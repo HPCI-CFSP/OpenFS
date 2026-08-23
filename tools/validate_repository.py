@@ -155,6 +155,8 @@ REQUIRED_FILES = [
     "tools/accept_handoff.py",
     "tools/process_pending_handoffs.py",
     "tools/publish_control_pr.py",
+    "tools/prepare_claim_promotions.py",
+    "tools/publish_promotion_pr.py",
     "tools/evaluate_monitor_readiness.py",
     "tools/prepare_run_approval.py",
     "queue/README.md",
@@ -175,6 +177,7 @@ REQUIRED_FILES = [
     ".github/workflows/weekly-coordinator.yml",
     ".github/workflows/handoff-control.yml",
     ".github/workflows/weekly-review.yml",
+    ".github/workflows/claim-promotion.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")

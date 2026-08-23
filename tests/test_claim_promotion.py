@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from promote_claim import prepare_canonical_claim, promote  # noqa: E402
+from prepare_claim_promotions import prepare as prepare_promotions  # noqa: E402
 from validate_repository import validate_canonical_claims  # noqa: E402
 
 
@@ -187,6 +188,33 @@ class ClaimPromotionTests(unittest.TestCase):
         errors = validate_canonical_claims(self.root)
         self.assertTrue(any("Decision digest differs" in error for error in errors))
         self.assertTrue(any("Decision is not accepted" in error for error in errors))
+
+    def test_batch_preparation_promotes_only_readiness_eligible_claims(self):
+        self.write(
+            f"runs/{self.run_id}/promotion-readiness.json",
+            {
+                "run_id": self.run_id,
+                "claims": [
+                    {
+                        "status": "eligible",
+                        "proposal_ref": self.proposal_ref,
+                        "decision_ref": self.decision_ref,
+                    }
+                ],
+            },
+        )
+        summary = prepare_promotions(
+            self.root, promoted_at="2026-08-24T02:00:00Z"
+        )
+        self.assertEqual(1, summary["prepared_count"])
+        self.assertEqual(["RUN-PILOT-TEST"], summary["affected_run_ids"])
+        self.assertIn("knowledge/claims/CLM-000001.json", summary["outputs"])
+        self.assertIn("TBD.md", summary["outputs"])
+
+    def test_batch_preparation_is_noop_without_eligible_claims(self):
+        summary = prepare_promotions(self.root, promoted_at="2026-08-24T02:00:00Z")
+        self.assertEqual(0, summary["prepared_count"])
+        self.assertEqual([], summary["outputs"])
 
 
 if __name__ == "__main__":

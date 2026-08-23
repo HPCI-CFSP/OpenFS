@@ -56,7 +56,8 @@
 - [x] Enforce unresolved dependency-impact blocks in Claim promotion.
 - [x] Generate deterministic indexes and `TBD.md` from accepted canonical Claims only.
 - [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
-- [ ] Add promotion pull requests and rollback support.
+- [x] Add variable-gated, review-only Claim promotion pull requests with duplicate-PR control.
+- [ ] Add explicit canonical supersession and rollback records.
 
 ## Phase 4: recurring autonomous loop
 

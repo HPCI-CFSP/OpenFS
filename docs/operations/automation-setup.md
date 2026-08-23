@@ -57,6 +57,7 @@ After the Pilot workflow defines and validates these names, add them at:
 | `OPENFS_COORDINATOR_ENABLED` | `false` | Enables scheduled weekly plan/Issue creation only |
 | `OPENFS_HANDOFF_CONTROL_ENABLED` | `false` | Enables daily Handoff validation and control-PR preparation |
 | `OPENFS_REVIEW_ENABLED` | `false` | Enables weekly internal Digest artifacts and grouped exception Issue updates |
+| `OPENFS_PROMOTION_ENABLED` | `false` | Enables reviewed Claim-promotion PR preparation; never auto-merges |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
@@ -141,6 +142,11 @@ Record these decisions in a reviewed pull request or Directive:
 11. Enable provider calls first in manual Pilot mode. Enable unattended production
    Runs only after owner review of cost, citations, dissent, false positives, and
    generated pull-request paths.
+12. After accepted non-Recommendation Claims exist, manually run **Prepare OpenFS
+    Claim Promotions** with `publish_pr=false` and inspect its artifact and diff.
+    Then test `publish_pr=true` and confirm branch protection requires human review.
+    Set `OPENFS_PROMOTION_ENABLED=true` only after this succeeds. The Tuesday
+    schedule prepares at most one open promotion PR and never merges it.
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 
