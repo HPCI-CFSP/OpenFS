@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/work-item.schema.json",
+  "title": "OpenFS Work Item",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "work_item_id",
+    "run_id",
+    "task_id",
+    "monitor_id",
+    "kind",
+    "required_role",
+    "status",
+    "idempotency_key",
+    "payload",
+    "output_paths",
+    "attempt",
+    "maximum_attempts",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
+    "run_id": {"type": "string"},
+    "task_id": {"type": "string", "pattern": "^OFS-[0-9]{3}$"},
+    "monitor_id": {"type": "string", "pattern": "^MON-[A-Z0-9-]+$"},
+    "kind": {"enum": ["source-discovery", "apply-directive", "evidence-extraction", "validation", "falsification", "synthesis", "promotion"]},
+    "required_role": {"type": "string"},
+    "status": {"enum": ["queued", "leased", "completed", "dead-letter", "cancelled"]},
+    "idempotency_key": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload": {"type": "object"},
+    "output_paths": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "attempt": {"type": "integer", "minimum": 0},
+    "maximum_attempts": {"type": "integer", "minimum": 1},
+    "lease": {
+      "type": "object",
+      "required": ["agent_id", "acquired_at", "expires_at"],
+      "properties": {
+        "agent_id": {"type": "string"},
+        "acquired_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "last_error": {"type": "object"},
+    "output_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "output_digests": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "completed_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

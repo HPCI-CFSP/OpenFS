@@ -26,12 +26,12 @@
 
 ## Phase 1: Git collaboration harness
 
-- [ ] Add GitHub Issue templates and the `research-directive` label.
+- [x] Add a GitHub Issue template for the `research-directive` intake path.
 - [x] Add first-run Agent onboarding and default-deny role/path permissions.
 - [x] Enforce registered Agent branch permissions during pull-request validation.
 - [x] Add trusted-base PR path enforcement that does not execute proposed checker code.
-- [ ] Implement Directive ingestion and schema validation.
-- [ ] Implement Run and Work Item creation with leases and idempotency keys.
+- [x] Implement structured Directive ingestion with public-boundary confirmation and stable provenance.
+- [x] Implement Pilot Run and Work Item creation with leases, expiry recovery, idempotency keys, retries, dead-letter exceptions, and a kill switch.
 - [ ] Configure branch protection, CODEOWNERS, and required status checks.
 - [ ] Add immutable action SHAs and an approved-action policy.
 
@@ -58,6 +58,6 @@
 ## Phase 4: recurring autonomous loop
 
 - [ ] Enable the first weekly monitor after three successful manual runs.
-- [ ] Add retry, dead-letter, budget, and kill-switch handling.
+- [ ] Complete production cost accounting and provider-side budget enforcement; local retry, dead-letter, Work Item limits, and the repository kill switch are implemented.
 - [ ] Generate Weekly Digests and exception Issues.
 - [ ] Process asynchronous human directives in the next or an ad-hoc run.

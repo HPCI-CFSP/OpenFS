@@ -18,7 +18,19 @@
     "scope": {"type": "array", "items": {"type": "string"}},
     "processed_run_ids": {"type": "array", "items": {"type": "string"}},
     "result_decision_ids": {"type": "array", "items": {"type": "string"}},
-    "publication_targets": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+    "publication_targets": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "source": {
+      "type": "object",
+      "required": ["kind", "url", "content_digest", "untrusted_input"],
+      "properties": {
+        "kind": {"const": "github-issue"},
+        "issue_number": {"type": "integer", "minimum": 1},
+        "url": {"type": "string", "format": "uri"},
+        "content_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "untrusted_input": {"const": true}
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }

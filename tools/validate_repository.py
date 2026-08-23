@@ -49,6 +49,7 @@ REQUIRED_FILES = [
     "schemas/assessment.schema.json",
     "schemas/decision.schema.json",
     "schemas/run.schema.json",
+    "schemas/work-item.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -67,6 +68,14 @@ REQUIRED_FILES = [
     "tools/promote_research_topic.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
+    "tools/openfs_runtime.py",
+    "tools/run_controller.py",
+    "tools/ingest_directive.py",
+    "queue/README.md",
+    "runs/README.md",
+    "state/README.md",
+    "reviews/exceptions/README.md",
+    "reviews/digests/README.md",
     "site/index.html",
     "site/styles.css",
     "site/app.js",
@@ -158,6 +167,35 @@ def validate_consensus_configuration(root: Path) -> list[str]:
             errors.append(f"consensus rule {object_type} missing: {sorted(missing)}")
         if rule.get("minimum_support", 0) > rule.get("minimum_assessments", 0):
             errors.append(f"consensus rule {object_type} requires more support than assessments")
+    return errors
+
+
+def validate_runtime_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    budgets = load_json(root / "config" / "budgets.json")
+    defaults = budgets.get("defaults", {})
+    for key in (
+        "maximum_run_minutes",
+        "maximum_work_items",
+        "maximum_retries_per_work_item",
+        "maximum_parallel_agents",
+        "maximum_sources_per_monitor",
+    ):
+        value = defaults.get(key)
+        if not isinstance(value, int) or value < 0:
+            errors.append(f"runtime budget must be a non-negative integer: {key}")
+    kill_switch = budgets.get("kill_switch", {})
+    if kill_switch.get("enabled") is not True or kill_switch.get("control_path") != "state/STOP":
+        errors.append("runtime kill switch must use state/STOP")
+    registry = load_json(root / "config" / "agent-registry.json")
+    agent_ids = [agent.get("agent_id") for agent in registry.get("agents", [])]
+    if len(agent_ids) != len(set(agent_ids)):
+        errors.append("agent registry has duplicate agent IDs")
+    orchestrators = [
+        agent for agent in registry.get("agents", []) if agent.get("role") == "orchestrator"
+    ]
+    if len(orchestrators) != 1:
+        errors.append("agent registry must define exactly one control-plane orchestrator template")
     return errors
 
 
@@ -369,6 +407,8 @@ def run(root: Path = ROOT) -> list[str]:
     errors.extend(validate_workflow_action_pins(root))
     if (root / "config" / "consensus-policy.json").exists():
         errors.extend(validate_consensus_configuration(root))
+    if (root / "config" / "budgets.json").exists():
+        errors.extend(validate_runtime_configuration(root))
     if (root / "config" / "research-baseline.json").exists():
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():

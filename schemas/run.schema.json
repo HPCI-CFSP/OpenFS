@@ -3,15 +3,21 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/run.schema.json",
   "title": "OpenFS Run Manifest",
   "type": "object",
-  "required": ["schema_version", "run_id", "base_commit", "started_at", "status", "policy_hashes", "agent_executions", "query_receipts"],
+  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "metrics", "run_identity_hash"],
   "properties": {
     "schema_version": {"type": "string"},
     "run_id": {"type": "string"},
+    "task_id": {"type": "string", "pattern": "^OFS-[0-9]{3}$"},
+    "monitor_id": {"type": "string", "pattern": "^MON-[A-Z0-9-]+$"},
+    "mode": {"enum": ["pilot", "production"]},
     "base_commit": {"type": "string"},
     "started_at": {"type": "string", "format": "date-time"},
     "completed_at": {"type": "string", "format": "date-time"},
     "status": {"enum": ["created", "running", "completed", "partial", "failed", "cancelled"]},
     "policy_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
+    "budget": {"type": "object"},
+    "directive_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "work_item_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "agent_executions": {
       "type": "array",
       "items": {
@@ -30,7 +36,9 @@
       }
     },
     "query_receipts": {"type": "array", "items": {"type": "object"}},
-    "cost": {"type": "object"}
+    "cost": {"type": "object"},
+    "metrics": {"type": "object"},
+    "run_identity_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   },
   "additionalProperties": false
 }

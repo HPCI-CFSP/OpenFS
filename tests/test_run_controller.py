@@ -1,0 +1,226 @@
+from __future__ import annotations
+
+import json
+import shutil
+import sys
+import tempfile
+import unittest
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from run_controller import (  # noqa: E402
+    complete_work_item,
+    create_run,
+    fail_work_item,
+    finalize_run,
+    lease_next,
+)
+
+
+class RunControllerTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        for relative in (
+            "config/autonomy-policy.json",
+            "config/budgets.json",
+            "config/consensus-policy.json",
+            "config/role-permissions.json",
+            "config/agent-registry.json",
+            "config/monitors/MON-MEMORY-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        (self.root / "reviews" / "directives").mkdir(parents=True)
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def add_directive(self):
+        directive = {
+            "schema_version": "0.1.0",
+            "directive_id": "DIR-000123",
+            "directive_type": "research-instruction",
+            "title": "Pilot focus",
+            "instruction": "Include memory pooling failure modes.",
+            "priority": "high",
+            "status": "approved",
+            "submitted_by": "test-owner",
+            "submitted_at": "2026-08-24T00:00:00Z",
+            "scope": ["OFS-001"],
+            "processed_run_ids": [],
+            "result_decision_ids": [],
+        }
+        (self.root / "reviews" / "directives" / "DIR-000123.json").write_text(
+            json.dumps(directive), encoding="utf-8"
+        )
+
+    def test_create_is_idempotent_and_includes_approved_directive(self):
+        self.add_directive()
+        now = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        first = create_run(
+            self.root,
+            run_id="RUN-PILOT-001",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=now,
+        )
+        second = create_run(
+            self.root,
+            run_id="RUN-PILOT-001",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=now + timedelta(hours=1),
+        )
+        self.assertEqual(first, second)
+        self.assertEqual(["DIR-000123"], first["directive_ids"])
+        self.assertEqual(5, len(first["work_item_ids"]))
+        self.assertEqual(
+            5,
+            len(list((self.root / "queue" / "RUN-PILOT-001").glob("WORK-*.json"))),
+        )
+
+    def test_lease_completion_records_output_digest(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-002",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-002",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        self.assertEqual("leased", leased["status"])
+        output_ref = leased["output_paths"][0]
+        output_path = self.root / output_ref
+        output_path.parent.mkdir(parents=True)
+        output_path.write_text('{"result":"ok"}\n', encoding="utf-8")
+        completed = complete_work_item(
+            self.root,
+            run_id="RUN-PILOT-002",
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+        )
+        self.assertEqual("completed", completed["status"])
+        self.assertEqual(64, len(completed["output_digests"][output_ref]))
+
+    def test_retry_exhaustion_creates_dead_letter_exception(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-003",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        final = None
+        for _ in range(3):
+            leased = lease_next(
+                self.root,
+                run_id="RUN-PILOT-003",
+                agent_id="discovery-public-01",
+                allow_disabled_pilot_agent=True,
+            )
+            final = fail_work_item(
+                self.root,
+                run_id="RUN-PILOT-003",
+                work_item_id=leased["work_item_id"],
+                agent_id="discovery-public-01",
+                error_kind="retrieval-timeout",
+                error_message="test timeout",
+                retryable=True,
+            )
+        self.assertEqual("dead-letter", final["status"])
+        exception_path = (
+            self.root
+            / "reviews"
+            / "exceptions"
+            / "RUN-PILOT-003"
+            / f"{final['work_item_id']}.json"
+        )
+        self.assertTrue(exception_path.is_file())
+
+    def test_expired_lease_is_recovered(self):
+        start = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-004",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=start,
+        )
+        first = lease_next(
+            self.root,
+            run_id="RUN-PILOT-004",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            lease_seconds=60,
+            now=start,
+        )
+        recovered = lease_next(
+            self.root,
+            run_id="RUN-PILOT-004",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start + timedelta(seconds=61),
+        )
+        self.assertEqual(first["work_item_id"], recovered["work_item_id"])
+        self.assertEqual(2, recovered["attempt"])
+
+    def test_kill_switch_blocks_new_run(self):
+        (self.root / "state").mkdir()
+        (self.root / "state" / "STOP").write_text("test\n", encoding="utf-8")
+        with self.assertRaisesRegex(RuntimeError, "kill switch"):
+            create_run(
+                self.root,
+                run_id="RUN-PILOT-005",
+                task_id="OFS-001",
+                monitor_id="MON-MEMORY-001",
+                pilot=True,
+            )
+
+    def test_finalize_reports_completed_run(self):
+        manifest = create_run(
+            self.root,
+            run_id="RUN-PILOT-006",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        for _ in manifest["work_item_ids"]:
+            leased = lease_next(
+                self.root,
+                run_id="RUN-PILOT-006",
+                agent_id="discovery-public-01",
+                allow_disabled_pilot_agent=True,
+            )
+            output_ref = leased["output_paths"][0]
+            path = self.root / output_ref
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n", encoding="utf-8")
+            complete_work_item(
+                self.root,
+                run_id="RUN-PILOT-006",
+                work_item_id=leased["work_item_id"],
+                agent_id="discovery-public-01",
+                output_refs=[output_ref],
+            )
+        completed = finalize_run(self.root, run_id="RUN-PILOT-006")
+        self.assertEqual("completed", completed["status"])
+        self.assertEqual({"completed": 4}, completed["metrics"]["work_items_by_status"])
+
+
+if __name__ == "__main__":
+    unittest.main()
