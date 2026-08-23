@@ -60,6 +60,7 @@ REQUIRED_FILES = [
     "schemas/evidence.schema.json",
     "schemas/evidence-bundle.schema.json",
     "schemas/coverage-report.schema.json",
+    "schemas/change-report.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -87,6 +88,7 @@ REQUIRED_FILES = [
     "tools/create_assessment.py",
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
+    "tools/detect_source_changes.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -313,6 +315,19 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
         if len(receipt_ids) != len(set(receipt_ids)):
             errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
+        change_report_ref = manifest.get("change_report_ref")
+        if change_report_ref:
+            change_report_path = root / change_report_ref
+            if not change_report_path.is_file():
+                errors.append(f"Run {run_id} change report is missing: {change_report_ref}")
+            else:
+                change_report = load_json(change_report_path)
+                if change_report.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} change report identity differs")
+                if change_report.get("previous_run_id") != manifest.get(
+                    "previous_run_id"
+                ):
+                    errors.append(f"Run {run_id} previous Run identity differs")
         snapshots = manifest.get("configuration_snapshots", {})
         for source_ref, expected_digest in manifest.get("policy_hashes", {}).items():
             snapshot_ref = snapshots.get(source_ref)
