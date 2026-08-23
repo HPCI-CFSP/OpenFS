@@ -120,6 +120,13 @@ deduplicated control Issue and artifact without making model calls. The research
 Worker and production Monitor remain disabled until independent provider capacity,
 cost limits, and recovery behavior are owner-approved.
 
+Production scheduling also has a deterministic readiness gate. It joins current
+Monitor, budget, Agent-registry, and Consensus-policy state with digest-pinned human
+reviews of the required manual Pilot Runs. Merely setting a Monitor to `enabled`
+cannot bypass an uncalibrated policy, inadequate independent review capacity,
+missing cost ceiling, or insufficient reviewed Runs. Pilot planning remains
+available while production is blocked.
+
 At Run creation, the controller pins the latest earlier completed Run with the same
 Task and Monitor identity. Finalizing a completed or partial Run automatically
 compares URL-and-query observations against that pinned predecessor and records

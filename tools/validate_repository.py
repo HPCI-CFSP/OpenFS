@@ -85,6 +85,8 @@ REQUIRED_FILES = [
     "schemas/center-followup-plan.schema.json",
     "schemas/global-followup-plan.schema.json",
     "schemas/global-followup-effectiveness.schema.json",
+    "schemas/run-approval.schema.json",
+    "schemas/monitor-readiness.schema.json",
     "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
@@ -139,6 +141,7 @@ REQUIRED_FILES = [
     "tools/accept_handoff.py",
     "tools/process_pending_handoffs.py",
     "tools/publish_control_pr.py",
+    "tools/evaluate_monitor_readiness.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -147,6 +150,7 @@ REQUIRED_FILES = [
     "reviews/issues/README.md",
     "reviews/briefs/README.md",
     "reviews/followups/README.md",
+    "reviews/run-approvals/README.md",
     "handoffs/README.md",
     "proposals/center-profiles/README.md",
     "site/index.html",
@@ -189,6 +193,74 @@ def validate_jsonl_files(root: Path) -> list[str]:
                 errors.append(
                     f"invalid JSONL: {path.relative_to(root)}:{line_number}: {exc}"
                 )
+    return errors
+
+
+def validate_run_approvals(root: Path) -> list[str]:
+    errors: list[str] = []
+    approval_ids: set[str] = set()
+    required = {
+        "schema_version",
+        "approval_id",
+        "run_id",
+        "monitor_id",
+        "status",
+        "manifest_digest",
+        "brief_ref",
+        "brief_digest",
+        "reviewed_by",
+        "reviewed_at",
+        "checks",
+        "notes",
+    }
+    required_checks = {
+        "public_information_boundary",
+        "citation_sample",
+        "coverage",
+        "false_positive_review",
+        "dissent_review",
+        "cost_review",
+    }
+    for path in sorted((root / "reviews" / "run-approvals").glob("RUN-*.json")):
+        approval = load_json(path)
+        missing = required - set(approval)
+        if missing:
+            errors.append(
+                f"Run approval lacks required fields: {path.relative_to(root)}: {sorted(missing)}"
+            )
+            continue
+        if path.stem != approval["run_id"]:
+            errors.append(f"Run approval filename differs from run ID: {path.relative_to(root)}")
+        approval_id = approval["approval_id"]
+        if approval_id in approval_ids:
+            errors.append(f"duplicate Run approval ID: {approval_id}")
+        approval_ids.add(approval_id)
+        checks = approval.get("checks", {})
+        if set(checks) != required_checks or not all(
+            isinstance(value, bool) for value in checks.values()
+        ):
+            errors.append(f"Run approval checks are incomplete: {path.relative_to(root)}")
+        manifest_path = root / "runs" / approval["run_id"] / "manifest.json"
+        brief_ref = Path(approval["brief_ref"])
+        brief_path = root / brief_ref
+        if not manifest_path.is_file():
+            errors.append(f"Run approval manifest is missing: {path.relative_to(root)}")
+        if (
+            brief_ref.is_absolute()
+            or ".." in brief_ref.parts
+            or brief_ref.parts[:2] != ("reviews", "briefs")
+            or not brief_path.is_file()
+        ):
+            errors.append(f"Run approval Brief reference is invalid: {path.relative_to(root)}")
+        if approval["status"] == "reviewed-pass":
+            if manifest_path.is_file() and stable_digest(load_json(manifest_path)) != approval[
+                "manifest_digest"
+            ]:
+                errors.append(f"passing Run approval manifest digest differs: {path.relative_to(root)}")
+            if brief_path.is_file() and stable_digest(load_json(brief_path)) != approval[
+                "brief_digest"
+            ]:
+                errors.append(f"passing Run approval Brief digest differs: {path.relative_to(root)}")
     return errors
 
 
@@ -1177,6 +1249,7 @@ def run(root: Path = ROOT) -> list[str]:
     errors.extend(validate_required_files(root))
     errors.extend(validate_json_files(root))
     errors.extend(validate_jsonl_files(root))
+    errors.extend(validate_run_approvals(root))
     if (root / "schemas").exists():
         errors.extend(validate_schema_headers(root))
     errors.extend(validate_workflow_action_pins(root))

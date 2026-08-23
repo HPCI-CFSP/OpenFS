@@ -33,7 +33,7 @@
 - [x] Implement structured Directive ingestion with public-boundary confirmation and stable provenance.
 - [x] Implement Pilot Run and Work Item creation with leases, expiry recovery, idempotency keys, retries, dead-letter exceptions, and a kill switch.
 - [ ] Configure branch protection, CODEOWNERS, and required status checks.
-- [ ] Add immutable action SHAs and an approved-action policy.
+- [x] Enforce immutable action SHAs in every workflow.
 
 ## Phase 2: proposal and independent assessment
 
@@ -58,6 +58,7 @@
 
 ## Phase 4: recurring autonomous loop
 
+- [x] Add a production-readiness gate for reviewed manual Runs, budget approval, policy calibration, and independent Consensus capacity.
 - [ ] Enable the first weekly monitor after three successful manual runs.
 - [ ] Complete production cost accounting and provider-side budget enforcement; local retry, dead-letter, Work Item limits, and the repository kill switch are implemented.
 - [ ] Generate Weekly Digests and exception Issues.

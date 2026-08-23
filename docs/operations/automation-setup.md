@@ -135,6 +135,23 @@ Record these decisions in a reviewed pull request or Directive:
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 
+### Production readiness gate
+
+An enabled Monitor is not sufficient to start unattended production. The weekly
+Coordinator runs `tools/evaluate_monitor_readiness.py` and blocks the cycle unless:
+
+- the Monitor is enabled;
+- the budget configuration is owner-approved and has a positive per-Run cost cap;
+- the Consensus policy is calibrated and the live Agent registry has sufficient
+  enabled, independent validator and critic capacity;
+- at least `manual_run_requirement` completed Pilot Runs have passed Coverage,
+  temporal integrity, and formal Consensus, and each has a digest-pinned human
+  record under `reviews/run-approvals/`.
+
+A Pilot Run approval confirms calibration review only. It does not accept a Claim,
+Finding, Recommendation, scenario, or report. If the approved Run manifest or Brief
+changes, the digest check invalidates that approval and blocks production.
+
 The Weekly Digest groups open Exceptions that share the same kind, unmet
 requirements, and publication-blocking state into one Owner Action. Every original
 Exception reference remains listed, but repeated Consensus-capacity failures do not

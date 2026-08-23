@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from openfs_runtime import atomic_write_json, isoformat, read_json
+from evaluate_monitor_readiness import evaluate as evaluate_monitor_readiness
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,7 +51,9 @@ def build_plan(
     requested = set(monitor_ids or [])
     if any(not MONITOR_ID.fullmatch(item) for item in requested):
         raise ValueError("invalid monitor ID")
+    timestamp = generated_at or isoformat()
     monitors = []
+    blockers = []
     known = set()
     for path in sorted((root / "config" / "monitors").glob("*.json")):
         monitor = read_json(path)
@@ -62,22 +65,31 @@ def build_plan(
             continue
         previous = _last_run(root, monitor_id)
         run_suffix = monitor_id.removeprefix("MON-")
-        monitors.append(
-            {
-                "monitor_id": monitor_id,
-                "task_id": monitor["task_id"],
-                "mode": "pilot" if pilot else "production",
-                "suggested_run_id": f"RUN-{week.replace('-', '')}-{run_suffix}",
-                "previous_run_id": previous.get("run_id") if previous else None,
-                "previous_run_status": previous.get("status") if previous else None,
-                "pending_directive_ids": _pending_directives(root, monitor["task_id"]),
-            }
-        )
+        production_readiness = None
+        if not pilot:
+            production_readiness = evaluate_monitor_readiness(
+                root,
+                monitor_id=monitor_id,
+                evaluated_at=timestamp,
+            )
+            if production_readiness["status"] != "ready":
+                blockers.append(f"monitor-not-production-ready:{monitor_id}")
+        plan = {
+            "monitor_id": monitor_id,
+            "task_id": monitor["task_id"],
+            "mode": "pilot" if pilot else "production",
+            "suggested_run_id": f"RUN-{week.replace('-', '')}-{run_suffix}",
+            "previous_run_id": previous.get("run_id") if previous else None,
+            "previous_run_status": previous.get("status") if previous else None,
+            "pending_directive_ids": _pending_directives(root, monitor["task_id"]),
+        }
+        if production_readiness:
+            plan["production_readiness"] = production_readiness
+        monitors.append(plan)
     unknown = sorted(requested - known)
     if unknown:
         raise ValueError(f"unknown monitor IDs: {unknown}")
 
-    blockers = []
     if not monitors:
         blockers.append("no-eligible-monitors")
     if (root / "state" / "STOP").exists():
@@ -103,7 +115,8 @@ def build_plan(
             lines.append(
                 f"- `{monitor['monitor_id']}` / `{monitor['task_id']}` -> "
                 f"`{monitor['suggested_run_id']}`; previous: "
-                f"`{monitor['previous_run_id'] or 'none'}`"
+                f"`{monitor['previous_run_id'] or 'none'}`; readiness: "
+                f"`{monitor.get('production_readiness', {}).get('status', 'pilot')}`"
             )
     else:
         lines.append("- None.")
@@ -120,7 +133,7 @@ def build_plan(
         "schema_version": "0.1.0",
         "cycle_id": cycle_id,
         "week": week,
-        "generated_at": generated_at or isoformat(),
+        "generated_at": timestamp,
         "mode": "pilot" if pilot else "production",
         "status": "blocked" if blockers else "ready",
         "blockers": blockers,

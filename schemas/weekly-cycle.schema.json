@@ -12,7 +12,24 @@
     "mode": {"enum": ["pilot", "production"]},
     "status": {"enum": ["ready", "blocked"]},
     "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "monitors": {"type": "array", "items": {"type": "object"}},
+    "monitors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["monitor_id", "task_id", "mode", "suggested_run_id", "previous_run_id", "previous_run_status", "pending_directive_ids"],
+        "properties": {
+          "monitor_id": {"type": "string"},
+          "task_id": {"type": "string"},
+          "mode": {"enum": ["pilot", "production"]},
+          "suggested_run_id": {"type": "string"},
+          "previous_run_id": {"type": ["string", "null"]},
+          "previous_run_status": {"type": ["string", "null"]},
+          "pending_directive_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "production_readiness": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
     "issue": {
       "type": "object",
       "required": ["title", "body", "labels", "deduplication_marker"],
