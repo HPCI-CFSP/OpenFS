@@ -112,6 +112,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
+    technology_scope = load_json(root / "config" / "global-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
     topics = []
     for topic in baseline["topics"]:
@@ -152,6 +153,27 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "open_gap_ids": baseline["open_gap_ids"],
         },
         "topics": topics,
+        "technology_landscape": {
+            "scope_id": technology_scope["scope_id"],
+            "categories": [
+                {"ja": ja, "en": en}
+                for ja, en in zip(
+                    i18n["technology_landscape"]["technology_categories_ja"],
+                    technology_scope["technology_categories"],
+                    strict=True,
+                )
+            ],
+            "scope_rule": {
+                "ja": i18n["technology_landscape"]["scope_rule_ja"],
+                "en": technology_scope["scope_rule"],
+            },
+            "priority_rule": {
+                "ja": i18n["technology_landscape"]["priority_rule_ja"],
+                "en": technology_scope["priority_rule"],
+            },
+            "priority_regions": technology_scope["priority_regions"],
+            "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
+        },
         "scenarios": scenarios,
         "reports": reports,
         "publication": {

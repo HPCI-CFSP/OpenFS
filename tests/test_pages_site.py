@@ -25,11 +25,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
             self.assertNotIn("domestic_technology", result)
+            self.assertEqual(12, len(result["technology_landscape"]["categories"]))
+            self.assertTrue(
+                all(set(category) == {"ja", "en"} for category in result["technology_landscape"]["categories"])
+            )
+            self.assertEqual(["Japan"], result["technology_landscape"]["priority_regions"])
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
             self.assertNotIn("SCN-EXAMPLE", rendered)
             self.assertNotIn("Illustrative archetypes", rendered)
+            index = (output / "index.html").read_text(encoding="utf-8")
+            self.assertIn('href="#technology-landscape"', index)
+            self.assertNotIn('href="#domestic"', index)
 
     def test_publication_policy_rejects_candidate_scenario_status(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))

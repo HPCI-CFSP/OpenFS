@@ -319,6 +319,14 @@ def validate_publication_configuration(root: Path) -> list[str]:
             f"publication i18n Topic coverage differs: missing={sorted(topic_ids - translated_ids)}, "
             f"unknown={sorted(translated_ids - topic_ids)}"
         )
+    technology_scope = load_json(root / "config" / "global-technology-scope.json")
+    technology_i18n = i18n.get("technology_landscape", {})
+    category_ja = technology_i18n.get("technology_categories_ja", [])
+    if len(category_ja) != len(technology_scope.get("technology_categories", [])):
+        errors.append("publication i18n technology landscape category counts differ")
+    for key in ("scope_rule_ja", "priority_rule_ja"):
+        if not technology_i18n.get(key):
+            errors.append(f"publication i18n technology landscape lacks {key}")
     workflow = (root / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
     if "OPENFS_PAGES_ENABLED" not in workflow:
         errors.append("Pages workflow lacks explicit activation variable")
