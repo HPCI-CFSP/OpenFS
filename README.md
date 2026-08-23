@@ -16,9 +16,9 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, the first deterministic consensus-gate prototype, the official FY2022-FY2025 FS report inventory, and a deterministic multi-scenario view generator. Web collection, scheduled agent dispatch, canonical promotion, and production report generation are not enabled yet.
+This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a GitHub Pages-ready public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the research-scope baseline inherited from FS materials, `OFS-003` builds center-aware multi-scenario plans, and `OFS-004` preserves a reviewed lane for AI-proposed emerging topics.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` broadly tracks technologies developed in Japan.
 
 ## Core principles
 
@@ -41,6 +41,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/tasks/` | Research tasks and their expected outputs |
 | `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
+| `docs/publication/` | GitHub Pages activation and public-output boundaries |
 | `config/` | Machine-readable agent, monitor, budget, and consensus settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Reusable agent procedures, added as each workflow is implemented |
@@ -62,9 +63,9 @@ Directories that do not yet contain implemented behavior are documented in `docs
 
 ## Research baseline
 
-New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 57 topics: the protected 30-topic initial catalog plus 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025. The additions cover performance limits, RAS, domestic technologies, federated software and data services, center conditions, governance, funding, and scenario presentation.
+New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-directed broad domestic-technology ecosystem Topic.
 
-The FS1.0 record and current primary evidence for every HPCI center remain incomplete. The baseline must not be represented as a complete historical or current HPCI review. AI agents may propose further topics through `OFS-004`, but may not remove the protected initial catalog.
+The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additive Topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing Topics.
 
 ## Local validation
 
@@ -103,6 +104,14 @@ python3 tools/generate_scenario_views.py \
   --output-json /tmp/openfs-scenarios.json
 ```
 
+Build the public GitHub Pages view locally:
+
+```bash
+python3 tools/build_pages_site.py --output _site
+```
+
+Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. See `docs/publication/github-pages.md`.
+
 ## Human directions
 
 Humans add asynchronous instructions through either:
@@ -114,4 +123,4 @@ Each directive will eventually be linked to the work items, runs, and decisions 
 
 ## License
 
-The project license is not yet selected. Until a license is added, the repository is publicly visible but no open-source reuse rights are granted by default.
+The project license is not yet selected. `docs/governance/license-decision.md` recommends Apache-2.0, subject to confirmation of the copyright holder, institutional authority, report licensing, and third-party-material boundaries. Until a license is added, public visibility does not grant open-source reuse rights by default.

@@ -1,0 +1,67 @@
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from build_pages_site import build, collect_scenarios  # noqa: E402
+
+
+class PagesSiteTests(unittest.TestCase):
+    def test_build_publishes_catalog_but_not_illustrative_scenarios(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            result = build(ROOT, output)
+            self.assertEqual(58, len(result["topics"]))
+            self.assertEqual([], result["scenarios"])
+            self.assertEqual([], result["reports"])
+            self.assertEqual("public-only", result["publication"]["information_plane"])
+            self.assertTrue((output / "index.html").is_file())
+            self.assertTrue((output / "data" / "openfs-public.js").is_file())
+            rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
+            self.assertNotIn("SCN-EXAMPLE", rendered)
+            self.assertNotIn("Illustrative archetypes", rendered)
+
+    def test_publication_policy_rejects_candidate_scenario_status(self):
+        policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))
+        self.assertNotIn("accepted", policy["accepted_scenario_statuses"])
+        self.assertNotIn("candidate", policy["accepted_scenario_statuses"])
+        self.assertNotIn("illustrative-example", policy["accepted_scenario_statuses"])
+
+    def test_published_scenario_is_allowlisted_and_requires_publication_decision(self):
+        policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))
+        scenario = {
+            "scenario_id": "SCN-PUBLIC-001",
+            "title_ja": "公開シナリオ",
+            "status": "published",
+            "objective": "公開用の要約",
+            "nda_internal_note": "must never be emitted",
+            "publication": {
+                "information_classification": "public",
+                "publication_approved": True,
+                "publication_decision_id": "DEC-PUB-001",
+            },
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "roadmaps" / "scenarios" / "accepted"
+            target.mkdir(parents=True)
+            (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
+            result = collect_scenarios(root, policy)
+            self.assertEqual("SCN-PUBLIC-001", result[0]["scenario_id"])
+            self.assertNotIn("nda_internal_note", result[0])
+
+            scenario["publication"].pop("publication_decision_id")
+            (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "publication decision"):
+                collect_scenarios(root, policy)
+
+
+if __name__ == "__main__":
+    unittest.main()

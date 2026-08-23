@@ -74,8 +74,9 @@ class ResearchBaselineTests(unittest.TestCase):
     def test_domestic_and_center_scenario_topics_are_explicit(self):
         topic_ids = {topic["topic_id"] for topic in self.baseline["topics"]}
         self.assertTrue(
-            {"ARCH-11", "ARCH-12", "CROSS-08", "CROSS-11", "CROSS-12", "CROSS-13", "CROSS-17"}.issubset(topic_ids)
+            {"ARCH-11", "ARCH-12", "CROSS-08", "CROSS-11", "CROSS-12", "CROSS-13", "CROSS-17", "CROSS-18"}.issubset(topic_ids)
         )
+        self.assertEqual(58, len(topic_ids))
 
     def test_missing_fs1_material_remains_explicit_but_fs2_gap_is_closed(self):
         self.assertFalse(self.baseline["complete"])

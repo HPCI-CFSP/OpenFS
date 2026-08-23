@@ -116,6 +116,14 @@ Accepted knowledge is projected into multiple HPCI system scenarios rather than 
 
 The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass the Recommendation Gate or promotion workflow.
 
+## Research-scope expansion
+
+Emerging-topic agents create additive Research Topic Proposals with catalog-delta analysis, multiple Source Origin Groups, a Query Plan, and falsification queries. Independent validators and a critic assess the proposal, the deterministic Consensus Gate decides eligibility, and the `topic-promotion` role can update only the baseline and automatic-topic monitor. The next Run expands accepted entries into Discovery Work Items for other agents.
+
+## Public projection
+
+`tools/build_pages_site.py` projects only approved public paths into a static GitHub Pages artifact. Candidate and illustrative scenarios, proposals, assessments, runs, reviews, and private/NDA paths are excluded. A published artifact also needs explicit public-classification metadata and a Publication Decision ID; only allowlisted fields are copied. Pages publication is a view over published artifacts, not a promotion mechanism.
+
 ## Planned repository areas
 
 The initial design includes `skills/`, `queue/`, `proposals/`, `assessments/`, `decisions/`, `data/`, `knowledge/`, `roadmaps/`, `reports/`, `reviews/`, `runs/`, and `state/`. Areas are added to Git when they contain an implemented workflow, policy, sample, or accepted record; empty placeholder trees are avoided.

@@ -3,11 +3,12 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/research-baseline.schema.json",
   "title": "OpenFS Research Baseline",
   "type": "object",
-  "required": ["schema_version", "baseline_id", "baseline_status", "complete", "initial_catalog", "source_refs", "source_corpus", "topics", "open_gap_ids"],
+  "required": ["schema_version", "baseline_id", "baseline_status", "catalog_revision", "complete", "initial_catalog", "source_refs", "source_corpus", "topics", "open_gap_ids"],
   "properties": {
     "schema_version": {"type": "string"},
     "baseline_id": {"type": "string"},
     "baseline_status": {"enum": ["draft", "initial-from-current-corpus", "reviewed", "superseded"]},
+    "catalog_revision": {"type": "integer", "minimum": 1},
     "complete": {"type": "boolean"},
     "derived_at": {"type": "string", "format": "date"},
     "initial_catalog": {
@@ -68,7 +69,10 @@
           "outputs": {"type": "array", "items": {"type": "string"}, "minItems": 1},
           "source_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
           "status": {"enum": ["not-started", "partial", "reviewed", "retired"]},
-          "review_cadence": {"enum": ["weekly", "monthly", "quarterly", "annual", "event-driven"]}
+          "review_cadence": {"enum": ["weekly", "monthly", "quarterly", "annual", "event-driven"]},
+          "catalog_origin": {"enum": ["human-directive", "ai-consensus"]},
+          "proposal_id": {"type": "string"},
+          "added_by_decision_id": {"type": "string"}
         },
         "additionalProperties": false
       }

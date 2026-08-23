@@ -24,6 +24,9 @@ REQUIRED_FILES = [
     "docs/planning/scenario-generation.md",
     "docs/planning/university-center-baseline.md",
     "docs/planning/presentation-mechanism.md",
+    "docs/publication/github-pages.md",
+    "docs/governance/license-decision.md",
+    "docs/research-baseline/ai-topic-promotion.md",
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
@@ -33,6 +36,8 @@ REQUIRED_FILES = [
     "config/role-permissions.json",
     "config/research-baseline.json",
     "config/scenario-policy.json",
+    "config/domestic-technology-scope.json",
+    "config/publication-policy.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/source-lineage.schema.json",
@@ -42,14 +47,25 @@ REQUIRED_FILES = [
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
+    "schemas/research-topic-proposal.schema.json",
     "docs/tasks/OFS-002.md",
     "docs/tasks/OFS-003.md",
     "docs/tasks/OFS-004.md",
+    "docs/tasks/OFS-005.md",
     "config/monitors/MON-FS-BASELINE-001.json",
     "config/monitors/MON-HPCI-CENTERS-001.json",
     "config/monitors/MON-EMERGING-TOPICS-001.json",
+    "config/monitors/MON-JP-TECH-001.json",
+    "config/monitors/MON-AUTO-TOPICS-001.json",
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
+    "tools/promote_research_topic.py",
+    "tools/expand_topic_monitor.py",
+    "tools/build_pages_site.py",
+    "site/index.html",
+    "site/styles.css",
+    "site/app.js",
+    ".github/workflows/pages.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -185,6 +201,10 @@ def validate_research_baseline(root: Path) -> list[str]:
     missing_initial_topics = set(initial_topic_ids) - set(topic_ids)
     if missing_initial_topics:
         errors.append(f"research baseline removed initial topics: {sorted(missing_initial_topics)}")
+    required_additive_topics = {"CROSS-17", "CROSS-18"}
+    missing_additive_topics = required_additive_topics - set(topic_ids)
+    if missing_additive_topics:
+        errors.append(f"research baseline missing continuing-discovery topics: {sorted(missing_additive_topics)}")
 
     official_sources = [
         source for source in source_corpus
@@ -205,6 +225,79 @@ def validate_research_baseline(root: Path) -> list[str]:
     incorrectly_open = {"FSBASE-GAP-002", "FSBASE-GAP-004"} & set(baseline.get("open_gap_ids", []))
     if incorrectly_open:
         errors.append(f"research baseline still marks reviewed official gaps open: {sorted(incorrectly_open)}")
+    return errors
+
+
+def validate_domestic_technology_scope(root: Path) -> list[str]:
+    errors: list[str] = []
+    scope = load_json(root / "config" / "domestic-technology-scope.json")
+    baseline = load_json(root / "config" / "research-baseline.json")
+    topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
+    if len(scope.get("technology_categories", [])) < 10:
+        errors.append("domestic technology scope must cover at least ten broad categories")
+    if not scope.get("coverage_requirements", {}).get("search_beyond_seed_list"):
+        errors.append("domestic technology scope must search beyond its seed list")
+    unknown = set(scope.get("topic_ids", [])) - topic_ids
+    if unknown:
+        errors.append(f"domestic technology scope references unknown topics: {sorted(unknown)}")
+    monitor = load_json(root / "config" / "monitors" / "MON-JP-TECH-001.json")
+    if monitor.get("scope_ref") != "config/domestic-technology-scope.json":
+        errors.append("MON-JP-TECH-001 does not reference the canonical domestic scope")
+    return errors
+
+
+def validate_research_topic_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    policy = load_json(root / "config" / "consensus-policy.json")
+    rule = policy.get("rules", {}).get("research_topic", {})
+    if rule.get("minimum_support_independence_groups", 0) < 2:
+        errors.append("research_topic consensus requires at least two support independence groups")
+    if rule.get("minimum_origin_groups", 0) < 2:
+        errors.append("research_topic consensus requires at least two source origin groups")
+    if rule.get("require_falsification_review") is not True:
+        errors.append("research_topic consensus requires falsification review")
+    permissions = load_json(root / "config" / "role-permissions.json")
+    allowed = set(permissions.get("roles", {}).get("topic-promotion", {}).get("allowed_write_patterns", []))
+    expected = {
+        "config/research-baseline.json",
+        "config/monitors/MON-AUTO-TOPICS-001.json",
+        "runs/**",
+    }
+    if allowed != expected:
+        errors.append("topic-promotion role has unexpected write permissions")
+    monitor = load_json(root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json")
+    baseline_topics = {
+        topic["topic_id"] for topic in load_json(root / "config" / "research-baseline.json")["topics"]
+    }
+    for entry in monitor.get("topic_entries", []):
+        if entry.get("topic_id") not in baseline_topics:
+            errors.append(f"auto-topic monitor references unknown topic: {entry.get('topic_id')}")
+        if not entry.get("decision_id"):
+            errors.append(f"auto-topic monitor entry lacks decision: {entry.get('topic_id')}")
+    return errors
+
+
+def validate_publication_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    policy = load_json(root / "config" / "publication-policy.json")
+    if policy.get("information_plane") != "public-only":
+        errors.append("publication policy must be public-only")
+    if policy.get("accepted_scenario_statuses") != ["published"]:
+        errors.append("publication policy must allow published scenarios only")
+    if policy.get("accepted_report_statuses") != ["published"]:
+        errors.append("publication policy must allow published reports only")
+    required_metadata = policy.get("required_publication_metadata", {})
+    if required_metadata != {
+        "information_classification": "public",
+        "publication_approved": True,
+    }:
+        errors.append("publication policy lacks strict public-classification metadata")
+    for key in ("scenario_public_fields", "report_public_fields"):
+        if not policy.get(key) or "publication" not in policy[key]:
+            errors.append(f"publication policy lacks an explicit {key} allowlist")
+    workflow = (root / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
+    if "OPENFS_PAGES_ENABLED" not in workflow:
+        errors.append("Pages workflow lacks explicit activation variable")
     return errors
 
 
@@ -248,6 +341,12 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
+    if (root / "config" / "domestic-technology-scope.json").exists():
+        errors.extend(validate_domestic_technology_scope(root))
+    if (root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json").exists():
+        errors.extend(validate_research_topic_configuration(root))
+    if (root / "config" / "publication-policy.json").exists():
+        errors.extend(validate_publication_configuration(root))
     return errors
 
 

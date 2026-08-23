@@ -11,8 +11,13 @@
 - [x] Add an initial FS-derived research baseline with explicit source and coverage gaps.
 - [x] Register and review all 26 official FY2022-FY2025 FS2.0/FS3.0 PDFs while preserving the initial 30 topics.
 - [x] Add center-profile and multi-scenario contracts plus deterministic Markdown/JSON view generation.
+- [x] Add broad domestic-technology scope and weekly coverage monitor.
+- [x] Add additive AI Topic proposal, Consensus, promotion, and Work Item expansion flow.
+- [x] Add a GitHub Pages-ready public view and guarded deployment workflow.
+- [x] Document license options and recommend Apache-2.0 pending ownership approval.
 - [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
 - [ ] Select and add a project license.
+- [ ] Confirm the copyright holder and approve Apache-2.0 or an alternative through a Directive.
 - [ ] Confirm repository visibility and member access policy.
 - [ ] Confirm the authoritative HPCI evaluation criteria and their owners.
 

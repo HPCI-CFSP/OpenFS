@@ -47,6 +47,24 @@ class AgentPermissionTests(unittest.TestCase):
         self.assertEqual(["AGENTS.md"], allowed)
         self.assertEqual([], denied)
 
+    def test_topic_promotion_is_limited_to_catalog_and_auto_monitor(self):
+        allowed, denied = check_paths(
+            "topic-promotion",
+            [
+                "config/research-baseline.json",
+                "config/monitors/MON-AUTO-TOPICS-001.json",
+                "runs/RUN-001/topic-promotion.json",
+                "config/consensus-policy.json",
+                "docs/research-baseline/README.md",
+            ],
+            self.config,
+        )
+        self.assertEqual(3, len(allowed))
+        self.assertEqual(
+            ["config/consensus-policy.json", "docs/research-baseline/README.md"],
+            denied,
+        )
+
     def test_path_traversal_is_denied(self):
         _, denied = check_paths("discovery", ["../data/sources/SRC.json"], self.config)
         self.assertTrue(denied)

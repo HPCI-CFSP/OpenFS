@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OpenFSの公開調査カタログ、HPCI整備シナリオ、報告書を閲覧するための公開ビュー">
+  <title>OpenFS | HPCI-CFSP</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="identity">
+        <span class="organization">HPCI-CFSP</span>
+        <h1>OpenFS</h1>
+        <p>Public research catalog and planning outputs</p>
+      </div>
+      <div class="header-status" aria-label="公開状態">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Public information only</span>
+        <span id="as-of" class="as-of"></span>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="ページ内ナビゲーション">
+      <a href="#overview">概要</a>
+      <a href="#catalog">調査カタログ</a>
+      <a href="#domestic">国内技術</a>
+      <a href="#scenarios">整備シナリオ</a>
+      <a href="#reports">報告書</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="overview" class="section overview-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">CURRENT PUBLIC STATE</span>
+          <h2>継続調査の現在地</h2>
+        </div>
+        <p>受理済みの公開情報だけを表示します。NDA情報、候補段階の提案、例示シナリオは公開対象に含めません。</p>
+      </div>
+      <div class="metric-grid" aria-label="OpenFSの集計">
+        <article class="metric"><span>調査Topic</span><strong id="metric-topics">0</strong><small>保護された初期項目を含む</small></article>
+        <article class="metric"><span>国内技術カテゴリ</span><strong id="metric-domestic">0</strong><small>既知候補に限定しない</small></article>
+        <article class="metric"><span>公開シナリオ</span><strong id="metric-scenarios">0</strong><small>Recommendation Gate通過分</small></article>
+        <article class="metric"><span>公開報告書</span><strong id="metric-reports">0</strong><small>来歴付きExport</small></article>
+      </div>
+      <div class="notice-band">
+        <div><strong id="baseline-id">FSBASE</strong><span id="baseline-detail"></span></div>
+        <p id="gap-summary"></p>
+      </div>
+    </section>
+
+    <section id="catalog" class="section">
+      <div class="section-heading">
+        <div><span class="eyebrow">RESEARCH INVENTORY</span><h2>調査カタログ</h2></div>
+        <p>AIが追加提案したTopicも、独立レビューとConsensus Gateを通過したものだけがここへ加わります。</p>
+      </div>
+      <div class="toolbar">
+        <div class="segmented" role="group" aria-label="分野フィルタ">
+          <button type="button" class="active" data-domain="all">すべて</button>
+          <button type="button" data-domain="architecture">Architecture</button>
+          <button type="button" data-domain="system-software">System software</button>
+          <button type="button" data-domain="applications">Applications</button>
+          <button type="button" data-domain="cross-cutting">Cross-cutting</button>
+        </div>
+        <label class="search-control">
+          <span>検索</span>
+          <input id="topic-search" type="search" placeholder="Topic ID、名称、問い" autocomplete="off">
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>調査項目</th><th>分野</th><th>状態</th><th>更新</th><th>起点</th></tr></thead>
+          <tbody id="topic-rows"></tbody>
+        </table>
+      </div>
+      <p id="topic-empty" class="empty-state" hidden>条件に一致するTopicはありません。</p>
+    </section>
+
+    <section id="domestic" class="section muted-band">
+      <div class="section-heading">
+        <div><span class="eyebrow">JAPAN TECHNOLOGY RADAR</span><h2>国内技術の広域調査</h2></div>
+        <p id="domestic-rule"></p>
+      </div>
+      <div id="domestic-categories" class="category-grid"></div>
+    </section>
+
+    <section id="scenarios" class="section">
+      <div class="section-heading">
+        <div><span class="eyebrow">ROADMAP SCENARIOS</span><h2>HPCI整備シナリオ</h2></div>
+        <p>Architecture、System Software、Applications、センター影響、国内技術、不確実性を一体で比較します。</p>
+      </div>
+      <div id="scenario-list" class="scenario-list"></div>
+      <div id="scenario-empty" class="empty-panel">
+        <strong>公開済みシナリオはまだありません</strong>
+        <p>現在の4案はGenerator検証用の例示です。根拠・評価・人の承認を通過した案だけを公開します。</p>
+      </div>
+    </section>
+
+    <section id="reports" class="section muted-band">
+      <div class="section-heading">
+        <div><span class="eyebrow">REPORTS</span><h2>報告書・Export</h2></div>
+        <p>公開版には版、基準日、根拠への追跡、置換関係を付けます。</p>
+      </div>
+      <div id="report-list" class="report-list"></div>
+      <div id="report-empty" class="empty-panel"><strong>公開済み報告書はまだありません</strong><p>Promotion workflowで受理されたExportが追加されると、ここへ自動表示されます。</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>OpenFS</strong><span>HPCI-CFSP public research view</span></div>
+    <div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a><span id="license-status"></span></div>
+  </footer>
+
+  <script src="data/openfs-public.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
