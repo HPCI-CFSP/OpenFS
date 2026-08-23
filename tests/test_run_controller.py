@@ -146,6 +146,7 @@ class RunControllerTests(unittest.TestCase):
             "config/monitors/MON-GLOBAL-TECH-001.json",
             "config/global-technology-scope.json",
             "config/research-baseline.json",
+            "runs/RUN-OFS005-PILOT-007/global-followup-effectiveness.json",
         ):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -169,12 +170,31 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual(
             "worldwide-technology-survey", first_work_item["skill"]["skill_id"]
         )
+        self.assertEqual(16, len(manifest["work_item_ids"]))
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in (self.root / "queue" / manifest["run_id"]).glob("*.json")
+        ]
+        persistent = [
+            item for item in items if item["payload"].get("persistent_query_id")
+        ]
+        self.assertEqual(4, len(persistent))
+        self.assertEqual(
+            {"peer-reviewed-research", "standards-body"},
+            {item["payload"]["source_classes"][0] for item in persistent},
+        )
+        promotion_ref = "runs/RUN-OFS005-PILOT-007/global-followup-effectiveness.json"
+        self.assertIn(promotion_ref, manifest["policy_hashes"])
+        self.assertTrue(
+            (self.root / manifest["configuration_snapshots"][promotion_ref]).is_file()
+        )
 
     def test_global_run_snapshots_coverage_followup_plan(self):
         for relative in (
             "config/monitors/MON-GLOBAL-TECH-001.json",
             "config/global-technology-scope.json",
             "config/research-baseline.json",
+            "runs/RUN-OFS005-PILOT-007/global-followup-effectiveness.json",
         ):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -236,7 +256,7 @@ class RunControllerTests(unittest.TestCase):
             now=datetime(2026, 8, 25, tzinfo=timezone.utc),
         )
 
-        self.assertEqual(14, len(manifest["work_item_ids"]))
+        self.assertEqual(18, len(manifest["work_item_ids"]))
         self.assertEqual(plan_ref, manifest["followup_plan"]["source_ref"])
         items = [
             json.loads(path.read_text(encoding="utf-8"))
@@ -296,7 +316,7 @@ class RunControllerTests(unittest.TestCase):
             pilot=True,
             now=datetime(2026, 8, 27, tzinfo=timezone.utc),
         )
-        self.assertEqual(12, len(after_close["work_item_ids"]))
+        self.assertEqual(16, len(after_close["work_item_ids"]))
         self.assertNotIn("followup_plan", after_close)
 
     def test_cancel_records_reason_and_cancels_open_work(self):

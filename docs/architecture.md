@@ -155,6 +155,10 @@ each target gap was resolved, so ineffective search generations remain visible.
 When no Coverage gaps remain, the planner writes a `no-followup-required` marker.
 Run creation treats the newest marker as authoritative, so an older gap plan is not
 replayed after its targets have been resolved.
+If a resolved target is a recurring Coverage requirement, its successful query can
+be promoted to the Monitor's `persistent_query_families`. Promotion records the
+effective Run, effectiveness report, and Source Follow-up Query ID. Repository
+validation rejects a persistent query without that machine-checkable provenance.
 `tools/evaluate_followup_effectiveness.py` compares each consumed query's target
 fields with the preceding profile and distinguishes stronger status, refreshed
 Evidence at equal status, no change, and regression. This operational metric guides

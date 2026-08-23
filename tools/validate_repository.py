@@ -347,6 +347,63 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
                 errors.append(
                     f"monitor {monitor.get('monitor_id')} has a non-positive Source requirement"
                 )
+        persistent_ids = [
+            item.get("persistent_query_id")
+            for item in monitor.get("persistent_query_families", [])
+        ]
+        if len(persistent_ids) != len(set(persistent_ids)):
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} has duplicate persistent query IDs"
+            )
+        for persistent in monitor.get("persistent_query_families", []):
+            if not persistent.get("persistent_query_id") or not persistent.get("query"):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} has an incomplete persistent query"
+                )
+            persistent_unknown = set(persistent.get("source_classes", [])) - known_classes
+            if persistent_unknown or not persistent.get("source_classes"):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query has invalid "
+                    f"Source classes: {sorted(persistent_unknown)}"
+                )
+            promotion = persistent.get("promotion_evidence", {})
+            effectiveness_ref = promotion.get("effectiveness_ref")
+            if not effectiveness_ref or not (root / effectiveness_ref).is_file():
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query lacks "
+                    "effectiveness evidence"
+                )
+                continue
+            effectiveness = load_json(root / effectiveness_ref)
+            matching = [
+                query
+                for query in effectiveness.get("queries", [])
+                if query.get("query_id") == promotion.get("source_followup_query_id")
+            ]
+            source_plan_ref = effectiveness.get("followup_plan_snapshot_ref")
+            source_plan = (
+                load_json(root / source_plan_ref)
+                if source_plan_ref and (root / source_plan_ref).is_file()
+                else {}
+            )
+            source_queries = [
+                query
+                for query in source_plan.get("queries", [])
+                if query.get("query_id") == promotion.get("source_followup_query_id")
+            ]
+            if (
+                effectiveness.get("run_id") != promotion.get("effective_run_id")
+                or len(matching) != 1
+                or matching[0].get("effective") is not True
+                or len(source_queries) != 1
+                or persistent.get("query") != source_queries[0].get("query")
+                or persistent.get("source_classes")
+                != source_queries[0].get("source_classes")
+            ):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query promotion "
+                    "is not backed by an effective query"
+                )
         slots = int(monitor.get("discovery_slots_per_query", 1))
         minimum_per_query = int(monitor.get("minimum_sources_per_query", 1))
         if slots < minimum_per_query:

@@ -80,6 +80,22 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
                 "Monitor configuration references must name an existing file under config/"
             )
         paths.append(subject_registry_path)
+    for persistent in monitor.get("persistent_query_families", []):
+        effectiveness_ref = persistent.get("promotion_evidence", {}).get(
+            "effectiveness_ref"
+        )
+        if not effectiveness_ref:
+            raise ValueError("Persistent query lacks effectiveness evidence")
+        effectiveness_path = root / effectiveness_ref
+        if (
+            (root / "runs").resolve() not in effectiveness_path.resolve().parents
+            or not effectiveness_path.is_file()
+        ):
+            raise ValueError(
+                "Persistent query effectiveness evidence must name an existing "
+                "file under runs/"
+            )
+        paths.append(effectiveness_path)
     return {
         path.relative_to(root).as_posix(): stable_digest(read_json(path))
         for path in paths
@@ -483,6 +499,15 @@ def create_run(
         {"query": query, "query_role": "coverage"}
         for query in monitor.get("query_families", [])
     ] + [
+        {
+            "query": entry["query"],
+            "query_role": "persistent-coverage",
+            "source_classes": entry["source_classes"],
+            "persistent_query_id": entry["persistent_query_id"],
+            "promotion_evidence": entry["promotion_evidence"],
+        }
+        for entry in monitor.get("persistent_query_families", [])
+    ] + [
         {"query": query, "query_role": "falsification"}
         for query in monitor.get("falsification_queries", [])
     ] + _subject_query_plan(root, monitor) + followup_query_plan
@@ -509,6 +534,8 @@ def create_run(
                 "followup_plan_id",
                 "followup_query_id",
                 "coverage_targets",
+                "persistent_query_id",
+                "promotion_evidence",
             ):
                 if key in query_entry:
                     payload[key] = query_entry[key]
