@@ -123,6 +123,60 @@ class SourcePipelineTests(unittest.TestCase):
             second["source_receipt"]["origin_group_id"],
         )
 
+    def test_derivative_sources_share_declared_origin_across_publishers(self):
+        first_capture = self.capture()
+        second_capture = self.capture()
+        for capture, url in (
+            (first_capture, "https://news-one.example/report"),
+            (second_capture, "https://news-two.example/article"),
+        ):
+            capture["source"]["canonical_url"] = url
+            capture["source"]["retrieved_url"] = url
+            capture["source"]["origin_url"] = "https://research.example/paper"
+            capture["source"]["source_class"] = "derivative-reporting"
+            capture["source"]["relationship"] = "summary"
+        first = self.register(first_capture)
+        second = self.register(second_capture)
+        self.assertEqual(
+            first["source_receipt"]["origin_group_id"],
+            second["source_receipt"]["origin_group_id"],
+        )
+        self.assertNotEqual(
+            first["source_receipt"]["publisher_group_id"],
+            second["source_receipt"]["publisher_group_id"],
+        )
+        self.assertEqual(
+            "https://research.example/paper",
+            first["source_lineage"]["canonical_origin_url"],
+        )
+        self.assertFalse(first["source_receipt"]["primary_source"])
+
+    def test_derivative_source_requires_a_distinct_explicit_origin(self):
+        capture = self.capture()
+        capture["source"]["source_class"] = "derivative-reporting"
+        capture["source"]["relationship"] = "summary"
+        capture["source"].pop("origin_url")
+        with self.assertRaisesRegex(ValueError, "explicit origin_url"):
+            self.register(capture)
+
+        capture["source"]["origin_url"] = capture["source"]["canonical_url"]
+        with self.assertRaisesRegex(ValueError, "must differ"):
+            self.register(capture)
+
+    def test_original_source_cannot_claim_a_different_origin(self):
+        capture = self.capture()
+        capture["source"]["origin_url"] = "https://another.example/origin"
+        with self.assertRaisesRegex(ValueError, "canonical URL as origin_url"):
+            self.register(capture)
+
+    def test_derivative_source_cannot_override_primary_status(self):
+        capture = self.capture()
+        capture["source"]["relationship"] = "translation"
+        capture["source"]["origin_url"] = "https://another.example/original"
+        capture["source"]["primary_source"] = True
+        with self.assertRaisesRegex(ValueError, "cannot be marked as primary"):
+            self.register(capture)
+
     def test_worldwide_coverage_tags_are_preserved_and_bounded(self):
         capture = self.capture()
         capture["source"]["coverage_tags"] = {

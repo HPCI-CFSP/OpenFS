@@ -39,9 +39,9 @@
 
 - [x] Add versioned, Run-pinned Skills for worldwide and general Discovery, Evidence extraction, synthesis, validation, and falsification.
 - [ ] Connect provider-backed discovery and extraction Skills; deterministic Source registration, Rights Gate, Prompt Injection quarantine, and Evidence extraction are implemented.
-- [ ] Implement source-lineage grouping and duplicate-origin detection.
-- [ ] Implement blind validator and falsification roles.
-- [ ] Resolve agent independence groups from the registry rather than trusting assessment input.
+- [x] Implement source-lineage grouping and duplicate-origin detection.
+- [x] Implement blind validator and falsification roles.
+- [x] Resolve agent independence groups from the registry rather than trusting assessment input.
 - [ ] Calibrate consensus thresholds on reviewed evaluation cases.
 - [x] Add the official FS2.0 and FY2025 FS3.0 report set and map inherited and added research topics.
 - [ ] Add the missing FS1.0 final report and map inherited, revised, and retired research topics.

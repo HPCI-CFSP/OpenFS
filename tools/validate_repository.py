@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from openfs_runtime import exception_group_key, language_in_scope, stable_digest
-from register_source import publisher_authority
+from register_source import canonicalize_url, publisher_authority
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -819,6 +819,7 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 )
 
     source_ids_by_run: dict[str, list[str]] = {}
+    content_hash_origins: dict[tuple[str, str], dict[str, list[str]]] = {}
     for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):
         result = load_json(path)
         if result.get("run_id") != path.parent.name:
@@ -840,6 +841,7 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         payload = work_item.get("payload", {})
         query_receipt = result.get("query_receipt", {})
         source_receipt = result.get("source_receipt", {})
+        source_lineage = result.get("source_lineage", {})
         if source_receipt.get("schema_version") == "0.2.0":
             expected_authority = publisher_authority(
                 source_receipt.get("canonical_url", "")
@@ -855,6 +857,72 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(
                     f"Source Publisher Group is not authority-derived: {path.relative_to(root)}"
                 )
+        if source_lineage.get("schema_version") == "0.2.0":
+            origin_url = source_lineage.get("canonical_origin_url", "")
+            policy_path = (
+                root
+                / "runs"
+                / path.parent.name
+                / "inputs"
+                / "config"
+                / "acquisition-policy.json"
+            )
+            try:
+                policy = load_json(policy_path if policy_path.is_file() else root / "config" / "acquisition-policy.json")
+                canonical_origin_url = canonicalize_url(origin_url, policy)
+            except (KeyError, TypeError, ValueError):
+                canonical_origin_url = None
+                errors.append(
+                    f"Source canonical Origin URL is invalid: {path.relative_to(root)}"
+                )
+            if canonical_origin_url is not None:
+                expected_origin_group = (
+                    f"ORG-{stable_digest(canonical_origin_url)[:12].upper()}"
+                )
+                if canonical_origin_url != origin_url:
+                    errors.append(
+                        f"Source canonical Origin URL is not canonical: {path.relative_to(root)}"
+                    )
+                if source_lineage.get("origin_group_id") != expected_origin_group:
+                    errors.append(
+                        f"Source Origin Group is not origin-derived: {path.relative_to(root)}"
+                    )
+            if source_receipt.get("origin_group_id") != source_lineage.get("origin_group_id"):
+                errors.append(
+                    f"Source Receipt and Lineage Origin Groups differ: {path.relative_to(root)}"
+                )
+            relationship = source_lineage.get("relationship")
+            if relationship == "original":
+                if origin_url != source_receipt.get("canonical_url"):
+                    errors.append(
+                        f"Original Source Origin URL differs from canonical URL: {path.relative_to(root)}"
+                    )
+                if source_lineage.get("canonical_origin_source_id") != source_receipt.get("source_id"):
+                    errors.append(
+                        f"Original Source does not identify itself as canonical origin: {path.relative_to(root)}"
+                    )
+            else:
+                if origin_url == source_receipt.get("canonical_url"):
+                    errors.append(
+                        f"Derivative Source uses itself as canonical origin: {path.relative_to(root)}"
+                    )
+                if source_receipt.get("primary_source"):
+                    errors.append(
+                        f"Derivative Source is marked primary: {path.relative_to(root)}"
+                    )
+            if (
+                source_receipt.get("source_class") == "derivative-reporting"
+                and relationship == "original"
+            ):
+                errors.append(
+                    f"Derivative reporting is marked original: {path.relative_to(root)}"
+                )
+        content_hash = source_receipt.get("retrieved_content_sha256")
+        origin_group = source_receipt.get("origin_group_id")
+        if content_hash and origin_group:
+            content_hash_origins.setdefault(
+                (path.parent.name, content_hash), {}
+            ).setdefault(origin_group, []).append(str(path.relative_to(root)))
         if strict_assignment and work_item.get("kind") != "source-discovery":
             errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
         if strict_assignment and query_receipt.get("query") != payload.get("query"):
@@ -888,6 +956,13 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
         if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
             errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
+    for (run_id, content_hash), origins in sorted(content_hash_origins.items()):
+        if len(origins) > 1:
+            refs = sorted(ref for paths in origins.values() for ref in paths)
+            errors.append(
+                "Identical Source content is assigned to multiple Origin Groups "
+                f"in {run_id} ({content_hash[:12]}): {', '.join(refs)}"
+            )
     for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
         bundle = load_json(path)
         if bundle.get("run_id") != path.parent.name:

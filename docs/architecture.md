@@ -58,6 +58,12 @@ The first three gates may be automated when policy conditions are met. A high-im
 
 `origin_group` represents sources derived from one original publication, dataset, benchmark, announcement, or analysis. Reprints and summaries may improve discoverability but do not create independent corroboration.
 
+An original Source must identify its canonical URL as the origin. A reprint,
+summary, translation, derived analysis, or shared-dataset view must declare the
+different canonical origin URL and is never counted as a primary Source for that
+origin. Exact retrieved-content hashes assigned to different Origin Groups in one
+Run fail validation and require lineage correction.
+
 `publisher_group` represents the controlling Web authority that issued or hosts a
 Source. It is derived conservatively from the canonical URL. Separate pages from
 one publisher may be separate origins, but they do not satisfy cross-publisher

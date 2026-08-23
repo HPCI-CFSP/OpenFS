@@ -46,6 +46,15 @@ MULTI_LABEL_PUBLIC_SUFFIXES = {
     "github.io",
 }
 
+LINEAGE_RELATIONSHIPS = {
+    "original",
+    "reprint",
+    "summary",
+    "translation",
+    "derived_analysis",
+    "shared_dataset",
+}
+
 
 def _public_host(hostname: str) -> bool:
     lowered = hostname.lower().rstrip(".")
@@ -196,6 +205,20 @@ def register_capture(
     canonical_url = canonicalize_url(source["canonical_url"], policy)
     retrieved_url = canonicalize_url(source.get("retrieved_url", canonical_url), policy)
     origin_url = canonicalize_url(source.get("origin_url", canonical_url), policy)
+    relationship = source.get("relationship", "original")
+    if relationship not in LINEAGE_RELATIONSHIPS:
+        raise ValueError(f"unknown Source lineage relationship: {relationship}")
+    if relationship == "original":
+        if origin_url != canonical_url:
+            raise ValueError("an original Source must use its canonical URL as origin_url")
+    else:
+        if not source.get("origin_url"):
+            raise ValueError("a derivative Source requires an explicit origin_url")
+        if origin_url == canonical_url:
+            raise ValueError("a derivative Source origin_url must differ from canonical_url")
+    if source.get("source_class") == "derivative-reporting" and relationship == "original":
+        raise ValueError("derivative-reporting cannot use the original relationship")
+
     publisher_domain = publisher_authority(canonical_url)
     source_id = _identifier(
         "SRC",
@@ -224,6 +247,14 @@ def register_capture(
         if marker.lower() in all_text
     )
     rights = source["rights"]
+    primary_source = bool(
+        source.get(
+            "primary_source",
+            source_classes[source["source_class"]]["default_primary"],
+        )
+    )
+    if relationship != "original" and primary_source:
+        raise ValueError("a derivative Source cannot be marked as primary_source")
     retrieval_status = source.get("retrieval_status", "success")
     if rights["acquisition_decision"] == "metadata-only":
         retrieval_status = "metadata-only"
@@ -260,9 +291,7 @@ def register_capture(
             f"URL domain {publisher_domain}"
         ),
         "source_class": source["source_class"],
-        "primary_source": bool(
-            source.get("primary_source", source_classes[source["source_class"]]["default_primary"])
-        ),
+        "primary_source": primary_source,
         "publication_date": source.get("publication_date"),
         "retrieved_at": source["retrieved_at"],
         "retrieval_method": query["retrieval_method"],
@@ -292,12 +321,20 @@ def register_capture(
     if source.get("coverage_tags"):
         source_receipt["coverage_tags"] = source["coverage_tags"]
     source_lineage = {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "lineage_id": lineage_id,
         "origin_group_id": origin_group_id,
-        "canonical_origin_source_id": source_id,
+        "canonical_origin_url": origin_url,
+        "canonical_origin_source_id": (
+            source_id
+            if relationship == "original"
+            else source.get(
+                "canonical_origin_source_id",
+                _identifier("UNRESOLVED", origin_url),
+            )
+        ),
         "member_source_ids": [source_id],
-        "relationship": source.get("relationship", "original"),
+        "relationship": relationship,
         "rationale": source_receipt["origin_rationale"],
         "review_state": "provisional",
     }
