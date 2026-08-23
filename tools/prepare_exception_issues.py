@@ -139,7 +139,11 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
     outputs = prepare(args.root, generated_at=args.generated_at)
-    print(json.dumps({"prepared": [str(path) for path in outputs]}))
+    print(
+        json.dumps(
+            {"prepared": [str(path.relative_to(args.root)) for path in outputs]}
+        )
+    )
     return 0
 
 

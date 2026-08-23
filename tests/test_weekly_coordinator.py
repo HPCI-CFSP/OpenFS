@@ -61,6 +61,7 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         self.assertNotIn("contents: write", workflow)
         self.assertNotIn("OPENAI_API_KEY", workflow)
         self.assertNotIn("ANTHROPIC_API_KEY", workflow)
+        self.assertIn("7 days ago", workflow)
 
     def test_scheduled_cycle_without_enabled_monitors_is_blocked(self):
         self.write_json(
@@ -186,6 +187,61 @@ class WeeklyCoordinatorTests(unittest.TestCase):
 
         self.assertEqual("created", result["publication_status"])
         self.assertEqual(3, len(calls))
+
+    def test_github_actions_bot_issue_is_managed_even_if_legacy_label_is_missing(self):
+        calls = []
+        body = "<!-- openfs-weekly-cycle:CYCLE-2026-W35 -->"
+
+        def request(method, endpoint, request_body):
+            calls.append((method, endpoint, request_body))
+            return [
+                {
+                    "number": 7,
+                    "html_url": "https://github.com/example/repo/issues/7",
+                    "title": "Weekly",
+                    "body": body,
+                    "labels": [],
+                    "user": {"login": "github-actions[bot]", "type": "Bot"},
+                }
+            ]
+
+        result = publish(
+            {
+                "issue": {
+                    "title": "Weekly",
+                    "body": body,
+                    "labels": ["openfs-weekly-cycle"],
+                    "deduplication_marker": body,
+                }
+            },
+            request=request,
+        )
+
+        self.assertEqual("existing", result["publication_status"])
+        self.assertEqual(1, len(calls))
+
+    def test_publication_fails_closed_when_required_label_is_missing(self):
+        calls = []
+
+        def request(method, endpoint, body):
+            calls.append((method, endpoint, body))
+            if endpoint.startswith("/issues?") or endpoint.startswith("/labels?"):
+                return []
+            raise AssertionError("Issue must not be created without managed labels")
+
+        with self.assertRaisesRegex(RuntimeError, "required managed Issue labels"):
+            publish(
+                {
+                    "title": "Exception",
+                    "body": "<!-- openfs-exception-group:EXCGRP-001 -->",
+                    "labels": ["openfs-exception", "needs-owner-action"],
+                    "deduplication_marker": (
+                        "<!-- openfs-exception-group:EXCGRP-001 -->"
+                    ),
+                },
+                request=request,
+            )
+        self.assertEqual(2, len(calls))
 
 
 if __name__ == "__main__":

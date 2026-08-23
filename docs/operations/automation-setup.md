@@ -124,6 +124,10 @@ Record these decisions in a reviewed pull request or Directive:
    inspect the internal Digest and grouped Issue payload artifact. Repeat with
    `publish_issues=true`, verify that a second run updates rather than duplicates
    the same managed Issues, then set `OPENFS_REVIEW_ENABLED=true`.
+   Before publishing, create repository labels `openfs-weekly-cycle`,
+   `openfs-exception`, and `needs-owner-action`; publication fails closed if a
+   required label is absent. The scheduled Review summarizes the preceding
+   completed ISO week by default, while manual dispatch may select another week.
 8. Bind `validator-public-02` and `critic-public-01` in
    `config/agent-registry.json` to approved reviewer models. The baseline needs
    three reviewer executions and at least two support groups independent of the

@@ -42,7 +42,7 @@ jobs:
         env:
           REQUESTED_WEEK: ${{ inputs.week }}
         run: |
-          WEEK="${REQUESTED_WEEK:-$(date -u +%G-W%V)}"
+          WEEK="${REQUESTED_WEEK:-$(date -u --date='7 days ago' +%G-W%V)}"
           GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p _automation
           python3 tools/generate_weekly_digest.py \

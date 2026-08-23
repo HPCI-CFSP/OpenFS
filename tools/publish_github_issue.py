@@ -52,8 +52,13 @@ def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
             label.get("name") if isinstance(label, dict) else label
             for label in item.get("labels", [])
         }
-        if marker in item.get("body", "") and expected_labels.issubset(
-            existing_labels
+        actor = item.get("user", {})
+        managed_by_actions = (
+            actor.get("login") == "github-actions[bot]"
+            and actor.get("type") == "Bot"
+        )
+        if marker in item.get("body", "") and (
+            expected_labels.issubset(existing_labels) or managed_by_actions
         ):
             desired_title = issue["title"][:256]
             desired_body = issue["body"]
@@ -79,13 +84,19 @@ def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
     available_labels = {
         item["name"] for item in request("GET", "/labels?per_page=100", None)
     }
+    missing_labels = expected_labels - available_labels
+    if missing_labels:
+        raise RuntimeError(
+            "required managed Issue labels are missing: "
+            + ", ".join(sorted(missing_labels))
+        )
     created = request(
         "POST",
         "/issues",
         {
             "title": issue["title"][:256],
             "body": issue["body"],
-            "labels": [name for name in issue.get("labels", []) if name in available_labels],
+            "labels": sorted(expected_labels),
         },
     )
     return {
