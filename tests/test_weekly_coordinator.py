@@ -52,6 +52,16 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         self.assertEqual(["DIR-000001"], plan["monitors"][0]["pending_directive_ids"])
         self.assertNotIn("Candidate statement", plan["issue"]["body"])
 
+    def test_weekly_review_is_variable_gated_and_has_no_research_secret(self):
+        workflow = (ROOT / ".github" / "workflows" / "weekly-review.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("OPENFS_REVIEW_ENABLED", workflow)
+        self.assertIn("issues: write", workflow)
+        self.assertNotIn("contents: write", workflow)
+        self.assertNotIn("OPENAI_API_KEY", workflow)
+        self.assertNotIn("ANTHROPIC_API_KEY", workflow)
+
     def test_scheduled_cycle_without_enabled_monitors_is_blocked(self):
         self.write_json(
             "config/monitors/MON-TEST-001.json",

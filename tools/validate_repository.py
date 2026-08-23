@@ -160,6 +160,7 @@ REQUIRED_FILES = [
     ".github/workflows/pages.yml",
     ".github/workflows/weekly-coordinator.yml",
     ".github/workflows/handoff-control.yml",
+    ".github/workflows/weekly-review.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")

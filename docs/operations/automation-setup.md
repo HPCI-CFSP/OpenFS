@@ -56,6 +56,7 @@ After the Pilot workflow defines and validates these names, add them at:
 |---|---:|---|
 | `OPENFS_COORDINATOR_ENABLED` | `false` | Enables scheduled weekly plan/Issue creation only |
 | `OPENFS_HANDOFF_CONTROL_ENABLED` | `false` | Enables daily Handoff validation and control-PR preparation |
+| `OPENFS_REVIEW_ENABLED` | `false` | Enables weekly internal Digest artifacts and grouped exception Issue updates |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
@@ -119,17 +120,21 @@ Record these decisions in a reviewed pull request or Directive:
    test Handoff is merged. Inspect its artifact, then test `publish_pr=true`.
    Set `OPENFS_HANDOFF_CONTROL_ENABLED=true` only after branch protection accepts
    its control PR and prevents direct merge without review.
-7. Bind `validator-public-02` and `critic-public-01` in
+7. Manually run **Review OpenFS Weekly Results** with `publish_issues=false` and
+   inspect the internal Digest and grouped Issue payload artifact. Repeat with
+   `publish_issues=true`, verify that a second run updates rather than duplicates
+   the same managed Issues, then set `OPENFS_REVIEW_ENABLED=true`.
+8. Bind `validator-public-02` and `critic-public-01` in
    `config/agent-registry.json` to approved reviewer models. The baseline needs
    three reviewer executions and at least two support groups independent of the
    synthesis author. Run `tools/check_consensus_readiness.py` after configuration.
-8. Configure a cost ceiling and provider-side alerts before adding the research
+9. Configure a cost ceiling and provider-side alerts before adding the research
    Worker. A full 15-center cycle can require about 127 Work Items with three
    reviewers; the repository ceiling is 200, while each Run should request the
    smallest limit that fits its inspected plan.
-9. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
+10. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
    budget, boundary, assignment, recovery, and Consensus-capacity tests.
-10. Enable provider calls first in manual Pilot mode. Enable unattended production
+11. Enable provider calls first in manual Pilot mode. Enable unattended production
    Runs only after owner review of cost, citations, dissent, false positives, and
    generated pull-request paths.
 
@@ -176,6 +181,9 @@ action updates one stable deduplication marker instead of opening one Issue per 
   digest-verified Agent outputs, expands deterministic follow-up Work Items, and
   opens one control-state pull request. If a prior control PR is still open, new
   Handoffs wait for the next cycle instead of creating a conflicting PR.
+- The **Weekly Review** job has no model-provider secret or content-write
+  permission. It emits an internal artifact and may create or update only sanitized,
+  managed GitHub Issues for currently open owner-action groups.
 
 ## Optional Codex automation
 

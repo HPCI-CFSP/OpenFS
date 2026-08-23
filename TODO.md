@@ -61,5 +61,5 @@
 - [x] Add a production-readiness gate for reviewed manual Runs, budget approval, policy calibration, and independent Consensus capacity.
 - [ ] Enable the first weekly monitor after three successful manual runs.
 - [ ] Complete production cost accounting and provider-side budget enforcement; local retry, dead-letter, Work Item limits, and the repository kill switch are implemented.
-- [ ] Generate Weekly Digests and exception Issues.
+- [x] Generate Weekly Digests and grouped exception Issues through a variable-gated, low-privilege review workflow.
 - [ ] Process asynchronous human directives in the next or an ad-hoc run.
