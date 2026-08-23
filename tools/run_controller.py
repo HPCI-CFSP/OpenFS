@@ -460,18 +460,20 @@ def create_run(
     if followup:
         _, followup_plan = followup
         for entry in followup_plan.get("queries", []):
-            followup_query_plan.append(
-                {
-                    "query": entry["query"],
-                    "query_role": entry["query_role"],
-                    "subject_ids": [entry["center_id"]],
-                    "profile_fields": entry["profile_fields"],
-                    "query_template_id": entry["query_id"],
-                    "source_classes": entry.get("source_classes", []),
-                    "followup_plan_id": followup_plan["followup_plan_id"],
-                    "followup_query_id": entry["query_id"],
-                }
-            )
+            planned = {
+                "query": entry["query"],
+                "query_role": entry["query_role"],
+                "query_template_id": entry["query_id"],
+                "source_classes": entry.get("source_classes", []),
+                "followup_plan_id": followup_plan["followup_plan_id"],
+                "followup_query_id": entry["query_id"],
+            }
+            if entry.get("center_id"):
+                planned["subject_ids"] = [entry["center_id"]]
+            for key in ("subject_ids", "profile_fields", "coverage_targets"):
+                if key in entry:
+                    planned[key] = entry[key]
+            followup_query_plan.append(planned)
     query_plan = [
         {"query": query, "query_role": "coverage"}
         for query in monitor.get("query_families", [])
@@ -501,6 +503,7 @@ def create_run(
                 "query_template_id",
                 "followup_plan_id",
                 "followup_query_id",
+                "coverage_targets",
             ):
                 if key in query_entry:
                     payload[key] = query_entry[key]

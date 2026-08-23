@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/global-followup-plan.schema.json",
+  "title": "Worldwide Coverage Gap Follow-up Plan",
+  "type": "object",
+  "required": ["schema_version", "followup_plan_id", "monitor_id", "task_id", "base_run_id", "base_run_status", "generated_at", "status", "publication_status", "input_brief_ref", "input_brief_digest", "input_coverage_ref", "input_coverage_digest", "limits", "queries", "caveats"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "followup_plan_id": {"type": "string", "pattern": "^GFP-[A-F0-9]{12}$"},
+    "monitor_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "base_run_id": {"type": "string"},
+    "base_run_status": {"enum": ["completed", "partial"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "status": {"const": "generated-for-research"},
+    "publication_status": {"const": "internal-review-only"},
+    "input_brief_ref": {"type": "string"},
+    "input_brief_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "input_coverage_ref": {"type": "string"},
+    "input_coverage_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "predecessor_plan": {"type": ["object", "null"]},
+    "limits": {"type": "object"},
+    "queries": {"type": "array", "items": {"type": "object"}},
+    "caveats": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

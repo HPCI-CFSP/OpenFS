@@ -138,6 +138,11 @@ Repeated unresolved gaps advance a recorded search generation: center-domain sea
 then institution-wide procurement and annual-report search, then cross-domain primary
 records. Each generation pins the preceding query digest so agents do not silently
 repeat an ineffective search forever.
+
+Worldwide Runs use the same closed-loop pattern. `tools/generate_global_followup_plan.py`
+deduplicates unmet Coverage dimensions into bounded Source-class, region, technology,
+maturity, result, or language queries. The Run Controller snapshots the latest
+digest-matched plan and carries its Coverage targets into the assigned Work Items.
 `tools/evaluate_followup_effectiveness.py` compares each consumed query's target
 fields with the preceding profile and distinguishes stronger status, refreshed
 Evidence at equal status, no change, and regression. This operational metric guides

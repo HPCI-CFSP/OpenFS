@@ -170,6 +170,88 @@ class RunControllerTests(unittest.TestCase):
             "worldwide-technology-survey", first_work_item["skill"]["skill_id"]
         )
 
+    def test_global_run_snapshots_coverage_followup_plan(self):
+        for relative in (
+            "config/monitors/MON-GLOBAL-TECH-001.json",
+            "config/global-technology-scope.json",
+            "config/research-baseline.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        brief_ref = "reviews/briefs/RUN-GLOBAL-PRIOR.json"
+        brief = {"run_id": "RUN-GLOBAL-PRIOR", "coverage_status": "incomplete"}
+        brief_path = self.root / brief_ref
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
+        brief_path.write_text(json.dumps(brief), encoding="utf-8")
+        plan_ref = "reviews/followups/RUN-GLOBAL-PRIOR-global-coverage.json"
+        plan = {
+            "followup_plan_id": "GFP-TEST00000001",
+            "monitor_id": "MON-GLOBAL-TECH-001",
+            "task_id": "OFS-005",
+            "base_run_id": "RUN-GLOBAL-PRIOR",
+            "generated_at": "2026-08-24T00:00:00Z",
+            "status": "generated-for-research",
+            "input_brief_ref": brief_ref,
+            "input_brief_digest": stable_digest(brief),
+            "queries": [
+                {
+                    "query_id": "GLOBAL-FOLLOWUP-001",
+                    "query": "HPC interoperability standard specification",
+                    "query_role": "coverage-followup",
+                    "source_classes": ["standards-body"],
+                    "coverage_targets": [
+                        {
+                            "dimension": "missing_source_requirements",
+                            "value": "standards-body",
+                        }
+                    ],
+                }
+            ],
+        }
+        plan_path = self.root / plan_ref
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(json.dumps(plan), encoding="utf-8")
+        prior_run = self.root / "runs" / "RUN-GLOBAL-PRIOR"
+        prior_run.mkdir(parents=True)
+        (prior_run / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "run_id": "RUN-GLOBAL-PRIOR",
+                    "task_id": "OFS-005",
+                    "monitor_id": "MON-GLOBAL-TECH-001",
+                    "status": "completed",
+                    "completed_at": "2026-08-24T00:30:00Z",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        manifest = create_run(
+            self.root,
+            run_id="RUN-GLOBAL-FOLLOWUP",
+            task_id="OFS-005",
+            monitor_id="MON-GLOBAL-TECH-001",
+            pilot=True,
+            now=datetime(2026, 8, 25, tzinfo=timezone.utc),
+        )
+
+        self.assertEqual(14, len(manifest["work_item_ids"]))
+        self.assertEqual(plan_ref, manifest["followup_plan"]["source_ref"])
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in (
+                self.root / "queue" / "RUN-GLOBAL-FOLLOWUP"
+            ).glob("*.json")
+        ]
+        followups = [item for item in items if item["payload"].get("followup_plan_id")]
+        self.assertEqual(2, len(followups))
+        self.assertNotIn("subject_ids", followups[0]["payload"])
+        self.assertEqual(
+            plan["queries"][0]["coverage_targets"],
+            followups[0]["payload"]["coverage_targets"],
+        )
+
     def test_cancel_records_reason_and_cancels_open_work(self):
         now = datetime(2026, 8, 24, tzinfo=timezone.utc)
         create_run(
