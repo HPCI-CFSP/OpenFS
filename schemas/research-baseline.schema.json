@@ -3,13 +3,30 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/research-baseline.schema.json",
   "title": "OpenFS Research Baseline",
   "type": "object",
-  "required": ["schema_version", "baseline_id", "baseline_status", "complete", "source_refs", "source_corpus", "topics", "open_gap_ids"],
+  "required": ["schema_version", "baseline_id", "baseline_status", "complete", "initial_catalog", "source_refs", "source_corpus", "topics", "open_gap_ids"],
   "properties": {
     "schema_version": {"type": "string"},
     "baseline_id": {"type": "string"},
     "baseline_status": {"enum": ["draft", "initial-from-current-corpus", "reviewed", "superseded"]},
     "complete": {"type": "boolean"},
     "derived_at": {"type": "string", "format": "date"},
+    "initial_catalog": {
+      "type": "object",
+      "required": ["baseline_id", "topic_count", "topic_ids", "retention_rule"],
+      "properties": {
+        "baseline_id": {"const": "FSBASE-001"},
+        "topic_count": {"const": 30},
+        "topic_ids": {
+          "type": "array",
+          "minItems": 30,
+          "maxItems": 30,
+          "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+          "uniqueItems": true
+        },
+        "retention_rule": {"const": "protected-no-silent-removal"}
+      },
+      "additionalProperties": false
+    },
     "source_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "source_corpus": {
       "type": "array",
@@ -24,7 +41,13 @@
           "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "origin_group_id": {"type": "string", "pattern": "^FSBASE-ORG-[0-9]{3}$"},
           "lineage_family": {"type": "string", "minLength": 1},
-          "availability": {"enum": ["external-reference", "registered-public-url", "repository"]}
+          "availability": {"enum": ["external-reference", "registered-public-url", "repository"]},
+          "public_url": {"type": "string", "format": "uri"},
+          "source_page_url": {"type": "string", "format": "uri"},
+          "fiscal_year": {"type": "integer", "minimum": 2022},
+          "team": {"type": "string", "minLength": 1},
+          "part": {"type": "string", "minLength": 1},
+          "page_count": {"type": "integer", "minimum": 1}
         },
         "additionalProperties": false
       }

@@ -2,9 +2,9 @@
 
 ## Purpose
 
-This directory defines the initial research inventory that OpenFS agents use when creating Tasks and Monitors. It is a starting scope derived from the currently supplied FS3.0 and FugakuNEXT-era public materials, not a claim that the research scope is complete or authoritative.
+This directory defines the research inventory that OpenFS agents use when creating Tasks and Monitors. `FSBASE-002` preserves the original 30-topic `FSBASE-001` catalog and adds topics identified through a review of all 26 reports linked from the official FY2022-FY2025 MEXT FS pages.
 
-An agent may add candidate topics when new evidence appears. It must not silently remove, merge, or narrow an existing topic. Such changes require a reviewed Directive and a recorded rationale showing whether the topic is inherited, revised, split, merged, or retired.
+An agent may and should propose candidate topics when new evidence appears. AI-originated proposals follow the same evidence, independent-review, and consensus process as human-originated proposals. An agent must not silently remove, merge, or narrow an existing topic. The original 30 IDs are explicitly protected in `config/research-baseline.json`.
 
 The machine-readable source of truth is `config/research-baseline.json`. This document is the human-readable view.
 
@@ -19,7 +19,9 @@ The machine-readable source of truth is `config/research-baseline.json`. This do
 
 If no baseline topic fits, use `OFS-002` to propose a new topic before starting recurring collection. A one-off exploratory Task may proceed only with an explicit human Directive.
 
-## Initial topic catalog
+## Protected initial topic catalog
+
+The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Additions extend this catalog; they do not replace it.
 
 ### Architecture
 
@@ -71,10 +73,65 @@ If no baseline topic fits, use `OFS-002` to propose a new topic before starting 
 | `CROSS-06` | Procurement, scenarios, and roadmap | How do technology maturity, cost, deployment timing, reversibility, and uncertainty produce multiple actionable scenarios? |
 | `CROSS-07` | Continuous FS governance and provenance | How are recurring evidence, dissent, decisions, human Directives, and report lineage maintained across FS cycles? |
 
+## FS2.0/FS3.0 additions
+
+### Architecture additions
+
+| ID | Topic |
+|---|---|
+| `ARCH-08` | Data-movement and performance-bottleneck quantification |
+| `ARCH-09` | Strong/weak scaling and service characteristics |
+| `ARCH-10` | RAS, maintainability, and long lifecycle |
+| `ARCH-11` | Domestic processors, accelerators, and packaging technologies |
+| `ARCH-12` | Reconfigurable, dataflow, and domain-specific computing |
+| `ARCH-13` | Mixed precision, approximate computing, and numerical integrity |
+
+### System-software additions
+
+| ID | Topic |
+|---|---|
+| `SSW-10` | Autotuning and compiler-assisted optimization |
+| `SSW-11` | Federated resource abstraction, meta-scheduling, and urgent computing |
+| `SSW-12` | Federated identity, authorization, and portals |
+| `SSW-13` | Cross-generation data lifecycle and high-speed transfer |
+| `SSW-14` | Confidential computing, privacy, and federated security |
+| `SSW-15` | Power/cooling telemetry and power-adaptive operation |
+| `SSW-16` | Unified HPC, AI, and experimental-facility workflow execution |
+
+### Application additions
+
+| ID | Topic |
+|---|---|
+| `APP-08` | Priority-domain portfolio and workload representativeness |
+| `APP-09` | Urgent, real-time, and experiment-coupled workloads |
+| `APP-10` | Large-scale AI and LLM training/inference workload models |
+| `APP-11` | Quantum/Ising applications and classical baselines |
+
+### Cross-cutting additions
+
+| ID | Topic |
+|---|---|
+| `CROSS-08` | University infrastructure-center status, refresh plans, and constraints |
+| `CROSS-09` | Joint procurement, joint investment, and staged deployment |
+| `CROSS-10` | HPCI operating organization, responsibility, and workforce |
+| `CROSS-11` | Domestic technology sovereignty, deployment, and industrial impact |
+| `CROSS-12` | Center-specific adoption profiles and migration feasibility |
+| `CROSS-13` | Multi-scenario system-plan generation, comparison, and presentation |
+| `CROSS-14` | Data and service continuity across compute generations |
+| `CROSS-15` | Resource ownership, funding, and charging models |
+| `CROSS-16` | Geographic placement, electricity, and facility proximity |
+| `CROSS-17` | AI-proposed emerging research topics |
+
+Detailed Japanese questions, expected evidence, outputs, source references, and cadence are in `config/research-baseline.json`. The review method and inheritance map are in `fs2-fs3-corpus-review.md` and `topic-inheritance.md`.
+
 ## Coverage rule
 
 A roadmap research cycle is not coverage-complete merely because every row has search results. Each active topic must declare monitored source classes, languages, time window, last successful query, failed retrievals, and known gaps. Topics may be marked `not-started`, `partial`, `reviewed`, or `retired`; only a human-approved baseline change may use `retired`.
 
-## Known limitation
+## AI proposal lane
 
-The initial public catalog was derived from the four documents listed in `source-corpus.md`. The FS1.0 and FS2.0 final reports and deliverables were not present in the supplied corpus, and one supplied FS3 proposal awaits a public-classification decision. Therefore, inherited, revised, and retired topics from those studies have not yet been verified. See `gap-register.md` and `OFS-002`.
+`CROSS-17`, `OFS-004`, and `MON-EMERGING-TOPICS-001` keep discovery open beyond historical FS scope. A candidate must state its novelty relative to all current Topic IDs, cite at least two origin groups when available, include a falsification query, and pass independent review before baseline promotion. Lack of a matching historical topic is not by itself evidence that a new topic is important.
+
+## Known limitations
+
+The official FY2022-FY2025 corpus has now been reviewed, but the FS1.0 final report remains unavailable in the registered corpus. Center profiles, current procurement plans, workload telemetry, scenario weights, and one separately supplied FS3 proposal still require additional handling or approval. See `gap-register.md` and `OFS-002`.

@@ -11,8 +11,9 @@ Before changing the repository, read:
 3. `docs/architecture.md`
 4. the policies relevant to the assigned role
 5. `docs/research-baseline/README.md` when creating or changing research scope
-6. the task, monitor, Run, and Work Item being processed
-7. the applicable schema and skill
+6. `docs/planning/scenario-generation.md` when creating or changing an HPCI system scenario
+7. the task, monitor, Run, and Work Item being processed
+8. the applicable schema and skill
 
 ## Safe default for a new agent
 
@@ -38,6 +39,10 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not silently overwrite evidence. Add a new version and link it with `supersedes`, `was_revision_of`, or an equivalent schema field.
 - Do not invent citations, dates, quotations, model identities, source origins, or confidence values.
 - Do not silently remove, merge, narrow, or retire a research-baseline topic. Propose the change through `OFS-002` with lineage and a reviewed human Directive.
+- Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additions are welcome through `OFS-004`, but they do not replace the protected initial catalog.
+- Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, refresh, or staffing state without current cited evidence.
+- Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, domestic technology, uncertainties, and decision gates.
+- Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
 
 ## Write permissions by role
 

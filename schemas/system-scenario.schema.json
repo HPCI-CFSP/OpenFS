@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/system-scenario.schema.json",
+  "title": "HPCI System Development Scenario",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "title_ja",
+    "status",
+    "planning_horizon",
+    "objective",
+    "architecture",
+    "system_software",
+    "applications",
+    "center_impacts",
+    "domestic_technology",
+    "evaluation",
+    "evidence_refs",
+    "uncertainties",
+    "decision_gates"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "scenario_id": {"type": "string", "pattern": "^SCN-[A-Z0-9-]+$"},
+    "title_ja": {"type": "string", "minLength": 1},
+    "status": {"enum": ["illustrative-example", "candidate", "under-review", "accepted", "rejected", "superseded"]},
+    "planning_horizon": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "architecture": {"type": "object", "minProperties": 1},
+    "system_software": {"type": "object", "minProperties": 1},
+    "applications": {"type": "object", "minProperties": 1},
+    "center_impacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["center_group", "fit", "migration", "unverified_conditions"],
+        "properties": {
+          "center_group": {"type": "string", "minLength": 1},
+          "fit": {"type": "string", "minLength": 1},
+          "migration": {"type": "string", "minLength": 1},
+          "unverified_conditions": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "domestic_technology": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["candidate", "role", "maturity_gate", "fallback"],
+        "properties": {
+          "candidate": {"type": "string", "minLength": 1},
+          "role": {"type": "string", "minLength": 1},
+          "maturity_gate": {"type": "string", "minLength": 1},
+          "fallback": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["score", "rationale", "evidence_refs"],
+        "properties": {
+          "score": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "uncertainties": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "decision_gates": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+  },
+  "additionalProperties": false
+}

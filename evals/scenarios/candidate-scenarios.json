@@ -1,0 +1,88 @@
+{
+  "schema_version": "0.1.0",
+  "set_id": "SCNSET-EXAMPLE-001",
+  "as_of": "2026-08-23",
+  "status": "illustrative-example",
+  "notice": "Illustrative archetypes for testing the generator. They are not HPCI recommendations and have not passed evidence or recommendation gates.",
+  "scenarios": [
+    {
+      "schema_version": "0.1.0",
+      "scenario_id": "SCN-EXAMPLE-BALANCED",
+      "title_ja": "バランス型・連合共通基盤",
+      "status": "illustrative-example",
+      "planning_horizon": "next HPCI refresh cycle",
+      "objective": "汎用CPUとアクセラレータを組み合わせ、共通運用・データ基盤で幅広い既存利用者とAI需要を支える。",
+      "architecture": {"compute": "general-purpose CPU plus GPU partitions", "memory_network": "balanced HBM/DDR and interoperable scale-out fabric", "storage_facility": "local scratch plus shared data services within site constraints"},
+      "system_software": {"execution": "Slurm-centered batch with containers and portals", "portability": "MPI, OpenMP, performance-portability layers", "federation": "common identity, transfer, telemetry, and metadata interfaces"},
+      "applications": {"portfolio": "broad simulation and AI for Science", "service": "capacity and capability queues", "evaluation": "continuous representative application suite"},
+      "center_impacts": [
+        {"center_group": "general-purpose university centers", "fit": "high if local demand remains broad", "migration": "moderate application and scheduler migration", "unverified_conditions": ["current demand mix", "power envelope", "refresh timing"]},
+        {"center_group": "accelerator-focused centers", "fit": "medium; may need larger accelerator share", "migration": "reuse common software and data plane", "unverified_conditions": ["GPU demand", "network topology"]}
+      ],
+      "domestic_technology": [{"candidate": "domestic CPU, interconnect, and software candidates", "role": "qualified partitions or staged subsystem", "maturity_gate": "application performance, production, support, and software readiness", "fallback": "standards-based internationally sourced component"}],
+      "evaluation": {},
+      "evidence_refs": ["CROSS-08", "CROSS-12", "CROSS-13", "FSBASE-SRC-021", "FSBASE-SRC-029"],
+      "uncertainties": ["Current center profiles are not yet accepted", "Evaluation weights are not approved"],
+      "decision_gates": ["Complete center profiles", "Benchmark candidate partitions", "Approve evaluation weights"]
+    },
+    {
+      "schema_version": "0.1.0",
+      "scenario_id": "SCN-EXAMPLE-AI-DATA",
+      "title_ja": "AI・データ集約型重点整備",
+      "status": "illustrative-example",
+      "planning_horizon": "next HPCI refresh cycle",
+      "objective": "大規模AI、AI for Science、実験データ処理を中心に高密度アクセラレータとデータプレーンを重点整備する。",
+      "architecture": {"compute": "high-density accelerator nodes plus large-memory service nodes", "memory_network": "high-bandwidth memory and high-bisection accelerator fabric", "storage_facility": "high-throughput ingest, object/metadata services, and accelerated scratch"},
+      "system_software": {"execution": "batch plus Kubernetes and high-throughput inference", "portability": "framework-first environment with validated HPC paths", "federation": "experiment streaming, model/data governance, and secure external access"},
+      "applications": {"portfolio": "AI for Science, LLM training/inference, digital twins", "service": "throughput, interactive, and experiment-coupled", "evaluation": "topology, memory, I/O, energy, and end-to-end science metrics"},
+      "center_impacts": [
+        {"center_group": "AI/data-intensive centers", "fit": "high where power and data infrastructure permit", "migration": "major framework and workflow expansion", "unverified_conditions": ["power and cooling", "data governance", "accelerator demand"]},
+        {"center_group": "legacy simulation-heavy centers", "fit": "conditional; CPU capacity may be insufficient", "migration": "retain or federate general-purpose capacity", "unverified_conditions": ["CPU-only workload share", "portability readiness"]}
+      ],
+      "domestic_technology": [{"candidate": "domestic AI accelerators, storage software, and optical/network technologies", "role": "evaluation and production pilot lane", "maturity_gate": "framework compatibility, sustained performance, power, scale, and support", "fallback": "interoperable accelerator and storage stack"}],
+      "evaluation": {},
+      "evidence_refs": ["APP-10", "SSW-13", "SSW-16", "CROSS-08", "FSBASE-SRC-028", "FSBASE-SRC-030"],
+      "uncertainties": ["Accelerator supply and pricing", "Future model and workload mix", "Facility readiness by center"],
+      "decision_gates": ["Measure HPCI AI workload portfolio", "Verify data and facility readiness", "Run full-workflow benchmarks"]
+    },
+    {
+      "schema_version": "0.1.0",
+      "scenario_id": "SCN-EXAMPLE-DOMESTIC",
+      "title_ja": "国内技術戦略・段階導入型",
+      "status": "illustrative-example",
+      "planning_horizon": "multi-refresh staged program",
+      "objective": "国内CPU、アクセラレータ、量子・Ising、ソフトウェア等を実証から本番へ段階導入し、供給・人材・産業波及を含めて評価する。",
+      "architecture": {"compute": "production core plus domestic-technology qualification partitions", "memory_network": "standards-based interfaces that preserve fallback", "storage_facility": "shared services isolate compute-component replacement"},
+      "system_software": {"execution": "common scheduler and container contract across pilot and production", "portability": "domestic compiler/runtime work tied to upstream and application teams", "federation": "cross-center testbed, benchmark, provenance, and support service"},
+      "applications": {"portfolio": "applications selected for domestic technology advantage", "service": "pilot, early access, and production gates", "evaluation": "performance, power, correctness, productivity, production, and maintenance"},
+      "center_impacts": [
+        {"center_group": "centers with co-design and engineering capacity", "fit": "potentially high for pilot leadership", "migration": "requires dedicated porting and support teams", "unverified_conditions": ["staffing", "application match", "vendor production plan"]},
+        {"center_group": "service-focused centers", "fit": "adopt after common readiness gates", "migration": "standards-based fallback limits disruption", "unverified_conditions": ["support SLA", "user demand"]}
+      ],
+      "domestic_technology": [{"candidate": "domestic CPU, vector, dataflow, RISC-V, quantum/Ising, packaging, and software portfolio", "role": "mandatory research and stage-gated deployment portfolio", "maturity_gate": "independent benchmark, production capacity, lifecycle support, and application adoption", "fallback": "compatible production subsystem with preserved APIs and data services"}],
+      "evaluation": {},
+      "evidence_refs": ["ARCH-11", "ARCH-12", "APP-11", "CROSS-11", "FSBASE-SRC-023", "FSBASE-SRC-029", "FSBASE-SRC-031"],
+      "uncertainties": ["Production and support maturity", "Sustained software investment", "Application advantage versus alternatives"],
+      "decision_gates": ["Publish domestic technology registry", "Complete independent benchmark and support review", "Approve pilot-to-production thresholds"]
+    },
+    {
+      "schema_version": "0.1.0",
+      "scenario_id": "SCN-EXAMPLE-CENTER-PORTFOLIO",
+      "title_ja": "センター特化・全国ポートフォリオ型",
+      "status": "illustrative-example",
+      "planning_horizon": "coordinated multi-center refresh cycles",
+      "objective": "各センターの利用者、設備、地域、更新時期に応じて役割を分担し、HPCI全体として補完的な資源ポートフォリオを形成する。",
+      "architecture": {"compute": "center-specific capability, capacity, AI/data, and emerging-technology roles", "memory_network": "role-specific node designs connected by national data and access services", "storage_facility": "hybrid local/shared tiers with lifecycle decoupled from compute"},
+      "system_software": {"execution": "federated resource catalog, allocation, meta-scheduling, and urgent jobs", "portability": "common minimum environment plus center extensions", "federation": "identity, metadata, transfer, monitoring, and user support"},
+      "applications": {"portfolio": "national coverage assembled from center specialties", "service": "cross-center workflows and transparent referral", "evaluation": "coverage gaps, transfer cost, queue balance, and migration"},
+      "center_impacts": [
+        {"center_group": "all participating centers", "fit": "depends on evidence-based role agreement", "migration": "local refresh plus federation-service adoption", "unverified_conditions": ["individual center profiles", "governance agreement", "network and staffing capacity"]}
+      ],
+      "domestic_technology": [{"candidate": "domestic technologies matched to qualified center roles", "role": "national testbed and selected production services", "maturity_gate": "center-specific application, facility, operations, and support fit", "fallback": "portfolio rebalancing across centers"}],
+      "evaluation": {},
+      "evidence_refs": ["CROSS-08", "CROSS-09", "CROSS-10", "CROSS-12", "CROSS-16", "FSBASE-SRC-025", "FSBASE-SRC-027"],
+      "uncertainties": ["Center autonomy and joint governance", "Cross-center data movement", "Stable operating workforce and funding"],
+      "decision_gates": ["Accept current profiles for every center", "Agree national coverage targets", "Validate federation services and governance"]
+    }
+  ]
+}

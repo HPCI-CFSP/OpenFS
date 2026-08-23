@@ -9,6 +9,8 @@
 - [x] Add Golden and Adversarial evaluation fixtures.
 - [x] Add a deterministic consensus-gate prototype and repository validation.
 - [x] Add an initial FS-derived research baseline with explicit source and coverage gaps.
+- [x] Register and review all 26 official FY2022-FY2025 FS2.0/FS3.0 PDFs while preserving the initial 30 topics.
+- [x] Add center-profile and multi-scenario contracts plus deterministic Markdown/JSON view generation.
 - [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
 - [ ] Select and add a project license.
 - [ ] Confirm repository visibility and member access policy.
@@ -32,13 +34,17 @@
 - [ ] Implement blind validator and falsification roles.
 - [ ] Resolve agent independence groups from the registry rather than trusting assessment input.
 - [ ] Calibrate consensus thresholds on reviewed evaluation cases.
-- [ ] Add the missing FS1.0 and FS2.0 final reports and map inherited, revised, and retired research topics.
+- [x] Add the official FS2.0 and FY2025 FS3.0 report set and map inherited and added research topics.
+- [ ] Add the missing FS1.0 final report and map inherited, revised, and retired research topics.
+- [ ] Complete current primary-source profiles for every in-scope HPCI center.
+- [ ] Exercise the AI-proposed emerging-topic monitor through three manual runs.
 
 ## Phase 3: canonical promotion
 
 - [ ] Implement Decision-to-canonical promotion.
 - [ ] Implement dependency invalidation for updated or withdrawn sources.
 - [ ] Generate indexes and `TBD.md` from accepted records.
+- [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
 - [ ] Add promotion pull requests and rollback support.
 
 ## Phase 4: recurring autonomous loop

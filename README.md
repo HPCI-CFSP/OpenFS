@@ -16,9 +16,9 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline and the first deterministic consensus-gate prototype. Web collection, scheduled agent dispatch, canonical promotion, and automatic report generation are not enabled yet.
+This repository currently contains the Phase 0 design baseline, the first deterministic consensus-gate prototype, the official FY2022-FY2025 FS report inventory, and a deterministic multi-scenario view generator. Web collection, scheduled agent dispatch, canonical promotion, and production report generation are not enabled yet.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the research-scope baseline inherited from FS materials.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the research-scope baseline inherited from FS materials, `OFS-003` builds center-aware multi-scenario plans, and `OFS-004` preserves a reviewed lane for AI-proposed emerging topics.
 
 ## Core principles
 
@@ -40,6 +40,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/policies/` | Human-owned decision and governance rules |
 | `docs/tasks/` | Research tasks and their expected outputs |
 | `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
+| `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `config/` | Machine-readable agent, monitor, budget, and consensus settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Reusable agent procedures, added as each workflow is implemented |
@@ -61,9 +62,9 @@ Directories that do not yet contain implemented behavior are documented in `docs
 
 ## Research baseline
 
-New research Tasks and Monitors should select topics from `config/research-baseline.json`. The current initial baseline contains architecture, system software, application, and cross-cutting topics derived from four supplied public FS3.0 and FugakuNEXT-era references.
+New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 57 topics: the protected 30-topic initial catalog plus 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025. The additions cover performance limits, RAS, domestic technologies, federated software and data services, center conditions, governance, funding, and scenario presentation.
 
-The actual FS1.0 and FS2.0 final reports were not present in the supplied corpus. Their inheritance review remains open under `OFS-002`; the current baseline must not be represented as a complete historical FS review.
+The FS1.0 record and current primary evidence for every HPCI center remain incomplete. The baseline must not be represented as a complete historical or current HPCI review. AI agents may propose further topics through `OFS-004`, but may not remove the protected initial catalog.
 
 ## Local validation
 
@@ -90,6 +91,16 @@ python3 tools/consensus_gate.py \
   --proposal evals/golden/accepted-proposal.json \
   --assessments evals/golden/accepted-assessments.json \
   --policy config/consensus-policy.json
+```
+
+Render the illustrative multi-scenario example without ranking:
+
+```bash
+python3 tools/generate_scenario_views.py \
+  --input evals/scenarios/candidate-scenarios.json \
+  --policy config/scenario-policy.json \
+  --output-markdown /tmp/openfs-scenarios.md \
+  --output-json /tmp/openfs-scenarios.json
 ```
 
 ## Human directions
