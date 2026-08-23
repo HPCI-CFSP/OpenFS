@@ -18,7 +18,7 @@ Research task
 
 This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a deployed bilingual GitHub Pages public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` broadly tracks technologies developed in Japan.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
 ## Core principles
 
@@ -42,6 +42,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `docs/publication/` | GitHub Pages activation and public-output boundaries |
+| `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
 | `config/` | Machine-readable agent, monitor, budget, and consensus settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Reusable agent procedures, added as each workflow is implemented |
@@ -63,7 +64,9 @@ Directories that do not yet contain implemented behavior are documented in `docs
 
 ## Research baseline
 
-New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-directed broad domestic-technology ecosystem Topic.
+New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-directed worldwide technology-horizon Topic with priority coverage for Japan.
+
+OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, source-language coverage where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 
 The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additive Topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing Topics.
 
@@ -111,6 +114,8 @@ python3 tools/build_pages_site.py --output _site
 ```
 
 The public site supports Japanese and English. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Scenario and report publication additionally requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
+
+Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 
 ## Human directions
 

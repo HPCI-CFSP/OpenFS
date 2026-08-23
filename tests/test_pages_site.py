@@ -24,7 +24,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual("public-only", result["publication"]["information_plane"])
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
-            self.assertTrue(all(set(category) == {"ja", "en"} for category in result["domestic_technology"]["categories"]))
+            self.assertNotIn("domestic_technology", result)
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")

@@ -110,9 +110,11 @@ The planned weekly cycle is:
 
 The schedule remains disabled until the `OFS-001` monitor completes three manual runs: initial collection, a changed-source run, and a directive-driven run.
 
+All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
+
 ## Center-aware scenario projection
 
-Accepted knowledge is projected into multiple HPCI system scenarios rather than collapsed into one model answer. Each candidate joins architecture, system software, applications, center-specific impacts, domestic technology, uncertainty, and decision gates. `config/scenario-policy.json` defines common criteria, `schemas/center-profile.schema.json` and `schemas/system-scenario.schema.json` define durable inputs, and `tools/generate_scenario_views.py` emits synchronized Markdown and JSON views.
+Accepted knowledge is projected into multiple HPCI system scenarios rather than collapsed into one model answer. Each candidate joins architecture, system software, applications, center-specific impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainty, and decision gates. `config/scenario-policy.json` defines common criteria, `schemas/center-profile.schema.json` and `schemas/system-scenario.schema.json` define durable inputs, and `tools/generate_scenario_views.py` emits synchronized Markdown and JSON views.
 
 The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass the Recommendation Gate or promotion workflow.
 

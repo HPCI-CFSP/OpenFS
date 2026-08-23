@@ -112,9 +112,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
-    domestic = load_json(root / "config" / "domestic-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
-    domestic_ids = set(domestic["topic_ids"])
     topics = []
     for topic in baseline["topics"]:
         topics.append(
@@ -130,7 +128,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     if topic["topic_id"] in initial_ids
                     else topic.get("catalog_origin", "human-directive")
                 ),
-                "domestic_scope": topic["topic_id"] in domestic_ids,
                 "research_questions": topic["research_questions"],
                 "outputs": topic["outputs"],
             }
@@ -155,23 +152,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "open_gap_ids": baseline["open_gap_ids"],
         },
         "topics": topics,
-        "domestic_technology": {
-            "scope_id": domestic["scope_id"],
-            "categories": [
-                {"ja": ja, "en": en}
-                for ja, en in zip(
-                    i18n["domestic_technology"]["technology_categories_ja"],
-                    domestic["technology_categories"],
-                    strict=True,
-                )
-            ],
-            "evaluation_dimensions": domestic["required_evaluation_dimensions"],
-            "topic_ids": domestic["topic_ids"],
-            "scope_rule": {
-                "ja": i18n["domestic_technology"]["scope_rule_ja"],
-                "en": domestic["scope_rule"],
-            },
-        },
         "scenarios": scenarios,
         "reports": reports,
         "publication": {

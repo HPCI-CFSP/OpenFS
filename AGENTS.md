@@ -41,9 +41,9 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not invent citations, dates, quotations, model identities, source origins, or confidence values.
 - Do not silently remove, merge, narrow, split, or retire a research-baseline topic. Propose those changes through `OFS-002` with lineage and a reviewed human Directive.
 - Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog.
-- When researching technologies developed in Japan, read `config/domestic-technology-scope.json`. Its examples are discovery seeds, not a closed vendor or technology list, and uncovered categories must be reported.
+- Research scope is worldwide. Read `config/global-technology-scope.json`, search across regions and source languages where feasible, and report uncovered regions and categories. Prioritize coverage of technologies developed in Japan without treating origin as evidence of technical merit or automatic adoption.
 - Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, refresh, or staffing state without current cited evidence.
-- Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, domestic technology, uncertainties, and decision gates.
+- Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainties, and decision gates.
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
 - Do not publish a scenario or report unless its Japanese and English public summaries are both present.
 

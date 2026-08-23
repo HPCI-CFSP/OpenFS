@@ -10,52 +10,51 @@
   const copy = {
     ja: {
       languageControl: "表示言語", tagline: "公開調査カタログと整備計画成果", publicOnly: "公開情報のみ", asOf: "基準日",
-      navOverview: "概要", navCatalog: "調査カタログ", navDomestic: "国内技術", navScenarios: "整備シナリオ", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navScenarios: "整備シナリオ", navReports: "報告書",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
       overviewLead: "受理済みの公開情報だけを表示します。内部情報、候補段階の提案、例示シナリオは公開対象に含めません。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", domesticMetric: "国内技術カテゴリ",
-      domesticMetricNote: "既知候補に限定しない", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
+      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scopeMetric: "調査対象地域",
+      scopeMetricValue: "全世界", scopeMetricNote: "日本発技術を優先追跡", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "AIが追加提案したTopicも、独立レビューとConsensus Gateを通過したものだけがここへ加わります。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "Topic ID、名称",
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
-      noTopics: "条件に一致するTopicはありません。", domesticKicker: "国内技術レーダー", domesticTitle: "国内技術の広域調査", area: "領域",
+      noTopics: "条件に一致するTopicはありません。",
       scenarioKicker: "ロードマップシナリオ", scenarioTitle: "HPCI整備シナリオ",
-      scenarioLead: "Architecture、System Software、Applications、センター影響、国内技術、不確実性を一体で比較します。",
+      scenarioLead: "Architecture、System Software、Applications、センター影響、世界技術動向、日本発技術、不確実性を一体で比較します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
       noScenarioText: "現在の4案はGenerator検証用の例示です。根拠・評価・人の公開承認を通過した案だけを公開します。",
       reportKicker: "報告書", reportTitle: "報告書・Export", reportLead: "公開版には版、基準日、根拠への追跡、置換関係を付けます。",
       noReportTitle: "公開済み報告書はまだありません",
       noReportText: "Promotion workflowで受理され、人が公開を承認したExportが追加されると、ここへ自動表示されます。",
-      footerDescription: "HPCI-CFSP 公開調査ビュー", domesticTag: "国内技術", originInitial: "保護された初期項目",
+      footerDescription: "HPCI-CFSP 公開調査ビュー", originInitial: "保護された初期項目",
       originHuman: "人の指示", originAi: "AI Consensus", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "確認済み", statusRetired: "廃止", cadenceWeekly: "週次", cadenceMonthly: "月次",
       cadenceQuarterly: "四半期", cadenceAnnual: "年次", cadenceEvent: "事象発生時"
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", asOf: "As of",
-      navOverview: "Overview", navCatalog: "Research catalog", navDomestic: "Japan technologies", navScenarios: "Roadmap scenarios", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navScenarios: "Roadmap scenarios", navReports: "Reports",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
       overviewLead: "Only accepted public information is shown. Internal information, candidate proposals, and illustrative scenarios are excluded from publication.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", domesticMetric: "Japan technology areas",
-      domesticMetricNote: "Not limited to known candidates", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
+      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scopeMetric: "Geographic scope",
+      scopeMetricValue: "Worldwide", scopeMetricNote: "Priority coverage for Japan-origin technologies", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "AI-proposed topics enter this catalog only after independent review and the Consensus Gate.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
-      noTopics: "No topics match the current filters.", domesticKicker: "JAPAN TECHNOLOGY RADAR",
-      domesticTitle: "Broad survey of technologies developed in Japan", area: "AREA", scenarioKicker: "ROADMAP SCENARIOS",
+      noTopics: "No topics match the current filters.", scenarioKicker: "ROADMAP SCENARIOS",
       scenarioTitle: "HPCI infrastructure scenarios",
-      scenarioLead: "Compare architecture, system software, applications, center impacts, domestic technologies, and uncertainties as a coherent whole.",
+      scenarioLead: "Compare architecture, system software, applications, center impacts, worldwide trends, Japan-origin technologies, and uncertainties as a coherent whole.",
       noScenarioTitle: "No scenarios have been published",
       noScenarioText: "The current four scenarios are generator examples. Only evidence-backed, evaluated, and human-approved scenarios are published.",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
       reportLead: "Published versions carry a version, as-of date, evidence traceability, and supersession links.",
       noReportTitle: "No reports have been published",
       noReportText: "Exports appear here after acceptance by the promotion workflow and explicit human publication approval.",
-      footerDescription: "HPCI-CFSP public research view", domesticTag: "Japan technology", originInitial: "protected initial",
+      footerDescription: "HPCI-CFSP public research view", originInitial: "protected initial",
       originHuman: "human directive", originAi: "AI consensus", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", cadenceWeekly: "weekly", cadenceMonthly: "monthly",
       cadenceQuarterly: "quarterly", cadenceAnnual: "annual", cadenceEvent: "event-driven"
@@ -111,29 +110,12 @@
   function renderSummary() {
     setText("as-of", `${tr("asOf")} ${data.as_of}`);
     setText("metric-topics", data.baseline.topic_count);
-    setText("metric-domestic", data.domestic_technology.categories.length);
     setText("metric-scenarios", data.scenarios.length);
     setText("metric-reports", data.reports.length);
     setText("baseline-id", data.baseline.baseline_id);
     setText("baseline-detail", `${tr("revision")} ${data.baseline.catalog_revision} / ${tr("officialSources")} ${data.baseline.official_source_count}`);
     setText("gap-summary", `${tr("openGaps")}: ${data.baseline.open_gap_ids.join(", ") || tr("none")}`);
-    setText("domestic-rule", data.domestic_technology.scope_rule[language]);
     setText("license-status", `License: ${data.publication.license}`);
-  }
-
-  function renderDomesticCategories() {
-    const root = document.getElementById("domestic-categories");
-    root.replaceChildren();
-    data.domestic_technology.categories.forEach((category, index) => {
-      const item = document.createElement("article");
-      item.className = "category-item";
-      const number = document.createElement("span");
-      number.textContent = `${tr("area")} ${String(index + 1).padStart(2, "0")}`;
-      const text = document.createElement("p");
-      text.textContent = category[language];
-      item.append(number, text);
-      root.appendChild(item);
-    });
   }
 
   function renderTopics() {
@@ -153,12 +135,6 @@
       idCell.textContent = topic.topic_id;
       const titleCell = document.createElement("td");
       titleCell.textContent = language === "ja" ? topic.title_ja : topic.title_en;
-      if (topic.domestic_scope) {
-        const domestic = document.createElement("span");
-        domestic.className = "tag domestic";
-        domestic.textContent = tr("domesticTag");
-        titleCell.append(" ", domestic);
-      }
       const domainCell = document.createElement("td");
       domainCell.textContent = domainLabels[language][topic.domain];
       const statusCell = document.createElement("td");
@@ -211,7 +187,6 @@
   function render() {
     applyStaticCopy();
     renderSummary();
-    renderDomesticCategories();
     renderTopics();
     renderScenarios();
     renderReports();

@@ -4,7 +4,7 @@
 
 OpenFS generates two synchronized views from one reviewed scenario set:
 
-- `reports/drafts/system-scenarios.md`: human-readable overview, architecture/software/application details, center impacts, domestic technology, evaluation matrix, uncertainty, gates, and traceability.
+- `reports/drafts/system-scenarios.md`: human-readable overview, architecture/software/application details, center impacts, worldwide technology options, priority Japan coverage, evaluation matrix, uncertainty, gates, and traceability.
 - `reports/exports/system-scenarios.json`: machine-readable data for the annual report repository, a static site, or another approved presentation layer.
 
 The generator never hides missing scores. With no approved weights it shows an unranked side-by-side comparison. With approved weights, a later implementation may add sensitivity-aware ranking, but the raw criteria and rationale remain visible.

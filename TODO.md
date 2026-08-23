@@ -11,12 +11,13 @@
 - [x] Add an initial FS-derived research baseline with explicit source and coverage gaps.
 - [x] Register and review all 26 official FY2022-FY2025 FS2.0/FS3.0 PDFs while preserving the initial 30 topics.
 - [x] Add center-profile and multi-scenario contracts plus deterministic Markdown/JSON view generation.
-- [x] Add broad domestic-technology scope and weekly coverage monitor.
+- [x] Add worldwide technology-horizon scope with priority coverage for Japan and a weekly coverage monitor.
 - [x] Add additive AI Topic proposal, Consensus, promotion, and Work Item expansion flow.
 - [x] Add a GitHub Pages-ready public view and guarded deployment workflow.
 - [x] Document license options and adopt Apache-2.0 for project-authored material.
 - [x] Add Japanese/English switching and bilingual publication validation to GitHub Pages.
 - [x] Require a matching human publication Directive before a scenario or report reaches Pages.
+- [x] Document repository-owner setup and the three-Run automation activation sequence.
 - [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
 - [x] Select and add the Apache-2.0 project license.
 - [ ] Review institutional copyright and contribution authority before accepting external contributions.

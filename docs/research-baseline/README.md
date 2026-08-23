@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This directory defines the research inventory that OpenFS agents use when creating Tasks and Monitors. `FSBASE-002` preserves the original 30-topic `FSBASE-001` catalog, adds topics identified through a review of all 26 reports linked from the official FY2022-FY2025 MEXT FS pages, and includes a human-directed broad domestic-technology scope.
+This directory defines the research inventory that OpenFS agents use when creating Tasks and Monitors. `FSBASE-002` preserves the original 30-topic `FSBASE-001` catalog, adds topics identified through a review of all 26 reports linked from the official FY2022-FY2025 MEXT FS pages, and includes a human-directed worldwide technology-horizon scope with priority coverage for Japan.
 
 An agent may and should propose candidate topics when new evidence appears. AI-originated proposals follow the same evidence, independent-review, and consensus process as human-originated proposals. An agent must not silently remove, merge, or narrow an existing topic. The original 30 IDs are explicitly protected in `config/research-baseline.json`.
 
@@ -121,7 +121,7 @@ The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Ad
 | `CROSS-15` | Resource ownership, funding, and charging models |
 | `CROSS-16` | Geographic placement, electricity, and facility proximity |
 | `CROSS-17` | AI-proposed emerging research topics |
-| `CROSS-18` | Broad and continuing research of the technology ecosystem developed in Japan |
+| `CROSS-18` | Worldwide and continuing survey of HPCI-related technology trends, with priority coverage for Japan |
 
 Detailed Japanese questions, expected evidence, outputs, source references, and cadence are in `config/research-baseline.json`. The review method and inheritance map are in `fs2-fs3-corpus-review.md` and `topic-inheritance.md`.
 
@@ -133,7 +133,7 @@ A roadmap research cycle is not coverage-complete merely because every row has s
 
 `CROSS-17`, `OFS-004`, and `MON-EMERGING-TOPICS-001` keep discovery open beyond historical FS scope. A candidate must state its novelty relative to all current Topic IDs, cite at least two Origin Groups, include a falsification query, and pass the `research_topic` Consensus Gate before additive promotion. The accepted Topic and Query Plan are registered in `MON-AUTO-TOPICS-001` so other agents can research it in later Runs. See `ai-topic-promotion.md`.
 
-`CROSS-18`, `OFS-005`, `MON-JP-TECH-001`, and `config/domestic-technology-scope.json` require broad discovery of technologies developed in Japan. Named organizations and current products are only seeds; agents must also search pre-commercial research, startups, standards, software, facilities, supply chains, negative results, and previously unknown categories.
+`CROSS-18`, `OFS-005`, `MON-GLOBAL-TECH-001`, and `config/global-technology-scope.json` require worldwide discovery across regions, organizations, and source languages. Technologies developed in Japan receive priority coverage, including pre-commercial research, startups, standards, software, facilities, supply chains, negative results, and previously unknown categories, but are compared with international alternatives under the same criteria.
 
 ## Known limitations
 
