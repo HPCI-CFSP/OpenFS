@@ -6,7 +6,14 @@ As of 2026-08-24, the repository has a Run Controller, leased Work Items,
 configuration snapshots, Rights Gate, pinned automatic source-change detection, coverage reporting,
 Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
 review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
-Pages publication. Three `OFS-001` Pilot Runs are retained as auditable fixtures.
+Pages publication. The repository retains 18 auditable Pilot Run manifests across
+memory (`OFS-001`), HPCI center (`OFS-003`), and worldwide technology (`OFS-005`)
+scopes: 13 completed and five deliberately cancelled while the harness was being
+corrected. The latest worldwide Run, `RUN-OFS005-PILOT-010`, completed 49 Work
+Items over 16 Sources, met its declared coverage scope, passed temporal-integrity
+checks, and produced eight provisional Claim proposals. They remain provisional
+because independent provider/model Consensus capacity is not configured; Pilot
+completion must not be read as formal research acceptance.
 
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
