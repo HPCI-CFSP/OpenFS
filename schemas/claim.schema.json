@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/claim.schema.json",
+  "title": "OpenFS Claim",
+  "type": "object",
+  "required": ["schema_version", "claim_id", "statement", "claim_kind", "temporal_scope", "evidence_ids", "source_lineage_ids", "status"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "statement": {"type": "string", "minLength": 1},
+    "claim_kind": {"enum": ["observed_fact", "reported_claim", "forecast", "interpretation", "recommendation"]},
+    "subject": {"type": "string"},
+    "predicate": {"type": "string"},
+    "object": {"type": "string"},
+    "temporal_scope": {"type": "string", "minLength": 1},
+    "conditions": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "source_lineage_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "status": {"enum": ["candidate", "under_independent_review", "accepted", "provisional", "contested", "rejected", "superseded", "withdrawn"]},
+    "supersedes": {"type": "string"}
+  },
+  "additionalProperties": false
+}

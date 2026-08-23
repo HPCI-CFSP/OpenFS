@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/source-lineage.schema.json",
+  "title": "OpenFS Source Lineage",
+  "type": "object",
+  "required": ["schema_version", "lineage_id", "origin_group_id", "canonical_origin_source_id", "member_source_ids", "rationale"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "lineage_id": {"type": "string", "pattern": "^LIN-[0-9]{6}$"},
+    "origin_group_id": {"type": "string", "pattern": "^ORG-[0-9]{6}$"},
+    "canonical_origin_source_id": {"type": "string"},
+    "member_source_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "relationship": {"enum": ["original", "reprint", "summary", "translation", "derived_analysis", "shared_dataset"]},
+    "rationale": {"type": "string", "minLength": 1},
+    "review_state": {"enum": ["automatic", "provisional", "human_reviewed"]}
+  },
+  "additionalProperties": false
+}

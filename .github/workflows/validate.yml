@@ -1,0 +1,22 @@
+name: Validate OpenFS
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Validate repository
+        run: python3 tools/validate_repository.py
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -v

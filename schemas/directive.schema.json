@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/directive.schema.json",
+  "title": "OpenFS Human Directive",
+  "type": "object",
+  "required": ["schema_version", "directive_id", "title", "instruction", "priority", "status", "submitted_by", "submitted_at"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+    "title": {"type": "string"},
+    "instruction": {"type": "string"},
+    "priority": {"enum": ["low", "normal", "high", "urgent"]},
+    "status": {"enum": ["proposed", "approved", "scheduled", "running", "completed", "rejected", "expired"]},
+    "submitted_by": {"type": "string"},
+    "submitted_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "processed_run_ids": {"type": "array", "items": {"type": "string"}},
+    "result_decision_ids": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
