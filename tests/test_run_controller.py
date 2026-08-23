@@ -92,6 +92,7 @@ class RunControllerTests(unittest.TestCase):
         )
         self.assertEqual(first, second)
         self.assertEqual(["DIR-000123"], first["directive_ids"])
+        self.assertEqual("not-evaluated", first["coverage_status"])
         self.assertEqual(13, len(first["work_item_ids"]))
         self.assertEqual(
             13,
@@ -103,6 +104,9 @@ class RunControllerTests(unittest.TestCase):
                 / first["configuration_snapshots"]["config/agent-registry.json"]
             ).is_file()
         )
+        directive_source = "reviews/directives/DIR-000123.json"
+        self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
+        self.assertEqual(64, len(first["directive_hashes"][directive_source]))
 
     def test_run_uses_pinned_agent_registry_after_live_registry_changes(self):
         create_run(

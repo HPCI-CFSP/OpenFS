@@ -166,6 +166,14 @@ def create_run(
     created = now or utc_now()
     created_at = isoformat(created)
     directives = _approved_directives(root, task_id)
+    directive_hashes = {
+        f"reviews/directives/{directive['directive_id']}.json": stable_digest(directive)
+        for directive in directives
+    }
+    directive_snapshots = {
+        source_ref: f"runs/{run_id}/inputs/{source_ref}"
+        for source_ref in sorted(directive_hashes)
+    }
     maximum_attempts = int(defaults.get("maximum_retries_per_work_item", 0)) + 1
 
     work_items: list[dict[str, Any]] = []
@@ -238,6 +246,7 @@ def create_run(
         "started_at": created_at,
         "status": "created",
         "research_status": "not-evaluated",
+        "coverage_status": "not-evaluated",
         "policy_hashes": policy_hashes,
         "configuration_snapshots": snapshot_refs,
         "budget": {
@@ -249,6 +258,8 @@ def create_run(
             "maximum_cost_usd": defaults.get("maximum_cost_usd"),
         },
         "directive_ids": [directive["directive_id"] for directive in directives],
+        "directive_hashes": directive_hashes,
+        "directive_snapshots": directive_snapshots,
         "work_item_ids": [item["work_item_id"] for item in work_items],
         "agent_executions": [],
         "query_receipts": [],
@@ -264,7 +275,15 @@ def create_run(
     }
     run_identity = {
         key: manifest[key]
-        for key in ("run_id", "task_id", "monitor_id", "mode", "policy_hashes", "directive_ids")
+        for key in (
+            "run_id",
+            "task_id",
+            "monitor_id",
+            "mode",
+            "policy_hashes",
+            "directive_ids",
+            "directive_hashes",
+        )
     }
     run_identity["work_item_idempotency_keys"] = [
         item["idempotency_key"] for item in work_items
@@ -279,6 +298,8 @@ def create_run(
 
     queue_path.mkdir(parents=True, exist_ok=True)
     for source_ref, snapshot_ref in snapshot_refs.items():
+        atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
+    for source_ref, snapshot_ref in directive_snapshots.items():
         atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
     for item in work_items:
         atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
@@ -501,7 +522,7 @@ def _record_agent_execution(
             "synthesis": ["propose_claim.py"],
             "validation": ["create_assessment.py"],
             "consensus": ["consensus_gate.py"],
-            "apply-directive": ["ingest_directive.py"],
+            "apply-directive": ["apply_directive.py"],
         }
         tool_paths = [Path(__file__)] + [
             ROOT / "tools" / name

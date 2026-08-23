@@ -18,4 +18,9 @@ OpenFS does not claim complete coverage of the Web. Each Monitor declares a meas
 
 Store each query, execution time, retrieval method, result URLs or stable identifiers, rank where available, and failures. The Weekly Digest reports domain coverage, stale sources, failed queries, newly added sources, and scope changes.
 
+Each new failure should declare `coverage_impact` as `blocking` or `warning`.
+An unclassified failure is blocking by default. `rights-excluded` is retained as a
+non-blocking warning when an evidence-eligible replacement is selected; the Rights
+Gate record must still remain in the Run.
+
 Coverage changes are policy-relevant changes. Agents may propose them, but a reviewed Directive or owner approval is required before removing a required source class or monitored organization.

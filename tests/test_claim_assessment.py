@@ -9,8 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from create_assessment import create  # noqa: E402
-from propose_claim import propose  # noqa: E402
+from create_assessment import create, validate_assignment as validate_assessment  # noqa: E402
+from propose_claim import propose, validate_assignment as validate_synthesis  # noqa: E402
 
 
 def read_json(path: str):
@@ -41,6 +41,22 @@ class ClaimAssessmentTests(unittest.TestCase):
             proposal["claim_candidate"]["evidence_ids"][0],
         )
         self.assertEqual(self.bundle["origin_group_ids"], proposal["origin_group_ids"])
+
+    def test_synthesis_assignment_rejects_evidence_substitution(self):
+        item = {
+            "kind": "synthesis",
+            "status": "leased",
+            "lease": {"agent_id": "synthesis-public-01"},
+            "payload": {"evidence_bundle_refs": [self.bundle_ref]},
+            "output_paths": ["proposals/claims/RUN/WORK-000001.json"],
+        }
+        with self.assertRaisesRegex(ValueError, "Evidence bundle references differ"):
+            validate_synthesis(
+                item,
+                bundle_refs=["proposals/evidence/RUN/OTHER.json"],
+                agent_id="synthesis-public-01",
+                output_ref="proposals/claims/RUN/WORK-000001.json",
+            )
 
     def test_assessment_identity_is_copied_from_registry(self):
         proposal = {
@@ -86,6 +102,22 @@ class ClaimAssessmentTests(unittest.TestCase):
                 registry=self.registry,
                 base_commit="abc123",
                 allow_disabled_pilot_agent=True,
+            )
+
+    def test_assessment_assignment_rejects_proposal_substitution(self):
+        item = {
+            "kind": "validation",
+            "status": "leased",
+            "lease": {"agent_id": "validator-public-01"},
+            "payload": {"proposal_ref": "proposals/claims/RUN/WORK-000001.json"},
+            "output_paths": ["assessments/RUN/WORK-000002.json"],
+        }
+        with self.assertRaisesRegex(ValueError, "Proposal reference differs"):
+            validate_assessment(
+                item,
+                proposal_ref="proposals/claims/RUN/OTHER.json",
+                agent_id="validator-public-01",
+                output_ref="assessments/RUN/WORK-000002.json",
             )
 
 

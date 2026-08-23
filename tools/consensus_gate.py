@@ -5,11 +5,10 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import stable_digest
+from openfs_runtime import atomic_write_json, read_json, run_snapshot_path, stable_digest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +24,7 @@ def evaluate(
     assessments: list[dict[str, Any]],
     policy: dict[str, Any],
     agent_registry: dict[str, Any],
+    decided_at: str | None = None,
 ) -> dict[str, Any]:
     proposal_id = proposal["proposal_id"]
     object_type = proposal["object_type"]
@@ -184,43 +184,93 @@ def evaluate(
         "dissent_assessment_ids": [
             item["assessment_id"] for item in valid if item["verdict"] != "support"
         ],
-        "decided_at": datetime.now(timezone.utc).isoformat(),
+        "decided_at": decided_at or proposal["created_at"],
     }
+
+
+def validate_assignment(
+    work_item: dict[str, Any],
+    *,
+    agent_id: str,
+    proposal_ref: str,
+    assessment_refs: list[str],
+    output_ref: str,
+) -> None:
+    if work_item.get("kind") != "consensus":
+        raise ValueError("Work Item is not assigned to consensus")
+    lease = work_item.get("lease", {})
+    if work_item.get("status") != "leased" or lease.get("agent_id") != agent_id:
+        raise RuntimeError("Consensus evaluation requires the current Work Item lease")
+    assigned_pairs = work_item.get("payload", {}).get("proposal_assessment_pairs", [])
+    matching = [item for item in assigned_pairs if item.get("proposal_ref") == proposal_ref]
+    if len(matching) != 1:
+        raise ValueError("Proposal reference differs from the assigned Work Item")
+    if sorted(matching[0].get("assessment_refs", [])) != sorted(assessment_refs):
+        raise ValueError("Assessment references differ from the assigned Work Item")
+    if output_ref not in work_item.get("output_paths", []):
+        raise ValueError("Decision output is outside the Work Item's declared paths")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--proposal", required=True, type=Path)
-    assessment_inputs = parser.add_mutually_exclusive_group(required=True)
-    assessment_inputs.add_argument("--assessments", type=Path)
-    assessment_inputs.add_argument("--assessment", action="append", type=Path)
-    parser.add_argument("--policy", required=True, type=Path)
-    parser.add_argument(
-        "--agent-registry",
-        type=Path,
-        default=ROOT / "config/agent-registry.json",
-    )
-    parser.add_argument("--output", type=Path)
+    parser.add_argument("--proposal-ref", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--work-item-id", required=True)
+    parser.add_argument("--agent-id", required=True)
+    parser.add_argument("--assessment", action="append", required=True, type=Path)
+    parser.add_argument("--policy", type=Path)
+    parser.add_argument("--agent-registry", type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
 
-    if args.assessment:
-        assessments = [load_json(path) for path in args.assessment]
-    else:
-        assessments = load_json(args.assessments)
-        if isinstance(assessments, dict):
-            assessments = [assessments]
-    decision = evaluate(
-        load_json(args.proposal),
-        assessments,
-        load_json(args.policy),
-        load_json(args.agent_registry),
+    work_item = read_json(
+        args.root / "queue" / args.run_id / f"{args.work_item_id}.json"
     )
-    rendered = json.dumps(decision, ensure_ascii=False, indent=2) + "\n"
-    if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(rendered, encoding="utf-8")
+    proposal_path = args.root / args.proposal_ref
+    supplied_proposal_path = (
+        args.proposal if args.proposal.is_absolute() else args.root / args.proposal
+    )
+    if supplied_proposal_path.resolve() != proposal_path.resolve():
+        raise ValueError("Proposal path differs from proposal-ref")
+    output_path = args.output if args.output.is_absolute() else args.root / args.output
+    output_ref = str(output_path.relative_to(args.root))
+    assessment_paths = [
+        path if path.is_absolute() else args.root / path
+        for path in (args.assessment or [])
+    ]
+    assessment_refs = [str(path.relative_to(args.root)) for path in assessment_paths]
+    validate_assignment(
+        work_item,
+        agent_id=args.agent_id,
+        proposal_ref=args.proposal_ref,
+        assessment_refs=assessment_refs,
+        output_ref=output_ref,
+    )
+
+    policy_path = args.policy or run_snapshot_path(
+        args.root, args.run_id, "config/consensus-policy.json"
+    )
+    registry_path = args.agent_registry or run_snapshot_path(
+        args.root, args.run_id, "config/agent-registry.json"
+    )
+
+    assessments = [load_json(path) for path in assessment_paths]
+    decision = evaluate(
+        load_json(proposal_path),
+        assessments,
+        load_json(policy_path),
+        load_json(registry_path),
+        decided_at=work_item.get("lease", {}).get("acquired_at")
+        or work_item.get("updated_at"),
+    )
+    if output_path.exists():
+        if read_json(output_path) != decision:
+            raise RuntimeError("Decision already exists with different content")
     else:
-        print(rendered, end="")
+        atomic_write_json(output_path, decision)
+    print(json.dumps({"decision_id": decision["decision_id"], "output": output_ref}))
     return 0
 
 

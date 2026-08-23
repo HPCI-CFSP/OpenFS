@@ -8,9 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from extract_evidence import extract  # noqa: E402
+from extract_evidence import extract, validate_assignment as validate_extraction  # noqa: E402
 from openfs_runtime import read_json  # noqa: E402
-from register_source import canonicalize_url, register_capture  # noqa: E402
+from register_source import canonicalize_url, register_capture, validate_assignment  # noqa: E402
 
 
 class SourcePipelineTests(unittest.TestCase):
@@ -142,6 +142,43 @@ class SourcePipelineTests(unittest.TestCase):
         self.assertEqual(
             source["source_lineage"]["lineage_id"], evidence["source_lineage_id"]
         )
+
+    def test_assignment_rejects_query_substitution(self):
+        capture = self.capture()
+        work_item = {
+            "kind": "source-discovery",
+            "status": "leased",
+            "lease": {"agent_id": "discovery-public-01"},
+            "output_paths": ["proposals/sources/RUN/WORK-000001.json"],
+            "payload": {
+                "query": "different query",
+                "languages": ["en"],
+                "source_classes": ["research-primary"],
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "query differs"):
+            validate_assignment(
+                capture,
+                work_item,
+                agent_id="discovery-public-01",
+                output_ref="proposals/sources/RUN/WORK-000001.json",
+            )
+
+    def test_extraction_assignment_rejects_source_substitution(self):
+        work_item = {
+            "kind": "evidence-extraction",
+            "status": "leased",
+            "lease": {"agent_id": "extraction-public-01"},
+            "output_paths": ["proposals/evidence/RUN/WORK-000002.json"],
+            "payload": {"source_result_ref": "proposals/sources/RUN/WORK-000001.json"},
+        }
+        with self.assertRaisesRegex(ValueError, "Source reference differs"):
+            validate_extraction(
+                work_item,
+                source_result_ref="proposals/sources/RUN/WORK-999999.json",
+                agent_id="extraction-public-01",
+                output_ref="proposals/evidence/RUN/WORK-000002.json",
+            )
 
 
 if __name__ == "__main__":

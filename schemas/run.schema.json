@@ -3,7 +3,7 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/run.schema.json",
   "title": "OpenFS Run Manifest",
   "type": "object",
-  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "research_status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "expansion_events", "metrics", "run_identity_hash"],
+  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "research_status", "coverage_status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "expansion_events", "metrics", "run_identity_hash"],
   "properties": {
     "schema_version": {"type": "string"},
     "run_id": {"type": "string"},
@@ -15,6 +15,7 @@
     "completed_at": {"type": "string", "format": "date-time"},
     "status": {"enum": ["created", "running", "completed", "partial", "failed", "cancelled", "stopped"]},
     "research_status": {"enum": ["not-evaluated", "coverage-incomplete", "ready-for-independent-review", "provisional", "accepted", "contested"]},
+    "coverage_status": {"enum": ["not-evaluated", "incomplete", "met-declared-scope"]},
     "policy_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
     "configuration_snapshots": {"type": "object", "additionalProperties": {"type": "string"}},
     "previous_run_id": {"type": ["string", "null"]},
@@ -22,6 +23,8 @@
     "consensus_readiness_ref": {"type": "string"},
     "budget": {"type": "object"},
     "directive_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "directive_hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "directive_snapshots": {"type": "object", "additionalProperties": {"type": "string"}},
     "work_item_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "agent_executions": {
       "type": "array",

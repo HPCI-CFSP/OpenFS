@@ -64,6 +64,8 @@ REQUIRED_FILES = [
     "schemas/consensus-readiness.schema.json",
     "schemas/weekly-digest.schema.json",
     "schemas/issue-payload.schema.json",
+    "schemas/directive-application.schema.json",
+    "schemas/run-brief.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -95,12 +97,15 @@ REQUIRED_FILES = [
     "tools/check_consensus_readiness.py",
     "tools/generate_weekly_digest.py",
     "tools/prepare_exception_issues.py",
+    "tools/apply_directive.py",
+    "tools/generate_run_brief.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
     "reviews/exceptions/README.md",
     "reviews/digests/README.md",
     "reviews/issues/README.md",
+    "reviews/briefs/README.md",
     "site/index.html",
     "site/styles.css",
     "site/app.js",
@@ -371,6 +376,24 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     errors.append(
                         f"Run {run_id} configuration snapshot digest differs: {snapshot_ref}"
                     )
+        directive_snapshots = manifest.get("directive_snapshots", {})
+        for source_ref, expected_digest in manifest.get("directive_hashes", {}).items():
+            snapshot_ref = directive_snapshots.get(source_ref)
+            if not snapshot_ref or not (root / snapshot_ref).is_file():
+                errors.append(f"Run {run_id} Directive snapshot is missing: {source_ref}")
+                continue
+            actual_digest = hashlib.sha256(
+                json.dumps(
+                    load_json(root / snapshot_ref),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if actual_digest != expected_digest:
+                errors.append(
+                    f"Run {run_id} Directive snapshot digest differs: {snapshot_ref}"
+                )
 
     source_ids_by_run: dict[str, list[str]] = {}
     for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):

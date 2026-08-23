@@ -10,7 +10,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from openfs_runtime import atomic_write_json, isoformat, read_json, stable_digest
+from openfs_runtime import (
+    atomic_write_json,
+    isoformat,
+    read_json,
+    run_snapshot_path,
+    stable_digest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -118,6 +124,10 @@ def register_capture(
     if source.get("source_class") not in source_classes:
         raise ValueError(f"unknown source class: {source.get('source_class')}")
     _validate_rights(source.get("rights", {}), passages, policy)
+    for failure in query.get("failures", []):
+        impact = failure.get("coverage_impact")
+        if impact is not None and impact not in {"blocking", "warning"}:
+            raise ValueError("query failure coverage_impact must be blocking or warning")
 
     canonical_url = canonicalize_url(source["canonical_url"], policy)
     retrieved_url = canonicalize_url(source.get("retrieved_url", canonical_url), policy)
@@ -254,6 +264,31 @@ def write_result(path: Path, result: dict[str, Any]) -> None:
     atomic_write_json(path, result)
 
 
+def validate_assignment(
+    capture: dict[str, Any],
+    work_item: dict[str, Any],
+    *,
+    agent_id: str,
+    output_ref: str,
+) -> None:
+    if work_item.get("kind") != "source-discovery":
+        raise ValueError("Work Item is not assigned to Source discovery")
+    lease = work_item.get("lease", {})
+    if work_item.get("status") != "leased" or lease.get("agent_id") != agent_id:
+        raise RuntimeError("Source registration requires the current Work Item lease")
+    if output_ref not in work_item.get("output_paths", []):
+        raise ValueError("Source output is outside the Work Item's declared paths")
+    payload = work_item.get("payload", {})
+    query = capture.get("query", {})
+    source = capture.get("source", {})
+    if query.get("text") != payload.get("query"):
+        raise ValueError("Capture query differs from the assigned Monitor query")
+    if query.get("language") not in payload.get("languages", []):
+        raise ValueError("Capture language is outside the assigned Monitor scope")
+    if source.get("source_class") not in payload.get("source_classes", []):
+        raise ValueError("Capture Source class is outside the assigned Monitor scope")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", required=True, type=Path)
@@ -263,16 +298,34 @@ def main() -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
+    capture = read_json(args.capture)
+    work_item = read_json(
+        args.root / "queue" / args.run_id / f"{args.work_item_id}.json"
+    )
+    output_path = args.output if args.output.is_absolute() else args.root / args.output
+    output_ref = str(output_path.relative_to(args.root))
+    validate_assignment(
+        capture,
+        work_item,
+        agent_id=args.agent_id,
+        output_ref=output_ref,
+    )
     result = register_capture(
-        read_json(args.capture),
+        capture,
         run_id=args.run_id,
         work_item_id=args.work_item_id,
         agent_id=args.agent_id,
-        policy=read_json(args.root / "config" / "acquisition-policy.json"),
-        source_registry=read_json(args.root / "config" / "source-registry.json"),
+        policy=read_json(
+            run_snapshot_path(
+                args.root, args.run_id, "config/acquisition-policy.json"
+            )
+        ),
+        source_registry=read_json(
+            run_snapshot_path(args.root, args.run_id, "config/source-registry.json")
+        ),
     )
-    write_result(args.output, result)
-    print(json.dumps({"source_id": result["source_receipt"]["source_id"], "output": str(args.output)}))
+    write_result(output_path, result)
+    print(json.dumps({"source_id": result["source_receipt"]["source_id"], "output": output_ref}))
     return 0
 
 

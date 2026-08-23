@@ -76,3 +76,13 @@ def git_head(root: Path) -> str:
     )
     return result.stdout.strip() if result.returncode == 0 else "unavailable"
 
+
+def run_snapshot_path(root: Path, run_id: str, source_ref: str) -> Path:
+    manifest = read_json(root / "runs" / run_id / "manifest.json")
+    snapshot_ref = manifest.get("configuration_snapshots", {}).get(source_ref)
+    if not snapshot_ref:
+        raise ValueError(f"Run has no pinned configuration snapshot: {source_ref}")
+    path = root / snapshot_ref
+    if not path.is_file():
+        raise ValueError(f"Pinned configuration snapshot is missing: {snapshot_ref}")
+    return path

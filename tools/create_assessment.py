@@ -8,7 +8,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import atomic_write_json, git_head, isoformat, read_json, stable_digest
+from openfs_runtime import (
+    atomic_write_json,
+    isoformat,
+    read_json,
+    run_snapshot_path,
+    stable_digest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,6 +50,8 @@ def create(
     objections: list[dict[str, str]],
     registry: dict[str, Any],
     base_commit: str,
+    work_item_id: str | None = None,
+    proposal_ref: str | None = None,
     allow_disabled_pilot_agent: bool = False,
     reviewed_at: str | None = None,
 ) -> dict[str, Any]:
@@ -88,34 +96,87 @@ def create(
     }
     if confidence is not None:
         assessment["confidence"] = confidence
+    if work_item_id is not None:
+        assessment["work_item_id"] = work_item_id
+    if proposal_ref is not None:
+        assessment["proposal_ref"] = proposal_ref
     return assessment
+
+
+def validate_assignment(
+    work_item: dict[str, Any],
+    *,
+    proposal_ref: str,
+    agent_id: str,
+    output_ref: str,
+) -> None:
+    if work_item.get("kind") != "validation":
+        raise ValueError("Work Item is not assigned to validation")
+    lease = work_item.get("lease", {})
+    if work_item.get("status") != "leased" or lease.get("agent_id") != agent_id:
+        raise RuntimeError("Assessment creation requires the current Work Item lease")
+    if work_item.get("payload", {}).get("proposal_ref") != proposal_ref:
+        raise ValueError("Proposal reference differs from the assigned Work Item")
+    if output_ref not in work_item.get("output_paths", []):
+        raise ValueError("Assessment output is outside the Work Item's declared paths")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--proposal", required=True, type=Path)
+    parser.add_argument("--proposal-ref", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--work-item-id", required=True)
     parser.add_argument("--reviewer-agent-id", required=True)
     parser.add_argument("--verdict", required=True, choices=("support", "refute", "uncertain"))
     parser.add_argument("--confidence", type=float)
     parser.add_argument("--checks", required=True, type=Path)
     parser.add_argument("--objections", required=True, type=Path)
-    parser.add_argument("--agent-registry", type=Path, default=ROOT / "config/agent-registry.json")
+    parser.add_argument("--agent-registry", type=Path)
     parser.add_argument("--allow-disabled-pilot-agent", action="store_true")
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
+    manifest = read_json(args.root / "runs" / args.run_id / "manifest.json")
+    work_item = read_json(
+        args.root / "queue" / args.run_id / f"{args.work_item_id}.json"
+    )
+    proposal_path = args.root / args.proposal_ref
+    supplied_path = args.proposal if args.proposal.is_absolute() else args.root / args.proposal
+    if supplied_path.resolve() != proposal_path.resolve():
+        raise ValueError("Proposal path differs from proposal-ref")
+    output_path = args.output if args.output.is_absolute() else args.root / args.output
+    output_ref = str(output_path.relative_to(args.root))
+    validate_assignment(
+        work_item,
+        proposal_ref=args.proposal_ref,
+        agent_id=args.reviewer_agent_id,
+        output_ref=output_ref,
+    )
+    registry_path = args.agent_registry or run_snapshot_path(
+        args.root, args.run_id, "config/agent-registry.json"
+    )
     assessment = create(
-        read_json(args.proposal),
+        read_json(proposal_path),
         reviewer_agent_id=args.reviewer_agent_id,
         verdict=args.verdict,
         confidence=args.confidence,
         checks=read_json(args.checks),
         objections=read_json(args.objections),
-        registry=read_json(args.agent_registry),
-        base_commit=git_head(ROOT),
+        registry=read_json(registry_path),
+        base_commit=manifest["base_commit"],
+        work_item_id=args.work_item_id,
+        proposal_ref=args.proposal_ref,
         allow_disabled_pilot_agent=args.allow_disabled_pilot_agent,
+        reviewed_at=work_item.get("lease", {}).get("acquired_at")
+        or work_item.get("updated_at"),
     )
-    atomic_write_json(args.output, assessment)
-    print(json.dumps({"assessment_id": assessment["assessment_id"], "output": str(args.output)}))
+    if output_path.exists():
+        if read_json(output_path) != assessment:
+            raise RuntimeError("Assessment already exists with different content")
+    else:
+        atomic_write_json(output_path, assessment)
+    print(json.dumps({"assessment_id": assessment["assessment_id"], "output": output_ref}))
     return 0
 
 

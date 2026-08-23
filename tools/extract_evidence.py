@@ -97,6 +97,24 @@ def extract(
     }
 
 
+def validate_assignment(
+    work_item: dict[str, Any],
+    *,
+    source_result_ref: str,
+    agent_id: str,
+    output_ref: str,
+) -> None:
+    if work_item.get("kind") != "evidence-extraction":
+        raise ValueError("Work Item is not assigned to Evidence extraction")
+    lease = work_item.get("lease", {})
+    if work_item.get("status") != "leased" or lease.get("agent_id") != agent_id:
+        raise RuntimeError("Evidence extraction requires the current Work Item lease")
+    if work_item.get("payload", {}).get("source_result_ref") != source_result_ref:
+        raise ValueError("Source reference differs from the assigned Work Item")
+    if output_ref not in work_item.get("output_paths", []):
+        raise ValueError("Evidence output is outside the Work Item's declared paths")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-result", required=True, type=Path)
@@ -105,16 +123,42 @@ def main() -> int:
     parser.add_argument("--work-item-id", required=True)
     parser.add_argument("--agent-id", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
+    work_item = read_json(
+        args.root / "queue" / args.run_id / f"{args.work_item_id}.json"
+    )
+    output_path = args.output if args.output.is_absolute() else args.root / args.output
+    output_ref = str(output_path.relative_to(args.root))
+    expected_source_path = args.root / args.source_result_ref
+    supplied_source_path = (
+        args.source_result
+        if args.source_result.is_absolute()
+        else args.root / args.source_result
+    )
+    if supplied_source_path.resolve() != expected_source_path.resolve():
+        raise ValueError("Source path differs from source-result-ref")
+    validate_assignment(
+        work_item,
+        source_result_ref=args.source_result_ref,
+        agent_id=args.agent_id,
+        output_ref=output_ref,
+    )
     bundle = extract(
-        read_json(args.source_result),
+        read_json(expected_source_path),
         source_result_ref=args.source_result_ref,
         run_id=args.run_id,
         work_item_id=args.work_item_id,
         agent_id=args.agent_id,
+        created_at=work_item.get("lease", {}).get("acquired_at")
+        or work_item.get("updated_at"),
     )
-    atomic_write_json(args.output, bundle)
-    print(json.dumps({"proposal_id": bundle["proposal_id"], "output": str(args.output)}))
+    if output_path.exists():
+        if read_json(output_path) != bundle:
+            raise RuntimeError("Evidence bundle already exists with different content")
+    else:
+        atomic_write_json(output_path, bundle)
+    print(json.dumps({"proposal_id": bundle["proposal_id"], "output": output_ref}))
     return 0
 
 

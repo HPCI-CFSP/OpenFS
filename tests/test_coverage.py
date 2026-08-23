@@ -34,6 +34,7 @@ class CoverageTests(unittest.TestCase):
             },
             "query_receipts": [],
             "research_status": "not-evaluated",
+            "coverage_status": "not-evaluated",
             "metrics": {},
         }
         (run_path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -59,13 +60,14 @@ class CoverageTests(unittest.TestCase):
     def tearDown(self):
         self.temporary.cleanup()
 
-    def test_incomplete_coverage_updates_research_status_and_receipts(self):
+    def test_incomplete_coverage_preserves_consensus_status_and_updates_receipts(self):
         report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
         self.assertEqual("incomplete", report["coverage_status"])
         self.assertTrue(report["monitor_snapshot_match"])
         self.assertIn("ja", report["gaps"]["missing_languages"])
         manifest = record_coverage(self.root, report)
-        self.assertEqual("coverage-incomplete", manifest["research_status"])
+        self.assertEqual("not-evaluated", manifest["research_status"])
+        self.assertEqual("incomplete", manifest["coverage_status"])
         self.assertEqual(1, len(manifest["query_receipts"]))
         self.assertGreater(manifest["metrics"]["coverage"]["gap_count"], 0)
 
@@ -97,6 +99,41 @@ class CoverageTests(unittest.TestCase):
         )
         self.assertFalse(authoritative["met"])
         self.assertEqual(1, authoritative["observed_count"])
+
+    def test_rights_exclusion_is_reported_as_warning(self):
+        path = (
+            self.root
+            / "proposals"
+            / "sources"
+            / "RUN-COVERAGE-TEST"
+            / "WORK-000001.json"
+        )
+        result = json.loads(path.read_text(encoding="utf-8"))
+        result["query_receipt"]["failures"] = [
+            {"kind": "rights-excluded", "detail": "Replacement selected."}
+        ]
+        path.write_text(json.dumps(result), encoding="utf-8")
+        report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
+        self.assertEqual([], report["gaps"]["query_failures"])
+        self.assertEqual(
+            "rights-excluded", report["observed"]["query_warnings"][0]["kind"]
+        )
+
+    def test_unclassified_failure_remains_blocking(self):
+        path = (
+            self.root
+            / "proposals"
+            / "sources"
+            / "RUN-COVERAGE-TEST"
+            / "WORK-000001.json"
+        )
+        result = json.loads(path.read_text(encoding="utf-8"))
+        result["query_receipt"]["failures"] = [
+            {"kind": "timeout", "detail": "Search endpoint timed out."}
+        ]
+        path.write_text(json.dumps(result), encoding="utf-8")
+        report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
+        self.assertEqual("timeout", report["gaps"]["query_failures"][0]["kind"])
 
 
 if __name__ == "__main__":

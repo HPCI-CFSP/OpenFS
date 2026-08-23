@@ -12,6 +12,7 @@ from openfs_runtime import atomic_write_json, isoformat, read_json, stable_diges
 
 
 ROOT = Path(__file__).resolve().parents[1]
+NON_BLOCKING_FAILURE_KINDS = {"rights-excluded"}
 
 
 def _monitor(root: Path, manifest: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -52,6 +53,16 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         for result in source_results
         for failure in result["query_receipt"].get("failures", [])
     ]
+    blocking_failures = [
+        failure
+        for failure in failures
+        if failure.get("coverage_impact") == "blocking"
+        or (
+            "coverage_impact" not in failure
+            and failure.get("kind") not in NON_BLOCKING_FAILURE_KINDS
+        )
+    ]
+    query_warnings = [failure for failure in failures if failure not in blocking_failures]
     query_source_counts = {
         query: len(
             {
@@ -121,7 +132,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             ]
         ),
         "duplicate_source_selections": duplicate_source_ids,
-        "query_failures": failures,
+        "query_failures": blocking_failures,
     }
     snapshot_match = manifest.get("policy_hashes", {}).get(monitor_relative) == stable_digest(
         monitor
@@ -164,6 +175,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             "source_class_requirement_results": class_requirement_results,
             "languages": sorted(observed_languages),
             "rights_decisions": rights_counts,
+            "query_warnings": query_warnings,
         },
         "gaps": gaps,
         "caveat": (
@@ -181,11 +193,7 @@ def record_coverage(root: Path, report: dict[str, Any]) -> dict[str, Any]:
     for path in sorted((root / "proposals" / "sources" / run_id).glob("*.json")):
         receipts.append(read_json(path)["query_receipt"])
     manifest["query_receipts"] = receipts
-    manifest["research_status"] = (
-        "ready-for-independent-review"
-        if report["coverage_status"] == "met-declared-scope"
-        else "coverage-incomplete"
-    )
+    manifest["coverage_status"] = report["coverage_status"]
     manifest.setdefault("metrics", {})["coverage"] = {
         "status": report["coverage_status"],
         "source_count": report["observed"]["source_count"],
