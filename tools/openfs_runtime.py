@@ -43,6 +43,13 @@ def stable_digest(value: Any) -> str:
     return sha256_bytes(canonical_json(value))
 
 
+def language_in_scope(language: str | None, allowed_languages: list[str]) -> bool:
+    """Accept an explicit language or any native language under source-language mode."""
+    return bool(language) and (
+        language in allowed_languages or "source-language" in allowed_languages
+    )
+
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 

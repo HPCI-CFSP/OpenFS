@@ -13,6 +13,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from openfs_runtime import (
     atomic_write_json,
     isoformat,
+    language_in_scope,
     read_json,
     run_snapshot_path,
     stable_digest,
@@ -320,7 +321,7 @@ def validate_assignment(
     source = capture.get("source", {})
     if query.get("text") != payload.get("query"):
         raise ValueError("Capture query differs from the assigned Monitor query")
-    if query.get("language") not in payload.get("languages", []):
+    if not language_in_scope(query.get("language"), payload.get("languages", [])):
         raise ValueError("Capture language is outside the assigned Monitor scope")
     if source.get("source_class") not in payload.get("source_classes", []):
         raise ValueError("Capture Source class is outside the assigned Monitor scope")

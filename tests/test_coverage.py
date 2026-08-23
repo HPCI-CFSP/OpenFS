@@ -341,6 +341,8 @@ class GlobalCoverageTests(unittest.TestCase):
             report = evaluate_coverage(root, run_id=run_id)
 
             self.assertEqual("GLOBAL-TECH-SCOPE-001", report["expected"]["global_scope_id"])
+            self.assertEqual(["source-language"], report["expected"]["language_modes"])
+            self.assertNotIn("source-language", report["gaps"]["missing_languages"])
             self.assertEqual(["europe"], report["observed"]["global_coverage"]["world_regions"])
             self.assertIn("japan", report["gaps"]["missing_world_regions"])
             self.assertIn("negative", report["gaps"]["missing_result_signals"])

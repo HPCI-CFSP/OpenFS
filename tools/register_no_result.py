@@ -8,7 +8,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import atomic_write_json, isoformat, read_json, stable_digest
+from openfs_runtime import (
+    atomic_write_json,
+    isoformat,
+    language_in_scope,
+    read_json,
+    stable_digest,
+)
 from register_source import canonicalize_url
 
 
@@ -31,7 +37,7 @@ def create(
     query = record.get("query", {})
     if query.get("text") != payload.get("query"):
         raise ValueError("No-result query differs from the assigned Monitor query")
-    if query.get("language") not in payload.get("languages", []):
+    if not language_in_scope(query.get("language"), payload.get("languages", [])):
         raise ValueError("No-result language is outside the assigned Monitor scope")
     failures = query.get("failures", [])
     if not failures:

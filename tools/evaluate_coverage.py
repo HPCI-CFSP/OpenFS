@@ -75,7 +75,9 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
     expected_queries = (
         expected_coverage_queries | expected_falsification_queries | assigned_queries
     )
-    expected_languages = set(monitor.get("languages", []))
+    configured_languages = set(monitor.get("languages", []))
+    language_modes = configured_languages & {"source-language"}
+    expected_languages = configured_languages - language_modes
     observed_queries = set(queries)
     observed_classes = {source["source_class"] for source in sources}
     observed_languages = {source["language"] for source in sources}
@@ -271,6 +273,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             "falsification_queries": sorted(expected_falsification_queries),
             "source_class_requirements": class_requirements,
             "languages": sorted(expected_languages),
+            "language_modes": sorted(language_modes),
             "minimum_sources_per_query": minimum_sources_per_query,
             "minimum_total_sources": minimum_total_sources,
             "minimum_origin_groups": minimum_origin_groups,

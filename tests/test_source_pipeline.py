@@ -183,6 +183,36 @@ class SourcePipelineTests(unittest.TestCase):
                 output_ref="proposals/sources/RUN/WORK-000001.json",
             )
 
+    def test_source_language_mode_accepts_an_unlisted_native_language(self):
+        capture = self.capture()
+        capture["query"]["language"] = "ko"
+        capture["source"]["language"] = "ko"
+        work_item = {
+            "kind": "source-discovery",
+            "status": "leased",
+            "lease": {"agent_id": "discovery-public-01"},
+            "output_paths": ["proposals/sources/RUN/WORK-000001.json"],
+            "payload": {
+                "query": capture["query"]["text"],
+                "languages": ["en", "ja", "source-language"],
+                "source_classes": ["research-primary"],
+            },
+        }
+        validate_assignment(
+            capture,
+            work_item,
+            agent_id="discovery-public-01",
+            output_ref="proposals/sources/RUN/WORK-000001.json",
+        )
+        work_item["payload"]["languages"] = ["en", "ja"]
+        with self.assertRaisesRegex(ValueError, "language is outside"):
+            validate_assignment(
+                capture,
+                work_item,
+                agent_id="discovery-public-01",
+                output_ref="proposals/sources/RUN/WORK-000001.json",
+            )
+
     def test_extraction_assignment_rejects_source_substitution(self):
         work_item = {
             "kind": "evidence-extraction",

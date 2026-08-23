@@ -10,6 +10,8 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
+from openfs_runtime import language_in_scope
+
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
@@ -642,7 +644,9 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             if key in payload
         }
         if result.get("object_type") == "discovery_no_result":
-            if strict_assignment and query_receipt.get("language") not in payload.get("languages", []):
+            if strict_assignment and not language_in_scope(
+                query_receipt.get("language"), payload.get("languages", [])
+            ):
                 errors.append(
                     f"No-result language differs from its assignment: {path.relative_to(root)}"
                 )
@@ -653,7 +657,9 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             continue
         if strict_assignment and source_receipt.get("source_class") not in payload.get("source_classes", []):
             errors.append(f"Source result class differs from its assignment: {path.relative_to(root)}")
-        if strict_assignment and source_receipt.get("language") not in payload.get("languages", []):
+        if strict_assignment and not language_in_scope(
+            source_receipt.get("language"), payload.get("languages", [])
+        ):
             errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
         if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
             errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
