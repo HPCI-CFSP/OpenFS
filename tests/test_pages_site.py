@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 
@@ -13,7 +14,28 @@ sys.path.insert(0, str(ROOT / "tools"))
 from build_pages_site import build, collect_scenarios  # noqa: E402
 
 
+class PageStructureParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.ids = []
+        self.fragment_links = []
+
+    def handle_starttag(self, _tag, attrs):
+        values = dict(attrs)
+        if values.get("id"):
+            self.ids.append(values["id"])
+        if values.get("href", "").startswith("#"):
+            self.fragment_links.append(values["href"][1:])
+
+
 class PagesSiteTests(unittest.TestCase):
+    def test_page_fragment_navigation_has_unique_existing_targets(self):
+        parser = PageStructureParser()
+        parser.feed((ROOT / "site" / "index.html").read_text(encoding="utf-8"))
+        self.assertEqual(len(parser.ids), len(set(parser.ids)))
+        self.assertTrue(parser.fragment_links)
+        self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
+
     def test_build_publishes_catalog_but_not_illustrative_scenarios(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
