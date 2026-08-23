@@ -224,6 +224,53 @@ class CenterCoverageTests(unittest.TestCase):
         self.assertEqual(14, len(report["gaps"]["missing_subject_searches"]))
         self.assertEqual(15, len(report["gaps"]["missing_subject_profile_queries"]))
 
+    def test_reused_source_preserves_each_subject_assignment(self):
+        run_id = "RUN-CENTER-COVERAGE"
+        queue_items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((self.root / "queue" / run_id).glob("*.json"))
+        ]
+        subject_items = [
+            entry for entry in queue_items if entry["payload"].get("subject_ids")
+        ]
+        selected = [
+            subject_items[0],
+            next(
+                entry
+                for entry in subject_items
+                if entry["payload"]["subject_ids"] != subject_items[0]["payload"]["subject_ids"]
+            ),
+        ]
+        source_path = self.root / "proposals" / "sources" / run_id
+        source_path.mkdir(parents=True, exist_ok=True)
+        for index, item in enumerate(selected, 1):
+            result = {
+                "query_receipt": {
+                    "query_receipt_id": f"QRY-REUSED{index:06d}",
+                    "query": item["payload"]["query"],
+                    "failures": [],
+                },
+                "source_receipt": {
+                    "source_id": "SRC-REUSEDCENTER",
+                    "source_class": "official-primary",
+                    "language": "ja",
+                    "primary_source": True,
+                    "origin_group_id": "ORG-REUSEDCENTER",
+                    "rights": {"acquisition_decision": "evidence-excerpt"},
+                    "assignment_scope": {
+                        "subject_ids": item["payload"]["subject_ids"],
+                        "profile_fields": item["payload"]["profile_fields"],
+                        "query_template_id": item["payload"]["query_template_id"],
+                    },
+                },
+            }
+            (source_path / f"{item['work_item_id']}.json").write_text(
+                json.dumps(result), encoding="utf-8"
+            )
+        report = evaluate_coverage(self.root, run_id=run_id)
+        self.assertEqual(1, report["observed"]["source_count"])
+        self.assertEqual(2, report["observed"]["subject_count"])
+
 
 if __name__ == "__main__":
     unittest.main()

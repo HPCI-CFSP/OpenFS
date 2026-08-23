@@ -121,6 +121,20 @@ Accepted knowledge is projected into multiple HPCI system scenarios rather than 
 
 `config/hpci-center-registry.json` is the dated, official-source-anchored provider scope. A center Run snapshots it, expands two complementary searches for every provider, and records the assignment in each Source Receipt. Evidence from those searches is synthesized into provisional field-level Center Profiles. `tools/evaluate_center_profiles.py` reports missing, partial, stale, and non-accepted profiles separately; query execution never substitutes for profile Evidence.
 
+Every new Center Profile is also a Consensus Proposal with source-origin lineage.
+The Run Controller assigns blind reviews to each configured reviewer identity and
+creates one deterministic Consensus batch only after all scheduled reviews finish.
+The profile evaluator joins Decisions instead of trusting a mutable status label.
+Pilot Runs created before proposal contract `0.2.0` remain auditable provisional
+fixtures and are not retroactively promoted.
+
+After a Center Run closes, `tools/generate_center_research_brief.py` measures
+field-level gaps and `tools/generate_center_followup_plan.py` converts the most
+planning-critical gaps into at most one bounded query per center. A later Run may
+consume only the latest digest-matched plan, snapshots it under the new Run, and
+records the originating Run ID. Gap-driven searches supplement the stable baseline
+queries; they never turn missing public information into a factual claim.
+
 The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass independent review, the Recommendation Gate, or promotion workflow.
 
 ## Research-scope expansion

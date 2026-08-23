@@ -46,7 +46,7 @@ def build_brief(
         for item in [read_json(path)]
     }
     assessments: dict[str, list[dict[str, Any]]] = {}
-    for path in sorted((root / "assessments" / run_id).glob("*.json")):
+    for path in sorted((root / "assessments" / run_id).rglob("*.json")):
         assessment = read_json(path)
         assessments.setdefault(assessment["proposal_id"], []).append(assessment)
 

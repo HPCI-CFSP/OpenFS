@@ -59,7 +59,7 @@ After the Pilot workflow defines and validates these names, add them at:
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
-| `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit |
+| `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit; increase only after inspecting the generated plan |
 | `OPENFS_OPENAI_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
 | `OPENFS_ANTHROPIC_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
 
@@ -119,11 +119,17 @@ Record these decisions in a reviewed pull request or Directive:
    test Handoff is merged. Inspect its artifact, then test `publish_pr=true`.
    Set `OPENFS_HANDOFF_CONTROL_ENABLED=true` only after branch protection accepts
    its control PR and prevents direct merge without review.
-7. Configure at least two independent provider paths, approved model IDs, a cost
-   ceiling, and provider-side alerts before adding the research Worker.
-8. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
+7. Bind `validator-public-02` and `critic-public-01` in
+   `config/agent-registry.json` to approved reviewer models. The baseline needs
+   three reviewer executions and at least two support groups independent of the
+   synthesis author. Run `tools/check_consensus_readiness.py` after configuration.
+8. Configure a cost ceiling and provider-side alerts before adding the research
+   Worker. A full 15-center cycle can require about 127 Work Items with three
+   reviewers; the repository ceiling is 200, while each Run should request the
+   smallest limit that fits its inspected plan.
+9. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
    budget, boundary, assignment, recovery, and Consensus-capacity tests.
-9. Enable provider calls first in manual Pilot mode. Enable unattended production
+10. Enable provider calls first in manual Pilot mode. Enable unattended production
    Runs only after owner review of cost, citations, dissent, false positives, and
    generated pull-request paths.
 

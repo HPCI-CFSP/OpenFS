@@ -23,6 +23,7 @@ from run_controller import (  # noqa: E402
     lease_next,
     expand_followups,
 )
+from openfs_runtime import stable_digest  # noqa: E402
 
 
 class RunControllerTests(unittest.TestCase):
@@ -149,6 +150,62 @@ class RunControllerTests(unittest.TestCase):
             all(item["payload"].get("query_template_id") for item in subject_items)
         )
 
+    def test_center_run_snapshots_latest_gap_followup_plan(self):
+        for relative in (
+            "config/hpci-center-registry.json",
+            "config/monitors/MON-HPCI-CENTERS-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        brief_ref = "reviews/briefs/RUN-PRIOR-center-research.json"
+        brief = {"run_id": "RUN-PRIOR", "centers": []}
+        brief_path = self.root / brief_ref
+        brief_path.parent.mkdir(parents=True, exist_ok=True)
+        brief_path.write_text(json.dumps(brief), encoding="utf-8")
+        plan_ref = "reviews/followups/RUN-PRIOR-center-gaps.json"
+        plan = {
+            "followup_plan_id": "CFP-TEST00000001",
+            "monitor_id": "MON-HPCI-CENTERS-001",
+            "task_id": "OFS-003",
+            "base_run_id": "RUN-PRIOR",
+            "generated_at": "2026-08-24T00:00:00Z",
+            "status": "generated-for-research",
+            "input_brief_ref": brief_ref,
+            "input_brief_digest": stable_digest(brief),
+            "queries": [
+                {
+                    "query_id": "FOLLOWUP-CENTER-AIST-IHF",
+                    "center_id": "CENTER-AIST-IHF",
+                    "profile_fields": ["power", "facility"],
+                    "query": "AIST power facility official",
+                    "query_role": "gap-followup",
+                    "source_classes": ["center-primary"],
+                }
+            ],
+        }
+        plan_path = self.root / plan_ref
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(json.dumps(plan), encoding="utf-8")
+
+        manifest = create_run(
+            self.root,
+            run_id="RUN-CENTER-FOLLOWUP",
+            task_id="OFS-003",
+            monitor_id="MON-HPCI-CENTERS-001",
+            pilot=True,
+        )
+        self.assertEqual(34, len(manifest["work_item_ids"]))
+        self.assertEqual(plan_ref, manifest["followup_plan"]["source_ref"])
+        self.assertTrue((self.root / manifest["followup_plan"]["snapshot_ref"]).is_file())
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in (self.root / "queue" / "RUN-CENTER-FOLLOWUP").glob("*.json")
+        ]
+        followups = [item for item in items if item["payload"].get("followup_plan_id")]
+        self.assertEqual(1, len(followups))
+        self.assertEqual(["power", "facility"], followups[0]["payload"]["profile_fields"])
+
     def test_center_evidence_expands_one_profile_synthesis_per_subject(self):
         for relative in (
             "config/hpci-center-registry.json",
@@ -234,6 +291,72 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual(
             10, len(profile_items[0]["payload"]["profile_fields"])
         )
+
+    def test_completed_profile_expands_reviewer_bound_validation(self):
+        for relative in (
+            "config/hpci-center-registry.json",
+            "config/monitors/MON-HPCI-CENTERS-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        run_id = "RUN-CENTER-REVIEW"
+        create_run(
+            self.root,
+            run_id=run_id,
+            task_id="OFS-003",
+            monitor_id="MON-HPCI-CENTERS-001",
+            pilot=True,
+        )
+        queue = self.root / "queue" / run_id
+        synthetic = {
+            "schema_version": "0.1.0",
+            "work_item_id": "WORK-000034",
+            "run_id": run_id,
+            "task_id": "OFS-003",
+            "monitor_id": "MON-HPCI-CENTERS-001",
+            "kind": "center-profile-synthesis",
+            "required_role": "synthesis",
+            "status": "completed",
+            "idempotency_key": "profile-test",
+            "payload": {"center_id": "CENTER-TEST"},
+            "output_paths": [f"proposals/center-profiles/{run_id}/CENTER-TEST.json"],
+            "output_refs": [f"proposals/center-profiles/{run_id}/CENTER-TEST.json"],
+            "attempt": 1,
+            "maximum_attempts": 3,
+            "created_at": "2026-08-24T00:00:00Z",
+            "updated_at": "2026-08-24T00:00:00Z",
+        }
+        output = self.root / synthetic["output_refs"][0]
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            json.dumps(
+                {
+                    "proposal_id": "PRP-CTR-000001",
+                    "object_type": "center_profile",
+                    "run_id": run_id,
+                }
+            ),
+            encoding="utf-8",
+        )
+        (queue / "WORK-000034.json").write_text(
+            json.dumps(synthetic), encoding="utf-8"
+        )
+        manifest_path = self.root / "runs" / run_id / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["work_item_ids"].append("WORK-000034")
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        expansion = expand_followups(self.root, run_id=run_id)
+        validations = [
+            item for item in expansion["created"] if item["kind"] == "validation"
+        ]
+        self.assertEqual(1, len(validations))
+        self.assertEqual(
+            "validator-public-01",
+            validations[0]["payload"]["assigned_reviewer_agent_id"],
+        )
+        self.assertIn("validator-public-01", validations[0]["output_paths"][0])
 
     def test_run_control_lock_blocks_competing_mutation_and_recovers(self):
         create_run(

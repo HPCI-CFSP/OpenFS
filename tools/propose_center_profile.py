@@ -13,6 +13,7 @@ from openfs_runtime import (
     isoformat,
     read_json,
     run_snapshot_path,
+    stable_digest,
 )
 
 
@@ -66,9 +67,13 @@ def propose(
         raise ValueError(f"draft contains unsupported fields: {sorted(set(draft) - allowed_top_level)}")
 
     evidence: dict[str, dict[str, Any]] = {}
+    origin_group_ids: set[str] = set()
+    has_primary_source = False
     for bundle in bundles:
         if bundle.get("object_type") != "evidence" or bundle.get("run_id") != run_id:
             raise ValueError("all inputs must be Evidence bundles from this Run")
+        origin_group_ids.update(bundle.get("origin_group_ids", []))
+        has_primary_source = has_primary_source or bundle.get("has_primary_source") is True
         for item in bundle.get("evidence_candidates", []):
             evidence[item["evidence_id"]] = item
 
@@ -108,8 +113,18 @@ def propose(
     if not used_evidence:
         raise ValueError("a Center Profile requires at least one assigned Evidence record")
     timestamp = created_at or isoformat()
+    identity = {
+        "run_id": run_id,
+        "center_id": center_id,
+        "evidence_refs": sorted(used_evidence),
+        "fields": normalized_fields,
+    }
+    proposal_number = int(stable_digest(identity)[:12], 16) % 1_000_000
     profile = {
         "schema_version": "0.1.0",
+        "proposal_contract_version": "0.2.0",
+        "proposal_id": f"PRP-CTR-{proposal_number:06d}",
+        "object_type": "center_profile",
         "run_id": run_id,
         "center_id": center_id,
         "name_ja": center["name_ja"],
@@ -117,6 +132,8 @@ def propose(
         "profile_status": "provisional",
         "evidence_as_of": draft["evidence_as_of"],
         "evidence_refs": sorted(used_evidence),
+        "origin_group_ids": sorted(origin_group_ids),
+        "has_primary_source": has_primary_source,
         **normalized_fields,
         "unknowns": sorted(unknowns),
         "created_by_agent_id": agent_id,

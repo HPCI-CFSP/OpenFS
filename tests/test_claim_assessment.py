@@ -120,6 +120,25 @@ class ClaimAssessmentTests(unittest.TestCase):
                 output_ref="assessments/RUN/WORK-000002.json",
             )
 
+    def test_assessment_assignment_rejects_reviewer_substitution(self):
+        item = {
+            "kind": "validation",
+            "status": "leased",
+            "lease": {"agent_id": "validator-public-01"},
+            "payload": {
+                "proposal_ref": "proposals/claims/RUN/WORK-000001.json",
+                "assigned_reviewer_agent_id": "validator-public-02",
+            },
+            "output_paths": ["assessments/RUN/WORK-000002.json"],
+        }
+        with self.assertRaisesRegex(ValueError, "Reviewer differs"):
+            validate_assessment(
+                item,
+                proposal_ref="proposals/claims/RUN/WORK-000001.json",
+                agent_id="validator-public-01",
+                output_ref="assessments/RUN/WORK-000002.json",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

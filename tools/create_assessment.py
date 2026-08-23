@@ -117,6 +117,9 @@ def validate_assignment(
         raise RuntimeError("Assessment creation requires the current Work Item lease")
     if work_item.get("payload", {}).get("proposal_ref") != proposal_ref:
         raise ValueError("Proposal reference differs from the assigned Work Item")
+    assigned_reviewer = work_item.get("payload", {}).get("assigned_reviewer_agent_id")
+    if assigned_reviewer and assigned_reviewer != agent_id:
+        raise ValueError("Reviewer differs from the assigned Work Item")
     if output_ref not in work_item.get("output_paths", []):
         raise ValueError("Assessment output is outside the Work Item's declared paths")
 

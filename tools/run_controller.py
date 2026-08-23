@@ -130,6 +130,30 @@ def _subject_query_plan(root: Path, monitor: dict[str, Any]) -> list[dict[str, A
     return plan
 
 
+def _latest_followup_plan(
+    root: Path, monitor: dict[str, Any]
+) -> tuple[str, dict[str, Any]] | None:
+    if not monitor.get("use_latest_followup_plan"):
+        return None
+    candidates: list[tuple[str, dict[str, Any]]] = []
+    for path in sorted((root / "reviews" / "followups").glob("*.json")):
+        plan = read_json(path)
+        if plan.get("monitor_id") != monitor.get("monitor_id"):
+            continue
+        if plan.get("status") != "generated-for-research":
+            continue
+        brief_ref = plan.get("input_brief_ref")
+        if not brief_ref or not (root / brief_ref).is_file():
+            continue
+        if stable_digest(read_json(root / brief_ref)) != plan.get("input_brief_digest"):
+            raise ValueError(f"follow-up input Brief digest mismatch: {path}")
+        source_ref = path.relative_to(root).as_posix()
+        candidates.append((source_ref, plan))
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: (item[1].get("generated_at", ""), item[0]))
+
+
 def _configuration_snapshot_refs(
     run_id: str, policy_hashes: dict[str, str]
 ) -> dict[str, str]:
@@ -242,13 +266,30 @@ def create_run(
 
     work_items: list[dict[str, Any]] = []
     slots_per_query = int(monitor.get("discovery_slots_per_query", 1))
+    followup = _latest_followup_plan(root, monitor)
+    followup_query_plan = []
+    if followup:
+        _, followup_plan = followup
+        for entry in followup_plan.get("queries", []):
+            followup_query_plan.append(
+                {
+                    "query": entry["query"],
+                    "query_role": entry["query_role"],
+                    "subject_ids": [entry["center_id"]],
+                    "profile_fields": entry["profile_fields"],
+                    "query_template_id": entry["query_id"],
+                    "source_classes": entry.get("source_classes", []),
+                    "followup_plan_id": followup_plan["followup_plan_id"],
+                    "followup_query_id": entry["query_id"],
+                }
+            )
     query_plan = [
         {"query": query, "query_role": "coverage"}
         for query in monitor.get("query_families", [])
     ] + [
         {"query": query, "query_role": "falsification"}
         for query in monitor.get("falsification_queries", [])
-    ] + _subject_query_plan(root, monitor)
+    ] + _subject_query_plan(root, monitor) + followup_query_plan
     for query_entry in query_plan:
         for candidate_slot in range(1, slots_per_query + 1):
             sequence = len(work_items) + 1
@@ -257,13 +298,21 @@ def create_run(
                 "query_role": query_entry["query_role"],
                 "candidate_slot": candidate_slot,
                 "languages": monitor.get("languages", []),
-                "source_classes": monitor.get("source_classes", []),
+                "source_classes": query_entry.get(
+                    "source_classes", monitor.get("source_classes", [])
+                ),
                 "source_class_requirements": monitor.get(
                     "source_class_requirements", []
                 ),
                 "maximum_unchecked_days": monitor.get("maximum_unchecked_days"),
             }
-            for key in ("subject_ids", "profile_fields", "query_template_id"):
+            for key in (
+                "subject_ids",
+                "profile_fields",
+                "query_template_id",
+                "followup_plan_id",
+                "followup_query_id",
+            ):
                 if key in query_entry:
                     payload[key] = query_entry[key]
             work_items.append(
@@ -306,6 +355,16 @@ def create_run(
 
     policy_hashes = _policy_hashes(root, monitor_path)
     snapshot_refs = _configuration_snapshot_refs(run_id, policy_hashes)
+    followup_manifest = None
+    if followup:
+        followup_ref, followup_plan = followup
+        followup_manifest = {
+            "source_ref": followup_ref,
+            "snapshot_ref": f"runs/{run_id}/inputs/{followup_ref}",
+            "digest": stable_digest(followup_plan),
+            "followup_plan_id": followup_plan["followup_plan_id"],
+            "base_run_id": followup_plan["base_run_id"],
+        }
     manifest = {
         "schema_version": "0.1.0",
         "run_id": run_id,
@@ -344,6 +403,8 @@ def create_run(
         },
         "metrics": {"work_items_total": len(work_items)},
     }
+    if followup_manifest:
+        manifest["followup_plan"] = followup_manifest
     run_identity = {
         key: manifest[key]
         for key in (
@@ -357,6 +418,7 @@ def create_run(
             "directive_hashes",
         )
     }
+    run_identity["followup_plan"] = followup_manifest
     run_identity["work_item_idempotency_keys"] = [
         item["idempotency_key"] for item in work_items
     ]
@@ -373,6 +435,11 @@ def create_run(
         atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
     for source_ref, snapshot_ref in directive_snapshots.items():
         atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
+    if followup_manifest:
+        atomic_write_json(
+            root / followup_manifest["snapshot_ref"],
+            read_json(root / followup_manifest["source_ref"]),
+        )
     for item in work_items:
         atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
     atomic_write_json(run_path, manifest)
@@ -687,6 +754,9 @@ def _lease_next(
     role = agent.get("role")
     for path, item in queue_entries:
         if item.get("required_role") != role:
+            continue
+        assigned_agent_id = item.get("payload", {}).get("assigned_reviewer_agent_id")
+        if assigned_agent_id and assigned_agent_id != agent_id:
             continue
         if item.get("status") != "queued":
             continue
@@ -1083,69 +1153,133 @@ def _expand_followups(
             additions.append(item)
             existing_keys.add(idempotency_key)
 
+    completed_proposal_items = [
+        item
+        for item in existing
+        if item.get("kind") in {"synthesis", "center-profile-synthesis"}
+        and item.get("status") == "completed"
+    ]
+    agent_registry = read_json(
+        root
+        / manifest["configuration_snapshots"]["config/agent-registry.json"]
+    )
+    eligible_reviewers = []
+    for candidate in agent_registry.get("agents", []):
+        if candidate.get("role") not in {"validator", "critic"}:
+            continue
+        if candidate.get("provider") in {None, "unconfigured"}:
+            continue
+        if candidate.get("model_family") in {None, "unconfigured"}:
+            continue
+        if manifest.get("mode") != "pilot" and not candidate.get("enabled"):
+            continue
+        eligible_reviewers.append(candidate)
+    for proposal_item in completed_proposal_items:
+        for proposal_ref in proposal_item.get("output_refs", []):
+            proposal = read_json(root / proposal_ref)
+            if not proposal.get("proposal_id") or not proposal.get("object_type"):
+                continue
+            for reviewer in sorted(eligible_reviewers, key=lambda item: item["agent_id"]):
+                payload = {
+                    "proposal_ref": proposal_ref,
+                    "parent_work_item_id": proposal_item["work_item_id"],
+                    "review_mode": "blind-first-review",
+                    "assigned_reviewer_agent_id": reviewer["agent_id"],
+                    "reviewer_independence_group": reviewer["agent_independence_group"],
+                }
+                identity = {
+                    "run_id": run_id,
+                    "task_id": manifest["task_id"],
+                    "monitor_id": manifest["monitor_id"],
+                    "kind": "validation",
+                    "payload": payload,
+                }
+                idempotency_key = stable_digest(identity)
+                if idempotency_key in existing_keys:
+                    continue
+                sequence += 1
+                item = _work_item(
+                    sequence=sequence,
+                    run_id=run_id,
+                    task_id=manifest["task_id"],
+                    monitor_id=manifest["monitor_id"],
+                    kind="validation",
+                    role=reviewer["role"],
+                    payload=payload,
+                    output_paths=[
+                        f"assessments/{run_id}/{proposal['proposal_id']}/{reviewer['agent_id']}.json"
+                    ],
+                    maximum_attempts=maximum_attempts,
+                    created_at=created_at,
+                )
+                additions.append(item)
+                existing_keys.add(idempotency_key)
+
+    validations_by_proposal: dict[str, list[dict[str, Any]]] = {}
+    for item in existing:
+        if item.get("kind") != "validation":
+            continue
+        proposal_ref = item.get("payload", {}).get("proposal_ref")
+        if proposal_ref:
+            validations_by_proposal.setdefault(proposal_ref, []).append(item)
+    completed_validations_by_proposal: dict[str, list[dict[str, Any]]] = {}
+    for item in existing:
+        if item.get("kind") != "validation" or item.get("status") != "completed":
+            continue
+        completed_validations_by_proposal.setdefault(
+            item.get("payload", {}).get("proposal_ref"), []
+        ).append(item)
+
+    proposal_refs = sorted(
+        reference
+        for item in completed_proposal_items
+        for reference in item.get("output_refs", [])
+        if read_json(root / reference).get("proposal_id")
+    )
     completed_claim_items = [
         item
         for item in existing
         if item.get("kind") == "synthesis" and item.get("status") == "completed"
     ]
-    for claim_item in completed_claim_items:
-        for proposal_ref in claim_item.get("output_refs", []):
-            payload = {
-                "proposal_ref": proposal_ref,
-                "parent_work_item_id": claim_item["work_item_id"],
-                "review_mode": "blind-first-review",
-            }
-            identity = {
-                "run_id": run_id,
-                "task_id": manifest["task_id"],
-                "monitor_id": manifest["monitor_id"],
-                "kind": "validation",
-                "payload": payload,
-            }
-            idempotency_key = stable_digest(identity)
-            if idempotency_key in existing_keys:
-                continue
-            sequence += 1
-            item = _work_item(
-                sequence=sequence,
-                run_id=run_id,
-                task_id=manifest["task_id"],
-                monitor_id=manifest["monitor_id"],
-                kind="validation",
-                role="validator",
-                payload=payload,
-                output_paths=[f"assessments/{run_id}/WORK-{sequence:06d}.json"],
-                maximum_attempts=maximum_attempts,
-                created_at=created_at,
-            )
-            additions.append(item)
-            existing_keys.add(idempotency_key)
-
-    completed_validations = {
-        item.get("payload", {}).get("proposal_ref"): item
-        for item in existing
-        if item.get("kind") == "validation" and item.get("status") == "completed"
-    }
-    claim_refs = sorted(
-        reference
-        for item in completed_claim_items
-        for reference in item.get("output_refs", [])
-    )
     upstream_complete = bool(discovery_items) and all(
         item.get("status") == "completed" for item in discovery_items.values()
     )
     all_query_claims_complete = len(completed_claim_items) == len(query_groups)
+    completed_profile_items = [
+        item
+        for item in completed_proposal_items
+        if item.get("kind") == "center-profile-synthesis"
+    ]
+    all_profile_proposals_complete = (
+        len(completed_profile_items) == len(subject_groups)
+        if run_monitor.get("synthesis_product") == "center-profile"
+        else True
+    )
+    all_expected_proposals_complete = (
+        all_profile_proposals_complete
+        if run_monitor.get("synthesis_product") == "center-profile"
+        else all_query_claims_complete
+    )
     if (
-        claim_refs
+        proposal_refs
         and upstream_complete
-        and all_query_claims_complete
-        and all(reference in completed_validations for reference in claim_refs)
+        and all_expected_proposals_complete
+        and all(validations_by_proposal.get(reference) for reference in proposal_refs)
+        and all(
+            len(completed_validations_by_proposal.get(reference, []))
+            == len(validations_by_proposal[reference])
+            for reference in proposal_refs
+        )
     ):
         pairs = []
         output_paths = []
-        for proposal_ref in claim_refs:
+        for proposal_ref in proposal_refs:
             proposal = read_json(root / proposal_ref)
-            assessment_refs = completed_validations[proposal_ref].get("output_refs", [])
+            assessment_refs = sorted(
+                ref
+                for validation in completed_validations_by_proposal[proposal_ref]
+                for ref in validation.get("output_refs", [])
+            )
             pairs.append(
                 {"proposal_ref": proposal_ref, "assessment_refs": assessment_refs}
             )
@@ -1337,6 +1471,11 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
             manifest["research_status"] = "accepted"
         else:
             manifest["research_status"] = "provisional"
+    elif any(
+        (root / directory / run_id).exists()
+        for directory in ("proposals/claims", "proposals/center-profiles")
+    ):
+        manifest["research_status"] = "provisional"
     if status in {"completed", "partial", "failed", "cancelled", "stopped"}:
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)

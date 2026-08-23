@@ -81,7 +81,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             for center in registry.get("centers", [])
         }
     observed_subject_fields: dict[str, set[str]] = {}
-    for source in sources:
+    for source in all_sources:
         assignment_scope = source.get("assignment_scope", {})
         for subject_id in assignment_scope.get("subject_ids", []):
             observed_subject_fields.setdefault(subject_id, set()).update(

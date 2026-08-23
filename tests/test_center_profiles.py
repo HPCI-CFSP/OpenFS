@@ -52,8 +52,12 @@ class CenterProfileCoverageTests(unittest.TestCase):
         self.temporary.cleanup()
 
     def profile(self, center, *, status="provisional", partial_field=None):
+        proposal_number = self.registry["centers"].index(center) + 1
         profile = {
             "schema_version": "0.1.0",
+            "proposal_contract_version": "0.2.0",
+            "proposal_id": f"PRP-CTR-{proposal_number:06d}",
+            "object_type": "center_profile",
             "run_id": "RUN-CENTER-PROFILES",
             "center_id": center["center_id"],
             "name_ja": center["name_ja"],
@@ -61,6 +65,8 @@ class CenterProfileCoverageTests(unittest.TestCase):
             "profile_status": status,
             "evidence_as_of": "2026-08-24",
             "evidence_refs": ["EVD-TEST"],
+            "origin_group_ids": ["ORG-TEST-A", "ORG-TEST-B"],
+            "has_primary_source": True,
             "unknowns": [],
             "created_by_agent_id": "synthesis-public-01",
             "created_at": "2026-08-24T00:00:00Z",
@@ -86,6 +92,24 @@ class CenterProfileCoverageTests(unittest.TestCase):
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(profile), encoding="utf-8")
 
+    def write_accepted_decision(self, profile):
+        output = (
+            self.root
+            / "decisions"
+            / "RUN-CENTER-PROFILES"
+            / f"{profile['proposal_id']}.json"
+        )
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            json.dumps(
+                {
+                    "proposal_id": profile["proposal_id"],
+                    "outcome": "accepted",
+                }
+            ),
+            encoding="utf-8",
+        )
+
     def test_partial_provisional_profile_remains_incomplete(self):
         self.write_profile(self.profile(self.registry["centers"][0], partial_field="power"))
         report = evaluate(
@@ -106,7 +130,9 @@ class CenterProfileCoverageTests(unittest.TestCase):
 
     def test_all_current_accepted_profiles_meet_registry_scope(self):
         for center in self.registry["centers"]:
-            self.write_profile(self.profile(center, status="accepted"))
+            profile = self.profile(center, status="accepted")
+            self.write_profile(profile)
+            self.write_accepted_decision(profile)
         report = evaluate(
             self.root,
             run_id="RUN-CENTER-PROFILES",
@@ -139,6 +165,8 @@ class CenterProfileCoverageTests(unittest.TestCase):
         bundle = {
             "object_type": "evidence",
             "run_id": "RUN-CENTER-PROFILES",
+            "origin_group_ids": ["ORG-CENTER-A"],
+            "has_primary_source": True,
             "evidence_candidates": [
                 {
                     "evidence_id": "EVD-CENTER-A",
@@ -162,6 +190,10 @@ class CenterProfileCoverageTests(unittest.TestCase):
             created_at="2026-08-24T00:00:00Z",
         )
         self.assertEqual("provisional", profile["profile_status"])
+        self.assertEqual("center_profile", profile["object_type"])
+        self.assertRegex(profile["proposal_id"], r"^PRP-CTR-[0-9]{6}$")
+        self.assertEqual(["ORG-CENTER-A"], profile["origin_group_ids"])
+        self.assertTrue(profile["has_primary_source"])
         self.assertEqual("verified", profile["current_system"]["status"])
         self.assertIn("power", profile["unknowns"])
         draft["fields"]["power"] = {

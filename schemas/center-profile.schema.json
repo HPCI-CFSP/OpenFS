@@ -57,6 +57,9 @@
   },
   "properties": {
     "schema_version": {"type": "string"},
+    "proposal_contract_version": {"type": "string"},
+    "proposal_id": {"type": "string", "pattern": "^PRP-CTR-[0-9]{6}$"},
+    "object_type": {"const": "center_profile"},
     "run_id": {"type": "string"},
     "center_id": {"type": "string", "pattern": "^CENTER-[A-Z0-9-]+$"},
     "name_ja": {"type": "string", "minLength": 1},
@@ -64,6 +67,8 @@
     "profile_status": {"enum": ["draft", "provisional", "reviewed", "accepted", "stale"]},
     "evidence_as_of": {"type": "string", "format": "date"},
     "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "origin_group_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "has_primary_source": {"type": "boolean"},
     "users": {"$ref": "#/$defs/profile_field"},
     "priority_domains": {"$ref": "#/$defs/profile_field"},
     "current_system": {"$ref": "#/$defs/profile_field"},

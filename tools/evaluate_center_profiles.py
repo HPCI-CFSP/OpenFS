@@ -65,6 +65,16 @@ def evaluate(
             duplicate_profiles.append(center_id)
         profiles[center_id] = profile
 
+    decisions = {}
+    for path in sorted((root / "decisions" / run_id).rglob("*.json")):
+        decision = read_json(path)
+        proposal_id = decision.get("proposal_id")
+        if proposal_id:
+            decisions[proposal_id] = {
+                "ref": str(path.relative_to(root)),
+                "outcome": decision.get("outcome"),
+            }
+
     missing_profiles = sorted(set(centers) - set(profiles))
     unexpected_profiles = sorted(set(profiles) - set(centers))
     non_accepted_profiles: list[dict[str, str]] = []
@@ -98,11 +108,15 @@ def evaluate(
         complete = not missing_fields and not partial_fields and not stale_fields
         if complete:
             evidence_complete += 1
-        if profile.get("profile_status") != "accepted":
+        decision = decisions.get(profile.get("proposal_id"), {})
+        accepted_by_consensus = decision.get("outcome") == "accepted"
+        effective_status = "accepted" if accepted_by_consensus else "provisional"
+        if not accepted_by_consensus:
             non_accepted_profiles.append(
                 {
                     "center_id": center_id,
-                    "profile_status": profile.get("profile_status", "missing"),
+                    "profile_status": effective_status,
+                    "decision_outcome": decision.get("outcome", "missing"),
                 }
             )
         profile_age_days = (evaluated_date - _date(profile["evidence_as_of"])).days
@@ -121,14 +135,17 @@ def evaluate(
             )
         current_and_accepted = (
             complete
-            and profile.get("profile_status") == "accepted"
+            and accepted_by_consensus
             and 0 <= profile_age_days <= maximum_age_days
         )
         accepted_current += int(current_and_accepted)
         profile_results.append(
             {
                 "center_id": center_id,
-                "profile_status": profile.get("profile_status"),
+                "profile_status": effective_status,
+                "proposal_status": profile.get("profile_status"),
+                "decision_outcome": decision.get("outcome", "missing"),
+                "decision_ref": decision.get("ref"),
                 "profile_age_days": profile_age_days,
                 "field_evidence_complete": complete,
                 "accepted_current": current_and_accepted,
