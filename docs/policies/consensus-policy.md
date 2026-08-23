@@ -2,7 +2,7 @@
 
 ## Principle
 
-Consensus is a deterministic eligibility check, not proof of truth. The gate evaluates assessments, agent independence, source-origin independence, primary-source support, schema validity, and objections.
+Consensus is a deterministic eligibility check, not proof of truth. The gate evaluates assessments, agent independence, source-origin independence, publisher independence, primary-source support, schema validity, and objections.
 
 ## Independent assessment
 
@@ -33,7 +33,11 @@ Center Profiles use the same gate. Their accepted status is projected from an
 
 ## Source lineage
 
-The number of URLs is not the number of independent sources. Proposals state their `origin_group_ids`; derivative publications from one origin count once.
+The number of URLs is not the number of independent sources. Proposals state their
+`origin_group_ids`; derivative publications from one origin count once. New Claim
+proposals also carry `publisher_group_ids`, derived from canonical Web authority.
+Multiple original pages from one publisher do not satisfy the configured
+cross-publisher threshold.
 
 ## Outcomes
 

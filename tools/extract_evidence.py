@@ -79,8 +79,8 @@ def extract(
                 "evidence_hash": stable_digest(evidence_identity),
             }
         )
-    return {
-        "schema_version": "0.1.0",
+    result = {
+        "schema_version": "0.2.0" if receipt.get("publisher_group_id") else "0.1.0",
         "proposal_id": _numeric_proposal_id(
             {
                 "run_id": run_id,
@@ -100,6 +100,9 @@ def extract(
         "created_at": timestamp,
         "evidence_candidates": candidates,
     }
+    if receipt.get("publisher_group_id"):
+        result["publisher_group_ids"] = [receipt["publisher_group_id"]]
+    return result
 
 
 def validate_assignment(

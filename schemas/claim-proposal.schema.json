@@ -23,6 +23,7 @@
     "run_id": {"type": "string"},
     "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
     "origin_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "publisher_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "has_primary_source": {"type": "boolean"},
     "artifact_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
     "created_by_agent_id": {"type": "string"},
@@ -30,5 +31,11 @@
     "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "claim_candidate": {"$ref": "claim.schema.json"}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "0.2.0"}}},
+      "then": {"required": ["publisher_group_ids"]}
+    }
+  ],
   "additionalProperties": false
 }

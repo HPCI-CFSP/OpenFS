@@ -51,6 +51,7 @@ class RunBriefTests(unittest.TestCase):
                     "source_class": "official-primary",
                     "primary_source": True,
                     "origin_group_id": "ORG-1",
+                    "publisher_group_id": "PUB-1",
                 }
             },
         )
@@ -114,12 +115,16 @@ class RunBriefTests(unittest.TestCase):
             {
                 "source_count": 1,
                 "origin_group_count": 1,
+                "publisher_group_count": 1,
                 "primary_source_count": 1,
             },
             brief["claims"][0]["evidence_summary"],
         )
         rendered = render_markdown(brief)
-        self.assertIn("1 Sources / 1 Origin Groups / 1 primary Sources", rendered)
+        self.assertIn(
+            "1 Sources / 1 Origin Groups / 1 Publisher Groups / 1 primary Sources",
+            rendered,
+        )
         self.assertIn("Source &lt;script&gt;", rendered)
         self.assertNotIn("Source <script>", rendered)
 

@@ -37,6 +37,7 @@ def _source_for_evidence(root: Path, evidence_ref: str) -> dict[str, Any]:
         "source_class": receipt["source_class"],
         "primary_source": receipt["primary_source"],
         "origin_group_id": receipt["origin_group_id"],
+        "publisher_group_id": receipt.get("publisher_group_id"),
         "evidence_ref": evidence_ref,
     }
 
@@ -89,6 +90,13 @@ def build_brief(
                     "source_count": len(source_map),
                     "origin_group_count": len(
                         {item["origin_group_id"] for item in source_map.values()}
+                    ),
+                    "publisher_group_count": len(
+                        {
+                            item["publisher_group_id"]
+                            for item in source_map.values()
+                            if item.get("publisher_group_id")
+                        }
                     ),
                     "primary_source_count": sum(
                         bool(item["primary_source"])
@@ -180,6 +188,7 @@ def render_markdown(brief: dict[str, Any]) -> str:
                 "Structured Evidence: "
                 f"**{claim['evidence_summary']['source_count']} Sources / "
                 f"{claim['evidence_summary']['origin_group_count']} Origin Groups / "
+                f"{claim['evidence_summary']['publisher_group_count']} Publisher Groups / "
                 f"{claim['evidence_summary']['primary_source_count']} primary Sources**",
                 "",
             ]

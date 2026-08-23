@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import copy
 import sys
 import unittest
 from pathlib import Path
@@ -56,6 +57,23 @@ class ClaimAssessmentTests(unittest.TestCase):
                 registry=self.registry,
                 created_at="2026-08-24T00:00:00Z",
             )
+
+    def test_claim_preserves_publisher_independence_groups(self):
+        bundle = copy.deepcopy(self.bundle)
+        bundle["publisher_group_ids"] = ["PUB-TEST000001"]
+        proposal = propose(
+            [bundle],
+            bundle_refs=[self.bundle_ref],
+            run_id="RUN-OFS001-PILOT-001",
+            agent_id="synthesis-public-01",
+            statement="Candidate statement with Publisher lineage.",
+            claim_kind="reported_claim",
+            temporal_scope="2026",
+            registry=self.registry,
+            created_at="2026-08-24T00:00:00Z",
+        )
+        self.assertEqual(["PUB-TEST000001"], proposal["publisher_group_ids"])
+        self.assertEqual("0.2.0", proposal["schema_version"])
 
     def test_synthesis_assignment_rejects_evidence_substitution(self):
         item = {

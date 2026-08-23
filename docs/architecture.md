@@ -48,7 +48,7 @@ Each scheduled execution is a new immutable Run. Continuity is stored in version
 
 The first three gates may be automated when policy conditions are met. A high-impact Recommendation remains a human-accountable decision even when agents prepare and review it.
 
-## Two kinds of independence
+## Three kinds of independence
 
 ### Agent independence
 
@@ -58,7 +58,14 @@ The first three gates may be automated when policy conditions are met. A high-im
 
 `origin_group` represents sources derived from one original publication, dataset, benchmark, announcement, or analysis. Reprints and summaries may improve discoverability but do not create independent corroboration.
 
-Both thresholds must be satisfied for an accepted Decision.
+`publisher_group` represents the controlling Web authority that issued or hosts a
+Source. It is derived conservatively from the canonical URL. Separate pages from
+one publisher may be separate origins, but they do not satisfy cross-publisher
+corroboration by themselves. Shared publishing platforms can under-count rather
+than overstate independence; a human may review such conservative cases.
+
+The configured Agent, Source Origin, and Publisher thresholds must all be satisfied
+for an accepted Decision.
 
 ## Artifact states
 
@@ -145,6 +152,9 @@ maturity, result, or language queries. The Run Controller snapshots the latest
 digest-matched plan and carries its Coverage targets into the assigned Work Items.
 On finalization, `tools/evaluate_global_followup_effectiveness.py` records whether
 each target gap was resolved, so ineffective search generations remain visible.
+When no Coverage gaps remain, the planner writes a `no-followup-required` marker.
+Run creation treats the newest marker as authoritative, so an older gap plan is not
+replayed after its targets have been resolved.
 `tools/evaluate_followup_effectiveness.py` compares each consumed query's target
 fields with the preceding profile and distinguishes stronger status, refreshed
 Evidence at equal status, no change, and regression. This operational metric guides

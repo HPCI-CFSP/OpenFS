@@ -158,7 +158,7 @@ def build_plan(
         "base_run_id": run_id,
         "base_run_status": manifest["status"],
         "generated_at": timestamp,
-        "status": "generated-for-research",
+        "status": "generated-for-research" if queries else "no-followup-required",
         "publication_status": "internal-review-only",
         "input_brief_ref": brief_ref,
         "input_brief_digest": stable_digest(brief),

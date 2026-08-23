@@ -10,7 +10,12 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from extract_evidence import extract, validate_assignment as validate_extraction  # noqa: E402
 from openfs_runtime import read_json  # noqa: E402
-from register_source import canonicalize_url, register_capture, validate_assignment  # noqa: E402
+from register_source import (  # noqa: E402
+    canonicalize_url,
+    publisher_authority,
+    register_capture,
+    validate_assignment,
+)
 from register_no_result import create as create_no_result  # noqa: E402
 
 
@@ -89,7 +94,34 @@ class SourcePipelineTests(unittest.TestCase):
             first["source_receipt"]["canonical_url"],
         )
         self.assertTrue(first["source_receipt"]["primary_source"])
+        self.assertEqual("example.org", first["source_receipt"]["publisher_authority"])
         self.assertFalse(first["source_receipt"]["security"]["prompt_injection_suspected"])
+
+    def test_publisher_group_collapses_pages_and_common_subdomains(self):
+        self.assertEqual(
+            "example.co.jp",
+            publisher_authority("https://www.example.co.jp/report/1"),
+        )
+        self.assertEqual(
+            "example.co.jp",
+            publisher_authority("https://docs.example.co.jp/report/2"),
+        )
+        first_capture = self.capture()
+        second_capture = self.capture()
+        first_capture["source"]["canonical_url"] = "https://example.org/report/one"
+        first_capture["source"]["origin_url"] = "https://example.org/report/one"
+        second_capture["source"]["canonical_url"] = "https://news.example.org/report/two"
+        second_capture["source"]["origin_url"] = "https://news.example.org/report/two"
+        first = self.register(first_capture)
+        second = self.register(second_capture)
+        self.assertEqual(
+            first["source_receipt"]["publisher_group_id"],
+            second["source_receipt"]["publisher_group_id"],
+        )
+        self.assertNotEqual(
+            first["source_receipt"]["origin_group_id"],
+            second["source_receipt"]["origin_group_id"],
+        )
 
     def test_worldwide_coverage_tags_are_preserved_and_bounded(self):
         capture = self.capture()
@@ -160,6 +192,10 @@ class SourcePipelineTests(unittest.TestCase):
         self.assertEqual(source["source_receipt"]["source_id"], evidence["source_id"])
         self.assertEqual(
             source["source_lineage"]["lineage_id"], evidence["source_lineage_id"]
+        )
+        self.assertEqual(
+            [source["source_receipt"]["publisher_group_id"]],
+            bundle["publisher_group_ids"],
         )
 
     def test_assignment_rejects_query_substitution(self):

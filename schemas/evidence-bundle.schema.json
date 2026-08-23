@@ -13,10 +13,17 @@
     "source_result_ref": {"type": "string"},
     "source_id": {"type": "string"},
     "origin_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "publisher_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "has_primary_source": {"type": "boolean"},
     "created_by_agent_id": {"type": "string"},
     "created_at": {"type": "string", "format": "date-time"},
     "evidence_candidates": {"type": "array", "items": {"$ref": "evidence.schema.json"}, "minItems": 1}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "0.2.0"}}},
+      "then": {"required": ["publisher_group_ids"]}
+    }
+  ],
   "additionalProperties": false
 }

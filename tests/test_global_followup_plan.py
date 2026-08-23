@@ -88,6 +88,33 @@ class GlobalFollowupPlanTests(unittest.TestCase):
             self.assertEqual(1, standards["search_generation"])
             self.assertEqual("targeted-primary", standards["search_strategy"])
 
+            (run_dir / "coverage.json").write_text(
+                json.dumps(
+                    {
+                        "gaps": {
+                            dimension: []
+                            for dimension in (
+                                "missing_source_requirements",
+                                "missing_organization_types",
+                                "missing_world_regions",
+                                "missing_technology_categories",
+                                "missing_maturity_signals",
+                                "missing_result_signals",
+                                "missing_languages",
+                            )
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            closed = build_plan(
+                root,
+                run_id=run_id,
+                generated_at="2026-08-24T07:00:00Z",
+            )
+            self.assertEqual("no-followup-required", closed["status"])
+            self.assertEqual([], closed["queries"])
+
 
 if __name__ == "__main__":
     unittest.main()

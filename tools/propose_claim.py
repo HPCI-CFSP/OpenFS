@@ -76,6 +76,7 @@ def propose(
     evidence_ids: list[str] = []
     lineage_ids: list[str] = []
     origin_group_ids: list[str] = []
+    publisher_group_ids: list[str] = []
     has_primary_source = False
     for bundle in bundles:
         if bundle.get("object_type") != "evidence":
@@ -85,6 +86,7 @@ def propose(
         evidence_ids.extend(item["evidence_id"] for item in bundle["evidence_candidates"])
         lineage_ids.extend(item["source_lineage_id"] for item in bundle["evidence_candidates"])
         origin_group_ids.extend(bundle["origin_group_ids"])
+        publisher_group_ids.extend(bundle.get("publisher_group_ids", []))
         has_primary_source = has_primary_source or bundle["has_primary_source"]
 
     identity = {
@@ -109,7 +111,7 @@ def propose(
         "status": "candidate",
     }
     result = {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0" if publisher_group_ids else "0.1.0",
         "proposal_id": proposal_id,
         "object_type": "claim",
         "run_id": run_id,
@@ -121,6 +123,8 @@ def propose(
         "evidence_bundle_refs": bundle_refs,
         "claim_candidate": claim,
     }
+    if publisher_group_ids:
+        result["publisher_group_ids"] = sorted(set(publisher_group_ids))
     if work_item_id is not None:
         result["work_item_id"] = work_item_id
     return result

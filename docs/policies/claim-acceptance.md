@@ -17,6 +17,7 @@ A Claim is the smallest statement that can be supported or refuted independently
 - Every factual element is supported by a cited evidence excerpt.
 - Time, geography, configuration, units, and comparison baseline are present when material.
 - Source lineage is known well enough to avoid duplicate-origin counting.
+- Publisher authority is known well enough to prevent one organization or Web authority from masquerading as independent corroboration through multiple pages.
 - At least one accepted assessment verifies citation entailment and temporal validity.
 - The configured quorum is met and no unresolved critical objection remains.
 

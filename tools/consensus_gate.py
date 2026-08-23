@@ -101,6 +101,7 @@ def evaluate(
         and item["agent_independence_group"] != "non-voting-control-plane"
     }
     origin_groups = set(proposal.get("origin_group_ids", []))
+    publisher_groups = set(proposal.get("publisher_group_ids", []))
 
     critical_objections = [
         {
@@ -122,6 +123,9 @@ def evaluate(
             len(support_groups) >= rule["minimum_support_independence_groups"]
         ),
         "minimum_origin_groups": len(origin_groups) >= rule["minimum_origin_groups"],
+        "minimum_publisher_groups": (
+            len(publisher_groups) >= rule.get("minimum_publisher_groups", 0)
+        ),
         "primary_source": (
             proposal.get("has_primary_source") is True
             if rule.get("require_primary_source", False)
@@ -172,9 +176,11 @@ def evaluate(
                 "refute": len(refute),
                 "support_independence_groups": len(support_groups),
                 "origin_groups": len(origin_groups),
+                "publisher_groups": len(publisher_groups),
             },
             "support_independence_groups": sorted(support_groups),
             "origin_group_ids": sorted(origin_groups),
+            "publisher_group_ids": sorted(publisher_groups),
             "duplicate_reviewer_agent_ids": sorted(set(duplicate_reviewers)),
             "proposal_author_independence_group": author_group,
             "invalid_assessments": invalid_assessments,

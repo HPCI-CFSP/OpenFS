@@ -10,7 +10,8 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import language_in_scope
+from openfs_runtime import language_in_scope, stable_digest
+from register_source import publisher_authority
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -241,6 +242,8 @@ def validate_consensus_configuration(root: Path) -> list[str]:
             errors.append(f"consensus rule {object_type} missing: {sorted(missing)}")
         if rule.get("minimum_support", 0) > rule.get("minimum_assessments", 0):
             errors.append(f"consensus rule {object_type} requires more support than assessments")
+    if policy.get("rules", {}).get("claim", {}).get("minimum_publisher_groups", 0) < 2:
+        errors.append("claim consensus requires at least two publisher groups")
     return errors
 
 
@@ -638,6 +641,21 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         payload = work_item.get("payload", {})
         query_receipt = result.get("query_receipt", {})
         source_receipt = result.get("source_receipt", {})
+        if source_receipt.get("schema_version") == "0.2.0":
+            expected_authority = publisher_authority(
+                source_receipt.get("canonical_url", "")
+            )
+            expected_publisher_group = (
+                f"PUB-{stable_digest(expected_authority)[:12].upper()}"
+            )
+            if source_receipt.get("publisher_authority") != expected_authority:
+                errors.append(
+                    f"Source Publisher authority is not canonical: {path.relative_to(root)}"
+                )
+            if source_receipt.get("publisher_group_id") != expected_publisher_group:
+                errors.append(
+                    f"Source Publisher Group is not authority-derived: {path.relative_to(root)}"
+                )
         if strict_assignment and work_item.get("kind") != "source-discovery":
             errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
         if strict_assignment and query_receipt.get("query") != payload.get("query"):
@@ -678,6 +696,15 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         source_ref = bundle.get("source_result_ref")
         if not source_ref or not (root / source_ref).is_file():
             errors.append(f"Evidence bundle source result is missing: {path.relative_to(root)}")
+        elif bundle.get("schema_version") == "0.2.0":
+            source_result = load_json(root / source_ref)
+            expected_publishers = [
+                source_result.get("source_receipt", {}).get("publisher_group_id")
+            ]
+            if bundle.get("publisher_group_ids") != expected_publishers:
+                errors.append(
+                    f"Evidence bundle Publisher Group differs from Source: {path.relative_to(root)}"
+                )
     for path in sorted((root / "proposals" / "claims").glob("RUN-*/*.json")):
         proposal = load_json(path)
         if proposal.get("run_id") != path.parent.name:
@@ -704,6 +731,11 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 for bundle in bundles
                 for origin in bundle.get("origin_group_ids", [])
             }
+            expected_publishers = {
+                publisher
+                for bundle in bundles
+                for publisher in bundle.get("publisher_group_ids", [])
+            }
             candidate = proposal.get("claim_candidate", {})
             if set(candidate.get("evidence_ids", [])) != expected_evidence_ids:
                 errors.append(f"Claim proposal Evidence IDs differ from bundles: {path.relative_to(root)}")
@@ -711,6 +743,10 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(f"Claim proposal Lineage IDs differ from bundles: {path.relative_to(root)}")
             if set(proposal.get("origin_group_ids", [])) != expected_origins:
                 errors.append(f"Claim proposal Origin Groups differ from bundles: {path.relative_to(root)}")
+            if set(proposal.get("publisher_group_ids", [])) != expected_publishers:
+                errors.append(
+                    f"Claim proposal Publisher Groups differ from bundles: {path.relative_to(root)}"
+                )
     for path in sorted((root / "proposals" / "center-profiles").glob("RUN-*/*.json")):
         profile = load_json(path)
         if profile.get("run_id") != path.parent.name:

@@ -41,6 +41,15 @@ class ConsensusGateTests(unittest.TestCase):
         self.assertEqual("provisional", decision["outcome"])
         self.assertFalse(decision["policy_result"]["checks"]["minimum_origin_groups"])
 
+    def test_shared_publisher_is_not_independent_corroboration(self):
+        proposal = copy.deepcopy(self.proposal)
+        proposal["publisher_group_ids"] = ["PUB-000001"]
+        decision = evaluate(proposal, self.assessments, self.policy, self.registry)
+        self.assertEqual("provisional", decision["outcome"])
+        self.assertFalse(
+            decision["policy_result"]["checks"]["minimum_publisher_groups"]
+        )
+
     def test_critical_objection_blocks_acceptance(self):
         assessments = copy.deepcopy(self.assessments)
         assessments[2]["objections"] = [

@@ -253,6 +253,52 @@ class RunControllerTests(unittest.TestCase):
             followups[0]["payload"]["coverage_targets"],
         )
 
+        closed_brief_ref = "reviews/briefs/RUN-GLOBAL-CLOSED.json"
+        closed_brief = {"run_id": "RUN-GLOBAL-CLOSED", "coverage_status": "met"}
+        (self.root / closed_brief_ref).write_text(
+            json.dumps(closed_brief), encoding="utf-8"
+        )
+        closed_run = self.root / "runs" / "RUN-GLOBAL-CLOSED"
+        closed_run.mkdir(parents=True)
+        (closed_run / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "run_id": "RUN-GLOBAL-CLOSED",
+                    "task_id": "OFS-005",
+                    "monitor_id": "MON-GLOBAL-TECH-001",
+                    "status": "completed",
+                    "completed_at": "2026-08-26T00:30:00Z",
+                }
+            ),
+            encoding="utf-8",
+        )
+        (self.root / "reviews" / "followups" / "RUN-GLOBAL-CLOSED.json").write_text(
+            json.dumps(
+                {
+                    "followup_plan_id": "GFP-TEST00000002",
+                    "monitor_id": "MON-GLOBAL-TECH-001",
+                    "task_id": "OFS-005",
+                    "base_run_id": "RUN-GLOBAL-CLOSED",
+                    "generated_at": "2026-08-26T01:00:00Z",
+                    "status": "no-followup-required",
+                    "input_brief_ref": closed_brief_ref,
+                    "input_brief_digest": stable_digest(closed_brief),
+                    "queries": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        after_close = create_run(
+            self.root,
+            run_id="RUN-GLOBAL-AFTER-CLOSE",
+            task_id="OFS-005",
+            monitor_id="MON-GLOBAL-TECH-001",
+            pilot=True,
+            now=datetime(2026, 8, 27, tzinfo=timezone.utc),
+        )
+        self.assertEqual(12, len(after_close["work_item_ids"]))
+        self.assertNotIn("followup_plan", after_close)
+
     def test_cancel_records_reason_and_cancels_open_work(self):
         now = datetime(2026, 8, 24, tzinfo=timezone.utc)
         create_run(

@@ -147,7 +147,10 @@ def _latest_followup_plan(
         plan = read_json(path)
         if plan.get("monitor_id") != monitor.get("monitor_id"):
             continue
-        if plan.get("status") != "generated-for-research":
+        if plan.get("status") not in {
+            "generated-for-research",
+            "no-followup-required",
+        }:
             continue
         base_run_id = plan.get("base_run_id")
         base_manifest_path = root / "runs" / str(base_run_id) / "manifest.json"
@@ -177,6 +180,8 @@ def _latest_followup_plan(
     if not candidates:
         return None
     _, _, source_ref, plan = max(candidates, key=lambda item: item[:3])
+    if plan.get("status") == "no-followup-required":
+        return None
     return source_ref, plan
 
 

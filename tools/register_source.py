@@ -22,6 +22,30 @@ from openfs_runtime import (
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Common multi-label public suffixes. Unknown suffixes fall back to the final
+# two labels, which is conservative for publisher-independence counting.
+MULTI_LABEL_PUBLIC_SUFFIXES = {
+    "ac.jp",
+    "co.jp",
+    "go.jp",
+    "ne.jp",
+    "or.jp",
+    "com.au",
+    "edu.au",
+    "gov.au",
+    "org.au",
+    "ac.uk",
+    "co.uk",
+    "gov.uk",
+    "org.uk",
+    "com.br",
+    "com.cn",
+    "edu.cn",
+    "gov.cn",
+    "org.cn",
+    "github.io",
+}
+
 
 def _public_host(hostname: str) -> bool:
     lowered = hostname.lower().rstrip(".")
@@ -61,6 +85,18 @@ def canonicalize_url(url: str, policy: dict[str, Any]) -> str:
     netloc = host if port is None else f"{host}:{port}"
     path = parsed.path or "/"
     return urlunsplit((parsed.scheme.lower(), netloc, path, urlencode(query), ""))
+
+
+def publisher_authority(url: str) -> str:
+    """Return a stable, conservative Web authority for publisher grouping."""
+    hostname = (urlsplit(url).hostname or "").lower().rstrip(".")
+    labels = hostname.split(".")
+    if len(labels) <= 2:
+        return hostname
+    suffix = ".".join(labels[-2:])
+    if suffix in MULTI_LABEL_PUBLIC_SUFFIXES and len(labels) >= 3:
+        return ".".join(labels[-3:])
+    return suffix
 
 
 def _identifier(prefix: str, value: Any) -> str:
@@ -160,6 +196,7 @@ def register_capture(
     canonical_url = canonicalize_url(source["canonical_url"], policy)
     retrieved_url = canonicalize_url(source.get("retrieved_url", canonical_url), policy)
     origin_url = canonicalize_url(source.get("origin_url", canonical_url), policy)
+    publisher_domain = publisher_authority(canonical_url)
     source_id = _identifier(
         "SRC",
         {
@@ -169,6 +206,7 @@ def register_capture(
         },
     )
     origin_group_id = _identifier("ORG", origin_url)
+    publisher_group_id = _identifier("PUB", publisher_domain)
     lineage_id = _identifier("LIN", {"source_id": source_id, "origin": origin_url})
     query_receipt_id = _identifier(
         "QRY",
@@ -207,7 +245,7 @@ def register_capture(
         "failures": query.get("failures", []),
     }
     source_receipt = {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "source_id": source_id,
         "run_id": run_id,
         "work_item_id": work_item_id,
@@ -215,6 +253,12 @@ def register_capture(
         "retrieved_url": retrieved_url,
         "title": source["title"],
         "publisher": source["publisher"],
+        "publisher_authority": publisher_domain,
+        "publisher_group_id": publisher_group_id,
+        "publisher_group_rationale": (
+            "Publisher authority is conservatively derived from the canonical "
+            f"URL domain {publisher_domain}"
+        ),
         "source_class": source["source_class"],
         "primary_source": bool(
             source.get("primary_source", source_classes[source["source_class"]]["default_primary"])
@@ -272,7 +316,7 @@ def register_capture(
     ]
     created_at = capture.get("created_at") or isoformat()
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "proposal_id": _numeric_proposal_id(
             {
                 "source_id": source_id,
