@@ -8,6 +8,7 @@
     "schema_version": {"type": "string"},
     "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
     "directive_type": {"enum": ["research-instruction", "publication-approval", "canonical-status", "governance"]},
+    "application_mode": {"enum": ["once", "recurring"]},
     "title": {"type": "string"},
     "instruction": {"type": "string"},
     "priority": {"enum": ["low", "normal", "high", "urgent"]},
@@ -57,6 +58,10 @@
     {
       "if": {"properties": {"canonical_status_action": {"const": "withdrawn"}}, "required": ["canonical_status_action"]},
       "then": {"not": {"required": ["replacement_claim_id"]}}
+    },
+    {
+      "if": {"properties": {"application_mode": {"const": "recurring"}}, "required": ["application_mode"]},
+      "then": {"required": ["expires_at"]}
     }
   ],
   "additionalProperties": false

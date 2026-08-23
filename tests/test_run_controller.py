@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from run_controller import (  # noqa: E402
     _acquire_lock,
+    _approved_directives,
     _lock_path,
     _predecessor_profile_inputs,
     _release_lock,
@@ -131,7 +132,6 @@ class RunControllerTests(unittest.TestCase):
             first_work_item["skill"]["digest"],
             first["skill_snapshots"]["skills/source-discovery/SKILL.md"]["digest"],
         )
-
         (self.root / "skills" / "source-discovery" / "SKILL.md").unlink()
         pinned = _skill_binding(
             self.root,
@@ -140,6 +140,35 @@ class RunControllerTests(unittest.TestCase):
             work_item_kind="source-discovery",
         )
         self.assertEqual(first_work_item["skill"], pinned)
+
+    def test_directive_application_mode_and_time_window_are_enforced(self):
+        self.add_directive()
+        now = datetime(2026, 8, 24, 1, tzinfo=timezone.utc)
+        self.assertEqual(
+            ["DIR-000123"],
+            [item["directive_id"] for item in _approved_directives(self.root, "OFS-001", as_of=now)],
+        )
+        receipt = self.root / "runs/RUN-PRIOR/directives/DIR-000123.json"
+        receipt.parent.mkdir(parents=True)
+        receipt.write_text(json.dumps({"status": "applied"}), encoding="utf-8")
+        self.assertEqual([], _approved_directives(self.root, "OFS-001", as_of=now))
+
+        path = self.root / "reviews/directives/DIR-000123.json"
+        directive = json.loads(path.read_text())
+        directive["application_mode"] = "recurring"
+        directive["expires_at"] = "2026-08-25T00:00:00Z"
+        path.write_text(json.dumps(directive), encoding="utf-8")
+        self.assertEqual(1, len(_approved_directives(self.root, "OFS-001", as_of=now)))
+        after_expiry = datetime(2026, 8, 25, 0, tzinfo=timezone.utc)
+        self.assertEqual(
+            [], _approved_directives(self.root, "OFS-001", as_of=after_expiry)
+        )
+
+        directive["application_mode"] = "once"
+        directive.pop("expires_at")
+        directive["submitted_at"] = "2026-08-26T00:00:00Z"
+        path.write_text(json.dumps(directive), encoding="utf-8")
+        self.assertEqual([], _approved_directives(self.root, "OFS-001", as_of=now))
 
     def test_global_monitor_uses_worldwide_survey_skill_override(self):
         for relative in (

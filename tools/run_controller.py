@@ -275,7 +275,9 @@ def _skill_binding(
     }
 
 
-def _approved_directives(root: Path, task_id: str) -> list[dict[str, Any]]:
+def _approved_directives(
+    root: Path, task_id: str, *, as_of: datetime
+) -> list[dict[str, Any]]:
     directives: list[dict[str, Any]] = []
     for path in sorted((root / "reviews" / "directives").glob("DIR-*.json")):
         directive = read_json(path)
@@ -283,8 +285,28 @@ def _approved_directives(root: Path, task_id: str) -> list[dict[str, Any]]:
             continue
         if directive.get("status") not in {"approved", "scheduled"}:
             continue
+        if _parse_time(directive["submitted_at"]) > as_of:
+            continue
+        expires_at = directive.get("expires_at")
+        if expires_at and _parse_time(expires_at) <= as_of:
+            continue
         scope = directive.get("scope", [])
         if scope and task_id not in scope:
+            continue
+        mode = directive.get("application_mode", "once")
+        if mode not in {"once", "recurring"}:
+            raise ValueError(f"unsupported Directive application mode: {mode}")
+        if mode == "recurring" and not expires_at:
+            raise ValueError("recurring Directive requires expires_at")
+        receipts = sorted(
+            (root / "runs").glob(
+                f"RUN-*/directives/{directive['directive_id']}.json"
+            )
+        )
+        already_applied = any(
+            read_json(receipt).get("status") == "applied" for receipt in receipts
+        ) or bool(directive.get("processed_run_ids"))
+        if mode == "once" and already_applied:
             continue
         directives.append(directive)
     return directives
@@ -471,7 +493,7 @@ def create_run(
         before_started_at=created_at,
         exclude_run_id=run_id,
     )
-    directives = _approved_directives(root, task_id)
+    directives = _approved_directives(root, task_id, as_of=created)
     directive_hashes = {
         f"reviews/directives/{directive['directive_id']}.json": stable_digest(directive)
         for directive in directives

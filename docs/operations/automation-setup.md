@@ -161,6 +161,13 @@ Record these decisions in a reviewed pull request or Directive:
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 
+Approved `research-instruction` Directives are snapshotted into the next matching
+Run. The default `application_mode` is `once`; its applied receipt prevents silent
+weekly replay. Use `application_mode: recurring` only with an explicit
+`expires_at`. A recurring Directive is included in each matching Run until that
+instant. Create a new Directive ID for a revised instruction instead of editing an
+already applied record.
+
 Production Work Item completion is fail-closed on cost accounting: every completion
 must report `cost_usd` plus a non-empty measurement note. The controller reevaluates
 the Run cap immediately after each completion, including the final Work Item, and

@@ -927,6 +927,40 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(
                     f"Run {run_id} Directive snapshot digest differs: {snapshot_ref}"
                 )
+            directive_id = Path(source_ref).stem
+            receipt_ref = f"runs/{run_id}/directives/{directive_id}.json"
+            receipt_path = root / receipt_ref
+            if not receipt_path.is_file():
+                continue
+            receipt = load_json(receipt_path)
+            snapshot = load_json(root / snapshot_ref)
+            if (
+                receipt.get("directive_id") != directive_id
+                or receipt.get("run_id") != run_id
+                or receipt.get("status") != "applied"
+                or receipt.get("directive_digest") != stable_digest(snapshot)
+                or receipt.get("instruction_digest")
+                != stable_digest(snapshot.get("instruction"))
+            ):
+                errors.append(f"Run {run_id} Directive application receipt differs: {receipt_ref}")
+            work_ref = (
+                root
+                / "queue"
+                / run_id
+                / f"{receipt.get('work_item_id', '')}.json"
+            )
+            if not work_ref.is_file():
+                errors.append(f"Run {run_id} Directive Work Item is missing: {receipt_ref}")
+            else:
+                work_item = load_json(work_ref)
+                if (
+                    work_item.get("kind") != "apply-directive"
+                    or work_item.get("payload", {}).get("directive_id") != directive_id
+                    or receipt_ref not in work_item.get("output_refs", [])
+                ):
+                    errors.append(
+                        f"Run {run_id} Directive receipt is not bound to its Work Item: {receipt_ref}"
+                    )
 
     source_ids_by_run: dict[str, list[str]] = {}
     content_hash_origins: dict[tuple[str, str], dict[str, list[str]]] = {}

@@ -67,6 +67,7 @@ def ingest_issue(issue: dict[str, Any]) -> dict[str, Any]:
         "schema_version": "0.1.0",
         "directive_id": directive_id,
         "directive_type": "research-instruction",
+        "application_mode": "once",
         "title": issue["title"].strip(),
         "instruction": "\n".join(instruction_sections),
         "priority": issue["priority"],
