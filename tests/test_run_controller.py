@@ -18,6 +18,7 @@ from run_controller import (  # noqa: E402
     fail_work_item,
     finalize_run,
     lease_next,
+    expand_followups,
 )
 
 
@@ -220,6 +221,38 @@ class RunControllerTests(unittest.TestCase):
         completed = finalize_run(self.root, run_id="RUN-PILOT-006")
         self.assertEqual("completed", completed["status"])
         self.assertEqual({"completed": 4}, completed["metrics"]["work_items_by_status"])
+
+    def test_completed_discovery_expands_one_idempotent_extraction_item(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-007",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-007",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        output_ref = leased["output_paths"][0]
+        output_path = self.root / output_ref
+        output_path.parent.mkdir(parents=True)
+        output_path.write_text("{}\n", encoding="utf-8")
+        complete_work_item(
+            self.root,
+            run_id="RUN-PILOT-007",
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+        )
+        first = expand_followups(self.root, run_id="RUN-PILOT-007")
+        second = expand_followups(self.root, run_id="RUN-PILOT-007")
+        self.assertEqual(1, len(first["created"]))
+        self.assertEqual([], second["created"])
+        self.assertEqual("evidence-extraction", first["created"][0]["kind"])
+        self.assertEqual("extraction", first["created"][0]["required_role"])
 
 
 if __name__ == "__main__":

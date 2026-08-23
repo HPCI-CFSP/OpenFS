@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/evidence.schema.json",
+  "title": "OpenFS Evidence Candidate",
+  "type": "object",
+  "required": ["schema_version", "evidence_id", "run_id", "work_item_id", "source_id", "source_lineage_id", "source_locator", "excerpt", "excerpt_kind", "statement_supported", "status", "extracted_by_agent_id", "extracted_at", "evidence_hash"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "evidence_id": {"type": "string", "pattern": "^EVD-[0-9A-F]{12}$"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string"},
+    "source_id": {"type": "string"},
+    "source_lineage_id": {"type": "string"},
+    "source_locator": {"type": "string", "minLength": 1},
+    "excerpt": {"type": "string", "minLength": 1},
+    "excerpt_kind": {"enum": ["quote", "paraphrase", "structured-field"]},
+    "statement_supported": {"type": "string", "minLength": 1},
+    "status": {"const": "candidate"},
+    "extracted_by_agent_id": {"type": "string"},
+    "extracted_at": {"type": "string", "format": "date-time"},
+    "evidence_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

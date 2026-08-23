@@ -37,7 +37,7 @@
 
 ## Phase 2: proposal and independent assessment
 
-- [ ] Implement source discovery and evidence extraction skills.
+- [ ] Connect provider-backed discovery and extraction Skills; deterministic Source registration, Rights Gate, Prompt Injection quarantine, and Evidence extraction are implemented.
 - [ ] Implement source-lineage grouping and duplicate-origin detection.
 - [ ] Implement blind validator and falsification roles.
 - [ ] Resolve agent independence groups from the registry rather than trusting assessment input.

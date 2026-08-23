@@ -36,6 +36,8 @@ REQUIRED_FILES = [
     "docs/policies/consensus-policy.md",
     "docs/security/threat-model.md",
     "config/consensus-policy.json",
+    "config/acquisition-policy.json",
+    "config/source-registry.json",
     "config/agent-registry.json",
     "config/role-permissions.json",
     "config/research-baseline.json",
@@ -50,6 +52,11 @@ REQUIRED_FILES = [
     "schemas/decision.schema.json",
     "schemas/run.schema.json",
     "schemas/work-item.schema.json",
+    "schemas/query-receipt.schema.json",
+    "schemas/source-receipt.schema.json",
+    "schemas/source-discovery-result.schema.json",
+    "schemas/evidence.schema.json",
+    "schemas/evidence-bundle.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -71,6 +78,8 @@ REQUIRED_FILES = [
     "tools/openfs_runtime.py",
     "tools/run_controller.py",
     "tools/ingest_directive.py",
+    "tools/register_source.py",
+    "tools/extract_evidence.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -196,6 +205,36 @@ def validate_runtime_configuration(root: Path) -> list[str]:
     ]
     if len(orchestrators) != 1:
         errors.append("agent registry must define exactly one control-plane orchestrator template")
+    return errors
+
+
+def validate_source_acquisition_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    registry = load_json(root / "config" / "source-registry.json")
+    class_ids = [item.get("class_id") for item in registry.get("source_classes", [])]
+    if len(class_ids) != len(set(class_ids)):
+        errors.append("source registry has duplicate source classes")
+    known_classes = set(class_ids)
+    for path in sorted((root / "config" / "monitors").glob("*.json")):
+        monitor = load_json(path)
+        unknown = set(monitor.get("source_classes", [])) - known_classes
+        if unknown:
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} uses unknown source classes: {sorted(unknown)}"
+            )
+    policy = load_json(root / "config" / "acquisition-policy.json")
+    required_rights_states = {
+        "permitted",
+        "prohibited",
+        "restricted",
+        "not-stated",
+        "not-applicable",
+    }
+    missing_states = required_rights_states - set(policy.get("rights_rules", {}))
+    if missing_states:
+        errors.append(f"acquisition policy lacks rights states: {sorted(missing_states)}")
+    if policy.get("maximum_candidate_passage_characters", 0) < 1:
+        errors.append("acquisition policy must limit candidate passage length")
     return errors
 
 
@@ -409,6 +448,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_consensus_configuration(root))
     if (root / "config" / "budgets.json").exists():
         errors.extend(validate_runtime_configuration(root))
+    if (root / "config" / "acquisition-policy.json").exists():
+        errors.extend(validate_source_acquisition_configuration(root))
     if (root / "config" / "research-baseline.json").exists():
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():

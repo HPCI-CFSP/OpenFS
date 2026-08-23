@@ -218,6 +218,7 @@ def create_run(
         "work_item_ids": [item["work_item_id"] for item in work_items],
         "agent_executions": [],
         "query_receipts": [],
+        "expansion_events": [],
         "metrics": {"work_items_total": len(work_items)},
     }
     run_identity = {
@@ -354,6 +355,74 @@ def complete_work_item(
     return item
 
 
+def expand_followups(
+    root: Path,
+    *,
+    run_id: str,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    manifest_path = root / "runs" / run_id / "manifest.json"
+    manifest = read_json(manifest_path)
+    queue_path = root / "queue" / run_id
+    existing = [read_json(path) for path in sorted(queue_path.glob("WORK-*.json"))]
+    existing_keys = {item["idempotency_key"] for item in existing}
+    sequence = len(existing)
+    created_at = isoformat(now)
+    maximum_attempts = int(manifest["budget"]["maximum_retries_per_work_item"]) + 1
+    additions: list[dict[str, Any]] = []
+    for parent in existing:
+        if parent.get("kind") != "source-discovery" or parent.get("status") != "completed":
+            continue
+        for source_result_ref in parent.get("output_refs", []):
+            payload = {
+                "source_result_ref": source_result_ref,
+                "parent_work_item_id": parent["work_item_id"],
+            }
+            identity = {
+                "run_id": run_id,
+                "task_id": manifest["task_id"],
+                "monitor_id": manifest["monitor_id"],
+                "kind": "evidence-extraction",
+                "payload": payload,
+            }
+            idempotency_key = stable_digest(identity)
+            if idempotency_key in existing_keys:
+                continue
+            sequence += 1
+            item = _work_item(
+                sequence=sequence,
+                run_id=run_id,
+                task_id=manifest["task_id"],
+                monitor_id=manifest["monitor_id"],
+                kind="evidence-extraction",
+                role="extraction",
+                payload=payload,
+                output_paths=[f"proposals/evidence/{run_id}/WORK-{sequence:06d}.json"],
+                maximum_attempts=maximum_attempts,
+                created_at=created_at,
+            )
+            additions.append(item)
+            existing_keys.add(idempotency_key)
+
+    limit = int(manifest["budget"]["maximum_work_items"])
+    if len(existing) + len(additions) > limit:
+        raise RuntimeError("follow-up expansion exceeds the Run Work Item budget")
+    for item in additions:
+        atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
+    if additions:
+        manifest["work_item_ids"].extend(item["work_item_id"] for item in additions)
+        manifest["expansion_events"].append(
+            {
+                "expanded_at": created_at,
+                "created_work_item_ids": [item["work_item_id"] for item in additions],
+                "reason": "completed-source-discovery",
+            }
+        )
+        manifest["metrics"]["work_items_total"] = len(existing) + len(additions)
+        atomic_write_json(manifest_path, manifest)
+    return {"created": additions, "manifest": manifest}
+
+
 def fail_work_item(
     root: Path,
     *,
@@ -460,6 +529,8 @@ def main() -> int:
 
     finalize = commands.add_parser("finalize")
     finalize.add_argument("--run-id", required=True)
+    expand = commands.add_parser("expand")
+    expand.add_argument("--run-id", required=True)
     args = parser.parse_args()
 
     if args.command == "start":
@@ -497,6 +568,8 @@ def main() -> int:
             error_message=args.error_message,
             retryable=args.retryable,
         )
+    elif args.command == "expand":
+        result = expand_followups(args.root, run_id=args.run_id)
     else:
         result = finalize_run(args.root, run_id=args.run_id)
     _print(result)
