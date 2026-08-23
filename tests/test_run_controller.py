@@ -84,9 +84,9 @@ class RunControllerTests(unittest.TestCase):
         )
         self.assertEqual(first, second)
         self.assertEqual(["DIR-000123"], first["directive_ids"])
-        self.assertEqual(5, len(first["work_item_ids"]))
+        self.assertEqual(13, len(first["work_item_ids"]))
         self.assertEqual(
-            5,
+            13,
             len(list((self.root / "queue" / "RUN-PILOT-001").glob("WORK-*.json"))),
         )
         self.assertTrue(
@@ -250,7 +250,7 @@ class RunControllerTests(unittest.TestCase):
             )
         completed = finalize_run(self.root, run_id="RUN-PILOT-006")
         self.assertEqual("completed", completed["status"])
-        self.assertEqual({"completed": 4}, completed["metrics"]["work_items_by_status"])
+        self.assertEqual({"completed": 12}, completed["metrics"]["work_items_by_status"])
 
     def test_completed_discovery_expands_one_idempotent_extraction_item(self):
         create_run(

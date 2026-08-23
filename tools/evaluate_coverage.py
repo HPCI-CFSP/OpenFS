@@ -8,13 +8,14 @@ import json
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import atomic_write_json, isoformat, read_json, sha256_file
+from openfs_runtime import atomic_write_json, isoformat, read_json, stable_digest
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _monitor(root: Path, monitor_id: str) -> tuple[Path, dict[str, Any]]:
+def _monitor(root: Path, manifest: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    monitor_id = manifest["monitor_id"]
     matches = [
         path
         for path in sorted((root / "config" / "monitors").glob("*.json"))
@@ -22,19 +23,26 @@ def _monitor(root: Path, monitor_id: str) -> tuple[Path, dict[str, Any]]:
     ]
     if len(matches) != 1:
         raise ValueError(f"monitor must resolve exactly once: {monitor_id}")
-    return matches[0], read_json(matches[0])
+    relative = matches[0].relative_to(root).as_posix()
+    snapshot_ref = manifest.get("configuration_snapshots", {}).get(relative)
+    if snapshot_ref:
+        return relative, read_json(root / snapshot_ref)
+    return relative, read_json(matches[0])
 
 
 def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = None) -> dict[str, Any]:
     manifest = read_json(root / "runs" / run_id / "manifest.json")
-    monitor_path, monitor = _monitor(root, manifest["monitor_id"])
+    monitor_relative, monitor = _monitor(root, manifest)
     source_results = []
     for path in sorted((root / "proposals" / "sources" / run_id).glob("*.json")):
         source_results.append(read_json(path))
     queries = [result["query_receipt"]["query"] for result in source_results]
-    sources = [result["source_receipt"] for result in source_results]
-    expected_queries = set(monitor.get("query_families", []))
-    expected_classes = set(monitor.get("source_classes", []))
+    all_sources = [result["source_receipt"] for result in source_results]
+    unique_sources = {source["source_id"]: source for source in all_sources}
+    sources = list(unique_sources.values())
+    expected_coverage_queries = set(monitor.get("query_families", []))
+    expected_falsification_queries = set(monitor.get("falsification_queries", []))
+    expected_queries = expected_coverage_queries | expected_falsification_queries
     expected_languages = set(monitor.get("languages", []))
     observed_queries = set(queries)
     observed_classes = {source["source_class"] for source in sources}
@@ -44,15 +52,79 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         for result in source_results
         for failure in result["query_receipt"].get("failures", [])
     ]
+    query_source_counts = {
+        query: len(
+            {
+                result["source_receipt"]["source_id"]
+                for result in source_results
+                if result["query_receipt"]["query"] == query
+            }
+        )
+        for query in sorted(expected_queries)
+    }
+    minimum_sources_per_query = int(monitor.get("minimum_sources_per_query", 1))
+    below_minimum_queries = [
+        {"query": query, "observed": count, "minimum": minimum_sources_per_query}
+        for query, count in query_source_counts.items()
+        if count < minimum_sources_per_query
+    ]
+    class_requirements = monitor.get("source_class_requirements", [])
+    if not class_requirements:
+        class_requirements = [
+            {"requirement_id": item, "one_of": [item], "minimum_count": 1}
+            for item in monitor.get("source_classes", [])
+        ]
+    class_requirement_results = []
+    for requirement in class_requirements:
+        observed_count = sum(
+            source["source_class"] in set(requirement["one_of"])
+            for source in sources
+        )
+        class_requirement_results.append(
+            {
+                "requirement_id": requirement["requirement_id"],
+                "one_of": requirement["one_of"],
+                "minimum_count": requirement["minimum_count"],
+                "observed_count": observed_count,
+                "met": observed_count >= requirement["minimum_count"],
+            }
+        )
+    missing_requirements = [
+        item["requirement_id"] for item in class_requirement_results if not item["met"]
+    ]
+    minimum_total_sources = int(monitor.get("minimum_total_sources", len(expected_queries)))
+    minimum_origin_groups = int(monitor.get("minimum_origin_groups", 1))
+    observed_origin_groups = {source["origin_group_id"] for source in sources}
+    duplicate_source_ids = sorted(
+        source_id
+        for source_id in unique_sources
+        if sum(source["source_id"] == source_id for source in all_sources) > 1
+    )
     gaps = {
         "missing_queries": sorted(expected_queries - observed_queries),
-        "missing_source_classes": sorted(expected_classes - observed_classes),
+        "below_minimum_queries": below_minimum_queries,
+        "missing_source_requirements": missing_requirements,
         "missing_languages": sorted(expected_languages - observed_languages),
+        "minimum_total_sources": (
+            []
+            if len(sources) >= minimum_total_sources
+            else [{"observed": len(sources), "minimum": minimum_total_sources}]
+        ),
+        "minimum_origin_groups": (
+            []
+            if len(observed_origin_groups) >= minimum_origin_groups
+            else [
+                {
+                    "observed": len(observed_origin_groups),
+                    "minimum": minimum_origin_groups,
+                }
+            ]
+        ),
+        "duplicate_source_selections": duplicate_source_ids,
         "query_failures": failures,
     }
-    monitor_relative = monitor_path.relative_to(root).as_posix()
-    snapshot_match = manifest.get("policy_hashes", {}).get(monitor_relative) == sha256_file(
-        monitor_path
+    snapshot_match = manifest.get("policy_hashes", {}).get(monitor_relative) == stable_digest(
+        monitor
     )
     if not snapshot_match:
         gaps["monitor_snapshot_mismatch"] = [monitor_relative]
@@ -74,15 +146,22 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         "monitor_snapshot_match": snapshot_match,
         "expected": {
             "query_families": sorted(expected_queries),
-            "source_classes": sorted(expected_classes),
+            "coverage_queries": sorted(expected_coverage_queries),
+            "falsification_queries": sorted(expected_falsification_queries),
+            "source_class_requirements": class_requirements,
             "languages": sorted(expected_languages),
+            "minimum_sources_per_query": minimum_sources_per_query,
+            "minimum_total_sources": minimum_total_sources,
+            "minimum_origin_groups": minimum_origin_groups,
         },
         "observed": {
             "source_count": len(sources),
             "primary_source_count": sum(source["primary_source"] for source in sources),
-            "origin_group_count": len({source["origin_group_id"] for source in sources}),
+            "origin_group_count": len(observed_origin_groups),
             "query_families": sorted(observed_queries),
+            "query_source_counts": query_source_counts,
             "source_classes": sorted(observed_classes),
+            "source_class_requirement_results": class_requirement_results,
             "languages": sorted(observed_languages),
             "rights_decisions": rights_counts,
         },

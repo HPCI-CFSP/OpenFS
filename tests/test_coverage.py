@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from evaluate_coverage import evaluate_coverage, record_coverage  # noqa: E402
-from openfs_runtime import sha256_file  # noqa: E402
+from openfs_runtime import read_json, stable_digest  # noqa: E402
 
 
 class CoverageTests(unittest.TestCase):
@@ -29,7 +29,9 @@ class CoverageTests(unittest.TestCase):
         manifest = {
             "run_id": run_id,
             "monitor_id": "MON-MEMORY-001",
-            "policy_hashes": {monitor_relative.as_posix(): sha256_file(monitor_path)},
+            "policy_hashes": {
+                monitor_relative.as_posix(): stable_digest(read_json(monitor_path))
+            },
             "query_receipts": [],
             "research_status": "not-evaluated",
             "metrics": {},
@@ -69,10 +71,32 @@ class CoverageTests(unittest.TestCase):
 
     def test_monitor_change_invalidates_coverage_snapshot(self):
         monitor = self.root / "config" / "monitors" / "MON-MEMORY-001.json"
-        monitor.write_text(monitor.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+        changed = json.loads(monitor.read_text(encoding="utf-8"))
+        changed["maximum_unchecked_days"] += 1
+        monitor.write_text(json.dumps(changed), encoding="utf-8")
         report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
         self.assertFalse(report["monitor_snapshot_match"])
         self.assertIn("monitor_snapshot_mismatch", report["gaps"])
+
+    def test_standards_body_counts_toward_authoritative_primary_requirement(self):
+        path = (
+            self.root
+            / "proposals"
+            / "sources"
+            / "RUN-COVERAGE-TEST"
+            / "WORK-000001.json"
+        )
+        result = json.loads(path.read_text(encoding="utf-8"))
+        result["source_receipt"]["source_class"] = "standards-body"
+        path.write_text(json.dumps(result), encoding="utf-8")
+        report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
+        authoritative = next(
+            item
+            for item in report["observed"]["source_class_requirement_results"]
+            if item["requirement_id"] == "authoritative-primary"
+        )
+        self.assertFalse(authoritative["met"])
+        self.assertEqual(1, authoritative["observed_count"])
 
 
 if __name__ == "__main__":

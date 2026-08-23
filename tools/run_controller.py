@@ -168,27 +168,39 @@ def create_run(
     maximum_attempts = int(defaults.get("maximum_retries_per_work_item", 0)) + 1
 
     work_items: list[dict[str, Any]] = []
-    for query in monitor.get("query_families", []):
-        sequence = len(work_items) + 1
-        work_items.append(
-            _work_item(
-                sequence=sequence,
-                run_id=run_id,
-                task_id=task_id,
-                monitor_id=monitor_id,
-                kind="source-discovery",
-                role="discovery",
-                payload={
-                    "query": query,
-                    "languages": monitor.get("languages", []),
-                    "source_classes": monitor.get("source_classes", []),
-                    "maximum_unchecked_days": monitor.get("maximum_unchecked_days"),
-                },
-                output_paths=[f"proposals/sources/{run_id}/WORK-{sequence:06d}.json"],
-                maximum_attempts=maximum_attempts,
-                created_at=created_at,
+    slots_per_query = int(monitor.get("discovery_slots_per_query", 1))
+    query_plan = [
+        (query, "coverage") for query in monitor.get("query_families", [])
+    ] + [
+        (query, "falsification") for query in monitor.get("falsification_queries", [])
+    ]
+    for query, query_role in query_plan:
+        for candidate_slot in range(1, slots_per_query + 1):
+            sequence = len(work_items) + 1
+            work_items.append(
+                _work_item(
+                    sequence=sequence,
+                    run_id=run_id,
+                    task_id=task_id,
+                    monitor_id=monitor_id,
+                    kind="source-discovery",
+                    role="discovery",
+                    payload={
+                        "query": query,
+                        "query_role": query_role,
+                        "candidate_slot": candidate_slot,
+                        "languages": monitor.get("languages", []),
+                        "source_classes": monitor.get("source_classes", []),
+                        "source_class_requirements": monitor.get(
+                            "source_class_requirements", []
+                        ),
+                        "maximum_unchecked_days": monitor.get("maximum_unchecked_days"),
+                    },
+                    output_paths=[f"proposals/sources/{run_id}/WORK-{sequence:06d}.json"],
+                    maximum_attempts=maximum_attempts,
+                    created_at=created_at,
+                )
             )
-        )
     for directive in directives:
         sequence = len(work_items) + 1
         work_items.append(

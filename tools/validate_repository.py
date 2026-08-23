@@ -247,6 +247,23 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
             errors.append(
                 f"monitor {monitor.get('monitor_id')} uses unknown source classes: {sorted(unknown)}"
             )
+        for requirement in monitor.get("source_class_requirements", []):
+            requirement_unknown = set(requirement.get("one_of", [])) - known_classes
+            if requirement_unknown:
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} source requirement uses unknown "
+                    f"classes: {sorted(requirement_unknown)}"
+                )
+            if int(requirement.get("minimum_count", 0)) < 1:
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} has a non-positive Source requirement"
+                )
+        slots = int(monitor.get("discovery_slots_per_query", 1))
+        minimum_per_query = int(monitor.get("minimum_sources_per_query", 1))
+        if slots < minimum_per_query:
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} cannot meet minimum sources per query"
+            )
     policy = load_json(root / "config" / "acquisition-policy.json")
     required_rights_states = {
         "permitted",
