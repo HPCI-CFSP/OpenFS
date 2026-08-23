@@ -51,7 +51,8 @@
 ## Phase 3: canonical promotion
 
 - [ ] Implement Decision-to-canonical promotion.
-- [ ] Implement dependency invalidation for updated or withdrawn sources.
+- [x] Generate dependency-impact promotion blocks for changed or unavailable Sources without treating search omission as withdrawal.
+- [ ] Enforce dependency-impact clearance in Decision-to-canonical promotion once that path is implemented.
 - [ ] Generate indexes and `TBD.md` from accepted records.
 - [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
 - [ ] Add promotion pull requests and rollback support.

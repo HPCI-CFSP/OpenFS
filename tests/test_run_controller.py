@@ -992,8 +992,15 @@ class RunControllerTests(unittest.TestCase):
             now=datetime(2026, 8, 24, 1, tzinfo=timezone.utc),
         )
         self.assertEqual(f"runs/{run_id}/changes.json", completed["change_report_ref"])
+        self.assertEqual(
+            f"runs/{run_id}/dependency-impact.json",
+            completed["dependency_impact_ref"],
+        )
         self.assertEqual(12, completed["metrics"]["source_changes"]["new"])
         self.assertEqual(1, completed["metrics"]["source_changes"]["not-observed"])
+        self.assertEqual(
+            1, completed["metrics"]["dependency_impact"]["reobservation_gaps"]
+        )
 
     def test_completed_discovery_expands_one_idempotent_extraction_item(self):
         create_run(

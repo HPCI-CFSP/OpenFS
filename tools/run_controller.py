@@ -1845,6 +1845,8 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
                 record_global_followup_effectiveness(root, effectiveness)
         if status in {"completed", "partial"} and manifest.get("previous_run_id"):
             from detect_source_changes import compare_runs, write_report
+            from analyze_dependency_impact import analyze as analyze_dependency_impact
+            from analyze_dependency_impact import write_report as write_dependency_impact
 
             change_report = compare_runs(
                 root,
@@ -1853,6 +1855,13 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
                 generated_at=manifest["completed_at"],
             )
             write_report(root, change_report)
+            dependency_impact = analyze_dependency_impact(
+                root,
+                run_id=run_id,
+                change_report=change_report,
+                generated_at=manifest["completed_at"],
+            )
+            write_dependency_impact(root, dependency_impact)
         from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
         from evaluate_temporal_integrity import record as record_temporal_integrity
 

@@ -50,6 +50,7 @@ class DigestAndIssueTests(unittest.TestCase):
                 "profile_continuity_ref": f"runs/{run_id}/profile-continuity.json",
                 "followup_effectiveness_ref": f"runs/{run_id}/followup-effectiveness.json",
                 "global_followup_effectiveness_ref": f"runs/{run_id}/global-followup-effectiveness.json",
+                "dependency_impact_ref": f"runs/{run_id}/dependency-impact.json",
             },
         )
         self.write_json(
@@ -74,6 +75,28 @@ class DigestAndIssueTests(unittest.TestCase):
                 "status": "effective",
                 "effective_query_count": 2,
                 "query_count": 2,
+            },
+        )
+        self.write_json(
+            f"runs/{run_id}/dependency-impact.json",
+            {
+                "summary": {
+                    "promotion_blocked": True,
+                    "reobservation_gaps": 0,
+                },
+                "impacts": [
+                    {
+                        "canonical_url": "https://example.org/changed",
+                        "classification": "changed",
+                        "action": "revalidate-dependents",
+                        "promotion_blocked": True,
+                        "claim_proposal_refs": [
+                            f"proposals/claims/{run_id}/WORK-000003.json"
+                        ],
+                        "center_profile_refs": [],
+                        "decision_refs": [f"decisions/{run_id}/DEC-1.json"],
+                    }
+                ],
             },
         )
         self.write_json(
@@ -136,7 +159,7 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["run_count"])
         self.assertEqual(1, digest["summary"]["coverage_gap_count"])
         self.assertEqual(1, len(digest["stale_sources"]))
-        self.assertEqual(1, digest["summary"]["owner_action_count"])
+        self.assertEqual(2, digest["summary"]["owner_action_count"])
         self.assertEqual(2, digest["summary"]["open_exception_count"])
         self.assertEqual(0, digest["summary"]["temporal_failure_count"])
         self.assertEqual(1, digest["summary"]["continuity_failure_count"])
@@ -145,6 +168,9 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["publisher_independence_failure_count"])
         self.assertEqual(1, digest["summary"]["persistent_query_count"])
         self.assertEqual(1, digest["summary"]["publication_blocked_count"])
+        self.assertEqual(1, digest["summary"]["dependency_promotion_block_count"])
+        self.assertEqual(0, digest["summary"]["reobservation_gap_count"])
+        self.assertEqual(1, len(digest["dependency_impacts"]))
         self.assertEqual("passed", digest["runs"][0]["temporal_integrity"])
         self.assertEqual("failed", digest["runs"][0]["profile_continuity"])
         self.assertEqual(
@@ -154,13 +180,26 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual("effective", digest["runs"][0]["global_followup_effectiveness"])
         self.assertEqual(1, digest["runs"][0]["publisher_independence_failures"])
         self.assertTrue(digest["runs"][0]["publication_blocked"])
-        self.assertEqual(2, len(digest["owner_actions"][0]["exception_refs"]))
+        exception_action = next(
+            item
+            for item in digest["owner_actions"]
+            if item["kind"] == "resolve-exception-group"
+        )
+        dependency_action = next(
+            item
+            for item in digest["owner_actions"]
+            if item["kind"] == "review-dependency-impact"
+        )
+        self.assertEqual(2, len(exception_action["exception_refs"]))
+        self.assertTrue(dependency_action["promotion_blocked"])
         self.assertEqual(
             ["profile-continuity"],
             digest["runs"][0]["publication_block_reasons"],
         )
         rendered = render_markdown(digest)
         self.assertIn("resolve 2 related Exception(s)", rendered)
+        self.assertIn("revalidate-dependents", rendered)
+        self.assertIn("promotion blocked", rendered)
         self.assertIn("blocked", rendered)
         self.assertIn("partially-effective (2/3)", rendered)
         self.assertIn("global: effective (2/2)", rendered)

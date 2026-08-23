@@ -68,6 +68,7 @@ REQUIRED_FILES = [
     "schemas/evidence-bundle.schema.json",
     "schemas/coverage-report.schema.json",
     "schemas/change-report.schema.json",
+    "schemas/dependency-impact.schema.json",
     "schemas/consensus-readiness.schema.json",
     "schemas/weekly-digest.schema.json",
     "schemas/issue-payload.schema.json",
@@ -130,6 +131,7 @@ REQUIRED_FILES = [
     "tools/evaluate_global_followup_effectiveness.py",
     "tools/propose_center_profile.py",
     "tools/detect_source_changes.py",
+    "tools/analyze_dependency_impact.py",
     "tools/check_consensus_readiness.py",
     "tools/generate_weekly_digest.py",
     "tools/prepare_exception_issues.py",
@@ -696,6 +698,23 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     "previous_run_id"
                 ):
                     errors.append(f"Run {run_id} previous Run identity differs")
+        dependency_impact_ref = manifest.get("dependency_impact_ref")
+        if dependency_impact_ref:
+            impact_path = root / dependency_impact_ref
+            if not impact_path.is_file():
+                errors.append(
+                    f"Run {run_id} dependency impact report is missing: {dependency_impact_ref}"
+                )
+            else:
+                impact = load_json(impact_path)
+                if impact.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} dependency impact identity differs")
+                if impact.get("previous_run_id") != manifest.get("previous_run_id"):
+                    errors.append(f"Run {run_id} dependency impact predecessor differs")
+                if impact.get("summary") != manifest.get("metrics", {}).get(
+                    "dependency_impact"
+                ):
+                    errors.append(f"Run {run_id} dependency impact metrics differ")
         readiness_ref = manifest.get("consensus_readiness_ref")
         if readiness_ref:
             readiness_path = root / readiness_ref

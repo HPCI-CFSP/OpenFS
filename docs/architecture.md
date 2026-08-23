@@ -140,6 +140,13 @@ compares URL-and-query observations against that pinned predecessor and records
 as `not-observed`, never as proof that the source was withdrawn. This keeps weekly
 change metrics reproducible even when multiple Runs overlap.
 
+The same finalization step writes `runs/<RUN-ID>/dependency-impact.json`. It traces
+changed and unavailable observations through Evidence bundles to Claim proposals,
+Center Profiles, and Decisions. A recorded dependent blocks promotion pending
+revalidation; a not-observed predecessor creates a reobservation gap without
+asserting withdrawal. The report is append-only review input and never silently
+rewrites a prior Claim or Decision.
+
 All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
 
 ## Center-aware scenario projection

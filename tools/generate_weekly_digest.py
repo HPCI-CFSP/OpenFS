@@ -75,6 +75,7 @@ def build_digest(
     stale: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
     exceptions: list[dict[str, Any]] = []
+    dependency_impacts: list[dict[str, Any]] = []
     temporal_failure_count = 0
     continuity_failure_count = 0
     ineffective_followup_count = 0
@@ -82,6 +83,8 @@ def build_digest(
     publisher_independence_failure_count = 0
     persistent_query_count = 0
     publication_blocked_count = 0
+    dependency_promotion_block_count = 0
+    reobservation_gap_count = 0
     change_totals = {
         name: 0 for name in ("new", "changed", "unchanged", "unavailable", "not-observed")
     }
@@ -96,6 +99,35 @@ def build_digest(
         if changes:
             for name, count in changes["summary"].items():
                 change_totals[name] = change_totals.get(name, 0) + count
+        dependency_ref = manifest.get("dependency_impact_ref")
+        dependency = read_json(root / dependency_ref) if dependency_ref else None
+        dependency_summary = dependency.get("summary", {}) if dependency else {}
+        if dependency_summary.get("promotion_blocked"):
+            dependency_promotion_block_count += 1
+        reobservation_gap_count += int(
+            dependency_summary.get("reobservation_gaps", 0)
+        )
+        if dependency:
+            for item in dependency.get("impacts", []):
+                if item.get("action") == "none":
+                    continue
+                dependency_impacts.append(
+                    {
+                        "run_id": run_id,
+                        "dependency_impact_ref": dependency_ref,
+                        "canonical_url": item["canonical_url"],
+                        "classification": item["classification"],
+                        "action": item["action"],
+                        "promotion_blocked": item["promotion_blocked"],
+                        "artifact_refs": sorted(
+                            set(
+                                item.get("claim_proposal_refs", [])
+                                + item.get("center_profile_refs", [])
+                                + item.get("decision_refs", [])
+                            )
+                        ),
+                    }
+                )
         readiness_ref = manifest.get("consensus_readiness_ref")
         readiness = read_json(root / readiness_ref) if readiness_ref else None
         temporal_ref = manifest.get("temporal_integrity_ref")
@@ -221,6 +253,12 @@ def build_digest(
                 "publisher_independence_failures": publisher_failures,
                 "publication_blocked": publication_blocked,
                 "publication_block_reasons": publication_block_reasons,
+                "dependency_promotion_blocked": bool(
+                    dependency_summary.get("promotion_blocked", False)
+                ),
+                "reobservation_gaps": int(
+                    dependency_summary.get("reobservation_gaps", 0)
+                ),
                 "consensus_outcomes": manifest.get("metrics", {}).get("consensus_outcomes", {}),
                 "cost": manifest.get("cost", {"measurement_status": "unreported"}),
             }
@@ -303,6 +341,26 @@ def build_digest(
                 "exception_refs": sorted(item["exception_ref"] for item in items),
             }
         )
+    grouped_dependency_actions: dict[str, list[dict[str, Any]]] = {}
+    for item in dependency_impacts:
+        grouped_dependency_actions.setdefault(item["action"], []).append(item)
+    for action, items in sorted(grouped_dependency_actions.items()):
+        owner_actions.append(
+            {
+                "action_id": f"ACTION-GROUP-{len(owner_actions) + 1:03d}",
+                "kind": "review-dependency-impact",
+                "dependency_action": action,
+                "promotion_blocked": any(item["promotion_blocked"] for item in items),
+                "run_ids": sorted({item["run_id"] for item in items}),
+                "dependency_impact_refs": sorted(
+                    {item["dependency_impact_ref"] for item in items}
+                ),
+                "canonical_urls": sorted({item["canonical_url"] for item in items}),
+                "artifact_refs": sorted(
+                    {ref for item in items for ref in item["artifact_refs"]}
+                ),
+            }
+        )
     return {
         "schema_version": "0.1.0",
         "digest_id": f"DIGEST-{week}",
@@ -322,6 +380,8 @@ def build_digest(
             "publisher_independence_failure_count": publisher_independence_failure_count,
             "persistent_query_count": persistent_query_count,
             "publication_blocked_count": publication_blocked_count,
+            "dependency_promotion_block_count": dependency_promotion_block_count,
+            "reobservation_gap_count": reobservation_gap_count,
         },
         "runs": run_summaries,
         "source_changes": change_totals,
@@ -330,12 +390,14 @@ def build_digest(
         "stale_sources": stale,
         "failures": failures,
         "open_exceptions": exceptions,
+        "dependency_impacts": dependency_impacts,
         "pending_directives": pending_directives,
         "owner_actions": owner_actions,
         "caveats": [
             "This Digest is a generated operational view, not primary evidence.",
             "Unreported cost is unknown and must not be interpreted as zero.",
             "not-observed Sources are not inferred to be withdrawn or unavailable.",
+            "Dependency promotion blocks remain until recorded revalidation; the Digest does not clear them.",
         ],
     }
 
@@ -402,19 +464,30 @@ def render_markdown(digest: dict[str, Any]) -> str:
     )
     if digest["owner_actions"]:
         for action in digest["owner_actions"]:
-            lines.append(
-                f"- **{action['exception_kind']}**: resolve "
-                f"{len(action['exception_refs'])} related Exception(s) across "
-                f"{len(action['run_ids'])} Run(s)."
-            )
-            if action["unmet_requirements"]:
+            if action["kind"] == "resolve-exception-group":
                 lines.append(
-                    "  Requirements: "
-                    + ", ".join(
-                        f"`{item}`" for item in action["unmet_requirements"]
-                    )
+                    f"- **{action['exception_kind']}**: resolve "
+                    f"{len(action['exception_refs'])} related Exception(s) across "
+                    f"{len(action['run_ids'])} Run(s)."
                 )
-            lines.extend(f"  - `{item}`" for item in action["exception_refs"])
+                if action["unmet_requirements"]:
+                    lines.append(
+                        "  Requirements: "
+                        + ", ".join(
+                            f"`{item}`" for item in action["unmet_requirements"]
+                        )
+                    )
+                lines.extend(f"  - `{item}`" for item in action["exception_refs"])
+            else:
+                block_text = "promotion blocked" if action["promotion_blocked"] else "reobservation requested"
+                lines.append(
+                    f"- **{action['dependency_action']}**: review "
+                    f"{len(action['canonical_urls'])} Source observation(s) across "
+                    f"{len(action['run_ids'])} Run(s); {block_text}."
+                )
+                lines.extend(
+                    f"  - `{item}`" for item in action["dependency_impact_refs"]
+                )
     else:
         lines.append("- None.")
     lines.extend(["", "## Caveats", ""])
