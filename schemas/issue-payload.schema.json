@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/issue-payload.schema.json",
+  "title": "OpenFS GitHub Issue Payload",
+  "type": "object",
+  "required": ["schema_version", "payload_id", "exception_id", "exception_ref", "title", "body", "labels", "deduplication_marker", "generated_at", "publication_status"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "payload_id": {"type": "string"},
+    "exception_id": {"type": "string"},
+    "exception_ref": {"type": "string"},
+    "title": {"type": "string", "minLength": 1},
+    "body": {"type": "string", "minLength": 1},
+    "labels": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "deduplication_marker": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "publication_status": {"enum": ["prepared", "published", "closed"]},
+    "github_issue_number": {"type": "integer", "minimum": 1},
+    "github_issue_url": {"type": "string", "format": "uri"}
+  },
+  "additionalProperties": false
+}

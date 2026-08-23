@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/weekly-digest.schema.json",
+  "title": "OpenFS Weekly Digest",
+  "type": "object",
+  "required": ["schema_version", "digest_id", "week", "generated_at", "run_ids", "summary", "runs", "source_changes", "coverage_gaps", "dissent", "stale_sources", "failures", "open_exceptions", "pending_directives", "owner_actions", "caveats"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "digest_id": {"type": "string", "pattern": "^DIGEST-[0-9]{4}-W[0-9]{2}$"},
+    "week": {"type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "run_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "summary": {"type": "object"},
+    "runs": {"type": "array", "items": {"type": "object"}},
+    "source_changes": {"type": "object"},
+    "coverage_gaps": {"type": "array", "items": {"type": "object"}},
+    "dissent": {"type": "array", "items": {"type": "object"}},
+    "stale_sources": {"type": "array", "items": {"type": "object"}},
+    "failures": {"type": "array", "items": {"type": "object"}},
+    "open_exceptions": {"type": "array", "items": {"type": "object"}},
+    "pending_directives": {"type": "array", "items": {"type": "object"}},
+    "owner_actions": {"type": "array", "items": {"type": "object"}},
+    "caveats": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
