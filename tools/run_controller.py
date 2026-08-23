@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import os
 import re
@@ -331,12 +332,18 @@ def _lock_path(root: Path, run_id: str, work_item_id: str) -> Path:
 
 def _acquire_lock(path: Path) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
-    return os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    descriptor = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as exc:
+        os.close(descriptor)
+        raise FileExistsError(f"lock is already held: {path}") from exc
+    return descriptor
 
 
 def _release_lock(path: Path, descriptor: int) -> None:
+    fcntl.flock(descriptor, fcntl.LOCK_UN)
     os.close(descriptor)
-    path.unlink(missing_ok=True)
 
 
 def _queue_items(root: Path, run_id: str) -> list[tuple[Path, dict[str, Any]]]:
@@ -547,7 +554,7 @@ def _record_agent_execution(
         _release_lock(lock, descriptor)
 
 
-def lease_next(
+def _lease_next(
     root: Path,
     *,
     run_id: str,
@@ -634,7 +641,7 @@ def lease_next(
     return None
 
 
-def complete_work_item(
+def _complete_work_item(
     root: Path,
     *,
     run_id: str,
@@ -689,7 +696,7 @@ def complete_work_item(
     return item
 
 
-def expand_followups(
+def _expand_followups(
     root: Path,
     *,
     run_id: str,
@@ -1055,7 +1062,7 @@ def expand_followups(
     return {"created": additions, "manifest": manifest}
 
 
-def reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
+def _reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
     repaired: list[str] = []
     for path in sorted((root / "queue" / run_id).glob("WORK-*.json")):
         item = read_json(path)
@@ -1087,7 +1094,7 @@ def reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
     }
 
 
-def fail_work_item(
+def _fail_work_item(
     root: Path,
     *,
     run_id: str,
@@ -1132,7 +1139,7 @@ def fail_work_item(
     return item
 
 
-def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dict[str, Any]:
+def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dict[str, Any]:
     path = root / "runs" / run_id / "manifest.json"
     manifest = read_json(path)
     items = [read_json(item) for item in sorted((root / "queue" / run_id).glob("WORK-*.json"))]
@@ -1174,6 +1181,102 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)
     return manifest
+
+
+def _run_control(
+    root: Path, run_id: str, operation: Any, **kwargs: Any
+) -> Any:
+    lock = _lock_path(root, run_id, "run-control")
+    try:
+        descriptor = _acquire_lock(lock)
+    except FileExistsError as exc:
+        raise RuntimeError(f"another Run control operation is active: {run_id}") from exc
+    try:
+        return operation(root, run_id=run_id, **kwargs)
+    finally:
+        _release_lock(lock, descriptor)
+
+
+def lease_next(
+    root: Path,
+    *,
+    run_id: str,
+    agent_id: str,
+    lease_seconds: int = 900,
+    allow_disabled_pilot_agent: bool = False,
+    now: datetime | None = None,
+) -> dict[str, Any] | None:
+    return _run_control(
+        root,
+        run_id,
+        _lease_next,
+        agent_id=agent_id,
+        lease_seconds=lease_seconds,
+        allow_disabled_pilot_agent=allow_disabled_pilot_agent,
+        now=now,
+    )
+
+
+def complete_work_item(
+    root: Path,
+    *,
+    run_id: str,
+    work_item_id: str,
+    agent_id: str,
+    output_refs: list[str],
+    usage: dict[str, Any] | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    return _run_control(
+        root,
+        run_id,
+        _complete_work_item,
+        work_item_id=work_item_id,
+        agent_id=agent_id,
+        output_refs=output_refs,
+        usage=usage,
+        now=now,
+    )
+
+
+def expand_followups(
+    root: Path, *, run_id: str, now: datetime | None = None
+) -> dict[str, Any]:
+    return _run_control(root, run_id, _expand_followups, now=now)
+
+
+def reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
+    return _run_control(root, run_id, _reconcile_agent_executions)
+
+
+def fail_work_item(
+    root: Path,
+    *,
+    run_id: str,
+    work_item_id: str,
+    agent_id: str,
+    error_kind: str,
+    error_message: str,
+    retryable: bool,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    return _run_control(
+        root,
+        run_id,
+        _fail_work_item,
+        work_item_id=work_item_id,
+        agent_id=agent_id,
+        error_kind=error_kind,
+        error_message=error_message,
+        retryable=retryable,
+        now=now,
+    )
+
+
+def finalize_run(
+    root: Path, *, run_id: str, now: datetime | None = None
+) -> dict[str, Any]:
+    return _run_control(root, run_id, _finalize_run, now=now)
 
 
 def _print(value: Any) -> None:

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/weekly-cycle.schema.json",
+  "title": "OpenFS Weekly Coordination Plan",
+  "type": "object",
+  "required": ["schema_version", "cycle_id", "week", "generated_at", "mode", "status", "blockers", "monitors", "issue"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "cycle_id": {"type": "string"},
+    "week": {"type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}$"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "mode": {"enum": ["pilot", "production"]},
+    "status": {"enum": ["ready", "blocked"]},
+    "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "monitors": {"type": "array", "items": {"type": "object"}},
+    "issue": {
+      "type": "object",
+      "required": ["title", "body", "labels", "deduplication_marker"],
+      "properties": {
+        "title": {"type": "string"},
+        "body": {"type": "string"},
+        "labels": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "deduplication_marker": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

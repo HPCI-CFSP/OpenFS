@@ -1,0 +1,72 @@
+name: OpenFS Weekly Coordinator
+
+on:
+  schedule:
+    - cron: "17 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      monitor_id:
+        description: Optional Monitor ID for a manual Pilot
+        required: false
+        type: string
+      pilot:
+        description: Allow the selected disabled Monitor for a Pilot plan
+        required: true
+        default: true
+        type: boolean
+      publish_issue:
+        description: Publish the prepared coordination Issue
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-weekly-coordinator
+  cancel-in-progress: false
+
+jobs:
+  coordinate:
+    if: github.event_name == 'workflow_dispatch' || vars.OPENFS_COORDINATOR_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Validate control plane
+        run: |
+          python3 tools/validate_repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Prepare weekly cycle
+        env:
+          REQUESTED_MONITOR_ID: ${{ inputs.monitor_id }}
+          REQUESTED_PILOT: ${{ inputs.pilot }}
+        run: |
+          WEEK="$(date -u +%G-W%V)"
+          GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          ARGS=(--week "$WEEK" --generated-at "$GENERATED_AT" --output _automation/weekly-cycle.json)
+          if [[ -n "$REQUESTED_MONITOR_ID" ]]; then
+            ARGS+=(--monitor-id "$REQUESTED_MONITOR_ID")
+          fi
+          if [[ "$REQUESTED_PILOT" == "true" ]]; then
+            ARGS+=(--pilot)
+          fi
+          python3 tools/prepare_weekly_cycle.py "${ARGS[@]}"
+      - name: Upload coordination plan
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: openfs-weekly-cycle
+          path: _automation/weekly-cycle.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish coordination Issue
+        if: vars.OPENFS_COORDINATOR_ENABLED == 'true' || inputs.publish_issue == true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 tools/publish_github_issue.py --payload _automation/weekly-cycle.json

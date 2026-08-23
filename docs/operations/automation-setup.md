@@ -2,9 +2,18 @@
 
 ## Current status
 
-As of 2026-08-23, the repository has policies, schemas, a deterministic Consensus Gate prototype, research catalogs, permission checks, tests, and guarded GitHub Pages publication. It does **not** yet have the production Run Controller, provider API clients, Work Item leases, or promotion pull-request workflow.
+As of 2026-08-24, the repository has a Run Controller, leased Work Items,
+configuration snapshots, Rights Gate, source-change detection, coverage reporting,
+Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
+review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
+Pages publication. Three `OFS-001` Pilot Runs are retained as auditable fixtures.
 
-The weekly schedule and all automated research agents therefore remain disabled. Adding API keys alone does not start research. The first operational milestone is a manually dispatched `OFS-001` Pilot; the weekly schedule is enabled only after three reviewed manual Runs.
+The weekly **control-plane** schedule is implemented in
+`.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
+one deduplicated coordination Issue. It makes no model call, performs no promotion,
+and publishes no research result. Provider API clients and an unattended research
+Worker are still intentionally disabled. Adding API keys alone does not start paid
+research.
 
 ## Recommended provider arrangement
 
@@ -45,6 +54,7 @@ After the Pilot workflow defines and validates these names, add them at:
 
 | Variable | Initial value | Meaning |
 |---|---:|---|
+| `OPENFS_COORDINATOR_ENABLED` | `false` | Enables scheduled weekly plan/Issue creation only |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
@@ -95,15 +105,36 @@ Record these decisions in a reviewed pull request or Directive:
 
 ## Activation sequence
 
-1. Merge the manual Pilot workflow and provider adapters with `OPENFS_RESEARCH_ENABLED=false`.
-2. Add the two API secrets and the repository variables.
-3. Run a secret-presence and budget preflight that makes no paid model call.
-4. Set `OPENFS_RESEARCH_ENABLED=true` and manually dispatch `OFS-001` Run 1.
-5. Review coverage, citations, dissent, false positives, cost, and generated pull-request paths.
-6. Complete Run 2 with a changed source and Run 3 with a human Directive.
-7. Enable the weekly schedule only if all three Runs pass review; otherwise keep Pilot mode and correct the harness.
+1. Merge the weekly Coordinator while both enable variables remain `false`.
+2. Manually dispatch **OpenFS Weekly Coordinator** with `monitor_id` set to
+   `MON-MEMORY-001`, `pilot=true`, and `publish_issue=false`.
+3. Download and inspect the `openfs-weekly-cycle` artifact. This is a no-cost
+   control-plane test.
+4. Dispatch again with `publish_issue=true` and verify that a second dispatch for
+   the same ISO week reuses the same Issue.
+5. Set the repository variable `OPENFS_COORDINATOR_ENABLED=true` to enable the
+   Monday 00:17 UTC schedule. This still makes no model call.
+6. Configure at least two independent provider paths, approved model IDs, a cost
+   ceiling, and provider-side alerts before adding the research Worker.
+7. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
+   budget, boundary, assignment, recovery, and Consensus-capacity tests.
+8. Enable provider calls first in manual Pilot mode. Enable unattended production
+   Runs only after owner review of cost, citations, dissent, false positives, and
+   generated pull-request paths.
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
+
+### Coordinator versus Worker
+
+- The **Coordinator** is the GitHub Actions schedule. It validates control data,
+  selects eligible Monitors, records prior Run IDs and pending Directives, and
+  emits a stable Issue trigger.
+- A **Worker** is a separately credentialed Codex, OpenAI API, Claude, or local
+  model execution path. It claims a cycle, creates a branch, and processes leased
+  Work Items through the Run Controller.
+- The Coordinator never receives provider secrets. A discovery or validation
+  Worker never receives publication authority. Promotion remains a separate pull
+  request path.
 
 ## Optional Codex automation
 

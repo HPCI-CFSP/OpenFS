@@ -66,6 +66,7 @@ REQUIRED_FILES = [
     "schemas/issue-payload.schema.json",
     "schemas/directive-application.schema.json",
     "schemas/run-brief.schema.json",
+    "schemas/weekly-cycle.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -99,6 +100,8 @@ REQUIRED_FILES = [
     "tools/prepare_exception_issues.py",
     "tools/apply_directive.py",
     "tools/generate_run_brief.py",
+    "tools/prepare_weekly_cycle.py",
+    "tools/publish_github_issue.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -110,6 +113,7 @@ REQUIRED_FILES = [
     "site/styles.css",
     "site/app.js",
     ".github/workflows/pages.yml",
+    ".github/workflows/weekly-coordinator.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")

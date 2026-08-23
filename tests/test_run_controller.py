@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from run_controller import (  # noqa: E402
+    _acquire_lock,
+    _lock_path,
+    _release_lock,
     complete_work_item,
     create_run,
     fail_work_item,
@@ -107,6 +110,35 @@ class RunControllerTests(unittest.TestCase):
         directive_source = "reviews/directives/DIR-000123.json"
         self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
         self.assertEqual(64, len(first["directive_hashes"][directive_source]))
+
+    def test_run_control_lock_blocks_competing_mutation_and_recovers(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-LOCK",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        lock = _lock_path(self.root, "RUN-PILOT-LOCK", "run-control")
+        descriptor = _acquire_lock(lock)
+        try:
+            with self.assertRaisesRegex(RuntimeError, "another Run control operation"):
+                lease_next(
+                    self.root,
+                    run_id="RUN-PILOT-LOCK",
+                    agent_id="discovery-public-01",
+                    allow_disabled_pilot_agent=True,
+                )
+        finally:
+            _release_lock(lock, descriptor)
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-LOCK",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        self.assertEqual("leased", leased["status"])
+        self.assertTrue(lock.exists())
 
     def test_run_uses_pinned_agent_registry_after_live_registry_changes(self):
         create_run(

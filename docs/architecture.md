@@ -108,7 +108,10 @@ The planned weekly cycle is:
 9. publish a digest and exception queue;
 10. update watermarks only after durable completion.
 
-The schedule remains disabled until the `OFS-001` monitor completes three manual runs: initial collection, a changed-source run, and a directive-driven run.
+The weekly Coordinator is implemented but remains variable-gated. It creates a
+deduplicated control Issue and artifact without making model calls. The research
+Worker and production Monitor remain disabled until independent provider capacity,
+cost limits, and recovery behavior are owner-approved.
 
 All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
 
