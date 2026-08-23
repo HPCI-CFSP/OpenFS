@@ -144,6 +144,13 @@ Record these decisions in a reviewed pull request or Directive:
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 
+Production Work Item completion is fail-closed on cost accounting: every completion
+must report `cost_usd` plus a non-empty measurement note. The controller reevaluates
+the Run cap immediately after each completion, including the final Work Item, and
+stops the Run on an overage. Pilot Runs may retain `unreported` cost for harness
+testing, but Digests display it as unknown rather than zero. Provider-side hard
+spend limits remain an independent owner setup requirement.
+
 ### Production readiness gate
 
 An enabled Monitor is not sufficient to start unattended production. The weekly

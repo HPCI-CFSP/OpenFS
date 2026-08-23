@@ -1060,6 +1060,8 @@ def _complete_work_item(
     now: datetime | None = None,
 ) -> dict[str, Any]:
     path = root / "queue" / run_id / f"{work_item_id}.json"
+    manifest_path = root / "runs" / run_id / "manifest.json"
+    manifest = read_json(manifest_path)
     item = read_json(path)
     lease = item.get("lease", {})
     if item.get("status") != "leased" or lease.get("agent_id") != agent_id:
@@ -1090,6 +1092,17 @@ def _complete_work_item(
             not isinstance(cost, (int, float)) or isinstance(cost, bool) or cost < 0
         ):
             raise ValueError("cost_usd must be a non-negative number or null")
+        note = usage.get("measurement_note")
+        if note is not None and (not isinstance(note, str) or not note.strip()):
+            raise ValueError("measurement_note must be a non-empty string or null")
+    if manifest.get("mode") == "production" and (
+        usage is None
+        or usage.get("cost_usd") is None
+        or not usage.get("measurement_note")
+    ):
+        raise ValueError(
+            "production Work Item completion requires cost_usd and measurement_note"
+        )
     timestamp = isoformat(now)
     item["status"] = "completed"
     item["output_refs"] = output_refs
@@ -1102,6 +1115,21 @@ def _complete_work_item(
     item["updated_at"] = timestamp
     item.pop("lease", None)
     atomic_write_json(path, item)
+    violation = _budget_violation(
+        manifest,
+        [queued for _, queued in _queue_items(root, run_id)],
+        _parse_time(timestamp),
+    )
+    if violation and violation[0] == "maximum-cost-usd":
+        reason, observed, limit = violation
+        _stop_run(
+            root,
+            manifest=manifest,
+            reason=reason,
+            observed=observed,
+            limit=limit,
+            now=_parse_time(timestamp),
+        )
     return item
 
 

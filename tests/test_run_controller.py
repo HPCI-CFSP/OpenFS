@@ -1264,6 +1264,10 @@ class RunControllerTests(unittest.TestCase):
             now=start + timedelta(seconds=1),
         )
 
+        stopped = json.loads(manifest_path.read_text())
+        self.assertEqual("stopped", stopped["status"])
+        self.assertEqual("maximum-cost-usd", stopped["stop"]["reason"])
+
         next_item = lease_next(
             self.root,
             run_id="RUN-PILOT-011",
@@ -1272,9 +1276,70 @@ class RunControllerTests(unittest.TestCase):
             now=start + timedelta(seconds=2),
         )
         self.assertIsNone(next_item)
-        stopped = json.loads(manifest_path.read_text())
         self.assertEqual("maximum-cost-usd", stopped["stop"]["reason"])
         self.assertEqual(0.6, stopped["cost"]["reported_total_usd"])
+
+    def test_production_completion_requires_explicit_cost_measurement(self):
+        start = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-COST",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=start,
+        )
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-COST",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start,
+        )
+        manifest_path = self.root / "runs" / "RUN-PILOT-COST" / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["mode"] = "production"
+        manifest["budget"]["maximum_cost_usd"] = 1.0
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        output_ref = leased["output_paths"][0]
+        output_path = self.root / output_ref
+        output_path.parent.mkdir(parents=True)
+        output_path.write_text("{}\n", encoding="utf-8")
+
+        with self.assertRaisesRegex(ValueError, "requires cost_usd"):
+            complete_work_item(
+                self.root,
+                run_id="RUN-PILOT-COST",
+                work_item_id=leased["work_item_id"],
+                agent_id="discovery-public-01",
+                output_refs=[output_ref],
+                usage={"input_tokens": 10, "output_tokens": 2, "cost_usd": None},
+                now=start + timedelta(seconds=1),
+            )
+
+        complete_work_item(
+            self.root,
+            run_id="RUN-PILOT-COST",
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+            usage={
+                "input_tokens": 10,
+                "output_tokens": 2,
+                "cost_usd": 0.01,
+                "measurement_note": "Provider usage receipt test fixture.",
+            },
+            now=start + timedelta(seconds=2),
+        )
+        completed = json.loads(
+            (
+                self.root
+                / "queue"
+                / "RUN-PILOT-COST"
+                / f"{leased['work_item_id']}.json"
+            ).read_text()
+        )
+        self.assertEqual(0.01, completed["usage"]["cost_usd"])
 
     def test_parallel_lease_limit_throttles_without_stopping_run(self):
         start = datetime(2026, 8, 24, tzinfo=timezone.utc)
