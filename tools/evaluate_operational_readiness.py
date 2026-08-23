@@ -148,12 +148,64 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
         "enabled_monitors_ready": bool(enabled) and len(ready_enabled) == len(enabled),
     }
     blockers = sorted(name for name, passed in checks.items() if not passed)
+    owner_actions = []
+    for item in workflow_gates:
+        if not item["passed"]:
+            owner_actions.append(
+                {
+                    "action_id": f"repair-{item['control_id']}",
+                    "summary": "Restore and review the missing workflow activation gate.",
+                    "refs": [item["ref"]],
+                }
+            )
+    for item in production_components:
+        if not item["passed"]:
+            owner_actions.append(
+                {
+                    "action_id": f"implement-{item['control_id']}",
+                    "summary": "Implement and review the required production component.",
+                    "refs": [item["ref"]],
+                }
+            )
+    for item in owner_controls:
+        if not item["verified"]:
+            owner_actions.append(
+                {
+                    "action_id": f"verify-{item['control_id']}",
+                    "summary": (
+                        "Verify the external control and record a non-secret, "
+                        "expiring owner attestation."
+                    ),
+                    "refs": ["config/owner-controls.json"],
+                }
+            )
+    if not enabled:
+        owner_actions.append(
+            {
+                "action_id": "enable-reviewed-research-monitor",
+                "summary": (
+                    "After its local readiness gates pass, enable at least one "
+                    "reviewed recurring research Monitor."
+                ),
+                "refs": ["config/monitors"],
+            }
+        )
+    for item in enabled:
+        if item["status"] != "ready":
+            owner_actions.append(
+                {
+                    "action_id": f"resolve-{item['monitor_id'].lower()}-readiness",
+                    "summary": "Resolve the enabled Monitor's reported readiness blockers.",
+                    "refs": [f"config/monitors/{item['monitor_id']}.json"],
+                }
+            )
     return {
         "schema_version": "0.1.0",
         "evaluated_at": timestamp,
         "status": "ready" if not blockers else "blocked",
         "checks": checks,
         "blockers": blockers,
+        "owner_actions": owner_actions,
         "workflow_gates": workflow_gates,
         "production_components": production_components,
         "owner_controls": owner_controls,

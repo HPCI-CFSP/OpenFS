@@ -32,10 +32,23 @@
     },
     "operational_readiness": {
       "type": "object",
-      "required": ["status", "blockers", "checks", "enabled_monitor_count", "ready_enabled_monitor_count", "detail_ref"],
+      "required": ["status", "blockers", "owner_actions", "checks", "enabled_monitor_count", "ready_enabled_monitor_count", "detail_ref"],
       "properties": {
         "status": {"enum": ["ready", "blocked"]},
         "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "owner_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action_id", "summary", "refs"],
+            "properties": {
+              "action_id": {"type": "string"},
+              "summary": {"type": "string"},
+              "refs": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        },
         "checks": {"type": "object", "additionalProperties": {"type": "boolean"}},
         "enabled_monitor_count": {"type": "integer", "minimum": 0},
         "ready_enabled_monitor_count": {"type": "integer", "minimum": 0},

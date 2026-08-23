@@ -63,6 +63,13 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         readiness = {
             "status": "blocked",
             "blockers": ["production_components_present", "owner_controls_verified"],
+            "owner_actions": [
+                {
+                    "action_id": "implement-provider-worker",
+                    "summary": "Implement the reviewed provider Worker.",
+                    "refs": ["tools/worker.py"],
+                }
+            ],
             "checks": {
                 "production_components_present": False,
                 "owner_controls_verified": False,
@@ -81,6 +88,8 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         self.assertEqual("ready", plan["status"])
         self.assertEqual("blocked", plan["operational_readiness"]["status"])
         self.assertIn("production_components_present", plan["issue"]["body"])
+        self.assertIn("implement-provider-worker", plan["issue"]["body"])
+        self.assertIn("Implement the reviewed provider Worker.", plan["issue"]["body"])
         self.assertNotIn("secret", plan["issue"]["body"].lower())
 
     def test_weekly_review_is_variable_gated_and_has_no_research_secret(self):

@@ -23,6 +23,12 @@ The report checks:
   passes its budget, Consensus-capacity, calibrated-policy, and reviewed-Pilot gate;
 - every required external control has a complete, unexpired owner attestation.
 
+For every failed check, the report also emits a deterministic `owner_actions`
+entry with a non-secret summary and repository references. The weekly coordination
+Issue shows these summaries, while the complete readiness report remains the
+workflow artifact. Actions are guidance only: they do not bypass approval or
+self-attest an external control.
+
 Component existence is not a filename-only check. The activation policy also
 declares a minimum size and required protocol markers. An empty workflow or adapter
 stub therefore remains blocked.

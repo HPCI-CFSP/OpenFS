@@ -3,7 +3,7 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/operational-readiness.schema.json",
   "title": "OpenFS Aggregate Operational Readiness",
   "type": "object",
-  "required": ["schema_version", "evaluated_at", "status", "checks", "blockers", "workflow_gates", "production_components", "owner_controls", "monitors", "effect"],
+  "required": ["schema_version", "evaluated_at", "status", "checks", "blockers", "owner_actions", "workflow_gates", "production_components", "owner_controls", "monitors", "effect"],
   "properties": {
     "schema_version": {"const": "0.1.0"},
     "evaluated_at": {"type": "string", "format": "date-time"},
@@ -21,6 +21,10 @@
       "additionalProperties": false
     },
     "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "owner_actions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/ownerAction"}
+    },
     "workflow_gates": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
     "production_components": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
     "owner_controls": {
@@ -65,6 +69,16 @@
     "effect": {"type": "string", "minLength": 1}
   },
   "$defs": {
+    "ownerAction": {
+      "type": "object",
+      "required": ["action_id", "summary", "refs"],
+      "properties": {
+        "action_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "summary": {"type": "string", "minLength": 1},
+        "refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
     "checkItem": {
       "type": "object",
       "required": ["control_id", "ref", "passed", "reason"],

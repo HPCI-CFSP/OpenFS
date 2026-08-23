@@ -93,6 +93,15 @@ class OperationalReadinessTests(unittest.TestCase):
             ],
             report["blockers"],
         )
+        self.assertEqual(
+            [
+                "repair-gate",
+                "implement-worker",
+                "verify-budget",
+                "enable-reviewed-research-monitor",
+            ],
+            [item["action_id"] for item in report["owner_actions"]],
+        )
 
     @patch("evaluate_operational_readiness.evaluate_monitor")
     def test_all_local_and_owner_gates_can_reach_ready(self, monitor):
@@ -131,6 +140,7 @@ class OperationalReadinessTests(unittest.TestCase):
         report = evaluate(self.root, evaluated_at="2026-08-24T05:00:00Z")
         self.assertEqual("ready", report["status"])
         self.assertEqual([], report["blockers"])
+        self.assertEqual([], report["owner_actions"])
 
     @patch("evaluate_operational_readiness.evaluate_monitor")
     def test_expired_owner_attestation_fails_closed(self, monitor):

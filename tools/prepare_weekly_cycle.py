@@ -117,6 +117,7 @@ def build_plan(
         readiness_summary = {
             "status": operational_readiness["status"],
             "blockers": operational_readiness.get("blockers", []),
+            "owner_actions": operational_readiness.get("owner_actions", []),
             "checks": operational_readiness.get("checks", {}),
             "enabled_monitor_count": operational_readiness.get("monitors", {}).get(
                 "enabled_count", 0
@@ -133,6 +134,13 @@ def build_plan(
                 "- Blockers: "
                 + ", ".join(f"`{item}`" for item in readiness_summary["blockers"])
             )
+        if readiness_summary["owner_actions"]:
+            lines.extend(["", "### Next owner actions", ""])
+            for action in readiness_summary["owner_actions"]:
+                lines.append(
+                    f"- `{action['action_id']}`: {action['summary']}"
+                )
+        lines.extend(["", "### Monitor readiness", ""])
         lines.append(
             "- Enabled recurring Monitors: "
             f"`{readiness_summary['enabled_monitor_count']}`; ready: "
