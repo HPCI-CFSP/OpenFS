@@ -58,6 +58,7 @@ REQUIRED_FILES = [
     "schemas/query-receipt.schema.json",
     "schemas/source-receipt.schema.json",
     "schemas/source-discovery-result.schema.json",
+    "schemas/discovery-no-result.schema.json",
     "schemas/evidence.schema.json",
     "schemas/evidence-bundle.schema.json",
     "schemas/coverage-report.schema.json",
@@ -95,6 +96,7 @@ REQUIRED_FILES = [
     "tools/run_controller.py",
     "tools/ingest_directive.py",
     "tools/register_source.py",
+    "tools/register_no_result.py",
     "tools/extract_evidence.py",
     "tools/propose_claim.py",
     "tools/create_assessment.py",
@@ -461,9 +463,10 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             errors.append(f"Source result Run mismatch: {path.relative_to(root)}")
         if result.get("work_item_id") != path.stem:
             errors.append(f"Source result Work Item mismatch: {path.relative_to(root)}")
-        source_ids_by_run.setdefault(path.parent.name, []).append(
-            result.get("source_receipt", {}).get("source_id")
-        )
+        if result.get("object_type") == "source":
+            source_ids_by_run.setdefault(path.parent.name, []).append(
+                result.get("source_receipt", {}).get("source_id")
+            )
         work_path = root / "queue" / path.parent.name / f"{path.stem}.json"
         if not work_path.is_file():
             errors.append(f"Source result Work Item is missing: {path.relative_to(root)}")
@@ -479,15 +482,25 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
         if strict_assignment and query_receipt.get("query") != payload.get("query"):
             errors.append(f"Source result query differs from its assignment: {path.relative_to(root)}")
-        if strict_assignment and source_receipt.get("source_class") not in payload.get("source_classes", []):
-            errors.append(f"Source result class differs from its assignment: {path.relative_to(root)}")
-        if strict_assignment and source_receipt.get("language") not in payload.get("languages", []):
-            errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
         expected_scope = {
             key: payload[key]
             for key in ("subject_ids", "profile_fields", "query_template_id")
             if key in payload
         }
+        if result.get("object_type") == "discovery_no_result":
+            if strict_assignment and query_receipt.get("language") not in payload.get("languages", []):
+                errors.append(
+                    f"No-result language differs from its assignment: {path.relative_to(root)}"
+                )
+            if strict_assignment and result.get("assignment_scope", {}) != expected_scope:
+                errors.append(
+                    f"No-result subject scope differs from its assignment: {path.relative_to(root)}"
+                )
+            continue
+        if strict_assignment and source_receipt.get("source_class") not in payload.get("source_classes", []):
+            errors.append(f"Source result class differs from its assignment: {path.relative_to(root)}")
+        if strict_assignment and source_receipt.get("language") not in payload.get("languages", []):
+            errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
         if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
             errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
     for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
@@ -531,9 +544,10 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             if set(proposal.get("origin_group_ids", [])) != expected_origins:
                 errors.append(f"Claim proposal Origin Groups differ from bundles: {path.relative_to(root)}")
     assessments_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
-    for path in sorted((root / "assessments").glob("RUN-*/*.json")):
+    for path in sorted((root / "assessments").glob("RUN-*/**/*.json")):
         assessment = load_json(path)
-        if assessment.get("run_id") != path.parent.name:
+        run_id = path.relative_to(root / "assessments").parts[0]
+        if assessment.get("run_id") != run_id:
             errors.append(f"Assessment Run mismatch: {path.relative_to(root)}")
         manifest_path = root / "runs" / assessment.get("run_id", "") / "manifest.json"
         registry_path = root / "config" / "agent-registry.json"
@@ -558,18 +572,30 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(
                     f"Assessment registry digest differs from Run snapshot: {path.relative_to(root)}"
                 )
-        assessments_by_run_and_id[(path.parent.name, assessment.get("assessment_id"))] = assessment
-    claim_proposals = {
-        (path.parent.name, proposal["proposal_id"]): proposal
-        for path in sorted((root / "proposals" / "claims").glob("RUN-*/*.json"))
-        for proposal in [load_json(path)]
-    }
+        assessments_by_run_and_id[(run_id, assessment.get("assessment_id"))] = assessment
+    proposals_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
+    for path in sorted((root / "proposals").glob("**/*.json")):
+        proposal = load_json(path)
+        run_id = proposal.get("run_id")
+        proposal_id = proposal.get("proposal_id")
+        if not run_id or not proposal_id:
+            continue
+        key = (run_id, proposal_id)
+        if key in proposals_by_run_and_id:
+            errors.append(
+                f"Duplicate Proposal ID in Run: {run_id}/{proposal_id}"
+            )
+        proposals_by_run_and_id[key] = proposal
     for path in sorted((root / "decisions").glob("RUN-*/*.json")):
         decision = load_json(path)
         run_id = path.parent.name
-        proposal = claim_proposals.get((run_id, decision.get("proposal_id")))
+        proposal = proposals_by_run_and_id.get((run_id, decision.get("proposal_id")))
         if proposal is None:
-            errors.append(f"Decision Claim proposal is missing: {path.relative_to(root)}")
+            errors.append(f"Decision Proposal is missing: {path.relative_to(root)}")
+        elif proposal.get("object_type") != decision.get("object_type"):
+            errors.append(
+                f"Decision Proposal object type differs: {path.relative_to(root)}"
+            )
         for assessment_id in decision.get("assessment_ids", []):
             assessment = assessments_by_run_and_id.get((run_id, assessment_id))
             if assessment is None:

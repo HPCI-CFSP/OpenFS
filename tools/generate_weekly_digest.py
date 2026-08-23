@@ -120,7 +120,10 @@ def build_digest(
             maximum_days = read_json(root / snapshot).get("maximum_unchecked_days")
         if maximum_days is not None:
             for path in sorted((root / "proposals" / "sources" / run_id).glob("*.json")):
-                receipt = read_json(path)["source_receipt"]
+                result = read_json(path)
+                if result.get("object_type") == "discovery_no_result":
+                    continue
+                receipt = result["source_receipt"]
                 age_days = (generated_time - _parse_time(receipt["retrieved_at"])).total_seconds() / 86400
                 if age_days > float(maximum_days):
                     stale.append(

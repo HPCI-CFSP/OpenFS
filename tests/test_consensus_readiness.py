@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_consensus_readiness import evaluate_readiness  # noqa: E402
+from check_consensus_readiness import evaluate_readiness, monitor_object_types  # noqa: E402
 
 
 class ConsensusReadinessTests(unittest.TestCase):
@@ -74,6 +74,21 @@ class ConsensusReadinessTests(unittest.TestCase):
         )
         self.assertEqual("ready", report["status"])
         self.assertEqual([], report["unmet_requirements"])
+
+    def test_center_profile_monitor_infers_its_consensus_object_type(self):
+        self.assertEqual(
+            ["center_profile"],
+            monitor_object_types({"synthesis_product": "center-profile"}),
+        )
+        self.assertEqual(
+            ["research_topic"],
+            monitor_object_types(
+                {
+                    "synthesis_product": "center-profile",
+                    "consensus_object_types": ["research_topic"],
+                }
+            ),
+        )
 
 
 if __name__ == "__main__":

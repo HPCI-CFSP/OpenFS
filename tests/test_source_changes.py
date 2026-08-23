@@ -37,6 +37,7 @@ class SourceChangeTests(unittest.TestCase):
         source_dir.mkdir(parents=True)
         for number, source in enumerate(sources, 1):
             result = {
+                "query_receipt": {"query": source.get("query", source["url"])},
                 "source_receipt": {
                     "canonical_url": source["url"],
                     "title": source.get("title", "Title"),
@@ -103,6 +104,34 @@ class SourceChangeTests(unittest.TestCase):
         )
         self.assertEqual("RUN-OLD", manifest["previous_run_id"])
         self.assertEqual(report["summary"], manifest["metrics"]["source_changes"])
+
+    def test_same_url_can_be_observed_for_multiple_assigned_queries(self):
+        shared = "https://example.org/shared-report"
+        self.add_run(
+            "RUN-OLD",
+            "2026-08-17T00:00:00Z",
+            [
+                {"url": shared, "query": "center A", "passages": [{"text": "A", "locator": "row A"}]},
+                {"url": shared, "query": "center B", "passages": [{"text": "B", "locator": "row B"}]},
+            ],
+        )
+        self.add_run(
+            "RUN-NEW",
+            "2026-08-24T00:00:00Z",
+            [
+                {"url": shared, "query": "center A", "passages": [{"text": "A", "locator": "row A"}]},
+                {"url": shared, "query": "center B", "passages": [{"text": "B", "locator": "row B"}]},
+                {"url": shared, "query": "center C", "passages": [{"text": "C", "locator": "row C"}]},
+            ],
+        )
+
+        report = compare_runs(self.root, run_id="RUN-NEW")
+        self.assertEqual(2, report["summary"]["unchanged"])
+        self.assertEqual(1, report["summary"]["new"])
+        self.assertEqual(
+            {"center A", "center B", "center C"},
+            {item["observation_query"] for item in report["changes"]},
+        )
 
 
 if __name__ == "__main__":

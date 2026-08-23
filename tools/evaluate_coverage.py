@@ -48,10 +48,13 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         item = read_json(path)
         if item.get("kind") == "source-discovery":
             discovery_items.append(item)
-    source_results = []
+    discovery_results = []
     for path in sorted((root / "proposals" / "sources" / run_id).glob("*.json")):
-        source_results.append(read_json(path))
-    queries = [result["query_receipt"]["query"] for result in source_results]
+        discovery_results.append(read_json(path))
+    source_results = [
+        result for result in discovery_results if result.get("object_type", "source") == "source"
+    ]
+    queries = [result["query_receipt"]["query"] for result in discovery_results]
     all_sources = [result["source_receipt"] for result in source_results]
     unique_sources = {source["source_id"]: source for source in all_sources}
     sources = list(unique_sources.values())
@@ -87,9 +90,15 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             observed_subject_fields.setdefault(subject_id, set()).update(
                 assignment_scope.get("profile_fields", [])
             )
+    for result in discovery_results:
+        assignment_scope = result.get("assignment_scope", {})
+        for subject_id in assignment_scope.get("subject_ids", []):
+            observed_subject_fields.setdefault(subject_id, set()).update(
+                assignment_scope.get("profile_fields", [])
+            )
     failures = [
         failure
-        for result in source_results
+        for result in discovery_results
         for failure in result["query_receipt"].get("failures", [])
     ]
     blocking_failures = [
@@ -198,7 +207,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         gaps["monitor_snapshot_mismatch"] = [monitor_relative]
     status = (
         "met-declared-scope"
-        if not any(gaps.values()) and len(source_results) >= len(expected_queries)
+        if not any(gaps.values()) and len(discovery_results) >= len(expected_queries)
         else "incomplete"
     )
     rights_counts: dict[str, int] = {}
@@ -246,6 +255,10 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
                 for subject_id, fields in sorted(observed_subject_fields.items())
             },
             "query_warnings": query_warnings,
+            "no_result_query_count": sum(
+                result.get("object_type") == "discovery_no_result"
+                for result in discovery_results
+            ),
         },
         "gaps": gaps,
         "caveat": (

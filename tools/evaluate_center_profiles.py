@@ -14,6 +14,7 @@ from openfs_runtime import atomic_write_json, isoformat, read_json
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPLETE_FIELD_STATES = {"verified", "not-applicable"}
+DATE_ONLY_TIMEZONE_GRACE_DAYS = 1
 
 
 def _date(value: str) -> date:
@@ -28,6 +29,13 @@ def _evaluation_date(value: str | None) -> tuple[str, date]:
         return isoformat(parsed), parsed.date()
     now = datetime.now(timezone.utc)
     return isoformat(now), now.date()
+
+
+def _age_days(evaluated_date: date, as_of: str) -> int:
+    age = (evaluated_date - _date(as_of)).days
+    if -DATE_ONLY_TIMEZONE_GRACE_DAYS <= age < 0:
+        return 0
+    return age
 
 
 def _pinned(root: Path, manifest: dict[str, Any], source_ref: str) -> dict[str, Any]:
@@ -102,7 +110,7 @@ def evaluate(
                 else:
                     missing_fields.append(field)
                 continue
-            age_days = (evaluated_date - _date(as_of)).days
+            age_days = _age_days(evaluated_date, as_of)
             if age_days < 0 or age_days > maximum_age_days:
                 stale_fields.append(field)
         complete = not missing_fields and not partial_fields and not stale_fields
@@ -119,7 +127,7 @@ def evaluate(
                     "decision_outcome": decision.get("outcome", "missing"),
                 }
             )
-        profile_age_days = (evaluated_date - _date(profile["evidence_as_of"])).days
+        profile_age_days = _age_days(evaluated_date, profile["evidence_as_of"])
         if profile_age_days < 0 or profile_age_days > maximum_age_days:
             stale_profiles.append(
                 {"center_id": center_id, "age_days": profile_age_days}
@@ -175,6 +183,7 @@ def evaluate(
             "registry_id": registry["registry_id"],
             "center_count": len(centers),
             "profile_max_age_days": maximum_age_days,
+            "date_only_timezone_grace_days": DATE_ONLY_TIMEZONE_GRACE_DAYS,
             "required_profile_status": "accepted",
             "complete_field_states": sorted(COMPLETE_FIELD_STATES),
         },
@@ -188,7 +197,8 @@ def evaluate(
         "caveat": (
             "Complete profile coverage means every registered center has current, "
             "field-level Evidence and accepted status. It does not by itself establish "
-            "that a proposed HPCI-wide scenario is feasible or preferred."
+            "that a proposed HPCI-wide scenario is feasible or preferred. Date-only "
+            "Evidence values receive a one-day grace for UTC/local-date rollover."
         ),
     }
 

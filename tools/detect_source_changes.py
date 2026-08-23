@@ -41,15 +41,23 @@ def content_fingerprint(result: dict[str, Any]) -> str:
     )
 
 
-def load_run_sources(root: Path, run_id: str) -> dict[str, tuple[str, dict[str, Any]]]:
-    sources: dict[str, tuple[str, dict[str, Any]]] = {}
+def load_run_sources(
+    root: Path, run_id: str
+) -> dict[tuple[str, str], tuple[str, dict[str, Any]]]:
+    sources: dict[tuple[str, str], tuple[str, dict[str, Any]]] = {}
     directory = root / "proposals" / "sources" / run_id
     for path in sorted(directory.glob("*.json")):
         result = read_json(path)
+        if result.get("object_type") == "discovery_no_result":
+            continue
         url = result["source_receipt"]["canonical_url"]
-        if url in sources:
-            raise ValueError(f"Run {run_id} has duplicate canonical URL: {url}")
-        sources[url] = (str(path.relative_to(root)), result)
+        query = result.get("query_receipt", {}).get("query", "")
+        identity = (url, query)
+        if identity in sources:
+            raise ValueError(
+                f"Run {run_id} has duplicate Source observation for URL and query: {url}"
+            )
+        sources[identity] = (str(path.relative_to(root)), result)
     return sources
 
 
@@ -83,9 +91,10 @@ def compare_runs(
     previous = load_run_sources(root, previous_run_id) if previous_run_id else {}
     changes: list[dict[str, Any]] = []
 
-    for url in sorted(set(current) | set(previous)):
-        current_entry = current.get(url)
-        previous_entry = previous.get(url)
+    for identity in sorted(set(current) | set(previous)):
+        url, observation_query = identity
+        current_entry = current.get(identity)
+        previous_entry = previous.get(identity)
         current_ref, current_result = current_entry if current_entry else (None, None)
         previous_ref, previous_result = previous_entry if previous_entry else (None, None)
         current_fingerprint = content_fingerprint(current_result) if current_result else None
@@ -103,7 +112,9 @@ def compare_runs(
                 reasons.append(f"Current retrieval status is {status}")
             elif previous_result is None:
                 classification = "new"
-                reasons.append("No matching canonical URL exists in the previous Run")
+                reasons.append(
+                    "No matching canonical URL and assigned query observation exists in the previous Run"
+                )
             elif current_fingerprint != previous_fingerprint:
                 classification = "changed"
                 reasons.append("The stable content fingerprint differs from the previous Run")
@@ -121,6 +132,7 @@ def compare_runs(
         changes.append(
             {
                 "canonical_url": url,
+                "observation_query": observation_query or None,
                 "classification": classification,
                 "current_source_ref": current_ref,
                 "previous_source_ref": previous_ref,
@@ -140,15 +152,17 @@ def compare_runs(
         "previous_run_id": previous_run_id,
         "generated_at": generated_at or isoformat(),
         "comparison_basis": {
-            "identity_key": "canonical_url",
+            "identity_key": "canonical_url + query_receipt.query",
             "preferred_fingerprint": "retrieved_content_sha256",
             "fallback_fingerprint": "stable source metadata and retained candidate passages",
         },
         "summary": summary,
         "changes": changes,
         "caveat": (
-            "not-observed means only that a prior URL was not selected in this Run; "
-            "it is not evidence that the source was withdrawn or became unavailable."
+            "Each item is a URL-and-query observation so one official document may "
+            "legitimately appear under multiple assigned scopes. not-observed means "
+            "only that a prior observation was not selected in this Run; it is not "
+            "evidence that the source was withdrawn or became unavailable."
         ),
     }
 

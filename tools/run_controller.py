@@ -907,6 +907,8 @@ def _expand_followups(
         if not output_refs:
             return None
         result = read_json(root / output_refs[0])
+        if result.get("object_type") == "discovery_no_result":
+            return "no-result"
         try:
             return result["source_receipt"]["rights"]["acquisition_decision"]
         except KeyError as exc:
@@ -919,12 +921,16 @@ def _expand_followups(
         if not output_refs:
             return None
         result = read_json(root / output_refs[0])
+        if result.get("object_type") == "discovery_no_result":
+            return None
         return result.get("source_receipt", {}).get("source_id")
 
     for parent in existing:
         if parent.get("kind") != "source-discovery" or parent.get("status") != "completed":
             continue
         decision = source_decision(parent)
+        if decision == "no-result":
+            continue
         if decision not in {"evidence-excerpt", "approved-snapshot"}:
             for source_result_ref in parent.get("output_refs", []):
                 skipped_evidence_sources[source_result_ref] = {
@@ -1351,6 +1357,21 @@ def _expand_followups(
         manifest["metrics"]["work_items_total"] = len(existing) + len(additions)
     manifest["skipped_evidence_sources"] = sorted(
         skipped_evidence_sources.values(), key=lambda item: item["source_result_ref"]
+    )
+    manifest["no_result_discoveries"] = sorted(
+        (
+            {
+                "work_item_id": item["work_item_id"],
+                "result_ref": item["output_refs"][0],
+            }
+            for item in existing
+            if item.get("kind") == "source-discovery"
+            and item.get("status") == "completed"
+            and item.get("output_refs")
+            and read_json(root / item["output_refs"][0]).get("object_type")
+            == "discovery_no_result"
+        ),
+        key=lambda item: item["work_item_id"],
     )
     atomic_write_json(manifest_path, manifest)
     return {"created": additions, "manifest": manifest}

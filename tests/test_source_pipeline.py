@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from extract_evidence import extract, validate_assignment as validate_extraction  # noqa: E402
 from openfs_runtime import read_json  # noqa: E402
 from register_source import canonicalize_url, register_capture, validate_assignment  # noqa: E402
+from register_no_result import create as create_no_result  # noqa: E402
 
 
 class SourcePipelineTests(unittest.TestCase):
@@ -179,6 +180,51 @@ class SourcePipelineTests(unittest.TestCase):
                 agent_id="extraction-public-01",
                 output_ref="proposals/evidence/RUN/WORK-000002.json",
             )
+
+    def test_no_result_records_search_without_inventing_source(self):
+        item = {
+            "run_id": "RUN-PILOT-TEST",
+            "work_item_id": "WORK-000010",
+            "kind": "source-discovery",
+            "status": "leased",
+            "lease": {
+                "agent_id": "discovery-public-01",
+                "acquired_at": "2026-08-24T00:00:00Z",
+            },
+            "payload": {
+                "query": "official center power plan",
+                "languages": ["en"],
+                "subject_ids": ["CENTER-TEST"],
+                "profile_fields": ["power"],
+                "query_template_id": "FOLLOWUP-CENTER-TEST",
+            },
+        }
+        result = create_no_result(
+            {
+                "query": {
+                    "text": "official center power plan",
+                    "language": "en",
+                    "retrieval_method": "web-search",
+                    "executed_at": "2026-08-24T00:00:00Z",
+                    "candidates": [
+                        {"url": "https://example.org/general", "rank": 1}
+                    ],
+                    "failures": [
+                        {
+                            "kind": "no-responsive-official-source",
+                            "detail": "The candidate did not address power.",
+                            "coverage_impact": "warning",
+                        }
+                    ],
+                }
+            },
+            work_item=item,
+            agent_id="discovery-public-01",
+            acquisition_policy=self.policy,
+        )
+        self.assertEqual("discovery_no_result", result["object_type"])
+        self.assertNotIn("source_receipt", result)
+        self.assertEqual(["power"], result["assignment_scope"]["profile_fields"])
 
 
 if __name__ == "__main__":

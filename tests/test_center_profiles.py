@@ -142,6 +142,23 @@ class CenterProfileCoverageTests(unittest.TestCase):
         self.assertEqual(15, report["observed"]["accepted_current_count"])
         self.assertFalse(any(report["gaps"].values()))
 
+    def test_date_only_profile_accepts_one_day_timezone_rollover(self):
+        profile = self.profile(self.registry["centers"][0], status="accepted")
+        self.write_profile(profile)
+        self.write_accepted_decision(profile)
+        report = evaluate(
+            self.root,
+            run_id="RUN-CENTER-PROFILES",
+            evaluated_at="2026-08-23T20:00:00Z",
+        )
+        observed = report["observed"]["profiles"][0]
+        self.assertEqual(0, observed["profile_age_days"])
+        self.assertTrue(observed["field_evidence_complete"])
+        self.assertNotIn(
+            profile["center_id"],
+            {item["center_id"] for item in report["gaps"]["stale_profiles"]},
+        )
+
     def test_profile_proposal_preserves_unknowns_and_rejects_unassigned_evidence(self):
         center = self.registry["centers"][0]
         draft = {

@@ -14,6 +14,16 @@ from openfs_runtime import atomic_write_json, isoformat, read_json, stable_diges
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def monitor_object_types(monitor: dict[str, Any]) -> list[str]:
+    configured = monitor.get("consensus_object_types")
+    if configured:
+        return configured
+    synthesis_product = monitor.get("synthesis_product")
+    if synthesis_product == "center-profile":
+        return ["center_profile"]
+    return ["claim"]
+
+
 def _usable(agent: dict[str, Any], *, pilot: bool) -> bool:
     return bool(
         (agent.get("enabled") or pilot)
@@ -173,7 +183,7 @@ def evaluate_run(root: Path, run_id: str) -> dict[str, Any]:
         run_id=run_id,
         registry=registry,
         policy=policy,
-        object_types=monitor.get("consensus_object_types", ["claim"]),
+        object_types=monitor_object_types(monitor),
         pilot=manifest.get("mode") == "pilot",
     )
 

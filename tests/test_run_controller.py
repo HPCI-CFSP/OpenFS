@@ -579,6 +579,56 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual("evidence-extraction", first["created"][0]["kind"])
         self.assertEqual("extraction", first["created"][0]["required_role"])
 
+    def test_no_result_discovery_completes_without_replacement_or_extraction(self):
+        run_id = "RUN-PILOT-NO-RESULT"
+        create_run(
+            self.root,
+            run_id=run_id,
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        leased = lease_next(
+            self.root,
+            run_id=run_id,
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        output_ref = leased["output_paths"][0]
+        output = self.root / output_ref
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            json.dumps(
+                {
+                    "object_type": "discovery_no_result",
+                    "query_receipt": {
+                        "query": leased["payload"]["query"],
+                        "failures": [
+                            {
+                                "kind": "no-responsive-official-source",
+                                "detail": "No responsive source found.",
+                                "coverage_impact": "warning",
+                            }
+                        ],
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        complete_work_item(
+            self.root,
+            run_id=run_id,
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+        )
+        expanded = expand_followups(self.root, run_id=run_id)
+        self.assertEqual([], expanded["created"])
+        self.assertEqual(
+            leased["work_item_id"],
+            expanded["manifest"]["no_result_discoveries"][0]["work_item_id"],
+        )
+
     def test_two_source_slots_expand_one_query_synthesis(self):
         create_run(
             self.root,
