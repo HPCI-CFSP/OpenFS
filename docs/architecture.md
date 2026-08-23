@@ -147,6 +147,14 @@ revalidation; a not-observed predecessor creates a reobservation gap without
 asserting withdrawal. The report is append-only review input and never silently
 rewrites a prior Claim or Decision.
 
+`tools/promote_claim.py` is the narrow canonical path for non-Recommendation
+Claims. It requires an accepted Decision with every check passing under the
+Run-pinned calibrated Consensus Policy, recomputes Evidence and Source Lineage
+references, and rejects any unresolved dependency-impact block. The resulting
+append-only record in `knowledge/claims/` pins Proposal, Decision, Evidence, and
+dependency-report digests. Recommendation Claims remain outside this automatic
+path and require the human-accountable Recommendation Gate.
+
 All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
 
 ## Center-aware scenario projection

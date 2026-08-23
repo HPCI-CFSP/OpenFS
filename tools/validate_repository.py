@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     "docs/operations/automation-setup.md",
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
+    "knowledge/README.md",
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
@@ -53,6 +54,7 @@ REQUIRED_FILES = [
     "config/publication-i18n.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
+    "schemas/canonical-claim.schema.json",
     "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
@@ -109,6 +111,7 @@ REQUIRED_FILES = [
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
     "tools/promote_research_topic.py",
+    "tools/promote_claim.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
     "tools/openfs_runtime.py",
@@ -1392,6 +1395,71 @@ def validate_scenario_configuration(root: Path) -> list[str]:
     return errors
 
 
+def validate_canonical_claims(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in sorted((root / "knowledge" / "claims").glob("CLM-*.json")):
+        record = load_json(path)
+        claim = record.get("claim", {})
+        provenance = record.get("provenance", {})
+        claim_id = record.get("canonical_claim_id")
+        relative = path.relative_to(root)
+        if path.stem != claim_id or claim.get("claim_id") != claim_id:
+            errors.append(f"Canonical Claim identity differs: {relative}")
+        if claim.get("status") != "accepted":
+            errors.append(f"Canonical Claim is not accepted: {relative}")
+        expected_promotion_digest = stable_digest(
+            {"claim": claim, "provenance": provenance}
+        )
+        if record.get("promotion_digest") != expected_promotion_digest:
+            errors.append(f"Canonical Claim promotion digest differs: {relative}")
+
+        proposal_ref = provenance.get("proposal_ref", "")
+        decision_ref = provenance.get("decision_ref", "")
+        proposal_path = root / proposal_ref
+        decision_path = root / decision_ref
+        if not proposal_path.is_file():
+            errors.append(f"Canonical Claim Proposal is missing: {relative}")
+            continue
+        if not decision_path.is_file():
+            errors.append(f"Canonical Claim Decision is missing: {relative}")
+            continue
+        proposal = load_json(proposal_path)
+        decision = load_json(decision_path)
+        if provenance.get("proposal_digest") != stable_digest(proposal):
+            errors.append(f"Canonical Claim Proposal digest differs: {relative}")
+        if provenance.get("decision_digest") != stable_digest(decision):
+            errors.append(f"Canonical Claim Decision digest differs: {relative}")
+        if (
+            decision.get("proposal_id") != proposal.get("proposal_id")
+            or decision.get("outcome") != "accepted"
+        ):
+            errors.append(f"Canonical Claim Decision is not accepted for Proposal: {relative}")
+        if provenance.get("policy_id") != decision.get("policy_id"):
+            errors.append(f"Canonical Claim Policy identity differs: {relative}")
+        if proposal.get("claim_candidate", {}).get("claim_id") != claim_id:
+            errors.append(f"Canonical Claim Proposal identity differs: {relative}")
+
+        bundle_refs = provenance.get("evidence_bundle_refs", [])
+        if bundle_refs != proposal.get("evidence_bundle_refs", []):
+            errors.append(f"Canonical Claim Evidence references differ: {relative}")
+        declared_digests = provenance.get("evidence_bundle_digests", {})
+        if set(declared_digests) != set(bundle_refs):
+            errors.append(f"Canonical Claim Evidence digest keys differ: {relative}")
+        for bundle_ref in bundle_refs:
+            bundle_path = root / bundle_ref
+            if not bundle_path.is_file():
+                errors.append(
+                    f"Canonical Claim Evidence bundle is missing: {bundle_ref}"
+                )
+            elif declared_digests.get(bundle_ref) != stable_digest(
+                load_json(bundle_path)
+            ):
+                errors.append(
+                    f"Canonical Claim Evidence bundle digest differs: {bundle_ref}"
+                )
+    return errors
+
+
 def run(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     errors.extend(validate_required_files(root))
@@ -1414,6 +1482,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
+    if (root / "knowledge" / "claims").exists():
+        errors.extend(validate_canonical_claims(root))
     if (root / "config" / "global-technology-scope.json").exists():
         errors.extend(validate_global_technology_scope(root))
     if (root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json").exists():

@@ -50,9 +50,10 @@
 
 ## Phase 3: canonical promotion
 
-- [ ] Implement Decision-to-canonical promotion.
+- [x] Implement Decision-to-canonical promotion for accepted non-Recommendation Claims.
+- [ ] Extend canonical promotion to Findings and reviewed Center Profiles.
 - [x] Generate dependency-impact promotion blocks for changed or unavailable Sources without treating search omission as withdrawal.
-- [ ] Enforce dependency-impact clearance in Decision-to-canonical promotion once that path is implemented.
+- [x] Enforce unresolved dependency-impact blocks in Claim promotion.
 - [ ] Generate indexes and `TBD.md` from accepted records.
 - [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
 - [ ] Add promotion pull requests and rollback support.

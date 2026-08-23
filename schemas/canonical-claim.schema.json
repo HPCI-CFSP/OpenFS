@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/canonical-claim.schema.json",
+  "title": "OpenFS Canonical Claim",
+  "type": "object",
+  "required": ["schema_version", "canonical_claim_id", "claim", "provenance", "promoted_at", "promotion_digest"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "canonical_claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "claim": {"$ref": "claim.schema.json"},
+    "provenance": {
+      "type": "object",
+      "required": ["proposal_ref", "proposal_digest", "decision_ref", "decision_digest", "policy_id", "evidence_bundle_refs", "evidence_bundle_digests", "dependency_impact_refs_checked"],
+      "properties": {
+        "proposal_ref": {"type": "string"},
+        "proposal_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "decision_ref": {"type": "string"},
+        "decision_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "policy_id": {"type": "string"},
+        "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "evidence_bundle_digests": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "dependency_impact_refs_checked": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "promoted_at": {"type": "string", "format": "date-time"},
+    "promotion_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
