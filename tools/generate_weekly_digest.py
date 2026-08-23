@@ -59,6 +59,8 @@ def build_digest(
     failures: list[dict[str, Any]] = []
     exceptions: list[dict[str, Any]] = []
     temporal_failure_count = 0
+    continuity_failure_count = 0
+    ineffective_followup_count = 0
     publication_blocked_count = 0
     change_totals = {
         name: 0 for name in ("new", "changed", "unchanged", "unavailable", "not-observed")
@@ -78,9 +80,61 @@ def build_digest(
         temporal_ref = manifest.get("temporal_integrity_ref")
         temporal = read_json(root / temporal_ref) if temporal_ref else None
         temporal_status = temporal.get("status", "not-evaluated") if temporal else "not-evaluated"
-        publication_blocked = bool(temporal and temporal.get("publication_blocked"))
+        continuity_ref = manifest.get("profile_continuity_ref")
+        continuity = read_json(root / continuity_ref) if continuity_ref else None
+        continuity_status = (
+            continuity.get("status", "not-evaluated")
+            if continuity
+            else "not-evaluated"
+        )
+        effectiveness_ref = manifest.get("followup_effectiveness_ref")
+        effectiveness = read_json(root / effectiveness_ref) if effectiveness_ref else None
+        effectiveness_status = (
+            effectiveness.get("status", "not-evaluated")
+            if effectiveness
+            else "not-evaluated"
+        )
+        run_exceptions = []
+        for path in sorted((root / "reviews" / "exceptions" / run_id).glob("*.json")):
+            exception = read_json(path)
+            if exception.get("status") != "open":
+                continue
+            run_exceptions.append(
+                {
+                    "exception_id": exception["exception_id"],
+                    "run_id": run_id,
+                    "exception_kind": exception.get(
+                        "exception_kind",
+                        exception.get("error", {}).get("kind", "work-item-failure"),
+                    ),
+                    "exception_ref": str(path.relative_to(root)),
+                    "requires_owner_action": exception.get(
+                        "requires_owner_action", True
+                    ),
+                    "publication_blocked": exception.get(
+                        "publication_blocked", False
+                    ),
+                }
+            )
+        exceptions.extend(run_exceptions)
+        publication_block_reasons = []
+        if temporal and temporal.get("publication_blocked"):
+            publication_block_reasons.append("temporal-integrity")
+        if continuity and continuity.get("publication_blocked"):
+            publication_block_reasons.append("profile-continuity")
+        publication_block_reasons.extend(
+            item["exception_kind"]
+            for item in run_exceptions
+            if item["publication_blocked"]
+        )
+        publication_block_reasons = sorted(set(publication_block_reasons))
+        publication_blocked = bool(publication_block_reasons)
         if temporal_status == "failed":
             temporal_failure_count += 1
+        if continuity_status == "failed":
+            continuity_failure_count += 1
+        if effectiveness_status == "ineffective":
+            ineffective_followup_count += 1
         if publication_blocked:
             publication_blocked_count += 1
         run_summaries.append(
@@ -93,7 +147,16 @@ def build_digest(
                 "coverage_status": coverage.get("coverage_status") if coverage else "not-evaluated",
                 "consensus_readiness": readiness.get("status") if readiness else "not-evaluated",
                 "temporal_integrity": temporal_status,
+                "profile_continuity": continuity_status,
+                "followup_effectiveness": effectiveness_status,
+                "effective_followup_queries": (
+                    effectiveness.get("effective_query_count") if effectiveness else None
+                ),
+                "followup_query_count": (
+                    effectiveness.get("query_count") if effectiveness else None
+                ),
                 "publication_blocked": publication_blocked,
+                "publication_block_reasons": publication_block_reasons,
                 "consensus_outcomes": manifest.get("metrics", {}).get("consensus_outcomes", {}),
                 "cost": manifest.get("cost", {"measurement_status": "unreported"}),
             }
@@ -157,24 +220,6 @@ def build_digest(
                         "error_kind": item.get("last_error", {}).get("kind", "unknown"),
                     }
                 )
-        for path in sorted((root / "reviews" / "exceptions" / run_id).glob("*.json")):
-            exception = read_json(path)
-            if exception.get("status") == "open":
-                exceptions.append(
-                    {
-                        "exception_id": exception["exception_id"],
-                        "run_id": run_id,
-                        "exception_kind": exception.get(
-                            "exception_kind",
-                            exception.get("error", {}).get("kind", "work-item-failure"),
-                        ),
-                        "exception_ref": str(path.relative_to(root)),
-                        "requires_owner_action": exception.get(
-                            "requires_owner_action", True
-                        ),
-                    }
-                )
-
     pending_directives = []
     for path in sorted((root / "reviews" / "directives").glob("DIR-*.json")):
         directive = read_json(path)
@@ -210,6 +255,8 @@ def build_digest(
             "coverage_gap_count": len(gaps),
             "failure_count": len(failures),
             "temporal_failure_count": temporal_failure_count,
+            "continuity_failure_count": continuity_failure_count,
+            "ineffective_followup_count": ineffective_followup_count,
             "publication_blocked_count": publication_blocked_count,
         },
         "runs": run_summaries,
@@ -237,8 +284,8 @@ def render_markdown(digest: dict[str, Any]) -> str:
         "",
         "## Run summary",
         "",
-        "| Run | Task / Monitor | Run status | Research | Coverage | Consensus capacity | Time audit | Publication | Cost |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| Run | Task / Monitor | Run status | Research | Coverage | Consensus capacity | Time audit | Continuity | Follow-up yield | Publication | Cost |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for run in digest["runs"]:
         cost = run["cost"]
@@ -246,14 +293,21 @@ def render_markdown(digest: dict[str, Any]) -> str:
         cost_text = cost.get("measurement_status", "unreported")
         if amount is not None:
             cost_text += f" (${amount:.4f} reported)"
+        followup_text = run["followup_effectiveness"]
+        if run["followup_query_count"] is not None:
+            followup_text += (
+                f" ({run['effective_followup_queries']}/{run['followup_query_count']})"
+            )
         lines.append(
             f"| `{run['run_id']}` | `{run['task_id']}` / `{run['monitor_id']}` | "
             f"{run['status']} | {run['research_status']} | {run['coverage_status']} | "
             f"{run['consensus_readiness']} | {run['temporal_integrity']} | "
-            f"{'blocked' if run['publication_blocked'] else 'not blocked'} | {cost_text} |"
+            f"{run['profile_continuity']} | "
+            f"{followup_text} | "
+            f"{'blocked: ' + ', '.join(run['publication_block_reasons']) if run['publication_blocked'] else 'not blocked'} | {cost_text} |"
         )
     if not digest["runs"]:
-        lines.append("| None | - | - | - | - | - | - | - | - |")
+        lines.append("| None | - | - | - | - | - | - | - | - | - | - |")
     lines.extend(
         [
             "",

@@ -73,6 +73,7 @@ REQUIRED_FILES = [
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/center-profile-coverage.schema.json",
+    "schemas/followup-effectiveness.schema.json",
     "schemas/profile-continuity.schema.json",
     "schemas/temporal-integrity.schema.json",
     "schemas/center-research-brief.schema.json",
@@ -105,6 +106,7 @@ REQUIRED_FILES = [
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
     "tools/evaluate_center_profiles.py",
+    "tools/evaluate_followup_effectiveness.py",
     "tools/evaluate_profile_continuity.py",
     "tools/evaluate_temporal_integrity.py",
     "tools/generate_center_research_brief.py",
@@ -441,6 +443,28 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 ):
                     errors.append(
                         f"Run {run_id} profile continuity regression count differs"
+                    )
+        effectiveness_ref = manifest.get("followup_effectiveness_ref")
+        if effectiveness_ref:
+            effectiveness_path = root / effectiveness_ref
+            if not effectiveness_path.is_file():
+                errors.append(
+                    f"Run {run_id} follow-up effectiveness report is missing: {effectiveness_ref}"
+                )
+            else:
+                effectiveness = load_json(effectiveness_path)
+                effectiveness_metric = manifest.get("metrics", {}).get(
+                    "followup_effectiveness", {}
+                )
+                if effectiveness.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} follow-up effectiveness identity differs")
+                if effectiveness.get("status") != effectiveness_metric.get("status"):
+                    errors.append(f"Run {run_id} follow-up effectiveness status differs")
+                if effectiveness.get("effective_query_count") != effectiveness_metric.get(
+                    "effective_query_count"
+                ):
+                    errors.append(
+                        f"Run {run_id} follow-up effectiveness count differs"
                     )
         temporal_ref = manifest.get("temporal_integrity_ref")
         if temporal_ref:

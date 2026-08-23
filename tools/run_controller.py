@@ -1629,9 +1629,17 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
         if manifest.get("followup_plan") and any(
             (root / "proposals" / "center-profiles" / run_id).glob("*.json")
         ):
+            from evaluate_followup_effectiveness import evaluate as evaluate_followup_effectiveness
+            from evaluate_followup_effectiveness import record as record_followup_effectiveness
             from evaluate_profile_continuity import evaluate as evaluate_profile_continuity
             from evaluate_profile_continuity import record as record_profile_continuity
 
+            effectiveness = evaluate_followup_effectiveness(
+                root,
+                run_id=run_id,
+                evaluated_at=manifest["completed_at"],
+            )
+            record_followup_effectiveness(root, effectiveness)
             continuity = evaluate_profile_continuity(
                 root,
                 run_id=run_id,

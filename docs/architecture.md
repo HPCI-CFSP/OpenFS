@@ -138,6 +138,10 @@ Repeated unresolved gaps advance a recorded search generation: center-domain sea
 then institution-wide procurement and annual-report search, then cross-domain primary
 records. Each generation pins the preceding query digest so agents do not silently
 repeat an ineffective search forever.
+`tools/evaluate_followup_effectiveness.py` compares each consumed query's target
+fields with the preceding profile and distinguishes stronger status, refreshed
+Evidence at equal status, no change, and regression. This operational metric guides
+the next search generation; it never promotes a finding.
 
 Recurring Center Runs are cumulative at field level. A new draft prefers current-Run
 Evidence when it is at least as strong as the preceding field. A stronger preceding

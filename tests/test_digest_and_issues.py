@@ -47,11 +47,25 @@ class DigestAndIssueTests(unittest.TestCase):
                 "metrics": {"consensus_outcomes": {"provisional": 1}},
                 "cost": {"measurement_status": "unreported", "reported_total_usd": None},
                 "temporal_integrity_ref": f"runs/{run_id}/temporal-integrity.json",
+                "profile_continuity_ref": f"runs/{run_id}/profile-continuity.json",
+                "followup_effectiveness_ref": f"runs/{run_id}/followup-effectiveness.json",
             },
         )
         self.write_json(
             f"runs/{run_id}/temporal-integrity.json",
+            {"status": "passed", "publication_blocked": False},
+        )
+        self.write_json(
+            f"runs/{run_id}/profile-continuity.json",
             {"status": "failed", "publication_blocked": True},
+        )
+        self.write_json(
+            f"runs/{run_id}/followup-effectiveness.json",
+            {
+                "status": "partially-effective",
+                "effective_query_count": 2,
+                "query_count": 3,
+            },
         )
         self.write_json(
             f"runs/{run_id}/inputs/monitor.json", {"maximum_unchecked_days": 7}
@@ -93,13 +107,25 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["coverage_gap_count"])
         self.assertEqual(1, len(digest["stale_sources"]))
         self.assertEqual(1, digest["summary"]["owner_action_count"])
-        self.assertEqual(1, digest["summary"]["temporal_failure_count"])
+        self.assertEqual(0, digest["summary"]["temporal_failure_count"])
+        self.assertEqual(1, digest["summary"]["continuity_failure_count"])
+        self.assertEqual(0, digest["summary"]["ineffective_followup_count"])
         self.assertEqual(1, digest["summary"]["publication_blocked_count"])
-        self.assertEqual("failed", digest["runs"][0]["temporal_integrity"])
+        self.assertEqual("passed", digest["runs"][0]["temporal_integrity"])
+        self.assertEqual("failed", digest["runs"][0]["profile_continuity"])
+        self.assertEqual(
+            "partially-effective", digest["runs"][0]["followup_effectiveness"]
+        )
+        self.assertEqual(2, digest["runs"][0]["effective_followup_queries"])
         self.assertTrue(digest["runs"][0]["publication_blocked"])
+        self.assertEqual(
+            ["profile-continuity"],
+            digest["runs"][0]["publication_block_reasons"],
+        )
         rendered = render_markdown(digest)
         self.assertIn("resolve", rendered)
         self.assertIn("blocked", rendered)
+        self.assertIn("partially-effective (2/3)", rendered)
 
     def test_issue_payload_excludes_untrusted_raw_error_and_is_idempotent(self):
         exception = {
