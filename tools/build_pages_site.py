@@ -129,8 +129,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     if topic["topic_id"] in initial_ids
                     else topic.get("catalog_origin", "human-directive")
                 ),
-                "research_questions": topic["research_questions"],
-                "outputs": topic["outputs"],
             }
         )
 
@@ -163,15 +161,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     strict=True,
                 )
             ],
-            "scope_rule": {
-                "ja": i18n["technology_landscape"]["scope_rule_ja"],
-                "en": technology_scope["scope_rule"],
-            },
-            "priority_rule": {
-                "ja": i18n["technology_landscape"]["priority_rule_ja"],
-                "en": technology_scope["priority_rule"],
-            },
-            "priority_regions": technology_scope["priority_regions"],
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "scenarios": scenarios,

@@ -29,7 +29,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue(
                 all(set(category) == {"ja", "en"} for category in result["technology_landscape"]["categories"])
             )
-            self.assertEqual(["Japan"], result["technology_landscape"]["priority_regions"])
+            self.assertNotIn("scope_rule", result["technology_landscape"])
+            self.assertNotIn("priority_rule", result["technology_landscape"])
+            self.assertNotIn("priority_regions", result["technology_landscape"])
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
@@ -38,6 +40,10 @@ class PagesSiteTests(unittest.TestCase):
             index = (output / "index.html").read_text(encoding="utf-8")
             self.assertIn('href="#technology-landscape"', index)
             self.assertNotIn('href="#domestic"', index)
+            app = (output / "app.js").read_text(encoding="utf-8")
+            for public_copy in (index, app, rendered):
+                self.assertNotIn("日本発技術を優先", public_copy)
+                self.assertNotIn("Priority coverage for Japan", public_copy)
 
     def test_publication_policy_rejects_candidate_scenario_status(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))
