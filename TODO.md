@@ -14,10 +14,12 @@
 - [x] Add broad domestic-technology scope and weekly coverage monitor.
 - [x] Add additive AI Topic proposal, Consensus, promotion, and Work Item expansion flow.
 - [x] Add a GitHub Pages-ready public view and guarded deployment workflow.
-- [x] Document license options and recommend Apache-2.0 pending ownership approval.
+- [x] Document license options and adopt Apache-2.0 for project-authored material.
+- [x] Add Japanese/English switching and bilingual publication validation to GitHub Pages.
+- [x] Require a matching human publication Directive before a scenario or report reaches Pages.
 - [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
-- [ ] Select and add a project license.
-- [ ] Confirm the copyright holder and approve Apache-2.0 or an alternative through a Directive.
+- [x] Select and add the Apache-2.0 project license.
+- [ ] Review institutional copyright and contribution authority before accepting external contributions.
 - [ ] Confirm repository visibility and member access policy.
 - [ ] Confirm the authoritative HPCI evaluation criteria and their owners.
 

@@ -26,7 +26,8 @@ def validate_and_promote(
     decision: dict[str, Any],
     baseline: dict[str, Any],
     monitor: dict[str, Any],
-) -> tuple[dict[str, Any], dict[str, Any]]:
+    i18n: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     if proposal.get("object_type") != "research_topic":
         raise ValueError("proposal object_type must be research_topic")
     if proposal.get("change_type") != "additive":
@@ -49,7 +50,7 @@ def validate_and_promote(
         raise ValueError(f"invalid topic domain: {candidate.get('domain')}")
     if candidate.get("review_cadence") not in CADENCES:
         raise ValueError(f"invalid review cadence: {candidate.get('review_cadence')}")
-    for field in ("title_ja", "research_questions", "evidence_expected", "outputs", "source_refs"):
+    for field in ("title_ja", "title_en", "research_questions", "evidence_expected", "outputs", "source_refs"):
         if not candidate.get(field):
             raise ValueError(f"candidate topic has no {field}")
 
@@ -72,6 +73,7 @@ def validate_and_promote(
         raise ValueError("research-topic proposal requires falsification queries")
 
     promoted_baseline = deepcopy(baseline)
+    title_en = candidate.pop("title_en")
     candidate.update(
         {
             "status": "not-started",
@@ -106,7 +108,12 @@ def validate_and_promote(
             "status": "active",
         }
     )
-    return promoted_baseline, promoted_monitor
+    promoted_i18n = deepcopy(i18n)
+    titles_en = promoted_i18n.setdefault("topic_titles_en", {})
+    if topic_id in titles_en:
+        raise ValueError(f"publication i18n already contains topic: {topic_id}")
+    titles_en[topic_id] = title_en
+    return promoted_baseline, promoted_monitor, promoted_i18n
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -120,18 +127,22 @@ def main() -> int:
     parser.add_argument("--decision", required=True, type=Path)
     parser.add_argument("--baseline", required=True, type=Path)
     parser.add_argument("--monitor", required=True, type=Path)
+    parser.add_argument("--i18n", required=True, type=Path)
     parser.add_argument("--output-baseline", required=True, type=Path)
     parser.add_argument("--output-monitor", required=True, type=Path)
+    parser.add_argument("--output-i18n", required=True, type=Path)
     args = parser.parse_args()
 
-    promoted_baseline, promoted_monitor = validate_and_promote(
+    promoted_baseline, promoted_monitor, promoted_i18n = validate_and_promote(
         load_json(args.proposal),
         load_json(args.decision),
         load_json(args.baseline),
         load_json(args.monitor),
+        load_json(args.i18n),
     )
     write_json(args.output_baseline, promoted_baseline)
     write_json(args.output_monitor, promoted_monitor)
+    write_json(args.output_i18n, promoted_i18n)
     print(
         f"Promoted {promoted_baseline['topics'][-1]['topic_id']} via "
         f"{promoted_baseline['topics'][-1]['added_by_decision_id']}"

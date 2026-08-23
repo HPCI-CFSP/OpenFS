@@ -1,8 +1,8 @@
 # OpenFS License Decision
 
-## Recommendation
+## Decision
 
-Use **Apache License 2.0** for the project-authored repository as the initial license, after confirming the copyright holder and authority to license contributions.
+OpenFS adopted the **Apache License 2.0** for project-authored repository material on 2026-08-23 by human direction. The repository includes `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`.
 
 It permits academic, public-sector, and commercial use and modification, includes an explicit contributor patent license and patent-termination clause, supports contributions without forcing downstream products to open their own code, and can cover source code, configuration, schemas, and documentation in one repository-wide rule.
 
@@ -21,12 +21,12 @@ Add a boundary notice stating that the license applies only to material for whic
 
 Creative Commons recommends using software-specific licenses rather than CC licenses for software. If OpenFS later dual-licenses original documentation or reports under CC BY 4.0, code, schemas, and tools should remain under a software license.
 
-## Required human confirmation before adding `LICENSE`
+## Applied boundary
 
-1. Identify the copyright holder: HPCI-CFSP, RIKEN, individual contributors, or another authorized entity.
-2. Confirm contributors and participating institutions are permitted to license their contributions under Apache-2.0.
-3. Confirm whether project-authored reports should remain Apache-2.0 or use a separate CC BY 4.0 content license.
-4. Approve the third-party-material boundary and preferred copyright notice.
-5. Record the decision in a reviewed Directive, then add `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md` together.
+1. `NOTICE` attributes OpenFS to HPCI-CFSP contributors without removing any individual or institutional copyright.
+2. Apache-2.0 applies only to material a Contributor is authorized to license.
+3. Linked reports, papers, vendor material, quotations, trademarks, datasets, and other third-party works are not relicensed.
+4. Project-authored reports remain Apache-2.0 for now. A future human decision may place original report content under CC BY 4.0 without changing the software license.
+5. Before accepting external Contributions, review institutional copyright authority and whether a Contributor Agreement is needed for future relicensing.
 
-Until these points are confirmed, the repository remains publicly visible but not open-source licensed.
+Previously published Apache-2.0 releases remain available under their granted terms even if a future release adopts an additional or different license.

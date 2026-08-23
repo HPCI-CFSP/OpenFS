@@ -22,6 +22,8 @@ def public_projection(
     artifact: dict[str, Any],
     fields: list[str],
     required_metadata: dict[str, Any],
+    required_bilingual_fields: list[str],
+    approved_directives: dict[str, set[str]],
     label: str,
 ) -> dict[str, Any]:
     publication = artifact.get("publication")
@@ -32,11 +34,34 @@ def public_projection(
             raise ValueError(f"{label} has invalid publication metadata: {key}")
     if not publication.get("publication_decision_id"):
         raise ValueError(f"{label} has no publication decision")
+    directive_id = publication.get("human_approval_directive_id")
+    artifact_id = artifact.get("scenario_id") or artifact.get("report_id")
+    if not directive_id or artifact_id not in approved_directives.get(directive_id, set()):
+        raise ValueError(f"{label} has no matching human publication Directive")
+    missing_languages = [key for key in required_bilingual_fields if not artifact.get(key)]
+    if missing_languages:
+        raise ValueError(f"{label} lacks bilingual fields: {missing_languages}")
     return {key: artifact[key] for key in fields if key in artifact}
+
+
+def approved_publication_directives(root: Path, policy: dict[str, Any]) -> dict[str, set[str]]:
+    allowed_statuses = set(policy["human_publication_directive_statuses"])
+    approvals: dict[str, set[str]] = {}
+    for path in sorted(root.glob(policy["human_publication_directive_glob"])):
+        directive = load_json(path)
+        if directive.get("directive_type") != "publication-approval":
+            continue
+        if directive.get("status") not in allowed_statuses:
+            continue
+        if not directive.get("submitted_by") or not directive.get("submitted_at"):
+            continue
+        approvals[directive["directive_id"]] = set(directive.get("publication_targets", []))
+    return approvals
 
 
 def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
     allowed = set(policy["accepted_scenario_statuses"])
+    directives = approved_publication_directives(root, policy)
     scenarios: list[dict[str, Any]] = []
     for path in sorted(root.glob(policy["accepted_scenario_glob"])):
         payload = load_json(path)
@@ -50,6 +75,8 @@ def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]
                     scenario,
                     policy["scenario_public_fields"],
                     policy["required_publication_metadata"],
+                    policy["scenario_required_bilingual_fields"],
+                    directives,
                     f"scenario {scenario.get('scenario_id', path.name)}",
                 )
             )
@@ -61,6 +88,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
     if not index_path.exists():
         return []
     allowed = set(policy["accepted_report_statuses"])
+    directives = approved_publication_directives(root, policy)
     reports = load_json(index_path).get("reports", [])
     projected_reports = []
     for report in reports:
@@ -73,6 +101,8 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
                 report,
                 policy["report_public_fields"],
                 policy["required_publication_metadata"],
+                policy["report_required_bilingual_fields"],
+                directives,
                 f"report {report.get('report_id', 'unknown')}",
             )
         )
@@ -81,6 +111,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
 
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
+    i18n = load_json(root / policy["included_i18n"])
     domestic = load_json(root / "config" / "domestic-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
     domestic_ids = set(domestic["topic_ids"])
@@ -91,6 +122,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 "topic_id": topic["topic_id"],
                 "domain": topic["domain"],
                 "title_ja": topic["title_ja"],
+                "title_en": i18n["topic_titles_en"][topic["topic_id"]],
                 "status": topic["status"],
                 "review_cadence": topic["review_cadence"],
                 "catalog_origin": (
@@ -125,10 +157,20 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topics": topics,
         "domestic_technology": {
             "scope_id": domestic["scope_id"],
-            "categories": domestic["technology_categories"],
+            "categories": [
+                {"ja": ja, "en": en}
+                for ja, en in zip(
+                    i18n["domestic_technology"]["technology_categories_ja"],
+                    domestic["technology_categories"],
+                    strict=True,
+                )
+            ],
             "evaluation_dimensions": domestic["required_evaluation_dimensions"],
             "topic_ids": domestic["topic_ids"],
-            "scope_rule": domestic["scope_rule"],
+            "scope_rule": {
+                "ja": i18n["domestic_technology"]["scope_rule_ja"],
+                "en": domestic["scope_rule"],
+            },
         },
         "scenarios": scenarios,
         "reports": reports,
@@ -136,7 +178,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "policy_id": policy["policy_id"],
             "information_plane": policy["information_plane"],
             "license_status": policy["license_status"],
-            "recommended_license": policy["recommended_license"],
+            "license": policy["license"],
             "repository_url": "https://github.com/HPCI-CFSP/OpenFS",
         },
     }

@@ -16,7 +16,7 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a GitHub Pages-ready public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
+This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a deployed bilingual GitHub Pages public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
 
 The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` broadly tracks technologies developed in Japan.
 
@@ -110,7 +110,7 @@ Build the public GitHub Pages view locally:
 python3 tools/build_pages_site.py --output _site
 ```
 
-Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. See `docs/publication/github-pages.md`.
+The public site supports Japanese and English. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Scenario and report publication additionally requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
 
 ## Human directions
 
@@ -123,4 +123,4 @@ Each directive will eventually be linked to the work items, runs, and decisions 
 
 ## License
 
-The project license is not yet selected. `docs/governance/license-decision.md` recommends Apache-2.0, subject to confirmation of the copyright holder, institutional authority, report licensing, and third-party-material boundaries. Until a license is added, public visibility does not grant open-source reuse rights by default.
+OpenFS project-authored material is licensed under the [Apache License 2.0](LICENSE). `NOTICE` identifies the project attribution, and `THIRD_PARTY_NOTICES.md` explains that linked reports, citations, trademarks, datasets, and other third-party works are not relicensed by OpenFS.

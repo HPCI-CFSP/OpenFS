@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md",
     "docs/agent-onboarding.md",
     "docs/architecture.md",
     "docs/research-baseline/README.md",
@@ -38,6 +41,7 @@ REQUIRED_FILES = [
     "config/scenario-policy.json",
     "config/domestic-technology-scope.json",
     "config/publication-policy.json",
+    "config/publication-i18n.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/source-lineage.schema.json",
@@ -260,6 +264,7 @@ def validate_research_topic_configuration(root: Path) -> list[str]:
     allowed = set(permissions.get("roles", {}).get("topic-promotion", {}).get("allowed_write_patterns", []))
     expected = {
         "config/research-baseline.json",
+        "config/publication-i18n.json",
         "config/monitors/MON-AUTO-TOPICS-001.json",
         "runs/**",
     }
@@ -295,6 +300,25 @@ def validate_publication_configuration(root: Path) -> list[str]:
     for key in ("scenario_public_fields", "report_public_fields"):
         if not policy.get(key) or "publication" not in policy[key]:
             errors.append(f"publication policy lacks an explicit {key} allowlist")
+    if policy.get("license_status") != "active" or policy.get("license") != "Apache-2.0":
+        errors.append("publication policy must expose the active Apache-2.0 license")
+    if not policy.get("human_publication_directive_glob"):
+        errors.append("publication policy lacks human publication Directives")
+    i18n = load_json(root / policy.get("included_i18n", "config/publication-i18n.json"))
+    if i18n.get("supported_languages") != ["ja", "en"]:
+        errors.append("publication i18n must support Japanese and English")
+    baseline = load_json(root / policy["included_catalog"])
+    topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
+    translated_ids = set(i18n.get("topic_titles_en", {}))
+    if translated_ids != topic_ids:
+        errors.append(
+            f"publication i18n Topic coverage differs: missing={sorted(topic_ids - translated_ids)}, "
+            f"unknown={sorted(translated_ids - topic_ids)}"
+        )
+    domestic = load_json(root / "config" / "domestic-technology-scope.json")
+    category_ja = i18n.get("domestic_technology", {}).get("technology_categories_ja", [])
+    if len(category_ja) != len(domestic.get("technology_categories", [])):
+        errors.append("publication i18n domestic category counts differ")
     workflow = (root / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
     if "OPENFS_PAGES_ENABLED" not in workflow:
         errors.append("Pages workflow lacks explicit activation variable")

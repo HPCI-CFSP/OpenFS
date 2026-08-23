@@ -21,6 +21,7 @@ Emerging-topic discovery
 `schemas/research-topic-proposal.schema.json` requires:
 
 - novelty and HPCI impact relative to current Topic IDs;
+- Japanese and English Topic titles;
 - why existing Topics are insufficient;
 - at least two Source Origin Groups and primary evidence;
 - research questions, expected evidence, outputs, and cadence;
@@ -39,11 +40,13 @@ python3 tools/promote_research_topic.py \
   --decision decisions/DEC-PRP-TOP-000001.json \
   --baseline config/research-baseline.json \
   --monitor config/monitors/MON-AUTO-TOPICS-001.json \
+  --i18n config/publication-i18n.json \
   --output-baseline config/research-baseline.json \
-  --output-monitor config/monitors/MON-AUTO-TOPICS-001.json
+  --output-monitor config/monitors/MON-AUTO-TOPICS-001.json \
+  --output-i18n config/publication-i18n.json
 ```
 
-The promotion tool verifies Decision acceptance, all policy checks, unique Topic ID, known source IDs, two actual Origin Groups, protected initial-catalog immutability, and additive-only behavior. It records Proposal and Decision IDs on the Topic.
+The promotion tool verifies Decision acceptance, all policy checks, unique Topic ID, known source IDs, two actual Origin Groups, protected initial-catalog immutability, and additive-only behavior. It records Proposal and Decision IDs on the Topic and registers the Consensus-reviewed English title in the Pages translation catalog.
 
 The next scheduler Run expands active accepted Topics for other agents:
 

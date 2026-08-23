@@ -24,9 +24,11 @@
     "schema_version": {"type": "string"},
     "scenario_id": {"type": "string", "pattern": "^SCN-[A-Z0-9-]+$"},
     "title_ja": {"type": "string", "minLength": 1},
+    "title_en": {"type": "string", "minLength": 1},
     "status": {"enum": ["illustrative-example", "candidate", "under-review", "accepted", "published", "rejected", "superseded"]},
     "planning_horizon": {"type": "string", "minLength": 1},
     "objective": {"type": "string", "minLength": 1},
+    "objective_en": {"type": "string", "minLength": 1},
     "architecture": {"type": "object", "minProperties": 1},
     "system_software": {"type": "object", "minProperties": 1},
     "applications": {"type": "object", "minProperties": 1},
@@ -78,11 +80,12 @@
     "decision_gates": {"type": "array", "items": {"type": "string"}, "minItems": 1},
     "publication": {
       "type": "object",
-      "required": ["information_classification", "publication_approved", "publication_decision_id", "approved_at"],
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id", "approved_at"],
       "properties": {
         "information_classification": {"const": "public"},
         "publication_approved": {"const": true},
         "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
         "approved_at": {"type": "string", "format": "date-time"}
       },
       "additionalProperties": false
@@ -91,7 +94,7 @@
   "allOf": [
     {
       "if": {"properties": {"status": {"const": "published"}}},
-      "then": {"required": ["publication"]}
+      "then": {"required": ["title_en", "objective_en", "publication"]}
     }
   ],
   "additionalProperties": false

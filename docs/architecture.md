@@ -118,7 +118,7 @@ The generator does not create authority. Missing center evidence remains visible
 
 ## Research-scope expansion
 
-Emerging-topic agents create additive Research Topic Proposals with catalog-delta analysis, multiple Source Origin Groups, a Query Plan, and falsification queries. Independent validators and a critic assess the proposal, the deterministic Consensus Gate decides eligibility, and the `topic-promotion` role can update only the baseline and automatic-topic monitor. The next Run expands accepted entries into Discovery Work Items for other agents.
+Emerging-topic agents create additive Research Topic Proposals with Japanese/English titles, catalog-delta analysis, multiple Source Origin Groups, a Query Plan, and falsification queries. Independent validators and a critic assess the proposal, the deterministic Consensus Gate decides eligibility, and the `topic-promotion` role can update only the baseline, public title catalog, and automatic-topic monitor. The next Run expands accepted entries into Discovery Work Items for other agents.
 
 ## Public projection
 

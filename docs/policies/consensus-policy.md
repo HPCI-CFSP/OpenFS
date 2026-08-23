@@ -23,6 +23,6 @@ All assessments and dissent remain attached to the Decision. Policy thresholds a
 
 ## Additive research Topics
 
-`research_topic` is a Consensus-controlled object type. An accepted Decision may authorize the narrowly scoped `topic-promotion` role to append the proposed Topic and Query Plan. The rule requires multiple independent Agent Groups, multiple Source Origin Groups, primary evidence, and falsification review.
+`research_topic` is a Consensus-controlled object type. An accepted Decision may authorize the narrowly scoped `topic-promotion` role to append the proposed Topic, Consensus-reviewed English title, and Query Plan. The rule requires multiple independent Agent Groups, multiple Source Origin Groups, primary evidence, and falsification review.
 
 This automated authority is additive only. Existing Topic removal, merge, split, narrowing, retirement, policy changes, and evaluation-weight changes remain human-Directive decisions.
