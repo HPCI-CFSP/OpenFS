@@ -91,6 +91,24 @@ class SourcePipelineTests(unittest.TestCase):
         self.assertTrue(first["source_receipt"]["primary_source"])
         self.assertFalse(first["source_receipt"]["security"]["prompt_injection_suspected"])
 
+    def test_worldwide_coverage_tags_are_preserved_and_bounded(self):
+        capture = self.capture()
+        capture["source"]["coverage_tags"] = {
+            "world_regions": ["europe"],
+            "technology_categories": ["compute-accelerators"],
+            "organization_types": ["vendor"],
+            "maturity_signals": ["prototype"],
+            "result_signals": ["positive"],
+        }
+        result = self.register(capture)
+        self.assertEqual(
+            ["europe"], result["source_receipt"]["coverage_tags"]["world_regions"]
+        )
+
+        capture["source"]["coverage_tags"]["unknown_dimension"] = ["value"]
+        with self.assertRaisesRegex(ValueError, "unknown dimensions"):
+            self.register(capture)
+
     def test_restricted_ai_terms_force_metadata_only(self):
         capture = self.capture()
         capture["source"]["rights"] = {

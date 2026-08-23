@@ -357,6 +357,29 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
         errors.append(f"acquisition policy lacks rights states: {sorted(missing_states)}")
     if policy.get("maximum_candidate_passage_characters", 0) < 1:
         errors.append("acquisition policy must limit candidate passage length")
+    scope = load_json(root / "config" / "global-technology-scope.json")
+    taxonomy = scope.get("coverage_taxonomy", {})
+    required = taxonomy.get("required_for_initial_cycle", {})
+    for dimension in (
+        "world_regions",
+        "technology_categories",
+        "organization_types",
+        "maturity_signals",
+        "result_signals",
+    ):
+        values = taxonomy.get(dimension, [])
+        if not values or len(values) != len(set(values)):
+            errors.append(f"global coverage taxonomy is empty or duplicated: {dimension}")
+        unknown_required = set(required.get(dimension, [])) - set(values)
+        if unknown_required:
+            errors.append(
+                f"global coverage requirements use unknown {dimension}: {sorted(unknown_required)}"
+            )
+    global_monitor = load_json(
+        root / "config" / "monitors" / "MON-GLOBAL-TECH-001.json"
+    )
+    if global_monitor.get("scope_ref") != "config/global-technology-scope.json":
+        errors.append("global technology Monitor does not pin the canonical scope")
     return errors
 
 

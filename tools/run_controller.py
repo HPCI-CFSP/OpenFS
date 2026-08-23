@@ -63,15 +63,21 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "source-registry.json",
         monitor_path,
     ]
-    subject_registry_ref = monitor.get("subject_registry_ref")
-    if subject_registry_ref:
-        subject_registry_path = root / subject_registry_ref
+    referenced_configurations = [
+        monitor.get("subject_registry_ref"),
+        monitor.get("scope_ref"),
+        monitor.get("topic_selector", {}).get("catalog_ref"),
+    ]
+    for referenced_configuration in referenced_configurations:
+        if not referenced_configuration:
+            continue
+        subject_registry_path = root / referenced_configuration
         if (
-            subject_registry_path.parent != root / "config"
+            (root / "config").resolve() not in subject_registry_path.resolve().parents
             or not subject_registry_path.is_file()
         ):
             raise ValueError(
-                "subject_registry_ref must name an existing file directly under config/"
+                "Monitor configuration references must name an existing file under config/"
             )
         paths.append(subject_registry_path)
     return {

@@ -277,5 +277,74 @@ class CenterCoverageTests(unittest.TestCase):
         self.assertEqual(2, report["observed"]["subject_count"])
 
 
+class GlobalCoverageTests(unittest.TestCase):
+    def test_global_scope_reports_missing_taxonomy_dimensions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run_id = "RUN-GLOBAL-COVERAGE"
+            monitor_ref = "config/monitors/MON-GLOBAL-TECH-001.json"
+            scope_ref = "config/global-technology-scope.json"
+            for relative in (monitor_ref, scope_ref):
+                live = root / relative
+                live.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, live)
+                target = root / "runs" / run_id / "inputs" / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, target)
+            monitor = read_json(ROOT / monitor_ref)
+            manifest = {
+                "run_id": run_id,
+                "monitor_id": monitor["monitor_id"],
+                "policy_hashes": {monitor_ref: stable_digest(monitor)},
+                "configuration_snapshots": {
+                    monitor_ref: f"runs/{run_id}/inputs/{monitor_ref}",
+                    scope_ref: f"runs/{run_id}/inputs/{scope_ref}",
+                },
+                "query_receipts": [],
+                "research_status": "not-evaluated",
+                "coverage_status": "not-evaluated",
+                "metrics": {},
+            }
+            run_path = root / "runs" / run_id
+            (run_path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            result_path = root / "proposals" / "sources" / run_id / "WORK-000001.json"
+            result_path.parent.mkdir(parents=True)
+            result_path.write_text(
+                json.dumps(
+                    {
+                        "object_type": "source",
+                        "query_receipt": {
+                            "query_receipt_id": "QRY-GLOBAL000001",
+                            "query": monitor["query_families"][0],
+                            "failures": [],
+                        },
+                        "source_receipt": {
+                            "source_id": "SRC-GLOBAL000001",
+                            "source_class": "official-primary",
+                            "language": "en",
+                            "primary_source": True,
+                            "origin_group_id": "ORG-GLOBAL000001",
+                            "rights": {"acquisition_decision": "evidence-excerpt"},
+                            "coverage_tags": {
+                                "world_regions": ["europe"],
+                                "technology_categories": ["compute-accelerators"],
+                                "organization_types": ["government"],
+                                "maturity_signals": ["procurement"],
+                                "result_signals": ["positive"],
+                            },
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            report = evaluate_coverage(root, run_id=run_id)
+
+            self.assertEqual("GLOBAL-TECH-SCOPE-001", report["expected"]["global_scope_id"])
+            self.assertEqual(["europe"], report["observed"]["global_coverage"]["world_regions"])
+            self.assertIn("japan", report["gaps"]["missing_world_regions"])
+            self.assertIn("negative", report["gaps"]["missing_result_signals"])
+
+
 if __name__ == "__main__":
     unittest.main()

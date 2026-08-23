@@ -94,6 +94,31 @@ def _validate_rights(
         raise ValueError("clickthrough sources require metadata-only or blocked handling")
 
 
+def _validate_coverage_tags(tags: Any) -> None:
+    if tags is None:
+        return
+    if not isinstance(tags, dict):
+        raise ValueError("coverage_tags must be an object")
+    allowed = {
+        "world_regions",
+        "technology_categories",
+        "organization_types",
+        "maturity_signals",
+        "result_signals",
+    }
+    unknown = set(tags) - allowed
+    if unknown:
+        raise ValueError(f"coverage_tags has unknown dimensions: {sorted(unknown)}")
+    for dimension, values in tags.items():
+        if (
+            not isinstance(values, list)
+            or not values
+            or not all(isinstance(value, str) and value for value in values)
+            or len(values) != len(set(values))
+        ):
+            raise ValueError(f"coverage_tags.{dimension} must be unique non-empty strings")
+
+
 def register_capture(
     capture: dict[str, Any],
     *,
@@ -125,6 +150,7 @@ def register_capture(
     if source.get("source_class") not in source_classes:
         raise ValueError(f"unknown source class: {source.get('source_class')}")
     _validate_rights(source.get("rights", {}), passages, policy)
+    _validate_coverage_tags(source.get("coverage_tags"))
     for failure in query.get("failures", []):
         impact = failure.get("coverage_impact")
         if impact is not None and impact not in {"blocking", "warning"}:
@@ -218,6 +244,8 @@ def register_capture(
     }
     if assignment_scope:
         source_receipt["assignment_scope"] = assignment_scope
+    if source.get("coverage_tags"):
+        source_receipt["coverage_tags"] = source["coverage_tags"]
     source_lineage = {
         "schema_version": "0.1.0",
         "lineage_id": lineage_id,

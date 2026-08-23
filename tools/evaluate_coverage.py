@@ -13,6 +13,13 @@ from openfs_runtime import atomic_write_json, isoformat, read_json, stable_diges
 
 ROOT = Path(__file__).resolve().parents[1]
 NON_BLOCKING_FAILURE_KINDS = {"rights-excluded"}
+GLOBAL_COVERAGE_DIMENSIONS = (
+    "world_regions",
+    "technology_categories",
+    "organization_types",
+    "maturity_signals",
+    "result_signals",
+)
 
 
 def _monitor(root: Path, manifest: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -72,6 +79,35 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
     observed_queries = set(queries)
     observed_classes = {source["source_class"] for source in sources}
     observed_languages = {source["language"] for source in sources}
+    global_scope_ref = monitor.get("scope_ref")
+    global_scope_id = None
+    expected_global_coverage: dict[str, list[str]] = {}
+    observed_global_coverage: dict[str, set[str]] = {
+        dimension: set() for dimension in GLOBAL_COVERAGE_DIMENSIONS
+    }
+    unknown_global_tags = []
+    untagged_source_ids = []
+    if global_scope_ref:
+        global_scope = _snapshotted_config(root, manifest, global_scope_ref)
+        global_scope_id = global_scope.get("scope_id")
+        taxonomy = global_scope.get("coverage_taxonomy", {})
+        expected_global_coverage = taxonomy.get("required_for_initial_cycle", {})
+        for source in sources:
+            tags = source.get("coverage_tags")
+            if not tags:
+                untagged_source_ids.append(source["source_id"])
+                continue
+            for dimension in GLOBAL_COVERAGE_DIMENSIONS:
+                values = set(tags.get(dimension, []))
+                observed_global_coverage[dimension].update(values)
+                for value in sorted(values - set(taxonomy.get(dimension, []))):
+                    unknown_global_tags.append(
+                        {
+                            "source_id": source["source_id"],
+                            "dimension": dimension,
+                            "value": value,
+                        }
+                    )
     expected_subject_fields: dict[str, set[str]] = {}
     subject_registry_ref = monitor.get("subject_registry_ref")
     subject_registry_id = None
@@ -200,6 +236,14 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         "missing_subject_profile_queries": missing_subject_profile_queries,
         "query_failures": blocking_failures,
     }
+    if global_scope_ref:
+        for dimension in GLOBAL_COVERAGE_DIMENSIONS:
+            gaps[f"missing_{dimension}"] = sorted(
+                set(expected_global_coverage.get(dimension, []))
+                - observed_global_coverage[dimension]
+            )
+        gaps["untagged_global_sources"] = sorted(untagged_source_ids)
+        gaps["unknown_global_coverage_tags"] = unknown_global_tags
     snapshot_match = manifest.get("policy_hashes", {}).get(monitor_relative) == stable_digest(
         monitor
     )
@@ -237,6 +281,9 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
                 subject_id: sorted(fields)
                 for subject_id, fields in sorted(expected_subject_fields.items())
             },
+            "global_scope_ref": global_scope_ref,
+            "global_scope_id": global_scope_id,
+            "global_coverage": expected_global_coverage,
         },
         "observed": {
             "source_count": len(sources),
@@ -255,6 +302,10 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
                 for subject_id, fields in sorted(observed_subject_fields.items())
             },
             "query_warnings": query_warnings,
+            "global_coverage": {
+                dimension: sorted(values)
+                for dimension, values in observed_global_coverage.items()
+            },
             "no_result_query_count": sum(
                 result.get("object_type") == "discovery_no_result"
                 for result in discovery_results

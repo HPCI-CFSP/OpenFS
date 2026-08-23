@@ -142,8 +142,14 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual(first_work_item["skill"], pinned)
 
     def test_global_monitor_uses_worldwide_survey_skill_override(self):
-        target = self.root / "config/monitors/MON-GLOBAL-TECH-001.json"
-        shutil.copy2(ROOT / "config/monitors/MON-GLOBAL-TECH-001.json", target)
+        for relative in (
+            "config/monitors/MON-GLOBAL-TECH-001.json",
+            "config/global-technology-scope.json",
+            "config/research-baseline.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
         manifest = create_run(
             self.root,
             run_id="RUN-GLOBAL-PILOT",
