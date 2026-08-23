@@ -7,7 +7,7 @@
   "properties": {
     "schema_version": {"type": "string"},
     "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
-    "directive_type": {"enum": ["research-instruction", "publication-approval", "governance"]},
+    "directive_type": {"enum": ["research-instruction", "publication-approval", "canonical-status", "governance"]},
     "title": {"type": "string"},
     "instruction": {"type": "string"},
     "priority": {"enum": ["low", "normal", "high", "urgent"]},
@@ -19,6 +19,16 @@
     "processed_run_ids": {"type": "array", "items": {"type": "string"}},
     "result_decision_ids": {"type": "array", "items": {"type": "string"}},
     "publication_targets": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "claim_targets": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "canonical_status_action": {"enum": ["withdrawn", "superseded"]},
+    "canonical_status_reason": {"type": "string", "minLength": 1},
+    "replacement_claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "public_information_confirmed": {"type": "boolean"},
     "source": {
       "type": "object",
       "required": ["kind", "url", "content_digest", "untrusted_input"],
@@ -32,5 +42,22 @@
       "additionalProperties": false
     }
   },
+  "allOf": [
+    {
+      "if": {"properties": {"directive_type": {"const": "canonical-status"}}, "required": ["directive_type"]},
+      "then": {
+        "required": ["claim_targets", "canonical_status_action", "canonical_status_reason", "public_information_confirmed"],
+        "properties": {"public_information_confirmed": {"const": true}}
+      }
+    },
+    {
+      "if": {"properties": {"canonical_status_action": {"const": "superseded"}}, "required": ["canonical_status_action"]},
+      "then": {"required": ["replacement_claim_id"]}
+    },
+    {
+      "if": {"properties": {"canonical_status_action": {"const": "withdrawn"}}, "required": ["canonical_status_action"]},
+      "then": {"not": {"required": ["replacement_claim_id"]}}
+    }
+  ],
   "additionalProperties": false
 }

@@ -147,6 +147,11 @@ Record these decisions in a reviewed pull request or Directive:
     Then test `publish_pr=true` and confirm branch protection requires human review.
     Set `OPENFS_PROMOTION_ENABLED=true` only after this succeeds. The Tuesday
     schedule prepares at most one open promotion PR and never merges it.
+13. Before relying on correction handling, create a test `canonical-status`
+    Directive for a disposable accepted Claim and run
+    `tools/record_claim_status.py` on a branch. Confirm the original record
+    remains, the active index excludes it, the status history names the human
+    Directive, a retry is idempotent, and branch protection requires review.
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 

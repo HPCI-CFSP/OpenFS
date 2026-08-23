@@ -23,7 +23,7 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a deployed bilingual GitHub Pages public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
+This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
 
 The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
@@ -34,6 +34,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 - Accepted knowledge is traceable from a report sentence back to claims, evidence excerpts, sources, runs, agents, prompts, and policies.
 - External web pages, documents, issues, and pull-request text are untrusted data, never instructions.
 - Research agents propose. Independent agents assess. Deterministic code decides whether the configured quorum is met. Only the promotion workflow may update canonical data.
+- Canonical Claims are immutable. Human-authorized withdrawal or supersession adds a digest-pinned status event and changes generated active views; it never deletes history.
 - Facts, forecasts, and HPCI recommendations are different object types and pass different review gates.
 - Normal processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or NDA export.
 
@@ -60,7 +61,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `assessments/` | Independent reviews of proposals |
 | `decisions/` | Machine-generated consensus decisions |
 | `data/` | Accepted canonical source, evidence, and finding records |
-| `knowledge/` | Accepted findings organized by HPCI technical domain |
+| `knowledge/` | Promoted canonical Claims, append-only status events, and generated active views |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, and dissent |

@@ -27,4 +27,12 @@ An authoritative source can support a fact about its own action, publication, or
 
 ## Change and withdrawal
 
-Claims are append-only records. Corrections create a revision linked to the prior Claim. Withdrawn or superseded Claims remain addressable and trigger review of dependent Findings, Roadmap Items, and report statements.
+Claims are append-only records. Corrections create a separately reviewed and
+promoted Claim. An approved human `canonical-status` Directive then records a
+terminal `superseded` event linking the old Claim to the replacement. A
+`withdrawn` event is used when no accepted replacement exists. Both actions
+require an explicit public reason and preserve the original Claim, Proposal,
+Decision, and Evidence digests. They remove the old Claim from active generated
+views but do not grant GitHub Pages publication authority. Withdrawn or
+superseded Claims remain addressable and trigger review of dependent Findings,
+Roadmap Items, and report statements.

@@ -96,6 +96,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "knowledge-index.schema.json"
     if ref.startswith("knowledge/claims/CLM-"):
         return "canonical-claim.schema.json"
+    if ref.startswith("knowledge/claim-status/CSE-"):
+        return "canonical-claim-status.schema.json"
     return None
 
 

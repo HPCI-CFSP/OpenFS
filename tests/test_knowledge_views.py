@@ -73,6 +73,28 @@ class KnowledgeViewTests(unittest.TestCase):
         self.assertTrue(tbd_path.is_file())
         self.assertEqual(first, generated)
 
+    def test_terminal_status_event_preserves_history_but_hides_active_claim(self):
+        self.write("knowledge/claims/CLM-000001.json", self.canonical())
+        self.write(
+            "knowledge/claim-status/CSE-AAAAAAAAAAAA.json",
+            {
+                "event_id": "CSE-AAAAAAAAAAAA",
+                "claim_id": "CLM-000001",
+                "action": "withdrawn",
+                "reason": "A public correction invalidated the statement.",
+                "directive_id": "DIR-000001",
+                "recorded_at": "2026-08-24T02:00:00Z",
+                "event_digest": "b" * 64,
+            },
+        )
+        index = build_index(self.root)
+        rendered = render_tbd(index)
+        self.assertEqual(0, index["claim_count"])
+        self.assertEqual(1, index["canonical_claim_count"])
+        self.assertEqual(1, index["status_event_count"])
+        self.assertNotIn("Accepted canonical statement.", rendered)
+        self.assertIn("public correction", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

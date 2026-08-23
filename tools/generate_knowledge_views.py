@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -21,13 +22,37 @@ KIND_LABELS = {
 }
 
 
+def _timestamp(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
 def build_index(root: Path) -> dict[str, Any]:
+    status_by_claim: dict[str, dict[str, Any]] = {}
+    for path in sorted((root / "knowledge" / "claim-status").glob("CSE-*.json")):
+        event = read_json(path)
+        claim_id = event["claim_id"]
+        if claim_id in status_by_claim:
+            raise ValueError(f"multiple terminal status events for canonical Claim: {claim_id}")
+        status_by_claim[claim_id] = {
+            "claim_id": claim_id,
+            "action": event["action"],
+            "reason": event["reason"],
+            "replacement_claim_id": event.get("replacement_claim_id"),
+            "status_event_ref": str(path.relative_to(root)),
+            "directive_id": event["directive_id"],
+            "recorded_at": event["recorded_at"],
+            "event_digest": event["event_digest"],
+        }
     entries: list[dict[str, Any]] = []
+    canonical_ids: set[str] = set()
     for path in sorted((root / "knowledge" / "claims").glob("CLM-*.json")):
         record = read_json(path)
         claim = record["claim"]
         if claim.get("status") != "accepted":
             raise ValueError(f"non-accepted Claim in canonical path: {path}")
+        canonical_ids.add(claim["claim_id"])
+        if claim["claim_id"] in status_by_claim:
+            continue
         entries.append(
             {
                 "claim_id": claim["claim_id"],
@@ -45,16 +70,29 @@ def build_index(root: Path) -> dict[str, Any]:
             }
         )
     entries.sort(key=lambda item: item["claim_id"])
-    as_of = max((item["promoted_at"] for item in entries), default=None)
+    unknown_status_ids = set(status_by_claim) - canonical_ids
+    if unknown_status_ids:
+        raise ValueError(
+            "status event refers to missing canonical Claim: "
+            + ", ".join(sorted(unknown_status_ids))
+        )
+    inactive = sorted(status_by_claim.values(), key=lambda item: item["claim_id"])
+    timestamps = [item["promoted_at"] for item in entries]
+    timestamps.extend(item["recorded_at"] for item in inactive)
+    as_of = max(timestamps, key=_timestamp) if timestamps else None
     return {
         "schema_version": "0.1.0",
         "as_of": as_of,
         "claim_count": len(entries),
-        "knowledge_digest": stable_digest(entries),
+        "canonical_claim_count": len(canonical_ids),
+        "status_event_count": len(inactive),
+        "knowledge_digest": stable_digest({"active": entries, "inactive": inactive}),
         "claims": entries,
+        "inactive_claims": inactive,
         "caveat": (
-            "This is a generated view of accepted canonical Claims. It excludes "
-            "Proposals, provisional Decisions, and Recommendation-Gate outputs."
+            "This is a generated view of active accepted canonical Claims. It excludes "
+            "Proposals, provisional Decisions, Recommendation-Gate outputs, and Claims "
+            "with append-only withdrawn or superseded status events."
         ),
     }
 
@@ -70,14 +108,16 @@ def render_tbd(index: dict[str, Any]) -> str:
         "This file is generated from accepted canonical records. It is not a primary record.",
         "",
         f"- As of: `{index['as_of'] or 'no-promotions'}`",
-        f"- Accepted Claim count: **{index['claim_count']}**",
+        f"- Active accepted Claim count: **{index['claim_count']}**",
+        f"- Canonical Claim count: **{index['canonical_claim_count']}**",
+        f"- Withdrawn or superseded Claim count: **{index['status_event_count']}**",
         f"- Knowledge digest: `{index['knowledge_digest']}`",
         "",
-        "## Accepted Claims",
+        "## Active Accepted Claims",
         "",
     ]
     if not index["claims"]:
-        lines.append("- No canonical Claims have been promoted.")
+        lines.append("- No canonical Claims are currently active.")
     else:
         for kind in KIND_LABELS:
             claims = [item for item in index["claims"] if item["claim_kind"] == kind]
@@ -94,6 +134,20 @@ def render_tbd(index: dict[str, Any]) -> str:
                     f"{item['source_lineage_count']}; Record: `{item['canonical_ref']}`"
                 )
             lines.append("")
+    lines.extend(["", "## Withdrawn Or Superseded Claims", ""])
+    if not index["inactive_claims"]:
+        lines.append("- No canonical Claim status events have been recorded.")
+    else:
+        for item in index["inactive_claims"]:
+            replacement = (
+                f"; replacement: **{item['replacement_claim_id']}**"
+                if item.get("replacement_claim_id")
+                else ""
+            )
+            lines.append(
+                f"- **{item['claim_id']}**: `{item['action']}`{replacement}; "
+                f"Directive: `{item['directive_id']}`; reason: {_one_line(item['reason'])}"
+            )
     lines.extend(
         [
             "",
@@ -125,6 +179,8 @@ def main() -> int:
             {
                 "outputs": [str(index_path), str(tbd_path)],
                 "claim_count": index["claim_count"],
+                "canonical_claim_count": index["canonical_claim_count"],
+                "status_event_count": index["status_event_count"],
                 "knowledge_digest": index["knowledge_digest"],
             }
         )

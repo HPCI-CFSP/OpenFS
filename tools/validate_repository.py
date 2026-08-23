@@ -38,6 +38,7 @@ REQUIRED_FILES = [
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
     "knowledge/README.md",
+    "knowledge/claim-status/README.md",
     "knowledge/claims/index.json",
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
@@ -58,6 +59,7 @@ REQUIRED_FILES = [
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
+    "schemas/canonical-claim-status.schema.json",
     "schemas/knowledge-index.schema.json",
     "schemas/promotion-readiness.schema.json",
     "schemas/cost-summary.schema.json",
@@ -119,6 +121,7 @@ REQUIRED_FILES = [
     "tools/validate_json_schemas.py",
     "tools/promote_research_topic.py",
     "tools/promote_claim.py",
+    "tools/record_claim_status.py",
     "tools/generate_knowledge_views.py",
     "tools/evaluate_promotion_readiness.py",
     "tools/expand_topic_monitor.py",
@@ -1531,6 +1534,87 @@ def validate_canonical_claims(root: Path) -> list[str]:
     return errors
 
 
+def validate_claim_status_events(root: Path) -> list[str]:
+    errors: list[str] = []
+    seen_claim_ids: set[str] = set()
+    for path in sorted((root / "knowledge" / "claim-status").glob("CSE-*.json")):
+        event = load_json(path)
+        relative = path.relative_to(root)
+        claim_id = event.get("claim_id", "")
+        if event.get("event_id") != path.stem:
+            errors.append(f"Canonical Claim status event identity differs: {relative}")
+        if claim_id in seen_claim_ids:
+            errors.append(f"Canonical Claim has multiple terminal status events: {claim_id}")
+        seen_claim_ids.add(claim_id)
+        if not isinstance(claim_id, str) or not re.fullmatch(r"CLM-[0-9]{6}", claim_id):
+            errors.append(f"Canonical Claim status event has invalid Claim ID: {relative}")
+            continue
+
+        digest_payload = dict(event)
+        event_digest = digest_payload.pop("event_digest", None)
+        if event_digest != stable_digest(digest_payload):
+            errors.append(f"Canonical Claim status event digest differs: {relative}")
+
+        canonical_ref = event.get("canonical_claim_ref", "")
+        expected_ref = f"knowledge/claims/{claim_id}.json"
+        if canonical_ref != expected_ref:
+            errors.append(f"Canonical Claim status event reference differs: {relative}")
+        canonical_path = root / expected_ref
+        if not canonical_path.is_file():
+            errors.append(f"Status-event canonical Claim is missing: {relative}")
+        else:
+            canonical = load_json(canonical_path)
+            if event.get("canonical_claim_digest") != stable_digest(canonical):
+                errors.append(f"Status-event canonical Claim digest differs: {relative}")
+            if canonical.get("claim", {}).get("status") != "accepted":
+                errors.append(f"Status-event canonical Claim is not accepted: {relative}")
+
+        directive_ref = event.get("directive_ref", "")
+        directive_id = event.get("directive_id")
+        if not isinstance(directive_id, str) or not re.fullmatch(
+            r"DIR-[0-9]{6}", directive_id
+        ):
+            errors.append(f"Canonical status event has invalid Directive ID: {relative}")
+            continue
+        expected_directive_ref = f"reviews/directives/{directive_id}.json"
+        directive_path = root / expected_directive_ref
+        if directive_ref != expected_directive_ref:
+            errors.append(f"Canonical status Directive reference differs: {relative}")
+        if not directive_path.is_file():
+            errors.append(f"Canonical status Directive is missing: {relative}")
+            continue
+        directive = load_json(directive_path)
+        if event.get("directive_digest") != stable_digest(directive):
+            errors.append(f"Canonical status Directive digest differs: {relative}")
+        if (
+            directive.get("directive_id") != event.get("directive_id")
+            or directive.get("directive_type") != "canonical-status"
+            or directive.get("status") not in {"approved", "completed"}
+            or directive.get("public_information_confirmed") is not True
+            or directive.get("claim_targets") != [claim_id]
+        ):
+            errors.append(f"Canonical status Directive does not authorize event: {relative}")
+        if (
+            directive.get("canonical_status_action") != event.get("action")
+            or directive.get("canonical_status_reason", "").strip()
+            != event.get("reason")
+            or directive.get("replacement_claim_id")
+            != event.get("replacement_claim_id")
+        ):
+            errors.append(f"Canonical status event differs from Directive: {relative}")
+
+        replacement_id = event.get("replacement_claim_id")
+        if event.get("action") == "superseded":
+            replacement_path = root / "knowledge" / "claims" / f"{replacement_id}.json"
+            if replacement_id == claim_id or not replacement_path.is_file():
+                errors.append(f"Canonical status replacement Claim is invalid: {relative}")
+            elif load_json(replacement_path).get("claim", {}).get("status") != "accepted":
+                errors.append(f"Canonical status replacement Claim is not accepted: {relative}")
+        elif replacement_id is not None:
+            errors.append(f"Withdrawn Claim names a replacement: {relative}")
+    return errors
+
+
 def validate_knowledge_views(root: Path) -> list[str]:
     errors: list[str] = []
     index_path = root / "knowledge" / "claims" / "index.json"
@@ -1569,6 +1653,7 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_scenario_configuration(root))
     if (root / "knowledge" / "claims").exists():
         errors.extend(validate_canonical_claims(root))
+        errors.extend(validate_claim_status_events(root))
         errors.extend(validate_knowledge_views(root))
     if (root / "config" / "global-technology-scope.json").exists():
         errors.extend(validate_global_technology_scope(root))

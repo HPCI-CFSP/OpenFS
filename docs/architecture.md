@@ -87,6 +87,9 @@ candidate
 - `contested` has unresolved material objections.
 - `rejected` fails evidence or policy checks.
 - `superseded` and `withdrawn` preserve history and trigger dependent-record review.
+- Canonical state changes are append-only events under `knowledge/claim-status/`.
+  They require a human `canonical-status` Directive naming exactly one Claim;
+  the deterministic active view changes, while the promoted record does not.
 
 ## Trust and information boundaries
 
