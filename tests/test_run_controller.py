@@ -89,6 +89,34 @@ class RunControllerTests(unittest.TestCase):
             5,
             len(list((self.root / "queue" / "RUN-PILOT-001").glob("WORK-*.json"))),
         )
+        self.assertTrue(
+            (
+                self.root
+                / first["configuration_snapshots"]["config/agent-registry.json"]
+            ).is_file()
+        )
+
+    def test_run_uses_pinned_agent_registry_after_live_registry_changes(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-PINNED",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        live_path = self.root / "config" / "agent-registry.json"
+        live = json.loads(live_path.read_text(encoding="utf-8"))
+        for agent in live["agents"]:
+            if agent["agent_id"] == "discovery-public-01":
+                agent["role"] = "critic"
+        live_path.write_text(json.dumps(live), encoding="utf-8")
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-PINNED",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        self.assertEqual("source-discovery", leased["kind"])
 
     def test_lease_completion_records_output_digest(self):
         create_run(

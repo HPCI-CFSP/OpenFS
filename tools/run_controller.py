@@ -59,7 +59,19 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "source-registry.json",
         monitor_path,
     ]
-    return {path.relative_to(root).as_posix(): sha256_file(path) for path in paths}
+    return {
+        path.relative_to(root).as_posix(): stable_digest(read_json(path))
+        for path in paths
+    }
+
+
+def _configuration_snapshot_refs(
+    run_id: str, policy_hashes: dict[str, str]
+) -> dict[str, str]:
+    return {
+        source: f"runs/{run_id}/inputs/{source}"
+        for source in sorted(policy_hashes)
+    }
 
 
 def _approved_directives(root: Path, task_id: str) -> list[dict[str, Any]]:
@@ -201,6 +213,8 @@ def create_run(
             f"Run requires {len(work_items)} Work Items but limit is {requested_limit}"
         )
 
+    policy_hashes = _policy_hashes(root, monitor_path)
+    snapshot_refs = _configuration_snapshot_refs(run_id, policy_hashes)
     manifest = {
         "schema_version": "0.1.0",
         "run_id": run_id,
@@ -211,7 +225,8 @@ def create_run(
         "started_at": created_at,
         "status": "created",
         "research_status": "not-evaluated",
-        "policy_hashes": _policy_hashes(root, monitor_path),
+        "policy_hashes": policy_hashes,
+        "configuration_snapshots": snapshot_refs,
         "budget": {
             "maximum_run_minutes": defaults.get("maximum_run_minutes"),
             "maximum_work_items": requested_limit,
@@ -241,14 +256,26 @@ def create_run(
         return existing
 
     queue_path.mkdir(parents=True, exist_ok=True)
+    for source_ref, snapshot_ref in snapshot_refs.items():
+        atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
     for item in work_items:
         atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
     atomic_write_json(run_path, manifest)
     return manifest
 
 
-def _agent(root: Path, agent_id: str) -> dict[str, Any]:
-    registry = _load_required(root, "config/agent-registry.json")
+def _agent(root: Path, agent_id: str, *, run_id: str | None = None) -> dict[str, Any]:
+    registry_path = root / "config" / "agent-registry.json"
+    if run_id:
+        manifest_path = root / "runs" / run_id / "manifest.json"
+        if manifest_path.is_file():
+            manifest = read_json(manifest_path)
+            snapshot_ref = manifest.get("configuration_snapshots", {}).get(
+                "config/agent-registry.json"
+            )
+            if snapshot_ref:
+                registry_path = root / snapshot_ref
+    registry = read_json(registry_path)
     matches = [item for item in registry.get("agents", []) if item.get("agent_id") == agent_id]
     if len(matches) != 1:
         raise ValueError(f"agent is not registered exactly once: {agent_id}")
@@ -322,7 +349,7 @@ def lease_next(
     now: datetime | None = None,
 ) -> dict[str, Any] | None:
     manifest = read_json(root / "runs" / run_id / "manifest.json")
-    agent = _agent(root, agent_id)
+    agent = _agent(root, agent_id, run_id=run_id)
     if not agent.get("enabled"):
         if not (allow_disabled_pilot_agent and manifest.get("mode") == "pilot"):
             raise RuntimeError(f"agent is disabled: {agent_id}")

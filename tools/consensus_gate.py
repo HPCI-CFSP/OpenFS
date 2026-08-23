@@ -9,6 +9,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from openfs_runtime import stable_digest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as stream:
@@ -19,6 +24,7 @@ def evaluate(
     proposal: dict[str, Any],
     assessments: list[dict[str, Any]],
     policy: dict[str, Any],
+    agent_registry: dict[str, Any],
 ) -> dict[str, Any]:
     proposal_id = proposal["proposal_id"]
     object_type = proposal["object_type"]
@@ -26,6 +32,15 @@ def evaluate(
         rule = policy["rules"][object_type]
     except KeyError as exc:
         raise ValueError(f"No consensus rule for object type: {object_type}") from exc
+
+    registry_digest = stable_digest(agent_registry)
+    agents = {
+        item["agent_id"]: item
+        for item in agent_registry.get("agents", [])
+        if item.get("agent_id")
+    }
+    author = agents.get(proposal.get("created_by_agent_id"))
+    author_group = author.get("agent_independence_group") if author else None
 
     matching = [item for item in assessments if item.get("proposal_id") == proposal_id]
     unique_by_reviewer: dict[str, dict[str, Any]] = {}
@@ -37,10 +52,54 @@ def evaluate(
             continue
         unique_by_reviewer[reviewer] = assessment
 
-    valid = list(unique_by_reviewer.values())
+    valid: list[dict[str, Any]] = []
+    invalid_assessments: list[dict[str, str]] = []
+    for assessment in unique_by_reviewer.values():
+        reviewer_id = assessment["reviewer_agent_id"]
+        reviewer = agents.get(reviewer_id)
+        reasons: list[str] = []
+        if reviewer is None:
+            reasons.append("reviewer-not-registered")
+        else:
+            if reviewer.get("role") not in {"validator", "critic"}:
+                reasons.append("reviewer-role-not-eligible")
+            if reviewer.get("provider") in {None, "unconfigured"}:
+                reasons.append("reviewer-provider-unconfigured")
+            if reviewer.get("model_family") in {None, "unconfigured"}:
+                reasons.append("reviewer-model-unconfigured")
+            if assessment.get("agent_independence_group") != reviewer.get(
+                "agent_independence_group"
+            ):
+                reasons.append("independence-group-mismatch")
+            expected_identity = {
+                "provider": reviewer.get("provider"),
+                "model_family": reviewer.get("model_family"),
+                "prompt_profile": reviewer.get("prompt_profile"),
+                "role": reviewer.get("role"),
+            }
+            if assessment.get("reviewer_identity") != expected_identity:
+                reasons.append("reviewer-identity-mismatch")
+            if assessment.get("agent_registry_digest") != registry_digest:
+                reasons.append("agent-registry-digest-mismatch")
+        if assessment.get("run_id") != proposal.get("run_id"):
+            reasons.append("run-id-mismatch")
+        if reviewer_id == proposal.get("created_by_agent_id"):
+            reasons.append("self-review")
+        if reasons:
+            invalid_assessments.append(
+                {"assessment_id": assessment["assessment_id"], "reason": ",".join(reasons)}
+            )
+        else:
+            valid.append(assessment)
+
     support = [item for item in valid if item["verdict"] == "support"]
     refute = [item for item in valid if item["verdict"] == "refute"]
-    support_groups = {item["agent_independence_group"] for item in support}
+    support_groups = {
+        item["agent_independence_group"]
+        for item in support
+        if item["agent_independence_group"] != author_group
+        and item["agent_independence_group"] != "non-voting-control-plane"
+    }
     origin_groups = set(proposal.get("origin_group_ids", []))
 
     critical_objections = [
@@ -84,6 +143,8 @@ def evaluate(
             else True
         ),
         "unique_reviewers": not duplicate_reviewers,
+        "registered_proposal_author": author is not None,
+        "valid_assessment_identities": not invalid_assessments,
     }
 
     if critical_objections:
@@ -102,6 +163,7 @@ def evaluate(
         "object_type": object_type,
         "outcome": outcome,
         "policy_id": policy["policy_id"],
+        "agent_registry_digest": registry_digest,
         "policy_result": {
             "checks": checks,
             "counts": {
@@ -114,6 +176,8 @@ def evaluate(
             "support_independence_groups": sorted(support_groups),
             "origin_group_ids": sorted(origin_groups),
             "duplicate_reviewer_agent_ids": sorted(set(duplicate_reviewers)),
+            "proposal_author_independence_group": author_group,
+            "invalid_assessments": invalid_assessments,
             "critical_objections": critical_objections,
         },
         "assessment_ids": [item["assessment_id"] for item in valid],
@@ -129,6 +193,11 @@ def main() -> int:
     parser.add_argument("--proposal", required=True, type=Path)
     parser.add_argument("--assessments", required=True, type=Path)
     parser.add_argument("--policy", required=True, type=Path)
+    parser.add_argument(
+        "--agent-registry",
+        type=Path,
+        default=ROOT / "config/agent-registry.json",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -136,6 +205,7 @@ def main() -> int:
         load_json(args.proposal),
         load_json(args.assessments),
         load_json(args.policy),
+        load_json(args.agent_registry),
     )
     rendered = json.dumps(decision, ensure_ascii=False, indent=2) + "\n"
     if args.output:

@@ -48,6 +48,7 @@ REQUIRED_FILES = [
     "config/publication-i18n.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
+    "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
     "schemas/decision.schema.json",
@@ -82,6 +83,9 @@ REQUIRED_FILES = [
     "tools/ingest_directive.py",
     "tools/register_source.py",
     "tools/extract_evidence.py",
+    "tools/propose_claim.py",
+    "tools/create_assessment.py",
+    "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
     "queue/README.md",
     "runs/README.md",
@@ -208,6 +212,24 @@ def validate_runtime_configuration(root: Path) -> list[str]:
     ]
     if len(orchestrators) != 1:
         errors.append("agent registry must define exactly one control-plane orchestrator template")
+    configured_identities: dict[tuple[str, str, str], str] = {}
+    for agent in registry.get("agents", []):
+        identity = (
+            agent.get("provider", ""),
+            agent.get("model_family", ""),
+            agent.get("prompt_profile", ""),
+        )
+        group = agent.get("agent_independence_group")
+        if agent.get("enabled") and "unconfigured" in identity:
+            errors.append(f"enabled agent has unconfigured identity: {agent.get('agent_id')}")
+        if "unconfigured" in identity or not all(identity) or not group:
+            continue
+        previous = configured_identities.setdefault(identity, group)
+        if previous != group:
+            errors.append(
+                "same provider/model/prompt identity is split across independence groups: "
+                f"{agent.get('agent_id')}"
+            )
     return errors
 
 
@@ -274,6 +296,27 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
         if len(receipt_ids) != len(set(receipt_ids)):
             errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
+        snapshots = manifest.get("configuration_snapshots", {})
+        for source_ref, expected_digest in manifest.get("policy_hashes", {}).items():
+            snapshot_ref = snapshots.get(source_ref)
+            if not snapshot_ref:
+                continue
+            snapshot_path = root / snapshot_ref
+            if not snapshot_path.is_file():
+                errors.append(f"Run {run_id} configuration snapshot is missing: {snapshot_ref}")
+            else:
+                snapshot_digest = hashlib.sha256(
+                    json.dumps(
+                        load_json(snapshot_path),
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ).hexdigest()
+                if snapshot_digest != expected_digest:
+                    errors.append(
+                        f"Run {run_id} configuration snapshot digest differs: {snapshot_ref}"
+                    )
 
     for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):
         result = load_json(path)
@@ -288,6 +331,40 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         source_ref = bundle.get("source_result_ref")
         if not source_ref or not (root / source_ref).is_file():
             errors.append(f"Evidence bundle source result is missing: {path.relative_to(root)}")
+    for path in sorted((root / "proposals" / "claims").glob("RUN-*/*.json")):
+        proposal = load_json(path)
+        if proposal.get("run_id") != path.parent.name:
+            errors.append(f"Claim proposal Run mismatch: {path.relative_to(root)}")
+        for evidence_ref in proposal.get("evidence_bundle_refs", []):
+            if not (root / evidence_ref).is_file():
+                errors.append(f"Claim proposal Evidence is missing: {path.relative_to(root)}")
+    for path in sorted((root / "assessments").glob("RUN-*/*.json")):
+        assessment = load_json(path)
+        if assessment.get("run_id") != path.parent.name:
+            errors.append(f"Assessment Run mismatch: {path.relative_to(root)}")
+        manifest_path = root / "runs" / assessment.get("run_id", "") / "manifest.json"
+        registry_path = root / "config" / "agent-registry.json"
+        if manifest_path.is_file():
+            manifest = load_json(manifest_path)
+            snapshot_ref = manifest.get("configuration_snapshots", {}).get(
+                "config/agent-registry.json"
+            )
+            if snapshot_ref:
+                registry_path = root / snapshot_ref
+        if registry_path.is_file():
+            registry = load_json(registry_path)
+            registry_digest = hashlib.sha256(
+                json.dumps(
+                    registry,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if assessment.get("agent_registry_digest") != registry_digest:
+                errors.append(
+                    f"Assessment registry digest differs from Run snapshot: {path.relative_to(root)}"
+                )
     return errors
 
 

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/claim-proposal.schema.json",
+  "title": "OpenFS Claim Proposal",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "proposal_id",
+    "object_type",
+    "run_id",
+    "origin_group_ids",
+    "has_primary_source",
+    "artifact_id",
+    "created_by_agent_id",
+    "created_at",
+    "evidence_bundle_refs",
+    "claim_candidate"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "proposal_id": {"type": "string", "pattern": "^PRP-CLM-[0-9]{6}$"},
+    "object_type": {"const": "claim"},
+    "run_id": {"type": "string"},
+    "origin_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "has_primary_source": {"type": "boolean"},
+    "artifact_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "created_by_agent_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "claim_candidate": {"$ref": "claim.schema.json"}
+  },
+  "additionalProperties": false
+}
