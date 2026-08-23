@@ -259,6 +259,8 @@ class RunControllerTests(unittest.TestCase):
         completed = finalize_run(self.root, run_id="RUN-PILOT-006")
         self.assertEqual("completed", completed["status"])
         self.assertEqual({"completed": 12}, completed["metrics"]["work_items_by_status"])
+        self.assertEqual("unreported", completed["cost"]["measurement_status"])
+        self.assertIsNone(completed["cost"]["reported_total_usd"])
 
     def test_completed_discovery_expands_one_idempotent_extraction_item(self):
         create_run(
@@ -395,6 +397,125 @@ class RunControllerTests(unittest.TestCase):
                 "acquisition_decision"
             ],
         )
+
+    def test_elapsed_run_budget_stops_and_records_exception(self):
+        start = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-010",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=start,
+        )
+
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-010",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start + timedelta(minutes=120),
+        )
+
+        self.assertIsNone(leased)
+        manifest = json.loads(
+            (self.root / "runs" / "RUN-PILOT-010" / "manifest.json").read_text()
+        )
+        self.assertEqual("stopped", manifest["status"])
+        self.assertEqual("maximum-run-minutes", manifest["stop"]["reason"])
+        self.assertTrue(
+            (
+                self.root
+                / "reviews"
+                / "exceptions"
+                / "RUN-PILOT-010"
+                / "STOP-MAXIMUM-RUN-MINUTES.json"
+            ).is_file()
+        )
+        queue = [
+            json.loads(path.read_text())
+            for path in (self.root / "queue" / "RUN-PILOT-010").glob("*.json")
+        ]
+        self.assertEqual({"cancelled"}, {item["status"] for item in queue})
+
+    def test_reported_cost_budget_is_enforced_before_next_lease(self):
+        start = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-011",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=start,
+        )
+        manifest_path = self.root / "runs" / "RUN-PILOT-011" / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["budget"]["maximum_cost_usd"] = 0.5
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-011",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start,
+        )
+        output_ref = leased["output_paths"][0]
+        output_path = self.root / output_ref
+        output_path.parent.mkdir(parents=True)
+        output_path.write_text("{}\n", encoding="utf-8")
+        complete_work_item(
+            self.root,
+            run_id="RUN-PILOT-011",
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+            usage={"input_tokens": 100, "output_tokens": 20, "cost_usd": 0.6},
+            now=start + timedelta(seconds=1),
+        )
+
+        next_item = lease_next(
+            self.root,
+            run_id="RUN-PILOT-011",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start + timedelta(seconds=2),
+        )
+        self.assertIsNone(next_item)
+        stopped = json.loads(manifest_path.read_text())
+        self.assertEqual("maximum-cost-usd", stopped["stop"]["reason"])
+        self.assertEqual(0.6, stopped["cost"]["reported_total_usd"])
+
+    def test_parallel_lease_limit_throttles_without_stopping_run(self):
+        start = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-012",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=start,
+        )
+        manifest_path = self.root / "runs" / "RUN-PILOT-012" / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["budget"]["maximum_parallel_agents"] = 1
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        first = lease_next(
+            self.root,
+            run_id="RUN-PILOT-012",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start,
+        )
+        second = lease_next(
+            self.root,
+            run_id="RUN-PILOT-012",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=start + timedelta(seconds=1),
+        )
+        self.assertIsNotNone(first)
+        self.assertIsNone(second)
+        self.assertNotEqual("stopped", json.loads(manifest_path.read_text())["status"])
 
 
 if __name__ == "__main__":

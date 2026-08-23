@@ -243,6 +243,8 @@ def create_run(
             "maximum_run_minutes": defaults.get("maximum_run_minutes"),
             "maximum_work_items": requested_limit,
             "maximum_retries_per_work_item": defaults.get("maximum_retries_per_work_item"),
+            "maximum_parallel_agents": defaults.get("maximum_parallel_agents"),
+            "maximum_sources_per_monitor": defaults.get("maximum_sources_per_monitor"),
             "maximum_cost_usd": defaults.get("maximum_cost_usd"),
         },
         "directive_ids": [directive["directive_id"] for directive in directives],
@@ -250,6 +252,13 @@ def create_run(
         "agent_executions": [],
         "query_receipts": [],
         "expansion_events": [],
+        "cost": {
+            "currency": "USD",
+            "measurement_status": "unreported",
+            "reported_total_usd": None,
+            "reported_executions": 0,
+            "unreported_executions": 0,
+        },
         "metrics": {"work_items_total": len(work_items)},
     }
     run_identity = {
@@ -306,6 +315,159 @@ def _acquire_lock(path: Path) -> int:
 def _release_lock(path: Path, descriptor: int) -> None:
     os.close(descriptor)
     path.unlink(missing_ok=True)
+
+
+def _queue_items(root: Path, run_id: str) -> list[tuple[Path, dict[str, Any]]]:
+    return [
+        (path, read_json(path))
+        for path in sorted((root / "queue" / run_id).glob("WORK-*.json"))
+    ]
+
+
+def _usage_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
+    completed = [item for item in items if item.get("status") == "completed"]
+    cost_values = [
+        item.get("usage", {}).get("cost_usd")
+        for item in completed
+        if item.get("usage", {}).get("cost_usd") is not None
+    ]
+    reported = len(cost_values)
+    if not completed or reported == 0:
+        measurement_status = "unreported"
+    elif reported == len(completed):
+        measurement_status = "complete"
+    else:
+        measurement_status = "partial"
+
+    def token_total(name: str) -> int | None:
+        values = [
+            item.get("usage", {}).get(name)
+            for item in completed
+            if item.get("usage", {}).get(name) is not None
+        ]
+        return sum(values) if values else None
+
+    return {
+        "currency": "USD",
+        "measurement_status": measurement_status,
+        "reported_total_usd": sum(cost_values) if cost_values else None,
+        "reported_executions": reported,
+        "unreported_executions": len(completed) - reported,
+        "reported_input_tokens": token_total("input_tokens"),
+        "reported_output_tokens": token_total("output_tokens"),
+    }
+
+
+def _budget_violation(
+    manifest: dict[str, Any],
+    items: list[dict[str, Any]],
+    current: datetime,
+) -> tuple[str, Any, Any] | None:
+    budget = manifest.get("budget", {})
+    maximum_minutes = budget.get("maximum_run_minutes")
+    if maximum_minutes is not None:
+        elapsed_seconds = (current - _parse_time(manifest["started_at"])).total_seconds()
+        if elapsed_seconds >= float(maximum_minutes) * 60:
+            return "maximum-run-minutes", elapsed_seconds / 60, maximum_minutes
+    maximum_work_items = budget.get("maximum_work_items")
+    if maximum_work_items is not None and len(items) > int(maximum_work_items):
+        return "maximum-work-items", len(items), maximum_work_items
+    maximum_sources = budget.get("maximum_sources_per_monitor")
+    source_items = sum(item.get("kind") == "source-discovery" for item in items)
+    if maximum_sources is not None and source_items > int(maximum_sources):
+        return "maximum-sources-per-monitor", source_items, maximum_sources
+    maximum_cost = budget.get("maximum_cost_usd")
+    usage = _usage_summary(items)
+    reported_cost = usage["reported_total_usd"]
+    if (
+        maximum_cost is not None
+        and reported_cost is not None
+        and reported_cost > float(maximum_cost)
+    ):
+        return "maximum-cost-usd", reported_cost, maximum_cost
+    return None
+
+
+def _stop_run(
+    root: Path,
+    *,
+    manifest: dict[str, Any],
+    reason: str,
+    observed: Any,
+    limit: Any,
+    now: datetime,
+) -> dict[str, Any]:
+    if manifest.get("status") == "stopped":
+        return manifest
+    timestamp = isoformat(now)
+    counts: dict[str, int] = {}
+    items: list[dict[str, Any]] = []
+    for path, item in _queue_items(root, manifest["run_id"]):
+        if item.get("status") in {"queued", "leased"}:
+            item["status"] = "cancelled"
+            item["cancellation"] = {
+                "reason": reason,
+                "recorded_at": timestamp,
+            }
+            item["updated_at"] = timestamp
+            item.pop("lease", None)
+            atomic_write_json(path, item)
+        counts[item["status"]] = counts.get(item["status"], 0) + 1
+        items.append(item)
+    manifest["status"] = "stopped"
+    manifest["stopped_at"] = timestamp
+    manifest["completed_at"] = timestamp
+    manifest["stop"] = {
+        "reason": reason,
+        "observed": observed,
+        "limit": limit,
+        "requires_owner_action": True,
+    }
+    manifest["cost"] = _usage_summary(items)
+    manifest.setdefault("metrics", {}).update(
+        {"work_items_total": len(items), "work_items_by_status": counts}
+    )
+    manifest_path = root / "runs" / manifest["run_id"] / "manifest.json"
+    atomic_write_json(manifest_path, manifest)
+    atomic_write_json(
+        root
+        / "reviews"
+        / "exceptions"
+        / manifest["run_id"]
+        / f"STOP-{reason.upper()}.json",
+        {
+            "schema_version": "0.1.0",
+            "exception_id": f"EXC-{manifest['run_id']}-{reason.upper()}",
+            "run_id": manifest["run_id"],
+            "status": "open",
+            "recorded_at": timestamp,
+            "exception_kind": "run-stop",
+            "reason": reason,
+            "observed": observed,
+            "limit": limit,
+            "requires_owner_action": True,
+        },
+    )
+    return manifest
+
+
+def _recover_expired_leases(
+    root: Path, run_id: str, current: datetime
+) -> list[tuple[Path, dict[str, Any]]]:
+    recovered: list[tuple[Path, dict[str, Any]]] = []
+    for path, item in _queue_items(root, run_id):
+        if item.get("status") == "leased":
+            lease = item.get("lease", {})
+            if lease.get("expires_at") and _parse_time(lease["expires_at"]) <= current:
+                item["status"] = "queued"
+                item["last_error"] = {
+                    "kind": "lease-expired",
+                    "recorded_at": isoformat(current),
+                }
+                item.pop("lease", None)
+                atomic_write_json(path, item)
+        recovered.append((path, item))
+    return recovered
 
 
 def _record_agent_execution(
@@ -373,23 +535,50 @@ def lease_next(
     now: datetime | None = None,
 ) -> dict[str, Any] | None:
     manifest = read_json(root / "runs" / run_id / "manifest.json")
+    if manifest.get("status") in {"completed", "failed", "cancelled", "stopped"}:
+        return None
+    current = now or utc_now()
+    budgets = _load_required(root, "config/budgets.json")
+    kill_switch = budgets.get("kill_switch", {})
+    if kill_switch.get("enabled") and (
+        root / kill_switch.get("control_path", "state/STOP")
+    ).exists():
+        _stop_run(
+            root,
+            manifest=manifest,
+            reason="kill-switch",
+            observed=True,
+            limit=False,
+            now=current,
+        )
+        return None
+    queue_entries = _recover_expired_leases(root, run_id, current)
+    violation = _budget_violation(
+        manifest, [item for _, item in queue_entries], current
+    )
+    if violation:
+        reason, observed, limit = violation
+        _stop_run(
+            root,
+            manifest=manifest,
+            reason=reason,
+            observed=observed,
+            limit=limit,
+            now=current,
+        )
+        return None
+    active_leases = sum(item.get("status") == "leased" for _, item in queue_entries)
+    maximum_parallel = manifest.get("budget", {}).get("maximum_parallel_agents")
+    if maximum_parallel is not None and active_leases >= int(maximum_parallel):
+        return None
     agent = _agent(root, agent_id, run_id=run_id)
     if not agent.get("enabled"):
         if not (allow_disabled_pilot_agent and manifest.get("mode") == "pilot"):
             raise RuntimeError(f"agent is disabled: {agent_id}")
     role = agent.get("role")
-    current = now or utc_now()
-    for path in sorted((root / "queue" / run_id).glob("WORK-*.json")):
-        item = read_json(path)
+    for path, item in queue_entries:
         if item.get("required_role") != role:
             continue
-        if item.get("status") == "leased":
-            lease = item.get("lease", {})
-            if lease.get("expires_at") and _parse_time(lease["expires_at"]) <= current:
-                item["status"] = "queued"
-                item["last_error"] = {"kind": "lease-expired", "recorded_at": isoformat(current)}
-                item.pop("lease", None)
-                atomic_write_json(path, item)
         if item.get("status") != "queued":
             continue
         lock = _lock_path(root, run_id, item["work_item_id"])
@@ -430,6 +619,7 @@ def complete_work_item(
     work_item_id: str,
     agent_id: str,
     output_refs: list[str],
+    usage: dict[str, Any] | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
     path = root / "queue" / run_id / f"{work_item_id}.json"
@@ -449,10 +639,26 @@ def complete_work_item(
         if not output_path.is_file():
             raise ValueError(f"declared output does not exist: {output_ref}")
         output_digests[output_ref] = sha256_file(output_path)
+    if usage is not None:
+        allowed_usage = {"input_tokens", "output_tokens", "cost_usd", "measurement_note"}
+        unknown = set(usage) - allowed_usage
+        if unknown:
+            raise ValueError(f"unknown usage fields: {sorted(unknown)}")
+        for key in ("input_tokens", "output_tokens"):
+            value = usage.get(key)
+            if value is not None and (not isinstance(value, int) or value < 0):
+                raise ValueError(f"{key} must be a non-negative integer or null")
+        cost = usage.get("cost_usd")
+        if cost is not None and (
+            not isinstance(cost, (int, float)) or isinstance(cost, bool) or cost < 0
+        ):
+            raise ValueError("cost_usd must be a non-negative number or null")
     timestamp = isoformat(now)
     item["status"] = "completed"
     item["output_refs"] = output_refs
     item["output_digests"] = output_digests
+    if usage is not None:
+        item["usage"] = usage
     item["completed_by_agent_id"] = agent_id
     item["completed_at"] = timestamp
     item["updated_at"] = timestamp
@@ -469,11 +675,26 @@ def expand_followups(
 ) -> dict[str, Any]:
     manifest_path = root / "runs" / run_id / "manifest.json"
     manifest = read_json(manifest_path)
+    if manifest.get("status") in {"completed", "failed", "cancelled", "stopped"}:
+        return {"created": [], "manifest": manifest}
     queue_path = root / "queue" / run_id
     existing = [read_json(path) for path in sorted(queue_path.glob("WORK-*.json"))]
+    current = now or utc_now()
+    violation = _budget_violation(manifest, existing, current)
+    if violation:
+        reason, observed, limit = violation
+        stopped = _stop_run(
+            root,
+            manifest=manifest,
+            reason=reason,
+            observed=observed,
+            limit=limit,
+            now=current,
+        )
+        return {"created": [], "manifest": stopped}
     existing_keys = {item["idempotency_key"] for item in existing}
     sequence = len(existing)
-    created_at = isoformat(now)
+    created_at = isoformat(current)
     maximum_attempts = int(manifest["budget"]["maximum_retries_per_work_item"]) + 1
     additions: list[dict[str, Any]] = []
     monitor_source_ref = next(
@@ -770,7 +991,29 @@ def expand_followups(
 
     limit = int(manifest["budget"]["maximum_work_items"])
     if len(existing) + len(additions) > limit:
-        raise RuntimeError("follow-up expansion exceeds the Run Work Item budget")
+        stopped = _stop_run(
+            root,
+            manifest=manifest,
+            reason="maximum-work-items",
+            observed=len(existing) + len(additions),
+            limit=limit,
+            now=current,
+        )
+        return {"created": [], "manifest": stopped}
+    source_limit = manifest["budget"].get("maximum_sources_per_monitor")
+    prospective_sources = sum(
+        item.get("kind") == "source-discovery" for item in existing + additions
+    )
+    if source_limit is not None and prospective_sources > int(source_limit):
+        stopped = _stop_run(
+            root,
+            manifest=manifest,
+            reason="maximum-sources-per-monitor",
+            observed=prospective_sources,
+            limit=source_limit,
+            now=current,
+        )
+        return {"created": [], "manifest": stopped}
     for item in additions:
         atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
     if additions:
@@ -874,7 +1117,9 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
     counts: dict[str, int] = {}
     for item in items:
         counts[item["status"]] = counts.get(item["status"], 0) + 1
-    if any(item["status"] in {"queued", "leased"} for item in items):
+    if manifest.get("status") == "stopped":
+        status = "stopped"
+    elif any(item["status"] in {"queued", "leased"} for item in items):
         status = "running"
     elif items and all(item["status"] == "completed" for item in items):
         status = "completed"
@@ -886,6 +1131,7 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
     manifest.setdefault("metrics", {}).update(
         {"work_items_total": len(items), "work_items_by_status": counts}
     )
+    manifest["cost"] = _usage_summary(items)
     decisions = [
         read_json(decision_path)
         for decision_path in sorted((root / "decisions" / run_id).glob("*.json"))
@@ -902,7 +1148,7 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
             manifest["research_status"] = "accepted"
         else:
             manifest["research_status"] = "provisional"
-    if status in {"completed", "partial", "failed", "cancelled"}:
+    if status in {"completed", "partial", "failed", "cancelled", "stopped"}:
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)
     return manifest
@@ -935,6 +1181,10 @@ def main() -> int:
     complete.add_argument("--work-item-id", required=True)
     complete.add_argument("--agent-id", required=True)
     complete.add_argument("--output-ref", action="append", required=True)
+    complete.add_argument("--input-tokens", type=int)
+    complete.add_argument("--output-tokens", type=int)
+    complete.add_argument("--cost-usd", type=float)
+    complete.add_argument("--usage-note")
 
     fail = commands.add_parser("fail")
     fail.add_argument("--run-id", required=True)
@@ -970,12 +1220,25 @@ def main() -> int:
             allow_disabled_pilot_agent=args.allow_disabled_pilot_agent,
         )
     elif args.command == "complete":
+        usage_values = {
+            "input_tokens": args.input_tokens,
+            "output_tokens": args.output_tokens,
+            "cost_usd": args.cost_usd,
+        }
+        if args.usage_note is not None:
+            usage_values["measurement_note"] = args.usage_note
+        usage = (
+            usage_values
+            if any(value is not None for value in usage_values.values())
+            else None
+        )
         result = complete_work_item(
             args.root,
             run_id=args.run_id,
             work_item_id=args.work_item_id,
             agent_id=args.agent_id,
             output_refs=args.output_ref,
+            usage=usage,
         )
     elif args.command == "fail":
         result = fail_work_item(
