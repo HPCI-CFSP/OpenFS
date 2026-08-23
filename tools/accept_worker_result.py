@@ -131,6 +131,13 @@ def validate_result(
         raise RuntimeError("Worker result is not owned by the current lease holder")
     if work_item.get("output_paths") != invocation["constraints"]["output_paths"]:
         raise ValueError("Worker invocation output paths differ from the Work Item")
+    manifest_ref = provenance["manifest_ref"]
+    if manifest_ref != f"runs/{invocation['run_id']}/manifest.json":
+        raise ValueError("Worker invocation Run manifest reference differs")
+    if stable_digest(read_json(_repository_path(root, manifest_ref))) != provenance[
+        "manifest_digest"
+    ]:
+        raise ValueError("pinned Run manifest changed after invocation preparation")
     for ref_key, digest_key in (
         ("agent_registry_ref", "agent_registry_digest"),
         ("role_permissions_ref", "role_permissions_digest"),
@@ -138,6 +145,10 @@ def validate_result(
         ref = provenance[ref_key]
         if stable_digest(read_json(_repository_path(root, ref))) != provenance[digest_key]:
             raise ValueError(f"pinned Worker configuration changed: {ref}")
+    skill = invocation["skill"]
+    skill_path = _repository_path(root, skill["snapshot_ref"])
+    if not skill_path.is_file() or sha256_file(skill_path) != skill["digest"]:
+        raise ValueError("pinned Worker Skill changed after invocation preparation")
 
     if result.get("status") == "completed":
         expected_refs = invocation["constraints"]["output_paths"]

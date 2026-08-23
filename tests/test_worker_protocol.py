@@ -254,6 +254,48 @@ class WorkerProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "changed after invocation"):
             validate_result(self.root, invocation, result)
 
+    def test_result_rejects_manifest_or_skill_drift_after_invocation(self):
+        invocation = self.invocation()
+        self.write(self.output_ref, {"public": "structured result"})
+        core = {
+            "schema_version": "0.1.0",
+            "result_id": "WRES-DDDDDDDDDDDDDDDD",
+            "invocation_id": invocation["invocation_id"],
+            "invocation_digest": invocation["invocation_digest"],
+            "agent_id": self.agent_id,
+            "status": "completed",
+            "completed_at": "2026-08-24T05:20:00Z",
+            "provider": {
+                "provider": "provider-a",
+                "model_family": "model-a",
+                "resolved_model_version": "model-a-202608",
+                "request_id_digest": "d" * 64,
+                "finish_reason": "stop",
+            },
+            "usage": {
+                "input_tokens": 1,
+                "output_tokens": 1,
+                "cost_usd": 0.01,
+                "measurement_note": "Measured.",
+            },
+            "output_refs": [self.output_ref],
+            "output_digests": {self.output_ref: sha256_file(self.root / self.output_ref)},
+        }
+        result = {**core, "result_digest": stable_digest(core)}
+
+        manifest_ref = f"runs/{self.run_id}/manifest.json"
+        manifest = json.loads((self.root / manifest_ref).read_text())
+        manifest["budget"]["maximum_cost_usd"] = 0.001
+        self.write(manifest_ref, manifest)
+        with self.assertRaisesRegex(ValueError, "Run manifest changed"):
+            validate_result(self.root, invocation, result)
+
+        manifest["budget"]["maximum_cost_usd"] = 1.0
+        self.write(manifest_ref, manifest)
+        self.write(self.skill_ref, "# Changed procedure\n")
+        with self.assertRaisesRegex(ValueError, "Worker Skill changed"):
+            validate_result(self.root, invocation, result)
+
     def test_acceptance_updates_control_state_through_run_controller(self):
         manifest_path = self.root / f"runs/{self.run_id}/manifest.json"
         manifest = json.loads(manifest_path.read_text())
