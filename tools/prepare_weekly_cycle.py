@@ -6,11 +6,13 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from openfs_runtime import atomic_write_json, isoformat, read_json
 from evaluate_monitor_readiness import evaluate as evaluate_monitor_readiness
+from run_controller import _approved_directives
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,15 +29,11 @@ def _last_run(root: Path, monitor_id: str) -> dict[str, Any] | None:
     return max(candidates, key=lambda item: item.get("started_at", "")) if candidates else None
 
 
-def _pending_directives(root: Path, task_id: str) -> list[str]:
-    result = []
-    for path in sorted((root / "reviews" / "directives").glob("DIR-*.json")):
-        directive = read_json(path)
-        if directive.get("status") not in {"approved", "scheduled"}:
-            continue
-        if task_id in directive.get("scope", []):
-            result.append(directive["directive_id"])
-    return result
+def _pending_directives(root: Path, task_id: str, as_of: datetime) -> list[str]:
+    return [
+        directive["directive_id"]
+        for directive in _approved_directives(root, task_id, as_of=as_of)
+    ]
 
 
 def build_plan(
@@ -45,6 +43,8 @@ def build_plan(
     monitor_ids: list[str] | None = None,
     pilot: bool = False,
     generated_at: str | None = None,
+    operational_readiness: dict[str, Any] | None = None,
+    operational_readiness_ref: str | None = None,
 ) -> dict[str, Any]:
     if not WEEK.fullmatch(week):
         raise ValueError(f"invalid ISO week: {week}")
@@ -52,6 +52,7 @@ def build_plan(
     if any(not MONITOR_ID.fullmatch(item) for item in requested):
         raise ValueError("invalid monitor ID")
     timestamp = generated_at or isoformat()
+    as_of = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
     monitors = []
     blockers = []
     known = set()
@@ -81,7 +82,9 @@ def build_plan(
             "suggested_run_id": f"RUN-{week.replace('-', '')}-{run_suffix}",
             "previous_run_id": previous.get("run_id") if previous else None,
             "previous_run_status": previous.get("status") if previous else None,
-            "pending_directive_ids": _pending_directives(root, monitor["task_id"]),
+            "pending_directive_ids": _pending_directives(
+                root, monitor["task_id"], as_of
+            ),
         }
         if production_readiness:
             plan["production_readiness"] = production_readiness
@@ -109,6 +112,36 @@ def build_plan(
     ]
     if blockers:
         lines.append("- Blockers: " + ", ".join(f"`{item}`" for item in blockers))
+    readiness_summary = None
+    if operational_readiness is not None:
+        readiness_summary = {
+            "status": operational_readiness["status"],
+            "blockers": operational_readiness.get("blockers", []),
+            "checks": operational_readiness.get("checks", {}),
+            "enabled_monitor_count": operational_readiness.get("monitors", {}).get(
+                "enabled_count", 0
+            ),
+            "ready_enabled_monitor_count": operational_readiness.get(
+                "monitors", {}
+            ).get("ready_enabled_count", 0),
+            "detail_ref": operational_readiness_ref,
+        }
+        lines.extend(["", "## Aggregate operational readiness", ""])
+        lines.append(f"- Status: `{readiness_summary['status']}`")
+        if readiness_summary["blockers"]:
+            lines.append(
+                "- Blockers: "
+                + ", ".join(f"`{item}`" for item in readiness_summary["blockers"])
+            )
+        lines.append(
+            "- Enabled recurring Monitors: "
+            f"`{readiness_summary['enabled_monitor_count']}`; ready: "
+            f"`{readiness_summary['ready_enabled_monitor_count']}`"
+        )
+        if operational_readiness_ref:
+            lines.append(
+                f"- Detail: `{operational_readiness_ref}` in the workflow artifact."
+            )
     lines.extend(["", "## Monitor plans", ""])
     if monitors:
         for monitor in monitors:
@@ -129,7 +162,7 @@ def build_plan(
             "accept its own findings, or publish candidate artifacts.",
         ]
     )
-    return {
+    plan = {
         "schema_version": "0.1.0",
         "cycle_id": cycle_id,
         "week": week,
@@ -145,6 +178,9 @@ def build_plan(
             "deduplication_marker": marker,
         },
     }
+    if readiness_summary is not None:
+        plan["operational_readiness"] = readiness_summary
+    return plan
 
 
 def main() -> int:
@@ -153,15 +189,35 @@ def main() -> int:
     parser.add_argument("--monitor-id", action="append")
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--generated-at")
+    parser.add_argument("--operational-readiness", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--root", type=Path, default=ROOT)
     args = parser.parse_args()
+    readiness_path = None
+    readiness = None
+    if args.operational_readiness:
+        readiness_path = (
+            args.operational_readiness
+            if args.operational_readiness.is_absolute()
+            else args.root / args.operational_readiness
+        )
+        readiness = read_json(readiness_path)
     plan = build_plan(
         args.root,
         week=args.week,
         monitor_ids=args.monitor_id,
         pilot=args.pilot,
         generated_at=args.generated_at,
+        operational_readiness=readiness,
+        operational_readiness_ref=(
+            (
+                args.operational_readiness.name
+                if args.operational_readiness.is_absolute()
+                else str(args.operational_readiness)
+            )
+            if readiness_path
+            else None
+        ),
     )
     output = args.output if args.output.is_absolute() else args.root / args.output
     atomic_write_json(output, plan)

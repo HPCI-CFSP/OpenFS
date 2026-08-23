@@ -30,6 +30,19 @@
         "additionalProperties": false
       }
     },
+    "operational_readiness": {
+      "type": "object",
+      "required": ["status", "blockers", "checks", "enabled_monitor_count", "ready_enabled_monitor_count", "detail_ref"],
+      "properties": {
+        "status": {"enum": ["ready", "blocked"]},
+        "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "checks": {"type": "object", "additionalProperties": {"type": "boolean"}},
+        "enabled_monitor_count": {"type": "integer", "minimum": 0},
+        "ready_enabled_monitor_count": {"type": "integer", "minimum": 0},
+        "detail_ref": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
     "issue": {
       "type": "object",
       "required": ["title", "body", "labels", "deduplication_marker"],

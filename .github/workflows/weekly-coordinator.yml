@@ -50,7 +50,10 @@ jobs:
         run: |
           WEEK="$(date -u +%G-W%V)"
           GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          ARGS=(--week "$WEEK" --generated-at "$GENERATED_AT" --output _automation/weekly-cycle.json)
+          python3 tools/evaluate_operational_readiness.py \
+            --evaluated-at "$GENERATED_AT" \
+            --output _automation/operational-readiness.json
+          ARGS=(--week "$WEEK" --generated-at "$GENERATED_AT" --operational-readiness _automation/operational-readiness.json --output _automation/weekly-cycle.json)
           if [[ -n "$REQUESTED_MONITOR_ID" ]]; then
             ARGS+=(--monitor-id "$REQUESTED_MONITOR_ID")
           fi
@@ -58,9 +61,6 @@ jobs:
             ARGS+=(--pilot)
           fi
           python3 tools/prepare_weekly_cycle.py "${ARGS[@]}"
-          python3 tools/evaluate_operational_readiness.py \
-            --evaluated-at "$GENERATED_AT" \
-            --output _automation/operational-readiness.json
       - name: Upload coordination plan
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

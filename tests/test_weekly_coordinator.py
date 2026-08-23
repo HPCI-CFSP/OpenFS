@@ -36,7 +36,10 @@ class WeeklyCoordinatorTests(unittest.TestCase):
             "reviews/directives/DIR-000001.json",
             {
                 "directive_id": "DIR-000001",
+                "directive_type": "research-instruction",
                 "status": "approved",
+                "submitted_at": "2026-08-23T00:00:00Z",
+                "application_mode": "once",
                 "scope": ["OFS-001"],
             },
         )
@@ -51,6 +54,34 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         self.assertEqual("RUN-2026W35-TEST-001", plan["monitors"][0]["suggested_run_id"])
         self.assertEqual(["DIR-000001"], plan["monitors"][0]["pending_directive_ids"])
         self.assertNotIn("Candidate statement", plan["issue"]["body"])
+
+    def test_issue_surfaces_sanitized_operational_readiness(self):
+        self.write_json(
+            "config/monitors/MON-TEST-001.json",
+            {"monitor_id": "MON-TEST-001", "task_id": "OFS-001", "enabled": False},
+        )
+        readiness = {
+            "status": "blocked",
+            "blockers": ["production_components_present", "owner_controls_verified"],
+            "checks": {
+                "production_components_present": False,
+                "owner_controls_verified": False,
+            },
+            "monitors": {"enabled_count": 0, "ready_enabled_count": 0},
+        }
+        plan = build_plan(
+            self.root,
+            week="2026-W35",
+            monitor_ids=["MON-TEST-001"],
+            pilot=True,
+            generated_at="2026-08-24T00:00:00Z",
+            operational_readiness=readiness,
+            operational_readiness_ref="_automation/operational-readiness.json",
+        )
+        self.assertEqual("ready", plan["status"])
+        self.assertEqual("blocked", plan["operational_readiness"]["status"])
+        self.assertIn("production_components_present", plan["issue"]["body"])
+        self.assertNotIn("secret", plan["issue"]["body"].lower())
 
     def test_weekly_review_is_variable_gated_and_has_no_research_secret(self):
         workflow = (ROOT / ".github" / "workflows" / "weekly-review.yml").read_text(
