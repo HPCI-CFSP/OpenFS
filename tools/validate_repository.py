@@ -58,6 +58,7 @@ REQUIRED_FILES = [
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
     "schemas/knowledge-index.schema.json",
+    "schemas/promotion-readiness.schema.json",
     "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
@@ -116,6 +117,7 @@ REQUIRED_FILES = [
     "tools/promote_research_topic.py",
     "tools/promote_claim.py",
     "tools/generate_knowledge_views.py",
+    "tools/evaluate_promotion_readiness.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
     "tools/openfs_runtime.py",
@@ -722,6 +724,21 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     "dependency_impact"
                 ):
                     errors.append(f"Run {run_id} dependency impact metrics differ")
+        promotion_readiness_ref = manifest.get("promotion_readiness_ref")
+        if promotion_readiness_ref:
+            promotion_path = root / promotion_readiness_ref
+            if not promotion_path.is_file():
+                errors.append(
+                    f"Run {run_id} promotion readiness report is missing: {promotion_readiness_ref}"
+                )
+            else:
+                promotion = load_json(promotion_path)
+                if promotion.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} promotion readiness identity differs")
+                if promotion.get("summary") != manifest.get("metrics", {}).get(
+                    "promotion_readiness"
+                ):
+                    errors.append(f"Run {run_id} promotion readiness metrics differ")
         readiness_ref = manifest.get("consensus_readiness_ref")
         if readiness_ref:
             readiness_path = root / readiness_ref

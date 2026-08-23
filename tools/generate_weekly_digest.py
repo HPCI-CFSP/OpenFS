@@ -85,6 +85,8 @@ def build_digest(
     publication_blocked_count = 0
     dependency_promotion_block_count = 0
     reobservation_gap_count = 0
+    promotion_eligible_count = 0
+    promotion_blocked_count = 0
     change_totals = {
         name: 0 for name in ("new", "changed", "unchanged", "unavailable", "not-observed")
     }
@@ -128,6 +130,11 @@ def build_digest(
                         ),
                     }
                 )
+        promotion_ref = manifest.get("promotion_readiness_ref")
+        promotion = read_json(root / promotion_ref) if promotion_ref else None
+        promotion_summary = promotion.get("summary", {}) if promotion else {}
+        promotion_eligible_count += int(promotion_summary.get("eligible_count", 0))
+        promotion_blocked_count += int(promotion_summary.get("blocked_count", 0))
         readiness_ref = manifest.get("consensus_readiness_ref")
         readiness = read_json(root / readiness_ref) if readiness_ref else None
         temporal_ref = manifest.get("temporal_integrity_ref")
@@ -259,6 +266,12 @@ def build_digest(
                 "reobservation_gaps": int(
                     dependency_summary.get("reobservation_gaps", 0)
                 ),
+                "promotion_eligible_count": int(
+                    promotion_summary.get("eligible_count", 0)
+                ),
+                "promotion_blocked_count": int(
+                    promotion_summary.get("blocked_count", 0)
+                ),
                 "consensus_outcomes": manifest.get("metrics", {}).get("consensus_outcomes", {}),
                 "cost": manifest.get("cost", {"measurement_status": "unreported"}),
             }
@@ -382,6 +395,8 @@ def build_digest(
             "publication_blocked_count": publication_blocked_count,
             "dependency_promotion_block_count": dependency_promotion_block_count,
             "reobservation_gap_count": reobservation_gap_count,
+            "promotion_eligible_count": promotion_eligible_count,
+            "promotion_blocked_count": promotion_blocked_count,
         },
         "runs": run_summaries,
         "source_changes": change_totals,
@@ -438,7 +453,9 @@ def render_markdown(digest: dict[str, Any]) -> str:
         followup_text = "; ".join(followup_parts) or "not-evaluated"
         learning_text = (
             f"persistent {run['persistent_query_count']}; "
-            f"publisher gaps {run['publisher_independence_failures']}"
+            f"publisher gaps {run['publisher_independence_failures']}; "
+            f"promotion {run['promotion_eligible_count']} ready/"
+            f"{run['promotion_blocked_count']} blocked"
         )
         lines.append(
             f"| `{run['run_id']}` | `{run['task_id']}` / `{run['monitor_id']}` | "

@@ -155,6 +155,11 @@ append-only record in `knowledge/claims/` pins Proposal, Decision, Evidence, and
 dependency-report digests. Recommendation Claims remain outside this automatic
 path and require the human-accountable Recommendation Gate.
 
+Run finalization also writes `promotion-readiness.json` when Claim Proposals exist.
+It classifies each Claim as eligible, already promoted, Decision-blocked,
+Policy-blocked, dependency-blocked, or Recommendation-Gate-bound. This preflight
+is visible operational state; eligibility never auto-merges canonical knowledge.
+
 All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
 
 ## Center-aware scenario projection

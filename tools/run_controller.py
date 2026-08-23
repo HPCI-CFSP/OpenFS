@@ -1862,6 +1862,18 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
                 generated_at=manifest["completed_at"],
             )
             write_dependency_impact(root, dependency_impact)
+        if status in {"completed", "partial"} and any(
+            (root / "proposals" / "claims" / run_id).glob("*.json")
+        ):
+            from evaluate_promotion_readiness import evaluate as evaluate_promotion_readiness
+            from evaluate_promotion_readiness import record as record_promotion_readiness
+
+            promotion_readiness = evaluate_promotion_readiness(
+                root,
+                run_id=run_id,
+                evaluated_at=manifest["completed_at"],
+            )
+            record_promotion_readiness(root, promotion_readiness)
         from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
         from evaluate_temporal_integrity import record as record_temporal_integrity
 

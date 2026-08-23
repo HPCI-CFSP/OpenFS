@@ -51,6 +51,7 @@ class DigestAndIssueTests(unittest.TestCase):
                 "followup_effectiveness_ref": f"runs/{run_id}/followup-effectiveness.json",
                 "global_followup_effectiveness_ref": f"runs/{run_id}/global-followup-effectiveness.json",
                 "dependency_impact_ref": f"runs/{run_id}/dependency-impact.json",
+                "promotion_readiness_ref": f"runs/{run_id}/promotion-readiness.json",
             },
         )
         self.write_json(
@@ -97,6 +98,15 @@ class DigestAndIssueTests(unittest.TestCase):
                         "decision_refs": [f"decisions/{run_id}/DEC-1.json"],
                     }
                 ],
+            },
+        )
+        self.write_json(
+            f"runs/{run_id}/promotion-readiness.json",
+            {
+                "summary": {
+                    "eligible_count": 1,
+                    "blocked_count": 2,
+                }
             },
         )
         self.write_json(
@@ -170,6 +180,8 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["publication_blocked_count"])
         self.assertEqual(1, digest["summary"]["dependency_promotion_block_count"])
         self.assertEqual(0, digest["summary"]["reobservation_gap_count"])
+        self.assertEqual(1, digest["summary"]["promotion_eligible_count"])
+        self.assertEqual(2, digest["summary"]["promotion_blocked_count"])
         self.assertEqual(1, len(digest["dependency_impacts"]))
         self.assertEqual("passed", digest["runs"][0]["temporal_integrity"])
         self.assertEqual("failed", digest["runs"][0]["profile_continuity"])
@@ -203,7 +215,10 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertIn("blocked", rendered)
         self.assertIn("partially-effective (2/3)", rendered)
         self.assertIn("global: effective (2/2)", rendered)
-        self.assertIn("persistent 1; publisher gaps 1", rendered)
+        self.assertIn(
+            "persistent 1; publisher gaps 1; promotion 1 ready/2 blocked",
+            rendered,
+        )
 
     def test_issue_payload_excludes_untrusted_raw_error_and_is_idempotent(self):
         exception = {
