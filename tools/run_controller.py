@@ -476,8 +476,100 @@ def expand_followups(
     created_at = isoformat(now)
     maximum_attempts = int(manifest["budget"]["maximum_retries_per_work_item"]) + 1
     additions: list[dict[str, Any]] = []
+    monitor_source_ref = next(
+        (
+            source_ref
+            for source_ref in manifest.get("policy_hashes", {})
+            if source_ref.startswith("config/monitors/")
+        ),
+        None,
+    )
+    if not monitor_source_ref:
+        raise ValueError("Run manifest has no pinned Monitor reference")
+    monitor_ref = manifest.get("configuration_snapshots", {}).get(
+        monitor_source_ref, monitor_source_ref
+    )
+    run_monitor = read_json(root / monitor_ref)
+    minimum_evidence_sources = int(
+        run_monitor.get("minimum_evidence_sources_per_claim", 2)
+    )
+    skipped_evidence_sources = {
+        item.get("source_result_ref"): item
+        for item in manifest.get("skipped_evidence_sources", [])
+    }
+
+    def source_decision(discovery_item: dict[str, Any]) -> str | None:
+        output_refs = discovery_item.get("output_refs", [])
+        if not output_refs:
+            return None
+        result = read_json(root / output_refs[0])
+        try:
+            return result["source_receipt"]["rights"]["acquisition_decision"]
+        except KeyError as exc:
+            raise ValueError(
+                f"Source result lacks a Rights decision: {output_refs[0]}"
+            ) from exc
+
     for parent in existing:
         if parent.get("kind") != "source-discovery" or parent.get("status") != "completed":
+            continue
+        decision = source_decision(parent)
+        if decision not in {"evidence-excerpt", "approved-snapshot"}:
+            for source_result_ref in parent.get("output_refs", []):
+                skipped_evidence_sources[source_result_ref] = {
+                    "source_result_ref": source_result_ref,
+                    "parent_work_item_id": parent["work_item_id"],
+                    "acquisition_decision": decision,
+                    "reason": "Rights decision does not permit Evidence extraction",
+                    "recorded_at": created_at,
+                }
+            parent_payload = parent.get("payload", {})
+            replacement_generation = int(
+                parent_payload.get("replacement_generation", 0)
+            ) + 1
+            original_candidate_slot = int(
+                parent_payload.get(
+                    "original_candidate_slot",
+                    parent_payload.get("candidate_slot", 1),
+                )
+            )
+            replacement_payload = dict(parent_payload)
+            replacement_payload.update(
+                {
+                    "candidate_slot": original_candidate_slot
+                    + 1000 * replacement_generation,
+                    "original_candidate_slot": original_candidate_slot,
+                    "replacement_for_work_item_id": parent["work_item_id"],
+                    "replacement_generation": replacement_generation,
+                    "replacement_reason": "source-not-evidence-eligible",
+                }
+            )
+            identity = {
+                "run_id": run_id,
+                "task_id": manifest["task_id"],
+                "monitor_id": manifest["monitor_id"],
+                "kind": "source-discovery",
+                "payload": replacement_payload,
+            }
+            idempotency_key = stable_digest(identity)
+            if idempotency_key not in existing_keys:
+                sequence += 1
+                item = _work_item(
+                    sequence=sequence,
+                    run_id=run_id,
+                    task_id=manifest["task_id"],
+                    monitor_id=manifest["monitor_id"],
+                    kind="source-discovery",
+                    role="discovery",
+                    payload=replacement_payload,
+                    output_paths=[
+                        f"proposals/sources/{run_id}/WORK-{sequence:06d}.json"
+                    ],
+                    maximum_attempts=maximum_attempts,
+                    created_at=created_at,
+                )
+                additions.append(item)
+                existing_keys.add(idempotency_key)
             continue
         for source_result_ref in parent.get("output_refs", []):
             payload = {
@@ -528,13 +620,20 @@ def expand_followups(
         key = (payload.get("query", ""), payload.get("query_role", "coverage"))
         query_groups.setdefault(key, []).append(item)
     for (query, query_role), discovery_group in sorted(query_groups.items()):
-        if not query or not all(
-            item["work_item_id"] in evidence_by_discovery for item in discovery_group
+        if not query or not all(item.get("status") == "completed" for item in discovery_group):
+            continue
+        evidence_eligible = [
+            item
+            for item in discovery_group
+            if source_decision(item) in {"evidence-excerpt", "approved-snapshot"}
+        ]
+        if len(evidence_eligible) < minimum_evidence_sources or not all(
+            item["work_item_id"] in evidence_by_discovery for item in evidence_eligible
         ):
             continue
         evidence_refs = sorted(
             reference
-            for item in discovery_group
+            for item in evidence_eligible
             for reference in evidence_by_discovery[item["work_item_id"]].get(
                 "output_refs", []
             )
@@ -545,7 +644,7 @@ def expand_followups(
             "evidence_bundle_refs": evidence_refs,
             "parent_work_item_ids": sorted(
                 evidence_by_discovery[item["work_item_id"]]["work_item_id"]
-                for item in discovery_group
+                for item in evidence_eligible
             ),
         }
         identity = {
@@ -684,7 +783,10 @@ def expand_followups(
             }
         )
         manifest["metrics"]["work_items_total"] = len(existing) + len(additions)
-        atomic_write_json(manifest_path, manifest)
+    manifest["skipped_evidence_sources"] = sorted(
+        skipped_evidence_sources.values(), key=lambda item: item["source_result_ref"]
+    )
+    atomic_write_json(manifest_path, manifest)
     return {"created": additions, "manifest": manifest}
 
 

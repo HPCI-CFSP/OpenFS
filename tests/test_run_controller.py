@@ -63,6 +63,14 @@ class RunControllerTests(unittest.TestCase):
             json.dumps(directive), encoding="utf-8"
         )
 
+    @staticmethod
+    def source_result(acquisition_decision="evidence-excerpt"):
+        return {
+            "source_receipt": {
+                "rights": {"acquisition_decision": acquisition_decision}
+            }
+        }
+
     def test_create_is_idempotent_and_includes_approved_directive(self):
         self.add_directive()
         now = datetime(2026, 8, 24, tzinfo=timezone.utc)
@@ -269,7 +277,9 @@ class RunControllerTests(unittest.TestCase):
         output_ref = leased["output_paths"][0]
         output_path = self.root / output_ref
         output_path.parent.mkdir(parents=True)
-        output_path.write_text("{}\n", encoding="utf-8")
+        output_path.write_text(
+            json.dumps(self.source_result()) + "\n", encoding="utf-8"
+        )
         complete_work_item(
             self.root,
             run_id="RUN-PILOT-007",
@@ -302,7 +312,9 @@ class RunControllerTests(unittest.TestCase):
             output_ref = leased["output_paths"][0]
             output_path = self.root / output_ref
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            output_path.write_text("{}\n", encoding="utf-8")
+            output_path.write_text(
+                json.dumps(self.source_result()) + "\n", encoding="utf-8"
+            )
             complete_work_item(
                 self.root,
                 run_id="RUN-PILOT-008",
@@ -336,6 +348,53 @@ class RunControllerTests(unittest.TestCase):
         ]
         self.assertEqual(1, len(synthesis))
         self.assertEqual(2, len(synthesis[0]["payload"]["evidence_bundle_refs"]))
+
+    def test_metadata_only_source_is_skipped_and_replaced_idempotently(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-009",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        leased = lease_next(
+            self.root,
+            run_id="RUN-PILOT-009",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+        )
+        output_ref = leased["output_paths"][0]
+        output_path = self.root / output_ref
+        output_path.parent.mkdir(parents=True)
+        output_path.write_text(
+            json.dumps(self.source_result("metadata-only")) + "\n",
+            encoding="utf-8",
+        )
+        complete_work_item(
+            self.root,
+            run_id="RUN-PILOT-009",
+            work_item_id=leased["work_item_id"],
+            agent_id="discovery-public-01",
+            output_refs=[output_ref],
+        )
+
+        first = expand_followups(self.root, run_id="RUN-PILOT-009")
+        second = expand_followups(self.root, run_id="RUN-PILOT-009")
+
+        self.assertEqual(1, len(first["created"]))
+        replacement = first["created"][0]
+        self.assertEqual("source-discovery", replacement["kind"])
+        self.assertEqual(
+            leased["work_item_id"],
+            replacement["payload"]["replacement_for_work_item_id"],
+        )
+        self.assertEqual([], second["created"])
+        self.assertEqual(
+            "metadata-only",
+            second["manifest"]["skipped_evidence_sources"][0][
+                "acquisition_decision"
+            ],
+        )
 
 
 if __name__ == "__main__":
