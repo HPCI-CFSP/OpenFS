@@ -82,7 +82,12 @@ def extract(
     return {
         "schema_version": "0.1.0",
         "proposal_id": _numeric_proposal_id(
-            {"run_id": run_id, "source_id": receipt["source_id"], "evidence": candidates}
+            {
+                "run_id": run_id,
+                "work_item_id": work_item_id,
+                "source_id": receipt["source_id"],
+                "evidence": candidates,
+            }
         ),
         "object_type": "evidence",
         "run_id": run_id,

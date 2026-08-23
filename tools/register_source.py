@@ -244,7 +244,13 @@ def register_capture(
     created_at = capture.get("created_at") or isoformat()
     return {
         "schema_version": "0.1.0",
-        "proposal_id": _numeric_proposal_id({"source_id": source_id, "run_id": run_id}),
+        "proposal_id": _numeric_proposal_id(
+            {
+                "source_id": source_id,
+                "run_id": run_id,
+                "work_item_id": work_item_id,
+            }
+        ),
         "object_type": "source",
         "run_id": run_id,
         "work_item_id": work_item_id,

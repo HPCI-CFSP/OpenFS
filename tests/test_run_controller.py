@@ -67,9 +67,10 @@ class RunControllerTests(unittest.TestCase):
         )
 
     @staticmethod
-    def source_result(acquisition_decision="evidence-excerpt"):
+    def source_result(acquisition_decision="evidence-excerpt", source_id="SRC-TEST"):
         return {
             "source_receipt": {
+                "source_id": source_id,
                 "rights": {"acquisition_decision": acquisition_decision}
             }
         }
@@ -179,7 +180,7 @@ class RunControllerTests(unittest.TestCase):
             for item in items
             if item["payload"].get("subject_ids") == [subject_id]
         ]
-        for item in subject_items:
+        for index, item in enumerate(subject_items, 1):
             output_ref = item["output_paths"][0]
             output = self.root / output_ref
             output.parent.mkdir(parents=True, exist_ok=True)
@@ -187,6 +188,7 @@ class RunControllerTests(unittest.TestCase):
                 json.dumps(
                     {
                         "source_receipt": {
+                            "source_id": f"SRC-CENTER-{index}",
                             "rights": {"acquisition_decision": "evidence-excerpt"}
                         }
                     }
@@ -462,7 +464,7 @@ class RunControllerTests(unittest.TestCase):
             monitor_id="MON-MEMORY-001",
             pilot=True,
         )
-        for _ in range(2):
+        for slot in range(2):
             leased = lease_next(
                 self.root,
                 run_id="RUN-PILOT-008",
@@ -473,7 +475,8 @@ class RunControllerTests(unittest.TestCase):
             output_path = self.root / output_ref
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(
-                json.dumps(self.source_result()) + "\n", encoding="utf-8"
+                json.dumps(self.source_result(source_id=f"SRC-SLOT-{slot}")) + "\n",
+                encoding="utf-8",
             )
             complete_work_item(
                 self.root,

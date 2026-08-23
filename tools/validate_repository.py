@@ -485,9 +485,6 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         }
         if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
             errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
-    for run_id, source_ids in source_ids_by_run.items():
-        if len(source_ids) != len(set(source_ids)):
-            errors.append(f"Run {run_id} contains duplicate selected Source IDs")
     for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
         bundle = load_json(path)
         if bundle.get("run_id") != path.parent.name:

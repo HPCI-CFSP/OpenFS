@@ -120,6 +120,26 @@ class CoverageTests(unittest.TestCase):
             "rights-excluded", report["observed"]["query_warnings"][0]["kind"]
         )
 
+    def test_reused_source_is_counted_once_without_blocking_coverage(self):
+        source_path = (
+            self.root
+            / "proposals"
+            / "sources"
+            / "RUN-COVERAGE-TEST"
+            / "WORK-000001.json"
+        )
+        duplicate = json.loads(source_path.read_text(encoding="utf-8"))
+        duplicate["query_receipt"]["query_receipt_id"] = "QRY-000000000002"
+        (source_path.parent / "WORK-000002.json").write_text(
+            json.dumps(duplicate), encoding="utf-8"
+        )
+        report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
+        self.assertEqual(1, report["observed"]["source_count"])
+        self.assertEqual(
+            ["SRC-000000000001"], report["observed"]["reused_source_ids"]
+        )
+        self.assertNotIn("duplicate_source_selections", report["gaps"])
+
     def test_unclassified_failure_remains_blocking(self):
         path = (
             self.root

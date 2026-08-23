@@ -186,7 +186,6 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
                 }
             ]
         ),
-        "duplicate_source_selections": duplicate_source_ids,
         "missing_subject_searches": missing_subject_searches,
         "unexpected_subject_searches": unexpected_subject_searches,
         "missing_subject_profile_queries": missing_subject_profile_queries,
@@ -240,6 +239,7 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             "source_class_requirement_results": class_requirement_results,
             "languages": sorted(observed_languages),
             "rights_decisions": rights_counts,
+            "reused_source_ids": duplicate_source_ids,
             "subject_count": len(observed_subject_fields),
             "subject_profile_query_fields": {
                 subject_id: sorted(fields)

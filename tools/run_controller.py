@@ -844,6 +844,13 @@ def _expand_followups(
                 f"Source result lacks a Rights decision: {output_refs[0]}"
             ) from exc
 
+    def source_id(discovery_item: dict[str, Any]) -> str | None:
+        output_refs = discovery_item.get("output_refs", [])
+        if not output_refs:
+            return None
+        result = read_json(root / output_refs[0])
+        return result.get("source_receipt", {}).get("source_id")
+
     for parent in existing:
         if parent.get("kind") != "source-discovery" or parent.get("status") != "completed":
             continue
@@ -963,7 +970,7 @@ def _expand_followups(
             for item in discovery_group
             if source_decision(item) in {"evidence-excerpt", "approved-snapshot"}
         ]
-        if len(evidence_eligible) < minimum_evidence_sources or not all(
+        if len({source_id(item) for item in evidence_eligible}) < minimum_evidence_sources or not all(
             item["work_item_id"] in evidence_by_discovery for item in evidence_eligible
         ):
             continue
@@ -1022,7 +1029,7 @@ def _expand_followups(
                 for item in discovery_group
                 if source_decision(item) in {"evidence-excerpt", "approved-snapshot"}
             ]
-            if len(evidence_eligible) < minimum_profile_evidence_sources or not all(
+            if len({source_id(item) for item in evidence_eligible}) < minimum_profile_evidence_sources or not all(
                 item["work_item_id"] in evidence_by_discovery for item in evidence_eligible
             ):
                 continue
