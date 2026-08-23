@@ -42,6 +42,21 @@ class ClaimAssessmentTests(unittest.TestCase):
         )
         self.assertEqual(self.bundle["origin_group_ids"], proposal["origin_group_ids"])
 
+    def test_claim_condition_cannot_encode_governance_state(self):
+        with self.assertRaisesRegex(ValueError, "applicability, not governance"):
+            propose(
+                [self.bundle],
+                bundle_refs=[self.bundle_ref],
+                run_id="RUN-OFS001-PILOT-001",
+                agent_id="synthesis-public-01",
+                statement="Candidate statement.",
+                claim_kind="reported_claim",
+                temporal_scope="2026",
+                conditions=["One Source Origin Group remains."],
+                registry=self.registry,
+                created_at="2026-08-24T00:00:00Z",
+            )
+
     def test_synthesis_assignment_rejects_evidence_substitution(self):
         item = {
             "kind": "synthesis",

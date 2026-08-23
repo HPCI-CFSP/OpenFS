@@ -12,6 +12,13 @@ from openfs_runtime import atomic_write_json, isoformat, read_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
+GOVERNANCE_CONDITION_MARKERS = (
+    "origin group",
+    "assessment",
+    "reviewer",
+    "corroboration",
+    "consensus",
+)
 
 
 def _optional_json(path: Path) -> dict[str, Any] | None:
@@ -60,6 +67,15 @@ def build_brief(
             source = _source_for_evidence(root, evidence_ref)
             source_map[source["source_id"]] = source
         reviews = assessments.get(proposal["proposal_id"], [])
+        condition_warnings = [
+            "This condition encodes review or evidence governance state; use the "
+            "structured Evidence summary and Consensus checks instead."
+            for condition in candidate.get("conditions", [])
+            if any(
+                marker in condition.lower()
+                for marker in GOVERNANCE_CONDITION_MARKERS
+            )
+        ]
         claims.append(
             {
                 "proposal_id": proposal["proposal_id"],
@@ -68,6 +84,17 @@ def build_brief(
                 "claim_kind": candidate["claim_kind"],
                 "temporal_scope": candidate.get("temporal_scope"),
                 "conditions": candidate.get("conditions", []),
+                "condition_warnings": condition_warnings,
+                "evidence_summary": {
+                    "source_count": len(source_map),
+                    "origin_group_count": len(
+                        {item["origin_group_id"] for item in source_map.values()}
+                    ),
+                    "primary_source_count": sum(
+                        bool(item["primary_source"])
+                        for item in source_map.values()
+                    ),
+                },
                 "outcome": decision["outcome"] if decision else "not-evaluated",
                 "unmet_consensus_checks": sorted(
                     key
@@ -150,11 +177,23 @@ def render_markdown(brief: dict[str, Any]) -> str:
                 "",
                 _safe(claim["statement"]),
                 "",
+                "Structured Evidence: "
+                f"**{claim['evidence_summary']['source_count']} Sources / "
+                f"{claim['evidence_summary']['origin_group_count']} Origin Groups / "
+                f"{claim['evidence_summary']['primary_source_count']} primary Sources**",
+                "",
             ]
         )
         if claim["conditions"]:
             lines.append("Conditions:")
             lines.extend(f"- {_safe(item)}" for item in claim["conditions"])
+            lines.append("")
+        if claim["condition_warnings"]:
+            lines.append("Condition warnings:")
+            lines.extend(
+                f"- **warning**: {_safe(item)}"
+                for item in claim["condition_warnings"]
+            )
             lines.append("")
         lines.append("Sources:")
         for source in claim["sources"]:

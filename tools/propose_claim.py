@@ -18,6 +18,13 @@ from openfs_runtime import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+GOVERNANCE_CONDITION_MARKERS = (
+    "origin group",
+    "assessment",
+    "reviewer",
+    "corroboration",
+    "consensus",
+)
 
 
 def _numeric_id(prefix: str, value: Any) -> str:
@@ -58,6 +65,13 @@ def propose(
         "observed_fact", "reported_claim", "forecast", "interpretation", "recommendation"
     }:
         raise ValueError(f"unsupported claim kind: {claim_kind}")
+    normalized_conditions = conditions or []
+    for condition in normalized_conditions:
+        lowered = condition.lower()
+        if any(marker in lowered for marker in GOVERNANCE_CONDITION_MARKERS):
+            raise ValueError(
+                "Claim conditions must describe applicability, not governance state"
+            )
 
     evidence_ids: list[str] = []
     lineage_ids: list[str] = []
@@ -89,7 +103,7 @@ def propose(
         "statement": statement.strip(),
         "claim_kind": claim_kind,
         "temporal_scope": temporal_scope.strip(),
-        "conditions": conditions or [],
+        "conditions": normalized_conditions,
         "evidence_ids": sorted(set(evidence_ids)),
         "source_lineage_ids": sorted(set(lineage_ids)),
         "status": "candidate",

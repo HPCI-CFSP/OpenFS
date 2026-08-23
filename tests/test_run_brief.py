@@ -110,7 +110,16 @@ class RunBriefTests(unittest.TestCase):
             "https://example.org/source",
             brief["claims"][0]["sources"][0]["canonical_url"],
         )
+        self.assertEqual(
+            {
+                "source_count": 1,
+                "origin_group_count": 1,
+                "primary_source_count": 1,
+            },
+            brief["claims"][0]["evidence_summary"],
+        )
         rendered = render_markdown(brief)
+        self.assertIn("1 Sources / 1 Origin Groups / 1 primary Sources", rendered)
         self.assertIn("Source &lt;script&gt;", rendered)
         self.assertNotIn("Source <script>", rendered)
 
