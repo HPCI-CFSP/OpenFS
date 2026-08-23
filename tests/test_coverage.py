@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from evaluate_coverage import evaluate_coverage, record_coverage  # noqa: E402
 from openfs_runtime import read_json, stable_digest  # noqa: E402
+from run_controller import create_run  # noqa: E402
 
 
 class CoverageTests(unittest.TestCase):
@@ -134,6 +135,74 @@ class CoverageTests(unittest.TestCase):
         path.write_text(json.dumps(result), encoding="utf-8")
         report = evaluate_coverage(self.root, run_id="RUN-COVERAGE-TEST")
         self.assertEqual("timeout", report["gaps"]["query_failures"][0]["kind"])
+
+
+class CenterCoverageTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        for relative in (
+            "config/acquisition-policy.json",
+            "config/agent-registry.json",
+            "config/autonomy-policy.json",
+            "config/budgets.json",
+            "config/consensus-policy.json",
+            "config/role-permissions.json",
+            "config/source-registry.json",
+            "config/hpci-center-registry.json",
+            "config/monitors/MON-HPCI-CENTERS-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        (self.root / "reviews" / "directives").mkdir(parents=True)
+        create_run(
+            self.root,
+            run_id="RUN-CENTER-COVERAGE",
+            task_id="OFS-003",
+            monitor_id="MON-HPCI-CENTERS-001",
+            pilot=True,
+        )
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def test_one_subject_search_cannot_claim_registry_coverage(self):
+        run_id = "RUN-CENTER-COVERAGE"
+        queue_items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((self.root / "queue" / run_id).glob("*.json"))
+        ]
+        item = next(entry for entry in queue_items if entry["payload"].get("subject_ids"))
+        result = {
+            "query_receipt": {
+                "query_receipt_id": "QRY-CENTER000001",
+                "query": item["payload"]["query"],
+                "failures": [],
+            },
+            "source_receipt": {
+                "source_id": "SRC-CENTER000001",
+                "source_class": "center-primary",
+                "language": "ja",
+                "primary_source": True,
+                "origin_group_id": "ORG-CENTER000001",
+                "rights": {"acquisition_decision": "evidence-excerpt"},
+                "assignment_scope": {
+                    "subject_ids": item["payload"]["subject_ids"],
+                    "profile_fields": item["payload"]["profile_fields"],
+                    "query_template_id": item["payload"]["query_template_id"],
+                },
+            },
+        }
+        output = self.root / "proposals" / "sources" / run_id / f"{item['work_item_id']}.json"
+        output.parent.mkdir(parents=True)
+        output.write_text(json.dumps(result), encoding="utf-8")
+        report = evaluate_coverage(self.root, run_id=run_id)
+        self.assertEqual("incomplete", report["coverage_status"])
+        self.assertEqual(15, report["expected"]["subject_count"])
+        self.assertEqual(1, report["observed"]["subject_count"])
+        self.assertEqual(14, len(report["gaps"]["missing_subject_searches"]))
+        self.assertEqual(15, len(report["gaps"]["missing_subject_profile_queries"]))
 
 
 if __name__ == "__main__":

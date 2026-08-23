@@ -60,7 +60,7 @@ trusted `Enforce Agent Permissions` check before merge.
 | `extraction` | Evidence proposals from identified sources | Generalize an excerpt into an unsupported Finding |
 | `validator` | Blind independent Assessments | Read other verdicts before first review or edit a Proposal |
 | `critic` | Falsification Assessments and dissent | Suppress objections to satisfy quorum |
-| `synthesis` | Finding and Roadmap Item proposals | Present recommendations as accepted facts |
+| `synthesis` | Claim, Center Profile, Finding, and Roadmap Item proposals | Present recommendations or provisional profiles as accepted facts |
 | `consensus` | Deterministic Decision records | Change thresholds during evaluation |
 | `promotion` | Canonical changes backed by accepted Decisions | Consume arbitrary Web content or alter Policy |
 | `maintainer` | Human-authorized harness code and documentation | Run as an unattended research identity |

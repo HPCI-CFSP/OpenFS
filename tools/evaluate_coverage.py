@@ -31,9 +31,23 @@ def _monitor(root: Path, manifest: dict[str, Any]) -> tuple[str, dict[str, Any]]
     return relative, read_json(matches[0])
 
 
+def _snapshotted_config(
+    root: Path, manifest: dict[str, Any], relative: str
+) -> dict[str, Any]:
+    snapshot_ref = manifest.get("configuration_snapshots", {}).get(relative)
+    if not snapshot_ref:
+        raise ValueError(f"Run does not snapshot required configuration: {relative}")
+    return read_json(root / snapshot_ref)
+
+
 def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = None) -> dict[str, Any]:
     manifest = read_json(root / "runs" / run_id / "manifest.json")
     monitor_relative, monitor = _monitor(root, manifest)
+    discovery_items = []
+    for path in sorted((root / "queue" / run_id).glob("WORK-*.json")):
+        item = read_json(path)
+        if item.get("kind") == "source-discovery":
+            discovery_items.append(item)
     source_results = []
     for path in sorted((root / "proposals" / "sources" / run_id).glob("*.json")):
         source_results.append(read_json(path))
@@ -43,11 +57,36 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
     sources = list(unique_sources.values())
     expected_coverage_queries = set(monitor.get("query_families", []))
     expected_falsification_queries = set(monitor.get("falsification_queries", []))
-    expected_queries = expected_coverage_queries | expected_falsification_queries
+    assigned_queries = {
+        item.get("payload", {}).get("query")
+        for item in discovery_items
+        if item.get("payload", {}).get("query")
+    }
+    expected_queries = (
+        expected_coverage_queries | expected_falsification_queries | assigned_queries
+    )
     expected_languages = set(monitor.get("languages", []))
     observed_queries = set(queries)
     observed_classes = {source["source_class"] for source in sources}
     observed_languages = {source["language"] for source in sources}
+    expected_subject_fields: dict[str, set[str]] = {}
+    subject_registry_ref = monitor.get("subject_registry_ref")
+    subject_registry_id = None
+    if subject_registry_ref:
+        registry = _snapshotted_config(root, manifest, subject_registry_ref)
+        subject_registry_id = registry.get("registry_id")
+        default_fields = set(registry.get("default_profile_fields", []))
+        expected_subject_fields = {
+            center["center_id"]: set(center.get("profile_fields", default_fields))
+            for center in registry.get("centers", [])
+        }
+    observed_subject_fields: dict[str, set[str]] = {}
+    for source in sources:
+        assignment_scope = source.get("assignment_scope", {})
+        for subject_id in assignment_scope.get("subject_ids", []):
+            observed_subject_fields.setdefault(subject_id, set()).update(
+                assignment_scope.get("profile_fields", [])
+            )
     failures = [
         failure
         for result in source_results
@@ -111,6 +150,22 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
         for source_id in unique_sources
         if sum(source["source_id"] == source_id for source in all_sources) > 1
     )
+    missing_subject_searches = sorted(
+        set(expected_subject_fields) - set(observed_subject_fields)
+    )
+    unexpected_subject_searches = sorted(
+        set(observed_subject_fields) - set(expected_subject_fields)
+    )
+    missing_subject_profile_queries = [
+        {
+            "subject_id": subject_id,
+            "missing_profile_fields": sorted(
+                fields - observed_subject_fields.get(subject_id, set())
+            ),
+        }
+        for subject_id, fields in sorted(expected_subject_fields.items())
+        if fields - observed_subject_fields.get(subject_id, set())
+    ]
     gaps = {
         "missing_queries": sorted(expected_queries - observed_queries),
         "below_minimum_queries": below_minimum_queries,
@@ -132,6 +187,9 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             ]
         ),
         "duplicate_source_selections": duplicate_source_ids,
+        "missing_subject_searches": missing_subject_searches,
+        "unexpected_subject_searches": unexpected_subject_searches,
+        "missing_subject_profile_queries": missing_subject_profile_queries,
         "query_failures": blocking_failures,
     }
     snapshot_match = manifest.get("policy_hashes", {}).get(monitor_relative) == stable_digest(
@@ -164,6 +222,13 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             "minimum_sources_per_query": minimum_sources_per_query,
             "minimum_total_sources": minimum_total_sources,
             "minimum_origin_groups": minimum_origin_groups,
+            "subject_registry_ref": subject_registry_ref,
+            "subject_registry_id": subject_registry_id,
+            "subject_count": len(expected_subject_fields),
+            "subject_profile_fields": {
+                subject_id: sorted(fields)
+                for subject_id, fields in sorted(expected_subject_fields.items())
+            },
         },
         "observed": {
             "source_count": len(sources),
@@ -175,12 +240,18 @@ def evaluate_coverage(root: Path, *, run_id: str, evaluated_at: str | None = Non
             "source_class_requirement_results": class_requirement_results,
             "languages": sorted(observed_languages),
             "rights_decisions": rights_counts,
+            "subject_count": len(observed_subject_fields),
+            "subject_profile_query_fields": {
+                subject_id: sorted(fields)
+                for subject_id, fields in sorted(observed_subject_fields.items())
+            },
             "query_warnings": query_warnings,
         },
         "gaps": gaps,
         "caveat": (
             "This status measures only the declared Monitor scope. It never means that "
-            "the Web or the research domain was searched completely."
+            "the Web or the research domain was searched completely. Subject profile "
+            "query coverage records assigned searches, not verified evidence completeness."
         ),
     }
 

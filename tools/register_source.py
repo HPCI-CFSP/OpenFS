@@ -102,6 +102,7 @@ def register_capture(
     agent_id: str,
     policy: dict[str, Any],
     source_registry: dict[str, Any],
+    assignment_scope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     required = {"query", "source", "candidate_passages"}
     missing = required - set(capture)
@@ -215,6 +216,8 @@ def register_capture(
             "matched_markers": matched_markers,
         },
     }
+    if assignment_scope:
+        source_receipt["assignment_scope"] = assignment_scope
     source_lineage = {
         "schema_version": "0.1.0",
         "lineage_id": lineage_id,
@@ -323,6 +326,11 @@ def main() -> int:
         source_registry=read_json(
             run_snapshot_path(args.root, args.run_id, "config/source-registry.json")
         ),
+        assignment_scope={
+            key: work_item.get("payload", {})[key]
+            for key in ("subject_ids", "profile_fields", "query_template_id")
+            if key in work_item.get("payload", {})
+        },
     )
     write_result(output_path, result)
     print(json.dumps({"source_id": result["source_receipt"]["source_id"], "output": output_ref}))

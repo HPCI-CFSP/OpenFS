@@ -23,7 +23,9 @@ Each `center-profile` must record:
 
 ## Initial center scope
 
-The FS2.0 RIKEN reports discuss Hokkaido, Tohoku, Tsukuba, Tokyo, Tokyo Institute of Technology / current successor organization, Nagoya, Kyoto, Osaka, Kyushu, RIKEN, AIST, and JAMSTEC. OpenFS must resolve current names, organizational changes, resource-provider status, and systems from primary sources before accepting profiles. It must not assume that every center wants the same hardware mix or software policy.
+The historical FS2.0 RIKEN reports are discovery evidence, but the operational scope is anchored to `config/hpci-center-registry.json`. That registry is dated, cites the current official HPCI provider page, and includes every organization currently listed there as a compute-resource provider. A Run snapshots the registry so later organizational changes cannot silently alter its declared scope.
+
+`MON-HPCI-CENTERS-001` expands separate discovery Work Items for every registered provider. Query execution coverage and profile evidence completeness are different measurements: finding a provider page proves that a search was attempted, not that power, facility, users, software, or refresh constraints are known. OpenFS must not assume that every center wants the same hardware mix or software policy.
 
 ## Freshness and unknowns
 

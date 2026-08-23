@@ -25,7 +25,7 @@ Research task
 
 This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a deployed bilingual GitHub Pages public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
 ## Core principles
 
@@ -50,7 +50,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `docs/publication/` | GitHub Pages activation and public-output boundaries |
 | `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
-| `config/` | Machine-readable agent, monitor, budget, and consensus settings |
+| `config/` | Machine-readable agent, monitor, budget, consensus, and dated HPCI provider-scope settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Reusable agent procedures, added as each workflow is implemented |
 | `evals/` | Golden, adversarial, and replay evaluation cases |

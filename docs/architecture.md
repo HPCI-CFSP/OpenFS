@@ -119,7 +119,9 @@ All recurring discovery is worldwide in scope. The global horizon monitor search
 
 Accepted knowledge is projected into multiple HPCI system scenarios rather than collapsed into one model answer. Each candidate joins architecture, system software, applications, center-specific impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainty, and decision gates. `config/scenario-policy.json` defines common criteria, `schemas/center-profile.schema.json` and `schemas/system-scenario.schema.json` define durable inputs, and `tools/generate_scenario_views.py` emits synchronized Markdown and JSON views.
 
-The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass the Recommendation Gate or promotion workflow.
+`config/hpci-center-registry.json` is the dated, official-source-anchored provider scope. A center Run snapshots it, expands two complementary searches for every provider, and records the assignment in each Source Receipt. Evidence from those searches is synthesized into provisional field-level Center Profiles. `tools/evaluate_center_profiles.py` reports missing, partial, stale, and non-accepted profiles separately; query execution never substitutes for profile Evidence.
+
+The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass independent review, the Recommendation Gate, or promotion workflow.
 
 ## Research-scope expansion
 

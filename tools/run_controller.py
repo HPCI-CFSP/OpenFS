@@ -51,6 +51,7 @@ def _monitor_path(root: Path, monitor_id: str) -> Path:
 
 
 def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
+    monitor = read_json(monitor_path)
     paths = [
         root / "config" / "acquisition-policy.json",
         root / "config" / "agent-registry.json",
@@ -61,10 +62,72 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "source-registry.json",
         monitor_path,
     ]
+    subject_registry_ref = monitor.get("subject_registry_ref")
+    if subject_registry_ref:
+        subject_registry_path = root / subject_registry_ref
+        if (
+            subject_registry_path.parent != root / "config"
+            or not subject_registry_path.is_file()
+        ):
+            raise ValueError(
+                "subject_registry_ref must name an existing file directly under config/"
+            )
+        paths.append(subject_registry_path)
     return {
         path.relative_to(root).as_posix(): stable_digest(read_json(path))
         for path in paths
     }
+
+
+def _subject_query_plan(root: Path, monitor: dict[str, Any]) -> list[dict[str, Any]]:
+    registry_ref = monitor.get("subject_registry_ref")
+    templates = monitor.get("subject_query_templates", [])
+    if not registry_ref and not templates:
+        return []
+    if not registry_ref or not templates:
+        raise ValueError(
+            "subject_registry_ref and subject_query_templates must be configured together"
+        )
+    registry = _load_required(root, registry_ref)
+    default_fields = registry.get("default_profile_fields", [])
+    plan: list[dict[str, Any]] = []
+    seen_center_ids: set[str] = set()
+    for center in registry.get("centers", []):
+        center_id = center.get("center_id")
+        if not center_id or center_id in seen_center_ids:
+            raise ValueError(f"subject registry has a duplicate or empty center_id: {center_id}")
+        seen_center_ids.add(center_id)
+        values = {
+            "center_id": center_id,
+            "name_ja": center.get("name_ja", ""),
+            "name_en": center.get("name_en", ""),
+            "official_url": center.get("official_url", ""),
+        }
+        allowed_fields = set(center.get("profile_fields", default_fields))
+        for template in templates:
+            template_fields = template.get("profile_fields", [])
+            unknown_fields = set(template_fields) - allowed_fields
+            if unknown_fields:
+                raise ValueError(
+                    f"subject query template {template.get('template_id')} uses unknown "
+                    f"profile fields for {center_id}: {sorted(unknown_fields)}"
+                )
+            try:
+                query = template["query"].format(**values)
+            except (KeyError, ValueError) as exc:
+                raise ValueError(
+                    f"invalid subject query template {template.get('template_id')}: {exc}"
+                ) from exc
+            plan.append(
+                {
+                    "query": query,
+                    "query_role": "subject-coverage",
+                    "subject_ids": [center_id],
+                    "profile_fields": template_fields,
+                    "query_template_id": template["template_id"],
+                }
+            )
+    return plan
 
 
 def _configuration_snapshot_refs(
@@ -180,13 +243,29 @@ def create_run(
     work_items: list[dict[str, Any]] = []
     slots_per_query = int(monitor.get("discovery_slots_per_query", 1))
     query_plan = [
-        (query, "coverage") for query in monitor.get("query_families", [])
+        {"query": query, "query_role": "coverage"}
+        for query in monitor.get("query_families", [])
     ] + [
-        (query, "falsification") for query in monitor.get("falsification_queries", [])
-    ]
-    for query, query_role in query_plan:
+        {"query": query, "query_role": "falsification"}
+        for query in monitor.get("falsification_queries", [])
+    ] + _subject_query_plan(root, monitor)
+    for query_entry in query_plan:
         for candidate_slot in range(1, slots_per_query + 1):
             sequence = len(work_items) + 1
+            payload = {
+                "query": query_entry["query"],
+                "query_role": query_entry["query_role"],
+                "candidate_slot": candidate_slot,
+                "languages": monitor.get("languages", []),
+                "source_classes": monitor.get("source_classes", []),
+                "source_class_requirements": monitor.get(
+                    "source_class_requirements", []
+                ),
+                "maximum_unchecked_days": monitor.get("maximum_unchecked_days"),
+            }
+            for key in ("subject_ids", "profile_fields", "query_template_id"):
+                if key in query_entry:
+                    payload[key] = query_entry[key]
             work_items.append(
                 _work_item(
                     sequence=sequence,
@@ -195,17 +274,7 @@ def create_run(
                     monitor_id=monitor_id,
                     kind="source-discovery",
                     role="discovery",
-                    payload={
-                        "query": query,
-                        "query_role": query_role,
-                        "candidate_slot": candidate_slot,
-                        "languages": monitor.get("languages", []),
-                        "source_classes": monitor.get("source_classes", []),
-                        "source_class_requirements": monitor.get(
-                            "source_class_requirements", []
-                        ),
-                        "maximum_unchecked_days": monitor.get("maximum_unchecked_days"),
-                    },
+                    payload=payload,
                     output_paths=[f"proposals/sources/{run_id}/WORK-{sequence:06d}.json"],
                     maximum_attempts=maximum_attempts,
                     created_at=created_at,
@@ -248,6 +317,7 @@ def create_run(
         "status": "created",
         "research_status": "not-evaluated",
         "coverage_status": "not-evaluated",
+        "assignment_contract_version": "0.2.0",
         "policy_hashes": policy_hashes,
         "configuration_snapshots": snapshot_refs,
         "budget": {
@@ -281,6 +351,7 @@ def create_run(
             "task_id",
             "monitor_id",
             "mode",
+            "assignment_contract_version",
             "policy_hashes",
             "directive_ids",
             "directive_hashes",
@@ -528,6 +599,7 @@ def _record_agent_execution(
             "source-discovery": ["register_source.py"],
             "evidence-extraction": ["extract_evidence.py"],
             "synthesis": ["propose_claim.py"],
+            "center-profile-synthesis": ["propose_center_profile.py"],
             "validation": ["create_assessment.py"],
             "consensus": ["consensus_gate.py"],
             "apply-directive": ["apply_directive.py"],
@@ -752,6 +824,9 @@ def _expand_followups(
     minimum_evidence_sources = int(
         run_monitor.get("minimum_evidence_sources_per_claim", 2)
     )
+    minimum_profile_evidence_sources = int(
+        run_monitor.get("minimum_evidence_sources_per_profile", 2)
+    )
     skipped_evidence_sources = {
         item.get("source_result_ref"): item
         for item in manifest.get("skipped_evidence_sources", [])
@@ -879,6 +954,8 @@ def _expand_followups(
         key = (payload.get("query", ""), payload.get("query_role", "coverage"))
         query_groups.setdefault(key, []).append(item)
     for (query, query_role), discovery_group in sorted(query_groups.items()):
+        if run_monitor.get("synthesis_product") == "center-profile":
+            continue
         if not query or not all(item.get("status") == "completed" for item in discovery_group):
             continue
         evidence_eligible = [
@@ -931,6 +1008,73 @@ def _expand_followups(
         )
         additions.append(item)
         existing_keys.add(idempotency_key)
+
+    if run_monitor.get("synthesis_product") == "center-profile":
+        subject_groups: dict[str, list[dict[str, Any]]] = {}
+        for item in discovery_items.values():
+            for subject_id in item.get("payload", {}).get("subject_ids", []):
+                subject_groups.setdefault(subject_id, []).append(item)
+        for subject_id, discovery_group in sorted(subject_groups.items()):
+            if not all(item.get("status") == "completed" for item in discovery_group):
+                continue
+            evidence_eligible = [
+                item
+                for item in discovery_group
+                if source_decision(item) in {"evidence-excerpt", "approved-snapshot"}
+            ]
+            if len(evidence_eligible) < minimum_profile_evidence_sources or not all(
+                item["work_item_id"] in evidence_by_discovery for item in evidence_eligible
+            ):
+                continue
+            evidence_refs = sorted(
+                reference
+                for item in evidence_eligible
+                for reference in evidence_by_discovery[item["work_item_id"]].get(
+                    "output_refs", []
+                )
+            )
+            payload = {
+                "center_id": subject_id,
+                "profile_fields": sorted(
+                    {
+                        field
+                        for item in discovery_group
+                        for field in item.get("payload", {}).get("profile_fields", [])
+                    }
+                ),
+                "evidence_bundle_refs": evidence_refs,
+                "parent_work_item_ids": sorted(
+                    evidence_by_discovery[item["work_item_id"]]["work_item_id"]
+                    for item in evidence_eligible
+                ),
+            }
+            identity = {
+                "run_id": run_id,
+                "task_id": manifest["task_id"],
+                "monitor_id": manifest["monitor_id"],
+                "kind": "center-profile-synthesis",
+                "payload": payload,
+            }
+            idempotency_key = stable_digest(identity)
+            if idempotency_key in existing_keys:
+                continue
+            sequence += 1
+            item = _work_item(
+                sequence=sequence,
+                run_id=run_id,
+                task_id=manifest["task_id"],
+                monitor_id=manifest["monitor_id"],
+                kind="center-profile-synthesis",
+                role="synthesis",
+                payload=payload,
+                output_paths=[
+                    f"proposals/center-profiles/{run_id}/{subject_id}.json"
+                ],
+                maximum_attempts=maximum_attempts,
+                created_at=created_at,
+            )
+            additions.append(item)
+            existing_keys.add(idempotency_key)
 
     completed_claim_items = [
         item

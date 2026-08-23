@@ -95,6 +95,7 @@ class RunControllerTests(unittest.TestCase):
         )
         self.assertEqual(first, second)
         self.assertEqual(["DIR-000123"], first["directive_ids"])
+        self.assertEqual("0.2.0", first["assignment_contract_version"])
         self.assertEqual("not-evaluated", first["coverage_status"])
         self.assertEqual(13, len(first["work_item_ids"]))
         self.assertEqual(
@@ -110,6 +111,127 @@ class RunControllerTests(unittest.TestCase):
         directive_source = "reviews/directives/DIR-000123.json"
         self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
         self.assertEqual(64, len(first["directive_hashes"][directive_source]))
+
+    def test_center_monitor_expands_and_snapshots_every_registered_subject(self):
+        for relative in (
+            "config/hpci-center-registry.json",
+            "config/monitors/MON-HPCI-CENTERS-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        manifest = create_run(
+            self.root,
+            run_id="RUN-CENTER-PILOT",
+            task_id="OFS-003",
+            monitor_id="MON-HPCI-CENTERS-001",
+            pilot=True,
+            now=datetime(2026, 8, 24, tzinfo=timezone.utc),
+        )
+        registry_ref = "config/hpci-center-registry.json"
+        self.assertIn(registry_ref, manifest["policy_hashes"])
+        self.assertTrue(
+            (self.root / manifest["configuration_snapshots"][registry_ref]).is_file()
+        )
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((self.root / "queue" / "RUN-CENTER-PILOT").glob("*.json"))
+        ]
+        subject_items = [item for item in items if item["payload"].get("subject_ids")]
+        self.assertEqual(33, len(items))
+        self.assertEqual(30, len(subject_items))
+        self.assertEqual(
+            15,
+            len({item["payload"]["subject_ids"][0] for item in subject_items}),
+        )
+        self.assertTrue(
+            all(item["payload"].get("query_template_id") for item in subject_items)
+        )
+
+    def test_center_evidence_expands_one_profile_synthesis_per_subject(self):
+        for relative in (
+            "config/hpci-center-registry.json",
+            "config/monitors/MON-HPCI-CENTERS-001.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / relative, target)
+        run_id = "RUN-CENTER-EXPANSION"
+        create_run(
+            self.root,
+            run_id=run_id,
+            task_id="OFS-003",
+            monitor_id="MON-HPCI-CENTERS-001",
+            pilot=True,
+        )
+        queue = self.root / "queue" / run_id
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted(queue.glob("*.json"))
+        ]
+        subject_id = next(
+            item["payload"]["subject_ids"][0]
+            for item in items
+            if item["payload"].get("subject_ids")
+        )
+        subject_items = [
+            item
+            for item in items
+            if item["payload"].get("subject_ids") == [subject_id]
+        ]
+        for item in subject_items:
+            output_ref = item["output_paths"][0]
+            output = self.root / output_ref
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(
+                json.dumps(
+                    {
+                        "source_receipt": {
+                            "rights": {"acquisition_decision": "evidence-excerpt"}
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            item["status"] = "completed"
+            item["output_refs"] = [output_ref]
+            (queue / f"{item['work_item_id']}.json").write_text(
+                json.dumps(item), encoding="utf-8"
+            )
+        first = expand_followups(self.root, run_id=run_id)
+        evidence_items = [
+            item
+            for item in first["created"]
+            if item["kind"] == "evidence-extraction"
+        ]
+        self.assertEqual(2, len(evidence_items))
+        for item in evidence_items:
+            output_ref = item["output_paths"][0]
+            output = self.root / output_ref
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(
+                json.dumps({"object_type": "evidence", "run_id": run_id}),
+                encoding="utf-8",
+            )
+            persisted = json.loads(
+                (queue / f"{item['work_item_id']}.json").read_text(encoding="utf-8")
+            )
+            persisted["status"] = "completed"
+            persisted["output_refs"] = [output_ref]
+            (queue / f"{item['work_item_id']}.json").write_text(
+                json.dumps(persisted), encoding="utf-8"
+            )
+        second = expand_followups(self.root, run_id=run_id)
+        profile_items = [
+            item
+            for item in second["created"]
+            if item["kind"] == "center-profile-synthesis"
+        ]
+        self.assertEqual(1, len(profile_items))
+        self.assertEqual(subject_id, profile_items[0]["payload"]["center_id"])
+        self.assertEqual(
+            10, len(profile_items[0]["payload"]["profile_fields"])
+        )
 
     def test_run_control_lock_blocks_competing_mutation_and_recovers(self):
         create_run(

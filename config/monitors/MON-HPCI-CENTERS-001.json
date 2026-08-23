@@ -8,14 +8,45 @@
   "domains": ["architecture", "system-software", "applications", "cross-cutting"],
   "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-12", "CROSS-13", "CROSS-16"],
   "source_classes": ["official-primary", "procurement-primary", "project-deliverable", "center-primary"],
+  "source_class_requirements": [
+    {
+      "requirement_id": "hpci-or-government-primary",
+      "one_of": ["official-primary", "procurement-primary", "project-deliverable"],
+      "minimum_count": 2
+    },
+    {
+      "requirement_id": "center-primary",
+      "one_of": ["center-primary"],
+      "minimum_count": 10
+    }
+  ],
   "query_families": [
-    "site:ac.jp 全国共同利用 共同利用 共同研究拠点 スーパーコンピュータ 更新 計画",
     "site:hpci-office.jp HPCI 資源提供機関 システム",
-    "大学 情報基盤センター スーパーコンピュータ 調達 仕様書",
-    "HPCI center power facility application portfolio"
+    "site:hpci-office.jp HPCI 計算機 ソフトウェア 資源 2026",
+    "site:mext.go.jp HPCI 計算資源 整備 運用 計画"
+  ],
+  "subject_registry_ref": "config/hpci-center-registry.json",
+  "synthesis_product": "center-profile",
+  "subject_query_templates": [
+    {
+      "template_id": "center-system-refresh-facility",
+      "query": "{name_ja} スーパーコンピュータ 現行システム 更新 調達 電力 設備 公式",
+      "profile_fields": ["current_system", "refresh_window", "power", "facility", "migration"]
+    },
+    {
+      "template_id": "center-users-software-operations",
+      "query": "{name_ja} 利用分野 ソフトウェア 運用 ストレージ ネットワーク 公式",
+      "profile_fields": ["users", "priority_domains", "software", "operations", "data_connectivity"]
+    }
   ],
   "profile_fields": ["users", "priority_domains", "current_system", "refresh_window", "power", "facility", "software", "operations", "migration", "data_connectivity"],
+  "discovery_slots_per_query": 1,
+  "minimum_sources_per_query": 1,
+  "minimum_evidence_sources_per_profile": 2,
+  "minimum_total_sources": 18,
+  "minimum_origin_groups": 12,
+  "profile_max_age_days": 90,
   "maximum_unchecked_days": 7,
   "manual_run_requirement": 3,
-  "coverage_status": "historical-fs-evidence-only"
+  "coverage_status": "registry-defined-not-yet-measured"
 }

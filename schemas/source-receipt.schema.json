@@ -37,6 +37,15 @@
     },
     "origin_group_id": {"type": "string", "pattern": "^ORG-(?:[0-9]{6}|[0-9A-F]{12})$"},
     "origin_rationale": {"type": "string", "minLength": 1},
+    "assignment_scope": {
+      "type": "object",
+      "properties": {
+        "subject_ids": {"type": "array", "items": {"type": "string", "pattern": "^CENTER-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "profile_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "query_template_id": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "security": {
       "type": "object",
       "required": ["untrusted_content", "prompt_injection_suspected", "matched_markers"],

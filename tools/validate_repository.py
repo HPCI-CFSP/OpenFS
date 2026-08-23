@@ -44,6 +44,7 @@ REQUIRED_FILES = [
     "config/research-baseline.json",
     "config/scenario-policy.json",
     "config/global-technology-scope.json",
+    "config/hpci-center-registry.json",
     "config/publication-policy.json",
     "config/publication-i18n.json",
     "schemas/proposal.schema.json",
@@ -70,6 +71,8 @@ REQUIRED_FILES = [
     "schemas/handoff.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
+    "schemas/center-profile-coverage.schema.json",
+    "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
     "docs/tasks/OFS-002.md",
@@ -95,6 +98,8 @@ REQUIRED_FILES = [
     "tools/create_assessment.py",
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
+    "tools/evaluate_center_profiles.py",
+    "tools/propose_center_profile.py",
     "tools/detect_source_changes.py",
     "tools/check_consensus_readiness.py",
     "tools/generate_weekly_digest.py",
@@ -115,6 +120,7 @@ REQUIRED_FILES = [
     "reviews/issues/README.md",
     "reviews/briefs/README.md",
     "handoffs/README.md",
+    "proposals/center-profiles/README.md",
     "site/index.html",
     "site/styles.css",
     "site/app.js",
@@ -305,6 +311,43 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
     return errors
 
 
+def validate_center_registry(root: Path) -> list[str]:
+    errors: list[str] = []
+    registry_ref = "config/hpci-center-registry.json"
+    registry = load_json(root / registry_ref)
+    center_ids = [center.get("center_id") for center in registry.get("centers", [])]
+    if len(center_ids) != len(set(center_ids)):
+        errors.append("HPCI center registry has duplicate center IDs")
+    if len(center_ids) < 10:
+        errors.append("HPCI center registry unexpectedly contains fewer than ten providers")
+    default_fields = set(registry.get("default_profile_fields", []))
+    if len(default_fields) != len(registry.get("default_profile_fields", [])):
+        errors.append("HPCI center registry has duplicate default profile fields")
+    for center in registry.get("centers", []):
+        if not all(center.get(key) for key in ("center_id", "name_ja", "name_en", "official_url")):
+            errors.append(f"HPCI center registry entry is incomplete: {center.get('center_id')}")
+    monitor = load_json(root / "config" / "monitors" / "MON-HPCI-CENTERS-001.json")
+    if monitor.get("subject_registry_ref") != registry_ref:
+        errors.append("HPCI center Monitor does not reference the canonical registry")
+    template_ids = [
+        item.get("template_id") for item in monitor.get("subject_query_templates", [])
+    ]
+    if len(template_ids) != len(set(template_ids)):
+        errors.append("HPCI center Monitor has duplicate subject query template IDs")
+    covered_fields = {
+        field
+        for item in monitor.get("subject_query_templates", [])
+        for field in item.get("profile_fields", [])
+    }
+    if covered_fields != default_fields or set(monitor.get("profile_fields", [])) != default_fields:
+        errors.append("HPCI center Monitor query templates do not cover every profile field")
+    if int(monitor.get("profile_max_age_days", 0)) < 1:
+        errors.append("HPCI center Monitor must define a positive profile freshness limit")
+    if monitor.get("synthesis_product") != "center-profile":
+        errors.append("HPCI center Monitor must synthesize center profiles")
+    return errors
+
+
 def validate_runtime_artifacts(root: Path) -> list[str]:
     errors: list[str] = []
     for manifest_path in sorted((root / "runs").glob("RUN-*/manifest.json")):
@@ -416,6 +459,32 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         source_ids_by_run.setdefault(path.parent.name, []).append(
             result.get("source_receipt", {}).get("source_id")
         )
+        work_path = root / "queue" / path.parent.name / f"{path.stem}.json"
+        if not work_path.is_file():
+            errors.append(f"Source result Work Item is missing: {path.relative_to(root)}")
+            continue
+        work_item = load_json(work_path)
+        run_manifest_path = root / "runs" / path.parent.name / "manifest.json"
+        run_manifest = load_json(run_manifest_path) if run_manifest_path.is_file() else {}
+        strict_assignment = run_manifest.get("assignment_contract_version") == "0.2.0"
+        payload = work_item.get("payload", {})
+        query_receipt = result.get("query_receipt", {})
+        source_receipt = result.get("source_receipt", {})
+        if strict_assignment and work_item.get("kind") != "source-discovery":
+            errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
+        if strict_assignment and query_receipt.get("query") != payload.get("query"):
+            errors.append(f"Source result query differs from its assignment: {path.relative_to(root)}")
+        if strict_assignment and source_receipt.get("source_class") not in payload.get("source_classes", []):
+            errors.append(f"Source result class differs from its assignment: {path.relative_to(root)}")
+        if strict_assignment and source_receipt.get("language") not in payload.get("languages", []):
+            errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
+        expected_scope = {
+            key: payload[key]
+            for key in ("subject_ids", "profile_fields", "query_template_id")
+            if key in payload
+        }
+        if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
+            errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
     for run_id, source_ids in source_ids_by_run.items():
         if len(source_ids) != len(set(source_ids)):
             errors.append(f"Run {run_id} contains duplicate selected Source IDs")
@@ -740,6 +809,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_runtime_configuration(root))
     if (root / "config" / "acquisition-policy.json").exists():
         errors.extend(validate_source_acquisition_configuration(root))
+    if (root / "config" / "hpci-center-registry.json").exists():
+        errors.extend(validate_center_registry(root))
     if (root / "config" / "research-baseline.json").exists():
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
