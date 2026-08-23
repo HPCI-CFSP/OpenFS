@@ -38,6 +38,9 @@ An explicit interactive repository-maintenance request from an authorized human 
 3. Confirm that the assigned Agent is enabled in `config/agent-registry.json` for an automated Run. Also inspect the Run's `consensus-readiness.json`; incomplete capacity means results must remain provisional even if research Work Items continue.
 4. When defining research scope, select topics from `config/research-baseline.json` and read its documented gaps.
 5. Read the Task, Monitor, Work Item, applicable Policy, Schema, and Skill.
+   Read the Skill from the Work Item's `skill.snapshot_ref`, not the live path;
+   verify its digest before execution. A missing or mismatched snapshot is a stop
+   condition.
 6. Check every planned output path with `tools/check_agent_permissions.py`.
 7. State unresolved inputs and stop if safe execution is not possible.
 

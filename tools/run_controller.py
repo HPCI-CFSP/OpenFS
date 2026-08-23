@@ -59,6 +59,7 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "budgets.json",
         root / "config" / "consensus-policy.json",
         root / "config" / "role-permissions.json",
+        root / "config" / "skill-registry.json",
         root / "config" / "source-registry.json",
         monitor_path,
     ]
@@ -182,6 +183,70 @@ def _configuration_snapshot_refs(
     }
 
 
+def _skill_snapshots(root: Path, run_id: str) -> dict[str, dict[str, str]]:
+    registry = _load_required(root, "config/skill-registry.json")
+    snapshots: dict[str, dict[str, str]] = {}
+    for entry in registry.get("skills", []):
+        source_ref = entry["source_ref"]
+        source_path = root / source_ref
+        if not source_path.is_file() or source_path.resolve().parent.parent != (
+            root / "skills"
+        ).resolve():
+            raise ValueError(f"invalid registered Skill source: {source_ref}")
+        snapshots[source_ref] = {
+            "skill_id": entry["skill_id"],
+            "version": entry["version"],
+            "snapshot_ref": f"runs/{run_id}/inputs/{source_ref}",
+            "digest": sha256_file(source_path),
+        }
+    return snapshots
+
+
+def _skill_binding(
+    root: Path, *, run_id: str, monitor_id: str, work_item_kind: str
+) -> dict[str, str] | None:
+    manifest_path = root / "runs" / run_id / "manifest.json"
+    registry_path = root / "config" / "skill-registry.json"
+    if manifest_path.is_file():
+        manifest = read_json(manifest_path)
+        registry_snapshot = manifest.get("configuration_snapshots", {}).get(
+            "config/skill-registry.json"
+        )
+        if registry_snapshot:
+            registry_path = root / registry_snapshot
+        snapshots = manifest.get("skill_snapshots", {})
+    else:
+        snapshots = _skill_snapshots(root, run_id)
+    registry = read_json(registry_path)
+    candidates = []
+    for entry in registry.get("skills", []):
+        if work_item_kind not in entry.get("work_item_kinds", []):
+            continue
+        monitor_ids = entry.get("monitor_ids")
+        if monitor_ids and monitor_id not in monitor_ids:
+            continue
+        candidates.append(entry)
+    specific = [entry for entry in candidates if entry.get("monitor_ids")]
+    selected = specific or [entry for entry in candidates if not entry.get("monitor_ids")]
+    if not selected:
+        return None
+    if len(selected) != 1:
+        raise ValueError(
+            f"Work Item Skill is ambiguous for {monitor_id}/{work_item_kind}"
+        )
+    entry = selected[0]
+    snapshot = snapshots.get(entry["source_ref"])
+    if not snapshot:
+        raise ValueError(f"Run has no pinned Skill: {entry['source_ref']}")
+    return {
+        "skill_id": entry["skill_id"],
+        "version": entry["version"],
+        "source_ref": entry["source_ref"],
+        "snapshot_ref": snapshot["snapshot_ref"],
+        "digest": snapshot["digest"],
+    }
+
+
 def _approved_directives(root: Path, task_id: str) -> list[dict[str, Any]]:
     directives: list[dict[str, Any]] = []
     for path in sorted((root / "reviews" / "directives").glob("DIR-*.json")):
@@ -209,6 +274,7 @@ def _work_item(
     output_paths: list[str],
     maximum_attempts: int,
     created_at: str,
+    skill: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     identity = {
         "run_id": run_id,
@@ -217,7 +283,7 @@ def _work_item(
         "kind": kind,
         "payload": payload,
     }
-    return {
+    item = {
         "schema_version": "0.1.0",
         "work_item_id": f"WORK-{sequence:06d}",
         "run_id": run_id,
@@ -234,6 +300,9 @@ def _work_item(
         "created_at": created_at,
         "updated_at": created_at,
     }
+    if skill:
+        item["skill"] = skill
+    return item
 
 
 def _evidence_ids(root: Path, refs: list[str]) -> set[str]:
@@ -441,6 +510,12 @@ def create_run(
                     output_paths=[f"proposals/sources/{run_id}/WORK-{sequence:06d}.json"],
                     maximum_attempts=maximum_attempts,
                     created_at=created_at,
+                    skill=_skill_binding(
+                        root,
+                        run_id=run_id,
+                        monitor_id=monitor_id,
+                        work_item_kind="source-discovery",
+                    ),
                 )
             )
     for directive in directives:
@@ -460,6 +535,12 @@ def create_run(
                 output_paths=[f"runs/{run_id}/directives/{directive['directive_id']}.json"],
                 maximum_attempts=maximum_attempts,
                 created_at=created_at,
+                skill=_skill_binding(
+                    root,
+                    run_id=run_id,
+                    monitor_id=monitor_id,
+                    work_item_kind="apply-directive",
+                ),
             )
         )
     if len(work_items) > requested_limit:
@@ -469,6 +550,7 @@ def create_run(
 
     policy_hashes = _policy_hashes(root, monitor_path)
     snapshot_refs = _configuration_snapshot_refs(run_id, policy_hashes)
+    skill_snapshots = _skill_snapshots(root, run_id)
     followup_manifest = None
     if followup:
         followup_ref, followup_plan = followup
@@ -493,6 +575,7 @@ def create_run(
         "assignment_contract_version": "0.2.0",
         "policy_hashes": policy_hashes,
         "configuration_snapshots": snapshot_refs,
+        "skill_snapshots": skill_snapshots,
         "budget": {
             "maximum_run_minutes": defaults.get("maximum_run_minutes"),
             "maximum_work_items": requested_limit,
@@ -530,6 +613,7 @@ def create_run(
             "policy_hashes",
             "directive_ids",
             "directive_hashes",
+            "skill_snapshots",
         )
     }
     run_identity["followup_plan"] = followup_manifest
@@ -549,6 +633,10 @@ def create_run(
         atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
     for source_ref, snapshot_ref in directive_snapshots.items():
         atomic_write_json(root / snapshot_ref, read_json(root / source_ref))
+    for source_ref, snapshot in skill_snapshots.items():
+        snapshot_path = root / snapshot["snapshot_ref"]
+        snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+        snapshot_path.write_bytes((root / source_ref).read_bytes())
     if followup_manifest:
         atomic_write_json(
             root / followup_manifest["snapshot_ref"],
@@ -790,6 +878,9 @@ def _record_agent_execution(
             for name in tool_names_by_kind.get(work_item.get("kind"), [])
         ]
         declared = declared_execution or {}
+        skill = work_item.get("skill")
+        if skill and declared.get("skill_hash") not in {None, skill["digest"]}:
+            raise ValueError("declared Skill hash differs from pinned Work Item Skill")
         execution = {
             "agent_id": agent["agent_id"],
             "work_item_id": work_item["work_item_id"],
@@ -807,7 +898,9 @@ def _record_agent_execution(
         }
         if declared.get("resolved_model_version"):
             execution["resolved_model_version"] = declared["resolved_model_version"]
-        if declared.get("skill_hash"):
+        if skill:
+            execution["skill_hash"] = skill["digest"]
+        elif declared.get("skill_hash"):
             execution["skill_hash"] = declared["skill_hash"]
         manifest.setdefault("agent_executions", []).append(execution)
         atomic_write_json(manifest_path, manifest)
@@ -1098,6 +1191,12 @@ def _expand_followups(
                     ],
                     maximum_attempts=maximum_attempts,
                     created_at=created_at,
+                    skill=_skill_binding(
+                        root,
+                        run_id=run_id,
+                        monitor_id=manifest["monitor_id"],
+                        work_item_kind="source-discovery",
+                    ),
                 )
                 additions.append(item)
                 existing_keys.add(idempotency_key)
@@ -1129,6 +1228,12 @@ def _expand_followups(
                 output_paths=[f"proposals/evidence/{run_id}/WORK-{sequence:06d}.json"],
                 maximum_attempts=maximum_attempts,
                 created_at=created_at,
+                skill=_skill_binding(
+                    root,
+                    run_id=run_id,
+                    monitor_id=manifest["monitor_id"],
+                    work_item_kind="evidence-extraction",
+                ),
             )
             additions.append(item)
             existing_keys.add(idempotency_key)
@@ -1202,6 +1307,12 @@ def _expand_followups(
             output_paths=[f"proposals/claims/{run_id}/WORK-{sequence:06d}.json"],
             maximum_attempts=maximum_attempts,
             created_at=created_at,
+            skill=_skill_binding(
+                root,
+                run_id=run_id,
+                monitor_id=manifest["monitor_id"],
+                work_item_kind="synthesis",
+            ),
         )
         additions.append(item)
         existing_keys.add(idempotency_key)
@@ -1280,6 +1391,12 @@ def _expand_followups(
                 ],
                 maximum_attempts=maximum_attempts,
                 created_at=created_at,
+                skill=_skill_binding(
+                    root,
+                    run_id=run_id,
+                    monitor_id=manifest["monitor_id"],
+                    work_item_kind="center-profile-synthesis",
+                ),
             )
             additions.append(item)
             existing_keys.add(idempotency_key)
@@ -1342,6 +1459,12 @@ def _expand_followups(
                     ],
                     maximum_attempts=maximum_attempts,
                     created_at=created_at,
+                    skill=_skill_binding(
+                        root,
+                        run_id=run_id,
+                        monitor_id=manifest["monitor_id"],
+                        work_item_kind="validation",
+                    ),
                 )
                 additions.append(item)
                 existing_keys.add(idempotency_key)
@@ -1439,6 +1562,12 @@ def _expand_followups(
                 output_paths=output_paths,
                 maximum_attempts=maximum_attempts,
                 created_at=created_at,
+                skill=_skill_binding(
+                    root,
+                    run_id=run_id,
+                    monitor_id=manifest["monitor_id"],
+                    work_item_kind="consensus",
+                ),
             )
             additions.append(item)
             existing_keys.add(idempotency_key)

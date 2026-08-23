@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/skill-registry.schema.json",
+  "title": "OpenFS Skill Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "skills"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "registry_id": {"type": "string"},
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill_id", "version", "source_ref", "work_item_kinds"],
+        "properties": {
+          "skill_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "version": {"type": "string"},
+          "source_ref": {"type": "string", "pattern": "^skills/[a-z0-9-]+/SKILL\\.md$"},
+          "work_item_kinds": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+          "monitor_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

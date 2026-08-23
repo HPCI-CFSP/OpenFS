@@ -19,6 +19,20 @@
     "assignment_contract_version": {"type": "string"},
     "policy_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
     "configuration_snapshots": {"type": "object", "additionalProperties": {"type": "string"}},
+    "skill_snapshots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["skill_id", "version", "snapshot_ref", "digest"],
+        "properties": {
+          "skill_id": {"type": "string"},
+          "version": {"type": "string"},
+          "snapshot_ref": {"type": "string"},
+          "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
     "previous_run_id": {"type": ["string", "null"]},
     "change_report_ref": {"type": "string"},
     "consensus_readiness_ref": {"type": "string"},

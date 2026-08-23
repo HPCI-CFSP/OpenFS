@@ -143,6 +143,15 @@ fields with the preceding profile and distinguishes stronger status, refreshed
 Evidence at equal status, no change, and regression. This operational metric guides
 the next search generation; it never promotes a finding.
 
+Agent procedures are versioned in `skills/*/SKILL.md` and selected by
+`config/skill-registry.json`. A Monitor-specific selector overrides the generic
+Work Item-kind selector, so the worldwide technology Monitor receives its regional
+and language coverage procedure without changing other Discovery Runs. Run creation
+snapshots every registered Skill, records a SHA-256 digest in the manifest, binds
+the applicable snapshot to each Work Item, and records that pinned digest in the
+Agent execution. Later Work Item expansion resolves only the Run snapshot, even if
+the live Skill changes or disappears.
+
 Recurring Center Runs are cumulative at field level. A new draft prefers current-Run
 Evidence when it is at least as strong as the preceding field. A stronger preceding
 field may be inherited only while its dated Evidence remains inside the Monitor's

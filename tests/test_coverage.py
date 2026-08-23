@@ -168,6 +168,7 @@ class CenterCoverageTests(unittest.TestCase):
             "config/budgets.json",
             "config/consensus-policy.json",
             "config/role-permissions.json",
+            "config/skill-registry.json",
             "config/source-registry.json",
             "config/hpci-center-registry.json",
             "config/monitors/MON-HPCI-CENTERS-001.json",
@@ -175,6 +176,10 @@ class CenterCoverageTests(unittest.TestCase):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, target)
+        for source in (ROOT / "skills").glob("*/SKILL.md"):
+            target = self.root / source.relative_to(ROOT)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
         (self.root / "reviews" / "directives").mkdir(parents=True)
         create_run(
             self.root,

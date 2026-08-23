@@ -32,6 +32,18 @@
     "idempotency_key": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "payload": {"type": "object"},
     "output_paths": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "skill": {
+      "type": "object",
+      "required": ["skill_id", "version", "source_ref", "snapshot_ref", "digest"],
+      "properties": {
+        "skill_id": {"type": "string"},
+        "version": {"type": "string"},
+        "source_ref": {"type": "string"},
+        "snapshot_ref": {"type": "string"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
     "attempt": {"type": "integer", "minimum": 0},
     "maximum_attempts": {"type": "integer", "minimum": 1},
     "lease": {

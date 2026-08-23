@@ -40,6 +40,7 @@ REQUIRED_FILES = [
     "config/acquisition-policy.json",
     "config/source-registry.json",
     "config/agent-registry.json",
+    "config/skill-registry.json",
     "config/role-permissions.json",
     "config/research-baseline.json",
     "config/scenario-policy.json",
@@ -54,6 +55,7 @@ REQUIRED_FILES = [
     "schemas/assessment.schema.json",
     "schemas/decision.schema.json",
     "schemas/run.schema.json",
+    "schemas/skill-registry.schema.json",
     "schemas/work-item.schema.json",
     "schemas/query-receipt.schema.json",
     "schemas/source-receipt.schema.json",
@@ -81,6 +83,12 @@ REQUIRED_FILES = [
     "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
+    "skills/source-discovery/SKILL.md",
+    "skills/worldwide-technology-survey/SKILL.md",
+    "skills/evidence-extraction/SKILL.md",
+    "skills/structured-synthesis/SKILL.md",
+    "skills/source-validation/SKILL.md",
+    "skills/falsification-review/SKILL.md",
     "docs/tasks/OFS-002.md",
     "docs/tasks/OFS-003.md",
     "docs/tasks/OFS-004.md",
@@ -274,6 +282,34 @@ def validate_runtime_configuration(root: Path) -> list[str]:
                 "same provider/model/prompt identity is split across independence groups: "
                 f"{agent.get('agent_id')}"
             )
+    skill_registry = load_json(root / "config" / "skill-registry.json")
+    skills = skill_registry.get("skills", [])
+    skill_ids = [item.get("skill_id") for item in skills]
+    if len(skill_ids) != len(set(skill_ids)):
+        errors.append("Skill registry has duplicate Skill IDs")
+    selector_keys: set[tuple[str, str | None]] = set()
+    for skill in skills:
+        source_ref = skill.get("source_ref", "")
+        source_path = root / source_ref
+        if not re.fullmatch(r"skills/[a-z0-9-]+/SKILL\.md", source_ref):
+            errors.append(f"Skill registry has invalid source path: {source_ref}")
+            continue
+        if not source_path.is_file():
+            errors.append(f"registered Skill source is missing: {source_ref}")
+            continue
+        frontmatter = source_path.read_text(encoding="utf-8").split("---", 2)
+        expected_name = f"name: {skill.get('skill_id')}"
+        if len(frontmatter) < 3 or expected_name not in frontmatter[1].splitlines():
+            errors.append(f"registered Skill frontmatter name differs: {source_ref}")
+        monitors = skill.get("monitor_ids") or [None]
+        for kind in skill.get("work_item_kinds", []):
+            for monitor_id in monitors:
+                key = (kind, monitor_id)
+                if key in selector_keys:
+                    errors.append(
+                        f"Skill selector is ambiguous: {kind}/{monitor_id or '*'}"
+                    )
+                selector_keys.add(key)
     return errors
 
 
@@ -381,6 +417,16 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         for path, item in zip(work_paths, work_items, strict=True):
             if path.stem != item.get("work_item_id") or item.get("run_id") != run_id:
                 errors.append(f"Work Item identity mismatch: {path.relative_to(root)}")
+            skill = item.get("skill")
+            if skill:
+                pinned = manifest.get("skill_snapshots", {}).get(skill.get("source_ref"))
+                if not pinned or any(
+                    skill.get(key) != pinned.get(key)
+                    for key in ("skill_id", "version", "snapshot_ref", "digest")
+                ):
+                    errors.append(
+                        f"Work Item Skill differs from Run snapshot: {path.relative_to(root)}"
+                    )
             if item.get("status") != "completed":
                 continue
             for output_ref, expected_digest in item.get("output_digests", {}).items():
@@ -501,6 +547,15 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     errors.append(
                         f"Run {run_id} configuration snapshot digest differs: {snapshot_ref}"
                     )
+        for source_ref, skill in manifest.get("skill_snapshots", {}).items():
+            snapshot_ref = skill.get("snapshot_ref")
+            snapshot_path = root / str(snapshot_ref)
+            if not snapshot_path.is_file():
+                errors.append(f"Run {run_id} Skill snapshot is missing: {snapshot_ref}")
+                continue
+            actual_digest = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+            if actual_digest != skill.get("digest"):
+                errors.append(f"Run {run_id} Skill snapshot digest differs: {source_ref}")
         directive_snapshots = manifest.get("directive_snapshots", {})
         for source_ref, expected_digest in manifest.get("directive_hashes", {}).items():
             snapshot_ref = directive_snapshots.get(source_ref)

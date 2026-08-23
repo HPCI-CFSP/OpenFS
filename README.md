@@ -52,7 +52,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
 | `config/` | Machine-readable agent, monitor, budget, consensus, and dated HPCI provider-scope settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
-| `skills/` | Reusable agent procedures, added as each workflow is implemented |
+| `skills/` | Versioned Discovery, extraction, synthesis, validation, and falsification procedures pinned into each Run |
 | `evals/` | Golden, adversarial, and replay evaluation cases |
 | `tools/` | Deterministic validation and consensus commands |
 | `tests/` | Tests for deterministic harness behavior |
@@ -67,7 +67,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `runs/` | Immutable run manifests and run-scoped outputs |
 | `state/` | Watermarks and resumable scheduler state |
 
-Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built.
+Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built. `config/skill-registry.json` deterministically selects and snapshots the procedure for each supported Work Item kind.
 
 ## Research baseline
 

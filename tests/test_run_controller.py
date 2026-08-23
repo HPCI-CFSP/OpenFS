@@ -17,6 +17,7 @@ from run_controller import (  # noqa: E402
     _lock_path,
     _predecessor_profile_inputs,
     _release_lock,
+    _skill_binding,
     complete_work_item,
     cancel_run,
     create_run,
@@ -38,6 +39,7 @@ class RunControllerTests(unittest.TestCase):
             "config/budgets.json",
             "config/consensus-policy.json",
             "config/role-permissions.json",
+            "config/skill-registry.json",
             "config/source-registry.json",
             "config/agent-registry.json",
             "config/monitors/MON-MEMORY-001.json",
@@ -45,6 +47,10 @@ class RunControllerTests(unittest.TestCase):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, target)
+        for source in (ROOT / "skills").glob("*/SKILL.md"):
+            target = self.root / source.relative_to(ROOT)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
         (self.root / "reviews" / "directives").mkdir(parents=True)
 
     def tearDown(self):
@@ -115,6 +121,48 @@ class RunControllerTests(unittest.TestCase):
         directive_source = "reviews/directives/DIR-000123.json"
         self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
         self.assertEqual(64, len(first["directive_hashes"][directive_source]))
+        first_work_item = json.loads(
+            (self.root / "queue" / "RUN-PILOT-001" / "WORK-000001.json").read_text()
+        )
+        self.assertEqual("source-discovery", first_work_item["skill"]["skill_id"])
+        skill_snapshot = self.root / first_work_item["skill"]["snapshot_ref"]
+        self.assertTrue(skill_snapshot.is_file())
+        self.assertEqual(
+            first_work_item["skill"]["digest"],
+            first["skill_snapshots"]["skills/source-discovery/SKILL.md"]["digest"],
+        )
+
+        (self.root / "skills" / "source-discovery" / "SKILL.md").unlink()
+        pinned = _skill_binding(
+            self.root,
+            run_id="RUN-PILOT-001",
+            monitor_id="MON-MEMORY-001",
+            work_item_kind="source-discovery",
+        )
+        self.assertEqual(first_work_item["skill"], pinned)
+
+    def test_global_monitor_uses_worldwide_survey_skill_override(self):
+        target = self.root / "config/monitors/MON-GLOBAL-TECH-001.json"
+        shutil.copy2(ROOT / "config/monitors/MON-GLOBAL-TECH-001.json", target)
+        manifest = create_run(
+            self.root,
+            run_id="RUN-GLOBAL-PILOT",
+            task_id="OFS-005",
+            monitor_id="MON-GLOBAL-TECH-001",
+            pilot=True,
+            now=datetime(2026, 8, 24, tzinfo=timezone.utc),
+        )
+        first_work_item = json.loads(
+            (
+                self.root
+                / "queue"
+                / manifest["run_id"]
+                / manifest["work_item_ids"][0]
+            ).with_suffix(".json").read_text()
+        )
+        self.assertEqual(
+            "worldwide-technology-survey", first_work_item["skill"]["skill_id"]
+        )
 
     def test_cancel_records_reason_and_cancels_open_work(self):
         now = datetime(2026, 8, 24, tzinfo=timezone.utc)
@@ -569,6 +617,13 @@ class RunControllerTests(unittest.TestCase):
         )
         self.assertEqual("leased", leased["status"])
         output_ref = leased["output_paths"][0]
+        leased_manifest = json.loads(
+            (self.root / "runs" / "RUN-PILOT-002" / "manifest.json").read_text()
+        )
+        self.assertEqual(
+            leased["skill"]["digest"],
+            leased_manifest["agent_executions"][0]["skill_hash"],
+        )
         output_path = self.root / output_ref
         output_path.parent.mkdir(parents=True)
         output_path.write_text('{"result":"ok"}\n', encoding="utf-8")
