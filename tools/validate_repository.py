@@ -335,12 +335,19 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                         f"Run {run_id} configuration snapshot digest differs: {snapshot_ref}"
                     )
 
+    source_ids_by_run: dict[str, list[str]] = {}
     for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):
         result = load_json(path)
         if result.get("run_id") != path.parent.name:
             errors.append(f"Source result Run mismatch: {path.relative_to(root)}")
         if result.get("work_item_id") != path.stem:
             errors.append(f"Source result Work Item mismatch: {path.relative_to(root)}")
+        source_ids_by_run.setdefault(path.parent.name, []).append(
+            result.get("source_receipt", {}).get("source_id")
+        )
+    for run_id, source_ids in source_ids_by_run.items():
+        if len(source_ids) != len(set(source_ids)):
+            errors.append(f"Run {run_id} contains duplicate selected Source IDs")
     for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
         bundle = load_json(path)
         if bundle.get("run_id") != path.parent.name:
@@ -352,9 +359,36 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         proposal = load_json(path)
         if proposal.get("run_id") != path.parent.name:
             errors.append(f"Claim proposal Run mismatch: {path.relative_to(root)}")
+        bundles = []
         for evidence_ref in proposal.get("evidence_bundle_refs", []):
             if not (root / evidence_ref).is_file():
                 errors.append(f"Claim proposal Evidence is missing: {path.relative_to(root)}")
+            else:
+                bundles.append(load_json(root / evidence_ref))
+        if bundles:
+            expected_evidence_ids = {
+                evidence["evidence_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            expected_lineage_ids = {
+                evidence["source_lineage_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            expected_origins = {
+                origin
+                for bundle in bundles
+                for origin in bundle.get("origin_group_ids", [])
+            }
+            candidate = proposal.get("claim_candidate", {})
+            if set(candidate.get("evidence_ids", [])) != expected_evidence_ids:
+                errors.append(f"Claim proposal Evidence IDs differ from bundles: {path.relative_to(root)}")
+            if set(candidate.get("source_lineage_ids", [])) != expected_lineage_ids:
+                errors.append(f"Claim proposal Lineage IDs differ from bundles: {path.relative_to(root)}")
+            if set(proposal.get("origin_group_ids", [])) != expected_origins:
+                errors.append(f"Claim proposal Origin Groups differ from bundles: {path.relative_to(root)}")
+    assessments_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
     for path in sorted((root / "assessments").glob("RUN-*/*.json")):
         assessment = load_json(path)
         if assessment.get("run_id") != path.parent.name:
@@ -382,6 +416,44 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(
                     f"Assessment registry digest differs from Run snapshot: {path.relative_to(root)}"
                 )
+        assessments_by_run_and_id[(path.parent.name, assessment.get("assessment_id"))] = assessment
+    claim_proposals = {
+        (path.parent.name, proposal["proposal_id"]): proposal
+        for path in sorted((root / "proposals" / "claims").glob("RUN-*/*.json"))
+        for proposal in [load_json(path)]
+    }
+    for path in sorted((root / "decisions").glob("RUN-*/*.json")):
+        decision = load_json(path)
+        run_id = path.parent.name
+        proposal = claim_proposals.get((run_id, decision.get("proposal_id")))
+        if proposal is None:
+            errors.append(f"Decision Claim proposal is missing: {path.relative_to(root)}")
+        for assessment_id in decision.get("assessment_ids", []):
+            assessment = assessments_by_run_and_id.get((run_id, assessment_id))
+            if assessment is None:
+                errors.append(f"Decision Assessment is missing: {path.relative_to(root)}")
+            elif assessment.get("proposal_id") != decision.get("proposal_id"):
+                errors.append(f"Decision Assessment targets another proposal: {path.relative_to(root)}")
+        manifest_path = root / "runs" / run_id / "manifest.json"
+        if manifest_path.is_file():
+            manifest = load_json(manifest_path)
+            registry_ref = manifest.get("configuration_snapshots", {}).get(
+                "config/agent-registry.json"
+            )
+            if registry_ref:
+                registry = load_json(root / registry_ref)
+                registry_digest = hashlib.sha256(
+                    json.dumps(
+                        registry,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ).hexdigest()
+                if decision.get("agent_registry_digest") != registry_digest:
+                    errors.append(
+                        f"Decision registry digest differs from Run snapshot: {path.relative_to(root)}"
+                    )
     return errors
 
 

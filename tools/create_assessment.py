@@ -39,7 +39,7 @@ def create(
     *,
     reviewer_agent_id: str,
     verdict: str,
-    confidence: float,
+    confidence: float | None,
     checks: dict[str, Any],
     objections: list[dict[str, str]],
     registry: dict[str, Any],
@@ -54,7 +54,7 @@ def create(
     )
     if verdict not in {"support", "refute", "uncertain"}:
         raise ValueError(f"unsupported verdict: {verdict}")
-    if not 0 <= confidence <= 1:
+    if confidence is not None and not 0 <= confidence <= 1:
         raise ValueError("confidence must be between zero and one")
     if proposal.get("created_by_agent_id") == reviewer_agent_id:
         raise ValueError("proposal author cannot assess its own proposal")
@@ -66,7 +66,7 @@ def create(
         "objections": objections,
     }
     number = int(stable_digest(identity)[:12], 16) % 1_000_000
-    return {
+    assessment = {
         "schema_version": "0.1.0",
         "assessment_id": f"ASM-{number:06d}",
         "proposal_id": proposal["proposal_id"],
@@ -82,11 +82,13 @@ def create(
         "run_id": proposal["run_id"],
         "base_commit": base_commit,
         "verdict": verdict,
-        "confidence": confidence,
         "checks": checks,
         "objections": objections,
         "reviewed_at": reviewed_at or isoformat(),
     }
+    if confidence is not None:
+        assessment["confidence"] = confidence
+    return assessment
 
 
 def main() -> int:
@@ -94,7 +96,7 @@ def main() -> int:
     parser.add_argument("--proposal", required=True, type=Path)
     parser.add_argument("--reviewer-agent-id", required=True)
     parser.add_argument("--verdict", required=True, choices=("support", "refute", "uncertain"))
-    parser.add_argument("--confidence", required=True, type=float)
+    parser.add_argument("--confidence", type=float)
     parser.add_argument("--checks", required=True, type=Path)
     parser.add_argument("--objections", required=True, type=Path)
     parser.add_argument("--agent-registry", type=Path, default=ROOT / "config/agent-registry.json")

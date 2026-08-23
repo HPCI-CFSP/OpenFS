@@ -332,6 +332,18 @@ def _record_agent_execution(
         }
         if identity in existing:
             return
+        tool_names_by_kind = {
+            "source-discovery": ["register_source.py"],
+            "evidence-extraction": ["extract_evidence.py"],
+            "synthesis": ["propose_claim.py"],
+            "validation": ["create_assessment.py"],
+            "consensus": ["consensus_gate.py"],
+            "apply-directive": ["ingest_directive.py"],
+        }
+        tool_paths = [Path(__file__)] + [
+            ROOT / "tools" / name
+            for name in tool_names_by_kind.get(work_item.get("kind"), [])
+        ]
         manifest.setdefault("agent_executions", []).append(
             {
                 "agent_id": agent["agent_id"],
@@ -341,7 +353,7 @@ def _record_agent_execution(
                 "model_id": agent["model_family"],
                 "prompt_hash": stable_digest(agent["prompt_profile"]),
                 "tool_versions": {
-                    "run_controller.py": sha256_file(Path(__file__)),
+                    path.name: sha256_file(path) for path in tool_paths if path.is_file()
                 },
                 "executed_at": executed_at,
             }
@@ -498,6 +510,165 @@ def expand_followups(
             additions.append(item)
             existing_keys.add(idempotency_key)
 
+    discovery_items = {
+        item["work_item_id"]: item
+        for item in existing
+        if item.get("kind") == "source-discovery"
+    }
+    evidence_by_discovery: dict[str, dict[str, Any]] = {}
+    for item in existing:
+        if item.get("kind") != "evidence-extraction" or item.get("status") != "completed":
+            continue
+        parent_id = item.get("payload", {}).get("parent_work_item_id")
+        if parent_id:
+            evidence_by_discovery[parent_id] = item
+    query_groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for item in discovery_items.values():
+        payload = item.get("payload", {})
+        key = (payload.get("query", ""), payload.get("query_role", "coverage"))
+        query_groups.setdefault(key, []).append(item)
+    for (query, query_role), discovery_group in sorted(query_groups.items()):
+        if not query or not all(
+            item["work_item_id"] in evidence_by_discovery for item in discovery_group
+        ):
+            continue
+        evidence_refs = sorted(
+            reference
+            for item in discovery_group
+            for reference in evidence_by_discovery[item["work_item_id"]].get(
+                "output_refs", []
+            )
+        )
+        payload = {
+            "query": query,
+            "query_role": query_role,
+            "evidence_bundle_refs": evidence_refs,
+            "parent_work_item_ids": sorted(
+                evidence_by_discovery[item["work_item_id"]]["work_item_id"]
+                for item in discovery_group
+            ),
+        }
+        identity = {
+            "run_id": run_id,
+            "task_id": manifest["task_id"],
+            "monitor_id": manifest["monitor_id"],
+            "kind": "synthesis",
+            "payload": payload,
+        }
+        idempotency_key = stable_digest(identity)
+        if idempotency_key in existing_keys:
+            continue
+        sequence += 1
+        item = _work_item(
+            sequence=sequence,
+            run_id=run_id,
+            task_id=manifest["task_id"],
+            monitor_id=manifest["monitor_id"],
+            kind="synthesis",
+            role="synthesis",
+            payload=payload,
+            output_paths=[f"proposals/claims/{run_id}/WORK-{sequence:06d}.json"],
+            maximum_attempts=maximum_attempts,
+            created_at=created_at,
+        )
+        additions.append(item)
+        existing_keys.add(idempotency_key)
+
+    completed_claim_items = [
+        item
+        for item in existing
+        if item.get("kind") == "synthesis" and item.get("status") == "completed"
+    ]
+    for claim_item in completed_claim_items:
+        for proposal_ref in claim_item.get("output_refs", []):
+            payload = {
+                "proposal_ref": proposal_ref,
+                "parent_work_item_id": claim_item["work_item_id"],
+                "review_mode": "blind-first-review",
+            }
+            identity = {
+                "run_id": run_id,
+                "task_id": manifest["task_id"],
+                "monitor_id": manifest["monitor_id"],
+                "kind": "validation",
+                "payload": payload,
+            }
+            idempotency_key = stable_digest(identity)
+            if idempotency_key in existing_keys:
+                continue
+            sequence += 1
+            item = _work_item(
+                sequence=sequence,
+                run_id=run_id,
+                task_id=manifest["task_id"],
+                monitor_id=manifest["monitor_id"],
+                kind="validation",
+                role="validator",
+                payload=payload,
+                output_paths=[f"assessments/{run_id}/WORK-{sequence:06d}.json"],
+                maximum_attempts=maximum_attempts,
+                created_at=created_at,
+            )
+            additions.append(item)
+            existing_keys.add(idempotency_key)
+
+    completed_validations = {
+        item.get("payload", {}).get("proposal_ref"): item
+        for item in existing
+        if item.get("kind") == "validation" and item.get("status") == "completed"
+    }
+    claim_refs = sorted(
+        reference
+        for item in completed_claim_items
+        for reference in item.get("output_refs", [])
+    )
+    upstream_complete = bool(discovery_items) and all(
+        item.get("status") == "completed" for item in discovery_items.values()
+    )
+    all_query_claims_complete = len(completed_claim_items) == len(query_groups)
+    if (
+        claim_refs
+        and upstream_complete
+        and all_query_claims_complete
+        and all(reference in completed_validations for reference in claim_refs)
+    ):
+        pairs = []
+        output_paths = []
+        for proposal_ref in claim_refs:
+            proposal = read_json(root / proposal_ref)
+            assessment_refs = completed_validations[proposal_ref].get("output_refs", [])
+            pairs.append(
+                {"proposal_ref": proposal_ref, "assessment_refs": assessment_refs}
+            )
+            output_paths.append(
+                f"decisions/{run_id}/{proposal['proposal_id']}.json"
+            )
+        payload = {"proposal_assessment_pairs": pairs}
+        identity = {
+            "run_id": run_id,
+            "task_id": manifest["task_id"],
+            "monitor_id": manifest["monitor_id"],
+            "kind": "consensus",
+            "payload": payload,
+        }
+        idempotency_key = stable_digest(identity)
+        if idempotency_key not in existing_keys:
+            sequence += 1
+            item = _work_item(
+                sequence=sequence,
+                run_id=run_id,
+                task_id=manifest["task_id"],
+                monitor_id=manifest["monitor_id"],
+                kind="consensus",
+                role="consensus",
+                payload=payload,
+                output_paths=output_paths,
+                maximum_attempts=maximum_attempts,
+                created_at=created_at,
+            )
+            additions.append(item)
+            existing_keys.add(idempotency_key)
+
     limit = int(manifest["budget"]["maximum_work_items"])
     if len(existing) + len(additions) > limit:
         raise RuntimeError("follow-up expansion exceeds the Run Work Item budget")
@@ -509,7 +680,7 @@ def expand_followups(
             {
                 "expanded_at": created_at,
                 "created_work_item_ids": [item["work_item_id"] for item in additions],
-                "reason": "completed-source-discovery",
+                "reason": "completed-upstream-work-items",
             }
         )
         manifest["metrics"]["work_items_total"] = len(existing) + len(additions)
@@ -540,7 +711,7 @@ def reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
             root,
             run_id=run_id,
             work_item=item,
-            agent=_agent(root, agent_id),
+            agent=_agent(root, agent_id, run_id=run_id),
             executed_at=item.get("completed_at", item["updated_at"]),
         )
     return {
@@ -613,6 +784,22 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
     manifest.setdefault("metrics", {}).update(
         {"work_items_total": len(items), "work_items_by_status": counts}
     )
+    decisions = [
+        read_json(decision_path)
+        for decision_path in sorted((root / "decisions" / run_id).glob("*.json"))
+    ]
+    if decisions:
+        decision_counts: dict[str, int] = {}
+        for decision in decisions:
+            outcome = decision["outcome"]
+            decision_counts[outcome] = decision_counts.get(outcome, 0) + 1
+        manifest["metrics"]["consensus_outcomes"] = decision_counts
+        if "contested" in decision_counts:
+            manifest["research_status"] = "contested"
+        elif decision_counts.get("accepted") == len(decisions):
+            manifest["research_status"] = "accepted"
+        else:
+            manifest["research_status"] = "provisional"
     if status in {"completed", "partial", "failed", "cancelled"}:
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)

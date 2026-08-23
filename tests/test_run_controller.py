@@ -284,6 +284,59 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual("evidence-extraction", first["created"][0]["kind"])
         self.assertEqual("extraction", first["created"][0]["required_role"])
 
+    def test_two_source_slots_expand_one_query_synthesis(self):
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-008",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+        )
+        for _ in range(2):
+            leased = lease_next(
+                self.root,
+                run_id="RUN-PILOT-008",
+                agent_id="discovery-public-01",
+                allow_disabled_pilot_agent=True,
+            )
+            output_ref = leased["output_paths"][0]
+            output_path = self.root / output_ref
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text("{}\n", encoding="utf-8")
+            complete_work_item(
+                self.root,
+                run_id="RUN-PILOT-008",
+                work_item_id=leased["work_item_id"],
+                agent_id="discovery-public-01",
+                output_refs=[output_ref],
+            )
+        extraction_expansion = expand_followups(self.root, run_id="RUN-PILOT-008")
+        self.assertEqual(2, len(extraction_expansion["created"]))
+        for _ in range(2):
+            leased = lease_next(
+                self.root,
+                run_id="RUN-PILOT-008",
+                agent_id="extraction-public-01",
+                allow_disabled_pilot_agent=True,
+            )
+            output_ref = leased["output_paths"][0]
+            output_path = self.root / output_ref
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text("{}\n", encoding="utf-8")
+            complete_work_item(
+                self.root,
+                run_id="RUN-PILOT-008",
+                work_item_id=leased["work_item_id"],
+                agent_id="extraction-public-01",
+                output_refs=[output_ref],
+            )
+        synthesis_expansion = expand_followups(self.root, run_id="RUN-PILOT-008")
+        synthesis = [
+            item for item in synthesis_expansion["created"] if item["kind"] == "synthesis"
+        ]
+        self.assertEqual(1, len(synthesis))
+        self.assertEqual(2, len(synthesis[0]["payload"]["evidence_bundle_refs"]))
+
 
 if __name__ == "__main__":
     unittest.main()

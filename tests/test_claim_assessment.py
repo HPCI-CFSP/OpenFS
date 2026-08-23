@@ -53,7 +53,7 @@ class ClaimAssessmentTests(unittest.TestCase):
             proposal,
             reviewer_agent_id="validator-public-01",
             verdict="uncertain",
-            confidence=0.5,
+            confidence=None,
             checks={"citation_entailment": "pass", "falsification_review": False},
             objections=[],
             registry=self.registry,
@@ -66,6 +66,7 @@ class ClaimAssessmentTests(unittest.TestCase):
             "openai-gpt5-codex-interactive",
             assessment["agent_independence_group"],
         )
+        self.assertNotIn("confidence", assessment)
 
     def test_unconfigured_critic_cannot_create_assessment(self):
         proposal = {

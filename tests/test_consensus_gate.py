@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
+sys.path.insert(0, str(ROOT / "tests"))
 
 from consensus_gate import evaluate  # noqa: E402
 from consensus_test_helpers import registry_bound_case  # noqa: E402

@@ -191,7 +191,9 @@ def evaluate(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--proposal", required=True, type=Path)
-    parser.add_argument("--assessments", required=True, type=Path)
+    assessment_inputs = parser.add_mutually_exclusive_group(required=True)
+    assessment_inputs.add_argument("--assessments", type=Path)
+    assessment_inputs.add_argument("--assessment", action="append", type=Path)
     parser.add_argument("--policy", required=True, type=Path)
     parser.add_argument(
         "--agent-registry",
@@ -201,9 +203,15 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
+    if args.assessment:
+        assessments = [load_json(path) for path in args.assessment]
+    else:
+        assessments = load_json(args.assessments)
+        if isinstance(assessments, dict):
+            assessments = [assessments]
     decision = evaluate(
         load_json(args.proposal),
-        load_json(args.assessments),
+        assessments,
         load_json(args.policy),
         load_json(args.agent_registry),
     )
