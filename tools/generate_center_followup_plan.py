@@ -39,6 +39,57 @@ QUERY_TERMS_JA = {
 }
 
 
+def _institution_domain(hostname: str | None) -> str | None:
+    if not hostname:
+        return None
+    labels = hostname.lower().split(".")
+    if len(labels) <= 2:
+        return hostname.lower()
+    if labels[-2:] == ["ac", "jp"] or labels[-2:] == ["go", "jp"]:
+        return ".".join(labels[-3:])
+    if labels[-2:] == ["co", "jp"] or labels[-2:] == ["or", "jp"]:
+        return ".".join(labels[-3:])
+    return ".".join(labels[-2:])
+
+
+def _query_strategy(
+    *,
+    generation: int,
+    center_name_ja: str,
+    center_name_en: str,
+    terms: str,
+    center_domain: str | None,
+) -> tuple[str, str, list[str]]:
+    if generation == 1:
+        site = f" site:{center_domain}" if center_domain else ""
+        return (
+            "center-domain",
+            f"{center_name_ja} {terms} 公式{site}",
+            ["center-primary", "procurement-primary"],
+        )
+    if generation == 2:
+        domain = _institution_domain(center_domain)
+        site = f" site:{domain}" if domain else ""
+        return (
+            "institution-domain-and-procurement",
+            f"{center_name_ja} {terms} 調達 仕様書 入札 年報 事業報告{site}",
+            ["center-primary", "procurement-primary", "official-primary"],
+        )
+    return (
+        "cross-domain-primary-records",
+        (
+            f'"{center_name_ja}" "{center_name_en}" {terms} '
+            "調達 仕様書 事業報告 government procurement"
+        ),
+        [
+            "center-primary",
+            "procurement-primary",
+            "official-primary",
+            "project-deliverable",
+        ],
+    )
+
+
 def build_plan(
     root: Path,
     *,
@@ -62,6 +113,14 @@ def build_plan(
     registry_centers = {
         center["center_id"]: center for center in registry.get("centers", [])
     }
+    predecessor_plan_ref = manifest.get("followup_plan", {}).get("source_ref")
+    predecessor_plan = (
+        read_json(root / predecessor_plan_ref) if predecessor_plan_ref else None
+    )
+    predecessor_queries = {
+        query["center_id"]: query
+        for query in (predecessor_plan or {}).get("queries", [])
+    }
     queries = []
     for center in brief.get("centers", []):
         center_id = center["center_id"]
@@ -76,20 +135,38 @@ def build_plan(
         registry_center = registry_centers[center_id]
         domain = urlparse(registry_center.get("official_url", "")).hostname
         terms = " ".join(QUERY_TERMS_JA[field] for field in selected)
-        domain_term = f" site:{domain}" if domain else ""
-        query_id = f"FOLLOWUP-{center_id}"
-        queries.append(
-            {
-                "query_id": query_id,
-                "center_id": center_id,
-                "name_ja": registry_center["name_ja"],
-                "profile_fields": selected,
-                "query": f"{registry_center['name_ja']} {terms} 公式{domain_term}",
-                "query_role": "gap-followup",
-                "source_classes": ["center-primary", "procurement-primary"],
-                "rationale": "Incomplete Center Profile fields from the preceding Run.",
-            }
+        previous_query = predecessor_queries.get(center_id)
+        generation = int((previous_query or {}).get("search_generation", 1)) + int(
+            previous_query is not None
         )
+        strategy, query_text, source_classes = _query_strategy(
+            generation=generation,
+            center_name_ja=registry_center["name_ja"],
+            center_name_en=registry_center.get(
+                "name_en", registry_center["name_ja"]
+            ),
+            terms=terms,
+            center_domain=domain,
+        )
+        query_id = f"FOLLOWUP-{center_id}"
+        query = {
+            "query_id": query_id,
+            "center_id": center_id,
+            "name_ja": registry_center["name_ja"],
+            "profile_fields": selected,
+            "query": query_text,
+            "query_role": "gap-followup",
+            "source_classes": source_classes,
+            "search_generation": generation,
+            "search_strategy": strategy,
+            "rationale": "Incomplete Center Profile fields from the preceding Run.",
+        }
+        if previous_query and predecessor_plan_ref:
+            query["previous_query_ref"] = (
+                f"{predecessor_plan_ref}#{previous_query['query_id']}"
+            )
+            query["previous_query_digest"] = stable_digest(previous_query)
+        queries.append(query)
         if len(queries) >= maximum_queries:
             break
     timestamp = generated_at or isoformat()
@@ -110,6 +187,13 @@ def build_plan(
         "publication_status": "internal-review-only",
         "input_brief_ref": brief_ref,
         "input_brief_digest": stable_digest(brief),
+        "predecessor_plan": {
+            "plan_ref": predecessor_plan_ref,
+            "plan_id": predecessor_plan["followup_plan_id"],
+            "plan_digest": stable_digest(predecessor_plan),
+        }
+        if predecessor_plan
+        else None,
         "limits": {
             "maximum_queries": maximum_queries,
             "maximum_fields_per_query": maximum_fields_per_query,

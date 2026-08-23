@@ -134,6 +134,10 @@ planning-critical gaps into at most one bounded query per center. A later Run ma
 consume only the latest digest-matched plan, snapshots it under the new Run, and
 records the originating Run ID. Gap-driven searches supplement the stable baseline
 queries; they never turn missing public information into a factual claim.
+Repeated unresolved gaps advance a recorded search generation: center-domain search,
+then institution-wide procurement and annual-report search, then cross-domain primary
+records. Each generation pins the preceding query digest so agents do not silently
+repeat an ineffective search forever.
 
 Recurring Center Runs are cumulative at field level. A new draft prefers current-Run
 Evidence when it is at least as strong as the preceding field. A stronger preceding
