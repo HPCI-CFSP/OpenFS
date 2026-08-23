@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/profile-continuity.schema.json",
+  "title": "Center Profile Continuity Report",
+  "type": "object",
+  "required": ["schema_version", "run_id", "predecessor_run_id", "evaluated_at", "status", "publication_blocked", "maximum_age_days", "predecessor_profile_count", "current_profile_count", "compared_field_count", "regression_count", "regressions"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "predecessor_run_id": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["passed", "failed"]},
+    "publication_blocked": {"type": "boolean"},
+    "maximum_age_days": {"type": "integer", "minimum": 1},
+    "predecessor_profile_count": {"type": "integer", "minimum": 0},
+    "current_profile_count": {"type": "integer", "minimum": 0},
+    "compared_field_count": {"type": "integer", "minimum": 0},
+    "regression_count": {"type": "integer", "minimum": 0},
+    "regressions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["center_id", "field", "reason", "predecessor_status", "current_status", "predecessor_ref", "current_ref"],
+        "properties": {
+          "center_id": {"type": "string"},
+          "field": {"type": ["string", "null"]},
+          "reason": {"enum": ["missing-profile", "weaker-current-state"]},
+          "predecessor_status": {"type": ["string", "null"]},
+          "current_status": {"type": ["string", "null"]},
+          "predecessor_ref": {"type": "string"},
+          "current_ref": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

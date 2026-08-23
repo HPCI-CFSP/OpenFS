@@ -142,7 +142,9 @@ freshness window. The synthesis assignment records the predecessor profile diges
 all required earlier Evidence bundles; the proposal records inherited fields, Evidence
 Run IDs, and bundle references. Unknown, stale, weaker, or silently modified predecessor
 content is not carried forward. Every cumulative profile still enters Consensus as a
-new provisional Proposal.
+new provisional Proposal. At Run finalization, `tools/evaluate_profile_continuity.py`
+independently compares still-current predecessor fields with the new profiles. A
+regression opens an owner-action exception and blocks publication until reviewed.
 
 The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass independent review, the Recommendation Gate, or promotion workflow.
 

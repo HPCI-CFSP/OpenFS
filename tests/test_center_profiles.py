@@ -12,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from evaluate_center_profiles import evaluate, record  # noqa: E402
+from evaluate_profile_continuity import (  # noqa: E402
+    evaluate as evaluate_continuity,
+    record as record_continuity,
+)
 from propose_center_profile import merge_with_predecessor, propose  # noqa: E402
 from run_controller import create_run  # noqa: E402
 from openfs_runtime import stable_digest  # noqa: E402
@@ -52,14 +56,21 @@ class CenterProfileCoverageTests(unittest.TestCase):
     def tearDown(self):
         self.temporary.cleanup()
 
-    def profile(self, center, *, status="provisional", partial_field=None):
+    def profile(
+        self,
+        center,
+        *,
+        status="provisional",
+        partial_field=None,
+        run_id="RUN-CENTER-PROFILES",
+    ):
         proposal_number = self.registry["centers"].index(center) + 1
         profile = {
             "schema_version": "0.1.0",
             "proposal_contract_version": "0.2.0",
             "proposal_id": f"PRP-CTR-{proposal_number:06d}",
             "object_type": "center_profile",
-            "run_id": "RUN-CENTER-PROFILES",
+            "run_id": run_id,
             "center_id": center["center_id"],
             "name_ja": center["name_ja"],
             "name_en": center["name_en"],
@@ -159,6 +170,88 @@ class CenterProfileCoverageTests(unittest.TestCase):
             profile["center_id"],
             {item["center_id"] for item in report["gaps"]["stale_profiles"]},
         )
+
+    def _prepare_continuity(self, predecessor_profile, current_profile):
+        previous_run = "RUN-CENTER-PREVIOUS"
+        previous_manifest = {
+            "run_id": previous_run,
+            "task_id": "OFS-003",
+            "monitor_id": "MON-HPCI-CENTERS-001",
+            "status": "completed",
+        }
+        previous_manifest_path = self.root / "runs" / previous_run / "manifest.json"
+        previous_manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        previous_manifest_path.write_text(json.dumps(previous_manifest), encoding="utf-8")
+        current_manifest_path = (
+            self.root / "runs" / "RUN-CENTER-PROFILES" / "manifest.json"
+        )
+        current_manifest = json.loads(current_manifest_path.read_text(encoding="utf-8"))
+        current_manifest["followup_plan"] = {"base_run_id": previous_run}
+        current_manifest_path.write_text(json.dumps(current_manifest), encoding="utf-8")
+        for run_id, profile in (
+            (previous_run, predecessor_profile),
+            ("RUN-CENTER-PROFILES", current_profile),
+        ):
+            path = (
+                self.root
+                / "proposals"
+                / "center-profiles"
+                / run_id
+                / f"{profile['center_id']}.json"
+            )
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(profile), encoding="utf-8")
+
+    def test_continuity_blocks_loss_of_current_predecessor_field(self):
+        center = self.registry["centers"][0]
+        predecessor = self.profile(center, run_id="RUN-CENTER-PREVIOUS")
+        current = self.profile(center, partial_field="power")
+        self._prepare_continuity(predecessor, current)
+
+        report = evaluate_continuity(
+            self.root,
+            run_id="RUN-CENTER-PROFILES",
+            evaluated_at="2026-08-24T12:00:00Z",
+        )
+
+        self.assertEqual("failed", report["status"])
+        self.assertTrue(report["publication_blocked"])
+        self.assertEqual(1, report["regression_count"])
+        self.assertEqual("power", report["regressions"][0]["field"])
+        manifest = record_continuity(self.root, report)
+        self.assertEqual(
+            "failed", manifest["metrics"]["profile_continuity"]["status"]
+        )
+        exception = json.loads(
+            (
+                self.root
+                / "reviews"
+                / "exceptions"
+                / "RUN-CENTER-PROFILES"
+                / "PROFILE-CONTINUITY.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual("open", exception["status"])
+
+    def test_continuity_passes_when_current_profile_preserves_strength(self):
+        center = self.registry["centers"][0]
+        predecessor = self.profile(
+            center,
+            partial_field="power",
+            run_id="RUN-CENTER-PREVIOUS",
+        )
+        current = self.profile(center)
+        self._prepare_continuity(predecessor, current)
+
+        report = evaluate_continuity(
+            self.root,
+            run_id="RUN-CENTER-PROFILES",
+            evaluated_at="2026-08-24T12:00:00Z",
+        )
+
+        self.assertEqual("passed", report["status"])
+        self.assertFalse(report["publication_blocked"])
+        self.assertEqual(0, report["regression_count"])
 
     def test_profile_proposal_preserves_unknowns_and_rejects_unassigned_evidence(self):
         center = self.registry["centers"][0]

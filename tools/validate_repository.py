@@ -73,6 +73,7 @@ REQUIRED_FILES = [
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/center-profile-coverage.schema.json",
+    "schemas/profile-continuity.schema.json",
     "schemas/temporal-integrity.schema.json",
     "schemas/center-research-brief.schema.json",
     "schemas/center-followup-plan.schema.json",
@@ -104,6 +105,7 @@ REQUIRED_FILES = [
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
     "tools/evaluate_center_profiles.py",
+    "tools/evaluate_profile_continuity.py",
     "tools/evaluate_temporal_integrity.py",
     "tools/generate_center_research_brief.py",
     "tools/generate_center_followup_plan.py",
@@ -418,6 +420,28 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     "consensus_readiness"
                 ):
                     errors.append(f"Run {run_id} Consensus readiness status differs")
+        continuity_ref = manifest.get("profile_continuity_ref")
+        if continuity_ref:
+            continuity_path = root / continuity_ref
+            if not continuity_path.is_file():
+                errors.append(
+                    f"Run {run_id} profile continuity report is missing: {continuity_ref}"
+                )
+            else:
+                continuity = load_json(continuity_path)
+                continuity_metric = manifest.get("metrics", {}).get(
+                    "profile_continuity", {}
+                )
+                if continuity.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} profile continuity identity differs")
+                if continuity.get("status") != continuity_metric.get("status"):
+                    errors.append(f"Run {run_id} profile continuity status differs")
+                if continuity.get("regression_count") != continuity_metric.get(
+                    "regression_count"
+                ):
+                    errors.append(
+                        f"Run {run_id} profile continuity regression count differs"
+                    )
         temporal_ref = manifest.get("temporal_integrity_ref")
         if temporal_ref:
             temporal_path = root / temporal_ref

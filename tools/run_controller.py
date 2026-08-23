@@ -1626,6 +1626,18 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)
     if status in {"completed", "partial", "failed", "cancelled", "stopped"}:
+        if manifest.get("followup_plan") and any(
+            (root / "proposals" / "center-profiles" / run_id).glob("*.json")
+        ):
+            from evaluate_profile_continuity import evaluate as evaluate_profile_continuity
+            from evaluate_profile_continuity import record as record_profile_continuity
+
+            continuity = evaluate_profile_continuity(
+                root,
+                run_id=run_id,
+                evaluated_at=manifest["completed_at"],
+            )
+            record_profile_continuity(root, continuity)
         from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
         from evaluate_temporal_integrity import record as record_temporal_integrity
 
