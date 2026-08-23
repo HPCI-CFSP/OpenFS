@@ -160,6 +160,9 @@ def build_digest(
                     "publication_blocked": exception.get(
                         "publication_blocked", False
                     ),
+                    "unmet_requirements": sorted(
+                        exception.get("unmet_requirements", [])
+                    ),
                 }
             )
         exceptions.extend(run_exceptions)
@@ -279,16 +282,31 @@ def build_digest(
                     "scope": directive.get("scope", []),
                 }
             )
-    owner_actions = [
-        {
-            "action_id": f"ACTION-{item['exception_id']}",
-            "kind": "resolve-exception",
-            "run_id": item["run_id"],
-            "exception_ref": item["exception_ref"],
-        }
-        for item in exceptions
-        if item["requires_owner_action"]
-    ]
+    grouped_actions: dict[tuple[str, tuple[str, ...], bool], list[dict[str, Any]]] = {}
+    for item in exceptions:
+        if not item["requires_owner_action"]:
+            continue
+        fingerprint = (
+            item["exception_kind"],
+            tuple(item["unmet_requirements"]),
+            item["publication_blocked"],
+        )
+        grouped_actions.setdefault(fingerprint, []).append(item)
+    owner_actions = []
+    for sequence, (fingerprint, items) in enumerate(
+        sorted(grouped_actions.items()), 1
+    ):
+        owner_actions.append(
+            {
+                "action_id": f"ACTION-GROUP-{sequence:03d}",
+                "kind": "resolve-exception-group",
+                "exception_kind": fingerprint[0],
+                "unmet_requirements": list(fingerprint[1]),
+                "publication_blocked": fingerprint[2],
+                "run_ids": sorted({item["run_id"] for item in items}),
+                "exception_refs": sorted(item["exception_ref"] for item in items),
+            }
+        )
     return {
         "schema_version": "0.1.0",
         "digest_id": f"DIGEST-{week}",
@@ -389,8 +407,18 @@ def render_markdown(digest: dict[str, Any]) -> str:
     if digest["owner_actions"]:
         for action in digest["owner_actions"]:
             lines.append(
-                f"- `{action['run_id']}`: resolve `{action['exception_ref']}`"
+                f"- **{action['exception_kind']}**: resolve "
+                f"{len(action['exception_refs'])} related Exception(s) across "
+                f"{len(action['run_ids'])} Run(s)."
             )
+            if action["unmet_requirements"]:
+                lines.append(
+                    "  Requirements: "
+                    + ", ".join(
+                        f"`{item}`" for item in action["unmet_requirements"]
+                    )
+                )
+            lines.extend(f"  - `{item}`" for item in action["exception_refs"])
     else:
         lines.append("- None.")
     lines.extend(["", "## Caveats", ""])

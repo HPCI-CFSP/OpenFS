@@ -108,6 +108,12 @@ class DigestAndIssueTests(unittest.TestCase):
             "requires_owner_action": True,
         }
         self.write_json(f"reviews/exceptions/{run_id}/READINESS.json", exception)
+        repeated_exception = dict(exception)
+        repeated_exception["exception_id"] = "EXC-RUN-WEEKLY-001-READINESS-REPEATED"
+        self.write_json(
+            f"reviews/exceptions/{run_id}/READINESS-REPEATED.json",
+            repeated_exception,
+        )
         self.write_json(
             f"decisions/{run_id}/DEC-1.json",
             {
@@ -131,6 +137,7 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["coverage_gap_count"])
         self.assertEqual(1, len(digest["stale_sources"]))
         self.assertEqual(1, digest["summary"]["owner_action_count"])
+        self.assertEqual(2, digest["summary"]["open_exception_count"])
         self.assertEqual(0, digest["summary"]["temporal_failure_count"])
         self.assertEqual(1, digest["summary"]["continuity_failure_count"])
         self.assertEqual(0, digest["summary"]["ineffective_followup_count"])
@@ -147,12 +154,13 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual("effective", digest["runs"][0]["global_followup_effectiveness"])
         self.assertEqual(1, digest["runs"][0]["publisher_independence_failures"])
         self.assertTrue(digest["runs"][0]["publication_blocked"])
+        self.assertEqual(2, len(digest["owner_actions"][0]["exception_refs"]))
         self.assertEqual(
             ["profile-continuity"],
             digest["runs"][0]["publication_block_reasons"],
         )
         rendered = render_markdown(digest)
-        self.assertIn("resolve", rendered)
+        self.assertIn("resolve 2 related Exception(s)", rendered)
         self.assertIn("blocked", rendered)
         self.assertIn("partially-effective (2/3)", rendered)
         self.assertIn("global: effective (2/2)", rendered)

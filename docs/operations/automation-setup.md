@@ -135,6 +135,11 @@ Record these decisions in a reviewed pull request or Directive:
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
 
+The Weekly Digest groups open Exceptions that share the same kind, unmet
+requirements, and publication-blocking state into one Owner Action. Every original
+Exception reference remains listed, but repeated Consensus-capacity failures do not
+create a separate review decision for each Run.
+
 ### Coordinator versus Worker
 
 - The **Coordinator** is the GitHub Actions schedule. It validates control data,
