@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_agent_branch import parse_agent_id  # noqa: E402
+from check_agent_branch import parse_agent_id, validate_branch_paths  # noqa: E402
 from check_agent_permissions import check_paths, load_config  # noqa: E402
 
 
@@ -77,10 +77,115 @@ class AgentPermissionTests(unittest.TestCase):
     def test_agent_branch_requires_expected_shape(self):
         self.assertEqual(
             "validator-public-01",
-            parse_agent_id("agent/validator-public-01/RUN-001/WORK-001"),
+            parse_agent_id("agent/validator-public-01/RUN-001/WORK-000001"),
         )
         self.assertIsNone(parse_agent_id("agent/validator-public-01/incomplete"))
-        self.assertIsNone(parse_agent_id("agent/validator-public-01/RUN-001/WORK-001/extra"))
+        self.assertIsNone(
+            parse_agent_id("agent/validator-public-01/RUN-001/WORK-000001/extra")
+        )
+        self.assertIsNone(
+            parse_agent_id("agent/validator-public-01/RUN-001/WORK-001")
+        )
+
+    def test_agent_branch_is_limited_to_assigned_outputs_and_handoff(self):
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            work_path = root / "queue" / "RUN-001" / "WORK-000001.json"
+            work_path.parent.mkdir(parents=True)
+            work_path.write_text(
+                json.dumps(
+                    {
+                        "run_id": "RUN-001",
+                        "work_item_id": "WORK-000001",
+                        "required_role": "discovery",
+                        "output_paths": [
+                            "proposals/sources/RUN-001/WORK-000001.json"
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            manifest_path = root / "runs" / "RUN-001" / "manifest.json"
+            manifest_path.parent.mkdir(parents=True)
+            manifest_path.write_text(
+                json.dumps({"mode": "production"}), encoding="utf-8"
+            )
+            registry = {
+                "discovery-public-01": {
+                    "agent_id": "discovery-public-01",
+                    "role": "discovery",
+                    "enabled": True,
+                }
+            }
+            assigned = [
+                "proposals/sources/RUN-001/WORK-000001.json",
+                "handoffs/RUN-001/WORK-000001.json",
+            ]
+            allowed, denied = validate_branch_paths(
+                root,
+                branch="agent/discovery-public-01/RUN-001/WORK-000001",
+                paths=assigned,
+                registry=registry,
+                permissions=self.config,
+            )
+            self.assertEqual(sorted(assigned), allowed)
+            self.assertEqual([], denied)
+            _, denied = validate_branch_paths(
+                root,
+                branch="agent/discovery-public-01/RUN-001/WORK-000001",
+                paths=assigned + ["runs/RUN-001/manifest.json"],
+                registry=registry,
+                permissions=self.config,
+            )
+            self.assertIn(
+                "path is outside branch assignment: runs/RUN-001/manifest.json",
+                denied,
+            )
+
+    def test_disabled_agent_is_allowed_only_for_a_pinned_pilot_run(self):
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            work = root / "queue/RUN-001/WORK-000001.json"
+            work.parent.mkdir(parents=True)
+            work.write_text(
+                json.dumps(
+                    {
+                        "run_id": "RUN-001",
+                        "work_item_id": "WORK-000001",
+                        "required_role": "discovery",
+                        "output_paths": ["proposals/sources/RUN-001/WORK-000001.json"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            manifest = root / "runs/RUN-001/manifest.json"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps({"mode": "pilot"}), encoding="utf-8")
+            paths = [
+                "proposals/sources/RUN-001/WORK-000001.json",
+                "handoffs/RUN-001/WORK-000001.json",
+            ]
+            allowed, denied = validate_branch_paths(
+                root,
+                branch="agent/discovery-public-01/RUN-001/WORK-000001",
+                paths=paths,
+                registry={
+                    "discovery-public-01": {
+                        "agent_id": "discovery-public-01",
+                        "role": "discovery",
+                        "enabled": False,
+                    }
+                },
+                permissions=self.config,
+            )
+            self.assertEqual(sorted(paths), allowed)
+            self.assertEqual([], denied)
 
 
 if __name__ == "__main__":

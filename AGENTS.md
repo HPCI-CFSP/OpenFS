@@ -72,6 +72,11 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 
 - Use one work item per branch when practical.
 - Use branch names of the form `agent/<agent-id>/<run-id>/<work-item-id>` for agent proposals.
+- A distributed Agent branch contains exactly every `output_paths` entry declared
+  by that Work Item plus `handoffs/<run-id>/<work-item-id>.json`. Do not commit
+  Queue, Run manifest, policy, index, or unrelated artifact changes from that branch.
+- Generate the Handoff only after all outputs are final. Its digests are checked by
+  trusted base-branch code and again after merge.
 - Keep machine-generated indexes separate from human-authored records.
 - Do not resolve merge conflicts by discarding another agent's or a human's changes.
 - Submit canonical changes as reviewable pull requests with the source Decision IDs and validation results.

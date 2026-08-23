@@ -506,6 +506,7 @@ def _record_agent_execution(
     work_item: dict[str, Any],
     agent: dict[str, Any],
     executed_at: str,
+    declared_execution: dict[str, Any] | None = None,
 ) -> None:
     manifest_path = root / "runs" / run_id / "manifest.json"
     lock = _lock_path(root, run_id, "manifest-agent-executions")
@@ -535,20 +536,27 @@ def _record_agent_execution(
             ROOT / "tools" / name
             for name in tool_names_by_kind.get(work_item.get("kind"), [])
         ]
-        manifest.setdefault("agent_executions", []).append(
-            {
-                "agent_id": agent["agent_id"],
-                "work_item_id": work_item["work_item_id"],
-                "attempt": work_item["attempt"],
-                "model_provider": agent["provider"],
-                "model_id": agent["model_family"],
-                "prompt_hash": stable_digest(agent["prompt_profile"]),
-                "tool_versions": {
-                    path.name: sha256_file(path) for path in tool_paths if path.is_file()
-                },
-                "executed_at": executed_at,
-            }
-        )
+        declared = declared_execution or {}
+        execution = {
+            "agent_id": agent["agent_id"],
+            "work_item_id": work_item["work_item_id"],
+            "attempt": work_item["attempt"],
+            "model_provider": declared.get("model_provider", agent["provider"]),
+            "model_id": declared.get("model_id", agent["model_family"]),
+            "prompt_hash": declared.get(
+                "prompt_hash", stable_digest(agent["prompt_profile"])
+            ),
+            "tool_versions": declared.get(
+                "tool_versions",
+                {path.name: sha256_file(path) for path in tool_paths if path.is_file()},
+            ),
+            "executed_at": executed_at,
+        }
+        if declared.get("resolved_model_version"):
+            execution["resolved_model_version"] = declared["resolved_model_version"]
+        if declared.get("skill_hash"):
+            execution["skill_hash"] = declared["skill_hash"]
+        manifest.setdefault("agent_executions", []).append(execution)
         atomic_write_json(manifest_path, manifest)
     finally:
         _release_lock(lock, descriptor)
@@ -657,8 +665,8 @@ def _complete_work_item(
     if item.get("status") != "leased" or lease.get("agent_id") != agent_id:
         raise RuntimeError("only the current lease owner can complete a Work Item")
     expected = set(item.get("output_paths", []))
-    if not output_refs or not set(output_refs).issubset(expected):
-        raise ValueError("output_refs must be a non-empty subset of declared output_paths")
+    if set(output_refs) != expected:
+        raise ValueError("output_refs must exactly match declared output_paths")
     output_digests: dict[str, str] = {}
     for output_ref in output_refs:
         relative = PurePosixPath(output_ref)
@@ -689,6 +697,7 @@ def _complete_work_item(
     if usage is not None:
         item["usage"] = usage
     item["completed_by_agent_id"] = agent_id
+    item["completion_mode"] = "leased-local"
     item["completed_at"] = timestamp
     item["updated_at"] = timestamp
     item.pop("lease", None)
