@@ -189,6 +189,50 @@ class DigestAndIssueTests(unittest.TestCase):
         stored = json.loads(first[0].read_text())
         self.assertEqual("2026-08-24T00:00:00Z", stored["generated_at"])
 
+    def test_recurring_exceptions_share_one_stable_issue_group(self):
+        base = {
+            "status": "open",
+            "exception_kind": "consensus-capacity",
+            "unmet_requirements": [
+                "claim:assessment_capacity",
+                "claim:independent_support_group_capacity",
+            ],
+            "requires_owner_action": True,
+        }
+        for number in (1, 2):
+            run_id = f"RUN-WEEKLY-{number:03d}"
+            self.write_json(
+                f"reviews/exceptions/{run_id}/READINESS.json",
+                {
+                    **base,
+                    "exception_id": f"EXC-{run_id}-READINESS",
+                    "run_id": run_id,
+                },
+            )
+
+        first = prepare(self.root, generated_at="2026-08-24T00:00:00Z")
+        self.assertEqual(1, len(first))
+        payload = json.loads(first[0].read_text())
+        self.assertEqual(2, len(payload["exception_ids"]))
+        self.assertEqual(2, len(payload["run_ids"]))
+        marker = payload["deduplication_marker"]
+
+        run_id = "RUN-WEEKLY-003"
+        self.write_json(
+            f"reviews/exceptions/{run_id}/READINESS.json",
+            {
+                **base,
+                "exception_id": f"EXC-{run_id}-READINESS",
+                "run_id": run_id,
+            },
+        )
+        second = prepare(self.root, generated_at="2026-08-25T00:00:00Z")
+        updated = json.loads(second[0].read_text())
+        self.assertEqual(first, second)
+        self.assertEqual(marker, updated["deduplication_marker"])
+        self.assertEqual(3, len(updated["exception_ids"]))
+        self.assertEqual("2026-08-24T00:00:00Z", updated["generated_at"])
+
 
 if __name__ == "__main__":
     unittest.main()

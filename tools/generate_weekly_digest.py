@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import atomic_write_json, isoformat, read_json
+from openfs_runtime import atomic_write_json, exception_group_key, isoformat, read_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -286,11 +286,7 @@ def build_digest(
     for item in exceptions:
         if not item["requires_owner_action"]:
             continue
-        fingerprint = (
-            item["exception_kind"],
-            tuple(item["unmet_requirements"]),
-            item["publication_blocked"],
-        )
+        fingerprint = exception_group_key(item)
         grouped_actions.setdefault(fingerprint, []).append(item)
     owner_actions = []
     for sequence, (fingerprint, items) in enumerate(

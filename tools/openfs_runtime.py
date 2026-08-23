@@ -43,6 +43,18 @@ def stable_digest(value: Any) -> str:
     return sha256_bytes(canonical_json(value))
 
 
+def exception_group_key(exception: dict[str, Any]) -> tuple[str, tuple[str, ...], bool]:
+    """Return the stable owner-action grouping dimensions for an Exception."""
+    kind = exception.get(
+        "exception_kind", exception.get("error", {}).get("kind", "work-item-failure")
+    )
+    return (
+        kind,
+        tuple(sorted(exception.get("unmet_requirements", []))),
+        bool(exception.get("publication_blocked", False)),
+    )
+
+
 def language_in_scope(language: str | None, allowed_languages: list[str]) -> bool:
     """Accept an explicit language or any native language under source-language mode."""
     return bool(language) and (

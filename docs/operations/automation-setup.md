@@ -158,6 +158,8 @@ The Weekly Digest groups open Exceptions that share the same kind, unmet
 requirements, and publication-blocking state into one Owner Action. Every original
 Exception reference remains listed, but repeated Consensus-capacity failures do not
 create a separate review decision for each Run.
+Sanitized GitHub Issue payloads use the same grouping key, so a recurring owner
+action updates one stable deduplication marker instead of opening one Issue per Run.
 
 ### Coordinator versus Worker
 

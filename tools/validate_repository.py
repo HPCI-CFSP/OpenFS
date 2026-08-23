@@ -10,7 +10,7 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
-from openfs_runtime import language_in_scope, stable_digest
+from openfs_runtime import exception_group_key, language_in_scope, stable_digest
 from register_source import publisher_authority
 
 
@@ -263,6 +263,50 @@ def validate_run_approvals(root: Path) -> list[str]:
                 "brief_digest"
             ]:
                 errors.append(f"passing Run approval Brief digest differs: {path.relative_to(root)}")
+    return errors
+
+
+def validate_issue_payloads(root: Path) -> list[str]:
+    errors: list[str] = []
+    seen_groups: set[str] = set()
+    for path in sorted((root / "reviews" / "issues" / "groups").glob("*.json")):
+        payload = load_json(path)
+        group_id = payload.get("exception_group_id")
+        if not group_id or path.stem != group_id:
+            errors.append(f"Issue group filename differs from identity: {path.relative_to(root)}")
+            continue
+        if group_id in seen_groups:
+            errors.append(f"duplicate Issue group identity: {group_id}")
+        seen_groups.add(group_id)
+        exception_refs = payload.get("exception_refs", [])
+        exceptions = []
+        for ref in exception_refs:
+            ref_path = root / ref
+            if not ref_path.is_file():
+                errors.append(f"Issue group Exception is missing: {path.relative_to(root)}: {ref}")
+                continue
+            exceptions.append(load_json(ref_path))
+        if not exceptions:
+            errors.append(f"Issue group has no Exception records: {path.relative_to(root)}")
+            continue
+        fingerprints = {exception_group_key(item) for item in exceptions}
+        if len(fingerprints) != 1:
+            errors.append(f"Issue group mixes owner actions: {path.relative_to(root)}")
+            continue
+        kind, unmet, publication_blocked = fingerprints.pop()
+        expected_id = f"EXCGRP-{stable_digest({'exception_kind': kind, 'unmet_requirements': list(unmet), 'publication_blocked': publication_blocked})[:12].upper()}"
+        if group_id != expected_id:
+            errors.append(f"Issue group fingerprint differs: {path.relative_to(root)}")
+        if payload.get("exception_ids") != sorted(
+            item["exception_id"] for item in exceptions
+        ):
+            errors.append(f"Issue group Exception IDs differ: {path.relative_to(root)}")
+        if payload.get("run_ids") != sorted({item["run_id"] for item in exceptions}):
+            errors.append(f"Issue group Run IDs differ: {path.relative_to(root)}")
+        if payload.get("deduplication_marker") != (
+            f"<!-- openfs-exception-group:{group_id} -->"
+        ):
+            errors.append(f"Issue group marker differs: {path.relative_to(root)}")
     return errors
 
 
@@ -1252,6 +1296,7 @@ def run(root: Path = ROOT) -> list[str]:
     errors.extend(validate_json_files(root))
     errors.extend(validate_jsonl_files(root))
     errors.extend(validate_run_approvals(root))
+    errors.extend(validate_issue_payloads(root))
     if (root / "schemas").exists():
         errors.extend(validate_schema_headers(root))
     errors.extend(validate_workflow_action_pins(root))
