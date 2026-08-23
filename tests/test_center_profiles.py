@@ -12,8 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from evaluate_center_profiles import evaluate, record  # noqa: E402
-from propose_center_profile import propose  # noqa: E402
+from propose_center_profile import merge_with_predecessor, propose  # noqa: E402
 from run_controller import create_run  # noqa: E402
+from openfs_runtime import stable_digest  # noqa: E402
 
 
 class CenterProfileCoverageTests(unittest.TestCase):
@@ -234,6 +235,96 @@ class CenterProfileCoverageTests(unittest.TestCase):
                 ),
                 center_registry=self.registry,
             )
+
+    def test_profile_inherits_only_stronger_current_predecessor_fields(self):
+        center = self.registry["centers"][0]
+        fields = {}
+        predecessor = {
+            "run_id": "RUN-CENTER-PREVIOUS",
+            "center_id": center["center_id"],
+        }
+        for field in self.registry["default_profile_fields"]:
+            fields[field] = {
+                "status": "unknown",
+                "summary": "",
+                "as_of": None,
+                "evidence_refs": [],
+            }
+            predecessor[field] = {
+                "status": "unknown",
+                "summary": "",
+                "as_of": None,
+                "evidence_refs": [],
+            }
+        fields["current_system"] = {
+            "status": "verified",
+            "summary": "New current-system Evidence.",
+            "as_of": "2026-08-24",
+            "evidence_refs": ["EVD-CURRENT"],
+        }
+        predecessor["current_system"] = {
+            "status": "partial",
+            "summary": "Older weaker system Evidence.",
+            "as_of": "2026-08-20",
+            "evidence_refs": ["EVD-PREVIOUS-WEAK"],
+        }
+        predecessor["facility"] = {
+            "status": "verified",
+            "summary": "Previous facility Evidence remains current.",
+            "as_of": "2026-08-20",
+            "evidence_refs": ["EVD-PREVIOUS"],
+        }
+        predecessor["power"] = {
+            "status": "verified",
+            "summary": "Stale power Evidence.",
+            "as_of": "2025-01-01",
+            "evidence_refs": ["EVD-STALE"],
+        }
+        draft = merge_with_predecessor(
+            {"evidence_as_of": "2026-08-24", "fields": fields},
+            predecessor,
+            evidence_as_of="2026-08-24",
+            maximum_age_days=90,
+        )
+        self.assertEqual(["facility"], draft["inheritance"]["inherited_fields"])
+        self.assertEqual("verified", draft["fields"]["current_system"]["status"])
+        self.assertEqual("unknown", draft["fields"]["power"]["status"])
+        current_bundle = {
+            "object_type": "evidence",
+            "run_id": "RUN-CENTER-CURRENT",
+            "origin_group_ids": ["ORG-CURRENT"],
+            "has_primary_source": True,
+            "evidence_candidates": [{"evidence_id": "EVD-CURRENT"}],
+        }
+        previous_bundle = {
+            "object_type": "evidence",
+            "run_id": "RUN-CENTER-PREVIOUS",
+            "origin_group_ids": ["ORG-PREVIOUS"],
+            "has_primary_source": True,
+            "evidence_candidates": [{"evidence_id": "EVD-PREVIOUS"}],
+        }
+        profile = propose(
+            [current_bundle, previous_bundle],
+            bundle_refs=["current.json", "previous.json"],
+            center_id=center["center_id"],
+            draft=draft,
+            run_id="RUN-CENTER-CURRENT",
+            agent_id="synthesis-public-01",
+            agent_registry=json.loads(
+                (self.root / "config" / "agent-registry.json").read_text(encoding="utf-8")
+            ),
+            center_registry=self.registry,
+            predecessor_profile=predecessor,
+            predecessor_ref="proposals/center-profiles/RUN-CENTER-PREVIOUS/profile.json",
+            predecessor_digest=stable_digest(predecessor),
+            created_at="2026-08-24T00:00:00Z",
+        )
+        self.assertEqual(["facility"], profile["predecessor"]["inherited_fields"])
+        self.assertEqual(
+            ["RUN-CENTER-CURRENT", "RUN-CENTER-PREVIOUS"],
+            profile["evidence_run_ids"],
+        )
+        self.assertEqual(["ORG-CURRENT", "ORG-PREVIOUS"], profile["origin_group_ids"])
 
 
 if __name__ == "__main__":

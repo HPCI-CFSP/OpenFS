@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/temporal-integrity.schema.json",
+  "title": "Run Temporal Integrity Report",
+  "type": "object",
+  "required": ["schema_version", "run_id", "evaluated_at", "status", "publication_blocked", "window", "observation_count", "anomaly_count", "anomalies"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["passed", "failed"]},
+    "publication_blocked": {"type": "boolean"},
+    "window": {
+      "type": "object",
+      "required": ["started_at", "ended_at", "maximum_clock_skew_seconds"],
+      "properties": {
+        "started_at": {"type": "string", "format": "date-time"},
+        "ended_at": {"type": "string", "format": "date-time"},
+        "maximum_clock_skew_seconds": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "observation_count": {"type": "integer", "minimum": 0},
+    "anomaly_count": {"type": "integer", "minimum": 0},
+    "anomalies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["document_ref", "pointer", "event_key", "value", "reason", "offset_seconds"],
+        "properties": {
+          "document_ref": {"type": "string"},
+          "pointer": {"type": "string"},
+          "event_key": {"type": "string"},
+          "value": {"type": "string"},
+          "reason": {"enum": ["invalid-date-time", "before-run-window", "after-run-window"]},
+          "offset_seconds": {"type": ["number", "null"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

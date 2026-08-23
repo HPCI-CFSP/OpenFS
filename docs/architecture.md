@@ -135,6 +135,15 @@ consume only the latest digest-matched plan, snapshots it under the new Run, and
 records the originating Run ID. Gap-driven searches supplement the stable baseline
 queries; they never turn missing public information into a factual claim.
 
+Recurring Center Runs are cumulative at field level. A new draft prefers current-Run
+Evidence when it is at least as strong as the preceding field. A stronger preceding
+field may be inherited only while its dated Evidence remains inside the Monitor's
+freshness window. The synthesis assignment records the predecessor profile digest and
+all required earlier Evidence bundles; the proposal records inherited fields, Evidence
+Run IDs, and bundle references. Unknown, stale, weaker, or silently modified predecessor
+content is not carried forward. Every cumulative profile still enters Consensus as a
+new provisional Proposal.
+
 The generator does not create authority. Missing center evidence remains visible, evaluation weights remain human-owned, and illustrative or candidate scenarios cannot bypass independent review, the Recommendation Gate, or promotion workflow.
 
 ## Research-scope expansion

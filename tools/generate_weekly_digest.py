@@ -58,6 +58,8 @@ def build_digest(
     stale: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
     exceptions: list[dict[str, Any]] = []
+    temporal_failure_count = 0
+    publication_blocked_count = 0
     change_totals = {
         name: 0 for name in ("new", "changed", "unchanged", "unavailable", "not-observed")
     }
@@ -73,6 +75,14 @@ def build_digest(
                 change_totals[name] = change_totals.get(name, 0) + count
         readiness_ref = manifest.get("consensus_readiness_ref")
         readiness = read_json(root / readiness_ref) if readiness_ref else None
+        temporal_ref = manifest.get("temporal_integrity_ref")
+        temporal = read_json(root / temporal_ref) if temporal_ref else None
+        temporal_status = temporal.get("status", "not-evaluated") if temporal else "not-evaluated"
+        publication_blocked = bool(temporal and temporal.get("publication_blocked"))
+        if temporal_status == "failed":
+            temporal_failure_count += 1
+        if publication_blocked:
+            publication_blocked_count += 1
         run_summaries.append(
             {
                 "run_id": run_id,
@@ -82,6 +92,8 @@ def build_digest(
                 "research_status": manifest["research_status"],
                 "coverage_status": coverage.get("coverage_status") if coverage else "not-evaluated",
                 "consensus_readiness": readiness.get("status") if readiness else "not-evaluated",
+                "temporal_integrity": temporal_status,
+                "publication_blocked": publication_blocked,
                 "consensus_outcomes": manifest.get("metrics", {}).get("consensus_outcomes", {}),
                 "cost": manifest.get("cost", {"measurement_status": "unreported"}),
             }
@@ -197,6 +209,8 @@ def build_digest(
             "owner_action_count": len(owner_actions),
             "coverage_gap_count": len(gaps),
             "failure_count": len(failures),
+            "temporal_failure_count": temporal_failure_count,
+            "publication_blocked_count": publication_blocked_count,
         },
         "runs": run_summaries,
         "source_changes": change_totals,
@@ -223,8 +237,8 @@ def render_markdown(digest: dict[str, Any]) -> str:
         "",
         "## Run summary",
         "",
-        "| Run | Task / Monitor | Run status | Research | Coverage | Consensus capacity | Cost |",
-        "|---|---|---|---|---|---|---|",
+        "| Run | Task / Monitor | Run status | Research | Coverage | Consensus capacity | Time audit | Publication | Cost |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for run in digest["runs"]:
         cost = run["cost"]
@@ -235,10 +249,11 @@ def render_markdown(digest: dict[str, Any]) -> str:
         lines.append(
             f"| `{run['run_id']}` | `{run['task_id']}` / `{run['monitor_id']}` | "
             f"{run['status']} | {run['research_status']} | {run['coverage_status']} | "
-            f"{run['consensus_readiness']} | {cost_text} |"
+            f"{run['consensus_readiness']} | {run['temporal_integrity']} | "
+            f"{'blocked' if run['publication_blocked'] else 'not blocked'} | {cost_text} |"
         )
     if not digest["runs"]:
-        lines.append("| None | - | - | - | - | - | - |")
+        lines.append("| None | - | - | - | - | - | - | - | - |")
     lines.extend(
         [
             "",

@@ -23,6 +23,7 @@
     "change_report_ref": {"type": "string"},
     "consensus_readiness_ref": {"type": "string"},
     "center_profile_coverage_ref": {"type": "string"},
+    "temporal_integrity_ref": {"type": "string"},
     "followup_plan": {
       "type": "object",
       "required": ["source_ref", "snapshot_ref", "digest", "followup_plan_id", "base_run_id"],
@@ -66,6 +67,16 @@
     "no_result_discoveries": {"type": "array", "items": {"type": "object"}},
     "stopped_at": {"type": "string", "format": "date-time"},
     "stop": {"type": "object"},
+    "cancellation": {
+      "type": "object",
+      "required": ["reason", "actor", "recorded_at"],
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "actor": {"type": "string", "minLength": 1},
+        "recorded_at": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
     "cost": {"type": "object"},
     "metrics": {"type": "object"},
     "run_identity_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}

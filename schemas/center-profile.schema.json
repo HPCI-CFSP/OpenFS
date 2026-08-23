@@ -67,8 +67,21 @@
     "profile_status": {"enum": ["draft", "provisional", "reviewed", "accepted", "stale"]},
     "evidence_as_of": {"type": "string", "format": "date"},
     "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "evidence_run_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "origin_group_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "has_primary_source": {"type": "boolean"},
+    "predecessor": {
+      "type": "object",
+      "required": ["run_id", "profile_ref", "profile_digest", "inherited_fields"],
+      "properties": {
+        "run_id": {"type": "string"},
+        "profile_ref": {"type": "string"},
+        "profile_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "inherited_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
     "users": {"$ref": "#/$defs/profile_field"},
     "priority_domains": {"$ref": "#/$defs/profile_field"},
     "current_system": {"$ref": "#/$defs/profile_field"},

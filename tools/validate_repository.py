@@ -73,6 +73,7 @@ REQUIRED_FILES = [
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/center-profile-coverage.schema.json",
+    "schemas/temporal-integrity.schema.json",
     "schemas/center-research-brief.schema.json",
     "schemas/center-followup-plan.schema.json",
     "schemas/hpci-center-registry.schema.json",
@@ -103,6 +104,7 @@ REQUIRED_FILES = [
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
     "tools/evaluate_center_profiles.py",
+    "tools/evaluate_temporal_integrity.py",
     "tools/generate_center_research_brief.py",
     "tools/generate_center_followup_plan.py",
     "tools/propose_center_profile.py",
@@ -416,6 +418,20 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     "consensus_readiness"
                 ):
                     errors.append(f"Run {run_id} Consensus readiness status differs")
+        temporal_ref = manifest.get("temporal_integrity_ref")
+        if temporal_ref:
+            temporal_path = root / temporal_ref
+            if not temporal_path.is_file():
+                errors.append(f"Run {run_id} temporal integrity report is missing: {temporal_ref}")
+            else:
+                temporal = load_json(temporal_path)
+                temporal_metric = manifest.get("metrics", {}).get("temporal_integrity", {})
+                if temporal.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} temporal integrity identity differs")
+                if temporal.get("status") != temporal_metric.get("status"):
+                    errors.append(f"Run {run_id} temporal integrity status differs")
+                if temporal.get("anomaly_count") != temporal_metric.get("anomaly_count"):
+                    errors.append(f"Run {run_id} temporal integrity anomaly count differs")
         snapshots = manifest.get("configuration_snapshots", {})
         for source_ref, expected_digest in manifest.get("policy_hashes", {}).items():
             snapshot_ref = snapshots.get(source_ref)
@@ -543,6 +559,78 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 errors.append(f"Claim proposal Lineage IDs differ from bundles: {path.relative_to(root)}")
             if set(proposal.get("origin_group_ids", [])) != expected_origins:
                 errors.append(f"Claim proposal Origin Groups differ from bundles: {path.relative_to(root)}")
+    for path in sorted((root / "proposals" / "center-profiles").glob("RUN-*/*.json")):
+        profile = load_json(path)
+        if profile.get("run_id") != path.parent.name:
+            errors.append(f"Center Profile Run mismatch: {path.relative_to(root)}")
+        bundle_refs = profile.get("evidence_bundle_refs")
+        if bundle_refs:
+            bundles: list[dict[str, Any]] = []
+            for bundle_ref in bundle_refs:
+                bundle_path = root / bundle_ref
+                if not bundle_path.is_file():
+                    errors.append(
+                        f"Center Profile Evidence bundle is missing: {path.relative_to(root)}"
+                    )
+                else:
+                    bundles.append(load_json(bundle_path))
+            evidence_ids = set(profile.get("evidence_refs", []))
+            bundle_evidence_ids = {
+                evidence["evidence_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            if not evidence_ids <= bundle_evidence_ids:
+                errors.append(
+                    f"Center Profile Evidence IDs are not covered by bundles: {path.relative_to(root)}"
+                )
+            evidence_run_ids = {
+                bundle.get("run_id")
+                for bundle in bundles
+                if any(
+                    evidence.get("evidence_id") in evidence_ids
+                    for evidence in bundle.get("evidence_candidates", [])
+                )
+            }
+            if set(profile.get("evidence_run_ids", [])) != evidence_run_ids:
+                errors.append(
+                    f"Center Profile Evidence Run IDs differ from bundles: {path.relative_to(root)}"
+                )
+        predecessor = profile.get("predecessor")
+        if predecessor:
+            predecessor_path = root / predecessor.get("profile_ref", "")
+            if not predecessor_path.is_file():
+                errors.append(
+                    f"Center Profile predecessor is missing: {path.relative_to(root)}"
+                )
+                continue
+            predecessor_profile = load_json(predecessor_path)
+            predecessor_digest = hashlib.sha256(
+                json.dumps(
+                    predecessor_profile,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if predecessor.get("profile_digest") != predecessor_digest:
+                errors.append(
+                    f"Center Profile predecessor digest differs: {path.relative_to(root)}"
+                )
+            if predecessor_profile.get("run_id") != predecessor.get("run_id"):
+                errors.append(
+                    f"Center Profile predecessor Run differs: {path.relative_to(root)}"
+                )
+            if predecessor_profile.get("center_id") != profile.get("center_id"):
+                errors.append(
+                    f"Center Profile predecessor center differs: {path.relative_to(root)}"
+                )
+            for field in predecessor.get("inherited_fields", []):
+                if profile.get(field) != predecessor_profile.get(field):
+                    errors.append(
+                        f"Center Profile inherited field differs from predecessor: "
+                        f"{path.relative_to(root)}#{field}"
+                    )
     assessments_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
     for path in sorted((root / "assessments").glob("RUN-*/**/*.json")):
         assessment = load_json(path)

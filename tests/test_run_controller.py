@@ -15,8 +15,10 @@ sys.path.insert(0, str(ROOT / "tools"))
 from run_controller import (  # noqa: E402
     _acquire_lock,
     _lock_path,
+    _predecessor_profile_inputs,
     _release_lock,
     complete_work_item,
+    cancel_run,
     create_run,
     fail_work_item,
     finalize_run,
@@ -114,6 +116,39 @@ class RunControllerTests(unittest.TestCase):
         self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
         self.assertEqual(64, len(first["directive_hashes"][directive_source]))
 
+    def test_cancel_records_reason_and_cancels_open_work(self):
+        now = datetime(2026, 8, 24, tzinfo=timezone.utc)
+        create_run(
+            self.root,
+            run_id="RUN-PILOT-CANCEL",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=now,
+        )
+        lease_next(
+            self.root,
+            run_id="RUN-PILOT-CANCEL",
+            agent_id="discovery-public-01",
+            allow_disabled_pilot_agent=True,
+            now=now,
+        )
+        manifest = cancel_run(
+            self.root,
+            run_id="RUN-PILOT-CANCEL",
+            reason="Incorrect pinned follow-up plan",
+            actor="test-owner",
+            now=now + timedelta(minutes=1),
+        )
+        self.assertEqual("cancelled", manifest["status"])
+        self.assertEqual("test-owner", manifest["cancellation"]["actor"])
+        queue = [
+            json.loads(path.read_text())
+            for path in (self.root / "queue" / "RUN-PILOT-CANCEL").glob("*.json")
+        ]
+        self.assertEqual({"cancelled"}, {item["status"] for item in queue})
+        self.assertTrue(all("lease" not in item for item in queue))
+
     def test_center_monitor_expands_and_snapshots_every_registered_subject(self):
         for relative in (
             "config/hpci-center-registry.json",
@@ -150,6 +185,69 @@ class RunControllerTests(unittest.TestCase):
             all(item["payload"].get("query_template_id") for item in subject_items)
         )
 
+    def test_predecessor_profile_inputs_resolve_only_evidence_missing_from_current_run(self):
+        predecessor_run_id = "RUN-CENTER-PREVIOUS"
+        center_id = "CENTER-AIST-IHF"
+        predecessor_manifest = {
+            "status": "completed",
+            "task_id": "OFS-003",
+            "monitor_id": "MON-HPCI-CENTERS-001",
+        }
+        predecessor_profile = {
+            "run_id": predecessor_run_id,
+            "center_id": center_id,
+            "evidence_refs": ["EVD-CURRENT", "EVD-PREVIOUS"],
+        }
+        predecessor_manifest_path = self.root / "runs" / predecessor_run_id / "manifest.json"
+        predecessor_manifest_path.parent.mkdir(parents=True)
+        predecessor_manifest_path.write_text(json.dumps(predecessor_manifest), encoding="utf-8")
+        predecessor_profile_path = (
+            self.root
+            / "proposals"
+            / "center-profiles"
+            / predecessor_run_id
+            / f"{center_id}.json"
+        )
+        predecessor_profile_path.parent.mkdir(parents=True)
+        predecessor_profile_path.write_text(json.dumps(predecessor_profile), encoding="utf-8")
+        previous_bundle_ref = f"proposals/evidence/{predecessor_run_id}/WORK-000001.json"
+        previous_bundle_path = self.root / previous_bundle_ref
+        previous_bundle_path.parent.mkdir(parents=True)
+        previous_bundle_path.write_text(
+            json.dumps(
+                {
+                    "object_type": "evidence",
+                    "run_id": predecessor_run_id,
+                    "evidence_candidates": [{"evidence_id": "EVD-PREVIOUS"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        current_ref = "proposals/evidence/RUN-CENTER-CURRENT/WORK-000001.json"
+        current_path = self.root / current_ref
+        current_path.parent.mkdir(parents=True)
+        current_path.write_text(
+            json.dumps(
+                {
+                    "object_type": "evidence",
+                    "run_id": "RUN-CENTER-CURRENT",
+                    "evidence_candidates": [{"evidence_id": "EVD-CURRENT"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        inputs = _predecessor_profile_inputs(
+            self.root,
+            manifest={
+                "task_id": "OFS-003",
+                "monitor_id": "MON-HPCI-CENTERS-001",
+                "followup_plan": {"base_run_id": predecessor_run_id},
+            },
+            center_id=center_id,
+            current_evidence_refs=[current_ref],
+        )
+        self.assertEqual([previous_bundle_ref], inputs["predecessor_evidence_bundle_refs"])
+        self.assertEqual(stable_digest(predecessor_profile), inputs["predecessor_profile_digest"])
     def test_center_run_snapshots_latest_gap_followup_plan(self):
         for relative in (
             "config/hpci-center-registry.json",
@@ -187,6 +285,51 @@ class RunControllerTests(unittest.TestCase):
         plan_path = self.root / plan_ref
         plan_path.parent.mkdir(parents=True, exist_ok=True)
         plan_path.write_text(json.dumps(plan), encoding="utf-8")
+        prior_run = self.root / "runs" / "RUN-PRIOR"
+        prior_run.mkdir(parents=True)
+        (prior_run / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "run_id": "RUN-PRIOR",
+                    "task_id": "OFS-003",
+                    "monitor_id": "MON-HPCI-CENTERS-001",
+                    "status": "completed",
+                    "completed_at": "2026-08-24T00:30:00Z",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        older_brief_ref = "reviews/briefs/RUN-OLDER-center-research.json"
+        older_brief = {"run_id": "RUN-OLDER", "centers": []}
+        (self.root / older_brief_ref).write_text(json.dumps(older_brief), encoding="utf-8")
+        older_plan = dict(plan)
+        older_plan.update(
+            {
+                "followup_plan_id": "CFP-TEST00000000",
+                "base_run_id": "RUN-OLDER",
+                "generated_at": "2026-08-27T00:00:00Z",
+                "input_brief_ref": older_brief_ref,
+                "input_brief_digest": stable_digest(older_brief),
+            }
+        )
+        (self.root / "reviews" / "followups" / "RUN-OLDER-center-gaps.json").write_text(
+            json.dumps(older_plan), encoding="utf-8"
+        )
+        older_run = self.root / "runs" / "RUN-OLDER"
+        older_run.mkdir(parents=True)
+        (older_run / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "run_id": "RUN-OLDER",
+                    "task_id": "OFS-003",
+                    "monitor_id": "MON-HPCI-CENTERS-001",
+                    "status": "completed",
+                    "completed_at": "2026-08-23T00:00:00Z",
+                }
+            ),
+            encoding="utf-8",
+        )
 
         manifest = create_run(
             self.root,
@@ -194,6 +337,7 @@ class RunControllerTests(unittest.TestCase):
             task_id="OFS-003",
             monitor_id="MON-HPCI-CENTERS-001",
             pilot=True,
+            now=datetime(2026, 8, 25, tzinfo=timezone.utc),
         )
         self.assertEqual(34, len(manifest["work_item_ids"]))
         self.assertEqual(plan_ref, manifest["followup_plan"]["source_ref"])

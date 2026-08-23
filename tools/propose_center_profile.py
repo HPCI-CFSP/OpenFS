@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +22,36 @@ from openfs_runtime import (
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCED_STATES = {"verified", "partial", "not-applicable"}
 ALL_STATES = EVIDENCED_STATES | {"unknown"}
+STATE_STRENGTH = {"unknown": 0, "partial": 1, "verified": 2, "not-applicable": 2}
+
+
+def merge_with_predecessor(
+    draft: dict[str, Any],
+    predecessor_profile: dict[str, Any],
+    *,
+    evidence_as_of: str,
+    maximum_age_days: int,
+) -> dict[str, Any]:
+    """Carry forward stronger, still-current fields without overwriting new Evidence."""
+    merged = copy.deepcopy(draft)
+    evaluation_date = date.fromisoformat(evidence_as_of)
+    inherited_fields: list[str] = []
+    for field, current in merged.get("fields", {}).items():
+        predecessor = predecessor_profile.get(field, {})
+        predecessor_status = predecessor.get("status", "unknown")
+        predecessor_as_of = predecessor.get("as_of")
+        if predecessor_status not in EVIDENCED_STATES or not predecessor_as_of:
+            continue
+        age_days = (evaluation_date - date.fromisoformat(predecessor_as_of)).days
+        if age_days < -1 or age_days > maximum_age_days:
+            continue
+        if STATE_STRENGTH[predecessor_status] <= STATE_STRENGTH[current["status"]]:
+            continue
+        merged["fields"][field] = copy.deepcopy(predecessor)
+        inherited_fields.append(field)
+    if inherited_fields:
+        merged["inheritance"] = {"inherited_fields": sorted(inherited_fields)}
+    return merged
 
 
 def _synthesis_agent(agent_id: str, registry: dict[str, Any]) -> None:
@@ -45,6 +77,9 @@ def propose(
     agent_id: str,
     agent_registry: dict[str, Any],
     center_registry: dict[str, Any],
+    predecessor_profile: dict[str, Any] | None = None,
+    predecessor_ref: str | None = None,
+    predecessor_digest: str | None = None,
     created_at: str | None = None,
 ) -> dict[str, Any]:
     _synthesis_agent(agent_id, agent_registry)
@@ -62,20 +97,48 @@ def propose(
     fields = draft.get("fields", {})
     if set(fields) != set(required_fields):
         raise ValueError("draft fields must exactly match the registered profile fields")
-    allowed_top_level = {"evidence_as_of", "fields", "unknowns"}
+    allowed_top_level = {"evidence_as_of", "fields", "unknowns", "inheritance"}
     if set(draft) - allowed_top_level:
         raise ValueError(f"draft contains unsupported fields: {sorted(set(draft) - allowed_top_level)}")
 
+    inheritance = draft.get("inheritance", {})
+    inherited_fields = inheritance.get("inherited_fields", [])
+    if len(inherited_fields) != len(set(inherited_fields)):
+        raise ValueError("inherited profile fields must be unique")
+    if inherited_fields:
+        if not predecessor_profile or not predecessor_ref or not predecessor_digest:
+            raise ValueError("inherited fields require a pinned predecessor profile")
+        if stable_digest(predecessor_profile) != predecessor_digest:
+            raise ValueError("predecessor profile digest does not match")
+        if predecessor_profile.get("center_id") != center_id:
+            raise ValueError("predecessor profile belongs to another center")
+        for field in inherited_fields:
+            if field not in required_fields or fields[field] != predecessor_profile.get(field):
+                raise ValueError(f"inherited field differs from predecessor: {field}")
+    elif predecessor_profile or predecessor_ref or predecessor_digest:
+        if not all((predecessor_profile, predecessor_ref, predecessor_digest)):
+            raise ValueError("predecessor profile metadata must be complete")
+        if stable_digest(predecessor_profile) != predecessor_digest:
+            raise ValueError("predecessor profile digest does not match")
+
+    allowed_bundle_run_ids = {run_id}
+    if predecessor_profile:
+        allowed_bundle_run_ids.add(predecessor_profile["run_id"])
     evidence: dict[str, dict[str, Any]] = {}
-    origin_group_ids: set[str] = set()
-    has_primary_source = False
-    for bundle in bundles:
-        if bundle.get("object_type") != "evidence" or bundle.get("run_id") != run_id:
-            raise ValueError("all inputs must be Evidence bundles from this Run")
-        origin_group_ids.update(bundle.get("origin_group_ids", []))
-        has_primary_source = has_primary_source or bundle.get("has_primary_source") is True
+    evidence_metadata: dict[str, dict[str, Any]] = {}
+    for bundle, bundle_ref in zip(bundles, bundle_refs, strict=True):
+        if bundle.get("object_type") != "evidence" or bundle.get("run_id") not in allowed_bundle_run_ids:
+            raise ValueError("all inputs must be current or pinned predecessor Evidence bundles")
         for item in bundle.get("evidence_candidates", []):
+            if item["evidence_id"] in evidence and evidence[item["evidence_id"]] != item:
+                raise ValueError(f"conflicting Evidence ID across assigned bundles: {item['evidence_id']}")
             evidence[item["evidence_id"]] = item
+            evidence_metadata[item["evidence_id"]] = {
+                "bundle_ref": bundle_ref,
+                "run_id": bundle["run_id"],
+                "origin_group_ids": bundle.get("origin_group_ids", []),
+                "has_primary_source": bundle.get("has_primary_source") is True,
+            }
 
     normalized_fields: dict[str, dict[str, Any]] = {}
     used_evidence: set[str] = set()
@@ -112,12 +175,44 @@ def propose(
         }
     if not used_evidence:
         raise ValueError("a Center Profile requires at least one assigned Evidence record")
+    for field, value in normalized_fields.items():
+        uses_predecessor_evidence = any(
+            evidence_metadata[evidence_id]["run_id"] != run_id
+            for evidence_id in value["evidence_refs"]
+        )
+        if uses_predecessor_evidence and field not in inherited_fields:
+            raise ValueError(
+                f"field uses predecessor Evidence without declaring inheritance: {field}"
+            )
+    origin_group_ids = {
+        origin_group_id
+        for evidence_id in used_evidence
+        for origin_group_id in evidence_metadata[evidence_id]["origin_group_ids"]
+    }
+    has_primary_source = any(
+        evidence_metadata[evidence_id]["has_primary_source"]
+        for evidence_id in used_evidence
+    )
+    used_bundle_refs = sorted(
+        {evidence_metadata[evidence_id]["bundle_ref"] for evidence_id in used_evidence}
+    )
+    evidence_run_ids = sorted(
+        {evidence_metadata[evidence_id]["run_id"] for evidence_id in used_evidence}
+    )
     timestamp = created_at or isoformat()
     identity = {
         "run_id": run_id,
         "center_id": center_id,
         "evidence_refs": sorted(used_evidence),
         "fields": normalized_fields,
+        "predecessor": {
+            "run_id": predecessor_profile["run_id"],
+            "profile_ref": predecessor_ref,
+            "profile_digest": predecessor_digest,
+            "inherited_fields": sorted(inherited_fields),
+        }
+        if inherited_fields
+        else None,
     }
     proposal_number = int(stable_digest(identity)[:12], 16) % 1_000_000
     profile = {
@@ -132,6 +227,8 @@ def propose(
         "profile_status": "provisional",
         "evidence_as_of": draft["evidence_as_of"],
         "evidence_refs": sorted(used_evidence),
+        "evidence_bundle_refs": used_bundle_refs,
+        "evidence_run_ids": evidence_run_ids,
         "origin_group_ids": sorted(origin_group_ids),
         "has_primary_source": has_primary_source,
         **normalized_fields,
@@ -139,6 +236,13 @@ def propose(
         "created_by_agent_id": agent_id,
         "created_at": timestamp,
     }
+    if inherited_fields:
+        profile["predecessor"] = {
+            "run_id": predecessor_profile["run_id"],
+            "profile_ref": predecessor_ref,
+            "profile_digest": predecessor_digest,
+            "inherited_fields": sorted(inherited_fields),
+        }
     return profile
 
 
@@ -207,6 +311,13 @@ def main() -> int:
                 args.root, args.run_id, monitor["subject_registry_ref"]
             )
         ),
+        predecessor_profile=(
+            read_json(args.root / work_item["payload"]["predecessor_profile_ref"])
+            if work_item.get("payload", {}).get("predecessor_profile_ref")
+            else None
+        ),
+        predecessor_ref=work_item.get("payload", {}).get("predecessor_profile_ref"),
+        predecessor_digest=work_item.get("payload", {}).get("predecessor_profile_digest"),
         created_at=work_item.get("lease", {}).get("acquired_at")
         or work_item.get("updated_at"),
     )

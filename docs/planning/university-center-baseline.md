@@ -30,6 +30,8 @@ The historical FS2.0 RIKEN reports are discovery evidence, but the operational s
 ## Freshness and unknowns
 
 - System, procurement, power, and refresh fields are stale after 90 days unless a reviewed monitor rule sets a shorter period.
+- A recurring Run may retain a stronger preceding field only while its cited Evidence is still within that freshness limit. It must record the predecessor profile hash, inherited field names, and the original Evidence bundles.
+- A same-cycle observation of equal or greater evidentiary strength replaces the inherited field. Search omission alone does not erase still-current Evidence, and inheritance never changes provisional content into accepted content.
 - Strategy and organization fields are checked at least annually and upon a public change.
 - Every profile carries an `evidence_as_of` date, evidence references, unknowns, and status.
 - A scenario cannot claim nationwide coverage while a required center profile is missing or stale; it must list the uncovered centers.

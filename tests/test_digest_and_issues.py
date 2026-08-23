@@ -46,7 +46,12 @@ class DigestAndIssueTests(unittest.TestCase):
                 },
                 "metrics": {"consensus_outcomes": {"provisional": 1}},
                 "cost": {"measurement_status": "unreported", "reported_total_usd": None},
+                "temporal_integrity_ref": f"runs/{run_id}/temporal-integrity.json",
             },
+        )
+        self.write_json(
+            f"runs/{run_id}/temporal-integrity.json",
+            {"status": "failed", "publication_blocked": True},
         )
         self.write_json(
             f"runs/{run_id}/inputs/monitor.json", {"maximum_unchecked_days": 7}
@@ -88,7 +93,13 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(1, digest["summary"]["coverage_gap_count"])
         self.assertEqual(1, len(digest["stale_sources"]))
         self.assertEqual(1, digest["summary"]["owner_action_count"])
-        self.assertIn("resolve", render_markdown(digest))
+        self.assertEqual(1, digest["summary"]["temporal_failure_count"])
+        self.assertEqual(1, digest["summary"]["publication_blocked_count"])
+        self.assertEqual("failed", digest["runs"][0]["temporal_integrity"])
+        self.assertTrue(digest["runs"][0]["publication_blocked"])
+        rendered = render_markdown(digest)
+        self.assertIn("resolve", rendered)
+        self.assertIn("blocked", rendered)
 
     def test_issue_payload_excludes_untrusted_raw_error_and_is_idempotent(self):
         exception = {

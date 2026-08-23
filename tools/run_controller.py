@@ -131,16 +131,34 @@ def _subject_query_plan(root: Path, monitor: dict[str, Any]) -> list[dict[str, A
 
 
 def _latest_followup_plan(
-    root: Path, monitor: dict[str, Any]
+    root: Path, monitor: dict[str, Any], *, as_of: datetime
 ) -> tuple[str, dict[str, Any]] | None:
     if not monitor.get("use_latest_followup_plan"):
         return None
-    candidates: list[tuple[str, dict[str, Any]]] = []
+    candidates: list[tuple[str, str, str, dict[str, Any]]] = []
     for path in sorted((root / "reviews" / "followups").glob("*.json")):
         plan = read_json(path)
         if plan.get("monitor_id") != monitor.get("monitor_id"):
             continue
         if plan.get("status") != "generated-for-research":
+            continue
+        base_run_id = plan.get("base_run_id")
+        base_manifest_path = root / "runs" / str(base_run_id) / "manifest.json"
+        if not base_manifest_path.is_file():
+            continue
+        base_manifest = read_json(base_manifest_path)
+        if base_manifest.get("status") not in {"completed", "partial"}:
+            continue
+        if (
+            base_manifest.get("task_id") != monitor.get("task_id")
+            or base_manifest.get("monitor_id") != monitor.get("monitor_id")
+        ):
+            continue
+        completed_at = base_manifest.get("completed_at")
+        generated_at = plan.get("generated_at")
+        if not completed_at or not generated_at:
+            continue
+        if _parse_time(completed_at) > as_of or _parse_time(generated_at) > as_of:
             continue
         brief_ref = plan.get("input_brief_ref")
         if not brief_ref or not (root / brief_ref).is_file():
@@ -148,10 +166,11 @@ def _latest_followup_plan(
         if stable_digest(read_json(root / brief_ref)) != plan.get("input_brief_digest"):
             raise ValueError(f"follow-up input Brief digest mismatch: {path}")
         source_ref = path.relative_to(root).as_posix()
-        candidates.append((source_ref, plan))
+        candidates.append((completed_at, generated_at, source_ref, plan))
     if not candidates:
         return None
-    return max(candidates, key=lambda item: (item[1].get("generated_at", ""), item[0]))
+    _, _, source_ref, plan = max(candidates, key=lambda item: item[:3])
+    return source_ref, plan
 
 
 def _configuration_snapshot_refs(
@@ -217,6 +236,101 @@ def _work_item(
     }
 
 
+def _evidence_ids(root: Path, refs: list[str]) -> set[str]:
+    return {
+        candidate["evidence_id"]
+        for ref in refs
+        for candidate in read_json(root / ref).get("evidence_candidates", [])
+    }
+
+
+def _resolve_predecessor_evidence_refs(
+    root: Path,
+    *,
+    predecessor_profile: dict[str, Any],
+    required_evidence_ids: set[str],
+) -> list[str]:
+    if not required_evidence_ids:
+        return []
+    declared_refs = predecessor_profile.get("evidence_bundle_refs", [])
+    preferred = [root / ref for ref in declared_refs]
+    predecessor_run_id = predecessor_profile["run_id"]
+    preferred.extend(
+        sorted((root / "proposals" / "evidence" / predecessor_run_id).glob("*.json"))
+    )
+    preferred.extend(sorted((root / "proposals" / "evidence").glob("*/*.json")))
+    selected: list[str] = []
+    covered: set[str] = set()
+    seen_paths: set[Path] = set()
+    for path in preferred:
+        if path in seen_paths or not path.is_file():
+            continue
+        seen_paths.add(path)
+        bundle_ids = {
+            candidate["evidence_id"]
+            for candidate in read_json(path).get("evidence_candidates", [])
+        }
+        if not (bundle_ids & (required_evidence_ids - covered)):
+            continue
+        selected.append(str(path.relative_to(root)))
+        covered.update(bundle_ids & required_evidence_ids)
+        if covered == required_evidence_ids:
+            break
+    missing = required_evidence_ids - covered
+    if missing:
+        raise ValueError(
+            "predecessor profile references unresolved Evidence IDs: "
+            + ", ".join(sorted(missing))
+        )
+    return sorted(selected)
+
+
+def _predecessor_profile_inputs(
+    root: Path,
+    *,
+    manifest: dict[str, Any],
+    center_id: str,
+    current_evidence_refs: list[str],
+) -> dict[str, Any]:
+    predecessor_run_id = manifest.get("followup_plan", {}).get("base_run_id")
+    if not predecessor_run_id:
+        return {}
+    predecessor_manifest_path = root / "runs" / predecessor_run_id / "manifest.json"
+    predecessor_profile_path = (
+        root
+        / "proposals"
+        / "center-profiles"
+        / predecessor_run_id
+        / f"{center_id}.json"
+    )
+    if not predecessor_manifest_path.is_file() or not predecessor_profile_path.is_file():
+        return {}
+    predecessor_manifest = read_json(predecessor_manifest_path)
+    if predecessor_manifest.get("status") != "completed":
+        return {}
+    if predecessor_manifest.get("task_id") != manifest.get("task_id"):
+        return {}
+    if predecessor_manifest.get("monitor_id") != manifest.get("monitor_id"):
+        return {}
+    predecessor_profile = read_json(predecessor_profile_path)
+    if predecessor_profile.get("center_id") != center_id:
+        raise ValueError("predecessor Center Profile has a mismatched center ID")
+    current_ids = _evidence_ids(root, current_evidence_refs)
+    required_predecessor_ids = set(predecessor_profile.get("evidence_refs", [])) - current_ids
+    predecessor_evidence_refs = _resolve_predecessor_evidence_refs(
+        root,
+        predecessor_profile=predecessor_profile,
+        required_evidence_ids=required_predecessor_ids,
+    )
+    profile_ref = str(predecessor_profile_path.relative_to(root))
+    return {
+        "predecessor_run_id": predecessor_run_id,
+        "predecessor_profile_ref": profile_ref,
+        "predecessor_profile_digest": stable_digest(predecessor_profile),
+        "predecessor_evidence_bundle_refs": predecessor_evidence_refs,
+    }
+
+
 def create_run(
     root: Path,
     *,
@@ -266,7 +380,7 @@ def create_run(
 
     work_items: list[dict[str, Any]] = []
     slots_per_query = int(monitor.get("discovery_slots_per_query", 1))
-    followup = _latest_followup_plan(root, monitor)
+    followup = _latest_followup_plan(root, monitor, as_of=created)
     followup_query_plan = []
     if followup:
         _, followup_plan = followup
@@ -1116,6 +1230,16 @@ def _expand_followups(
                     "output_refs", []
                 )
             )
+            predecessor_inputs = _predecessor_profile_inputs(
+                root,
+                manifest=manifest,
+                center_id=subject_id,
+                current_evidence_refs=evidence_refs,
+            )
+            evidence_refs = sorted(
+                set(evidence_refs)
+                | set(predecessor_inputs.get("predecessor_evidence_bundle_refs", []))
+            )
             payload = {
                 "center_id": subject_id,
                 "profile_fields": sorted(
@@ -1131,6 +1255,7 @@ def _expand_followups(
                     for item in evidence_eligible
                 ),
             }
+            payload.update(predecessor_inputs)
             identity = {
                 "run_id": run_id,
                 "task_id": manifest["task_id"],
@@ -1500,6 +1625,60 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
     if status in {"completed", "partial", "failed", "cancelled", "stopped"}:
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)
+    if status in {"completed", "partial", "failed", "cancelled", "stopped"}:
+        from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
+        from evaluate_temporal_integrity import record as record_temporal_integrity
+
+        report = evaluate_temporal_integrity(
+            root,
+            run_id=run_id,
+            evaluated_at=manifest["completed_at"],
+        )
+        return record_temporal_integrity(root, report)
+    return manifest
+
+
+def _cancel_run(
+    root: Path,
+    *,
+    run_id: str,
+    reason: str,
+    actor: str,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    if not reason.strip() or not actor.strip():
+        raise ValueError("Run cancellation requires a reason and actor")
+    manifest_path = root / "runs" / run_id / "manifest.json"
+    manifest = read_json(manifest_path)
+    if manifest.get("status") == "cancelled":
+        return manifest
+    if manifest.get("status") in {"completed", "partial", "failed", "stopped"}:
+        raise RuntimeError(f"cannot cancel terminal Run: {run_id}")
+    timestamp = isoformat(now)
+    cancellation = {
+        "reason": reason.strip(),
+        "actor": actor.strip(),
+        "recorded_at": timestamp,
+    }
+    counts: dict[str, int] = {}
+    items: list[dict[str, Any]] = []
+    for path, item in _queue_items(root, run_id):
+        if item.get("status") in {"queued", "leased"}:
+            item["status"] = "cancelled"
+            item["cancellation"] = cancellation
+            item["updated_at"] = timestamp
+            item.pop("lease", None)
+            atomic_write_json(path, item)
+        counts[item["status"]] = counts.get(item["status"], 0) + 1
+        items.append(item)
+    manifest["status"] = "cancelled"
+    manifest["completed_at"] = timestamp
+    manifest["cancellation"] = cancellation
+    manifest["cost"] = _usage_summary(items)
+    manifest.setdefault("metrics", {}).update(
+        {"work_items_total": len(items), "work_items_by_status": counts}
+    )
+    atomic_write_json(manifest_path, manifest)
     return manifest
 
 
@@ -1555,6 +1734,24 @@ def complete_work_item(
         agent_id=agent_id,
         output_refs=output_refs,
         usage=usage,
+        now=now,
+    )
+
+
+def cancel_run(
+    root: Path,
+    *,
+    run_id: str,
+    reason: str,
+    actor: str,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    return _run_control(
+        root,
+        run_id,
+        _cancel_run,
+        reason=reason,
+        actor=actor,
         now=now,
     )
 
@@ -1639,6 +1836,11 @@ def main() -> int:
     fail.add_argument("--error-message", required=True)
     fail.add_argument("--retryable", action="store_true")
 
+    cancel = commands.add_parser("cancel")
+    cancel.add_argument("--run-id", required=True)
+    cancel.add_argument("--reason", required=True)
+    cancel.add_argument("--actor", required=True)
+
     finalize = commands.add_parser("finalize")
     finalize.add_argument("--run-id", required=True)
     expand = commands.add_parser("expand")
@@ -1694,6 +1896,13 @@ def main() -> int:
             error_kind=args.error_kind,
             error_message=args.error_message,
             retryable=args.retryable,
+        )
+    elif args.command == "cancel":
+        result = cancel_run(
+            args.root,
+            run_id=args.run_id,
+            reason=args.reason,
+            actor=args.actor,
         )
     elif args.command == "expand":
         result = expand_followups(args.root, run_id=args.run_id)
