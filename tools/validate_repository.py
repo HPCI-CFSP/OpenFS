@@ -83,6 +83,7 @@ REQUIRED_FILES = [
     "schemas/center-research-brief.schema.json",
     "schemas/center-followup-plan.schema.json",
     "schemas/global-followup-plan.schema.json",
+    "schemas/global-followup-effectiveness.schema.json",
     "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
@@ -123,6 +124,7 @@ REQUIRED_FILES = [
     "tools/generate_center_research_brief.py",
     "tools/generate_center_followup_plan.py",
     "tools/generate_global_followup_plan.py",
+    "tools/evaluate_global_followup_effectiveness.py",
     "tools/propose_center_profile.py",
     "tools/detect_source_changes.py",
     "tools/check_consensus_readiness.py",
@@ -640,11 +642,15 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
             errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
         if strict_assignment and query_receipt.get("query") != payload.get("query"):
             errors.append(f"Source result query differs from its assignment: {path.relative_to(root)}")
-        expected_scope = {
-            key: payload[key]
-            for key in ("subject_ids", "profile_fields", "query_template_id")
-            if key in payload
-        }
+        expected_scope = (
+            {
+                key: payload[key]
+                for key in ("subject_ids", "profile_fields", "query_template_id")
+                if key in payload
+            }
+            if payload.get("subject_ids")
+            else {}
+        )
         if result.get("object_type") == "discovery_no_result":
             if strict_assignment and not language_in_scope(
                 query_receipt.get("language"), payload.get("languages", [])

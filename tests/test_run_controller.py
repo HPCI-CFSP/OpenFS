@@ -247,6 +247,7 @@ class RunControllerTests(unittest.TestCase):
         followups = [item for item in items if item["payload"].get("followup_plan_id")]
         self.assertEqual(2, len(followups))
         self.assertNotIn("subject_ids", followups[0]["payload"])
+        self.assertNotIn("query_template_id", followups[0]["payload"])
         self.assertEqual(
             plan["queries"][0]["coverage_targets"],
             followups[0]["payload"]["coverage_targets"],

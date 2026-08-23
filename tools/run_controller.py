@@ -463,13 +463,13 @@ def create_run(
             planned = {
                 "query": entry["query"],
                 "query_role": entry["query_role"],
-                "query_template_id": entry["query_id"],
                 "source_classes": entry.get("source_classes", []),
                 "followup_plan_id": followup_plan["followup_plan_id"],
                 "followup_query_id": entry["query_id"],
             }
             if entry.get("center_id"):
                 planned["subject_ids"] = [entry["center_id"]]
+                planned["query_template_id"] = entry["query_id"]
             for key in ("subject_ids", "profile_fields", "coverage_targets"):
                 if key in entry:
                     planned[key] = entry[key]
@@ -1784,6 +1784,23 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
                 evaluated_at=manifest["completed_at"],
             )
             record_profile_continuity(root, continuity)
+        if manifest.get("followup_plan"):
+            followup_plan = read_json(
+                root / manifest["followup_plan"]["snapshot_ref"]
+            )
+            if any(
+                query.get("coverage_targets")
+                for query in followup_plan.get("queries", [])
+            ):
+                from evaluate_global_followup_effectiveness import evaluate as evaluate_global_followup_effectiveness
+                from evaluate_global_followup_effectiveness import record as record_global_followup_effectiveness
+
+                effectiveness = evaluate_global_followup_effectiveness(
+                    root,
+                    run_id=run_id,
+                    evaluated_at=manifest["completed_at"],
+                )
+                record_global_followup_effectiveness(root, effectiveness)
         from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
         from evaluate_temporal_integrity import record as record_temporal_integrity
 
