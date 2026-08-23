@@ -26,5 +26,9 @@ jobs:
         run: python3 tools/check_agent_branch.py
       - name: Validate repository
         run: python3 tools/validate_repository.py
+      - name: Install pinned JSON Schema validator
+        run: python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
+      - name: Validate JSON Schema contracts
+        run: python3 tools/validate_json_schemas.py
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -v

@@ -79,10 +79,14 @@ The FS1.0 record and current primary evidence for every HPCI center remain incom
 
 ## Local validation
 
-The current validator and tests use the Python standard library only.
+Structural validation and unit tests use the Python standard library. Full
+Draft 2020-12 instance validation uses the exact versions in
+`requirements-validation.txt`.
 
 ```bash
+python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/validate_json_schemas.py
 python3 -m unittest discover -s tests -v
 ```
 

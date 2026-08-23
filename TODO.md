@@ -18,7 +18,7 @@
 - [x] Add Japanese/English switching and bilingual publication validation to GitHub Pages.
 - [x] Require a matching human publication Directive before a scenario or report reaches Pages.
 - [x] Document repository-owner setup and the three-Run automation activation sequence.
-- [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
+- [x] Add full JSON Schema Draft 2020-12 validation for all mapped contract artifacts.
 - [x] Select and add the Apache-2.0 project license.
 - [ ] Review institutional copyright and contribution authority before accepting external contributions.
 - [ ] Confirm repository visibility and member access policy.
