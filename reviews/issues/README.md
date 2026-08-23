@@ -10,3 +10,6 @@ blocking state. The group marker remains stable when later Runs encounter the sa
 owner action, while the payload retains every Run, Exception ID, and repository
 record reference. This prevents recurring Consensus-capacity or policy failures
 from creating one Issue per Run.
+When the same marker already exists on GitHub, the publisher updates its title and
+sanitized body only when they changed, so later Run references become visible
+without opening a duplicate Issue.

@@ -43,11 +43,34 @@ def _request_factory(repository: str, token: str) -> Request:
 def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
     issue = payload.get("issue", payload)
     marker = issue["deduplication_marker"]
+    expected_labels = set(issue.get("labels", []))
     existing = request(
         "GET", "/issues?state=all&per_page=100&sort=created&direction=desc", None
     )
     for item in existing:
-        if marker in item.get("body", ""):
+        existing_labels = {
+            label.get("name") if isinstance(label, dict) else label
+            for label in item.get("labels", [])
+        }
+        if marker in item.get("body", "") and expected_labels.issubset(
+            existing_labels
+        ):
+            desired_title = issue["title"][:256]
+            desired_body = issue["body"]
+            if (
+                item.get("title") != desired_title
+                or item.get("body", "") != desired_body
+            ):
+                updated = request(
+                    "PATCH",
+                    f"/issues/{item['number']}",
+                    {"title": desired_title, "body": desired_body},
+                )
+                return {
+                    "publication_status": "updated",
+                    "github_issue_number": updated["number"],
+                    "github_issue_url": updated["html_url"],
+                }
             return {
                 "publication_status": "existing",
                 "github_issue_number": item["number"],

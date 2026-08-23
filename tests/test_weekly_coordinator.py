@@ -75,7 +75,9 @@ class WeeklyCoordinatorTests(unittest.TestCase):
                     {
                         "number": 7,
                         "html_url": "https://github.com/example/repo/issues/7",
+                        "title": "Weekly",
                         "body": "<!-- openfs-weekly-cycle:CYCLE-2026-W35 -->",
+                        "labels": [{"name": "openfs-weekly-cycle"}],
                     }
                 ]
             raise AssertionError("No create call is expected")
@@ -95,6 +97,85 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         )
         self.assertEqual("existing", result["publication_status"])
         self.assertEqual(1, len(calls))
+
+    def test_existing_issue_is_updated_when_group_members_change(self):
+        calls = []
+
+        def request(method, endpoint, body):
+            calls.append((method, endpoint, body))
+            if endpoint.startswith("/issues?"):
+                return [
+                    {
+                        "number": 7,
+                        "html_url": "https://github.com/example/repo/issues/7",
+                        "title": "Old title",
+                        "body": "<!-- openfs-exception-group:EXCGRP-001 -->\nOld",
+                        "labels": [{"name": "openfs-exception"}],
+                    }
+                ]
+            if method == "PATCH" and endpoint == "/issues/7":
+                self.assertEqual("New body", body["body"].splitlines()[-1])
+                return {
+                    "number": 7,
+                    "html_url": "https://github.com/example/repo/issues/7",
+                }
+            raise AssertionError(f"Unexpected request: {method} {endpoint}")
+
+        result = publish(
+            {
+                "title": "Current grouped exception",
+                "body": "<!-- openfs-exception-group:EXCGRP-001 -->\nNew body",
+                "labels": ["openfs-exception"],
+                "deduplication_marker": (
+                    "<!-- openfs-exception-group:EXCGRP-001 -->"
+                ),
+            },
+            request=request,
+        )
+
+        self.assertEqual("updated", result["publication_status"])
+        self.assertEqual(2, len(calls))
+
+    def test_marker_without_managed_label_cannot_capture_publication(self):
+        calls = []
+
+        def request(method, endpoint, body):
+            calls.append((method, endpoint, body))
+            if endpoint.startswith("/issues?"):
+                return [
+                    {
+                        "number": 3,
+                        "html_url": "https://github.com/example/repo/issues/3",
+                        "title": "Unmanaged",
+                        "body": "<!-- openfs-weekly-cycle:CYCLE-2026-W35 -->",
+                        "labels": [],
+                    }
+                ]
+            if endpoint.startswith("/labels?"):
+                return [{"name": "openfs-weekly-cycle"}]
+            if method == "POST" and endpoint == "/issues":
+                return {
+                    "number": 8,
+                    "html_url": "https://github.com/example/repo/issues/8",
+                }
+            raise AssertionError(f"Unexpected request: {method} {endpoint}")
+
+        result = publish(
+            {
+                "issue": {
+                    "title": "Weekly",
+                    "body": "<!-- openfs-weekly-cycle:CYCLE-2026-W35 -->",
+                    "labels": ["openfs-weekly-cycle"],
+                    "deduplication_marker": (
+                        "<!-- openfs-weekly-cycle:CYCLE-2026-W35 -->"
+                    ),
+                }
+            },
+            request=request,
+        )
+
+        self.assertEqual("created", result["publication_status"])
+        self.assertEqual(3, len(calls))
 
 
 if __name__ == "__main__":
