@@ -899,6 +899,102 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual("unreported", completed["cost"]["measurement_status"])
         self.assertIsNone(completed["cost"]["reported_total_usd"])
 
+    def test_finalize_automatically_compares_pinned_predecessor(self):
+        predecessor_id = "RUN-PILOT-PREVIOUS"
+        predecessor_dir = self.root / "runs" / predecessor_id
+        predecessor_dir.mkdir(parents=True)
+        (predecessor_dir / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "run_id": predecessor_id,
+                    "task_id": "OFS-001",
+                    "monitor_id": "MON-MEMORY-001",
+                    "started_at": "2026-08-17T00:00:00Z",
+                    "status": "completed",
+                    "metrics": {},
+                }
+            ),
+            encoding="utf-8",
+        )
+        predecessor_sources = self.root / "proposals" / "sources" / predecessor_id
+        predecessor_sources.mkdir(parents=True)
+        (predecessor_sources / "WORK-000001.json").write_text(
+            json.dumps(
+                {
+                    "query_receipt": {"query": "prior query"},
+                    "source_receipt": {
+                        "canonical_url": "https://example.org/prior",
+                        "title": "Prior",
+                        "publisher": "Example",
+                        "publication_date": "2026-08-01",
+                        "media_type": "text/html",
+                        "language": "en",
+                        "retrieval_status": "success",
+                        "rights": {"acquisition_decision": "evidence-excerpt"},
+                    },
+                    "candidate_passages": [{"text": "Prior", "locator": "p1"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        run_id = "RUN-PILOT-AUTO-CHANGE"
+        manifest = create_run(
+            self.root,
+            run_id=run_id,
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=datetime(2026, 8, 24, tzinfo=timezone.utc),
+        )
+        self.assertEqual(predecessor_id, manifest["previous_run_id"])
+        for number, _ in enumerate(manifest["work_item_ids"], 1):
+            leased = lease_next(
+                self.root,
+                run_id=run_id,
+                agent_id="discovery-public-01",
+                allow_disabled_pilot_agent=True,
+            )
+            output_ref = leased["output_paths"][0]
+            path = self.root / output_ref
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                json.dumps(
+                    {
+                        "query_receipt": {"query": leased["payload"]["query"]},
+                        "source_receipt": {
+                            "canonical_url": f"https://example.org/current-{number}",
+                            "title": f"Current {number}",
+                            "publisher": "Example",
+                            "publication_date": "2026-08-24",
+                            "media_type": "text/html",
+                            "language": "en",
+                            "retrieval_status": "success",
+                            "rights": {"acquisition_decision": "evidence-excerpt"},
+                        },
+                        "candidate_passages": [
+                            {"text": f"Current {number}", "locator": "p1"}
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            complete_work_item(
+                self.root,
+                run_id=run_id,
+                work_item_id=leased["work_item_id"],
+                agent_id="discovery-public-01",
+                output_refs=[output_ref],
+            )
+
+        completed = finalize_run(
+            self.root,
+            run_id=run_id,
+            now=datetime(2026, 8, 24, 1, tzinfo=timezone.utc),
+        )
+        self.assertEqual(f"runs/{run_id}/changes.json", completed["change_report_ref"])
+        self.assertEqual(12, completed["metrics"]["source_changes"]["new"])
+        self.assertEqual(1, completed["metrics"]["source_changes"]["not-observed"])
+
     def test_completed_discovery_expands_one_idempotent_extraction_item(self):
         create_run(
             self.root,

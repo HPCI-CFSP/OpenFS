@@ -61,22 +61,40 @@ def load_run_sources(
     return sources
 
 
-def find_previous_run(root: Path, run_id: str) -> str | None:
-    current = read_json(root / "runs" / run_id / "manifest.json")
+def find_previous_run_for_identity(
+    root: Path,
+    *,
+    task_id: str,
+    monitor_id: str,
+    before_started_at: str,
+    exclude_run_id: str | None = None,
+) -> str | None:
+    """Select the latest completed predecessor before a Run starts."""
     candidates: list[tuple[str, str]] = []
     for path in sorted((root / "runs").glob("RUN-*/manifest.json")):
         manifest = read_json(path)
         candidate_id = manifest.get("run_id")
-        if candidate_id == run_id or manifest.get("status") != "completed":
+        if candidate_id == exclude_run_id or manifest.get("status") != "completed":
             continue
-        if manifest.get("task_id") != current.get("task_id"):
+        if manifest.get("task_id") != task_id:
             continue
-        if manifest.get("monitor_id") != current.get("monitor_id"):
+        if manifest.get("monitor_id") != monitor_id:
             continue
-        if manifest.get("started_at", "") >= current.get("started_at", ""):
+        if manifest.get("started_at", "") >= before_started_at:
             continue
         candidates.append((manifest.get("started_at", ""), candidate_id))
     return max(candidates)[1] if candidates else None
+
+
+def find_previous_run(root: Path, run_id: str) -> str | None:
+    current = read_json(root / "runs" / run_id / "manifest.json")
+    return find_previous_run_for_identity(
+        root,
+        task_id=current["task_id"],
+        monitor_id=current["monitor_id"],
+        before_started_at=current["started_at"],
+        exclude_run_id=run_id,
+    )
 
 
 def compare_runs(
@@ -86,7 +104,28 @@ def compare_runs(
     previous_run_id: str | None = None,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
-    previous_run_id = previous_run_id or find_previous_run(root, run_id)
+    current_manifest = read_json(root / "runs" / run_id / "manifest.json")
+    if previous_run_id is None:
+        if "previous_run_id" in current_manifest:
+            previous_run_id = current_manifest["previous_run_id"]
+        else:
+            previous_run_id = find_previous_run(root, run_id)
+    if previous_run_id:
+        previous_manifest = read_json(
+            root / "runs" / previous_run_id / "manifest.json"
+        )
+        if previous_manifest.get("status") != "completed":
+            raise ValueError("Source comparison predecessor must be completed")
+        if (
+            previous_manifest.get("task_id") != current_manifest.get("task_id")
+            or previous_manifest.get("monitor_id")
+            != current_manifest.get("monitor_id")
+        ):
+            raise ValueError("Source comparison predecessor scope differs")
+        if previous_manifest.get("started_at", "") >= current_manifest.get(
+            "started_at", ""
+        ):
+            raise ValueError("Source comparison predecessor must be earlier")
     current = load_run_sources(root, run_id)
     previous = load_run_sources(root, previous_run_id) if previous_run_id else {}
     changes: list[dict[str, Any]] = []

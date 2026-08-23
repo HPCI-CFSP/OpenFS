@@ -22,6 +22,7 @@ from openfs_runtime import (
     utc_now,
 )
 from check_consensus_readiness import evaluate_run, record_readiness
+from detect_source_changes import find_previous_run_for_identity
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -463,6 +464,13 @@ def create_run(
     queue_path = root / "queue" / run_id
     created = now or utc_now()
     created_at = isoformat(created)
+    previous_run_id = find_previous_run_for_identity(
+        root,
+        task_id=task_id,
+        monitor_id=monitor_id,
+        before_started_at=created_at,
+        exclude_run_id=run_id,
+    )
     directives = _approved_directives(root, task_id)
     directive_hashes = {
         f"reviews/directives/{directive['directive_id']}.json": stable_digest(directive)
@@ -613,6 +621,7 @@ def create_run(
         "status": "created",
         "research_status": "not-evaluated",
         "coverage_status": "not-evaluated",
+        "previous_run_id": previous_run_id,
         "assignment_contract_version": "0.2.0",
         "policy_hashes": policy_hashes,
         "configuration_snapshots": snapshot_refs,
@@ -651,6 +660,7 @@ def create_run(
             "monitor_id",
             "mode",
             "assignment_contract_version",
+            "previous_run_id",
             "policy_hashes",
             "directive_ids",
             "directive_hashes",
@@ -1833,6 +1843,16 @@ def _finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> di
                     evaluated_at=manifest["completed_at"],
                 )
                 record_global_followup_effectiveness(root, effectiveness)
+        if status in {"completed", "partial"} and manifest.get("previous_run_id"):
+            from detect_source_changes import compare_runs, write_report
+
+            change_report = compare_runs(
+                root,
+                run_id=run_id,
+                previous_run_id=manifest["previous_run_id"],
+                generated_at=manifest["completed_at"],
+            )
+            write_report(root, change_report)
         from evaluate_temporal_integrity import evaluate as evaluate_temporal_integrity
         from evaluate_temporal_integrity import record as record_temporal_integrity
 

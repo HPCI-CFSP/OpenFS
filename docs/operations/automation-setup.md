@@ -3,7 +3,7 @@
 ## Current status
 
 As of 2026-08-24, the repository has a Run Controller, leased Work Items,
-configuration snapshots, Rights Gate, source-change detection, coverage reporting,
+configuration snapshots, Rights Gate, pinned automatic source-change detection, coverage reporting,
 Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
 review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
 Pages publication. Three `OFS-001` Pilot Runs are retained as auditable fixtures.

@@ -541,6 +541,22 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
         receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
         if len(receipt_ids) != len(set(receipt_ids)):
             errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
+        previous_run_id = manifest.get("previous_run_id")
+        if previous_run_id:
+            previous_path = root / "runs" / previous_run_id / "manifest.json"
+            if not previous_path.is_file():
+                errors.append(f"Run {run_id} predecessor is missing: {previous_run_id}")
+            else:
+                previous = load_json(previous_path)
+                if previous.get("status") != "completed":
+                    errors.append(f"Run {run_id} predecessor is not completed")
+                if (
+                    previous.get("task_id") != manifest.get("task_id")
+                    or previous.get("monitor_id") != manifest.get("monitor_id")
+                ):
+                    errors.append(f"Run {run_id} predecessor scope differs")
+                if previous.get("started_at", "") >= manifest.get("started_at", ""):
+                    errors.append(f"Run {run_id} predecessor is not earlier")
         change_report_ref = manifest.get("change_report_ref")
         if change_report_ref:
             change_report_path = root / change_report_ref

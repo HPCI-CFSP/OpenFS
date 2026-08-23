@@ -10,7 +10,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from detect_source_changes import compare_runs, write_report  # noqa: E402
+from detect_source_changes import (  # noqa: E402
+    compare_runs,
+    find_previous_run_for_identity,
+    write_report,
+)
 
 
 class SourceChangeTests(unittest.TestCase):
@@ -132,6 +136,21 @@ class SourceChangeTests(unittest.TestCase):
             {"center A", "center B", "center C"},
             {item["observation_query"] for item in report["changes"]},
         )
+
+    def test_predecessor_selection_uses_latest_completed_matching_scope(self):
+        self.add_run("RUN-OLDER", "2026-08-01T00:00:00Z", [])
+        self.add_run("RUN-PARTIAL", "2026-08-15T00:00:00Z", [], status="partial")
+        self.add_run("RUN-LATEST", "2026-08-20T00:00:00Z", [])
+        self.add_run("RUN-FUTURE", "2026-08-30T00:00:00Z", [])
+
+        selected = find_previous_run_for_identity(
+            self.root,
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            before_started_at="2026-08-24T00:00:00Z",
+        )
+
+        self.assertEqual("RUN-LATEST", selected)
 
 
 if __name__ == "__main__":

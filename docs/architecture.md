@@ -107,7 +107,7 @@ The planned weekly cycle is:
 1. ingest reviewed directives;
 2. expand active monitors into work items;
 3. search public sources and record coverage;
-4. detect new, changed, withdrawn, and failed sources;
+4. detect new, changed, unchanged, unavailable, and not-observed source observations;
 5. create proposals;
 6. obtain blind independent assessments and falsification review;
 7. run the deterministic consensus gate;
@@ -119,6 +119,13 @@ The weekly Coordinator is implemented but remains variable-gated. It creates a
 deduplicated control Issue and artifact without making model calls. The research
 Worker and production Monitor remain disabled until independent provider capacity,
 cost limits, and recovery behavior are owner-approved.
+
+At Run creation, the controller pins the latest earlier completed Run with the same
+Task and Monitor identity. Finalizing a completed or partial Run automatically
+compares URL-and-query observations against that pinned predecessor and records
+`runs/<RUN-ID>/changes.json`. A prior URL absent from the new selection is classified
+as `not-observed`, never as proof that the source was withdrawn. This keeps weekly
+change metrics reproducible even when multiple Runs overlap.
 
 All recurring discovery is worldwide in scope. The global horizon monitor searches across regions, organizations, and source languages; it gives technologies developed in Japan priority coverage to reduce local blind spots, then evaluates them against international alternatives using the same evidence and maturity rules.
 
