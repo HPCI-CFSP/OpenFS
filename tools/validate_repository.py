@@ -59,6 +59,7 @@ REQUIRED_FILES = [
     "schemas/canonical-claim.schema.json",
     "schemas/knowledge-index.schema.json",
     "schemas/promotion-readiness.schema.json",
+    "schemas/cost-summary.schema.json",
     "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
@@ -180,6 +181,40 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as stream:
         return json.load(stream)
+
+
+def usage_summary_from_items(items: list[dict[str, Any]]) -> dict[str, Any]:
+    completed = [item for item in items if item.get("status") == "completed"]
+    cost_values = [
+        item.get("usage", {}).get("cost_usd")
+        for item in completed
+        if item.get("usage", {}).get("cost_usd") is not None
+    ]
+    reported = len(cost_values)
+    if not completed or reported == 0:
+        measurement_status = "unreported"
+    elif reported == len(completed):
+        measurement_status = "complete"
+    else:
+        measurement_status = "partial"
+
+    def token_total(name: str) -> int | None:
+        values = [
+            item.get("usage", {}).get(name)
+            for item in completed
+            if item.get("usage", {}).get(name) is not None
+        ]
+        return sum(values) if values else None
+
+    return {
+        "currency": "USD",
+        "measurement_status": measurement_status,
+        "reported_total_usd": sum(cost_values) if cost_values else None,
+        "reported_executions": reported,
+        "unreported_executions": len(completed) - reported,
+        "reported_input_tokens": token_total("input_tokens"),
+        "reported_output_tokens": token_total("output_tokens"),
+    }
 
 
 def validate_json_files(root: Path) -> list[str]:
@@ -675,6 +710,16 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                 actual_digest = hashlib.sha256(output_path.read_bytes()).hexdigest()
                 if actual_digest != expected_digest:
                     errors.append(f"completed Work Item output digest changed: {output_ref}")
+        if manifest.get("cost") is not None and manifest.get("status") in {
+            "completed",
+            "partial",
+            "failed",
+            "cancelled",
+            "stopped",
+        }:
+            expected_cost = usage_summary_from_items(work_items)
+            if manifest.get("cost") != expected_cost:
+                errors.append(f"Run {run_id} cost summary differs from Work Item usage")
         receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
         if len(receipt_ids) != len(set(receipt_ids)):
             errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
