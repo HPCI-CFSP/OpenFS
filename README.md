@@ -1,6 +1,13 @@
 # OpenFS
 
+[![OpenFS Pages](https://img.shields.io/badge/OpenFS-Public%20Site-18755b?logo=githubpages&logoColor=white)](https://hpci-cfsp.github.io/OpenFS/)
+[![Validate OpenFS](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/validate.yml/badge.svg)](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/validate.yml)
+[![Publish OpenFS Pages](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/pages.yml/badge.svg)](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/pages.yml)
+[![License](https://img.shields.io/badge/License-Apache--2.0-173b57.svg)](LICENSE)
+
 OpenFS is an evidence-first research harness for continuously investigating the technologies, systems, and operating models needed for future HPCI infrastructure.
+
+Browse the bilingual public research view at [OpenFS Pages](https://hpci-cfsp.github.io/OpenFS/).
 
 The project turns a recurring research question into traceable artifacts:
 
