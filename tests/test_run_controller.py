@@ -27,10 +27,12 @@ class RunControllerTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
         for relative in (
+            "config/acquisition-policy.json",
             "config/autonomy-policy.json",
             "config/budgets.json",
             "config/consensus-policy.json",
             "config/role-permissions.json",
+            "config/source-registry.json",
             "config/agent-registry.json",
             "config/monitors/MON-MEMORY-001.json",
         ):

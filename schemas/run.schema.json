@@ -3,7 +3,7 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/run.schema.json",
   "title": "OpenFS Run Manifest",
   "type": "object",
-  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "expansion_events", "metrics", "run_identity_hash"],
+  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "research_status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "expansion_events", "metrics", "run_identity_hash"],
   "properties": {
     "schema_version": {"type": "string"},
     "run_id": {"type": "string"},
@@ -14,6 +14,7 @@
     "started_at": {"type": "string", "format": "date-time"},
     "completed_at": {"type": "string", "format": "date-time"},
     "status": {"enum": ["created", "running", "completed", "partial", "failed", "cancelled"]},
+    "research_status": {"enum": ["not-evaluated", "coverage-incomplete", "ready-for-independent-review", "provisional", "accepted", "contested"]},
     "policy_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
     "budget": {"type": "object"},
     "directive_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
@@ -22,15 +23,18 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["agent_id", "model_provider", "model_id", "prompt_hash", "tool_versions"],
+        "required": ["agent_id", "work_item_id", "attempt", "model_provider", "model_id", "prompt_hash", "tool_versions", "executed_at"],
         "properties": {
           "agent_id": {"type": "string"},
+          "work_item_id": {"type": "string"},
+          "attempt": {"type": "integer", "minimum": 1},
           "model_provider": {"type": "string"},
           "model_id": {"type": "string"},
           "resolved_model_version": {"type": "string"},
           "prompt_hash": {"type": "string"},
           "skill_hash": {"type": "string"},
-          "tool_versions": {"type": "object", "additionalProperties": {"type": "string"}}
+          "tool_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+          "executed_at": {"type": "string", "format": "date-time"}
         },
         "additionalProperties": false
       }

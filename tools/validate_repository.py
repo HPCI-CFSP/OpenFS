@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -57,6 +58,7 @@ REQUIRED_FILES = [
     "schemas/source-discovery-result.schema.json",
     "schemas/evidence.schema.json",
     "schemas/evidence-bundle.schema.json",
+    "schemas/coverage-report.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -80,6 +82,7 @@ REQUIRED_FILES = [
     "tools/ingest_directive.py",
     "tools/register_source.py",
     "tools/extract_evidence.py",
+    "tools/evaluate_coverage.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -235,6 +238,56 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
         errors.append(f"acquisition policy lacks rights states: {sorted(missing_states)}")
     if policy.get("maximum_candidate_passage_characters", 0) < 1:
         errors.append("acquisition policy must limit candidate passage length")
+    return errors
+
+
+def validate_runtime_artifacts(root: Path) -> list[str]:
+    errors: list[str] = []
+    for manifest_path in sorted((root / "runs").glob("RUN-*/manifest.json")):
+        manifest = load_json(manifest_path)
+        run_id = manifest.get("run_id")
+        if manifest_path.parent.name != run_id:
+            errors.append(f"Run manifest path does not match run_id: {manifest_path}")
+            continue
+        queue_dir = root / "queue" / run_id
+        work_paths = sorted(queue_dir.glob("WORK-*.json"))
+        work_items = [load_json(path) for path in work_paths]
+        actual_ids = [item.get("work_item_id") for item in work_items]
+        if actual_ids != manifest.get("work_item_ids", []):
+            errors.append(f"Run {run_id} manifest Work Item IDs differ from queue files")
+        idempotency_keys = [item.get("idempotency_key") for item in work_items]
+        if len(idempotency_keys) != len(set(idempotency_keys)):
+            errors.append(f"Run {run_id} has duplicate Work Item idempotency keys")
+        for path, item in zip(work_paths, work_items, strict=True):
+            if path.stem != item.get("work_item_id") or item.get("run_id") != run_id:
+                errors.append(f"Work Item identity mismatch: {path.relative_to(root)}")
+            if item.get("status") != "completed":
+                continue
+            for output_ref, expected_digest in item.get("output_digests", {}).items():
+                output_path = root / output_ref
+                if not output_path.is_file():
+                    errors.append(f"completed Work Item output is missing: {output_ref}")
+                    continue
+                actual_digest = hashlib.sha256(output_path.read_bytes()).hexdigest()
+                if actual_digest != expected_digest:
+                    errors.append(f"completed Work Item output digest changed: {output_ref}")
+        receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
+        if len(receipt_ids) != len(set(receipt_ids)):
+            errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
+
+    for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):
+        result = load_json(path)
+        if result.get("run_id") != path.parent.name:
+            errors.append(f"Source result Run mismatch: {path.relative_to(root)}")
+        if result.get("work_item_id") != path.stem:
+            errors.append(f"Source result Work Item mismatch: {path.relative_to(root)}")
+    for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
+        bundle = load_json(path)
+        if bundle.get("run_id") != path.parent.name:
+            errors.append(f"Evidence bundle Run mismatch: {path.relative_to(root)}")
+        source_ref = bundle.get("source_result_ref")
+        if not source_ref or not (root / source_ref).is_file():
+            errors.append(f"Evidence bundle source result is missing: {path.relative_to(root)}")
     return errors
 
 
@@ -460,6 +513,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_topic_configuration(root))
     if (root / "config" / "publication-policy.json").exists():
         errors.extend(validate_publication_configuration(root))
+    if (root / "runs").exists():
+        errors.extend(validate_runtime_artifacts(root))
     return errors
 
 

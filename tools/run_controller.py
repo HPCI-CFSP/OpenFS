@@ -50,10 +50,13 @@ def _monitor_path(root: Path, monitor_id: str) -> Path:
 
 def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
     paths = [
+        root / "config" / "acquisition-policy.json",
+        root / "config" / "agent-registry.json",
         root / "config" / "autonomy-policy.json",
         root / "config" / "budgets.json",
         root / "config" / "consensus-policy.json",
         root / "config" / "role-permissions.json",
+        root / "config" / "source-registry.json",
         monitor_path,
     ]
     return {path.relative_to(root).as_posix(): sha256_file(path) for path in paths}
@@ -207,6 +210,7 @@ def create_run(
         "base_commit": git_head(root),
         "started_at": created_at,
         "status": "created",
+        "research_status": "not-evaluated",
         "policy_hashes": _policy_hashes(root, monitor_path),
         "budget": {
             "maximum_run_minutes": defaults.get("maximum_run_minutes"),
@@ -265,6 +269,49 @@ def _release_lock(path: Path, descriptor: int) -> None:
     path.unlink(missing_ok=True)
 
 
+def _record_agent_execution(
+    root: Path,
+    *,
+    run_id: str,
+    work_item: dict[str, Any],
+    agent: dict[str, Any],
+    executed_at: str,
+) -> None:
+    manifest_path = root / "runs" / run_id / "manifest.json"
+    lock = _lock_path(root, run_id, "manifest-agent-executions")
+    descriptor = _acquire_lock(lock)
+    try:
+        manifest = read_json(manifest_path)
+        identity = (
+            agent["agent_id"],
+            work_item["work_item_id"],
+            work_item["attempt"],
+        )
+        existing = {
+            (item["agent_id"], item["work_item_id"], item["attempt"])
+            for item in manifest.get("agent_executions", [])
+        }
+        if identity in existing:
+            return
+        manifest.setdefault("agent_executions", []).append(
+            {
+                "agent_id": agent["agent_id"],
+                "work_item_id": work_item["work_item_id"],
+                "attempt": work_item["attempt"],
+                "model_provider": agent["provider"],
+                "model_id": agent["model_family"],
+                "prompt_hash": stable_digest(agent["prompt_profile"]),
+                "tool_versions": {
+                    "run_controller.py": sha256_file(Path(__file__)),
+                },
+                "executed_at": executed_at,
+            }
+        )
+        atomic_write_json(manifest_path, manifest)
+    finally:
+        _release_lock(lock, descriptor)
+
+
 def lease_next(
     root: Path,
     *,
@@ -312,6 +359,13 @@ def lease_next(
             }
             item["updated_at"] = isoformat(current)
             atomic_write_json(path, item)
+            _record_agent_execution(
+                root,
+                run_id=run_id,
+                work_item=item,
+                agent=agent,
+                executed_at=isoformat(current),
+            )
             return item
         finally:
             _release_lock(lock, descriptor)
@@ -348,6 +402,7 @@ def complete_work_item(
     item["status"] = "completed"
     item["output_refs"] = output_refs
     item["output_digests"] = output_digests
+    item["completed_by_agent_id"] = agent_id
     item["completed_at"] = timestamp
     item["updated_at"] = timestamp
     item.pop("lease", None)
@@ -423,6 +478,38 @@ def expand_followups(
     return {"created": additions, "manifest": manifest}
 
 
+def reconcile_agent_executions(root: Path, *, run_id: str) -> dict[str, Any]:
+    repaired: list[str] = []
+    for path in sorted((root / "queue" / run_id).glob("WORK-*.json")):
+        item = read_json(path)
+        if item.get("status") != "completed":
+            continue
+        agent_id = item.get("completed_by_agent_id")
+        if not agent_id:
+            for output_ref in item.get("output_refs", []):
+                output = read_json(root / output_ref)
+                agent_id = output.get("created_by_agent_id")
+                if agent_id:
+                    break
+        if not agent_id:
+            continue
+        if not item.get("completed_by_agent_id"):
+            item["completed_by_agent_id"] = agent_id
+            atomic_write_json(path, item)
+            repaired.append(item["work_item_id"])
+        _record_agent_execution(
+            root,
+            run_id=run_id,
+            work_item=item,
+            agent=_agent(root, agent_id),
+            executed_at=item.get("completed_at", item["updated_at"]),
+        )
+    return {
+        "repaired_work_item_ids": repaired,
+        "manifest": read_json(root / "runs" / run_id / "manifest.json"),
+    }
+
+
 def fail_work_item(
     root: Path,
     *,
@@ -484,7 +571,9 @@ def finalize_run(root: Path, *, run_id: str, now: datetime | None = None) -> dic
     else:
         status = "failed"
     manifest["status"] = status
-    manifest["metrics"] = {"work_items_total": len(items), "work_items_by_status": counts}
+    manifest.setdefault("metrics", {}).update(
+        {"work_items_total": len(items), "work_items_by_status": counts}
+    )
     if status in {"completed", "partial", "failed", "cancelled"}:
         manifest["completed_at"] = isoformat(now)
     atomic_write_json(path, manifest)
@@ -531,6 +620,8 @@ def main() -> int:
     finalize.add_argument("--run-id", required=True)
     expand = commands.add_parser("expand")
     expand.add_argument("--run-id", required=True)
+    reconcile = commands.add_parser("reconcile")
+    reconcile.add_argument("--run-id", required=True)
     args = parser.parse_args()
 
     if args.command == "start":
@@ -570,6 +661,8 @@ def main() -> int:
         )
     elif args.command == "expand":
         result = expand_followups(args.root, run_id=args.run_id)
+    elif args.command == "reconcile":
+        result = reconcile_agent_executions(args.root, run_id=args.run_id)
     else:
         result = finalize_run(args.root, run_id=args.run_id)
     _print(result)
