@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from accept_handoff import accept_handoff  # noqa: E402
 from create_handoff import create_handoff  # noqa: E402
 from openfs_runtime import atomic_write_json, read_json  # noqa: E402
+from process_pending_handoffs import process  # noqa: E402
 from run_controller import create_run  # noqa: E402
 
 
@@ -52,7 +53,13 @@ class HandoffTests(unittest.TestCase):
         output_ref = "proposals/sources/RUN-HANDOFF-001/WORK-000001.json"
         atomic_write_json(
             self.root / output_ref,
-            {"run_id": "RUN-HANDOFF-001", "work_item_id": "WORK-000001"},
+            {
+                "run_id": "RUN-HANDOFF-001",
+                "work_item_id": "WORK-000001",
+                "source_receipt": {
+                    "rights": {"acquisition_decision": "evidence-excerpt"}
+                },
+            },
         )
         handoff = create_handoff(
             self.root,
@@ -114,6 +121,25 @@ class HandoffTests(unittest.TestCase):
                 handoff_ref=handoff_ref,
                 allow_disabled_pilot_agent=True,
             )
+
+    def test_pending_processor_accepts_once_and_expands_followup(self):
+        handoff_ref = self.make_handoff()
+        result = process(
+            self.root,
+            allow_disabled_pilot_agent=True,
+            processed_at="2026-08-24T00:02:00Z",
+        )
+        self.assertEqual([handoff_ref], result["accepted_handoff_refs"])
+        self.assertEqual(
+            ["WORK-000013"], result["expansions"][0]["created_work_item_ids"]
+        )
+        second = process(
+            self.root,
+            allow_disabled_pilot_agent=True,
+            processed_at="2026-08-24T00:03:00Z",
+        )
+        self.assertEqual([], second["accepted_handoff_refs"])
+        self.assertEqual([handoff_ref], second["already_accepted_handoff_refs"])
 
 
 if __name__ == "__main__":

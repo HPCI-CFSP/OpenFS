@@ -55,6 +55,7 @@ After the Pilot workflow defines and validates these names, add them at:
 | Variable | Initial value | Meaning |
 |---|---:|---|
 | `OPENFS_COORDINATOR_ENABLED` | `false` | Enables scheduled weekly plan/Issue creation only |
+| `OPENFS_HANDOFF_CONTROL_ENABLED` | `false` | Enables daily Handoff validation and control-PR preparation |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
@@ -114,11 +115,15 @@ Record these decisions in a reviewed pull request or Directive:
    the same ISO week reuses the same Issue.
 5. Set the repository variable `OPENFS_COORDINATOR_ENABLED=true` to enable the
    Monday 00:17 UTC schedule. This still makes no model call.
-6. Configure at least two independent provider paths, approved model IDs, a cost
+6. Manually run **Process OpenFS Agent Handoffs** with `publish_pr=false` after a
+   test Handoff is merged. Inspect its artifact, then test `publish_pr=true`.
+   Set `OPENFS_HANDOFF_CONTROL_ENABLED=true` only after branch protection accepts
+   its control PR and prevents direct merge without review.
+7. Configure at least two independent provider paths, approved model IDs, a cost
    ceiling, and provider-side alerts before adding the research Worker.
-7. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
+8. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
    budget, boundary, assignment, recovery, and Consensus-capacity tests.
-8. Enable provider calls first in manual Pilot mode. Enable unattended production
+9. Enable provider calls first in manual Pilot mode. Enable unattended production
    Runs only after owner review of cost, citations, dissent, false positives, and
    generated pull-request paths.
 
@@ -135,6 +140,10 @@ Weekly operation should create proposal pull requests and exception Issues. It m
 - The Coordinator never receives provider secrets. A discovery or validation
   Worker never receives publication authority. Promotion remains a separate pull
   request path.
+- The **Handoff Controller** runs daily when enabled. It accepts merged,
+  digest-verified Agent outputs, expands deterministic follow-up Work Items, and
+  opens one control-state pull request. If a prior control PR is still open, new
+  Handoffs wait for the next cycle instead of creating a conflicting PR.
 
 ## Optional Codex automation
 

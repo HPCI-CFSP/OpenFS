@@ -105,6 +105,8 @@ REQUIRED_FILES = [
     "tools/publish_github_issue.py",
     "tools/create_handoff.py",
     "tools/accept_handoff.py",
+    "tools/process_pending_handoffs.py",
+    "tools/publish_control_pr.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -118,6 +120,7 @@ REQUIRED_FILES = [
     "site/app.js",
     ".github/workflows/pages.yml",
     ".github/workflows/weekly-coordinator.yml",
+    ".github/workflows/handoff-control.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
