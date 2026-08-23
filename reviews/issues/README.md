@@ -13,3 +13,6 @@ from creating one Issue per Run.
 When the same marker already exists on GitHub, the publisher updates its title and
 sanitized body only when they changed, so later Run references become visible
 without opening a duplicate Issue.
+If every retained Exception in an existing group stops requiring owner action, the
+payload requests that managed Issue be closed. A later recurrence reopens the same
+Issue. A resolved group with no pre-existing payload never creates a new Issue.

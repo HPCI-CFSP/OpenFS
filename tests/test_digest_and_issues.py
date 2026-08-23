@@ -233,6 +233,29 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(3, len(updated["exception_ids"]))
         self.assertEqual("2026-08-24T00:00:00Z", updated["generated_at"])
 
+        for path in (self.root / "reviews" / "exceptions").glob("RUN-*/*.json"):
+            exception = json.loads(path.read_text())
+            exception["status"] = "resolved"
+            path.write_text(json.dumps(exception), encoding="utf-8")
+        resolved_paths = prepare(
+            self.root, generated_at="2026-08-26T00:00:00Z"
+        )
+        resolved = json.loads(resolved_paths[0].read_text())
+        self.assertEqual(marker, resolved["deduplication_marker"])
+        self.assertEqual("closed", resolved["desired_issue_state"])
+
+        first_exception = next(
+            (self.root / "reviews" / "exceptions").glob("RUN-*/*.json")
+        )
+        recurrence = json.loads(first_exception.read_text())
+        recurrence["status"] = "open"
+        first_exception.write_text(json.dumps(recurrence), encoding="utf-8")
+        reopened_paths = prepare(
+            self.root, generated_at="2026-08-27T00:00:00Z"
+        )
+        reopened = json.loads(reopened_paths[0].read_text())
+        self.assertEqual("open", reopened["desired_issue_state"])
+
 
 if __name__ == "__main__":
     unittest.main()

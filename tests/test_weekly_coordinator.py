@@ -243,6 +243,52 @@ class WeeklyCoordinatorTests(unittest.TestCase):
             )
         self.assertEqual(2, len(calls))
 
+    def test_resolved_group_closes_existing_issue_but_never_creates_one(self):
+        calls = []
+        marker = "<!-- openfs-exception-group:EXCGRP-001 -->"
+
+        def request(method, endpoint, body):
+            calls.append((method, endpoint, body))
+            if endpoint.startswith("/issues?"):
+                return [
+                    {
+                        "number": 9,
+                        "html_url": "https://github.com/example/repo/issues/9",
+                        "title": "Open",
+                        "body": marker,
+                        "state": "open",
+                        "labels": [{"name": "openfs-exception"}],
+                    }
+                ]
+            if method == "PATCH" and endpoint == "/issues/9":
+                self.assertEqual("closed", body["state"])
+                return {
+                    "number": 9,
+                    "html_url": "https://github.com/example/repo/issues/9",
+                }
+            raise AssertionError(f"Unexpected request: {method} {endpoint}")
+
+        payload = {
+            "title": "Resolved",
+            "body": marker + "\nResolved",
+            "labels": ["openfs-exception"],
+            "deduplication_marker": marker,
+            "desired_issue_state": "closed",
+        }
+        result = publish(payload, request=request)
+        self.assertEqual("updated", result["publication_status"])
+        self.assertEqual(2, len(calls))
+
+        empty_calls = []
+
+        def empty_request(method, endpoint, body):
+            empty_calls.append((method, endpoint, body))
+            return []
+
+        result = publish(payload, request=empty_request)
+        self.assertEqual("not-found", result["publication_status"])
+        self.assertEqual(1, len(empty_calls))
+
 
 if __name__ == "__main__":
     unittest.main()

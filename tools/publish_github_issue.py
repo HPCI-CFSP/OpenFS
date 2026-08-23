@@ -44,6 +44,9 @@ def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
     issue = payload.get("issue", payload)
     marker = issue["deduplication_marker"]
     expected_labels = set(issue.get("labels", []))
+    desired_state = issue.get("desired_issue_state", "open")
+    if desired_state not in {"open", "closed"}:
+        raise ValueError("desired Issue state must be open or closed")
     existing = request(
         "GET", "/issues?state=all&per_page=100&sort=created&direction=desc", None
     )
@@ -65,11 +68,16 @@ def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
             if (
                 item.get("title") != desired_title
                 or item.get("body", "") != desired_body
+                or item.get("state", "open") != desired_state
             ):
                 updated = request(
                     "PATCH",
                     f"/issues/{item['number']}",
-                    {"title": desired_title, "body": desired_body},
+                    {
+                        "title": desired_title,
+                        "body": desired_body,
+                        "state": desired_state,
+                    },
                 )
                 return {
                     "publication_status": "updated",
@@ -81,6 +89,8 @@ def publish(payload: dict[str, Any], *, request: Request) -> dict[str, Any]:
                 "github_issue_number": item["number"],
                 "github_issue_url": item["html_url"],
             }
+    if desired_state == "closed":
+        return {"publication_status": "not-found", "desired_issue_state": "closed"}
     available_labels = {
         item["name"] for item in request("GET", "/labels?per_page=100", None)
     }

@@ -22,13 +22,18 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def grouped_issue_payload(
-    exceptions: list[tuple[str, dict[str, Any]]], *, generated_at: str
+    exceptions: list[tuple[str, dict[str, Any]]],
+    *,
+    generated_at: str,
+    desired_issue_state: str = "open",
 ) -> dict[str, Any]:
     if not exceptions:
         raise ValueError("Issue group requires at least one Exception")
     fingerprints = {exception_group_key(exception) for _, exception in exceptions}
     if len(fingerprints) != 1:
         raise ValueError("Issue group contains Exceptions with different owner actions")
+    if desired_issue_state not in {"open", "closed"}:
+        raise ValueError("desired Issue state must be open or closed")
     kind, unmet_requirements, publication_blocked = fingerprints.pop()
     group_identity = {
         "exception_kind": kind,
@@ -49,7 +54,12 @@ def grouped_issue_payload(
         f"- Kind: `{kind}`",
         f"- Runs: {', '.join(f'`{item}`' for item in run_ids)}",
         f"- Publication blocked: `{'yes' if publication_blocked else 'no'}`",
+        f"- Desired Issue state: `{desired_issue_state}`",
     ]
+    if desired_issue_state == "closed":
+        safe_details.append(
+            "- Resolution: no Exception in this group currently requires owner action."
+        )
     if unmet_requirements:
         safe_details.append(
             "- Unmet requirements: "
@@ -80,7 +90,12 @@ def grouped_issue_payload(
         "exception_kind": kind,
         "unmet_requirements": list(unmet_requirements),
         "publication_blocked": publication_blocked,
-        "title": f"[OpenFS] Owner action required: {kind}"[:256],
+        "desired_issue_state": desired_issue_state,
+        "title": (
+            f"[OpenFS] Owner action required: {kind}"
+            if desired_issue_state == "open"
+            else f"[OpenFS] Resolved owner action: {kind}"
+        )[:256],
         "body": "\n".join(safe_details),
         "labels": ["openfs-exception", "needs-owner-action"],
         "deduplication_marker": marker,
@@ -100,23 +115,33 @@ def issue_payload(
 
 def prepare(root: Path, *, generated_at: str | None = None) -> list[Path]:
     generated_at = generated_at or isoformat()
-    grouped: dict[
+    all_grouped: dict[
+        tuple[str, tuple[str, ...], bool], list[tuple[str, dict[str, Any]]]
+    ] = {}
+    active_grouped: dict[
         tuple[str, tuple[str, ...], bool], list[tuple[str, dict[str, Any]]]
     ] = {}
     for path in sorted((root / "reviews" / "exceptions").glob("RUN-*/*.json")):
         exception = read_json(path)
-        if exception.get("status") != "open" or not exception.get(
+        entry = (str(path.relative_to(root)), exception)
+        key = exception_group_key(exception)
+        all_grouped.setdefault(key, []).append(entry)
+        if exception.get("status") == "open" and exception.get(
             "requires_owner_action", True
         ):
-            continue
-        grouped.setdefault(exception_group_key(exception), []).append(
-            (str(path.relative_to(root)), exception)
-        )
+            active_grouped.setdefault(key, []).append(entry)
     outputs: list[Path] = []
-    for exceptions in grouped.values():
-        payload = grouped_issue_payload(exceptions, generated_at=generated_at)
+    for key, all_exceptions in all_grouped.items():
+        active_exceptions = active_grouped.get(key)
+        payload = grouped_issue_payload(
+            active_exceptions or all_exceptions,
+            generated_at=generated_at,
+            desired_issue_state="open" if active_exceptions else "closed",
+        )
         safe_id = re.sub(r"[^A-Za-z0-9_.-]", "-", payload["exception_group_id"])
         output = root / "reviews" / "issues" / "groups" / f"{safe_id}.json"
+        if not active_exceptions and not output.exists():
+            continue
         if output.exists():
             existing = read_json(output)
             if existing.get("exception_group_id") != payload["exception_group_id"]:

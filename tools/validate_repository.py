@@ -304,6 +304,13 @@ def validate_issue_payloads(root: Path) -> list[str]:
             errors.append(f"Issue group Exception IDs differ: {path.relative_to(root)}")
         if payload.get("run_ids") != sorted({item["run_id"] for item in exceptions}):
             errors.append(f"Issue group Run IDs differ: {path.relative_to(root)}")
+        active = any(
+            item.get("status") == "open"
+            and item.get("requires_owner_action", True)
+            for item in exceptions
+        )
+        if payload.get("desired_issue_state") != ("open" if active else "closed"):
+            errors.append(f"Issue group desired state differs: {path.relative_to(root)}")
         if payload.get("deduplication_marker") != (
             f"<!-- openfs-exception-group:{group_id} -->"
         ):
