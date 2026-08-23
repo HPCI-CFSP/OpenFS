@@ -10,3 +10,14 @@ all six checks defined by `schemas/run-approval.schema.json`. The readiness gate
 counts only completed Pilot Runs whose coverage, temporal integrity, research
 Consensus, digests, and human checks all pass. Editing a Run or Brief after review
 invalidates the record automatically.
+
+Prepare a default-deny draft with:
+
+```bash
+python3 tools/prepare_run_approval.py --run-id RUN-EXAMPLE-PILOT-001
+```
+
+The command pins the final manifest and Brief digests but sets every check to
+`false`, leaves the reviewer fields empty, and uses status `draft`. A human reviewer
+must inspect the cited artifacts and explicitly complete the record. Agents must not
+turn their own draft into `reviewed-pass`.

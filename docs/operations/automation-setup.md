@@ -151,6 +151,8 @@ Coordinator runs `tools/evaluate_monitor_readiness.py` and blocks the cycle unle
 A Pilot Run approval confirms calibration review only. It does not accept a Claim,
 Finding, Recommendation, scenario, or report. If the approved Run manifest or Brief
 changes, the digest check invalidates that approval and blocks production.
+Use `tools/prepare_run_approval.py --run-id <RUN-ID>` to create a default-deny
+review draft with pinned digests; it deliberately leaves every human check false.
 
 The Weekly Digest groups open Exceptions that share the same kind, unmet
 requirements, and publication-blocking state into one Owner Action. Every original

@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from evaluate_monitor_readiness import evaluate  # noqa: E402
 from openfs_runtime import stable_digest  # noqa: E402
 from prepare_weekly_cycle import build_plan  # noqa: E402
+from prepare_run_approval import prepare  # noqa: E402
 
 
 class MonitorReadinessTests(unittest.TestCase):
@@ -107,6 +108,7 @@ class MonitorReadinessTests(unittest.TestCase):
                 "manifest_digest": stable_digest(manifest),
                 "brief_ref": str(brief_path.relative_to(self.root)),
                 "brief_digest": stable_digest(brief),
+                "prepared_at": "2026-08-21T00:00:00Z",
                 "reviewed_by": "human-owner",
                 "reviewed_at": "2026-08-21T00:00:00Z",
                 "checks": {
@@ -121,6 +123,36 @@ class MonitorReadinessTests(unittest.TestCase):
             },
         )
         return manifest_path, brief_path
+
+    def test_prepared_review_is_default_deny_and_idempotent(self):
+        self.add_reviewed_run()
+        approval_path = (
+            self.root / "reviews" / "run-approvals" / "RUN-TEST-PILOT-001.json"
+        )
+        approval_path.unlink()
+
+        first, output = prepare(
+            self.root,
+            run_id="RUN-TEST-PILOT-001",
+            prepared_at="2026-08-21T00:00:00Z",
+        )
+        second, _ = prepare(
+            self.root,
+            run_id="RUN-TEST-PILOT-001",
+            prepared_at="2026-08-21T00:00:00Z",
+        )
+
+        self.assertEqual(first, second)
+        self.assertEqual("draft", first["status"])
+        self.assertIsNone(first["reviewed_by"])
+        self.assertFalse(any(first["checks"].values()))
+        self.assertTrue(output.is_file())
+        report = evaluate(
+            self.root,
+            monitor_id=self.monitor["monitor_id"],
+            evaluated_at="2026-08-24T00:00:00Z",
+        )
+        self.assertEqual("blocked", report["status"])
 
     def test_ready_requires_digest_pinned_human_reviewed_run(self):
         self.add_reviewed_run()
