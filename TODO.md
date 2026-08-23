@@ -32,7 +32,8 @@
 - [x] Add trusted-base PR path enforcement that does not execute proposed checker code.
 - [x] Implement structured Directive ingestion with public-boundary confirmation and stable provenance.
 - [x] Implement Pilot Run and Work Item creation with leases, expiry recovery, idempotency keys, retries, dead-letter exceptions, and a kill switch.
-- [ ] Configure branch protection, CODEOWNERS, and required status checks.
+- [x] Add CODEOWNERS for control-plane, canonical, and human-approval paths.
+- [ ] Configure branch protection and required status checks in GitHub settings.
 - [x] Enforce immutable action SHAs in every workflow.
 
 ## Phase 2: proposal and independent assessment

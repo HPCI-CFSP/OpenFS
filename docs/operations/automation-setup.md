@@ -85,6 +85,7 @@ Create a branch ruleset or branch-protection rule for `main`:
 
 - require a pull request before merge;
 - require at least one human approval;
+- require review from Code Owners for protected control-plane paths;
 - dismiss stale approvals when new commits are pushed;
 - require the `validate` and `enforce` checks;
 - require conversation resolution;
@@ -92,6 +93,11 @@ Create a branch ruleset or branch-protection rule for `main`:
 - apply the rule to administrators where organization policy allows.
 
 The scheduled agents must never push directly to `main`.
+The repository CODEOWNERS file currently assigns these paths to `@kento`. Replace
+that owner with a write-enabled HPCI-CFSP maintainer team when the team exists;
+do not remove the protected path set merely to reduce review friction. Proposal,
+Assessment, and Handoff paths are intentionally outside CODEOWNERS so ordinary
+multi-Agent research can proceed without making every artifact a human bottleneck.
 
 GitHub reference: <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches>
 

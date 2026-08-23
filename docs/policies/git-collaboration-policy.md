@@ -15,4 +15,4 @@
   and batches control-state changes on a separate coordination branch.
 - Merge conflicts are resolved from artifact identity and provenance, not by choosing the newest free-form document.
 
-The `Enforce Agent Permissions` check runs trusted base-branch policy code and must be a required branch-protection check. Branch protection, CODEOWNERS, merge queue policy, separate bot identities, and permitted automation identities must be configured before automatic promotion is enabled.
+The `Enforce Agent Permissions` check runs trusted base-branch policy code and must be a required branch-protection check. CODEOWNERS protects control-plane, canonical, publication, and human-approval paths without covering ordinary Proposal, Assessment, or Handoff artifacts. Branch protection must require Code Owner review before automatic promotion is enabled; merge queue policy, separate bot identities, and permitted automation identities remain repository-owner settings.

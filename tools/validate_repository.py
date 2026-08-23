@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
+    ".github/CODEOWNERS",
     "LICENSE",
     "NOTICE",
     "THIRD_PARTY_NOTICES.md",
@@ -1527,6 +1528,46 @@ def validate_activation_configuration(root: Path) -> list[str]:
     return errors
 
 
+def validate_codeowners(root: Path) -> list[str]:
+    errors: list[str] = []
+    path = root / ".github" / "CODEOWNERS"
+    rules: dict[str, list[str]] = {}
+    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split()
+        if len(fields) < 2 or not all(owner.startswith("@") for owner in fields[1:]):
+            errors.append(f"CODEOWNERS line {line_number} lacks a valid owner")
+            continue
+        if fields[0] in rules:
+            errors.append(f"CODEOWNERS has duplicate pattern: {fields[0]}")
+        rules[fields[0]] = fields[1:]
+    required_patterns = {
+        "/AGENTS.md",
+        "/.github/**",
+        "/config/**",
+        "/schemas/**",
+        "/skills/**",
+        "/tools/**",
+        "/docs/policies/**",
+        "/docs/security/**",
+        "/data/**",
+        "/knowledge/**",
+        "/roadmaps/**",
+        "/reports/**",
+        "/reviews/directives/**",
+        "/reviews/run-approvals/**",
+        "/LICENSE",
+        "/NOTICE",
+        "/requirements-validation.txt",
+    }
+    missing = sorted(required_patterns - set(rules))
+    if missing:
+        errors.append(f"CODEOWNERS lacks protected control-plane patterns: {missing}")
+    return errors
+
+
 def validate_canonical_claims(root: Path) -> list[str]:
     errors: list[str] = []
     for path in sorted((root / "knowledge" / "claims").glob("CLM-*.json")):
@@ -1697,6 +1738,8 @@ def run(root: Path = ROOT) -> list[str]:
     if (root / "schemas").exists():
         errors.extend(validate_schema_headers(root))
     errors.extend(validate_workflow_action_pins(root))
+    if (root / ".github" / "CODEOWNERS").exists():
+        errors.extend(validate_codeowners(root))
     if (root / "config" / "consensus-policy.json").exists():
         errors.extend(validate_consensus_configuration(root))
     if (root / "config" / "budgets.json").exists():
