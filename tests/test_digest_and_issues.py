@@ -49,6 +49,7 @@ class DigestAndIssueTests(unittest.TestCase):
                 "temporal_integrity_ref": f"runs/{run_id}/temporal-integrity.json",
                 "profile_continuity_ref": f"runs/{run_id}/profile-continuity.json",
                 "followup_effectiveness_ref": f"runs/{run_id}/followup-effectiveness.json",
+                "global_followup_effectiveness_ref": f"runs/{run_id}/global-followup-effectiveness.json",
             },
         )
         self.write_json(
@@ -68,7 +69,19 @@ class DigestAndIssueTests(unittest.TestCase):
             },
         )
         self.write_json(
-            f"runs/{run_id}/inputs/monitor.json", {"maximum_unchecked_days": 7}
+            f"runs/{run_id}/global-followup-effectiveness.json",
+            {
+                "status": "effective",
+                "effective_query_count": 2,
+                "query_count": 2,
+            },
+        )
+        self.write_json(
+            f"runs/{run_id}/inputs/monitor.json",
+            {
+                "maximum_unchecked_days": 7,
+                "persistent_query_families": [{"persistent_query_id": "Q-1"}],
+            },
         )
         self.write_json(
             f"runs/{run_id}/coverage.json",
@@ -95,6 +108,17 @@ class DigestAndIssueTests(unittest.TestCase):
             "requires_owner_action": True,
         }
         self.write_json(f"reviews/exceptions/{run_id}/READINESS.json", exception)
+        self.write_json(
+            f"decisions/{run_id}/DEC-1.json",
+            {
+                "decision_id": "DEC-1",
+                "outcome": "provisional",
+                "dissent_assessment_ids": [],
+                "policy_result": {
+                    "checks": {"minimum_publisher_groups": False}
+                },
+            },
+        )
 
         digest = build_digest(
             self.root,
@@ -110,6 +134,9 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertEqual(0, digest["summary"]["temporal_failure_count"])
         self.assertEqual(1, digest["summary"]["continuity_failure_count"])
         self.assertEqual(0, digest["summary"]["ineffective_followup_count"])
+        self.assertEqual(0, digest["summary"]["ineffective_global_followup_count"])
+        self.assertEqual(1, digest["summary"]["publisher_independence_failure_count"])
+        self.assertEqual(1, digest["summary"]["persistent_query_count"])
         self.assertEqual(1, digest["summary"]["publication_blocked_count"])
         self.assertEqual("passed", digest["runs"][0]["temporal_integrity"])
         self.assertEqual("failed", digest["runs"][0]["profile_continuity"])
@@ -117,6 +144,8 @@ class DigestAndIssueTests(unittest.TestCase):
             "partially-effective", digest["runs"][0]["followup_effectiveness"]
         )
         self.assertEqual(2, digest["runs"][0]["effective_followup_queries"])
+        self.assertEqual("effective", digest["runs"][0]["global_followup_effectiveness"])
+        self.assertEqual(1, digest["runs"][0]["publisher_independence_failures"])
         self.assertTrue(digest["runs"][0]["publication_blocked"])
         self.assertEqual(
             ["profile-continuity"],
@@ -126,6 +155,8 @@ class DigestAndIssueTests(unittest.TestCase):
         self.assertIn("resolve", rendered)
         self.assertIn("blocked", rendered)
         self.assertIn("partially-effective (2/3)", rendered)
+        self.assertIn("global: effective (2/2)", rendered)
+        self.assertIn("persistent 1; publisher gaps 1", rendered)
 
     def test_issue_payload_excludes_untrusted_raw_error_and_is_idempotent(self):
         exception = {
