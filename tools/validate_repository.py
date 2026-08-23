@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     "docs/planning/university-center-baseline.md",
     "docs/planning/presentation-mechanism.md",
     "docs/publication/github-pages.md",
+    "docs/operations/automation-setup.md",
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
     "docs/policies/claim-acceptance.md",
@@ -39,7 +40,7 @@ REQUIRED_FILES = [
     "config/role-permissions.json",
     "config/research-baseline.json",
     "config/scenario-policy.json",
-    "config/domestic-technology-scope.json",
+    "config/global-technology-scope.json",
     "config/publication-policy.json",
     "config/publication-i18n.json",
     "schemas/proposal.schema.json",
@@ -59,7 +60,7 @@ REQUIRED_FILES = [
     "config/monitors/MON-FS-BASELINE-001.json",
     "config/monitors/MON-HPCI-CENTERS-001.json",
     "config/monitors/MON-EMERGING-TOPICS-001.json",
-    "config/monitors/MON-JP-TECH-001.json",
+    "config/monitors/MON-GLOBAL-TECH-001.json",
     "config/monitors/MON-AUTO-TOPICS-001.json",
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
@@ -232,21 +233,24 @@ def validate_research_baseline(root: Path) -> list[str]:
     return errors
 
 
-def validate_domestic_technology_scope(root: Path) -> list[str]:
+def validate_global_technology_scope(root: Path) -> list[str]:
     errors: list[str] = []
-    scope = load_json(root / "config" / "domestic-technology-scope.json")
-    baseline = load_json(root / "config" / "research-baseline.json")
-    topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
+    scope = load_json(root / "config" / "global-technology-scope.json")
     if len(scope.get("technology_categories", [])) < 10:
-        errors.append("domestic technology scope must cover at least ten broad categories")
+        errors.append("global technology scope must cover at least ten broad categories")
     if not scope.get("coverage_requirements", {}).get("search_beyond_seed_list"):
-        errors.append("domestic technology scope must search beyond its seed list")
-    unknown = set(scope.get("topic_ids", [])) - topic_ids
-    if unknown:
-        errors.append(f"domestic technology scope references unknown topics: {sorted(unknown)}")
-    monitor = load_json(root / "config" / "monitors" / "MON-JP-TECH-001.json")
-    if monitor.get("scope_ref") != "config/domestic-technology-scope.json":
-        errors.append("MON-JP-TECH-001 does not reference the canonical domestic scope")
+        errors.append("global technology scope must search beyond known candidates")
+    coverage = scope.get("coverage_requirements", {})
+    if not coverage.get("worldwide_region_coverage"):
+        errors.append("global technology scope must require worldwide region coverage")
+    if scope.get("priority_regions") != ["Japan"]:
+        errors.append("global technology scope must prioritize coverage of Japan")
+    monitor = load_json(root / "config" / "monitors" / "MON-GLOBAL-TECH-001.json")
+    if monitor.get("scope_ref") != "config/global-technology-scope.json":
+        errors.append("MON-GLOBAL-TECH-001 does not reference the canonical global scope")
+    selector = monitor.get("topic_selector", {})
+    if selector.get("catalog_ref") != "config/research-baseline.json" or not selector.get("include_all_active_topics"):
+        errors.append("MON-GLOBAL-TECH-001 must dynamically include all active research topics")
     return errors
 
 
@@ -315,10 +319,6 @@ def validate_publication_configuration(root: Path) -> list[str]:
             f"publication i18n Topic coverage differs: missing={sorted(topic_ids - translated_ids)}, "
             f"unknown={sorted(translated_ids - topic_ids)}"
         )
-    domestic = load_json(root / "config" / "domestic-technology-scope.json")
-    category_ja = i18n.get("domestic_technology", {}).get("technology_categories_ja", [])
-    if len(category_ja) != len(domestic.get("technology_categories", [])):
-        errors.append("publication i18n domestic category counts differ")
     workflow = (root / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
     if "OPENFS_PAGES_ENABLED" not in workflow:
         errors.append("Pages workflow lacks explicit activation variable")
@@ -344,7 +344,7 @@ def validate_scenario_configuration(root: Path) -> list[str]:
         if not scenario.get("center_impacts"):
             errors.append(f"scenario {scenario.get('scenario_id')} has no center impacts")
         if not scenario.get("domestic_technology"):
-            errors.append(f"scenario {scenario.get('scenario_id')} has no domestic technology")
+            errors.append(f"scenario {scenario.get('scenario_id')} has no priority Japan technology comparison")
     criterion_ids = [item.get("criterion_id") for item in policy.get("evaluation_criteria", [])]
     if len(criterion_ids) != len(set(criterion_ids)):
         errors.append("scenario policy has duplicate criterion IDs")
@@ -365,8 +365,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
-    if (root / "config" / "domestic-technology-scope.json").exists():
-        errors.extend(validate_domestic_technology_scope(root))
+    if (root / "config" / "global-technology-scope.json").exists():
+        errors.extend(validate_global_technology_scope(root))
     if (root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json").exists():
         errors.extend(validate_research_topic_configuration(root))
     if (root / "config" / "publication-policy.json").exists():

@@ -13,7 +13,7 @@ The site builder reads only explicitly approved public paths. It does not publis
 - `.github/workflows/pages.yml`: validates, builds, uploads, and deploys the site.
 - `roadmaps/scenarios/accepted/`: future Publication-Gate-approved scenario inputs.
 - `reports/exports/index.json`: future Publication-Gate-approved report index.
-- `config/publication-i18n.json`: English Topic names and Japanese domestic-technology labels used by the public projection.
+- `config/publication-i18n.json`: English Topic names used by the bilingual public projection.
 
 The project site is `https://hpci-cfsp.github.io/OpenFS/`. Visitors can switch between Japanese and English; the selected language is retained locally in the browser.
 
