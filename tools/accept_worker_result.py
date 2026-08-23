@@ -54,6 +54,34 @@ def _validate_contracts(root: Path, refs: list[str]) -> None:
         raise ValueError("Worker artifact contract validation failed: " + "; ".join(errors))
 
 
+def validate_output_identity(
+    invocation: dict[str, Any], outputs: list[dict[str, Any]]
+) -> None:
+    role = invocation["role"]
+    for output in outputs:
+        if output.get("run_id") != invocation["run_id"]:
+            raise ValueError("Worker output belongs to a different Run")
+        if output.get("work_item_id") != invocation["work_item_id"]:
+            raise ValueError("Worker output belongs to a different Work Item")
+        artifact_time = output.get("reviewed_at") or output.get("created_at")
+        if not isinstance(artifact_time, str) or not (
+            _instant(invocation["prepared_at"])
+            <= _instant(artifact_time)
+            <= _instant(invocation["constraints"]["lease_expires_at"])
+        ):
+            raise ValueError("Worker output timestamp falls outside its invocation lease")
+        if role in {"validator", "critic"}:
+            if output.get("reviewer_agent_id") != invocation["agent_id"]:
+                raise ValueError("Worker Assessment belongs to a different reviewer")
+            expected = invocation["provider_binding"]
+            identity = output.get("reviewer_identity", {})
+            for key in ("provider", "model_family", "prompt_profile", "role"):
+                if identity.get(key) != expected.get(key, role):
+                    raise ValueError("Worker Assessment reviewer identity differs")
+        elif output.get("created_by_agent_id") != invocation["agent_id"]:
+            raise ValueError("Worker output belongs to a different creating Agent")
+
+
 def validate_result(
     root: Path, invocation: dict[str, Any], result: dict[str, Any]
 ) -> None:
@@ -161,6 +189,10 @@ def accept(
     _validate_contracts(
         root,
         [invocation_ref, result_ref, *result.get("output_refs", [])],
+    )
+    validate_output_identity(
+        invocation,
+        [read_json(_repository_path(root, ref)) for ref in result.get("output_refs", [])],
     )
     now = _instant(result["completed_at"])
     common = {

@@ -74,6 +74,7 @@ def propose(
     center_id: str,
     draft: dict[str, Any],
     run_id: str,
+    work_item_id: str | None = None,
     agent_id: str,
     agent_registry: dict[str, Any],
     center_registry: dict[str, Any],
@@ -236,6 +237,8 @@ def propose(
         "created_by_agent_id": agent_id,
         "created_at": timestamp,
     }
+    if work_item_id is not None:
+        profile["work_item_id"] = work_item_id
     if inherited_fields:
         profile["predecessor"] = {
             "run_id": predecessor_profile["run_id"],
@@ -302,6 +305,7 @@ def main() -> int:
         center_id=args.center_id,
         draft=read_json(args.draft),
         run_id=args.run_id,
+        work_item_id=args.work_item_id,
         agent_id=args.agent_id,
         agent_registry=read_json(
             run_snapshot_path(args.root, args.run_id, "config/agent-registry.json")

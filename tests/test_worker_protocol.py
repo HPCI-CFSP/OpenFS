@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from accept_worker_result import accept, validate_result  # noqa: E402
+from accept_worker_result import accept, validate_output_identity, validate_result  # noqa: E402
 from openfs_runtime import sha256_file, stable_digest  # noqa: E402
 from prepare_worker_invocation import prepare  # noqa: E402
 
@@ -132,6 +132,21 @@ class WorkerProtocolTests(unittest.TestCase):
         self.assertEqual("provider-a", invocation["provider_binding"]["provider"])
         self.assertEqual(self.output_ref, invocation["constraints"]["output_paths"][0])
         self.assertEqual(64, len(invocation["invocation_digest"]))
+
+    def test_output_identity_is_bound_to_lease(self):
+        invocation = self.invocation()
+        output = {
+            "run_id": self.run_id,
+            "work_item_id": self.work_item_id,
+            "created_by_agent_id": "different-agent",
+            "created_at": "2026-08-24T05:20:00Z",
+        }
+        with self.assertRaisesRegex(ValueError, "different creating Agent"):
+            validate_output_identity(invocation, [output])
+        output["created_by_agent_id"] = self.agent_id
+        output["run_id"] = "RUN-DIFFERENT"
+        with self.assertRaisesRegex(ValueError, "different Run"):
+            validate_output_identity(invocation, [output])
 
     def test_disabled_agent_and_secret_like_payload_fail_closed(self):
         registry = deepcopy(self.registry)
