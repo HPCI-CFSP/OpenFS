@@ -344,6 +344,18 @@ def validate_source_acquisition_configuration(root: Path) -> list[str]:
             errors.append(
                 f"monitor {monitor.get('monitor_id')} cannot meet minimum sources per query"
             )
+        minimum_evidence = int(
+            monitor.get("minimum_evidence_sources_per_claim", 2)
+        )
+        if (
+            monitor.get("query_families")
+            and monitor.get("synthesis_product") != "center-profile"
+            and slots < minimum_evidence
+        ):
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} cannot meet minimum Evidence "
+                "sources per Claim"
+            )
     policy = load_json(root / "config" / "acquisition-policy.json")
     required_rights_states = {
         "permitted",
