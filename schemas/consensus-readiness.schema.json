@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/consensus-readiness.schema.json",
+  "title": "OpenFS Consensus Capacity Preflight",
+  "type": "object",
+  "required": ["schema_version", "run_id", "evaluated_at", "status", "pilot_mode", "registry_digest", "policy_id", "object_type_results", "unmet_requirements", "effect"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["ready", "incomplete"]},
+    "pilot_mode": {"type": "boolean"},
+    "registry_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy_id": {"type": "string"},
+    "object_type_results": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+    "unmet_requirements": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

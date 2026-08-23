@@ -8,6 +8,14 @@ Consensus is a deterministic eligibility check, not proof of truth. The gate eva
 
 Reviewers perform a blind first review. An assessment records its reviewer, agent independence group, verdict, confidence, checks, and objections. Registry data, not self-declared model text, is authoritative for independence groups in production.
 
+At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
+capacity before any research result exists. Reviewers in the Proposal author's
+independence group may provide an assessment, but they cannot satisfy the
+independent-support-group requirement. Unconfigured provider/model placeholders
+and deterministic control-plane agents never count. An incomplete preflight
+creates an Exception and permits only provisional research; it does not fabricate
+quorum or stop ordinary public-information discovery.
+
 ## Source lineage
 
 The number of URLs is not the number of independent sources. Proposals state their `origin_group_ids`; derivative publications from one origin count once.

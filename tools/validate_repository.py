@@ -61,6 +61,7 @@ REQUIRED_FILES = [
     "schemas/evidence-bundle.schema.json",
     "schemas/coverage-report.schema.json",
     "schemas/change-report.schema.json",
+    "schemas/consensus-readiness.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/system-scenario.schema.json",
@@ -89,6 +90,7 @@ REQUIRED_FILES = [
     "tools/consensus_gate.py",
     "tools/evaluate_coverage.py",
     "tools/detect_source_changes.py",
+    "tools/check_consensus_readiness.py",
     "queue/README.md",
     "runs/README.md",
     "state/README.md",
@@ -328,6 +330,21 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
                     "previous_run_id"
                 ):
                     errors.append(f"Run {run_id} previous Run identity differs")
+        readiness_ref = manifest.get("consensus_readiness_ref")
+        if readiness_ref:
+            readiness_path = root / readiness_ref
+            if not readiness_path.is_file():
+                errors.append(
+                    f"Run {run_id} Consensus readiness report is missing: {readiness_ref}"
+                )
+            else:
+                readiness = load_json(readiness_path)
+                if readiness.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} Consensus readiness identity differs")
+                if readiness.get("status") != manifest.get("metrics", {}).get(
+                    "consensus_readiness"
+                ):
+                    errors.append(f"Run {run_id} Consensus readiness status differs")
         snapshots = manifest.get("configuration_snapshots", {})
         for source_ref, expected_digest in manifest.get("policy_hashes", {}).items():
             snapshot_ref = snapshots.get(source_ref)

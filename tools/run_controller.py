@@ -20,6 +20,7 @@ from openfs_runtime import (
     stable_digest,
     utc_now,
 )
+from check_consensus_readiness import evaluate_run, record_readiness
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -282,7 +283,7 @@ def create_run(
     for item in work_items:
         atomic_write_json(queue_path / f"{item['work_item_id']}.json", item)
     atomic_write_json(run_path, manifest)
-    return manifest
+    return record_readiness(root, evaluate_run(root, run_id))
 
 
 def _agent(root: Path, agent_id: str, *, run_id: str | None = None) -> dict[str, Any]:
