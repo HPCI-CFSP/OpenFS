@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1.0",
+  "registry_status": "template",
+  "agents": [
+    {
+      "agent_id": "orchestrator-local-01",
+      "enabled": false,
+      "role": "orchestrator",
+      "provider": "deterministic-local",
+      "model_family": "none",
+      "prompt_profile": "run-control-v1",
+      "agent_independence_group": "non-voting-control-plane",
+      "network_access": "none",
+      "data_clearance": "public",
+      "write_scope": [
+        "queue",
+        "runs",
+        "state",
+        "reviews/exceptions"
+      ]
+    },
+    {
+      "agent_id": "discovery-public-01",
+      "enabled": false,
+      "role": "discovery",
+      "provider": "OpenAI",
+      "model_family": "GPT-5 Codex",
+      "prompt_profile": "public-source-discovery-v1",
+      "agent_independence_group": "openai-gpt5-codex-interactive",
+      "network_access": "public-web",
+      "data_clearance": "public",
+      "write_scope": [
+        "proposals",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "extraction-public-01",
+      "enabled": false,
+      "role": "extraction",
+      "provider": "OpenAI",
+      "model_family": "GPT-5 Codex",
+      "prompt_profile": "evidence-extraction-v1",
+      "agent_independence_group": "openai-gpt5-codex-interactive",
+      "network_access": "none",
+      "data_clearance": "public",
+      "write_scope": [
+        "proposals/evidence",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "validator-public-01",
+      "enabled": false,
+      "role": "validator",
+      "provider": "OpenAI",
+      "model_family": "GPT-5 Codex",
+      "prompt_profile": "citation-validation-v1",
+      "agent_independence_group": "openai-gpt5-codex-interactive",
+      "network_access": "public-web",
+      "data_clearance": "public",
+      "write_scope": [
+        "assessments",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "validator-public-02",
+      "enabled": false,
+      "role": "validator",
+      "provider": "unconfigured",
+      "model_family": "unconfigured",
+      "prompt_profile": "citation-validation-v1",
+      "agent_independence_group": "unconfigured-validator-b",
+      "network_access": "public-web",
+      "data_clearance": "public",
+      "write_scope": [
+        "assessments",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "critic-public-01",
+      "enabled": false,
+      "role": "critic",
+      "provider": "unconfigured",
+      "model_family": "unconfigured",
+      "prompt_profile": "falsification-v1",
+      "agent_independence_group": "unconfigured-critic-c",
+      "network_access": "public-web",
+      "data_clearance": "public",
+      "write_scope": [
+        "assessments",
+        "reviews/dissent",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "synthesis-public-01",
+      "enabled": false,
+      "role": "synthesis",
+      "provider": "OpenAI",
+      "model_family": "GPT-5 Codex",
+      "prompt_profile": "structured-synthesis-v1",
+      "agent_independence_group": "openai-gpt5-codex-interactive",
+      "network_access": "none",
+      "data_clearance": "public",
+      "write_scope": [
+        "proposals/claims",
+        "proposals/center-profiles",
+        "runs"
+      ]
+    },
+    {
+      "agent_id": "consensus-local-01",
+      "enabled": true,
+      "role": "consensus",
+      "provider": "deterministic-local",
+      "model_family": "none",
+      "prompt_profile": "consensus-gate-v1",
+      "agent_independence_group": "non-voting-control-plane",
+      "network_access": "none",
+      "data_clearance": "public",
+      "write_scope": [
+        "decisions",
+        "runs"
+      ]
+    }
+  ]
+}
