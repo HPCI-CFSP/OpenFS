@@ -24,12 +24,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual("public-only", result["publication"]["information_plane"])
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
+            self.assertTrue(all("research_questions" not in topic for topic in result["topics"]))
+            self.assertTrue(all("outputs" not in topic for topic in result["topics"]))
+            public_cross_18 = next(topic for topic in result["topics"] if topic["topic_id"] == "CROSS-18")
+            self.assertEqual("HPCI関連技術動向の継続調査", public_cross_18["title_ja"])
+            self.assertEqual("Continuous Survey of HPCI-Related Technology Trends", public_cross_18["title_en"])
             self.assertNotIn("domestic_technology", result)
             self.assertEqual(12, len(result["technology_landscape"]["categories"]))
             self.assertTrue(
                 all(set(category) == {"ja", "en"} for category in result["technology_landscape"]["categories"])
             )
-            self.assertEqual(["Japan"], result["technology_landscape"]["priority_regions"])
+            self.assertNotIn("scope_rule", result["technology_landscape"])
+            self.assertNotIn("priority_rule", result["technology_landscape"])
+            self.assertNotIn("priority_regions", result["technology_landscape"])
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
@@ -38,6 +45,18 @@ class PagesSiteTests(unittest.TestCase):
             index = (output / "index.html").read_text(encoding="utf-8")
             self.assertIn('href="#technology-landscape"', index)
             self.assertNotIn('href="#domestic"', index)
+            app = (output / "app.js").read_text(encoding="utf-8")
+            public_bundle = "\n".join((index, app, rendered))
+            for internal_policy_phrase in (
+                "調査対象地域",
+                "日本発技術を優先追跡",
+                "Geographic scope",
+                "Priority coverage for Japan",
+                "priority_regions",
+                "priority_rule",
+                "scope_rule",
+            ):
+                self.assertNotIn(internal_policy_phrase, public_bundle)
 
     def test_publication_policy_rejects_candidate_scenario_status(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))

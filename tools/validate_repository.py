@@ -319,6 +319,9 @@ def validate_publication_configuration(root: Path) -> list[str]:
             f"publication i18n Topic coverage differs: missing={sorted(topic_ids - translated_ids)}, "
             f"unknown={sorted(translated_ids - topic_ids)}"
         )
+    unknown_ja_overrides = set(i18n.get("topic_title_overrides_ja", {})) - topic_ids
+    if unknown_ja_overrides:
+        errors.append(f"publication i18n has unknown Japanese Topic overrides: {sorted(unknown_ja_overrides)}")
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
     technology_i18n = i18n.get("technology_landscape", {})
     category_ja = technology_i18n.get("technology_categories_ja", [])

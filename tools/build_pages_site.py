@@ -114,13 +114,16 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     i18n = load_json(root / policy["included_i18n"])
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
+    public_title_overrides_ja = i18n.get("topic_title_overrides_ja", {})
     topics = []
     for topic in baseline["topics"]:
         topics.append(
             {
                 "topic_id": topic["topic_id"],
                 "domain": topic["domain"],
-                "title_ja": topic["title_ja"],
+                "title_ja": public_title_overrides_ja.get(
+                    topic["topic_id"], topic["title_ja"]
+                ),
                 "title_en": i18n["topic_titles_en"][topic["topic_id"]],
                 "status": topic["status"],
                 "review_cadence": topic["review_cadence"],
@@ -129,8 +132,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     if topic["topic_id"] in initial_ids
                     else topic.get("catalog_origin", "human-directive")
                 ),
-                "research_questions": topic["research_questions"],
-                "outputs": topic["outputs"],
             }
         )
 
@@ -154,7 +155,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         },
         "topics": topics,
         "technology_landscape": {
-            "scope_id": technology_scope["scope_id"],
             "categories": [
                 {"ja": ja, "en": en}
                 for ja, en in zip(
@@ -163,16 +163,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     strict=True,
                 )
             ],
-            "scope_rule": {
-                "ja": i18n["technology_landscape"]["scope_rule_ja"],
-                "en": technology_scope["scope_rule"],
-            },
-            "priority_rule": {
-                "ja": i18n["technology_landscape"]["priority_rule_ja"],
-                "en": technology_scope["priority_rule"],
-            },
-            "priority_regions": technology_scope["priority_regions"],
-            "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "scenarios": scenarios,
         "reports": reports,
