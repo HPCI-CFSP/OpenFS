@@ -43,6 +43,29 @@ def stable_digest(value: Any) -> str:
     return sha256_bytes(canonical_json(value))
 
 
+def manifest_control_digest(manifest: dict[str, Any]) -> str:
+    """Hash immutable Run controls while allowing concurrent progress updates."""
+    control_keys = (
+        "schema_version",
+        "run_id",
+        "task_id",
+        "monitor_id",
+        "mode",
+        "base_commit",
+        "started_at",
+        "assignment_contract_version",
+        "policy_hashes",
+        "configuration_snapshots",
+        "skill_snapshots",
+        "budget",
+        "directive_ids",
+        "directive_hashes",
+        "directive_snapshots",
+        "run_identity_hash",
+    )
+    return stable_digest({key: manifest.get(key) for key in control_keys})
+
+
 def exception_group_key(exception: dict[str, Any]) -> tuple[str, tuple[str, ...], bool]:
     """Return the stable owner-action grouping dimensions for an Exception."""
     kind = exception.get(

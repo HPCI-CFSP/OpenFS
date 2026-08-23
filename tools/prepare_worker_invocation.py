@@ -10,7 +10,14 @@ from pathlib import Path
 from typing import Any
 
 from check_agent_permissions import check_paths
-from openfs_runtime import atomic_write_json, isoformat, read_json, sha256_file, stable_digest
+from openfs_runtime import (
+    atomic_write_json,
+    isoformat,
+    manifest_control_digest,
+    read_json,
+    sha256_file,
+    stable_digest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,7 +75,7 @@ def prepare(
         raise RuntimeError("Worker invocation requires the current Work Item lease")
     if _instant(lease["expires_at"]) <= _instant(timestamp):
         raise RuntimeError("Worker invocation cannot use an expired lease")
-    if manifest.get("status") not in {"planned", "running"}:
+    if manifest.get("status") not in {"created", "running"}:
         raise RuntimeError("Worker invocation requires a non-terminal Run")
 
     snapshots = manifest.get("configuration_snapshots", {})
@@ -144,7 +151,7 @@ def prepare(
             "work_item_ref": work_item_ref,
             "work_item_digest": stable_digest(work_item),
             "manifest_ref": manifest_ref,
-            "manifest_digest": stable_digest(manifest),
+            "manifest_control_digest": manifest_control_digest(manifest),
             "agent_registry_ref": registry_ref,
             "agent_registry_digest": stable_digest(registry),
             "role_permissions_ref": permissions_ref,

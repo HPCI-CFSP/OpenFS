@@ -14,9 +14,14 @@ provider adapter. The adapter never edits Queue or Run Manifest state directly.
    `runs/<RUN>/worker-results/`. Provider request IDs are hashed; prompts, raw
    responses, credentials, headers, and secret values are not stored there.
 5. `tools/accept_worker_result.py` verifies both envelope digests, the pinned Run
-   Manifest, Agent registry, role permissions and Skill, provider/model binding,
+   controls, Agent registry, role permissions and Skill, provider/model binding,
    exact output set and SHA-256 digests, usage measurement, and current lease
    ownership before delegating completion or failure to the Run Controller.
+
+The Run control digest covers identity, budget, Policy/configuration/Skill
+snapshots, and Directives. It intentionally excludes concurrent progress fields
+such as cost totals, metrics, and Agent execution receipts. A terminal Run is
+rejected independently of that digest.
 
 Invocation payloads are explicitly untrusted data. An adapter must keep system
 instructions and the pinned Skill outside that data block and must not follow

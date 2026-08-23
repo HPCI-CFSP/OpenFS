@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from openfs_runtime import read_json, sha256_file, stable_digest
+from openfs_runtime import manifest_control_digest, read_json, sha256_file, stable_digest
 from run_controller import complete_work_item, fail_work_item
 
 
@@ -134,10 +134,11 @@ def validate_result(
     manifest_ref = provenance["manifest_ref"]
     if manifest_ref != f"runs/{invocation['run_id']}/manifest.json":
         raise ValueError("Worker invocation Run manifest reference differs")
-    if stable_digest(read_json(_repository_path(root, manifest_ref))) != provenance[
-        "manifest_digest"
-    ]:
-        raise ValueError("pinned Run manifest changed after invocation preparation")
+    manifest = read_json(_repository_path(root, manifest_ref))
+    if manifest.get("status") not in {"created", "running"}:
+        raise RuntimeError("Worker result requires a non-terminal Run")
+    if manifest_control_digest(manifest) != provenance["manifest_control_digest"]:
+        raise ValueError("pinned Run controls changed after invocation preparation")
     for ref_key, digest_key in (
         ("agent_registry_ref", "agent_registry_digest"),
         ("role_permissions_ref", "role_permissions_digest"),

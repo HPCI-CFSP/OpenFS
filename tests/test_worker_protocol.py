@@ -65,7 +65,7 @@ class WorkerProtocolTests(unittest.TestCase):
             f"runs/{self.run_id}/manifest.json",
             {
                 "run_id": self.run_id,
-                "status": "running",
+                "status": "created",
                 "mode": "production",
                 "started_at": "2026-08-24T05:00:00Z",
                 "budget": {
@@ -285,9 +285,14 @@ class WorkerProtocolTests(unittest.TestCase):
 
         manifest_ref = f"runs/{self.run_id}/manifest.json"
         manifest = json.loads((self.root / manifest_ref).read_text())
+        manifest["cost"] = {"reported_total_usd": 0.02}
+        manifest["metrics"] = {"work_items_completed": 1}
+        self.write(manifest_ref, manifest)
+        validate_result(self.root, invocation, result)
+
         manifest["budget"]["maximum_cost_usd"] = 0.001
         self.write(manifest_ref, manifest)
-        with self.assertRaisesRegex(ValueError, "Run manifest changed"):
+        with self.assertRaisesRegex(ValueError, "Run controls changed"):
             validate_result(self.root, invocation, result)
 
         manifest["budget"]["maximum_cost_usd"] = 1.0
