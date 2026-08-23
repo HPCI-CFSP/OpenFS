@@ -11,12 +11,27 @@
     {
       "control_id": "provider-worker-workflow",
       "path": ".github/workflows/research-worker.yml",
-      "purpose": "Dispatch provider-backed public-Web Work Items under Run budgets and leases."
+      "purpose": "Dispatch provider-backed public-Web Work Items under Run budgets and leases.",
+      "minimum_size_bytes": 1000,
+      "required_markers": [
+        "OPENFS_RESEARCH_ENABLED",
+        "evaluate_operational_readiness.py",
+        "--require-ready",
+        "prepare_worker_invocation.py",
+        "accept_worker_result.py"
+      ]
     },
     {
       "control_id": "provider-worker-adapter",
       "path": "tools/execute_provider_work_item.py",
-      "purpose": "Bind role Skills to configured providers without exposing secrets to artifacts."
+      "purpose": "Bind role Skills to configured providers without exposing secrets to artifacts.",
+      "minimum_size_bytes": 1000,
+      "required_markers": [
+        "WORKER_PROTOCOL_VERSION = \"0.1.0\"",
+        "worker-result.schema.json",
+        "result_digest",
+        "environment-only-not-artifact"
+      ]
     }
   ],
   "required_owner_controls": [

@@ -23,6 +23,10 @@ The report checks:
   passes its budget, Consensus-capacity, calibrated-policy, and reviewed-Pilot gate;
 - every required external control has a complete, unexpired owner attestation.
 
+Component existence is not a filename-only check. The activation policy also
+declares a minimum size and required protocol markers. An empty workflow or adapter
+stub therefore remains blocked.
+
 `config/activation-policy.json` defines these requirements.
 `config/owner-controls.json` starts entirely `unverified`. After checking the real
 GitHub or provider setting, a human owner may change one control to `verified` and

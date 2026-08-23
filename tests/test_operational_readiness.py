@@ -34,6 +34,8 @@ class OperationalReadinessTests(unittest.TestCase):
                         "control_id": "worker",
                         "path": "tools/worker.py",
                         "purpose": "Execute provider work.",
+                        "minimum_size_bytes": 20,
+                        "required_markers": ["WORKER_PROTOCOL_VERSION"],
                     }
                 ],
                 "required_owner_controls": ["budget"],
@@ -98,7 +100,10 @@ class OperationalReadinessTests(unittest.TestCase):
             ".github/workflows/worker.yml",
             "if: vars.OPENFS_WORKER_ENABLED == 'true'\n",
         )
-        self.write("tools/worker.py", "# tested fixture\n")
+        self.write(
+            "tools/worker.py",
+            "WORKER_PROTOCOL_VERSION = 'fixture'\n# tested fixture\n",
+        )
         self.write(
             "config/owner-controls.json",
             {
@@ -130,7 +135,7 @@ class OperationalReadinessTests(unittest.TestCase):
     @patch("evaluate_operational_readiness.evaluate_monitor")
     def test_expired_owner_attestation_fails_closed(self, monitor):
         self.write(".github/workflows/worker.yml", "OPENFS_WORKER_ENABLED\n")
-        self.write("tools/worker.py", "# fixture\n")
+        self.write("tools/worker.py", "WORKER_PROTOCOL_VERSION = 'fixture'\n")
         controls = json.loads((self.root / "config/owner-controls.json").read_text())
         controls["controls"][0].update(
             {

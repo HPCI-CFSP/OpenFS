@@ -56,13 +56,36 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
 
     production_components = []
     for item in policy["required_production_components"]:
-        present = _repository_path(root, item["path"]).is_file()
+        component_path = _repository_path(root, item["path"])
+        text = component_path.read_text(encoding="utf-8") if component_path.is_file() else ""
+        missing_markers = [
+            marker for marker in item["required_markers"] if marker not in text
+        ]
+        size = component_path.stat().st_size if component_path.is_file() else 0
+        present = (
+            component_path.is_file()
+            and size >= int(item["minimum_size_bytes"])
+            and not missing_markers
+        )
+        if not component_path.is_file():
+            reason = f"missing: {item['purpose']}"
+        elif size < int(item["minimum_size_bytes"]):
+            reason = (
+                f"component is too small for the declared contract: {size} < "
+                f"{item['minimum_size_bytes']} bytes"
+            )
+        elif missing_markers:
+            reason = "component lacks required contract markers: " + ", ".join(
+                missing_markers
+            )
+        else:
+            reason = item["purpose"]
         production_components.append(
             {
                 "control_id": item["control_id"],
                 "ref": item["path"],
                 "passed": present,
-                "reason": item["purpose"] if present else f"missing: {item['purpose']}",
+                "reason": reason,
             }
         )
 
