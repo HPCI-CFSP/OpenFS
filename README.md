@@ -80,13 +80,14 @@ The FS1.0 record and current primary evidence for every HPCI center remain incom
 
 ## Local validation
 
-Structural validation and unit tests use the Python standard library. Full
-Draft 2020-12 instance validation uses the exact versions in
-`requirements-validation.txt`.
+Dependency-free structural validation runs first. Full Draft 2020-12 instance
+validation, GitHub Actions YAML validation, and their unit tests use the exact
+versions in `requirements-validation.txt`.
 
 ```bash
 python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/validate_workflows.py
 python3 tools/validate_json_schemas.py
 python3 -m unittest discover -s tests -v
 ```

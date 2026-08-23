@@ -32,10 +32,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install pinned validator
-        run: python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
       - name: Validate promotion inputs
         run: |
           python3 tools/validate_repository.py
+          python3 tools/validate_workflows.py
           python3 tools/validate_json_schemas.py
           python3 -m unittest discover -s tests -v
       - name: Check for an open Claim promotion PR

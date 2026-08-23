@@ -128,6 +128,7 @@ REQUIRED_FILES = [
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
     "tools/validate_json_schemas.py",
+    "tools/validate_workflows.py",
     "tools/promote_research_topic.py",
     "tools/promote_claim.py",
     "tools/record_claim_status.py",
