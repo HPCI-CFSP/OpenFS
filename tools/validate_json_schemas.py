@@ -68,6 +68,10 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
     }
     if ref.startswith("runs/") and path.name in run_names:
         return run_names[path.name]
+    if ref.startswith("runs/") and "/worker-invocations/" in ref:
+        return "worker-invocation.schema.json"
+    if ref.startswith("runs/") and "/worker-results/" in ref:
+        return "worker-result.schema.json"
     if ref.startswith("proposals/sources/"):
         return (
             "discovery-no-result.schema.json"

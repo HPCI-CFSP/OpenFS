@@ -53,6 +53,12 @@ twice: during normal validation and by a `pull_request_target` job that executes
 trusted base-branch policy code. Repository branch protection must require the
 trusted `Enforce Agent Permissions` check before merge.
 
+Provider-backed unattended execution additionally follows
+`docs/operations/provider-worker-protocol.md`. A provider adapter receives a
+secret-free invocation and writes only declared role outputs plus a structured
+result. It must not edit Queue, Manifest, Policy, registry, or canonical paths;
+only the trusted result-acceptance step may update Run control state.
+
 ## Role outputs
 
 | Role | Intended output | Must not do |

@@ -26,6 +26,9 @@
 - schema-bound data exchange between stages;
 - least-privilege, stage-specific identities;
 - no shared job containing both untrusted code and provider or write credentials;
+- provider adapters consume digest-pinned, secret-free Worker invocations and
+  cannot update trusted Queue or Manifest state; a separate control step verifies
+  output and usage receipts before completion;
 - pinned and reviewed automation dependencies;
 - budgets, timeouts, retry limits, concurrency limits, and kill switch;
 - append-only provenance and alerting for protected-policy changes;
