@@ -15,7 +15,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
+          fetch-depth: 0
           persist-credentials: false
+      - name: Check registered agent branch permissions
+        if: github.event_name == 'pull_request'
+        env:
+          OPENFS_HEAD_REF: ${{ github.head_ref }}
+          OPENFS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          OPENFS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 tools/check_agent_branch.py
       - name: Validate repository
         run: python3 tools/validate_repository.py
       - name: Run unit tests

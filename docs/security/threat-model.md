@@ -29,4 +29,9 @@
 - pinned and reviewed automation dependencies;
 - budgets, timeouts, retry limits, concurrency limits, and kill switch;
 - append-only provenance and alerting for protected-policy changes;
+- trusted-base pull-request enforcement so proposed code cannot weaken its own role check;
 - adversarial tests and incident-response exercises.
+
+## Residual boundary
+
+Repository instructions guide a cooperative agent; they are not an operating-system sandbox. A compromised process holding a human's GitHub credential could use a non-agent branch identity. Scheduled agents therefore require separate least-privilege bot identities, and protected branches must require trusted checks and human-owned CODEOWNERS review for policy, workflow, registry, and permission changes.

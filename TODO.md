@@ -8,6 +8,7 @@
 - [x] Add initial consensus, autonomy, source-retention, model-change, and NDA-export policies.
 - [x] Add Golden and Adversarial evaluation fixtures.
 - [x] Add a deterministic consensus-gate prototype and repository validation.
+- [x] Add an initial FS-derived research baseline with explicit source and coverage gaps.
 - [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
 - [ ] Select and add a project license.
 - [ ] Confirm repository visibility and member access policy.
@@ -16,6 +17,9 @@
 ## Phase 1: Git collaboration harness
 
 - [ ] Add GitHub Issue templates and the `research-directive` label.
+- [x] Add first-run Agent onboarding and default-deny role/path permissions.
+- [x] Enforce registered Agent branch permissions during pull-request validation.
+- [x] Add trusted-base PR path enforcement that does not execute proposed checker code.
 - [ ] Implement Directive ingestion and schema validation.
 - [ ] Implement Run and Work Item creation with leases and idempotency keys.
 - [ ] Configure branch protection, CODEOWNERS, and required status checks.
@@ -28,6 +32,7 @@
 - [ ] Implement blind validator and falsification roles.
 - [ ] Resolve agent independence groups from the registry rather than trusting assessment input.
 - [ ] Calibrate consensus thresholds on reviewed evaluation cases.
+- [ ] Add the missing FS1.0 and FS2.0 final reports and map inherited, revised, and retired research topics.
 
 ## Phase 3: canonical promotion
 

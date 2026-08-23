@@ -7,10 +7,26 @@ These instructions apply to every AI agent working in this repository.
 Before changing the repository, read:
 
 1. `README.md`
-2. `docs/architecture.md`
-3. the policies relevant to the assigned role
-4. the task and monitor being processed
-5. the applicable schema and skill
+2. `docs/agent-onboarding.md`
+3. `docs/architecture.md`
+4. the policies relevant to the assigned role
+5. `docs/research-baseline/README.md` when creating or changing research scope
+6. the task, monitor, Run, and Work Item being processed
+7. the applicable schema and skill
+
+## Safe default for a new agent
+
+Start read-only. Do not modify files or call side-effecting external tools until all of the following are known:
+
+- assigned `agent_id` and role;
+- Task, Monitor, Run, and Work Item IDs, or an explicit human-authorized maintainer request;
+- public or private information plane;
+- permitted output paths from `config/role-permissions.json`;
+- stopping condition and budget.
+
+If any item is missing, report the missing context and stop before mutation. Do not invent a role, enable a disabled Agent or Monitor, weaken a Policy, or broaden permissions to make the task proceed.
+
+Before writing, run `python3 tools/check_agent_permissions.py --role <role> <planned-path>...`. The check is necessary but does not grant authority that the assignment did not provide.
 
 ## Non-negotiable boundaries
 
@@ -21,6 +37,7 @@ Before changing the repository, read:
 - Keep observed facts, forecasts, interpretations, and recommendations distinguishable.
 - Do not silently overwrite evidence. Add a new version and link it with `supersedes`, `was_revision_of`, or an equivalent schema field.
 - Do not invent citations, dates, quotations, model identities, source origins, or confidence values.
+- Do not silently remove, merge, narrow, or retire a research-baseline topic. Propose the change through `OFS-002` with lineage and a reviewed human Directive.
 
 ## Write permissions by role
 
@@ -29,6 +46,7 @@ Before changing the repository, read:
 - The deterministic consensus tool writes decisions.
 - Only the promotion workflow may update `data/`, `knowledge/`, accepted roadmaps, report exports, or generated `TBD.md` content.
 - Agents must never push directly to a protected default branch.
+- Scheduled research agents must not use the `maintainer` role. `maintainer` is reserved for an explicit interactive request from an authorized human.
 
 ## Review independence
 

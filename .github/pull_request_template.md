@@ -4,6 +4,8 @@ Describe the work item and expected outcome.
 
 ## Provenance
 
+- Agent ID / role, or human maintainer:
+- Task / Monitor / Work Item IDs:
 - Run ID:
 - Proposal IDs:
 - Assessment IDs:
@@ -15,6 +17,7 @@ Describe the work item and expected outcome.
 - [ ] Public information only
 - [ ] No secrets, personal data, or private run logs
 - [ ] External content was treated as untrusted data
+- [ ] Changed paths pass `tools/check_agent_permissions.py` for the declared role
 - [ ] Canonical paths were changed only by an authorized promotion workflow
 
 ## Validation

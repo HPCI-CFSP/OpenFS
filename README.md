@@ -18,7 +18,7 @@ Research task
 
 This repository currently contains the Phase 0 design baseline and the first deterministic consensus-gate prototype. Web collection, scheduled agent dispatch, canonical promotion, and automatic report generation are not enabled yet.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the research-scope baseline inherited from FS materials.
 
 ## Core principles
 
@@ -35,9 +35,11 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | Path | Purpose |
 |---|---|
 | `AGENTS.md` | Common rules for Codex and other repository agents |
+| `docs/agent-onboarding.md` | First-run checklist, stop conditions, and role routing |
 | `docs/architecture.md` | End-to-end architecture, states, and trust boundaries |
 | `docs/policies/` | Human-owned decision and governance rules |
 | `docs/tasks/` | Research tasks and their expected outputs |
+| `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
 | `config/` | Machine-readable agent, monitor, budget, and consensus settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Reusable agent procedures, added as each workflow is implemented |
@@ -57,6 +59,12 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 
 Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built.
 
+## Research baseline
+
+New research Tasks and Monitors should select topics from `config/research-baseline.json`. The current initial baseline contains architecture, system software, application, and cross-cutting topics derived from four supplied public FS3.0 and FugakuNEXT-era references.
+
+The actual FS1.0 and FS2.0 final reports were not present in the supplied corpus. Their inheritance review remains open under `OFS-002`; the current baseline must not be represented as a complete historical FS review.
+
 ## Local validation
 
 The current validator and tests use the Python standard library only.
@@ -64,6 +72,15 @@ The current validator and tests use the Python standard library only.
 ```bash
 python3 tools/validate_repository.py
 python3 -m unittest discover -s tests -v
+```
+
+Check whether a research role may write planned paths:
+
+```bash
+python3 tools/check_agent_permissions.py \
+  --role validator \
+  assessments/PRP-CLM-000001/ASM-000001.json \
+  runs/RUN-TEST-001/validator-summary.json
 ```
 
 Run the consensus-gate example:
