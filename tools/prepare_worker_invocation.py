@@ -24,6 +24,8 @@ SENSITIVE_KEYS = {
     "secret",
     "token",
 }
+PROVIDER_ROLES = {"discovery", "extraction", "validator", "critic", "synthesis"}
+PLACEHOLDER_BINDINGS = {"", "none", "unconfigured", "deterministic-local"}
 
 
 def _instant(value: str) -> datetime:
@@ -86,6 +88,13 @@ def prepare(
         raise RuntimeError("provider Worker cannot invoke a disabled Agent")
     if agent.get("role") != work_item.get("required_role"):
         raise ValueError("Agent role differs from the Work Item")
+    if agent.get("role") not in PROVIDER_ROLES:
+        raise ValueError("Work Item role is not eligible for a provider Worker")
+    if (
+        str(agent.get("provider", "")).lower() in PLACEHOLDER_BINDINGS
+        or str(agent.get("model_family", "")).lower() in PLACEHOLDER_BINDINGS
+    ):
+        raise ValueError("provider Worker requires a configured provider and model")
     if agent.get("data_clearance") != "public":
         raise ValueError("public OpenFS Worker requires public data clearance")
     if agent.get("network_access") not in {"none", "public-web"}:

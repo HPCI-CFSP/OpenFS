@@ -1057,6 +1057,7 @@ def _complete_work_item(
     agent_id: str,
     output_refs: list[str],
     usage: dict[str, Any] | None = None,
+    worker_execution: dict[str, Any] | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
     path = root / "queue" / run_id / f"{work_item_id}.json"
@@ -1103,12 +1104,38 @@ def _complete_work_item(
         raise ValueError(
             "production Work Item completion requires cost_usd and measurement_note"
         )
+    if worker_execution is not None:
+        required_worker_fields = {
+            "invocation_ref",
+            "invocation_digest",
+            "result_ref",
+            "result_digest",
+            "provider",
+            "model_family",
+            "resolved_model_version",
+            "request_id_digest",
+        }
+        if set(worker_execution) != required_worker_fields:
+            raise ValueError("worker_execution fields differ from the control contract")
+        for key in ("invocation_ref", "result_ref"):
+            relative = PurePosixPath(str(worker_execution[key]))
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError(f"worker_execution {key} is not repository-relative")
+            if not root.joinpath(*relative.parts).is_file():
+                raise ValueError(f"worker_execution {key} does not exist")
+        for key in ("invocation_digest", "result_digest"):
+            if not re.fullmatch(r"[0-9a-f]{64}", str(worker_execution[key])):
+                raise ValueError(f"worker_execution {key} is invalid")
+        if not worker_execution["provider"] or not worker_execution["model_family"]:
+            raise ValueError("worker_execution provider binding is empty")
     timestamp = isoformat(now)
     item["status"] = "completed"
     item["output_refs"] = output_refs
     item["output_digests"] = output_digests
     if usage is not None:
         item["usage"] = usage
+    if worker_execution is not None:
+        item["worker_execution"] = worker_execution
     item["completed_by_agent_id"] = agent_id
     item["completion_mode"] = "leased-local"
     item["completed_at"] = timestamp
@@ -2000,6 +2027,7 @@ def complete_work_item(
     agent_id: str,
     output_refs: list[str],
     usage: dict[str, Any] | None = None,
+    worker_execution: dict[str, Any] | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
     return _run_control(
@@ -2010,6 +2038,7 @@ def complete_work_item(
         agent_id=agent_id,
         output_refs=output_refs,
         usage=usage,
+        worker_execution=worker_execution,
         now=now,
     )
 

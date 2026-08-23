@@ -61,6 +61,21 @@
     "output_digests": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
     "completed_by_agent_id": {"type": "string"},
     "completion_mode": {"enum": ["leased-local", "merged-handoff"]},
+    "worker_execution": {
+      "type": "object",
+      "required": ["invocation_ref", "invocation_digest", "result_ref", "result_digest", "provider", "model_family", "resolved_model_version", "request_id_digest"],
+      "properties": {
+        "invocation_ref": {"type": "string"},
+        "invocation_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "result_ref": {"type": "string"},
+        "result_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "provider": {"type": "string", "minLength": 1},
+        "model_family": {"type": "string", "minLength": 1},
+        "resolved_model_version": {"type": ["string", "null"]},
+        "request_id_digest": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
     "handoff_ref": {"type": "string"},
     "usage": {
       "type": "object",

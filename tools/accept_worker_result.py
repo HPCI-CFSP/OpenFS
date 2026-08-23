@@ -31,6 +31,29 @@ def _repository_path(root: Path, ref: str) -> Path:
     return root.joinpath(*relative.parts)
 
 
+def _validate_contracts(root: Path, refs: list[str]) -> None:
+    from jsonschema import Draft202012Validator, FormatChecker
+    from validate_json_schemas import contract_schema, schema_registry
+
+    schemas, registry = schema_registry(root)
+    errors: list[str] = []
+    for ref in refs:
+        path = _repository_path(root, ref)
+        payload = read_json(path)
+        schema_name = contract_schema(path, root, payload)
+        if schema_name is None:
+            errors.append(f"no artifact contract is mapped for {ref}")
+            continue
+        validator = Draft202012Validator(
+            schemas[schema_name], registry=registry, format_checker=FormatChecker()
+        )
+        for error in validator.iter_errors(payload):
+            location = "/".join(str(item) for item in error.absolute_path) or "$"
+            errors.append(f"{ref} [{schema_name}] {location}: {error.message}")
+    if errors:
+        raise ValueError("Worker artifact contract validation failed: " + "; ".join(errors))
+
+
 def validate_result(
     root: Path, invocation: dict[str, Any], result: dict[str, Any]
 ) -> None:
@@ -135,6 +158,10 @@ def accept(
     invocation = read_json(_repository_path(root, invocation_ref))
     result = read_json(_repository_path(root, result_ref))
     validate_result(root, invocation, result)
+    _validate_contracts(
+        root,
+        [invocation_ref, result_ref, *result.get("output_refs", [])],
+    )
     now = _instant(result["completed_at"])
     common = {
         "root": root,
@@ -148,6 +175,16 @@ def accept(
             **common,
             output_refs=result["output_refs"],
             usage=result["usage"],
+            worker_execution={
+                "invocation_ref": invocation_ref,
+                "invocation_digest": invocation["invocation_digest"],
+                "result_ref": result_ref,
+                "result_digest": result["result_digest"],
+                "provider": result["provider"]["provider"],
+                "model_family": result["provider"]["model_family"],
+                "resolved_model_version": result["provider"]["resolved_model_version"],
+                "request_id_digest": result["provider"]["request_id_digest"],
+            },
         )
     error = result["error"]
     return fail_work_item(

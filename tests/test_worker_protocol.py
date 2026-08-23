@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -11,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from accept_worker_result import validate_result  # noqa: E402
+from accept_worker_result import accept, validate_result  # noqa: E402
 from openfs_runtime import sha256_file, stable_digest  # noqa: E402
 from prepare_worker_invocation import prepare  # noqa: E402
 
@@ -20,6 +21,14 @@ class WorkerProtocolTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
+        (self.root / "schemas").mkdir()
+        for name in (
+            "worker-invocation.schema.json",
+            "worker-result.schema.json",
+            "discovery-no-result.schema.json",
+            "source-discovery-result.schema.json",
+        ):
+            shutil.copy2(ROOT / "schemas" / name, self.root / "schemas" / name)
         self.run_id = "RUN-WORKER-TEST"
         self.work_item_id = "WORK-000001"
         self.agent_id = "discovery-test"
@@ -58,6 +67,13 @@ class WorkerProtocolTests(unittest.TestCase):
                 "run_id": self.run_id,
                 "status": "running",
                 "mode": "production",
+                "started_at": "2026-08-24T05:00:00Z",
+                "budget": {
+                    "maximum_run_minutes": 120,
+                    "maximum_work_items": 10,
+                    "maximum_sources_per_monitor": 10,
+                    "maximum_cost_usd": 1.0,
+                },
                 "configuration_snapshots": {
                     "config/agent-registry.json": self.registry_ref,
                     "config/role-permissions.json": self.permissions_ref,
@@ -124,6 +140,12 @@ class WorkerProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "disabled Agent"):
             self.invocation()
 
+        placeholder = deepcopy(self.registry)
+        placeholder["agents"][0]["provider"] = "unconfigured"
+        self.write(self.registry_ref, placeholder)
+        with self.assertRaisesRegex(ValueError, "configured provider"):
+            self.invocation()
+
         self.write(self.registry_ref, self.registry)
         item = deepcopy(self.work_item)
         item["payload"]["api_key"] = "must-not-enter-artifact"
@@ -162,6 +184,17 @@ class WorkerProtocolTests(unittest.TestCase):
         }
         result = {**core, "result_digest": stable_digest(core)}
         validate_result(self.root, invocation, result)
+
+        invocation_ref = f"runs/{self.run_id}/worker-invocations/{invocation['invocation_id']}.json"
+        result_ref = f"runs/{self.run_id}/worker-results/{result['result_id']}.json"
+        self.write(invocation_ref, invocation)
+        self.write(result_ref, result)
+        with self.assertRaisesRegex(ValueError, "artifact contract validation"):
+            accept(self.root, invocation_ref=invocation_ref, result_ref=result_ref)
+        still_leased = json.loads(
+            (self.root / f"queue/{self.run_id}/{self.work_item_id}.json").read_text()
+        )
+        self.assertEqual("leased", still_leased["status"])
 
         self.write(self.output_ref, {"public": "changed after result"})
         with self.assertRaisesRegex(ValueError, "missing or changed"):
@@ -205,6 +238,75 @@ class WorkerProtocolTests(unittest.TestCase):
         self.write(f"queue/{self.run_id}/{self.work_item_id}.json", changed_item)
         with self.assertRaisesRegex(ValueError, "changed after invocation"):
             validate_result(self.root, invocation, result)
+
+    def test_acceptance_updates_control_state_through_run_controller(self):
+        manifest_path = self.root / f"runs/{self.run_id}/manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["budget"]["maximum_cost_usd"] = 0.02
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        invocation = self.invocation()
+        self.write(
+            self.output_ref,
+            {
+                "schema_version": "0.1.0",
+                "result_id": "NORESULT-AAAAAAAAAAAA",
+                "object_type": "discovery_no_result",
+                "run_id": self.run_id,
+                "work_item_id": self.work_item_id,
+                "created_by_agent_id": self.agent_id,
+                "created_at": "2026-08-24T05:19:00Z",
+                "query_receipt": {"query": "public HPC roadmap"},
+                "assignment_scope": {"candidate_slot": 1},
+                "disposition": "no-eligible-responsive-source",
+            },
+        )
+        core = {
+            "schema_version": "0.1.0",
+            "result_id": "WRES-CCCCCCCCCCCCCCCC",
+            "invocation_id": invocation["invocation_id"],
+            "invocation_digest": invocation["invocation_digest"],
+            "agent_id": self.agent_id,
+            "status": "completed",
+            "completed_at": "2026-08-24T05:20:00Z",
+            "provider": {
+                "provider": "provider-a",
+                "model_family": "model-a",
+                "resolved_model_version": "model-a-202608",
+                "request_id_digest": "c" * 64,
+                "finish_reason": "stop",
+            },
+            "usage": {
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "cost_usd": 0.03,
+                "measurement_note": "Provider usage response and price table v1.",
+            },
+            "output_refs": [self.output_ref],
+            "output_digests": {self.output_ref: sha256_file(self.root / self.output_ref)},
+        }
+        result = {**core, "result_digest": stable_digest(core)}
+        invocation_ref = f"runs/{self.run_id}/worker-invocations/{invocation['invocation_id']}.json"
+        result_ref = f"runs/{self.run_id}/worker-results/{result['result_id']}.json"
+        self.write(invocation_ref, invocation)
+        self.write(result_ref, result)
+
+        completed = accept(
+            self.root, invocation_ref=invocation_ref, result_ref=result_ref
+        )
+        self.assertEqual("completed", completed["status"])
+        self.assertEqual(0.03, completed["usage"]["cost_usd"])
+        persisted = json.loads(
+            (self.root / f"queue/{self.run_id}/{self.work_item_id}.json").read_text()
+        )
+        self.assertNotIn("lease", persisted)
+        self.assertEqual("leased-local", persisted["completion_mode"])
+        self.assertEqual(result_ref, persisted["worker_execution"]["result_ref"])
+        self.assertEqual(
+            result["result_digest"], persisted["worker_execution"]["result_digest"]
+        )
+        stopped = json.loads(manifest_path.read_text())
+        self.assertEqual("stopped", stopped["status"])
+        self.assertEqual("maximum-cost-usd", stopped["stop"]["reason"])
 
 
 if __name__ == "__main__":
