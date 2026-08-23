@@ -10,3 +10,9 @@ reports. Recommendation Claims are excluded from this automatic path.
 
 Do not edit a promoted record in place. A correction creates a new reviewed
 Proposal and a superseding append-only record.
+
+`claims/index.json` and the repository-root `TBD.md` are deterministic generated
+views. `tools/promote_claim.py` refreshes both in the same operation;
+`python3 tools/generate_knowledge_views.py` may be used for deterministic repair.
+The generator never reads Proposal or provisional Decision directories as
+standalone knowledge.

@@ -149,6 +149,9 @@ def promote(
             or provenance.get("decision_ref") != decision_ref
         ):
             raise RuntimeError("canonical Claim ID already exists with different provenance")
+        from generate_knowledge_views import generate
+
+        generate(root)
         return output, existing
 
     policy_path = (
@@ -174,6 +177,9 @@ def promote(
         promoted_at=promoted_at or isoformat(),
     )
     atomic_write_json(output, canonical)
+    from generate_knowledge_views import generate
+
+    generate(root)
     return output, canonical
 
 

@@ -12,6 +12,7 @@ from typing import Any
 
 from openfs_runtime import exception_group_key, language_in_scope, stable_digest
 from register_source import canonicalize_url, publisher_authority
+from generate_knowledge_views import build_index, render_tbd
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +37,7 @@ REQUIRED_FILES = [
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
     "knowledge/README.md",
+    "knowledge/claims/index.json",
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
@@ -55,6 +57,7 @@ REQUIRED_FILES = [
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
+    "schemas/knowledge-index.schema.json",
     "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
@@ -112,6 +115,7 @@ REQUIRED_FILES = [
     "tools/generate_scenario_views.py",
     "tools/promote_research_topic.py",
     "tools/promote_claim.py",
+    "tools/generate_knowledge_views.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
     "tools/openfs_runtime.py",
@@ -1460,6 +1464,20 @@ def validate_canonical_claims(root: Path) -> list[str]:
     return errors
 
 
+def validate_knowledge_views(root: Path) -> list[str]:
+    errors: list[str] = []
+    index_path = root / "knowledge" / "claims" / "index.json"
+    tbd_path = root / "TBD.md"
+    if not index_path.is_file() or not tbd_path.is_file():
+        return errors
+    expected = build_index(root)
+    if load_json(index_path) != expected:
+        errors.append("Canonical knowledge index is stale or non-deterministic")
+    if tbd_path.read_text(encoding="utf-8") != render_tbd(expected):
+        errors.append("TBD.md differs from accepted canonical knowledge")
+    return errors
+
+
 def run(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     errors.extend(validate_required_files(root))
@@ -1484,6 +1502,7 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_scenario_configuration(root))
     if (root / "knowledge" / "claims").exists():
         errors.extend(validate_canonical_claims(root))
+        errors.extend(validate_knowledge_views(root))
     if (root / "config" / "global-technology-scope.json").exists():
         errors.extend(validate_global_technology_scope(root))
     if (root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json").exists():

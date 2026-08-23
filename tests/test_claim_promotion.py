@@ -90,6 +90,13 @@ class ClaimPromotionTests(unittest.TestCase):
         self.assertEqual("accepted", canonical["claim"]["status"])
         self.assertEqual(self.proposal_ref, canonical["provenance"]["proposal_ref"])
         self.assertEqual(64, len(canonical["promotion_digest"]))
+        index = json.loads(
+            (self.root / "knowledge" / "claims" / "index.json").read_text()
+        )
+        self.assertEqual(1, index["claim_count"])
+        self.assertIn(
+            "A tested public fact.", (self.root / "TBD.md").read_text()
+        )
 
         second_output, second = promote(
             self.root,

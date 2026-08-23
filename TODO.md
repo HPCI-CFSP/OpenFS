@@ -54,7 +54,7 @@
 - [ ] Extend canonical promotion to Findings and reviewed Center Profiles.
 - [x] Generate dependency-impact promotion blocks for changed or unavailable Sources without treating search omission as withdrawal.
 - [x] Enforce unresolved dependency-impact blocks in Claim promotion.
-- [ ] Generate indexes and `TBD.md` from accepted records.
+- [x] Generate deterministic indexes and `TBD.md` from accepted canonical Claims only.
 - [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
 - [ ] Add promotion pull requests and rollback support.
 
