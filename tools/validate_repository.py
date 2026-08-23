@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     "docs/planning/presentation-mechanism.md",
     "docs/publication/github-pages.md",
     "docs/operations/automation-setup.md",
+    "docs/operations/production-readiness.md",
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
     "knowledge/README.md",
@@ -56,6 +57,8 @@ REQUIRED_FILES = [
     "config/hpci-center-registry.json",
     "config/publication-policy.json",
     "config/publication-i18n.json",
+    "config/activation-policy.json",
+    "config/owner-controls.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
@@ -98,6 +101,9 @@ REQUIRED_FILES = [
     "schemas/global-followup-effectiveness.schema.json",
     "schemas/run-approval.schema.json",
     "schemas/monitor-readiness.schema.json",
+    "schemas/activation-policy.schema.json",
+    "schemas/owner-controls.schema.json",
+    "schemas/operational-readiness.schema.json",
     "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
@@ -161,6 +167,7 @@ REQUIRED_FILES = [
     "tools/prepare_claim_promotions.py",
     "tools/publish_promotion_pr.py",
     "tools/evaluate_monitor_readiness.py",
+    "tools/evaluate_operational_readiness.py",
     "tools/prepare_run_approval.py",
     "queue/README.md",
     "runs/README.md",
@@ -1469,6 +1476,51 @@ def validate_scenario_configuration(root: Path) -> list[str]:
     return errors
 
 
+def validate_activation_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    policy = load_json(root / "config" / "activation-policy.json")
+    attestations = load_json(root / "config" / "owner-controls.json")
+
+    def unique_ids(items: list[dict[str, Any]], label: str) -> set[str]:
+        values = [item.get("control_id", "") for item in items]
+        if len(values) != len(set(values)):
+            errors.append(f"activation configuration has duplicate {label} control IDs")
+        return set(values)
+
+    workflow_ids = unique_ids(policy.get("required_workflow_gates", []), "workflow")
+    component_ids = unique_ids(
+        policy.get("required_production_components", []), "component"
+    )
+    if workflow_ids & component_ids:
+        errors.append("activation workflow and component control IDs overlap")
+
+    required_owner = policy.get("required_owner_controls", [])
+    if len(required_owner) != len(set(required_owner)):
+        errors.append("activation policy has duplicate owner control IDs")
+    attested_owner = unique_ids(attestations.get("controls", []), "owner")
+    if set(required_owner) != attested_owner:
+        errors.append("owner-control attestations differ from activation policy")
+
+    path_items = [
+        (item.get("workflow_ref", ""), item.get("variable", ""))
+        for item in policy.get("required_workflow_gates", [])
+    ]
+    path_items.extend(
+        (item.get("path", ""), None)
+        for item in policy.get("required_production_components", [])
+    )
+    for ref, variable in path_items:
+        parts = Path(ref).parts
+        if not ref or Path(ref).is_absolute() or ".." in parts:
+            errors.append(f"activation reference is not repository-relative: {ref}")
+            continue
+        if variable:
+            path = root / ref
+            if not path.is_file() or variable not in path.read_text(encoding="utf-8"):
+                errors.append(f"activation workflow lacks declared gate {variable}: {ref}")
+    return errors
+
+
 def validate_canonical_claims(root: Path) -> list[str]:
     errors: list[str] = []
     for path in sorted((root / "knowledge" / "claims").glob("CLM-*.json")):
@@ -1651,6 +1703,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
+    if (root / "config" / "activation-policy.json").exists():
+        errors.extend(validate_activation_configuration(root))
     if (root / "knowledge" / "claims").exists():
         errors.extend(validate_canonical_claims(root))
         errors.extend(validate_claim_status_events(root))

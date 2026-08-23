@@ -164,6 +164,10 @@ spend limits remain an independent owner setup requirement.
 
 ### Production readiness gate
 
+Use the aggregate procedure in `docs/operations/production-readiness.md` before
+enabling any unattended Worker. It distinguishes repository checks from
+expiring owner attestations for GitHub and provider settings.
+
 An enabled Monitor is not sufficient to start unattended production. The weekly
 Coordinator runs `tools/evaluate_monitor_readiness.py` and blocks the cycle unless:
 

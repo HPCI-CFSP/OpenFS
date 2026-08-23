@@ -47,6 +47,10 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "skill-registry.schema.json"
     if ref == "config/hpci-center-registry.json":
         return "hpci-center-registry.schema.json"
+    if ref == "config/activation-policy.json":
+        return "activation-policy.schema.json"
+    if ref == "config/owner-controls.json":
+        return "owner-controls.schema.json"
     if ref.startswith("queue/"):
         return "work-item.schema.json"
     if ref.endswith("/manifest.json") and ref.startswith("runs/"):

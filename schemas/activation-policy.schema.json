@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/activation-policy.schema.json",
+  "title": "OpenFS Activation Policy",
+  "type": "object",
+  "required": ["schema_version", "required_workflow_gates", "required_production_components", "required_owner_controls", "production_monitor_minimum_manual_runs", "effect"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "required_workflow_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["control_id", "workflow_ref", "variable"],
+        "properties": {
+          "control_id": {"type": "string", "minLength": 1},
+          "workflow_ref": {"type": "string", "pattern": "^\\.github/workflows/[^/]+\\.yml$"},
+          "variable": {"type": "string", "pattern": "^OPENFS_[A-Z_]+$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "required_production_components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["control_id", "path", "purpose"],
+        "properties": {
+          "control_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "purpose": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "required_owner_controls": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "production_monitor_minimum_manual_runs": {"type": "integer", "minimum": 1},
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

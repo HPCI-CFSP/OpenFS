@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1.0",
+  "required_workflow_gates": [
+    {"control_id": "coordinator-gate", "workflow_ref": ".github/workflows/weekly-coordinator.yml", "variable": "OPENFS_COORDINATOR_ENABLED"},
+    {"control_id": "review-gate", "workflow_ref": ".github/workflows/weekly-review.yml", "variable": "OPENFS_REVIEW_ENABLED"},
+    {"control_id": "handoff-gate", "workflow_ref": ".github/workflows/handoff-control.yml", "variable": "OPENFS_HANDOFF_CONTROL_ENABLED"},
+    {"control_id": "promotion-gate", "workflow_ref": ".github/workflows/claim-promotion.yml", "variable": "OPENFS_PROMOTION_ENABLED"},
+    {"control_id": "pages-gate", "workflow_ref": ".github/workflows/pages.yml", "variable": "OPENFS_PAGES_ENABLED"}
+  ],
+  "required_production_components": [
+    {
+      "control_id": "provider-worker-workflow",
+      "path": ".github/workflows/research-worker.yml",
+      "purpose": "Dispatch provider-backed public-Web Work Items under Run budgets and leases."
+    },
+    {
+      "control_id": "provider-worker-adapter",
+      "path": "tools/execute_provider_work_item.py",
+      "purpose": "Bind role Skills to configured providers without exposing secrets to artifacts."
+    }
+  ],
+  "required_owner_controls": [
+    "branch-protection-and-required-checks",
+    "actions-pull-request-permission",
+    "workflow-activation-variables",
+    "provider-secrets-and-data-boundary",
+    "provider-hard-spend-limit",
+    "human-review-duty"
+  ],
+  "production_monitor_minimum_manual_runs": 1,
+  "effect": "Unattended provider-backed research remains disabled unless every repository check, enabled-Monitor readiness report, and unexpired owner attestation passes."
+}
