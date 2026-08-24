@@ -29,6 +29,18 @@ class PageStructureParser(HTMLParser):
 
 
 class PagesSiteTests(unittest.TestCase):
+    def test_pr_preview_is_artifact_only_and_read_only(self):
+        workflow = (
+            ROOT / ".github" / "workflows" / "pages-preview.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("pull_request:", workflow)
+        self.assertIn("contents: read", workflow)
+        self.assertIn("actions/upload-artifact@", workflow)
+        self.assertIn("retention-days: 14", workflow)
+        self.assertNotIn("pages: write", workflow)
+        self.assertNotIn("id-token: write", workflow)
+        self.assertNotIn("actions/deploy-pages@", workflow)
+
     def test_page_fragment_navigation_has_unique_existing_targets(self):
         parser = PageStructureParser()
         parser.feed((ROOT / "site" / "index.html").read_text(encoding="utf-8"))

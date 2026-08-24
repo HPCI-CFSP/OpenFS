@@ -11,6 +11,8 @@ The site builder reads only explicitly approved public paths. It does not publis
 - `site/`: static HTML, CSS, and JavaScript.
 - `tools/build_pages_site.py`: creates `_site/` and public data from approved inputs.
 - `.github/workflows/pages.yml`: validates, builds, uploads, and deploys the site.
+- `.github/workflows/pages-preview.yml`: builds a non-deployed review artifact for
+  same-repository pull requests that change Pages inputs.
 - `roadmaps/scenarios/accepted/`: future Publication-Gate-approved scenario inputs.
 - `reports/exports/index.json`: future Publication-Gate-approved report index.
 - `config/publication-i18n.json`: English Topic names and Japanese technology-landscape labels used by the bilingual public projection.
@@ -50,3 +52,23 @@ python3 tools/build_pages_site.py --output _site
 ```
 
 Open `_site/index.html` directly or serve `_site/` with a local static server. The generated `_site/` directory is disposable build output and is not committed.
+
+## Pull-request preview before merge
+
+GitHub's official `actions/deploy-pages` PR-preview input is not publicly
+available. OpenFS therefore does not deploy a PR over the production Pages site.
+For a same-repository PR that changes a Pages input:
+
+1. Wait for **Build OpenFS Pages Preview** to pass.
+2. Open that workflow run from the PR Checks tab.
+3. Download `openfs-pages-preview-pr-<PR number>` from **Artifacts**.
+4. Extract it and open `index.html`, or serve the directory with
+   `python3 -m http.server 8000 --directory <directory>`.
+5. Check Japanese/English switching, the Technology landscape tab, desktop and
+   mobile widths, and confirm that no candidate Scenario or Report is exposed.
+
+The Preview job has only `contents: read`. It does not request `pages: write` or
+`id-token: write`, does not call `actions/deploy-pages`, and retains the artifact
+for 14 days. Pull requests from forks are skipped because their proposed code is
+not executed by this preview job. A shareable hosted PR URL would require a
+separate preview hosting service or repository and a separate security review.
