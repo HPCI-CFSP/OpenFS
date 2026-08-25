@@ -257,6 +257,39 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertIn("minimum_model_families", result["unmet_requirements"])
         self.assertIn("minimum_providers", result["unmet_requirements"])
 
+    def test_overall_support_cannot_hide_a_refuted_unit(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["unit_assessments"][0]["verdict"] = "refute"
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("support_verdict_has_non_support_units" in item for item in result["integrity_errors"])
+        )
+
+    def test_overall_support_requires_passing_checks_and_supporting_sources(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        first_check = next(iter(review["unit_assessments"][0]["checks"]))
+        review["unit_assessments"][0]["checks"][first_check] = "fail"
+        review["primary_source_checks"][0]["outcome"] = "contradicts"
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("support_verdict_has_non_passing_checks" in item for item in result["integrity_errors"])
+        )
+        self.assertTrue(
+            any("support_verdict_has_non_supporting_sources" in item for item in result["integrity_errors"])
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

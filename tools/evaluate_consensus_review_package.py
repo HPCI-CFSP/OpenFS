@@ -194,6 +194,45 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
                 for selector in requirements:
                     if (unit_id, selector) not in conclusive_selectors:
                         review_errors.append(f"primary_source_coverage_mismatch:{review_id}:{unit_id}:{selector}")
+        if review.get("overall_verdict") == "support":
+            non_support_units = [
+                item.get("unit_id", "<missing>")
+                for item in assessments
+                if item.get("verdict") != "support"
+            ]
+            if non_support_units:
+                review_errors.append(
+                    f"support_verdict_has_non_support_units:{review_id}:{','.join(sorted(non_support_units))}"
+                )
+            non_passing_checks = [
+                f"{item.get('unit_id', '<missing>')}:{check}={outcome}"
+                for item in assessments
+                for check, outcome in item.get("checks", {}).items()
+                if outcome != "pass"
+            ]
+            if non_passing_checks:
+                review_errors.append(
+                    f"support_verdict_has_non_passing_checks:{review_id}:{','.join(sorted(non_passing_checks))}"
+                )
+            non_supporting_sources = [
+                f"{item.get('unit_id', '<missing>')}:{item.get('selector', '<missing>')}={item.get('outcome', '<missing>')}"
+                for item in primary_checks
+                if item.get("outcome") != "supports"
+            ]
+            if non_supporting_sources:
+                review_errors.append(
+                    f"support_verdict_has_non_supporting_sources:{review_id}:{','.join(sorted(non_supporting_sources))}"
+                )
+            blocking_objections = [
+                f"{item.get('unit_id', '<missing>')}:{objection.get('severity', '<missing>')}"
+                for item in assessments
+                for objection in item.get("objections", [])
+                if objection.get("severity") in {"major", "critical"}
+            ]
+            if review.get("critical_objections") or blocking_objections:
+                review_errors.append(
+                    f"support_verdict_has_blocking_objections:{review_id}"
+                )
         if review.get("reviewer", {}).get("independence_group") in disallowed:
             review_errors.append(f"disallowed_independence_group:{review_id}")
         integrity_errors.extend(review_errors)

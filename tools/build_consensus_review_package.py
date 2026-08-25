@@ -437,6 +437,9 @@ milestone records, {summary['source_count']} registered sources,
    Registry, and `registry_snapshot_digest` is the SHA-256 of its exact Git object.
 6. Run schema and repository validation. Consensus remains incomplete until the
    configured policy passes and a human makes the required high-impact decision.
+   An overall `support` vote is eligible only when every unit supports, every
+   required check passes, every required primary-source check supports, and no
+   major or critical objection remains.
 
 ## 日本語要約
 

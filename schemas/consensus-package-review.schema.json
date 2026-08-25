@@ -86,5 +86,29 @@
     "critical_objections": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "reviewed_at": {"type": "string", "format": "date-time"}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"overall_verdict": {"const": "support"}}, "required": ["overall_verdict"]},
+      "then": {
+        "properties": {
+          "primary_source_checks": {
+            "items": {"properties": {"outcome": {"const": "supports"}}}
+          },
+          "unit_assessments": {
+            "items": {
+              "properties": {
+                "verdict": {"const": "support"},
+                "checks": {"additionalProperties": {"const": "pass"}},
+                "objections": {
+                  "items": {"properties": {"severity": {"const": "minor"}}}
+                }
+              }
+            }
+          },
+          "critical_objections": {"maxItems": 0}
+        }
+      }
+    }
+  ],
   "additionalProperties": false
 }
