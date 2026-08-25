@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from build_pages_site import (  # noqa: E402
     build,
     collect_consensus_receipts,
+    collect_memory_roadmap,
     collect_scenarios,
     collect_topic_summaries,
 )
@@ -223,6 +224,40 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual([], result["consensus_receipts"])
             self.assertEqual([], result["scenarios"])
             self.assertEqual([], result["reports"])
+            self.assertEqual(
+                "MEMORY-ROADMAP-EXPORT-001",
+                result["memory_roadmap"]["export_id"],
+            )
+            self.assertEqual(
+                {"start_year": 2026, "end_year": 2032},
+                result["memory_roadmap"]["horizon"],
+            )
+            self.assertEqual(11, len(result["memory_roadmap"]["technologies"]))
+            self.assertTrue(
+                any(
+                    milestone["year"] == 2032
+                    for lane in result["memory_roadmap"]["lanes"]
+                    for milestone in lane["milestones"]
+                )
+            )
+            self.assertTrue(
+                any(
+                    milestone["year"] is None
+                    for lane in result["memory_roadmap"]["lanes"]
+                    for milestone in lane["milestones"]
+                )
+            )
+            self.assertEqual(
+                3,
+                len(
+                    {
+                        lane["vendor"]
+                        for lane in result["memory_roadmap"]["lanes"]
+                        if lane["technology_id"] == "MEMTECH-HBM"
+                    }
+                ),
+            )
+            self.assertNotIn("publication", result["memory_roadmap"])
             self.assertEqual("public-only", result["publication"]["information_plane"])
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
@@ -253,6 +288,23 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue(
                 all("publication" not in summary for summary in result["research_summaries"])
             )
+            for summary in result["research_summaries"]:
+                represented_topics = {
+                    topic_id
+                    for finding in summary["findings"]
+                    for topic_id in finding["topic_ids"]
+                }
+                self.assertEqual(set(summary["topic_ids"]), represented_topics)
+            app02_findings = [
+                finding
+                for summary in result["research_summaries"]
+                for finding in summary["findings"]
+                if "APP-02" in finding["topic_ids"]
+            ]
+            self.assertTrue(app02_findings)
+            self.assertTrue(
+                all("富岳" in finding["statement_ja"] for finding in app02_findings)
+            )
             self.assertNotIn("domestic_technology", result)
             self.assertEqual(12, len(result["technology_landscape"]["categories"]))
             self.assertTrue(
@@ -268,6 +320,8 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("Illustrative archetypes", rendered)
             self.assertIn("SUM-MEMORY-PILOT-003", rendered)
             self.assertIn("https://www.usenix.org/conference/nsdi26", rendered)
+            self.assertIn("SRC-MEM037", rendered)
+            self.assertIn("MEMTECH-SOCAMM", rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
             self.assertIn('href="#technology-landscape"', index)
             self.assertNotIn('href="#domestic"', index)
@@ -277,14 +331,77 @@ class PagesSiteTests(unittest.TestCase):
                 self.assertNotIn("日本発技術を優先", public_copy)
                 self.assertNotIn("Priority coverage for Japan", public_copy)
             self.assertIn('id="topic-dialog"', index)
+            self.assertIn('id="roadmap-dialog"', index)
+            self.assertIn('id="memory-roadmap-timeline"', index)
+            self.assertNotIn('data-i18n="scopeMetric"', index)
             self.assertIn("openTopicDetail", app)
+            self.assertIn("openRoadmapMilestone", app)
+            self.assertIn("renderMemoryRoadmap", app)
             self.assertIn('tr("findingAvailable")', app)
             self.assertIn('tr("sourceSurvey")', app)
+            self.assertIn("research-source-title", app)
             self.assertIn("renderConsensusReceipt", app)
             self.assertIn("consensusProof", app)
             self.assertIn("/commit/${harness.commit_sha}", app)
             self.assertNotIn("summary.summary_ja", app)
             self.assertNotIn("summary.summary_en", app)
+            self.assertNotIn('scopeMetric:', app)
+
+    def test_memory_roadmap_rejects_unknown_source_reference(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            public = root / "knowledge" / "public"
+            public.mkdir(parents=True)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            payload = json.loads(
+                (ROOT / "knowledge" / "public" / "memory-technology-roadmap.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            payload["lanes"][0]["milestones"][0]["source_ids"] = ["SRC-MEM999"]
+            (public / "memory-technology-roadmap.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            directive = json.loads(
+                (ROOT / "reviews" / "directives" / "DIR-900004.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            (directives / "DIR-900004.json").write_text(
+                json.dumps(directive), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "unknown sources"):
+                collect_memory_roadmap(root, policy)
+
+    def test_memory_roadmap_rejects_milestone_outside_horizon(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            public = root / "knowledge" / "public"
+            public.mkdir(parents=True)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            payload = json.loads(
+                (ROOT / "knowledge" / "public" / "memory-technology-roadmap.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            payload["lanes"][0]["milestones"][0]["year"] = 2033
+            (public / "memory-technology-roadmap.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            directive = json.loads(
+                (ROOT / "reviews" / "directives" / "DIR-900004.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            (directives / "DIR-900004.json").write_text(
+                json.dumps(directive), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "outside the horizon"):
+                collect_memory_roadmap(root, policy)
 
     def test_accepted_finding_publishes_consensus_receipt(self):
         policy = self.publication_policy()

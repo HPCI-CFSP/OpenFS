@@ -356,6 +356,87 @@ def collect_topic_summaries(
     return safe_summaries
 
 
+def collect_memory_roadmap(root: Path, policy: dict[str, Any]) -> dict[str, Any] | None:
+    path = root / policy["included_public_memory_roadmap"]
+    if not path.exists():
+        return None
+    export = load_json(path)
+    if export.get("status") not in set(policy["accepted_memory_roadmap_statuses"]):
+        raise ValueError("public memory technology roadmap is not published")
+    directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        export,
+        policy["memory_roadmap_public_fields"],
+        policy["required_publication_metadata"],
+        policy["memory_roadmap_required_bilingual_fields"],
+        directives,
+        f"memory technology roadmap {export.get('export_id', path.name)}",
+    )
+
+    horizon = projected["horizon"]
+    start_year = horizon["start_year"]
+    end_year = horizon["end_year"]
+    if start_year > end_year:
+        raise ValueError("memory technology roadmap has an invalid horizon")
+
+    technologies = projected.get("technologies", [])
+    technology_ids = [item.get("technology_id") for item in technologies]
+    if len(technology_ids) != len(set(technology_ids)):
+        raise ValueError("memory technology roadmap has duplicate technology IDs")
+
+    sources = projected.get("sources", [])
+    source_ids = [item.get("source_id") for item in sources]
+    if len(source_ids) != len(set(source_ids)):
+        raise ValueError("memory technology roadmap has duplicate source IDs")
+    known_sources = set(source_ids)
+    for technology in technologies:
+        unknown_sources = set(technology.get("source_ids", [])) - known_sources
+        if unknown_sources:
+            raise ValueError(
+                f"memory technology {technology.get('technology_id')} references "
+                f"unknown sources: {sorted(unknown_sources)}"
+            )
+
+    lane_ids: set[str] = set()
+    milestone_ids: set[str] = set()
+    for lane in projected.get("lanes", []):
+        lane_id = lane.get("lane_id")
+        if lane_id in lane_ids:
+            raise ValueError(f"duplicate memory roadmap lane: {lane_id}")
+        lane_ids.add(lane_id)
+        if lane.get("technology_id") not in set(technology_ids):
+            raise ValueError(f"memory roadmap lane {lane_id} has an unknown technology")
+        for milestone in lane.get("milestones", []):
+            milestone_id = milestone.get("milestone_id")
+            if milestone_id in milestone_ids:
+                raise ValueError(f"duplicate memory roadmap milestone: {milestone_id}")
+            milestone_ids.add(milestone_id)
+            unknown_sources = set(milestone.get("source_ids", [])) - known_sources
+            if unknown_sources:
+                raise ValueError(
+                    f"memory roadmap milestone {milestone_id} references unknown "
+                    f"sources: {sorted(unknown_sources)}"
+                )
+            year = milestone.get("year")
+            timing_basis = milestone.get("timing_basis")
+            maturity = milestone.get("maturity")
+            if year is None:
+                if timing_basis != "no-public-date" or maturity != "undated":
+                    raise ValueError(
+                        f"undated memory roadmap milestone {milestone_id} has "
+                        "inconsistent maturity or timing basis"
+                    )
+            elif not start_year <= year <= end_year:
+                raise ValueError(
+                    f"memory roadmap milestone {milestone_id} is outside the horizon"
+                )
+            elif timing_basis == "no-public-date" or maturity == "undated":
+                raise ValueError(
+                    f"dated memory roadmap milestone {milestone_id} is marked undated"
+                )
+    return projected
+
+
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
@@ -416,6 +497,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
 
     scenarios = collect_scenarios(root, policy)
     reports = collect_reports(root, policy)
+    memory_roadmap = collect_memory_roadmap(root, policy)
     official_sources = [
         source for source in baseline["source_corpus"]
         if source.get("availability") == "registered-public-url"
@@ -447,6 +529,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             ],
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
+        "memory_roadmap": memory_roadmap,
         "scenarios": scenarios,
         "reports": reports,
         "publication": {
@@ -487,6 +570,7 @@ def main() -> int:
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "
         f"receipts={len(result['consensus_receipts'])}, "
+        f"memory_roadmap={'yes' if result['memory_roadmap'] else 'no'}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
     return 0

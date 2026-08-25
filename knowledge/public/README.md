@@ -4,6 +4,12 @@ This directory contains human-approved, public-only projections of OpenFS resear
 
 Each summary must retain its research, coverage, and Consensus status. Source links must be public, and publication requires a matching `publication-approval` Directive.
 
+`memory-technology-roadmap.json` is a bilingual, human-approved public display
+artifact for the memory technology watch. It separates observed commercial
+milestones, samples, standards, vendor targets, concepts, and publicly undated
+items. Empty future years mean that no dated product milestone was confirmed in
+the reviewed official sources; they do not mean that development has stopped.
+
 `consensus-receipts.json` is the public proof layer for findings that passed the
 Consensus Gate. A Receipt lists only approved public metadata: the accepted
 Decision, participating AI models and agent roles, independence groups, policy

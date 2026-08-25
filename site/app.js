@@ -13,8 +13,7 @@
       navOverview: "概要", navCatalog: "調査カタログ", navTechnology: "技術動向", navScenarios: "整備シナリオ", navReports: "報告書",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
       overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示し、整備シナリオと報告書は人の公開承認を通過した成果に限定します。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scopeMetric: "調査更新",
-      scopeMetricValue: "継続", scopeMetricNote: "新しい公開情報を反映", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
+      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各Topicには、公開情報から得た知見と根拠資料を直接関連付け、調査元と検証状況を併記します。",
@@ -42,15 +41,19 @@
       consensusReceipt: "Consensus Receipt", decision: "Decision", decidedAt: "判定日時", policy: "Policy",
       participants: "参加モデル・エージェント", harnesses: "AIハーネス", agentRole: "役割", independenceGroup: "独立性グループ",
       promptProfile: "Prompt Profile", contribution: "検証上の担当", assessment: "Assessment", commit: "Commit", run: "Run",
-      provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", profileIncomplete: "プロファイルに未確認項目あり", consensusIncomplete: "未完了"
+      provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", profileIncomplete: "プロファイルに未確認項目あり", consensusIncomplete: "未完了",
+      memoryRoadmapKicker: "メモリ技術調査", roadmapFilter: "技術群フィルタ", memoryProducts: "メモリ製品", integration3d: "3D実装", systemEnablers: "システム技術",
+      technologyColumn: "技術", vendorColumn: "ベンダー／対象", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。",
+      technologyNotesKicker: "技術別ノート", technologyNotesTitle: "現状とHPCI整備への示唆", currentState: "現在の状況", hpciImplications: "HPCI整備への示唆", roadmapCaveat: "公開時の注意事項",
+      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "ベンダー目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
+      observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "公開時期なし", officialScanIncomplete: "一次情報の継続確認が必要"
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", asOf: "As of",
       navOverview: "Overview", navCatalog: "Research catalog", navTechnology: "Technology landscape", navScenarios: "Roadmap scenarios", navReports: "Reports",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
       overviewLead: "Research summaries derived from public information are shown with their validation status. Roadmap scenarios and reports are limited to explicitly human-approved outputs.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scopeMetric: "Research updates",
-      scopeMetricValue: "Continuous", scopeMetricNote: "Incorporates new public information", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
+      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each Topic directly links public-source findings and supporting sources while identifying the source survey and validation status.",
@@ -79,7 +82,12 @@
       consensusReceipt: "Consensus Receipt", decision: "Decision", decidedAt: "Decided", policy: "Policy",
       participants: "Participating models and agents", harnesses: "AI harnesses", agentRole: "Role", independenceGroup: "Independence group",
       promptProfile: "Prompt profile", contribution: "Consensus contribution", assessment: "Assessment", commit: "Commit", run: "Run",
-      provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", profileIncomplete: "profile gaps remain", consensusIncomplete: "incomplete"
+      provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", profileIncomplete: "profile gaps remain", consensusIncomplete: "incomplete",
+      memoryRoadmapKicker: "MEMORY TECHNOLOGY RESEARCH", roadmapFilter: "Technology group filter", memoryProducts: "Memory products", integration3d: "3D integration", systemEnablers: "System enablers",
+      technologyColumn: "Technology", vendorColumn: "Vendor / scope", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Blank cells indicate that no dated public milestone was confirmed, not that development has stopped.",
+      technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Current state and implications for HPCI", currentState: "Current state", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
+      commercial: "product / volume", sample: "sample", standard: "standard", target: "vendor target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
+      observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required"
     }
   };
 
@@ -90,9 +98,14 @@
   const statusKeys = {"not-started": "statusNotStarted", partial: "statusPartial", reviewed: "statusReviewed", retired: "statusRetired"};
   const cadenceKeys = {weekly: "cadenceWeekly", monthly: "cadenceMonthly", quarterly: "cadenceQuarterly", annual: "cadenceAnnual", "event-driven": "cadenceEvent"};
   const originKeys = {"protected-initial": "originInitial", "human-directive": "originHuman", "ai-consensus": "originAi"};
+  const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
+  const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
+  const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
   let activeDomain = "all";
   let language = readLanguage();
   let activeTopicId = null;
+  let activeRoadmapGroup = "all";
+  let activeRoadmapMilestoneId = null;
 
   function readLanguage() {
     try {
@@ -157,6 +170,181 @@
     });
   }
 
+  function localized(item, field) {
+    return item[`${field}_${language}`] || item[field] || "";
+  }
+
+  function roadmapSourceMap() {
+    return new Map((data.memory_roadmap?.sources || []).map((source) => [source.source_id, source]));
+  }
+
+  function renderRoadmapLegend() {
+    const root = document.getElementById("roadmap-legend");
+    root.replaceChildren();
+    ["commercial", "sample", "standard", "target", "concept", "undated"].forEach((maturity) => {
+      const item = document.createElement("span");
+      item.className = `legend-item maturity-${maturity}`;
+      item.textContent = tr(maturityKeys[maturity]);
+      root.appendChild(item);
+    });
+  }
+
+  function renderRoadmapTimeline() {
+    const roadmap = data.memory_roadmap;
+    const root = document.getElementById("memory-roadmap-timeline");
+    root.replaceChildren();
+    if (!roadmap) return;
+
+    const technologies = roadmap.technologies.filter(
+      (technology) => activeRoadmapGroup === "all" || technology.group === activeRoadmapGroup
+    );
+    const years = [];
+    for (let year = roadmap.horizon.start_year; year <= roadmap.horizon.end_year; year += 1) years.push(year);
+
+    const table = document.createElement("table");
+    table.className = "roadmap-table";
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    [tr("technologyColumn"), tr("vendorColumn"), ...years, tr("undatedColumn")].forEach((label, index) => {
+      const cell = document.createElement("th");
+      cell.textContent = label;
+      if (index === 0) cell.className = "roadmap-tech-column";
+      if (index === 1) cell.className = "roadmap-vendor-column";
+      headRow.appendChild(cell);
+    });
+    head.appendChild(headRow);
+
+    const body = document.createElement("tbody");
+    technologies.forEach((technology) => {
+      const lanes = roadmap.lanes.filter((lane) => lane.technology_id === technology.technology_id);
+      lanes.forEach((lane, laneIndex) => {
+        const row = document.createElement("tr");
+        if (laneIndex === 0) {
+          const technologyCell = document.createElement("th");
+          technologyCell.scope = "rowgroup";
+          technologyCell.rowSpan = lanes.length;
+          technologyCell.className = "roadmap-tech-column roadmap-technology-cell";
+          const technologyName = document.createElement("strong");
+          technologyName.textContent = localized(technology, "name");
+          const technologyGroup = document.createElement("span");
+          technologyGroup.textContent = tr(roadmapGroupKeys[technology.group]);
+          technologyCell.append(technologyName, technologyGroup);
+          row.appendChild(technologyCell);
+        }
+
+        const vendorCell = document.createElement("th");
+        vendorCell.scope = "row";
+        vendorCell.className = "roadmap-vendor-column roadmap-vendor-cell";
+        const vendor = document.createElement("strong");
+        vendor.textContent = lane.vendor;
+        const scope = document.createElement("span");
+        scope.textContent = localized(lane, "scope");
+        vendorCell.append(vendor, scope);
+        row.appendChild(vendorCell);
+
+        [...years, null].forEach((year) => {
+          const cell = document.createElement("td");
+          const milestones = lane.milestones.filter((milestone) => milestone.year === year);
+          milestones.forEach((milestone) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `roadmap-milestone maturity-${milestone.maturity}`;
+            button.textContent = localized(milestone, "label");
+            button.setAttribute("aria-haspopup", "dialog");
+            button.addEventListener("click", () => openRoadmapMilestone(milestone.milestone_id));
+            cell.appendChild(button);
+          });
+          row.appendChild(cell);
+        });
+        body.appendChild(row);
+      });
+    });
+    table.append(head, body);
+    root.appendChild(table);
+  }
+
+  function appendSourceList(root, sourceIds) {
+    const sources = roadmapSourceMap();
+    sourceIds.forEach((sourceId) => {
+      const source = sources.get(sourceId);
+      if (!source) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = source.title;
+      const publisher = document.createElement("span");
+      publisher.textContent = source.publisher;
+      item.append(link, publisher);
+      root.appendChild(item);
+    });
+  }
+
+  function renderMemoryTechnologyDetails() {
+    const roadmap = data.memory_roadmap;
+    const root = document.getElementById("memory-technology-details");
+    root.replaceChildren();
+    if (!roadmap) return;
+    roadmap.technologies
+      .filter((technology) => activeRoadmapGroup === "all" || technology.group === activeRoadmapGroup)
+      .forEach((technology) => {
+        const details = document.createElement("details");
+        details.className = "memory-technology-note";
+        const toggle = document.createElement("summary");
+        const name = document.createElement("strong");
+        name.textContent = localized(technology, "name");
+        const summary = document.createElement("span");
+        summary.textContent = localized(technology, "summary");
+        toggle.append(name, summary);
+        const body = document.createElement("div");
+        body.className = "memory-technology-note-body";
+        const stateTitle = document.createElement("h4");
+        stateTitle.textContent = tr("currentState");
+        const state = document.createElement("p");
+        state.textContent = localized(technology, "current_state");
+        const implicationsTitle = document.createElement("h4");
+        implicationsTitle.textContent = tr("hpciImplications");
+        const implications = document.createElement("p");
+        implications.textContent = localized(technology, "hpci_implications");
+        const sourcesTitle = document.createElement("h4");
+        sourcesTitle.textContent = tr("publicSources");
+        const sources = document.createElement("ul");
+        sources.className = "source-list memory-source-list";
+        appendSourceList(sources, technology.source_ids);
+        body.append(stateTitle, state, implicationsTitle, implications, sourcesTitle, sources);
+        details.append(toggle, body);
+        root.appendChild(details);
+      });
+  }
+
+  function renderMemoryRoadmap() {
+    const roadmap = data.memory_roadmap;
+    const section = document.getElementById("memory-roadmap");
+    section.hidden = !roadmap;
+    if (!roadmap) return;
+    setText("memory-roadmap-title", localized(roadmap, "title"));
+    setText("memory-roadmap-summary", localized(roadmap, "summary"));
+    setText("memory-roadmap-as-of", roadmap.as_of);
+    setText("memory-roadmap-research-status", statusLabel(roadmap.research_status));
+    setText("memory-roadmap-coverage-status", statusLabel(roadmap.coverage_status));
+    setText("memory-roadmap-consensus-status", statusLabel(roadmap.consensus_status));
+    setText("memory-roadmap-caveat", localized(roadmap, "caveat"));
+    const gaps = document.getElementById("memory-roadmap-gaps");
+    gaps.replaceChildren();
+    roadmap.coverage_gaps.forEach((gap) => {
+      const item = document.createElement("li");
+      item.textContent = localized(gap, "statement");
+      gaps.appendChild(item);
+    });
+    document.querySelectorAll("[data-roadmap-group]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.roadmapGroup === activeRoadmapGroup);
+    });
+    renderRoadmapLegend();
+    renderRoadmapTimeline();
+    renderMemoryTechnologyDetails();
+  }
+
   function renderTopics() {
     const query = document.getElementById("topic-search").value.trim().toLocaleLowerCase(language);
     const root = document.getElementById("topic-rows");
@@ -211,6 +399,7 @@
       accepted: "accepted",
       "met-declared-scope": "coverageMet",
       "profile-coverage-incomplete": "profileIncomplete",
+      "official-source-scan-incomplete": "officialScanIncomplete",
       incomplete: "consensusIncomplete"
     };
     return tr(labels[value] || value);
@@ -383,10 +572,13 @@
       const titleBlock = document.createElement("div");
       const kicker = document.createElement("span");
       kicker.className = "eyebrow";
-      kicker.textContent = tr("sourceSurvey");
+      kicker.textContent = tr("findings");
       const title = document.createElement("h3");
-      title.textContent = language === "ja" ? summary.title_ja : summary.title_en;
-      titleBlock.append(kicker, title);
+      title.textContent = language === "ja" ? topic.title_ja : topic.title_en;
+      const sourceSurvey = document.createElement("p");
+      sourceSurvey.className = "research-source-title";
+      sourceSurvey.textContent = `${tr("sourceSurvey")}: ${language === "ja" ? summary.title_ja : summary.title_en}`;
+      titleBlock.append(kicker, title, sourceSurvey);
       const status = document.createElement("span");
       status.className = "summary-status";
       status.textContent = statusLabel(summary.research_status);
@@ -447,6 +639,65 @@
     if (!dialog.open) dialog.showModal();
   }
 
+  function findRoadmapMilestone(milestoneId) {
+    const roadmap = data.memory_roadmap;
+    if (!roadmap) return null;
+    for (const lane of roadmap.lanes) {
+      const milestone = lane.milestones.find((item) => item.milestone_id === milestoneId);
+      if (milestone) {
+        const technology = roadmap.technologies.find(
+          (item) => item.technology_id === lane.technology_id
+        );
+        return {technology, lane, milestone};
+      }
+    }
+    return null;
+  }
+
+  function renderRoadmapDialog() {
+    if (!activeRoadmapMilestoneId) return;
+    const match = findRoadmapMilestone(activeRoadmapMilestoneId);
+    if (!match) return;
+    const {technology, lane, milestone} = match;
+    setText("roadmap-dialog-id", milestone.milestone_id);
+    setText("roadmap-dialog-title", localized(milestone, "label"));
+    setText(
+      "roadmap-dialog-meta",
+      `${localized(technology, "name")} / ${lane.vendor} / ${milestone.year || tr("undatedColumn")}`
+    );
+    const root = document.getElementById("roadmap-dialog-content");
+    root.replaceChildren();
+    const section = document.createElement("section");
+    section.className = "roadmap-milestone-detail";
+    const status = document.createElement("span");
+    status.className = `summary-status maturity-${milestone.maturity}`;
+    status.textContent = tr(maturityKeys[milestone.maturity]);
+    const title = document.createElement("h3");
+    title.textContent = tr("milestoneDetail");
+    const detail = document.createElement("p");
+    detail.textContent = localized(milestone, "detail");
+    const meta = document.createElement("dl");
+    meta.className = "research-meta roadmap-dialog-meta-list";
+    appendMetaItem(meta, tr("technologyColumn"), localized(technology, "name"));
+    appendMetaItem(meta, tr("vendorColumn"), `${lane.vendor} / ${localized(lane, "scope")}`);
+    appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[milestone.timing_basis]));
+    appendMetaItem(meta, tr("asOf"), data.memory_roadmap.as_of);
+    const sourcesTitle = document.createElement("h4");
+    sourcesTitle.textContent = tr("publicSources");
+    const sources = document.createElement("ul");
+    sources.className = "source-list roadmap-dialog-source-list";
+    appendSourceList(sources, milestone.source_ids);
+    section.append(status, title, detail, meta, sourcesTitle, sources);
+    root.appendChild(section);
+  }
+
+  function openRoadmapMilestone(milestoneId) {
+    activeRoadmapMilestoneId = milestoneId;
+    renderRoadmapDialog();
+    const dialog = document.getElementById("roadmap-dialog");
+    if (!dialog.open) dialog.showModal();
+  }
+
   function renderScenarios() {
     const root = document.getElementById("scenario-list");
     root.replaceChildren();
@@ -484,9 +735,11 @@
     renderSummary();
     renderTopics();
     renderTechnologyCategories();
+    renderMemoryRoadmap();
     renderScenarios();
     renderReports();
     renderTopicDetail();
+    renderRoadmapDialog();
   }
 
   document.querySelectorAll("[data-language]").forEach((button) => {
@@ -503,6 +756,12 @@
       renderTopics();
     });
   });
+  document.querySelectorAll("[data-roadmap-group]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeRoadmapGroup = button.dataset.roadmapGroup;
+      renderMemoryRoadmap();
+    });
+  });
   document.getElementById("topic-search").addEventListener("input", renderTopics);
   document.getElementById("topic-dialog-close").addEventListener("click", () => {
     document.getElementById("topic-dialog").close();
@@ -512,6 +771,15 @@
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
     activeTopicId = null;
+  });
+  document.getElementById("roadmap-dialog-close").addEventListener("click", () => {
+    document.getElementById("roadmap-dialog").close();
+  });
+  document.getElementById("roadmap-dialog").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) event.currentTarget.close();
+  });
+  document.getElementById("roadmap-dialog").addEventListener("close", () => {
+    activeRoadmapMilestoneId = null;
   });
   render();
 })();
