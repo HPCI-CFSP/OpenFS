@@ -4,8 +4,11 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +27,110 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.manifest_path = PACKAGE / "manifest.json"
         self.assertTrue(self.manifest_path.exists(), "commit-pinned package must be generated")
         self.manifest = load_json(self.manifest_path)
+
+    def _registered_reviewer(self, index, role="validator"):
+        return {
+            "agent_id": f"independent-reviewer-{index}",
+            "enabled": True,
+            "role": role,
+            "provider": f"Provider-{index}",
+            "model_family": f"Model-{index}",
+            "prompt_profile": "independent-roadmap-review-v1",
+            "agent_independence_group": f"independent-group-{index}",
+            "network_access": "public-web",
+            "data_clearance": "public",
+            "write_scope": ["assessments", "runs"],
+        }
+
+    def _review(self, agent, registry_digest, verdict="support"):
+        roadmap_sources = {}
+        for unit in self.manifest["review_units"]:
+            if unit["kind"] != "roadmap":
+                continue
+            path = next(
+                path for path in unit["artifact_paths"]
+                if path.startswith("knowledge/public/roadmaps/")
+            )
+            source = next(
+                source for source in load_json(ROOT / path)["sources"]
+                if source["source_class"] != "openfs-governance"
+            )
+            roadmap_sources[unit["unit_id"]] = source
+        return {
+            "schema_version": "0.1.0",
+            "review_id": f"CRV-{agent['agent_id'].upper()}",
+            "package_id": self.manifest["package_id"],
+            "base_commit": self.manifest["base_commit"],
+            "reviewer": {
+                "agent_id": agent["agent_id"],
+                "role": agent["role"],
+                "provider": agent["provider"],
+                "model_family": agent["model_family"],
+                "prompt_profile": agent["prompt_profile"],
+                "independence_group": agent["agent_independence_group"],
+                "origin_group": f"origin-{agent['agent_id']}",
+                "harness_id": f"HAR-REVIEWER-{agent['agent_id'][-1]}",
+                "harness_repository_url": "https://github.com/example/review-harness",
+                "harness_commit": agent["agent_id"][-1] * 40,
+            },
+            "registry_snapshot_digest": registry_digest,
+            "overall_verdict": verdict,
+            "primary_source_checks": [
+                {
+                    "unit_id": unit_id,
+                    "source_id": source["source_id"],
+                    "source_url": source["url"],
+                    "source_class": source["source_class"],
+                    "outcome": "supports",
+                    "notes": "The registered primary source and cited roadmap claim were checked.",
+                }
+                for unit_id, source in roadmap_sources.items()
+            ],
+            "unit_assessments": [
+                {
+                    "unit_id": unit["unit_id"],
+                    "verdict": verdict,
+                    "confidence": 0.8,
+                    "checks": {check: "pass" for check in unit["required_checks"]},
+                    "observations": ["Pinned artifacts and cited evidence were checked."],
+                    "objections": [],
+                }
+                for unit in self.manifest["review_units"]
+            ],
+            "critical_objections": [],
+            "reviewed_at": "2026-08-26T00:00:00Z",
+        }
+
+    def _evaluate_synthetic(self, reviews, agents):
+        artifact_digests = {
+            artifact["path"]: artifact["sha256"]
+            for artifact in self.manifest["artifact_manifest"]
+        }
+        registry_digest = artifact_digests["config/agent-registry.json"]
+        registry = {"schema_version": "0.1.0", "registry_status": "active", "agents": agents}
+
+        def fake_digest(_root, _commit, path):
+            return artifact_digests.get(path)
+
+        def fake_json(_root, _commit, path):
+            if path == "config/agent-registry.json":
+                return registry
+            return load_json(ROOT / path)
+
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            root = Path(tmp)
+            manifest_path = root / "manifest.json"
+            manifest_path.write_text(json.dumps(self.manifest), encoding="utf-8")
+            assessment_dir = root / self.manifest["submission"]["assessment_directory"]
+            assessment_dir.mkdir(parents=True)
+            for index, review in enumerate(reviews):
+                (assessment_dir / f"review-{index}.json").write_text(
+                    json.dumps(review), encoding="utf-8"
+                )
+            with patch("evaluate_consensus_review_package.committed_digest", side_effect=fake_digest), patch(
+                "evaluate_consensus_review_package.committed_json", side_effect=fake_json
+            ):
+                return evaluate(root, manifest_path)
 
     def test_package_covers_six_roadmaps_and_shared_review_units(self):
         units = self.manifest["review_units"]
@@ -58,6 +165,11 @@ class ConsensusReviewPackageTests(unittest.TestCase):
                 artifact["path"],
             )
 
+    def test_every_review_unit_uses_only_pinned_artifacts(self):
+        pinned = {artifact["path"] for artifact in self.manifest["artifact_manifest"]}
+        for unit in self.manifest["review_units"]:
+            self.assertLessEqual(set(unit["artifact_paths"]), pinned, unit["unit_id"])
+
     def test_empty_review_set_is_honestly_incomplete(self):
         result = evaluate(ROOT, self.manifest_path)
         self.assertEqual("incomplete", result["status"])
@@ -84,6 +196,53 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             roadmap_units,
             {check["unit_id"] for check in template["primary_source_checks"]},
         )
+
+    def test_four_registered_diverse_reviews_reach_only_human_decision(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agents = [self._registered_reviewer(index, "critic" if index == 4 else "validator") for index in range(1, 5)]
+        reviews = [
+            self._review(agent, registry_digest, "uncertain" if agent["role"] == "critic" else "support")
+            for agent in agents
+        ]
+        result = self._evaluate_synthetic(reviews, agents)
+        self.assertEqual("ready-for-human-decision", result["status"])
+        self.assertEqual([], result["integrity_errors"])
+        self.assertEqual(3, result["counts"]["support"])
+        self.assertEqual(3, result["counts"]["support_model_families"])
+        self.assertEqual(3, result["counts"]["support_providers"])
+
+    def test_tampered_primary_source_identity_invalidates_review(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agents = [self._registered_reviewer(index, "critic" if index == 4 else "validator") for index in range(1, 5)]
+        reviews = [self._review(agent, registry_digest) for agent in agents]
+        reviews[0]["primary_source_checks"][0]["source_url"] = "https://example.invalid/tampered"
+        result = self._evaluate_synthetic(reviews, agents)
+        self.assertEqual("incomplete", result["status"])
+        self.assertTrue(any("primary_source_identity_mismatch" in item for item in result["integrity_errors"]))
+
+    def test_support_from_one_model_family_cannot_pass(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agents = [self._registered_reviewer(index, "critic" if index == 4 else "validator") for index in range(1, 5)]
+        for agent in agents[:3]:
+            agent["provider"] = "Provider-shared"
+            agent["model_family"] = "Model-shared"
+        reviews = [
+            self._review(agent, registry_digest, "uncertain" if agent["role"] == "critic" else "support")
+            for agent in agents
+        ]
+        result = self._evaluate_synthetic(reviews, agents)
+        self.assertEqual("incomplete", result["status"])
+        self.assertIn("minimum_model_families", result["unmet_requirements"])
+        self.assertIn("minimum_providers", result["unmet_requirements"])
 
 
 if __name__ == "__main__":

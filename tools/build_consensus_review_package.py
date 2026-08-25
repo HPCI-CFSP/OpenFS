@@ -46,10 +46,6 @@ ARTIFACTS = [
 ]
 
 
-def read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
 def committed_bytes(root: Path, commit: str, path: str) -> bytes:
     result = subprocess.run(
         ["git", "show", f"{commit}:{path}"],
@@ -59,6 +55,10 @@ def committed_bytes(root: Path, commit: str, path: str) -> bytes:
         stderr=subprocess.PIPE,
     )
     return result.stdout
+
+
+def committed_json(root: Path, commit: str, path: str) -> dict[str, Any]:
+    return json.loads(committed_bytes(root, commit, path))
 
 
 def artifact_manifest(root: Path, commit: str) -> list[dict[str, str]]:
@@ -151,16 +151,16 @@ def shared_units() -> list[dict[str, Any]]:
 
 
 def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, Any]:
-    policy = read_json(root / "config" / "consensus-policy.json")
+    policy = committed_json(root, base_commit, "config/consensus-policy.json")
     rule = policy["rules"]["high_impact_recommendation"]
     units = [
-        roadmap_unit(path, read_json(root / path))
+        roadmap_unit(path, committed_json(root, base_commit, path))
         for path in ROADMAP_PATHS
     ] + shared_units()
-    roadmaps = [read_json(root / path) for path in ROADMAP_PATHS]
-    source_audit = read_json(root / "knowledge/public/audits/roadmap-source-audit.json")
-    dependency_register = read_json(root / "knowledge/public/dependencies/p0-roadmap-dependencies.json")
-    scenarios = read_json(root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json")
+    roadmaps = [committed_json(root, base_commit, path) for path in ROADMAP_PATHS]
+    source_audit = committed_json(root, base_commit, "knowledge/public/audits/roadmap-source-audit.json")
+    dependency_register = committed_json(root, base_commit, "knowledge/public/dependencies/p0-roadmap-dependencies.json")
+    scenarios = committed_json(root, base_commit, "roadmaps/scenarios/accepted/hpci-p0-scenarios.json")
     portfolio_summary = {
         "roadmap_count": len(roadmaps),
         "milestone_count": sum(
@@ -295,7 +295,9 @@ milestone records, {summary['source_count']} registered sources,
 HPCI整備計画{summary['scenario_count']}案をコミット `{commit}` に固定します。
 各review unitを独立に検証し、反証を探索してください。URL到達性を内容の正しさと
 みなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
-independence groupは独立票に数えません。Consensus成立後も最終採用には人の判断が必要です。
+independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
+有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ以上を満たす必要があります。
+Consensus成立後も最終採用には人の判断が必要です。
 """
 
 
