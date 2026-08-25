@@ -230,6 +230,10 @@ action updates one stable deduplication marker instead of opening one Issue per 
 - The **Weekly Review** job has no model-provider secret or content-write
   permission. It emits an internal artifact and may create or update only sanitized,
   managed GitHub Issues for currently open owner-action groups.
+- The same job rebuilds the P0 roadmap source and freshness audits. One stable
+  managed Issue lists only `critical` and `high` freshness attention, is updated
+  rather than duplicated, and is closed when that priority queue is empty. The
+  lower-priority audit remains available in the workflow artifact and on Pages.
 
 ## Optional Codex automation
 

@@ -181,6 +181,7 @@ REQUIRED_FILES = [
     "tools/check_consensus_readiness.py",
     "tools/generate_weekly_digest.py",
     "tools/prepare_exception_issues.py",
+    "tools/prepare_freshness_issue.py",
     "tools/apply_directive.py",
     "tools/generate_run_brief.py",
     "tools/prepare_weekly_cycle.py",

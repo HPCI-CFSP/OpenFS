@@ -16,3 +16,10 @@ without opening a duplicate Issue.
 If every retained Exception in an existing group stops requiring owner action, the
 payload requests that managed Issue be closed. A later recurrence reopens the same
 Issue. A resolved group with no pre-existing payload never creates a new Issue.
+
+The weekly review also prepares one separate, stable P0 roadmap-freshness Issue
+from `roadmap-freshness-audit.json`. It contains only `critical` and `high`
+attention items, is updated instead of duplicated, and requests closure when the
+priority queue becomes empty. Lower-priority items remain visible in the audit
+artifact and on GitHub Pages without creating Issue noise. Freshness attention is
+a recheck queue, not a claim that a roadmap entry is incorrect.

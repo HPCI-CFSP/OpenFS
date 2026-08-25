@@ -42,9 +42,12 @@ ARTIFACTS = [
     ("schemas/consensus-package-review.schema.json", "schema"),
     ("schemas/consensus-package-gate-result.schema.json", "schema"),
     ("schemas/roadmap-freshness-audit.schema.json", "schema"),
+    ("schemas/issue-payload.schema.json", "schema"),
     ("tools/build_roadmap_freshness_audit.py", "tool"),
+    ("tools/prepare_freshness_issue.py", "tool"),
     ("tools/build_consensus_review_package.py", "tool"),
     ("tools/evaluate_consensus_review_package.py", "tool"),
+    (".github/workflows/weekly-review.yml", "workflow"),
     ("reviews/directives/DIR-900006.json", "directive"),
 ]
 
@@ -177,7 +180,7 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-freshness-audit.schema.json", "tools/build_roadmap_freshness_audit.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_freshness_audit.py", "tools/prepare_freshness_issue.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/workflows/weekly-review.yml"],
             "selectors": ["DIR-900006", "consensus_status", "research_status", "publication"],
             "primary_source_requirements": [],
             "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
