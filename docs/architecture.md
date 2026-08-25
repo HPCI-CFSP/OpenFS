@@ -91,6 +91,22 @@ candidate
   They require a human `canonical-status` Directive naming exactly one Claim;
   the deterministic active view changes, while the promoted record does not.
 
+## Common roadmap contract
+
+Published roadmaps are projections of approved public evidence, not canonical
+Claims or final HPCI recommendations. All domains use
+`schemas/public-roadmap.schema.json`, which separates tracks, owner lanes,
+milestones, dependencies, sources, and structured Coverage Gaps. The portfolio in
+`config/roadmap-portfolio.json` owns stable roadmap IDs and slugs.
+
+Quarter precision is evidence-constrained. A dated milestone may use Q1-Q4 only
+when its cited source supports that precision; half-year and year-only statements
+retain a null quarter, and missing public timing remains undated. OpenFS planning
+gates are separate `hpci-evaluation` or `hpci-adoption` events with
+`openfs-provisional-plan` timing. Pages generation fails closed when references,
+portfolio mappings, timing semantics, publication approval, or the declared public
+artifact set disagree.
+
 ## Trust and information boundaries
 
 ### Public plane

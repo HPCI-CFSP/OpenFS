@@ -1,0 +1,136 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "PORTABILITY-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-SSW-PORTABILITY",
+  "status": "published",
+  "domain": "system-software",
+  "slug": "system-software/portability-compilers-tuning",
+  "as_of": "2026-08-25",
+  "title_ja": "性能可搬性・コンパイラ・自動最適化",
+  "title_en": "Performance portability, compilers, and automated optimization",
+  "summary_ja": "並列API、コンパイラ基盤、性能可搬層、ベンダースタック、自動移植・最適化を、HPCI世代移行の評価ゲートとともに比較する暫定ロードマップ。",
+  "summary_en": "A provisional roadmap comparing parallel APIs, compiler infrastructure, portability layers, vendor stacks, and automated migration and tuning with HPCI transition gates.",
+  "horizon": {"start_year": 2026, "end_year": 2032},
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {"group_id": "standards", "name_ja": "並列API・標準", "name_en": "Parallel APIs and standards"},
+    {"group_id": "compilers", "name_ja": "コンパイラ基盤", "name_en": "Compiler infrastructure"},
+    {"group_id": "portability", "name_ja": "性能可搬層", "name_en": "Portability layers"},
+    {"group_id": "vendor-stacks", "name_ja": "ベンダースタック", "name_en": "Vendor stacks"},
+    {"group_id": "automation", "name_ja": "自動移植・最適化", "name_en": "Automated migration and tuning"},
+    {"group_id": "hpci-gates", "name_ja": "HPCI評価ゲート", "name_en": "HPCI evaluation gates"}
+  ],
+  "tracks": [
+    {
+      "track_id": "PORT-APIS", "group": "standards", "name_ja": "OpenMP・SYCL", "name_en": "OpenMP and SYCL",
+      "summary_ja": "ベンダー横断の指示文・C++異種プログラミングAPIと実装追随を追跡する。", "summary_en": "Tracks cross-vendor directive and C++ heterogeneous APIs and implementation uptake.",
+      "current_state_ja": "OpenMP 6.0は公開済みで6.1は2026年11月予定。SYCL 2020 revision 12は2026年Q3に公開された。", "current_state_en": "OpenMP 6.0 is current and 6.1 is planned for November 2026. SYCL 2020 revision 12 was published in Q3 2026.",
+      "hpci_implications_ja": "仕様公開とCPU/GPU実装範囲を分け、Fortran、デバイス機能、デバッグ、性能差をコンパイラ別に検証する。", "hpci_implications_en": "Separate specification publication from CPU/GPU implementation coverage and test Fortran, device features, debugging, and performance per compiler.",
+      "source_ids": ["SRC-PORT001", "SRC-PORT002", "SRC-PORT003"]
+    },
+    {
+      "track_id": "PORT-LLVM", "group": "compilers", "name_ja": "LLVM/Clang・MLIR", "name_en": "LLVM/Clang and MLIR",
+      "summary_ja": "複数アーキテクチャと高水準最適化を支える共通コンパイラ基盤の更新を追跡する。", "summary_en": "Tracks the common compiler infrastructure supporting multiple architectures and high-level optimization.",
+      "current_state_ja": "LLVMは約6か月周期で、22.1が2026年Q1、23.1がQ3に公開された。", "current_state_en": "LLVM follows an approximately six-month cadence; 22.1 was released in Q1 2026 and 23.1 in Q3.",
+      "hpci_implications_ja": "リリース追随だけでなく、AArch64/x86/GPU backend、OpenMP offload、数値再現性、長期保守版を評価する。", "hpci_implications_en": "Assess AArch64/x86/GPU backends, OpenMP offload, numerical reproducibility, and support branches rather than merely following releases.",
+      "source_ids": ["SRC-PORT004", "SRC-PORT005"]
+    },
+    {
+      "track_id": "PORT-KOKKOS", "group": "portability", "name_ja": "Kokkos等の性能可搬層", "name_en": "Kokkos and portability layers",
+      "summary_ja": "アプリとベンダーAPIの間に置くC++性能可搬抽象と数値ライブラリを追跡する。", "summary_en": "Tracks C++ performance-portability abstractions and numerical libraries between applications and vendor APIs.",
+      "current_state_ja": "Kokkos 5系はC++20を基盤に2026年も更新され、Kokkos-FFT 1.0がQ1にproduction-readyとなった。", "current_state_en": "Kokkos 5.x continues on a C++20 baseline in 2026, and Kokkos-FFT 1.0 became production-ready in Q1.",
+      "hpci_implications_ja": "可搬層の採用率、backend別性能差、依存ライブラリ、教育・保守コストをアプリ群全体で測る。", "hpci_implications_en": "Measure adoption, backend performance gaps, dependencies, training, and maintenance costs across the application portfolio.",
+      "source_ids": ["SRC-PORT006", "SRC-PORT007"]
+    },
+    {
+      "track_id": "PORT-VENDOR", "group": "vendor-stacks", "name_ja": "ROCm・NVIDIA HPC SDK", "name_en": "ROCm and NVIDIA HPC SDK",
+      "summary_ja": "アクセラレータ利用に必要なコンパイラ、ライブラリ、プロファイラの製品スタックを追跡する。", "summary_en": "Tracks product compiler, library, and profiler stacks needed for accelerators.",
+      "current_state_ja": "ROCm 7.2は2026年Q1、NVIDIA HPC SDK 26.5は2026年Q2に提供。将来のサポート期間は公開情報が限定的。", "current_state_en": "ROCm 7.2 arrived in Q1 2026 and NVIDIA HPC SDK 26.5 in Q2. Public long-term support information is limited.",
+      "hpci_implications_ja": "最新版性能と調達後の固定版保守を両立し、コンテナ、Spack、セキュリティ修正、旧GPU互換を検証する。", "hpci_implications_en": "Balance current performance with post-procurement support, testing containers, Spack, security fixes, and older-GPU compatibility.",
+      "source_ids": ["SRC-PORT008", "SRC-PORT009"]
+    },
+    {
+      "track_id": "PORT-AUTO", "group": "automation", "name_ja": "AI支援移植・自動最適化", "name_en": "AI-assisted migration and automated optimization",
+      "summary_ja": "AIによるコード移植、性能予測、ボトルネック分析、最適化、回帰評価の閉ループ化を追跡する。", "summary_en": "Tracks closed-loop AI code migration, performance prediction, bottleneck analysis, optimization, and regression evaluation.",
+      "current_state_ja": "富岳NEXTはBenchpark/Benchkit、オンプレミスAI、商用AI、テストベッドを組み合わせた試作を2026年度中頃に公開予定としている。", "current_state_en": "FugakuNEXT plans a prototype around mid-FY2026 combining Benchpark/Benchkit, on-premises AI, commercial AI, and testbeds.",
+      "hpci_implications_ja": "生成コードを自動採用せず、テスト、性能、数値差、ライセンス、来歴を機械検証して人の責任ある判断へ渡す。", "hpci_implications_en": "Do not auto-accept generated code; mechanically verify tests, performance, numerical differences, licenses, and provenance before accountable review.",
+      "source_ids": ["SRC-PORT010", "SRC-PORT011"]
+    },
+    {
+      "track_id": "PORT-HPCI-EVAL", "group": "hpci-gates", "name_ja": "HPCI移植性評価", "name_en": "HPCI portability evaluation",
+      "summary_ja": "複数ISA・GPUを継続評価し、アプリ移行と受入基準へ接続するOpenFS暫定ゲート。", "summary_en": "OpenFS provisional gates for continuous multi-ISA and multi-GPU evaluation connected to application migration and acceptance.",
+      "current_state_ja": "公開コンパイラ情報は多いが、HPCIアプリ群を同一条件で比較した移植性台帳は未整備。", "current_state_en": "Compiler information is abundant, but no common portability ledger yet compares the HPCI application portfolio under identical conditions.",
+      "hpci_implications_ja": "ビルド可否、正当性、性能、工数、保守性を別指標にし、センター別の必要backendを維持する。", "hpci_implications_en": "Track buildability, correctness, performance, effort, and maintainability separately while retaining center-specific backend needs.",
+      "source_ids": ["SRC-PORT011", "SRC-PORT012"]
+    }
+  ],
+  "lanes": [
+    {"lane_id": "LANE-PORT-OPENMP", "track_id": "PORT-APIS", "owner": "OpenMP ARB", "scope_ja": "OpenMP仕様", "scope_en": "OpenMP specification", "milestones": [
+      {"milestone_id": "MS-PORT-OPENMP-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "concept", "event_type": "standard", "timing_basis": "observed", "comparison_priority": "supporting", "label_ja": "6.1公開コメント案", "label_en": "6.1 public comment draft", "detail_ja": "2026年7月にTechnical Report 15を公開。", "detail_en": "Technical Report 15 was released in July 2026.", "source_ids": ["SRC-PORT001"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]},
+      {"milestone_id": "MS-PORT-OPENMP-2026Q4", "year": 2026, "quarter": "Q4", "timing_precision": "quarter", "maturity": "target", "event_type": "standard", "timing_basis": "project-target", "comparison_priority": "key", "label_ja": "OpenMP 6.1予定", "label_en": "OpenMP 6.1 planned", "detail_ja": "OpenMP ARBは2026年11月の6.1仕様公開を計画。実装完備時期とは異なる。", "detail_en": "The OpenMP ARB plans the 6.1 specification for November 2026; complete implementation will follow separately.", "source_ids": ["SRC-PORT002"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-SYCL", "track_id": "PORT-APIS", "owner": "Khronos Group", "scope_ja": "SYCL仕様", "scope_en": "SYCL specification", "milestones": [
+      {"milestone_id": "MS-PORT-SYCL-2026", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "standard", "event_type": "standard", "timing_basis": "standard-release", "comparison_priority": "key", "label_ja": "SYCL 2020 rev.12", "label_en": "SYCL 2020 rev.12", "detail_ja": "2026年8月6日にrevision 12を公開。", "detail_en": "Revision 12 was published on August 6, 2026.", "source_ids": ["SRC-PORT003"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-LLVM", "track_id": "PORT-LLVM", "owner": "LLVM Project", "scope_ja": "LLVM主要リリース", "scope_en": "LLVM major releases", "milestones": [
+      {"milestone_id": "MS-PORT-LLVM-2026Q1", "year": 2026, "quarter": "Q1", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "supporting", "label_ja": "LLVM 22.1", "label_en": "LLVM 22.1", "detail_ja": "2026年2月に22.1.0を公開。", "detail_en": "LLVM 22.1.0 was released in February 2026.", "source_ids": ["SRC-PORT005"], "dependency_refs": []},
+      {"milestone_id": "MS-PORT-LLVM-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "LLVM 23.1", "label_en": "LLVM 23.1", "detail_ja": "2026年8月25日に23.1.0を公開。LLVMは約6か月周期。", "detail_en": "LLVM 23.1.0 was released on August 25, 2026; LLVM follows an approximately six-month cadence.", "source_ids": ["SRC-PORT004", "SRC-PORT005"], "dependency_refs": []}
+    ]},
+    {"lane_id": "LANE-PORT-KOKKOS", "track_id": "PORT-KOKKOS", "owner": "Kokkos Project", "scope_ja": "Kokkos 5系", "scope_en": "Kokkos 5.x", "milestones": [
+      {"milestone_id": "MS-PORT-KOKKOS-2026Q1", "year": 2026, "quarter": "Q1", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "supporting", "label_ja": "Kokkos 5.1", "label_en": "Kokkos 5.1", "detail_ja": "Kokkos 5.1.0を2026年3月26日に公開。", "detail_en": "Kokkos 5.1.0 was released on March 26, 2026.", "source_ids": ["SRC-PORT006"], "dependency_refs": ["DEP-PORT-WORKLOAD-001"]},
+      {"milestone_id": "MS-PORT-KOKKOS-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "Kokkos 5.2", "label_en": "Kokkos 5.2", "detail_ja": "Kokkos 5.2.0を2026年7月24日に公開。", "detail_en": "Kokkos 5.2.0 was released on July 24, 2026.", "source_ids": ["SRC-PORT006"], "dependency_refs": ["DEP-PORT-WORKLOAD-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-KOKKOSFFT", "track_id": "PORT-KOKKOS", "owner": "Kokkos-FFT Project", "scope_ja": "可搬FFT", "scope_en": "Portable FFT", "milestones": [
+      {"milestone_id": "MS-PORT-KOKKOSFFT-2026", "year": 2026, "quarter": "Q1", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "supporting", "label_ja": "Kokkos-FFT 1.0", "label_en": "Kokkos-FFT 1.0", "detail_ja": "2026年3月にproduction-ready版を公開。分散multi-GPUは将来開発で時期未公表。", "detail_en": "A production-ready release arrived in March 2026; distributed multi-GPU work has no public delivery date.", "source_ids": ["SRC-PORT007"], "dependency_refs": ["DEP-PORT-WORKLOAD-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-ROCM", "track_id": "PORT-VENDOR", "owner": "AMD", "scope_ja": "ROCm production stream", "scope_en": "ROCm production stream", "milestones": [
+      {"milestone_id": "MS-PORT-ROCM-2026Q1", "year": 2026, "quarter": "Q1", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "ROCm 7.2", "label_en": "ROCm 7.2", "detail_ja": "ROCm 7.2.0を2026年1月21日に公開。", "detail_en": "ROCm 7.2.0 was released on January 21, 2026.", "source_ids": ["SRC-PORT008"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-NVHPC", "track_id": "PORT-VENDOR", "owner": "NVIDIA", "scope_ja": "NVIDIA HPC SDK", "scope_en": "NVIDIA HPC SDK", "milestones": [
+      {"milestone_id": "MS-PORT-NVHPC-2026Q2", "year": 2026, "quarter": "Q2", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "HPC SDK 26.5", "label_en": "HPC SDK 26.5", "detail_ja": "2026年5月版はx86_64とArm Server向けでCUDA 13.2を同梱。", "detail_en": "The May 2026 release supports x86_64 and Arm Server and bundles CUDA 13.2.", "source_ids": ["SRC-PORT009"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-FNAUTO", "track_id": "PORT-AUTO", "owner": "RIKEN R-CCS / collaborators", "scope_ja": "富岳NEXT協調設計環境", "scope_en": "FugakuNEXT co-design environment", "milestones": [
+      {"milestone_id": "MS-PORT-FNAUTO-2026", "year": 2026, "quarter": null, "timing_precision": "half-year", "maturity": "pilot", "event_type": "research", "timing_basis": "project-target", "comparison_priority": "key", "label_ja": "AI協調設計試作", "label_en": "AI co-design prototype", "detail_ja": "Benchpark/Benchkit、AI、複数テストベッドを組み合わせた試作を2026年度中頃に公開予定。", "detail_en": "A prototype combining Benchpark/Benchkit, AI, and multiple testbeds is planned around mid-FY2026.", "source_ids": ["SRC-PORT010"], "dependency_refs": ["DEP-PORT-WORKLOAD-001"]},
+      {"milestone_id": "MS-PORT-FNAUTO-UNDATED", "year": null, "quarter": null, "timing_precision": "undated", "maturity": "undated", "event_type": "research", "timing_basis": "no-public-date", "comparison_priority": "key", "label_ja": "本番自動最適化時期未公表", "label_en": "Production automation date not public", "detail_ja": "自動生成コードの本番受入、継続学習、複数センター展開の時期は確認できない。", "detail_en": "No public timing was confirmed for production acceptance of generated code, continual learning, or multi-center deployment.", "source_ids": ["SRC-PORT010", "SRC-PORT011"], "dependency_refs": ["DEP-PORT-BLUEPRINT-001"]}
+    ]},
+    {"lane_id": "LANE-PORT-HPCI", "track_id": "PORT-HPCI-EVAL", "owner": "HPCI / OpenFS proposal", "scope_ja": "性能可搬性受入", "scope_en": "Performance-portability acceptance", "milestones": [
+      {"milestone_id": "MS-PORT-HPCI-2026", "year": 2026, "quarter": "Q4", "timing_precision": "quarter", "maturity": "decision-gate", "event_type": "hpci-evaluation", "timing_basis": "openfs-provisional-plan", "comparison_priority": "key", "label_ja": "移植性台帳v1", "label_en": "Portability ledger v1", "detail_ja": "代表アプリごとに言語、API、backend、ビルド、正当性、性能、工数を記録するOpenFS提案。", "detail_en": "OpenFS proposes recording language, API, backend, build, correctness, performance, and effort per representative application.", "source_ids": ["SRC-PORT011", "SRC-PORT012"], "dependency_refs": ["DEP-PORT-WORKLOAD-001"]},
+      {"milestone_id": "MS-PORT-HPCI-2027", "year": 2027, "quarter": "Q4", "timing_precision": "quarter", "maturity": "decision-gate", "event_type": "hpci-evaluation", "timing_basis": "openfs-provisional-plan", "comparison_priority": "key", "label_ja": "複数backend再現評価", "label_en": "Multi-backend reproducibility", "detail_ja": "少なくとも2系統のCPU/GPU backendで正当性・性能・再現性を継続測定するOpenFS提案。", "detail_en": "OpenFS proposes continuous correctness, performance, and reproducibility measurement on at least two CPU/GPU backend families.", "source_ids": ["SRC-PORT011", "SRC-PORT012"], "dependency_refs": ["DEP-PORT-COMPUTE-001"]},
+      {"milestone_id": "MS-PORT-HPCI-2028", "year": 2028, "quarter": "Q4", "timing_precision": "quarter", "maturity": "decision-gate", "event_type": "hpci-evaluation", "timing_basis": "openfs-provisional-plan", "comparison_priority": "key", "label_ja": "調達受入基準", "label_en": "Procurement acceptance criteria", "detail_ja": "必須アプリの実行率、性能保持率、移植工数、保守期間をノード調達条件へ反映するOpenFS提案。", "detail_en": "OpenFS proposes feeding required-application coverage, retained performance, porting effort, and support horizon into node procurement criteria.", "source_ids": ["SRC-PORT011", "SRC-PORT012"], "dependency_refs": ["DEP-PORT-BLUEPRINT-001"]},
+      {"milestone_id": "MS-PORT-HPCI-2030", "year": 2030, "quarter": null, "timing_precision": "year", "maturity": "deployment", "event_type": "hpci-adoption", "timing_basis": "openfs-provisional-plan", "comparison_priority": "key", "label_ja": "世代移行運用", "label_en": "Generation-transition operation", "detail_ja": "富岳NEXTと大学センター更新の間でCI、互換環境、性能回帰、移植支援を継続運用するOpenFS提案。", "detail_en": "OpenFS proposes operating CI, compatibility environments, performance regression, and migration support across FugakuNEXT and university-center refreshes.", "source_ids": ["SRC-PORT011", "SRC-PORT012"], "dependency_refs": ["DEP-PORT-BLUEPRINT-001"]}
+    ]}
+  ],
+  "dependencies": [
+    {"dependency_id": "DEP-PORT-COMPUTE-001", "relationship": "co-evolves", "upstream_roadmap_id": "RM-HW-COMPUTE", "downstream_roadmap_id": "RM-SSW-PORTABILITY", "statement_ja": "新CPU/GPU機能とbackendの成熟時期が性能可搬性の実現範囲を決める。", "statement_en": "New CPU/GPU features and backend maturity determine achievable portability.", "basis": "evidence-backed", "source_ids": ["SRC-PORT008", "SRC-PORT009", "SRC-PORT011"]},
+    {"dependency_id": "DEP-PORT-WORKLOAD-001", "relationship": "informs", "upstream_roadmap_id": "RM-APP-WORKLOADS", "downstream_roadmap_id": "RM-SSW-PORTABILITY", "statement_ja": "代表アプリとProxyがAPI、ライブラリ、最適化機能の優先順位を決める。", "statement_en": "Representative applications and proxies prioritize APIs, libraries, and optimization features.", "basis": "evidence-backed", "source_ids": ["SRC-PORT010", "SRC-PORT012"]},
+    {"dependency_id": "DEP-PORT-NET-001", "relationship": "requires", "upstream_roadmap_id": "RM-HW-INTERCONNECT", "downstream_roadmap_id": "RM-SSW-PORTABILITY", "statement_ja": "通信性能可搬性にはMPI、libfabric、集合通信の新規ファブリック対応が必要。", "statement_en": "Communication portability requires MPI, libfabric, and collective support for new fabrics.", "basis": "openfs-assessment", "source_ids": ["SRC-PORT011"]},
+    {"dependency_id": "DEP-PORT-BLUEPRINT-001", "relationship": "informs", "upstream_roadmap_id": "RM-SSW-PORTABILITY", "downstream_roadmap_id": "RM-X-BLUEPRINT", "statement_ja": "移植性台帳と受入基準はセンター別構成と移行費用の主要入力になる。", "statement_en": "The portability ledger and acceptance criteria inform center configurations and migration cost.", "basis": "openfs-assessment", "source_ids": ["SRC-PORT012"]}
+  ],
+  "sources": [
+    {"source_id": "SRC-PORT001", "title": "OpenMP Specifications", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/specifications/", "source_class": "standards-body"},
+    {"source_id": "SRC-PORT002", "title": "OpenMP ARB Releases Technical Report 14", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/press-release/openmp-arb-releases-tr14/", "published_at": "2025-11-13", "source_class": "standards-body"},
+    {"source_id": "SRC-PORT003", "title": "Khronos SYCL Registry", "publisher": "Khronos Group", "url": "https://registry.khronos.org/SYCL/", "source_class": "standards-body"},
+    {"source_id": "SRC-PORT004", "title": "How To Release LLVM To The Public", "publisher": "LLVM Project", "url": "https://www.llvm.org/docs/HowToReleaseLLVM.html", "source_class": "project-official"},
+    {"source_id": "SRC-PORT005", "title": "The LLVM Compiler Infrastructure Project", "publisher": "LLVM Project", "url": "https://www.llvm.org/", "source_class": "project-official"},
+    {"source_id": "SRC-PORT006", "title": "Kokkos Releases", "publisher": "Kokkos Project", "url": "https://kokkos.org/about/releases/", "source_class": "project-official"},
+    {"source_id": "SRC-PORT007", "title": "Kokkos-FFT v1.0 release", "publisher": "Kokkos Project", "url": "https://kokkos.org/blog/2026-kokkos-fft-v1-release/", "published_at": "2026-03-05", "source_class": "project-official"},
+    {"source_id": "SRC-PORT008", "title": "ROCm release history", "publisher": "AMD", "url": "https://rocm.docs.amd.com/en/develop/release/versions.html", "source_class": "vendor-official"},
+    {"source_id": "SRC-PORT009", "title": "NVIDIA HPC SDK Current Release Downloads", "publisher": "NVIDIA", "url": "https://developer.nvidia.com/hpc-sdk/downloads", "source_class": "vendor-official"},
+    {"source_id": "SRC-PORT010", "title": "FugakuNEXT ISC2026 Poster and Handout", "publisher": "RIKEN R-CCS", "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf", "source_class": "research-organization"},
+    {"source_id": "SRC-PORT011", "title": "Basic Design Technical Report for FugakuNEXT", "publisher": "RIKEN R-CCS", "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf", "published_at": "2026-05-29", "source_class": "research-organization"},
+    {"source_id": "SRC-PORT012", "title": "FS3.0 Overview: HPCI Reference Blueprint and Continuous Benchmarking", "publisher": "RIKEN R-CCS", "url": "https://www.r-ccs.riken.jp/wp/wp-content/uploads/2025/12/20251107-fs-overview_en.pdf", "source_class": "research-organization"}
+  ],
+  "coverage_gaps": [
+    {"gap_id": "GAP-PORT-001", "scope_ja": "OpenMP 6.1/SYCL機能の各コンパイラ・GPU実装率", "scope_en": "Per-compiler and per-GPU implementation coverage for OpenMP 6.1 and SYCL", "impact_ja": "仕様年表を実用的な移植経路へ直接変換できない。", "impact_en": "Prevents translating specification dates directly into practical migration paths.", "next_action_ja": "GCC、LLVM、Fujitsu、Intel、NVIDIA、AMDの適合表を四半期ごとに更新する。", "next_action_en": "Update GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD implementation matrices quarterly.", "status": "open"},
+    {"gap_id": "GAP-PORT-002", "scope_ja": "2027年以降のKokkos、ROCm、HPC SDK長期計画", "scope_en": "Post-2026 Kokkos, ROCm, and HPC SDK long-term plans", "impact_ja": "調達後5年以上の保守リスクを年表化できない。", "impact_en": "Long-term support risk after procurement cannot be placed on the timeline.", "next_action_ja": "公開LTS方針、廃止予定、対応GPU一覧を追跡し、未公表はGapのまま残す。", "next_action_en": "Track public LTS, deprecation, and supported-GPU policies and retain undisclosed items as gaps.", "status": "open"},
+    {"gap_id": "GAP-PORT-003", "scope_ja": "AI生成コードの正当性・性能・ライセンス評価手順", "scope_en": "Correctness, performance, and license evaluation for AI-generated code", "impact_ja": "自動最適化を人手ボトルネックなしで本番受入できない。", "impact_en": "Prevents production acceptance of automated optimization without a human bottleneck.", "next_action_ja": "テスト生成、差分検証、性能回帰、来歴、承認をHarness Schemaとして実装する。", "next_action_en": "Implement test generation, differential validation, performance regression, provenance, and approval in the harness schema.", "status": "open"},
+    {"gap_id": "GAP-PORT-004", "scope_ja": "HPCI主要アプリの移植工数とbackend別性能", "scope_en": "Porting effort and backend performance for major HPCI applications", "impact_ja": "性能可搬層とネイティブAPIの費用対効果を比較できない。", "impact_en": "Prevents cost-benefit comparison of portability layers and native APIs.", "next_action_ja": "HPCI-CBで移植性台帳を継続生成する。", "next_action_en": "Continuously generate the portability ledger through HPCI-CB.", "status": "open"},
+    {"gap_id": "GAP-PORT-005", "scope_ja": "2030〜2032年のソフトウェア標準・保守計画", "scope_en": "Software standards and support plans for 2030-2032", "impact_ja": "後半期間はHPCI提案ゲート以外の公表年表が薄い。", "impact_en": "The later horizon lacks public milestones beyond HPCI proposal gates.", "next_action_ja": "推測せず、標準団体とプロジェクトの一次情報を定期追跡する。", "next_action_en": "Do not extrapolate; periodically monitor primary sources from standards bodies and projects.", "status": "open"}
+  ],
+  "caveat_ja": "本ロードマップは公開一次情報とOpenFS暫定評価ゲートを分離した単一モデル作業版で、独立モデルによるConsensus Gateは未完了です。リリース番号はHPCIアプリの動作・性能・長期保守を保証しません。",
+  "caveat_en": "This is a single-model working draft separating public primary-source milestones from OpenFS provisional gates; independent-model Consensus is incomplete. Release numbers do not guarantee HPCI application correctness, performance, or long-term support.",
+  "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260825-004", "human_approval_directive_id": "DIR-900005"}
+}

@@ -110,8 +110,6 @@
   let activeDomain = "all";
   let language = readLanguage();
   let activeTopicId = null;
-  let activeRoadmapGroup = "all";
-  let activeRoadmapMilestoneId = null;
 
   function readLanguage() {
     try {
@@ -191,7 +189,7 @@
       link.textContent = language === "ja" ? roadmap.title_ja : roadmap.title_en;
       const count = document.createElement("span");
       count.className = "roadmap-row-note";
-      count.textContent = `${roadmap.technology_count} ${language === "ja" ? "技術" : "technologies"} / ${roadmap.milestone_count} ${language === "ja" ? "項目" : "milestones"}`;
+      count.textContent = `${roadmap.track_count} ${language === "ja" ? "トラック" : "tracks"} / ${roadmap.milestone_count} ${language === "ja" ? "項目" : "milestones"}`;
       titleCell.append(link, count);
       const domain = document.createElement("td");
       domain.textContent = roadmapDomainLabels[language][roadmap.domain] || roadmap.domain;
@@ -752,7 +750,6 @@
 
   function openRoadmapMilestone(milestoneId) {
     activeRoadmapMilestoneId = milestoneId;
-    renderRoadmapDialog();
     const dialog = document.getElementById("roadmap-dialog");
     if (!dialog.open) dialog.showModal();
   }
@@ -814,12 +811,6 @@
       renderTopics();
     });
   });
-  document.querySelectorAll("[data-roadmap-group]").forEach((button) => {
-    button.addEventListener("click", () => {
-      activeRoadmapGroup = button.dataset.roadmapGroup;
-      renderMemoryRoadmap();
-    });
-  });
   document.getElementById("topic-search").addEventListener("input", renderTopics);
   document.getElementById("topic-dialog-close").addEventListener("click", () => {
     document.getElementById("topic-dialog").close();
@@ -829,15 +820,6 @@
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
     activeTopicId = null;
-  });
-  document.getElementById("roadmap-dialog-close").addEventListener("click", () => {
-    document.getElementById("roadmap-dialog").close();
-  });
-  document.getElementById("roadmap-dialog").addEventListener("click", (event) => {
-    if (event.target === event.currentTarget) event.currentTarget.close();
-  });
-  document.getElementById("roadmap-dialog").addEventListener("close", () => {
-    activeRoadmapMilestoneId = null;
   });
   render();
 })();

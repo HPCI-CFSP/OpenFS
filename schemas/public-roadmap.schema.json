@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-roadmap.schema.json",
+  "title": "OpenFS Public Roadmap Export",
+  "type": "object",
+  "required": [
+    "schema_version", "export_id", "roadmap_id", "status", "domain", "slug", "as_of",
+    "title_ja", "title_en", "summary_ja", "summary_en", "horizon",
+    "timeline_granularity", "research_status", "coverage_status", "consensus_status",
+    "groups", "tracks", "lanes", "dependencies", "sources", "coverage_gaps",
+    "caveat_ja", "caveat_en", "publication"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.2.0"},
+    "export_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]+-[0-9]{3}$"},
+    "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+    "status": {"const": "published"},
+    "domain": {"enum": ["hardware", "system-software", "applications", "cross-cutting"]},
+    "slug": {"type": "string", "pattern": "^[a-z0-9-]+(?:/[a-z0-9-]+)*$"},
+    "as_of": {"type": "string", "format": "date"},
+    "title_ja": {"type": "string", "minLength": 1},
+    "title_en": {"type": "string", "minLength": 1},
+    "summary_ja": {"type": "string", "minLength": 1},
+    "summary_en": {"type": "string", "minLength": 1},
+    "horizon": {
+      "type": "object",
+      "required": ["start_year", "end_year"],
+      "properties": {
+        "start_year": {"type": "integer", "minimum": 2020},
+        "end_year": {"type": "integer", "minimum": 2020}
+      },
+      "additionalProperties": false
+    },
+    "timeline_granularity": {"const": "quarter"},
+    "research_status": {"enum": ["provisional", "accepted"]},
+    "coverage_status": {"enum": ["official-source-scan-incomplete", "met-declared-scope"]},
+    "consensus_status": {"enum": ["incomplete", "accepted"]},
+    "groups": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["group_id", "name_ja", "name_en"],
+        "properties": {
+          "group_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "name_ja": {"type": "string", "minLength": 1},
+          "name_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "tracks": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/track"}
+    },
+    "lanes": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/lane"}
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/dependency"}
+    },
+    "sources": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/coverageGap"}
+    },
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "sourceIdList": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+    },
+    "track": {
+      "type": "object",
+      "required": [
+        "track_id", "group", "name_ja", "name_en", "summary_ja", "summary_en",
+        "current_state_ja", "current_state_en", "hpci_implications_ja",
+        "hpci_implications_en", "source_ids"
+      ],
+      "properties": {
+        "track_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]+$"},
+        "group": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "name_ja": {"type": "string", "minLength": 1},
+        "name_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "current_state_ja": {"type": "string", "minLength": 1},
+        "current_state_en": {"type": "string", "minLength": 1},
+        "hpci_implications_ja": {"type": "string", "minLength": 1},
+        "hpci_implications_en": {"type": "string", "minLength": 1},
+        "source_ids": {"$ref": "#/$defs/sourceIdList"}
+      },
+      "additionalProperties": false
+    },
+    "lane": {
+      "type": "object",
+      "required": ["lane_id", "track_id", "owner", "scope_ja", "scope_en", "milestones"],
+      "properties": {
+        "lane_id": {"type": "string", "pattern": "^LANE-[A-Z0-9-]+$"},
+        "track_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]+$"},
+        "owner": {"type": "string", "minLength": 1},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "milestones": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/milestone"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "milestone": {
+      "type": "object",
+      "required": [
+        "milestone_id", "year", "quarter", "timing_precision", "maturity",
+        "event_type", "timing_basis", "comparison_priority", "label_ja", "label_en",
+        "detail_ja", "detail_en", "source_ids", "dependency_refs"
+      ],
+      "properties": {
+        "milestone_id": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
+        "year": {"type": ["integer", "null"], "minimum": 2020},
+        "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
+        "timing_precision": {"enum": ["quarter", "half-year", "year", "undated"]},
+        "maturity": {"enum": ["commercial", "sample", "standard", "target", "concept", "pilot", "decision-gate", "deployment", "undated"]},
+        "event_type": {"enum": ["product", "standard", "research", "policy", "hpci-evaluation", "hpci-adoption"]},
+        "timing_basis": {"enum": ["observed", "standard-release", "vendor-target", "project-target", "policy-target", "openfs-provisional-plan", "no-public-date"]},
+        "comparison_priority": {"enum": ["key", "supporting"]},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "detail_ja": {"type": "string", "minLength": 1},
+        "detail_en": {"type": "string", "minLength": 1},
+        "source_ids": {"$ref": "#/$defs/sourceIdList"},
+        "dependency_refs": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^(DEP|MS|RM)-[A-Z0-9-]+$"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "required": [
+        "dependency_id", "relationship", "upstream_roadmap_id", "downstream_roadmap_id",
+        "statement_ja", "statement_en", "basis", "source_ids"
+      ],
+      "properties": {
+        "dependency_id": {"type": "string", "pattern": "^DEP-[A-Z0-9-]+$"},
+        "relationship": {"enum": ["requires", "informs", "constrains", "enables", "co-evolves"]},
+        "upstream_roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+        "downstream_roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "basis": {"enum": ["evidence-backed", "openfs-assessment"]},
+        "source_ids": {"$ref": "#/$defs/sourceIdList"}
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["source_id", "title", "publisher", "url", "source_class"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+        "title": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri"},
+        "published_at": {"type": "string", "format": "date"},
+        "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "academic-primary", "openfs-governance"]}
+      },
+      "additionalProperties": false
+    },
+    "coverageGap": {
+      "type": "object",
+      "required": ["gap_id", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "status"],
+      "properties": {
+        "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "impact_ja": {"type": "string", "minLength": 1},
+        "impact_en": {"type": "string", "minLength": 1},
+        "next_action_ja": {"type": "string", "minLength": 1},
+        "next_action_en": {"type": "string", "minLength": 1},
+        "status": {"const": "open"}
+      },
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
