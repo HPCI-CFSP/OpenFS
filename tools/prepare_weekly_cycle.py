@@ -36,6 +36,26 @@ def _pending_directives(root: Path, task_id: str, as_of: datetime) -> list[str]:
     ]
 
 
+def _weekly_gap_assignments(root: Path, monitor_id: str) -> list[dict[str, Any]]:
+    path = root / "knowledge/public/audits/roadmap-gap-queue.json"
+    if not path.is_file():
+        return []
+    queue = read_json(path)
+    return [
+        {
+            "gap_id": item["gap_id"],
+            "queue_item_id": item["queue_item_id"],
+            "query_seed_count": len(item.get("query_seeds", [])),
+        }
+        for item in queue.get("assignments", [])
+        if item.get("workstream") == "source-discovery"
+        and item.get("assignment_ref") == monitor_id
+        and item.get("priority") == "P0"
+        and item.get("cadence") == "weekly"
+        and item.get("status") == "open"
+    ]
+
+
 def build_plan(
     root: Path,
     *,
@@ -88,6 +108,11 @@ def build_plan(
         }
         if production_readiness:
             plan["production_readiness"] = production_readiness
+        gap_assignments = _weekly_gap_assignments(root, monitor_id)
+        plan["coverage_gap_refs"] = [item["gap_id"] for item in gap_assignments]
+        plan["coverage_gap_query_seed_count"] = sum(
+            item["query_seed_count"] for item in gap_assignments
+        )
         monitors.append(plan)
     unknown = sorted(requested - known)
     if unknown:
@@ -157,7 +182,9 @@ def build_plan(
                 f"- `{monitor['monitor_id']}` / `{monitor['task_id']}` -> "
                 f"`{monitor['suggested_run_id']}`; previous: "
                 f"`{monitor['previous_run_id'] or 'none'}`; readiness: "
-                f"`{monitor.get('production_readiness', {}).get('status', 'pilot')}`"
+                f"`{monitor.get('production_readiness', {}).get('status', 'pilot')}`; "
+                f"weekly P0 Gaps: `{len(monitor['coverage_gap_refs'])}`; "
+                f"query seeds: `{monitor['coverage_gap_query_seed_count']}`"
             )
     else:
         lines.append("- None.")

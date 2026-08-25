@@ -106,7 +106,7 @@ class RunControllerTests(unittest.TestCase):
         )
         self.assertEqual(first, second)
         self.assertEqual(["DIR-000123"], first["directive_ids"])
-        self.assertEqual("0.2.0", first["assignment_contract_version"])
+        self.assertEqual("0.3.0", first["assignment_contract_version"])
         self.assertEqual("not-evaluated", first["coverage_status"])
         self.assertEqual(13, len(first["work_item_ids"]))
         self.assertEqual(
@@ -169,6 +169,48 @@ class RunControllerTests(unittest.TestCase):
         directive["submitted_at"] = "2026-08-26T00:00:00Z"
         path.write_text(json.dumps(directive), encoding="utf-8")
         self.assertEqual([], _approved_directives(self.root, "OFS-001", as_of=now))
+
+    def test_p0_coverage_gap_queries_are_pinned_and_expanded(self):
+        source = ROOT / "knowledge/public/audits/roadmap-gap-queue.json"
+        target = self.root / source.relative_to(ROOT)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        manifest = create_run(
+            self.root,
+            run_id="RUN-P0-GAPS-001",
+            task_id="OFS-001",
+            monitor_id="MON-MEMORY-001",
+            pilot=True,
+            now=datetime(2026, 8, 26, tzinfo=timezone.utc),
+        )
+        self.assertEqual(["GAP-MEM003"], manifest["coverage_gap_queue"]["assigned_gap_refs"])
+        self.assertEqual(2, manifest["coverage_gap_queue"]["query_seed_count"])
+        queue_ref = "knowledge/public/audits/roadmap-gap-queue.json"
+        self.assertIn(queue_ref, manifest["policy_hashes"])
+        self.assertTrue((self.root / manifest["configuration_snapshots"][queue_ref]).is_file())
+        items = [
+            json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted((self.root / "queue" / manifest["run_id"]).glob("*.json"))
+        ]
+        gap_items = [
+            item for item in items if item["payload"].get("query_role") == "coverage-gap"
+        ]
+        self.assertEqual(4, len(gap_items))
+        self.assertEqual(
+            {"GAP-MEM003"},
+            {item["payload"]["coverage_gap_refs"][0] for item in gap_items},
+        )
+        self.assertEqual(
+            {"ja", "en"},
+            {item["payload"]["query_seed_language"] for item in gap_items},
+        )
+        self.assertTrue(
+            all(
+                item["payload"]["languages"]
+                == [item["payload"]["query_seed_language"]]
+                for item in gap_items
+            )
+        )
 
     def test_global_monitor_uses_worldwide_survey_skill_override(self):
         for relative in (

@@ -444,7 +444,15 @@ def main() -> int:
         ),
         assignment_scope={
             key: work_item.get("payload", {})[key]
-            for key in ("subject_ids", "profile_fields", "query_template_id")
+            for key in (
+                "subject_ids",
+                "profile_fields",
+                "query_template_id",
+                "coverage_gap_refs",
+                "coverage_gap_queue_id",
+                "coverage_gap_queue_item_id",
+                "query_seed_language",
+            )
             if key in work_item.get("payload", {})
         },
     )

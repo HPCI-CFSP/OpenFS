@@ -195,6 +195,26 @@ class SourcePipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown dimensions"):
             self.register(capture)
 
+    def test_coverage_gap_assignment_is_preserved_on_source(self):
+        result = register_capture(
+            self.capture(),
+            run_id="RUN-PILOT-TEST",
+            work_item_id="WORK-000001",
+            agent_id="discovery-public-01",
+            policy=self.policy,
+            source_registry=self.registry,
+            assignment_scope={
+                "coverage_gap_refs": ["GAP-MEM003"],
+                "coverage_gap_queue_id": "RGQ-20260826-001",
+                "coverage_gap_queue_item_id": "RGQ-0007",
+                "query_seed_language": "en",
+            },
+        )
+        self.assertEqual(
+            ["GAP-MEM003"],
+            result["source_receipt"]["assignment_scope"]["coverage_gap_refs"],
+        )
+
     def test_restricted_ai_terms_force_metadata_only(self):
         capture = self.capture()
         capture["source"]["rights"] = {
@@ -335,6 +355,10 @@ class SourcePipelineTests(unittest.TestCase):
                 "subject_ids": ["CENTER-TEST"],
                 "profile_fields": ["power"],
                 "query_template_id": "FOLLOWUP-CENTER-TEST",
+                "coverage_gap_refs": ["GAP-BLUE-003"],
+                "coverage_gap_queue_id": "RGQ-20260826-001",
+                "coverage_gap_queue_item_id": "RGQ-0012",
+                "query_seed_language": "en",
             },
         }
         result = create_no_result(
@@ -363,6 +387,9 @@ class SourcePipelineTests(unittest.TestCase):
         self.assertEqual("discovery_no_result", result["object_type"])
         self.assertNotIn("source_receipt", result)
         self.assertEqual(["power"], result["assignment_scope"]["profile_fields"])
+        self.assertEqual(
+            ["GAP-BLUE-003"], result["assignment_scope"]["coverage_gap_refs"]
+        )
 
 
 if __name__ == "__main__":

@@ -22,6 +22,11 @@ are scheduled for weekly reconsideration, but the queue records them as
 `staged-monitor-disabled` while production readiness is incomplete. The weekly
 Review workflow regenerates this assignment artifact, so an open Gap cannot silently
 fall out of the review loop merely because it is already visible on GitHub Pages.
+The Coordinator includes the selected Monitor's weekly P0 Gap IDs and query-seed
+count in its cycle plan. When a Run is created, the Run Controller expands those
+seeds into ordinary leased `source-discovery` Work Items, records the originating
+Gap on every item, and snapshots the queue beside the other Run inputs. Disabled
+Monitors still require an explicit Pilot or a passed production-readiness gate.
 
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares

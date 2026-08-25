@@ -53,7 +53,29 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         self.assertEqual("ready", plan["status"])
         self.assertEqual("RUN-2026W35-TEST-001", plan["monitors"][0]["suggested_run_id"])
         self.assertEqual(["DIR-000001"], plan["monitors"][0]["pending_directive_ids"])
+        self.assertEqual([], plan["monitors"][0]["coverage_gap_refs"])
+        self.assertEqual(0, plan["monitors"][0]["coverage_gap_query_seed_count"])
         self.assertNotIn("Candidate statement", plan["issue"]["body"])
+
+    def test_weekly_plan_surfaces_p0_gap_queries_for_selected_monitor(self):
+        for relative in (
+            "config/monitors/MON-MEMORY-001.json",
+            "knowledge/public/audits/roadmap-gap-queue.json",
+        ):
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / relative).read_bytes())
+        plan = build_plan(
+            self.root,
+            week="2026-W35",
+            monitor_ids=["MON-MEMORY-001"],
+            pilot=True,
+            generated_at="2026-08-26T00:00:00Z",
+        )
+        monitor = plan["monitors"][0]
+        self.assertEqual(["GAP-MEM003"], monitor["coverage_gap_refs"])
+        self.assertEqual(2, monitor["coverage_gap_query_seed_count"])
+        self.assertIn("weekly P0 Gaps: `1`", plan["issue"]["body"])
 
     def test_issue_surfaces_sanitized_operational_readiness(self):
         self.write_json(

@@ -30,6 +30,12 @@ Agent setting (`none` or `public-web`). Public OpenFS adapters must never mount 
 receive access to RiVault, RIKEN Box private areas, NDA material, or private shared
 storage.
 
+For a Work Item with `query_role: coverage-gap`, the adapter must retain
+`coverage_gap_refs`, `coverage_gap_queue_id`, `coverage_gap_queue_item_id`, and
+`query_seed_language` in the submitted capture or no-result path. Discovering one
+responsive page never closes a Coverage Gap; evidence extraction, synthesis,
+independent review, and an explicit roadmap update remain separate steps.
+
 The contract does not make a provider integration production-ready by itself.
 The repository still requires a reviewed `research-worker.yml`, provider-specific
 adapter implementation, sandbox and egress tests, hard provider spend limits,
