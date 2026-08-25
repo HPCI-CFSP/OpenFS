@@ -118,6 +118,12 @@ def build_audit(root: Path, timeout: float, workers: int) -> dict[str, Any]:
         for status in ("reachable", "access-restricted", "missing", "timeout", "error")
     }
     source_class_counts = Counter(source["source_class"] for source in sources)
+    unique_urls = {source["url"] for source in sources}
+    unique_external_urls = {
+        source["url"]
+        for source in sources
+        if source["source_class"] != "openfs-governance"
+    }
     return {
         "schema_version": "0.1.0",
         "export_id": "ROADMAP-SOURCE-AUDIT-001",
@@ -133,6 +139,9 @@ def build_audit(root: Path, timeout: float, workers: int) -> dict[str, Any]:
         "user_agent": USER_AGENT,
         "summary": {
             "source_count": len(results),
+            "unique_url_count": len(unique_urls),
+            "duplicate_registration_count": len(results) - len(unique_urls),
+            "unique_external_url_count": len(unique_external_urls),
             "external_first_party_source_count": len(results)
             - source_class_counts["openfs-governance"],
             "openfs_governance_source_count": source_class_counts["openfs-governance"],

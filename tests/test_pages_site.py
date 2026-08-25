@@ -282,6 +282,15 @@ class PagesSiteTests(unittest.TestCase):
             )
             assurance = result["roadmap_assurance"]
             self.assertGreaterEqual(assurance["source_audit"]["summary"]["source_count"], 91)
+            self.assertLess(
+                assurance["source_audit"]["summary"]["unique_url_count"],
+                assurance["source_audit"]["summary"]["source_count"],
+            )
+            self.assertEqual(
+                assurance["source_audit"]["summary"]["source_count"]
+                - assurance["source_audit"]["summary"]["unique_url_count"],
+                assurance["source_audit"]["summary"]["duplicate_registration_count"],
+            )
             self.assertEqual(
                 assurance["source_audit"]["summary"]["source_count"]
                 - assurance["source_audit"]["summary"]["reachable"],

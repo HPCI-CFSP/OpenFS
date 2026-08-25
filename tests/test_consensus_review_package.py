@@ -137,6 +137,11 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(6, summary["roadmap_count"])
         self.assertGreaterEqual(summary["milestone_count"], 130)
         self.assertGreaterEqual(summary["source_count"], 91)
+        self.assertGreaterEqual(summary["unique_source_url_count"], 80)
+        self.assertEqual(
+            summary["source_count"] - summary["unique_source_url_count"],
+            summary["duplicate_source_registration_count"],
+        )
         self.assertGreaterEqual(summary["coverage_gap_count"], 30)
         self.assertEqual(14, summary["dependency_count"])
         self.assertEqual(3, summary["scenario_count"])

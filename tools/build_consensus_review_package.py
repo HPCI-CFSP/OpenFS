@@ -311,6 +311,8 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
             for lane in roadmap["lanes"]
         ),
         "source_count": source_audit["summary"]["source_count"],
+        "unique_source_url_count": source_audit["summary"]["unique_url_count"],
+        "duplicate_source_registration_count": source_audit["summary"]["duplicate_registration_count"],
         "coverage_gap_count": sum(len(roadmap["coverage_gaps"]) for roadmap in roadmaps),
         "dependency_count": len(dependency_register["dependencies"]),
         "external_constraint_count": len(dependency_register["external_constraints"]),
@@ -342,8 +344,8 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
             },
             {
                 "limitation_id": "LIM-SOURCE-TRIAGE-INDEPENDENCE",
-                "description_ja": "HTTP到達性警告9件の意味取得トリアージは単一モデルによる暫定確認で、独立した主張検証ではない。",
-                "description_en": "Semantic retrieval triage for nine HTTP reachability warnings is provisional single-model follow-up, not independent claim validation.",
+                "description_ja": f"HTTP到達性警告{source_audit['summary']['source_count'] - source_audit['summary']['reachable']}件の意味取得トリアージは単一モデルによる暫定確認で、独立した主張検証ではない。",
+                "description_en": f"Semantic retrieval triage for {source_audit['summary']['source_count'] - source_audit['summary']['reachable']} HTTP reachability warnings is provisional single-model follow-up, not independent claim validation.",
                 "effect": "requires-independent-review",
             },
             {
@@ -413,7 +415,8 @@ def readme(manifest: dict[str, Any]) -> str:
     return f"""# P0 roadmap v0.2 independent review package
 
 This package pins {summary['roadmap_count']} P0 roadmaps, {summary['milestone_count']}
-milestone records, {summary['source_count']} registered sources,
+milestone records, {summary['source_count']} source registrations representing
+{summary['unique_source_url_count']} unique URLs,
 {summary['dependency_count']} cross-roadmap dependencies,
 {summary['coverage_gap_count']} prioritized Coverage Gaps, and
 {summary['scenario_count']} provisional HPCI scenarios to commit `{commit}`.
@@ -445,7 +448,8 @@ milestone records, {summary['source_count']} registered sources,
 ## 日本語要約
 
 このパッケージは、P0の{summary['roadmap_count']}ロードマップ、
-{summary['milestone_count']}マイルストーン、{summary['source_count']}情報源、
+{summary['milestone_count']}マイルストーン、{summary['source_count']}件の情報源登録
+（重複除去{summary['unique_source_url_count']} URL）、
 {summary['dependency_count']}相互依存、{summary['coverage_gap_count']}件の優先度付きCoverage Gap、
 HPCI整備計画{summary['scenario_count']}案をコミット `{commit}` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要

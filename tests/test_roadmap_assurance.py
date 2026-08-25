@@ -146,6 +146,13 @@ class RoadmapAssuranceTests(unittest.TestCase):
         summary = self.sources["summary"]
         self.assertEqual(len(registered), summary["source_count"])
         self.assertEqual(
+            summary["source_count"] - summary["unique_url_count"],
+            summary["duplicate_registration_count"],
+        )
+        self.assertLessEqual(
+            summary["unique_external_url_count"], summary["unique_url_count"]
+        )
+        self.assertEqual(
             summary["source_count"],
             sum(
                 summary[key]
