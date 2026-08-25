@@ -179,6 +179,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual("incomplete", result["status"])
         self.assertEqual([], result["integrity_errors"])
         self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertEqual({}, result["review_results"]["review_file_digests"])
         self.assertEqual(0, result["counts"]["assessments"])
         self.assertIn("minimum_assessments", result["unmet_requirements"])
         self.assertIn("falsification_review", result["unmet_requirements"])
@@ -239,6 +240,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(3, result["counts"]["support_providers"])
         self.assertEqual(3, result["counts"]["support_harnesses"])
         self.assertEqual(4, len(result["review_results"]["eligible_review_ids"]))
+        self.assertEqual(4, len(result["review_results"]["review_file_digests"]))
         self.assertEqual([], result["review_results"]["ineligible_reviews"])
 
     def test_tampered_primary_source_identity_invalidates_review(self):

@@ -19,6 +19,9 @@ package ID and base commit.
 The deterministic gate result records the same manifest digest. GitHub Pages
 recomputes it and fails closed when either a gate result or an eligible review
 targets different manifest bytes.
+The gate also records the SHA-256 of every review file it evaluated. Pages
+requires the assessment set and every byte digest to match, so adding, removing,
+or editing a review always requires deterministic re-evaluation.
 
 At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
 capacity before any research result exists. Reviewers in the Proposal author's

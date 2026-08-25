@@ -621,6 +621,25 @@ class PagesSiteTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "gate manifest digest mismatch"):
                 collect_consensus_packages(root, policy, include_commit_metadata=False)
 
+    def test_consensus_package_rejects_stale_review_digest_set(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            target = root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(source, target)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900007.json", directives)
+            gate_path = target / "gate-result.json"
+            gate = json.loads(gate_path.read_text(encoding="utf-8"))
+            gate["review_results"]["review_file_digests"] = {
+                "CRV-STALE": "f" * 64
+            }
+            gate_path.write_text(json.dumps(gate), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "gate review digest set mismatch"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
+
     def test_memory_roadmap_rejects_unknown_source_reference(self):
         policy = self.publication_policy()
         with tempfile.TemporaryDirectory() as directory:

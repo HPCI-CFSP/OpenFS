@@ -29,7 +29,7 @@
     },
     "review_results": {
       "type": "object",
-      "required": ["eligible_review_ids", "ineligible_reviews"],
+      "required": ["eligible_review_ids", "ineligible_reviews", "review_file_digests"],
       "properties": {
         "eligible_review_ids": {
           "type": "array", "uniqueItems": true,
@@ -46,6 +46,11 @@
             },
             "additionalProperties": false
           }
+        },
+        "review_file_digests": {
+          "type": "object",
+          "propertyNames": {"pattern": "^CRV-[A-Z0-9-]+$"},
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
         }
       },
       "additionalProperties": false

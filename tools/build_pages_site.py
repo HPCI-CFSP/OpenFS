@@ -402,7 +402,11 @@ def collect_consensus_packages(
         eligible_ids = set(
             gate.get("review_results", {}).get("eligible_review_ids", [])
         )
+        gate_review_digests = gate.get("review_results", {}).get(
+            "review_file_digests", {}
+        )
         assessments = {}
+        assessment_digests = {}
         assessment_dir = root / manifest["submission"]["assessment_directory"]
         for assessment_path in sorted(assessment_dir.glob("*.json")):
             assessment = load_json(assessment_path)
@@ -416,6 +420,13 @@ def collect_consensus_packages(
             if review_id in assessments:
                 raise ValueError(f"Consensus package {package_id} contains duplicate review ID {review_id}")
             assessments[review_id] = assessment
+            assessment_digests[review_id] = hashlib.sha256(
+                assessment_path.read_bytes()
+            ).hexdigest()
+        if assessment_digests != gate_review_digests:
+            raise ValueError(
+                f"Consensus package {package_id} gate review digest set mismatch"
+            )
         missing_eligible = eligible_ids - set(assessments)
         if missing_eligible:
             raise ValueError(f"Consensus package {package_id} gate references missing reviews: {sorted(missing_eligible)}")

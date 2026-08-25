@@ -88,7 +88,16 @@ def evaluate(
         }
 
     assessment_dir = root / manifest["submission"]["assessment_directory"]
-    reviews = [read_json(path) for path in sorted(assessment_dir.glob("*.json"))]
+    reviews: list[dict[str, Any]] = []
+    review_file_digests: dict[str, str] = {}
+    for path in sorted(assessment_dir.glob("*.json")):
+        review = read_json(path)
+        reviews.append(review)
+        review_id = review.get("review_id", "<missing>")
+        review_file_digests.setdefault(
+            review_id,
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
     expected_units = {unit["unit_id"] for unit in manifest["review_units"]}
     required_primary_checks: dict[str, dict[str, set[tuple[str, str, str]]]] = {}
     for unit in manifest["review_units"]:
@@ -362,6 +371,7 @@ def evaluate(
             "ineligible_reviews": sorted(
                 ineligible_reviews, key=lambda item: item["review_id"]
             ),
+            "review_file_digests": dict(sorted(review_file_digests.items())),
         },
         "unmet_requirements": sorted(set(unmet)),
         "integrity_errors": sorted(set(integrity_errors)),
