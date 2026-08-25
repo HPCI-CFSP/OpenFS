@@ -110,11 +110,18 @@ def build_entry(roadmap_id: str, milestone: dict[str, Any]) -> dict[str, Any]:
 
 def build_audit(root: Path) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
+    timing_counts: Counter[str] = Counter()
     for path in sorted((root / "knowledge" / "public" / "roadmaps").glob("*.json")):
         roadmap = load_json(path)
         for lane in roadmap["lanes"]:
             for milestone in lane["milestones"]:
                 entries.append(build_entry(roadmap["roadmap_id"], milestone))
+                if milestone["timing_basis"] == "openfs-provisional-plan":
+                    timing_counts[f"openfs_provisional_{milestone['timing_precision'].replace('-', '_')}"] += 1
+                elif milestone["timing_basis"] == "no-public-date":
+                    timing_counts["undated"] += 1
+                else:
+                    timing_counts[f"source_supported_{milestone['timing_precision'].replace('-', '_')}"] += 1
     entries.sort(key=lambda item: (item["roadmap_id"], item["milestone_id"]))
     counts = Counter(item["review_status"] for item in entries)
     return {
@@ -135,6 +142,12 @@ def build_audit(root: Path) -> dict[str, Any]:
             "openfs_provisional": counts["openfs-provisional"],
             "independently_verified": 0,
             "pending_independent_review": len(entries),
+            "source_supported_quarter": timing_counts["source_supported_quarter"],
+            "source_supported_half_year": timing_counts["source_supported_half_year"],
+            "source_supported_year": timing_counts["source_supported_year"],
+            "undated": timing_counts["undated"],
+            "openfs_provisional_quarter": timing_counts["openfs_provisional_quarter"],
+            "openfs_provisional_year": timing_counts["openfs_provisional_year"],
         },
         "entries": entries,
         "publication": {

@@ -83,6 +83,28 @@ class RoadmapAssuranceTests(unittest.TestCase):
             )
         self.assertEqual(0, self.evidence["summary"]["independently_verified"])
         self.assertEqual(len(milestones), self.evidence["summary"]["pending_independent_review"])
+        timing_summary = self.evidence["summary"]
+        self.assertEqual(
+            len(milestones),
+            sum(
+                timing_summary[key]
+                for key in (
+                    "source_supported_quarter",
+                    "source_supported_half_year",
+                    "source_supported_year",
+                    "undated",
+                    "openfs_provisional_quarter",
+                    "openfs_provisional_year",
+                )
+            ),
+        )
+        self.assertGreater(timing_summary["source_supported_quarter"], 0)
+        self.assertEqual(timing_summary["coverage_gap"], timing_summary["undated"])
+        self.assertEqual(
+            timing_summary["openfs_provisional"],
+            timing_summary["openfs_provisional_quarter"]
+            + timing_summary["openfs_provisional_year"],
+        )
 
     def test_source_audit_covers_every_registered_source_and_has_no_known_404(self):
         registered_items = [
