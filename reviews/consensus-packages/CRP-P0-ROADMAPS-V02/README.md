@@ -1,14 +1,14 @@
 # P0 roadmap v0.2 independent review package
 
-This package pins 6 P0 roadmaps, 150
-milestone records, 105 registered sources,
+This package pins 6 P0 roadmaps, 152
+milestone records, 109 registered sources,
 14 cross-roadmap dependencies,
 31 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `09cc4b4743e37302e7758affbe9c1ca56b1c2b8e`.
+3 provisional HPCI scenarios to commit `3c69f490d4ca00ff407fa1744c2331401cc73aa7`.
 
 ## Review protocol
 
-1. Check out exactly `09cc4b4743e37302e7758affbe9c1ca56b1c2b8e` and verify every `artifact_manifest.sha256`.
+1. Check out exactly `3c69f490d4ca00ff407fa1744c2331401cc73aa7` and verify every `artifact_manifest.sha256`.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
    Record one conclusive primary-source check for every milestone listed in
@@ -29,9 +29,9 @@ milestone records, 105 registered sources,
 ## 日本語要約
 
 このパッケージは、P0の6ロードマップ、
-150マイルストーン、105情報源、
+152マイルストーン、109情報源、
 14相互依存、31件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `09cc4b4743e37302e7758affbe9c1ca56b1c2b8e` に固定します。
+HPCI整備計画3案をコミット `3c69f490d4ca00ff407fa1744c2331401cc73aa7` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
