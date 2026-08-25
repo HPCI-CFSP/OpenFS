@@ -118,7 +118,9 @@ Directive, and creates review units with explicit falsification prompts.
 Independent validators and critics submit one schema-valid assessment covering
 every unit. The deterministic evaluator rejects digest drift, missing units,
 duplicate reviewer identities, author-group votes, insufficient provider/origin
-diversity, absent falsification, and critical objections. Passing those mechanical
+diversity, absent falsification, primary-source checks that do not match the
+commit-pinned roadmap registry, and critical objections. The package also pins
+its review schemas and evaluator implementation. Passing those mechanical
 conditions yields only `ready-for-human-decision`; it cannot replace the human
 decision required for a high-impact HPCI recommendation.
 

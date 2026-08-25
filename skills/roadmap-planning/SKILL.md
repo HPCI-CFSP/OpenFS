@@ -42,7 +42,8 @@ research or claim that Consensus is complete.
    complete review target. Then run
    `tools/build_consensus_review_package.py --base-commit <40-hex-commit>` and
    distribute that pinned package to blind reviewers. Reviewers must inspect every
-   review unit, seek counterevidence, record provider/model/prompt/harness identity,
+   review unit, seek counterevidence, record at least one conclusive registered
+   primary-source check for every roadmap, record provider/model/prompt/harness identity,
    and submit schema-valid assessments. Do not count this planner's own review,
    same-conversation forks, or shared-conclusion reviewers as independent.
 10. Run `tools/evaluate_consensus_review_package.py <manifest>`. A

@@ -136,7 +136,8 @@ python3 tools/evaluate_consensus_review_package.py \
 ```
 
 The evaluator can return `ready-for-human-decision`, but high-impact HPCI adoption
-still requires a reviewed human Directive. See
+still requires a reviewed human Directive. Each reviewer must record a conclusive,
+commit-pinned primary-source check for every roadmap unit. See
 `docs/operations/independent-roadmap-review.md`.
 
 Render the illustrative multi-scenario example without ranking:

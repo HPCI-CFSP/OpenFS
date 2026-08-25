@@ -34,8 +34,14 @@ ARTIFACTS = [
     ("roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "scenario-set"),
     ("config/consensus-policy.json", "policy"),
     ("config/scenario-policy.json", "policy"),
+    ("config/agent-registry.json", "registry"),
     ("schemas/public-roadmap.schema.json", "schema"),
     ("schemas/system-scenario.schema.json", "schema"),
+    ("schemas/consensus-review-package.schema.json", "schema"),
+    ("schemas/consensus-package-review.schema.json", "schema"),
+    ("schemas/consensus-package-gate-result.schema.json", "schema"),
+    ("tools/build_consensus_review_package.py", "tool"),
+    ("tools/evaluate_consensus_review_package.py", "tool"),
     ("reviews/directives/DIR-900006.json", "directive"),
 ]
 
@@ -135,9 +141,9 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py"],
             "selectors": ["DIR-900006", "consensus_status", "research_status", "publication"],
-            "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity"],
+            "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
             "falsification_prompts_ja": ["未完了のConsensusを受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。"],
             "falsification_prompts_en": ["Could incomplete Consensus be read as accepted?", "Is URL reachability presented as claim correctness?", "Does any content exceed the approved public-information boundary?"],
         },
@@ -181,8 +187,8 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
         "review_units": units,
         "independence_requirements": {
             "author_group": "openai-gpt5-codex-interactive",
-            "reviewer_rule_ja": "支持票には少なくとも3つの独立groupと3つのorigin groupが必要。作成モデルと同じgroup、同一会話のfork、同一出力を共有したreviewerは独立票として数えない。",
-            "reviewer_rule_en": "Supporting votes require at least three independent groups and three origin groups. The author group, forks of the same conversation, and reviewers sharing generated conclusions do not count as independent votes.",
+            "reviewer_rule_ja": "支持票には少なくとも3つの独立group、3つのorigin group、登録済みの3モデル系統、2プロバイダが必要。作成モデルと同じgroup、同一会話のfork、同一出力を共有したreviewerは独立票として数えない。",
+            "reviewer_rule_en": "Supporting votes require at least three independent groups and three origin groups, three registered model families, and two registered providers. The author group, forks of the same conversation, and reviewers sharing generated conclusions do not count as independent votes.",
             "disallowed_as_independent": ["openai-gpt5-codex-interactive", "same-conversation-fork", "shared-conclusion-context"],
         },
         "known_limitations": [
@@ -214,6 +220,7 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
 
 
 def review_template(manifest: dict[str, Any]) -> dict[str, Any]:
+    roadmap_units = [unit for unit in manifest["review_units"] if unit["kind"] == "roadmap"]
     return {
         "_template_notice": "Replace every angle-bracket placeholder and remove this field before submission.",
         "schema_version": "0.1.0",
@@ -229,6 +236,16 @@ def review_template(manifest: dict[str, Any]) -> dict[str, Any]:
         },
         "registry_snapshot_digest": "<64-hex-sha256>",
         "overall_verdict": "uncertain",
+        "primary_source_checks": [
+            {
+                "unit_id": unit["unit_id"], "source_id": "<SRC-ID>",
+                "source_url": "https://example.invalid/primary-source",
+                "source_class": "vendor-official",
+                "outcome": "inconclusive",
+                "notes": "<record the exact claim checked and what the primary source says>",
+            }
+            for unit in roadmap_units
+        ],
         "unit_assessments": [
             {
                 "unit_id": unit["unit_id"], "verdict": "uncertain", "confidence": 0,
@@ -258,13 +275,15 @@ milestone records, {summary['source_count']} registered sources,
 1. Check out exactly `{commit}` and verify every `artifact_manifest.sha256`.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
+   Record at least one conclusive primary-source check for every roadmap unit.
 3. Actively seek counterevidence using each unit's falsification prompts. Keep
    unsupported timing as a Coverage Gap; do not infer a quarter.
 4. Fill `review-template.json`, remove `_template_notice`, assign a unique review
    ID, and save it under `assessments/{PACKAGE_ID}/`. Do not edit the package manifest.
 5. Record provider, model family, prompt profile, independence/origin groups,
    harness repository, and harness commit. A fork of the author conversation is
-   not an independent vote.
+   not an independent vote. The agent must be enabled in the commit-pinned Agent
+   Registry, and `registry_snapshot_digest` is the SHA-256 of its exact Git object.
 6. Run schema and repository validation. Consensus remains incomplete until the
    configured policy passes and a human makes the required high-impact decision.
 

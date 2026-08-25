@@ -70,6 +70,11 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
   digests before review. A reviewer from the author group, a fork of the same
   conversation, or a reviewer given another reviewer's conclusion is not an
   independent vote.
+- A package review counts only when its Agent is enabled in the commit-pinned
+  `config/agent-registry.json`, its recorded identity matches that registry, and
+  it records a conclusive registered primary-source check for every roadmap.
+  High-impact support requires at least three registered model families and two
+  providers in addition to the independence and origin-group thresholds.
 
 ## Reproducibility
 

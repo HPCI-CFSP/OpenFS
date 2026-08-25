@@ -70,6 +70,20 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         independence = self.manifest["independence_requirements"]
         self.assertIn(independence["author_group"], independence["disallowed_as_independent"])
         self.assertTrue(self.manifest["consensus_policy"]["require_human_decision"])
+        self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_model_families"], 3)
+        self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_providers"], 2)
+
+    def test_template_requires_a_primary_source_check_for_every_roadmap(self):
+        template = load_json(PACKAGE / "review-template.json")
+        roadmap_units = {
+            unit["unit_id"]
+            for unit in self.manifest["review_units"]
+            if unit["kind"] == "roadmap"
+        }
+        self.assertEqual(
+            roadmap_units,
+            {check["unit_id"] for check in template["primary_source_checks"]},
+        )
 
 
 if __name__ == "__main__":

@@ -61,6 +61,8 @@ def evaluate(
         if reviewer is None:
             reasons.append("reviewer-not-registered")
         else:
+            if reviewer.get("enabled") is not True:
+                reasons.append("reviewer-not-enabled")
             if reviewer.get("role") not in {"validator", "critic"}:
                 reasons.append("reviewer-role-not-eligible")
             if reviewer.get("provider") in {None, "unconfigured"}:
@@ -100,6 +102,13 @@ def evaluate(
         if item["agent_independence_group"] != author_group
         and item["agent_independence_group"] != "non-voting-control-plane"
     }
+    support_model_families = {
+        (item["reviewer_identity"]["provider"], item["reviewer_identity"]["model_family"])
+        for item in support
+    }
+    support_providers = {
+        item["reviewer_identity"]["provider"] for item in support
+    }
     origin_groups = set(proposal.get("origin_group_ids", []))
     publisher_groups = set(proposal.get("publisher_group_ids", []))
 
@@ -123,6 +132,10 @@ def evaluate(
             len(support_groups) >= rule["minimum_support_independence_groups"]
         ),
         "minimum_origin_groups": len(origin_groups) >= rule["minimum_origin_groups"],
+        "minimum_model_families": (
+            len(support_model_families) >= rule.get("minimum_model_families", 0)
+        ),
+        "minimum_providers": len(support_providers) >= rule.get("minimum_providers", 0),
         "minimum_publisher_groups": (
             len(publisher_groups) >= rule.get("minimum_publisher_groups", 0)
         ),

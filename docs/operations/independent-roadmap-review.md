@@ -17,9 +17,14 @@ allowing the authoring model to certify its own work.
 
 3. Commit the generated package separately. This makes the package point backward
    to a stable review target rather than trying to refer to its own commit.
-4. Assign at least four blind reviews that can satisfy the current
+4. Before building the package, register and enable each intended validator or
+   critic in `config/agent-registry.json`. Their provider, model family, prompt
+   profile, role, independence group, public-Web access, public clearance, and
+   `assessments` write scope are checked against the pinned registry.
+5. Assign at least four blind reviews that can satisfy the current
    `high_impact_recommendation` rule. The author group and same-conversation forks
-   are ineligible as independent votes.
+   are ineligible as independent votes. The supporting set must span at least
+   three registered model families and two providers.
 
 ## Reviewer procedure
 
@@ -29,12 +34,17 @@ allowing the authoring model to certify its own work.
 3. Follow the falsification prompts and search for contradictory primary sources,
    later schedule changes, product cancellations, unsupported quarter precision,
    omitted alternatives, and infeasible dependencies or fallbacks.
-4. Copy `review-template.json` to
+4. For every roadmap unit, record at least one conclusive primary-source check.
+   Its source ID and URL must match that roadmap in the package's pinned commit;
+   reachability alone and secondary summaries do not satisfy this requirement.
+   Set `registry_snapshot_digest` to the SHA-256 of the exact
+   `config/agent-registry.json` Git object at `base_commit`.
+5. Copy `review-template.json` to
    `assessments/CRP-P0-ROADMAPS-V02/<review-id>.json`, replace all
    placeholders, remove `_template_notice`, and record the exact model, provider,
    prompt profile, independence/origin groups, harness repository, and harness
    commit.
-5. Use `uncertain` when evidence is insufficient. Do not infer dates or convert a
+6. Use `uncertain` when evidence is insufficient. Do not infer dates or convert a
    Coverage Gap into a negative fact.
 
 ## Deterministic gate

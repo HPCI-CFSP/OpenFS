@@ -5,7 +5,7 @@
   "type": "object",
   "required": [
     "schema_version", "review_id", "package_id", "base_commit", "reviewer",
-    "registry_snapshot_digest", "overall_verdict", "unit_assessments",
+    "registry_snapshot_digest", "overall_verdict", "primary_source_checks", "unit_assessments",
     "critical_objections", "reviewed_at"
   ],
   "properties": {
@@ -32,6 +32,22 @@
     },
     "registry_snapshot_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "overall_verdict": {"enum": ["support", "refute", "uncertain"]},
+    "primary_source_checks": {
+      "type": "array", "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["unit_id", "source_id", "source_url", "source_class", "outcome", "notes"],
+        "properties": {
+          "unit_id": {"type": "string", "pattern": "^CRU-[A-Z0-9-]+$"},
+          "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+          "source_url": {"type": "string", "format": "uri"},
+          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "academic-primary"]},
+          "outcome": {"enum": ["supports", "contradicts", "inconclusive", "inaccessible"]},
+          "notes": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
     "unit_assessments": {
       "type": "array", "minItems": 9,
       "items": {
