@@ -187,7 +187,7 @@
       const titleCell = document.createElement("td");
       const link = document.createElement("a");
       link.className = "roadmap-title-link";
-      link.href = roadmap.path;
+      link.href = `${roadmap.path}?v=${encodeURIComponent(data.site.commit_sha)}`;
       link.textContent = language === "ja" ? roadmap.title_ja : roadmap.title_en;
       const count = document.createElement("span");
       count.className = "roadmap-row-note";

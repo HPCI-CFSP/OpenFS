@@ -247,6 +247,7 @@ class PagesSiteTests(unittest.TestCase):
                 {"start_year": 2026, "end_year": 2032},
                 result["memory_roadmap"]["horizon"],
             )
+            self.assertEqual("quarter", result["memory_roadmap"]["timeline_granularity"])
             self.assertEqual(11, len(result["memory_roadmap"]["technologies"]))
             self.assertEqual("hardware", result["memory_roadmap"]["domain"])
             self.assertEqual(
@@ -266,6 +267,20 @@ class PagesSiteTests(unittest.TestCase):
                     for lane in result["memory_roadmap"]["lanes"]
                     for milestone in lane["milestones"]
                 )
+            )
+            milestones = {
+                milestone["milestone_id"]: milestone
+                for lane in result["memory_roadmap"]["lanes"]
+                for milestone in lane["milestones"]
+            }
+            self.assertEqual("Q1", milestones["MS-HBM-MICRON-2026"]["quarter"])
+            self.assertEqual("Q2", milestones["MS-DDR-MICRON-2026B"]["quarter"])
+            self.assertEqual("Q3", milestones["MS-3D-DRAM-SAMSUNG-2026"]["quarter"])
+            self.assertIsNone(milestones["MS-HBM-MICRON-2027"]["quarter"])
+            self.assertEqual("year", milestones["MS-HBM-MICRON-2027"]["timing_precision"])
+            self.assertEqual(
+                "undated",
+                milestones["MS-CXL-MICRON-UNDATED"]["timing_precision"],
             )
             self.assertEqual(
                 3,
@@ -356,7 +371,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('"catalog_as_of":"2026-08-23"', rendered)
             self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
-            self.assertIn('href="#roadmaps"', index)
+            asset_version = result["site"]["commit_sha"]
+            self.assertIn(f'href="roadmaps/?v={asset_version}"', index)
+            self.assertNotIn('href="#roadmaps"', index)
+            self.assertIn(f'src="data/openfs-public.js?v={asset_version}"', index)
+            self.assertIn(f'src="app.js?v={asset_version}"', index)
             self.assertNotIn('href="#domestic"', index)
             app = (output / "app.js").read_text(encoding="utf-8")
             roadmap_app = (output / "roadmaps.js").read_text(encoding="utf-8")
@@ -383,6 +402,14 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_detail)
+            self.assertNotIn("{{ASSET_VERSION}}", index)
+            self.assertNotIn("{{ASSET_VERSION}}", roadmap_index)
+            self.assertNotIn("{{ASSET_VERSION}}", roadmap_detail)
+            self.assertIn(
+                f'src="../data/openfs-public.js?v={asset_version}"', roadmap_index
+            )
+            self.assertIn("roadmap-quarter-heading", roadmap_app)
+            self.assertIn('tr("quarterUnknown")', roadmap_app)
             self.assertNotIn('data-i18n="scopeMetric"', index)
             self.assertIn("openTopicDetail", app)
             self.assertIn("renderRoadmapHome", app)
@@ -454,6 +481,35 @@ class PagesSiteTests(unittest.TestCase):
                 json.dumps(directive), encoding="utf-8"
             )
             with self.assertRaisesRegex(ValueError, "outside the horizon"):
+                collect_memory_roadmap(root, policy)
+
+    def test_memory_roadmap_rejects_quarter_without_quarter_precision(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            public = root / "knowledge" / "public"
+            public.mkdir(parents=True)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            payload = json.loads(
+                (ROOT / "knowledge" / "public" / "memory-technology-roadmap.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            payload["lanes"][0]["milestones"][0]["quarter"] = "Q1"
+            payload["lanes"][0]["milestones"][0]["timing_precision"] = "year"
+            (public / "memory-technology-roadmap.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            directive = json.loads(
+                (ROOT / "reviews" / "directives" / "DIR-900004.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            (directives / "DIR-900004.json").write_text(
+                json.dumps(directive), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "inconsistent timing precision"):
                 collect_memory_roadmap(root, policy)
 
     def test_accepted_finding_publishes_consensus_receipt(self):
