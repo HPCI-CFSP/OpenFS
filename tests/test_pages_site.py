@@ -262,8 +262,15 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
+                    and len(scenario["decision_blocking_gap_refs"]) == 14
                     for scenario in result["scenarios"]
                 )
+            )
+            self.assertIn(
+                'id="scenario-blocking-gaps"',
+                (output / result["scenarios"][0]["path"] / "index.html").read_text(
+                    encoding="utf-8"
+                ),
             )
             self.assertTrue(
                 all(

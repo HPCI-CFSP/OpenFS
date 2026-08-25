@@ -241,6 +241,12 @@ class RoadmapAssuranceTests(unittest.TestCase):
             self.dependencies["export_id"],
             self.evidence["export_id"],
         }
+        p0_gap_refs = {
+            gap["gap_id"]
+            for roadmap in self.roadmaps
+            for gap in roadmap["coverage_gaps"]
+            if gap["priority"] == "P0"
+        }
         for scenario in scenarios:
             self.assertEqual("provisional", scenario["research_status"])
             self.assertEqual("incomplete", scenario["consensus_status"])
@@ -261,6 +267,7 @@ class RoadmapAssuranceTests(unittest.TestCase):
             for option in scenario["technology_options"]:
                 self.assertLessEqual(set(option["evidence_refs"]), known_evidence_refs)
             self.assertLessEqual(set(scenario["evidence_refs"]), known_evidence_refs)
+            self.assertEqual(p0_gap_refs, set(scenario["decision_blocking_gap_refs"]))
             for evaluation in scenario["evaluation"].values():
                 self.assertLessEqual(set(evaluation["evidence_refs"]), known_evidence_refs)
 
