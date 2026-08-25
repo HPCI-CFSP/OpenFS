@@ -85,6 +85,31 @@
     const item = document.createElement("div"); const term = document.createElement("span"); term.textContent = label; const count = document.createElement("strong"); count.textContent = value; item.append(term, count); if (note) { const small = document.createElement("small"); small.textContent = note; item.append(small); } root.append(item);
   }
 
+  function makeQueryPlanCell(item) {
+    const cell = document.createElement("td");
+    cell.className = "gap-query-plan-cell";
+    if (!item.query_seeds.length) {
+      cell.textContent = tr(item.query_plan_origin);
+      return cell;
+    }
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = `${tr(item.query_plan_origin)} (${item.query_seeds.length})`;
+    const list = document.createElement("ol");
+    item.query_seeds.forEach((seed) => {
+      const entry = document.createElement("li");
+      const languageLabel = document.createElement("strong");
+      languageLabel.textContent = seed.language.toUpperCase();
+      const query = document.createElement("code");
+      query.textContent = seed.query;
+      entry.append(languageLabel, query);
+      list.append(entry);
+    });
+    details.append(summary, list);
+    cell.append(details);
+    return cell;
+  }
+
   function renderEvidencePage() {
     const assurance = data.roadmap_assurance; const source = assurance.source_audit; const evidence = assurance.evidence_audit; const freshness = assurance.freshness_audit; const gapQueue = assurance.gap_queue; const dependencies = assurance.dependency_register;
     const metrics = document.getElementById("assurance-metrics"); metrics.replaceChildren();
@@ -112,7 +137,7 @@
     const gapTable = document.createElement("table"); gapTable.className = "assurance-table coverage-gap-table"; const gapHead = document.createElement("thead"); const gapHeadRow = document.createElement("tr"); [tr("priority"), tr("roadmap"), tr("scope"), tr("impact"), tr("nextAction")].forEach((label) => gapHeadRow.append(makeCell("th", label))); gapHead.append(gapHeadRow); const gapBody = document.createElement("tbody"); gaps.forEach((gap) => { const row = document.createElement("tr"); const priorityCell = document.createElement("td"); const priority = document.createElement("span"); priority.className = `gap-priority priority-${gap.priority.toLowerCase()}`; priority.textContent = gap.priority; priorityCell.append(priority); row.append(priorityCell, makeCell("th", roadmapTitle(gap.roadmap_id)), makeCell("td", localized(gap, "scope")), makeCell("td", localized(gap, "impact")), makeCell("td", localized(gap, "next_action"))); gapBody.append(row); }); gapTable.append(gapHead, gapBody); document.getElementById("coverage-gap-register").replaceChildren(gapTable);
 
     const queueSummary = document.getElementById("gap-queue-summary"); queueSummary.replaceChildren(); [[tr("p0ExplicitQueries"), gapQueue.summary.p0_explicit_query_overrides], [tr("p0FallbackQueries"), gapQueue.summary.p0_generated_query_fallbacks], [tr("assignedConsensus"), gapQueue.summary.consensus_review], [tr("productionReady"), gapQueue.summary.ready_for_scheduled_discovery]].forEach(([labelText, value]) => { const item = document.createElement("div"); item.append(makeCell("span", labelText), makeCell("strong", value)); queueSummary.append(item); });
-    const p0Assignments = gapQueue.assignments.filter((item) => item.priority === "P0"); const queueTable = document.createElement("table"); queueTable.className = "assurance-table gap-assignment-table"; const queueHead = document.createElement("thead"); const queueHeadRow = document.createElement("tr"); ["Gap", tr("roadmap"), tr("assignment"), tr("cadence"), tr("queryPlan"), tr("executionState"), tr("nextAction")].forEach((label) => queueHeadRow.append(makeCell("th", label))); queueHead.append(queueHeadRow); const queueBody = document.createElement("tbody"); p0Assignments.forEach((item) => { const row = document.createElement("tr"); row.append(makeCell("th", item.gap_id), makeCell("td", roadmapTitle(item.roadmap_id)), makeCell("td", item.assignment_ref), makeCell("td", tr(item.cadence)), makeCell("td", tr(item.query_plan_origin)), makeCell("td", tr(item.execution_state)), makeCell("td", localized(item, "next_action"))); queueBody.append(row); }); queueTable.append(queueHead, queueBody); document.getElementById("gap-assignment-queue").replaceChildren(queueTable);
+    const p0Assignments = gapQueue.assignments.filter((item) => item.priority === "P0"); const queueTable = document.createElement("table"); queueTable.className = "assurance-table gap-assignment-table"; const queueHead = document.createElement("thead"); const queueHeadRow = document.createElement("tr"); ["Gap", tr("roadmap"), tr("assignment"), tr("cadence"), tr("queryPlan"), tr("executionState"), tr("nextAction")].forEach((label) => queueHeadRow.append(makeCell("th", label))); queueHead.append(queueHeadRow); const queueBody = document.createElement("tbody"); p0Assignments.forEach((item) => { const row = document.createElement("tr"); row.append(makeCell("th", item.gap_id), makeCell("td", roadmapTitle(item.roadmap_id)), makeCell("td", item.assignment_ref), makeCell("td", tr(item.cadence)), makeQueryPlanCell(item), makeCell("td", tr(item.execution_state)), makeCell("td", localized(item, "next_action"))); queueBody.append(row); }); queueTable.append(queueHead, queueBody); document.getElementById("gap-assignment-queue").replaceChildren(queueTable);
 
     const dependencyRoot = document.getElementById("dependency-register"); dependencyRoot.replaceChildren(); dependencies.dependencies.forEach((dependency) => { const item = document.createElement("article"); const route = document.createElement("h4"); route.textContent = `${roadmapTitle(dependency.upstream_roadmap_id)} → ${roadmapTitle(dependency.downstream_roadmap_id)}`; const meta = document.createElement("p"); meta.className = "dependency-meta"; meta.textContent = `${tr("relationship")}: ${dependency.relationship} · ${tr("criticality")}: ${tr(dependency.criticality)} · ${dependency.basis}`; const statement = document.createElement("p"); statement.textContent = localized(dependency, "statement"); const detail = document.createElement("dl"); [[tr("decisionImpact"), localized(dependency, "decision_impact")], [tr("delayRisk"), localized(dependency, "risk_if_late")], [tr("gates"), dependency.gate_refs.join(", ")]].forEach(([term, value]) => { const group = document.createElement("div"); group.append(makeCell("dt", term), makeCell("dd", value)); detail.append(group); }); item.append(route, meta, statement, detail); dependencyRoot.append(item); });
     const externalRoot = document.getElementById("external-constraints"); externalRoot.replaceChildren(); dependencies.external_constraints.forEach((constraint) => { const item = document.createElement("article"); const title = document.createElement("h4"); title.textContent = localized(constraint, "name"); const body = document.createElement("p"); body.textContent = localized(constraint, "impact"); item.append(title, body); externalRoot.append(item); });
