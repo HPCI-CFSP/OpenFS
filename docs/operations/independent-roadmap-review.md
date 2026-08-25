@@ -17,6 +17,11 @@ allowing the authoring model to certify its own work.
 
 3. Commit the generated package separately. This makes the package point backward
    to a stable review target rather than trying to refer to its own commit.
+   Preserve both commits when the pull request is merged. Prefer a merge commit
+   for a package-bearing branch. A squash or rebase merge changes commit
+   identity; if either is used, rebuild the package, manifest digest, gate result,
+   and public view from commits reachable on the destination branch before
+   assigning reviews.
 4. Before building the package, register and enable each intended validator or
    critic in `config/agent-registry.json`. Their provider, model family, prompt
    profile, role, independence group, review-origin group, Harness ID, Harness
