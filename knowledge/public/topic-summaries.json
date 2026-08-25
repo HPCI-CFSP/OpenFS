@@ -1,0 +1,259 @@
+{
+  "schema_version": "0.1.0",
+  "export_id": "TOPIC-SUMMARY-EXPORT-001",
+  "status": "published",
+  "as_of": "2026-08-24",
+  "summaries": [
+    {
+      "summary_id": "SUM-MEMORY-PILOT-003",
+      "topic_ids": ["ARCH-02", "ARCH-03", "ARCH-04", "ARCH-07", "CROSS-06", "CROSS-11", "CROSS-13"],
+      "title_ja": "メモリ階層・データ移動の公開情報調査",
+      "title_en": "Public-source survey of memory hierarchy and data movement",
+      "summary_ja": "12件の公開資料から6件の暫定知見を整理した。異種メモリの効果は媒体仕様だけで決まらず、配置方針、移行コスト、競合、実装上の熱・電力制約を含む実アプリケーション評価が必要である。",
+      "summary_en": "Six provisional findings were synthesized from 12 public sources. Heterogeneous-memory value cannot be inferred from device specifications alone; real-application evaluation must include placement policy, migration cost, contention, and thermal and power constraints.",
+      "source_run_id": "RUN-OFS001-PILOT-003",
+      "generated_at": "2026-08-23T17:53:30Z",
+      "research_status": "provisional",
+      "coverage_status": "met-declared-scope",
+      "consensus_status": "incomplete",
+      "findings": [
+        {
+          "finding_id": "FND-MEM-148702",
+          "topic_ids": ["ARCH-03"],
+          "statement_ja": "異種メモリの効果は、アプリケーションやデータオブジェクトのアクセス特性と配置方針の双方に依存する。帯域・容量だけでなく、実アプリケーションの感度分析と移行オーバーヘッドを評価する必要がある。",
+          "statement_en": "Heterogeneous-memory benefit depends jointly on application or object access behavior and placement policy. Evaluation therefore needs real-application sensitivity studies and migration overhead in addition to bandwidth and capacity.",
+          "sources": [
+            {"source_id": "SRC-3B585C8C7747", "title": "HPCI整備計画調査研究 運用システム整備計画調査研究", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/assets/uploads/2025/12/fs3-overview_jp.pdf"},
+            {"source_id": "SRC-9820B5E691E7", "title": "Improving Computing Memory Performance for Scientific Discovery", "publisher": "U.S. Department of Energy Office of Science", "url": "https://stage.energy.gov/science/ascr/articles/improving-computing-memory-performance-scientific-discovery"}
+          ]
+        },
+        {
+          "finding_id": "FND-MEM-382908",
+          "topic_ids": ["ARCH-03", "CROSS-06", "CROSS-13"],
+          "statement_ja": "スイッチ型CXLメモリプーリングでは、容量集約だけで便益を判断できない。総コストとスケジューラのみの基準に加え、干渉、公平性、輻輳、入場制御を評価する必要がある。",
+          "statement_en": "Switched CXL pooling needs a total-cost and scheduler-only baseline plus explicit evaluation of interference, fairness, congestion, and admission control. Capacity pooling alone does not establish net benefit.",
+          "sources": [
+            {"source_id": "SRC-179E3ACA43A5", "title": "Building A CSFQ-Inspired Transport for Switched CXL Memory Pooling", "publisher": "USENIX Association", "url": "https://www.usenix.org/conference/nsdi26/presentation/guo-zerui"},
+            {"source_id": "SRC-20960EAEAE08", "title": "A Case Against CXL Memory Pooling", "publisher": "Google Research / ACM HotNets", "url": "https://research.google/pubs/a-case-against-cxl-memory-pooling/"}
+          ]
+        },
+        {
+          "finding_id": "FND-MEM-726174",
+          "topic_ids": ["ARCH-03", "ARCH-04"],
+          "statement_ja": "CXL規格のリンク速度やRAS機能と、実システムで生じる遅延、転送方向差、競合、デバイス間不均衡は別の評価層であり、規格値だけからワークロード性能は予測できない。",
+          "statement_en": "CXL link rate and RAS capabilities are a different evaluation layer from observed latency, transfer-direction behavior, contention, and imbalance across pooled devices; specifications alone do not predict workload performance.",
+          "sources": [
+            {"source_id": "SRC-6D52CAD2F671", "title": "CXL-CCL: Inter-Node Collective GPU-Communication Using a CXL Shared Memory Pool", "publisher": "ACM International Conference on Supercomputing", "url": "https://doi.org/10.1145/3797905.3807846"},
+            {"source_id": "SRC-961CB55A90CD", "title": "CXL Consortium Releases the Compute Express Link 4.0 Specification Increasing Speed and Bandwidth", "publisher": "Compute Express Link Consortium", "url": "https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-Specification-Release_FINAL_Website-Copy.pdf"}
+          ]
+        },
+        {
+          "finding_id": "FND-MEM-485678",
+          "topic_ids": ["ARCH-02", "ARCH-03"],
+          "statement_ja": "HBM4では信号品質、電力供給、反り、放熱、配線密度、実現可能な積層構成が相互に制約する。探索ではピーク帯域だけでなく、熱的に実現可能な帯域を扱う必要がある。",
+          "statement_en": "HBM4 signal integrity, power delivery, warpage, heat dissipation, interconnect density, and attainable stack configuration are coupled constraints. Exploration should use thermally attainable bandwidth rather than peak bandwidth alone.",
+          "sources": [
+            {"source_id": "SRC-62A25C1CCBDC", "title": "AI Technology and the Markets", "publisher": "TechSearch International", "url": "https://eps.ieee.org/wp-content/uploads/2025/11/Oct_8_Vardaman_.pdf"},
+            {"source_id": "SRC-C3BD8D4E93E2", "title": "Packaging Integration: AI/HPC Memory and Data-Movement Scaling", "publisher": "IEEE Electron Devices Society Newsletter", "url": "https://www.ieee.org/ns/periodicals/EDS/EDS-OCTOBER-2025-HTML/InnerFiles/LandPage.html"}
+          ]
+        },
+        {
+          "finding_id": "FND-MEM-132983",
+          "topic_ids": ["ARCH-03", "CROSS-06", "CROSS-13"],
+          "statement_ja": "HPCI向けメモリ評価は、性能、容量、費用、電力、コヒーレンス、データ移動、交換容易性を含む更新可能な多目的評価とすべきであり、単一媒体を常に最適とはみなせない。",
+          "statement_en": "HPCI memory evaluation should be updateable and multi-objective across performance, capacity, cost, power, coherence, data movement, and replacement flexibility; no single medium is established as universally optimal.",
+          "sources": [
+            {"source_id": "SRC-4D57CF0E49CE", "title": "ETP4HPC SRA6 White Paper - Hardware Components", "publisher": "ETP4HPC", "url": "https://zenodo.org/records/15185032"},
+            {"source_id": "SRC-8F2F4E0E64B6", "title": "次世代計算基盤に関する報告書 最終取りまとめ ポイント", "publisher": "文部科学省 HPCI計画推進委員会", "url": "https://www.mext.go.jp/content/20240614-mxt-jyohoka01-000036490_04.pdf"}
+          ]
+        },
+        {
+          "finding_id": "FND-MEM-775072",
+          "topic_ids": ["ARCH-03", "ARCH-07", "CROSS-11"],
+          "statement_ja": "日本の公開された次世代メモリ計画には、成熟度の異なるHBM4E、CXL 3Dメモリ、低消費電力DRAM、ZAMが含まれる。目標時期は示されているが、HPCIアプリケーションでの適合性は未実証である。",
+          "statement_en": "Japan's public next-generation memory portfolio includes HBM4E, CXL 3D memory, low-power DRAM, and ZAM at different maturity levels. Target dates are stated, but HPCI application suitability remains unmeasured in the cited sources.",
+          "sources": [
+            {"source_id": "SRC-1B509A964C8E", "title": "SAIMEMORY and Intel Collaborate to Commercialize Next-generation Memory Technology", "publisher": "SoftBank Corp. and SAIMEMORY Corp.", "url": "https://www.saimemory.co.jp/assets/news/pdf/SAIMEMORY_PR_20260203_01_ENG.pdf"},
+            {"source_id": "SRC-73827DB58BDF", "title": "次世代メモリ技術開発", "publisher": "NEDO", "url": "https://www.nedo.go.jp/content/800036414.pdf"}
+          ]
+        }
+      ],
+      "caveat_ja": "全6件が暫定知見であり、独立モデルによるConsensus Gateは未完了です。正式なHPCI整備方針ではありません。",
+      "caveat_en": "All six findings are provisional and independent-model Consensus is incomplete. They are not formal HPCI infrastructure recommendations."
+    },
+    {
+      "summary_id": "SUM-HPCI-CENTERS-PILOT-005",
+      "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-12", "CROSS-13", "CROSS-16"],
+      "title_ja": "HPCI大学基盤センターの現況・更新調査",
+      "title_en": "Survey of HPCI university-center systems and refresh plans",
+      "summary_ja": "15機関について30件の公開一次資料からセンタープロファイルを作成した。現行システムは13機関、更新時期は9機関で確認できた一方、電力、利用者、移行情報には大きな公開情報Gapが残る。",
+      "summary_en": "Profiles for 15 organizations were assembled from 30 public primary sources. Current systems were verified for 13 organizations and refresh timing for nine, while major public-information gaps remain for power, users, and migration.",
+      "source_run_id": "RUN-OFS003-PILOT-005",
+      "generated_at": "2026-08-23T19:41:02.520963Z",
+      "research_status": "provisional",
+      "coverage_status": "profile-coverage-incomplete",
+      "consensus_status": "incomplete",
+      "findings": [
+        {
+          "finding_id": "FND-CTR-AIST-REFRESH",
+          "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-12"],
+          "statement_ja": "ABCI 3.0は2024年10月から2025年1月にかけて段階的に移行した。",
+          "statement_en": "ABCI 3.0 used a phased transition from October 2024 through January 2025.",
+          "sources": [
+            {"source_id": "SRC-6634CF10383F", "title": "大規模AIクラウド計算システム『ABCI 2.0』が『ABCI 3.0』にリプレース", "publisher": "産業技術総合研究所", "url": "https://www.aist.go.jp/aist_j/news/announce/pr20241010.html"}
+          ]
+        },
+        {
+          "finding_id": "FND-CTR-HOKKAIDO-EXPANSION",
+          "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-16"],
+          "statement_ja": "北海道大学は32 GPUノードの増強を計画し、2027年4月からのHPCI提供を想定しているが、計画変更の可能性も明記している。",
+          "statement_en": "Hokkaido University planned a 32-GPU-node expansion for HPCI availability from April 2027, while explicitly noting that the plan may change.",
+          "sources": [
+            {"source_id": "SRC-00AF009B886A", "title": "北海道大学 AI for Science 基盤整備計画", "publisher": "北海道大学 情報基盤センター", "url": "https://www.iic.hokudai.ac.jp/wp-content/uploads/2026/01/hokudai_ai4s_plan.pdf"}
+          ]
+        },
+        {
+          "finding_id": "FND-CTR-NAGOYA-REFRESH",
+          "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-12"],
+          "statement_ja": "名古屋大学の次期システムは2026年10月1日の稼働開始予定として公開されていた。",
+          "statement_en": "Nagoya University's next system was publicly scheduled to begin operation on October 1, 2026.",
+          "sources": [
+            {"source_id": "SRC-F308265189FA", "title": "スーパーコンピュータシステム『不老・弐』", "publisher": "名古屋大学 情報連携推進本部", "url": "https://icts.nagoya-u.ac.jp/ja/sc/"}
+          ]
+        },
+        {
+          "finding_id": "FND-CTR-OSAKA-REFRESH",
+          "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-12"],
+          "statement_ja": "大阪大学はSQUIDとONIONのサービスを2027年6月30日に終了する予定を公表している。",
+          "statement_en": "Osaka University has announced that SQUID and ONION service is scheduled to end on June 30, 2027.",
+          "sources": [
+            {"source_id": "SRC-05C70893DFB5", "title": "スーパーコンピュータ SQUID および ONION のサービス終了について", "publisher": "大阪大学 D3センター", "url": "https://www.hpc.cmc.osaka-u.ac.jp/news/squid-onion-service-end/"}
+          ]
+        },
+        {
+          "finding_id": "FND-CTR-RIKEN-NEXT",
+          "topic_ids": ["CROSS-08", "CROSS-09", "CROSS-13"],
+          "statement_ja": "富岳NEXTは2030年頃の運用開始を目標としており、現時点では将来マイルストーンとして扱う必要がある。",
+          "statement_en": "FugakuNEXT targets operation around 2030 and should currently be treated as a prospective milestone.",
+          "sources": [
+            {"source_id": "SRC-1940B039E4A4", "title": "Basic Design Technical Report for the New Flagship System FugakuNEXT", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf"}
+          ]
+        },
+        {
+          "finding_id": "FND-CTR-TSUKUBA-SIRIUS",
+          "topic_ids": ["CROSS-08", "CROSS-12"],
+          "statement_ja": "筑波大学のSiriusは2026年3月27日に運用を開始した。",
+          "statement_en": "The University of Tsukuba's Sirius began operation on March 27, 2026.",
+          "sources": [
+            {"source_id": "SRC-3CA9DA08E0BD", "title": "スーパーコンピュータ『Sirius』の運用を開始", "publisher": "筑波大学 計算科学研究センター", "url": "https://www.ccs.tsukuba.ac.jp/release260327/"}
+          ]
+        }
+      ],
+      "caveat_ja": "センタープロファイルは暫定で、未確認項目はセンターへの否定的評価を意味しません。公開情報が見つからない項目はGapとして保持しています。",
+      "caveat_en": "Center profiles are provisional. Unverified fields are retained as public-information gaps and are not negative findings about a center."
+    },
+    {
+      "summary_id": "SUM-TECH-TRENDS-PILOT-010",
+      "topic_ids": ["ARCH-01", "ARCH-02", "ARCH-03", "ARCH-04", "ARCH-05", "ARCH-06", "ARCH-07", "ARCH-11", "APP-02", "CROSS-01", "CROSS-03", "CROSS-06", "CROSS-08", "CROSS-11", "CROSS-18"],
+      "title_ja": "HPCI関連技術動向の公開情報調査",
+      "title_en": "Public-source survey of HPCI-related technology trends",
+      "summary_ja": "16件の公開一次資料・査読研究から8件の暫定知見を整理した。計算機単体のピーク性能ではなく、アーキテクチャ、ソフトウェア、アプリケーション、データ・ネットワーク基盤、調達・供給制約を一体で追跡する必要性が確認された。",
+      "summary_en": "Eight provisional findings were synthesized from 16 public primary and peer-reviewed sources. The evidence supports tracking architecture, software, applications, data and network infrastructure, and procurement and supply constraints together rather than relying on peak compute performance alone.",
+      "source_run_id": "RUN-OFS005-PILOT-010",
+      "generated_at": "2026-08-23T20:43:02.722483Z",
+      "research_status": "provisional",
+      "coverage_status": "met-declared-scope",
+      "consensus_status": "incomplete",
+      "findings": [
+        {
+          "finding_id": "FND-TECH-101268",
+          "topic_ids": ["ARCH-07", "CROSS-06", "CROSS-18"],
+          "statement_ja": "市場投入後の新興計算・メモリ技術でも、企業買収による統合や将来開発の終了が起こり得るため、技術評価には供給・継続性リスクを含める必要がある。",
+          "statement_en": "Commercial emerging-compute and memory programs can undergo ownership consolidation or future-development termination even after reaching the market.",
+          "sources": [
+            {"source_id": "SRC-47AC48B76C0E", "title": "Graphcore joins SoftBank Group to build next generation of AI compute", "publisher": "Graphcore", "url": "https://www.graphcore.ai/posts/graphcore-joins-softbank-group-to-build-next-generation-of-ai-compute"},
+            {"source_id": "SRC-8A3926E5879F", "title": "Intel Optane Business Update", "publisher": "Intel", "url": "https://www.intel.com/content/www/us/en/support/articles/000091826/memory-and-storage.html"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-965179",
+          "topic_ids": ["ARCH-01", "APP-02", "CROSS-01", "CROSS-18"],
+          "statement_ja": "富岳とFrontierの査読研究は、ピーク性能だけでなく、アーキテクチャ、ソフトウェア、アプリケーション挙動を一体として評価している。",
+          "statement_en": "Peer-reviewed studies of Fugaku and Frontier evaluate supercomputer architecture together with software and application behavior rather than relying on peak performance alone.",
+          "sources": [
+            {"source_id": "SRC-084EA4CFFF7D", "title": "Co-Design for Supercomputer Fugaku Processor", "publisher": "IEICE ESS Fundamentals Review", "url": "https://www.jstage.jst.go.jp/article/essfr/15/4/15_300/_article/-char/en"},
+            {"source_id": "SRC-E4DB94C61A80", "title": "Frontier: Exploring Exascale", "publisher": "Oak Ridge National Laboratory", "url": "https://impact.ornl.gov/en/publications/frontier-exploring-exascale-the-system-architecture-of-the-first--2/"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-152317",
+          "topic_ids": ["ARCH-02", "ARCH-03", "ARCH-04", "CROSS-18"],
+          "statement_ja": "CXLとUCIeは、相互運用の仕組みを維持しながら、異種メモリ、計算、マルチチップレット向けのオープンな接続仕様を高帯域化している。",
+          "statement_en": "CXL and UCIe are extending open interconnects for higher-bandwidth heterogeneous memory, compute, and multi-chiplet systems while retaining interoperability mechanisms.",
+          "sources": [
+            {"source_id": "SRC-072E83D723E9", "title": "UCIe Consortium Specifications", "publisher": "UCIe Consortium", "url": "https://www.uciexpress.org/specifications"},
+            {"source_id": "SRC-85B736A309A3", "title": "CXL Consortium Releases the Compute Express Link 4.0 Specification", "publisher": "Compute Express Link Consortium", "url": "https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-Specification-Release_FINAL_Website-Copy.pdf"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-139778",
+          "topic_ids": ["ARCH-01", "ARCH-07", "ARCH-11", "CROSS-11", "CROSS-18"],
+          "statement_ja": "日本では、異種構成の次期フラッグシップと、HPC向けソフトウェア展開を伴う国産専用AIアクセラレータの双方が進められている。",
+          "statement_en": "Japan is pursuing both a heterogeneous national flagship architecture and domestically developed specialized AI accelerators with software support extending toward HPC workloads.",
+          "sources": [
+            {"source_id": "SRC-0102C4127B41", "title": "RIKEN launches international initiative for FugakuNEXT development", "publisher": "RIKEN", "url": "https://www.riken.jp/en/news_pubs/news/2025/20250822_1/index.html"},
+            {"source_id": "SRC-86FF3250D845", "title": "MN-Core Series", "publisher": "Preferred Networks", "url": "https://projects.preferred.jp/mn-core/en/"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-912120",
+          "topic_ids": ["ARCH-05", "CROSS-08", "CROSS-18"],
+          "statement_ja": "日本の大学・共同利用計算基盤では、異種アクセラレータ、高速ネットワーク、大容量並列ストレージ、ソフトウェア環境を統合したシステムが運用されている。",
+          "statement_en": "Japan's university and shared research-computing infrastructure operates integrated systems combining heterogeneous accelerators, high-speed networks, large parallel storage, and software environments.",
+          "sources": [
+            {"source_id": "SRC-15E66CBE961E", "title": "システム構成概要", "publisher": "国立遺伝学研究所 DDBJセンター", "url": "https://sc.ddbj.nig.ac.jp/guides/overview/"},
+            {"source_id": "SRC-4C40373813C3", "title": "Miyabiスーパーコンピュータシステムの紹介", "publisher": "東京大学情報基盤センター", "url": "https://www.cc.u-tokyo.ac.jp/supercomputer/miyabi/system.php"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-464299",
+          "topic_ids": ["ARCH-04", "ARCH-06", "ARCH-11", "CROSS-11", "CROSS-18"],
+          "statement_ja": "日本の公的研究開発戦略は、AI・データセンターの通信電力と拡張性の課題に対し、光電融合と複数技術層の協調を主要な解決経路として位置づけている。",
+          "statement_en": "Japan's public R&D strategies position photonics-electronics convergence and coordination across multiple technology layers as major approaches to communication-power and scaling challenges in AI and data centers.",
+          "sources": [
+            {"source_id": "SRC-CCF95F1478D1", "title": "未来のAI計算システムを支える光データ通信技術", "publisher": "科学技術振興機構 研究開発戦略センター", "url": "https://www.jst.go.jp/crds/report/CRDS-FY2025-SP-07.html"},
+            {"source_id": "SRC-D8A0204D468A", "title": "次世代デジタルインフラの構築とは", "publisher": "新エネルギー・産業技術総合開発機構", "url": "https://green-innovation.nedo.go.jp/article/digital-infrastructure-02/"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-022564",
+          "topic_ids": ["ARCH-07", "CROSS-06", "CROSS-18"],
+          "statement_ja": "公開されているスーパーコンピュータ計画は、AI・データ基盤需要に加え、予算、調達、部品供給の制約によって導入経路が変化している。",
+          "statement_en": "Public supercomputing plans are being reshaped by AI and data-infrastructure demand while funding, procurement, and component-supply constraints alter deployment paths.",
+          "sources": [
+            {"source_id": "SRC-CED9E60B8397", "title": "FY 2026 Advanced Scientific Computing Research Budget Request", "publisher": "U.S. Department of Energy Office of Science", "url": "https://www.energy.gov/documents/fy-2026-advanced-scientific-computing-research-budget-request"},
+            {"source_id": "SRC-DAA06E7E0E0E", "title": "KISTI, 국가 슈퍼컴퓨터 6호기 사전규격 공개 개시", "publisher": "Korea Institute of Science and Technology Information", "url": "https://www.kisti.re.kr/promote/post/news/6562"}
+          ]
+        },
+        {
+          "finding_id": "FND-TECH-406538",
+          "topic_ids": ["ARCH-05", "CROSS-01", "CROSS-03", "CROSS-18"],
+          "statement_ja": "公開された研究計算基盤計画では、計算性能順位だけを成果とせず、アクセラレータ計算をデータ、ネットワーク、アプリケーション基盤と統合している。",
+          "statement_en": "Public research-computing programs are integrating accelerator compute with data, network, and application infrastructure rather than treating compute rank as the sole outcome.",
+          "sources": [
+            {"source_id": "SRC-7F0549EF953B", "title": "Pawsey Supercomputing Research Centre - Technology Refresh", "publisher": "Pawsey Supercomputing Research Centre", "url": "https://pawsey.org.au/technology-refresh/"},
+            {"source_id": "SRC-DC8D47804615", "title": "EuroHPC Multiannual Strategic Programme 2025 Update", "publisher": "European High Performance Computing Joint Undertaking", "url": "https://www.eurohpc-ju.europa.eu/document/download/a4c7e874-845b-4ff8-9f78-ec0747d180ec_en?filename=Decision+08.2025+Revised+MASP+%28Amendment+No+3%29.pdf"}
+          ]
+        }
+      ],
+      "caveat_ja": "全8件が暫定知見であり、独立モデルによるConsensus Gateは未完了です。技術採用や調達の決定を直接示すものではありません。",
+      "caveat_en": "All eight findings are provisional and independent-model Consensus is incomplete. They do not directly determine technology adoption or procurement."
+    }
+  ],
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-20260825-001",
+    "human_approval_directive_id": "DIR-900002"
+  }
+}

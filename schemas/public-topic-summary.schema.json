@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-topic-summary.schema.json",
+  "title": "OpenFS Public Topic Summary Export",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "as_of", "summaries", "publication"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "export_id": {"type": "string", "pattern": "^TOPIC-SUMMARY-EXPORT-[0-9]{3}$"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "summaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "summary_id", "topic_ids", "title_ja", "title_en", "summary_ja", "summary_en",
+          "source_run_id", "generated_at", "research_status", "coverage_status",
+          "consensus_status", "findings", "caveat_ja", "caveat_en"
+        ],
+        "properties": {
+          "summary_id": {"type": "string", "pattern": "^SUM-[A-Z0-9-]+$"},
+          "topic_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "title_ja": {"type": "string", "minLength": 1},
+          "title_en": {"type": "string", "minLength": 1},
+          "summary_ja": {"type": "string", "minLength": 1},
+          "summary_en": {"type": "string", "minLength": 1},
+          "source_run_id": {"type": "string", "pattern": "^RUN-[A-Z0-9-]+$"},
+          "generated_at": {"type": "string", "format": "date-time"},
+          "research_status": {"enum": ["provisional", "accepted"]},
+          "coverage_status": {"type": "string", "minLength": 1},
+          "consensus_status": {"type": "string", "minLength": 1},
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["finding_id", "topic_ids", "statement_ja", "statement_en", "sources"],
+              "properties": {
+                "finding_id": {"type": "string", "pattern": "^FND-[A-Z0-9-]+$"},
+                "topic_ids": {
+                  "type": "array",
+                  "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "statement_ja": {"type": "string", "minLength": 1},
+                "statement_en": {"type": "string", "minLength": 1},
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["source_id", "title", "publisher", "url"],
+                    "properties": {
+                      "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9]+$"},
+                      "title": {"type": "string", "minLength": 1},
+                      "publisher": {"type": "string", "minLength": 1},
+                      "url": {"type": "string", "format": "uri"}
+                    },
+                    "additionalProperties": false
+                  },
+                  "minItems": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "caveat_ja": {"type": "string", "minLength": 1},
+          "caveat_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "information_classification", "publication_approved", "publication_decision_id",
+        "human_approval_directive_id"
+      ],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

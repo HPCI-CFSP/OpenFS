@@ -35,7 +35,11 @@ def public_projection(
     if not publication.get("publication_decision_id"):
         raise ValueError(f"{label} has no publication decision")
     directive_id = publication.get("human_approval_directive_id")
-    artifact_id = artifact.get("scenario_id") or artifact.get("report_id")
+    artifact_id = (
+        artifact.get("scenario_id")
+        or artifact.get("report_id")
+        or artifact.get("export_id")
+    )
     if not directive_id or artifact_id not in approved_directives.get(directive_id, set()):
         raise ValueError(f"{label} has no matching human publication Directive")
     missing_languages = [key for key in required_bilingual_fields if not artifact.get(key)]
@@ -109,13 +113,87 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
     return projected_reports
 
 
+def collect_topic_summaries(
+    root: Path, policy: dict[str, Any], valid_topic_ids: set[str]
+) -> list[dict[str, Any]]:
+    path = root / policy["included_public_topic_summaries"]
+    if not path.exists():
+        return []
+    export = load_json(path)
+    if export.get("status") not in set(policy["accepted_topic_summary_statuses"]):
+        raise ValueError("public Topic summary export is not published")
+    directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        export,
+        ["export_id", "status", "as_of", "summaries"],
+        policy["required_publication_metadata"],
+        [],
+        directives,
+        f"Topic summary export {export.get('export_id', path.name)}",
+    )
+
+    summary_fields = policy["topic_summary_public_fields"]
+    finding_fields = policy["topic_finding_public_fields"]
+    source_fields = policy["topic_source_public_fields"]
+    required_bilingual = policy["topic_summary_required_bilingual_fields"]
+    safe_summaries: list[dict[str, Any]] = []
+    seen_summary_ids: set[str] = set()
+    for summary in projected.get("summaries", []):
+        summary_id = summary.get("summary_id", "unknown")
+        if summary_id in seen_summary_ids:
+            raise ValueError(f"duplicate public Topic summary: {summary_id}")
+        seen_summary_ids.add(summary_id)
+        missing_languages = [key for key in required_bilingual if not summary.get(key)]
+        if missing_languages:
+            raise ValueError(
+                f"Topic summary {summary_id} lacks bilingual fields: {missing_languages}"
+            )
+        topic_ids = set(summary.get("topic_ids", []))
+        unknown_topics = topic_ids - valid_topic_ids
+        if unknown_topics:
+            raise ValueError(
+                f"Topic summary {summary_id} references unknown Topics: {sorted(unknown_topics)}"
+            )
+        safe_summary = {key: summary[key] for key in summary_fields if key in summary}
+        safe_findings = []
+        represented_topics: set[str] = set()
+        for finding in summary.get("findings", []):
+            finding_topics = set(finding.get("topic_ids", []))
+            if not finding_topics or not finding_topics <= topic_ids:
+                raise ValueError(
+                    f"Topic summary {summary_id} has Finding outside its Topic set"
+                )
+            represented_topics.update(finding_topics)
+            safe_finding = {key: finding[key] for key in finding_fields if key in finding}
+            safe_finding["sources"] = [
+                {key: source[key] for key in source_fields if key in source}
+                for source in finding.get("sources", [])
+            ]
+            safe_findings.append(safe_finding)
+        missing_findings = topic_ids - represented_topics
+        if missing_findings:
+            raise ValueError(
+                f"Topic summary {summary_id} has no Finding for Topics: "
+                f"{sorted(missing_findings)}"
+            )
+        safe_summary["findings"] = safe_findings
+        safe_summaries.append(safe_summary)
+    return safe_summaries
+
+
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
+    valid_topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
+    research_summaries = collect_topic_summaries(root, policy, valid_topic_ids)
     topics = []
     for topic in baseline["topics"]:
+        summary_count = sum(
+            topic["topic_id"] in summary["topic_ids"]
+            for summary in research_summaries
+        )
         topics.append(
             {
                 "topic_id": topic["topic_id"],
@@ -129,6 +207,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     if topic["topic_id"] in initial_ids
                     else topic.get("catalog_origin", "human-directive")
                 ),
+                "research_summary_count": summary_count,
             }
         )
 
@@ -151,6 +230,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "open_gap_ids": baseline["open_gap_ids"],
         },
         "topics": topics,
+        "research_summaries": research_summaries,
         "technology_landscape": {
             "scope_id": technology_scope["scope_id"],
             "categories": [
@@ -201,6 +281,7 @@ def main() -> int:
     result = build(ROOT, args.output)
     print(
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
+        f"summaries={len(result['research_summaries'])}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
     return 0
