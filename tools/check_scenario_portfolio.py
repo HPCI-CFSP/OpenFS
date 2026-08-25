@@ -36,6 +36,10 @@ def _duplicates(values: list[str]) -> set[str]:
     return {value for value in values if values.count(value) > 1}
 
 
+def _normalized_text(value: str | None) -> str:
+    return " ".join((value or "").split()).casefold()
+
+
 def _p0_gaps(roadmaps: list[dict[str, Any]]) -> set[str]:
     return {
         gap["gap_id"]
@@ -101,7 +105,9 @@ def evaluate(
                 f"missing={sorted(REQUIRED_DOMAINS - domains)}, extra={sorted(domains - REQUIRED_DOMAINS)}"
             )
         for option in options:
-            candidates_by_domain.setdefault(option["domain"], set()).add(option["candidate_en"])
+            candidates_by_domain.setdefault(option["domain"], set()).add(
+                _normalized_text(option["candidate_en"])
+            )
 
         blocker_gaps = set(scenario.get("decision_blocking_gap_refs", []))
         if blocker_gaps != p0_gaps:
@@ -124,13 +130,13 @@ def evaluate(
         left_options = {item["domain"]: item for item in left.get("technology_options", [])}
         right_options = {item["domain"]: item for item in right.get("technology_options", [])}
         candidate_differences = sum(
-            left_options.get(domain, {}).get("candidate_en")
-            != right_options.get(domain, {}).get("candidate_en")
+            _normalized_text(left_options.get(domain, {}).get("candidate_en"))
+            != _normalized_text(right_options.get(domain, {}).get("candidate_en"))
             for domain in REQUIRED_DOMAINS
         )
         fallback_differences = sum(
-            left_options.get(domain, {}).get("fallback_en")
-            != right_options.get(domain, {}).get("fallback_en")
+            _normalized_text(left_options.get(domain, {}).get("fallback_en"))
+            != _normalized_text(right_options.get(domain, {}).get("fallback_en"))
             for domain in REQUIRED_DOMAINS
         )
         pairwise_candidate_differences.append(candidate_differences)

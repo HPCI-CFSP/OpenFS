@@ -67,6 +67,9 @@ class ScenarioPortfolioTests(unittest.TestCase):
         changed["scenarios"][1]["technology_options"] = copy.deepcopy(
             changed["scenarios"][0]["technology_options"]
         )
+        for option in changed["scenarios"][1]["technology_options"]:
+            option["candidate_en"] = f"  {option['candidate_en'].upper()}  "
+            option["fallback_en"] = f"  {option['fallback_en'].upper()}  "
         result = self.evaluate(changed)
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("candidate domains differ" in item for item in result["calculation_errors"]))
