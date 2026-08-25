@@ -121,10 +121,10 @@ def build_audit(root: Path) -> dict[str, Any]:
         "export_id": "ROADMAP-EVIDENCE-AUDIT-001",
         "status": "published",
         "as_of": "2026-08-26",
-        "review_scope": "single-model-primary-source-screening",
+        "review_scope": "single-model-structured-claim-screening",
         "consensus_status": "incomplete",
-        "method_ja": "6ロードマップの全マイルストーンについて、引用一次情報、主張種別、時期の扱いを照合した。URL到達性監査とは分離し、独立モデルによるConsensusは未完了のまま保持する。",
-        "method_en": "Every milestone in the six roadmaps was screened for cited primary sources, claim type, and timing semantics. This is separate from URL reachability, and independent-model Consensus remains incomplete.",
+        "method_ja": "6ロードマップの全マイルストーンについて、引用IDの存在、主張種別、時期表現の整合を機械的に分類し、主要な更新項目を単一モデルで一次情報と照合した。全件の独立した意味検証を示すものではなく、URL到達性監査とも分離している。独立モデルによるConsensusは未完了。",
+        "method_en": "Every milestone in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics, and major updates were checked by one model against primary sources. This is not independent semantic verification of every item and is separate from URL reachability. Independent-model Consensus remains incomplete.",
         "summary": {
             "milestone_count": len(entries),
             "screened_primary": counts["screened-primary"],

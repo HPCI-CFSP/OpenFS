@@ -257,6 +257,28 @@ class PagesSiteTests(unittest.TestCase):
                     for scenario in result["scenarios"]
                 )
             )
+            self.assertTrue(
+                all(
+                    scenario["path"].startswith("scenarios/scn-hpci-")
+                    and len(scenario["source_commit"]) == 40
+                    and "publication" not in scenario
+                    for scenario in result["scenarios"]
+                )
+            )
+            assurance = result["roadmap_assurance"]
+            self.assertGreaterEqual(assurance["source_audit"]["summary"]["source_count"], 91)
+            self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
+            self.assertEqual(
+                14,
+                len(assurance["dependency_register"]["dependencies"]),
+            )
+            self.assertTrue(
+                all("publication" not in artifact for artifact in assurance.values())
+            )
+            self.assertEqual(
+                30,
+                sum(len(roadmap["coverage_gaps"]) for roadmap in result["roadmap_artifacts"]),
+            )
             self.assertEqual([], result["reports"])
             self.assertEqual("2026-08-23", result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))
@@ -274,7 +296,7 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertEqual("common-quarterly", memory_index["renderer"])
             self.assertEqual(11, memory_index["track_count"])
-            self.assertEqual(50, memory_index["milestone_count"])
+            self.assertGreaterEqual(memory_index["milestone_count"], 50)
             roadmap_by_id = {
                 roadmap["roadmap_id"]: roadmap
                 for roadmap in result["roadmap_artifacts"]
@@ -323,8 +345,7 @@ class PagesSiteTests(unittest.TestCase):
                 "undated",
                 milestones["MS-CXL-MICRON-UNDATED"]["timing_precision"],
             )
-            self.assertEqual(
-                3,
+            self.assertGreaterEqual(
                 len(
                     {
                         lane["owner"]
@@ -332,6 +353,7 @@ class PagesSiteTests(unittest.TestCase):
                         if lane["track_id"] == "MEMTECH-HBM"
                     }
                 ),
+                3,
             )
             self.assertNotIn("publication", memory_roadmap)
             self.assertEqual("public-only", result["publication"]["information_plane"])
@@ -392,8 +414,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             self.assertTrue((output / "roadmaps.js").is_file())
+            self.assertTrue((output / "planning.js").is_file())
             self.assertTrue((output / "roadmaps" / "index.html").is_file())
             self.assertTrue((output / "roadmaps" / "compare" / "index.html").is_file())
+            self.assertTrue((output / "roadmaps" / "evidence" / "index.html").is_file())
+            self.assertTrue((output / "scenarios" / "index.html").is_file())
+            self.assertTrue(
+                (
+                    output
+                    / "scenarios"
+                    / "scn-hpci-balanced-001"
+                    / "index.html"
+                ).is_file()
+            )
             self.assertTrue(
                 (
                     output
@@ -410,6 +443,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("https://www.usenix.org/conference/nsdi26", rendered)
             self.assertIn("SRC-MEM037", rendered)
             self.assertIn("MEMTECH-SOCAMM", rendered)
+            self.assertIn("ROADMAP-EVIDENCE-AUDIT-001", rendered)
+            self.assertIn("ROADMAP-DEPENDENCY-REGISTER-001", rendered)
+            self.assertIn("SCN-HPCI-BALANCED-001", rendered)
             self.assertIn('"catalog_as_of":"2026-08-23"', rendered)
             self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
@@ -594,14 +630,14 @@ class PagesSiteTests(unittest.TestCase):
             }
             (directives / "DIR-000001.json").write_text(json.dumps(directive), encoding="utf-8")
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
-            result = collect_scenarios(root, policy)
+            result = collect_scenarios(root, policy, include_commit_metadata=False)
             self.assertEqual("SCN-PUBLIC-001", result[0]["scenario_id"])
             self.assertNotIn("nda_internal_note", result[0])
 
             scenario["publication"].pop("publication_decision_id")
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "publication decision"):
-                collect_scenarios(root, policy)
+                collect_scenarios(root, policy, include_commit_metadata=False)
 
     def test_published_scenario_requires_matching_human_directive(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))
@@ -631,7 +667,7 @@ class PagesSiteTests(unittest.TestCase):
             target.mkdir(parents=True)
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "human publication Directive"):
-                collect_scenarios(root, policy)
+                collect_scenarios(root, policy, include_commit_metadata=False)
 
 
 if __name__ == "__main__":

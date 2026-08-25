@@ -38,6 +38,16 @@ class AgentPermissionTests(unittest.TestCase):
         self.assertEqual(2, len(allowed))
         self.assertEqual(["proposals/evidence/EVD.json"], denied)
 
+    def test_consensus_package_reviews_follow_existing_role_boundaries(self):
+        assessment = "assessments/CRP-P0-ROADMAPS-V02/CRV-INDEPENDENT-A.json"
+        allowed, denied = check_paths("validator", [assessment], self.config)
+        self.assertEqual([assessment], allowed)
+        self.assertEqual([], denied)
+        gate = "reviews/consensus-packages/CRP-P0-ROADMAPS-V02/gate-result.json"
+        allowed, denied = check_paths("consensus", [gate], self.config)
+        self.assertEqual([gate], allowed)
+        self.assertEqual([], denied)
+
     def test_maintainer_requires_explicit_human_authorization(self):
         _, denied = check_paths("maintainer", ["AGENTS.md"], self.config)
         self.assertTrue(denied)

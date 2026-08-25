@@ -144,7 +144,9 @@ def approved_publication_directives(root: Path, policy: dict[str, Any]) -> dict[
     return approvals
 
 
-def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
+def collect_scenarios(
+    root: Path, policy: dict[str, Any], include_commit_metadata: bool = True
+) -> list[dict[str, Any]]:
     allowed = set(policy["accepted_scenario_statuses"])
     directives = approved_publication_directives(root, policy)
     scenarios: list[dict[str, Any]] = []
@@ -155,16 +157,24 @@ def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]
             status = scenario.get("status")
             if status not in allowed:
                 raise ValueError(f"non-publishable scenario in accepted path: {path}: {status}")
-            scenarios.append(
-                public_projection(
-                    scenario,
-                    policy["scenario_public_fields"],
-                    policy["required_publication_metadata"],
-                    policy["scenario_required_bilingual_fields"],
-                    directives,
-                    f"scenario {scenario.get('scenario_id', path.name)}",
-                )
+            projected = public_projection(
+                scenario,
+                policy["scenario_public_fields"],
+                policy["required_publication_metadata"],
+                policy["scenario_required_bilingual_fields"],
+                directives,
+                f"scenario {scenario.get('scenario_id', path.name)}",
             )
+            projected.pop("publication", None)
+            projected["path"] = f"scenarios/{projected['scenario_id'].lower()}/"
+            if include_commit_metadata:
+                metadata = source_commit_metadata(root, str(path.relative_to(root)))
+                projected.update(
+                    updated_at=metadata["updated_at"],
+                    source_commit=metadata["commit_sha"],
+                    source_commit_url=metadata["commit_url"],
+                )
+            scenarios.append(projected)
     return scenarios
 
 
@@ -181,8 +191,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(
                 f"non-publishable report in public index: {report.get('report_id')}"
             )
-        projected_reports.append(
-            public_projection(
+        projected = public_projection(
                 report,
                 policy["report_public_fields"],
                 policy["required_publication_metadata"],
@@ -190,7 +199,8 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
                 directives,
                 f"report {report.get('report_id', 'unknown')}",
             )
-        )
+        projected.pop("publication", None)
+        projected_reports.append(projected)
     return projected_reports
 
 
@@ -763,7 +773,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
@@ -798,6 +808,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         ),
         encoding="utf-8",
     )
+    assurance = output / "roadmaps" / "evidence" / "index.html"
+    assurance.parent.mkdir(parents=True)
+    assurance.write_text(
+        render_template(
+            source / "roadmap-evidence.html",
+            {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
     detail_template = source / "roadmap-detail.html"
     for roadmap in public_data["roadmaps"]:
         detail = output / "roadmaps" / roadmap["slug"] / "index.html"
@@ -810,6 +829,31 @@ def build(root: Path, output: Path) -> dict[str, Any]:
                 {
                     "ROOT_PREFIX": root_prefix,
                     "ROADMAP_ID": html.escape(roadmap["export_id"], quote=True),
+                    "ASSET_VERSION": asset_version,
+                },
+            ),
+            encoding="utf-8",
+        )
+    scenarios_index = output / "scenarios" / "index.html"
+    scenarios_index.parent.mkdir(parents=True, exist_ok=True)
+    scenarios_index.write_text(
+        render_template(
+            source / "scenarios-index.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    scenario_template = source / "scenario-detail.html"
+    for scenario in public_data["scenarios"]:
+        detail = output / scenario["path"] / "index.html"
+        detail.parent.mkdir(parents=True, exist_ok=True)
+        depth = len(detail.parent.relative_to(output).parts)
+        detail.write_text(
+            render_template(
+                scenario_template,
+                {
+                    "ROOT_PREFIX": "../" * depth,
+                    "SCENARIO_ID": html.escape(scenario["scenario_id"], quote=True),
                     "ASSET_VERSION": asset_version,
                 },
             ),

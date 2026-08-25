@@ -107,6 +107,21 @@ gates are separate `hpci-evaluation` or `hpci-adoption` events with
 portfolio mappings, timing semantics, publication approval, or the declared public
 artifact set disagree.
 
+### Portfolio review package
+
+A multi-roadmap portfolio and its HPCI scenarios are a high-impact recommendation,
+not a normal Claim. The author first commits a complete review target. The package
+builder then reads those exact Git objects, records a SHA-256 for every roadmap,
+audit, dependency register, scenario set, policy, schema, and publication
+Directive, and creates review units with explicit falsification prompts.
+
+Independent validators and critics submit one schema-valid assessment covering
+every unit. The deterministic evaluator rejects digest drift, missing units,
+duplicate reviewer identities, author-group votes, insufficient provider/origin
+diversity, absent falsification, and critical objections. Passing those mechanical
+conditions yields only `ready-for-human-decision`; it cannot replace the human
+decision required for a high-impact HPCI recommendation.
+
 ## Trust and information boundaries
 
 ### Public plane

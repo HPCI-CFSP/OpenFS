@@ -119,7 +119,7 @@ def build_audit(root: Path, timeout: float, workers: int) -> dict[str, Any]:
         "schema_version": "0.1.0",
         "export_id": "ROADMAP-SOURCE-AUDIT-001",
         "status": "published",
-        "audit_id": f"RSA-{checked_at[:10].replace('-', '')}-001",
+        "audit_id": f"RSA-{as_of.replace('-', '')}-001",
         "as_of": as_of,
         "checked_at": checked_at,
         "method": "HTTP GET with redirects; first 1 KiB read; source contents are not retained",

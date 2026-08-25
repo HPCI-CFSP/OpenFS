@@ -75,7 +75,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `knowledge/public/roadmaps/` | Human-approved bilingual public roadmap exports using one common schema |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
-| `reviews/` | Human directives, digests, exceptions, and dissent |
+| `reviews/` | Human directives, digests, exceptions, dissent, and commit-pinned Consensus review packages |
 | `runs/` | Immutable run manifests and run-scoped outputs |
 | `state/` | Watermarks and resumable scheduler state |
 
@@ -125,6 +125,19 @@ python3 tools/consensus_gate.py \
   --assessments evals/golden/accepted-assessments.json \
   --policy config/consensus-policy.json
 ```
+
+Build and evaluate an independent P0 roadmap review package after committing the
+artifact set:
+
+```bash
+python3 tools/build_consensus_review_package.py --base-commit <40-hex-artifact-commit>
+python3 tools/evaluate_consensus_review_package.py \
+  reviews/consensus-packages/CRP-P0-ROADMAPS-V02/manifest.json
+```
+
+The evaluator can return `ready-for-human-decision`, but high-impact HPCI adoption
+still requires a reviewed human Directive. See
+`docs/operations/independent-roadmap-review.md`.
 
 Render the illustrative multi-scenario example without ranking:
 

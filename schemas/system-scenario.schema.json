@@ -58,8 +58,10 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["candidate", "role", "maturity_gate", "fallback"],
+        "required": ["option_id", "domain", "candidate", "role", "maturity_gate", "fallback", "evidence_refs"],
         "properties": {
+          "option_id": {"type": "string", "pattern": "^TOPT-[A-Z0-9-]+$"},
+          "domain": {"enum": ["compute", "memory", "interconnect", "system-software", "applications"]},
           "candidate": {"type": "string", "minLength": 1},
           "candidate_en": {"type": "string", "minLength": 1},
           "role": {"type": "string", "minLength": 1},
@@ -67,7 +69,8 @@
           "maturity_gate": {"type": "string", "minLength": 1},
           "maturity_gate_en": {"type": "string", "minLength": 1},
           "fallback": {"type": "string", "minLength": 1},
-          "fallback_en": {"type": "string", "minLength": 1}
+          "fallback_en": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
         },
         "additionalProperties": false
       }

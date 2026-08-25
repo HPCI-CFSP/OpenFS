@@ -66,6 +66,7 @@ class PublicRoadmapTests(unittest.TestCase):
         for roadmap in self.roadmaps:
             self.assertTrue(roadmap["coverage_gaps"])
             for gap in roadmap["coverage_gaps"]:
+                self.assertIn(gap["priority"], {"P0", "P1", "P2"})
                 self.assertTrue(gap["impact_ja"] and gap["impact_en"])
                 self.assertTrue(gap["next_action_ja"] and gap["next_action_en"])
             for dependency in roadmap["dependencies"]:

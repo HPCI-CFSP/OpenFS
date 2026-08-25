@@ -106,6 +106,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "center-profile.schema.json"
     if ref.startswith("proposals/research-topics/"):
         return "research-topic-proposal.schema.json"
+    if ref.startswith("assessments/CRP-"):
+        return "consensus-package-review.schema.json"
     if ref.startswith("assessments/"):
         return "assessment.schema.json"
     if ref.startswith("decisions/"):
@@ -120,6 +122,10 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "issue-payload.schema.json"
     if ref.startswith("reviews/run-approvals/"):
         return "run-approval.schema.json"
+    if ref.startswith("reviews/consensus-packages/") and path.name == "manifest.json":
+        return "consensus-review-package.schema.json"
+    if ref.startswith("reviews/consensus-packages/") and path.name == "gate-result.json":
+        return "consensus-package-gate-result.schema.json"
     if ref == "knowledge/claims/index.json":
         return "knowledge-index.schema.json"
     if ref.startswith("knowledge/claims/CLM-"):

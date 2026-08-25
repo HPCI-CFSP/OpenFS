@@ -1,0 +1,59 @@
+# Independent roadmap portfolio review
+
+This procedure reviews the six P0 roadmaps, their assurance artifacts,
+cross-roadmap dependencies, Coverage Gaps, and three HPCI scenarios without
+allowing the authoring model to certify its own work.
+
+## Author handoff
+
+1. Finish and validate the full portfolio, then commit it. Do not build a package
+   from an uncommitted worktree.
+2. Build the package from the immutable artifact commit:
+
+   ```bash
+   python3 tools/build_consensus_review_package.py \
+     --base-commit <40-hex-artifact-commit>
+   ```
+
+3. Commit the generated package separately. This makes the package point backward
+   to a stable review target rather than trying to refer to its own commit.
+4. Assign at least four blind reviews that can satisfy the current
+   `high_impact_recommendation` rule. The author group and same-conversation forks
+   are ineligible as independent votes.
+
+## Reviewer procedure
+
+1. Check out the package's `base_commit` and verify every artifact digest.
+2. Read `manifest.json` before any prior assessment. Review all units and every
+   required check; do not sample only favored technologies or one scenario.
+3. Follow the falsification prompts and search for contradictory primary sources,
+   later schedule changes, product cancellations, unsupported quarter precision,
+   omitted alternatives, and infeasible dependencies or fallbacks.
+4. Copy `review-template.json` to
+   `assessments/CRP-P0-ROADMAPS-V02/<review-id>.json`, replace all
+   placeholders, remove `_template_notice`, and record the exact model, provider,
+   prompt profile, independence/origin groups, harness repository, and harness
+   commit.
+5. Use `uncertain` when evidence is insufficient. Do not infer dates or convert a
+   Coverage Gap into a negative fact.
+
+## Deterministic gate
+
+Run:
+
+```bash
+python3 tools/evaluate_consensus_review_package.py \
+  reviews/consensus-packages/CRP-P0-ROADMAPS-V02/manifest.json \
+  --output reviews/consensus-packages/CRP-P0-ROADMAPS-V02/gate-result.json
+python3 tools/validate_json_schemas.py
+```
+
+`incomplete` preserves provisional publication. `ready-for-human-decision` means
+only that independent-review thresholds and package integrity passed. A reviewed
+human Directive is still required before an HPCI recommendation can be accepted.
+
+## Current limitation
+
+The repository's agent registry does not yet enable enough genuinely independent
+validator and critic groups. The package is therefore a ready handoff mechanism,
+not evidence that Consensus has already been achieved.

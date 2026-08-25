@@ -27,10 +27,24 @@ research or claim that Consensus is complete.
    OpenFS assessment.
 6. Put every unresolved source, vendor, center, cost, performance, or later-horizon
    question in `coverage_gaps`, including its decision impact and next action.
-   Missing evidence remains a gap and never becomes a forecast.
+   Missing evidence remains a gap and never becomes a forecast. Assign `P0` only
+   when the answer can change an HPCI architecture, facility, procurement,
+   migration, or scenario decision; assign `P1` to material comparison gaps and
+   `P2` to useful context. Revisit priority when dependencies change.
 7. Mark important cross-roadmap events `comparison_priority: key`; keep supporting
    releases and context as `supporting`.
 8. Before handoff, run JSON Schema validation, repository validation, unit tests,
-   Pages generation, and desktop/mobile visual checks. The public export remains
+   both roadmap audit generators, Pages generation, and desktop/mobile visual
+   checks. The public export remains
    `research_status: provisional` and `consensus_status: incomplete` until the
    configured independent-model Consensus Gate supplies an accepted receipt.
+9. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
+   complete review target. Then run
+   `tools/build_consensus_review_package.py --base-commit <40-hex-commit>` and
+   distribute that pinned package to blind reviewers. Reviewers must inspect every
+   review unit, seek counterevidence, record provider/model/prompt/harness identity,
+   and submit schema-valid assessments. Do not count this planner's own review,
+   same-conversation forks, or shared-conclusion reviewers as independent.
+10. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
+    `ready-for-human-decision` result is not acceptance; high-impact adoption still
+    requires the human decision required by policy.

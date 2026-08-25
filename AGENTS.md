@@ -65,6 +65,11 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Record both `agent_independence_group` and source `origin_group` identifiers.
 - Multiple instances of the same model family and prompt profile do not automatically count as independent votes.
 - Preserve dissent and unresolved objections even when a proposal is accepted.
+- A roadmap portfolio or HPCI scenario recommendation must be reviewed from a
+  commit-pinned package under `reviews/consensus-packages/`. Verify the artifact
+  digests before review. A reviewer from the author group, a fork of the same
+  conversation, or a reviewer given another reviewer's conclusion is not an
+  independent vote.
 
 ## Reproducibility
 
@@ -96,4 +101,14 @@ When a task contains multiple investigations, organize them into separate task, 
 - Label OpenFS evaluation and adoption gates as provisional plans and keep them
   distinct from vendor, standards, policy, and observed milestones.
 - Record unresolved research as structured Coverage Gaps with decision impact and
-  a next action. Never fill a gap with an unsupported forecast.
+  a next action. Assign `P0` only when the missing information can change an HPCI
+  architecture, facility, procurement, migration, or scenario decision; use `P1`
+  for material comparison gaps and `P2` for useful context. Never fill a gap with
+  an unsupported forecast.
+- After any roadmap source or milestone change, regenerate both assurance
+  artifacts with `tools/audit_roadmap_sources.py` and
+  `tools/build_roadmap_evidence_audit.py`. URL reachability is not semantic
+  validation and must not be described as such.
+- High-impact portfolio review uses the `high_impact_recommendation` Consensus
+  rule. Keep public roadmaps and scenarios provisional until independent reviews,
+  falsification, deterministic evaluation, and the required human decision pass.

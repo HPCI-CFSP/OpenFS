@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/consensus-package-gate-result.schema.json",
+  "title": "OpenFS Consensus Package Gate Result",
+  "type": "object",
+  "required": ["schema_version", "package_id", "base_commit", "evaluated_at", "status", "counts", "unmet_requirements", "integrity_errors", "effect"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "package_id": {"type": "string", "pattern": "^CRP-[A-Z0-9-]+$"},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["incomplete", "ready-for-human-decision"]},
+    "counts": {
+      "type": "object",
+      "required": ["assessments", "support", "support_independence_groups", "support_origin_groups", "critic_reviews", "critical_objections"],
+      "properties": {
+        "assessments": {"type": "integer", "minimum": 0},
+        "support": {"type": "integer", "minimum": 0},
+        "support_independence_groups": {"type": "integer", "minimum": 0},
+        "support_origin_groups": {"type": "integer", "minimum": 0},
+        "critic_reviews": {"type": "integer", "minimum": 0},
+        "critical_objections": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "unmet_requirements": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "integrity_errors": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
