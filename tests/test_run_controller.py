@@ -982,6 +982,7 @@ class RunControllerTests(unittest.TestCase):
                 run_id=run_id,
                 agent_id="discovery-public-01",
                 allow_disabled_pilot_agent=True,
+                now=datetime(2026, 8, 24, tzinfo=timezone.utc),
             )
             output_ref = leased["output_paths"][0]
             path = self.root / output_ref
@@ -1013,6 +1014,7 @@ class RunControllerTests(unittest.TestCase):
                 work_item_id=leased["work_item_id"],
                 agent_id="discovery-public-01",
                 output_refs=[output_ref],
+                now=datetime(2026, 8, 24, tzinfo=timezone.utc),
             )
 
         completed = finalize_run(

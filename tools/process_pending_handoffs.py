@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -53,8 +54,11 @@ def process(
         affected_runs.add(handoff["run_id"])
 
     expansions = []
+    now_dt: datetime | None = None
+    if processed_at:
+        now_dt = datetime.fromisoformat(processed_at.replace("Z", "+00:00")).astimezone(timezone.utc)
     for run_id in sorted(affected_runs):
-        result = expand_followups(root, run_id=run_id)
+        result = expand_followups(root, run_id=run_id, now=now_dt)
         expansions.append(
             {
                 "run_id": run_id,
