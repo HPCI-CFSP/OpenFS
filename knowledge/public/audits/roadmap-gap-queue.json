@@ -1,14 +1,14 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
   "queue_id": "RGQ-20260826-001",
   "as_of": "2026-08-26",
-  "generated_at": "2026-08-26T12:00:00Z",
-  "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とし、明示query planがあるGapでは生成fallbackより優先する。",
-  "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly; an explicit query plan takes precedence over the generated fallback.",
-  "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。生成fallbackは探索開始点にすぎない。Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
-  "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved, and a generated fallback is only a discovery starting point. Items assigned to disabled Monitors are not searched automatically until production-readiness gates pass.",
+  "generated_at": "2026-08-25T18:43:35Z",
+  "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とする。P0のsource-discoveryには検索条件だけでなく、独立起源数と具体的な閉鎖条件を明示する。",
+  "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly. P0 source-discovery items carry explicit search plans, independent-origin minimums, and concrete closure criteria.",
+  "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。すべての閉鎖条件を検証し、必要な独立起源数とConsensus Gateを満たすまでstatusはopenのままにする。生成fallbackは探索開始点にすぎず、Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
+  "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved. Status remains open until every closure criterion is verified and the required independent-origin count and Consensus Gate are satisfied. A generated fallback is only a discovery starting point, and disabled Monitors do not run until production-readiness gates pass.",
   "summary": {
     "roadmap_count": 6,
     "gap_count": 31,
@@ -58,6 +58,26 @@
         "procurement-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-001-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "15提供機関すべてについて、上位ワークロード、利用者層、実消費資源量で重み付けした規模分布を公式情報または公開承認済み統計で確認する。",
+            "requirement_en": "Confirm top workloads, user mix, and resource-consumption-weighted scale distributions for all 15 providers from official or publication-approved statistics."
+          },
+          {
+            "criterion_id": "GAP-WORK-001-C2",
+            "verification_method": "evidence-review",
+            "requirement_ja": "センター別ワークロードと共通ベンチマークの対応を示し、全国利用の被覆率を定量化する。",
+            "requirement_en": "Map center workloads to common benchmarks and quantify coverage of national usage."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0001"
     },
@@ -92,6 +112,26 @@
         "peer-reviewed-research"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "モデル式、入力特徴量、版、適用範囲を公開し、同一入力から予測を再生成できる。",
+            "requirement_en": "Publish equations, input features, version, and applicability so predictions can be reproduced from identical inputs."
+          },
+          {
+            "criterion_id": "GAP-WORK-003-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "複数システム・複数ワークロードで予測対実測データと誤差分布を独立再現する。",
+            "requirement_en": "Independently reproduce prediction-versus-measurement data and error distributions across multiple systems and workloads."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0002"
     },
@@ -127,6 +167,26 @@
         "peer-reviewed-research"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-004-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "AI for Science、複合ワークフロー、緊急計算、データ移動を含む全国ワークロード被覆表を作成する。",
+            "requirement_en": "Create a national workload-coverage matrix spanning AI for Science, compound workflows, urgent computing, and data movement."
+          },
+          {
+            "criterion_id": "GAP-WORK-004-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "不足カテゴリの代表ケースを再現可能な実行定義として追加し、複数機関で検証する。",
+            "requirement_en": "Add representative cases for uncovered categories as reproducible run definitions and validate them at multiple institutions."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0003"
     },
@@ -162,6 +222,26 @@
         "vendor-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-004-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一ワークロード、入力、精度条件でCPU/GPU候補を複数実機上で測定し、手順と生データを公開する。",
+            "requirement_en": "Measure CPU/GPU candidates on multiple systems with identical workloads, inputs, and accuracy constraints, publishing methods and raw data."
+          },
+          {
+            "criterion_id": "GAP-COMP-004-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "性能、システム電力、障害・回復挙動を同一評価に含め、独立に再現する。",
+            "requirement_en": "Include performance, system power, and failure/recovery behavior in one evaluation and reproduce it independently."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0004"
     },
@@ -197,6 +277,26 @@
         "official-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "CXL 4.0対応スイッチ、メモリ装置、管理ソフトウェアについて製品名、状態、時期を公式情報で確認する。",
+            "requirement_en": "Confirm official product names, status, and timing for CXL 4.0 switches, memory devices, and management software."
+          },
+          {
+            "criterion_id": "GAP-NET-003-C2",
+            "verification_method": "conformance-test",
+            "requirement_ja": "2社以上の装置を含む適合性・相互運用試験結果を確認する。",
+            "requirement_en": "Confirm conformance and interoperability results covering devices from at least two vendors."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0005"
     },
@@ -233,6 +333,26 @@
         "procurement-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-004-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "CPO/IOWNの価格、故障率、交換単位、復旧時間、長期保守期間を運用または調達資料から確認する。",
+            "requirement_en": "Confirm CPO/IOWN price, failure rate, replacement unit, restoration time, and support horizon from operational or procurement records."
+          },
+          {
+            "criterion_id": "GAP-NET-004-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "HPCI相当距離・負荷のパイロットで性能、電力、障害復旧を継続測定する。",
+            "requirement_en": "Continuously measure performance, power, and failure recovery in an HPCI-scale distance and load pilot."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0006"
     },
@@ -273,6 +393,26 @@
         "peer-reviewed-research"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-MEM003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "候補メモリの価格、供給数量、量産状態、長期保守を公開調達または複数の独立した一次情報で確認する。",
+            "requirement_en": "Confirm price, supply volume, production status, and long-term support for candidate memories from public procurement records or multiple independent primary sources."
+          },
+          {
+            "criterion_id": "GAP-MEM003-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一HPCIワークロード条件で性能、電力、RASを複数構成間で再現可能に比較する。",
+            "requirement_en": "Reproducibly compare performance, power, and RAS across configurations under identical HPCI workload conditions."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0007"
     },
@@ -309,6 +449,26 @@
         "research-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "GCC、LLVM、Fujitsu、Intel、NVIDIA、AMDの対象OpenMP/SYCL機能を、版付きの実装表で確認する。",
+            "requirement_en": "Confirm target OpenMP/SYCL features for GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD in versioned implementation matrices."
+          },
+          {
+            "criterion_id": "GAP-PORT-001-C2",
+            "verification_method": "conformance-test",
+            "requirement_ja": "対象CPU/GPU上の適合試験を同一テストセットで実行し、自己申告表との差を独立に検証する。",
+            "requirement_en": "Run one conformance suite across target CPUs/GPUs and independently verify differences from self-declared matrices."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0008"
     },
@@ -344,6 +504,26 @@
         "official-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-004-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "HPCI主要アプリについてbackend別の移植差分、工数、正しさ、性能を共通書式で測定する。",
+            "requirement_en": "Measure backend-specific code changes, effort, correctness, and performance for major HPCI applications in a common format."
+          },
+          {
+            "criterion_id": "GAP-PORT-004-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "少なくとも2機関がビルド定義、ログ、結果を独立再現する。",
+            "requirement_en": "Have at least two institutions independently reproduce build definitions, logs, and results."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0009"
     },
@@ -380,6 +560,26 @@
         "peer-reviewed-research"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-006-C1",
+            "verification_method": "conformance-test",
+            "requirement_ja": "2系統以上のMPI実装と複数libfabric providerでABIおよびGPU転送の相互運用を試験する。",
+            "requirement_en": "Test ABI and GPU-transfer interoperability across at least two MPI implementations and multiple libfabric providers."
+          },
+          {
+            "criterion_id": "GAP-PORT-006-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一ワークロードへの障害注入で検出、回復、結果正当性を独立再現する。",
+            "requirement_en": "Independently reproduce detection, recovery, and result correctness under fault injection into identical workloads."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0010"
     },
@@ -415,6 +615,26 @@
         "official-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-001-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "15提供機関すべての12項目Profileを現行契約版で埋め、項目ごとの根拠を保存する。",
+            "requirement_en": "Complete all 12 fields in current-contract profiles for all 15 providers and retain field-level evidence."
+          },
+          {
+            "criterion_id": "GAP-BLUE-001-C2",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "各Profileの更新窓と責任者確認日を記録する。",
+            "requirement_en": "Record each profile's update window and responsible-party confirmation date."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0011"
     },
@@ -450,6 +670,26 @@
         "peer-reviewed-research"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-002-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "HPCI-RB、TS reference、PEC referenceそれぞれの版、公開日、内容ハッシュ、承認主体を公式記録で確認する。",
+            "requirement_en": "Confirm version, publication date, content hash, and approving authority for HPCI-RB, TS reference, and PEC reference in official records."
+          },
+          {
+            "criterion_id": "GAP-BLUE-002-C2",
+            "verification_method": "evidence-review",
+            "requirement_ja": "3成果物間の参照関係と適用範囲を機械可読に検証する。",
+            "requirement_en": "Machine-validate cross-references and applicability among the three deliverables."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0012"
     },
@@ -485,6 +725,26 @@
         "official-primary"
       ],
       "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-003-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "15提供機関すべてについて電力、冷却、予算、調達、停止制約を項目別根拠付きで確認する。",
+            "requirement_en": "Confirm power, cooling, budget, procurement, and outage constraints for all 15 providers with field-level evidence."
+          },
+          {
+            "criterion_id": "GAP-BLUE-003-C2",
+            "verification_method": "evidence-review",
+            "requirement_ja": "非公開項目は値を公開面へ移さず、公開可能な集約結論と承認来歴だけを受け渡す。",
+            "requirement_en": "For non-public fields, transfer only publication-approved aggregate conclusions and provenance, never underlying values, into the public plane."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0013"
     },
@@ -507,6 +767,20 @@
       "query_seeds": [],
       "required_source_classes": [],
       "query_plan_origin": "not-applicable",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-006-C1",
+            "verification_method": "consensus-quorum",
+            "requirement_ja": "異なる提供者・モデル・Harnessによる独立レビューがConsensus Policyのquorumと異議解消条件を満たす。",
+            "requirement_en": "Independent reviews from distinct providers, models, and harnesses meet the Consensus Policy quorum and objection-resolution requirements."
+          }
+        ]
+      },
+      "closure_plan_origin": "consensus-policy",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0014"
     },
@@ -545,6 +819,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0015"
     },
@@ -583,6 +871,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0016"
     },
@@ -621,6 +923,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0017"
     },
@@ -659,6 +975,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0018"
     },
@@ -697,6 +1027,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0019"
     },
@@ -737,6 +1081,20 @@
         "independent-analysis"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-MEM002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0020"
     },
@@ -777,6 +1135,20 @@
         "independent-analysis"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-MEM004-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0021"
     },
@@ -815,6 +1187,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0022"
     },
@@ -853,6 +1239,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0023"
     },
@@ -889,6 +1289,20 @@
         "center-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-004-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0024"
     },
@@ -925,6 +1339,20 @@
         "center-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-005-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0025"
     },
@@ -963,6 +1391,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-005-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0026"
     },
@@ -1001,6 +1443,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0027"
     },
@@ -1039,6 +1495,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-005-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0028"
     },
@@ -1079,6 +1549,20 @@
         "independent-analysis"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-MEM001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0029"
     },
@@ -1119,6 +1603,20 @@
         "independent-analysis"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-MEM005-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0030"
     },
@@ -1157,6 +1655,20 @@
         "procurement-primary"
       ],
       "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-005-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
       "status": "open",
       "queue_item_id": "RGQ-0031"
     }

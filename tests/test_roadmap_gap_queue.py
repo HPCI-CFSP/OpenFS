@@ -54,6 +54,24 @@ class RoadmapGapQueueTests(unittest.TestCase):
         self.assertEqual(13, queue["summary"]["explicit_query_overrides"])
         self.assertEqual(13, queue["summary"]["p0_explicit_query_overrides"])
         self.assertEqual(0, queue["summary"]["p0_generated_query_fallbacks"])
+        p0_items = [item for item in queue["assignments"] if item["priority"] == "P0"]
+        self.assertTrue(
+            all(item["closure_state"] == "criteria-unverified" for item in p0_items)
+        )
+        self.assertTrue(
+            all(
+                item["closure_plan"]["minimum_independent_origin_groups"] >= 2
+                and item["closure_plan"]["requires_consensus_gate"] is True
+                and item["closure_plan"]["criteria"]
+                for item in p0_items
+            )
+        )
+        self.assertTrue(
+            all(
+                item["closure_plan_origin"] == "explicit-override"
+                for item in p0_discovery
+            )
+        )
 
     def test_builder_preserves_monitor_readiness_and_consensus_assignment(self):
         result = build(ROOT, "2026-08-26T12:00:00Z")
@@ -61,6 +79,9 @@ class RoadmapGapQueueTests(unittest.TestCase):
         self.assertEqual("MON-MEMORY-001", by_gap["GAP-MEM001"]["assignment_ref"])
         self.assertEqual("MON-FS-BASELINE-001", by_gap["GAP-BLUE-002"]["assignment_ref"])
         self.assertEqual("CRP-P0-ROADMAPS-V02", by_gap["GAP-BLUE-006"]["assignment_ref"])
+        self.assertEqual(
+            "consensus-policy", by_gap["GAP-BLUE-006"]["closure_plan_origin"]
+        )
         self.assertEqual(
             "awaiting-independent-review",
             by_gap["GAP-BLUE-006"]["execution_state"],

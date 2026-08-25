@@ -314,6 +314,16 @@ class PagesSiteTests(unittest.TestCase):
                     ]
                 ),
             )
+            self.assertTrue(
+                all(
+                    item["closure_state"] == "criteria-unverified"
+                    and item["closure_plan"]["minimum_independent_origin_groups"] >= 2
+                    and item["closure_plan"]["requires_consensus_gate"] is True
+                    and item["closure_plan"]["criteria"]
+                    for item in assurance["gap_queue"]["assignments"]
+                    if item["priority"] == "P0"
+                )
+            )
             self.assertEqual(
                 14,
                 len(assurance["dependency_register"]["dependencies"]),

@@ -55,6 +55,48 @@ def _assignment_ref(roadmap_id: str, gap_id: str) -> str:
     )
 
 
+def _default_closure_plan(gap: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "minimum_independent_origin_groups": 2 if gap["priority"] == "P0" else 1,
+        "requires_consensus_gate": True,
+        "criteria": [
+            {
+                "criterion_id": f"{gap['gap_id']}-C1",
+                "verification_method": "evidence-review",
+                "requirement_ja": (
+                    "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて"
+                    "独立レビューする。"
+                ),
+                "requirement_en": (
+                    "Confirm primary evidence directly covering the Gap and independently "
+                    "review its limitations and possible counterevidence."
+                ),
+            }
+        ],
+    }
+
+
+def _consensus_closure_plan(gap: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": True,
+        "criteria": [
+            {
+                "criterion_id": f"{gap['gap_id']}-C1",
+                "verification_method": "consensus-quorum",
+                "requirement_ja": (
+                    "異なる提供者・モデル・Harnessによる独立レビューがConsensus Policyの"
+                    "quorumと異議解消条件を満たす。"
+                ),
+                "requirement_en": (
+                    "Independent reviews from distinct providers, models, and harnesses meet "
+                    "the Consensus Policy quorum and objection-resolution requirements."
+                ),
+            }
+        ],
+    }
+
+
 def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
     roadmaps = [
         load_json(path)
@@ -80,6 +122,7 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
             assignment_ref = _assignment_ref(roadmap["roadmap_id"], gap_id)
             cadence = CADENCE[gap["priority"]]
             if assignment_ref.startswith("CRP-"):
+                closure_plan = _consensus_closure_plan(gap)
                 assignment = {
                     "gap_id": gap_id,
                     "roadmap_id": roadmap["roadmap_id"],
@@ -99,6 +142,9 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
                     "query_seeds": [],
                     "required_source_classes": [],
                     "query_plan_origin": "not-applicable",
+                    "closure_plan": closure_plan,
+                    "closure_plan_origin": "consensus-policy",
+                    "closure_state": "criteria-unverified",
                     "status": gap["status"],
                 }
             else:
@@ -119,6 +165,8 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
                     query_seeds = override["query_seeds"]
                     required_source_classes = override["source_classes"]
                     query_plan_origin = "explicit-override"
+                    closure_plan = override["closure_plan"]
+                    closure_plan_origin = "explicit-override"
                 else:
                     query_seeds = [
                         {
@@ -132,6 +180,8 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
                     ]
                     required_source_classes = monitor.get("source_classes", [])
                     query_plan_origin = "generated-fallback"
+                    closure_plan = _default_closure_plan(gap)
+                    closure_plan_origin = "generated-default"
                 assignment = {
                     "gap_id": gap_id,
                     "roadmap_id": roadmap["roadmap_id"],
@@ -155,6 +205,9 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
                     "query_seeds": query_seeds,
                     "required_source_classes": required_source_classes,
                     "query_plan_origin": query_plan_origin,
+                    "closure_plan": closure_plan,
+                    "closure_plan_origin": closure_plan_origin,
+                    "closure_state": "criteria-unverified",
                     "status": gap["status"],
                 }
             assignments.append(assignment)
@@ -189,16 +242,16 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
         microsecond=0
     ).isoformat().replace("+00:00", "Z")
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "export_id": "ROADMAP-GAP-QUEUE-001",
         "status": "published",
         "queue_id": f"RGQ-{as_of.replace('-', '')}-001",
         "as_of": as_of,
         "generated_at": generated,
-        "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とし、明示query planがあるGapでは生成fallbackより優先する。",
-        "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly; an explicit query plan takes precedence over the generated fallback.",
-        "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。生成fallbackは探索開始点にすぎない。Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
-        "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved, and a generated fallback is only a discovery starting point. Items assigned to disabled Monitors are not searched automatically until production-readiness gates pass.",
+        "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とする。P0のsource-discoveryには検索条件だけでなく、独立起源数と具体的な閉鎖条件を明示する。",
+        "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly. P0 source-discovery items carry explicit search plans, independent-origin minimums, and concrete closure criteria.",
+        "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。すべての閉鎖条件を検証し、必要な独立起源数とConsensus Gateを満たすまでstatusはopenのままにする。生成fallbackは探索開始点にすぎず、Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
+        "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved. Status remains open until every closure criterion is verified and the required independent-origin count and Consensus Gate are satisfied. A generated fallback is only a discovery starting point, and disabled Monitors do not run until production-readiness gates pass.",
         "summary": {
             "roadmap_count": len(roadmaps),
             "gap_count": len(assignments),

@@ -27,12 +27,17 @@ count in its cycle plan. When a Run is created, the Run Controller expands those
 seeds into ordinary leased `source-discovery` Work Items, records the originating
 Gap on every item, and snapshots the queue beside the other Run inputs. Disabled
 Monitors still require an explicit Pilot or a passed production-readiness gate.
-P0 query plans are curated in `config/roadmap-gap-query-overrides.json`. A newly
-added Gap remains assignable through a deterministic generated fallback, while
-the queue exposes `query_plan_origin` so reviewers can prioritize replacing that
-fallback with domain-specific searches. The current 13 P0 source-discovery Gaps
-all have explicit query plans; the fourteenth P0 item is the Consensus review
-assignment itself.
+P0 query and closure plans are curated in
+`config/roadmap-gap-query-overrides.json`. Each P0 source-discovery plan states
+the minimum number of independent Origin Groups, requires a Consensus Gate, and
+lists concrete bilingual closure criteria. A newly added Gap remains assignable
+through deterministic generated query and closure defaults, while the queue
+exposes `query_plan_origin`, `closure_plan_origin`, and `closure_state` so reviewers
+can replace those defaults with domain-specific contracts. The current 13 P0
+source-discovery Gaps all have explicit plans; the fourteenth P0 item is the
+Consensus review assignment itself. A responsive result, a source count, or one
+model's judgment cannot change an open Gap: every criterion must be verified and
+the independent-origin and Consensus requirements must pass.
 
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares

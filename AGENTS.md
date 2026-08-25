@@ -110,6 +110,11 @@ When a task contains multiple investigations, organize them into separate task, 
   architecture, facility, procurement, migration, or scenario decision; use `P1`
   for material comparison gaps and `P2` for useful context. Never fill a gap with
   an unsupported forecast.
+- For every P0 source-discovery Gap, preserve an explicit closure plan in
+  `config/roadmap-gap-query-overrides.json`. Finding a responsive page, increasing
+  a source count, or receiving one model's approval never closes a Gap. Keep it
+  open until every named criterion, independent-Origin-Group minimum, and
+  Consensus requirement is verified.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and

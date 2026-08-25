@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["schema_version", "export_id", "status", "queue_id", "as_of", "generated_at", "method_ja", "method_en", "caveat_ja", "caveat_en", "summary", "assignments", "publication"],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"const": "0.2.0"},
     "export_id": {"const": "ROADMAP-GAP-QUEUE-001"},
     "status": {"const": "published"},
     "queue_id": {"type": "string", "pattern": "^RGQ-[0-9]{8}-[0-9]{3}$"},
@@ -41,7 +41,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["queue_item_id", "gap_id", "roadmap_id", "priority", "workstream", "cadence", "assignment_ref", "task_id", "monitor_enabled", "execution_state", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "query_seeds", "required_source_classes", "query_plan_origin", "status"],
+        "required": ["queue_item_id", "gap_id", "roadmap_id", "priority", "workstream", "cadence", "assignment_ref", "task_id", "monitor_enabled", "execution_state", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "query_seeds", "required_source_classes", "query_plan_origin", "closure_plan", "closure_plan_origin", "closure_state", "status"],
         "properties": {
           "queue_item_id": {"type": "string", "pattern": "^RGQ-[0-9]{4}$"},
           "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
@@ -73,10 +73,25 @@
           },
           "required_source_classes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
           "query_plan_origin": {"enum": ["explicit-override", "generated-fallback", "not-applicable"]},
+          "closure_plan": {"$ref": "#/$defs/closurePlan"},
+          "closure_plan_origin": {"enum": ["explicit-override", "generated-default", "consensus-policy"]},
+          "closure_state": {"const": "criteria-unverified"},
           "status": {"const": "open"}
         },
         "additionalProperties": false,
         "allOf": [
+          {
+            "if": {"properties": {"priority": {"const": "P0"}}},
+            "then": {
+              "properties": {
+                "closure_plan": {
+                  "properties": {
+                    "minimum_independent_origin_groups": {"minimum": 2}
+                  }
+                }
+              }
+            }
+          },
           {
             "if": {"properties": {"workstream": {"const": "source-discovery"}}},
             "then": {
@@ -115,6 +130,32 @@
         "publication_approved": {"const": true},
         "publication_decision_id": {"const": "PUBDEC-20260826-005"},
         "human_approval_directive_id": {"const": "DIR-900006"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "closurePlan": {
+      "type": "object",
+      "required": ["minimum_independent_origin_groups", "requires_consensus_gate", "criteria"],
+      "properties": {
+        "minimum_independent_origin_groups": {"type": "integer", "minimum": 1},
+        "requires_consensus_gate": {"const": true},
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "verification_method", "requirement_ja", "requirement_en"],
+            "properties": {
+              "criterion_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+-C[0-9]+$"},
+              "verification_method": {"enum": ["evidence-review", "reproducible-measurement", "conformance-test", "authority-confirmation", "consensus-quorum"]},
+              "requirement_ja": {"type": "string", "minLength": 1},
+              "requirement_en": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
       },
       "additionalProperties": false
     }
