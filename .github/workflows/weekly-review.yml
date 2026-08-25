@@ -49,6 +49,9 @@ jobs:
             --output _automation/roadmap-source-audit.json \
             --timeout 25 \
             --workers 8
+          python3 tools/build_roadmap_source_triage.py \
+            --audit _automation/roadmap-source-audit.json \
+            --output _automation/roadmap-source-triage.json
           python3 tools/build_roadmap_freshness_audit.py \
             --generated-at "$GENERATED_AT" \
             --source-audit _automation/roadmap-source-audit.json \
@@ -73,6 +76,7 @@ jobs:
           path: |
             _automation/exception-issues.json
             _automation/roadmap-source-audit.json
+            _automation/roadmap-source-triage.json
             _automation/roadmap-freshness-audit.json
             _automation/roadmap-gap-queue.json
             _automation/roadmap-freshness-issue.json

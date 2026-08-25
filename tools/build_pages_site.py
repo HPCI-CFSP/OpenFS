@@ -709,6 +709,12 @@ def collect_roadmap_assurance(
             ["method_ja", "method_en", "caveat_ja", "caveat_en"],
         ),
         (
+            "source_triage",
+            policy["included_public_roadmap_source_triage"],
+            policy["roadmap_source_triage_public_fields"],
+            ["caveat_ja", "caveat_en"],
+        ),
+        (
             "evidence_audit",
             policy["included_public_roadmap_evidence_audit"],
             policy["roadmap_evidence_audit_public_fields"],

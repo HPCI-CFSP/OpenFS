@@ -55,6 +55,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "owner-controls.schema.json"
     if ref == "config/roadmap-gap-query-overrides.json":
         return "roadmap-gap-query-overrides.schema.json"
+    if ref == "config/roadmap-source-retrieval-reviews.json":
+        return "roadmap-source-retrieval-reviews.schema.json"
     if ref == "knowledge/public/topic-summaries.json":
         return "public-topic-summary.schema.json"
     if ref == "knowledge/public/consensus-receipts.json":
@@ -63,6 +65,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "public-roadmap.schema.json"
     if ref == "knowledge/public/audits/roadmap-source-audit.json":
         return "roadmap-source-audit.schema.json"
+    if ref == "knowledge/public/audits/roadmap-source-triage.json":
+        return "roadmap-source-triage.schema.json"
     if ref == "knowledge/public/audits/roadmap-evidence-audit.json":
         return "roadmap-evidence-audit.schema.json"
     if ref == "knowledge/public/audits/roadmap-freshness-audit.json":

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-source-triage.schema.json",
+  "title": "OpenFS Roadmap Source Retrieval Triage",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "triage_id", "as_of", "review_set_id", "review_status", "reviewer", "caveat_ja", "caveat_en", "summary", "entries", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"const": "ROADMAP-SOURCE-TRIAGE-001"},
+    "status": {"const": "published"},
+    "triage_id": {"type": "string", "pattern": "^RST-[0-9]{8}-[0-9]{3}$"},
+    "as_of": {"type": "string", "format": "date"},
+    "review_set_id": {"type": "string", "pattern": "^RSRR-[0-9]{8}-[0-9]{3}$"},
+    "review_status": {"const": "provisional-single-model"},
+    "reviewer": {
+      "type": "object",
+      "required": ["agent", "harness", "consensus_status"],
+      "properties": {
+        "agent": {"type": "string", "minLength": 1},
+        "harness": {"type": "string", "minLength": 1},
+        "consensus_status": {"const": "incomplete"}
+      },
+      "additionalProperties": false
+    },
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "required": ["non_reachable_count", "reviewed_count", "exact_url_content_confirmed", "unresolved", "stale_review_count"],
+      "properties": {
+        "non_reachable_count": {"type": "integer", "minimum": 0},
+        "reviewed_count": {"type": "integer", "minimum": 0},
+        "exact_url_content_confirmed": {"type": "integer", "minimum": 0},
+        "unresolved": {"type": "integer", "minimum": 0},
+        "stale_review_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["roadmap_id", "source_id", "url", "http_audit_status", "http_status", "reviewed_at", "review_outcome", "note_ja", "note_en"],
+        "properties": {
+          "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+          "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+          "url": {"type": "string", "format": "uri"},
+          "http_audit_status": {"enum": ["access-restricted", "missing", "timeout", "error"]},
+          "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599},
+          "reviewed_at": {"type": "string", "format": "date"},
+          "review_outcome": {"enum": ["exact-url-content-confirmed", "unresolved"]},
+          "note_ja": {"type": "string", "minLength": 1},
+          "note_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"const": "PUBDEC-20260826-002"},
+        "human_approval_directive_id": {"const": "DIR-900006"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

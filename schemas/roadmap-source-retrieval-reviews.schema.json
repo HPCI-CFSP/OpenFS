@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-source-retrieval-reviews.schema.json",
+  "title": "OpenFS Roadmap Source Retrieval Reviews",
+  "type": "object",
+  "required": ["schema_version", "review_set_id", "as_of", "review_status", "reviewer", "entries"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "review_set_id": {"type": "string", "pattern": "^RSRR-[0-9]{8}-[0-9]{3}$"},
+    "as_of": {"type": "string", "format": "date"},
+    "review_status": {"const": "provisional-single-model"},
+    "reviewer": {
+      "type": "object",
+      "required": ["agent", "harness", "consensus_status"],
+      "properties": {
+        "agent": {"type": "string", "minLength": 1},
+        "harness": {"type": "string", "minLength": 1},
+        "consensus_status": {"const": "incomplete"}
+      },
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["roadmap_id", "source_id", "url", "reviewed_at", "review_outcome", "note_ja", "note_en"],
+        "properties": {
+          "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+          "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+          "url": {"type": "string", "format": "uri"},
+          "reviewed_at": {"type": "string", "format": "date"},
+          "review_outcome": {"enum": ["exact-url-content-confirmed", "unresolved"]},
+          "note_ja": {"type": "string", "minLength": 1},
+          "note_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
