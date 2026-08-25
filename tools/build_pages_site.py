@@ -194,6 +194,11 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             topic["topic_id"] in summary["topic_ids"]
             for summary in research_summaries
         )
+        finding_count = sum(
+            topic["topic_id"] in finding["topic_ids"]
+            for summary in research_summaries
+            for finding in summary["findings"]
+        )
         topics.append(
             {
                 "topic_id": topic["topic_id"],
@@ -208,6 +213,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                     else topic.get("catalog_origin", "human-directive")
                 ),
                 "research_summary_count": summary_count,
+                "research_finding_count": finding_count,
             }
         )
 
