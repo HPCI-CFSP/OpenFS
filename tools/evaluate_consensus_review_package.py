@@ -55,6 +55,7 @@ def evaluate(
     evaluated_at: str | None = None,
     maximum_clock_skew_seconds: int = MAXIMUM_CLOCK_SKEW_SECONDS,
 ) -> dict[str, Any]:
+    manifest_digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
     manifest = read_json(manifest_path)
     evaluated = parse_time(evaluated_at) if evaluated_at else datetime.now(timezone.utc)
     skew = timedelta(seconds=maximum_clock_skew_seconds)
@@ -64,6 +65,8 @@ def evaluate(
     except (KeyError, TypeError, ValueError):
         package_created = None
         integrity_errors.append("package_created_at_invalid")
+    if package_created is not None and package_created > evaluated + skew:
+        integrity_errors.append("package_created_after_evaluation_window")
     for artifact in manifest["artifact_manifest"]:
         actual = committed_digest(root, manifest["base_commit"], artifact["path"])
         if actual is None:
@@ -187,6 +190,8 @@ def evaluate(
                 review_errors.append(f"reviewer_write_scope_mismatch:{review_id}:{agent_id}")
         if review.get("registry_snapshot_digest") != registry_digest:
             review_errors.append(f"agent_registry_digest_mismatch:{review_id}")
+        if review.get("package_manifest_digest") != manifest_digest:
+            review_errors.append(f"package_manifest_digest_mismatch:{review_id}")
         if review.get("package_id") != manifest["package_id"]:
             review_errors.append(f"package_id_mismatch:{review_id}")
         if review.get("base_commit") != manifest["base_commit"]:

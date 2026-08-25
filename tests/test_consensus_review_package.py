@@ -52,6 +52,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             "review_id": f"CRV-{agent['agent_id'].upper()}",
             "package_id": self.manifest["package_id"],
             "base_commit": self.manifest["base_commit"],
+            "package_manifest_digest": hashlib.sha256(self.manifest_path.read_bytes()).hexdigest(),
             "reviewer": {
                 "agent_id": agent["agent_id"],
                 "role": agent["role"],
@@ -111,7 +112,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             root = Path(tmp)
             manifest_path = root / "manifest.json"
-            manifest_path.write_text(json.dumps(self.manifest), encoding="utf-8")
+            manifest_path.write_bytes(self.manifest_path.read_bytes())
             assessment_dir = root / self.manifest["submission"]["assessment_directory"]
             assessment_dir.mkdir(parents=True)
             for index, review in enumerate(reviews):
@@ -387,6 +388,31 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual([], result["review_results"]["eligible_review_ids"])
         self.assertTrue(
             any("reviewed_at_invalid" in item for item in result["integrity_errors"])
+        )
+
+    def test_package_creation_cannot_be_after_evaluation(self):
+        result = evaluate(
+            ROOT,
+            self.manifest_path,
+            evaluated_at="2020-01-01T00:00:00Z",
+        )
+        self.assertIn(
+            "package_created_after_evaluation_window",
+            result["integrity_errors"],
+        )
+
+    def test_review_is_bound_to_exact_package_manifest_bytes(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["package_manifest_digest"] = "f" * 64
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("package_manifest_digest_mismatch" in item for item in result["integrity_errors"])
         )
 
 

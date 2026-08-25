@@ -375,13 +375,14 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
     }
 
 
-def review_template(manifest: dict[str, Any]) -> dict[str, Any]:
+def review_template(manifest: dict[str, Any], manifest_digest: str) -> dict[str, Any]:
     return {
         "_template_notice": "Replace every angle-bracket placeholder and remove this field before submission.",
         "schema_version": "0.1.0",
         "review_id": "<CRV-UNIQUE-ID>",
         "package_id": manifest["package_id"],
         "base_commit": manifest["base_commit"],
+        "package_manifest_digest": manifest_digest,
         "reviewer": {
             "agent_id": "<agent-id>", "role": "validator", "provider": "<provider>",
             "model_family": "<model-family>", "prompt_profile": "<prompt-profile>",
@@ -429,7 +430,10 @@ milestone records, {summary['source_count']} source registrations representing
 
 ## Review protocol
 
-1. Check out exactly `{commit}` and verify every `artifact_manifest.sha256`.
+1. Check out exactly `{commit}`, verify every `artifact_manifest.sha256`, and
+   record the SHA-256 of the exact `manifest.json` bytes as
+   `package_manifest_digest` in the review. Do not reserialize the manifest
+   before calculating this digest.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
    Record one conclusive primary-source check for every milestone listed in
@@ -482,8 +486,13 @@ def main() -> int:
     created_at = args.created_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     manifest = build_manifest(args.root, commit, created_at)
     args.output.mkdir(parents=True, exist_ok=True)
-    (args.output / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (args.output / "review-template.json").write_text(json.dumps(review_template(manifest), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    manifest_digest = hashlib.sha256(manifest_bytes).hexdigest()
+    (args.output / "manifest.json").write_bytes(manifest_bytes)
+    (args.output / "review-template.json").write_text(
+        json.dumps(review_template(manifest, manifest_digest), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     (args.output / "README.md").write_text(readme(manifest), encoding="utf-8")
     print(json.dumps({"package_id": PACKAGE_ID, "base_commit": commit, "artifacts": len(manifest["artifact_manifest"]), "review_units": len(manifest["review_units"])}, ensure_ascii=False))
     return 0

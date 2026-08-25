@@ -11,7 +11,11 @@ Reviewers perform a blind first review. An assessment records its reviewer, agen
 For a commit-pinned review package, `reviewed_at` must fall after the package was
 created and no later than the evaluator's clock, subject to the configured
 one-minute clock-skew tolerance. A pre-package or future-dated review is
-ineligible even when its content otherwise satisfies the gate.
+ineligible even when its content otherwise satisfies the gate. A future-dated
+package is also invalid. Every review records `package_manifest_digest`, the
+SHA-256 of the exact `manifest.json` bytes, so a review cannot be replayed after
+review units, artifact lists, or package metadata are regenerated under the same
+package ID and base commit.
 
 At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
 capacity before any research result exists. Reviewers in the Proposal author's
