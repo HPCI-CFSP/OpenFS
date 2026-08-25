@@ -4,11 +4,11 @@ This package pins 6 P0 roadmaps, 159
 milestone records, 118 registered sources,
 14 cross-roadmap dependencies,
 31 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `7a0bbe8413352ace83963ff1e9f43bb084b920f1`.
+3 provisional HPCI scenarios to commit `b36d039676a470a684ec914825af7fc3fef54464`.
 
 ## Review protocol
 
-1. Check out exactly `7a0bbe8413352ace83963ff1e9f43bb084b920f1` and verify every `artifact_manifest.sha256`.
+1. Check out exactly `b36d039676a470a684ec914825af7fc3fef54464` and verify every `artifact_manifest.sha256`.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
    Record one conclusive primary-source check for every milestone listed in
@@ -31,7 +31,7 @@ milestone records, 118 registered sources,
 このパッケージは、P0の6ロードマップ、
 159マイルストーン、118情報源、
 14相互依存、31件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `7a0bbe8413352ace83963ff1e9f43bb084b920f1` に固定します。
+HPCI整備計画3案をコミット `b36d039676a470a684ec914825af7fc3fef54464` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ

@@ -3,8 +3,8 @@
   "package_id": "CRP-P0-ROADMAPS-V02",
   "status": "awaiting-independent-review",
   "object_type": "high-impact-recommendation",
-  "base_commit": "7a0bbe8413352ace83963ff1e9f43bb084b920f1",
-  "created_at": "2026-08-25T19:00:46Z",
+  "base_commit": "b36d039676a470a684ec914825af7fc3fef54464",
+  "created_at": "2026-08-25T19:08:07Z",
   "portfolio_summary": {
     "roadmap_count": 6,
     "milestone_count": 159,
@@ -159,6 +159,11 @@
       "object_type": "registry"
     },
     {
+      "path": "config/role-permissions.json",
+      "sha256": "8617e979e2fc40221b31e0a8594cc26786c6b74c7b7f33a711fde4d8c7eb8d6f",
+      "object_type": "policy"
+    },
+    {
       "path": "schemas/public-roadmap.schema.json",
       "sha256": "064597ac2c8717e0fbcc640b1b41b6b2240b2fdc4a9f5895f64619c86aec4da9",
       "object_type": "schema"
@@ -224,6 +229,11 @@
       "object_type": "schema"
     },
     {
+      "path": "schemas/benchmark-result-bundle.schema.json",
+      "sha256": "e531defd961f20d7aa8362cc8be0543af9dbb4db1113c9d34c478d2b771d7487",
+      "object_type": "schema"
+    },
+    {
       "path": "schemas/run.schema.json",
       "sha256": "a86053cec5fdd62d1c8b7957102a251a370e1e52c1ef43410dea1e7b792cfaef",
       "object_type": "schema"
@@ -269,9 +279,24 @@
       "object_type": "tool"
     },
     {
+      "path": "tools/check_benchmark_result_bundle.py",
+      "sha256": "6d8edf811fc9b0518682770da16259f0f5e83df4a7e3789594c7ee325396d7a7",
+      "object_type": "tool"
+    },
+    {
       "path": "docs/research-baseline/performance-model-validation.md",
       "sha256": "4fbe8a296a494c3b1d6aace42cf469fe6b8f2dd8dc6450cd46651a2a30e0e717",
       "object_type": "research-contract"
+    },
+    {
+      "path": "docs/research-baseline/reproducible-benchmark-results.md",
+      "sha256": "868c289bd8a68b2ccc89e5b7b1d122940cd76f11c200aa6676a43ead7bdd12eb",
+      "object_type": "research-contract"
+    },
+    {
+      "path": "proposals/benchmark-results/README.md",
+      "sha256": "77b7c037e940a8ce6636bb904490b804010392e981b6028d0e46f2865efdad6b",
+      "object_type": "operations-guide"
     },
     {
       "path": "tools/build_center_profile_assurance.py",
@@ -320,7 +345,7 @@
     },
     {
       "path": "tools/build_consensus_review_package.py",
-      "sha256": "28e5e6a9a659fba9c54f7c1e0dd0740417680d900c6af0dfd733fb2bcd64bd9c",
+      "sha256": "43b45834c0db6d937537dbd5ce0e09e9eae29908ef9d27a615ac3b8505307131",
       "object_type": "tool"
     },
     {
@@ -1829,6 +1854,7 @@
         "knowledge/public/audits/roadmap-gap-queue.json",
         "config/source-registry.json",
         "config/roadmap-gap-query-overrides.json",
+        "config/role-permissions.json",
         "config/monitors/MON-MEMORY-001.json",
         "config/monitors/MON-GLOBAL-TECH-001.json",
         "config/monitors/MON-HPCI-CENTERS-001.json",
@@ -1836,9 +1862,13 @@
         "schemas/roadmap-gap-queue.schema.json",
         "schemas/roadmap-gap-query-overrides.schema.json",
         "schemas/performance-model-card.schema.json",
+        "schemas/benchmark-result-bundle.schema.json",
         "tools/build_roadmap_gap_queue.py",
         "tools/check_performance_model_card.py",
+        "tools/check_benchmark_result_bundle.py",
         "docs/research-baseline/performance-model-validation.md",
+        "docs/research-baseline/reproducible-benchmark-results.md",
+        "proposals/benchmark-results/README.md",
         "tools/run_controller.py",
         "tools/prepare_weekly_cycle.py"
       ],
@@ -1866,14 +1896,16 @@
         "未公表事項を否定的事実として扱っていないか。",
         "Monitor無効中の割当を自動調査済みと誤表示していないか。",
         "1件の検索結果だけでGapを解消済みにしていないか。",
-        "性能モデルの校正データを検証データとして再利用し、単一環境の誤差を一般化していないか。"
+        "性能モデルの校正データを検証データとして再利用し、単一環境の誤差を一般化していないか。",
+        "異なる入力・精度・測定境界のbenchmarkを同条件比較として扱い、失敗runや正当性不合格を除外していないか。"
       ],
       "falsification_prompts_en": [
         "Is P0 driven by HPCI decision impact rather than ease of research?",
         "Is absence of public information incorrectly treated as negative fact?",
         "Is an assignment under a disabled Monitor misrepresented as executed research?",
         "Can one search result incorrectly close a Gap?",
-        "Does a performance model reuse calibration data for validation or generalize error from one environment?"
+        "Does a performance model reuse calibration data for validation or generalize error from one environment?",
+        "Are benchmarks with different inputs, precision, or measurement boundaries treated as like-for-like, or are failed and incorrect runs omitted?"
       ]
     },
     {
