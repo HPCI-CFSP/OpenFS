@@ -29,6 +29,16 @@ class PageStructureParser(HTMLParser):
 
 
 class PagesSiteTests(unittest.TestCase):
+    def test_pages_workflow_installs_pinned_validators_before_tests(self):
+        workflow = (
+            ROOT / ".github" / "workflows" / "pages.yml"
+        ).read_text(encoding="utf-8")
+        install_step = "Install pinned contract validators"
+        test_step = "Run unit tests"
+        self.assertIn('- "requirements-validation.txt"', workflow)
+        self.assertIn("--requirement requirements-validation.txt", workflow)
+        self.assertLess(workflow.index(install_step), workflow.index(test_step))
+
     def test_pr_preview_is_artifact_only_and_read_only(self):
         workflow = (
             ROOT / ".github" / "workflows" / "pages-preview.yml"
