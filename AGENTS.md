@@ -115,6 +115,11 @@ When a task contains multiple investigations, organize them into separate task, 
   a source count, or receiving one model's approval never closes a Gap. Keep it
   open until every named criterion, independent-Origin-Group minimum, and
   Consensus requirement is verified.
+- Represent performance-model evidence for `GAP-WORK-003` with
+  `schemas/performance-model-card.schema.json` and recompute its holdout errors
+  with `tools/check_performance_model_card.py`. Calibration data must remain
+  separate from validation data. A passing result is only a candidate for
+  independent Consensus review and never closes the Gap automatically.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and

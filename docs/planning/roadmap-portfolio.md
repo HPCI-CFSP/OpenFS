@@ -62,6 +62,13 @@ Coverage Gaps, and dependencies. Exact quarters require cited support. OpenFS
 evaluation and adoption gates use `openfs-provisional-plan` and are never presented
 as vendor or standards commitments.
 
+The workloads and performance-model roadmap additionally uses
+`schemas/performance-model-card.schema.json` for candidate prediction models.
+`tools/check_performance_model_card.py` recomputes holdout errors and checks
+calibration separation, units, thresholds, and system/workload/Origin-Group
+diversity. Passing this deterministic check only permits independent Consensus
+review; it does not close `GAP-WORK-003` or establish HPCI-wide validity.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone
