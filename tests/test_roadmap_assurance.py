@@ -208,6 +208,22 @@ class RoadmapAssuranceTests(unittest.TestCase):
             self.assertNotIn(pair, seen)
             seen.add(pair)
 
+        open_p0_gaps = {
+            gap["gap_id"]
+            for roadmap in self.roadmaps
+            for gap in roadmap["coverage_gaps"]
+            if gap["priority"] == "P0" and gap["status"] == "open"
+        }
+        edge_gap_refs = {
+            gap_id
+            for dependency in self.dependencies["dependencies"]
+            for gap_id in dependency["coverage_gap_refs"]
+            if gap_id in open_p0_gaps
+        }
+        portfolio_gate_gap_refs = set(self.dependencies["portfolio_gate_gap_refs"])
+        self.assertFalse(edge_gap_refs & portfolio_gate_gap_refs)
+        self.assertEqual(open_p0_gaps, edge_gap_refs | portfolio_gate_gap_refs)
+
     def test_dependency_graph_is_acyclic_and_reaches_the_reference_blueprint(self):
         graph = {roadmap["roadmap_id"]: set() for roadmap in self.roadmaps}
         reverse = {roadmap_id: set() for roadmap_id in graph}

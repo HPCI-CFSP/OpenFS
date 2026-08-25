@@ -62,6 +62,15 @@ Coverage Gaps, and dependencies. Exact quarters require cited support. OpenFS
 evaluation and adoption gates use `openfs-provisional-plan` and are never presented
 as vendor or standards commitments.
 
+Cross-roadmap direction is normalized in
+`knowledge/public/dependencies/p0-roadmap-dependencies.json`. Run
+`python3 tools/check_roadmap_dependency_register.py` after changing a roadmap,
+milestone, dependency, or P0 Coverage Gap. The check rejects unknown references,
+duplicate or cyclic edges, a roadmap with no path to `RM-X-BLUEPRINT`, and any
+open P0 Gap that is neither propagated on a causal edge nor explicitly classified
+as a non-causal portfolio-wide gate. Passing is structural evidence only and does
+not validate the causal claim or satisfy Consensus.
+
 The workloads and performance-model roadmap additionally uses
 `schemas/performance-model-card.schema.json` for candidate prediction models.
 `tools/check_performance_model_card.py` recomputes holdout errors and checks

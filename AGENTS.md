@@ -149,6 +149,13 @@ When a task contains multiple investigations, organize them into separate task, 
   appear exactly once in the shared decision-evidence contracts. A passing check
   only makes the portfolio eligible for independent Consensus; it does not close
   a Gap, validate a claim, rank a scenario, or authorize adoption.
+- Keep cross-roadmap dependencies in
+  `knowledge/public/dependencies/p0-roadmap-dependencies.json` and validate them
+  with `tools/check_roadmap_dependency_register.py`. The graph must remain
+  acyclic, every non-blueprint roadmap must reach `RM-X-BLUEPRINT`, and every
+  open P0 Gap must be classified either on a causal edge or as a non-causal
+  portfolio-wide gate. A passing check establishes structural integrity only;
+  it does not validate causality, close a Gap, or satisfy Consensus.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and
