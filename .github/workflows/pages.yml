@@ -14,6 +14,7 @@ on:
       - "reports/exports/**"
       - "reviews/directives/**"
       - "tools/build_pages_site.py"
+      - "requirements-validation.txt"
       - "LICENSE"
       - "NOTICE"
       - "THIRD_PARTY_NOTICES.md"
@@ -40,6 +41,9 @@ jobs:
           persist-credentials: false
       - name: Validate public inputs
         run: python3 tools/validate_repository.py
+      - name: Install pinned contract validators
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -v
       - name: Build static site
