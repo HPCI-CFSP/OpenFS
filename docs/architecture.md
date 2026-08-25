@@ -127,13 +127,16 @@ Directive, and creates review units with explicit falsification prompts.
 
 Independent validators and critics submit one schema-valid assessment covering
 every unit and a conclusive primary-source check for every key externally dated
-milestone declared in the package. The deterministic evaluator rejects digest drift, missing units,
+milestone declared in the package. Each review binds to the exact package
+manifest bytes. The deterministic evaluator rejects digest drift, missing units,
 duplicate reviewer identities, author-group votes, insufficient provider/origin
 diversity, absent falsification, primary-source checks that do not match the
-exact milestone citations in the commit-pinned roadmap registry, and critical objections. The package also pins
-its review schemas and evaluator implementation. Passing those mechanical
-conditions yields only `ready-for-human-decision`; it cannot replace the human
-decision required for a high-impact HPCI recommendation.
+exact milestone citations in the commit-pinned roadmap registry, and critical
+objections. Its gate result binds the manifest and every evaluated review file
+by SHA-256; Pages rejects a changed review set until the evaluator is rerun. The
+package also pins its review schemas and evaluator implementation. Passing those
+mechanical conditions yields only `ready-for-human-decision`; it cannot replace
+the human decision required for a high-impact HPCI recommendation.
 
 ## Trust and information boundaries
 

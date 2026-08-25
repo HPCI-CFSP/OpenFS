@@ -30,10 +30,16 @@ allowing the authoring model to certify its own work.
    are ineligible as independent votes. The supporting set must span at least
    three registered model families, two providers, and two distinct Harness
    repositories. Each execution still pins its exact Harness commit.
+6. Give every reviewer the package commit, not only the `base_commit`. The former
+   identifies the exact `manifest.json`; the latter identifies the artifact set
+   to inspect.
 
 ## Reviewer procedure
 
-1. Check out the package's `base_commit` and verify every artifact digest.
+1. Check out the package commit, calculate SHA-256 over the exact
+   `manifest.json` bytes, and record it as `package_manifest_digest`. Do not
+   reserialize JSON before hashing. Then check out the package's `base_commit`
+   and verify every artifact digest.
 2. Read `manifest.json` before any prior assessment. Review all units and every
    required check; do not sample only favored technologies or one scenario.
 3. Follow the falsification prompts and search for contradictory primary sources,
@@ -58,6 +64,12 @@ allowing the authoring model to certify its own work.
    commit exactly as pinned in the Agent Registry.
 6. Use `uncertain` when evidence is insufficient. Do not infer dates or convert a
    Coverage Gap into a negative fact.
+7. Set `reviewed_at` to an RFC 3339 time with an explicit UTC offset. It must not
+   predate package creation or be later than the gate evaluation time, apart from
+   the one-minute clock-skew allowance.
+8. Submit only the assigned assessment path from a reviewer-specific branch. A
+   second Agent must not edit another reviewer's file or reuse its conclusions as
+   a blind review.
 
 ## Deterministic gate
 
@@ -70,9 +82,18 @@ python3 tools/evaluate_consensus_review_package.py \
 python3 tools/validate_json_schemas.py
 ```
 
+Run the evaluator again after any review file is added, removed, or edited. The
+gate result binds the exact manifest digest, the complete set of evaluated review
+IDs, and each review file's SHA-256. GitHub Pages recomputes those digests and
+fails closed on a stale gate result.
+
 `incomplete` preserves provisional publication. `ready-for-human-decision` means
 only that independent-review thresholds and package integrity passed. A reviewed
 human Directive is still required before an HPCI recommendation can be accepted.
+An eligible `support` review must support every review unit and every required
+primary-source check, pass every required check, and contain no major or critical
+objection. The falsification review is an additional independent assessment; it
+does not need to manufacture support.
 
 ## Current limitation
 

@@ -453,7 +453,9 @@ milestone records, {summary['source_count']} source registrations representing
    configured policy passes and a human makes the required high-impact decision.
    An overall `support` vote is eligible only when every unit supports, every
    required check passes, every required primary-source check supports, and no
-   major or critical objection remains.
+   major or critical objection remains. Re-run the evaluator after adding,
+   removing, or editing any review; its result pins the exact manifest and every
+   evaluated review file by SHA-256.
 
 ## 日本語要約
 
