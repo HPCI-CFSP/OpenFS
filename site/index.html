@@ -20,7 +20,7 @@
         <div class="header-status" aria-label="公開状態">
           <span class="status-dot" aria-hidden="true"></span>
           <span data-i18n="publicOnly">公開情報のみ</span>
-          <span id="as-of" class="as-of"></span>
+          <a id="site-updated" class="site-updated" href="https://github.com/HPCI-CFSP/OpenFS" target="_blank" rel="noopener noreferrer"></a>
         </div>
         <div class="language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
           <button type="button" data-language="ja" aria-pressed="true">日本語</button>
@@ -31,7 +31,7 @@
     <nav class="tabs" aria-label="ページ内ナビゲーション">
       <a href="#overview" data-i18n="navOverview">概要</a>
       <a href="#catalog" data-i18n="navCatalog">調査カタログ</a>
-      <a href="#technology-landscape" data-i18n="navTechnology">技術動向</a>
+      <a href="#roadmaps" data-i18n="navRoadmaps">ロードマップ</a>
       <a href="#scenarios" data-i18n="navScenarios">整備シナリオ</a>
       <a href="#reports" data-i18n="navReports">報告書</a>
     </nav>
@@ -48,11 +48,12 @@
       </div>
       <div class="metric-grid" aria-label="OpenFSの集計">
         <article class="metric"><span data-i18n="topicsMetric">調査Topic</span><strong id="metric-topics">0</strong><small data-i18n="topicsMetricNote">保護された初期項目を含む</small></article>
+        <article class="metric"><span data-i18n="roadmapMetric">公開ロードマップ</span><strong id="metric-roadmaps">0</strong><small data-i18n="roadmapMetricNote">専用ページで公開中</small></article>
         <article class="metric"><span data-i18n="scenarioMetric">公開シナリオ</span><strong id="metric-scenarios">0</strong><small data-i18n="scenarioMetricNote">人の公開承認を通過した成果</small></article>
         <article class="metric"><span data-i18n="reportMetric">公開報告書</span><strong id="metric-reports">0</strong><small data-i18n="reportMetricNote">来歴付きExport</small></article>
       </div>
       <div class="notice-band">
-        <div><strong id="baseline-id">FSBASE</strong><span id="baseline-detail"></span></div>
+        <div><span data-i18n="catalogAsOf">カタログ基準日</span><strong id="catalog-as-of"></strong><strong id="baseline-id">FSBASE</strong><span id="baseline-detail"></span></div>
         <p id="gap-summary"></p>
       </div>
     </section>
@@ -84,48 +85,21 @@
       <p id="topic-empty" class="empty-state" data-i18n="noTopics" hidden>条件に一致するTopicはありません。</p>
     </section>
 
-    <section id="technology-landscape" class="section muted-band">
+    <section id="roadmaps" class="section muted-band">
       <div class="section-heading">
-        <div><span class="eyebrow" data-i18n="technologyKicker">継続調査対象</span><h2 data-i18n="technologyTitle">技術動向</h2></div>
-        <p id="technology-rule" data-i18n="technologyLead">HPCI整備計画に関係する技術分野を継続的に調査します。</p>
+        <div><span class="eyebrow" data-i18n="roadmapKicker">技術・ソフトウェア・応用の見通し</span><h2 data-i18n="roadmapTitle">ロードマップ</h2></div>
+        <p data-i18n="roadmapLead">分野別のロードマップを一覧から選び、年表、根拠、HPCI整備への示唆を専用ページで確認できます。</p>
       </div>
-      <div id="technology-categories" class="category-grid"></div>
-      <section id="memory-roadmap" class="memory-roadmap" hidden>
-        <header class="memory-roadmap-header">
-          <div>
-            <span class="eyebrow" data-i18n="memoryRoadmapKicker">メモリ技術調査</span>
-            <h3 id="memory-roadmap-title"></h3>
-            <p id="memory-roadmap-summary"></p>
-          </div>
-          <dl class="roadmap-status" aria-label="ロードマップ検証状態">
-            <div><dt data-i18n="asOf">基準日</dt><dd id="memory-roadmap-as-of"></dd></div>
-            <div><dt data-i18n="researchStatus">調査状態</dt><dd id="memory-roadmap-research-status"></dd></div>
-            <div><dt data-i18n="coverageStatus">調査範囲</dt><dd id="memory-roadmap-coverage-status"></dd></div>
-            <div><dt data-i18n="consensusStatus">Consensus</dt><dd id="memory-roadmap-consensus-status"></dd></div>
-          </dl>
-        </header>
-        <div class="roadmap-toolbar">
-          <div class="segmented roadmap-filter" role="group" data-i18n-aria-label="roadmapFilter" aria-label="技術群フィルタ">
-            <button type="button" class="active" data-roadmap-group="all" data-i18n="all">すべて</button>
-            <button type="button" data-roadmap-group="memory-products" data-i18n="memoryProducts">メモリ製品</button>
-            <button type="button" data-roadmap-group="3d-integration" data-i18n="integration3d">3D実装</button>
-            <button type="button" data-roadmap-group="system-enablers" data-i18n="systemEnablers">システム技術</button>
-          </div>
-          <div id="roadmap-legend" class="roadmap-legend" aria-label="成熟度の凡例"></div>
-        </div>
-        <div id="memory-roadmap-timeline" class="roadmap-table-wrap"></div>
-        <p class="roadmap-table-note" data-i18n="roadmapTableNote">項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。</p>
-        <div class="memory-detail-heading">
-          <span class="eyebrow" data-i18n="technologyNotesKicker">技術別ノート</span>
-          <h3 data-i18n="technologyNotesTitle">現状とHPCI整備への示唆</h3>
-        </div>
-        <div id="memory-technology-details" class="memory-technology-details"></div>
-        <aside class="roadmap-caveat">
-          <strong data-i18n="roadmapCaveat">公開時の注意事項</strong>
-          <p id="memory-roadmap-caveat"></p>
-          <ul id="memory-roadmap-gaps"></ul>
-        </aside>
-      </section>
+      <div class="table-wrap roadmap-library-preview">
+        <table>
+          <thead><tr><th data-i18n="roadmapColumn">ロードマップ</th><th data-i18n="domainColumn">分野</th><th data-i18n="horizonColumn">対象期間</th><th data-i18n="researchAsOf">調査基準日</th><th data-i18n="consensusStatus">Consensus</th><th data-i18n="updatedColumn">更新日時</th></tr></thead>
+          <tbody id="roadmap-home-rows"></tbody>
+        </table>
+      </div>
+      <p id="roadmap-home-empty" class="empty-state" data-i18n="noRoadmaps" hidden>公開済みロードマップはまだありません。</p>
+      <div class="section-action">
+        <a href="roadmaps/" data-i18n="openRoadmapLibrary">ロードマップ一覧を開く</a>
+      </div>
     </section>
 
     <section id="scenarios" class="section">

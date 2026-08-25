@@ -9,17 +9,18 @@
 
   const copy = {
     ja: {
-      languageControl: "表示言語", tagline: "公開調査カタログと整備計画成果", publicOnly: "公開情報のみ", asOf: "基準日",
-      navOverview: "概要", navCatalog: "調査カタログ", navTechnology: "技術動向", navScenarios: "整備シナリオ", navReports: "報告書",
+      languageControl: "表示言語", tagline: "公開調査カタログと整備計画成果", publicOnly: "公開情報のみ", siteUpdated: "サイト更新", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "基準日",
+      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "整備シナリオ", navReports: "報告書",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
       overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示し、整備シナリオと報告書は人の公開承認を通過した成果に限定します。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
+      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各Topicには、公開情報から得た知見と根拠資料を直接関連付け、調査元と検証状況を併記します。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "Topic ID、名称",
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
       noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
+      roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分野別のロードマップを一覧から選び、年表、根拠、HPCI整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開済みロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
       scenarioKicker: "ロードマップシナリオ", scenarioTitle: "HPCI整備シナリオ",
       scenarioLead: "Architecture、System Software、Applications、センター影響、技術動向、不確実性を一体で比較します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
@@ -49,17 +50,18 @@
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "公開時期なし", officialScanIncomplete: "一次情報の継続確認が必要"
     },
     en: {
-      languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", asOf: "As of",
-      navOverview: "Overview", navCatalog: "Research catalog", navTechnology: "Technology landscape", navScenarios: "Roadmap scenarios", navReports: "Reports",
+      languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of",
+      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "Roadmap scenarios", navReports: "Reports",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
       overviewLead: "Research summaries derived from public information are shown with their validation status. Roadmap scenarios and reports are limited to explicitly human-approved outputs.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
+      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each Topic directly links public-source findings and supporting sources while identifying the source survey and validation status.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
-      noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA", scenarioKicker: "ROADMAP SCENARIOS",
+      noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
+      roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a domain roadmap and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "ROADMAP SCENARIOS",
       scenarioTitle: "HPCI infrastructure scenarios",
       scenarioLead: "Compare architecture, system software, applications, center impacts, technology trends, and uncertainties as a coherent whole.",
       noScenarioTitle: "No scenarios have been published",
@@ -95,6 +97,10 @@
     ja: {architecture: "アーキテクチャ", "system-software": "システムソフトウェア", applications: "アプリケーション", "cross-cutting": "分野横断"},
     en: {architecture: "Architecture", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
   };
+  const roadmapDomainLabels = {
+    ja: {hardware: "ハードウェア", "system-software": "システムソフトウェア", applications: "アプリケーション", "cross-cutting": "分野横断"},
+    en: {hardware: "Hardware", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
+  };
   const statusKeys = {"not-started": "statusNotStarted", partial: "statusPartial", reviewed: "statusReviewed", retired: "statusRetired"};
   const cadenceKeys = {weekly: "cadenceWeekly", monthly: "cadenceMonthly", quarterly: "cadenceQuarterly", annual: "cadenceAnnual", "event-driven": "cadenceEvent"};
   const originKeys = {"protected-initial": "originInitial", "human-directive": "originHuman", "ai-consensus": "originAi"};
@@ -126,6 +132,20 @@
   }
 
   function tr(key) { return copy[language][key] || key; }
+  function formatJst(value) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(new Date(value));
+    const item = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return `${item.year}-${item.month}-${item.day} ${item.hour}:${item.minute}:${item.second} JST`;
+  }
   function setText(id, value) {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
@@ -144,15 +164,54 @@
   }
 
   function renderSummary() {
-    setText("as-of", `${tr("asOf")} ${data.as_of}`);
+    const siteUpdated = document.getElementById("site-updated");
+    siteUpdated.href = data.site.commit_url;
+    siteUpdated.textContent = `${tr("siteUpdated")} ${formatJst(data.site.updated_at)} · ${data.site.commit_sha.slice(0, 7)}`;
     setText("metric-topics", data.baseline.topic_count);
+    setText("metric-roadmaps", data.roadmaps.length);
     setText("metric-scenarios", data.scenarios.length);
     setText("metric-reports", data.reports.length);
+    setText("catalog-as-of", data.catalog_as_of);
     setText("baseline-id", data.baseline.baseline_id);
     setText("baseline-detail", `${tr("revision")} ${data.baseline.catalog_revision} / ${tr("officialSources")} ${data.baseline.official_source_count}`);
     setText("gap-summary", `${tr("openGaps")}: ${data.baseline.open_gap_ids.join(", ") || tr("none")}`);
-    setText("technology-rule", tr("technologyLead"));
     setText("license-status", `License: ${data.publication.license}`);
+  }
+
+  function renderRoadmapHome() {
+    const root = document.getElementById("roadmap-home-rows");
+    if (!root) return;
+    root.replaceChildren();
+    data.roadmaps.slice(0, 5).forEach((roadmap) => {
+      const row = document.createElement("tr");
+      const titleCell = document.createElement("td");
+      const link = document.createElement("a");
+      link.className = "roadmap-title-link";
+      link.href = roadmap.path;
+      link.textContent = language === "ja" ? roadmap.title_ja : roadmap.title_en;
+      const count = document.createElement("span");
+      count.className = "roadmap-row-note";
+      count.textContent = `${roadmap.technology_count} ${language === "ja" ? "技術" : "technologies"} / ${roadmap.milestone_count} ${language === "ja" ? "項目" : "milestones"}`;
+      titleCell.append(link, count);
+      const domain = document.createElement("td");
+      domain.textContent = roadmapDomainLabels[language][roadmap.domain] || roadmap.domain;
+      const horizon = document.createElement("td");
+      horizon.textContent = `${roadmap.horizon.start_year}-${roadmap.horizon.end_year}`;
+      const asOf = document.createElement("td");
+      asOf.textContent = roadmap.as_of;
+      const consensus = document.createElement("td");
+      consensus.textContent = statusLabel(roadmap.consensus_status);
+      const updated = document.createElement("td");
+      const commit = document.createElement("a");
+      commit.href = roadmap.source_commit_url;
+      commit.target = "_blank";
+      commit.rel = "noopener noreferrer";
+      commit.textContent = formatJst(roadmap.updated_at);
+      updated.appendChild(commit);
+      row.append(titleCell, domain, horizon, asOf, consensus, updated);
+      root.appendChild(row);
+    });
+    document.getElementById("roadmap-home-empty").hidden = data.roadmaps.length !== 0;
   }
 
   function renderTechnologyCategories() {
@@ -734,8 +793,7 @@
     applyStaticCopy();
     renderSummary();
     renderTopics();
-    renderTechnologyCategories();
-    renderMemoryRoadmap();
+    renderRoadmapHome();
     renderScenarios();
     renderReports();
     renderTopicDetail();

@@ -141,7 +141,7 @@ Build the public GitHub Pages view locally:
 python3 tools/build_pages_site.py --output _site
 ```
 
-The public site supports Japanese and English and includes a `Technology landscape` view for worldwide research coverage, with technologies developed in Japan tracked as a priority within that scope. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Scenario and report publication additionally requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
+The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index and dedicated detail pages. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Scenario and report publication additionally requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
 
 Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 

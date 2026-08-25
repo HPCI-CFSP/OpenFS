@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OpenFS公開ロードマップの詳細、年表、根拠、HPCI整備への示唆">
+  <title>Roadmap | OpenFS</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{{ROOT_PREFIX}}styles.css">
+</head>
+<body data-page="roadmap-detail" data-root-prefix="{{ROOT_PREFIX}}" data-roadmap-id="{{ROADMAP_ID}}">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="identity">
+        <span class="organization">HPCI-CFSP</span>
+        <h1><a href="{{ROOT_PREFIX}}">OpenFS</a></h1>
+        <p data-i18n="tagline">公開調査カタログと整備計画成果</p>
+      </div>
+      <div class="header-controls">
+        <div class="header-status" aria-label="公開状態">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span data-i18n="publicOnly">公開情報のみ</span>
+          <a id="site-updated" class="site-updated" href="https://github.com/HPCI-CFSP/OpenFS" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+        <div class="language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+          <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+          <button type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="サイト内ナビゲーション">
+      <a href="{{ROOT_PREFIX}}#overview" data-i18n="navOverview">概要</a>
+      <a href="{{ROOT_PREFIX}}#catalog" data-i18n="navCatalog">調査カタログ</a>
+      <a href="{{ROOT_PREFIX}}roadmaps/" class="active" data-i18n="navRoadmaps">ロードマップ</a>
+      <a href="{{ROOT_PREFIX}}#scenarios" data-i18n="navScenarios">整備シナリオ</a>
+      <a href="{{ROOT_PREFIX}}#reports" data-i18n="navReports">報告書</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section roadmap-detail-page">
+      <nav class="breadcrumb" aria-label="パンくずリスト"><a href="{{ROOT_PREFIX}}">OpenFS</a><span>/</span><a href="{{ROOT_PREFIX}}roadmaps/" data-i18n="navRoadmaps">ロードマップ</a><span>/</span><span id="roadmap-breadcrumb-title"></span></nav>
+      <section id="memory-roadmap" class="memory-roadmap">
+        <header class="memory-roadmap-header">
+          <div>
+            <span class="eyebrow" data-i18n="memoryRoadmapKicker">メモリ技術調査</span>
+            <h2 id="memory-roadmap-title"></h2>
+            <p id="memory-roadmap-summary"></p>
+          </div>
+          <dl class="roadmap-status" aria-label="ロードマップ検証状態">
+            <div><dt data-i18n="researchAsOf">調査基準日</dt><dd id="memory-roadmap-as-of"></dd></div>
+            <div><dt data-i18n="horizonColumn">対象期間</dt><dd id="memory-roadmap-horizon"></dd></div>
+            <div><dt data-i18n="researchStatus">調査状態</dt><dd id="memory-roadmap-research-status"></dd></div>
+            <div><dt data-i18n="coverageStatus">調査範囲</dt><dd id="memory-roadmap-coverage-status"></dd></div>
+            <div><dt data-i18n="consensusStatus">Consensus</dt><dd id="memory-roadmap-consensus-status"></dd></div>
+            <div><dt data-i18n="updatedColumn">更新日時</dt><dd><a id="memory-roadmap-updated" target="_blank" rel="noopener noreferrer"></a></dd></div>
+          </dl>
+        </header>
+        <div class="roadmap-toolbar">
+          <div class="segmented roadmap-filter" role="group" data-i18n-aria-label="roadmapFilter" aria-label="技術群フィルタ">
+            <button type="button" class="active" data-roadmap-group="all" data-i18n="all">すべて</button>
+            <button type="button" data-roadmap-group="memory-products" data-i18n="memoryProducts">メモリ製品</button>
+            <button type="button" data-roadmap-group="3d-integration" data-i18n="integration3d">3D実装</button>
+            <button type="button" data-roadmap-group="system-enablers" data-i18n="systemEnablers">システム技術</button>
+          </div>
+          <div id="roadmap-legend" class="roadmap-legend" aria-label="成熟度の凡例"></div>
+        </div>
+        <div id="memory-roadmap-timeline" class="roadmap-table-wrap"></div>
+        <p class="roadmap-table-note" data-i18n="roadmapTableNote">項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。</p>
+        <div class="memory-detail-heading">
+          <span class="eyebrow" data-i18n="technologyNotesKicker">技術別ノート</span>
+          <h3 data-i18n="technologyNotesTitle">現状とHPCI整備への示唆</h3>
+        </div>
+        <div id="memory-technology-details" class="memory-technology-details"></div>
+        <aside class="roadmap-caveat">
+          <strong data-i18n="roadmapCaveat">公開時の注意事項</strong>
+          <p id="memory-roadmap-caveat"></p>
+          <ul id="memory-roadmap-gaps"></ul>
+        </aside>
+        <section class="roadmap-revision">
+          <span class="eyebrow" data-i18n="revisionKicker">来歴</span>
+          <h3 data-i18n="revisionTitle">更新履歴と再現情報</h3>
+          <dl class="revision-meta">
+            <div><dt data-i18n="artifactId">Artifact ID</dt><dd id="roadmap-artifact-id"></dd></div>
+            <div><dt data-i18n="sourceCommit">ソースコミット</dt><dd><a id="roadmap-source-commit" target="_blank" rel="noopener noreferrer"></a></dd></div>
+            <div><dt data-i18n="updatedColumn">更新日時</dt><dd id="roadmap-revision-updated"></dd></div>
+          </dl>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>OpenFS</strong><span data-i18n="footerDescription">HPCI-CFSP 公開調査ビュー</span></div>
+    <div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a><span id="license-status"></span></div>
+  </footer>
+
+  <dialog id="roadmap-dialog" class="topic-dialog roadmap-dialog" aria-labelledby="roadmap-dialog-title">
+    <div class="topic-dialog-shell">
+      <header class="topic-dialog-header">
+        <div><span id="roadmap-dialog-id" class="eyebrow"></span><h2 id="roadmap-dialog-title"></h2><p id="roadmap-dialog-meta"></p></div>
+        <div class="dialog-actions">
+          <div class="language-switcher dialog-language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+            <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+            <button type="button" data-language="en" aria-pressed="false">English</button>
+          </div>
+          <button id="roadmap-dialog-close" class="dialog-close" type="button" data-i18n-aria-label="closeDialog" aria-label="詳細を閉じる">&times;</button>
+        </div>
+      </header>
+      <div id="roadmap-dialog-content" class="topic-dialog-content"></div>
+    </div>
+  </dialog>
+  <script src="{{ROOT_PREFIX}}data/openfs-public.js"></script>
+  <script src="{{ROOT_PREFIX}}roadmaps.js"></script>
+</body>
+</html>

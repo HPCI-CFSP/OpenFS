@@ -139,7 +139,7 @@ python3 tools/generate_scenario_views.py \
 python3 tools/build_pages_site.py --output _site
 ```
 
-公開Siteは日本語と英語に対応し、世界の技術を対象とする`Technology landscape` Viewを備え、その中で日本発技術を優先的に追跡します。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。ScenarioとReportの公開には、一致する人の`publication-approval` Directiveも必要です。詳細は`docs/publication/github-pages.md`を参照してください。
+公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧と専用詳細Pageに分けて表示します。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。ScenarioとReportの公開には、一致する人の`publication-approval` Directiveも必要です。詳細は`docs/publication/github-pages.md`を参照してください。
 
 調査自動化はまだ有効化されていません。Provider Account、GitHub設定、3 RunのPilot手順は`docs/operations/automation-setup.md`に記載されています。API Keyを設定するだけではLoopは起動しません。
 

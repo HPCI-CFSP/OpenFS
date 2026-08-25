@@ -4,18 +4,93 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
+import os
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_URL = "https://github.com/HPCI-CFSP/OpenFS"
 
 
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as stream:
         return json.load(stream)
+
+
+def git_output(root: Path, arguments: list[str]) -> str:
+    result = subprocess.run(
+        ["git", *arguments],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
+def source_commit_metadata(root: Path, relative_path: str | None = None) -> dict[str, str]:
+    if relative_path:
+        value = git_output(
+            root,
+            ["log", "-1", "--format=%H%x00%cI", "--", relative_path],
+        )
+        if not value:
+            raise ValueError(f"no source commit found for {relative_path}")
+        commit_sha, updated_at = value.split("\x00", 1)
+    else:
+        commit_sha = os.environ.get("OPENFS_SOURCE_COMMIT") or os.environ.get(
+            "GITHUB_SHA"
+        )
+        if not commit_sha:
+            commit_sha = git_output(root, ["rev-parse", "HEAD"])
+        updated_at = git_output(root, ["show", "-s", "--format=%cI", commit_sha])
+    if len(commit_sha) != 40 or any(
+        character not in "0123456789abcdef" for character in commit_sha
+    ):
+        raise ValueError(f"invalid source commit SHA: {commit_sha}")
+    return {
+        "commit_sha": commit_sha,
+        "updated_at": updated_at,
+        "commit_url": f"{REPOSITORY_URL}/commit/{commit_sha}",
+    }
+
+
+def roadmap_index_entry(roadmap: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "roadmap_id": roadmap["export_id"],
+        "domain": roadmap["domain"],
+        "slug": roadmap["slug"],
+        "path": f"roadmaps/{roadmap['slug']}/",
+        "renderer": "memory-technology",
+        "title_ja": roadmap["title_ja"],
+        "title_en": roadmap["title_en"],
+        "summary_ja": roadmap["summary_ja"],
+        "summary_en": roadmap["summary_en"],
+        "horizon": roadmap["horizon"],
+        "as_of": roadmap["as_of"],
+        "updated_at": roadmap["updated_at"],
+        "source_commit": roadmap["source_commit"],
+        "source_commit_url": roadmap["source_commit_url"],
+        "research_status": roadmap["research_status"],
+        "coverage_status": roadmap["coverage_status"],
+        "consensus_status": roadmap["consensus_status"],
+        "technology_count": len(roadmap["technologies"]),
+        "milestone_count": sum(
+            len(lane["milestones"]) for lane in roadmap["lanes"]
+        ),
+    }
+
+
+def render_template(path: Path, replacements: dict[str, str]) -> str:
+    value = path.read_text(encoding="utf-8")
+    for key, replacement in replacements.items():
+        value = value.replace(f"{{{{{key}}}}}", replacement)
+    return value
 
 
 def public_projection(
@@ -498,13 +573,27 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     scenarios = collect_scenarios(root, policy)
     reports = collect_reports(root, policy)
     memory_roadmap = collect_memory_roadmap(root, policy)
+    memory_roadmap_path = policy["included_public_memory_roadmap"]
+    if memory_roadmap:
+        roadmap_metadata = source_commit_metadata(root, memory_roadmap_path)
+        memory_roadmap.update(
+            {
+                "updated_at": roadmap_metadata["updated_at"],
+                "source_commit": roadmap_metadata["commit_sha"],
+                "source_commit_url": roadmap_metadata["commit_url"],
+            }
+        )
+    roadmaps = [roadmap_index_entry(memory_roadmap)] if memory_roadmap else []
+    roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
+    site_metadata = source_commit_metadata(root)
     official_sources = [
         source for source in baseline["source_corpus"]
         if source.get("availability") == "registered-public-url"
     ]
     return {
         "schema_version": "0.1.0",
-        "as_of": baseline["derived_at"],
+        "catalog_as_of": baseline["derived_at"],
+        "site": site_metadata,
         "baseline": {
             "baseline_id": baseline["baseline_id"],
             "catalog_revision": baseline["catalog_revision"],
@@ -530,6 +619,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "memory_roadmap": memory_roadmap,
+        "roadmaps": roadmaps,
         "scenarios": scenarios,
         "reports": reports,
         "publication": {
@@ -537,7 +627,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "information_plane": policy["information_plane"],
             "license_status": policy["license_status"],
             "license": policy["license"],
-            "repository_url": "https://github.com/HPCI-CFSP/OpenFS",
+            "repository_url": REPOSITORY_URL,
         },
     }
 
@@ -548,7 +638,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("index.html", "styles.css", "app.js"):
+    for filename in ("index.html", "styles.css", "app.js", "roadmaps.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
@@ -557,6 +647,31 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     (data_dir / "openfs-public.js").write_text(
         f"window.OPENFS_PUBLIC_DATA={serialized};\n", encoding="utf-8"
     )
+    roadmap_index = output / "roadmaps" / "index.html"
+    roadmap_index.parent.mkdir(parents=True)
+    roadmap_index.write_text(
+        render_template(
+            source / "roadmaps-index.html",
+            {"ROOT_PREFIX": "../"},
+        ),
+        encoding="utf-8",
+    )
+    detail_template = source / "roadmap-detail.html"
+    for roadmap in public_data["roadmaps"]:
+        detail = output / "roadmaps" / roadmap["slug"] / "index.html"
+        detail.parent.mkdir(parents=True)
+        depth = len(detail.parent.relative_to(output).parts)
+        root_prefix = "../" * depth
+        detail.write_text(
+            render_template(
+                detail_template,
+                {
+                    "ROOT_PREFIX": root_prefix,
+                    "ROADMAP_ID": html.escape(roadmap["roadmap_id"], quote=True),
+                },
+            ),
+            encoding="utf-8",
+        )
     (output / ".nojekyll").write_text("", encoding="utf-8")
     return public_data
 
@@ -570,7 +685,7 @@ def main() -> int:
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "
         f"receipts={len(result['consensus_receipts'])}, "
-        f"memory_roadmap={'yes' if result['memory_roadmap'] else 'no'}, "
+        f"roadmaps={len(result['roadmaps'])}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
     return 0
