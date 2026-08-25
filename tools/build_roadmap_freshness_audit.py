@@ -26,6 +26,14 @@ def quarter_number(value: str | None) -> int | None:
     return int(value[1]) if value else None
 
 
+def publication_period(source: dict[str, Any]) -> tuple[int, int] | None:
+    published_at = source.get("published_at")
+    if not published_at:
+        return None
+    published = date.fromisoformat(published_at)
+    return published.year, QUARTER[published.month]
+
+
 def attention(
     roadmap_id: str,
     object_type: str,
@@ -76,6 +84,7 @@ def build(
     for roadmap in roadmaps:
         roadmap_items: list[dict[str, Any]] = []
         milestones = [milestone for lane in roadmap["lanes"] for milestone in lane["milestones"]]
+        source_registry = {source["source_id"]: source for source in roadmap["sources"]}
         total_milestones += len(milestones)
         total_sources += len(roadmap["sources"])
         key_source_ids = {
@@ -127,6 +136,23 @@ def build(
                         "公開を停止し、日付またはtiming_basisを一次情報に照らして修正する。",
                         "Block publication and correct the date or timing_basis against the primary source.",
                     ))
+                if milestone["timing_precision"] == "quarter" and quarter is not None:
+                    publication_periods = [
+                        period
+                        for source_id in milestone["source_ids"]
+                        if (period := publication_period(source_registry[source_id])) is not None
+                    ]
+                    if publication_periods and all(
+                        period > (year, quarter) for period in publication_periods
+                    ):
+                        roadmap_items.append(attention(
+                            roadmap["roadmap_id"], "milestone", milestone["milestone_id"], "low",
+                            "retrospective-source-timing-check",
+                            "引用一次資料の公開四半期が、記録された実績四半期より後である。遡及報告は正当な場合があるが、出来事の時期を示す本文の確認が必要。",
+                            "The cited primary sources were published after the recorded event quarter. Retrospective reporting may be valid, but the text must explicitly entail the event timing.",
+                            "独立Reviewで一次資料本文を確認し、公開日を出来事の日付として代用しない。",
+                            "Verify the primary-source text during independent review; do not substitute publication date for event date.",
+                        ))
         for source in roadmap["sources"]:
             if "published_at" not in source:
                 roadmap_items.append(attention(
@@ -175,10 +201,10 @@ def build(
         "audit_id": f"RFA-{as_of.strftime('%Y%m%d')}-001",
         "as_of": as_of.isoformat(),
         "generated_at": generated,
-        "method_ja": "6ロードマップを機械走査し、未確定時期、期限経過目標、未来日付の実績、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
-        "method_en": "Mechanically scans six roadmaps and queues undated milestones, passed targets, future-dated observed events, unrecorded source dates, and reachability warnings for follow-up.",
-        "caveat_ja": "鮮度注意は誤りの判定ではありません。古い一次資料が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
-        "caveat_en": "Freshness attention is not a finding of error. Older primary sources may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
+        "method_ja": "6ロードマップを機械走査し、未確定時期、期限経過目標、未来日付の実績、遡及報告、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
+        "method_en": "Mechanically scans six roadmaps and queues undated milestones, passed targets, future-dated observed events, retrospective reports, unrecorded source dates, and reachability warnings for follow-up.",
+        "caveat_ja": "鮮度注意は誤りの判定ではありません。古い一次資料や遡及報告が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
+        "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {
             "roadmap_count": len(roadmaps),
             "milestone_count": total_milestones,
@@ -191,6 +217,7 @@ def build(
             "no_public_date_milestones": reasons["no-public-date"],
             "past_target_rechecks": reasons["target-date-passed"],
             "future_observed_conflicts": reasons["future-observed-conflict"],
+            "retrospective_timing_checks": reasons["retrospective-source-timing-check"],
             "source_date_unknown": reasons["source-publication-date-unrecorded"],
             "source_attention": sum(count for reason, count in reasons.items() if reason.startswith("source-") and reason != "source-publication-date-unrecorded"),
         },

@@ -31,6 +31,7 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             audit["summary"]["source_count"],
         )
         self.assertEqual(0, audit["summary"]["future_observed_conflicts"])
+        self.assertEqual(1, audit["summary"]["retrospective_timing_checks"])
         self.assertEqual(
             len(audit["attention_items"]),
             len({item["attention_id"] for item in audit["attention_items"]}),
@@ -73,6 +74,15 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
                                 "comparison_priority": "key",
                                 "source_ids": ["SRC-TEST001"],
                             },
+                            {
+                                "milestone_id": "MS-TEST-RETROSPECTIVE",
+                                "year": 2025,
+                                "quarter": "Q4",
+                                "timing_precision": "quarter",
+                                "timing_basis": "observed",
+                                "comparison_priority": "key",
+                                "source_ids": ["SRC-TEST001"],
+                            },
                         ]
                     }
                 ],
@@ -88,8 +98,10 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             by_reason = {item["reason"]: item for item in result["attention_items"]}
             self.assertEqual("high", by_reason["target-date-passed"]["severity"])
             self.assertEqual("critical", by_reason["future-observed-conflict"]["severity"])
+            self.assertEqual("low", by_reason["retrospective-source-timing-check"]["severity"])
             self.assertEqual(1, result["summary"]["past_target_rechecks"])
             self.assertEqual(1, result["summary"]["future_observed_conflicts"])
+            self.assertEqual(1, result["summary"]["retrospective_timing_checks"])
 
 
 if __name__ == "__main__":
