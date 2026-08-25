@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/portability-capability-matrix.schema.json",
+  "title": "OpenFS Portability Capability Matrix",
+  "type": "object",
+  "required": ["schema_version", "matrix_id", "status", "as_of", "roadmap_gap_refs", "required_vendors", "required_features", "test_environments", "implementations", "source_refs", "acceptance", "consensus_status"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "matrix_id": {"type": "string", "pattern": "^PCM-[A-Z0-9-]+$"},
+    "status": {"const": "candidate"},
+    "as_of": {"type": "string", "format": "date"},
+    "roadmap_gap_refs": {"type": "array", "contains": {"const": "GAP-PORT-001"}, "minContains": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}},
+    "required_vendors": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"enum": ["gcc", "llvm", "fujitsu", "intel", "nvidia", "amd"]}},
+    "required_features": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["feature_id", "name", "standard", "specification_version"],
+        "properties": {
+          "feature_id": {"type": "string", "pattern": "^FEAT-[A-Z0-9-]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "standard": {"enum": ["openmp", "sycl"]},
+          "specification_version": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "test_environments": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["environment_id", "institution_id", "origin_group_id", "system", "operating_system", "harness_commit"],
+        "properties": {
+          "environment_id": {"type": "string", "pattern": "^ENV-[A-Z0-9-]+$"},
+          "institution_id": {"type": "string", "minLength": 1},
+          "origin_group_id": {"type": "string", "minLength": 1},
+          "system": {"type": "string", "minLength": 1},
+          "operating_system": {"type": "string", "minLength": 1},
+          "harness_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "implementations": {
+      "type": "array", "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["implementation_id", "vendor", "compiler_name", "compiler_version", "backend_targets", "feature_results"],
+        "properties": {
+          "implementation_id": {"type": "string", "pattern": "^IMPL-[A-Z0-9-]+$"},
+          "vendor": {"enum": ["gcc", "llvm", "fujitsu", "intel", "nvidia", "amd"]},
+          "compiler_name": {"type": "string", "minLength": 1},
+          "compiler_version": {"type": "string", "minLength": 1},
+          "backend_targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "feature_results": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["feature_id", "support_status", "verification_basis", "evidence_refs", "environment_ids", "test_artifact_ref"],
+              "properties": {
+                "feature_id": {"type": "string", "pattern": "^FEAT-[A-Z0-9-]+$"},
+                "support_status": {"enum": ["supported", "partial", "unsupported", "unknown"]},
+                "verification_basis": {"enum": ["vendor-documentation", "compile-test", "conformance-test", "application-test"]},
+                "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+                "environment_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^ENV-[A-Z0-9-]+$"}},
+                "test_artifact_ref": {"type": ["string", "null"]}
+              },
+              "allOf": [
+                {"if": {"properties": {"verification_basis": {"const": "vendor-documentation"}}}, "then": {"properties": {"environment_ids": {"maxItems": 0}, "test_artifact_ref": {"type": "null"}}}},
+                {"if": {"properties": {"verification_basis": {"enum": ["compile-test", "conformance-test", "application-test"]}}}, "then": {"properties": {"environment_ids": {"minItems": 1}, "test_artifact_ref": {"type": "string", "minLength": 1}}}}
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "source_refs": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "acceptance": {
+      "type": "object",
+      "required": ["minimum_vendors", "minimum_tested_vendors", "minimum_test_environments", "minimum_origin_groups", "require_complete_feature_grid", "require_no_unknown"],
+      "properties": {
+        "minimum_vendors": {"const": 6},
+        "minimum_tested_vendors": {"const": 6},
+        "minimum_test_environments": {"type": "integer", "minimum": 2},
+        "minimum_origin_groups": {"type": "integer", "minimum": 2},
+        "require_complete_feature_grid": {"const": true},
+        "require_no_unknown": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "consensus_status": {"const": "incomplete"}
+  },
+  "additionalProperties": false
+}

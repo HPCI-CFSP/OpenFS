@@ -136,6 +136,13 @@ When a task contains multiple investigations, organize them into separate task, 
   diversity, rounding, small-cell, complementary-suppression, and publication
   rules. A passing summary remains provisional until independent Consensus and
   an artifact-specific human publication Directive pass.
+- Store OpenMP/SYCL implementation comparisons under
+  `proposals/portability-capability-matrices/` using
+  `schemas/portability-capability-matrix.schema.json`. Compare the same feature
+  grid across GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD; distinguish vendor
+  documentation from executable tests; and run
+  `tools/check_portability_capability_matrix.py`. Unsupported and partial results
+  remain in the matrix. Passing only makes the matrix a Consensus candidate.
 - Keep the published three-scenario portfolio structurally comparable with
   `tools/check_scenario_portfolio.py`. Every scenario must expose the same eleven
   unscored criteria and five option domains, and every currently open P0 Gap must
