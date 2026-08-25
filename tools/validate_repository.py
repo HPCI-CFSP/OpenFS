@@ -525,6 +525,24 @@ def validate_runtime_configuration(root: Path) -> list[str]:
         group = agent.get("agent_independence_group")
         if agent.get("enabled") and "unconfigured" in identity:
             errors.append(f"enabled agent has unconfigured identity: {agent.get('agent_id')}")
+        if agent.get("enabled") and agent.get("role") in {"validator", "critic"}:
+            review_provenance = {
+                "review_origin_group": agent.get("review_origin_group"),
+                "harness_id": agent.get("harness_id"),
+                "harness_repository_url": agent.get("harness_repository_url"),
+                "harness_commit": agent.get("harness_commit"),
+            }
+            missing = sorted(key for key, value in review_provenance.items() if not value)
+            if missing:
+                errors.append(
+                    f"enabled reviewer lacks pinned review provenance: {agent.get('agent_id')} ({', '.join(missing)})"
+                )
+            elif not re.fullmatch(r"HAR-[A-Z0-9-]+", review_provenance["harness_id"]):
+                errors.append(f"enabled reviewer has invalid harness ID: {agent.get('agent_id')}")
+            elif not re.fullmatch(r"https://[^\s]+", review_provenance["harness_repository_url"]):
+                errors.append(f"enabled reviewer has invalid harness repository URL: {agent.get('agent_id')}")
+            elif not re.fullmatch(r"[0-9a-f]{40}", review_provenance["harness_commit"]):
+                errors.append(f"enabled reviewer has invalid harness commit: {agent.get('agent_id')}")
         if "unconfigured" in identity or not all(identity) or not group:
             continue
         previous = configured_identities.setdefault(identity, group)

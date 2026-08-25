@@ -37,6 +37,10 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             "model_family": f"Model-{index}",
             "prompt_profile": "independent-roadmap-review-v1",
             "agent_independence_group": f"independent-group-{index}",
+            "review_origin_group": f"origin-reviewer-{index}",
+            "harness_id": f"HAR-REVIEWER-{index}",
+            "harness_repository_url": "https://github.com/example/review-harness",
+            "harness_commit": str(index) * 40,
             "network_access": "public-web",
             "data_clearance": "public",
             "write_scope": ["assessments", "runs"],
@@ -55,10 +59,10 @@ class ConsensusReviewPackageTests(unittest.TestCase):
                 "model_family": agent["model_family"],
                 "prompt_profile": agent["prompt_profile"],
                 "independence_group": agent["agent_independence_group"],
-                "origin_group": f"origin-{agent['agent_id']}",
-                "harness_id": f"HAR-REVIEWER-{agent['agent_id'][-1]}",
-                "harness_repository_url": "https://github.com/example/review-harness",
-                "harness_commit": agent["agent_id"][-1] * 40,
+                "origin_group": agent["review_origin_group"],
+                "harness_id": agent["harness_id"],
+                "harness_repository_url": agent["harness_repository_url"],
+                "harness_commit": agent["harness_commit"],
             },
             "registry_snapshot_digest": registry_digest,
             "overall_verdict": verdict,
@@ -256,6 +260,35 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual("incomplete", result["status"])
         self.assertIn("minimum_model_families", result["unmet_requirements"])
         self.assertIn("minimum_providers", result["unmet_requirements"])
+
+    def test_self_declared_origin_or_harness_cannot_spoof_registry(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["reviewer"]["origin_group"] = "forged-origin"
+        review["reviewer"]["harness_commit"] = "f" * 40
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("reviewer_registry_provenance_mismatch" in item for item in result["integrity_errors"])
+        )
+
+    def test_reviewer_without_registry_pinned_harness_is_ineligible(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        del agent["harness_commit"]
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("reviewer_registry_provenance_unconfigured" in item for item in result["integrity_errors"])
+        )
 
     def test_overall_support_cannot_hide_a_refuted_unit(self):
         registry_digest = next(

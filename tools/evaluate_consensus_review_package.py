@@ -140,6 +140,24 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
             }
             if observed_identity != expected_identity:
                 review_errors.append(f"reviewer_registry_identity_mismatch:{review_id}:{agent_id}")
+            expected_provenance = {
+                "origin_group": registered.get("review_origin_group"),
+                "harness_id": registered.get("harness_id"),
+                "harness_repository_url": registered.get("harness_repository_url"),
+                "harness_commit": registered.get("harness_commit"),
+            }
+            if not all(expected_provenance.values()):
+                review_errors.append(
+                    f"reviewer_registry_provenance_unconfigured:{review_id}:{agent_id}"
+                )
+            else:
+                observed_provenance = {
+                    key: reviewer_identity.get(key) for key in expected_provenance
+                }
+                if observed_provenance != expected_provenance:
+                    review_errors.append(
+                        f"reviewer_registry_provenance_mismatch:{review_id}:{agent_id}"
+                    )
             if registered.get("network_access") != "public-web":
                 review_errors.append(f"reviewer_lacks_public_web:{review_id}:{agent_id}")
             if registered.get("data_clearance") != "public":

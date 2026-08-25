@@ -19,8 +19,12 @@ allowing the authoring model to certify its own work.
    to a stable review target rather than trying to refer to its own commit.
 4. Before building the package, register and enable each intended validator or
    critic in `config/agent-registry.json`. Their provider, model family, prompt
-   profile, role, independence group, public-Web access, public clearance, and
-   `assessments` write scope are checked against the pinned registry.
+   profile, role, independence group, review-origin group, Harness ID, Harness
+   repository and commit, public-Web access, public clearance, and `assessments`
+   write scope are checked against the pinned registry. Set
+   `review_origin_group`, `harness_id`, `harness_repository_url`, and
+   `harness_commit` before enabling a reviewer; review-file self-declarations do
+   not establish independence.
 5. Assign at least four blind reviews that can satisfy the current
    `high_impact_recommendation` rule. The author group and same-conversation forks
    are ineligible as independent votes. The supporting set must span at least
@@ -50,7 +54,7 @@ allowing the authoring model to certify its own work.
    `assessments/CRP-P0-ROADMAPS-V02/<review-id>.json`, replace all
    placeholders, remove `_template_notice`, and record the exact model, provider,
    prompt profile, independence/origin groups, harness repository, and harness
-   commit.
+   commit exactly as pinned in the Agent Registry.
 6. Use `uncertain` when evidence is insufficient. Do not infer dates or convert a
    Coverage Gap into a negative fact.
 
@@ -72,5 +76,6 @@ human Directive is still required before an HPCI recommendation can be accepted.
 ## Current limitation
 
 The repository's agent registry does not yet enable enough genuinely independent
-validator and critic groups. The package is therefore a ready handoff mechanism,
-not evidence that Consensus has already been achieved.
+validator and critic groups with pinned Harness provenance. The package is
+therefore a ready handoff mechanism, not evidence that Consensus has already been
+achieved.

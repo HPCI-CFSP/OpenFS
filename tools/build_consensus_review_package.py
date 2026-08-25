@@ -434,7 +434,8 @@ milestone records, {summary['source_count']} registered sources,
 5. Record provider, model family, prompt profile, independence/origin groups,
    harness repository, and harness commit. A fork of the author conversation is
    not an independent vote. The agent must be enabled in the commit-pinned Agent
-   Registry, and `registry_snapshot_digest` is the SHA-256 of its exact Git object.
+   Registry, its origin and Harness provenance must exactly match that Registry,
+   and `registry_snapshot_digest` is the SHA-256 of its exact Git object.
 6. Run schema and repository validation. Consensus remains incomplete until the
    configured policy passes and a human makes the required high-impact decision.
    An overall `support` vote is eligible only when every unit supports, every
