@@ -19,7 +19,11 @@ OpenFS must produce several feasible HPCI development plans, not one model-autho
 4. Have independent agents challenge workload coverage, center feasibility, regional, vendor, or model bias, missing Japan-origin technologies, migration cost, and correlated evidence.
 5. Run sensitivity analysis only after a human-approved weight set exists. Preserve conditions under which an option becomes preferable or infeasible.
 6. Map every open P0 Coverage Gap to exactly one decision-evidence contract. Each contract names the Schema and Validator for the required evidence and has `candidate-only` effect.
-7. Run `python3 tools/check_scenario_portfolio.py`. Success proves structural comparability and complete P0 assignment only; it does not establish claim validity or close a Gap.
+7. Run `python3 tools/check_scenario_portfolio.py`. Each scenario pair must differ
+   in at least three of five candidate domains and three of five fallback domains,
+   in addition to sharing the same comparison contract. Success proves structural
+   comparability, substantive option separation, and complete P0 assignment only;
+   it does not establish claim validity or close a Gap.
 8. Promote candidate scenarios only through the Recommendation Gate and a human-approved Directive.
 
 ## Deterministic view generation

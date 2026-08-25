@@ -145,8 +145,10 @@ When a task contains multiple investigations, organize them into separate task, 
   remain in the matrix. Passing only makes the matrix a Consensus candidate.
 - Keep the published three-scenario portfolio structurally comparable with
   `tools/check_scenario_portfolio.py`. Every scenario must expose the same eleven
-  unscored criteria and five option domains, and every currently open P0 Gap must
-  appear exactly once in the shared decision-evidence contracts. A passing check
+  unscored criteria and five option domains. Every pair must also meet the
+  candidate and fallback difference thresholds in `config/scenario-policy.json`,
+  and every currently open P0 Gap must appear exactly once in the shared
+  decision-evidence contracts. A passing check
   only makes the portfolio eligible for independent Consensus; it does not close
   a Gap, validate a claim, rank a scenario, or authorize adoption.
 - Keep cross-roadmap dependencies in

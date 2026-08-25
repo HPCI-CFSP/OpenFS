@@ -24,9 +24,10 @@ class ScenarioPortfolioTests(unittest.TestCase):
             load_json(path)
             for path in sorted((ROOT / "knowledge" / "public" / "roadmaps").glob("*.json"))
         ]
+        self.policy = load_json(ROOT / "config" / "scenario-policy.json")
 
     def evaluate(self, scenario_set=None):
-        return evaluate(scenario_set or self.scenario_set, self.roadmaps, ROOT)
+        return evaluate(scenario_set or self.scenario_set, self.roadmaps, ROOT, self.policy)
 
     def test_current_portfolio_is_structurally_ready_for_consensus(self):
         result = self.evaluate()
@@ -34,6 +35,8 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertEqual([], result["calculation_errors"])
         self.assertEqual(14, result["counts"]["open_p0_gaps"])
         self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
+        self.assertGreaterEqual(result["counts"]["minimum_pairwise_candidate_domain_differences"], 3)
+        self.assertGreaterEqual(result["counts"]["minimum_pairwise_fallback_domain_differences"], 3)
         self.assertTrue(result["gaps_remain_open"])
 
     def test_missing_gap_assignment_fails_closed(self):
@@ -58,6 +61,16 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("option domains mismatch" in item for item in result["calculation_errors"]))
         self.assertTrue(any("missing repository path" in item for item in result["calculation_errors"]))
+
+    def test_three_labels_cannot_hide_two_substantively_identical_scenarios(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][1]["technology_options"] = copy.deepcopy(
+            changed["scenarios"][0]["technology_options"]
+        )
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("candidate domains differ" in item for item in result["calculation_errors"]))
+        self.assertTrue(any("fallback domains differ" in item for item in result["calculation_errors"]))
 
 
 if __name__ == "__main__":

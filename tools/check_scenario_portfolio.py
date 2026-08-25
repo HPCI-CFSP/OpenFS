@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 from pathlib import Path
 from typing import Any
@@ -48,10 +49,24 @@ def evaluate(
     scenario_set: dict[str, Any],
     roadmaps: list[dict[str, Any]],
     repository_root: Path,
+    scenario_policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     errors: list[str] = []
     scenarios = scenario_set["scenarios"]
     p0_gaps = _p0_gaps(roadmaps)
+    scenario_policy = scenario_policy or {}
+    minimum_candidate_differences = scenario_policy.get(
+        "minimum_pairwise_candidate_domain_differences", 3
+    )
+    minimum_fallback_differences = scenario_policy.get(
+        "minimum_pairwise_fallback_domain_differences", 3
+    )
+    for name, value in (
+        ("minimum_pairwise_candidate_domain_differences", minimum_candidate_differences),
+        ("minimum_pairwise_fallback_domain_differences", minimum_fallback_differences),
+    ):
+        if not isinstance(value, int) or not 1 <= value <= len(REQUIRED_DOMAINS):
+            errors.append(f"scenario policy: invalid {name}={value}")
 
     scenario_ids = [item["scenario_id"] for item in scenarios]
     if len(scenarios) != 3:
@@ -103,6 +118,35 @@ def evaluate(
         if len(candidates_by_domain.get(domain, set())) < 2:
             errors.append(f"{domain}: fewer than two distinct candidates across scenarios")
 
+    pairwise_candidate_differences: list[int] = []
+    pairwise_fallback_differences: list[int] = []
+    for left, right in itertools.combinations(scenarios, 2):
+        left_options = {item["domain"]: item for item in left.get("technology_options", [])}
+        right_options = {item["domain"]: item for item in right.get("technology_options", [])}
+        candidate_differences = sum(
+            left_options.get(domain, {}).get("candidate_en")
+            != right_options.get(domain, {}).get("candidate_en")
+            for domain in REQUIRED_DOMAINS
+        )
+        fallback_differences = sum(
+            left_options.get(domain, {}).get("fallback_en")
+            != right_options.get(domain, {}).get("fallback_en")
+            for domain in REQUIRED_DOMAINS
+        )
+        pairwise_candidate_differences.append(candidate_differences)
+        pairwise_fallback_differences.append(fallback_differences)
+        pair = f"{left['scenario_id']} vs {right['scenario_id']}"
+        if candidate_differences < minimum_candidate_differences:
+            errors.append(
+                f"{pair}: only {candidate_differences} candidate domains differ; "
+                f"minimum={minimum_candidate_differences}"
+            )
+        if fallback_differences < minimum_fallback_differences:
+            errors.append(
+                f"{pair}: only {fallback_differences} fallback domains differ; "
+                f"minimum={minimum_fallback_differences}"
+            )
+
     contracts = scenario_set.get("decision_evidence_contracts", [])
     contract_ids = [item["contract_id"] for item in contracts]
     for value in sorted(_duplicates(contract_ids)):
@@ -137,13 +181,20 @@ def evaluate(
             "option_domains": len(REQUIRED_DOMAINS),
             "open_p0_gaps": len(p0_gaps),
             "decision_evidence_contracts": len(contracts),
+            "minimum_pairwise_candidate_domain_differences": min(
+                pairwise_candidate_differences, default=0
+            ),
+            "minimum_pairwise_fallback_domain_differences": min(
+                pairwise_fallback_differences, default=0
+            ),
         },
         "calculation_errors": errors,
         "candidate_ready_for_consensus": not errors,
         "consensus_status": scenario_set["consensus_status"],
         "gaps_remain_open": True,
         "note": (
-            "Validator success establishes structural comparability and complete P0 Gap assignment only; "
+            "Validator success establishes structural comparability, configured option separation, "
+            "and complete P0 Gap assignment only; "
             "it does not validate scenario claims, close a Gap, satisfy Consensus, or authorize adoption."
         ),
     }
@@ -175,7 +226,10 @@ def main() -> int:
         json.loads(path.read_text(encoding="utf-8"))
         for path in sorted(roadmap_dir.glob("*.json"))
     ]
-    result = evaluate(scenario_set, roadmaps, repository_root)
+    scenario_policy = json.loads(
+        (repository_root / "config" / "scenario-policy.json").read_text(encoding="utf-8")
+    )
+    result = evaluate(scenario_set, roadmaps, repository_root, scenario_policy)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["candidate_ready_for_consensus"] else 1
 
