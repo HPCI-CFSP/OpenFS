@@ -4,11 +4,11 @@ This package pins 6 P0 roadmaps, 164
 milestone records, 128 registered sources,
 14 cross-roadmap dependencies,
 31 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `97d363557a5a43627a521ab0fa103486ac4e3484`.
+3 provisional HPCI scenarios to commit `a269f30bf7d1914bfe64a2c9bdffcfe011fd9f1f`.
 
 ## Review protocol
 
-1. Check out exactly `97d363557a5a43627a521ab0fa103486ac4e3484` and verify every `artifact_manifest.sha256`.
+1. Check out exactly `a269f30bf7d1914bfe64a2c9bdffcfe011fd9f1f` and verify every `artifact_manifest.sha256`.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
    Record one conclusive primary-source check for every milestone listed in
@@ -35,11 +35,11 @@ milestone records, 128 registered sources,
 このパッケージは、P0の6ロードマップ、
 164マイルストーン、128情報源、
 14相互依存、31件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `97d363557a5a43627a521ab0fa103486ac4e3484` に固定します。
+HPCI整備計画3案をコミット `a269f30bf7d1914bfe64a2c9bdffcfe011fd9f1f` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
 independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
-有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ、2つのcommit固定Harness
-以上を満たす必要があります。
+有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ、2つの異なるHarness
+Repository以上を満たし、各実行のHarness commitを固定する必要があります。
 Consensus成立後も最終採用には人の判断が必要です。
