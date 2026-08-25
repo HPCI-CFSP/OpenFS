@@ -5,11 +5,11 @@ milestone records, 131 source registrations representing
 118 unique URLs,
 14 cross-roadmap dependencies,
 31 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `bacbd834c9002c77186555b152dec92f315f1f97`.
+3 provisional HPCI scenarios to commit `0d607ce8a620fab709f147db30766d94ea888f63`.
 
 ## Review protocol
 
-1. Check out exactly `bacbd834c9002c77186555b152dec92f315f1f97`, verify every `artifact_manifest.sha256`, and
+1. Check out exactly `0d607ce8a620fab709f147db30766d94ea888f63`, verify every `artifact_manifest.sha256`, and
    record the SHA-256 of the exact `manifest.json` bytes as
    `package_manifest_digest` in the review. Do not reserialize the manifest
    before calculating this digest.
@@ -32,7 +32,9 @@ milestone records, 131 source registrations representing
    configured policy passes and a human makes the required high-impact decision.
    An overall `support` vote is eligible only when every unit supports, every
    required check passes, every required primary-source check supports, and no
-   major or critical objection remains.
+   major or critical objection remains. Re-run the evaluator after adding,
+   removing, or editing any review; its result pins the exact manifest and every
+   evaluated review file by SHA-256.
 
 ## 日本語要約
 
@@ -40,7 +42,7 @@ milestone records, 131 source registrations representing
 164マイルストーン、131件の情報源登録
 （重複除去118 URL）、
 14相互依存、31件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `bacbd834c9002c77186555b152dec92f315f1f97` に固定します。
+HPCI整備計画3案をコミット `0d607ce8a620fab709f147db30766d94ea888f63` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
