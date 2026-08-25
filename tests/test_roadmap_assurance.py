@@ -134,6 +134,20 @@ class RoadmapAssuranceTests(unittest.TestCase):
             ),
         )
         self.assertEqual(0, summary["missing"])
+        self.assertEqual(
+            summary["source_count"],
+            summary["external_first_party_source_count"]
+            + summary["openfs_governance_source_count"],
+        )
+        self.assertEqual(summary["source_count"], sum(summary["source_class_counts"].values()))
+        self.assertEqual(
+            {
+                source["source_class"]
+                for roadmap in self.roadmaps
+                for source in roadmap["sources"]
+            },
+            {key for key, value in summary["source_class_counts"].items() if value},
+        )
 
     def test_every_registered_source_is_used_by_a_roadmap_assertion(self):
         for roadmap in self.roadmaps:

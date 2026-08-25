@@ -8,6 +8,7 @@ import json
 import ssl
 import urllib.error
 import urllib.request
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,6 +34,7 @@ def collect_sources(root: Path) -> list[dict[str, Any]]:
                     "roadmap_id": roadmap["roadmap_id"],
                     "source_id": source["source_id"],
                     "url": source["url"],
+                    "source_class": source["source_class"],
                 }
             )
     return collected
@@ -115,6 +117,7 @@ def build_audit(root: Path, timeout: float, workers: int) -> dict[str, Any]:
         status: sum(result["status"] == status for result in results)
         for status in ("reachable", "access-restricted", "missing", "timeout", "error")
     }
+    source_class_counts = Counter(source["source_class"] for source in sources)
     return {
         "schema_version": "0.1.0",
         "export_id": "ROADMAP-SOURCE-AUDIT-001",
@@ -128,7 +131,25 @@ def build_audit(root: Path, timeout: float, workers: int) -> dict[str, Any]:
         "caveat_ja": "到達性は機械クライアントの結果であり、主張の正しさを示さない。403、429、timeout等はブラウザで有効な資料でも発生し得る。",
         "caveat_en": "Reachability reflects one machine client and does not validate a claim. A valid browser-accessible source may still return 403, 429, or a timeout.",
         "user_agent": USER_AGENT,
-        "summary": {"source_count": len(results), **summary},
+        "summary": {
+            "source_count": len(results),
+            "external_first_party_source_count": len(results)
+            - source_class_counts["openfs-governance"],
+            "openfs_governance_source_count": source_class_counts["openfs-governance"],
+            "source_class_counts": {
+                source_class: source_class_counts[source_class]
+                for source_class in (
+                    "vendor-official",
+                    "standards-body",
+                    "government-official",
+                    "research-organization",
+                    "project-official",
+                    "academic-primary",
+                    "openfs-governance",
+                )
+            },
+            **summary,
+        },
         "results": results,
         "publication": {
             "information_classification": "public",

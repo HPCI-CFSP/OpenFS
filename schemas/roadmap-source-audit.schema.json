@@ -19,9 +19,25 @@
     "user_agent": {"type": "string", "minLength": 1},
     "summary": {
       "type": "object",
-      "required": ["source_count", "reachable", "access-restricted", "missing", "timeout", "error"],
+      "required": ["source_count", "external_first_party_source_count", "openfs_governance_source_count", "source_class_counts", "reachable", "access-restricted", "missing", "timeout", "error"],
       "properties": {
         "source_count": {"type": "integer", "minimum": 1},
+        "external_first_party_source_count": {"type": "integer", "minimum": 1},
+        "openfs_governance_source_count": {"type": "integer", "minimum": 0},
+        "source_class_counts": {
+          "type": "object",
+          "required": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "academic-primary", "openfs-governance"],
+          "properties": {
+            "vendor-official": {"type": "integer", "minimum": 0},
+            "standards-body": {"type": "integer", "minimum": 0},
+            "government-official": {"type": "integer", "minimum": 0},
+            "research-organization": {"type": "integer", "minimum": 0},
+            "project-official": {"type": "integer", "minimum": 0},
+            "academic-primary": {"type": "integer", "minimum": 0},
+            "openfs-governance": {"type": "integer", "minimum": 0}
+          },
+          "additionalProperties": false
+        },
         "reachable": {"type": "integer", "minimum": 0},
         "access-restricted": {"type": "integer", "minimum": 0},
         "missing": {"type": "integer", "minimum": 0},
@@ -35,11 +51,12 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["roadmap_id", "source_id", "url", "status", "http_status", "final_url", "content_type"],
+        "required": ["roadmap_id", "source_id", "url", "source_class", "status", "http_status", "final_url", "content_type"],
         "properties": {
           "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
           "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
           "url": {"type": "string", "format": "uri"},
+          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "academic-primary", "openfs-governance"]},
           "status": {"enum": ["reachable", "access-restricted", "missing", "timeout", "error"]},
           "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599},
           "final_url": {"type": "string", "format": "uri"},
