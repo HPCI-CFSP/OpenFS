@@ -8,6 +8,74 @@
   "notice_ja": "公開一次情報とOpenFS暫定評価に基づく比較案であり、推奨順位ではない。センターProfile、価格、供給、施設条件、Consensusは未完了。",
   "notice_en": "These are comparison options based on public primary sources and OpenFS provisional assessment, not a ranking. Center profiles, price, supply, facility conditions, and Consensus remain incomplete.",
   "consensus_status": "incomplete",
+  "decision_evidence_contracts": [
+    {
+      "contract_id": "DCTR-SOURCE-EVIDENCE",
+      "title_ja": "一次情報・時期・Gap監査",
+      "title_en": "Primary-source, timing, and Gap assurance",
+      "schema_paths": ["schemas/evidence-bundle.schema.json", "schemas/public-roadmap.schema.json"],
+      "validator_paths": ["tools/validate_json_schemas.py", "tools/build_roadmap_evidence_audit.py"],
+      "gap_refs": ["GAP-NET-003", "GAP-NET-004", "GAP-PORT-001"],
+      "effect_ja": "公開一次情報、時期精度、未公表事項を再監査し、技術的可能性を導入可能性へ読み替えない。",
+      "effect_en": "Re-audit public primary sources, timing precision, and undisclosed items without converting technical possibility into deployment readiness.",
+      "acceptance_effect": "candidate-only"
+    },
+    {
+      "contract_id": "DCTR-BENCHMARK",
+      "title_ja": "再現可能な実測比較",
+      "title_en": "Reproducible measured comparison",
+      "schema_paths": ["schemas/benchmark-result-bundle.schema.json"],
+      "validator_paths": ["tools/check_benchmark_result_bundle.py"],
+      "gap_refs": ["GAP-COMP-004", "GAP-MEM003", "GAP-PORT-004", "GAP-PORT-006"],
+      "effect_ja": "正当性、性能、電力、RAS、移植工数、MPI/providerを同一条件で比較する。",
+      "effect_en": "Compare correctness, performance, energy, RAS, porting effort, and MPI/provider behavior under common conditions.",
+      "acceptance_effect": "candidate-only"
+    },
+    {
+      "contract_id": "DCTR-PERFORMANCE-MODEL",
+      "title_ja": "性能外挿モデル検証",
+      "title_en": "Performance-extrapolation model validation",
+      "schema_paths": ["schemas/performance-model-card.schema.json"],
+      "validator_paths": ["tools/check_performance_model_card.py"],
+      "gap_refs": ["GAP-WORK-003"],
+      "effect_ja": "式、入力、適用範囲、校正とholdout、予測誤差を固定して再計算する。",
+      "effect_en": "Pin and recompute equations, inputs, applicability, calibration versus holdout data, and prediction error.",
+      "acceptance_effect": "candidate-only"
+    },
+    {
+      "contract_id": "DCTR-WORKLOAD-OBSERVATION",
+      "title_ja": "匿名化した利用分布",
+      "title_en": "Privacy-preserving workload distributions",
+      "schema_paths": ["schemas/workload-observation-summary.schema.json"],
+      "validator_paths": ["tools/check_workload_observation_summary.py"],
+      "gap_refs": ["GAP-WORK-001", "GAP-WORK-004"],
+      "effect_ja": "個別jobや識別子を公開せず、センター横断の規模・用途・データ移動分布を比較する。",
+      "effect_en": "Compare scale, workload, and data-movement distributions across centers without publishing job rows or identifiers.",
+      "acceptance_effect": "candidate-only"
+    },
+    {
+      "contract_id": "DCTR-CENTER-PROFILE",
+      "title_ja": "センター別導入制約",
+      "title_en": "Center-specific deployment constraints",
+      "schema_paths": ["schemas/center-profile.schema.json", "schemas/center-profile-assurance.schema.json"],
+      "validator_paths": ["tools/evaluate_center_profiles.py", "tools/build_center_profile_assurance.py"],
+      "gap_refs": ["GAP-BLUE-001", "GAP-BLUE-003"],
+      "effect_ja": "15提供機関の利用、施設、電力、予算、調達、移行条件を同じ契約で確認する。",
+      "effect_en": "Assess workload, facility, power, budget, procurement, and migration constraints under one contract for all 15 providers.",
+      "acceptance_effect": "candidate-only"
+    },
+    {
+      "contract_id": "DCTR-GOVERNANCE",
+      "title_ja": "版・独立レビュー・公開判断",
+      "title_en": "Version, independent review, and publication decision",
+      "schema_paths": ["schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json"],
+      "validator_paths": ["tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py"],
+      "gap_refs": ["GAP-BLUE-002", "GAP-BLUE-006"],
+      "effect_ja": "commit固定の成果物を独立モデル・提供者・Harnessで反証し、人の正式判断へ渡す。",
+      "effect_en": "Falsify commit-pinned artifacts across independent models, providers, and harnesses before accountable human decision.",
+      "acceptance_effect": "candidate-only"
+    }
+  ],
   "scenarios": [
     {
       "schema_version": "0.2.0",

@@ -96,6 +96,11 @@
       "uniqueItems": true,
       "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}
     },
+    "decision_evidence_contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/decisionEvidenceContract"}
+    },
     "uncertainties": {"type": "array", "items": {"type": "string"}, "minItems": 1},
     "uncertainties_en": {"type": "array", "items": {"type": "string"}, "minItems": 1},
     "decision_gates": {"type": "array", "items": {"type": "string"}, "minItems": 1},
@@ -121,5 +126,23 @@
       "then": {"required": ["title_en", "objective_en", "research_status", "consensus_status", "decision_blocking_gap_refs", "uncertainties_en", "decision_gates_en", "caveat_ja", "caveat_en", "publication"]}
     }
   ],
+  "$defs": {
+    "decisionEvidenceContract": {
+      "type": "object",
+      "required": ["contract_id", "title_ja", "title_en", "schema_paths", "validator_paths", "gap_refs", "effect_ja", "effect_en", "acceptance_effect"],
+      "properties": {
+        "contract_id": {"type": "string", "pattern": "^DCTR-[A-Z0-9-]+$"},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "schema_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^schemas/[A-Za-z0-9._-]+\\.schema\\.json$"}},
+        "validator_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^tools/[A-Za-z0-9._-]+\\.py$"}},
+        "gap_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}},
+        "effect_ja": {"type": "string", "minLength": 1},
+        "effect_en": {"type": "string", "minLength": 1},
+        "acceptance_effect": {"const": "candidate-only"}
+      },
+      "additionalProperties": false
+    }
+  },
   "additionalProperties": false
 }

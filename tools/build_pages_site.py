@@ -157,8 +157,11 @@ def collect_scenarios(
             status = scenario.get("status")
             if status not in allowed:
                 raise ValueError(f"non-publishable scenario in accepted path: {path}: {status}")
+            scenario_with_contracts = dict(scenario)
+            if "decision_evidence_contracts" in payload:
+                scenario_with_contracts["decision_evidence_contracts"] = payload["decision_evidence_contracts"]
             projected = public_projection(
-                scenario,
+                scenario_with_contracts,
                 policy["scenario_public_fields"],
                 policy["required_publication_metadata"],
                 policy["scenario_required_bilingual_fields"],

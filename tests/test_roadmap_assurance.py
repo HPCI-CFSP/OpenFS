@@ -271,6 +271,24 @@ class RoadmapAssuranceTests(unittest.TestCase):
             for evaluation in scenario["evaluation"].values():
                 self.assertLessEqual(set(evaluation["evidence_refs"]), known_evidence_refs)
 
+    def test_decision_evidence_contracts_cover_each_open_p0_gap_exactly_once(self):
+        p0_gap_refs = {
+            gap["gap_id"]
+            for roadmap in self.roadmaps
+            for gap in roadmap["coverage_gaps"]
+            if gap["priority"] == "P0" and gap["status"] == "open"
+        }
+        contracts = self.scenarios["decision_evidence_contracts"]
+        self.assertEqual(6, len(contracts))
+        self.assertEqual(len(contracts), len({item["contract_id"] for item in contracts}))
+        assigned = [gap_id for contract in contracts for gap_id in contract["gap_refs"]]
+        self.assertEqual(p0_gap_refs, set(assigned))
+        self.assertEqual(len(assigned), len(set(assigned)))
+        for contract in contracts:
+            self.assertEqual("candidate-only", contract["acceptance_effect"])
+            for relative_path in contract["schema_paths"] + contract["validator_paths"]:
+                self.assertTrue((ROOT / relative_path).is_file(), relative_path)
+
 
 if __name__ == "__main__":
     unittest.main()

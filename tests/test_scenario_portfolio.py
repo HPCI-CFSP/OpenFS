@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+import copy
+import json
+import unittest
+from pathlib import Path
+
+from tools.check_scenario_portfolio import evaluate
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_json(path: Path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+class ScenarioPortfolioTests(unittest.TestCase):
+    def setUp(self):
+        self.scenario_set = load_json(
+            ROOT / "roadmaps" / "scenarios" / "accepted" / "hpci-p0-scenarios.json"
+        )
+        self.roadmaps = [
+            load_json(path)
+            for path in sorted((ROOT / "knowledge" / "public" / "roadmaps").glob("*.json"))
+        ]
+
+    def evaluate(self, scenario_set=None):
+        return evaluate(scenario_set or self.scenario_set, self.roadmaps, ROOT)
+
+    def test_current_portfolio_is_structurally_ready_for_consensus(self):
+        result = self.evaluate()
+        self.assertTrue(result["candidate_ready_for_consensus"])
+        self.assertEqual([], result["calculation_errors"])
+        self.assertEqual(14, result["counts"]["open_p0_gaps"])
+        self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
+        self.assertTrue(result["gaps_remain_open"])
+
+    def test_missing_gap_assignment_fails_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["decision_evidence_contracts"][0]["gap_refs"].pop()
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("Gap coverage mismatch" in item for item in result["calculation_errors"]))
+
+    def test_numeric_scenario_score_fails_without_approved_weights(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["evaluation"]["application-coverage"]["score"] = 4
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("scores require approved weights" in item for item in result["calculation_errors"]))
+
+    def test_missing_domain_and_contract_path_fail_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["technology_options"].pop()
+        changed["decision_evidence_contracts"][0]["validator_paths"] = ["tools/not-present.py"]
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("option domains mismatch" in item for item in result["calculation_errors"]))
+        self.assertTrue(any("missing repository path" in item for item in result["calculation_errors"]))
+
+
+if __name__ == "__main__":
+    unittest.main()

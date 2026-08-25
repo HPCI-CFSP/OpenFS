@@ -263,15 +263,15 @@ class PagesSiteTests(unittest.TestCase):
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
                     and len(scenario["decision_blocking_gap_refs"]) == 14
+                    and len(scenario["decision_evidence_contracts"]) == 6
                     for scenario in result["scenarios"]
                 )
             )
-            self.assertIn(
-                'id="scenario-blocking-gaps"',
-                (output / result["scenarios"][0]["path"] / "index.html").read_text(
-                    encoding="utf-8"
-                ),
-            )
+            scenario_html = (
+                output / result["scenarios"][0]["path"] / "index.html"
+            ).read_text(encoding="utf-8")
+            self.assertIn('id="scenario-blocking-gaps"', scenario_html)
+            self.assertIn('id="scenario-evidence-contracts"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")

@@ -136,6 +136,12 @@ When a task contains multiple investigations, organize them into separate task, 
   diversity, rounding, small-cell, complementary-suppression, and publication
   rules. A passing summary remains provisional until independent Consensus and
   an artifact-specific human publication Directive pass.
+- Keep the published three-scenario portfolio structurally comparable with
+  `tools/check_scenario_portfolio.py`. Every scenario must expose the same eleven
+  unscored criteria and five option domains, and every currently open P0 Gap must
+  appear exactly once in the shared decision-evidence contracts. A passing check
+  only makes the portfolio eligible for independent Consensus; it does not close
+  a Gap, validate a claim, rank a scenario, or authorize adoption.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and
