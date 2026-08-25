@@ -110,10 +110,13 @@ When a task contains multiple investigations, organize them into separate task, 
   architecture, facility, procurement, migration, or scenario decision; use `P1`
   for material comparison gaps and `P2` for useful context. Never fill a gap with
   an unsupported forecast.
-- After any roadmap source or milestone change, regenerate both assurance
-  artifacts with `tools/audit_roadmap_sources.py` and
-  `tools/build_roadmap_evidence_audit.py`. URL reachability is not semantic
-  validation and must not be described as such.
+- After any roadmap source or milestone change, regenerate assurance artifacts
+  with `tools/audit_roadmap_sources.py`,
+  `tools/build_roadmap_source_triage.py`, and
+  `tools/build_roadmap_evidence_audit.py`. A retrieval review is pinned to the
+  exact source URL and becomes unresolved when that URL changes. Neither URL
+  reachability nor single-model semantic retrieval is independent claim
+  validation, and neither may be described as Consensus acceptance.
 - High-impact portfolio review uses the `high_impact_recommendation` Consensus
   rule. Keep public roadmaps and scenarios provisional until independent reviews,
   falsification, deterministic evaluation, and the required human decision pass.

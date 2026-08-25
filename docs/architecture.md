@@ -111,8 +111,11 @@ The weekly review also rebuilds a freshness queue from the committed roadmaps an
 a fresh URL reachability scan. It flags undated milestones, passed target dates,
 future-dated observed events, missing source-date metadata, and retrieval
 warnings without treating any of them as proof that a claim is false. The
-generated workflow artifacts are review inputs; they do not modify canonical
-roadmaps or bypass Consensus.
+source triage layer may record that the exact official URL was readable through
+a separate semantic retrieval path, but that review is URL-pinned, provisional,
+and invalidated automatically when the registered URL changes. It does not
+replace independent claim validation. The generated workflow artifacts are
+review inputs; they do not modify canonical roadmaps or bypass Consensus.
 
 ### Portfolio review package
 

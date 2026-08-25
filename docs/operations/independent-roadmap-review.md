@@ -39,7 +39,10 @@ allowing the authoring model to certify its own work.
    using one of that milestone's registered `source_options`. The source ID,
    URL, and class must match the exact milestone citation in the package's
    pinned commit; reachability alone and secondary summaries do not satisfy
-   this requirement. OpenFS provisional gates and undated gaps remain in the
+   this requirement. A `ROADMAP-SOURCE-TRIAGE-001` entry establishes only that
+   one model could retrieve the exact official URL and cited text; it is not an
+   independent primary-source check and cannot be copied as a review conclusion.
+   OpenFS provisional gates and undated gaps remain in the
    unit assessment but are not presented as externally verified events.
    Set `registry_snapshot_digest` to the SHA-256 of the exact
    `config/agent-registry.json` Git object at `base_commit`.
