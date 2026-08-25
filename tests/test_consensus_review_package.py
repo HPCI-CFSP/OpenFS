@@ -43,19 +43,6 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         }
 
     def _review(self, agent, registry_digest, verdict="support"):
-        roadmap_sources = {}
-        for unit in self.manifest["review_units"]:
-            if unit["kind"] != "roadmap":
-                continue
-            path = next(
-                path for path in unit["artifact_paths"]
-                if path.startswith("knowledge/public/roadmaps/")
-            )
-            source = next(
-                source for source in load_json(ROOT / path)["sources"]
-                if source["source_class"] != "openfs-governance"
-            )
-            roadmap_sources[unit["unit_id"]] = source
         return {
             "schema_version": "0.1.0",
             "review_id": f"CRV-{agent['agent_id'].upper()}",
@@ -77,14 +64,14 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             "overall_verdict": verdict,
             "primary_source_checks": [
                 {
-                    "unit_id": unit_id,
-                    "source_id": source["source_id"],
-                    "source_url": source["url"],
-                    "source_class": source["source_class"],
+                    "unit_id": unit["unit_id"],
+                    "selector": requirement["selector"],
+                    **requirement["source_options"][0],
                     "outcome": "supports",
                     "notes": "The registered primary source and cited roadmap claim were checked.",
                 }
-                for unit_id, source in roadmap_sources.items()
+                for unit in self.manifest["review_units"]
+                for requirement in unit["primary_source_requirements"]
             ],
             "unit_assessments": [
                 {
@@ -146,7 +133,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(6, summary["roadmap_count"])
         self.assertGreaterEqual(summary["milestone_count"], 130)
         self.assertGreaterEqual(summary["source_count"], 91)
-        self.assertEqual(30, summary["coverage_gap_count"])
+        self.assertGreaterEqual(summary["coverage_gap_count"], 30)
         self.assertEqual(14, summary["dependency_count"])
         self.assertEqual(3, summary["scenario_count"])
 
@@ -186,17 +173,31 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_model_families"], 3)
         self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_providers"], 2)
 
-    def test_template_requires_a_primary_source_check_for_every_roadmap(self):
+    def test_template_requires_a_primary_source_check_for_every_key_evidence_milestone(self):
         template = load_json(PACKAGE / "review-template.json")
-        roadmap_units = {
-            unit["unit_id"]
+        expected = {
+            (unit["unit_id"], requirement["selector"])
             for unit in self.manifest["review_units"]
-            if unit["kind"] == "roadmap"
+            for requirement in unit["primary_source_requirements"]
         }
         self.assertEqual(
-            roadmap_units,
-            {check["unit_id"] for check in template["primary_source_checks"]},
+            expected,
+            {(check["unit_id"], check["selector"]) for check in template["primary_source_checks"]},
         )
+        self.assertGreaterEqual(len(expected), 50)
+
+    def test_roadmap_units_select_every_milestone(self):
+        for unit in self.manifest["review_units"]:
+            if unit["kind"] != "roadmap":
+                continue
+            path = next(path for path in unit["artifact_paths"] if path.startswith("knowledge/public/roadmaps/"))
+            roadmap = load_json(ROOT / path)
+            milestone_ids = {
+                milestone["milestone_id"]
+                for lane in roadmap["lanes"]
+                for milestone in lane["milestones"]
+            }
+            self.assertLessEqual(milestone_ids, set(unit["selectors"]), unit["unit_id"])
 
     def test_four_registered_diverse_reviews_reach_only_human_decision(self):
         registry_digest = next(

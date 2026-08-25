@@ -30,6 +30,7 @@ ARTIFACTS = [
     *[(path, "roadmap") for path in ROADMAP_PATHS],
     ("knowledge/public/audits/roadmap-source-audit.json", "source-audit"),
     ("knowledge/public/audits/roadmap-evidence-audit.json", "evidence-audit"),
+    ("knowledge/public/audits/roadmap-freshness-audit.json", "freshness-audit"),
     ("knowledge/public/dependencies/p0-roadmap-dependencies.json", "dependency-register"),
     ("roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "scenario-set"),
     ("config/consensus-policy.json", "policy"),
@@ -40,6 +41,8 @@ ARTIFACTS = [
     ("schemas/consensus-review-package.schema.json", "schema"),
     ("schemas/consensus-package-review.schema.json", "schema"),
     ("schemas/consensus-package-gate-result.schema.json", "schema"),
+    ("schemas/roadmap-freshness-audit.schema.json", "schema"),
+    ("tools/build_roadmap_freshness_audit.py", "tool"),
     ("tools/build_consensus_review_package.py", "tool"),
     ("tools/evaluate_consensus_review_package.py", "tool"),
     ("reviews/directives/DIR-900006.json", "directive"),
@@ -73,6 +76,34 @@ def artifact_manifest(root: Path, commit: str) -> list[dict[str, str]]:
 
 
 def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
+    milestones = [
+        milestone
+        for lane in roadmap["lanes"]
+        for milestone in lane["milestones"]
+    ]
+    sources = {source["source_id"]: source for source in roadmap["sources"]}
+    primary_source_requirements = []
+    for milestone in milestones:
+        if milestone["comparison_priority"] != "key" or milestone["timing_basis"] in {
+            "openfs-provisional-plan", "no-public-date",
+        }:
+            continue
+        source_options = [
+            {
+                "source_id": source_id,
+                "source_url": sources[source_id]["url"],
+                "source_class": sources[source_id]["source_class"],
+            }
+            for source_id in milestone["source_ids"]
+            if sources[source_id]["source_class"] != "openfs-governance"
+        ]
+        if source_options:
+            primary_source_requirements.append(
+                {
+                    "selector": milestone["milestone_id"],
+                    "source_options": source_options,
+                }
+            )
     return {
         "unit_id": f"CRU-{roadmap['roadmap_id'].removeprefix('RM-')}",
         "kind": "roadmap",
@@ -82,8 +113,10 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
         "selectors": [
             roadmap["roadmap_id"],
             *[track["track_id"] for track in roadmap["tracks"]],
+            *[milestone["milestone_id"] for milestone in milestones],
             *[gap["gap_id"] for gap in roadmap["coverage_gaps"]],
         ],
+        "primary_source_requirements": primary_source_requirements,
         "required_checks": [
             "source-identity", "citation-entailment", "temporal-validity",
             "scope-alignment", "coverage-gap-completeness",
@@ -110,6 +143,7 @@ def shared_units() -> list[dict[str, Any]]:
             "title_en": "Cross-roadmap dependencies",
             "artifact_paths": ["knowledge/public/dependencies/p0-roadmap-dependencies.json", *ROADMAP_PATHS],
             "selectors": ["ROADMAP-DEPENDENCY-REGISTER-001", "XDEP-*"],
+            "primary_source_requirements": [],
             "required_checks": ["source-identity", "scope-alignment", "dependency-validity", "temporal-validity"],
             "falsification_prompts_ja": ["依存の向き、重要度、判断ゲートに逆転・循環・欠落がないか。", "技術的な可能性を調達・導入可能性と誤認していないか。"],
             "falsification_prompts_en": ["Are dependency direction, criticality, and gates free of inversions, cycles, or omissions?", "Is technical feasibility being mistaken for procurement or deployment readiness?"],
@@ -121,6 +155,7 @@ def shared_units() -> list[dict[str, Any]]:
             "title_en": "Prioritized Coverage Gaps",
             "artifact_paths": ROADMAP_PATHS,
             "selectors": ["GAP-*", "P0", "P1", "P2"],
+            "primary_source_requirements": [],
             "required_checks": ["scope-alignment", "coverage-gap-completeness", "dependency-validity", "fallback-viability"],
             "falsification_prompts_ja": ["P0がHPCI判断への影響ではなく情報の入手しやすさで決まっていないか。", "未公表事項を否定的事実として扱っていないか。"],
             "falsification_prompts_en": ["Is P0 driven by HPCI decision impact rather than ease of research?", "Is absence of public information incorrectly treated as negative fact?"],
@@ -132,6 +167,7 @@ def shared_units() -> list[dict[str, Any]]:
             "title_en": "Three HPCI infrastructure scenarios",
             "artifact_paths": ["roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "config/scenario-policy.json", "knowledge/public/dependencies/p0-roadmap-dependencies.json", *ROADMAP_PATHS],
             "selectors": ["SCN-HPCI-BALANCED-001", "SCN-HPCI-AI-DATA-001", "SCN-HPCI-STAGED-001", "TOPT-*"],
+            "primary_source_requirements": [],
             "required_checks": ["scope-alignment", "scenario-coherence", "fallback-viability", "dependency-validity", "coverage-gap-completeness"],
             "falsification_prompts_ja": ["3案が実質的に同じ案の言い換えになっていないか。", "アーキテクチャ、ソフトウェア、アプリケーション、センター制約が一体で成立するか。", "fallbackが技術的・運用的に実行可能か。"],
             "falsification_prompts_en": ["Are the three options genuinely distinct rather than paraphrases?", "Do architecture, software, applications, and center constraints form coherent plans?", "Are fallbacks technically and operationally viable?"],
@@ -141,8 +177,9 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "config/consensus-policy.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-freshness-audit.schema.json", "tools/build_roadmap_freshness_audit.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py"],
             "selectors": ["DIR-900006", "consensus_status", "research_status", "publication"],
+            "primary_source_requirements": [],
             "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
             "falsification_prompts_ja": ["未完了のConsensusを受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。"],
             "falsification_prompts_en": ["Could incomplete Consensus be read as accepted?", "Is URL reachability presented as claim correctness?", "Does any content exceed the approved public-information boundary?"],
@@ -220,7 +257,6 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
 
 
 def review_template(manifest: dict[str, Any]) -> dict[str, Any]:
-    roadmap_units = [unit for unit in manifest["review_units"] if unit["kind"] == "roadmap"]
     return {
         "_template_notice": "Replace every angle-bracket placeholder and remove this field before submission.",
         "schema_version": "0.1.0",
@@ -238,13 +274,14 @@ def review_template(manifest: dict[str, Any]) -> dict[str, Any]:
         "overall_verdict": "uncertain",
         "primary_source_checks": [
             {
-                "unit_id": unit["unit_id"], "source_id": "<SRC-ID>",
-                "source_url": "https://example.invalid/primary-source",
-                "source_class": "vendor-official",
+                "unit_id": unit["unit_id"],
+                "selector": requirement["selector"],
+                **requirement["source_options"][0],
                 "outcome": "inconclusive",
                 "notes": "<record the exact claim checked and what the primary source says>",
             }
-            for unit in roadmap_units
+            for unit in manifest["review_units"]
+            for requirement in unit["primary_source_requirements"]
         ],
         "unit_assessments": [
             {
@@ -275,7 +312,10 @@ milestone records, {summary['source_count']} registered sources,
 1. Check out exactly `{commit}` and verify every `artifact_manifest.sha256`.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
-   Record at least one conclusive primary-source check for every roadmap unit.
+   Record one conclusive primary-source check for every milestone listed in
+   `primary_source_requirements`, using one of that milestone's registered
+   `source_options`. Key OpenFS proposals and undated gaps remain subject to the
+   unit assessment but do not masquerade as externally verified events.
 3. Actively seek counterevidence using each unit's falsification prompts. Keep
    unsupported timing as a Coverage Gap; do not infer a quarter.
 4. Fill `review-template.json`, remove `_template_notice`, assign a unique review
@@ -293,8 +333,9 @@ milestone records, {summary['source_count']} registered sources,
 {summary['milestone_count']}マイルストーン、{summary['source_count']}情報源、
 {summary['dependency_count']}相互依存、{summary['coverage_gap_count']}件の優先度付きCoverage Gap、
 HPCI整備計画{summary['scenario_count']}案をコミット `{commit}` に固定します。
-各review unitを独立に検証し、反証を探索してください。URL到達性を内容の正しさと
-みなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
+各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
+マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
+正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
 independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
 有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ以上を満たす必要があります。
 Consensus成立後も最終採用には人の判断が必要です。

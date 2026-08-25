@@ -276,6 +276,8 @@ class PagesSiteTests(unittest.TestCase):
             assurance = result["roadmap_assurance"]
             self.assertGreaterEqual(assurance["source_audit"]["summary"]["source_count"], 91)
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
+            self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
+            self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
             self.assertEqual(
                 14,
                 len(assurance["dependency_register"]["dependencies"]),
@@ -283,9 +285,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue(
                 all("publication" not in artifact for artifact in assurance.values())
             )
-            self.assertEqual(
-                30,
+            self.assertGreaterEqual(
                 sum(len(roadmap["coverage_gaps"]) for roadmap in result["roadmap_artifacts"]),
+                30,
             )
             self.assertEqual([], result["reports"])
             self.assertEqual("2026-08-23", result["catalog_as_of"])

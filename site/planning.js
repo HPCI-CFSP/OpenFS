@@ -14,6 +14,7 @@
       evidenceKicker: "EVIDENCE HARDENING", evidenceTitle: "根拠監査", evidenceLead: "URL到達性、マイルストーンの主張種別、時期精度、Coverage Gapを分けて表示します。",
       consensusCaveatTitle: "検証状態", evidenceCaveat: "全件の引用ID・主張種別・時期表現を構造検査し、主要な更新項目を単一モデルで一次情報と照合しました。全件の独立した意味検証ではなく、Consensus Gateは未完了です。到達性監査も主張の正しさを判定しません。",
       claimAuditTitle: "Claim-Evidence監査", sourceAuditTitle: "情報源到達性", sourceAuditNote: "到達性は主張の正しさを示しません。アクセス制限やtimeoutはブラウザで有効な資料でも発生します。",
+      freshnessAuditTitle: "鮮度・再調査キュー", freshnessAuditLead: "古さを誤りとみなさず、時期未確定、期限経過、到達性注意、日付メタデータ不足を次回ループへ送ります。", freshnessAttentionTitle: "中以上の注意項目", freshnessAttention: "鮮度注意", critical: "重大", object: "対象", reason: "理由",
       gapRegisterTitle: "優先度付きCoverage Gap", gapRegisterLead: "公開情報で確認できない条件を推測で補わず、判断への影響と次の調査行動を記録します。",
       normalizedDependenciesTitle: "正規化した相互依存", externalConstraintsTitle: "外部制約・Coverage Gap", sourceCount: "情報源", reachable: "到達", accessRestricted: "アクセス制限", timeoutError: "timeout / error", milestoneCount: "マイルストーン", primaryEvent: "出来事・標準", forwardTarget: "将来目標", baseline: "基準日時点", coverageGap: "時期未公表", provisionalGate: "OpenFS暫定ゲート",
       roadmap: "ロードマップ", total: "合計", status: "状態", source: "情報源", url: "公開URL", relationship: "関係", criticality: "重要度", decisionImpact: "判断への影響", delayRisk: "遅延リスク", gates: "判断ゲート", high: "高", medium: "中", low: "低", commit: "Commit", priority: "優先度", scope: "確認対象", impact: "判断への影響", nextAction: "次の調査行動", open: "未解決",
@@ -32,6 +33,7 @@
       evidenceKicker: "EVIDENCE HARDENING", evidenceTitle: "Evidence assurance", evidenceLead: "Separates URL reachability, milestone claim type, timing precision, and Coverage Gaps.",
       consensusCaveatTitle: "Validation status", evidenceCaveat: "All items were structurally checked for source references, claim type, and timing semantics, and major updates were checked by one model against primary sources. This is not independent semantic verification of every item; Consensus is incomplete, and reachability does not establish correctness.",
       claimAuditTitle: "Claim-evidence audit", sourceAuditTitle: "Source reachability", sourceAuditNote: "Reachability does not validate claims. A browser-accessible source may still return an access restriction or timeout to the machine client.",
+      freshnessAuditTitle: "Freshness and follow-up queue", freshnessAuditLead: "Queues undated timing, passed targets, reachability warnings, and missing date metadata without treating age as error.", freshnessAttentionTitle: "Medium-or-higher attention", freshnessAttention: "Freshness attention", critical: "critical", object: "Object", reason: "Reason",
       gapRegisterTitle: "Prioritized Coverage Gaps", gapRegisterLead: "Unknown public conditions remain explicit rather than being filled by inference, with decision impact and the next research action recorded.",
       normalizedDependenciesTitle: "Normalized dependencies", externalConstraintsTitle: "External constraints and Coverage Gaps", sourceCount: "Sources", reachable: "Reachable", accessRestricted: "Access restricted", timeoutError: "Timeout / error", milestoneCount: "Milestones", primaryEvent: "Events / standards", forwardTarget: "Forward targets", baseline: "As-of baseline", coverageGap: "Undated", provisionalGate: "OpenFS provisional gates",
       roadmap: "Roadmap", total: "Total", status: "Status", source: "Source", url: "Public URL", relationship: "Relationship", criticality: "Criticality", decisionImpact: "Decision impact", delayRisk: "Delay risk", gates: "Decision gates", high: "high", medium: "medium", low: "low", commit: "Commit", priority: "Priority", scope: "Scope", impact: "Decision impact", nextAction: "Next research action", open: "open",
@@ -82,7 +84,7 @@
   }
 
   function renderEvidencePage() {
-    const assurance = data.roadmap_assurance; const source = assurance.source_audit; const evidence = assurance.evidence_audit; const dependencies = assurance.dependency_register;
+    const assurance = data.roadmap_assurance; const source = assurance.source_audit; const evidence = assurance.evidence_audit; const freshness = assurance.freshness_audit; const dependencies = assurance.dependency_register;
     const metrics = document.getElementById("assurance-metrics"); metrics.replaceChildren();
     renderMetric(metrics, tr("sourceCount"), source.summary.source_count, `${source.audit_id} · ${source.as_of}`);
     renderMetric(metrics, tr("reachable"), source.summary.reachable, `${Math.round(source.summary.reachable / source.summary.source_count * 100)}%`);
@@ -90,12 +92,16 @@
     renderMetric(metrics, tr("timeoutError"), source.summary.timeout + source.summary.error, tr("sourceAuditNote"));
     renderMetric(metrics, tr("milestoneCount"), evidence.summary.milestone_count, evidence.as_of);
     renderMetric(metrics, tr("coverageGap"), evidence.summary.coverage_gap, `${evidence.summary.openfs_provisional} ${tr("provisionalGate")}`);
+    renderMetric(metrics, tr("freshnessAttention"), freshness.summary.high + freshness.summary.critical, `${freshness.summary.critical} ${tr("critical")} · ${freshness.summary.past_target_rechecks} target rechecks`);
     setText("assurance-caveat-text", tr("evidenceCaveat"));
-    [["evidence-audit-commit", evidence], ["source-audit-commit", source], ["dependency-register-commit", dependencies]].forEach(([id, artifact]) => { const link = document.getElementById(id); link.href = artifact.source_commit_url; link.textContent = `${tr("commit")} ${artifact.source_commit.slice(0, 7)}`; });
+    [["evidence-audit-commit", evidence], ["freshness-audit-commit", freshness], ["source-audit-commit", source], ["dependency-register-commit", dependencies]].forEach(([id, artifact]) => { const link = document.getElementById(id); link.href = artifact.source_commit_url; link.textContent = `${tr("commit")} ${artifact.source_commit.slice(0, 7)}`; });
 
     const byRoadmap = new Map(data.roadmaps.map((item) => [item.roadmap_id, {total: 0, primary: 0, target: 0, baseline: 0, gap: 0, provisional: 0}]));
-    evidence.entries.forEach((entry) => { const item = byRoadmap.get(entry.roadmap_id); item.total += 1; if (entry.review_status === "screened-primary") item.primary += 1; if (entry.review_status === "screened-forward-looking") item.target += 1; if (entry.review_status === "as-of-baseline") item.baseline += 1; if (entry.review_status === "coverage-gap") item.gap += 1; if (entry.review_status === "openfs-provisional") item.provisional += 1; });
+    evidence.entries.forEach((entry) => { const item = byRoadmap.get(entry.roadmap_id); item.total += 1; if (entry.review_status === "classified-primary-event") item.primary += 1; if (entry.review_status === "classified-forward-looking") item.target += 1; if (entry.review_status === "as-of-baseline") item.baseline += 1; if (entry.review_status === "coverage-gap") item.gap += 1; if (entry.review_status === "openfs-provisional") item.provisional += 1; });
     const claimTable = document.createElement("table"); claimTable.className = "assurance-table"; const claimHead = document.createElement("thead"); const claimHeadRow = document.createElement("tr"); [tr("roadmap"), tr("total"), tr("primaryEvent"), tr("forwardTarget"), tr("baseline"), tr("coverageGap"), tr("provisionalGate")].forEach((label) => claimHeadRow.append(makeCell("th", label))); claimHead.append(claimHeadRow); const claimBody = document.createElement("tbody"); byRoadmap.forEach((counts, roadmapId) => { const row = document.createElement("tr"); row.append(makeCell("th", roadmapTitle(roadmapId)), makeCell("td", counts.total), makeCell("td", counts.primary), makeCell("td", counts.target), makeCell("td", counts.baseline), makeCell("td", counts.gap), makeCell("td", counts.provisional)); claimBody.append(row); }); claimTable.append(claimHead, claimBody); const claimRoot = document.getElementById("claim-audit-by-roadmap"); claimRoot.replaceChildren(claimTable);
+
+    const freshnessTable = document.createElement("table"); freshnessTable.className = "assurance-table"; const freshnessHead = document.createElement("thead"); const freshnessHeadRow = document.createElement("tr"); [tr("roadmap"), tr("milestoneCount"), tr("sourceCount"), tr("critical"), tr("high"), tr("medium"), tr("low")].forEach((label) => freshnessHeadRow.append(makeCell("th", label))); freshnessHead.append(freshnessHeadRow); const freshnessBody = document.createElement("tbody"); freshness.roadmap_summaries.forEach((summary) => { const row = document.createElement("tr"); row.append(makeCell("th", roadmapTitle(summary.roadmap_id)), makeCell("td", summary.milestone_count), makeCell("td", summary.source_count), makeCell("td", summary.critical), makeCell("td", summary.high), makeCell("td", summary.medium), makeCell("td", summary.low)); freshnessBody.append(row); }); freshnessTable.append(freshnessHead, freshnessBody); document.getElementById("freshness-summary").replaceChildren(freshnessTable);
+    const followups = freshness.attention_items.filter((item) => item.severity !== "low"); const followupTable = document.createElement("table"); followupTable.className = "assurance-table freshness-attention-table"; const followupHead = document.createElement("thead"); const followupHeadRow = document.createElement("tr"); [tr("priority"), tr("roadmap"), tr("object"), tr("reason"), tr("nextAction")].forEach((label) => followupHeadRow.append(makeCell("th", label))); followupHead.append(followupHeadRow); const followupBody = document.createElement("tbody"); followups.forEach((item) => { const row = document.createElement("tr"); const severityCell = document.createElement("td"); const badge = document.createElement("span"); badge.className = `freshness-severity severity-${item.severity}`; badge.textContent = tr(item.severity); severityCell.append(badge); row.append(severityCell, makeCell("th", roadmapTitle(item.roadmap_id)), makeCell("td", item.object_id), makeCell("td", localized(item, "reason")), makeCell("td", localized(item, "next_action"))); followupBody.append(row); }); followupTable.append(followupHead, followupBody); document.getElementById("freshness-attention").replaceChildren(followupTable);
 
     const attention = source.results.filter((item) => item.status !== "reachable"); const sourceTable = document.createElement("table"); sourceTable.className = "assurance-table source-attention-table"; const sourceHead = document.createElement("thead"); const sourceHeadRow = document.createElement("tr"); [tr("roadmap"), tr("source"), tr("status"), tr("url")].forEach((label) => sourceHeadRow.append(makeCell("th", label))); sourceHead.append(sourceHeadRow); const sourceBody = document.createElement("tbody"); attention.forEach((item) => { const row = document.createElement("tr"); row.append(makeCell("th", roadmapTitle(item.roadmap_id)), makeCell("td", item.source_id), makeCell("td", item.status)); const url = document.createElement("td"); const link = document.createElement("a"); link.href = item.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = item.url; url.append(link); row.append(url); sourceBody.append(row); }); sourceTable.append(sourceHead, sourceBody); document.getElementById("source-audit-results").replaceChildren(sourceTable);
 
@@ -113,17 +119,28 @@
 
   function comparisonValue(scenario, row) {
     if (row === "objective") return localized(scenario, "objective");
-    if (row === "architecture") return localized(scenario.architecture, "summary");
-    if (row === "systemSoftware") return localized(scenario.system_software, "summary");
-    if (row === "applications") return localized(scenario.applications, "summary");
+    if (row.startsWith("option:")) {
+      const domain = row.slice("option:".length);
+      const option = scenario.technology_options.find((item) => item.domain === domain);
+      return option ? `${localized(option, "candidate")}: ${localized(option, "role")}` : "";
+    }
     if (row === "unknownCount") return String(localizedArray(scenario, "uncertainties").length);
     return localized(scenario.evaluation.reversibility, "rationale");
   }
 
   function renderScenarioIndex() {
     renderScenarioCards(document.getElementById("scenario-index-list"));
-    const rows = ["objective", "architecture", "systemSoftware", "applications", "unknownCount", "reversibility"];
-    const table = document.createElement("table"); table.className = "scenario-comparison-table"; const head = document.createElement("thead"); const headRow = document.createElement("tr"); headRow.append(makeCell("th", tr("criterion"))); data.scenarios.forEach((scenario) => { const cell = document.createElement("th"); const link = document.createElement("a"); link.href = scenarioLink(scenario); link.textContent = localized(scenario, "title"); cell.append(link); headRow.append(cell); }); head.append(headRow); const body = document.createElement("tbody"); rows.forEach((key) => { const row = document.createElement("tr"); row.append(makeCell("th", tr(key))); data.scenarios.forEach((scenario) => row.append(makeCell("td", comparisonValue(scenario, key)))); body.append(row); }); table.append(head, body); document.getElementById("scenario-comparison").replaceChildren(table);
+    const rows = [
+      ["objective", "objective"],
+      ["compute", "option:compute"],
+      ["memory", "option:memory"],
+      ["interconnect", "option:interconnect"],
+      ["systemSoftware", "option:system-software"],
+      ["applications", "option:applications"],
+      ["unknownCount", "unknownCount"],
+      ["reversibility", "reversibility"],
+    ];
+    const table = document.createElement("table"); table.className = "scenario-comparison-table"; const head = document.createElement("thead"); const headRow = document.createElement("tr"); headRow.append(makeCell("th", tr("criterion"))); data.scenarios.forEach((scenario) => { const cell = document.createElement("th"); const link = document.createElement("a"); link.href = scenarioLink(scenario); link.textContent = localized(scenario, "title"); cell.append(link); headRow.append(cell); }); head.append(headRow); const body = document.createElement("tbody"); rows.forEach(([label, value]) => { const row = document.createElement("tr"); row.append(makeCell("th", tr(label))); data.scenarios.forEach((scenario) => row.append(makeCell("td", comparisonValue(scenario, value)))); body.append(row); }); table.append(head, body); document.getElementById("scenario-comparison").replaceChildren(table);
     const gates = document.getElementById("scenario-gates"); gates.replaceChildren(); data.scenarios.forEach((scenario) => { const item = document.createElement("section"); const title = document.createElement("h4"); title.textContent = localized(scenario, "title"); const list = document.createElement("ol"); localizedArray(scenario, "decision_gates").forEach((gate) => list.append(makeCell("li", gate))); item.append(title, list); gates.append(item); });
   }
 

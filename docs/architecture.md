@@ -107,6 +107,13 @@ gates are separate `hpci-evaluation` or `hpci-adoption` events with
 portfolio mappings, timing semantics, publication approval, or the declared public
 artifact set disagree.
 
+The weekly review also rebuilds a freshness queue from the committed roadmaps and
+a fresh URL reachability scan. It flags undated milestones, passed target dates,
+future-dated observed events, missing source-date metadata, and retrieval
+warnings without treating any of them as proof that a claim is false. The
+generated workflow artifacts are review inputs; they do not modify canonical
+roadmaps or bypass Consensus.
+
 ### Portfolio review package
 
 A multi-roadmap portfolio and its HPCI scenarios are a high-impact recommendation,
@@ -116,10 +123,11 @@ audit, dependency register, scenario set, policy, schema, and publication
 Directive, and creates review units with explicit falsification prompts.
 
 Independent validators and critics submit one schema-valid assessment covering
-every unit. The deterministic evaluator rejects digest drift, missing units,
+every unit and a conclusive primary-source check for every key externally dated
+milestone declared in the package. The deterministic evaluator rejects digest drift, missing units,
 duplicate reviewer identities, author-group votes, insufficient provider/origin
 diversity, absent falsification, primary-source checks that do not match the
-commit-pinned roadmap registry, and critical objections. The package also pins
+exact milestone citations in the commit-pinned roadmap registry, and critical objections. The package also pins
 its review schemas and evaluator implementation. Passing those mechanical
 conditions yields only `ready-for-human-decision`; it cannot replace the human
 decision required for a high-impact HPCI recommendation.

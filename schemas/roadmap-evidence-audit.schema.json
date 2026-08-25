@@ -13,23 +13,26 @@
     "export_id": {"const": "ROADMAP-EVIDENCE-AUDIT-001"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
-    "review_scope": {"const": "single-model-structured-claim-screening"},
+    "review_scope": {"const": "single-model-structured-claim-classification"},
     "consensus_status": {"const": "incomplete"},
     "method_ja": {"type": "string", "minLength": 1},
     "method_en": {"type": "string", "minLength": 1},
     "summary": {
       "type": "object",
       "required": [
-        "milestone_count", "screened_primary", "screened_forward_looking",
-        "as_of_baseline", "coverage_gap", "openfs_provisional"
+        "milestone_count", "classified_primary", "classified_forward_looking",
+        "as_of_baseline", "coverage_gap", "openfs_provisional",
+        "independently_verified", "pending_independent_review"
       ],
       "properties": {
         "milestone_count": {"type": "integer", "minimum": 1},
-        "screened_primary": {"type": "integer", "minimum": 0},
-        "screened_forward_looking": {"type": "integer", "minimum": 0},
+        "classified_primary": {"type": "integer", "minimum": 0},
+        "classified_forward_looking": {"type": "integer", "minimum": 0},
         "as_of_baseline": {"type": "integer", "minimum": 0},
         "coverage_gap": {"type": "integer", "minimum": 0},
-        "openfs_provisional": {"type": "integer", "minimum": 0}
+        "openfs_provisional": {"type": "integer", "minimum": 0},
+        "independently_verified": {"const": 0},
+        "pending_independent_review": {"type": "integer", "minimum": 1}
       },
       "additionalProperties": false
     },
@@ -42,6 +45,7 @@
           "roadmap_id", "milestone_id", "comparison_priority", "review_status",
           "claim_support", "timing_status", "source_ids", "locator_hint_ja",
           "locator_hint_en", "review_note_ja", "review_note_en"
+          ,"semantic_verification"
         ],
         "properties": {
           "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
@@ -49,19 +53,19 @@
           "comparison_priority": {"enum": ["key", "supporting"]},
           "review_status": {
             "enum": [
-              "screened-primary", "screened-forward-looking", "as-of-baseline",
+              "classified-primary-event", "classified-forward-looking", "as-of-baseline",
               "coverage-gap", "openfs-provisional"
             ]
           },
           "claim_support": {
             "enum": [
-              "direct-primary", "official-target-statement", "current-state-only",
+              "official-primary-source-cited", "official-target-source-cited", "current-state-only",
               "absence-not-exhaustively-provable", "openfs-design-assessment"
             ]
           },
           "timing_status": {
             "enum": [
-              "event-date-supported", "target-date-supported", "baseline-only",
+              "declared-event-timing", "declared-target-timing", "baseline-only",
               "unresolved", "provisional-gate"
             ]
           },
@@ -73,6 +77,7 @@
           "locator_hint_en": {"type": "string", "minLength": 1},
           "review_note_ja": {"type": "string", "minLength": 1},
           "review_note_en": {"type": "string", "minLength": 1}
+          ,"semantic_verification": {"const": "pending-independent-review"}
         },
         "additionalProperties": false
       }

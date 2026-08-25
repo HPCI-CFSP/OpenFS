@@ -45,6 +45,14 @@ jobs:
           WEEK="${REQUESTED_WEEK:-$(date -u --date='7 days ago' +%G-W%V)}"
           GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p _automation
+          python3 tools/audit_roadmap_sources.py \
+            --output _automation/roadmap-source-audit.json \
+            --timeout 25 \
+            --workers 8
+          python3 tools/build_roadmap_freshness_audit.py \
+            --generated-at "$GENERATED_AT" \
+            --source-audit _automation/roadmap-source-audit.json \
+            --output _automation/roadmap-freshness-audit.json
           python3 tools/generate_weekly_digest.py \
             --week "$WEEK" \
             --generated-at "$GENERATED_AT"
@@ -58,6 +66,8 @@ jobs:
           name: openfs-weekly-review
           path: |
             _automation/exception-issues.json
+            _automation/roadmap-source-audit.json
+            _automation/roadmap-freshness-audit.json
             _automation/review-week.txt
             reviews/digests/*.json
             reviews/digests/*.md

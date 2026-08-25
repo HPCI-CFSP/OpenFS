@@ -66,7 +66,7 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
     assessment_dir = root / manifest["submission"]["assessment_directory"]
     reviews = [read_json(path) for path in sorted(assessment_dir.glob("*.json"))]
     expected_units = {unit["unit_id"] for unit in manifest["review_units"]}
-    primary_sources_by_unit: dict[str, dict[str, tuple[str, str]]] = {}
+    required_primary_checks: dict[str, dict[str, set[tuple[str, str, str]]]] = {}
     for unit in manifest["review_units"]:
         if unit["kind"] != "roadmap":
             continue
@@ -77,13 +77,35 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         roadmap = committed_json(root, manifest["base_commit"], roadmap_paths[0]) if len(roadmap_paths) == 1 else None
         if roadmap is None:
             integrity_errors.append(f"roadmap_source_registry_unavailable:{unit['unit_id']}")
-            primary_sources_by_unit[unit["unit_id"]] = {}
+            required_primary_checks[unit["unit_id"]] = {}
         else:
-            primary_sources_by_unit[unit["unit_id"]] = {
-                source["source_id"]: (source["url"], source["source_class"])
-                for source in roadmap["sources"]
-                if source["source_class"] != "openfs-governance"
+            source_registry = {source["source_id"]: source for source in roadmap["sources"]}
+            expected = {
+                milestone["milestone_id"]: {
+                    (
+                        source_id,
+                        source_registry[source_id]["url"],
+                        source_registry[source_id]["source_class"],
+                    )
+                    for source_id in milestone["source_ids"]
+                    if source_registry[source_id]["source_class"] != "openfs-governance"
+                }
+                for lane in roadmap["lanes"]
+                for milestone in lane["milestones"]
+                if milestone["comparison_priority"] == "key"
+                and milestone["timing_basis"] not in {"openfs-provisional-plan", "no-public-date"}
             }
+            expected = {selector: options for selector, options in expected.items() if options}
+            declared = {
+                requirement["selector"]: {
+                    (option["source_id"], option["source_url"], option["source_class"])
+                    for option in requirement["source_options"]
+                }
+                for requirement in unit.get("primary_source_requirements", [])
+            }
+            if declared != expected:
+                integrity_errors.append(f"primary_source_requirement_manifest_mismatch:{unit['unit_id']}")
+            required_primary_checks[unit["unit_id"]] = expected
     seen_ids: set[str] = set()
     seen_agents: set[str] = set()
     eligible: list[dict[str, Any]] = []
@@ -143,28 +165,35 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
             if unit_id in required_checks and set(assessment.get("checks", {})) != required_checks[unit_id]:
                 review_errors.append(f"required_check_coverage_mismatch:{review_id}:{unit_id}")
         primary_checks = review.get("primary_source_checks", [])
-        seen_primary_checks: set[tuple[str, str]] = set()
-        conclusive_units: set[str] = set()
+        seen_primary_checks: set[tuple[str, str, str]] = set()
+        conclusive_selectors: set[tuple[str, str]] = set()
         for check in primary_checks:
             unit_id = check.get("unit_id", "<missing>")
+            selector = check.get("selector", "<missing>")
             source_id = check.get("source_id", "<missing>")
-            key = (unit_id, source_id)
+            key = (unit_id, selector, source_id)
             if key in seen_primary_checks:
-                review_errors.append(f"duplicate_primary_source_check:{review_id}:{unit_id}:{source_id}")
+                review_errors.append(f"duplicate_primary_source_check:{review_id}:{unit_id}:{selector}:{source_id}")
             seen_primary_checks.add(key)
-            registered = primary_sources_by_unit.get(unit_id)
-            if registered is None:
+            unit_requirements = required_primary_checks.get(unit_id)
+            if unit_requirements is None:
                 review_errors.append(f"primary_source_unit_mismatch:{review_id}:{unit_id}")
                 continue
-            if registered.get(source_id) != (check.get("source_url"), check.get("source_class")):
-                review_errors.append(f"primary_source_identity_mismatch:{review_id}:{unit_id}:{source_id}")
+            source_options = unit_requirements.get(selector)
+            observed_source = (source_id, check.get("source_url"), check.get("source_class"))
+            if source_options is None:
+                review_errors.append(f"primary_source_selector_mismatch:{review_id}:{unit_id}:{selector}")
+                continue
+            if observed_source not in source_options:
+                review_errors.append(f"primary_source_identity_mismatch:{review_id}:{unit_id}:{selector}:{source_id}")
                 continue
             if check.get("outcome") in {"supports", "contradicts"}:
-                conclusive_units.add(unit_id)
+                conclusive_selectors.add((unit_id, selector))
         if manifest["consensus_policy"]["require_primary_source"]:
-            for unit_id in primary_sources_by_unit:
-                if unit_id not in conclusive_units:
-                    review_errors.append(f"primary_source_coverage_mismatch:{review_id}:{unit_id}")
+            for unit_id, requirements in required_primary_checks.items():
+                for selector in requirements:
+                    if (unit_id, selector) not in conclusive_selectors:
+                        review_errors.append(f"primary_source_coverage_mismatch:{review_id}:{unit_id}:{selector}")
         if review.get("reviewer", {}).get("independence_group") in disallowed:
             review_errors.append(f"disallowed_independence_group:{review_id}")
         integrity_errors.extend(review_errors)

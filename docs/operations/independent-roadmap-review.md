@@ -34,9 +34,13 @@ allowing the authoring model to certify its own work.
 3. Follow the falsification prompts and search for contradictory primary sources,
    later schedule changes, product cancellations, unsupported quarter precision,
    omitted alternatives, and infeasible dependencies or fallbacks.
-4. For every roadmap unit, record at least one conclusive primary-source check.
-   Its source ID and URL must match that roadmap in the package's pinned commit;
-   reachability alone and secondary summaries do not satisfy this requirement.
+4. For every milestone listed in a roadmap unit's
+   `primary_source_requirements`, record one conclusive primary-source check
+   using one of that milestone's registered `source_options`. The source ID,
+   URL, and class must match the exact milestone citation in the package's
+   pinned commit; reachability alone and secondary summaries do not satisfy
+   this requirement. OpenFS provisional gates and undated gaps remain in the
+   unit assessment but are not presented as externally verified events.
    Set `registry_snapshot_digest` to the SHA-256 of the exact
    `config/agent-registry.json` Git object at `base_commit`.
 5. Copy `review-template.json` to

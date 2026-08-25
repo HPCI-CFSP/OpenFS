@@ -715,6 +715,12 @@ def collect_roadmap_assurance(
             ["method_ja", "method_en"],
         ),
         (
+            "freshness_audit",
+            policy["included_public_roadmap_freshness_audit"],
+            policy["roadmap_freshness_audit_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
             "dependency_register",
             policy["included_public_roadmap_dependencies"],
             policy["roadmap_dependency_public_fields"],
