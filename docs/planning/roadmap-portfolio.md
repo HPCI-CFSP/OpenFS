@@ -46,11 +46,27 @@ Each published roadmap should contain the following elements.
 | Cross-cutting | Integrated operations, governance, and service continuity | CROSS-03, 04, 07, 10, 14 | Operational transition, accountability, and continuity gates |
 | Cross-cutting | Technology horizon scanning and new Topic discovery | CROSS-17, 18; ARCH-07, 11 | Signals, new Topic proposals, and Consensus Gate decisions |
 
+### Initial P0 publication wave
+
+The first common-format publication wave contains six roadmaps: compute nodes,
+memory and data movement, interconnect and optics, performance portability,
+scientific workloads, and the HPCI reference blueprint. Together they form a
+connected dependency graph from workload requirements through software and
+hardware choices to center-level decisions. This six-roadmap wave is a delivery
+milestone within the broader P0 backlog; it does not downgrade the remaining P0
+families.
+
+Every artifact uses `schemas/public-roadmap.schema.json`. The public comparison
+shows `comparison_priority: key` milestones, primary-source coverage, structured
+Coverage Gaps, and dependencies. Exact quarters require cited support. OpenFS
+evaluation and adoption gates use `openfs-provisional-plan` and are never presented
+as vendor or standards commitments.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone
 
-Continue the published memory roadmap and next create compute nodes, interconnect, scientific workload, performance portability, storage/data, center blueprint, facilities, runtime, workflow, security, procurement scenarios, integrated operations, and horizon-scanning roadmaps. These determine the core architectural choices and expose dependencies early.
+Maintain the six-roadmap initial publication wave, then add storage/data, facilities, runtime, workflow, security, procurement scenarios, integrated operations, and horizon scanning. These determine the remaining core architectural choices and expose dependencies early.
 
 ### P1: deepen feasibility and adoption
 

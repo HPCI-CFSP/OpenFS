@@ -29,7 +29,7 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 
 ## 現在の状況
 
-本Repositoryには現在、Phase 0の設計Baseline、再実行可能な公開Web PilotのVertical Slice、決定論的なConsensusおよびAI Topic Promotion経路、FY2022-FY2025のFS報告書公式一覧、決定論的な複数Scenario表示Generator、Review専用のCanonical Claim Promotion経路、日英対応のGitHub Pages公開ビューが含まれています。定期的なProduction Provider dispatchとProduction Report生成はまだ有効化されておらず、Ownerが文書化されたDrillを完了するまでWorkflowは既定で無効です。
+本Repositoryには現在、Phase 0の設計Baseline、再実行可能な公開Web PilotのVertical Slice、決定論的なConsensusおよびAI Topic Promotion経路、FY2022-FY2025のFS報告書公式一覧、決定論的な複数Scenario表示Generator、Review専用のCanonical Claim Promotion経路、日英対応のGitHub Pages公開ビューが含まれています。最初の共通形式による暫定Roadmap 6本は、計算、メモリ、インターコネクト、性能可搬性、科学ワークロード、HPCI参照構成を対象とし、Pagesでは個別の四半期表示とRoadmap横断比較を提供します。定期的なProduction Provider dispatchとProduction Report生成はまだ有効化されておらず、Ownerが文書化されたDrillを完了するまでWorkflowは既定で無効です。
 
 最初のVertical Sliceである`OFS-001`は、2030年代のHPCI向けメモリ階層候補を繰り返し調査します。`OFS-002`はFS由来Baselineを維持し、`OFS-003`は日付付きHPCI Provider Registryと現地根拠を持つCenter Profileからセンター状況を考慮したScenarioを作成し、`OFS-004`はConsensusで受理されたAI Topic追加をPromotionし、`OFS-005`は日本発技術を優先的に網羅しながら世界の技術動向を継続調査します。
 
@@ -72,6 +72,7 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 | `decisions/` | 機械生成されたConsensus Decision |
 | `data/` | 受理されたCanonical Source、Evidence、Finding Record |
 | `knowledge/` | Promotion済みCanonical Claim、追記専用Status Event、生成されたActive View |
+| `knowledge/public/roadmaps/` | 1つの共通Schemaを使う、人が公開承認した日英Roadmap Export |
 | `roadmaps/` | Scenario形式のRoadmap Draftと受理版 |
 | `reports/` | 生成されたReport DraftとExport |
 | `reviews/` | 人のDirective、Digest、Exception、Dissent |
@@ -139,7 +140,7 @@ python3 tools/generate_scenario_views.py \
 python3 tools/build_pages_site.py --output _site
 ```
 
-公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧と専用詳細Pageに分けて表示します。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。ScenarioとReportの公開には、一致する人の`publication-approval` Directiveも必要です。詳細は`docs/publication/github-pages.md`を参照してください。
+公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧、専用の四半期詳細Page、重要Milestone、一次情報Coverage、Coverage Gap、依存関係を示す6本横断比較に分けて表示します。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。Roadmap、Scenario、Reportの公開には、それぞれ一致する人の`publication-approval` Directiveが必要です。詳細は`docs/publication/github-pages.md`を参照してください。
 
 調査自動化はまだ有効化されていません。Provider Account、GitHub設定、3 RunのPilot手順は`docs/operations/automation-setup.md`に記載されています。API Keyを設定するだけではLoopは起動しません。
 

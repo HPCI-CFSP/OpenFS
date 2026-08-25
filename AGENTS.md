@@ -86,3 +86,14 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 ## Repository organization
 
 When a task contains multiple investigations, organize them into separate task, monitor, run, and artifact IDs. Do not mix unrelated investigations in a single output file.
+
+## Public roadmap artifacts
+
+- Build public roadmaps with `skills/roadmap-planning/SKILL.md` and
+  `schemas/public-roadmap.schema.json`; do not introduce a roadmap-specific format.
+- Assign Q1-Q4 only when the cited public source supports that precision. Preserve
+  half-year, year-only, and undated timing without inference.
+- Label OpenFS evaluation and adoption gates as provisional plans and keep them
+  distinct from vendor, standards, policy, and observed milestones.
+- Record unresolved research as structured Coverage Gaps with decision impact and
+  a next action. Never fill a gap with an unsupported forecast.

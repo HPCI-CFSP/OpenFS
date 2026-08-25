@@ -62,11 +62,12 @@ def source_commit_metadata(root: Path, relative_path: str | None = None) -> dict
 
 def roadmap_index_entry(roadmap: dict[str, Any]) -> dict[str, Any]:
     return {
-        "roadmap_id": roadmap["export_id"],
+        "export_id": roadmap["export_id"],
+        "roadmap_id": roadmap["roadmap_id"],
         "domain": roadmap["domain"],
         "slug": roadmap["slug"],
         "path": f"roadmaps/{roadmap['slug']}/",
-        "renderer": "memory-technology",
+        "renderer": "common-quarterly",
         "title_ja": roadmap["title_ja"],
         "title_en": roadmap["title_en"],
         "summary_ja": roadmap["summary_ja"],
@@ -80,10 +81,14 @@ def roadmap_index_entry(roadmap: dict[str, Any]) -> dict[str, Any]:
         "research_status": roadmap["research_status"],
         "coverage_status": roadmap["coverage_status"],
         "consensus_status": roadmap["consensus_status"],
-        "technology_count": len(roadmap["technologies"]),
+        "track_count": len(roadmap["tracks"]),
         "milestone_count": sum(
             len(lane["milestones"]) for lane in roadmap["lanes"]
         ),
+        "source_count": roadmap["source_coverage"]["source_count"],
+        "primary_source_count": roadmap["source_coverage"]["primary_source_count"],
+        "coverage_gap_count": len(roadmap["coverage_gaps"]),
+        "dependency_count": len(roadmap["dependencies"]),
     }
 
 
@@ -432,102 +437,166 @@ def collect_topic_summaries(
     return safe_summaries
 
 
-def collect_memory_roadmap(root: Path, policy: dict[str, Any]) -> dict[str, Any] | None:
-    path = root / policy["included_public_memory_roadmap"]
-    if not path.exists():
-        return None
-    export = load_json(path)
-    if export.get("status") not in set(policy["accepted_memory_roadmap_statuses"]):
-        raise ValueError("public memory technology roadmap is not published")
+def collect_roadmaps(
+    root: Path, policy: dict[str, Any], include_commit_metadata: bool = True
+) -> list[dict[str, Any]]:
+    portfolio = load_json(root / "config" / "roadmap-portfolio.json")
+    portfolio_by_id = {
+        item["roadmap_id"]: item for item in portfolio["roadmap_families"]
+    }
+    expected_exports = {
+        export_id
+        for item in portfolio["roadmap_families"]
+        if item["status"] == "published"
+        for export_id in item["published_artifact_ids"]
+    }
     directives = approved_publication_directives(root, policy)
-    projected = public_projection(
-        export,
-        policy["memory_roadmap_public_fields"],
-        policy["required_publication_metadata"],
-        policy["memory_roadmap_required_bilingual_fields"],
-        directives,
-        f"memory technology roadmap {export.get('export_id', path.name)}",
-    )
+    roadmaps: list[dict[str, Any]] = []
+    seen_exports: set[str] = set()
+    seen_roadmaps: set[str] = set()
+    seen_slugs: set[str] = set()
+    seen_dependencies: set[str] = set()
+    for path in sorted(root.glob(policy["included_public_roadmap_glob"])):
+        export = load_json(path)
+        if export.get("status") not in set(policy["accepted_roadmap_statuses"]):
+            raise ValueError(f"non-publishable roadmap in accepted path: {path}")
+        label = f"roadmap {export.get('export_id', path.name)}"
+        projected = public_projection(
+            export,
+            policy["roadmap_public_fields"],
+            policy["required_publication_metadata"],
+            policy["roadmap_required_bilingual_fields"],
+            directives,
+            label,
+        )
+        export_id = projected["export_id"]
+        roadmap_id = projected["roadmap_id"]
+        slug = projected["slug"]
+        if export_id in seen_exports or roadmap_id in seen_roadmaps or slug in seen_slugs:
+            raise ValueError(f"duplicate roadmap export, roadmap ID, or slug: {label}")
+        seen_exports.add(export_id)
+        seen_roadmaps.add(roadmap_id)
+        seen_slugs.add(slug)
 
-    horizon = projected["horizon"]
-    start_year = horizon["start_year"]
-    end_year = horizon["end_year"]
-    if start_year > end_year:
-        raise ValueError("memory technology roadmap has an invalid horizon")
+        portfolio_item = portfolio_by_id.get(roadmap_id)
+        if not portfolio_item:
+            raise ValueError(f"{label} is absent from the roadmap portfolio")
+        if (
+            portfolio_item["slug"] != slug
+            or portfolio_item["domain"] != projected["domain"]
+            or export_id not in portfolio_item["published_artifact_ids"]
+        ):
+            raise ValueError(f"{label} disagrees with its roadmap portfolio entry")
 
-    technologies = projected.get("technologies", [])
-    technology_ids = [item.get("technology_id") for item in technologies]
-    if len(technology_ids) != len(set(technology_ids)):
-        raise ValueError("memory technology roadmap has duplicate technology IDs")
+        start_year = projected["horizon"]["start_year"]
+        end_year = projected["horizon"]["end_year"]
+        if start_year > end_year:
+            raise ValueError(f"{label} has an invalid horizon")
+        group_ids = [item["group_id"] for item in projected["groups"]]
+        track_ids = [item["track_id"] for item in projected["tracks"]]
+        source_ids = [item["source_id"] for item in projected["sources"]]
+        for kind, identifiers in (
+            ("group", group_ids), ("track", track_ids), ("source", source_ids)
+        ):
+            if len(identifiers) != len(set(identifiers)):
+                raise ValueError(f"{label} has duplicate {kind} IDs")
+        known_groups = set(group_ids)
+        known_tracks = set(track_ids)
+        known_sources = set(source_ids)
+        for track in projected["tracks"]:
+            if track["group"] not in known_groups:
+                raise ValueError(f"track {track['track_id']} has an unknown group")
+            unknown = set(track["source_ids"]) - known_sources
+            if unknown:
+                raise ValueError(f"track {track['track_id']} references unknown sources: {sorted(unknown)}")
 
-    sources = projected.get("sources", [])
-    source_ids = [item.get("source_id") for item in sources]
-    if len(source_ids) != len(set(source_ids)):
-        raise ValueError("memory technology roadmap has duplicate source IDs")
-    known_sources = set(source_ids)
-    for technology in technologies:
-        unknown_sources = set(technology.get("source_ids", [])) - known_sources
-        if unknown_sources:
-            raise ValueError(
-                f"memory technology {technology.get('technology_id')} references "
-                f"unknown sources: {sorted(unknown_sources)}"
+        dependency_ids = {item["dependency_id"] for item in projected["dependencies"]}
+        if len(dependency_ids) != len(projected["dependencies"]):
+            raise ValueError(f"{label} has duplicate dependency IDs")
+        duplicate_dependencies = dependency_ids & seen_dependencies
+        if duplicate_dependencies:
+            raise ValueError(f"duplicate cross-roadmap dependency IDs: {sorted(duplicate_dependencies)}")
+        seen_dependencies.update(dependency_ids)
+        for dependency in projected["dependencies"]:
+            unknown_roadmaps = {
+                dependency["upstream_roadmap_id"], dependency["downstream_roadmap_id"]
+            } - set(portfolio_by_id)
+            unknown_sources = set(dependency["source_ids"]) - known_sources
+            if unknown_roadmaps or unknown_sources:
+                raise ValueError(
+                    f"dependency {dependency['dependency_id']} has unknown roadmap or source references"
+                )
+
+        lane_ids: set[str] = set()
+        all_milestone_ids = {
+            milestone["milestone_id"]
+            for lane in projected["lanes"]
+            for milestone in lane["milestones"]
+        }
+        milestone_ids: set[str] = set()
+        for lane in projected["lanes"]:
+            lane_id = lane["lane_id"]
+            if lane_id in lane_ids:
+                raise ValueError(f"duplicate roadmap lane: {lane_id}")
+            lane_ids.add(lane_id)
+            if lane["track_id"] not in known_tracks:
+                raise ValueError(f"roadmap lane {lane_id} has an unknown track")
+            for milestone in lane["milestones"]:
+                milestone_id = milestone["milestone_id"]
+                if milestone_id in milestone_ids:
+                    raise ValueError(f"duplicate roadmap milestone: {milestone_id}")
+                milestone_ids.add(milestone_id)
+                unknown_sources = set(milestone["source_ids"]) - known_sources
+                if unknown_sources:
+                    raise ValueError(f"milestone {milestone_id} references unknown sources: {sorted(unknown_sources)}")
+                year = milestone["year"]
+                quarter = milestone["quarter"]
+                precision = milestone["timing_precision"]
+                basis = milestone["timing_basis"]
+                maturity = milestone["maturity"]
+                if year is None:
+                    if quarter is not None or precision != "undated" or basis != "no-public-date" or maturity != "undated":
+                        raise ValueError(f"undated roadmap milestone {milestone_id} has inconsistent timing fields")
+                elif not start_year <= year <= end_year:
+                    raise ValueError(f"roadmap milestone {milestone_id} is outside the horizon")
+                elif basis == "no-public-date" or maturity == "undated":
+                    raise ValueError(f"dated roadmap milestone {milestone_id} is marked undated")
+                elif quarter is not None and precision != "quarter":
+                    raise ValueError(f"quarterly roadmap milestone {milestone_id} has inconsistent timing precision")
+                elif quarter is None and precision not in {"half-year", "year"}:
+                    raise ValueError(f"year-level roadmap milestone {milestone_id} has inconsistent timing precision")
+                if basis == "openfs-provisional-plan" and milestone["event_type"] not in {"hpci-evaluation", "hpci-adoption"}:
+                    raise ValueError(f"OpenFS provisional milestone {milestone_id} is not an HPCI gate")
+                allowed_refs = dependency_ids | all_milestone_ids | set(portfolio_by_id)
+                unknown_refs = set(milestone["dependency_refs"]) - allowed_refs
+                if unknown_refs:
+                    raise ValueError(f"milestone {milestone_id} has unknown dependency references: {sorted(unknown_refs)}")
+
+        primary_source_count = sum(
+            source["source_class"] != "openfs-governance"
+            for source in projected["sources"]
+        )
+        projected["source_coverage"] = {
+            "source_count": len(projected["sources"]),
+            "primary_source_count": primary_source_count,
+            "primary_source_ratio": round(primary_source_count / len(projected["sources"]), 3),
+        }
+        if include_commit_metadata:
+            metadata = source_commit_metadata(root, str(path.relative_to(root)))
+            projected.update(
+                updated_at=metadata["updated_at"],
+                source_commit=metadata["commit_sha"],
+                source_commit_url=metadata["commit_url"],
             )
+        roadmaps.append(projected)
 
-    lane_ids: set[str] = set()
-    milestone_ids: set[str] = set()
-    for lane in projected.get("lanes", []):
-        lane_id = lane.get("lane_id")
-        if lane_id in lane_ids:
-            raise ValueError(f"duplicate memory roadmap lane: {lane_id}")
-        lane_ids.add(lane_id)
-        if lane.get("technology_id") not in set(technology_ids):
-            raise ValueError(f"memory roadmap lane {lane_id} has an unknown technology")
-        for milestone in lane.get("milestones", []):
-            milestone_id = milestone.get("milestone_id")
-            if milestone_id in milestone_ids:
-                raise ValueError(f"duplicate memory roadmap milestone: {milestone_id}")
-            milestone_ids.add(milestone_id)
-            unknown_sources = set(milestone.get("source_ids", [])) - known_sources
-            if unknown_sources:
-                raise ValueError(
-                    f"memory roadmap milestone {milestone_id} references unknown "
-                    f"sources: {sorted(unknown_sources)}"
-                )
-            year = milestone.get("year")
-            quarter = milestone.get("quarter")
-            timing_precision = milestone.get("timing_precision")
-            timing_basis = milestone.get("timing_basis")
-            maturity = milestone.get("maturity")
-            if year is None:
-                if (
-                    quarter is not None
-                    or timing_precision != "undated"
-                    or timing_basis != "no-public-date"
-                    or maturity != "undated"
-                ):
-                    raise ValueError(
-                        f"undated memory roadmap milestone {milestone_id} has "
-                        "inconsistent precision, maturity, or timing basis"
-                    )
-            elif not start_year <= year <= end_year:
-                raise ValueError(
-                    f"memory roadmap milestone {milestone_id} is outside the horizon"
-                )
-            elif timing_basis == "no-public-date" or maturity == "undated":
-                raise ValueError(
-                    f"dated memory roadmap milestone {milestone_id} is marked undated"
-                )
-            elif quarter is not None and timing_precision != "quarter":
-                raise ValueError(
-                    f"quarterly memory roadmap milestone {milestone_id} has "
-                    "inconsistent timing precision"
-                )
-            elif quarter is None and timing_precision not in {"half-year", "year"}:
-                raise ValueError(
-                    f"year-level memory roadmap milestone {milestone_id} has "
-                    "inconsistent timing precision"
-                )
-    return projected
+    if seen_exports != expected_exports:
+        raise ValueError(
+            "published roadmap artifacts disagree with portfolio: "
+            f"missing={sorted(expected_exports - seen_exports)}, "
+            f"unexpected={sorted(seen_exports - expected_exports)}"
+        )
+    return roadmaps
 
 
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
@@ -590,18 +659,8 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
 
     scenarios = collect_scenarios(root, policy)
     reports = collect_reports(root, policy)
-    memory_roadmap = collect_memory_roadmap(root, policy)
-    memory_roadmap_path = policy["included_public_memory_roadmap"]
-    if memory_roadmap:
-        roadmap_metadata = source_commit_metadata(root, memory_roadmap_path)
-        memory_roadmap.update(
-            {
-                "updated_at": roadmap_metadata["updated_at"],
-                "source_commit": roadmap_metadata["commit_sha"],
-                "source_commit_url": roadmap_metadata["commit_url"],
-            }
-        )
-    roadmaps = [roadmap_index_entry(memory_roadmap)] if memory_roadmap else []
+    roadmap_artifacts = collect_roadmaps(root, policy)
+    roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
     site_metadata = source_commit_metadata(root)
     official_sources = [
@@ -609,7 +668,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         if source.get("availability") == "registered-public-url"
     ]
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "catalog_as_of": baseline["derived_at"],
         "site": site_metadata,
         "baseline": {
@@ -636,7 +695,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             ],
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
-        "memory_roadmap": memory_roadmap,
+        "roadmap_artifacts": roadmap_artifacts,
         "roadmaps": roadmaps,
         "scenarios": scenarios,
         "reports": reports,
@@ -682,6 +741,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         ),
         encoding="utf-8",
     )
+    comparison = output / "roadmaps" / "compare" / "index.html"
+    comparison.parent.mkdir(parents=True)
+    comparison.write_text(
+        render_template(
+            source / "roadmaps-compare.html",
+            {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
     detail_template = source / "roadmap-detail.html"
     for roadmap in public_data["roadmaps"]:
         detail = output / "roadmaps" / roadmap["slug"] / "index.html"
@@ -693,7 +761,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
                 detail_template,
                 {
                     "ROOT_PREFIX": root_prefix,
-                    "ROADMAP_ID": html.escape(roadmap["roadmap_id"], quote=True),
+                    "ROADMAP_ID": html.escape(roadmap["export_id"], quote=True),
                     "ASSET_VERSION": asset_version,
                 },
             ),

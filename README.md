@@ -29,7 +29,7 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
+This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. The first six common-format provisional roadmaps cover compute, memory, interconnect, performance portability, scientific workloads, and the HPCI reference blueprint; Pages provides individual quarterly views and a cross-roadmap comparison. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
 
 The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
@@ -72,6 +72,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `decisions/` | Machine-generated consensus decisions |
 | `data/` | Accepted canonical source, evidence, and finding records |
 | `knowledge/` | Promoted canonical Claims, append-only status events, and generated active views |
+| `knowledge/public/roadmaps/` | Human-approved bilingual public roadmap exports using one common schema |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, and dissent |
@@ -141,7 +142,7 @@ Build the public GitHub Pages view locally:
 python3 tools/build_pages_site.py --output _site
 ```
 
-The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index and dedicated detail pages. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Scenario and report publication additionally requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
+The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, dedicated quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, Coverage Gaps, and dependencies. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Every roadmap, scenario, and report publication requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
 
 Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 
