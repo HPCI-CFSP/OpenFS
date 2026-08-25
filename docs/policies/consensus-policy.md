@@ -8,6 +8,11 @@ Consensus is a deterministic eligibility check, not proof of truth. The gate eva
 
 Reviewers perform a blind first review. An assessment records its reviewer, agent independence group, verdict, confidence, checks, and objections. Registry data, not self-declared model text, is authoritative for independence groups in production.
 
+For a commit-pinned review package, `reviewed_at` must fall after the package was
+created and no later than the evaluator's clock, subject to the configured
+one-minute clock-skew tolerance. A pre-package or future-dated review is
+ineligible even when its content otherwise satisfies the gate.
+
 At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
 capacity before any research result exists. Reviewers in the Proposal author's
 independence group may provide an assessment, but they cannot satisfy the

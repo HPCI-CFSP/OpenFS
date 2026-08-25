@@ -7,12 +7,20 @@ import argparse
 import hashlib
 import json
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+MAXIMUM_CLOCK_SKEW_SECONDS = 60
+
+
+def parse_time(value: str) -> datetime:
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError("date-time must include an explicit UTC offset")
+    return parsed.astimezone(timezone.utc)
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -40,9 +48,22 @@ def committed_json(root: Path, commit: str, path: str) -> dict[str, Any] | None:
         return None
 
 
-def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
+def evaluate(
+    root: Path,
+    manifest_path: Path,
+    *,
+    evaluated_at: str | None = None,
+    maximum_clock_skew_seconds: int = MAXIMUM_CLOCK_SKEW_SECONDS,
+) -> dict[str, Any]:
     manifest = read_json(manifest_path)
+    evaluated = parse_time(evaluated_at) if evaluated_at else datetime.now(timezone.utc)
+    skew = timedelta(seconds=maximum_clock_skew_seconds)
     integrity_errors: list[str] = []
+    try:
+        package_created = parse_time(manifest["created_at"])
+    except (KeyError, TypeError, ValueError):
+        package_created = None
+        integrity_errors.append("package_created_at_invalid")
     for artifact in manifest["artifact_manifest"]:
         actual = committed_digest(root, manifest["base_commit"], artifact["path"])
         if actual is None:
@@ -170,6 +191,16 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
             review_errors.append(f"package_id_mismatch:{review_id}")
         if review.get("base_commit") != manifest["base_commit"]:
             review_errors.append(f"base_commit_mismatch:{review_id}")
+        try:
+            reviewed_at = parse_time(review["reviewed_at"])
+        except (KeyError, TypeError, ValueError):
+            reviewed_at = None
+            review_errors.append(f"reviewed_at_invalid:{review_id}")
+        if reviewed_at is not None:
+            if package_created is not None and reviewed_at < package_created - skew:
+                review_errors.append(f"review_before_package_created:{review_id}")
+            if reviewed_at > evaluated + skew:
+                review_errors.append(f"review_after_evaluation_window:{review_id}")
         assessments = review.get("unit_assessments", [])
         assessed = [item.get("unit_id") for item in assessments]
         if len(assessed) != len(expected_units) or set(assessed) != expected_units:
@@ -317,7 +348,7 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         "schema_version": "0.1.0",
         "package_id": manifest["package_id"],
         "base_commit": manifest["base_commit"],
-        "evaluated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "evaluated_at": evaluated.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "status": status,
         "counts": counts,
         "review_results": {

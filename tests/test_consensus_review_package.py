@@ -89,7 +89,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
                 for unit in self.manifest["review_units"]
             ],
             "critical_objections": [],
-            "reviewed_at": "2026-08-26T00:00:00Z",
+            "reviewed_at": self.manifest["created_at"],
         }
 
     def _evaluate_synthetic(self, reviews, agents):
@@ -340,6 +340,48 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         )
         self.assertTrue(
             any("support_verdict_has_non_supporting_sources" in item for item in result["integrity_errors"])
+        )
+
+    def test_review_before_package_creation_is_ineligible(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["reviewed_at"] = "2026-08-25T00:00:00Z"
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("review_before_package_created" in item for item in result["integrity_errors"])
+        )
+
+    def test_future_review_is_ineligible(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["reviewed_at"] = "2026-08-27T00:00:00Z"
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("review_after_evaluation_window" in item for item in result["integrity_errors"])
+        )
+
+    def test_review_time_requires_an_explicit_utc_offset(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agent = self._registered_reviewer(1)
+        review = self._review(agent, registry_digest)
+        review["reviewed_at"] = "2026-08-26T00:00:00"
+        result = self._evaluate_synthetic([review], [agent])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
+        self.assertTrue(
+            any("reviewed_at_invalid" in item for item in result["integrity_errors"])
         )
 
 
