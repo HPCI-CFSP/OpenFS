@@ -329,8 +329,8 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
         "review_units": units,
         "independence_requirements": {
             "author_group": "openai-gpt5-codex-interactive",
-            "reviewer_rule_ja": "支持票には少なくとも3つの独立group、3つのorigin group、登録済みの3モデル系統、2プロバイダが必要。作成モデルと同じgroup、同一会話のfork、同一出力を共有したreviewerは独立票として数えない。",
-            "reviewer_rule_en": "Supporting votes require at least three independent groups and three origin groups, three registered model families, and two registered providers. The author group, forks of the same conversation, and reviewers sharing generated conclusions do not count as independent votes.",
+            "reviewer_rule_ja": "支持票には少なくとも3つの独立group、3つのorigin group、登録済みの3モデル系統、2プロバイダ、2つのcommit固定Harnessが必要。作成モデルと同じgroup、同一会話のfork、同一出力を共有したreviewerは独立票として数えない。",
+            "reviewer_rule_en": "Supporting votes require at least three independent groups and three origin groups, three registered model families, two registered providers, and two commit-pinned Harness identities. The author group, forks of the same conversation, and reviewers sharing generated conclusions do not count as independent votes.",
             "disallowed_as_independent": ["openai-gpt5-codex-interactive", "same-conversation-fork", "shared-conclusion-context"],
         },
         "known_limitations": [
@@ -452,7 +452,8 @@ HPCI整備計画{summary['scenario_count']}案をコミット `{commit}` に固�
 マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
 independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
-有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ以上を満たす必要があります。
+有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ、2つのcommit固定Harness
+以上を満たす必要があります。
 Consensus成立後も最終採用には人の判断が必要です。
 """
 

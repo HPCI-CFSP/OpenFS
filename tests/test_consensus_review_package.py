@@ -183,6 +183,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertTrue(self.manifest["consensus_policy"]["require_human_decision"])
         self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_model_families"], 3)
         self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_providers"], 2)
+        self.assertGreaterEqual(self.manifest["consensus_policy"]["minimum_harnesses"], 2)
 
     def test_template_requires_a_primary_source_check_for_every_key_evidence_milestone(self):
         template = load_json(PACKAGE / "review-template.json")
@@ -226,6 +227,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(3, result["counts"]["support"])
         self.assertEqual(3, result["counts"]["support_model_families"])
         self.assertEqual(3, result["counts"]["support_providers"])
+        self.assertEqual(3, result["counts"]["support_harnesses"])
         self.assertEqual(4, len(result["review_results"]["eligible_review_ids"]))
         self.assertEqual([], result["review_results"]["ineligible_reviews"])
 
@@ -260,6 +262,25 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual("incomplete", result["status"])
         self.assertIn("minimum_model_families", result["unmet_requirements"])
         self.assertIn("minimum_providers", result["unmet_requirements"])
+
+    def test_support_from_one_harness_cannot_pass(self):
+        registry_digest = next(
+            item["sha256"] for item in self.manifest["artifact_manifest"]
+            if item["path"] == "config/agent-registry.json"
+        )
+        agents = [self._registered_reviewer(index, "critic" if index == 4 else "validator") for index in range(1, 5)]
+        for agent in agents[:3]:
+            agent["harness_id"] = "HAR-SHARED"
+            agent["harness_repository_url"] = "https://github.com/example/shared-harness"
+            agent["harness_commit"] = "a" * 40
+        reviews = [
+            self._review(agent, registry_digest, "uncertain" if agent["role"] == "critic" else "support")
+            for agent in agents
+        ]
+        result = self._evaluate_synthetic(reviews, agents)
+        self.assertEqual("incomplete", result["status"])
+        self.assertEqual(1, result["counts"]["support_harnesses"])
+        self.assertIn("minimum_harnesses", result["unmet_requirements"])
 
     def test_self_declared_origin_or_harness_cannot_spoof_registry(self):
         registry_digest = next(

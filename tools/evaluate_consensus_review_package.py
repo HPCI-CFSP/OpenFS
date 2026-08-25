@@ -278,6 +278,14 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         "support_origin_groups": len({review["reviewer"]["origin_group"] for review in support}),
         "support_model_families": len({(review["reviewer"]["provider"], review["reviewer"]["model_family"]) for review in support}),
         "support_providers": len({review["reviewer"]["provider"] for review in support}),
+        "support_harnesses": len({
+            (
+                review["reviewer"]["harness_id"],
+                review["reviewer"]["harness_repository_url"],
+                review["reviewer"]["harness_commit"],
+            )
+            for review in support
+        }),
         "critic_reviews": sum(review["reviewer"]["role"] == "critic" for review in eligible),
         "critical_objections": critical_objections,
     }
@@ -295,6 +303,8 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         unmet.append("minimum_model_families")
     if counts["support_providers"] < policy["minimum_providers"]:
         unmet.append("minimum_providers")
+    if counts["support_harnesses"] < policy["minimum_harnesses"]:
+        unmet.append("minimum_harnesses")
     if policy["require_falsification_review"] and counts["critic_reviews"] < 1:
         unmet.append("falsification_review")
     if policy["block_on_critical_objection"] and critical_objections:

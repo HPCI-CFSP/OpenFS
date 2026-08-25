@@ -28,7 +28,8 @@ allowing the authoring model to certify its own work.
 5. Assign at least four blind reviews that can satisfy the current
    `high_impact_recommendation` rule. The author group and same-conversation forks
    are ineligible as independent votes. The supporting set must span at least
-   three registered model families and two providers.
+   three registered model families, two providers, and two commit-pinned Harness
+   identities.
 
 ## Reviewer procedure
 
