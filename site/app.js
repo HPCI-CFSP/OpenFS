@@ -25,6 +25,7 @@
       scenarioLead: "Architecture、System Software、Applications、センター影響、技術動向、不確実性を一体で比較します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
       noScenarioText: "現在の4案はGenerator検証用の例示です。根拠・評価・人の公開承認を通過した案だけを公開します。",
+      openScenarioComparison: "3シナリオ比較を開く",
       reportKicker: "報告書", reportTitle: "報告書・Export", reportLead: "公開版には版、基準日、根拠への追跡、置換関係を付けます。",
       noReportTitle: "公開済み報告書はまだありません",
       noReportText: "Promotion workflowで受理され、人が公開を承認したExportが追加されると、ここへ自動表示されます。",
@@ -46,7 +47,7 @@
       memoryRoadmapKicker: "メモリ技術調査", roadmapFilter: "技術群フィルタ", memoryProducts: "メモリ製品", integration3d: "3D実装", systemEnablers: "システム技術",
       technologyColumn: "技術", vendorColumn: "ベンダー／対象", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。",
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "現状とHPCI整備への示唆", currentState: "現在の状況", hpciImplications: "HPCI整備への示唆", roadmapCaveat: "公開時の注意事項",
-      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "ベンダー目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
+      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "公開時期なし", officialScanIncomplete: "一次情報の継続確認が必要"
     },
     en: {
@@ -66,6 +67,7 @@
       scenarioLead: "Compare architecture, system software, applications, center impacts, technology trends, and uncertainties as a coherent whole.",
       noScenarioTitle: "No scenarios have been published",
       noScenarioText: "The current four scenarios are generator examples. Only evidence-backed, evaluated, and human-approved scenarios are published.",
+      openScenarioComparison: "Open the three-scenario comparison",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
       reportLead: "Published versions carry a version, as-of date, evidence traceability, and supersession links.",
       noReportTitle: "No reports have been published",
@@ -88,7 +90,7 @@
       memoryRoadmapKicker: "MEMORY TECHNOLOGY RESEARCH", roadmapFilter: "Technology group filter", memoryProducts: "Memory products", integration3d: "3D integration", systemEnablers: "System enablers",
       technologyColumn: "Technology", vendorColumn: "Vendor / scope", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Blank cells indicate that no dated public milestone was confirmed, not that development has stopped.",
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Current state and implications for HPCI", currentState: "Current state", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
-      commercial: "product / volume", sample: "sample", standard: "standard", target: "vendor target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
+      commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required"
     }
   };
@@ -142,7 +144,7 @@
       hourCycle: "h23"
     }).formatToParts(new Date(value));
     const item = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-    return `${item.year}-${item.month}-${item.day} ${item.hour}:${item.minute}:${item.second} JST`;
+    return `${item.year}-${item.month}-${item.day}-${item.hour}:${item.minute}:${item.second} JST`;
   }
   function setText(id, value) {
     const element = document.getElementById(id);
@@ -391,7 +393,7 @@
     gaps.replaceChildren();
     roadmap.coverage_gaps.forEach((gap) => {
       const item = document.createElement("li");
-      item.textContent = localized(gap, "statement");
+      item.textContent = `${gap.priority} · ${localized(gap, "statement")}`;
       gaps.appendChild(item);
     });
     document.querySelectorAll("[data-roadmap-group]").forEach((button) => {
@@ -761,10 +763,16 @@
       const item = document.createElement("article");
       item.className = "scenario-item";
       const title = document.createElement("h3");
-      title.textContent = `${scenario.scenario_id} | ${language === "ja" ? scenario.title_ja : scenario.title_en}`;
+      const link = document.createElement("a");
+      link.href = `${scenario.path}?v=${encodeURIComponent(data.site.commit_sha)}`;
+      link.textContent = `${scenario.scenario_id} | ${language === "ja" ? scenario.title_ja : scenario.title_en}`;
+      title.appendChild(link);
       const objective = document.createElement("p");
       objective.textContent = language === "ja" ? scenario.objective : scenario.objective_en;
-      item.append(title, objective);
+      const meta = document.createElement("p");
+      meta.className = "scenario-card-meta";
+      meta.textContent = `${scenario.planning_horizon} · ${scenario.research_status} · Consensus ${scenario.consensus_status}`;
+      item.append(title, objective, meta);
       root.appendChild(item);
     });
     document.getElementById("scenario-empty").hidden = data.scenarios.length !== 0;

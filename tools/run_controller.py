@@ -64,6 +64,9 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "source-registry.json",
         monitor_path,
     ]
+    gap_queue_path = root / "knowledge/public/audits/roadmap-gap-queue.json"
+    if gap_queue_path.is_file():
+        paths.append(gap_queue_path)
     referenced_configurations = [
         monitor.get("subject_registry_ref"),
         monitor.get("scope_ref"),
@@ -152,6 +155,48 @@ def _subject_query_plan(root: Path, monitor: dict[str, Any]) -> list[dict[str, A
                 }
             )
     return plan
+
+
+def _coverage_gap_query_plan(
+    root: Path, monitor: dict[str, Any]
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+    """Expand weekly P0 Gap assignments without claiming that a search resolved them."""
+    relative_ref = "knowledge/public/audits/roadmap-gap-queue.json"
+    path = root / relative_ref
+    if not path.is_file():
+        return [], None
+    queue = read_json(path)
+    assignments = [
+        item
+        for item in queue.get("assignments", [])
+        if item.get("workstream") == "source-discovery"
+        and item.get("assignment_ref") == monitor.get("monitor_id")
+        and item.get("priority") == "P0"
+        and item.get("cadence") == "weekly"
+        and item.get("status") == "open"
+    ]
+    plan: list[dict[str, Any]] = []
+    for assignment in assignments:
+        for seed in assignment.get("query_seeds", []):
+            plan.append(
+                {
+                    "query": seed["query"],
+                    "query_role": "coverage-gap",
+                    "languages": [seed["language"]],
+                    "source_classes": assignment["required_source_classes"],
+                    "coverage_gap_refs": [assignment["gap_id"]],
+                    "coverage_gap_queue_id": queue["queue_id"],
+                    "coverage_gap_queue_item_id": assignment["queue_item_id"],
+                    "query_seed_language": seed["language"],
+                }
+            )
+    binding = {
+        "source_ref": relative_ref,
+        "queue_id": queue["queue_id"],
+        "assigned_gap_refs": sorted(item["gap_id"] for item in assignments),
+        "query_seed_count": len(plan),
+    }
+    return plan, binding
 
 
 def _latest_followup_plan(
@@ -525,6 +570,7 @@ def create_run(
                 if key in entry:
                     planned[key] = entry[key]
             followup_query_plan.append(planned)
+    coverage_gap_plan, coverage_gap_binding = _coverage_gap_query_plan(root, monitor)
     query_plan = [
         {"query": query, "query_role": "coverage"}
         for query in monitor.get("query_families", [])
@@ -540,7 +586,7 @@ def create_run(
     ] + [
         {"query": query, "query_role": "falsification"}
         for query in monitor.get("falsification_queries", [])
-    ] + _subject_query_plan(root, monitor) + followup_query_plan
+    ] + _subject_query_plan(root, monitor) + followup_query_plan + coverage_gap_plan
     for query_entry in query_plan:
         for candidate_slot in range(1, slots_per_query + 1):
             sequence = len(work_items) + 1
@@ -548,7 +594,9 @@ def create_run(
                 "query": query_entry["query"],
                 "query_role": query_entry["query_role"],
                 "candidate_slot": candidate_slot,
-                "languages": monitor.get("languages", []),
+                "languages": query_entry.get(
+                    "languages", monitor.get("languages", [])
+                ),
                 "source_classes": query_entry.get(
                     "source_classes", monitor.get("source_classes", [])
                 ),
@@ -566,6 +614,10 @@ def create_run(
                 "coverage_targets",
                 "persistent_query_id",
                 "promotion_evidence",
+                "coverage_gap_refs",
+                "coverage_gap_queue_id",
+                "coverage_gap_queue_item_id",
+                "query_seed_language",
             ):
                 if key in query_entry:
                     payload[key] = query_entry[key]
@@ -644,7 +696,7 @@ def create_run(
         "research_status": "not-evaluated",
         "coverage_status": "not-evaluated",
         "previous_run_id": previous_run_id,
-        "assignment_contract_version": "0.2.0",
+        "assignment_contract_version": "0.3.0",
         "policy_hashes": policy_hashes,
         "configuration_snapshots": snapshot_refs,
         "skill_snapshots": skill_snapshots,
@@ -674,6 +726,8 @@ def create_run(
     }
     if followup_manifest:
         manifest["followup_plan"] = followup_manifest
+    if coverage_gap_binding:
+        manifest["coverage_gap_queue"] = coverage_gap_binding
     run_identity = {
         key: manifest[key]
         for key in (
@@ -690,6 +744,7 @@ def create_run(
         )
     }
     run_identity["followup_plan"] = followup_manifest
+    run_identity["coverage_gap_queue"] = coverage_gap_binding
     run_identity["work_item_idempotency_keys"] = [
         item["idempotency_key"] for item in work_items
     ]

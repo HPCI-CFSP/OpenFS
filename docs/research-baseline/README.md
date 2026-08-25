@@ -17,6 +17,10 @@ The machine-readable source of truth is `config/research-baseline.json`. This do
 5. Propose additions or changes through `OFS-002`; do not edit the baseline as incidental research output.
 6. Keep vendor claims, measured results, forecasts, interpretations, and HPCI recommendations separate.
 
+Observed center workload distributions use the privacy-preserving aggregate
+contract in `privacy-preserving-workload-observations.md`; raw scheduler or user
+records never enter this public repository.
+
 If no baseline topic fits, use `OFS-002` to propose a new topic before starting recurring collection. A one-off exploratory Task may proceed only with an explicit human Directive.
 
 ## Protected initial topic catalog

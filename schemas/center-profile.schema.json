@@ -89,6 +89,8 @@
     "refresh_window": {"$ref": "#/$defs/profile_field"},
     "power": {"$ref": "#/$defs/profile_field"},
     "facility": {"$ref": "#/$defs/profile_field"},
+    "budget": {"$ref": "#/$defs/profile_field"},
+    "procurement": {"$ref": "#/$defs/profile_field"},
     "software": {"$ref": "#/$defs/profile_field"},
     "operations": {"$ref": "#/$defs/profile_field"},
     "migration": {"$ref": "#/$defs/profile_field"},
@@ -97,5 +99,14 @@
     "created_by_agent_id": {"type": "string"},
     "created_at": {"type": "string", "format": "date-time"}
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"proposal_contract_version": {"const": "0.3.0"}},
+        "required": ["proposal_contract_version"]
+      },
+      "then": {"required": ["budget", "procurement"]}
+    }
+  ],
   "additionalProperties": false
 }

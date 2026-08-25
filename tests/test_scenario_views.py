@@ -42,7 +42,7 @@ class ScenarioViewTests(unittest.TestCase):
             for scenario in rendered["scenarios"]:
                 self.assertEqual(expected_criteria, set(scenario["evaluation"]))
                 self.assertTrue(scenario["center_impacts"])
-                self.assertTrue(scenario["domestic_technology"])
+                self.assertTrue(scenario["technology_options"])
             markdown = markdown_path.read_text(encoding="utf-8")
             self.assertIn("Ranking: `disabled`", markdown)
             self.assertIn("センター特化・全国ポートフォリオ型", markdown)

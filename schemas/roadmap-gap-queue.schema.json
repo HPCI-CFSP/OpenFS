@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-gap-queue.schema.json",
+  "title": "OpenFS Roadmap Coverage Gap Queue",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "queue_id", "as_of", "generated_at", "method_ja", "method_en", "caveat_ja", "caveat_en", "summary", "assignments", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.2.0"},
+    "export_id": {"const": "ROADMAP-GAP-QUEUE-001"},
+    "status": {"const": "published"},
+    "queue_id": {"type": "string", "pattern": "^RGQ-[0-9]{8}-[0-9]{3}$"},
+    "as_of": {"type": "string", "format": "date"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "method_ja": {"type": "string", "minLength": 1},
+    "method_en": {"type": "string", "minLength": 1},
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "required": ["roadmap_count", "gap_count", "p0", "p1", "p2", "source_discovery", "consensus_review", "ready_for_scheduled_discovery", "staged_monitor_disabled", "awaiting_independent_review", "explicit_query_overrides", "generated_query_fallbacks", "p0_explicit_query_overrides", "p0_generated_query_fallbacks"],
+      "properties": {
+        "roadmap_count": {"type": "integer", "minimum": 1},
+        "gap_count": {"type": "integer", "minimum": 1},
+        "p0": {"type": "integer", "minimum": 0},
+        "p1": {"type": "integer", "minimum": 0},
+        "p2": {"type": "integer", "minimum": 0},
+        "source_discovery": {"type": "integer", "minimum": 0},
+        "consensus_review": {"type": "integer", "minimum": 0},
+        "ready_for_scheduled_discovery": {"type": "integer", "minimum": 0},
+        "staged_monitor_disabled": {"type": "integer", "minimum": 0},
+        "awaiting_independent_review": {"type": "integer", "minimum": 0},
+        "explicit_query_overrides": {"type": "integer", "minimum": 0},
+        "generated_query_fallbacks": {"type": "integer", "minimum": 0},
+        "p0_explicit_query_overrides": {"type": "integer", "minimum": 0},
+        "p0_generated_query_fallbacks": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["queue_item_id", "gap_id", "roadmap_id", "priority", "workstream", "cadence", "assignment_ref", "task_id", "monitor_enabled", "execution_state", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "query_seeds", "required_source_classes", "query_plan_origin", "closure_plan", "closure_plan_origin", "closure_state", "status"],
+        "properties": {
+          "queue_item_id": {"type": "string", "pattern": "^RGQ-[0-9]{4}$"},
+          "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
+          "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "workstream": {"enum": ["source-discovery", "consensus-review"]},
+          "cadence": {"enum": ["weekly", "monthly", "quarterly", "continuous-until-quorum"]},
+          "assignment_ref": {"type": "string", "pattern": "^(MON|CRP)-[A-Z0-9-]+$"},
+          "task_id": {"type": ["string", "null"], "pattern": "^OFS-[0-9]{3}$"},
+          "monitor_enabled": {"type": ["boolean", "null"]},
+          "execution_state": {"enum": ["ready-for-scheduled-discovery", "staged-monitor-disabled", "awaiting-independent-review"]},
+          "scope_ja": {"type": "string", "minLength": 1},
+          "scope_en": {"type": "string", "minLength": 1},
+          "impact_ja": {"type": "string", "minLength": 1},
+          "impact_en": {"type": "string", "minLength": 1},
+          "next_action_ja": {"type": "string", "minLength": 1},
+          "next_action_en": {"type": "string", "minLength": 1},
+          "query_seeds": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["language", "query"],
+              "properties": {
+                "language": {"enum": ["ja", "en"]},
+                "query": {"type": "string", "minLength": 1}
+              },
+              "additionalProperties": false
+            }
+          },
+          "required_source_classes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "query_plan_origin": {"enum": ["explicit-override", "generated-fallback", "not-applicable"]},
+          "closure_plan": {"$ref": "#/$defs/closurePlan"},
+          "closure_plan_origin": {"enum": ["explicit-override", "generated-default", "consensus-policy"]},
+          "closure_state": {"const": "criteria-unverified"},
+          "status": {"const": "open"}
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {"properties": {"priority": {"const": "P0"}}},
+            "then": {
+              "properties": {
+                "closure_plan": {
+                  "properties": {
+                    "minimum_independent_origin_groups": {"minimum": 2}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {"properties": {"workstream": {"const": "source-discovery"}}},
+            "then": {
+              "properties": {
+                "assignment_ref": {"pattern": "^MON-[A-Z0-9-]+$"},
+                "task_id": {"type": "string"},
+                "monitor_enabled": {"type": "boolean"},
+                "query_seeds": {"minItems": 2},
+                "required_source_classes": {"minItems": 1},
+                "query_plan_origin": {"enum": ["explicit-override", "generated-fallback"]}
+              }
+            }
+          },
+          {
+            "if": {"properties": {"workstream": {"const": "consensus-review"}}},
+            "then": {
+              "properties": {
+                "assignment_ref": {"pattern": "^CRP-[A-Z0-9-]+$"},
+                "task_id": {"type": "null"},
+                "monitor_enabled": {"type": "null"},
+                "execution_state": {"const": "awaiting-independent-review"},
+                "query_seeds": {"maxItems": 0},
+                "required_source_classes": {"maxItems": 0},
+                "query_plan_origin": {"const": "not-applicable"}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"const": "PUBDEC-20260826-005"},
+        "human_approval_directive_id": {"const": "DIR-900006"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "closurePlan": {
+      "type": "object",
+      "required": ["minimum_independent_origin_groups", "requires_consensus_gate", "criteria"],
+      "properties": {
+        "minimum_independent_origin_groups": {"type": "integer", "minimum": 1},
+        "requires_consensus_gate": {"const": true},
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "verification_method", "requirement_ja", "requirement_en"],
+            "properties": {
+              "criterion_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+-C[0-9]+$"},
+              "verification_method": {"enum": ["evidence-review", "reproducible-measurement", "conformance-test", "authority-confirmation", "consensus-quorum"]},
+              "requirement_ja": {"type": "string", "minLength": 1},
+              "requirement_en": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

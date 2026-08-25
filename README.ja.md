@@ -75,7 +75,7 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 | `knowledge/public/roadmaps/` | 1つの共通Schemaを使う、人が公開承認した日英Roadmap Export |
 | `roadmaps/` | Scenario形式のRoadmap Draftと受理版 |
 | `reports/` | 生成されたReport DraftとExport |
-| `reviews/` | 人のDirective、Digest、Exception、Dissent |
+| `reviews/` | 人のDirective、Digest、Exception、Dissent、Commit固定のConsensus Review Package |
 | `runs/` | 不変のRun ManifestとRun単位の出力 |
 | `state/` | Watermarkと再開可能なScheduler State |
 
@@ -123,6 +123,19 @@ python3 tools/consensus_gate.py \
   --assessments evals/golden/accepted-assessments.json \
   --policy config/consensus-policy.json
 ```
+
+成果物一式をCommitした後、独立したP0 Roadmap Review Packageを作成して評価します。
+
+```bash
+python3 tools/build_consensus_review_package.py --base-commit <40-hex-artifact-commit>
+python3 tools/evaluate_consensus_review_package.py \
+  reviews/consensus-packages/CRP-P0-ROADMAPS-V02/manifest.json
+```
+
+Evaluatorが`ready-for-human-decision`を返しても、影響の大きいHPCI採用判断には、
+Review済みの人のDirectiveが必要です。各ReviewerはRoadmapごとに、固定Commitへ
+登録された一次情報の確定的な確認結果を記録します。詳細は
+`docs/operations/independent-roadmap-review.md`を参照してください。
 
 順位付けを行わず、例示用の複数ScenarioをRenderします。
 

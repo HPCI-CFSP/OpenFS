@@ -42,7 +42,7 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not silently remove, merge, narrow, split, or retire a research-baseline topic. Propose those changes through `OFS-002` with lineage and a reviewed human Directive.
 - Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog.
 - Research scope is worldwide. Read `config/global-technology-scope.json`, search across regions and source languages where feasible, and report uncovered regions and categories. Prioritize coverage of technologies developed in Japan without treating origin as evidence of technical merit or automatic adoption.
-- Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, refresh, or staffing state without cited Evidence that remains inside the Monitor's freshness window. Any permitted field-level inheritance must pin the predecessor digest and original Evidence bundles and must re-enter Consensus as provisional.
+- Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, budget, procurement, refresh, or staffing state without cited Evidence that remains inside the Monitor's freshness window. Every new Center Profile uses the complete current registry field set; fields absent from an older contract are `unknown`/`not-collected`, never implicitly complete. Any permitted field-level inheritance must pin the predecessor digest and original Evidence bundles and must re-enter Consensus as provisional.
 - A follow-up Run must pass the Profile continuity gate before publication. Investigate every reported regression rather than deleting or weakening predecessor Evidence.
 - Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainties, and decision gates.
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
@@ -65,6 +65,16 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Record both `agent_independence_group` and source `origin_group` identifiers.
 - Multiple instances of the same model family and prompt profile do not automatically count as independent votes.
 - Preserve dissent and unresolved objections even when a proposal is accepted.
+- A roadmap portfolio or HPCI scenario recommendation must be reviewed from a
+  commit-pinned package under `reviews/consensus-packages/`. Verify the artifact
+  digests before review. A reviewer from the author group, a fork of the same
+  conversation, or a reviewer given another reviewer's conclusion is not an
+  independent vote.
+- A package review counts only when its Agent is enabled in the commit-pinned
+  `config/agent-registry.json`, its recorded identity matches that registry, and
+  it records a conclusive registered primary-source check for every roadmap.
+  High-impact support requires at least three registered model families and two
+  providers in addition to the independence and origin-group thresholds.
 
 ## Reproducibility
 
@@ -96,4 +106,65 @@ When a task contains multiple investigations, organize them into separate task, 
 - Label OpenFS evaluation and adoption gates as provisional plans and keep them
   distinct from vendor, standards, policy, and observed milestones.
 - Record unresolved research as structured Coverage Gaps with decision impact and
-  a next action. Never fill a gap with an unsupported forecast.
+  a next action. Assign `P0` only when the missing information can change an HPCI
+  architecture, facility, procurement, migration, or scenario decision; use `P1`
+  for material comparison gaps and `P2` for useful context. Never fill a gap with
+  an unsupported forecast.
+- For every P0 source-discovery Gap, preserve an explicit closure plan in
+  `config/roadmap-gap-query-overrides.json`. Finding a responsive page, increasing
+  a source count, or receiving one model's approval never closes a Gap. Keep it
+  open until every named criterion, independent-Origin-Group minimum, and
+  Consensus requirement is verified.
+- Represent performance-model evidence for `GAP-WORK-003` with
+  `schemas/performance-model-card.schema.json` and recompute its holdout errors
+  with `tools/check_performance_model_card.py`. Calibration data must remain
+  separate from validation data. A passing result is only a candidate for
+  independent Consensus review and never closes the Gap automatically.
+- Store reproducible HPCI-CB comparison candidates under
+  `proposals/benchmark-results/` using
+  `schemas/benchmark-result-bundle.schema.json`. Run
+  `tools/check_benchmark_result_bundle.py` to recompute aggregates and enforce
+  Gap-specific correctness, energy, RAS, portability, and interoperability
+  requirements. A passing bundle remains provisional until independent
+  reproduction, Consensus, and the applicable human decision.
+- Store privacy-reviewed aggregate workload candidates under
+  `proposals/workload-observations/` using
+  `schemas/workload-observation-summary.schema.json`. Aggregate inside the
+  approved institution boundary; export no direct identifiers, job rows, free
+  text, raw paths, or raw-data locations. Run
+  `tools/check_workload_observation_summary.py` to enforce observation-window,
+  diversity, rounding, small-cell, complementary-suppression, and publication
+  rules. A passing summary remains provisional until independent Consensus and
+  an artifact-specific human publication Directive pass.
+- Store OpenMP/SYCL implementation comparisons under
+  `proposals/portability-capability-matrices/` using
+  `schemas/portability-capability-matrix.schema.json`. Compare the same feature
+  grid across GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD; distinguish vendor
+  documentation from executable tests; and run
+  `tools/check_portability_capability_matrix.py`. Unsupported and partial results
+  remain in the matrix. Passing only makes the matrix a Consensus candidate.
+- Keep the published three-scenario portfolio structurally comparable with
+  `tools/check_scenario_portfolio.py`. Every scenario must expose the same eleven
+  unscored criteria and five option domains. Every pair must also meet the
+  candidate and fallback difference thresholds in `config/scenario-policy.json`,
+  and every currently open P0 Gap must appear exactly once in the shared
+  decision-evidence contracts. A passing check
+  only makes the portfolio eligible for independent Consensus; it does not close
+  a Gap, validate a claim, rank a scenario, or authorize adoption.
+- Keep cross-roadmap dependencies in
+  `knowledge/public/dependencies/p0-roadmap-dependencies.json` and validate them
+  with `tools/check_roadmap_dependency_register.py`. The graph must remain
+  acyclic, every non-blueprint roadmap must reach `RM-X-BLUEPRINT`, and every
+  open P0 Gap must be classified either on a causal edge or as a non-causal
+  portfolio-wide gate. A passing check establishes structural integrity only;
+  it does not validate causality, close a Gap, or satisfy Consensus.
+- After any roadmap source or milestone change, regenerate assurance artifacts
+  with `tools/audit_roadmap_sources.py`,
+  `tools/build_roadmap_source_triage.py`, and
+  `tools/build_roadmap_evidence_audit.py`. A retrieval review is pinned to the
+  exact source URL and becomes unresolved when that URL changes. Neither URL
+  reachability nor single-model semantic retrieval is independent claim
+  validation, and neither may be described as Consensus acceptance.
+- High-impact portfolio review uses the `high_impact_recommendation` Consensus
+  rule. Keep public roadmaps and scenarios provisional until independent reviews,
+  falsification, deterministic evaluation, and the required human decision pass.

@@ -45,6 +45,23 @@ jobs:
           WEEK="${REQUESTED_WEEK:-$(date -u --date='7 days ago' +%G-W%V)}"
           GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p _automation
+          python3 tools/audit_roadmap_sources.py \
+            --output _automation/roadmap-source-audit.json \
+            --timeout 25 \
+            --workers 8
+          python3 tools/build_roadmap_source_triage.py \
+            --audit _automation/roadmap-source-audit.json \
+            --output _automation/roadmap-source-triage.json
+          python3 tools/build_roadmap_freshness_audit.py \
+            --generated-at "$GENERATED_AT" \
+            --source-audit _automation/roadmap-source-audit.json \
+            --output _automation/roadmap-freshness-audit.json
+          python3 tools/build_roadmap_gap_queue.py \
+            --generated-at "$GENERATED_AT" \
+            --output _automation/roadmap-gap-queue.json
+          python3 tools/prepare_freshness_issue.py \
+            --audit _automation/roadmap-freshness-audit.json \
+            --output _automation/roadmap-freshness-issue.json
           python3 tools/generate_weekly_digest.py \
             --week "$WEEK" \
             --generated-at "$GENERATED_AT"
@@ -53,11 +70,16 @@ jobs:
             > _automation/exception-issues.json
           printf '%s\n' "$WEEK" > _automation/review-week.txt
       - name: Upload internal review artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: openfs-weekly-review
           path: |
             _automation/exception-issues.json
+            _automation/roadmap-source-audit.json
+            _automation/roadmap-source-triage.json
+            _automation/roadmap-freshness-audit.json
+            _automation/roadmap-gap-queue.json
+            _automation/roadmap-freshness-issue.json
             _automation/review-week.txt
             reviews/digests/*.json
             reviews/digests/*.md
@@ -72,3 +94,5 @@ jobs:
           jq -r '.prepared[]' _automation/exception-issues.json | while IFS= read -r payload; do
             python3 tools/publish_github_issue.py --payload "$payload"
           done
+          python3 tools/publish_github_issue.py \
+            --payload _automation/roadmap-freshness-issue.json

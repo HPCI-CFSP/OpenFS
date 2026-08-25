@@ -2,6 +2,12 @@
 
 This directory contains human-approved, public-only projections of OpenFS research. These files are display artifacts, not canonical Claims or accepted HPCI recommendations.
 
+`audits/center-profile-assurance.json` is an aggregate public projection of the
+latest pinned Center Run. It publishes field-status counts and official center
+links, but not the provisional narrative fields. It keeps search execution,
+field-level Evidence completeness, and Consensus acceptance separate, and maps
+the unresolved state to `GAP-BLUE-001` and `GAP-BLUE-003`.
+
 Each summary must retain its research, coverage, and Consensus status. Source links must be public, and publication requires a matching `publication-approval` Directive.
 
 `memory-technology-roadmap.json` is a bilingual, human-approved public display

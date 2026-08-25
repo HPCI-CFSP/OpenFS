@@ -53,12 +53,36 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "activation-policy.schema.json"
     if ref == "config/owner-controls.json":
         return "owner-controls.schema.json"
+    if ref == "config/roadmap-gap-query-overrides.json":
+        return "roadmap-gap-query-overrides.schema.json"
+    if ref == "config/roadmap-source-retrieval-reviews.json":
+        return "roadmap-source-retrieval-reviews.schema.json"
     if ref == "knowledge/public/topic-summaries.json":
         return "public-topic-summary.schema.json"
     if ref == "knowledge/public/consensus-receipts.json":
         return "public-consensus-receipt.schema.json"
     if ref.startswith("knowledge/public/roadmaps/"):
         return "public-roadmap.schema.json"
+    if ref == "knowledge/public/audits/roadmap-source-audit.json":
+        return "roadmap-source-audit.schema.json"
+    if ref == "knowledge/public/audits/roadmap-source-triage.json":
+        return "roadmap-source-triage.schema.json"
+    if ref == "knowledge/public/audits/roadmap-evidence-audit.json":
+        return "roadmap-evidence-audit.schema.json"
+    if ref == "knowledge/public/audits/roadmap-freshness-audit.json":
+        return "roadmap-freshness-audit.schema.json"
+    if ref == "knowledge/public/audits/roadmap-gap-queue.json":
+        return "roadmap-gap-queue.schema.json"
+    if ref == "knowledge/public/audits/center-profile-assurance.json":
+        return "center-profile-assurance.schema.json"
+    if ref == "knowledge/public/dependencies/p0-roadmap-dependencies.json":
+        return "roadmap-dependency-register.schema.json"
+    if ref.startswith("roadmaps/scenarios/accepted/"):
+        return (
+            "published-scenario-set.schema.json"
+            if "scenarios" in payload
+            else "system-scenario.schema.json"
+        )
     if ref.startswith("queue/"):
         return "work-item.schema.json"
     if ref.endswith("/manifest.json") and ref.startswith("runs/"):
@@ -92,8 +116,16 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "claim-proposal.schema.json"
     if ref.startswith("proposals/center-profiles/"):
         return "center-profile.schema.json"
+    if ref.startswith("proposals/benchmark-results/"):
+        return "benchmark-result-bundle.schema.json"
+    if ref.startswith("proposals/workload-observations/"):
+        return "workload-observation-summary.schema.json"
+    if ref.startswith("proposals/portability-capability-matrices/"):
+        return "portability-capability-matrix.schema.json"
     if ref.startswith("proposals/research-topics/"):
         return "research-topic-proposal.schema.json"
+    if ref.startswith("assessments/CRP-"):
+        return "consensus-package-review.schema.json"
     if ref.startswith("assessments/"):
         return "assessment.schema.json"
     if ref.startswith("decisions/"):
@@ -108,6 +140,10 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "issue-payload.schema.json"
     if ref.startswith("reviews/run-approvals/"):
         return "run-approval.schema.json"
+    if ref.startswith("reviews/consensus-packages/") and path.name == "manifest.json":
+        return "consensus-review-package.schema.json"
+    if ref.startswith("reviews/consensus-packages/") and path.name == "gate-result.json":
+        return "consensus-package-gate-result.schema.json"
     if ref == "knowledge/claims/index.json":
         return "knowledge-index.schema.json"
     if ref.startswith("knowledge/claims/CLM-"):

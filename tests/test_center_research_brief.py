@@ -72,7 +72,7 @@ class CenterResearchBriefTests(unittest.TestCase):
             )
             self.assertEqual(1, brief["summary"]["center_count"])
             self.assertEqual("met-declared-scope", brief["web_coverage_status"])
-            self.assertEqual(9, len(brief["priority_followups"]))
+            self.assertEqual(11, len(brief["priority_followups"]))
             self.assertIn("power", {item["field"] for item in brief["priority_followups"]})
             self.assertIn("CENTER-TEST", render_markdown(brief))
 

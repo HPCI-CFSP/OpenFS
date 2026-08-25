@@ -32,6 +32,11 @@ REQUIRED_FILES = [
     "docs/research-baseline/fs2-fs3-corpus-review.md",
     "docs/research-baseline/topic-inheritance.md",
     "docs/research-baseline/gap-register.md",
+    "docs/research-baseline/performance-model-validation.md",
+    "docs/research-baseline/reproducible-benchmark-results.md",
+    "docs/research-baseline/privacy-preserving-workload-observations.md",
+    "docs/research-baseline/portability-capability-matrices.md",
+    "proposals/portability-capability-matrices/README.md",
     "docs/planning/scenario-generation.md",
     "docs/planning/roadmap-portfolio.md",
     "docs/planning/university-center-baseline.md",
@@ -52,6 +57,8 @@ REQUIRED_FILES = [
     "knowledge/public/roadmaps/portability-compilers-tuning.json",
     "knowledge/public/roadmaps/reference-blueprint-centers.json",
     "knowledge/public/roadmaps/workloads-benchmarks-models.json",
+    "knowledge/public/audits/roadmap-gap-queue.json",
+    "knowledge/public/audits/center-profile-assurance.json",
     "knowledge/claim-status/README.md",
     "knowledge/claims/index.json",
     "docs/policies/claim-acceptance.md",
@@ -73,6 +80,7 @@ REQUIRED_FILES = [
     "config/publication-i18n.json",
     "config/activation-policy.json",
     "config/owner-controls.json",
+    "config/roadmap-gap-query-overrides.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
@@ -107,6 +115,7 @@ REQUIRED_FILES = [
     "schemas/roadmap-portfolio.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/center-profile-coverage.schema.json",
+    "schemas/center-profile-assurance.schema.json",
     "schemas/followup-effectiveness.schema.json",
     "schemas/profile-continuity.schema.json",
     "schemas/temporal-integrity.schema.json",
@@ -123,10 +132,19 @@ REQUIRED_FILES = [
     "schemas/worker-result.schema.json",
     "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
+    "schemas/published-scenario-set.schema.json",
     "schemas/research-topic-proposal.schema.json",
     "schemas/public-topic-summary.schema.json",
     "schemas/public-consensus-receipt.schema.json",
     "schemas/public-roadmap.schema.json",
+    "schemas/roadmap-freshness-audit.schema.json",
+    "schemas/roadmap-gap-queue.schema.json",
+    "schemas/roadmap-gap-query-overrides.schema.json",
+    "schemas/performance-model-card.schema.json",
+    "schemas/benchmark-result-bundle.schema.json",
+    "schemas/workload-observation-summary.schema.json",
+    "schemas/portability-capability-matrix.schema.json",
+    "schemas/roadmap-dependency-register.schema.json",
     "skills/source-discovery/SKILL.md",
     "skills/worldwide-technology-survey/SKILL.md",
     "skills/evidence-extraction/SKILL.md",
@@ -155,6 +173,15 @@ REQUIRED_FILES = [
     "tools/evaluate_promotion_readiness.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
+    "tools/build_roadmap_freshness_audit.py",
+    "tools/build_roadmap_gap_queue.py",
+    "tools/build_center_profile_assurance.py",
+    "tools/check_performance_model_card.py",
+    "tools/check_benchmark_result_bundle.py",
+    "tools/check_workload_observation_summary.py",
+    "tools/check_portability_capability_matrix.py",
+    "tools/check_scenario_portfolio.py",
+    "tools/check_roadmap_dependency_register.py",
     "tools/openfs_runtime.py",
     "tools/run_controller.py",
     "tools/ingest_directive.py",
@@ -179,6 +206,7 @@ REQUIRED_FILES = [
     "tools/check_consensus_readiness.py",
     "tools/generate_weekly_digest.py",
     "tools/prepare_exception_issues.py",
+    "tools/prepare_freshness_issue.py",
     "tools/apply_directive.py",
     "tools/generate_run_brief.py",
     "tools/prepare_weekly_cycle.py",
@@ -205,6 +233,8 @@ REQUIRED_FILES = [
     "reviews/run-approvals/README.md",
     "handoffs/README.md",
     "proposals/center-profiles/README.md",
+    "proposals/benchmark-results/README.md",
+    "proposals/workload-observations/README.md",
     "site/index.html",
     "site/styles.css",
     "site/app.js",
@@ -495,6 +525,24 @@ def validate_runtime_configuration(root: Path) -> list[str]:
         group = agent.get("agent_independence_group")
         if agent.get("enabled") and "unconfigured" in identity:
             errors.append(f"enabled agent has unconfigured identity: {agent.get('agent_id')}")
+        if agent.get("enabled") and agent.get("role") in {"validator", "critic"}:
+            review_provenance = {
+                "review_origin_group": agent.get("review_origin_group"),
+                "harness_id": agent.get("harness_id"),
+                "harness_repository_url": agent.get("harness_repository_url"),
+                "harness_commit": agent.get("harness_commit"),
+            }
+            missing = sorted(key for key, value in review_provenance.items() if not value)
+            if missing:
+                errors.append(
+                    f"enabled reviewer lacks pinned review provenance: {agent.get('agent_id')} ({', '.join(missing)})"
+                )
+            elif not re.fullmatch(r"HAR-[A-Z0-9-]+", review_provenance["harness_id"]):
+                errors.append(f"enabled reviewer has invalid harness ID: {agent.get('agent_id')}")
+            elif not re.fullmatch(r"https://[^\s]+", review_provenance["harness_repository_url"]):
+                errors.append(f"enabled reviewer has invalid harness repository URL: {agent.get('agent_id')}")
+            elif not re.fullmatch(r"[0-9a-f]{40}", review_provenance["harness_commit"]):
+                errors.append(f"enabled reviewer has invalid harness commit: {agent.get('agent_id')}")
         if "unconfigured" in identity or not all(identity) or not group:
             continue
         previous = configured_identities.setdefault(identity, group)
@@ -1534,8 +1582,8 @@ def validate_scenario_configuration(root: Path) -> list[str]:
             errors.append(f"scenario {scenario.get('scenario_id')} missing: {sorted(missing)}")
         if not scenario.get("center_impacts"):
             errors.append(f"scenario {scenario.get('scenario_id')} has no center impacts")
-        if not scenario.get("domestic_technology"):
-            errors.append(f"scenario {scenario.get('scenario_id')} has no priority Japan technology comparison")
+        if not scenario.get("technology_options"):
+            errors.append(f"scenario {scenario.get('scenario_id')} has no worldwide technology comparison")
     criterion_ids = [item.get("criterion_id") for item in policy.get("evaluation_criteria", [])]
     if len(criterion_ids) != len(set(criterion_ids)):
         errors.append("scenario policy has duplicate criterion IDs")

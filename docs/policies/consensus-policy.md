@@ -8,6 +8,21 @@ Consensus is a deterministic eligibility check, not proof of truth. The gate eva
 
 Reviewers perform a blind first review. An assessment records its reviewer, agent independence group, verdict, confidence, checks, and objections. Registry data, not self-declared model text, is authoritative for independence groups in production.
 
+For a commit-pinned review package, `reviewed_at` must fall after the package was
+created and no later than the evaluator's clock, subject to the configured
+one-minute clock-skew tolerance. A pre-package or future-dated review is
+ineligible even when its content otherwise satisfies the gate. A future-dated
+package is also invalid. Every review records `package_manifest_digest`, the
+SHA-256 of the exact `manifest.json` bytes, so a review cannot be replayed after
+review units, artifact lists, or package metadata are regenerated under the same
+package ID and base commit.
+The deterministic gate result records the same manifest digest. GitHub Pages
+recomputes it and fails closed when either a gate result or an eligible review
+targets different manifest bytes.
+The gate also records the SHA-256 of every review file it evaluated. Pages
+requires the assessment set and every byte digest to match, so adding, removing,
+or editing a review always requires deterministic re-evaluation.
+
 At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
 capacity before any research result exists. Reviewers in the Proposal author's
 independence group may provide an assessment, but they cannot satisfy the

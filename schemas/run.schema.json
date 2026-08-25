@@ -34,6 +34,17 @@
       }
     },
     "previous_run_id": {"type": ["string", "null"]},
+    "coverage_gap_queue": {
+      "type": "object",
+      "required": ["source_ref", "queue_id", "assigned_gap_refs", "query_seed_count"],
+      "properties": {
+        "source_ref": {"const": "knowledge/public/audits/roadmap-gap-queue.json"},
+        "queue_id": {"type": "string", "pattern": "^RGQ-[0-9]{8}-[0-9]{3}$"},
+        "assigned_gap_refs": {"type": "array", "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}, "uniqueItems": true},
+        "query_seed_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
     "change_report_ref": {"type": "string"},
     "dependency_impact_ref": {"type": "string"},
     "promotion_readiness_ref": {"type": "string"},

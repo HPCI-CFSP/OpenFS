@@ -107,6 +107,37 @@ gates are separate `hpci-evaluation` or `hpci-adoption` events with
 portfolio mappings, timing semantics, publication approval, or the declared public
 artifact set disagree.
 
+The weekly review also rebuilds a freshness queue from the committed roadmaps and
+a fresh URL reachability scan. It flags undated milestones, passed target dates,
+future-dated observed events, missing source-date metadata, and retrieval
+warnings without treating any of them as proof that a claim is false. The
+source triage layer may record that the exact official URL was readable through
+a separate semantic retrieval path, but that review is URL-pinned, provisional,
+and invalidated automatically when the registered URL changes. It does not
+replace independent claim validation. The generated workflow artifacts are
+review inputs; they do not modify canonical roadmaps or bypass Consensus.
+
+### Portfolio review package
+
+A multi-roadmap portfolio and its HPCI scenarios are a high-impact recommendation,
+not a normal Claim. The author first commits a complete review target. The package
+builder then reads those exact Git objects, records a SHA-256 for every roadmap,
+audit, dependency register, scenario set, policy, schema, and publication
+Directive, and creates review units with explicit falsification prompts.
+
+Independent validators and critics submit one schema-valid assessment covering
+every unit and a conclusive primary-source check for every key externally dated
+milestone declared in the package. Each review binds to the exact package
+manifest bytes. The deterministic evaluator rejects digest drift, missing units,
+duplicate reviewer identities, author-group votes, insufficient provider/origin
+diversity, absent falsification, primary-source checks that do not match the
+exact milestone citations in the commit-pinned roadmap registry, and critical
+objections. Its gate result binds the manifest and every evaluated review file
+by SHA-256; Pages rejects a changed review set until the evaluator is rerun. The
+package also pins its review schemas and evaluator implementation. Passing those
+mechanical conditions yields only `ready-for-human-decision`; it cannot replace
+the human decision required for a high-impact HPCI recommendation.
+
 ## Trust and information boundaries
 
 ### Public plane
@@ -186,6 +217,12 @@ All recurring discovery is worldwide in scope. The global horizon monitor search
 Accepted knowledge is projected into multiple HPCI system scenarios rather than collapsed into one model answer. Each candidate joins architecture, system software, applications, center-specific impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainty, and decision gates. `config/scenario-policy.json` defines common criteria, `schemas/center-profile.schema.json` and `schemas/system-scenario.schema.json` define durable inputs, and `tools/generate_scenario_views.py` emits synchronized Markdown and JSON views.
 
 `config/hpci-center-registry.json` is the dated, official-source-anchored provider scope. A center Run snapshots it, expands two complementary searches for every provider, and records the assignment in each Source Receipt. Evidence from those searches is synthesized into provisional field-level Center Profiles. `tools/evaluate_center_profiles.py` reports missing, partial, stale, and non-accepted profiles separately; query execution never substitutes for profile Evidence.
+
+The current Center Profile contract contains twelve fields, including explicit
+`budget` and `procurement` constraints. `tools/build_center_profile_assurance.py`
+projects only aggregate status and official center links into the public plane.
+Profiles from the earlier ten-field contract stay immutable and appear as
+`not-collected` for the new fields until a later evidenced Run replaces them.
 
 Every new Center Profile is also a Consensus Proposal with source-origin lineage.
 The Run Controller assigns blind reviews to each configured reviewer identity and

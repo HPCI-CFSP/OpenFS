@@ -127,9 +127,9 @@
         "year": {"type": ["integer", "null"], "minimum": 2020},
         "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
         "timing_precision": {"enum": ["quarter", "half-year", "year", "undated"]},
-        "maturity": {"enum": ["commercial", "sample", "standard", "target", "concept", "pilot", "decision-gate", "deployment", "undated"]},
+        "maturity": {"enum": ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"]},
         "event_type": {"enum": ["product", "standard", "research", "policy", "hpci-evaluation", "hpci-adoption"]},
-        "timing_basis": {"enum": ["observed", "standard-release", "vendor-target", "project-target", "policy-target", "openfs-provisional-plan", "no-public-date"]},
+        "timing_basis": {"enum": ["observed", "as-of-baseline", "standard-release", "vendor-target", "project-target", "policy-target", "openfs-provisional-plan", "no-public-date"]},
         "comparison_priority": {"enum": ["key", "supporting"]},
         "label_ja": {"type": "string", "minLength": 1},
         "label_en": {"type": "string", "minLength": 1},
@@ -176,9 +176,10 @@
     },
     "coverageGap": {
       "type": "object",
-      "required": ["gap_id", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "status"],
+      "required": ["gap_id", "priority", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "status"],
       "properties": {
         "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
         "scope_ja": {"type": "string", "minLength": 1},
         "scope_en": {"type": "string", "minLength": 1},
         "impact_ja": {"type": "string", "minLength": 1},

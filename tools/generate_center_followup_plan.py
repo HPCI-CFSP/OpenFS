@@ -15,6 +15,8 @@ from openfs_runtime import atomic_write_json, isoformat, read_json, stable_diges
 ROOT = Path(__file__).resolve().parents[1]
 FIELD_PRIORITY = (
     "refresh_window",
+    "procurement",
+    "budget",
     "power",
     "facility",
     "migration",
@@ -32,6 +34,8 @@ QUERY_TERMS_JA = {
     "refresh_window": "更新時期 次期システム 調達",
     "power": "消費電力 電力制約",
     "facility": "設備 建屋 冷却",
+    "budget": "予算 事業計画 概算要求",
+    "procurement": "調達 入札 仕様書 契約",
     "software": "ソフトウェア 利用環境",
     "operations": "運用体制 利用支援",
     "migration": "移行計画 互換性",

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/consensus-package-review.schema.json",
+  "title": "OpenFS Consensus Package Review",
+  "type": "object",
+  "required": [
+    "schema_version", "review_id", "package_id", "base_commit", "package_manifest_digest", "reviewer",
+    "registry_snapshot_digest", "overall_verdict", "primary_source_checks", "unit_assessments",
+    "critical_objections", "reviewed_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "review_id": {"type": "string", "pattern": "^CRV-[A-Z0-9-]+$"},
+    "package_id": {"type": "string", "pattern": "^CRP-[A-Z0-9-]+$"},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "package_manifest_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewer": {
+      "type": "object",
+      "required": ["agent_id", "role", "provider", "model_family", "prompt_profile", "independence_group", "origin_group", "harness_id", "harness_repository_url", "harness_commit"],
+      "properties": {
+        "agent_id": {"type": "string", "minLength": 1},
+        "role": {"enum": ["validator", "critic"]},
+        "provider": {"type": "string", "minLength": 1},
+        "model_family": {"type": "string", "minLength": 1},
+        "prompt_profile": {"type": "string", "minLength": 1},
+        "independence_group": {"type": "string", "minLength": 1},
+        "origin_group": {"type": "string", "minLength": 1},
+        "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"},
+        "harness_repository_url": {"type": "string", "format": "uri"},
+        "harness_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "registry_snapshot_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "overall_verdict": {"enum": ["support", "refute", "uncertain"]},
+    "primary_source_checks": {
+      "type": "array", "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["unit_id", "selector", "source_id", "source_url", "source_class", "outcome", "notes"],
+        "properties": {
+          "unit_id": {"type": "string", "pattern": "^CRU-[A-Z0-9-]+$"},
+          "selector": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
+          "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+          "source_url": {"type": "string", "format": "uri"},
+          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "academic-primary"]},
+          "outcome": {"enum": ["supports", "contradicts", "inconclusive", "inaccessible"]},
+          "notes": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "unit_assessments": {
+      "type": "array", "minItems": 9,
+      "items": {
+        "type": "object",
+        "required": ["unit_id", "verdict", "confidence", "checks", "observations", "objections"],
+        "properties": {
+          "unit_id": {"type": "string", "pattern": "^CRU-[A-Z0-9-]+$"},
+          "verdict": {"enum": ["support", "refute", "uncertain"]},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "checks": {
+            "type": "object",
+            "minProperties": 4,
+            "additionalProperties": {"enum": ["pass", "fail", "unknown", "not-applicable"]}
+          },
+          "observations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "objections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["severity", "message", "artifact_path", "selector"],
+              "properties": {
+                "severity": {"enum": ["minor", "major", "critical"]},
+                "message": {"type": "string", "minLength": 1},
+                "artifact_path": {"type": "string", "minLength": 1},
+                "selector": {"type": "string", "minLength": 1},
+                "counterevidence_url": {"type": "string", "format": "uri"}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "critical_objections": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "reviewed_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"overall_verdict": {"const": "support"}}, "required": ["overall_verdict"]},
+      "then": {
+        "properties": {
+          "primary_source_checks": {
+            "items": {"properties": {"outcome": {"const": "supports"}}}
+          },
+          "unit_assessments": {
+            "items": {
+              "properties": {
+                "verdict": {"const": "support"},
+                "checks": {"additionalProperties": {"const": "pass"}},
+                "objections": {
+                  "items": {"properties": {"severity": {"const": "minor"}}}
+                }
+              }
+            }
+          },
+          "critical_objections": {"maxItems": 0}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

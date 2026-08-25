@@ -62,6 +62,30 @@ Coverage Gaps, and dependencies. Exact quarters require cited support. OpenFS
 evaluation and adoption gates use `openfs-provisional-plan` and are never presented
 as vendor or standards commitments.
 
+Cross-roadmap direction is normalized in
+`knowledge/public/dependencies/p0-roadmap-dependencies.json`. Run
+`python3 tools/check_roadmap_dependency_register.py` after changing a roadmap,
+milestone, dependency, or P0 Coverage Gap. The check rejects unknown references,
+duplicate or cyclic edges, a roadmap with no path to `RM-X-BLUEPRINT`, and any
+open P0 Gap that is neither propagated on a causal edge nor explicitly classified
+as a non-causal portfolio-wide gate. Passing is structural evidence only and does
+not validate the causal claim or satisfy Consensus.
+
+The workloads and performance-model roadmap additionally uses
+`schemas/performance-model-card.schema.json` for candidate prediction models.
+`tools/check_performance_model_card.py` recomputes holdout errors and checks
+calibration separation, units, thresholds, and system/workload/Origin-Group
+diversity. Passing this deterministic check only permits independent Consensus
+review; it does not close `GAP-WORK-003` or establish HPCI-wide validity.
+
+Experimental comparisons shared by the compute, memory, portability, MPI, and
+performance-model workstreams use
+`schemas/benchmark-result-bundle.schema.json`. Candidate bundles preserve the
+common workload/input/precision conditions, environment and raw-data digests,
+individual repetitions, correctness, energy, failure/recovery, and porting
+records. `tools/check_benchmark_result_bundle.py` recomputes aggregates and
+applies Gap-specific checks before independent review.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone

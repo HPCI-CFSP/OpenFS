@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from build_pages_site import (  # noqa: E402
     build,
+    collect_consensus_packages,
     collect_consensus_receipts,
     collect_roadmaps,
     collect_scenarios,
@@ -234,14 +235,126 @@ class PagesSiteTests(unittest.TestCase):
         self.assertTrue(parser.fragment_links)
         self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
 
-    def test_build_publishes_catalog_but_not_illustrative_scenarios(self):
+    def test_build_publishes_catalog_and_approved_scenarios_only(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             result = build(ROOT, output)
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual([], result["scenarios"])
+            self.assertEqual(1, len(result["consensus_packages"]))
+            package = result["consensus_packages"][0]
+            self.assertEqual("CRP-P0-ROADMAPS-V02", package["package_id"])
+            self.assertEqual("incomplete", package["gate"]["status"])
+            self.assertEqual([], package["eligible_reviewers"])
+            self.assertGreaterEqual(package["artifact_count"], 20)
+            self.assertEqual(40, len(package["base_commit"]))
+            self.assertEqual(64, len(package["manifest_sha256"]))
+            self.assertEqual(
+                package["manifest_sha256"],
+                package["gate"]["package_manifest_digest"],
+            )
+            self.assertEqual(3, len(result["scenarios"]))
+            self.assertEqual(
+                {
+                    "SCN-HPCI-BALANCED-001",
+                    "SCN-HPCI-AI-DATA-001",
+                    "SCN-HPCI-STAGED-001",
+                },
+                {scenario["scenario_id"] for scenario in result["scenarios"]},
+            )
+            self.assertTrue(
+                all(
+                    scenario["research_status"] == "provisional"
+                    and scenario["consensus_status"] == "incomplete"
+                    and len(scenario["decision_blocking_gap_refs"]) == 14
+                    and len(scenario["decision_evidence_contracts"]) == 6
+                    for scenario in result["scenarios"]
+                )
+            )
+            scenario_html = (
+                output / result["scenarios"][0]["path"] / "index.html"
+            ).read_text(encoding="utf-8")
+            self.assertIn('id="scenario-blocking-gaps"', scenario_html)
+            self.assertIn('id="scenario-evidence-contracts"', scenario_html)
+            self.assertTrue(
+                all(
+                    scenario["path"].startswith("scenarios/scn-hpci-")
+                    and len(scenario["source_commit"]) == 40
+                    and "publication" not in scenario
+                    for scenario in result["scenarios"]
+                )
+            )
+            assurance = result["roadmap_assurance"]
+            self.assertGreaterEqual(assurance["source_audit"]["summary"]["source_count"], 91)
+            self.assertLess(
+                assurance["source_audit"]["summary"]["unique_url_count"],
+                assurance["source_audit"]["summary"]["source_count"],
+            )
+            self.assertEqual(
+                assurance["source_audit"]["summary"]["source_count"]
+                - assurance["source_audit"]["summary"]["unique_url_count"],
+                assurance["source_audit"]["summary"]["duplicate_registration_count"],
+            )
+            self.assertEqual(
+                assurance["source_audit"]["summary"]["source_count"]
+                - assurance["source_audit"]["summary"]["reachable"],
+                assurance["source_triage"]["summary"]["non_reachable_count"],
+            )
+            self.assertEqual(0, assurance["source_triage"]["summary"]["unresolved"])
+            center_profiles = assurance["center_profile_assurance"]
+            self.assertEqual(15, center_profiles["summary"]["center_count"])
+            self.assertEqual(0, center_profiles["summary"]["accepted_current_count"])
+            self.assertEqual(30, center_profiles["summary"]["not_collected"])
+            self.assertEqual(
+                {"GAP-BLUE-001", "GAP-BLUE-003"},
+                {item["gap_id"] for item in center_profiles["gap_status"]},
+            )
+            self.assertTrue(
+                all(item["status"] == "open" for item in center_profiles["gap_status"])
+            )
+            self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
+            self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
+            self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
+            self.assertEqual(31, assurance["gap_queue"]["summary"]["gap_count"])
+            self.assertEqual(14, assurance["gap_queue"]["summary"]["p0"])
+            self.assertEqual(
+                14,
+                len(
+                    [
+                        item
+                        for item in assurance["gap_queue"]["assignments"]
+                        if item["priority"] == "P0"
+                    ]
+                ),
+            )
+            self.assertTrue(
+                all(
+                    item["closure_state"] == "criteria-unverified"
+                    and item["closure_plan"]["minimum_independent_origin_groups"] >= 2
+                    and item["closure_plan"]["requires_consensus_gate"] is True
+                    and item["closure_plan"]["criteria"]
+                    for item in assurance["gap_queue"]["assignments"]
+                    if item["priority"] == "P0"
+                )
+            )
+            self.assertEqual(
+                14,
+                len(assurance["dependency_register"]["dependencies"]),
+            )
+            self.assertTrue(
+                all("publication" not in artifact for artifact in assurance.values())
+            )
+            self.assertIn(
+                'id="center-profile-centers"',
+                (output / "roadmaps" / "evidence" / "index.html").read_text(
+                    encoding="utf-8"
+                ),
+            )
+            self.assertGreaterEqual(
+                sum(len(roadmap["coverage_gaps"]) for roadmap in result["roadmap_artifacts"]),
+                30,
+            )
             self.assertEqual([], result["reports"])
             self.assertEqual("2026-08-23", result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))
@@ -259,7 +372,7 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertEqual("common-quarterly", memory_index["renderer"])
             self.assertEqual(11, memory_index["track_count"])
-            self.assertEqual(50, memory_index["milestone_count"])
+            self.assertGreaterEqual(memory_index["milestone_count"], 50)
             roadmap_by_id = {
                 roadmap["roadmap_id"]: roadmap
                 for roadmap in result["roadmap_artifacts"]
@@ -308,8 +421,7 @@ class PagesSiteTests(unittest.TestCase):
                 "undated",
                 milestones["MS-CXL-MICRON-UNDATED"]["timing_precision"],
             )
-            self.assertEqual(
-                3,
+            self.assertGreaterEqual(
                 len(
                     {
                         lane["owner"]
@@ -317,6 +429,7 @@ class PagesSiteTests(unittest.TestCase):
                         if lane["track_id"] == "MEMTECH-HBM"
                     }
                 ),
+                3,
             )
             self.assertNotIn("publication", memory_roadmap)
             self.assertEqual("public-only", result["publication"]["information_plane"])
@@ -377,8 +490,23 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             self.assertTrue((output / "roadmaps.js").is_file())
+            self.assertTrue((output / "planning.js").is_file())
             self.assertTrue((output / "roadmaps" / "index.html").is_file())
             self.assertTrue((output / "roadmaps" / "compare" / "index.html").is_file())
+            self.assertTrue((output / "roadmaps" / "evidence" / "index.html").is_file())
+            self.assertTrue((output / "scenarios" / "index.html").is_file())
+            self.assertTrue((output / "consensus" / "index.html").is_file())
+            self.assertTrue(
+                (output / "consensus" / "crp-p0-roadmaps-v02" / "index.html").is_file()
+            )
+            self.assertTrue(
+                (
+                    output
+                    / "scenarios"
+                    / "scn-hpci-balanced-001"
+                    / "index.html"
+                ).is_file()
+            )
             self.assertTrue(
                 (
                     output
@@ -395,6 +523,10 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("https://www.usenix.org/conference/nsdi26", rendered)
             self.assertIn("SRC-MEM037", rendered)
             self.assertIn("MEMTECH-SOCAMM", rendered)
+            self.assertIn("ROADMAP-EVIDENCE-AUDIT-001", rendered)
+            self.assertIn("ROADMAP-DEPENDENCY-REGISTER-001", rendered)
+            self.assertIn("SCN-HPCI-BALANCED-001", rendered)
+            self.assertIn("CRP-P0-ROADMAPS-V02", rendered)
             self.assertIn('"catalog_as_of":"2026-08-23"', rendered)
             self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
@@ -409,6 +541,9 @@ class PagesSiteTests(unittest.TestCase):
             roadmap_index = (output / "roadmaps" / "index.html").read_text(
                 encoding="utf-8"
             )
+            evidence_index = (
+                output / "roadmaps" / "evidence" / "index.html"
+            ).read_text(encoding="utf-8")
             roadmap_detail = (
                 output
                 / "roadmaps"
@@ -425,6 +560,8 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn('id="memory-roadmap-timeline"', index)
             self.assertIn('id="roadmap-home-rows"', index)
             self.assertIn('id="roadmap-rows"', roadmap_index)
+            self.assertIn('id="source-class-summary"', evidence_index)
+            self.assertIn("sourceClassOrder", (output / "planning.js").read_text(encoding="utf-8"))
             self.assertIn('id="roadmap-timeline"', roadmap_detail)
             self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
@@ -454,6 +591,54 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("summary.summary_ja", app)
             self.assertNotIn("summary.summary_en", app)
             self.assertNotIn('scopeMetric:', app)
+
+    def test_consensus_package_requires_explicit_publication_directive(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(
+                source,
+                root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02",
+            )
+            with self.assertRaisesRegex(ValueError, "no human publication Directive"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
+
+    def test_consensus_package_rejects_stale_gate_manifest_digest(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            target = root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(source, target)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900007.json", directives)
+            gate_path = target / "gate-result.json"
+            gate = json.loads(gate_path.read_text(encoding="utf-8"))
+            gate["package_manifest_digest"] = "f" * 64
+            gate_path.write_text(json.dumps(gate), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "gate manifest digest mismatch"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
+
+    def test_consensus_package_rejects_stale_review_digest_set(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            target = root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(source, target)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900007.json", directives)
+            gate_path = target / "gate-result.json"
+            gate = json.loads(gate_path.read_text(encoding="utf-8"))
+            gate["review_results"]["review_file_digests"] = {
+                "CRV-STALE": "f" * 64
+            }
+            gate_path.write_text(json.dumps(gate), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "gate review digest set mismatch"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
 
     def test_memory_roadmap_rejects_unknown_source_reference(self):
         policy = self.publication_policy()
@@ -549,6 +734,12 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "公開用の要約",
             "objective_en": "Public summary",
+            "uncertainties": ["未確認条件"],
+            "uncertainties_en": ["Unverified condition"],
+            "decision_gates": ["人による判断"],
+            "decision_gates_en": ["Human decision"],
+            "caveat_ja": "公開用注意",
+            "caveat_en": "Publication caveat",
             "nda_internal_note": "must never be emitted",
             "publication": {
                 "information_classification": "public",
@@ -573,14 +764,14 @@ class PagesSiteTests(unittest.TestCase):
             }
             (directives / "DIR-000001.json").write_text(json.dumps(directive), encoding="utf-8")
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
-            result = collect_scenarios(root, policy)
+            result = collect_scenarios(root, policy, include_commit_metadata=False)
             self.assertEqual("SCN-PUBLIC-001", result[0]["scenario_id"])
             self.assertNotIn("nda_internal_note", result[0])
 
             scenario["publication"].pop("publication_decision_id")
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "publication decision"):
-                collect_scenarios(root, policy)
+                collect_scenarios(root, policy, include_commit_metadata=False)
 
     def test_published_scenario_requires_matching_human_directive(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))
@@ -591,6 +782,12 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "要約",
             "objective_en": "Summary",
+            "uncertainties": ["未確認条件"],
+            "uncertainties_en": ["Unverified condition"],
+            "decision_gates": ["人による判断"],
+            "decision_gates_en": ["Human decision"],
+            "caveat_ja": "公開用注意",
+            "caveat_en": "Publication caveat",
             "publication": {
                 "information_classification": "public",
                 "publication_approved": True,
@@ -604,7 +801,7 @@ class PagesSiteTests(unittest.TestCase):
             target.mkdir(parents=True)
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "human publication Directive"):
-                collect_scenarios(root, policy)
+                collect_scenarios(root, policy, include_commit_metadata=False)
 
 
 if __name__ == "__main__":

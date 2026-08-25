@@ -15,6 +15,30 @@ checks, and produced eight provisional Claim proposals. They remain provisional
 because independent provider/model Consensus capacity is not configured; Pilot
 completion must not be read as formal research acceptance.
 
+The public roadmap portfolio also has a deterministic Coverage Gap queue at
+`knowledge/public/audits/roadmap-gap-queue.json`. It assigns every open Gap to a
+specific Monitor or the independent Consensus package. P0 source-discovery items
+are scheduled for weekly reconsideration, but the queue records them as
+`staged-monitor-disabled` while production readiness is incomplete. The weekly
+Review workflow regenerates this assignment artifact, so an open Gap cannot silently
+fall out of the review loop merely because it is already visible on GitHub Pages.
+The Coordinator includes the selected Monitor's weekly P0 Gap IDs and query-seed
+count in its cycle plan. When a Run is created, the Run Controller expands those
+seeds into ordinary leased `source-discovery` Work Items, records the originating
+Gap on every item, and snapshots the queue beside the other Run inputs. Disabled
+Monitors still require an explicit Pilot or a passed production-readiness gate.
+P0 query and closure plans are curated in
+`config/roadmap-gap-query-overrides.json`. Each P0 source-discovery plan states
+the minimum number of independent Origin Groups, requires a Consensus Gate, and
+lists concrete bilingual closure criteria. A newly added Gap remains assignable
+through deterministic generated query and closure defaults, while the queue
+exposes `query_plan_origin`, `closure_plan_origin`, and `closure_state` so reviewers
+can replace those defaults with domain-specific contracts. The current 13 P0
+source-discovery Gaps all have explicit plans; the fourteenth P0 item is the
+Consensus review assignment itself. A responsive result, a source count, or one
+model's judgment cannot change an open Gap: every criterion must be verified and
+the independent-origin and Consensus requirements must pass.
+
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
 one deduplicated coordination Issue. It makes no model call, performs no promotion,
@@ -230,6 +254,10 @@ action updates one stable deduplication marker instead of opening one Issue per 
 - The **Weekly Review** job has no model-provider secret or content-write
   permission. It emits an internal artifact and may create or update only sanitized,
   managed GitHub Issues for currently open owner-action groups.
+- The same job rebuilds the P0 roadmap source and freshness audits. One stable
+  managed Issue lists only `critical` and `high` freshness attention, is updated
+  rather than duplicated, and is closed when that priority queue is empty. The
+  lower-priority audit remains available in the workflow artifact and on Pages.
 
 ## Optional Codex automation
 

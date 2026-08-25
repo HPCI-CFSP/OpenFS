@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import os
@@ -144,7 +145,9 @@ def approved_publication_directives(root: Path, policy: dict[str, Any]) -> dict[
     return approvals
 
 
-def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
+def collect_scenarios(
+    root: Path, policy: dict[str, Any], include_commit_metadata: bool = True
+) -> list[dict[str, Any]]:
     allowed = set(policy["accepted_scenario_statuses"])
     directives = approved_publication_directives(root, policy)
     scenarios: list[dict[str, Any]] = []
@@ -155,16 +158,27 @@ def collect_scenarios(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]
             status = scenario.get("status")
             if status not in allowed:
                 raise ValueError(f"non-publishable scenario in accepted path: {path}: {status}")
-            scenarios.append(
-                public_projection(
-                    scenario,
-                    policy["scenario_public_fields"],
-                    policy["required_publication_metadata"],
-                    policy["scenario_required_bilingual_fields"],
-                    directives,
-                    f"scenario {scenario.get('scenario_id', path.name)}",
-                )
+            scenario_with_contracts = dict(scenario)
+            if "decision_evidence_contracts" in payload:
+                scenario_with_contracts["decision_evidence_contracts"] = payload["decision_evidence_contracts"]
+            projected = public_projection(
+                scenario_with_contracts,
+                policy["scenario_public_fields"],
+                policy["required_publication_metadata"],
+                policy["scenario_required_bilingual_fields"],
+                directives,
+                f"scenario {scenario.get('scenario_id', path.name)}",
             )
+            projected.pop("publication", None)
+            projected["path"] = f"scenarios/{projected['scenario_id'].lower()}/"
+            if include_commit_metadata:
+                metadata = source_commit_metadata(root, str(path.relative_to(root)))
+                projected.update(
+                    updated_at=metadata["updated_at"],
+                    source_commit=metadata["commit_sha"],
+                    source_commit_url=metadata["commit_url"],
+                )
+            scenarios.append(projected)
     return scenarios
 
 
@@ -181,8 +195,7 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
             raise ValueError(
                 f"non-publishable report in public index: {report.get('report_id')}"
             )
-        projected_reports.append(
-            public_projection(
+        projected = public_projection(
                 report,
                 policy["report_public_fields"],
                 policy["required_publication_metadata"],
@@ -190,7 +203,8 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
                 directives,
                 f"report {report.get('report_id', 'unknown')}",
             )
-        )
+        projected.pop("publication", None)
+        projected_reports.append(projected)
     return projected_reports
 
 
@@ -344,6 +358,113 @@ def collect_consensus_receipts(
         ]
         safe_receipts.append(safe_receipt)
     return safe_receipts
+
+
+def collect_consensus_packages(
+    root: Path, policy: dict[str, Any], include_commit_metadata: bool = True
+) -> list[dict[str, Any]]:
+    directives = approved_publication_directives(root, policy)
+    approved_targets = {
+        target for targets in directives.values() for target in targets
+    }
+    allowed_package_statuses = set(policy["accepted_consensus_package_statuses"])
+    allowed_gate_statuses = set(policy["accepted_consensus_package_gate_statuses"])
+    packages: list[dict[str, Any]] = []
+    for manifest_path in sorted(root.glob(policy["included_consensus_package_glob"])):
+        manifest_digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+        manifest = load_json(manifest_path)
+        package_id = manifest.get("package_id", manifest_path.parent.name)
+        if package_id not in approved_targets:
+            raise ValueError(f"Consensus package {package_id} has no human publication Directive")
+        if manifest.get("status") not in allowed_package_statuses:
+            raise ValueError(f"Consensus package {package_id} has non-public status")
+        gate_path = manifest_path.parent / "gate-result.json"
+        if not gate_path.exists():
+            raise ValueError(f"Consensus package {package_id} has no gate result")
+        gate = load_json(gate_path)
+        if gate.get("package_id") != package_id or gate.get("base_commit") != manifest.get("base_commit"):
+            raise ValueError(f"Consensus package {package_id} gate identity mismatch")
+        if gate.get("package_manifest_digest") != manifest_digest:
+            raise ValueError(f"Consensus package {package_id} gate manifest digest mismatch")
+        if gate.get("status") not in allowed_gate_statuses:
+            raise ValueError(f"Consensus package {package_id} has non-public gate status")
+
+        projected = {
+            key: manifest[key]
+            for key in policy["consensus_package_public_fields"]
+            if key in manifest
+        }
+        projected["gate"] = {
+            key: gate[key]
+            for key in policy["consensus_package_gate_public_fields"]
+            if key in gate
+        }
+        eligible_ids = set(
+            gate.get("review_results", {}).get("eligible_review_ids", [])
+        )
+        gate_review_digests = gate.get("review_results", {}).get(
+            "review_file_digests", {}
+        )
+        assessments = {}
+        assessment_digests = {}
+        assessment_dir = root / manifest["submission"]["assessment_directory"]
+        for assessment_path in sorted(assessment_dir.glob("*.json")):
+            assessment = load_json(assessment_path)
+            if (
+                assessment.get("package_id") != package_id
+                or assessment.get("base_commit") != manifest.get("base_commit")
+                or assessment.get("package_manifest_digest") != manifest_digest
+            ):
+                raise ValueError(f"Consensus package {package_id} contains a mismatched assessment")
+            review_id = assessment.get("review_id")
+            if review_id in assessments:
+                raise ValueError(f"Consensus package {package_id} contains duplicate review ID {review_id}")
+            assessments[review_id] = assessment
+            assessment_digests[review_id] = hashlib.sha256(
+                assessment_path.read_bytes()
+            ).hexdigest()
+        if assessment_digests != gate_review_digests:
+            raise ValueError(
+                f"Consensus package {package_id} gate review digest set mismatch"
+            )
+        missing_eligible = eligible_ids - set(assessments)
+        if missing_eligible:
+            raise ValueError(f"Consensus package {package_id} gate references missing reviews: {sorted(missing_eligible)}")
+        reviewers = []
+        reviewer_fields = policy["consensus_package_reviewer_public_fields"]
+        for review_id in sorted(eligible_ids):
+            assessment = assessments[review_id]
+            reviewer = {
+                key: assessment["reviewer"][key]
+                for key in reviewer_fields
+                if key in assessment["reviewer"]
+            }
+            reviewer.update(
+                review_id=review_id,
+                overall_verdict=assessment["overall_verdict"],
+                reviewed_at=assessment["reviewed_at"],
+            )
+            repository_url = reviewer.get("harness_repository_url", "")
+            harness_commit = reviewer.get("harness_commit", "")
+            if repository_url.startswith("https://github.com/") and len(harness_commit) == 40:
+                reviewer["harness_commit_url"] = f"{repository_url.removesuffix('.git')}/commit/{harness_commit}"
+            reviewers.append(reviewer)
+        projected["eligible_reviewers"] = reviewers
+        projected["artifact_count"] = len(manifest["artifact_manifest"])
+        projected["manifest_sha256"] = manifest_digest
+        projected["path"] = f"consensus/{package_id.lower()}/"
+        projected["base_commit_url"] = f"{REPOSITORY_URL}/commit/{manifest['base_commit']}"
+        if include_commit_metadata:
+            relative = str(manifest_path.relative_to(root))
+            metadata = source_commit_metadata(root, relative)
+            projected.update(
+                updated_at=metadata["updated_at"],
+                source_commit=metadata["commit_sha"],
+                source_commit_url=metadata["commit_url"],
+                manifest_url=f"{REPOSITORY_URL}/blob/{metadata['commit_sha']}/{relative}",
+            )
+        packages.append(projected)
+    return packages
 
 
 def collect_topic_summaries(
@@ -555,7 +676,7 @@ def collect_roadmaps(
                 basis = milestone["timing_basis"]
                 maturity = milestone["maturity"]
                 if year is None:
-                    if quarter is not None or precision != "undated" or basis != "no-public-date" or maturity != "undated":
+                    if quarter is not None or precision != "undated" or basis != "no-public-date":
                         raise ValueError(f"undated roadmap milestone {milestone_id} has inconsistent timing fields")
                 elif not start_year <= year <= end_year:
                     raise ValueError(f"roadmap milestone {milestone_id} is outside the horizon")
@@ -597,6 +718,76 @@ def collect_roadmaps(
             f"unexpected={sorted(seen_exports - expected_exports)}"
         )
     return roadmaps
+
+
+def collect_roadmap_assurance(
+    root: Path, policy: dict[str, Any]
+) -> dict[str, Any]:
+    directives = approved_publication_directives(root, policy)
+    specifications = (
+        (
+            "source_audit",
+            policy["included_public_roadmap_source_audit"],
+            policy["roadmap_source_audit_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
+            "source_triage",
+            policy["included_public_roadmap_source_triage"],
+            policy["roadmap_source_triage_public_fields"],
+            ["caveat_ja", "caveat_en"],
+        ),
+        (
+            "evidence_audit",
+            policy["included_public_roadmap_evidence_audit"],
+            policy["roadmap_evidence_audit_public_fields"],
+            ["method_ja", "method_en"],
+        ),
+        (
+            "freshness_audit",
+            policy["included_public_roadmap_freshness_audit"],
+            policy["roadmap_freshness_audit_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
+            "gap_queue",
+            policy["included_public_roadmap_gap_queue"],
+            policy["roadmap_gap_queue_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
+            "center_profile_assurance",
+            policy["included_public_center_profile_assurance"],
+            policy["center_profile_assurance_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
+            "dependency_register",
+            policy["included_public_roadmap_dependencies"],
+            policy["roadmap_dependency_public_fields"],
+            ["title_ja", "title_en", "summary_ja", "summary_en"],
+        ),
+    )
+    assurance: dict[str, Any] = {}
+    for key, relative_path, fields, bilingual_fields in specifications:
+        path = root / relative_path
+        artifact = load_json(path)
+        projected = public_projection(
+            artifact,
+            fields,
+            policy["required_publication_metadata"],
+            bilingual_fields,
+            directives,
+            f"roadmap assurance artifact {artifact.get('export_id', path.name)}",
+        )
+        metadata = source_commit_metadata(root, relative_path)
+        projected.update(
+            updated_at=metadata["updated_at"],
+            source_commit=metadata["commit_sha"],
+            source_commit_url=metadata["commit_url"],
+        )
+        assurance[key] = projected
+    return assurance
 
 
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
@@ -658,8 +849,10 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         )
 
     scenarios = collect_scenarios(root, policy)
+    consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
+    roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
     site_metadata = source_commit_metadata(root)
@@ -683,6 +876,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topics": topics,
         "research_summaries": research_summaries,
         "consensus_receipts": consensus_receipts,
+        "consensus_packages": consensus_packages,
         "technology_landscape": {
             "scope_id": technology_scope["scope_id"],
             "categories": [
@@ -696,6 +890,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "roadmap_artifacts": roadmap_artifacts,
+        "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,
         "reports": reports,
@@ -715,7 +910,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
@@ -750,6 +945,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         ),
         encoding="utf-8",
     )
+    assurance = output / "roadmaps" / "evidence" / "index.html"
+    assurance.parent.mkdir(parents=True)
+    assurance.write_text(
+        render_template(
+            source / "roadmap-evidence.html",
+            {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
     detail_template = source / "roadmap-detail.html"
     for roadmap in public_data["roadmaps"]:
         detail = output / "roadmaps" / roadmap["slug"] / "index.html"
@@ -762,6 +966,56 @@ def build(root: Path, output: Path) -> dict[str, Any]:
                 {
                     "ROOT_PREFIX": root_prefix,
                     "ROADMAP_ID": html.escape(roadmap["export_id"], quote=True),
+                    "ASSET_VERSION": asset_version,
+                },
+            ),
+            encoding="utf-8",
+        )
+    scenarios_index = output / "scenarios" / "index.html"
+    scenarios_index.parent.mkdir(parents=True, exist_ok=True)
+    scenarios_index.write_text(
+        render_template(
+            source / "scenarios-index.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    consensus_index = output / "consensus" / "index.html"
+    consensus_index.parent.mkdir(parents=True, exist_ok=True)
+    consensus_index.write_text(
+        render_template(
+            source / "consensus-index.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    consensus_template = source / "consensus-detail.html"
+    for package in public_data["consensus_packages"]:
+        detail = output / package["path"] / "index.html"
+        detail.parent.mkdir(parents=True, exist_ok=True)
+        depth = len(detail.parent.relative_to(output).parts)
+        detail.write_text(
+            render_template(
+                consensus_template,
+                {
+                    "ROOT_PREFIX": "../" * depth,
+                    "PACKAGE_ID": html.escape(package["package_id"], quote=True),
+                    "ASSET_VERSION": asset_version,
+                },
+            ),
+            encoding="utf-8",
+        )
+    scenario_template = source / "scenario-detail.html"
+    for scenario in public_data["scenarios"]:
+        detail = output / scenario["path"] / "index.html"
+        detail.parent.mkdir(parents=True, exist_ok=True)
+        depth = len(detail.parent.relative_to(output).parts)
+        detail.write_text(
+            render_template(
+                scenario_template,
+                {
+                    "ROOT_PREFIX": "../" * depth,
+                    "SCENARIO_ID": html.escape(scenario["scenario_id"], quote=True),
                     "ASSET_VERSION": asset_version,
                 },
             ),
@@ -780,6 +1034,7 @@ def main() -> int:
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "
         f"receipts={len(result['consensus_receipts'])}, "
+        f"consensus_packages={len(result['consensus_packages'])}, "
         f"roadmaps={len(result['roadmaps'])}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
