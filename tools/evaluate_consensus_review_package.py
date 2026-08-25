@@ -279,11 +279,7 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         "support_model_families": len({(review["reviewer"]["provider"], review["reviewer"]["model_family"]) for review in support}),
         "support_providers": len({review["reviewer"]["provider"] for review in support}),
         "support_harnesses": len({
-            (
-                review["reviewer"]["harness_id"],
-                review["reviewer"]["harness_repository_url"],
-                review["reviewer"]["harness_commit"],
-            )
+            review["reviewer"]["harness_repository_url"].removesuffix("/").removesuffix(".git").lower()
             for review in support
         }),
         "critic_reviews": sum(review["reviewer"]["role"] == "critic" for review in eligible),

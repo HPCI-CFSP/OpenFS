@@ -39,7 +39,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             "agent_independence_group": f"independent-group-{index}",
             "review_origin_group": f"origin-reviewer-{index}",
             "harness_id": f"HAR-REVIEWER-{index}",
-            "harness_repository_url": "https://github.com/example/review-harness",
+            "harness_repository_url": f"https://github.com/example/review-harness-{index}",
             "harness_commit": str(index) * 40,
             "network_access": "public-web",
             "data_clearance": "public",
@@ -270,9 +270,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         )
         agents = [self._registered_reviewer(index, "critic" if index == 4 else "validator") for index in range(1, 5)]
         for agent in agents[:3]:
-            agent["harness_id"] = "HAR-SHARED"
             agent["harness_repository_url"] = "https://github.com/example/shared-harness"
-            agent["harness_commit"] = "a" * 40
         reviews = [
             self._review(agent, registry_digest, "uncertain" if agent["role"] == "critic" else "support")
             for agent in agents
