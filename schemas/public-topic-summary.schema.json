@@ -34,7 +34,7 @@
           "generated_at": {"type": "string", "format": "date-time"},
           "research_status": {"enum": ["provisional", "accepted"]},
           "coverage_status": {"type": "string", "minLength": 1},
-          "consensus_status": {"type": "string", "minLength": 1},
+          "consensus_status": {"enum": ["incomplete", "accepted"]},
           "findings": {
             "type": "array",
             "items": {
@@ -50,6 +50,7 @@
                 },
                 "statement_ja": {"type": "string", "minLength": 1},
                 "statement_en": {"type": "string", "minLength": 1},
+                "consensus_receipt_id": {"type": "string", "pattern": "^CSR-[A-Z0-9-]+$"},
                 "sources": {
                   "type": "array",
                   "items": {
@@ -73,6 +74,25 @@
           "caveat_ja": {"type": "string", "minLength": 1},
           "caveat_en": {"type": "string", "minLength": 1}
         },
+        "allOf": [
+          {
+            "if": {
+              "properties": {"consensus_status": {"const": "accepted"}},
+              "required": ["consensus_status"]
+            },
+            "then": {
+              "properties": {
+                "research_status": {"const": "accepted"},
+                "findings": {"items": {"required": ["consensus_receipt_id"]}}
+              }
+            },
+            "else": {
+              "properties": {
+                "findings": {"items": {"not": {"required": ["consensus_receipt_id"]}}}
+              }
+            }
+          }
+        ],
         "additionalProperties": false
       }
     },

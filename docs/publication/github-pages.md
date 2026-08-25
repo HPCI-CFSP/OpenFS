@@ -17,6 +17,7 @@ The site builder reads only explicitly approved public paths. It does not direct
 - `reports/exports/index.json`: future Publication-Gate-approved report index.
 - `config/publication-i18n.json`: English Topic names and Japanese technology-landscape labels used by the bilingual public projection.
 - `knowledge/public/topic-summaries.json`: approved bilingual research summaries, provisional status, selected findings, and public source links shown from each Topic.
+- `knowledge/public/consensus-receipts.json`: approved public proof records for accepted Findings. Each Receipt lists the participating model and Agent identities, independence groups, Consensus policy result, harness repository, Run ID, and exact harness commit SHA without exposing raw Assessments or private Run content.
 
 The project site is `https://hpci-cfsp.github.io/OpenFS/`. Visitors can switch between Japanese and English; the selected language is retained locally in the browser.
 
@@ -34,13 +35,23 @@ No API key, personal access token, DNS setting, or separate hosting account is r
 
 ## Publication approval
 
-Before adding a Topic Summary, Scenario, or Report to Pages:
+Before adding a Topic Summary, Consensus Receipt, Scenario, or Report to Pages:
 
 1. Prepare both Japanese and English public titles and summaries.
 2. Confirm that every field is suitable for public release.
 3. Create a human Directive with `directive_type: publication-approval`, status `approved` or `completed`, and the exact Export, Scenario, or Report IDs under `publication_targets`.
 4. Reference that Directive from `publication.human_approval_directive_id` in each artifact.
 5. Let CI build the public projection. Missing or mismatched approval causes the build to fail closed.
+
+For an accepted Finding, also add `consensus_receipt_id` and publish the matching
+Receipt. The Receipt must identify an accepted Decision, at least two actual
+voting model identities, at least two voting independence groups, every public
+model/Agent participant, and at least one harness with a full 40-character
+commit SHA. Multiple Agent IDs backed by one model identity do not satisfy this
+publication check. A provisional Finding cannot
+carry a Receipt. Pages renders the Receipt behind a clickable Consensus proof
+line so visitors can inspect the model, Agent, policy, harness, Run, and commit
+used for the decision.
 
 ## Safe activation
 

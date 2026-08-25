@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-consensus-receipt.schema.json",
+  "title": "OpenFS Public Consensus Receipt Export",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "as_of", "receipts", "publication"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "export_id": {"type": "string", "pattern": "^CONSENSUS-RECEIPT-EXPORT-[0-9]{3}$"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "receipt_id", "decision_id", "finding_ids", "outcome", "decided_at",
+          "policy_id", "policy_requirements", "policy_result",
+          "independence_group_count", "participants", "harnesses"
+        ],
+        "properties": {
+          "receipt_id": {"type": "string", "pattern": "^CSR-[A-Z0-9-]+$"},
+          "decision_id": {"type": "string", "pattern": "^DEC-[A-Z0-9-]+$"},
+          "finding_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^FND-[A-Z0-9-]+$"},
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "outcome": {"const": "accepted"},
+          "decided_at": {"type": "string", "format": "date-time"},
+          "policy_id": {"type": "string", "minLength": 1},
+          "policy_requirements": {
+            "type": "object",
+            "required": [
+              "minimum_assessments", "minimum_support",
+              "minimum_independence_groups", "falsification_review_required"
+            ],
+            "properties": {
+              "minimum_assessments": {"type": "integer", "minimum": 1},
+              "minimum_support": {"type": "integer", "minimum": 1},
+              "minimum_independence_groups": {"type": "integer", "minimum": 2},
+              "falsification_review_required": {"type": "boolean"}
+            },
+            "additionalProperties": false
+          },
+          "policy_result": {
+            "type": "object",
+            "required": [
+              "assessment_count", "support_count", "independence_groups",
+              "falsification_review_passed", "critical_objection_count"
+            ],
+            "properties": {
+              "assessment_count": {"type": "integer", "minimum": 1},
+              "support_count": {"type": "integer", "minimum": 1},
+              "independence_groups": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1},
+                "minItems": 2,
+                "uniqueItems": true
+              },
+              "falsification_review_passed": {"const": true},
+              "critical_objection_count": {"const": 0}
+            },
+            "additionalProperties": false
+          },
+          "independence_group_count": {"type": "integer", "minimum": 2},
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "agent_id", "role", "provider", "model_family", "prompt_profile",
+                "independence_group", "contribution", "harness_id"
+              ],
+              "properties": {
+                "agent_id": {"type": "string", "minLength": 1},
+                "role": {"type": "string", "minLength": 1},
+                "provider": {"type": "string", "minLength": 1},
+                "model_family": {"type": "string", "minLength": 1},
+                "prompt_profile": {"type": "string", "minLength": 1},
+                "independence_group": {"type": "string", "minLength": 1},
+                "contribution": {
+                  "enum": [
+                    "proposal-author", "supporting-validator",
+                    "falsification-critic", "consensus-controller"
+                  ]
+                },
+                "assessment_id": {"type": "string", "minLength": 1},
+                "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"}
+              },
+              "additionalProperties": false
+            },
+            "minItems": 2
+          },
+          "harnesses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "harness_id", "name", "repository_url", "commit_sha", "run_id",
+                "agent_registry_digest", "configuration_digest"
+              ],
+              "properties": {
+                "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"},
+                "name": {"type": "string", "minLength": 1},
+                "repository_url": {"type": "string", "format": "uri"},
+                "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+                "run_id": {"type": "string", "pattern": "^RUN-[A-Z0-9-]+$"},
+                "agent_registry_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                "configuration_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+              },
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "information_classification", "publication_approved", "publication_decision_id",
+        "human_approval_directive_id"
+      ],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

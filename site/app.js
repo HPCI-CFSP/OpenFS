@@ -38,6 +38,10 @@
       topicResultsKicker: "Topic別の調査結果", topicResultsLead: "このTopicに直接関連付けられた公開知見を{runCount}件の調査Runから{findingCount}件表示しています。",
       sourceSurvey: "調査元", findings: "調査で得られた知見", sources: "根拠資料", sourceCaveat: "調査元の検証状況",
       sourceRun: "調査Run", generatedAt: "生成日時", researchStatus: "調査状態", coverageStatus: "調査範囲", consensusStatus: "Consensus",
+      consensusProof: "この情報は{modelCount}個のAIモデル（{groupCount}つの独立AIグループ）と{harnessCount}件のAIハーネス構成によってConsensusを通過しています",
+      consensusReceipt: "Consensus Receipt", decision: "Decision", decidedAt: "判定日時", policy: "Policy",
+      participants: "参加モデル・エージェント", harnesses: "AIハーネス", agentRole: "役割", independenceGroup: "独立性グループ",
+      promptProfile: "Prompt Profile", contribution: "検証上の担当", assessment: "Assessment", commit: "Commit", run: "Run",
       provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", profileIncomplete: "プロファイルに未確認項目あり", consensusIncomplete: "未完了"
     },
     en: {
@@ -71,6 +75,10 @@
       topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this Topic from {runCount} research runs.",
       sourceSurvey: "SOURCE SURVEY", findings: "Research findings", sources: "Supporting sources", sourceCaveat: "Source survey validation status",
       sourceRun: "Research run", generatedAt: "Generated", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus",
+      consensusProof: "This information passed Consensus with {modelCount} AI models in {groupCount} independent groups and {harnessCount} AI harness configurations",
+      consensusReceipt: "Consensus Receipt", decision: "Decision", decidedAt: "Decided", policy: "Policy",
+      participants: "Participating models and agents", harnesses: "AI harnesses", agentRole: "Role", independenceGroup: "Independence group",
+      promptProfile: "Prompt profile", contribution: "Consensus contribution", assessment: "Assessment", commit: "Commit", run: "Run",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", profileIncomplete: "profile gaps remain", consensusIncomplete: "incomplete"
     }
   };
@@ -222,6 +230,103 @@
       ));
   }
 
+  function consensusReceiptForFinding(finding) {
+    if (!finding.consensus_receipt_id) return null;
+    return data.consensus_receipts.find(
+      (receipt) => receipt.receipt_id === finding.consensus_receipt_id
+    ) || null;
+  }
+
+  function appendReceiptMeta(root, label, value) {
+    const item = document.createElement("div");
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const description = document.createElement("dd");
+    description.textContent = value;
+    item.append(term, description);
+    root.appendChild(item);
+  }
+
+  function renderConsensusReceipt(finding) {
+    const receipt = consensusReceiptForFinding(finding);
+    if (!receipt) return null;
+    const details = document.createElement("details");
+    details.className = "consensus-receipt";
+    const toggle = document.createElement("summary");
+    const modelCount = new Set(
+      receipt.participants
+        .filter((participant) => participant.contribution !== "consensus-controller")
+        .map((participant) => `${participant.provider}\u0000${participant.model_family}`)
+    ).size;
+    toggle.textContent = tr("consensusProof")
+      .replace("{modelCount}", String(modelCount))
+      .replace("{groupCount}", String(receipt.independence_group_count))
+      .replace("{harnessCount}", String(receipt.harnesses.length));
+    const body = document.createElement("div");
+    body.className = "consensus-receipt-body";
+    const title = document.createElement("h5");
+    title.textContent = `${tr("consensusReceipt")} ${receipt.receipt_id}`;
+    const meta = document.createElement("dl");
+    meta.className = "consensus-receipt-meta";
+    appendReceiptMeta(meta, tr("decision"), receipt.decision_id);
+    appendReceiptMeta(meta, tr("decidedAt"), receipt.decided_at.slice(0, 10));
+    appendReceiptMeta(meta, tr("policy"), receipt.policy_id);
+    appendReceiptMeta(
+      meta,
+      tr("independenceGroup"),
+      receipt.policy_result.independence_groups.join(", ")
+    );
+
+    const participantsTitle = document.createElement("h6");
+    participantsTitle.textContent = tr("participants");
+    const participants = document.createElement("div");
+    participants.className = "receipt-list";
+    receipt.participants.forEach((participant) => {
+      const item = document.createElement("div");
+      item.className = "receipt-list-item";
+      const model = document.createElement("strong");
+      model.textContent = `${participant.provider} / ${participant.model_family}`;
+      const identity = document.createElement("p");
+      identity.textContent = participant.agent_id;
+      const attributes = document.createElement("dl");
+      appendReceiptMeta(attributes, tr("agentRole"), participant.role);
+      appendReceiptMeta(attributes, tr("independenceGroup"), participant.independence_group);
+      appendReceiptMeta(attributes, tr("promptProfile"), participant.prompt_profile);
+      appendReceiptMeta(attributes, tr("contribution"), participant.contribution);
+      if (participant.assessment_id) {
+        appendReceiptMeta(attributes, tr("assessment"), participant.assessment_id);
+      }
+      item.append(model, identity, attributes);
+      participants.appendChild(item);
+    });
+
+    const harnessesTitle = document.createElement("h6");
+    harnessesTitle.textContent = tr("harnesses");
+    const harnesses = document.createElement("div");
+    harnesses.className = "receipt-list";
+    receipt.harnesses.forEach((harness) => {
+      const item = document.createElement("div");
+      item.className = "receipt-list-item harness-item";
+      const name = document.createElement("a");
+      name.href = harness.repository_url;
+      name.target = "_blank";
+      name.rel = "noopener noreferrer";
+      name.textContent = harness.name;
+      const run = document.createElement("p");
+      run.textContent = `${tr("run")}: ${harness.run_id}`;
+      const commit = document.createElement("a");
+      commit.href = `${harness.repository_url}/commit/${harness.commit_sha}`;
+      commit.target = "_blank";
+      commit.rel = "noopener noreferrer";
+      commit.textContent = `${tr("commit")}: ${harness.commit_sha}`;
+      item.append(name, run, commit);
+      harnesses.appendChild(item);
+    });
+    body.append(title, meta, participantsTitle, participants, harnessesTitle, harnesses);
+    details.append(toggle, body);
+    return details;
+  }
+
   function appendMetaItem(root, label, value) {
     const item = document.createElement("div");
     const term = document.createElement("dt");
@@ -319,6 +424,8 @@
           sources.appendChild(sourceItem);
         });
         item.append(statement, sourceLabel, sources);
+        const consensusReceipt = renderConsensusReceipt(finding);
+        if (consensusReceipt) item.appendChild(consensusReceipt);
         findings.appendChild(item);
       });
       const caveat = document.createElement("aside");
