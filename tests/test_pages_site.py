@@ -194,6 +194,7 @@ class PagesSiteTests(unittest.TestCase):
         self.assertIn("--requirement requirements-validation.txt", workflow)
         self.assertLess(workflow.index(install_step), workflow.index(test_step))
         self.assertIn('"knowledge/public/**"', workflow)
+        self.assertIn("fetch-depth: 0", workflow)
 
     def test_pr_preview_is_artifact_only_and_read_only(self):
         workflow = (
@@ -207,6 +208,7 @@ class PagesSiteTests(unittest.TestCase):
         self.assertNotIn("id-token: write", workflow)
         self.assertNotIn("actions/deploy-pages@", workflow)
         self.assertIn('"knowledge/public/**"', workflow)
+        self.assertIn("fetch-depth: 0", workflow)
 
     def test_page_fragment_navigation_has_unique_existing_targets(self):
         parser = PageStructureParser()
@@ -224,6 +226,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual([], result["consensus_receipts"])
             self.assertEqual([], result["scenarios"])
             self.assertEqual([], result["reports"])
+            self.assertEqual("2026-08-23", result["catalog_as_of"])
+            self.assertEqual(40, len(result["site"]["commit_sha"]))
+            self.assertTrue(result["site"]["commit_url"].endswith(result["site"]["commit_sha"]))
+            self.assertIn("T", result["site"]["updated_at"])
+            self.assertEqual(1, len(result["roadmaps"]))
+            self.assertEqual("hardware", result["roadmaps"][0]["domain"])
+            self.assertEqual(
+                "roadmaps/hardware/memory-data-movement/",
+                result["roadmaps"][0]["path"],
+            )
+            self.assertEqual("memory-technology", result["roadmaps"][0]["renderer"])
+            self.assertEqual(11, result["roadmaps"][0]["technology_count"])
+            self.assertEqual(50, result["roadmaps"][0]["milestone_count"])
             self.assertEqual(
                 "MEMORY-ROADMAP-EXPORT-001",
                 result["memory_roadmap"]["export_id"],
@@ -233,6 +248,11 @@ class PagesSiteTests(unittest.TestCase):
                 result["memory_roadmap"]["horizon"],
             )
             self.assertEqual(11, len(result["memory_roadmap"]["technologies"]))
+            self.assertEqual("hardware", result["memory_roadmap"]["domain"])
+            self.assertEqual(
+                "hardware/memory-data-movement", result["memory_roadmap"]["slug"]
+            )
+            self.assertEqual(40, len(result["memory_roadmap"]["source_commit"]))
             self.assertTrue(
                 any(
                     milestone["year"] == 2032
@@ -315,6 +335,17 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("priority_regions", result["technology_landscape"])
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
+            self.assertTrue((output / "roadmaps.js").is_file())
+            self.assertTrue((output / "roadmaps" / "index.html").is_file())
+            self.assertTrue(
+                (
+                    output
+                    / "roadmaps"
+                    / "hardware"
+                    / "memory-data-movement"
+                    / "index.html"
+                ).is_file()
+            )
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
             self.assertNotIn("SCN-EXAMPLE", rendered)
             self.assertNotIn("Illustrative archetypes", rendered)
@@ -322,21 +353,43 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("https://www.usenix.org/conference/nsdi26", rendered)
             self.assertIn("SRC-MEM037", rendered)
             self.assertIn("MEMTECH-SOCAMM", rendered)
+            self.assertIn('"catalog_as_of":"2026-08-23"', rendered)
+            self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
-            self.assertIn('href="#technology-landscape"', index)
+            self.assertIn('href="#roadmaps"', index)
             self.assertNotIn('href="#domestic"', index)
             app = (output / "app.js").read_text(encoding="utf-8")
+            roadmap_app = (output / "roadmaps.js").read_text(encoding="utf-8")
+            roadmap_index = (output / "roadmaps" / "index.html").read_text(
+                encoding="utf-8"
+            )
+            roadmap_detail = (
+                output
+                / "roadmaps"
+                / "hardware"
+                / "memory-data-movement"
+                / "index.html"
+            ).read_text(encoding="utf-8")
             for public_copy in (index, app, rendered):
                 self.assertNotIn("調査対象地域", public_copy)
                 self.assertNotIn("日本発技術を優先", public_copy)
                 self.assertNotIn("Priority coverage for Japan", public_copy)
             self.assertIn('id="topic-dialog"', index)
             self.assertIn('id="roadmap-dialog"', index)
-            self.assertIn('id="memory-roadmap-timeline"', index)
+            self.assertNotIn('id="memory-roadmap-timeline"', index)
+            self.assertIn('id="roadmap-home-rows"', index)
+            self.assertIn('id="roadmap-rows"', roadmap_index)
+            self.assertIn('id="memory-roadmap-timeline"', roadmap_detail)
+            self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
+            self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
+            self.assertNotIn("{{ROOT_PREFIX}}", roadmap_detail)
             self.assertNotIn('data-i18n="scopeMetric"', index)
             self.assertIn("openTopicDetail", app)
-            self.assertIn("openRoadmapMilestone", app)
-            self.assertIn("renderMemoryRoadmap", app)
+            self.assertIn("renderRoadmapHome", app)
+            self.assertIn("formatJst", app)
+            self.assertIn("openRoadmapMilestone", roadmap_app)
+            self.assertIn("renderRoadmapDetail", roadmap_app)
+            self.assertIn("renderRoadmapIndex", roadmap_app)
             self.assertIn('tr("findingAvailable")', app)
             self.assertIn('tr("sourceSurvey")', app)
             self.assertIn("research-source-title", app)

@@ -18,8 +18,11 @@ The site builder reads only explicitly approved public paths. It does not direct
 - `config/publication-i18n.json`: English Topic names and Japanese technology-landscape labels used by the bilingual public projection.
 - `knowledge/public/topic-summaries.json`: approved bilingual research summaries, provisional status, selected findings, and public source links shown from each Topic.
 - `knowledge/public/consensus-receipts.json`: approved public proof records for accepted Findings. Each Receipt lists the participating model and Agent identities, independence groups, Consensus policy result, harness repository, Run ID, and exact harness commit SHA without exposing raw Assessments or private Run content.
+- `knowledge/public/*roadmap*.json`: approved bilingual roadmap artifacts. Each artifact declares a domain and stable slug; the builder generates the roadmap index and a dedicated detail route.
 
-The project site is `https://hpci-cfsp.github.io/OpenFS/`. Visitors can switch between Japanese and English; the selected language is retained locally in the browser.
+The project site is `https://hpci-cfsp.github.io/OpenFS/`. Visitors can switch between Japanese and English; the selected language is retained locally in the browser. The home page contains only a compact roadmap entry list. `/roadmaps/` provides the searchable library, and each roadmap is rendered under `/roadmaps/<domain>/<slug>/` so it can be bookmarked and reviewed independently.
+
+The header identifies the exact Pages source version as `Site updated YYYY-MM-DD HH:MM:SS JST` and links to its Git commit. This is the source commit timestamp, not a deployment clock. Catalog and roadmap dates remain separate: `Catalog as of` comes from the research baseline, while each detail page displays its own `Research as of` date and source-file commit.
 
 ## One-time actions for a repository administrator
 
@@ -76,8 +79,9 @@ For a same-repository PR that changes a Pages input:
 3. Download `openfs-pages-preview-pr-<PR number>` from **Artifacts**.
 4. Extract it and open `index.html`, or serve the directory with
    `python3 -m http.server 8000 --directory <directory>`.
-5. Check Japanese/English switching, the Technology landscape tab, desktop and
-   mobile widths, and confirm that no candidate Scenario or Report is exposed.
+5. Check Japanese/English switching, the roadmap index and dedicated detail
+   routes, desktop and mobile widths, and confirm that no candidate Scenario or
+   Report is exposed.
 
 The Preview job has only `contents: read`. It does not request `pages: write` or
 `id-token: write`, does not call `actions/deploy-pages`, and retains the artifact

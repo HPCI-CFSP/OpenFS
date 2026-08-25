@@ -4,7 +4,7 @@
   "title": "OpenFS Public Memory Technology Roadmap Export",
   "type": "object",
   "required": [
-    "schema_version", "export_id", "status", "as_of", "title_ja", "title_en",
+    "schema_version", "export_id", "status", "domain", "slug", "as_of", "title_ja", "title_en",
     "summary_ja", "summary_en", "horizon", "research_status", "coverage_status",
     "consensus_status", "technologies", "lanes", "sources", "coverage_gaps",
     "caveat_ja", "caveat_en", "publication"
@@ -13,6 +13,8 @@
     "schema_version": {"type": "string"},
     "export_id": {"type": "string", "pattern": "^MEMORY-ROADMAP-EXPORT-[0-9]{3}$"},
     "status": {"const": "published"},
+    "domain": {"enum": ["hardware", "system-software", "applications", "cross-cutting"]},
+    "slug": {"type": "string", "pattern": "^[a-z0-9-]+(?:/[a-z0-9-]+)*$"},
     "as_of": {"type": "string", "format": "date"},
     "title_ja": {"type": "string", "minLength": 1},
     "title_en": {"type": "string", "minLength": 1},
