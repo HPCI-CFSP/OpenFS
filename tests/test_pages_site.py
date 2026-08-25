@@ -70,16 +70,16 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
             self.assertTrue(
-                all("research_summary_count" in topic for topic in result["topics"])
-            )
-            self.assertGreater(
-                next(
-                    topic["research_summary_count"]
+                all(
+                    "research_summary_count" in topic
+                    and "research_finding_count" in topic
                     for topic in result["topics"]
-                    if topic["topic_id"] == "ARCH-03"
-                ),
-                0,
+                )
             )
+            topic_by_id = {topic["topic_id"]: topic for topic in result["topics"]}
+            self.assertGreater(topic_by_id["ARCH-03"]["research_finding_count"], 0)
+            self.assertEqual(2, topic_by_id["ARCH-04"]["research_summary_count"])
+            self.assertEqual(3, topic_by_id["ARCH-04"]["research_finding_count"])
             self.assertTrue(
                 all(
                     finding["sources"]
@@ -121,6 +121,10 @@ class PagesSiteTests(unittest.TestCase):
                 self.assertNotIn("Priority coverage for Japan", public_copy)
             self.assertIn('id="topic-dialog"', index)
             self.assertIn("openTopicDetail", app)
+            self.assertIn('tr("findingAvailable")', app)
+            self.assertIn('tr("sourceSurvey")', app)
+            self.assertNotIn("summary.summary_ja", app)
+            self.assertNotIn("summary.summary_en", app)
 
     def test_publication_policy_rejects_candidate_scenario_status(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))

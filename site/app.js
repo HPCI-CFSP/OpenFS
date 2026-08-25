@@ -17,7 +17,7 @@
       scopeMetricValue: "継続", scopeMetricNote: "新しい公開情報を反映", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
-      catalogLead: "各Topicには、公開情報から作成した調査サマリー、暫定知見、根拠資料を関連付けます。",
+      catalogLead: "各Topicには、公開情報から得た知見と根拠資料を直接関連付け、調査元と検証状況を併記します。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "Topic ID、名称",
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
       noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
@@ -32,10 +32,11 @@
       originHuman: "人の指示", originAi: "AI Consensus", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "確認済み", statusRetired: "廃止", cadenceWeekly: "週次", cadenceMonthly: "月次",
       cadenceQuarterly: "四半期", cadenceAnnual: "年次", cadenceEvent: "事象発生時",
-      summaryAvailable: "公開サマリー", summaryPending: "公開サマリー未作成", closeDialog: "詳細を閉じる",
-      topicDetailMeta: "Topic詳細", noSummaryTitle: "公開サマリーはまだありません",
+      findingAvailable: "公開知見", summaryPending: "公開知見未作成", closeDialog: "詳細を閉じる",
+      topicDetailMeta: "Topic詳細", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "このTopicに紐づく調査結果はまだ公開されていません。今後の調査ループで更新されます。",
-      researchOverview: "調査概要", findings: "調査で得られた知見", sources: "根拠資料", caveat: "検証状況に関する注意",
+      topicResultsKicker: "Topic別の調査結果", topicResultsLead: "このTopicに直接関連付けられた公開知見を{runCount}件の調査Runから{findingCount}件表示しています。",
+      sourceSurvey: "調査元", findings: "調査で得られた知見", sources: "根拠資料", sourceCaveat: "調査元の検証状況",
       sourceRun: "調査Run", generatedAt: "生成日時", researchStatus: "調査状態", coverageStatus: "調査範囲", consensusStatus: "Consensus",
       provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", profileIncomplete: "プロファイルに未確認項目あり", consensusIncomplete: "未完了"
     },
@@ -48,7 +49,7 @@
       scopeMetricValue: "Continuous", scopeMetricNote: "Incorporates new public information", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
-      catalogLead: "Each Topic links to its public-source research summary, provisional findings, and supporting sources.",
+      catalogLead: "Each Topic directly links public-source findings and supporting sources while identifying the source survey and validation status.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA", scenarioKicker: "ROADMAP SCENARIOS",
@@ -64,10 +65,11 @@
       originHuman: "human directive", originAi: "AI consensus", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", cadenceWeekly: "weekly", cadenceMonthly: "monthly",
       cadenceQuarterly: "quarterly", cadenceAnnual: "annual", cadenceEvent: "event-driven",
-      summaryAvailable: "public summary", summaryPending: "public summary pending", closeDialog: "Close details",
-      topicDetailMeta: "Topic details", noSummaryTitle: "No public summary yet",
+      findingAvailable: "public findings", summaryPending: "public findings pending", closeDialog: "Close details",
+      topicDetailMeta: "Topic details", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this Topic has been published yet. A future research cycle can update it.",
-      researchOverview: "Research overview", findings: "Research findings", sources: "Supporting sources", caveat: "Validation caveat",
+      topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this Topic from {runCount} research runs.",
+      sourceSurvey: "SOURCE SURVEY", findings: "Research findings", sources: "Supporting sources", sourceCaveat: "Source survey validation status",
       sourceRun: "Research run", generatedAt: "Generated", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", profileIncomplete: "profile gaps remain", consensusIncomplete: "incomplete"
     }
@@ -171,9 +173,9 @@
       titleText.className = "topic-link-title";
       titleText.textContent = language === "ja" ? topic.title_ja : topic.title_en;
       const resultState = document.createElement("span");
-      resultState.className = `topic-result-state${topic.research_summary_count ? " available" : ""}`;
-      resultState.textContent = topic.research_summary_count
-        ? `${tr("summaryAvailable")} ${topic.research_summary_count}`
+      resultState.className = `topic-result-state${topic.research_finding_count ? " available" : ""}`;
+      resultState.textContent = topic.research_finding_count
+        ? `${tr("findingAvailable")} ${topic.research_finding_count}`
         : tr("summaryPending");
       titleButton.append(titleText, resultState);
       titleButton.addEventListener("click", () => openTopicDetail(topic.topic_id));
@@ -213,7 +215,11 @@
         ...summary,
         findings: summary.findings.filter((finding) => finding.topic_ids.includes(topicId))
       }))
-      .filter((summary) => summary.findings.length > 0);
+      .filter((summary) => summary.findings.length > 0)
+      .sort((left, right) => (
+        right.findings.length - left.findings.length
+        || right.generated_at.localeCompare(left.generated_at)
+      ));
   }
 
   function appendMetaItem(root, label, value) {
@@ -248,6 +254,22 @@
       return;
     }
 
+    const findingCount = summaries.reduce(
+      (count, summary) => count + summary.findings.length,
+      0
+    );
+    const topicOverview = document.createElement("section");
+    topicOverview.className = "topic-results-overview";
+    const overviewKicker = document.createElement("span");
+    overviewKicker.className = "eyebrow";
+    overviewKicker.textContent = tr("topicResultsKicker");
+    const overviewText = document.createElement("p");
+    overviewText.textContent = tr("topicResultsLead")
+      .replace("{runCount}", String(summaries.length))
+      .replace("{findingCount}", String(findingCount));
+    topicOverview.append(overviewKicker, overviewText);
+    root.appendChild(topicOverview);
+
     summaries.forEach((summary) => {
       const section = document.createElement("section");
       section.className = "research-summary";
@@ -256,7 +278,7 @@
       const titleBlock = document.createElement("div");
       const kicker = document.createElement("span");
       kicker.className = "eyebrow";
-      kicker.textContent = tr("researchOverview");
+      kicker.textContent = tr("sourceSurvey");
       const title = document.createElement("h3");
       title.textContent = language === "ja" ? summary.title_ja : summary.title_en;
       titleBlock.append(kicker, title);
@@ -264,9 +286,6 @@
       status.className = "summary-status";
       status.textContent = statusLabel(summary.research_status);
       heading.append(titleBlock, status);
-      const overview = document.createElement("p");
-      overview.className = "research-overview";
-      overview.textContent = language === "ja" ? summary.summary_ja : summary.summary_en;
       const meta = document.createElement("dl");
       meta.className = "research-meta";
       appendMetaItem(meta, tr("sourceRun"), summary.source_run_id);
@@ -305,11 +324,11 @@
       const caveat = document.createElement("aside");
       caveat.className = "summary-caveat";
       const caveatTitle = document.createElement("strong");
-      caveatTitle.textContent = tr("caveat");
+      caveatTitle.textContent = tr("sourceCaveat");
       const caveatText = document.createElement("p");
       caveatText.textContent = language === "ja" ? summary.caveat_ja : summary.caveat_en;
       caveat.append(caveatTitle, caveatText);
-      section.append(heading, overview, meta, findingsTitle, findings, caveat);
+      section.append(heading, meta, findingsTitle, findings, caveat);
       root.appendChild(section);
     });
   }
