@@ -21,11 +21,12 @@
       "type": "object",
       "required": [
         "milestone_count", "classified_primary", "classified_forward_looking",
-        "as_of_baseline", "coverage_gap", "openfs_provisional",
+        "as_of_baseline", "coverage_gap", "openfs_provisional", "openfs_governance_event",
         "independently_verified", "pending_independent_review",
         "source_supported_quarter", "source_supported_half_year",
         "source_supported_year", "undated", "openfs_provisional_quarter",
-        "openfs_provisional_year"
+        "openfs_provisional_year", "openfs_governance_quarter",
+        "openfs_governance_year"
       ],
       "properties": {
         "milestone_count": {"type": "integer", "minimum": 1},
@@ -34,6 +35,7 @@
         "as_of_baseline": {"type": "integer", "minimum": 0},
         "coverage_gap": {"type": "integer", "minimum": 0},
         "openfs_provisional": {"type": "integer", "minimum": 0},
+        "openfs_governance_event": {"type": "integer", "minimum": 0},
         "independently_verified": {"const": 0},
         "pending_independent_review": {"type": "integer", "minimum": 1},
         "source_supported_quarter": {"type": "integer", "minimum": 0},
@@ -41,7 +43,9 @@
         "source_supported_year": {"type": "integer", "minimum": 0},
         "undated": {"type": "integer", "minimum": 0},
         "openfs_provisional_quarter": {"type": "integer", "minimum": 0},
-        "openfs_provisional_year": {"type": "integer", "minimum": 0}
+        "openfs_provisional_year": {"type": "integer", "minimum": 0},
+        "openfs_governance_quarter": {"type": "integer", "minimum": 0},
+        "openfs_governance_year": {"type": "integer", "minimum": 0}
       },
       "additionalProperties": false
     },
@@ -63,19 +67,20 @@
           "review_status": {
             "enum": [
               "classified-primary-event", "classified-forward-looking", "as-of-baseline",
-              "coverage-gap", "openfs-provisional"
+              "coverage-gap", "openfs-provisional", "openfs-governance-event"
             ]
           },
           "claim_support": {
             "enum": [
               "official-primary-source-cited", "official-target-source-cited", "current-state-only",
-              "absence-not-exhaustively-provable", "openfs-design-assessment"
+              "absence-not-exhaustively-provable", "openfs-design-assessment",
+              "openfs-governance-record"
             ]
           },
           "timing_status": {
             "enum": [
               "declared-event-timing", "declared-target-timing", "baseline-only",
-              "unresolved", "provisional-gate"
+              "unresolved", "provisional-gate", "recorded-internal-event"
             ]
           },
           "source_ids": {

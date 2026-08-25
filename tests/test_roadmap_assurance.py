@@ -42,6 +42,16 @@ class RoadmapAssuranceTests(unittest.TestCase):
             milestone["milestone_id"]: milestone
             for milestone in milestone_items
         }
+        milestone_source_classes = {
+            milestone["milestone_id"]: {
+                source_classes[source_id]
+                for source_id in milestone["source_ids"]
+            }
+            for roadmap in self.roadmaps
+            for source_classes in [{source["source_id"]: source["source_class"] for source in roadmap["sources"]}]
+            for lane in roadmap["lanes"]
+            for milestone in lane["milestones"]
+        }
         self.assertEqual(len(milestone_items), len(milestones), "milestone IDs must be globally unique")
         entries = {entry["milestone_id"]: entry for entry in self.evidence["entries"]}
         self.assertGreaterEqual(len(milestones), 130)
@@ -57,6 +67,7 @@ class RoadmapAssuranceTests(unittest.TestCase):
                     "as_of_baseline",
                     "coverage_gap",
                     "openfs_provisional",
+                    "openfs_governance_event",
                 )
             ),
         )
@@ -72,8 +83,14 @@ class RoadmapAssuranceTests(unittest.TestCase):
             "openfs-provisional-plan": "openfs-provisional",
         }
         for milestone_id, milestone in milestones.items():
+            expected_review_status = expected_status[milestone["timing_basis"]]
+            if (
+                milestone_source_classes[milestone_id] == {"openfs-governance"}
+                and milestone["timing_basis"] not in {"openfs-provisional-plan", "no-public-date"}
+            ):
+                expected_review_status = "openfs-governance-event"
             self.assertEqual(
-                expected_status[milestone["timing_basis"]],
+                expected_review_status,
                 entries[milestone_id]["review_status"],
             )
             self.assertEqual(milestone["source_ids"], entries[milestone_id]["source_ids"])
@@ -95,6 +112,8 @@ class RoadmapAssuranceTests(unittest.TestCase):
                     "undated",
                     "openfs_provisional_quarter",
                     "openfs_provisional_year",
+                    "openfs_governance_quarter",
+                    "openfs_governance_year",
                 )
             ),
         )

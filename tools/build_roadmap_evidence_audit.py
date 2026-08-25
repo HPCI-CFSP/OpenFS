@@ -86,8 +86,23 @@ def timing_label(milestone: dict[str, Any], language: str) -> str:
     return f"{year} {quarter}" if quarter else str(year)
 
 
-def build_entry(roadmap_id: str, milestone: dict[str, Any]) -> dict[str, Any]:
-    status, support, timing, note_ja, note_en = STATUS_BY_BASIS[milestone["timing_basis"]]
+def build_entry(
+    roadmap_id: str,
+    milestone: dict[str, Any],
+    source_classes: set[str],
+) -> dict[str, Any]:
+    internal_governance_event = (
+        source_classes == {"openfs-governance"}
+        and milestone["timing_basis"] not in {"openfs-provisional-plan", "no-public-date"}
+    )
+    if internal_governance_event:
+        status = "openfs-governance-event"
+        support = "openfs-governance-record"
+        timing = "recorded-internal-event"
+        note_ja = "OpenFS自身の公開ガバナンス記録であり、外部技術の一次情報には数えない。"
+        note_en = "This is an OpenFS governance record and does not count as external primary technology evidence."
+    else:
+        status, support, timing, note_ja, note_en = STATUS_BY_BASIS[milestone["timing_basis"]]
     return {
         "roadmap_id": roadmap_id,
         "milestone_id": milestone["milestone_id"],
@@ -113,13 +128,24 @@ def build_audit(root: Path) -> dict[str, Any]:
     timing_counts: Counter[str] = Counter()
     for path in sorted((root / "knowledge" / "public" / "roadmaps").glob("*.json")):
         roadmap = load_json(path)
+        source_classes = {
+            source["source_id"]: source["source_class"]
+            for source in roadmap["sources"]
+        }
         for lane in roadmap["lanes"]:
             for milestone in lane["milestones"]:
-                entries.append(build_entry(roadmap["roadmap_id"], milestone))
+                milestone_source_classes = {
+                    source_classes[source_id] for source_id in milestone["source_ids"]
+                }
+                entries.append(
+                    build_entry(roadmap["roadmap_id"], milestone, milestone_source_classes)
+                )
                 if milestone["timing_basis"] == "openfs-provisional-plan":
                     timing_counts[f"openfs_provisional_{milestone['timing_precision'].replace('-', '_')}"] += 1
                 elif milestone["timing_basis"] == "no-public-date":
                     timing_counts["undated"] += 1
+                elif milestone_source_classes == {"openfs-governance"}:
+                    timing_counts[f"openfs_governance_{milestone['timing_precision'].replace('-', '_')}"] += 1
                 else:
                     timing_counts[f"source_supported_{milestone['timing_precision'].replace('-', '_')}"] += 1
     entries.sort(key=lambda item: (item["roadmap_id"], item["milestone_id"]))
@@ -140,6 +166,7 @@ def build_audit(root: Path) -> dict[str, Any]:
             "as_of_baseline": counts["as-of-baseline"],
             "coverage_gap": counts["coverage-gap"],
             "openfs_provisional": counts["openfs-provisional"],
+            "openfs_governance_event": counts["openfs-governance-event"],
             "independently_verified": 0,
             "pending_independent_review": len(entries),
             "source_supported_quarter": timing_counts["source_supported_quarter"],
@@ -148,6 +175,8 @@ def build_audit(root: Path) -> dict[str, Any]:
             "undated": timing_counts["undated"],
             "openfs_provisional_quarter": timing_counts["openfs_provisional_quarter"],
             "openfs_provisional_year": timing_counts["openfs_provisional_year"],
+            "openfs_governance_quarter": timing_counts["openfs_governance_quarter"],
+            "openfs_governance_year": timing_counts["openfs_governance_year"],
         },
         "entries": entries,
         "publication": {
