@@ -555,7 +555,7 @@ def collect_roadmaps(
                 basis = milestone["timing_basis"]
                 maturity = milestone["maturity"]
                 if year is None:
-                    if quarter is not None or precision != "undated" or basis != "no-public-date" or maturity != "undated":
+                    if quarter is not None or precision != "undated" or basis != "no-public-date":
                         raise ValueError(f"undated roadmap milestone {milestone_id} has inconsistent timing fields")
                 elif not start_year <= year <= end_year:
                     raise ValueError(f"roadmap milestone {milestone_id} is outside the horizon")
@@ -597,6 +597,52 @@ def collect_roadmaps(
             f"unexpected={sorted(seen_exports - expected_exports)}"
         )
     return roadmaps
+
+
+def collect_roadmap_assurance(
+    root: Path, policy: dict[str, Any]
+) -> dict[str, Any]:
+    directives = approved_publication_directives(root, policy)
+    specifications = (
+        (
+            "source_audit",
+            policy["included_public_roadmap_source_audit"],
+            policy["roadmap_source_audit_public_fields"],
+            ["method_ja", "method_en", "caveat_ja", "caveat_en"],
+        ),
+        (
+            "evidence_audit",
+            policy["included_public_roadmap_evidence_audit"],
+            policy["roadmap_evidence_audit_public_fields"],
+            ["method_ja", "method_en"],
+        ),
+        (
+            "dependency_register",
+            policy["included_public_roadmap_dependencies"],
+            policy["roadmap_dependency_public_fields"],
+            ["title_ja", "title_en", "summary_ja", "summary_en"],
+        ),
+    )
+    assurance: dict[str, Any] = {}
+    for key, relative_path, fields, bilingual_fields in specifications:
+        path = root / relative_path
+        artifact = load_json(path)
+        projected = public_projection(
+            artifact,
+            fields,
+            policy["required_publication_metadata"],
+            bilingual_fields,
+            directives,
+            f"roadmap assurance artifact {artifact.get('export_id', path.name)}",
+        )
+        metadata = source_commit_metadata(root, relative_path)
+        projected.update(
+            updated_at=metadata["updated_at"],
+            source_commit=metadata["commit_sha"],
+            source_commit_url=metadata["commit_url"],
+        )
+        assurance[key] = projected
+    return assurance
 
 
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
@@ -660,6 +706,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     scenarios = collect_scenarios(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
+    roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
     site_metadata = source_commit_metadata(root)
@@ -696,6 +743,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "roadmap_artifacts": roadmap_artifacts,
+        "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,
         "reports": reports,

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/published-scenario-set.schema.json",
+  "title": "OpenFS Published HPCI Scenario Set",
+  "type": "object",
+  "required": ["schema_version", "set_id", "as_of", "status", "title_ja", "title_en", "notice_ja", "notice_en", "consensus_status", "scenarios"],
+  "properties": {
+    "schema_version": {"const": "0.2.0"},
+    "set_id": {"const": "SCNSET-HPCI-P0-001"},
+    "as_of": {"type": "string", "format": "date"},
+    "status": {"const": "published"},
+    "title_ja": {"type": "string", "minLength": 1},
+    "title_en": {"type": "string", "minLength": 1},
+    "notice_ja": {"type": "string", "minLength": 1},
+    "notice_en": {"type": "string", "minLength": 1},
+    "consensus_status": {"const": "incomplete"},
+    "scenarios": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"$ref": "https://hpci-cfsp.github.io/OpenFS/schemas/system-scenario.schema.json"}
+    }
+  },
+  "additionalProperties": false
+}

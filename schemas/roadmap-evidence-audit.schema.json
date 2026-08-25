@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-evidence-audit.schema.json",
+  "title": "OpenFS Roadmap Claim-Evidence Audit",
+  "type": "object",
+  "required": [
+    "schema_version", "export_id", "status", "as_of", "review_scope",
+    "consensus_status", "method_ja", "method_en", "summary", "entries",
+    "publication"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"const": "ROADMAP-EVIDENCE-AUDIT-001"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "review_scope": {"const": "single-model-primary-source-screening"},
+    "consensus_status": {"const": "incomplete"},
+    "method_ja": {"type": "string", "minLength": 1},
+    "method_en": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "required": [
+        "milestone_count", "screened_primary", "screened_forward_looking",
+        "as_of_baseline", "coverage_gap", "openfs_provisional"
+      ],
+      "properties": {
+        "milestone_count": {"type": "integer", "minimum": 1},
+        "screened_primary": {"type": "integer", "minimum": 0},
+        "screened_forward_looking": {"type": "integer", "minimum": 0},
+        "as_of_baseline": {"type": "integer", "minimum": 0},
+        "coverage_gap": {"type": "integer", "minimum": 0},
+        "openfs_provisional": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "roadmap_id", "milestone_id", "comparison_priority", "review_status",
+          "claim_support", "timing_status", "source_ids", "locator_hint_ja",
+          "locator_hint_en", "review_note_ja", "review_note_en"
+        ],
+        "properties": {
+          "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+          "milestone_id": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
+          "comparison_priority": {"enum": ["key", "supporting"]},
+          "review_status": {
+            "enum": [
+              "screened-primary", "screened-forward-looking", "as-of-baseline",
+              "coverage-gap", "openfs-provisional"
+            ]
+          },
+          "claim_support": {
+            "enum": [
+              "direct-primary", "official-target-statement", "current-state-only",
+              "absence-not-exhaustively-provable", "openfs-design-assessment"
+            ]
+          },
+          "timing_status": {
+            "enum": [
+              "event-date-supported", "target-date-supported", "baseline-only",
+              "unresolved", "provisional-gate"
+            ]
+          },
+          "source_ids": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+          },
+          "locator_hint_ja": {"type": "string", "minLength": 1},
+          "locator_hint_en": {"type": "string", "minLength": 1},
+          "review_note_ja": {"type": "string", "minLength": 1},
+          "review_note_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "information_classification", "publication_approved",
+        "publication_decision_id", "human_approval_directive_id"
+      ],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"const": "PUBDEC-20260826-001"},
+        "human_approval_directive_id": {"const": "DIR-900006"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

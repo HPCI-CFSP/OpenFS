@@ -1,0 +1,277 @@
+{
+  "schema_version": "0.2.0",
+  "set_id": "SCNSET-HPCI-P0-001",
+  "as_of": "2026-08-26",
+  "status": "published",
+  "title_ja": "HPCI整備計画 3シナリオ比較",
+  "title_en": "Three-scenario comparison for HPCI infrastructure planning",
+  "notice_ja": "公開一次情報とOpenFS暫定評価に基づく比較案であり、推奨順位ではない。センターProfile、価格、供給、施設条件、Consensusは未完了。",
+  "notice_en": "These are comparison options based on public primary sources and OpenFS provisional assessment, not a ranking. Center profiles, price, supply, facility conditions, and Consensus remain incomplete.",
+  "consensus_status": "incomplete",
+  "scenarios": [
+    {
+      "schema_version": "0.2.0",
+      "scenario_id": "SCN-HPCI-BALANCED-001",
+      "title_ja": "バランス型・連合共通基盤",
+      "title_en": "Balanced federated common platform",
+      "status": "published",
+      "research_status": "provisional",
+      "consensus_status": "incomplete",
+      "planning_horizon": "FY2026-FY2032",
+      "objective": "汎用計算、アクセラレータ、データ処理をセンターごとに配分し、共通ソフトウェア・データ・評価基盤で幅広いHPCI利用を支える。",
+      "objective_en": "Distribute general-purpose compute, accelerators, and data processing across centers while supporting broad HPCI use through common software, data, and evaluation services.",
+      "architecture": {
+        "summary_ja": "CPU中心、GPU中心、大容量メモリ、データサービスを組み合わせる異種ポートフォリオ。",
+        "summary_en": "A heterogeneous portfolio combining CPU-centric, GPU-centric, large-memory, and data-service resources.",
+        "priorities_ja": ["HBMとDDR/SOCAMMの均衡", "標準準拠scale-outと段階的CXL/CPO", "センター別施設制約に応じた構成"],
+        "priorities_en": ["Balanced HBM and DDR/SOCAMM", "Standards-based scale-out with staged CXL/CPO", "Configurations matched to center facility constraints"],
+        "roadmap_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT"]
+      },
+      "system_software": {
+        "summary_ja": "共通最小環境とセンター拡張を分け、MPI/OpenMP/SYCLと性能可搬層を継続検証する。",
+        "summary_en": "Separate a common minimum environment from center extensions and continuously validate MPI, OpenMP, SYCL, and portability layers.",
+        "priorities_ja": ["移植性台帳", "コンテナと再現環境", "共通監視・来歴・セキュリティ境界"],
+        "priorities_en": ["Portability ledger", "Containers and reproducible environments", "Common observability, provenance, and security boundaries"],
+        "roadmap_refs": ["RM-SSW-PORTABILITY"]
+      },
+      "applications": {
+        "summary_ja": "安定コアと更新可能な拡張部を持つ代表アプリ・Proxy・性能モデルを全センターで継続評価する。",
+        "summary_en": "Continuously evaluate a representative suite across centers with a stable core and evolvable application, proxy, and model extensions.",
+        "priorities_ja": ["従来HPCとAI for Scienceの両立", "性能・電力・データ移動・移植工数の同時計測", "四半期更新"],
+        "priorities_en": ["Coverage of conventional HPC and AI for Science", "Joint measurement of performance, power, data movement, and porting effort", "Quarterly updates"],
+        "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "center_impacts": [
+        {
+          "center_group": "汎用大学基盤センター",
+          "center_group_en": "General-purpose university centers",
+          "fit": "広い利用分野を維持しつつ更新構成を調整しやすい。",
+          "fit_en": "Supports broad user communities while allowing refresh configurations to vary.",
+          "migration": "共通環境へ段階移行し、センター固有backendを拡張として維持する。",
+          "migration_en": "Migrate gradually to the common environment while retaining center-specific backends as extensions.",
+          "unverified_conditions": ["利用分野構成", "更新時期", "電力・冷却", "運用人員"],
+          "unverified_conditions_en": ["Workload mix", "Refresh window", "Power and cooling", "Operations staffing"]
+        },
+        {
+          "center_group": "アクセラレータ・データ重点センター",
+          "center_group_en": "Accelerator- and data-intensive centers",
+          "fit": "GPU/HBM比率とデータサービスを増やすことで適合可能。",
+          "fit_en": "Can fit by increasing GPU/HBM share and data services.",
+          "migration": "共通APIとデータ面を維持しながら高密度区画を追加する。",
+          "migration_en": "Add high-density partitions while preserving common APIs and data services.",
+          "unverified_conditions": ["高密度設備余力", "GPU需要", "広域データ転送"],
+          "unverified_conditions_en": ["High-density facility headroom", "GPU demand", "Wide-area data transfer"]
+        }
+      ],
+      "technology_options": [
+        {
+          "candidate": "世界のCPU/GPU、HBM/SOCAMM、標準fabric、光化技術",
+          "candidate_en": "Worldwide CPU/GPU, HBM/SOCAMM, standards-based fabric, and photonics options",
+          "role": "複数ベンダー候補を共通ベンチマークで比較し、用途別区画へ配分する。",
+          "role_en": "Compare multi-vendor candidates using common benchmarks and assign them to workload-specific partitions.",
+          "maturity_gate": "実アプリ性能、電力、供給、保守、移植性、相互運用性",
+          "maturity_gate_en": "Application performance, power, supply, support, portability, and interoperability",
+          "fallback": "標準APIとデータサービスを保ち、構成比またはベンダーを変更する。",
+          "fallback_en": "Preserve standard APIs and data services while changing vendor or portfolio share."
+        }
+      ],
+      "evaluation": {
+        "application-coverage": {"score": null, "rationale": "幅広い分野を意図するが、全センターProfileが未確定。", "rationale_en": "Designed for broad coverage, but all-center profiles remain incomplete.", "evidence_refs": ["GAP-WORK-001", "GAP-BLUE-001"]},
+        "time-to-solution": {"score": null, "rationale": "用途別構成で改善可能だが共通実測が必要。", "rationale_en": "Workload-specific configurations may improve results, but common measurements are required.", "evidence_refs": ["MS-COMP-HPCI-2027", "MS-WORK-HPCI-2027Q4"]},
+        "power-facility-fit": {"score": null, "rationale": "センター別構成を許すが施設ロードマップが未整備。", "rationale_en": "Allows center-specific configurations, but the facility roadmap is missing.", "evidence_refs": ["EXT-FACILITY"]},
+        "lifecycle-cost": {"score": null, "rationale": "移植と運用を含める設計だが価格・保守条件が未公開。", "rationale_en": "Includes migration and operations conceptually, but price and support terms are unavailable.", "evidence_refs": ["EXT-COST-SUPPLY"]},
+        "maturity-schedule": {"score": null, "rationale": "複数候補と段階ゲートで不確実性を吸収する。", "rationale_en": "Uses multiple candidates and staged gates to absorb schedule uncertainty.", "evidence_refs": ["MS-BLUE-HPCI-2027Q4", "MS-BLUE-HPCI-2028Q2"]},
+        "software-migration": {"score": null, "rationale": "共通最小環境と移植性台帳を中心に置く。", "rationale_en": "Centers the plan on a common minimum environment and portability ledger.", "evidence_refs": ["MS-PORT-HPCI-2027", "XDEP-PORT-COMP"]},
+        "operations-security": {"score": null, "rationale": "共通運用は効率化余地があるが責任分界が未確定。", "rationale_en": "Common operations may improve efficiency, but responsibility boundaries are unresolved.", "evidence_refs": ["GAP-BLUE-004"]},
+        "hpci-interoperability": {"score": null, "rationale": "連合共通基盤を中心目的とする。", "rationale_en": "Federated interoperability is a primary objective.", "evidence_refs": ["MS-BLUE-POLICY-2027", "XDEP-NET-BLUE"]},
+        "technology-origin-and-ecosystem": {"score": null, "rationale": "世界候補を同一基準で比較し、供給集中を回避する。", "rationale_en": "Compares worldwide options under common gates and avoids supply concentration.", "evidence_refs": ["GAP-MEM003", "EXT-COST-SUPPLY"]},
+        "center-fit": {"score": null, "rationale": "センター別構成を許すがProfile完成が前提。", "rationale_en": "Allows center-specific configurations but depends on completed profiles.", "evidence_refs": ["MS-BLUE-HPCI-2027Q2", "GAP-BLUE-001"]},
+        "reversibility": {"score": null, "rationale": "複数区画と標準境界により比較的可逆。", "rationale_en": "Multiple partitions and standard boundaries provide relative reversibility.", "evidence_refs": ["MS-NET-HPCI-2027", "MS-PORT-HPCI-2027"]}
+      },
+      "evidence_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-SSW-PORTABILITY", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT", "ROADMAP-DEPENDENCY-REGISTER-001"],
+      "uncertainties": ["15センターの受理済みProfileがない", "価格・供給量・保守条件が公開情報では不足", "施設ロードマップがP0外"],
+      "uncertainties_en": ["No accepted profiles for all 15 centers", "Public price, supply-volume, and support information is insufficient", "A facility roadmap is outside the current P0 set"],
+      "decision_gates": ["2026 Q4: 共通計測基準", "2027 Q2: 15センターProfile", "2027 Q4: 複数構成比較", "2028 Q2: 調達テンプレート実証"],
+      "decision_gates_en": ["2026 Q4: common measurement baseline", "2027 Q2: 15-center profiles", "2027 Q4: multi-configuration comparison", "2028 Q2: procurement-template pilot"],
+      "caveat_ja": "単一モデルによる暫定シナリオ。Consensus Gateと人による採用判断は未完了で、推奨順位を示さない。",
+      "caveat_en": "A single-model provisional scenario. Consensus and human adoption decisions are incomplete, and no ranking is asserted.",
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+    },
+    {
+      "schema_version": "0.2.0",
+      "scenario_id": "SCN-HPCI-AI-DATA-001",
+      "title_ja": "AI・データ集約型重点整備",
+      "title_en": "AI- and data-intensive priority investment",
+      "status": "published",
+      "research_status": "provisional",
+      "consensus_status": "incomplete",
+      "planning_horizon": "FY2026-FY2032",
+      "objective": "AI for Science、実験・観測データ、デジタルツインを中心に、高密度アクセラレータ、広帯域メモリ、光ネットワーク、データサービスへ重点配分する。",
+      "objective_en": "Prioritize dense accelerators, high-bandwidth memory, optical networking, and data services for AI for Science, experimental and observational data, and digital twins.",
+      "architecture": {
+        "summary_ja": "GPU/HBMラック、大容量CPUノード、高速ingest、階層ストレージを高帯域fabricで接続する。",
+        "summary_en": "Connect GPU/HBM racks, large-memory CPU nodes, high-speed ingest, and tiered storage with high-bandwidth fabrics.",
+        "priorities_ja": ["HBM4/4EとSOCAMM2", "高radix scale-up/scale-outとCPO", "AIデータのingest・metadata・scratch"],
+        "priorities_en": ["HBM4/4E and SOCAMM2", "High-radix scale-up/scale-out and CPO", "AI-data ingest, metadata, and scratch"],
+        "roadmap_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT"]
+      },
+      "system_software": {
+        "summary_ja": "バッチとコンテナ/ワークフローを併用し、AI frameworkとHPC精度・再現性を同時検証する。",
+        "summary_en": "Combine batch and container/workflow services while validating AI frameworks together with HPC accuracy and reproducibility.",
+        "priorities_ja": ["GPU frameworkと通信library", "データ・モデル来歴", "CPU/GPU性能可搬性"],
+        "priorities_en": ["GPU frameworks and communication libraries", "Data and model provenance", "CPU/GPU performance portability"],
+        "roadmap_refs": ["RM-SSW-PORTABILITY"]
+      },
+      "applications": {
+        "summary_ja": "科学基盤モデル、AIサロゲート、simulation-AI連成、実験連携を重点評価し、従来HPCの最低容量を保つ。",
+        "summary_en": "Prioritize scientific foundation models, AI surrogates, simulation-AI coupling, and experiment integration while retaining minimum conventional-HPC capacity.",
+        "priorities_ja": ["end-to-end科学成果時間", "学習・推論・simulation連成", "データ移動と電力"],
+        "priorities_en": ["End-to-end time to scientific result", "Coupled training, inference, and simulation", "Data movement and power"],
+        "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "center_impacts": [
+        {
+          "center_group": "AI・データ・実験連携センター",
+          "center_group_en": "AI-, data-, and experiment-coupled centers",
+          "fit": "施設とデータ基盤が対応できれば高い適合性。",
+          "fit_en": "High fit where facilities and data infrastructure can support dense systems.",
+          "migration": "framework、workflow、データ管理、利用支援を大幅に拡張する。",
+          "migration_en": "Substantially expand frameworks, workflows, data management, and user support.",
+          "unverified_conditions": ["電力・冷却", "データガバナンス", "アクセラレータ需要", "供給"],
+          "unverified_conditions_en": ["Power and cooling", "Data governance", "Accelerator demand", "Supply"]
+        },
+        {
+          "center_group": "CPU・従来simulation重点センター",
+          "center_group_en": "CPU- and conventional-simulation-oriented centers",
+          "fit": "CPU容量不足を避けるため連合内の役割分担が必要。",
+          "fit_en": "Requires federation role-sharing to avoid insufficient CPU capacity.",
+          "migration": "CPU区画維持または他センター紹介と、AI併用経路を整える。",
+          "migration_en": "Retain CPU partitions or referrals to other centers and establish AI-assisted paths.",
+          "unverified_conditions": ["CPU-only利用比率", "GPU移植性", "広域転送費用"],
+          "unverified_conditions_en": ["CPU-only workload share", "GPU portability", "Wide-area transfer cost"]
+        }
+      ],
+      "technology_options": [
+        {
+          "candidate": "世界のrack-scale AI、HBM/SOCAMM、CPO、CXL、PIM候補",
+          "candidate_en": "Worldwide rack-scale AI, HBM/SOCAMM, CPO, CXL, and PIM options",
+          "role": "本番GPU/HBM基盤と、CXL/PIM等の評価区画を分ける。",
+          "role_en": "Separate production GPU/HBM infrastructure from CXL/PIM and other evaluation partitions.",
+          "maturity_gate": "全workflow性能、電力、精度、供給、framework、運用性",
+          "maturity_gate_en": "Full-workflow performance, power, accuracy, supply, frameworks, and operability",
+          "fallback": "標準データ面を維持し、GPU世代、ベンダー、CXL/PIM採用範囲を縮退する。",
+          "fallback_en": "Preserve standard data services while changing GPU generation or vendor and reducing CXL/PIM scope."
+        }
+      ],
+      "evaluation": {
+        "application-coverage": {"score": null, "rationale": "AI for Scienceには強いが従来HPCの代表性確認が必要。", "rationale_en": "Strong for AI for Science, but conventional-HPC coverage must be verified.", "evidence_refs": ["GAP-WORK-004"]},
+        "time-to-solution": {"score": null, "rationale": "適合workflowでは高い可能性があるがend-to-end実測が必要。", "rationale_en": "May be strong for matching workflows, but end-to-end measurements are required.", "evidence_refs": ["MS-WORK-MLPERF-2026", "XDEP-WORK-COMP"]},
+        "power-facility-fit": {"score": null, "rationale": "高密度化により最も厳しい制約となる。", "rationale_en": "Dense deployment makes this the strongest constraint.", "evidence_refs": ["EXT-FACILITY"]},
+        "lifecycle-cost": {"score": null, "rationale": "電力、更新頻度、framework移行を含むTCOが未確認。", "rationale_en": "TCO including power, refresh cadence, and framework migration is unverified.", "evidence_refs": ["EXT-COST-SUPPLY"]},
+        "maturity-schedule": {"score": null, "rationale": "2026-2028の製品目標は多いが供給確約と後半時期が不足。", "rationale_en": "Many 2026-2028 targets exist, but supply commitments and later-horizon dates are limited.", "evidence_refs": ["GAP-MEM001", "GAP-NET-001"]},
+        "software-migration": {"score": null, "rationale": "framework適合は期待できるが科学コードの移植差が大きい。", "rationale_en": "Framework fit may be strong, but scientific-code porting varies widely.", "evidence_refs": ["GAP-PORT-001", "GAP-PORT-003"]},
+        "operations-security": {"score": null, "rationale": "モデル・データ来歴と対話サービス運用が追加要件。", "rationale_en": "Model/data provenance and interactive-service operations add requirements.", "evidence_refs": ["GAP-BLUE-004"]},
+        "hpci-interoperability": {"score": null, "rationale": "大規模データ転送と共通認証・metadataが前提。", "rationale_en": "Depends on large-scale data transfer and common identity and metadata.", "evidence_refs": ["XDEP-NET-BLUE"]},
+        "technology-origin-and-ecosystem": {"score": null, "rationale": "供給集中とソフトウェア依存を複数候補で検証する必要。", "rationale_en": "Supply concentration and software dependence require multi-option evaluation.", "evidence_refs": ["EXT-COST-SUPPLY"]},
+        "center-fit": {"score": null, "rationale": "施設と利用構成によるセンター間差が大きい。", "rationale_en": "Center fit varies strongly with facilities and workload mix.", "evidence_refs": ["GAP-BLUE-001", "EXT-FACILITY"]},
+        "reversibility": {"score": null, "rationale": "本番基盤と実証区画を分ければ可逆性を確保できる。", "rationale_en": "Separating production and pilot partitions can preserve reversibility.", "evidence_refs": ["MS-NET-HPCI-2028", "MS-BLUE-HPCI-2028Q2"]}
+      },
+      "evidence_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-SSW-PORTABILITY", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT", "ROADMAP-DEPENDENCY-REGISTER-001"],
+      "uncertainties": ["科学AI workloadの全国代表性", "高密度施設対応", "GPU/HBM供給と価格", "CXL/PIMの本番時期"],
+      "uncertainties_en": ["National representativeness of scientific-AI workloads", "High-density facility readiness", "GPU/HBM supply and price", "Production timing for CXL and PIM"],
+      "decision_gates": ["2026 Q4: AI/HPC共通suite", "2027 Q2: センター別データ・施設Profile", "2027 Q4: end-to-end workflow比較", "2028 Q2: 高密度区画と光/CXL実証"],
+      "decision_gates_en": ["2026 Q4: common AI/HPC suite", "2027 Q2: center data and facility profiles", "2027 Q4: end-to-end workflow comparison", "2028 Q2: dense-partition and optical/CXL pilot"],
+      "caveat_ja": "単一モデルによる暫定シナリオ。AI需要、施設、価格の未確認値を推測で補っておらず、推奨順位を示さない。",
+      "caveat_en": "A single-model provisional scenario. Unknown AI demand, facility, and price values are not inferred, and no ranking is asserted.",
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+    },
+    {
+      "schema_version": "0.2.0",
+      "scenario_id": "SCN-HPCI-STAGED-001",
+      "title_ja": "段階導入・選択肢維持型",
+      "title_en": "Staged deployment with option preservation",
+      "status": "published",
+      "research_status": "provisional",
+      "consensus_status": "incomplete",
+      "planning_horizon": "FY2026-FY2032",
+      "objective": "成熟した本番基盤を維持しつつ、新CPU/GPU、CPO、CXL、PIM、AI移植等を独立した評価区画から段階的に昇格させ、技術・供給・施設の不確実性を吸収する。",
+      "objective_en": "Maintain a mature production core while promoting new CPUs/GPUs, CPO, CXL, PIM, and AI migration from independent evaluation partitions through staged gates.",
+      "architecture": {
+        "summary_ja": "安定本番区画、複数ベンダー評価区画、交換可能なデータ・ネットワーク境界で構成する。",
+        "summary_en": "Combine a stable production core, multi-vendor evaluation partitions, and replaceable data and network boundaries.",
+        "priorities_ja": ["成熟技術の本番継続", "新技術の小規模実証から段階拡大", "標準境界とfallback"],
+        "priorities_en": ["Production continuity on mature technology", "Gradual expansion from small pilots", "Standard boundaries and fallback"],
+        "roadmap_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT"]
+      },
+      "system_software": {
+        "summary_ja": "本番版と評価版を分離し、互換性・再現性・保守期間を昇格条件にする。",
+        "summary_en": "Separate production and evaluation stacks and use compatibility, reproducibility, and support horizon as promotion gates.",
+        "priorities_ja": ["version固定と更新経路", "複数backend CI", "生成AI移植のテスト・来歴"],
+        "priorities_en": ["Version pinning and upgrade paths", "Multi-backend CI", "Tests and provenance for AI-assisted migration"],
+        "roadmap_refs": ["RM-SSW-PORTABILITY"]
+      },
+      "applications": {
+        "summary_ja": "代表suiteで昇格判定し、未移植アプリと不利な結果を削除せず残す。",
+        "summary_en": "Use the representative suite for promotion decisions while retaining unported applications and unfavorable results.",
+        "priorities_ja": ["反証試験", "pilot-to-production閾値", "旧新環境の継続比較"],
+        "priorities_en": ["Falsification testing", "Pilot-to-production thresholds", "Continuous comparison of old and new environments"],
+        "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "center_impacts": [
+        {
+          "center_group": "共同設計・実証能力を持つセンター",
+          "center_group_en": "Centers with co-design and pilot capability",
+          "fit": "評価区画の主担当として適合しやすい。",
+          "fit_en": "Well suited to lead evaluation partitions.",
+          "migration": "測定、移植、運用、ベンダー連携の専任能力が必要。",
+          "migration_en": "Requires dedicated measurement, porting, operations, and vendor-coordination capacity.",
+          "unverified_conditions": ["人員", "共同設計契約", "施設余力", "利用者参加"],
+          "unverified_conditions_en": ["Staffing", "Co-design agreements", "Facility headroom", "User participation"]
+        },
+        {
+          "center_group": "安定サービス重点センター",
+          "center_group_en": "Service-continuity-oriented centers",
+          "fit": "共通ゲート通過後に導入することで運用リスクを抑えられる。",
+          "fit_en": "Can reduce operational risk by adopting only after common gates are passed.",
+          "migration": "本番環境を保ち、連合内の評価結果を導入判断に利用する。",
+          "migration_en": "Retain production environments and use federation pilot results for adoption decisions.",
+          "unverified_conditions": ["更新時期", "旧環境保守費", "全国役割合意"],
+          "unverified_conditions_en": ["Refresh window", "Legacy support cost", "National role agreement"]
+        }
+      ],
+      "technology_options": [
+        {
+          "candidate": "世界の新CPU/GPU、メモリ、fabric、光、PIM、ソフトウェア候補",
+          "candidate_en": "Worldwide emerging CPU/GPU, memory, fabric, optics, PIM, and software options",
+          "role": "共通評価区画で比較し、条件を満たした用途・センターから本番へ昇格する。",
+          "role_en": "Compare in common evaluation partitions and promote into production by workload and center after gates are met.",
+          "maturity_gate": "独立ベンチマーク、正当性、供給、SLA、移植性、施設適合、TCO",
+          "maturity_gate_en": "Independent benchmarks, correctness, supply, SLA, portability, facility fit, and TCO",
+          "fallback": "本番コアを継続し、次四半期または次調達波で再評価する。",
+          "fallback_en": "Continue the production core and reassess in the next quarter or procurement wave."
+        }
+      ],
+      "evaluation": {
+        "application-coverage": {"score": null, "rationale": "不適合アプリを残す設計だが全国suite完成が必要。", "rationale_en": "Retains non-fitting applications, but requires a completed national suite.", "evidence_refs": ["GAP-WORK-001"]},
+        "time-to-solution": {"score": null, "rationale": "最速候補の全面導入は遅れる一方、実測後に用途別最適化できる。", "rationale_en": "May delay full deployment of the fastest option but enables measured workload-specific adoption.", "evidence_refs": ["MS-WORK-HPCI-2027Q4"]},
+        "power-facility-fit": {"score": null, "rationale": "小規模実証で施設条件を先に検証できる。", "rationale_en": "Small pilots can test facility conditions before scale-up.", "evidence_refs": ["EXT-FACILITY"]},
+        "lifecycle-cost": {"score": null, "rationale": "二重環境費用と失敗回避価値の比較が必要。", "rationale_en": "Requires comparison of dual-environment cost against the value of avoiding failed adoption.", "evidence_refs": ["EXT-COST-SUPPLY"]},
+        "maturity-schedule": {"score": null, "rationale": "公開時期が弱い技術を未確定のまま扱える。", "rationale_en": "Can retain technologies with weak public timing as unresolved options.", "evidence_refs": ["GAP-MEM001", "GAP-NET-002"]},
+        "software-migration": {"score": null, "rationale": "複数backend CIと段階移植を中心に置く。", "rationale_en": "Centers the plan on multi-backend CI and staged migration.", "evidence_refs": ["MS-PORT-HPCI-2027", "MS-PORT-HPCI-2028"]},
+        "operations-security": {"score": null, "rationale": "本番と実証の責任境界・データ境界が追加で必要。", "rationale_en": "Requires explicit production-pilot responsibility and data boundaries.", "evidence_refs": ["GAP-BLUE-004"]},
+        "hpci-interoperability": {"score": null, "rationale": "標準境界を昇格条件にするが実装差を検証する必要。", "rationale_en": "Uses standard boundaries as gates but must validate implementation differences.", "evidence_refs": ["MS-NET-HPCI-2027", "XDEP-PORT-NET"]},
+        "technology-origin-and-ecosystem": {"score": null, "rationale": "多様な候補を同じゲートで継続評価できる。", "rationale_en": "Can continuously evaluate diverse options under common gates.", "evidence_refs": ["ROADMAP-EVIDENCE-AUDIT-001"]},
+        "center-fit": {"score": null, "rationale": "センター役割分担が成立すれば適合性を高められる。", "rationale_en": "Can improve fit if center role-sharing is agreed.", "evidence_refs": ["MS-BLUE-HPCI-2027Q2", "GAP-BLUE-001"]},
+        "reversibility": {"score": null, "rationale": "本番コア、評価区画、fallbackにより最も可逆性を重視。", "rationale_en": "Most explicitly prioritizes reversibility through a production core, pilot partitions, and fallback.", "evidence_refs": ["MS-BLUE-HPCI-2028Q2"]}
+      },
+      "evidence_refs": ["RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-SSW-PORTABILITY", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT", "ROADMAP-DEPENDENCY-REGISTER-001"],
+      "uncertainties": ["実証を担う人員・施設", "本番・実証二重運用の費用", "昇格閾値の人による承認", "ベンダー供給時期"],
+      "uncertainties_en": ["Staffing and facilities for pilots", "Cost of dual production and pilot operation", "Human approval of promotion thresholds", "Vendor supply timing"],
+      "decision_gates": ["2026 Q4: 共通suiteと実証規約", "2027 Q2: 実証センターとProfile", "2027 Q4: 第一回昇格・継続・停止判定", "2028 Q2: 調達テンプレート実証"],
+      "decision_gates_en": ["2026 Q4: common suite and pilot protocol", "2027 Q2: pilot centers and profiles", "2027 Q4: first promote-continue-stop decision", "2028 Q2: procurement-template pilot"],
+      "caveat_ja": "単一モデルによる暫定シナリオ。段階導入が常に低費用または高性能であるとは仮定せず、未確認条件をCoverage Gapとして残す。",
+      "caveat_en": "A single-model provisional scenario. It does not assume staged deployment is always cheaper or faster and retains unknown conditions as Coverage Gaps.",
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+    }
+  ]
+}

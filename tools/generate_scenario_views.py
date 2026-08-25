@@ -123,8 +123,8 @@ def render_markdown(payload: dict[str, Any], policy: dict[str, Any]) -> str:
                 f"| {impact['center_group']} | {impact['fit']} | {impact['migration']} | "
                 f"{text_value(impact['unverified_conditions'])} |"
             )
-        lines.extend(["", "### Domestic technology", "", "| Candidate | Role | Maturity gate | Fallback |", "|---|---|---|---|"])
-        for item in scenario["domestic_technology"]:
+        lines.extend(["", "### Technology options", "", "| Candidate | Role | Maturity gate | Fallback |", "|---|---|---|---|"])
+        for item in scenario["technology_options"]:
             lines.append(
                 f"| {item['candidate']} | {item['role']} | {item['maturity_gate']} | {item['fallback']} |"
             )

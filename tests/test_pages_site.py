@@ -234,14 +234,29 @@ class PagesSiteTests(unittest.TestCase):
         self.assertTrue(parser.fragment_links)
         self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
 
-    def test_build_publishes_catalog_but_not_illustrative_scenarios(self):
+    def test_build_publishes_catalog_and_approved_scenarios_only(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             result = build(ROOT, output)
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual([], result["scenarios"])
+            self.assertEqual(3, len(result["scenarios"]))
+            self.assertEqual(
+                {
+                    "SCN-HPCI-BALANCED-001",
+                    "SCN-HPCI-AI-DATA-001",
+                    "SCN-HPCI-STAGED-001",
+                },
+                {scenario["scenario_id"] for scenario in result["scenarios"]},
+            )
+            self.assertTrue(
+                all(
+                    scenario["research_status"] == "provisional"
+                    and scenario["consensus_status"] == "incomplete"
+                    for scenario in result["scenarios"]
+                )
+            )
             self.assertEqual([], result["reports"])
             self.assertEqual("2026-08-23", result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))
@@ -549,6 +564,12 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "公開用の要約",
             "objective_en": "Public summary",
+            "uncertainties": ["未確認条件"],
+            "uncertainties_en": ["Unverified condition"],
+            "decision_gates": ["人による判断"],
+            "decision_gates_en": ["Human decision"],
+            "caveat_ja": "公開用注意",
+            "caveat_en": "Publication caveat",
             "nda_internal_note": "must never be emitted",
             "publication": {
                 "information_classification": "public",
@@ -591,6 +612,12 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "要約",
             "objective_en": "Summary",
+            "uncertainties": ["未確認条件"],
+            "uncertainties_en": ["Unverified condition"],
+            "decision_gates": ["人による判断"],
+            "decision_gates_en": ["Human decision"],
+            "caveat_ja": "公開用注意",
+            "caveat_en": "Publication caveat",
             "publication": {
                 "information_classification": "public",
                 "publication_approved": True,

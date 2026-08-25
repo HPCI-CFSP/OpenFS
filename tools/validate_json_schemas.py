@@ -59,6 +59,18 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "public-consensus-receipt.schema.json"
     if ref.startswith("knowledge/public/roadmaps/"):
         return "public-roadmap.schema.json"
+    if ref == "knowledge/public/audits/roadmap-source-audit.json":
+        return "roadmap-source-audit.schema.json"
+    if ref == "knowledge/public/audits/roadmap-evidence-audit.json":
+        return "roadmap-evidence-audit.schema.json"
+    if ref == "knowledge/public/dependencies/p0-roadmap-dependencies.json":
+        return "roadmap-dependency-register.schema.json"
+    if ref.startswith("roadmaps/scenarios/accepted/"):
+        return (
+            "published-scenario-set.schema.json"
+            if "scenarios" in payload
+            else "system-scenario.schema.json"
+        )
     if ref.startswith("queue/"):
         return "work-item.schema.json"
     if ref.endswith("/manifest.json") and ref.startswith("runs/"):

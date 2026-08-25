@@ -16,9 +16,9 @@
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "名称、分野", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", researchAsOf: "調査基準日", researchStatus: "調査状態", coverageStatus: "調査範囲", consensusStatus: "Consensus", updatedColumn: "更新日時", noRoadmaps: "条件に一致するロードマップはありません。",
       roadmapKicker: "根拠付き暫定ロードマップ", roadmapFilter: "トラック群フィルタ", trackColumn: "技術・判断トラック", ownerColumn: "主体／対象", quarterUnknown: "Q未特定", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。Q1-Q4は公開根拠がある場合のみ使用し、年次・半期情報はQ未特定に残しています。空欄は日程未確認を意味します。",
       trackNotesKicker: "トラック別ノート", trackNotesTitle: "現状とHPCI整備への示唆", currentState: "現在の状況", hpciImplications: "HPCI整備への示唆", roadmapCaveat: "公開時の注意事項", dependenciesKicker: "相互依存", dependenciesTitle: "他ロードマップとの依存関係", coverageGapsTitle: "Coverage Gap", gapImpact: "影響", gapNextAction: "次の確認",
-      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "ベンダー目標", concept: "構想・研究", pilot: "実証", decisionGate: "判断ゲート", deployment: "導入", undated: "時期未公表",
+      commercial: "製品・量産", sample: "サンプル", standard: "標準", published: "公開済み", target: "ベンダー目標", concept: "構想・研究", pilot: "実証", decisionGate: "判断ゲート", deployment: "導入", undated: "時期未公表",
       timingBasis: "時期の根拠", timingPrecision: "時期の精度", eventType: "イベント種別", quarterPrecision: "四半期", halfYearPrecision: "半期", yearPrecision: "年", undatedPrecision: "未公表", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
-      observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", projectTarget: "プロジェクト目標", policyTarget: "政策目標", openfsPlan: "OpenFS暫定計画", noPublicDate: "公開時期なし",
+      observed: "確認済み", asOfBaseline: "基準日時点の提供状況", standardRelease: "標準公開", vendorTarget: "ベンダー目標", projectTarget: "プロジェクト目標", policyTarget: "政策目標", openfsPlan: "OpenFS暫定計画", noPublicDate: "公開時期なし",
       productEvent: "製品", standardEvent: "標準", researchEvent: "研究", policyEvent: "政策", evaluationEvent: "HPCI評価", adoptionEvent: "HPCI導入",
       provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", consensusIncomplete: "未完了", profileIncomplete: "一次情報の継続確認が必要",
       sourceCoverage: "一次情報", tracksUnit: "トラック", milestonesUnit: "項目", gapsUnit: "Gap", keyMilestones: "重要マイルストーン", selectedRoadmaps: "比較対象", dependencyMap: "依存関係一覧",
@@ -33,9 +33,9 @@
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Title or domain", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", researchAsOf: "Research as of", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus", updatedColumn: "Updated", noRoadmaps: "No roadmaps match the current filters.",
       roadmapKicker: "EVIDENCE-BASED PROVISIONAL ROADMAP", roadmapFilter: "Track group filter", trackColumn: "Technology / decision track", ownerColumn: "Owner / scope", quarterUnknown: "Q?", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to inspect its evidence. Q1-Q4 are used only when supported by public evidence; year- or half-year-only dates remain under Q?. Blank cells mean no dated milestone was confirmed.",
       trackNotesKicker: "TRACK NOTES", trackNotesTitle: "Current state and implications for HPCI", currentState: "Current state", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat", dependenciesKicker: "INTERDEPENDENCIES", dependenciesTitle: "Dependencies on other roadmaps", coverageGapsTitle: "Coverage Gaps", gapImpact: "Impact", gapNextAction: "Next check",
-      commercial: "product / volume", sample: "sample", standard: "standard", target: "vendor target", concept: "concept / research", pilot: "pilot", decisionGate: "decision gate", deployment: "deployment", undated: "timing not public",
+      commercial: "product / volume", sample: "sample", standard: "standard", published: "published", target: "vendor target", concept: "concept / research", pilot: "pilot", decisionGate: "decision gate", deployment: "deployment", undated: "timing not public",
       timingBasis: "Timing basis", timingPrecision: "Timing precision", eventType: "Event type", quarterPrecision: "quarter", halfYearPrecision: "half-year", yearPrecision: "year", undatedPrecision: "not public", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
-      observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", projectTarget: "project target", policyTarget: "policy target", openfsPlan: "OpenFS provisional plan", noPublicDate: "no public date",
+      observed: "observed", asOfBaseline: "availability as of baseline", standardRelease: "standard release", vendorTarget: "vendor target", projectTarget: "project target", policyTarget: "policy target", openfsPlan: "OpenFS provisional plan", noPublicDate: "no public date",
       productEvent: "product", standardEvent: "standard", researchEvent: "research", policyEvent: "policy", evaluationEvent: "HPCI evaluation", adoptionEvent: "HPCI adoption",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", consensusIncomplete: "incomplete", profileIncomplete: "continued primary-source review required",
       sourceCoverage: "Primary sources", tracksUnit: "tracks", milestonesUnit: "milestones", gapsUnit: "gaps", keyMilestones: "Key milestones", selectedRoadmaps: "Roadmaps to compare", dependencyMap: "Dependency list",
@@ -48,8 +48,8 @@
     ja: {hardware: "ハードウェア", "system-software": "システムソフトウェア", applications: "アプリケーション", "cross-cutting": "分野横断"},
     en: {hardware: "Hardware", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
   };
-  const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", pilot: "pilot", "decision-gate": "decisionGate", deployment: "deployment", undated: "undated"};
-  const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "project-target": "projectTarget", "policy-target": "policyTarget", "openfs-provisional-plan": "openfsPlan", "no-public-date": "noPublicDate"};
+  const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", published: "published", target: "target", concept: "concept", pilot: "pilot", "decision-gate": "decisionGate", deployment: "deployment", undated: "undated"};
+  const timingBasisKeys = {observed: "observed", "as-of-baseline": "asOfBaseline", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "project-target": "projectTarget", "policy-target": "policyTarget", "openfs-provisional-plan": "openfsPlan", "no-public-date": "noPublicDate"};
   const timingPrecisionKeys = {quarter: "quarterPrecision", "half-year": "halfYearPrecision", year: "yearPrecision", undated: "undatedPrecision"};
   const eventTypeKeys = {product: "productEvent", standard: "standardEvent", research: "researchEvent", policy: "policyEvent", "hpci-evaluation": "evaluationEvent", "hpci-adoption": "adoptionEvent"};
   const relationshipKeys = {requires: "requires", informs: "informs", constrains: "constrains", enables: "enables", "co-evolves": "coEvolves"};
@@ -104,7 +104,7 @@
     const sources = sourceMap(roadmap); sourceIds.forEach((sourceId) => { const source = sources.get(sourceId); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); publisher.textContent = `${source.publisher} · ${source.source_class}`; item.append(link, publisher); root.append(item); });
   }
   function renderRoadmapLegend() {
-    const root = document.getElementById("roadmap-legend"); root.replaceChildren(); ["commercial", "sample", "standard", "target", "concept", "pilot", "decision-gate", "deployment", "undated"].forEach((maturity) => { const item = document.createElement("span"); item.className = `legend-item maturity-${maturity}`; item.textContent = tr(maturityKeys[maturity]); root.append(item); });
+    const root = document.getElementById("roadmap-legend"); root.replaceChildren(); ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"].forEach((maturity) => { const item = document.createElement("span"); item.className = `legend-item maturity-${maturity}`; item.textContent = tr(maturityKeys[maturity]); root.append(item); });
   }
   function renderGroupFilter(roadmap) {
     const root = document.getElementById("roadmap-group-filter"); root.replaceChildren();

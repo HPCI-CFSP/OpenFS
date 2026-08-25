@@ -1534,8 +1534,8 @@ def validate_scenario_configuration(root: Path) -> list[str]:
             errors.append(f"scenario {scenario.get('scenario_id')} missing: {sorted(missing)}")
         if not scenario.get("center_impacts"):
             errors.append(f"scenario {scenario.get('scenario_id')} has no center impacts")
-        if not scenario.get("domestic_technology"):
-            errors.append(f"scenario {scenario.get('scenario_id')} has no priority Japan technology comparison")
+        if not scenario.get("technology_options"):
+            errors.append(f"scenario {scenario.get('scenario_id')} has no worldwide technology comparison")
     criterion_ids = [item.get("criterion_id") for item in policy.get("evaluation_criteria", [])]
     if len(criterion_ids) != len(set(criterion_ids)):
         errors.append("scenario policy has duplicate criterion IDs")
