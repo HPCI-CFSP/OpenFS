@@ -127,6 +127,15 @@ When a task contains multiple investigations, organize them into separate task, 
   Gap-specific correctness, energy, RAS, portability, and interoperability
   requirements. A passing bundle remains provisional until independent
   reproduction, Consensus, and the applicable human decision.
+- Store privacy-reviewed aggregate workload candidates under
+  `proposals/workload-observations/` using
+  `schemas/workload-observation-summary.schema.json`. Aggregate inside the
+  approved institution boundary; export no direct identifiers, job rows, free
+  text, raw paths, or raw-data locations. Run
+  `tools/check_workload_observation_summary.py` to enforce observation-window,
+  diversity, rounding, small-cell, complementary-suppression, and publication
+  rules. A passing summary remains provisional until independent Consensus and
+  an artifact-specific human publication Directive pass.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and

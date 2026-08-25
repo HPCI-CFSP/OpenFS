@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/workload-observation-summary.schema.json",
+  "title": "OpenFS Privacy-Preserving Workload Observation Summary",
+  "type": "object",
+  "required": ["schema_version", "summary_id", "status", "roadmap_gap_refs", "scope", "privacy_release", "observations", "acceptance", "provenance", "publication", "consensus_status"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "summary_id": {"type": "string", "pattern": "^WOS-[A-Z0-9-]+$"},
+    "status": {"enum": ["provisional", "review-candidate", "accepted"]},
+    "roadmap_gap_refs": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"enum": ["GAP-WORK-001", "GAP-WORK-004", "GAP-BLUE-001", "GAP-BLUE-003", "GAP-BLUE-004"]}
+    },
+    "scope": {
+      "type": "object",
+      "required": ["objective_ja", "objective_en", "period_start", "period_end", "population_definition", "included_job_states", "excluded_job_states"],
+      "properties": {
+        "objective_ja": {"type": "string", "minLength": 1},
+        "objective_en": {"type": "string", "minLength": 1},
+        "period_start": {"type": "string", "format": "date"},
+        "period_end": {"type": "string", "format": "date"},
+        "population_definition": {"type": "string", "minLength": 1},
+        "included_job_states": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "excluded_job_states": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "privacy_release": {
+      "type": "object",
+      "required": ["aggregation_inside_approved_boundary", "direct_identifiers_removed", "row_level_jobs_exported", "minimum_cell_count", "rounding_base", "small_cell_action", "complementary_suppression", "free_text_exported", "source_data_classification", "release_reviewer"],
+      "properties": {
+        "aggregation_inside_approved_boundary": {"const": true},
+        "direct_identifiers_removed": {"const": true},
+        "row_level_jobs_exported": {"const": false},
+        "minimum_cell_count": {"type": "integer", "minimum": 10},
+        "rounding_base": {"type": "integer", "minimum": 5},
+        "small_cell_action": {"const": "suppress"},
+        "complementary_suppression": {"const": true},
+        "free_text_exported": {"const": false},
+        "source_data_classification": {"enum": ["public", "internal-aggregate", "restricted-source"]},
+        "release_reviewer": {"type": "string", "pattern": "^REVIEWER-[A-Z0-9-]+$"}
+      },
+      "additionalProperties": false
+    },
+    "observations": {
+      "type": "array", "minItems": 2,
+      "items": {"$ref": "#/$defs/observation"}
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["minimum_institutions", "minimum_origin_groups", "minimum_observation_days", "required_dimensions"],
+      "properties": {
+        "minimum_institutions": {"type": "integer", "minimum": 2},
+        "minimum_origin_groups": {"type": "integer", "minimum": 2},
+        "minimum_observation_days": {"type": "integer", "minimum": 28},
+        "required_dimensions": {
+          "type": "array", "minItems": 3, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dimensionId"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["created_at", "base_commit", "agent_id", "model_identity", "harness_repository", "harness_commit", "aggregation_code_digest", "input_receipt_digest"],
+      "properties": {
+        "created_at": {"type": "string", "format": "date-time"},
+        "base_commit": {"$ref": "#/$defs/commit"},
+        "agent_id": {"type": "string", "minLength": 1},
+        "model_identity": {"type": "string", "minLength": 1},
+        "harness_repository": {"type": "string", "format": "uri"},
+        "harness_commit": {"$ref": "#/$defs/commit"},
+        "aggregation_code_digest": {"$ref": "#/$defs/digest"},
+        "input_receipt_digest": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public-aggregate"},
+        "publication_approved": {"type": "boolean"},
+        "publication_decision_id": {"type": ["string", "null"], "pattern": "^PUBDEC-[A-Z0-9-]+$"},
+        "human_approval_directive_id": {"type": ["string", "null"], "pattern": "^DIR-[0-9]+$"}
+      },
+      "additionalProperties": false
+    },
+    "consensus_status": {"enum": ["incomplete", "accepted"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "accepted"}}},
+      "then": {
+        "properties": {
+          "consensus_status": {"const": "accepted"},
+          "publication": {
+            "properties": {
+              "publication_approved": {"const": true},
+              "publication_decision_id": {"type": "string"},
+              "human_approval_directive_id": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "dimensionId": {
+      "enum": ["application-domain", "workflow-type", "job-size-nodes", "accelerator-count", "walltime-seconds", "queue-wait-seconds", "memory-per-node-gib", "data-transfer-gib", "job-outcome"]
+    },
+    "observation": {
+      "type": "object",
+      "required": ["observation_id", "institution_id", "origin_group_id", "system_id", "rounded_population_jobs", "population_rounding_base", "source_receipt_digest", "distributions"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OBS-[A-Z0-9-]+$"},
+        "institution_id": {"type": "string", "pattern": "^INST-[A-Z0-9-]+$"},
+        "origin_group_id": {"type": "string", "pattern": "^ORG-[A-Z0-9-]+$"},
+        "system_id": {"type": "string", "pattern": "^SYS-[A-Z0-9-]+$"},
+        "rounded_population_jobs": {"type": "integer", "minimum": 10},
+        "population_rounding_base": {"type": "integer", "minimum": 5},
+        "source_receipt_digest": {"$ref": "#/$defs/digest"},
+        "distributions": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/distribution"}}
+      },
+      "additionalProperties": false
+    },
+    "distribution": {
+      "type": "object",
+      "required": ["dimension_id", "unit", "bins"],
+      "properties": {
+        "dimension_id": {"$ref": "#/$defs/dimensionId"},
+        "unit": {"type": "string", "minLength": 1},
+        "bins": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/bin"}}
+      },
+      "additionalProperties": false
+    },
+    "bin": {
+      "type": "object",
+      "required": ["bin_id", "label_ja", "label_en", "lower_bound", "upper_bound", "rounded_job_count", "suppressed", "suppression_reason"],
+      "properties": {
+        "bin_id": {"type": "string", "pattern": "^BIN-[A-Z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "lower_bound": {"type": ["number", "null"]},
+        "upper_bound": {"type": ["number", "null"]},
+        "rounded_job_count": {"type": ["integer", "null"], "minimum": 0},
+        "suppressed": {"type": "boolean"},
+        "suppression_reason": {"type": ["string", "null"], "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"suppressed": {"const": true}}},
+          "then": {"properties": {"rounded_job_count": {"type": "null"}, "suppression_reason": {"type": "string"}}},
+          "else": {"properties": {"rounded_job_count": {"type": "integer"}, "suppression_reason": {"type": "null"}}}
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
