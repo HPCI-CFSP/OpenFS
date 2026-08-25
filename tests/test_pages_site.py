@@ -613,7 +613,7 @@ class PagesSiteTests(unittest.TestCase):
             shutil.copytree(source, target)
             directives = root / "reviews" / "directives"
             directives.mkdir(parents=True)
-            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900006.json", directives)
+            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900007.json", directives)
             gate_path = target / "gate-result.json"
             gate = json.loads(gate_path.read_text(encoding="utf-8"))
             gate["package_manifest_digest"] = "f" * 64
