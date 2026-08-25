@@ -73,6 +73,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "roadmap-freshness-audit.schema.json"
     if ref == "knowledge/public/audits/roadmap-gap-queue.json":
         return "roadmap-gap-queue.schema.json"
+    if ref == "knowledge/public/audits/center-profile-assurance.json":
+        return "center-profile-assurance.schema.json"
     if ref == "knowledge/public/dependencies/p0-roadmap-dependencies.json":
         return "roadmap-dependency-register.schema.json"
     if ref.startswith("roadmaps/scenarios/accepted/"):

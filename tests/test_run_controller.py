@@ -707,7 +707,7 @@ class RunControllerTests(unittest.TestCase):
         self.assertEqual(1, len(profile_items))
         self.assertEqual(subject_id, profile_items[0]["payload"]["center_id"])
         self.assertEqual(
-            10, len(profile_items[0]["payload"]["profile_fields"])
+            12, len(profile_items[0]["payload"]["profile_fields"])
         )
 
     def test_completed_profile_expands_reviewer_bound_validation(self):

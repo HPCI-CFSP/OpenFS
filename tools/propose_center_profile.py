@@ -218,7 +218,7 @@ def propose(
     proposal_number = int(stable_digest(identity)[:12], 16) % 1_000_000
     profile = {
         "schema_version": "0.1.0",
-        "proposal_contract_version": "0.2.0",
+        "proposal_contract_version": "0.3.0",
         "proposal_id": f"PRP-CTR-{proposal_number:06d}",
         "object_type": "center_profile",
         "run_id": run_id,

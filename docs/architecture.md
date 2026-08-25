@@ -215,6 +215,12 @@ Accepted knowledge is projected into multiple HPCI system scenarios rather than 
 
 `config/hpci-center-registry.json` is the dated, official-source-anchored provider scope. A center Run snapshots it, expands two complementary searches for every provider, and records the assignment in each Source Receipt. Evidence from those searches is synthesized into provisional field-level Center Profiles. `tools/evaluate_center_profiles.py` reports missing, partial, stale, and non-accepted profiles separately; query execution never substitutes for profile Evidence.
 
+The current Center Profile contract contains twelve fields, including explicit
+`budget` and `procurement` constraints. `tools/build_center_profile_assurance.py`
+projects only aggregate status and official center links into the public plane.
+Profiles from the earlier ten-field contract stay immutable and appear as
+`not-collected` for the new fields until a later evidenced Run replaces them.
+
 Every new Center Profile is also a Consensus Proposal with source-origin lineage.
 The Run Controller assigns blind reviews to each configured reviewer identity and
 creates one deterministic Consensus batch only after all scheduled reviews finish.

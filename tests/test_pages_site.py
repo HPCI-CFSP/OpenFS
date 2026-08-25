@@ -288,6 +288,17 @@ class PagesSiteTests(unittest.TestCase):
                 assurance["source_triage"]["summary"]["non_reachable_count"],
             )
             self.assertEqual(0, assurance["source_triage"]["summary"]["unresolved"])
+            center_profiles = assurance["center_profile_assurance"]
+            self.assertEqual(15, center_profiles["summary"]["center_count"])
+            self.assertEqual(0, center_profiles["summary"]["accepted_current_count"])
+            self.assertEqual(30, center_profiles["summary"]["not_collected"])
+            self.assertEqual(
+                {"GAP-BLUE-001", "GAP-BLUE-003"},
+                {item["gap_id"] for item in center_profiles["gap_status"]},
+            )
+            self.assertTrue(
+                all(item["status"] == "open" for item in center_profiles["gap_status"])
+            )
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
             self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
             self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
@@ -309,6 +320,12 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertTrue(
                 all("publication" not in artifact for artifact in assurance.values())
+            )
+            self.assertIn(
+                'id="center-profile-centers"',
+                (output / "roadmaps" / "evidence" / "index.html").read_text(
+                    encoding="utf-8"
+                ),
             )
             self.assertGreaterEqual(
                 sum(len(roadmap["coverage_gaps"]) for roadmap in result["roadmap_artifacts"]),

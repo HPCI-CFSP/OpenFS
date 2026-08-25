@@ -16,6 +16,8 @@ Each `center-profile` must record:
 | Refresh window | procurement notices and support dates | phasing and joint procurement |
 | Power | contracted power, measured system power | feasible node count and scheduling |
 | Facility | floor, cooling, electrical, construction limits | deployment feasibility and cost |
+| Budget | public budgets, business plans, and budget requests | affordability, phasing, and lifecycle-cost bounds |
+| Procurement | tender notices, specifications, awards, and contract periods | executable acquisition timing and supply assumptions |
 | Software | compiler, scheduler, library, portal, license inventory | continuity, support, and lock-in |
 | Operations | staffing, service levels, incident model | operational feasibility |
 | Migration | code, data, user, and workflow dependencies | time, cost, and transition risk |
@@ -26,6 +28,12 @@ Each `center-profile` must record:
 The historical FS2.0 RIKEN reports are discovery evidence, but the operational scope is anchored to `config/hpci-center-registry.json`. That registry is dated, cites the current official HPCI provider page, and includes every organization currently listed there as a compute-resource provider. A Run snapshots the registry so later organizational changes cannot silently alter its declared scope.
 
 `MON-HPCI-CENTERS-001` expands separate discovery Work Items for every registered provider. Query execution coverage and profile evidence completeness are different measurements: finding a provider page proves that a search was attempted, not that power, facility, users, software, or refresh constraints are known. OpenFS must not assume that every center wants the same hardware mix or software policy.
+
+Center Profile proposal contract `0.3.0` adds `budget` and `procurement` because
+`GAP-BLUE-003` cannot be evaluated from power and facility fields alone. Historical
+`0.2.0` proposals remain valid records; the public assurance projection marks the
+two absent fields as `not-collected` instead of treating them as complete or
+retroactively rewriting the old Run.
 
 ## Freshness and unknowns
 

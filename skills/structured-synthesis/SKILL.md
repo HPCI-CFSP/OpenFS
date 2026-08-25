@@ -13,6 +13,9 @@ recommendation. Conflicting Evidence stays visible; missing Evidence yields
 
 For a Claim, use `tools/propose_claim.py` and keep the statement atomic. For a Center
 Profile, use `tools/propose_center_profile.py`; inherited fields must retain the
-predecessor digest and original Evidence and remain provisional. Write only the
+predecessor digest and original Evidence and remain provisional. Contract `0.3.0`
+requires all twelve registry fields, including `budget` and `procurement`; absent
+public Evidence yields `unknown`, not a value inferred from power, facility, or
+another center. Write only the
 declared proposal path. A synthesis agent never accepts its own proposal, changes
 evaluation weights, or publishes a recommendation.

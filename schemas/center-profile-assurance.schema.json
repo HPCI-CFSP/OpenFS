@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/center-profile-assurance.schema.json",
+  "title": "OpenFS Public Center Profile Assurance",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "as_of", "generated_at", "source_run_id", "registry_id", "profile_contract_target", "consensus_status", "method_ja", "method_en", "caveat_ja", "caveat_en", "summary", "field_summary", "gap_status", "centers", "publication"],
+  "$defs": {
+    "field_status": {"enum": ["verified", "partial", "unknown", "not-applicable", "not-collected"]},
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"const": "PUBDEC-20260826-006"},
+        "human_approval_directive_id": {"const": "DIR-900006"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"const": "CENTER-PROFILE-ASSURANCE-001"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "source_run_id": {"type": "string"},
+    "registry_id": {"type": "string"},
+    "profile_contract_target": {"const": "0.3.0"},
+    "consensus_status": {"const": "incomplete"},
+    "method_ja": {"type": "string", "minLength": 1},
+    "method_en": {"type": "string", "minLength": 1},
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "required": ["center_count", "profile_count", "accepted_current_count", "field_evidence_complete_count", "field_slot_count", "verified", "partial", "unknown", "not_applicable", "not_collected", "followup_query_count", "effective_followup_query_count", "ineffective_followup_query_count"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "field_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "verified", "partial", "unknown", "not_applicable", "not_collected"],
+        "properties": {
+          "field": {"type": "string"},
+          "verified": {"type": "integer", "minimum": 0},
+          "partial": {"type": "integer", "minimum": 0},
+          "unknown": {"type": "integer", "minimum": 0},
+          "not_applicable": {"type": "integer", "minimum": 0},
+          "not_collected": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "gap_status": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap_id", "required_fields", "affected_center_count", "affected_center_ids", "incomplete_field_slot_count", "status"],
+        "properties": {
+          "gap_id": {"enum": ["GAP-BLUE-001", "GAP-BLUE-003"]},
+          "required_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+          "affected_center_count": {"type": "integer", "minimum": 0},
+          "affected_center_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "incomplete_field_slot_count": {"type": "integer", "minimum": 0},
+          "status": {"enum": ["open", "resolved"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "centers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["center_id", "name_ja", "name_en", "official_url", "profile_status", "decision_outcome", "evidence_as_of", "field_states", "field_evidence_complete", "accepted_current"],
+        "properties": {
+          "center_id": {"type": "string"},
+          "name_ja": {"type": "string"},
+          "name_en": {"type": "string"},
+          "official_url": {"type": "string", "format": "uri"},
+          "profile_status": {"type": "string"},
+          "decision_outcome": {"type": "string"},
+          "evidence_as_of": {"type": ["string", "null"], "format": "date"},
+          "field_states": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["field", "status"],
+              "properties": {"field": {"type": "string"}, "status": {"$ref": "#/$defs/field_status"}},
+              "additionalProperties": false
+            }
+          },
+          "field_evidence_complete": {"type": "boolean"},
+          "accepted_current": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "additionalProperties": false
+}

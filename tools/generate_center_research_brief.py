@@ -19,6 +19,8 @@ PROFILE_FIELDS = (
     "refresh_window",
     "power",
     "facility",
+    "budget",
+    "procurement",
     "software",
     "operations",
     "migration",
@@ -73,7 +75,15 @@ def build_brief(
         fields = {}
         missing_or_partial = []
         for field in PROFILE_FIELDS:
-            value = profile[field]
+            value = profile.get(
+                field,
+                {
+                    "status": "unknown",
+                    "summary": "Not collected by this profile contract.",
+                    "as_of": None,
+                    "evidence_refs": [],
+                },
+            )
             status = value["status"]
             status_counts[field][status] += 1
             fields[field] = {

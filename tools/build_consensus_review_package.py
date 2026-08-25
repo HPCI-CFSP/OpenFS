@@ -26,6 +26,26 @@ ROADMAP_PATHS = [
         "workloads-benchmarks-models",
     )
 ]
+CENTER_PROFILE_PATHS = [
+    f"proposals/center-profiles/RUN-OFS003-PILOT-005/{center_id}.json"
+    for center_id in (
+        "CENTER-AIST-IHF",
+        "CENTER-HOKKAIDO-IIC",
+        "CENTER-ISM-CSST",
+        "CENTER-JAMSTEC-CEIST",
+        "CENTER-JCAHPC",
+        "CENTER-KYOTO-ACCMS",
+        "CENTER-KYUSHU-RIIT",
+        "CENTER-NAGOYA-ITC",
+        "CENTER-OSAKA-D3",
+        "CENTER-RIKEN-IRDS",
+        "CENTER-RIKEN-RCCS",
+        "CENTER-SCIENCE-TOKYO-IIC",
+        "CENTER-TOHOKU-CSC",
+        "CENTER-TSUKUBA-CCS",
+        "CENTER-UTOKYO-ITC",
+    )
+]
 ARTIFACTS = [
     *[(path, "roadmap") for path in ROADMAP_PATHS],
     ("knowledge/public/audits/roadmap-source-audit.json", "source-audit"),
@@ -33,12 +53,14 @@ ARTIFACTS = [
     ("knowledge/public/audits/roadmap-evidence-audit.json", "evidence-audit"),
     ("knowledge/public/audits/roadmap-freshness-audit.json", "freshness-audit"),
     ("knowledge/public/audits/roadmap-gap-queue.json", "gap-queue"),
+    ("knowledge/public/audits/center-profile-assurance.json", "center-profile-assurance"),
     ("knowledge/public/dependencies/p0-roadmap-dependencies.json", "dependency-register"),
     ("roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "scenario-set"),
     ("config/consensus-policy.json", "policy"),
     ("config/scenario-policy.json", "policy"),
     ("config/publication-policy.json", "policy"),
     ("config/source-registry.json", "registry"),
+    ("config/hpci-center-registry.json", "registry"),
     ("config/roadmap-gap-query-overrides.json", "query-plan"),
     ("config/roadmap-source-retrieval-reviews.json", "retrieval-review"),
     ("config/monitors/MON-MEMORY-001.json", "monitor"),
@@ -47,6 +69,8 @@ ARTIFACTS = [
     ("config/monitors/MON-FS-BASELINE-001.json", "monitor"),
     ("config/agent-registry.json", "registry"),
     ("schemas/public-roadmap.schema.json", "schema"),
+    ("schemas/center-profile.schema.json", "schema"),
+    ("schemas/center-profile-assurance.schema.json", "schema"),
     ("schemas/system-scenario.schema.json", "schema"),
     ("schemas/consensus-review-package.schema.json", "schema"),
     ("schemas/consensus-package-review.schema.json", "schema"),
@@ -64,6 +88,9 @@ ARTIFACTS = [
     ("tools/build_roadmap_freshness_audit.py", "tool"),
     ("tools/build_roadmap_source_triage.py", "tool"),
     ("tools/build_roadmap_gap_queue.py", "tool"),
+    ("tools/build_center_profile_assurance.py", "tool"),
+    ("tools/evaluate_center_profiles.py", "tool"),
+    ("tools/propose_center_profile.py", "tool"),
     ("tools/prepare_freshness_issue.py", "tool"),
     ("tools/run_controller.py", "tool"),
     ("tools/prepare_weekly_cycle.py", "tool"),
@@ -81,6 +108,9 @@ ARTIFACTS = [
     ("site/roadmap-evidence.html", "presentation"),
     ("site/styles.css", "presentation"),
     ("reviews/directives/DIR-900006.json", "directive"),
+    ("runs/RUN-OFS003-PILOT-005/center-profile-coverage.json", "run-audit"),
+    ("runs/RUN-OFS003-PILOT-005/followup-effectiveness.json", "run-audit"),
+    *[(path, "center-profile") for path in CENTER_PROFILE_PATHS],
 ]
 
 
@@ -171,6 +201,26 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
 
 def shared_units() -> list[dict[str, Any]]:
     return [
+        {
+            "unit_id": "CRU-CENTER-PROFILES",
+            "kind": "center-profile",
+            "title_ja": "HPCIセンターProfile契約と未確認条件",
+            "title_en": "HPCI center-profile contract and unknown conditions",
+            "artifact_paths": [
+                "knowledge/public/audits/center-profile-assurance.json",
+                "config/hpci-center-registry.json",
+                "schemas/center-profile.schema.json",
+                "schemas/center-profile-assurance.schema.json",
+                "runs/RUN-OFS003-PILOT-005/center-profile-coverage.json",
+                "runs/RUN-OFS003-PILOT-005/followup-effectiveness.json",
+                *CENTER_PROFILE_PATHS,
+            ],
+            "selectors": ["GAP-BLUE-001", "GAP-BLUE-003", "CENTER-*", "budget", "procurement"],
+            "primary_source_requirements": [],
+            "required_checks": ["source-identity", "scope-alignment", "coverage-gap-completeness", "review-protocol-integrity"],
+            "falsification_prompts_ja": ["検索実行済みをProfile受理済みと誤認していないか。", "旧契約にない予算・調達項目を暗黙に充足扱いしていないか。", "未確認を制約なしという否定的事実に変換していないか。"],
+            "falsification_prompts_en": ["Is completed search execution mistaken for an accepted profile?", "Are budget and procurement fields absent from the older contract treated as implicitly complete?", "Is unknown information converted into a claim that no constraint exists?"],
+        },
         {
             "unit_id": "CRU-CROSS-ROADMAP",
             "kind": "cross-roadmap",
