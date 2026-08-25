@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import unittest
+from collections import defaultdict
 from pathlib import Path
 
 
@@ -195,6 +196,25 @@ class RoadmapAssuranceTests(unittest.TestCase):
                 for source_id in milestone["source_ids"]
             )
             self.assertEqual(registered, used, roadmap["roadmap_id"])
+
+    def test_duplicate_urls_use_identical_canonical_metadata(self):
+        by_url = defaultdict(list)
+        for roadmap in self.roadmaps:
+            for source in roadmap["sources"]:
+                by_url[source["url"]].append(source)
+        for url, registrations in by_url.items():
+            if len(registrations) < 2:
+                continue
+            metadata = {
+                (
+                    source["title"],
+                    source["publisher"],
+                    source["source_class"],
+                    source.get("published_at"),
+                )
+                for source in registrations
+            }
+            self.assertEqual(1, len(metadata), url)
 
     def test_dependency_register_references_known_graph_objects(self):
         roadmap_ids = {roadmap["roadmap_id"] for roadmap in self.roadmaps}
