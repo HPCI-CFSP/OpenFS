@@ -121,10 +121,10 @@ class ConsensusReviewPackageTests(unittest.TestCase):
 
     def test_package_covers_six_roadmaps_and_shared_review_units(self):
         units = self.manifest["review_units"]
-        self.assertEqual(10, len(units))
+        self.assertEqual(11, len(units))
         self.assertEqual(6, sum(unit["kind"] == "roadmap" for unit in units))
         self.assertEqual(
-            {"cross-roadmap", "coverage-gap", "scenario", "publication-assurance"},
+            {"center-profile", "cross-roadmap", "coverage-gap", "scenario", "publication-assurance"},
             {unit["kind"] for unit in units if unit["kind"] != "roadmap"},
         )
         self.assertTrue(all(len(unit["required_checks"]) >= 4 for unit in units))
