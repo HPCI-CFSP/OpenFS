@@ -72,6 +72,7 @@ def roadmap_index_entry(roadmap: dict[str, Any]) -> dict[str, Any]:
         "summary_ja": roadmap["summary_ja"],
         "summary_en": roadmap["summary_en"],
         "horizon": roadmap["horizon"],
+        "timeline_granularity": roadmap["timeline_granularity"],
         "as_of": roadmap["as_of"],
         "updated_at": roadmap["updated_at"],
         "source_commit": roadmap["source_commit"],
@@ -493,13 +494,20 @@ def collect_memory_roadmap(root: Path, policy: dict[str, Any]) -> dict[str, Any]
                     f"sources: {sorted(unknown_sources)}"
                 )
             year = milestone.get("year")
+            quarter = milestone.get("quarter")
+            timing_precision = milestone.get("timing_precision")
             timing_basis = milestone.get("timing_basis")
             maturity = milestone.get("maturity")
             if year is None:
-                if timing_basis != "no-public-date" or maturity != "undated":
+                if (
+                    quarter is not None
+                    or timing_precision != "undated"
+                    or timing_basis != "no-public-date"
+                    or maturity != "undated"
+                ):
                     raise ValueError(
                         f"undated memory roadmap milestone {milestone_id} has "
-                        "inconsistent maturity or timing basis"
+                        "inconsistent precision, maturity, or timing basis"
                     )
             elif not start_year <= year <= end_year:
                 raise ValueError(
@@ -508,6 +516,16 @@ def collect_memory_roadmap(root: Path, policy: dict[str, Any]) -> dict[str, Any]
             elif timing_basis == "no-public-date" or maturity == "undated":
                 raise ValueError(
                     f"dated memory roadmap milestone {milestone_id} is marked undated"
+                )
+            elif quarter is not None and timing_precision != "quarter":
+                raise ValueError(
+                    f"quarterly memory roadmap milestone {milestone_id} has "
+                    "inconsistent timing precision"
+                )
+            elif quarter is None and timing_precision not in {"half-year", "year"}:
+                raise ValueError(
+                    f"year-level memory roadmap milestone {milestone_id} has "
+                    "inconsistent timing precision"
                 )
     return projected
 
@@ -638,11 +656,19 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("index.html", "styles.css", "app.js", "roadmaps.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
     public_data = build_public_data(root, policy)
+    asset_version = public_data["site"]["commit_sha"]
+    (output / "index.html").write_text(
+        render_template(
+            source / "index.html",
+            {"ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
     serialized = json.dumps(public_data, ensure_ascii=False, separators=(",", ":"))
     (data_dir / "openfs-public.js").write_text(
         f"window.OPENFS_PUBLIC_DATA={serialized};\n", encoding="utf-8"
@@ -652,7 +678,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     roadmap_index.write_text(
         render_template(
             source / "roadmaps-index.html",
-            {"ROOT_PREFIX": "../"},
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
         ),
         encoding="utf-8",
     )
@@ -668,6 +694,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
                 {
                     "ROOT_PREFIX": root_prefix,
                     "ROADMAP_ID": html.escape(roadmap["roadmap_id"], quote=True),
+                    "ASSET_VERSION": asset_version,
                 },
             ),
             encoding="utf-8",

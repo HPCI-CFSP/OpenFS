@@ -5,7 +5,7 @@
   "type": "object",
   "required": [
     "schema_version", "export_id", "status", "domain", "slug", "as_of", "title_ja", "title_en",
-    "summary_ja", "summary_en", "horizon", "research_status", "coverage_status",
+    "summary_ja", "summary_en", "horizon", "timeline_granularity", "research_status", "coverage_status",
     "consensus_status", "technologies", "lanes", "sources", "coverage_gaps",
     "caveat_ja", "caveat_en", "publication"
   ],
@@ -29,6 +29,7 @@
       },
       "additionalProperties": false
     },
+    "timeline_granularity": {"const": "quarter"},
     "research_status": {"enum": ["provisional", "accepted"]},
     "coverage_status": {"type": "string", "minLength": 1},
     "consensus_status": {"enum": ["incomplete", "accepted"]},
@@ -79,12 +80,14 @@
             "items": {
               "type": "object",
               "required": [
-                "milestone_id", "year", "maturity", "timing_basis", "label_ja",
+                "milestone_id", "year", "quarter", "timing_precision", "maturity", "timing_basis", "label_ja",
                 "label_en", "detail_ja", "detail_en", "source_ids"
               ],
               "properties": {
                 "milestone_id": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
                 "year": {"type": ["integer", "null"], "minimum": 2020},
+                "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
+                "timing_precision": {"enum": ["quarter", "half-year", "year", "undated"]},
                 "maturity": {"enum": ["commercial", "sample", "standard", "target", "concept", "undated"]},
                 "timing_basis": {"enum": ["observed", "standard-release", "vendor-target", "no-public-date"]},
                 "label_ja": {"type": "string", "minLength": 1},

@@ -14,9 +14,9 @@
       libraryKicker: "公開ロードマップ索引", libraryTitle: "ロードマップ一覧", libraryLead: "ハードウェア、システムソフトウェア、アプリケーション、分野横断の見通しを検索し、専用ページで詳細を確認できます。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "名称、分野", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", researchAsOf: "調査基準日", researchStatus: "調査状態", coverageStatus: "調査範囲", consensusStatus: "Consensus", updatedColumn: "更新日時", noRoadmaps: "条件に一致するロードマップはありません。",
       memoryRoadmapKicker: "メモリ技術調査", roadmapFilter: "技術群フィルタ", memoryProducts: "メモリ製品", integration3d: "3D実装", systemEnablers: "システム技術",
-      technologyColumn: "技術", vendorColumn: "ベンダー／対象", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。",
+      technologyColumn: "技術", vendorColumn: "ベンダー／対象", quarterUnknown: "Q未特定", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。四半期を確認できない年次・半期情報は各年の「Q未特定」に置き、空欄は確認できる公開日程がないことを示します。",
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "現状とHPCI整備への示唆", currentState: "現在の状況", hpciImplications: "HPCI整備への示唆", roadmapCaveat: "公開時の注意事項",
-      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "ベンダー目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
+      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "ベンダー目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", timingPrecision: "時期の精度", quarterPrecision: "四半期", halfYearPrecision: "半期", yearPrecision: "年", undatedPrecision: "未公表", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "公開時期なし", officialScanIncomplete: "一次情報の継続確認が必要",
       provisional: "暫定", accepted: "受理済み", coverageMet: "宣言した範囲を充足", consensusIncomplete: "未完了", profileIncomplete: "未確認項目あり",
       revisionKicker: "来歴", revisionTitle: "更新履歴と再現情報", artifactId: "Artifact ID", sourceCommit: "ソースコミット", closeDialog: "詳細を閉じる", footerDescription: "HPCI-CFSP 公開調査ビュー"
@@ -27,9 +27,9 @@
       libraryKicker: "PUBLISHED ROADMAP INDEX", libraryTitle: "Roadmap library", libraryLead: "Search hardware, system software, application, and cross-cutting outlooks, then open a dedicated page for details.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Title or domain", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", researchAsOf: "Research as of", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus", updatedColumn: "Updated", noRoadmaps: "No roadmaps match the current filters.",
       memoryRoadmapKicker: "MEMORY TECHNOLOGY RESEARCH", roadmapFilter: "Technology group filter", memoryProducts: "Memory products", integration3d: "3D integration", systemEnablers: "System enablers",
-      technologyColumn: "Technology", vendorColumn: "Vendor / scope", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Blank cells indicate that no dated public milestone was confirmed, not that development has stopped.",
+      technologyColumn: "Technology", vendorColumn: "Vendor / scope", quarterUnknown: "Q?", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Year- or half-year-only information remains under Q? for that year; blank cells mean no dated public milestone was confirmed.",
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Current state and implications for HPCI", currentState: "Current state", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
-      commercial: "product / volume", sample: "sample", standard: "standard", target: "vendor target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
+      commercial: "product / volume", sample: "sample", standard: "standard", target: "vendor target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", timingPrecision: "Timing precision", quarterPrecision: "quarter", halfYearPrecision: "half-year", yearPrecision: "year", undatedPrecision: "not public", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", consensusIncomplete: "incomplete", profileIncomplete: "gaps remain",
       revisionKicker: "PROVENANCE", revisionTitle: "Revision and reproducibility", artifactId: "Artifact ID", sourceCommit: "Source commit", closeDialog: "Close details", footerDescription: "HPCI-CFSP public research view"
@@ -43,6 +43,7 @@
   const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
+  const timingPrecisionKeys = {quarter: "quarterPrecision", "half-year": "halfYearPrecision", year: "yearPrecision", undated: "undatedPrecision"};
   const page = document.body.dataset.page;
   const rootPrefix = document.body.dataset.rootPrefix || "";
   let language = readLanguage();
@@ -124,7 +125,7 @@
       const titleCell = document.createElement("td");
       const link = document.createElement("a");
       link.className = "roadmap-title-link";
-      link.href = `${rootPrefix}${roadmap.path}`;
+      link.href = `${rootPrefix}${roadmap.path}?v=${encodeURIComponent(data.site.commit_sha)}`;
       link.textContent = localized(roadmap, "title");
       const summary = document.createElement("span");
       summary.className = "roadmap-row-note";
@@ -188,16 +189,54 @@
     for (let year = roadmap.horizon.start_year; year <= roadmap.horizon.end_year; year += 1) years.push(year);
     const table = document.createElement("table");
     table.className = "roadmap-table";
+    const colgroup = document.createElement("colgroup");
+    ["roadmap-tech-column", "roadmap-vendor-column"].forEach((className) => {
+      const column = document.createElement("col");
+      column.className = className;
+      colgroup.appendChild(column);
+    });
+    years.forEach(() => {
+      ["Q1", "Q2", "Q3", "Q4", null].forEach(() => {
+        const column = document.createElement("col");
+        column.className = "roadmap-quarter-column";
+        colgroup.appendChild(column);
+      });
+    });
+    const undatedColumn = document.createElement("col");
+    undatedColumn.className = "roadmap-undated-column";
+    colgroup.appendChild(undatedColumn);
     const head = document.createElement("thead");
-    const headRow = document.createElement("tr");
-    [tr("technologyColumn"), tr("vendorColumn"), ...years, tr("undatedColumn")].forEach((label, index) => {
+    const yearRow = document.createElement("tr");
+    [tr("technologyColumn"), tr("vendorColumn")].forEach((label, index) => {
       const cell = document.createElement("th");
       cell.textContent = label;
+      cell.rowSpan = 2;
       if (index === 0) cell.className = "roadmap-tech-column";
       if (index === 1) cell.className = "roadmap-vendor-column";
-      headRow.appendChild(cell);
+      yearRow.appendChild(cell);
     });
-    head.appendChild(headRow);
+    years.forEach((year) => {
+      const cell = document.createElement("th");
+      cell.colSpan = 5;
+      cell.className = "roadmap-year-heading";
+      cell.textContent = year;
+      yearRow.appendChild(cell);
+    });
+    const undatedHeading = document.createElement("th");
+    undatedHeading.rowSpan = 2;
+    undatedHeading.className = "roadmap-undated-heading";
+    undatedHeading.textContent = tr("undatedColumn");
+    yearRow.appendChild(undatedHeading);
+    const quarterRow = document.createElement("tr");
+    years.forEach(() => {
+      ["Q1", "Q2", "Q3", "Q4", tr("quarterUnknown")].forEach((label) => {
+        const cell = document.createElement("th");
+        cell.className = "roadmap-quarter-heading";
+        cell.textContent = label;
+        quarterRow.appendChild(cell);
+      });
+    });
+    head.append(yearRow, quarterRow);
     const body = document.createElement("tbody");
     technologies.forEach((technology) => {
       const lanes = roadmap.lanes.filter((lane) => lane.technology_id === technology.technology_id);
@@ -224,9 +263,11 @@
         scope.textContent = localized(lane, "scope");
         vendorCell.append(vendor, scope);
         row.appendChild(vendorCell);
-        [...years, null].forEach((year) => {
+        const timelineSlots = years.flatMap((year) => ["Q1", "Q2", "Q3", "Q4", null].map((quarter) => ({year, quarter})));
+        timelineSlots.push({year: null, quarter: null});
+        timelineSlots.forEach((slot) => {
           const cell = document.createElement("td");
-          lane.milestones.filter((milestone) => milestone.year === year).forEach((milestone) => {
+          lane.milestones.filter((milestone) => milestone.year === slot.year && milestone.quarter === slot.quarter).forEach((milestone) => {
             const button = document.createElement("button");
             button.type = "button";
             button.className = `roadmap-milestone maturity-${milestone.maturity}`;
@@ -240,7 +281,7 @@
         body.appendChild(row);
       });
     });
-    table.append(head, body);
+    table.append(colgroup, head, body);
     root.appendChild(table);
   }
 
@@ -366,7 +407,12 @@
     const {technology, lane, milestone} = match;
     setText("roadmap-dialog-id", milestone.milestone_id);
     setText("roadmap-dialog-title", localized(milestone, "label"));
-    setText("roadmap-dialog-meta", `${localized(technology, "name")} / ${lane.vendor} / ${milestone.year || tr("undatedColumn")}`);
+    const milestonePeriod = milestone.year === null
+      ? tr("undatedColumn")
+      : milestone.quarter
+        ? `${milestone.year} ${milestone.quarter}`
+        : `${milestone.year} (${tr("quarterUnknown")})`;
+    setText("roadmap-dialog-meta", `${localized(technology, "name")} / ${lane.vendor} / ${milestonePeriod}`);
     const root = document.getElementById("roadmap-dialog-content");
     root.replaceChildren();
     const section = document.createElement("section");
@@ -383,6 +429,7 @@
     appendMetaItem(meta, tr("technologyColumn"), localized(technology, "name"));
     appendMetaItem(meta, tr("vendorColumn"), `${lane.vendor} / ${localized(lane, "scope")}`);
     appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[milestone.timing_basis]));
+    appendMetaItem(meta, tr("timingPrecision"), tr(timingPrecisionKeys[milestone.timing_precision]));
     appendMetaItem(meta, tr("researchAsOf"), currentRoadmap().as_of);
     const sourcesTitle = document.createElement("h4");
     sourcesTitle.textContent = tr("publicSources");
