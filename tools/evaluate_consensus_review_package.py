@@ -87,6 +87,7 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
     seen_ids: set[str] = set()
     seen_agents: set[str] = set()
     eligible: list[dict[str, Any]] = []
+    ineligible_reviews: list[dict[str, Any]] = []
     disallowed = set(manifest["independence_requirements"]["disallowed_as_independent"])
     for review in reviews:
         review_errors: list[str] = []
@@ -169,6 +170,10 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         integrity_errors.extend(review_errors)
         if not review_errors:
             eligible.append(review)
+        else:
+            ineligible_reviews.append(
+                {"review_id": review_id, "reasons": sorted(set(review_errors))}
+            )
 
     support = [review for review in eligible if review.get("overall_verdict") == "support"]
     critical_objections = sum(
@@ -223,6 +228,12 @@ def evaluate(root: Path, manifest_path: Path) -> dict[str, Any]:
         "evaluated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "status": status,
         "counts": counts,
+        "review_results": {
+            "eligible_review_ids": sorted(review["review_id"] for review in eligible),
+            "ineligible_reviews": sorted(
+                ineligible_reviews, key=lambda item: item["review_id"]
+            ),
+        },
         "unmet_requirements": sorted(set(unmet)),
         "integrity_errors": sorted(set(integrity_errors)),
         "effect": effect,

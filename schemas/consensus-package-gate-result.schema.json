@@ -3,7 +3,7 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/consensus-package-gate-result.schema.json",
   "title": "OpenFS Consensus Package Gate Result",
   "type": "object",
-  "required": ["schema_version", "package_id", "base_commit", "evaluated_at", "status", "counts", "unmet_requirements", "integrity_errors", "effect"],
+  "required": ["schema_version", "package_id", "base_commit", "evaluated_at", "status", "counts", "review_results", "unmet_requirements", "integrity_errors", "effect"],
   "properties": {
     "schema_version": {"const": "0.1.0"},
     "package_id": {"type": "string", "pattern": "^CRP-[A-Z0-9-]+$"},
@@ -22,6 +22,29 @@
         "support_providers": {"type": "integer", "minimum": 0},
         "critic_reviews": {"type": "integer", "minimum": 0},
         "critical_objections": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "review_results": {
+      "type": "object",
+      "required": ["eligible_review_ids", "ineligible_reviews"],
+      "properties": {
+        "eligible_review_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^CRV-[A-Z0-9-]+$"}
+        },
+        "ineligible_reviews": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["review_id", "reasons"],
+            "properties": {
+              "review_id": {"type": "string", "minLength": 1},
+              "reasons": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+            },
+            "additionalProperties": false
+          }
+        }
       },
       "additionalProperties": false
     },

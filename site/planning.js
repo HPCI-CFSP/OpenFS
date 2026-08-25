@@ -23,7 +23,8 @@
       planningHorizon: "計画期間", researchStatus: "調査状態", consensusStatus: "Consensus", updatedColumn: "更新日時", provisional: "暫定", incomplete: "未完了",
       centerImpacts: "センターへの影響", technologyOptions: "技術候補とfallback", evaluationAxes: "11評価軸", unscoredNote: "人が重みを承認していないため総合点は付けません。", uncertainties: "未確認条件", decisionGates: "判断ゲート", provenance: "PROVENANCE", traceability: "来歴と参照ID", sourceCommit: "ソースコミット",
       fit: "適合性", migration: "移行", unverified: "未確認", candidate: "候補", role: "役割", maturityGate: "成熟度ゲート", fallback: "Fallback", criterion: "評価軸", assessment: "暫定評価", evidence: "参照ID", optionDomain: "分野", compute: "計算ノード", memory: "メモリ", interconnect: "インターコネクト", "system-software": "システムソフトウェア", applicationsDomain: "アプリケーション",
-      "application-coverage": "アプリケーション・利用者適合性", "time-to-solution": "性能・応答・スループット", "power-facility-fit": "電力・冷却・建屋適合性", "lifecycle-cost": "ライフサイクル費用", "maturity-schedule": "技術成熟度・供給・導入時期", "software-migration": "ソフトウェア継続性・移行", "operations-security": "運用性・人材・セキュリティ", "hpci-interoperability": "HPCI相互運用性", "technology-origin-and-ecosystem": "技術・供給網・産業波及", "center-fit": "センター別適合", reversibilityCriterion: "可逆性・段階導入性"
+      "application-coverage": "アプリケーション・利用者適合性", "time-to-solution": "性能・応答・スループット", "power-facility-fit": "電力・冷却・建屋適合性", "lifecycle-cost": "ライフサイクル費用", "maturity-schedule": "技術成熟度・供給・導入時期", "software-migration": "ソフトウェア継続性・移行", "operations-security": "運用性・人材・セキュリティ", "hpci-interoperability": "HPCI相互運用性", "technology-origin-and-ecosystem": "技術・供給網・産業波及", "center-fit": "センター別適合", reversibilityCriterion: "可逆性・段階導入性",
+      consensusReview: "Consensusレビュー", consensusIndexTitle: "Consensusレビュー", consensusIndexLead: "固定コミット、独立性要件、決定論的ゲート、有効なReviewerの来歴を表示します。", consensusNotAcceptance: "レビュー完了は自動採用ではありません", consensusIndexNotice: "高影響のHPCI判断は、独立レビュー閾値を満たした後も人のDirectiveを必要とします。", openConsensus: "レビュー来歴を見る", consensusRequirements: "独立レビュー要件", consensusReviewUnits: "レビュー単位", eligibleReviewers: "有効なReviewer", unmetRequirements: "未達要件", knownLimitations: "既知の制約", noEligibleReviewers: "現在、有効な独立Reviewはありません。", assessmentCount: "有効Review", supportCount: "支持", modelFamilies: "モデル系統", providers: "プロバイダ", criticReviews: "反証Review", pinnedArtifacts: "固定成果物", baseCommit: "固定コミット", requirement: "要件", threshold: "閾値", reviewChecks: "検査項目", reviewer: "Reviewer", model: "モデル", harness: "Harness", verdict: "判定", reviewedAt: "レビュー日時", "ready-for-human-decision": "人の判断待ち", awaiting: "独立レビュー待ち", gateEffectIncomplete: "独立レビューの要件は未達です。ロードマップと整備シナリオは暫定のままです。", gateEffectReady: "独立レビュー閾値を満たしましたが、採用には人の判断が必要です。"
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", siteUpdated: "Site updated",
@@ -40,7 +41,8 @@
       planningHorizon: "Planning horizon", researchStatus: "Research status", consensusStatus: "Consensus", updatedColumn: "Updated", provisional: "provisional", incomplete: "incomplete",
       centerImpacts: "Center impacts", technologyOptions: "Technology options and fallback", evaluationAxes: "Eleven evaluation criteria", unscoredNote: "No total score is calculated before human approval of weights.", uncertainties: "Uncertainties", decisionGates: "Decision gates", provenance: "PROVENANCE", traceability: "Traceability and references", sourceCommit: "Source commit",
       fit: "Fit", migration: "Migration", unverified: "Unverified", candidate: "Candidate", role: "Role", maturityGate: "Maturity gate", fallback: "Fallback", criterion: "Criterion", assessment: "Provisional assessment", evidence: "Evidence refs", optionDomain: "Domain", compute: "Compute", memory: "Memory", interconnect: "Interconnect", "system-software": "System Software", applicationsDomain: "Applications",
-      "application-coverage": "Application and user fit", "time-to-solution": "Performance, response, and throughput", "power-facility-fit": "Power, cooling, and facility fit", "lifecycle-cost": "Lifecycle cost", "maturity-schedule": "Maturity, supply, and schedule", "software-migration": "Software continuity and migration", "operations-security": "Operations, staffing, and security", "hpci-interoperability": "HPCI interoperability", "technology-origin-and-ecosystem": "Technology, supply chain, and ecosystem", "center-fit": "Center-specific fit", reversibilityCriterion: "Reversibility and staged deployment"
+      "application-coverage": "Application and user fit", "time-to-solution": "Performance, response, and throughput", "power-facility-fit": "Power, cooling, and facility fit", "lifecycle-cost": "Lifecycle cost", "maturity-schedule": "Maturity, supply, and schedule", "software-migration": "Software continuity and migration", "operations-security": "Operations, staffing, and security", "hpci-interoperability": "HPCI interoperability", "technology-origin-and-ecosystem": "Technology, supply chain, and ecosystem", "center-fit": "Center-specific fit", reversibilityCriterion: "Reversibility and staged deployment",
+      consensusReview: "Consensus review", consensusIndexTitle: "Consensus review", consensusIndexLead: "Shows the pinned commit, independence requirements, deterministic gate, and provenance of eligible reviewers.", consensusNotAcceptance: "Review completion is not automatic adoption", consensusIndexNotice: "A high-impact HPCI decision still requires a human Directive after independent-review thresholds pass.", openConsensus: "Open review provenance", consensusRequirements: "Independent-review requirements", consensusReviewUnits: "Review units", eligibleReviewers: "Eligible reviewers", unmetRequirements: "Unmet requirements", knownLimitations: "Known limitations", noEligibleReviewers: "There are currently no eligible independent reviews.", assessmentCount: "Eligible reviews", supportCount: "Support", modelFamilies: "Model families", providers: "Providers", criticReviews: "Falsification reviews", pinnedArtifacts: "Pinned artifacts", baseCommit: "Pinned commit", requirement: "Requirement", threshold: "Threshold", reviewChecks: "Checks", reviewer: "Reviewer", model: "Model", harness: "Harness", verdict: "Verdict", reviewedAt: "Reviewed", "ready-for-human-decision": "ready for human decision", awaiting: "awaiting independent review", gateEffectIncomplete: "Independent-review requirements are unmet. Roadmaps and scenarios remain provisional.", gateEffectReady: "Independent-review thresholds are met, but adoption still requires a human decision."
     }
   };
 
@@ -63,6 +65,7 @@
   }
   function makeCell(tag, text) { const cell = document.createElement(tag); cell.textContent = text; return cell; }
   function scenarioLink(scenario) { return `${rootPrefix}${scenario.path}?v=${encodeURIComponent(data.site.commit_sha)}`; }
+  function consensusLink(item) { return `${rootPrefix}${item.path}?v=${encodeURIComponent(data.site.commit_sha)}`; }
   function roadmapTitle(roadmapId) { const roadmap = data.roadmaps.find((item) => item.roadmap_id === roadmapId); return roadmap ? (language === "ja" ? roadmap.title_ja : roadmap.title_en) : roadmapId; }
 
   function applyStaticCopy() {
@@ -138,7 +141,51 @@
     const uncertaintyList = document.getElementById("scenario-uncertainties"); uncertaintyList.replaceChildren(); localizedArray(scenario, "uncertainties").forEach((item) => uncertaintyList.append(makeCell("li", item))); const gateList = document.getElementById("scenario-decision-gates"); gateList.replaceChildren(); localizedArray(scenario, "decision_gates").forEach((item) => gateList.append(makeCell("li", item)));
   }
 
-  function render() { applyStaticCopy(); if (page === "roadmap-evidence") renderEvidencePage(); if (page === "scenario-index") renderScenarioIndex(); if (page === "scenario-detail") renderScenarioDetail(); }
+  function renderConsensusCards(root) {
+    root.replaceChildren();
+    data.consensus_packages.forEach((item) => {
+      const card = document.createElement("article");
+      const id = document.createElement("span"); id.className = "eyebrow"; id.textContent = item.package_id;
+      const title = document.createElement("h3"); const link = document.createElement("a"); link.href = consensusLink(item); link.textContent = `${item.portfolio_summary.roadmap_count} P0 roadmaps · v0.2`; title.append(link);
+      const status = document.createElement("span"); status.className = `status-badge status-${item.gate.status}`; status.textContent = tr(item.gate.status);
+      const summary = document.createElement("p"); summary.textContent = `${item.portfolio_summary.milestone_count} ${tr("milestoneCount")} · ${item.portfolio_summary.source_count} ${tr("sourceCount")} · ${item.portfolio_summary.coverage_gap_count} Coverage Gaps`;
+      const meta = document.createElement("p"); meta.className = "scenario-card-meta"; meta.textContent = `${tr("assessmentCount")}: ${item.gate.counts.assessments} · ${tr("supportCount")}: ${item.gate.counts.support}`;
+      card.append(id, title, status, summary, meta); root.append(card);
+    });
+  }
+
+  function renderConsensusIndex() {
+    renderConsensusCards(document.getElementById("consensus-package-list"));
+  }
+
+  function renderConsensusDetail() {
+    const item = data.consensus_packages.find((candidate) => candidate.package_id === document.body.dataset.packageId);
+    if (!item) { document.querySelector("main").textContent = "Consensus package unavailable."; return; }
+    document.title = `${item.package_id} | OpenFS`;
+    setText("consensus-breadcrumb-title", item.package_id); setText("consensus-package-id", item.package_id); setText("consensus-effect", tr(item.gate.status === "ready-for-human-decision" ? "gateEffectReady" : "gateEffectIncomplete"));
+    const status = document.getElementById("consensus-gate-status"); status.textContent = tr(item.gate.status); status.className = `status-badge status-${item.gate.status}`;
+    const base = document.getElementById("consensus-base-commit"); base.href = item.base_commit_url; base.textContent = `${tr("baseCommit")} ${item.base_commit.slice(0, 12)}`;
+    const metrics = document.getElementById("consensus-metrics"); metrics.replaceChildren();
+    renderMetric(metrics, tr("assessmentCount"), item.gate.counts.assessments, `${item.consensus_policy.minimum_assessments} ${tr("threshold")}`);
+    renderMetric(metrics, tr("supportCount"), item.gate.counts.support, `${item.consensus_policy.minimum_support} ${tr("threshold")}`);
+    renderMetric(metrics, tr("modelFamilies"), item.gate.counts.support_model_families, `${item.consensus_policy.minimum_model_families} ${tr("threshold")}`);
+    renderMetric(metrics, tr("providers"), item.gate.counts.support_providers, `${item.consensus_policy.minimum_providers} ${tr("threshold")}`);
+    renderMetric(metrics, tr("criticReviews"), item.gate.counts.critic_reviews, item.consensus_policy.require_falsification_review ? ">= 1" : "0");
+    renderMetric(metrics, tr("pinnedArtifacts"), item.artifact_count || 0, item.base_commit.slice(0, 12));
+
+    const requirements = document.createElement("table"); requirements.className = "assurance-table"; const head = document.createElement("thead"); const headRow = document.createElement("tr"); [tr("requirement"), tr("threshold")].forEach((label) => headRow.append(makeCell("th", label))); head.append(headRow); const body = document.createElement("tbody");
+    [["minimum_assessments", item.consensus_policy.minimum_assessments], ["minimum_support", item.consensus_policy.minimum_support], ["minimum_support_independence_groups", item.consensus_policy.minimum_support_independence_groups], ["minimum_origin_groups", item.consensus_policy.minimum_origin_groups], ["minimum_model_families", item.consensus_policy.minimum_model_families], ["minimum_providers", item.consensus_policy.minimum_providers], ["require_falsification_review", item.consensus_policy.require_falsification_review], ["require_human_decision", item.consensus_policy.require_human_decision]].forEach(([name, value]) => { const row = document.createElement("tr"); row.append(makeCell("th", name), makeCell("td", String(value))); body.append(row); }); requirements.append(head, body); document.getElementById("consensus-requirements").replaceChildren(requirements);
+
+    const units = document.getElementById("consensus-review-units"); units.replaceChildren(); item.review_units.forEach((unit) => { const card = document.createElement("article"); const title = document.createElement("h4"); title.textContent = localized(unit, "title"); const id = document.createElement("p"); id.className = "mono-list"; id.textContent = `${unit.unit_id} · ${unit.kind}`; const checks = document.createElement("p"); checks.textContent = `${tr("reviewChecks")}: ${unit.required_checks.join(", ")}`; card.append(title, id, checks); units.append(card); });
+
+    const reviewers = document.getElementById("consensus-reviewers"); reviewers.replaceChildren(); setText("consensus-reviewer-note", item.eligible_reviewers.length ? "" : tr("noEligibleReviewers")); item.eligible_reviewers.forEach((reviewer) => { const card = document.createElement("article"); const title = document.createElement("h4"); title.textContent = `${reviewer.provider} · ${reviewer.model_family}`; const meta = document.createElement("p"); meta.className = "mono-list"; meta.textContent = `${reviewer.review_id} · ${reviewer.role} · ${reviewer.overall_verdict}`; const profile = document.createElement("p"); profile.textContent = `${reviewer.prompt_profile} · ${reviewer.independence_group} · ${reviewer.origin_group}`; const harness = document.createElement("a"); harness.href = reviewer.harness_commit_url || reviewer.harness_repository_url; harness.target = "_blank"; harness.rel = "noopener noreferrer"; harness.textContent = `${reviewer.harness_id} @ ${reviewer.harness_commit.slice(0, 12)}`; card.append(title, meta, profile, harness); reviewers.append(card); });
+
+    const unmet = document.getElementById("consensus-unmet"); unmet.replaceChildren(); item.gate.unmet_requirements.forEach((value) => unmet.append(makeCell("li", value)));
+    const limitations = document.getElementById("consensus-limitations"); limitations.replaceChildren(); item.known_limitations.forEach((limitation) => { const card = document.createElement("article"); const title = document.createElement("h4"); title.textContent = limitation.limitation_id; const body = document.createElement("p"); body.textContent = localized(limitation, "description"); const effect = document.createElement("span"); effect.className = "status-badge"; effect.textContent = limitation.effect; card.append(title, body, effect); limitations.append(card); });
+    setText("consensus-provenance-id", item.package_id); const source = document.getElementById("consensus-source-commit"); source.href = item.source_commit_url; source.textContent = item.source_commit; const manifest = document.getElementById("consensus-manifest"); manifest.href = item.manifest_url;
+  }
+
+  function render() { applyStaticCopy(); if (page === "roadmap-evidence") renderEvidencePage(); if (page === "scenario-index") renderScenarioIndex(); if (page === "scenario-detail") renderScenarioDetail(); if (page === "consensus-index") renderConsensusIndex(); if (page === "consensus-detail") renderConsensusDetail(); }
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(language); render(); }));
   render();
 })();

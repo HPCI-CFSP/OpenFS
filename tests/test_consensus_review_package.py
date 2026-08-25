@@ -174,6 +174,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         result = evaluate(ROOT, self.manifest_path)
         self.assertEqual("incomplete", result["status"])
         self.assertEqual([], result["integrity_errors"])
+        self.assertEqual([], result["review_results"]["eligible_review_ids"])
         self.assertEqual(0, result["counts"]["assessments"])
         self.assertIn("minimum_assessments", result["unmet_requirements"])
         self.assertIn("falsification_review", result["unmet_requirements"])
@@ -213,6 +214,8 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(3, result["counts"]["support"])
         self.assertEqual(3, result["counts"]["support_model_families"])
         self.assertEqual(3, result["counts"]["support_providers"])
+        self.assertEqual(4, len(result["review_results"]["eligible_review_ids"]))
+        self.assertEqual([], result["review_results"]["ineligible_reviews"])
 
     def test_tampered_primary_source_identity_invalidates_review(self):
         registry_digest = next(
@@ -225,6 +228,8 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         result = self._evaluate_synthetic(reviews, agents)
         self.assertEqual("incomplete", result["status"])
         self.assertTrue(any("primary_source_identity_mismatch" in item for item in result["integrity_errors"]))
+        self.assertEqual(3, len(result["review_results"]["eligible_review_ids"]))
+        self.assertEqual(1, len(result["review_results"]["ineligible_reviews"]))
 
     def test_support_from_one_model_family_cannot_pass(self):
         registry_digest = next(

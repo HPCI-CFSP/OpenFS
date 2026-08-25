@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from build_pages_site import (  # noqa: E402
     build,
+    collect_consensus_packages,
     collect_consensus_receipts,
     collect_roadmaps,
     collect_scenarios,
@@ -241,6 +242,13 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
             self.assertEqual([], result["consensus_receipts"])
+            self.assertEqual(1, len(result["consensus_packages"]))
+            package = result["consensus_packages"][0]
+            self.assertEqual("CRP-P0-ROADMAPS-V02", package["package_id"])
+            self.assertEqual("incomplete", package["gate"]["status"])
+            self.assertEqual([], package["eligible_reviewers"])
+            self.assertGreaterEqual(package["artifact_count"], 20)
+            self.assertEqual(40, len(package["base_commit"]))
             self.assertEqual(3, len(result["scenarios"]))
             self.assertEqual(
                 {
@@ -419,6 +427,10 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue((output / "roadmaps" / "compare" / "index.html").is_file())
             self.assertTrue((output / "roadmaps" / "evidence" / "index.html").is_file())
             self.assertTrue((output / "scenarios" / "index.html").is_file())
+            self.assertTrue((output / "consensus" / "index.html").is_file())
+            self.assertTrue(
+                (output / "consensus" / "crp-p0-roadmaps-v02" / "index.html").is_file()
+            )
             self.assertTrue(
                 (
                     output
@@ -446,6 +458,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("ROADMAP-EVIDENCE-AUDIT-001", rendered)
             self.assertIn("ROADMAP-DEPENDENCY-REGISTER-001", rendered)
             self.assertIn("SCN-HPCI-BALANCED-001", rendered)
+            self.assertIn("CRP-P0-ROADMAPS-V02", rendered)
             self.assertIn('"catalog_as_of":"2026-08-23"', rendered)
             self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
@@ -505,6 +518,18 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("summary.summary_ja", app)
             self.assertNotIn("summary.summary_en", app)
             self.assertNotIn('scopeMetric:', app)
+
+    def test_consensus_package_requires_explicit_publication_directive(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(
+                source,
+                root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02",
+            )
+            with self.assertRaisesRegex(ValueError, "no human publication Directive"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
 
     def test_memory_roadmap_rejects_unknown_source_reference(self):
         policy = self.publication_policy()

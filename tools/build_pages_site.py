@@ -356,6 +356,94 @@ def collect_consensus_receipts(
     return safe_receipts
 
 
+def collect_consensus_packages(
+    root: Path, policy: dict[str, Any], include_commit_metadata: bool = True
+) -> list[dict[str, Any]]:
+    directives = approved_publication_directives(root, policy)
+    approved_targets = {
+        target for targets in directives.values() for target in targets
+    }
+    allowed_package_statuses = set(policy["accepted_consensus_package_statuses"])
+    allowed_gate_statuses = set(policy["accepted_consensus_package_gate_statuses"])
+    packages: list[dict[str, Any]] = []
+    for manifest_path in sorted(root.glob(policy["included_consensus_package_glob"])):
+        manifest = load_json(manifest_path)
+        package_id = manifest.get("package_id", manifest_path.parent.name)
+        if package_id not in approved_targets:
+            raise ValueError(f"Consensus package {package_id} has no human publication Directive")
+        if manifest.get("status") not in allowed_package_statuses:
+            raise ValueError(f"Consensus package {package_id} has non-public status")
+        gate_path = manifest_path.parent / "gate-result.json"
+        if not gate_path.exists():
+            raise ValueError(f"Consensus package {package_id} has no gate result")
+        gate = load_json(gate_path)
+        if gate.get("package_id") != package_id or gate.get("base_commit") != manifest.get("base_commit"):
+            raise ValueError(f"Consensus package {package_id} gate identity mismatch")
+        if gate.get("status") not in allowed_gate_statuses:
+            raise ValueError(f"Consensus package {package_id} has non-public gate status")
+
+        projected = {
+            key: manifest[key]
+            for key in policy["consensus_package_public_fields"]
+            if key in manifest
+        }
+        projected["gate"] = {
+            key: gate[key]
+            for key in policy["consensus_package_gate_public_fields"]
+            if key in gate
+        }
+        eligible_ids = set(
+            gate.get("review_results", {}).get("eligible_review_ids", [])
+        )
+        assessments = {}
+        assessment_dir = root / manifest["submission"]["assessment_directory"]
+        for assessment_path in sorted(assessment_dir.glob("*.json")):
+            assessment = load_json(assessment_path)
+            if assessment.get("package_id") != package_id or assessment.get("base_commit") != manifest.get("base_commit"):
+                raise ValueError(f"Consensus package {package_id} contains a mismatched assessment")
+            review_id = assessment.get("review_id")
+            if review_id in assessments:
+                raise ValueError(f"Consensus package {package_id} contains duplicate review ID {review_id}")
+            assessments[review_id] = assessment
+        missing_eligible = eligible_ids - set(assessments)
+        if missing_eligible:
+            raise ValueError(f"Consensus package {package_id} gate references missing reviews: {sorted(missing_eligible)}")
+        reviewers = []
+        reviewer_fields = policy["consensus_package_reviewer_public_fields"]
+        for review_id in sorted(eligible_ids):
+            assessment = assessments[review_id]
+            reviewer = {
+                key: assessment["reviewer"][key]
+                for key in reviewer_fields
+                if key in assessment["reviewer"]
+            }
+            reviewer.update(
+                review_id=review_id,
+                overall_verdict=assessment["overall_verdict"],
+                reviewed_at=assessment["reviewed_at"],
+            )
+            repository_url = reviewer.get("harness_repository_url", "")
+            harness_commit = reviewer.get("harness_commit", "")
+            if repository_url.startswith("https://github.com/") and len(harness_commit) == 40:
+                reviewer["harness_commit_url"] = f"{repository_url.removesuffix('.git')}/commit/{harness_commit}"
+            reviewers.append(reviewer)
+        projected["eligible_reviewers"] = reviewers
+        projected["artifact_count"] = len(manifest["artifact_manifest"])
+        projected["path"] = f"consensus/{package_id.lower()}/"
+        projected["base_commit_url"] = f"{REPOSITORY_URL}/commit/{manifest['base_commit']}"
+        if include_commit_metadata:
+            relative = str(manifest_path.relative_to(root))
+            metadata = source_commit_metadata(root, relative)
+            projected.update(
+                updated_at=metadata["updated_at"],
+                source_commit=metadata["commit_sha"],
+                source_commit_url=metadata["commit_url"],
+                manifest_url=f"{REPOSITORY_URL}/blob/{metadata['commit_sha']}/{relative}",
+            )
+        packages.append(projected)
+    return packages
+
+
 def collect_topic_summaries(
     root: Path,
     policy: dict[str, Any],
@@ -714,6 +802,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         )
 
     scenarios = collect_scenarios(root, policy)
+    consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
     roadmap_assurance = collect_roadmap_assurance(root, policy)
@@ -740,6 +829,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topics": topics,
         "research_summaries": research_summaries,
         "consensus_receipts": consensus_receipts,
+        "consensus_packages": consensus_packages,
         "technology_landscape": {
             "scope_id": technology_scope["scope_id"],
             "categories": [
@@ -843,6 +933,31 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         ),
         encoding="utf-8",
     )
+    consensus_index = output / "consensus" / "index.html"
+    consensus_index.parent.mkdir(parents=True, exist_ok=True)
+    consensus_index.write_text(
+        render_template(
+            source / "consensus-index.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    consensus_template = source / "consensus-detail.html"
+    for package in public_data["consensus_packages"]:
+        detail = output / package["path"] / "index.html"
+        detail.parent.mkdir(parents=True, exist_ok=True)
+        depth = len(detail.parent.relative_to(output).parts)
+        detail.write_text(
+            render_template(
+                consensus_template,
+                {
+                    "ROOT_PREFIX": "../" * depth,
+                    "PACKAGE_ID": html.escape(package["package_id"], quote=True),
+                    "ASSET_VERSION": asset_version,
+                },
+            ),
+            encoding="utf-8",
+        )
     scenario_template = source / "scenario-detail.html"
     for scenario in public_data["scenarios"]:
         detail = output / scenario["path"] / "index.html"
@@ -872,6 +987,7 @@ def main() -> int:
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "
         f"receipts={len(result['consensus_receipts'])}, "
+        f"consensus_packages={len(result['consensus_packages'])}, "
         f"roadmaps={len(result['roadmaps'])}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
