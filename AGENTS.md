@@ -120,6 +120,13 @@ When a task contains multiple investigations, organize them into separate task, 
   with `tools/check_performance_model_card.py`. Calibration data must remain
   separate from validation data. A passing result is only a candidate for
   independent Consensus review and never closes the Gap automatically.
+- Store reproducible HPCI-CB comparison candidates under
+  `proposals/benchmark-results/` using
+  `schemas/benchmark-result-bundle.schema.json`. Run
+  `tools/check_benchmark_result_bundle.py` to recompute aggregates and enforce
+  Gap-specific correctness, energy, RAS, portability, and interoperability
+  requirements. A passing bundle remains provisional until independent
+  reproduction, Consensus, and the applicable human decision.
 - After any roadmap source or milestone change, regenerate assurance artifacts
   with `tools/audit_roadmap_sources.py`,
   `tools/build_roadmap_source_triage.py`, and

@@ -69,6 +69,14 @@ calibration separation, units, thresholds, and system/workload/Origin-Group
 diversity. Passing this deterministic check only permits independent Consensus
 review; it does not close `GAP-WORK-003` or establish HPCI-wide validity.
 
+Experimental comparisons shared by the compute, memory, portability, MPI, and
+performance-model workstreams use
+`schemas/benchmark-result-bundle.schema.json`. Candidate bundles preserve the
+common workload/input/precision conditions, environment and raw-data digests,
+individual repetitions, correctness, energy, failure/recovery, and porting
+records. `tools/check_benchmark_result_bundle.py` recomputes aggregates and
+applies Gap-specific checks before independent review.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone
