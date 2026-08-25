@@ -349,6 +349,12 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
                 "effect": "requires-independent-review",
             },
             {
+                "limitation_id": "LIM-SOURCE-ORIGIN-INDEPENDENCE",
+                "description_ja": "重複除去URL数は独立した情報起源数ではない。転載・翻訳・同一発行主体のページは、Consensusでorigin groupを確認する必要がある。",
+                "description_en": "Unique URL count is not independent-origin count. Mirrors, translations, and pages from one publisher require origin-group review in Consensus.",
+                "effect": "requires-independent-review",
+            },
+            {
                 "limitation_id": "LIM-CENTER-PROFILES",
                 "description_ja": "15センターの受理済みProfile、施設条件、調達価格・供給確約が揃っていない。",
                 "description_en": "Accepted profiles for all 15 centers, facility constraints, procurement prices, and supply commitments are incomplete.",
