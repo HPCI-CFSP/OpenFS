@@ -3,11 +3,12 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/consensus-package-gate-result.schema.json",
   "title": "OpenFS Consensus Package Gate Result",
   "type": "object",
-  "required": ["schema_version", "package_id", "base_commit", "evaluated_at", "status", "counts", "review_results", "unmet_requirements", "integrity_errors", "effect"],
+  "required": ["schema_version", "package_id", "base_commit", "package_manifest_digest", "evaluated_at", "status", "counts", "review_results", "unmet_requirements", "integrity_errors", "effect"],
   "properties": {
     "schema_version": {"const": "0.1.0"},
     "package_id": {"type": "string", "pattern": "^CRP-[A-Z0-9-]+$"},
     "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "package_manifest_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "evaluated_at": {"type": "string", "format": "date-time"},
     "status": {"enum": ["incomplete", "ready-for-human-decision"]},
     "counts": {

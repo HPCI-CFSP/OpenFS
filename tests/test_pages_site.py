@@ -249,6 +249,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual([], package["eligible_reviewers"])
             self.assertGreaterEqual(package["artifact_count"], 20)
             self.assertEqual(40, len(package["base_commit"]))
+            self.assertEqual(64, len(package["manifest_sha256"]))
+            self.assertEqual(
+                package["manifest_sha256"],
+                package["gate"]["package_manifest_digest"],
+            )
             self.assertEqual(3, len(result["scenarios"]))
             self.assertEqual(
                 {
@@ -597,6 +602,23 @@ class PagesSiteTests(unittest.TestCase):
                 root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02",
             )
             with self.assertRaisesRegex(ValueError, "no human publication Directive"):
+                collect_consensus_packages(root, policy, include_commit_metadata=False)
+
+    def test_consensus_package_rejects_stale_gate_manifest_digest(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = ROOT / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            target = root / "reviews" / "consensus-packages" / "CRP-P0-ROADMAPS-V02"
+            shutil.copytree(source, target)
+            directives = root / "reviews" / "directives"
+            directives.mkdir(parents=True)
+            shutil.copy2(ROOT / "reviews" / "directives" / "DIR-900006.json", directives)
+            gate_path = target / "gate-result.json"
+            gate = json.loads(gate_path.read_text(encoding="utf-8"))
+            gate["package_manifest_digest"] = "f" * 64
+            gate_path.write_text(json.dumps(gate), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "gate manifest digest mismatch"):
                 collect_consensus_packages(root, policy, include_commit_metadata=False)
 
     def test_memory_roadmap_rejects_unknown_source_reference(self):

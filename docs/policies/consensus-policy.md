@@ -16,6 +16,9 @@ package is also invalid. Every review records `package_manifest_digest`, the
 SHA-256 of the exact `manifest.json` bytes, so a review cannot be replayed after
 review units, artifact lists, or package metadata are regenerated under the same
 package ID and base commit.
+The deterministic gate result records the same manifest digest. GitHub Pages
+recomputes it and fails closed when either a gate result or an eligible review
+targets different manifest bytes.
 
 At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
 capacity before any research result exists. Reviewers in the Proposal author's

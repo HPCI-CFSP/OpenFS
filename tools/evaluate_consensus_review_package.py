@@ -353,6 +353,7 @@ def evaluate(
         "schema_version": "0.1.0",
         "package_id": manifest["package_id"],
         "base_commit": manifest["base_commit"],
+        "package_manifest_digest": manifest_digest,
         "evaluated_at": evaluated.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "status": status,
         "counts": counts,

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import os
@@ -370,6 +371,7 @@ def collect_consensus_packages(
     allowed_gate_statuses = set(policy["accepted_consensus_package_gate_statuses"])
     packages: list[dict[str, Any]] = []
     for manifest_path in sorted(root.glob(policy["included_consensus_package_glob"])):
+        manifest_digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
         manifest = load_json(manifest_path)
         package_id = manifest.get("package_id", manifest_path.parent.name)
         if package_id not in approved_targets:
@@ -382,6 +384,8 @@ def collect_consensus_packages(
         gate = load_json(gate_path)
         if gate.get("package_id") != package_id or gate.get("base_commit") != manifest.get("base_commit"):
             raise ValueError(f"Consensus package {package_id} gate identity mismatch")
+        if gate.get("package_manifest_digest") != manifest_digest:
+            raise ValueError(f"Consensus package {package_id} gate manifest digest mismatch")
         if gate.get("status") not in allowed_gate_statuses:
             raise ValueError(f"Consensus package {package_id} has non-public gate status")
 
@@ -402,7 +406,11 @@ def collect_consensus_packages(
         assessment_dir = root / manifest["submission"]["assessment_directory"]
         for assessment_path in sorted(assessment_dir.glob("*.json")):
             assessment = load_json(assessment_path)
-            if assessment.get("package_id") != package_id or assessment.get("base_commit") != manifest.get("base_commit"):
+            if (
+                assessment.get("package_id") != package_id
+                or assessment.get("base_commit") != manifest.get("base_commit")
+                or assessment.get("package_manifest_digest") != manifest_digest
+            ):
                 raise ValueError(f"Consensus package {package_id} contains a mismatched assessment")
             review_id = assessment.get("review_id")
             if review_id in assessments:
@@ -432,6 +440,7 @@ def collect_consensus_packages(
             reviewers.append(reviewer)
         projected["eligible_reviewers"] = reviewers
         projected["artifact_count"] = len(manifest["artifact_manifest"])
+        projected["manifest_sha256"] = manifest_digest
         projected["path"] = f"consensus/{package_id.lower()}/"
         projected["base_commit_url"] = f"{REPOSITORY_URL}/commit/{manifest['base_commit']}"
         if include_commit_metadata:

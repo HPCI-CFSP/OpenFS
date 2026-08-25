@@ -182,6 +182,10 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(0, result["counts"]["assessments"])
         self.assertIn("minimum_assessments", result["unmet_requirements"])
         self.assertIn("falsification_review", result["unmet_requirements"])
+        self.assertEqual(
+            hashlib.sha256(self.manifest_path.read_bytes()).hexdigest(),
+            result["package_manifest_digest"],
+        )
 
     def test_author_group_is_explicitly_disallowed(self):
         independence = self.manifest["independence_requirements"]
