@@ -6,7 +6,7 @@ These instructions apply to every AI agent working in this repository.
 
 Before changing the repository, read:
 
-1. `README.md`
+1. `README.md` (English) or its synchronized Japanese counterpart `README.ja.md`
 2. `docs/agent-onboarding.md`
 3. `docs/architecture.md`
 4. the policies relevant to the assigned role
@@ -47,6 +47,7 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainties, and decision gates.
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
 - Do not publish a scenario or report unless its Japanese and English public summaries are both present.
+- Treat `README.md` and `README.ja.md` as one synchronized public document. Any user-visible content or structure change to either file requires the corresponding change in the other file in the same pull request. Preserve matching `i18n-section` IDs and run `python3 tools/validate_readme_i18n.py`.
 
 ## Write permissions by role
 

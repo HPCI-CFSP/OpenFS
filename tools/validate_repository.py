@@ -18,6 +18,7 @@ from generate_knowledge_views import build_index, render_tbd
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     "README.md",
+    "README.ja.md",
     "AGENTS.md",
     ".github/CODEOWNERS",
     "LICENSE",
@@ -136,6 +137,7 @@ REQUIRED_FILES = [
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
     "tools/validate_json_schemas.py",
+    "tools/validate_readme_i18n.py",
     "tools/validate_workflows.py",
     "tools/promote_research_topic.py",
     "tools/promote_claim.py",

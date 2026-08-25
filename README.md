@@ -1,9 +1,13 @@
 # OpenFS
 
+**English** | [日本語](README.ja.md)
+
 [![OpenFS Pages](https://img.shields.io/badge/OpenFS-Public%20Site-18755b?logo=githubpages&logoColor=white)](https://hpci-cfsp.github.io/OpenFS/)
 [![Validate OpenFS](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/validate.yml/badge.svg)](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/validate.yml)
 [![Publish OpenFS Pages](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/pages.yml/badge.svg)](https://github.com/HPCI-CFSP/OpenFS/actions/workflows/pages.yml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-173b57.svg)](LICENSE)
+
+<!-- i18n-section: overview -->
 
 OpenFS is an evidence-first research harness for continuously investigating the technologies, systems, and operating models needed for future HPCI infrastructure.
 
@@ -21,11 +25,15 @@ Research task
   -> Reports
 ```
 
+<!-- i18n-section: status -->
+
 ## Status
 
 This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
 
 The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
+
+<!-- i18n-section: core-principles -->
 
 ## Core principles
 
@@ -37,6 +45,8 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 - Canonical Claims are immutable. Human-authorized withdrawal or supersession adds a digest-pinned status event and changes generated active views; it never deletes history.
 - Facts, forecasts, and HPCI recommendations are different object types and pass different review gates.
 - Normal processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or NDA export.
+
+<!-- i18n-section: repository-map -->
 
 ## Repository map
 
@@ -70,6 +80,8 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 
 Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built. `config/skill-registry.json` deterministically selects and snapshots the procedure for each supported Work Item kind.
 
+<!-- i18n-section: research-baseline -->
+
 ## Research baseline
 
 New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-directed worldwide technology-horizon Topic with priority coverage for Japan.
@@ -77,6 +89,8 @@ New research Tasks and Monitors should select topics from `config/research-basel
 OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, source-language coverage where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 
 The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additive Topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing Topics.
+
+<!-- i18n-section: local-validation -->
 
 ## Local validation
 
@@ -87,6 +101,7 @@ versions in `requirements-validation.txt`.
 ```bash
 python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/validate_readme_i18n.py
 python3 tools/validate_workflows.py
 python3 tools/validate_json_schemas.py
 python3 -m unittest discover -s tests -v
@@ -130,6 +145,8 @@ The public site supports Japanese and English and includes a `Technology landsca
 
 Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 
+<!-- i18n-section: human-directions -->
+
 ## Human directions
 
 Humans add asynchronous instructions through either:
@@ -138,6 +155,8 @@ Humans add asynchronous instructions through either:
 - a reviewed directive file under `reviews/directives/`.
 
 Each directive will eventually be linked to the work items, runs, and decisions that processed it.
+
+<!-- i18n-section: license -->
 
 ## License
 

@@ -24,6 +24,14 @@ jobs:
           OPENFS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           OPENFS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: python3 tools/check_agent_branch.py
+      - name: Validate bilingual README
+        run: python3 tools/validate_readme_i18n.py
+      - name: Require synchronized README changes
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        env:
+          OPENFS_README_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          OPENFS_README_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 tools/validate_readme_i18n.py --base "$OPENFS_README_BASE_SHA" --head "$OPENFS_README_HEAD_SHA"
       - name: Validate repository
         run: python3 tools/validate_repository.py
       - name: Install pinned contract validators
