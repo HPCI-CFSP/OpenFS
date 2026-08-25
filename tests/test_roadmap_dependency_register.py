@@ -55,6 +55,19 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("unknown source_ids" in item for item in result["calculation_errors"]))
 
+    def test_known_but_unrelated_source_fails_closed(self):
+        changed = copy.deepcopy(self.register)
+        dependency = next(
+            item for item in changed["dependencies"]
+            if item["dependency_id"] == "XDEP-MEM-COMP"
+        )
+        dependency["source_ids"].append("SRC-NET001")
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(
+            any("source_ids belong to unrelated roadmaps" in item for item in result["calculation_errors"])
+        )
+
     def test_missing_p0_gap_propagation_fails_closed(self):
         changed = copy.deepcopy(self.register)
         for dependency in changed["dependencies"]:

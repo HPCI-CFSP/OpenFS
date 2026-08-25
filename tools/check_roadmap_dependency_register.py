@@ -19,23 +19,35 @@ def _duplicates(values: list[Any]) -> set[Any]:
 def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[str, Any]:
     errors: list[str] = []
     roadmap_ids = {item["roadmap_id"] for item in roadmaps}
-    source_ids = {source["source_id"] for item in roadmaps for source in item["sources"]}
-    milestone_ids = {
-        milestone["milestone_id"]
+    source_owners = {
+        source["source_id"]: item["roadmap_id"]
+        for item in roadmaps
+        for source in item["sources"]
+    }
+    source_ids = set(source_owners)
+    milestone_owners = {
+        milestone["milestone_id"]: item["roadmap_id"]
         for item in roadmaps
         for lane in item["lanes"]
         for milestone in lane["milestones"]
     }
+    milestone_ids = set(milestone_owners)
     gaps = {gap["gap_id"]: gap for item in roadmaps for gap in item["coverage_gaps"]}
     p0_gaps = {
         gap_id
         for gap_id, gap in gaps.items()
         if gap["priority"] == "P0" and gap["status"] == "open"
     }
-    source_dependency_ids = {
-        dependency["dependency_id"]
+    source_dependency_owners = {
+        dependency["dependency_id"]: item["roadmap_id"]
         for item in roadmaps
         for dependency in item["dependencies"]
+    }
+    source_dependency_ids = set(source_dependency_owners)
+    gap_owners = {
+        gap["gap_id"]: item["roadmap_id"]
+        for item in roadmaps
+        for gap in item["coverage_gaps"]
     }
 
     dependencies = register["dependencies"]
@@ -61,6 +73,7 @@ def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[s
         if upstream == downstream:
             errors.append(f"{dependency_id}: self-dependency is not allowed")
         graph[upstream].add(downstream)
+        endpoint_roadmaps = {upstream, downstream}
         for label, refs, known in (
             ("source_ids", set(dependency["source_ids"]), source_ids),
             ("source_dependency_ids", set(dependency["source_dependency_ids"]), source_dependency_ids),
@@ -70,6 +83,30 @@ def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[s
             unknown = refs - known
             if unknown:
                 errors.append(f"{dependency_id}: unknown {label} {sorted(unknown)}")
+        for label, refs, owners, allowed_owners in (
+            ("source_ids", dependency["source_ids"], source_owners, endpoint_roadmaps),
+            (
+                "source_dependency_ids",
+                dependency["source_dependency_ids"],
+                source_dependency_owners,
+                endpoint_roadmaps,
+            ),
+            (
+                "gate_refs",
+                dependency["gate_refs"],
+                milestone_owners,
+                endpoint_roadmaps | {BLUEPRINT_ID},
+            ),
+            ("coverage_gap_refs", dependency["coverage_gap_refs"], gap_owners, endpoint_roadmaps),
+        ):
+            unrelated = [
+                ref for ref in refs
+                if ref in owners and owners[ref] not in allowed_owners
+            ]
+            if unrelated:
+                errors.append(
+                    f"{dependency_id}: {label} belong to unrelated roadmaps {sorted(unrelated)}"
+                )
         edge_gap_refs.update(dependency["coverage_gap_refs"])
 
     indegree = {node: 0 for node in graph}
