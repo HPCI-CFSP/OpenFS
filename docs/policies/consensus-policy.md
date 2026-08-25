@@ -48,6 +48,21 @@ cross-publisher threshold.
 
 All assessments and dissent remain attached to the Decision. Policy thresholds are versioned in `config/consensus-policy.json` and must be calibrated against reviewed evaluation cases.
 
+## Public Consensus Receipts
+
+An accepted Finding may be labeled as Consensus-passed on GitHub Pages only
+when it references a matching public Consensus Receipt. The Receipt is a
+public-only projection of the accepted Decision and records the participating
+model identities, Agent roles, voting independence groups, policy result,
+harness repositories, Run IDs, and exact 40-character harness commit SHAs.
+
+Publication requires at least two distinct voting model identities and two
+voting independence groups. Multiple Agent IDs using one model do not satisfy
+the public check. Missing or inconsistent Receipt data fails the Pages build;
+the Finding remains provisional or Consensus-incomplete. Raw Assessments,
+prompts, private logs, credentials, and non-public Run content are not included
+in the Receipt.
+
 ## Additive research Topics
 
 `research_topic` is a Consensus-controlled object type. An accepted Decision may authorize the narrowly scoped `topic-promotion` role to append the proposed Topic, Consensus-reviewed English title, and Query Plan. The rule requires multiple independent Agent Groups, multiple Source Origin Groups, primary evidence, and falsification review.

@@ -113,8 +113,163 @@ def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
     return projected_reports
 
 
+def collect_consensus_receipts(
+    root: Path, policy: dict[str, Any]
+) -> list[dict[str, Any]]:
+    path = root / policy["included_public_consensus_receipts"]
+    if not path.exists():
+        return []
+    export = load_json(path)
+    if export.get("status") not in set(
+        policy["accepted_consensus_receipt_statuses"]
+    ):
+        raise ValueError("public Consensus Receipt export is not published")
+    directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        export,
+        ["export_id", "status", "as_of", "receipts"],
+        policy["required_publication_metadata"],
+        [],
+        directives,
+        f"Consensus Receipt export {export.get('export_id', path.name)}",
+    )
+
+    receipt_fields = policy["consensus_receipt_public_fields"]
+    participant_fields = policy["consensus_participant_public_fields"]
+    harness_fields = policy["consensus_harness_public_fields"]
+    safe_receipts: list[dict[str, Any]] = []
+    seen_receipt_ids: set[str] = set()
+    represented_findings: set[str] = set()
+    for receipt in projected.get("receipts", []):
+        receipt_id = receipt.get("receipt_id", "unknown")
+        if receipt_id in seen_receipt_ids:
+            raise ValueError(f"duplicate public Consensus Receipt: {receipt_id}")
+        seen_receipt_ids.add(receipt_id)
+        if receipt.get("outcome") != "accepted":
+            raise ValueError(f"Consensus Receipt {receipt_id} is not accepted")
+
+        finding_ids = set(receipt.get("finding_ids", []))
+        if not finding_ids:
+            raise ValueError(f"Consensus Receipt {receipt_id} has no Findings")
+        duplicates = finding_ids & represented_findings
+        if duplicates:
+            raise ValueError(
+                f"public Findings have multiple Consensus Receipts: {sorted(duplicates)}"
+            )
+        represented_findings.update(finding_ids)
+
+        harnesses = receipt.get("harnesses", [])
+        harness_ids = [item.get("harness_id") for item in harnesses]
+        known_harness_ids = set(harness_ids)
+        if not harness_ids or len(harness_ids) != len(set(harness_ids)):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} has missing or duplicate harness IDs"
+            )
+        for harness in harnesses:
+            commit_sha = harness.get("commit_sha", "")
+            if len(commit_sha) != 40 or any(
+                character not in "0123456789abcdef" for character in commit_sha
+            ):
+                raise ValueError(
+                    f"Consensus Receipt {receipt_id} has an invalid harness commit SHA"
+                )
+
+        participants = receipt.get("participants", [])
+        participant_ids = [item.get("agent_id") for item in participants]
+        if not participant_ids or len(participant_ids) != len(set(participant_ids)):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} has missing or duplicate Agent IDs"
+            )
+        if any(item.get("harness_id") not in known_harness_ids for item in participants):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} has an Agent with an unknown harness"
+            )
+        voting_participants = [
+            item
+            for item in participants
+            if item.get("contribution") != "consensus-controller"
+            and item.get("independence_group") != "non-voting-control-plane"
+        ]
+        if any(
+            str(item.get(field, "")).strip().lower()
+            in {"", "none", "unconfigured"}
+            for item in voting_participants
+            for field in ("provider", "model_family", "independence_group")
+        ):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} contains an unconfigured participant"
+            )
+        model_identities = {
+            (item.get("provider"), item.get("model_family"))
+            for item in voting_participants
+        }
+        if len(model_identities) < 2:
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} has fewer than two model identities"
+            )
+
+        requirements = receipt.get("policy_requirements", {})
+        result = receipt.get("policy_result", {})
+        result_groups = set(result.get("independence_groups", []))
+        participant_groups = {
+            item.get("independence_group")
+            for item in voting_participants
+        }
+        group_count = receipt.get("independence_group_count")
+        minimum_groups = requirements.get("minimum_independence_groups")
+        if (
+            not isinstance(group_count, int)
+            or not isinstance(minimum_groups, int)
+            or not result_groups
+            or not result_groups <= participant_groups
+            or group_count != len(result_groups)
+            or group_count < 2
+            or group_count < minimum_groups
+        ):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} has inconsistent independence groups"
+            )
+        assessment_count = result.get("assessment_count")
+        support_count = result.get("support_count")
+        minimum_assessments = requirements.get("minimum_assessments")
+        minimum_support = requirements.get("minimum_support")
+        if (
+            not all(
+                isinstance(value, int)
+                for value in (
+                    assessment_count,
+                    support_count,
+                    minimum_assessments,
+                    minimum_support,
+                )
+            )
+            or assessment_count < minimum_assessments
+            or support_count < minimum_support
+            or result.get("falsification_review_passed") is not True
+            or result.get("critical_objection_count") != 0
+        ):
+            raise ValueError(
+                f"Consensus Receipt {receipt_id} does not satisfy its public policy result"
+            )
+
+        safe_receipt = {key: receipt[key] for key in receipt_fields if key in receipt}
+        safe_receipt["participants"] = [
+            {key: item[key] for key in participant_fields if key in item}
+            for item in participants
+        ]
+        safe_receipt["harnesses"] = [
+            {key: item[key] for key in harness_fields if key in item}
+            for item in harnesses
+        ]
+        safe_receipts.append(safe_receipt)
+    return safe_receipts
+
+
 def collect_topic_summaries(
-    root: Path, policy: dict[str, Any], valid_topic_ids: set[str]
+    root: Path,
+    policy: dict[str, Any],
+    valid_topic_ids: set[str],
+    consensus_receipts: dict[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
     path = root / policy["included_public_topic_summaries"]
     if not path.exists():
@@ -158,12 +313,32 @@ def collect_topic_summaries(
         safe_findings = []
         represented_topics: set[str] = set()
         for finding in summary.get("findings", []):
+            finding_id = finding.get("finding_id", "unknown")
             finding_topics = set(finding.get("topic_ids", []))
             if not finding_topics or not finding_topics <= topic_ids:
                 raise ValueError(
                     f"Topic summary {summary_id} has Finding outside its Topic set"
                 )
             represented_topics.update(finding_topics)
+            receipt_id = finding.get("consensus_receipt_id")
+            if summary.get("consensus_status") == "accepted":
+                if summary.get("research_status") != "accepted":
+                    raise ValueError(
+                        f"accepted Consensus summary {summary_id} is not research-accepted"
+                    )
+                if not receipt_id:
+                    raise ValueError(
+                        f"accepted Finding {finding_id} has no Consensus Receipt"
+                    )
+                receipt = consensus_receipts.get(receipt_id)
+                if not receipt or finding_id not in receipt.get("finding_ids", []):
+                    raise ValueError(
+                        f"accepted Finding {finding_id} has no matching Consensus Receipt"
+                    )
+            elif receipt_id:
+                raise ValueError(
+                    f"provisional Finding {finding_id} cannot reference a Consensus Receipt"
+                )
             safe_finding = {key: finding[key] for key in finding_fields if key in finding}
             safe_finding["sources"] = [
                 {key: source[key] for key in source_fields if key in source}
@@ -187,7 +362,29 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
     valid_topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
-    research_summaries = collect_topic_summaries(root, policy, valid_topic_ids)
+    consensus_receipts = collect_consensus_receipts(root, policy)
+    receipt_by_id = {
+        receipt["receipt_id"]: receipt for receipt in consensus_receipts
+    }
+    research_summaries = collect_topic_summaries(
+        root, policy, valid_topic_ids, receipt_by_id
+    )
+    public_finding_ids = {
+        finding["finding_id"]
+        for summary in research_summaries
+        for finding in summary["findings"]
+    }
+    receipt_finding_ids = {
+        finding_id
+        for receipt in consensus_receipts
+        for finding_id in receipt["finding_ids"]
+    }
+    unlinked_receipts = receipt_finding_ids - public_finding_ids
+    if unlinked_receipts:
+        raise ValueError(
+            "Consensus Receipts reference unpublished Findings: "
+            f"{sorted(unlinked_receipts)}"
+        )
     topics = []
     for topic in baseline["topics"]:
         summary_count = sum(
@@ -237,6 +434,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         },
         "topics": topics,
         "research_summaries": research_summaries,
+        "consensus_receipts": consensus_receipts,
         "technology_landscape": {
             "scope_id": technology_scope["scope_id"],
             "categories": [
@@ -288,6 +486,7 @@ def main() -> int:
     print(
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "
+        f"receipts={len(result['consensus_receipts'])}, "
         f"scenarios={len(result['scenarios'])}, reports={len(result['reports'])}"
     )
     return 0

@@ -43,6 +43,7 @@ REQUIRED_FILES = [
     "knowledge/README.md",
     "knowledge/public/README.md",
     "knowledge/public/topic-summaries.json",
+    "knowledge/public/consensus-receipts.json",
     "knowledge/claim-status/README.md",
     "knowledge/claims/index.json",
     "docs/policies/claim-acceptance.md",
@@ -114,6 +115,7 @@ REQUIRED_FILES = [
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
     "schemas/public-topic-summary.schema.json",
+    "schemas/public-consensus-receipt.schema.json",
     "skills/source-discovery/SKILL.md",
     "skills/worldwide-technology-survey/SKILL.md",
     "skills/evidence-extraction/SKILL.md",
@@ -1464,6 +1466,13 @@ def validate_publication_configuration(root: Path) -> list[str]:
         errors.append("publication policy lacks strict public-classification metadata")
     for key in ("scenario_public_fields", "report_public_fields"):
         if not policy.get(key) or "publication" not in policy[key]:
+            errors.append(f"publication policy lacks an explicit {key} allowlist")
+    for key in (
+        "consensus_receipt_public_fields",
+        "consensus_participant_public_fields",
+        "consensus_harness_public_fields",
+    ):
+        if not policy.get(key):
             errors.append(f"publication policy lacks an explicit {key} allowlist")
     if policy.get("license_status") != "active" or policy.get("license") != "Apache-2.0":
         errors.append("publication policy must expose the active Apache-2.0 license")
