@@ -138,6 +138,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(3, summary["scenario_count"])
         pinned_paths = {artifact["path"] for artifact in self.manifest["artifact_manifest"]}
         self.assertIn("knowledge/public/audits/roadmap-gap-queue.json", pinned_paths)
+        self.assertIn("knowledge/public/audits/roadmap-source-triage.json", pinned_paths)
         self.assertIn("tools/run_controller.py", pinned_paths)
         self.assertIn(".github/workflows/weekly-coordinator.yml", pinned_paths)
         self.assertIn("config/roadmap-gap-query-overrides.json", pinned_paths)
