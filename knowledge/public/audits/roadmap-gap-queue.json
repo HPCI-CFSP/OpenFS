@@ -5,10 +5,10 @@
   "queue_id": "RGQ-20260826-001",
   "as_of": "2026-08-26",
   "generated_at": "2026-08-26T12:00:00Z",
-  "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とする。",
-  "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly.",
-  "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
-  "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved. Items assigned to disabled Monitors are not searched automatically until production-readiness gates pass.",
+  "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とし、明示query planがあるGapでは生成fallbackより優先する。",
+  "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly; an explicit query plan takes precedence over the generated fallback.",
+  "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。生成fallbackは探索開始点にすぎない。Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
+  "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved, and a generated fallback is only a discovery starting point. Items assigned to disabled Monitors are not searched automatically until production-readiness gates pass.",
   "summary": {
     "roadmap_count": 6,
     "gap_count": 31,
@@ -19,7 +19,11 @@
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
     "staged_monitor_disabled": 30,
-    "awaiting_independent_review": 1
+    "awaiting_independent_review": 1,
+    "explicit_query_overrides": 13,
+    "generated_query_fallbacks": 17,
+    "p0_explicit_query_overrides": 13,
+    "p0_generated_query_fallbacks": 0
   },
   "assignments": [
     {
@@ -41,21 +45,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "全HPCIセンターの上位ワークロード、利用者、規模分布 センター別公開情報と承認済み利用統計を収集し、機械可読Profileへ登録する。 公式 一次情報"
+          "query": "HPCI 資源提供機関 年報 利用統計 アプリケーション分野 ノード時間 2025 2026"
         },
         {
           "language": "en",
-          "query": "Top workloads, users, and scale distributions across all HPCI centers Collect center public information and approved usage statistics into machine-readable profiles. official primary source"
+          "query": "HPCI computing center annual report workload usage statistics application domain node hours 2025 2026"
         }
       ],
       "required_source_classes": [
         "official-primary",
         "research-primary",
-        "standards-body",
-        "peer-reviewed-research",
-        "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0001"
     },
@@ -78,21 +80,18 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "性能外挿モデルの公開式、入力、誤差、検証データ モデルカードSchemaと予測対実測の継続検証をHarnessへ追加する。 公式 一次情報"
+          "query": "HPC 性能モデル 外挿 方程式 入力 誤差 検証データ 予測 実測"
         },
         {
           "language": "en",
-          "query": "Published equations, inputs, errors, and validation data for extrapolation models Add a model-card schema and continuous prediction-versus-measurement validation to the harness. official primary source"
+          "query": "HPC performance extrapolation model equations inputs error validation data prediction measurement"
         }
       ],
       "required_source_classes": [
-        "official-primary",
         "research-primary",
-        "standards-body",
-        "peer-reviewed-research",
-        "vendor-primary",
-        "procurement-primary"
+        "peer-reviewed-research"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0002"
     },
@@ -115,21 +114,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "AI for Science、ワークフロー、緊急計算、データ移動の代表性 分野コミュニティとセンターから候補を募集し、Consensus Gateで拡張部へ採用する。 公式 一次情報"
+          "query": "AI for Science ベンチマーク workflow 緊急計算 データ移動 代表性 公開仕様"
         },
         {
           "language": "en",
-          "query": "Representativeness for AI for Science, workflows, urgent computing, and data movement Solicit candidates from communities and centers and promote them into the extension set through Consensus. official primary source"
+          "query": "AI for Science benchmark workflow urgent computing data movement representativeness specification MLCommons Science"
         }
       ],
       "required_source_classes": [
         "official-primary",
         "research-primary",
-        "standards-body",
-        "peer-reviewed-research",
-        "vendor-primary",
-        "procurement-primary"
+        "peer-reviewed-research"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0003"
     },
@@ -152,21 +149,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "同条件の実アプリ性能・電力・RAS比較 HPCI-CB上で再現可能な測定を行い、結果を別ArtifactとしてConsensusへ送る。 公式 一次情報"
+          "query": "HPC 実アプリ CPU GPU 同一条件 性能 消費電力 RAS 比較 公開測定"
         },
         {
           "language": "en",
-          "query": "Like-for-like application performance, power, and RAS comparison Run reproducible HPCI-CB measurements and submit results as separate artifacts to Consensus. official primary source"
+          "query": "HPC application like-for-like CPU GPU performance power RAS reproducible benchmark results"
         }
       ],
       "required_source_classes": [
-        "official-primary",
         "research-primary",
-        "standards-body",
         "peer-reviewed-research",
-        "vendor-primary",
-        "procurement-primary"
+        "vendor-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0004"
     },
@@ -188,22 +183,20 @@
       "next_action_en": "Continue monitoring CXL Consortium and vendor product and compliance information.",
       "query_seeds": [
         {
-          "language": "ja",
-          "query": "CXL 4.0のスイッチ・メモリ装置・管理ソフトウェア CXL Consortiumと各ベンダーの製品・適合情報を継続確認する。 公式 一次情報"
+          "language": "en",
+          "query": "site:computeexpresslink.org CXL 4.0 switch memory device management compliance specification"
         },
         {
           "language": "en",
-          "query": "CXL 4.0 switches, memory devices, and management software Continue monitoring CXL Consortium and vendor product and compliance information. official primary source"
+          "query": "CXL 4.0 switch memory expander management software product sampling compliance vendor"
         }
       ],
       "required_source_classes": [
-        "official-primary",
-        "research-primary",
         "standards-body",
-        "peer-reviewed-research",
         "vendor-primary",
-        "procurement-primary"
+        "official-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0005"
     },
@@ -226,21 +219,20 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "CPO/IOWNの価格、故障率、交換方式、長期保守 公開導入事例と保守仕様を収集し、HPCIパイロットで実測する。 公式 一次情報"
+          "query": "IOWN APN 光ネットワーク 導入 運用 SLA 障害 保守 交換 公開事例"
         },
         {
           "language": "en",
-          "query": "CPO/IOWN price, failure rate, replacement model, and long-term support Collect public deployments and service specifications, then measure them in an HPCI pilot. official primary source"
+          "query": "co-packaged optics deployment serviceability failure rate replaceable laser maintenance long-term support field trial"
         }
       ],
       "required_source_classes": [
         "official-primary",
-        "research-primary",
-        "standards-body",
-        "peer-reviewed-research",
         "vendor-primary",
+        "research-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0006"
     },
@@ -263,22 +255,24 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "価格、供給数量、歩留まり、長期保守、実アプリ性能は多くの公開ロードマップに含まれず、HPCI採用判断には別途実測が必要。 公開調達・量産・保守情報を継続収集し、HPCI-CBで同条件の性能・電力・RAS測定を行う。非公開情報は公開面へ持ち込まず、承認済みの集約結論だけを別経路で利用する。 公式 一次情報"
+          "query": "HBM SOCAMM CXLメモリ 調達 価格 供給量 歩留まり 長期保守 公開情報"
         },
         {
           "language": "en",
-          "query": "Price, supply volume, yield, long-term maintenance, and application performance are absent from many public roadmaps and require separate HPCI measurements. Continue collecting public procurement, volume, and support evidence and run like-for-like performance, power, and RAS measurements in HPCI-CB. Keep non-public inputs off the public plane and use only separately approved aggregate conclusions. official primary source"
+          "query": "HBM4 SOCAMM CXL memory procurement price supply volume yield long-term support"
+        },
+        {
+          "language": "en",
+          "query": "HPC HBM DDR CXL memory like-for-like application performance power RAS benchmark"
         }
       ],
       "required_source_classes": [
-        "official-primary",
-        "standards-body",
+        "procurement-primary",
         "vendor-primary",
         "research-primary",
-        "peer-reviewed-research",
-        "preprint-research",
-        "independent-analysis"
+        "peer-reviewed-research"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0007"
     },
@@ -300,22 +294,21 @@
       "next_action_en": "Update GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD implementation matrices quarterly.",
       "query_seeds": [
         {
-          "language": "ja",
-          "query": "OpenMP 6.1/SYCL機能の各コンパイラ・GPU実装率 GCC、LLVM、Fujitsu、Intel、NVIDIA、AMDの適合表を四半期ごとに更新する。 公式 一次情報"
+          "language": "en",
+          "query": "GCC LLVM Fujitsu Intel NVIDIA AMD OpenMP 6.1 implementation status feature matrix"
         },
         {
           "language": "en",
-          "query": "Per-compiler and per-GPU implementation coverage for OpenMP 6.1 and SYCL Update GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD implementation matrices quarterly. official primary source"
+          "query": "SYCL 2020 implementation conformance feature matrix Intel AdaptiveCpp ComputeCpp compiler"
         }
       ],
       "required_source_classes": [
         "official-primary",
-        "research-primary",
         "standards-body",
-        "peer-reviewed-research",
         "vendor-primary",
-        "procurement-primary"
+        "research-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0008"
     },
@@ -338,21 +331,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "HPCI主要アプリの移植工数とbackend別性能 HPCI-CBで移植性台帳を継続生成する。 公式 一次情報"
+          "query": "HPCI 主要アプリ GPU backend 移植工数 性能 CUDA HIP SYCL OpenMP 事例"
         },
         {
           "language": "en",
-          "query": "Porting effort and backend performance for major HPCI applications Continuously generate the portability ledger through HPCI-CB. official primary source"
+          "query": "HPC application portability benchmark porting effort backend performance CUDA HIP SYCL OpenMP"
         }
       ],
       "required_source_classes": [
-        "official-primary",
         "research-primary",
-        "standards-body",
         "peer-reviewed-research",
-        "vendor-primary",
-        "procurement-primary"
+        "official-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0009"
     },
@@ -374,22 +365,21 @@
       "next_action_en": "Compare at least two MPI implementations and multiple providers quarterly using common HPCI workloads, fault injection, and GPU transfers.",
       "query_seeds": [
         {
-          "language": "ja",
-          "query": "MPI 5 ABI、GPU-direct、libfabric provider、障害回復の実装間整合性 2系統以上のMPI実装と複数providerを同一HPCIワークロード、障害注入、GPU転送で四半期ごとに比較する。 公式 一次情報"
+          "language": "en",
+          "query": "MPI 5.0 ABI implementation status Open MPI MPICH GPU direct libfabric provider interoperability"
         },
         {
           "language": "en",
-          "query": "Cross-implementation consistency for the MPI 5 ABI, GPU-direct, libfabric providers, and fault recovery Compare at least two MPI implementations and multiple providers quarterly using common HPCI workloads, fault injection, and GPU transfers. official primary source"
+          "query": "MPI fault recovery fault injection GPU transfer libfabric provider cross implementation benchmark"
         }
       ],
       "required_source_classes": [
+        "standards-body",
         "official-primary",
         "research-primary",
-        "standards-body",
-        "peer-reviewed-research",
-        "vendor-primary",
-        "procurement-primary"
+        "peer-reviewed-research"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0010"
     },
@@ -412,19 +402,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "15提供機関の確認済みProfileと更新窓 公開情報で草案を更新し、各機関の責任者確認を得る。 公式 一次情報"
+          "query": "HPCI 資源提供機関 計算機 更新計画 調達 2026 2027 2028"
         },
         {
           "language": "en",
-          "query": "Institution-confirmed profiles and refresh windows for 15 providers Update drafts from public sources and obtain accountable institutional confirmation. official primary source"
+          "query": "Japan university supercomputing center procurement renewal plan system refresh 2026 2027 2028"
         }
       ],
       "required_source_classes": [
-        "official-primary",
+        "center-primary",
         "procurement-primary",
-        "project-deliverable",
-        "center-primary"
+        "official-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0011"
     },
@@ -447,11 +437,11 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "HPCI-RB/TS ref./PEC ref.の版、公開日、承認主体 FS3.0成果公開とガバナンス決定を追跡し、版・承認来歴Schemaを適用する。 公式 一次情報"
+          "query": "site:mext.go.jp HPCI FS3.0 令和7年度 成果報告 整備計画 リファレンス"
         },
         {
-          "language": "en",
-          "query": "Versions, publication dates, and approval owners for HPCI-RB, TS ref., and PEC ref. Track FS3.0 releases and governance decisions and apply version and approval provenance schemas. official primary source"
+          "language": "ja",
+          "query": "site:riken.jp HPCI Reference Blueprint 技術仕様 性能評価基準 承認"
         }
       ],
       "required_source_classes": [
@@ -459,6 +449,7 @@
         "project-deliverable",
         "peer-reviewed-research"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0012"
     },
@@ -481,19 +472,19 @@
       "query_seeds": [
         {
           "language": "ja",
-          "query": "センター別電力・冷却・予算・調達・停止制約 公開可能項目をProfileへ追加し、非公開情報は別NDA面から集約結論のみ受け取る。 公式 一次情報"
+          "query": "大学 スーパーコンピュータ 調達仕様書 電力 冷却 建屋 停止 保守 予算"
         },
         {
           "language": "en",
-          "query": "Center power, cooling, budget, procurement, and outage constraints Add public fields to profiles and receive only approved aggregate conclusions from the separate NDA plane. official primary source"
+          "query": "Japan university computing center supercomputer procurement specification power cooling facility outage maintenance"
         }
       ],
       "required_source_classes": [
-        "official-primary",
         "procurement-primary",
-        "project-deliverable",
-        "center-primary"
+        "center-primary",
+        "official-primary"
       ],
+      "query_plan_origin": "explicit-override",
       "status": "open",
       "queue_item_id": "RGQ-0013"
     },
@@ -515,6 +506,7 @@
       "next_action_en": "Run reviews with independent providers, models, and harnesses and publish participants and commit hashes in Consensus Receipts.",
       "query_seeds": [],
       "required_source_classes": [],
+      "query_plan_origin": "not-applicable",
       "status": "open",
       "queue_item_id": "RGQ-0014"
     },
@@ -552,6 +544,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0015"
     },
@@ -589,6 +582,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0016"
     },
@@ -626,6 +620,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0017"
     },
@@ -663,6 +658,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0018"
     },
@@ -700,6 +696,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0019"
     },
@@ -733,11 +730,13 @@
         "official-primary",
         "standards-body",
         "vendor-primary",
+        "procurement-primary",
         "research-primary",
         "peer-reviewed-research",
         "preprint-research",
         "independent-analysis"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0020"
     },
@@ -771,11 +770,13 @@
         "official-primary",
         "standards-body",
         "vendor-primary",
+        "procurement-primary",
         "research-primary",
         "peer-reviewed-research",
         "preprint-research",
         "independent-analysis"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0021"
     },
@@ -813,6 +814,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0022"
     },
@@ -850,6 +852,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0023"
     },
@@ -885,6 +888,7 @@
         "project-deliverable",
         "center-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0024"
     },
@@ -920,6 +924,7 @@
         "project-deliverable",
         "center-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0025"
     },
@@ -957,6 +962,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0026"
     },
@@ -994,6 +1000,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0027"
     },
@@ -1031,6 +1038,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0028"
     },
@@ -1064,11 +1072,13 @@
         "official-primary",
         "standards-body",
         "vendor-primary",
+        "procurement-primary",
         "research-primary",
         "peer-reviewed-research",
         "preprint-research",
         "independent-analysis"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0029"
     },
@@ -1102,11 +1112,13 @@
         "official-primary",
         "standards-body",
         "vendor-primary",
+        "procurement-primary",
         "research-primary",
         "peer-reviewed-research",
         "preprint-research",
         "independent-analysis"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0030"
     },
@@ -1144,6 +1156,7 @@
         "vendor-primary",
         "procurement-primary"
       ],
+      "query_plan_origin": "generated-fallback",
       "status": "open",
       "queue_item_id": "RGQ-0031"
     }

@@ -140,6 +140,8 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertIn("knowledge/public/audits/roadmap-gap-queue.json", pinned_paths)
         self.assertIn("tools/run_controller.py", pinned_paths)
         self.assertIn(".github/workflows/weekly-coordinator.yml", pinned_paths)
+        self.assertIn("config/roadmap-gap-query-overrides.json", pinned_paths)
+        self.assertIn("config/monitors/MON-MEMORY-001.json", pinned_paths)
 
     def test_every_artifact_digest_matches_the_pinned_git_object(self):
         for artifact in self.manifest["artifact_manifest"]:

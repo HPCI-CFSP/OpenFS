@@ -74,7 +74,7 @@ class WeeklyCoordinatorTests(unittest.TestCase):
         )
         monitor = plan["monitors"][0]
         self.assertEqual(["GAP-MEM003"], monitor["coverage_gap_refs"])
-        self.assertEqual(2, monitor["coverage_gap_query_seed_count"])
+        self.assertEqual(3, monitor["coverage_gap_query_seed_count"])
         self.assertIn("weekly P0 Gaps: `1`", plan["issue"]["body"])
 
     def test_issue_surfaces_sanitized_operational_readiness(self):

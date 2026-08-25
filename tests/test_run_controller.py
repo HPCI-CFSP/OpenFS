@@ -184,7 +184,7 @@ class RunControllerTests(unittest.TestCase):
             now=datetime(2026, 8, 26, tzinfo=timezone.utc),
         )
         self.assertEqual(["GAP-MEM003"], manifest["coverage_gap_queue"]["assigned_gap_refs"])
-        self.assertEqual(2, manifest["coverage_gap_queue"]["query_seed_count"])
+        self.assertEqual(3, manifest["coverage_gap_queue"]["query_seed_count"])
         queue_ref = "knowledge/public/audits/roadmap-gap-queue.json"
         self.assertIn(queue_ref, manifest["policy_hashes"])
         self.assertTrue((self.root / manifest["configuration_snapshots"][queue_ref]).is_file())
@@ -195,7 +195,7 @@ class RunControllerTests(unittest.TestCase):
         gap_items = [
             item for item in items if item["payload"].get("query_role") == "coverage-gap"
         ]
-        self.assertEqual(4, len(gap_items))
+        self.assertEqual(6, len(gap_items))
         self.assertEqual(
             {"GAP-MEM003"},
             {item["payload"]["coverage_gap_refs"][0] for item in gap_items},

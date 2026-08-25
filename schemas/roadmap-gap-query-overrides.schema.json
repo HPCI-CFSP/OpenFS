@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-gap-query-overrides.schema.json",
+  "title": "OpenFS Roadmap Gap Query Overrides",
+  "type": "object",
+  "required": ["schema_version", "override_set_id", "status", "as_of", "entries"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "override_set_id": {"type": "string", "pattern": "^RGQO-[A-Z0-9-]+$"},
+    "status": {"const": "active"},
+    "as_of": {"type": "string", "format": "date"},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["gap_id", "query_seeds", "source_classes"],
+        "properties": {
+          "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
+          "query_seeds": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "required": ["language", "query"],
+              "properties": {
+                "language": {"enum": ["ja", "en"]},
+                "query": {"type": "string", "minLength": 8}
+              },
+              "additionalProperties": false
+            }
+          },
+          "source_classes": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

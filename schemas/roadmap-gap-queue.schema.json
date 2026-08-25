@@ -17,7 +17,7 @@
     "caveat_en": {"type": "string", "minLength": 1},
     "summary": {
       "type": "object",
-      "required": ["roadmap_count", "gap_count", "p0", "p1", "p2", "source_discovery", "consensus_review", "ready_for_scheduled_discovery", "staged_monitor_disabled", "awaiting_independent_review"],
+      "required": ["roadmap_count", "gap_count", "p0", "p1", "p2", "source_discovery", "consensus_review", "ready_for_scheduled_discovery", "staged_monitor_disabled", "awaiting_independent_review", "explicit_query_overrides", "generated_query_fallbacks", "p0_explicit_query_overrides", "p0_generated_query_fallbacks"],
       "properties": {
         "roadmap_count": {"type": "integer", "minimum": 1},
         "gap_count": {"type": "integer", "minimum": 1},
@@ -28,7 +28,11 @@
         "consensus_review": {"type": "integer", "minimum": 0},
         "ready_for_scheduled_discovery": {"type": "integer", "minimum": 0},
         "staged_monitor_disabled": {"type": "integer", "minimum": 0},
-        "awaiting_independent_review": {"type": "integer", "minimum": 0}
+        "awaiting_independent_review": {"type": "integer", "minimum": 0},
+        "explicit_query_overrides": {"type": "integer", "minimum": 0},
+        "generated_query_fallbacks": {"type": "integer", "minimum": 0},
+        "p0_explicit_query_overrides": {"type": "integer", "minimum": 0},
+        "p0_generated_query_fallbacks": {"type": "integer", "minimum": 0}
       },
       "additionalProperties": false
     },
@@ -37,7 +41,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["queue_item_id", "gap_id", "roadmap_id", "priority", "workstream", "cadence", "assignment_ref", "task_id", "monitor_enabled", "execution_state", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "query_seeds", "required_source_classes", "status"],
+        "required": ["queue_item_id", "gap_id", "roadmap_id", "priority", "workstream", "cadence", "assignment_ref", "task_id", "monitor_enabled", "execution_state", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "query_seeds", "required_source_classes", "query_plan_origin", "status"],
         "properties": {
           "queue_item_id": {"type": "string", "pattern": "^RGQ-[0-9]{4}$"},
           "gap_id": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
@@ -68,6 +72,7 @@
             }
           },
           "required_source_classes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "query_plan_origin": {"enum": ["explicit-override", "generated-fallback", "not-applicable"]},
           "status": {"const": "open"}
         },
         "additionalProperties": false,
@@ -80,7 +85,8 @@
                 "task_id": {"type": "string"},
                 "monitor_enabled": {"type": "boolean"},
                 "query_seeds": {"minItems": 2},
-                "required_source_classes": {"minItems": 1}
+                "required_source_classes": {"minItems": 1},
+                "query_plan_origin": {"enum": ["explicit-override", "generated-fallback"]}
               }
             }
           },
@@ -93,7 +99,8 @@
                 "monitor_enabled": {"type": "null"},
                 "execution_state": {"const": "awaiting-independent-review"},
                 "query_seeds": {"maxItems": 0},
-                "required_source_classes": {"maxItems": 0}
+                "required_source_classes": {"maxItems": 0},
+                "query_plan_origin": {"const": "not-applicable"}
               }
             }
           }
