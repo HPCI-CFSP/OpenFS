@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/operational-readiness.schema.json",
+  "title": "OpenFS Aggregate Operational Readiness",
+  "type": "object",
+  "required": ["schema_version", "evaluated_at", "status", "checks", "blockers", "owner_actions", "workflow_gates", "production_components", "owner_controls", "monitors", "effect"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["ready", "blocked"]},
+    "checks": {
+      "type": "object",
+      "required": ["workflow_gates_present", "production_components_present", "owner_controls_verified", "research_monitor_enabled", "enabled_monitors_ready"],
+      "properties": {
+        "workflow_gates_present": {"type": "boolean"},
+        "production_components_present": {"type": "boolean"},
+        "owner_controls_verified": {"type": "boolean"},
+        "research_monitor_enabled": {"type": "boolean"},
+        "enabled_monitors_ready": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "owner_actions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/ownerAction"}
+    },
+    "workflow_gates": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
+    "production_components": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
+    "owner_controls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["control_id", "status", "verified", "expires_at", "reason"],
+        "properties": {
+          "control_id": {"type": "string"},
+          "status": {"type": "string"},
+          "verified": {"type": "boolean"},
+          "expires_at": {"type": ["string", "null"], "format": "date-time"},
+          "reason": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "monitors": {
+      "type": "object",
+      "required": ["eligible_count", "enabled_count", "ready_enabled_count", "results"],
+      "properties": {
+        "eligible_count": {"type": "integer", "minimum": 0},
+        "enabled_count": {"type": "integer", "minimum": 0},
+        "ready_enabled_count": {"type": "integer", "minimum": 0},
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["monitor_id", "enabled", "status", "blockers"],
+            "properties": {
+              "monitor_id": {"type": "string"},
+              "enabled": {"type": "boolean"},
+              "status": {"enum": ["ready", "blocked"]},
+              "blockers": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "ownerAction": {
+      "type": "object",
+      "required": ["action_id", "summary", "refs"],
+      "properties": {
+        "action_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "summary": {"type": "string", "minLength": 1},
+        "refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "checkItem": {
+      "type": "object",
+      "required": ["control_id", "ref", "passed", "reason"],
+      "properties": {
+        "control_id": {"type": "string"},
+        "ref": {"type": "string"},
+        "passed": {"type": "boolean"},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

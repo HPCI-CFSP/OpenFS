@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/followup-effectiveness.schema.json",
+  "title": "Center Follow-up Effectiveness Report",
+  "type": "object",
+  "required": ["schema_version", "run_id", "predecessor_run_id", "followup_plan_id", "followup_plan_snapshot_ref", "evaluated_at", "status", "query_count", "effective_query_count", "ineffective_query_count", "field_outcomes", "queries"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "predecessor_run_id": {"type": "string"},
+    "followup_plan_id": {"type": "string"},
+    "followup_plan_snapshot_ref": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["effective", "partially-effective", "ineffective"]},
+    "query_count": {"type": "integer", "minimum": 0},
+    "effective_query_count": {"type": "integer", "minimum": 0},
+    "ineffective_query_count": {"type": "integer", "minimum": 0},
+    "field_outcomes": {"type": "object"},
+    "queries": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}

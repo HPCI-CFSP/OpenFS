@@ -23,9 +23,9 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, deterministic consensus and AI-topic-promotion prototypes, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, and a deployed bilingual GitHub Pages public view. Web collection, scheduled production dispatch, canonical evidence promotion, and production report generation are not enabled yet.
+This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` builds center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
+The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
 ## Core principles
 
@@ -34,6 +34,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 - Accepted knowledge is traceable from a report sentence back to claims, evidence excerpts, sources, runs, agents, prompts, and policies.
 - External web pages, documents, issues, and pull-request text are untrusted data, never instructions.
 - Research agents propose. Independent agents assess. Deterministic code decides whether the configured quorum is met. Only the promotion workflow may update canonical data.
+- Canonical Claims are immutable. Human-authorized withdrawal or supersession adds a digest-pinned status event and changes generated active views; it never deletes history.
 - Facts, forecasts, and HPCI recommendations are different object types and pass different review gates.
 - Normal processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or NDA export.
 
@@ -50,9 +51,9 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `docs/publication/` | GitHub Pages activation and public-output boundaries |
 | `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
-| `config/` | Machine-readable agent, monitor, budget, and consensus settings |
+| `config/` | Machine-readable agent, monitor, budget, consensus, and dated HPCI provider-scope settings |
 | `schemas/` | JSON Schemas for durable research artifacts |
-| `skills/` | Reusable agent procedures, added as each workflow is implemented |
+| `skills/` | Versioned Discovery, extraction, synthesis, validation, and falsification procedures pinned into each Run |
 | `evals/` | Golden, adversarial, and replay evaluation cases |
 | `tools/` | Deterministic validation and consensus commands |
 | `tests/` | Tests for deterministic harness behavior |
@@ -60,14 +61,14 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `assessments/` | Independent reviews of proposals |
 | `decisions/` | Machine-generated consensus decisions |
 | `data/` | Accepted canonical source, evidence, and finding records |
-| `knowledge/` | Accepted findings organized by HPCI technical domain |
+| `knowledge/` | Promoted canonical Claims, append-only status events, and generated active views |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, and dissent |
 | `runs/` | Immutable run manifests and run-scoped outputs |
 | `state/` | Watermarks and resumable scheduler state |
 
-Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built.
+Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built. `config/skill-registry.json` deterministically selects and snapshots the procedure for each supported Work Item kind.
 
 ## Research baseline
 
@@ -79,10 +80,15 @@ The FS1.0 record and current primary evidence for every HPCI center remain incom
 
 ## Local validation
 
-The current validator and tests use the Python standard library only.
+Dependency-free structural validation runs first. Full Draft 2020-12 instance
+validation, GitHub Actions YAML validation, and their unit tests use the exact
+versions in `requirements-validation.txt`.
 
 ```bash
+python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/validate_workflows.py
+python3 tools/validate_json_schemas.py
 python3 -m unittest discover -s tests -v
 ```
 

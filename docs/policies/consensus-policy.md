@@ -2,15 +2,42 @@
 
 ## Principle
 
-Consensus is a deterministic eligibility check, not proof of truth. The gate evaluates assessments, agent independence, source-origin independence, primary-source support, schema validity, and objections.
+Consensus is a deterministic eligibility check, not proof of truth. The gate evaluates assessments, agent independence, source-origin independence, publisher independence, primary-source support, schema validity, and objections.
 
 ## Independent assessment
 
 Reviewers perform a blind first review. An assessment records its reviewer, agent independence group, verdict, confidence, checks, and objections. Registry data, not self-declared model text, is authoritative for independence groups in production.
 
+At Run creation, `tools/check_consensus_readiness.py` evaluates configured review
+capacity before any research result exists. Reviewers in the Proposal author's
+independence group may provide an assessment, but they cannot satisfy the
+independent-support-group requirement. Unconfigured provider/model placeholders
+and deterministic control-plane agents never count. An incomplete preflight
+creates an Exception and permits only provisional research; it does not fabricate
+quorum or stop ordinary public-information discovery.
+
+Each Proposal is expanded into one reviewer-bound Work Item for every configured,
+eligible `validator` or `critic` in the Run's pinned Agent Registry. A reviewer
+cannot lease another reviewer's item. The Consensus Work Item is created only after
+all scheduled first reviews finish, and it receives every Assessment reference.
+Unconfigured reviewer templates are not scheduled.
+
+The baseline policy needs three Assessments and support from at least two
+independence groups outside the Proposal author's group. In the template Registry,
+`validator-public-02` and `critic-public-01` are deliberately unconfigured. The
+owner must bind them to approved, genuinely independent provider/model paths before
+production; changing only an Agent ID does not create independence.
+
+Center Profiles use the same gate. Their accepted status is projected from an
+`accepted` Decision; editing `profile_status` alone cannot make a profile accepted.
+
 ## Source lineage
 
-The number of URLs is not the number of independent sources. Proposals state their `origin_group_ids`; derivative publications from one origin count once.
+The number of URLs is not the number of independent sources. Proposals state their
+`origin_group_ids`; derivative publications from one origin count once. New Claim
+proposals also carry `publisher_group_ids`, derived from canonical Web authority.
+Multiple original pages from one publisher do not satisfy the configured
+cross-publisher threshold.
 
 ## Outcomes
 

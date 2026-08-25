@@ -35,13 +35,29 @@ An explicit interactive repository-maintenance request from an authorized human 
 
 1. Read `AGENTS.md` and this file.
 2. Read `docs/architecture.md` and `docs/policies/information-boundary.md`.
-3. Confirm that the assigned Agent is enabled in `config/agent-registry.json` for an automated Run.
+3. Confirm that the assigned Agent is enabled in `config/agent-registry.json` for an automated Run. Also inspect the Run's `consensus-readiness.json`; incomplete capacity means results must remain provisional even if research Work Items continue.
 4. When defining research scope, select topics from `config/research-baseline.json` and read its documented gaps.
 5. Read the Task, Monitor, Work Item, applicable Policy, Schema, and Skill.
+   Read the Skill from the Work Item's `skill.snapshot_ref`, not the live path;
+   verify its digest before execution. A missing or mismatched snapshot is a stop
+   condition.
 6. Check every planned output path with `tools/check_agent_permissions.py`.
 7. State unresolved inputs and stop if safe execution is not possible.
 
-Agent changes use `agent/<agent-id>/<run-id>/<work-item-id>`. Pull requests from that namespace are checked against the registered role twice: during normal validation and by a `pull_request_target` job that executes only trusted base-branch policy code. Repository branch protection must require the trusted `Enforce Agent Permissions` check before merge.
+Agent changes use `agent/<agent-id>/<run-id>/<work-item-id>`. A distributed
+branch contains exactly the Work Item's declared outputs and one matching Handoff;
+it does not commit Queue or Run manifest state. Create the Handoff with
+`tools/create_handoff.py` after outputs are final. Pull requests from that namespace
+are checked against the pinned Work Item, Agent role, output paths, and file digests
+twice: during normal validation and by a `pull_request_target` job that executes only
+trusted base-branch policy code. Repository branch protection must require the
+trusted `Enforce Agent Permissions` check before merge.
+
+Provider-backed unattended execution additionally follows
+`docs/operations/provider-worker-protocol.md`. A provider adapter receives a
+secret-free invocation and writes only declared role outputs plus a structured
+result. It must not edit Queue, Manifest, Policy, registry, or canonical paths;
+only the trusted result-acceptance step may update Run control state.
 
 ## Role outputs
 
@@ -53,7 +69,7 @@ Agent changes use `agent/<agent-id>/<run-id>/<work-item-id>`. Pull requests from
 | `extraction` | Evidence proposals from identified sources | Generalize an excerpt into an unsupported Finding |
 | `validator` | Blind independent Assessments | Read other verdicts before first review or edit a Proposal |
 | `critic` | Falsification Assessments and dissent | Suppress objections to satisfy quorum |
-| `synthesis` | Finding and Roadmap Item proposals | Present recommendations as accepted facts |
+| `synthesis` | Claim, Center Profile, Finding, and Roadmap Item proposals | Present recommendations or provisional profiles as accepted facts |
 | `consensus` | Deterministic Decision records | Change thresholds during evaluation |
 | `promotion` | Canonical changes backed by accepted Decisions | Consume arbitrary Web content or alter Policy |
 | `maintainer` | Human-authorized harness code and documentation | Run as an unattended research identity |
@@ -72,6 +88,15 @@ Stop without mutation when:
 - a destructive, public-release, high-impact Recommendation, or NDA-export action lacks Level C approval.
 
 Record an exception when the Run infrastructure exists. For an interactive task, report the exact missing authorization or information to the human.
+
+## Distributed completion
+
+After an Agent output pull request is merged, a trusted orchestrator runs
+`tools/accept_handoff.py --handoff-ref <path>`. Acceptance rechecks the pinned Run
+base, Work Item attempt, Agent identity, output set, and SHA-256 digests before it
+updates Queue and Manifest state. The resulting control-state changes use a
+separate maintainer-authorized coordination branch. An Agent must never mark its
+own Handoff accepted or edit its own Work Item status in Git.
 
 ## Instruction precedence
 

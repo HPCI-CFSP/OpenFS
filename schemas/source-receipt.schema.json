@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/source-receipt.schema.json",
+  "title": "OpenFS Source Receipt",
+  "type": "object",
+  "required": ["schema_version", "source_id", "run_id", "work_item_id", "canonical_url", "retrieved_url", "title", "publisher", "source_class", "primary_source", "publication_date", "retrieved_at", "retrieval_method", "retrieval_status", "media_type", "language", "retention_class", "rights", "origin_group_id", "origin_rationale", "security"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "source_id": {"type": "string", "pattern": "^SRC-[0-9A-F]{12}$"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string"},
+    "canonical_url": {"type": "string", "format": "uri"},
+    "retrieved_url": {"type": "string", "format": "uri"},
+    "title": {"type": "string", "minLength": 1},
+    "publisher": {"type": "string", "minLength": 1},
+    "publisher_authority": {"type": "string", "minLength": 1},
+    "publisher_group_id": {"type": "string", "pattern": "^PUB-[0-9A-F]{12}$"},
+    "publisher_group_rationale": {"type": "string", "minLength": 1},
+    "source_class": {"type": "string"},
+    "primary_source": {"type": "boolean"},
+    "publication_date": {"type": ["string", "null"]},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "retrieval_method": {"enum": ["web-search", "direct-http", "browser", "api", "manual-import"]},
+    "retrieval_status": {"enum": ["success", "metadata-only", "blocked", "unavailable", "paywalled", "malformed"]},
+    "media_type": {"type": "string"},
+    "language": {"type": "string"},
+    "retrieved_content_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "retention_class": {"enum": ["metadata-only", "evidence-excerpt", "approved-snapshot", "external-reference"]},
+    "rights": {
+      "type": "object",
+      "required": ["access", "ai_processing", "acquisition_decision", "basis", "terms_url"],
+      "properties": {
+        "access": {"enum": ["public", "clickthrough", "paywalled", "restricted"]},
+        "ai_processing": {"enum": ["permitted", "prohibited", "restricted", "not-stated", "not-applicable"]},
+        "acquisition_decision": {"enum": ["metadata-only", "evidence-excerpt", "approved-snapshot", "external-reference", "blocked"]},
+        "basis": {"type": "string", "minLength": 1},
+        "terms_url": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "origin_group_id": {"type": "string", "pattern": "^ORG-(?:[0-9]{6}|[0-9A-F]{12})$"},
+    "origin_rationale": {"type": "string", "minLength": 1},
+    "assignment_scope": {
+      "type": "object",
+      "properties": {
+        "subject_ids": {"type": "array", "items": {"type": "string", "pattern": "^CENTER-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "profile_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "query_template_id": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "coverage_tags": {
+      "type": "object",
+      "properties": {
+        "world_regions": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "technology_categories": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "organization_types": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "maturity_signals": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "result_signals": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "required": ["untrusted_content", "prompt_injection_suspected", "matched_markers"],
+      "properties": {
+        "untrusted_content": {"const": true},
+        "prompt_injection_suspected": {"type": "boolean"},
+        "matched_markers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "0.2.0"}}},
+      "then": {"required": ["publisher_authority", "publisher_group_id", "publisher_group_rationale"]}
+    }
+  ],
+  "additionalProperties": false
+}

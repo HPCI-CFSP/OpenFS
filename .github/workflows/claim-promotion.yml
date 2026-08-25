@@ -1,0 +1,98 @@
+name: Prepare OpenFS Claim Promotions
+
+on:
+  schedule:
+    - cron: "43 2 * * 2"
+  workflow_dispatch:
+    inputs:
+      publish_pr:
+        description: Push a promotion branch and create a pull request
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-claim-promotion
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' || vars.OPENFS_PROMOTION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out trusted default branch
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pinned validator
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
+      - name: Validate promotion inputs
+        run: |
+          python3 tools/validate_repository.py
+          python3 tools/validate_workflows.py
+          python3 tools/validate_json_schemas.py
+          python3 -m unittest discover -s tests -v
+      - name: Check for an open Claim promotion PR
+        id: existing
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          RESULT="$(python3 tools/publish_promotion_pr.py --check-only)"
+          echo "$RESULT"
+          echo "open=$(echo "$RESULT" | jq -r .existing)" >> "$GITHUB_OUTPUT"
+      - name: Prepare eligible Claim promotions
+        if: steps.existing.outputs.open != 'true'
+        run: |
+          mkdir -p _automation
+          python3 tools/prepare_claim_promotions.py \
+            --promoted-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --output _automation/claim-promotions.json
+      - name: Upload promotion summary
+        if: steps.existing.outputs.open != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: openfs-claim-promotions
+          path: _automation/claim-promotions.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Commit canonical changes
+        id: commit
+        if: steps.existing.outputs.open != 'true'
+        env:
+          PROMOTION_BRANCH: automation/claim-promotion-${{ github.run_id }}
+        run: |
+          if git diff --quiet -- knowledge TBD.md; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git switch -c "$PROMOTION_BRANCH"
+          git config user.name "openfs-promotion[bot]"
+          git config user.email "openfs-promotion[bot]@users.noreply.github.com"
+          git add knowledge TBD.md
+          git commit -m "Promote accepted OpenFS Claims"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$PROMOTION_BRANCH" >> "$GITHUB_OUTPUT"
+      - name: Push promotion branch
+        if: steps.commit.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.publish_pr == true)
+        env:
+          PROMOTION_BRANCH: ${{ steps.commit.outputs.branch }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin "HEAD:${PROMOTION_BRANCH}"
+      - name: Create promotion pull request
+        if: steps.commit.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.publish_pr == true)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 tools/publish_promotion_pr.py \
+            --head "${{ steps.commit.outputs.branch }}" \
+            --summary _automation/claim-promotions.json

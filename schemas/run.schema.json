@@ -3,34 +3,102 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/run.schema.json",
   "title": "OpenFS Run Manifest",
   "type": "object",
-  "required": ["schema_version", "run_id", "base_commit", "started_at", "status", "policy_hashes", "agent_executions", "query_receipts"],
+  "required": ["schema_version", "run_id", "task_id", "monitor_id", "mode", "base_commit", "started_at", "status", "research_status", "coverage_status", "policy_hashes", "budget", "directive_ids", "work_item_ids", "agent_executions", "query_receipts", "expansion_events", "metrics", "run_identity_hash"],
   "properties": {
     "schema_version": {"type": "string"},
     "run_id": {"type": "string"},
+    "task_id": {"type": "string", "pattern": "^OFS-[0-9]{3}$"},
+    "monitor_id": {"type": "string", "pattern": "^MON-[A-Z0-9-]+$"},
+    "mode": {"enum": ["pilot", "production"]},
     "base_commit": {"type": "string"},
     "started_at": {"type": "string", "format": "date-time"},
     "completed_at": {"type": "string", "format": "date-time"},
-    "status": {"enum": ["created", "running", "completed", "partial", "failed", "cancelled"]},
+    "status": {"enum": ["created", "running", "completed", "partial", "failed", "cancelled", "stopped"]},
+    "research_status": {"enum": ["not-evaluated", "coverage-incomplete", "ready-for-independent-review", "provisional", "accepted", "contested"]},
+    "coverage_status": {"enum": ["not-evaluated", "incomplete", "met-declared-scope"]},
+    "assignment_contract_version": {"type": "string"},
     "policy_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
+    "configuration_snapshots": {"type": "object", "additionalProperties": {"type": "string"}},
+    "skill_snapshots": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["skill_id", "version", "snapshot_ref", "digest"],
+        "properties": {
+          "skill_id": {"type": "string"},
+          "version": {"type": "string"},
+          "snapshot_ref": {"type": "string"},
+          "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "previous_run_id": {"type": ["string", "null"]},
+    "change_report_ref": {"type": "string"},
+    "dependency_impact_ref": {"type": "string"},
+    "promotion_readiness_ref": {"type": "string"},
+    "consensus_readiness_ref": {"type": "string"},
+    "center_profile_coverage_ref": {"type": "string"},
+    "followup_effectiveness_ref": {"type": "string"},
+    "global_followup_effectiveness_ref": {"type": "string"},
+    "profile_continuity_ref": {"type": "string"},
+    "temporal_integrity_ref": {"type": "string"},
+    "followup_plan": {
+      "type": "object",
+      "required": ["source_ref", "snapshot_ref", "digest", "followup_plan_id", "base_run_id"],
+      "properties": {
+        "source_ref": {"type": "string"},
+        "snapshot_ref": {"type": "string"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "followup_plan_id": {"type": "string"},
+        "base_run_id": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "budget": {"type": "object"},
+    "directive_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "directive_hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "directive_snapshots": {"type": "object", "additionalProperties": {"type": "string"}},
+    "work_item_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "agent_executions": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["agent_id", "model_provider", "model_id", "prompt_hash", "tool_versions"],
+        "required": ["agent_id", "work_item_id", "attempt", "model_provider", "model_id", "prompt_hash", "tool_versions", "executed_at"],
         "properties": {
           "agent_id": {"type": "string"},
+          "work_item_id": {"type": "string"},
+          "attempt": {"type": "integer", "minimum": 1},
           "model_provider": {"type": "string"},
           "model_id": {"type": "string"},
           "resolved_model_version": {"type": "string"},
           "prompt_hash": {"type": "string"},
           "skill_hash": {"type": "string"},
-          "tool_versions": {"type": "object", "additionalProperties": {"type": "string"}}
+          "tool_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+          "executed_at": {"type": "string", "format": "date-time"}
         },
         "additionalProperties": false
       }
     },
     "query_receipts": {"type": "array", "items": {"type": "object"}},
-    "cost": {"type": "object"}
+    "expansion_events": {"type": "array", "items": {"type": "object"}},
+    "skipped_evidence_sources": {"type": "array", "items": {"type": "object"}},
+    "no_result_discoveries": {"type": "array", "items": {"type": "object"}},
+    "stopped_at": {"type": "string", "format": "date-time"},
+    "stop": {"type": "object"},
+    "cancellation": {
+      "type": "object",
+      "required": ["reason", "actor", "recorded_at"],
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "actor": {"type": "string", "minLength": 1},
+        "recorded_at": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "cost": {"$ref": "cost-summary.schema.json"},
+    "metrics": {"type": "object"},
+    "run_identity_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   },
   "additionalProperties": false
 }

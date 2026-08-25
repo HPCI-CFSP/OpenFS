@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+"""Create candidate Evidence records from a rights-cleared Source result."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any
+
+from openfs_runtime import atomic_write_json, isoformat, read_json, stable_digest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _identifier(prefix: str, value: Any) -> str:
+    return f"{prefix}-{stable_digest(value)[:12].upper()}"
+
+
+def _numeric_proposal_id(value: Any) -> str:
+    number = int(stable_digest(value)[:12], 16) % 1_000_000
+    return f"PRP-EVD-{number:06d}"
+
+
+def extract(
+    source_result: dict[str, Any],
+    *,
+    source_result_ref: str,
+    run_id: str,
+    work_item_id: str,
+    agent_id: str,
+    created_at: str | None = None,
+) -> dict[str, Any]:
+    if source_result.get("object_type") != "source":
+        raise ValueError("input must be a Source discovery result")
+    if source_result.get("run_id") != run_id:
+        raise ValueError("Source result belongs to a different Run")
+    receipt = source_result["source_receipt"]
+    rights = receipt["rights"]
+    if rights["acquisition_decision"] not in {"evidence-excerpt", "approved-snapshot"}:
+        raise RuntimeError("Source rights do not permit Evidence extraction")
+    security = receipt["security"]
+    if security.get("prompt_injection_suspected"):
+        raise RuntimeError("Source is quarantined for suspected prompt injection")
+    passages = source_result.get("candidate_passages", [])
+    if not passages:
+        raise ValueError("Source result has no candidate passages")
+
+    timestamp = created_at or isoformat()
+    candidates = []
+    for passage in passages:
+        claim = passage.get("candidate_claim")
+        if not claim:
+            raise ValueError(f"candidate passage has no candidate_claim: {passage['passage_id']}")
+        if passage.get("passage_kind") not in {"quote", "paraphrase", "structured-field"}:
+            raise ValueError(f"invalid passage_kind: {passage.get('passage_kind')}")
+        evidence_identity = {
+            "source_id": receipt["source_id"],
+            "locator": passage["locator"],
+            "text": passage["text"],
+            "statement_supported": claim,
+        }
+        candidates.append(
+            {
+                "schema_version": "0.1.0",
+                "evidence_id": _identifier("EVD", evidence_identity),
+                "run_id": run_id,
+                "work_item_id": work_item_id,
+                "source_id": receipt["source_id"],
+                "source_lineage_id": source_result["source_lineage"]["lineage_id"],
+                "source_locator": passage["locator"],
+                "excerpt": passage["text"],
+                "excerpt_kind": passage["passage_kind"],
+                "statement_supported": claim,
+                "status": "candidate",
+                "extracted_by_agent_id": agent_id,
+                "extracted_at": timestamp,
+                "evidence_hash": stable_digest(evidence_identity),
+            }
+        )
+    result = {
+        "schema_version": "0.2.0" if receipt.get("publisher_group_id") else "0.1.0",
+        "proposal_id": _numeric_proposal_id(
+            {
+                "run_id": run_id,
+                "work_item_id": work_item_id,
+                "source_id": receipt["source_id"],
+                "evidence": candidates,
+            }
+        ),
+        "object_type": "evidence",
+        "run_id": run_id,
+        "work_item_id": work_item_id,
+        "source_result_ref": source_result_ref,
+        "source_id": receipt["source_id"],
+        "origin_group_ids": [receipt["origin_group_id"]],
+        "has_primary_source": receipt["primary_source"],
+        "created_by_agent_id": agent_id,
+        "created_at": timestamp,
+        "evidence_candidates": candidates,
+    }
+    if receipt.get("publisher_group_id"):
+        result["publisher_group_ids"] = [receipt["publisher_group_id"]]
+    return result
+
+
+def validate_assignment(
+    work_item: dict[str, Any],
+    *,
+    source_result_ref: str,
+    agent_id: str,
+    output_ref: str,
+) -> None:
+    if work_item.get("kind") != "evidence-extraction":
+        raise ValueError("Work Item is not assigned to Evidence extraction")
+    lease = work_item.get("lease", {})
+    if work_item.get("status") != "leased" or lease.get("agent_id") != agent_id:
+        raise RuntimeError("Evidence extraction requires the current Work Item lease")
+    if work_item.get("payload", {}).get("source_result_ref") != source_result_ref:
+        raise ValueError("Source reference differs from the assigned Work Item")
+    if output_ref not in work_item.get("output_paths", []):
+        raise ValueError("Evidence output is outside the Work Item's declared paths")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-result", required=True, type=Path)
+    parser.add_argument("--source-result-ref", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--work-item-id", required=True)
+    parser.add_argument("--agent-id", required=True)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--root", type=Path, default=ROOT)
+    args = parser.parse_args()
+    work_item = read_json(
+        args.root / "queue" / args.run_id / f"{args.work_item_id}.json"
+    )
+    output_path = args.output if args.output.is_absolute() else args.root / args.output
+    output_ref = str(output_path.relative_to(args.root))
+    expected_source_path = args.root / args.source_result_ref
+    supplied_source_path = (
+        args.source_result
+        if args.source_result.is_absolute()
+        else args.root / args.source_result
+    )
+    if supplied_source_path.resolve() != expected_source_path.resolve():
+        raise ValueError("Source path differs from source-result-ref")
+    validate_assignment(
+        work_item,
+        source_result_ref=args.source_result_ref,
+        agent_id=args.agent_id,
+        output_ref=output_ref,
+    )
+    bundle = extract(
+        read_json(expected_source_path),
+        source_result_ref=args.source_result_ref,
+        run_id=args.run_id,
+        work_item_id=args.work_item_id,
+        agent_id=args.agent_id,
+        created_at=work_item.get("lease", {}).get("acquired_at")
+        or work_item.get("updated_at"),
+    )
+    if output_path.exists():
+        if read_json(output_path) != bundle:
+            raise RuntimeError("Evidence bundle already exists with different content")
+    else:
+        atomic_write_json(output_path, bundle)
+    print(json.dumps({"proposal_id": bundle["proposal_id"], "output": output_ref}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

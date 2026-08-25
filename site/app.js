@@ -13,16 +13,16 @@
       navOverview: "概要", navCatalog: "調査カタログ", navTechnology: "技術動向", navScenarios: "整備シナリオ", navReports: "報告書",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
       overviewLead: "受理済みの公開情報だけを表示します。内部情報、候補段階の提案、例示シナリオは公開対象に含めません。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scopeMetric: "調査対象地域",
-      scopeMetricValue: "全世界", scopeMetricNote: "日本発技術を優先追跡", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
+      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", scopeMetric: "調査更新",
+      scopeMetricValue: "継続", scopeMetricNote: "新しい公開情報を反映", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "AIが追加提案したTopicも、独立レビューとConsensus Gateを通過したものだけがここへ加わります。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "Topic ID、名称",
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
-      noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", area: "領域",
+      noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       scenarioKicker: "ロードマップシナリオ", scenarioTitle: "HPCI整備シナリオ",
-      scenarioLead: "Architecture、System Software、Applications、センター影響、世界技術動向、日本発技術、不確実性を一体で比較します。",
+      scenarioLead: "Architecture、System Software、Applications、センター影響、技術動向、不確実性を一体で比較します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
       noScenarioText: "現在の4案はGenerator検証用の例示です。根拠・評価・人の公開承認を通過した案だけを公開します。",
       reportKicker: "報告書", reportTitle: "報告書・Export", reportLead: "公開版には版、基準日、根拠への追跡、置換関係を付けます。",
@@ -38,16 +38,16 @@
       navOverview: "Overview", navCatalog: "Research catalog", navTechnology: "Technology landscape", navScenarios: "Roadmap scenarios", navReports: "Reports",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
       overviewLead: "Only accepted public information is shown. Internal information, candidate proposals, and illustrative scenarios are excluded from publication.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scopeMetric: "Geographic scope",
-      scopeMetricValue: "Worldwide", scopeMetricNote: "Priority coverage for Japan-origin technologies", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
+      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", scopeMetric: "Research updates",
+      scopeMetricValue: "Continuous", scopeMetricNote: "Incorporates new public information", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "AI-proposed topics enter this catalog only after independent review and the Consensus Gate.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
-      noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", area: "AREA", scenarioKicker: "ROADMAP SCENARIOS",
+      noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA", scenarioKicker: "ROADMAP SCENARIOS",
       scenarioTitle: "HPCI infrastructure scenarios",
-      scenarioLead: "Compare architecture, system software, applications, center impacts, worldwide trends, Japan-origin technologies, and uncertainties as a coherent whole.",
+      scenarioLead: "Compare architecture, system software, applications, center impacts, technology trends, and uncertainties as a coherent whole.",
       noScenarioTitle: "No scenarios have been published",
       noScenarioText: "The current four scenarios are generator examples. Only evidence-backed, evaluated, and human-approved scenarios are published.",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
@@ -115,7 +115,7 @@
     setText("baseline-id", data.baseline.baseline_id);
     setText("baseline-detail", `${tr("revision")} ${data.baseline.catalog_revision} / ${tr("officialSources")} ${data.baseline.official_source_count}`);
     setText("gap-summary", `${tr("openGaps")}: ${data.baseline.open_gap_ids.join(", ") || tr("none")}`);
-    setText("technology-rule", `${data.technology_landscape.scope_rule[language]} ${data.technology_landscape.priority_rule[language]}`);
+    setText("technology-rule", tr("technologyLead"));
     setText("license-status", `License: ${data.publication.license}`);
   }
 

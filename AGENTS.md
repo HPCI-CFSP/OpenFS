@@ -42,7 +42,8 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not silently remove, merge, narrow, split, or retire a research-baseline topic. Propose those changes through `OFS-002` with lineage and a reviewed human Directive.
 - Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog.
 - Research scope is worldwide. Read `config/global-technology-scope.json`, search across regions and source languages where feasible, and report uncovered regions and categories. Prioritize coverage of technologies developed in Japan without treating origin as evidence of technical merit or automatic adoption.
-- Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, refresh, or staffing state without current cited evidence.
+- Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, refresh, or staffing state without cited Evidence that remains inside the Monitor's freshness window. Any permitted field-level inheritance must pin the predecessor digest and original Evidence bundles and must re-enter Consensus as provisional.
+- A follow-up Run must pass the Profile continuity gate before publication. Investigate every reported regression rather than deleting or weakening predecessor Evidence.
 - Do not present an illustrative or candidate system scenario as an HPCI recommendation. A scenario must include architecture, system software, applications, center impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainties, and decision gates.
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
 - Do not publish a scenario or report unless its Japanese and English public summaries are both present.
@@ -72,6 +73,11 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 
 - Use one work item per branch when practical.
 - Use branch names of the form `agent/<agent-id>/<run-id>/<work-item-id>` for agent proposals.
+- A distributed Agent branch contains exactly every `output_paths` entry declared
+  by that Work Item plus `handoffs/<run-id>/<work-item-id>.json`. Do not commit
+  Queue, Run manifest, policy, index, or unrelated artifact changes from that branch.
+- Generate the Handoff only after all outputs are final. Its digests are checked by
+  trusted base-branch code and again after merge.
 - Keep machine-generated indexes separate from human-authored records.
 - Do not resolve merge conflicts by discarding another agent's or a human's changes.
 - Submit canonical changes as reviewable pull requests with the source Decision IDs and validation results.

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/canonical-claim-status.schema.json",
+  "title": "OpenFS Canonical Claim Status Event",
+  "type": "object",
+  "required": ["schema_version", "event_id", "claim_id", "action", "reason", "canonical_claim_ref", "canonical_claim_digest", "directive_id", "directive_ref", "directive_digest", "recorded_at", "recorded_by", "event_digest"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "event_id": {"type": "string", "pattern": "^CSE-[0-9A-F]{12}$"},
+    "claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "action": {"enum": ["withdrawn", "superseded"]},
+    "reason": {"type": "string", "minLength": 1},
+    "replacement_claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+    "canonical_claim_ref": {"type": "string", "pattern": "^knowledge/claims/CLM-[0-9]{6}\\.json$"},
+    "canonical_claim_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+    "directive_ref": {"type": "string", "pattern": "^reviews/directives/DIR-[0-9]{6}\\.json$"},
+    "directive_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "recorded_by": {"type": "string", "minLength": 1},
+    "event_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"action": {"const": "superseded"}}, "required": ["action"]},
+      "then": {"required": ["replacement_claim_id"]}
+    },
+    {
+      "if": {"properties": {"action": {"const": "withdrawn"}}, "required": ["action"]},
+      "then": {"not": {"required": ["replacement_claim_id"]}}
+    }
+  ],
+  "additionalProperties": false
+}

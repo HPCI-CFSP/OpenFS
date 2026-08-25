@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 
@@ -13,7 +14,40 @@ sys.path.insert(0, str(ROOT / "tools"))
 from build_pages_site import build, collect_scenarios  # noqa: E402
 
 
+class PageStructureParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.ids = []
+        self.fragment_links = []
+
+    def handle_starttag(self, _tag, attrs):
+        values = dict(attrs)
+        if values.get("id"):
+            self.ids.append(values["id"])
+        if values.get("href", "").startswith("#"):
+            self.fragment_links.append(values["href"][1:])
+
+
 class PagesSiteTests(unittest.TestCase):
+    def test_pr_preview_is_artifact_only_and_read_only(self):
+        workflow = (
+            ROOT / ".github" / "workflows" / "pages-preview.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("pull_request:", workflow)
+        self.assertIn("contents: read", workflow)
+        self.assertIn("actions/upload-artifact@", workflow)
+        self.assertIn("retention-days: 14", workflow)
+        self.assertNotIn("pages: write", workflow)
+        self.assertNotIn("id-token: write", workflow)
+        self.assertNotIn("actions/deploy-pages@", workflow)
+
+    def test_page_fragment_navigation_has_unique_existing_targets(self):
+        parser = PageStructureParser()
+        parser.feed((ROOT / "site" / "index.html").read_text(encoding="utf-8"))
+        self.assertEqual(len(parser.ids), len(set(parser.ids)))
+        self.assertTrue(parser.fragment_links)
+        self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
+
     def test_build_publishes_catalog_but_not_illustrative_scenarios(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
@@ -29,7 +63,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue(
                 all(set(category) == {"ja", "en"} for category in result["technology_landscape"]["categories"])
             )
-            self.assertEqual(["Japan"], result["technology_landscape"]["priority_regions"])
+            self.assertNotIn("scope_rule", result["technology_landscape"])
+            self.assertNotIn("priority_rule", result["technology_landscape"])
+            self.assertNotIn("priority_regions", result["technology_landscape"])
             self.assertTrue((output / "index.html").is_file())
             self.assertTrue((output / "data" / "openfs-public.js").is_file())
             rendered = (output / "data" / "openfs-public.js").read_text(encoding="utf-8")
@@ -38,6 +74,10 @@ class PagesSiteTests(unittest.TestCase):
             index = (output / "index.html").read_text(encoding="utf-8")
             self.assertIn('href="#technology-landscape"', index)
             self.assertNotIn('href="#domestic"', index)
+            app = (output / "app.js").read_text(encoding="utf-8")
+            for public_copy in (index, app, rendered):
+                self.assertNotIn("日本発技術を優先", public_copy)
+                self.assertNotIn("Priority coverage for Japan", public_copy)
 
     def test_publication_policy_rejects_candidate_scenario_status(self):
         policy = json.loads((ROOT / "config" / "publication-policy.json").read_text(encoding="utf-8"))

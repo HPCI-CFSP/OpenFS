@@ -18,7 +18,7 @@
 - [x] Add Japanese/English switching and bilingual publication validation to GitHub Pages.
 - [x] Require a matching human publication Directive before a scenario or report reaches Pages.
 - [x] Document repository-owner setup and the three-Run automation activation sequence.
-- [ ] Add full JSON Schema Draft 2020-12 instance validation; the current validator checks structure and JSON syntax only.
+- [x] Add full JSON Schema Draft 2020-12 validation for all mapped contract artifacts.
 - [x] Select and add the Apache-2.0 project license.
 - [ ] Review institutional copyright and contribution authority before accepting external contributions.
 - [ ] Confirm repository visibility and member access policy.
@@ -26,21 +26,23 @@
 
 ## Phase 1: Git collaboration harness
 
-- [ ] Add GitHub Issue templates and the `research-directive` label.
+- [x] Add a GitHub Issue template for the `research-directive` intake path.
 - [x] Add first-run Agent onboarding and default-deny role/path permissions.
 - [x] Enforce registered Agent branch permissions during pull-request validation.
 - [x] Add trusted-base PR path enforcement that does not execute proposed checker code.
-- [ ] Implement Directive ingestion and schema validation.
-- [ ] Implement Run and Work Item creation with leases and idempotency keys.
-- [ ] Configure branch protection, CODEOWNERS, and required status checks.
-- [ ] Add immutable action SHAs and an approved-action policy.
+- [x] Implement structured Directive ingestion with public-boundary confirmation and stable provenance.
+- [x] Implement Pilot Run and Work Item creation with leases, expiry recovery, idempotency keys, retries, dead-letter exceptions, and a kill switch.
+- [x] Add CODEOWNERS for control-plane, canonical, and human-approval paths.
+- [ ] Configure branch protection and required status checks in GitHub settings.
+- [x] Enforce immutable action SHAs in every workflow.
 
 ## Phase 2: proposal and independent assessment
 
-- [ ] Implement source discovery and evidence extraction skills.
-- [ ] Implement source-lineage grouping and duplicate-origin detection.
-- [ ] Implement blind validator and falsification roles.
-- [ ] Resolve agent independence groups from the registry rather than trusting assessment input.
+- [x] Add versioned, Run-pinned Skills for worldwide and general Discovery, Evidence extraction, synthesis, validation, and falsification.
+- [ ] Connect provider-backed discovery and extraction Skills; deterministic Source registration, Rights Gate, Prompt Injection quarantine, and Evidence extraction are implemented.
+- [x] Implement source-lineage grouping and duplicate-origin detection.
+- [x] Implement blind validator and falsification roles.
+- [x] Resolve agent independence groups from the registry rather than trusting assessment input.
 - [ ] Calibrate consensus thresholds on reviewed evaluation cases.
 - [x] Add the official FS2.0 and FY2025 FS3.0 report set and map inherited and added research topics.
 - [ ] Add the missing FS1.0 final report and map inherited, revised, and retired research topics.
@@ -49,15 +51,19 @@
 
 ## Phase 3: canonical promotion
 
-- [ ] Implement Decision-to-canonical promotion.
-- [ ] Implement dependency invalidation for updated or withdrawn sources.
-- [ ] Generate indexes and `TBD.md` from accepted records.
+- [x] Implement Decision-to-canonical promotion for accepted non-Recommendation Claims.
+- [ ] Extend canonical promotion to Findings and reviewed Center Profiles.
+- [x] Generate dependency-impact promotion blocks for changed or unavailable Sources without treating search omission as withdrawal.
+- [x] Enforce unresolved dependency-impact blocks in Claim promotion.
+- [x] Generate deterministic indexes and `TBD.md` from accepted canonical Claims only.
 - [ ] Promote reviewed center profiles and generate the first evidence-backed HPCI scenario set.
-- [ ] Add promotion pull requests and rollback support.
+- [x] Add variable-gated, review-only Claim promotion pull requests with duplicate-PR control.
+- [x] Add human-authorized, append-only canonical withdrawal and supersession records.
 
 ## Phase 4: recurring autonomous loop
 
+- [x] Add a production-readiness gate for reviewed manual Runs, budget approval, policy calibration, and independent Consensus capacity.
 - [ ] Enable the first weekly monitor after three successful manual runs.
-- [ ] Add retry, dead-letter, budget, and kill-switch handling.
-- [ ] Generate Weekly Digests and exception Issues.
-- [ ] Process asynchronous human directives in the next or an ad-hoc run.
+- [ ] Add the provider Worker and provider-side hard spend limits; fail-closed repository cost accounting, local retry, dead-letter, Work Item limits, and the repository kill switch are implemented.
+- [x] Generate Weekly Digests and grouped exception Issues through a variable-gated, low-privilege review workflow.
+- [x] Process one-shot or time-bounded recurring human Directives in the next or an ad-hoc Run with pinned receipts.

@@ -2,7 +2,11 @@
 
 ## Current mode
 
-The recurring schedule and agent registry are disabled. Phase 0 supports repository validation and deterministic consensus-gate tests only.
+The recurring schedule and provider-backed agents remain disabled. The local Pilot
+control plane supports idempotent Run creation, approved Directive selection,
+leased Work Items, lease-expiry recovery, bounded retries, dead-letter exception
+records, output hashing, and deterministic finalization. This does not enable paid
+model calls or canonical promotion.
 
 ## Manual validation
 
@@ -10,6 +14,21 @@ The recurring schedule and agent registry are disabled. Phase 0 supports reposit
 python3 tools/validate_repository.py
 python3 -m unittest discover -s tests -v
 ```
+
+Create a disabled-monitor Pilot Run without calling a provider:
+
+```bash
+python3 tools/run_controller.py start \
+  --run-id RUN-PILOT-001 \
+  --task-id OFS-001 \
+  --monitor-id MON-MEMORY-001 \
+  --pilot
+```
+
+Pilot workers may lease a Work Item only with the explicit
+`--allow-disabled-pilot-agent` flag. Production mode rejects disabled Monitors and
+Agents. A completed Work Item must name a declared output path that exists; the
+controller records its SHA-256 digest.
 
 ## Before enabling a monitor
 

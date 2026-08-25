@@ -6,17 +6,24 @@ from __future__ import annotations
 import json
 import re
 import sys
+import hashlib
 from pathlib import Path
 from typing import Any
+
+from openfs_runtime import exception_group_key, language_in_scope, stable_digest
+from register_source import canonicalize_url, publisher_authority
+from generate_knowledge_views import build_index, render_tbd
 
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
+    ".github/CODEOWNERS",
     "LICENSE",
     "NOTICE",
     "THIRD_PARTY_NOTICES.md",
+    "requirements-validation.txt",
     "docs/agent-onboarding.md",
     "docs/architecture.md",
     "docs/research-baseline/README.md",
@@ -29,30 +36,87 @@ REQUIRED_FILES = [
     "docs/planning/presentation-mechanism.md",
     "docs/publication/github-pages.md",
     "docs/operations/automation-setup.md",
+    "docs/operations/production-readiness.md",
+    "docs/operations/provider-worker-protocol.md",
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
+    "knowledge/README.md",
+    "knowledge/claim-status/README.md",
+    "knowledge/claims/index.json",
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
     "docs/security/threat-model.md",
     "config/consensus-policy.json",
+    "config/acquisition-policy.json",
+    "config/source-registry.json",
     "config/agent-registry.json",
+    "config/skill-registry.json",
     "config/role-permissions.json",
     "config/research-baseline.json",
     "config/scenario-policy.json",
     "config/global-technology-scope.json",
+    "config/hpci-center-registry.json",
     "config/publication-policy.json",
     "config/publication-i18n.json",
+    "config/activation-policy.json",
+    "config/owner-controls.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
+    "schemas/canonical-claim.schema.json",
+    "schemas/canonical-claim-status.schema.json",
+    "schemas/knowledge-index.schema.json",
+    "schemas/promotion-readiness.schema.json",
+    "schemas/cost-summary.schema.json",
+    "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
     "schemas/assessment.schema.json",
     "schemas/decision.schema.json",
     "schemas/run.schema.json",
+    "schemas/skill-registry.schema.json",
+    "schemas/work-item.schema.json",
+    "schemas/query-receipt.schema.json",
+    "schemas/source-receipt.schema.json",
+    "schemas/source-discovery-result.schema.json",
+    "schemas/discovery-no-result.schema.json",
+    "schemas/evidence.schema.json",
+    "schemas/evidence-bundle.schema.json",
+    "schemas/coverage-report.schema.json",
+    "schemas/change-report.schema.json",
+    "schemas/dependency-impact.schema.json",
+    "schemas/consensus-readiness.schema.json",
+    "schemas/weekly-digest.schema.json",
+    "schemas/issue-payload.schema.json",
+    "schemas/directive-application.schema.json",
+    "schemas/run-brief.schema.json",
+    "schemas/weekly-cycle.schema.json",
+    "schemas/handoff.schema.json",
     "schemas/research-baseline.schema.json",
     "schemas/center-profile.schema.json",
+    "schemas/center-profile-coverage.schema.json",
+    "schemas/followup-effectiveness.schema.json",
+    "schemas/profile-continuity.schema.json",
+    "schemas/temporal-integrity.schema.json",
+    "schemas/center-research-brief.schema.json",
+    "schemas/center-followup-plan.schema.json",
+    "schemas/global-followup-plan.schema.json",
+    "schemas/global-followup-effectiveness.schema.json",
+    "schemas/run-approval.schema.json",
+    "schemas/monitor-readiness.schema.json",
+    "schemas/activation-policy.schema.json",
+    "schemas/owner-controls.schema.json",
+    "schemas/operational-readiness.schema.json",
+    "schemas/worker-invocation.schema.json",
+    "schemas/worker-result.schema.json",
+    "schemas/hpci-center-registry.schema.json",
     "schemas/system-scenario.schema.json",
     "schemas/research-topic-proposal.schema.json",
+    "skills/source-discovery/SKILL.md",
+    "skills/worldwide-technology-survey/SKILL.md",
+    "skills/evidence-extraction/SKILL.md",
+    "skills/structured-synthesis/SKILL.md",
+    "skills/source-validation/SKILL.md",
+    "skills/falsification-review/SKILL.md",
     "docs/tasks/OFS-002.md",
     "docs/tasks/OFS-003.md",
     "docs/tasks/OFS-004.md",
@@ -64,13 +128,73 @@ REQUIRED_FILES = [
     "config/monitors/MON-AUTO-TOPICS-001.json",
     "evals/scenarios/candidate-scenarios.json",
     "tools/generate_scenario_views.py",
+    "tools/validate_json_schemas.py",
+    "tools/validate_workflows.py",
     "tools/promote_research_topic.py",
+    "tools/promote_claim.py",
+    "tools/record_claim_status.py",
+    "tools/generate_knowledge_views.py",
+    "tools/evaluate_promotion_readiness.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
+    "tools/openfs_runtime.py",
+    "tools/run_controller.py",
+    "tools/ingest_directive.py",
+    "tools/register_source.py",
+    "tools/register_no_result.py",
+    "tools/extract_evidence.py",
+    "tools/propose_claim.py",
+    "tools/create_assessment.py",
+    "tools/consensus_gate.py",
+    "tools/evaluate_coverage.py",
+    "tools/evaluate_center_profiles.py",
+    "tools/evaluate_followup_effectiveness.py",
+    "tools/evaluate_profile_continuity.py",
+    "tools/evaluate_temporal_integrity.py",
+    "tools/generate_center_research_brief.py",
+    "tools/generate_center_followup_plan.py",
+    "tools/generate_global_followup_plan.py",
+    "tools/evaluate_global_followup_effectiveness.py",
+    "tools/propose_center_profile.py",
+    "tools/detect_source_changes.py",
+    "tools/analyze_dependency_impact.py",
+    "tools/check_consensus_readiness.py",
+    "tools/generate_weekly_digest.py",
+    "tools/prepare_exception_issues.py",
+    "tools/apply_directive.py",
+    "tools/generate_run_brief.py",
+    "tools/prepare_weekly_cycle.py",
+    "tools/publish_github_issue.py",
+    "tools/create_handoff.py",
+    "tools/accept_handoff.py",
+    "tools/process_pending_handoffs.py",
+    "tools/publish_control_pr.py",
+    "tools/prepare_claim_promotions.py",
+    "tools/publish_promotion_pr.py",
+    "tools/evaluate_monitor_readiness.py",
+    "tools/evaluate_operational_readiness.py",
+    "tools/prepare_worker_invocation.py",
+    "tools/accept_worker_result.py",
+    "tools/prepare_run_approval.py",
+    "queue/README.md",
+    "runs/README.md",
+    "state/README.md",
+    "reviews/exceptions/README.md",
+    "reviews/digests/README.md",
+    "reviews/issues/README.md",
+    "reviews/briefs/README.md",
+    "reviews/followups/README.md",
+    "reviews/run-approvals/README.md",
+    "handoffs/README.md",
+    "proposals/center-profiles/README.md",
     "site/index.html",
     "site/styles.css",
     "site/app.js",
     ".github/workflows/pages.yml",
+    ".github/workflows/weekly-coordinator.yml",
+    ".github/workflows/handoff-control.yml",
+    ".github/workflows/weekly-review.yml",
+    ".github/workflows/claim-promotion.yml",
 ]
 ACTION_PATTERN = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -79,6 +203,40 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as stream:
         return json.load(stream)
+
+
+def usage_summary_from_items(items: list[dict[str, Any]]) -> dict[str, Any]:
+    completed = [item for item in items if item.get("status") == "completed"]
+    cost_values = [
+        item.get("usage", {}).get("cost_usd")
+        for item in completed
+        if item.get("usage", {}).get("cost_usd") is not None
+    ]
+    reported = len(cost_values)
+    if not completed or reported == 0:
+        measurement_status = "unreported"
+    elif reported == len(completed):
+        measurement_status = "complete"
+    else:
+        measurement_status = "partial"
+
+    def token_total(name: str) -> int | None:
+        values = [
+            item.get("usage", {}).get(name)
+            for item in completed
+            if item.get("usage", {}).get(name) is not None
+        ]
+        return sum(values) if values else None
+
+    return {
+        "currency": "USD",
+        "measurement_status": measurement_status,
+        "reported_total_usd": sum(cost_values) if cost_values else None,
+        "reported_executions": reported,
+        "unreported_executions": len(completed) - reported,
+        "reported_input_tokens": token_total("input_tokens"),
+        "reported_output_tokens": token_total("output_tokens"),
+    }
 
 
 def validate_json_files(root: Path) -> list[str]:
@@ -105,6 +263,126 @@ def validate_jsonl_files(root: Path) -> list[str]:
                 errors.append(
                     f"invalid JSONL: {path.relative_to(root)}:{line_number}: {exc}"
                 )
+    return errors
+
+
+def validate_run_approvals(root: Path) -> list[str]:
+    errors: list[str] = []
+    approval_ids: set[str] = set()
+    required = {
+        "schema_version",
+        "approval_id",
+        "run_id",
+        "monitor_id",
+        "status",
+        "manifest_digest",
+        "brief_ref",
+        "brief_digest",
+        "prepared_at",
+        "reviewed_by",
+        "reviewed_at",
+        "checks",
+        "notes",
+    }
+    required_checks = {
+        "public_information_boundary",
+        "citation_sample",
+        "coverage",
+        "false_positive_review",
+        "dissent_review",
+        "cost_review",
+    }
+    for path in sorted((root / "reviews" / "run-approvals").glob("RUN-*.json")):
+        approval = load_json(path)
+        missing = required - set(approval)
+        if missing:
+            errors.append(
+                f"Run approval lacks required fields: {path.relative_to(root)}: {sorted(missing)}"
+            )
+            continue
+        if path.stem != approval["run_id"]:
+            errors.append(f"Run approval filename differs from run ID: {path.relative_to(root)}")
+        approval_id = approval["approval_id"]
+        if approval_id in approval_ids:
+            errors.append(f"duplicate Run approval ID: {approval_id}")
+        approval_ids.add(approval_id)
+        checks = approval.get("checks", {})
+        if set(checks) != required_checks or not all(
+            isinstance(value, bool) for value in checks.values()
+        ):
+            errors.append(f"Run approval checks are incomplete: {path.relative_to(root)}")
+        manifest_path = root / "runs" / approval["run_id"] / "manifest.json"
+        brief_ref = Path(approval["brief_ref"])
+        brief_path = root / brief_ref
+        if not manifest_path.is_file():
+            errors.append(f"Run approval manifest is missing: {path.relative_to(root)}")
+        if (
+            brief_ref.is_absolute()
+            or ".." in brief_ref.parts
+            or brief_ref.parts[:2] != ("reviews", "briefs")
+            or not brief_path.is_file()
+        ):
+            errors.append(f"Run approval Brief reference is invalid: {path.relative_to(root)}")
+        if approval["status"] == "reviewed-pass":
+            if manifest_path.is_file() and stable_digest(load_json(manifest_path)) != approval[
+                "manifest_digest"
+            ]:
+                errors.append(f"passing Run approval manifest digest differs: {path.relative_to(root)}")
+            if brief_path.is_file() and stable_digest(load_json(brief_path)) != approval[
+                "brief_digest"
+            ]:
+                errors.append(f"passing Run approval Brief digest differs: {path.relative_to(root)}")
+    return errors
+
+
+def validate_issue_payloads(root: Path) -> list[str]:
+    errors: list[str] = []
+    seen_groups: set[str] = set()
+    for path in sorted((root / "reviews" / "issues" / "groups").glob("*.json")):
+        payload = load_json(path)
+        group_id = payload.get("exception_group_id")
+        if not group_id or path.stem != group_id:
+            errors.append(f"Issue group filename differs from identity: {path.relative_to(root)}")
+            continue
+        if group_id in seen_groups:
+            errors.append(f"duplicate Issue group identity: {group_id}")
+        seen_groups.add(group_id)
+        exception_refs = payload.get("exception_refs", [])
+        exceptions = []
+        for ref in exception_refs:
+            ref_path = root / ref
+            if not ref_path.is_file():
+                errors.append(f"Issue group Exception is missing: {path.relative_to(root)}: {ref}")
+                continue
+            exceptions.append(load_json(ref_path))
+        if not exceptions:
+            errors.append(f"Issue group has no Exception records: {path.relative_to(root)}")
+            continue
+        fingerprints = {exception_group_key(item) for item in exceptions}
+        if len(fingerprints) != 1:
+            errors.append(f"Issue group mixes owner actions: {path.relative_to(root)}")
+            continue
+        kind, unmet, publication_blocked = fingerprints.pop()
+        expected_id = f"EXCGRP-{stable_digest({'exception_kind': kind, 'unmet_requirements': list(unmet), 'publication_blocked': publication_blocked})[:12].upper()}"
+        if group_id != expected_id:
+            errors.append(f"Issue group fingerprint differs: {path.relative_to(root)}")
+        if payload.get("exception_ids") != sorted(
+            item["exception_id"] for item in exceptions
+        ):
+            errors.append(f"Issue group Exception IDs differ: {path.relative_to(root)}")
+        if payload.get("run_ids") != sorted({item["run_id"] for item in exceptions}):
+            errors.append(f"Issue group Run IDs differ: {path.relative_to(root)}")
+        active = any(
+            item.get("status") == "open"
+            and item.get("requires_owner_action", True)
+            for item in exceptions
+        )
+        if payload.get("desired_issue_state") != ("open" if active else "closed"):
+            errors.append(f"Issue group desired state differs: {path.relative_to(root)}")
+        if payload.get("deduplication_marker") != (
+            f"<!-- openfs-exception-group:{group_id} -->"
+        ):
+            errors.append(f"Issue group marker differs: {path.relative_to(root)}")
     return errors
 
 
@@ -158,6 +436,886 @@ def validate_consensus_configuration(root: Path) -> list[str]:
             errors.append(f"consensus rule {object_type} missing: {sorted(missing)}")
         if rule.get("minimum_support", 0) > rule.get("minimum_assessments", 0):
             errors.append(f"consensus rule {object_type} requires more support than assessments")
+    if policy.get("rules", {}).get("claim", {}).get("minimum_publisher_groups", 0) < 2:
+        errors.append("claim consensus requires at least two publisher groups")
+    return errors
+
+
+def validate_runtime_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    budgets = load_json(root / "config" / "budgets.json")
+    defaults = budgets.get("defaults", {})
+    for key in (
+        "maximum_run_minutes",
+        "maximum_work_items",
+        "maximum_retries_per_work_item",
+        "maximum_parallel_agents",
+        "maximum_sources_per_monitor",
+    ):
+        value = defaults.get(key)
+        if not isinstance(value, int) or value < 0:
+            errors.append(f"runtime budget must be a non-negative integer: {key}")
+    kill_switch = budgets.get("kill_switch", {})
+    if kill_switch.get("enabled") is not True or kill_switch.get("control_path") != "state/STOP":
+        errors.append("runtime kill switch must use state/STOP")
+    registry = load_json(root / "config" / "agent-registry.json")
+    agent_ids = [agent.get("agent_id") for agent in registry.get("agents", [])]
+    if len(agent_ids) != len(set(agent_ids)):
+        errors.append("agent registry has duplicate agent IDs")
+    orchestrators = [
+        agent for agent in registry.get("agents", []) if agent.get("role") == "orchestrator"
+    ]
+    if len(orchestrators) != 1:
+        errors.append("agent registry must define exactly one control-plane orchestrator template")
+    configured_identities: dict[tuple[str, str, str], str] = {}
+    for agent in registry.get("agents", []):
+        identity = (
+            agent.get("provider", ""),
+            agent.get("model_family", ""),
+            agent.get("prompt_profile", ""),
+        )
+        group = agent.get("agent_independence_group")
+        if agent.get("enabled") and "unconfigured" in identity:
+            errors.append(f"enabled agent has unconfigured identity: {agent.get('agent_id')}")
+        if "unconfigured" in identity or not all(identity) or not group:
+            continue
+        previous = configured_identities.setdefault(identity, group)
+        if previous != group:
+            errors.append(
+                "same provider/model/prompt identity is split across independence groups: "
+                f"{agent.get('agent_id')}"
+            )
+    skill_registry = load_json(root / "config" / "skill-registry.json")
+    skills = skill_registry.get("skills", [])
+    skill_ids = [item.get("skill_id") for item in skills]
+    if len(skill_ids) != len(set(skill_ids)):
+        errors.append("Skill registry has duplicate Skill IDs")
+    selector_keys: set[tuple[str, str | None]] = set()
+    for skill in skills:
+        source_ref = skill.get("source_ref", "")
+        source_path = root / source_ref
+        if not re.fullmatch(r"skills/[a-z0-9-]+/SKILL\.md", source_ref):
+            errors.append(f"Skill registry has invalid source path: {source_ref}")
+            continue
+        if not source_path.is_file():
+            errors.append(f"registered Skill source is missing: {source_ref}")
+            continue
+        frontmatter = source_path.read_text(encoding="utf-8").split("---", 2)
+        expected_name = f"name: {skill.get('skill_id')}"
+        if len(frontmatter) < 3 or expected_name not in frontmatter[1].splitlines():
+            errors.append(f"registered Skill frontmatter name differs: {source_ref}")
+        monitors = skill.get("monitor_ids") or [None]
+        for kind in skill.get("work_item_kinds", []):
+            for monitor_id in monitors:
+                key = (kind, monitor_id)
+                if key in selector_keys:
+                    errors.append(
+                        f"Skill selector is ambiguous: {kind}/{monitor_id or '*'}"
+                    )
+                selector_keys.add(key)
+    return errors
+
+
+def validate_source_acquisition_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    registry = load_json(root / "config" / "source-registry.json")
+    class_ids = [item.get("class_id") for item in registry.get("source_classes", [])]
+    if len(class_ids) != len(set(class_ids)):
+        errors.append("source registry has duplicate source classes")
+    known_classes = set(class_ids)
+    for path in sorted((root / "config" / "monitors").glob("*.json")):
+        monitor = load_json(path)
+        unknown = set(monitor.get("source_classes", [])) - known_classes
+        if unknown:
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} uses unknown source classes: {sorted(unknown)}"
+            )
+        for requirement in monitor.get("source_class_requirements", []):
+            requirement_unknown = set(requirement.get("one_of", [])) - known_classes
+            if requirement_unknown:
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} source requirement uses unknown "
+                    f"classes: {sorted(requirement_unknown)}"
+                )
+            if int(requirement.get("minimum_count", 0)) < 1:
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} has a non-positive Source requirement"
+                )
+        persistent_ids = [
+            item.get("persistent_query_id")
+            for item in monitor.get("persistent_query_families", [])
+        ]
+        if len(persistent_ids) != len(set(persistent_ids)):
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} has duplicate persistent query IDs"
+            )
+        for persistent in monitor.get("persistent_query_families", []):
+            if not persistent.get("persistent_query_id") or not persistent.get("query"):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} has an incomplete persistent query"
+                )
+            persistent_unknown = set(persistent.get("source_classes", [])) - known_classes
+            if persistent_unknown or not persistent.get("source_classes"):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query has invalid "
+                    f"Source classes: {sorted(persistent_unknown)}"
+                )
+            promotion = persistent.get("promotion_evidence", {})
+            effectiveness_ref = promotion.get("effectiveness_ref")
+            if not effectiveness_ref or not (root / effectiveness_ref).is_file():
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query lacks "
+                    "effectiveness evidence"
+                )
+                continue
+            effectiveness = load_json(root / effectiveness_ref)
+            matching = [
+                query
+                for query in effectiveness.get("queries", [])
+                if query.get("query_id") == promotion.get("source_followup_query_id")
+            ]
+            source_plan_ref = effectiveness.get("followup_plan_snapshot_ref")
+            source_plan = (
+                load_json(root / source_plan_ref)
+                if source_plan_ref and (root / source_plan_ref).is_file()
+                else {}
+            )
+            source_queries = [
+                query
+                for query in source_plan.get("queries", [])
+                if query.get("query_id") == promotion.get("source_followup_query_id")
+            ]
+            if (
+                effectiveness.get("run_id") != promotion.get("effective_run_id")
+                or len(matching) != 1
+                or matching[0].get("effective") is not True
+                or len(source_queries) != 1
+                or persistent.get("query") != source_queries[0].get("query")
+                or persistent.get("source_classes")
+                != source_queries[0].get("source_classes")
+            ):
+                errors.append(
+                    f"monitor {monitor.get('monitor_id')} persistent query promotion "
+                    "is not backed by an effective query"
+                )
+        slots = int(monitor.get("discovery_slots_per_query", 1))
+        minimum_per_query = int(monitor.get("minimum_sources_per_query", 1))
+        if slots < minimum_per_query:
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} cannot meet minimum sources per query"
+            )
+        minimum_evidence = int(
+            monitor.get("minimum_evidence_sources_per_claim", 2)
+        )
+        if (
+            monitor.get("query_families")
+            and monitor.get("synthesis_product") != "center-profile"
+            and slots < minimum_evidence
+        ):
+            errors.append(
+                f"monitor {monitor.get('monitor_id')} cannot meet minimum Evidence "
+                "sources per Claim"
+            )
+    policy = load_json(root / "config" / "acquisition-policy.json")
+    required_rights_states = {
+        "permitted",
+        "prohibited",
+        "restricted",
+        "not-stated",
+        "not-applicable",
+    }
+    missing_states = required_rights_states - set(policy.get("rights_rules", {}))
+    if missing_states:
+        errors.append(f"acquisition policy lacks rights states: {sorted(missing_states)}")
+    if policy.get("maximum_candidate_passage_characters", 0) < 1:
+        errors.append("acquisition policy must limit candidate passage length")
+    scope = load_json(root / "config" / "global-technology-scope.json")
+    taxonomy = scope.get("coverage_taxonomy", {})
+    required = taxonomy.get("required_for_initial_cycle", {})
+    for dimension in (
+        "world_regions",
+        "technology_categories",
+        "organization_types",
+        "maturity_signals",
+        "result_signals",
+    ):
+        values = taxonomy.get(dimension, [])
+        if not values or len(values) != len(set(values)):
+            errors.append(f"global coverage taxonomy is empty or duplicated: {dimension}")
+        unknown_required = set(required.get(dimension, [])) - set(values)
+        if unknown_required:
+            errors.append(
+                f"global coverage requirements use unknown {dimension}: {sorted(unknown_required)}"
+            )
+    global_monitor = load_json(
+        root / "config" / "monitors" / "MON-GLOBAL-TECH-001.json"
+    )
+    if global_monitor.get("scope_ref") != "config/global-technology-scope.json":
+        errors.append("global technology Monitor does not pin the canonical scope")
+    return errors
+
+
+def validate_center_registry(root: Path) -> list[str]:
+    errors: list[str] = []
+    registry_ref = "config/hpci-center-registry.json"
+    registry = load_json(root / registry_ref)
+    center_ids = [center.get("center_id") for center in registry.get("centers", [])]
+    if len(center_ids) != len(set(center_ids)):
+        errors.append("HPCI center registry has duplicate center IDs")
+    if len(center_ids) < 10:
+        errors.append("HPCI center registry unexpectedly contains fewer than ten providers")
+    default_fields = set(registry.get("default_profile_fields", []))
+    if len(default_fields) != len(registry.get("default_profile_fields", [])):
+        errors.append("HPCI center registry has duplicate default profile fields")
+    for center in registry.get("centers", []):
+        if not all(center.get(key) for key in ("center_id", "name_ja", "name_en", "official_url")):
+            errors.append(f"HPCI center registry entry is incomplete: {center.get('center_id')}")
+    monitor = load_json(root / "config" / "monitors" / "MON-HPCI-CENTERS-001.json")
+    if monitor.get("subject_registry_ref") != registry_ref:
+        errors.append("HPCI center Monitor does not reference the canonical registry")
+    template_ids = [
+        item.get("template_id") for item in monitor.get("subject_query_templates", [])
+    ]
+    if len(template_ids) != len(set(template_ids)):
+        errors.append("HPCI center Monitor has duplicate subject query template IDs")
+    covered_fields = {
+        field
+        for item in monitor.get("subject_query_templates", [])
+        for field in item.get("profile_fields", [])
+    }
+    if covered_fields != default_fields or set(monitor.get("profile_fields", [])) != default_fields:
+        errors.append("HPCI center Monitor query templates do not cover every profile field")
+    if int(monitor.get("profile_max_age_days", 0)) < 1:
+        errors.append("HPCI center Monitor must define a positive profile freshness limit")
+    if monitor.get("synthesis_product") != "center-profile":
+        errors.append("HPCI center Monitor must synthesize center profiles")
+    return errors
+
+
+def validate_runtime_artifacts(root: Path) -> list[str]:
+    errors: list[str] = []
+    for manifest_path in sorted((root / "runs").glob("RUN-*/manifest.json")):
+        manifest = load_json(manifest_path)
+        run_id = manifest.get("run_id")
+        if manifest_path.parent.name != run_id:
+            errors.append(f"Run manifest path does not match run_id: {manifest_path}")
+            continue
+        queue_dir = root / "queue" / run_id
+        work_paths = sorted(queue_dir.glob("WORK-*.json"))
+        work_items = [load_json(path) for path in work_paths]
+        actual_ids = [item.get("work_item_id") for item in work_items]
+        if actual_ids != manifest.get("work_item_ids", []):
+            errors.append(f"Run {run_id} manifest Work Item IDs differ from queue files")
+        idempotency_keys = [item.get("idempotency_key") for item in work_items]
+        if len(idempotency_keys) != len(set(idempotency_keys)):
+            errors.append(f"Run {run_id} has duplicate Work Item idempotency keys")
+        for path, item in zip(work_paths, work_items, strict=True):
+            if path.stem != item.get("work_item_id") or item.get("run_id") != run_id:
+                errors.append(f"Work Item identity mismatch: {path.relative_to(root)}")
+            skill = item.get("skill")
+            if skill:
+                pinned = manifest.get("skill_snapshots", {}).get(skill.get("source_ref"))
+                if not pinned or any(
+                    skill.get(key) != pinned.get(key)
+                    for key in ("skill_id", "version", "snapshot_ref", "digest")
+                ):
+                    errors.append(
+                        f"Work Item Skill differs from Run snapshot: {path.relative_to(root)}"
+                    )
+            if item.get("status") != "completed":
+                continue
+            for output_ref, expected_digest in item.get("output_digests", {}).items():
+                output_path = root / output_ref
+                if not output_path.is_file():
+                    errors.append(f"completed Work Item output is missing: {output_ref}")
+                    continue
+                actual_digest = hashlib.sha256(output_path.read_bytes()).hexdigest()
+                if actual_digest != expected_digest:
+                    errors.append(f"completed Work Item output digest changed: {output_ref}")
+        if manifest.get("cost") is not None and manifest.get("status") in {
+            "completed",
+            "partial",
+            "failed",
+            "cancelled",
+            "stopped",
+        }:
+            expected_cost = usage_summary_from_items(work_items)
+            if manifest.get("cost") != expected_cost:
+                errors.append(f"Run {run_id} cost summary differs from Work Item usage")
+        receipt_ids = [item.get("query_receipt_id") for item in manifest.get("query_receipts", [])]
+        if len(receipt_ids) != len(set(receipt_ids)):
+            errors.append(f"Run {run_id} has duplicate Query Receipt IDs")
+        previous_run_id = manifest.get("previous_run_id")
+        if previous_run_id:
+            previous_path = root / "runs" / previous_run_id / "manifest.json"
+            if not previous_path.is_file():
+                errors.append(f"Run {run_id} predecessor is missing: {previous_run_id}")
+            else:
+                previous = load_json(previous_path)
+                if previous.get("status") != "completed":
+                    errors.append(f"Run {run_id} predecessor is not completed")
+                if (
+                    previous.get("task_id") != manifest.get("task_id")
+                    or previous.get("monitor_id") != manifest.get("monitor_id")
+                ):
+                    errors.append(f"Run {run_id} predecessor scope differs")
+                if previous.get("started_at", "") >= manifest.get("started_at", ""):
+                    errors.append(f"Run {run_id} predecessor is not earlier")
+        change_report_ref = manifest.get("change_report_ref")
+        if change_report_ref:
+            change_report_path = root / change_report_ref
+            if not change_report_path.is_file():
+                errors.append(f"Run {run_id} change report is missing: {change_report_ref}")
+            else:
+                change_report = load_json(change_report_path)
+                if change_report.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} change report identity differs")
+                if change_report.get("previous_run_id") != manifest.get(
+                    "previous_run_id"
+                ):
+                    errors.append(f"Run {run_id} previous Run identity differs")
+        dependency_impact_ref = manifest.get("dependency_impact_ref")
+        if dependency_impact_ref:
+            impact_path = root / dependency_impact_ref
+            if not impact_path.is_file():
+                errors.append(
+                    f"Run {run_id} dependency impact report is missing: {dependency_impact_ref}"
+                )
+            else:
+                impact = load_json(impact_path)
+                if impact.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} dependency impact identity differs")
+                if impact.get("previous_run_id") != manifest.get("previous_run_id"):
+                    errors.append(f"Run {run_id} dependency impact predecessor differs")
+                if impact.get("summary") != manifest.get("metrics", {}).get(
+                    "dependency_impact"
+                ):
+                    errors.append(f"Run {run_id} dependency impact metrics differ")
+        promotion_readiness_ref = manifest.get("promotion_readiness_ref")
+        if promotion_readiness_ref:
+            promotion_path = root / promotion_readiness_ref
+            if not promotion_path.is_file():
+                errors.append(
+                    f"Run {run_id} promotion readiness report is missing: {promotion_readiness_ref}"
+                )
+            else:
+                promotion = load_json(promotion_path)
+                if promotion.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} promotion readiness identity differs")
+                if promotion.get("summary") != manifest.get("metrics", {}).get(
+                    "promotion_readiness"
+                ):
+                    errors.append(f"Run {run_id} promotion readiness metrics differ")
+        readiness_ref = manifest.get("consensus_readiness_ref")
+        if readiness_ref:
+            readiness_path = root / readiness_ref
+            if not readiness_path.is_file():
+                errors.append(
+                    f"Run {run_id} Consensus readiness report is missing: {readiness_ref}"
+                )
+            else:
+                readiness = load_json(readiness_path)
+                if readiness.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} Consensus readiness identity differs")
+                if readiness.get("status") != manifest.get("metrics", {}).get(
+                    "consensus_readiness"
+                ):
+                    errors.append(f"Run {run_id} Consensus readiness status differs")
+        continuity_ref = manifest.get("profile_continuity_ref")
+        if continuity_ref:
+            continuity_path = root / continuity_ref
+            if not continuity_path.is_file():
+                errors.append(
+                    f"Run {run_id} profile continuity report is missing: {continuity_ref}"
+                )
+            else:
+                continuity = load_json(continuity_path)
+                continuity_metric = manifest.get("metrics", {}).get(
+                    "profile_continuity", {}
+                )
+                if continuity.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} profile continuity identity differs")
+                if continuity.get("status") != continuity_metric.get("status"):
+                    errors.append(f"Run {run_id} profile continuity status differs")
+                if continuity.get("regression_count") != continuity_metric.get(
+                    "regression_count"
+                ):
+                    errors.append(
+                        f"Run {run_id} profile continuity regression count differs"
+                    )
+        effectiveness_ref = manifest.get("followup_effectiveness_ref")
+        if effectiveness_ref:
+            effectiveness_path = root / effectiveness_ref
+            if not effectiveness_path.is_file():
+                errors.append(
+                    f"Run {run_id} follow-up effectiveness report is missing: {effectiveness_ref}"
+                )
+            else:
+                effectiveness = load_json(effectiveness_path)
+                effectiveness_metric = manifest.get("metrics", {}).get(
+                    "followup_effectiveness", {}
+                )
+                if effectiveness.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} follow-up effectiveness identity differs")
+                if effectiveness.get("status") != effectiveness_metric.get("status"):
+                    errors.append(f"Run {run_id} follow-up effectiveness status differs")
+                if effectiveness.get("effective_query_count") != effectiveness_metric.get(
+                    "effective_query_count"
+                ):
+                    errors.append(
+                        f"Run {run_id} follow-up effectiveness count differs"
+                    )
+        temporal_ref = manifest.get("temporal_integrity_ref")
+        if temporal_ref:
+            temporal_path = root / temporal_ref
+            if not temporal_path.is_file():
+                errors.append(f"Run {run_id} temporal integrity report is missing: {temporal_ref}")
+            else:
+                temporal = load_json(temporal_path)
+                temporal_metric = manifest.get("metrics", {}).get("temporal_integrity", {})
+                if temporal.get("run_id") != run_id:
+                    errors.append(f"Run {run_id} temporal integrity identity differs")
+                if temporal.get("status") != temporal_metric.get("status"):
+                    errors.append(f"Run {run_id} temporal integrity status differs")
+                if temporal.get("anomaly_count") != temporal_metric.get("anomaly_count"):
+                    errors.append(f"Run {run_id} temporal integrity anomaly count differs")
+        snapshots = manifest.get("configuration_snapshots", {})
+        for source_ref, expected_digest in manifest.get("policy_hashes", {}).items():
+            snapshot_ref = snapshots.get(source_ref)
+            if not snapshot_ref:
+                continue
+            snapshot_path = root / snapshot_ref
+            if not snapshot_path.is_file():
+                errors.append(f"Run {run_id} configuration snapshot is missing: {snapshot_ref}")
+            else:
+                snapshot_digest = hashlib.sha256(
+                    json.dumps(
+                        load_json(snapshot_path),
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ).hexdigest()
+                if snapshot_digest != expected_digest:
+                    errors.append(
+                        f"Run {run_id} configuration snapshot digest differs: {snapshot_ref}"
+                    )
+        for source_ref, skill in manifest.get("skill_snapshots", {}).items():
+            snapshot_ref = skill.get("snapshot_ref")
+            snapshot_path = root / str(snapshot_ref)
+            if not snapshot_path.is_file():
+                errors.append(f"Run {run_id} Skill snapshot is missing: {snapshot_ref}")
+                continue
+            actual_digest = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+            if actual_digest != skill.get("digest"):
+                errors.append(f"Run {run_id} Skill snapshot digest differs: {source_ref}")
+        directive_snapshots = manifest.get("directive_snapshots", {})
+        for source_ref, expected_digest in manifest.get("directive_hashes", {}).items():
+            snapshot_ref = directive_snapshots.get(source_ref)
+            if not snapshot_ref or not (root / snapshot_ref).is_file():
+                errors.append(f"Run {run_id} Directive snapshot is missing: {source_ref}")
+                continue
+            actual_digest = hashlib.sha256(
+                json.dumps(
+                    load_json(root / snapshot_ref),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if actual_digest != expected_digest:
+                errors.append(
+                    f"Run {run_id} Directive snapshot digest differs: {snapshot_ref}"
+                )
+            directive_id = Path(source_ref).stem
+            receipt_ref = f"runs/{run_id}/directives/{directive_id}.json"
+            receipt_path = root / receipt_ref
+            if not receipt_path.is_file():
+                continue
+            receipt = load_json(receipt_path)
+            snapshot = load_json(root / snapshot_ref)
+            if (
+                receipt.get("directive_id") != directive_id
+                or receipt.get("run_id") != run_id
+                or receipt.get("status") != "applied"
+                or receipt.get("directive_digest") != stable_digest(snapshot)
+                or receipt.get("instruction_digest")
+                != stable_digest(snapshot.get("instruction"))
+            ):
+                errors.append(f"Run {run_id} Directive application receipt differs: {receipt_ref}")
+            work_ref = (
+                root
+                / "queue"
+                / run_id
+                / f"{receipt.get('work_item_id', '')}.json"
+            )
+            if not work_ref.is_file():
+                errors.append(f"Run {run_id} Directive Work Item is missing: {receipt_ref}")
+            else:
+                work_item = load_json(work_ref)
+                if (
+                    work_item.get("kind") != "apply-directive"
+                    or work_item.get("payload", {}).get("directive_id") != directive_id
+                    or receipt_ref not in work_item.get("output_refs", [])
+                ):
+                    errors.append(
+                        f"Run {run_id} Directive receipt is not bound to its Work Item: {receipt_ref}"
+                    )
+
+    source_ids_by_run: dict[str, list[str]] = {}
+    content_hash_origins: dict[tuple[str, str], dict[str, list[str]]] = {}
+    for path in sorted((root / "proposals" / "sources").glob("RUN-*/*.json")):
+        result = load_json(path)
+        if result.get("run_id") != path.parent.name:
+            errors.append(f"Source result Run mismatch: {path.relative_to(root)}")
+        if result.get("work_item_id") != path.stem:
+            errors.append(f"Source result Work Item mismatch: {path.relative_to(root)}")
+        if result.get("object_type") == "source":
+            source_ids_by_run.setdefault(path.parent.name, []).append(
+                result.get("source_receipt", {}).get("source_id")
+            )
+        work_path = root / "queue" / path.parent.name / f"{path.stem}.json"
+        if not work_path.is_file():
+            errors.append(f"Source result Work Item is missing: {path.relative_to(root)}")
+            continue
+        work_item = load_json(work_path)
+        run_manifest_path = root / "runs" / path.parent.name / "manifest.json"
+        run_manifest = load_json(run_manifest_path) if run_manifest_path.is_file() else {}
+        strict_assignment = run_manifest.get("assignment_contract_version") == "0.2.0"
+        payload = work_item.get("payload", {})
+        query_receipt = result.get("query_receipt", {})
+        source_receipt = result.get("source_receipt", {})
+        source_lineage = result.get("source_lineage", {})
+        if source_receipt.get("schema_version") == "0.2.0":
+            expected_authority = publisher_authority(
+                source_receipt.get("canonical_url", "")
+            )
+            expected_publisher_group = (
+                f"PUB-{stable_digest(expected_authority)[:12].upper()}"
+            )
+            if source_receipt.get("publisher_authority") != expected_authority:
+                errors.append(
+                    f"Source Publisher authority is not canonical: {path.relative_to(root)}"
+                )
+            if source_receipt.get("publisher_group_id") != expected_publisher_group:
+                errors.append(
+                    f"Source Publisher Group is not authority-derived: {path.relative_to(root)}"
+                )
+        if source_lineage.get("schema_version") == "0.2.0":
+            origin_url = source_lineage.get("canonical_origin_url", "")
+            policy_path = (
+                root
+                / "runs"
+                / path.parent.name
+                / "inputs"
+                / "config"
+                / "acquisition-policy.json"
+            )
+            try:
+                policy = load_json(policy_path if policy_path.is_file() else root / "config" / "acquisition-policy.json")
+                canonical_origin_url = canonicalize_url(origin_url, policy)
+            except (KeyError, TypeError, ValueError):
+                canonical_origin_url = None
+                errors.append(
+                    f"Source canonical Origin URL is invalid: {path.relative_to(root)}"
+                )
+            if canonical_origin_url is not None:
+                expected_origin_group = (
+                    f"ORG-{stable_digest(canonical_origin_url)[:12].upper()}"
+                )
+                if canonical_origin_url != origin_url:
+                    errors.append(
+                        f"Source canonical Origin URL is not canonical: {path.relative_to(root)}"
+                    )
+                if source_lineage.get("origin_group_id") != expected_origin_group:
+                    errors.append(
+                        f"Source Origin Group is not origin-derived: {path.relative_to(root)}"
+                    )
+            if source_receipt.get("origin_group_id") != source_lineage.get("origin_group_id"):
+                errors.append(
+                    f"Source Receipt and Lineage Origin Groups differ: {path.relative_to(root)}"
+                )
+            relationship = source_lineage.get("relationship")
+            if relationship == "original":
+                if origin_url != source_receipt.get("canonical_url"):
+                    errors.append(
+                        f"Original Source Origin URL differs from canonical URL: {path.relative_to(root)}"
+                    )
+                if source_lineage.get("canonical_origin_source_id") != source_receipt.get("source_id"):
+                    errors.append(
+                        f"Original Source does not identify itself as canonical origin: {path.relative_to(root)}"
+                    )
+            else:
+                if origin_url == source_receipt.get("canonical_url"):
+                    errors.append(
+                        f"Derivative Source uses itself as canonical origin: {path.relative_to(root)}"
+                    )
+                if source_receipt.get("primary_source"):
+                    errors.append(
+                        f"Derivative Source is marked primary: {path.relative_to(root)}"
+                    )
+            if (
+                source_receipt.get("source_class") == "derivative-reporting"
+                and relationship == "original"
+            ):
+                errors.append(
+                    f"Derivative reporting is marked original: {path.relative_to(root)}"
+                )
+        content_hash = source_receipt.get("retrieved_content_sha256")
+        origin_group = source_receipt.get("origin_group_id")
+        if content_hash and origin_group:
+            content_hash_origins.setdefault(
+                (path.parent.name, content_hash), {}
+            ).setdefault(origin_group, []).append(str(path.relative_to(root)))
+        if strict_assignment and work_item.get("kind") != "source-discovery":
+            errors.append(f"Source result belongs to a non-discovery Work Item: {path.relative_to(root)}")
+        if strict_assignment and query_receipt.get("query") != payload.get("query"):
+            errors.append(f"Source result query differs from its assignment: {path.relative_to(root)}")
+        expected_scope = (
+            {
+                key: payload[key]
+                for key in ("subject_ids", "profile_fields", "query_template_id")
+                if key in payload
+            }
+            if payload.get("subject_ids")
+            else {}
+        )
+        if result.get("object_type") == "discovery_no_result":
+            if strict_assignment and not language_in_scope(
+                query_receipt.get("language"), payload.get("languages", [])
+            ):
+                errors.append(
+                    f"No-result language differs from its assignment: {path.relative_to(root)}"
+                )
+            if strict_assignment and result.get("assignment_scope", {}) != expected_scope:
+                errors.append(
+                    f"No-result subject scope differs from its assignment: {path.relative_to(root)}"
+                )
+            continue
+        if strict_assignment and source_receipt.get("source_class") not in payload.get("source_classes", []):
+            errors.append(f"Source result class differs from its assignment: {path.relative_to(root)}")
+        if strict_assignment and not language_in_scope(
+            source_receipt.get("language"), payload.get("languages", [])
+        ):
+            errors.append(f"Source result language differs from its assignment: {path.relative_to(root)}")
+        if strict_assignment and source_receipt.get("assignment_scope", {}) != expected_scope:
+            errors.append(f"Source result subject scope differs from its assignment: {path.relative_to(root)}")
+    for (run_id, content_hash), origins in sorted(content_hash_origins.items()):
+        if len(origins) > 1:
+            refs = sorted(ref for paths in origins.values() for ref in paths)
+            errors.append(
+                "Identical Source content is assigned to multiple Origin Groups "
+                f"in {run_id} ({content_hash[:12]}): {', '.join(refs)}"
+            )
+    for path in sorted((root / "proposals" / "evidence").glob("RUN-*/*.json")):
+        bundle = load_json(path)
+        if bundle.get("run_id") != path.parent.name:
+            errors.append(f"Evidence bundle Run mismatch: {path.relative_to(root)}")
+        source_ref = bundle.get("source_result_ref")
+        if not source_ref or not (root / source_ref).is_file():
+            errors.append(f"Evidence bundle source result is missing: {path.relative_to(root)}")
+        elif bundle.get("schema_version") == "0.2.0":
+            source_result = load_json(root / source_ref)
+            expected_publishers = [
+                source_result.get("source_receipt", {}).get("publisher_group_id")
+            ]
+            if bundle.get("publisher_group_ids") != expected_publishers:
+                errors.append(
+                    f"Evidence bundle Publisher Group differs from Source: {path.relative_to(root)}"
+                )
+    for path in sorted((root / "proposals" / "claims").glob("RUN-*/*.json")):
+        proposal = load_json(path)
+        if proposal.get("run_id") != path.parent.name:
+            errors.append(f"Claim proposal Run mismatch: {path.relative_to(root)}")
+        bundles = []
+        for evidence_ref in proposal.get("evidence_bundle_refs", []):
+            if not (root / evidence_ref).is_file():
+                errors.append(f"Claim proposal Evidence is missing: {path.relative_to(root)}")
+            else:
+                bundles.append(load_json(root / evidence_ref))
+        if bundles:
+            expected_evidence_ids = {
+                evidence["evidence_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            expected_lineage_ids = {
+                evidence["source_lineage_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            expected_origins = {
+                origin
+                for bundle in bundles
+                for origin in bundle.get("origin_group_ids", [])
+            }
+            expected_publishers = {
+                publisher
+                for bundle in bundles
+                for publisher in bundle.get("publisher_group_ids", [])
+            }
+            candidate = proposal.get("claim_candidate", {})
+            if set(candidate.get("evidence_ids", [])) != expected_evidence_ids:
+                errors.append(f"Claim proposal Evidence IDs differ from bundles: {path.relative_to(root)}")
+            if set(candidate.get("source_lineage_ids", [])) != expected_lineage_ids:
+                errors.append(f"Claim proposal Lineage IDs differ from bundles: {path.relative_to(root)}")
+            if set(proposal.get("origin_group_ids", [])) != expected_origins:
+                errors.append(f"Claim proposal Origin Groups differ from bundles: {path.relative_to(root)}")
+            if set(proposal.get("publisher_group_ids", [])) != expected_publishers:
+                errors.append(
+                    f"Claim proposal Publisher Groups differ from bundles: {path.relative_to(root)}"
+                )
+    for path in sorted((root / "proposals" / "center-profiles").glob("RUN-*/*.json")):
+        profile = load_json(path)
+        if profile.get("run_id") != path.parent.name:
+            errors.append(f"Center Profile Run mismatch: {path.relative_to(root)}")
+        bundle_refs = profile.get("evidence_bundle_refs")
+        if bundle_refs:
+            bundles: list[dict[str, Any]] = []
+            for bundle_ref in bundle_refs:
+                bundle_path = root / bundle_ref
+                if not bundle_path.is_file():
+                    errors.append(
+                        f"Center Profile Evidence bundle is missing: {path.relative_to(root)}"
+                    )
+                else:
+                    bundles.append(load_json(bundle_path))
+            evidence_ids = set(profile.get("evidence_refs", []))
+            bundle_evidence_ids = {
+                evidence["evidence_id"]
+                for bundle in bundles
+                for evidence in bundle.get("evidence_candidates", [])
+            }
+            if not evidence_ids <= bundle_evidence_ids:
+                errors.append(
+                    f"Center Profile Evidence IDs are not covered by bundles: {path.relative_to(root)}"
+                )
+            evidence_run_ids = {
+                bundle.get("run_id")
+                for bundle in bundles
+                if any(
+                    evidence.get("evidence_id") in evidence_ids
+                    for evidence in bundle.get("evidence_candidates", [])
+                )
+            }
+            if set(profile.get("evidence_run_ids", [])) != evidence_run_ids:
+                errors.append(
+                    f"Center Profile Evidence Run IDs differ from bundles: {path.relative_to(root)}"
+                )
+        predecessor = profile.get("predecessor")
+        if predecessor:
+            predecessor_path = root / predecessor.get("profile_ref", "")
+            if not predecessor_path.is_file():
+                errors.append(
+                    f"Center Profile predecessor is missing: {path.relative_to(root)}"
+                )
+                continue
+            predecessor_profile = load_json(predecessor_path)
+            predecessor_digest = hashlib.sha256(
+                json.dumps(
+                    predecessor_profile,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if predecessor.get("profile_digest") != predecessor_digest:
+                errors.append(
+                    f"Center Profile predecessor digest differs: {path.relative_to(root)}"
+                )
+            if predecessor_profile.get("run_id") != predecessor.get("run_id"):
+                errors.append(
+                    f"Center Profile predecessor Run differs: {path.relative_to(root)}"
+                )
+            if predecessor_profile.get("center_id") != profile.get("center_id"):
+                errors.append(
+                    f"Center Profile predecessor center differs: {path.relative_to(root)}"
+                )
+            for field in predecessor.get("inherited_fields", []):
+                if profile.get(field) != predecessor_profile.get(field):
+                    errors.append(
+                        f"Center Profile inherited field differs from predecessor: "
+                        f"{path.relative_to(root)}#{field}"
+                    )
+    assessments_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
+    for path in sorted((root / "assessments").glob("RUN-*/**/*.json")):
+        assessment = load_json(path)
+        run_id = path.relative_to(root / "assessments").parts[0]
+        if assessment.get("run_id") != run_id:
+            errors.append(f"Assessment Run mismatch: {path.relative_to(root)}")
+        manifest_path = root / "runs" / assessment.get("run_id", "") / "manifest.json"
+        registry_path = root / "config" / "agent-registry.json"
+        if manifest_path.is_file():
+            manifest = load_json(manifest_path)
+            snapshot_ref = manifest.get("configuration_snapshots", {}).get(
+                "config/agent-registry.json"
+            )
+            if snapshot_ref:
+                registry_path = root / snapshot_ref
+        if registry_path.is_file():
+            registry = load_json(registry_path)
+            registry_digest = hashlib.sha256(
+                json.dumps(
+                    registry,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            if assessment.get("agent_registry_digest") != registry_digest:
+                errors.append(
+                    f"Assessment registry digest differs from Run snapshot: {path.relative_to(root)}"
+                )
+        assessments_by_run_and_id[(run_id, assessment.get("assessment_id"))] = assessment
+    proposals_by_run_and_id: dict[tuple[str, str], dict[str, Any]] = {}
+    for path in sorted((root / "proposals").glob("**/*.json")):
+        proposal = load_json(path)
+        run_id = proposal.get("run_id")
+        proposal_id = proposal.get("proposal_id")
+        if not run_id or not proposal_id:
+            continue
+        key = (run_id, proposal_id)
+        if key in proposals_by_run_and_id:
+            errors.append(
+                f"Duplicate Proposal ID in Run: {run_id}/{proposal_id}"
+            )
+        proposals_by_run_and_id[key] = proposal
+    for path in sorted((root / "decisions").glob("RUN-*/*.json")):
+        decision = load_json(path)
+        run_id = path.parent.name
+        proposal = proposals_by_run_and_id.get((run_id, decision.get("proposal_id")))
+        if proposal is None:
+            errors.append(f"Decision Proposal is missing: {path.relative_to(root)}")
+        elif proposal.get("object_type") != decision.get("object_type"):
+            errors.append(
+                f"Decision Proposal object type differs: {path.relative_to(root)}"
+            )
+        for assessment_id in decision.get("assessment_ids", []):
+            assessment = assessments_by_run_and_id.get((run_id, assessment_id))
+            if assessment is None:
+                errors.append(f"Decision Assessment is missing: {path.relative_to(root)}")
+            elif assessment.get("proposal_id") != decision.get("proposal_id"):
+                errors.append(f"Decision Assessment targets another proposal: {path.relative_to(root)}")
+        manifest_path = root / "runs" / run_id / "manifest.json"
+        if manifest_path.is_file():
+            manifest = load_json(manifest_path)
+            registry_ref = manifest.get("configuration_snapshots", {}).get(
+                "config/agent-registry.json"
+            )
+            if registry_ref:
+                registry = load_json(root / registry_ref)
+                registry_digest = hashlib.sha256(
+                    json.dumps(
+                        registry,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                ).hexdigest()
+                if decision.get("agent_registry_digest") != registry_digest:
+                    errors.append(
+                        f"Decision registry digest differs from Run snapshot: {path.relative_to(root)}"
+                    )
     return errors
 
 
@@ -359,26 +1517,289 @@ def validate_scenario_configuration(root: Path) -> list[str]:
     return errors
 
 
+def validate_activation_configuration(root: Path) -> list[str]:
+    errors: list[str] = []
+    policy = load_json(root / "config" / "activation-policy.json")
+    attestations = load_json(root / "config" / "owner-controls.json")
+
+    def unique_ids(items: list[dict[str, Any]], label: str) -> set[str]:
+        values = [item.get("control_id", "") for item in items]
+        if len(values) != len(set(values)):
+            errors.append(f"activation configuration has duplicate {label} control IDs")
+        return set(values)
+
+    workflow_ids = unique_ids(policy.get("required_workflow_gates", []), "workflow")
+    component_ids = unique_ids(
+        policy.get("required_production_components", []), "component"
+    )
+    if workflow_ids & component_ids:
+        errors.append("activation workflow and component control IDs overlap")
+
+    required_owner = policy.get("required_owner_controls", [])
+    if len(required_owner) != len(set(required_owner)):
+        errors.append("activation policy has duplicate owner control IDs")
+    attested_owner = unique_ids(attestations.get("controls", []), "owner")
+    if set(required_owner) != attested_owner:
+        errors.append("owner-control attestations differ from activation policy")
+
+    path_items = [
+        (item.get("workflow_ref", ""), item.get("variable", ""))
+        for item in policy.get("required_workflow_gates", [])
+    ]
+    path_items.extend(
+        (item.get("path", ""), None)
+        for item in policy.get("required_production_components", [])
+    )
+    for ref, variable in path_items:
+        parts = Path(ref).parts
+        if not ref or Path(ref).is_absolute() or ".." in parts:
+            errors.append(f"activation reference is not repository-relative: {ref}")
+            continue
+        if variable:
+            path = root / ref
+            if not path.is_file() or variable not in path.read_text(encoding="utf-8"):
+                errors.append(f"activation workflow lacks declared gate {variable}: {ref}")
+    return errors
+
+
+def validate_codeowners(root: Path) -> list[str]:
+    errors: list[str] = []
+    path = root / ".github" / "CODEOWNERS"
+    rules: dict[str, list[str]] = {}
+    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split()
+        if len(fields) < 2 or not all(owner.startswith("@") for owner in fields[1:]):
+            errors.append(f"CODEOWNERS line {line_number} lacks a valid owner")
+            continue
+        if fields[0] in rules:
+            errors.append(f"CODEOWNERS has duplicate pattern: {fields[0]}")
+        rules[fields[0]] = fields[1:]
+    required_patterns = {
+        "/AGENTS.md",
+        "/.github/**",
+        "/config/**",
+        "/schemas/**",
+        "/skills/**",
+        "/tools/**",
+        "/docs/policies/**",
+        "/docs/security/**",
+        "/data/**",
+        "/knowledge/**",
+        "/roadmaps/**",
+        "/reports/**",
+        "/reviews/directives/**",
+        "/reviews/run-approvals/**",
+        "/LICENSE",
+        "/NOTICE",
+        "/requirements-validation.txt",
+    }
+    missing = sorted(required_patterns - set(rules))
+    if missing:
+        errors.append(f"CODEOWNERS lacks protected control-plane patterns: {missing}")
+    return errors
+
+
+def validate_canonical_claims(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in sorted((root / "knowledge" / "claims").glob("CLM-*.json")):
+        record = load_json(path)
+        claim = record.get("claim", {})
+        provenance = record.get("provenance", {})
+        claim_id = record.get("canonical_claim_id")
+        relative = path.relative_to(root)
+        if path.stem != claim_id or claim.get("claim_id") != claim_id:
+            errors.append(f"Canonical Claim identity differs: {relative}")
+        if claim.get("status") != "accepted":
+            errors.append(f"Canonical Claim is not accepted: {relative}")
+        expected_promotion_digest = stable_digest(
+            {"claim": claim, "provenance": provenance}
+        )
+        if record.get("promotion_digest") != expected_promotion_digest:
+            errors.append(f"Canonical Claim promotion digest differs: {relative}")
+
+        proposal_ref = provenance.get("proposal_ref", "")
+        decision_ref = provenance.get("decision_ref", "")
+        proposal_path = root / proposal_ref
+        decision_path = root / decision_ref
+        if not proposal_path.is_file():
+            errors.append(f"Canonical Claim Proposal is missing: {relative}")
+            continue
+        if not decision_path.is_file():
+            errors.append(f"Canonical Claim Decision is missing: {relative}")
+            continue
+        proposal = load_json(proposal_path)
+        decision = load_json(decision_path)
+        if provenance.get("proposal_digest") != stable_digest(proposal):
+            errors.append(f"Canonical Claim Proposal digest differs: {relative}")
+        if provenance.get("decision_digest") != stable_digest(decision):
+            errors.append(f"Canonical Claim Decision digest differs: {relative}")
+        if (
+            decision.get("proposal_id") != proposal.get("proposal_id")
+            or decision.get("outcome") != "accepted"
+        ):
+            errors.append(f"Canonical Claim Decision is not accepted for Proposal: {relative}")
+        if provenance.get("policy_id") != decision.get("policy_id"):
+            errors.append(f"Canonical Claim Policy identity differs: {relative}")
+        if proposal.get("claim_candidate", {}).get("claim_id") != claim_id:
+            errors.append(f"Canonical Claim Proposal identity differs: {relative}")
+
+        bundle_refs = provenance.get("evidence_bundle_refs", [])
+        if bundle_refs != proposal.get("evidence_bundle_refs", []):
+            errors.append(f"Canonical Claim Evidence references differ: {relative}")
+        declared_digests = provenance.get("evidence_bundle_digests", {})
+        if set(declared_digests) != set(bundle_refs):
+            errors.append(f"Canonical Claim Evidence digest keys differ: {relative}")
+        for bundle_ref in bundle_refs:
+            bundle_path = root / bundle_ref
+            if not bundle_path.is_file():
+                errors.append(
+                    f"Canonical Claim Evidence bundle is missing: {bundle_ref}"
+                )
+            elif declared_digests.get(bundle_ref) != stable_digest(
+                load_json(bundle_path)
+            ):
+                errors.append(
+                    f"Canonical Claim Evidence bundle digest differs: {bundle_ref}"
+                )
+    return errors
+
+
+def validate_claim_status_events(root: Path) -> list[str]:
+    errors: list[str] = []
+    seen_claim_ids: set[str] = set()
+    for path in sorted((root / "knowledge" / "claim-status").glob("CSE-*.json")):
+        event = load_json(path)
+        relative = path.relative_to(root)
+        claim_id = event.get("claim_id", "")
+        if event.get("event_id") != path.stem:
+            errors.append(f"Canonical Claim status event identity differs: {relative}")
+        if claim_id in seen_claim_ids:
+            errors.append(f"Canonical Claim has multiple terminal status events: {claim_id}")
+        seen_claim_ids.add(claim_id)
+        if not isinstance(claim_id, str) or not re.fullmatch(r"CLM-[0-9]{6}", claim_id):
+            errors.append(f"Canonical Claim status event has invalid Claim ID: {relative}")
+            continue
+
+        digest_payload = dict(event)
+        event_digest = digest_payload.pop("event_digest", None)
+        if event_digest != stable_digest(digest_payload):
+            errors.append(f"Canonical Claim status event digest differs: {relative}")
+
+        canonical_ref = event.get("canonical_claim_ref", "")
+        expected_ref = f"knowledge/claims/{claim_id}.json"
+        if canonical_ref != expected_ref:
+            errors.append(f"Canonical Claim status event reference differs: {relative}")
+        canonical_path = root / expected_ref
+        if not canonical_path.is_file():
+            errors.append(f"Status-event canonical Claim is missing: {relative}")
+        else:
+            canonical = load_json(canonical_path)
+            if event.get("canonical_claim_digest") != stable_digest(canonical):
+                errors.append(f"Status-event canonical Claim digest differs: {relative}")
+            if canonical.get("claim", {}).get("status") != "accepted":
+                errors.append(f"Status-event canonical Claim is not accepted: {relative}")
+
+        directive_ref = event.get("directive_ref", "")
+        directive_id = event.get("directive_id")
+        if not isinstance(directive_id, str) or not re.fullmatch(
+            r"DIR-[0-9]{6}", directive_id
+        ):
+            errors.append(f"Canonical status event has invalid Directive ID: {relative}")
+            continue
+        expected_directive_ref = f"reviews/directives/{directive_id}.json"
+        directive_path = root / expected_directive_ref
+        if directive_ref != expected_directive_ref:
+            errors.append(f"Canonical status Directive reference differs: {relative}")
+        if not directive_path.is_file():
+            errors.append(f"Canonical status Directive is missing: {relative}")
+            continue
+        directive = load_json(directive_path)
+        if event.get("directive_digest") != stable_digest(directive):
+            errors.append(f"Canonical status Directive digest differs: {relative}")
+        if (
+            directive.get("directive_id") != event.get("directive_id")
+            or directive.get("directive_type") != "canonical-status"
+            or directive.get("status") not in {"approved", "completed"}
+            or directive.get("public_information_confirmed") is not True
+            or directive.get("claim_targets") != [claim_id]
+        ):
+            errors.append(f"Canonical status Directive does not authorize event: {relative}")
+        if (
+            directive.get("canonical_status_action") != event.get("action")
+            or directive.get("canonical_status_reason", "").strip()
+            != event.get("reason")
+            or directive.get("replacement_claim_id")
+            != event.get("replacement_claim_id")
+        ):
+            errors.append(f"Canonical status event differs from Directive: {relative}")
+
+        replacement_id = event.get("replacement_claim_id")
+        if event.get("action") == "superseded":
+            replacement_path = root / "knowledge" / "claims" / f"{replacement_id}.json"
+            if replacement_id == claim_id or not replacement_path.is_file():
+                errors.append(f"Canonical status replacement Claim is invalid: {relative}")
+            elif load_json(replacement_path).get("claim", {}).get("status") != "accepted":
+                errors.append(f"Canonical status replacement Claim is not accepted: {relative}")
+        elif replacement_id is not None:
+            errors.append(f"Withdrawn Claim names a replacement: {relative}")
+    return errors
+
+
+def validate_knowledge_views(root: Path) -> list[str]:
+    errors: list[str] = []
+    index_path = root / "knowledge" / "claims" / "index.json"
+    tbd_path = root / "TBD.md"
+    if not index_path.is_file() or not tbd_path.is_file():
+        return errors
+    expected = build_index(root)
+    if load_json(index_path) != expected:
+        errors.append("Canonical knowledge index is stale or non-deterministic")
+    if tbd_path.read_text(encoding="utf-8") != render_tbd(expected):
+        errors.append("TBD.md differs from accepted canonical knowledge")
+    return errors
+
+
 def run(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     errors.extend(validate_required_files(root))
     errors.extend(validate_json_files(root))
     errors.extend(validate_jsonl_files(root))
+    errors.extend(validate_run_approvals(root))
+    errors.extend(validate_issue_payloads(root))
     if (root / "schemas").exists():
         errors.extend(validate_schema_headers(root))
     errors.extend(validate_workflow_action_pins(root))
+    if (root / ".github" / "CODEOWNERS").exists():
+        errors.extend(validate_codeowners(root))
     if (root / "config" / "consensus-policy.json").exists():
         errors.extend(validate_consensus_configuration(root))
+    if (root / "config" / "budgets.json").exists():
+        errors.extend(validate_runtime_configuration(root))
+    if (root / "config" / "acquisition-policy.json").exists():
+        errors.extend(validate_source_acquisition_configuration(root))
+    if (root / "config" / "hpci-center-registry.json").exists():
+        errors.extend(validate_center_registry(root))
     if (root / "config" / "research-baseline.json").exists():
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
+    if (root / "config" / "activation-policy.json").exists():
+        errors.extend(validate_activation_configuration(root))
+    if (root / "knowledge" / "claims").exists():
+        errors.extend(validate_canonical_claims(root))
+        errors.extend(validate_claim_status_events(root))
+        errors.extend(validate_knowledge_views(root))
     if (root / "config" / "global-technology-scope.json").exists():
         errors.extend(validate_global_technology_scope(root))
     if (root / "config" / "monitors" / "MON-AUTO-TOPICS-001.json").exists():
         errors.extend(validate_research_topic_configuration(root))
     if (root / "config" / "publication-policy.json").exists():
         errors.extend(validate_publication_configuration(root))
+    if (root / "runs").exists():
+        errors.extend(validate_runtime_artifacts(root))
     return errors
 
 

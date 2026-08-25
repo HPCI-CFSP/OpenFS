@@ -22,24 +22,80 @@
     "data_connectivity",
     "unknowns"
   ],
+  "$defs": {
+    "profile_field": {
+      "type": "object",
+      "required": ["status", "summary", "as_of", "evidence_refs"],
+      "properties": {
+        "status": {"enum": ["verified", "partial", "unknown", "not-applicable"]},
+        "summary": {"type": "string"},
+        "as_of": {"type": ["string", "null"], "format": "date"},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"enum": ["verified", "partial", "not-applicable"]}}},
+          "then": {
+            "properties": {
+              "summary": {"minLength": 1},
+              "as_of": {"type": "string"},
+              "evidence_refs": {"minItems": 1}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "unknown"}}},
+          "then": {
+            "properties": {
+              "evidence_refs": {"maxItems": 0}
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
   "properties": {
     "schema_version": {"type": "string"},
+    "proposal_contract_version": {"type": "string"},
+    "proposal_id": {"type": "string", "pattern": "^PRP-CTR-[0-9]{6}$"},
+    "object_type": {"const": "center_profile"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
     "center_id": {"type": "string", "pattern": "^CENTER-[A-Z0-9-]+$"},
     "name_ja": {"type": "string", "minLength": 1},
+    "name_en": {"type": "string", "minLength": 1},
     "profile_status": {"enum": ["draft", "provisional", "reviewed", "accepted", "stale"]},
     "evidence_as_of": {"type": "string", "format": "date"},
     "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
-    "users": {"type": "object"},
-    "priority_domains": {"type": "array", "items": {"type": "string"}, "minItems": 1},
-    "current_system": {"type": "object"},
-    "refresh_window": {"type": "object"},
-    "power": {"type": "object"},
-    "facility": {"type": "object"},
-    "software": {"type": "object"},
-    "operations": {"type": "object"},
-    "migration": {"type": "object"},
-    "data_connectivity": {"type": "object"},
-    "unknowns": {"type": "array", "items": {"type": "string"}}
+    "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "evidence_run_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "origin_group_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "has_primary_source": {"type": "boolean"},
+    "predecessor": {
+      "type": "object",
+      "required": ["run_id", "profile_ref", "profile_digest", "inherited_fields"],
+      "properties": {
+        "run_id": {"type": "string"},
+        "profile_ref": {"type": "string"},
+        "profile_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "inherited_fields": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "users": {"$ref": "#/$defs/profile_field"},
+    "priority_domains": {"$ref": "#/$defs/profile_field"},
+    "current_system": {"$ref": "#/$defs/profile_field"},
+    "refresh_window": {"$ref": "#/$defs/profile_field"},
+    "power": {"$ref": "#/$defs/profile_field"},
+    "facility": {"$ref": "#/$defs/profile_field"},
+    "software": {"$ref": "#/$defs/profile_field"},
+    "operations": {"$ref": "#/$defs/profile_field"},
+    "migration": {"$ref": "#/$defs/profile_field"},
+    "data_connectivity": {"$ref": "#/$defs/profile_field"},
+    "unknowns": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "created_by_agent_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"}
   },
   "additionalProperties": false
 }

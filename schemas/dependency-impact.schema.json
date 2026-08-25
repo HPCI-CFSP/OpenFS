@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/dependency-impact.schema.json",
+  "title": "OpenFS Dependency Impact Report",
+  "type": "object",
+  "required": ["schema_version", "run_id", "previous_run_id", "generated_at", "summary", "impacts", "caveat"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "previous_run_id": {"type": ["string", "null"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "summary": {
+      "type": "object",
+      "required": ["source_changes", "actionable_source_changes", "reobservation_gaps", "impacted_evidence_bundles", "impacted_claim_proposals", "impacted_center_profiles", "impacted_decisions", "promotion_blocked"],
+      "properties": {
+        "source_changes": {"type": "integer", "minimum": 0},
+        "actionable_source_changes": {"type": "integer", "minimum": 0},
+        "reobservation_gaps": {"type": "integer", "minimum": 0},
+        "impacted_evidence_bundles": {"type": "integer", "minimum": 0},
+        "impacted_claim_proposals": {"type": "integer", "minimum": 0},
+        "impacted_center_profiles": {"type": "integer", "minimum": 0},
+        "impacted_decisions": {"type": "integer", "minimum": 0},
+        "promotion_blocked": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "impacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["canonical_url", "observation_query", "classification", "source_refs", "evidence_bundle_refs", "claim_proposal_refs", "center_profile_refs", "decision_refs", "action", "promotion_blocked", "reasons"],
+        "properties": {
+          "canonical_url": {"type": "string", "format": "uri"},
+          "observation_query": {"type": ["string", "null"]},
+          "classification": {"enum": ["new", "changed", "unchanged", "unavailable", "not-observed"]},
+          "source_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "evidence_bundle_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "claim_proposal_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "center_profile_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "decision_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "action": {"enum": ["none", "reobserve", "revalidate-dependents", "verify-unavailable-and-revalidate"]},
+          "promotion_blocked": {"type": "boolean"},
+          "reasons": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "caveat": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

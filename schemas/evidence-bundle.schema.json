@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/evidence-bundle.schema.json",
+  "title": "OpenFS Evidence Extraction Bundle",
+  "type": "object",
+  "required": ["schema_version", "proposal_id", "object_type", "run_id", "work_item_id", "source_result_ref", "source_id", "origin_group_ids", "has_primary_source", "created_by_agent_id", "created_at", "evidence_candidates"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "proposal_id": {"type": "string", "pattern": "^PRP-EVD-[0-9]{6}$"},
+    "object_type": {"const": "evidence"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string"},
+    "source_result_ref": {"type": "string"},
+    "source_id": {"type": "string"},
+    "origin_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "publisher_group_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "has_primary_source": {"type": "boolean"},
+    "created_by_agent_id": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "evidence_candidates": {"type": "array", "items": {"$ref": "evidence.schema.json"}, "minItems": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "0.2.0"}}},
+      "then": {"required": ["publisher_group_ids"]}
+    }
+  ],
+  "additionalProperties": false
+}

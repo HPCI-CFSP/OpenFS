@@ -3,7 +3,7 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/decision.schema.json",
   "title": "OpenFS Decision",
   "type": "object",
-  "required": ["schema_version", "decision_id", "proposal_id", "object_type", "outcome", "policy_id", "policy_result", "decided_at"],
+  "required": ["schema_version", "decision_id", "proposal_id", "object_type", "outcome", "policy_id", "agent_registry_digest", "policy_result", "decided_at"],
   "properties": {
     "schema_version": {"type": "string"},
     "decision_id": {"type": "string"},
@@ -11,6 +11,7 @@
     "object_type": {"type": "string"},
     "outcome": {"enum": ["accepted", "provisional", "contested", "rejected"]},
     "policy_id": {"type": "string"},
+    "agent_registry_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "policy_result": {"type": "object"},
     "assessment_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "dissent_assessment_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},

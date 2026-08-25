@@ -1,0 +1,102 @@
+name: Process OpenFS Agent Handoffs
+
+on:
+  schedule:
+    - cron: "41 1 * * *"
+  workflow_dispatch:
+    inputs:
+      allow_disabled_pilot_agent:
+        description: Accept disabled registered Agents only for Pilot Runs
+        required: true
+        default: false
+        type: boolean
+      publish_pr:
+        description: Push a control branch and create a pull request
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-handoff-control
+  cancel-in-progress: false
+
+jobs:
+  process:
+    if: github.event_name == 'workflow_dispatch' || vars.OPENFS_HANDOFF_CONTROL_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out trusted default branch
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate control plane
+        run: |
+          python3 tools/validate_repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Check for an open Handoff control PR
+        id: existing
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          RESULT="$(python3 tools/publish_control_pr.py --check-only)"
+          echo "$RESULT"
+          echo "open=$(echo "$RESULT" | jq -r .existing)" >> "$GITHUB_OUTPUT"
+      - name: Process pending Handoffs
+        if: steps.existing.outputs.open != 'true'
+        env:
+          ALLOW_DISABLED_PILOT_AGENT: ${{ inputs.allow_disabled_pilot_agent }}
+        run: |
+          PROCESSED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          ARGS=(--processed-at "$PROCESSED_AT" --output _automation/handoff-control.json)
+          if [[ "$ALLOW_DISABLED_PILOT_AGENT" == "true" ]]; then
+            ARGS+=(--allow-disabled-pilot-agent)
+          fi
+          python3 tools/process_pending_handoffs.py "${ARGS[@]}"
+      - name: Upload control summary
+        if: steps.existing.outputs.open != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: openfs-handoff-control
+          path: _automation/handoff-control.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Commit control update
+        id: commit
+        if: steps.existing.outputs.open != 'true'
+        env:
+          CONTROL_BRANCH: automation/handoff-control-${{ github.run_id }}
+        run: |
+          if git diff --quiet -- queue runs reviews/exceptions; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git switch -c "$CONTROL_BRANCH"
+          git config user.name "openfs-control[bot]"
+          git config user.email "openfs-control[bot]@users.noreply.github.com"
+          git add queue runs reviews/exceptions
+          git commit -m "Accept merged OpenFS agent handoffs"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$CONTROL_BRANCH" >> "$GITHUB_OUTPUT"
+      - name: Push control branch
+        if: steps.commit.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.publish_pr == true)
+        env:
+          CONTROL_BRANCH: ${{ steps.commit.outputs.branch }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin "HEAD:${CONTROL_BRANCH}"
+      - name: Create control pull request
+        if: steps.commit.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.publish_pr == true)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 tools/publish_control_pr.py \
+            --head "${{ steps.commit.outputs.branch }}" \
+            --summary _automation/handoff-control.json

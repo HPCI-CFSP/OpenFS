@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/monitor-readiness.schema.json",
+  "title": "OpenFS Monitor Production Readiness",
+  "type": "object",
+  "required": ["schema_version", "monitor_id", "task_id", "evaluated_at", "status", "checks", "blockers", "manual_runs", "consensus", "configuration_digests", "effect"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "monitor_id": {"type": "string"},
+    "task_id": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["ready", "blocked"]},
+    "checks": {"type": "object", "additionalProperties": {"type": "boolean"}},
+    "blockers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "manual_runs": {"type": "object"},
+    "consensus": {"type": "object"},
+    "configuration_digests": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/worker-invocation.schema.json",
+  "title": "OpenFS Provider Worker Invocation",
+  "type": "object",
+  "required": ["schema_version", "invocation_id", "run_id", "work_item_id", "attempt", "agent_id", "role", "kind", "prepared_at", "provider_binding", "task", "skill", "constraints", "provenance", "invocation_digest"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "invocation_id": {"type": "string", "pattern": "^WINV-[0-9A-F]{16}$"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "agent_id": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "prepared_at": {"type": "string", "format": "date-time"},
+    "provider_binding": {
+      "type": "object",
+      "required": ["provider", "model_family", "prompt_profile", "network_access", "data_clearance"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "model_family": {"type": "string", "minLength": 1},
+        "prompt_profile": {"type": "string", "minLength": 1},
+        "network_access": {"enum": ["none", "public-web"]},
+        "data_clearance": {"const": "public"}
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "required": ["payload", "untrusted_input"],
+      "properties": {"payload": {"type": "object"}, "untrusted_input": {"const": true}},
+      "additionalProperties": false
+    },
+    "skill": {
+      "type": "object",
+      "required": ["skill_id", "version", "snapshot_ref", "digest"],
+      "properties": {
+        "skill_id": {"type": "string"},
+        "version": {"type": "string"},
+        "snapshot_ref": {"type": "string"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["information_plane", "secret_transport", "lease_expires_at", "output_paths"],
+      "properties": {
+        "information_plane": {"const": "public"},
+        "secret_transport": {"const": "environment-only-not-artifact"},
+        "lease_expires_at": {"type": "string", "format": "date-time"},
+        "output_paths": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["work_item_ref", "work_item_digest", "manifest_ref", "manifest_control_digest", "agent_registry_ref", "agent_registry_digest", "role_permissions_ref", "role_permissions_digest"],
+      "properties": {
+        "work_item_ref": {"type": "string"},
+        "work_item_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "manifest_ref": {"type": "string"},
+        "manifest_control_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "agent_registry_ref": {"type": "string"},
+        "agent_registry_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "role_permissions_ref": {"type": "string"},
+        "role_permissions_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "invocation_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

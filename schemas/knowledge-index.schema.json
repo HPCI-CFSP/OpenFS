@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/knowledge-index.schema.json",
+  "title": "OpenFS Canonical Knowledge Index",
+  "type": "object",
+  "required": ["schema_version", "as_of", "claim_count", "canonical_claim_count", "status_event_count", "knowledge_digest", "claims", "inactive_claims", "caveat"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "as_of": {"type": ["string", "null"], "format": "date-time"},
+    "claim_count": {"type": "integer", "minimum": 0},
+    "canonical_claim_count": {"type": "integer", "minimum": 0},
+    "status_event_count": {"type": "integer", "minimum": 0},
+    "knowledge_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "claim_kind", "statement", "temporal_scope", "conditions", "evidence_count", "source_lineage_count", "canonical_ref", "proposal_ref", "decision_ref", "promoted_at", "promotion_digest"],
+        "properties": {
+          "claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+          "claim_kind": {"enum": ["observed_fact", "reported_claim", "forecast", "interpretation", "recommendation"]},
+          "statement": {"type": "string", "minLength": 1},
+          "temporal_scope": {"type": "string", "minLength": 1},
+          "conditions": {"type": "array", "items": {"type": "string"}},
+          "evidence_count": {"type": "integer", "minimum": 1},
+          "source_lineage_count": {"type": "integer", "minimum": 1},
+          "canonical_ref": {"type": "string"},
+          "proposal_ref": {"type": "string"},
+          "decision_ref": {"type": "string"},
+          "promoted_at": {"type": "string", "format": "date-time"},
+          "promotion_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "inactive_claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "action", "reason", "replacement_claim_id", "status_event_ref", "directive_id", "recorded_at", "event_digest"],
+        "properties": {
+          "claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+          "action": {"enum": ["withdrawn", "superseded"]},
+          "reason": {"type": "string", "minLength": 1},
+          "replacement_claim_id": {"type": ["string", "null"], "pattern": "^CLM-[0-9]{6}$"},
+          "status_event_ref": {"type": "string"},
+          "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+          "recorded_at": {"type": "string", "format": "date-time"},
+          "event_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "caveat": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

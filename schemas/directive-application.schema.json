@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/directive-application.schema.json",
+  "title": "OpenFS Directive Application Receipt",
+  "type": "object",
+  "required": ["schema_version", "directive_id", "run_id", "work_item_id", "created_by_agent_id", "applied_at", "directive_digest", "instruction_digest", "scope", "authorization_bounds", "status"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string"},
+    "created_by_agent_id": {"type": "string"},
+    "applied_at": {"type": "string", "format": "date-time"},
+    "directive_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "instruction_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "authorization_bounds": {"type": "object"},
+    "status": {"const": "applied"}
+  },
+  "additionalProperties": false
+}

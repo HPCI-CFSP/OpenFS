@@ -1,0 +1,62 @@
+name: Build OpenFS Pages Preview
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/pages-preview.yml"
+      - "site/**"
+      - "config/publication-policy.json"
+      - "config/publication-i18n.json"
+      - "config/research-baseline.json"
+      - "config/global-technology-scope.json"
+      - "roadmaps/scenarios/accepted/**"
+      - "reports/exports/**"
+      - "reviews/directives/**"
+      - "tools/build_pages_site.py"
+      - "tools/validate_repository.py"
+      - "tests/test_pages_site.py"
+      - "LICENSE"
+      - "NOTICE"
+      - "THIRD_PARTY_NOTICES.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-pages-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pull request
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Validate public inputs
+        run: python3 tools/validate_repository.py
+      - name: Run Pages tests
+        run: python3 -m unittest tests.test_pages_site -v
+      - name: Build static preview
+        run: python3 tools/build_pages_site.py --output _site
+      - name: Add preview instructions
+        run: |
+          cat > _site/OPEN_PREVIEW.txt <<'EOF'
+          OpenFS Pages pull-request preview
+
+          1. Extract this artifact.
+          2. Open index.html in a browser, or run:
+             python3 -m http.server 8000 --directory .
+          3. Visit http://localhost:8000/.
+
+          This artifact is not deployed and cannot modify the production Pages site.
+          EOF
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: openfs-pages-preview-pr-${{ github.event.pull_request.number }}
+          path: _site
+          if-no-files-found: error
+          retention-days: 14

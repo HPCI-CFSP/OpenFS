@@ -2,9 +2,25 @@
 
 ## Current status
 
-As of 2026-08-23, the repository has policies, schemas, a deterministic Consensus Gate prototype, research catalogs, permission checks, tests, and guarded GitHub Pages publication. It does **not** yet have the production Run Controller, provider API clients, Work Item leases, or promotion pull-request workflow.
+As of 2026-08-24, the repository has a Run Controller, leased Work Items,
+configuration snapshots, Rights Gate, pinned automatic source-change detection, coverage reporting,
+Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
+review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
+Pages publication. The repository retains 18 auditable Pilot Run manifests across
+memory (`OFS-001`), HPCI center (`OFS-003`), and worldwide technology (`OFS-005`)
+scopes: 13 completed and five deliberately cancelled while the harness was being
+corrected. The latest worldwide Run, `RUN-OFS005-PILOT-010`, completed 49 Work
+Items over 16 Sources, met its declared coverage scope, passed temporal-integrity
+checks, and produced eight provisional Claim proposals. They remain provisional
+because independent provider/model Consensus capacity is not configured; Pilot
+completion must not be read as formal research acceptance.
 
-The weekly schedule and all automated research agents therefore remain disabled. Adding API keys alone does not start research. The first operational milestone is a manually dispatched `OFS-001` Pilot; the weekly schedule is enabled only after three reviewed manual Runs.
+The weekly **control-plane** schedule is implemented in
+`.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
+one deduplicated coordination Issue. It makes no model call, performs no promotion,
+and publishes no research result. Provider API clients and an unattended research
+Worker are still intentionally disabled. Adding API keys alone does not start paid
+research.
 
 ## Recommended provider arrangement
 
@@ -45,10 +61,14 @@ After the Pilot workflow defines and validates these names, add them at:
 
 | Variable | Initial value | Meaning |
 |---|---:|---|
+| `OPENFS_COORDINATOR_ENABLED` | `false` | Enables scheduled weekly plan/Issue creation only |
+| `OPENFS_HANDOFF_CONTROL_ENABLED` | `false` | Enables daily Handoff validation and control-PR preparation |
+| `OPENFS_REVIEW_ENABLED` | `false` | Enables weekly internal Digest artifacts and grouped exception Issue updates |
+| `OPENFS_PROMOTION_ENABLED` | `false` | Enables reviewed Claim-promotion PR preparation; never auto-merges |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
-| `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit |
+| `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit; increase only after inspecting the generated plan |
 | `OPENFS_OPENAI_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
 | `OPENFS_ANTHROPIC_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
 
@@ -72,6 +92,7 @@ Create a branch ruleset or branch-protection rule for `main`:
 
 - require a pull request before merge;
 - require at least one human approval;
+- require review from Code Owners for protected control-plane paths;
 - dismiss stale approvals when new commits are pushed;
 - require the `validate` and `enforce` checks;
 - require conversation resolution;
@@ -79,6 +100,11 @@ Create a branch ruleset or branch-protection rule for `main`:
 - apply the rule to administrators where organization policy allows.
 
 The scheduled agents must never push directly to `main`.
+The repository CODEOWNERS file currently assigns these paths to `@kento`. Replace
+that owner with a write-enabled HPCI-CFSP maintainer team when the team exists;
+do not remove the protected path set merely to reduce review friction. Proposal,
+Assessment, and Handoff paths are intentionally outside CODEOWNERS so ordinary
+multi-Agent research can proceed without making every artifact a human bottleneck.
 
 GitHub reference: <https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches>
 
@@ -95,15 +121,115 @@ Record these decisions in a reviewed pull request or Directive:
 
 ## Activation sequence
 
-1. Merge the manual Pilot workflow and provider adapters with `OPENFS_RESEARCH_ENABLED=false`.
-2. Add the two API secrets and the repository variables.
-3. Run a secret-presence and budget preflight that makes no paid model call.
-4. Set `OPENFS_RESEARCH_ENABLED=true` and manually dispatch `OFS-001` Run 1.
-5. Review coverage, citations, dissent, false positives, cost, and generated pull-request paths.
-6. Complete Run 2 with a changed source and Run 3 with a human Directive.
-7. Enable the weekly schedule only if all three Runs pass review; otherwise keep Pilot mode and correct the harness.
+1. Merge the weekly Coordinator while both enable variables remain `false`.
+2. Manually dispatch **OpenFS Weekly Coordinator** with `monitor_id` set to
+   `MON-MEMORY-001`, `pilot=true`, and `publish_issue=false`.
+3. Download and inspect the `openfs-weekly-cycle` artifact. This is a no-cost
+   control-plane test.
+4. Dispatch again with `publish_issue=true` and verify that a second dispatch for
+   the same ISO week reuses the same Issue.
+5. Set the repository variable `OPENFS_COORDINATOR_ENABLED=true` to enable the
+   Monday 00:17 UTC schedule. This still makes no model call.
+6. Manually run **Process OpenFS Agent Handoffs** with `publish_pr=false` after a
+   test Handoff is merged. Inspect its artifact, then test `publish_pr=true`.
+   Set `OPENFS_HANDOFF_CONTROL_ENABLED=true` only after branch protection accepts
+   its control PR and prevents direct merge without review.
+7. Manually run **Review OpenFS Weekly Results** with `publish_issues=false` and
+   inspect the internal Digest and grouped Issue payload artifact. Repeat with
+   `publish_issues=true`, verify that a second run updates rather than duplicates
+   the same managed Issues, then set `OPENFS_REVIEW_ENABLED=true`.
+   Before publishing, create repository labels `openfs-weekly-cycle`,
+   `openfs-exception`, and `needs-owner-action`; publication fails closed if a
+   required label is absent. The scheduled Review summarizes the preceding
+   completed ISO week by default, while manual dispatch may select another week.
+8. Bind `validator-public-02` and `critic-public-01` in
+   `config/agent-registry.json` to approved reviewer models. The baseline needs
+   three reviewer executions and at least two support groups independent of the
+   synthesis author. Run `tools/check_consensus_readiness.py` after configuration.
+9. Configure a cost ceiling and provider-side alerts before adding the research
+   Worker. A full 15-center cycle can require about 127 Work Items with three
+   reviewers; the repository ceiling is 200, while each Run should request the
+   smallest limit that fits its inspected plan.
+10. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
+   budget, boundary, assignment, recovery, and Consensus-capacity tests.
+11. Enable provider calls first in manual Pilot mode. Enable unattended production
+   Runs only after owner review of cost, citations, dissent, false positives, and
+   generated pull-request paths.
+12. After accepted non-Recommendation Claims exist, manually run **Prepare OpenFS
+    Claim Promotions** with `publish_pr=false` and inspect its artifact and diff.
+    Then test `publish_pr=true` and confirm branch protection requires human review.
+    Set `OPENFS_PROMOTION_ENABLED=true` only after this succeeds. The Tuesday
+    schedule prepares at most one open promotion PR and never merges it.
+13. Before relying on correction handling, create a test `canonical-status`
+    Directive for a disposable accepted Claim and run
+    `tools/record_claim_status.py` on a branch. Confirm the original record
+    remains, the active index excludes it, the status history names the human
+    Directive, a retry is idempotent, and branch protection requires review.
 
 Weekly operation should create proposal pull requests and exception Issues. It must not auto-merge canonical results or publish a scenario/report without the existing human publication Directive.
+
+Approved `research-instruction` Directives are snapshotted into the next matching
+Run. The default `application_mode` is `once`; its applied receipt prevents silent
+weekly replay. Use `application_mode: recurring` only with an explicit
+`expires_at`. A recurring Directive is included in each matching Run until that
+instant. Create a new Directive ID for a revised instruction instead of editing an
+already applied record.
+
+Production Work Item completion is fail-closed on cost accounting: every completion
+must report `cost_usd` plus a non-empty measurement note. The controller reevaluates
+the Run cap immediately after each completion, including the final Work Item, and
+stops the Run on an overage. Pilot Runs may retain `unreported` cost for harness
+testing, but Digests display it as unknown rather than zero. Provider-side hard
+spend limits remain an independent owner setup requirement.
+
+### Production readiness gate
+
+Use the aggregate procedure in `docs/operations/production-readiness.md` before
+enabling any unattended Worker. It distinguishes repository checks from
+expiring owner attestations for GitHub and provider settings.
+
+An enabled Monitor is not sufficient to start unattended production. The weekly
+Coordinator runs `tools/evaluate_monitor_readiness.py` and blocks the cycle unless:
+
+- the Monitor is enabled;
+- the budget configuration is owner-approved and has a positive per-Run cost cap;
+- the Consensus policy is calibrated and the live Agent registry has sufficient
+  enabled, independent validator and critic capacity;
+- at least `manual_run_requirement` completed Pilot Runs have passed Coverage,
+  temporal integrity, and formal Consensus, and each has a digest-pinned human
+  record under `reviews/run-approvals/`.
+
+A Pilot Run approval confirms calibration review only. It does not accept a Claim,
+Finding, Recommendation, scenario, or report. If the approved Run manifest or Brief
+changes, the digest check invalidates that approval and blocks production.
+Use `tools/prepare_run_approval.py --run-id <RUN-ID>` to create a default-deny
+review draft with pinned digests; it deliberately leaves every human check false.
+
+The Weekly Digest groups open Exceptions that share the same kind, unmet
+requirements, and publication-blocking state into one Owner Action. Every original
+Exception reference remains listed, but repeated Consensus-capacity failures do not
+create a separate review decision for each Run.
+Sanitized GitHub Issue payloads use the same grouping key, so a recurring owner
+action updates one stable deduplication marker instead of opening one Issue per Run.
+
+### Coordinator versus Worker
+
+- The **Coordinator** is the GitHub Actions schedule. It validates control data,
+  selects eligible Monitors, records prior Run IDs and pending Directives, and
+  emits a stable Issue trigger.
+- A **Worker** is a separately credentialed Codex, OpenAI API, Claude, or local
+  model execution path. It claims a cycle, creates a branch, and processes leased
+  Work Items through the Run Controller.
+- The Coordinator never receives provider secrets. A discovery or validation
+  Worker never receives publication authority. Promotion remains a separate pull
+  request path.
+- The **Handoff Controller** runs daily when enabled. It accepts merged,
+  digest-verified Agent outputs, expands deterministic follow-up Work Items, and
+  opens one control-state pull request. If a prior control PR is still open, new
+  Handoffs wait for the next cycle instead of creating a conflicting PR.
+- The **Weekly Review** job has no model-provider secret or content-write
+  permission. It emits an internal artifact and may create or update only sanitized,
+  managed GitHub Issues for currently open owner-action groups.
 
 ## Optional Codex automation
 

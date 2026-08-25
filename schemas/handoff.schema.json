@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/handoff.schema.json",
+  "title": "OpenFS Agent Handoff",
+  "type": "object",
+  "required": ["schema_version", "handoff_id", "run_id", "work_item_id", "agent_id", "attempt", "work_item_idempotency_key", "base_commit", "output_refs", "output_digests", "worker_execution", "created_at", "status"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "handoff_id": {"type": "string"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
+    "agent_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "work_item_idempotency_key": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base_commit": {"type": "string"},
+    "output_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "output_digests": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "worker_execution": {"type": "object"},
+    "usage": {"type": "object"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "status": {"const": "submitted"}
+  },
+  "additionalProperties": false
+}

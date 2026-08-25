@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/promotion-readiness.schema.json",
+  "title": "OpenFS Claim Promotion Readiness",
+  "type": "object",
+  "required": ["schema_version", "run_id", "evaluated_at", "policy_id", "policy_calibration_status", "summary", "claims", "caveat"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "policy_id": {"type": ["string", "null"]},
+    "policy_calibration_status": {"type": "string"},
+    "summary": {"type": "object"},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "claim_id", "claim_kind", "proposal_ref", "decision_ref", "status", "dependency_impact_refs", "reasons"],
+        "properties": {
+          "proposal_id": {"type": "string"},
+          "claim_id": {"type": "string", "pattern": "^CLM-[0-9]{6}$"},
+          "claim_kind": {"enum": ["observed_fact", "reported_claim", "forecast", "interpretation", "recommendation"]},
+          "proposal_ref": {"type": "string"},
+          "decision_ref": {"type": ["string", "null"]},
+          "status": {"enum": ["eligible", "already-promoted", "missing-decision", "decision-not-accepted", "decision-checks-failed", "policy-mismatch", "policy-uncalibrated", "recommendation-gate-required", "dependency-impact-blocked"]},
+          "dependency_impact_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "reasons": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "caveat": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

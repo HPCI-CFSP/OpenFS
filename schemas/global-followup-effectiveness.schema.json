@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/global-followup-effectiveness.schema.json",
+  "title": "Worldwide Coverage Follow-up Effectiveness",
+  "type": "object",
+  "required": ["schema_version", "run_id", "predecessor_run_id", "followup_plan_id", "followup_plan_snapshot_ref", "evaluated_at", "status", "query_count", "effective_query_count", "ineffective_query_count", "resolved_target_count", "unresolved_target_count", "queries"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "run_id": {"type": "string"},
+    "predecessor_run_id": {"type": "string"},
+    "followup_plan_id": {"type": "string"},
+    "followup_plan_snapshot_ref": {"type": "string"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["effective", "partially-effective", "ineffective"]},
+    "query_count": {"type": "integer", "minimum": 1},
+    "effective_query_count": {"type": "integer", "minimum": 0},
+    "ineffective_query_count": {"type": "integer", "minimum": 0},
+    "resolved_target_count": {"type": "integer", "minimum": 0},
+    "unresolved_target_count": {"type": "integer", "minimum": 0},
+    "queries": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}

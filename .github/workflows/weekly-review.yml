@@ -1,0 +1,74 @@
+name: Review OpenFS Weekly Results
+
+on:
+  schedule:
+    - cron: "17 2 * * 1"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: Optional ISO week such as 2026-W35
+        required: false
+        type: string
+      publish_issues:
+        description: Create or update sanitized grouped exception Issues
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-weekly-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    if: github.event_name == 'workflow_dispatch' || vars.OPENFS_REVIEW_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Validate review inputs
+        run: |
+          python3 tools/validate_repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Generate review artifacts
+        env:
+          REQUESTED_WEEK: ${{ inputs.week }}
+        run: |
+          WEEK="${REQUESTED_WEEK:-$(date -u --date='7 days ago' +%G-W%V)}"
+          GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          mkdir -p _automation
+          python3 tools/generate_weekly_digest.py \
+            --week "$WEEK" \
+            --generated-at "$GENERATED_AT"
+          python3 tools/prepare_exception_issues.py \
+            --generated-at "$GENERATED_AT" \
+            > _automation/exception-issues.json
+          printf '%s\n' "$WEEK" > _automation/review-week.txt
+      - name: Upload internal review artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: openfs-weekly-review
+          path: |
+            _automation/exception-issues.json
+            _automation/review-week.txt
+            reviews/digests/*.json
+            reviews/digests/*.md
+            reviews/issues/groups/*.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish or update grouped exception Issues
+        if: vars.OPENFS_REVIEW_ENABLED == 'true' || inputs.publish_issues == true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          jq -r '.prepared[]' _automation/exception-issues.json | while IFS= read -r payload; do
+            python3 tools/publish_github_issue.py --payload "$payload"
+          done

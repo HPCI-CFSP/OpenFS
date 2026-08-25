@@ -3,14 +3,28 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/assessment.schema.json",
   "title": "OpenFS Assessment",
   "type": "object",
-  "required": ["schema_version", "assessment_id", "proposal_id", "reviewer_agent_id", "agent_independence_group", "run_id", "verdict", "checks", "objections", "reviewed_at"],
+  "required": ["schema_version", "assessment_id", "proposal_id", "reviewer_agent_id", "agent_independence_group", "reviewer_identity", "agent_registry_digest", "run_id", "verdict", "checks", "objections", "reviewed_at"],
   "properties": {
     "schema_version": {"type": "string"},
     "assessment_id": {"type": "string", "pattern": "^ASM-[0-9]{6}$"},
     "proposal_id": {"type": "string"},
     "reviewer_agent_id": {"type": "string"},
     "agent_independence_group": {"type": "string"},
+    "reviewer_identity": {
+      "type": "object",
+      "required": ["provider", "model_family", "prompt_profile", "role"],
+      "properties": {
+        "provider": {"type": "string"},
+        "model_family": {"type": "string"},
+        "prompt_profile": {"type": "string"},
+        "role": {"enum": ["validator", "critic"]}
+      },
+      "additionalProperties": false
+    },
+    "agent_registry_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "run_id": {"type": "string"},
+    "work_item_id": {"type": "string", "pattern": "^WORK-[0-9]{6}$"},
+    "proposal_ref": {"type": "string"},
     "base_commit": {"type": "string"},
     "verdict": {"enum": ["support", "refute", "uncertain"]},
     "confidence": {"type": "number", "minimum": 0, "maximum": 1},

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/query-receipt.schema.json",
+  "title": "OpenFS Query Receipt",
+  "type": "object",
+  "required": ["schema_version", "query_receipt_id", "run_id", "work_item_id", "query", "language", "retrieval_method", "executed_at", "results", "failures"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "query_receipt_id": {"type": "string", "pattern": "^QRY-[0-9A-F]{12}$"},
+    "run_id": {"type": "string"},
+    "work_item_id": {"type": "string"},
+    "query": {"type": "string", "minLength": 1},
+    "language": {"type": "string"},
+    "retrieval_method": {"enum": ["web-search", "direct-http", "browser", "api", "manual-import"]},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "rank", "selected"],
+        "properties": {
+          "url": {"type": "string", "format": "uri"},
+          "rank": {"type": "integer", "minimum": 1},
+          "selected": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "detail"],
+        "properties": {
+          "kind": {"type": "string"},
+          "detail": {"type": "string"},
+          "coverage_impact": {"enum": ["blocking", "warning"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
