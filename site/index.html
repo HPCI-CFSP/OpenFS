@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="OpenFSの公開調査カタログ、HPCI整備シナリオ、報告書を閲覧するための公開ビュー">
   <title>OpenFS | HPCI-CFSP</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -43,7 +44,7 @@
           <span class="eyebrow" data-i18n="overviewKicker">現在の公開状況</span>
           <h2 data-i18n="overviewTitle">継続調査の現在地</h2>
         </div>
-        <p data-i18n="overviewLead">受理済みの公開情報だけを表示します。内部情報、候補段階の提案、例示シナリオは公開対象に含めません。</p>
+        <p data-i18n="overviewLead">公開情報から作成した調査サマリーは検証状況とともに表示し、整備シナリオと報告書は人の公開承認を通過した成果に限定します。</p>
       </div>
       <div class="metric-grid" aria-label="OpenFSの集計">
         <article class="metric"><span data-i18n="topicsMetric">調査Topic</span><strong id="metric-topics">0</strong><small data-i18n="topicsMetricNote">保護された初期項目を含む</small></article>
@@ -60,7 +61,7 @@
     <section id="catalog" class="section">
       <div class="section-heading">
         <div><span class="eyebrow" data-i18n="catalogKicker">調査項目一覧</span><h2 data-i18n="catalogTitle">調査カタログ</h2></div>
-        <p data-i18n="catalogLead">AIが追加提案したTopicも、独立レビューとConsensus Gateを通過したものだけがここへ加わります。</p>
+        <p data-i18n="catalogLead">各Topicには、公開情報から作成した調査サマリー、暫定知見、根拠資料を関連付けます。</p>
       </div>
       <div class="toolbar">
         <div class="segmented" role="group" data-i18n-aria-label="domainFilter" aria-label="分野フィルタ">
@@ -118,6 +119,26 @@
     <div><strong>OpenFS</strong><span data-i18n="footerDescription">HPCI-CFSP 公開調査ビュー</span></div>
     <div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a><span id="license-status"></span></div>
   </footer>
+
+  <dialog id="topic-dialog" class="topic-dialog" aria-labelledby="topic-dialog-title">
+    <div class="topic-dialog-shell">
+      <header class="topic-dialog-header">
+        <div>
+          <span id="topic-dialog-id" class="eyebrow"></span>
+          <h2 id="topic-dialog-title"></h2>
+          <p id="topic-dialog-meta"></p>
+        </div>
+        <div class="dialog-actions">
+          <div class="language-switcher dialog-language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+            <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+            <button type="button" data-language="en" aria-pressed="false">English</button>
+          </div>
+          <button id="topic-dialog-close" class="dialog-close" type="button" data-i18n-aria-label="closeDialog" aria-label="詳細を閉じる">&times;</button>
+        </div>
+      </header>
+      <div id="topic-dialog-content" class="topic-dialog-content"></div>
+    </div>
+  </dialog>
 
   <script src="data/openfs-public.js"></script>
   <script src="app.js"></script>
