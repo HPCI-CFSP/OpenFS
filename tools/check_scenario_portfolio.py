@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,14 @@ REQUIRED_CRITERIA = {
     "center-fit",
     "reversibility",
 }
+DOMAIN_ROADMAPS = {
+    "compute": "RM-HW-COMPUTE",
+    "memory": "RM-HW-MEMORY",
+    "interconnect": "RM-HW-INTERCONNECT",
+    "system-software": "RM-SSW-PORTABILITY",
+    "applications": "RM-APP-WORKLOADS",
+}
+DECISION_GATE_PATTERN = re.compile(r"^(\d{4}) Q([1-4]):\s+\S")
 
 
 def _duplicates(values: list[str]) -> set[str]:
@@ -49,6 +58,62 @@ def _p0_gaps(roadmaps: list[dict[str, Any]]) -> set[str]:
     }
 
 
+def _reference_index(
+    roadmaps: list[dict[str, Any]], repository_root: Path, errors: list[str]
+) -> set[str]:
+    references: set[str] = set()
+    for roadmap in roadmaps:
+        references.add(roadmap["roadmap_id"])
+        references.update(source["source_id"] for source in roadmap.get("sources", []))
+        references.update(gap["gap_id"] for gap in roadmap.get("coverage_gaps", []))
+        references.update(
+            milestone["milestone_id"]
+            for lane in roadmap.get("lanes", [])
+            for milestone in lane.get("milestones", [])
+        )
+        references.update(
+            dependency["dependency_id"]
+            for dependency in roadmap.get("dependencies", [])
+        )
+
+    dependency_path = (
+        repository_root / "knowledge/public/dependencies/p0-roadmap-dependencies.json"
+    )
+    if not dependency_path.is_file():
+        errors.append("scenario references: dependency register is missing")
+    else:
+        dependency_register = json.loads(dependency_path.read_text(encoding="utf-8"))
+        references.add(dependency_register["export_id"])
+        references.update(
+            item["dependency_id"] for item in dependency_register.get("dependencies", [])
+        )
+        references.update(
+            item["constraint_id"]
+            for item in dependency_register.get("external_constraints", [])
+        )
+
+    for path in sorted((repository_root / "knowledge/public/audits").glob("*.json")):
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+        if artifact.get("export_id"):
+            references.add(artifact["export_id"])
+    return references
+
+
+def _decision_gate_periods(
+    scenario_id: str, language: str, values: list[str], errors: list[str]
+) -> list[tuple[int, int]]:
+    periods: list[tuple[int, int]] = []
+    for value in values:
+        match = DECISION_GATE_PATTERN.match(value)
+        if not match:
+            errors.append(f"{scenario_id}: malformed {language} decision gate {value!r}")
+            continue
+        periods.append((int(match.group(1)), int(match.group(2))))
+    if periods != sorted(set(periods)):
+        errors.append(f"{scenario_id}: {language} decision gates are duplicate or out of order")
+    return periods
+
+
 def evaluate(
     scenario_set: dict[str, Any],
     roadmaps: list[dict[str, Any]],
@@ -58,6 +123,7 @@ def evaluate(
     errors: list[str] = []
     scenarios = scenario_set["scenarios"]
     p0_gaps = _p0_gaps(roadmaps)
+    known_references = _reference_index(roadmaps, repository_root, errors)
     scenario_policy = scenario_policy or {}
     minimum_candidate_differences = scenario_policy.get(
         "minimum_pairwise_candidate_domain_differences", 3
@@ -108,6 +174,24 @@ def evaluate(
             candidates_by_domain.setdefault(option["domain"], set()).add(
                 _normalized_text(option["candidate_en"])
             )
+            expected_roadmap = DOMAIN_ROADMAPS[option["domain"]]
+            option_refs = set(option.get("evidence_refs", []))
+            if expected_roadmap not in option_refs:
+                errors.append(
+                    f"{scenario_id}:{option['option_id']}: missing domain roadmap {expected_roadmap}"
+                )
+            for reference in sorted(option_refs - known_references):
+                errors.append(
+                    f"{scenario_id}:{option['option_id']}: unresolved evidence reference {reference}"
+                )
+
+        for reference in sorted(set(scenario.get("evidence_refs", [])) - known_references):
+            errors.append(f"{scenario_id}: unresolved scenario evidence reference {reference}")
+        for criterion, evaluation in scenario.get("evaluation", {}).items():
+            for reference in sorted(set(evaluation.get("evidence_refs", [])) - known_references):
+                errors.append(
+                    f"{scenario_id}:{criterion}: unresolved evaluation evidence reference {reference}"
+                )
 
         blocker_gaps = set(scenario.get("decision_blocking_gap_refs", []))
         if blocker_gaps != p0_gaps:
@@ -119,6 +203,14 @@ def evaluate(
             errors.append(f"{scenario_id}: uncertainty translations are not one-to-one")
         if len(scenario.get("decision_gates", [])) != len(scenario.get("decision_gates_en", [])):
             errors.append(f"{scenario_id}: decision-gate translations are not one-to-one")
+        ja_periods = _decision_gate_periods(
+            scenario_id, "Japanese", scenario.get("decision_gates", []), errors
+        )
+        en_periods = _decision_gate_periods(
+            scenario_id, "English", scenario.get("decision_gates_en", []), errors
+        )
+        if ja_periods != en_periods:
+            errors.append(f"{scenario_id}: decision-gate periods differ between Japanese and English")
 
     for domain in sorted(REQUIRED_DOMAINS):
         if len(candidates_by_domain.get(domain, set())) < 2:
@@ -187,6 +279,7 @@ def evaluate(
             "option_domains": len(REQUIRED_DOMAINS),
             "open_p0_gaps": len(p0_gaps),
             "decision_evidence_contracts": len(contracts),
+            "known_evidence_references": len(known_references),
             "minimum_pairwise_candidate_domain_differences": min(
                 pairwise_candidate_differences, default=0
             ),

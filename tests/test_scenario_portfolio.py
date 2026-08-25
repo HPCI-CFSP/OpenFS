@@ -35,6 +35,7 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertEqual([], result["calculation_errors"])
         self.assertEqual(14, result["counts"]["open_p0_gaps"])
         self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
+        self.assertGreaterEqual(result["counts"]["known_evidence_references"], 300)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_candidate_domain_differences"], 3)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_fallback_domain_differences"], 3)
         self.assertTrue(result["gaps_remain_open"])
@@ -74,6 +75,32 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("candidate domains differ" in item for item in result["calculation_errors"]))
         self.assertTrue(any("fallback domains differ" in item for item in result["calculation_errors"]))
+
+    def test_dangling_evidence_reference_fails_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["technology_options"][0]["evidence_refs"].append(
+            "MS-NOT-REGISTERED"
+        )
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("unresolved evidence reference" in item for item in result["calculation_errors"]))
+
+    def test_option_must_reference_its_domain_roadmap(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["technology_options"][0]["evidence_refs"].remove(
+            "RM-HW-COMPUTE"
+        )
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("missing domain roadmap" in item for item in result["calculation_errors"]))
+
+    def test_decision_gate_periods_must_match_and_be_chronological(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["decision_gates"][0] = "2027 Q4: 遅いゲート"
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("out of order" in item for item in result["calculation_errors"]))
+        self.assertTrue(any("differ between Japanese and English" in item for item in result["calculation_errors"]))
 
 
 if __name__ == "__main__":
