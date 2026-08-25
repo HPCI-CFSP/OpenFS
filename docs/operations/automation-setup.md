@@ -15,6 +15,14 @@ checks, and produced eight provisional Claim proposals. They remain provisional
 because independent provider/model Consensus capacity is not configured; Pilot
 completion must not be read as formal research acceptance.
 
+The public roadmap portfolio also has a deterministic Coverage Gap queue at
+`knowledge/public/audits/roadmap-gap-queue.json`. It assigns every open Gap to a
+specific Monitor or the independent Consensus package. P0 source-discovery items
+are scheduled for weekly reconsideration, but the queue records them as
+`staged-monitor-disabled` while production readiness is incomplete. The weekly
+Review workflow regenerates this assignment artifact, so an open Gap cannot silently
+fall out of the review loop merely because it is already visible on GitHub Pages.
+
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
 one deduplicated coordination Issue. It makes no model call, performs no promotion,

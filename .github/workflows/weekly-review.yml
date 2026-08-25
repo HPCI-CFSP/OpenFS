@@ -53,6 +53,9 @@ jobs:
             --generated-at "$GENERATED_AT" \
             --source-audit _automation/roadmap-source-audit.json \
             --output _automation/roadmap-freshness-audit.json
+          python3 tools/build_roadmap_gap_queue.py \
+            --generated-at "$GENERATED_AT" \
+            --output _automation/roadmap-gap-queue.json
           python3 tools/prepare_freshness_issue.py \
             --audit _automation/roadmap-freshness-audit.json \
             --output _automation/roadmap-freshness-issue.json
@@ -71,6 +74,7 @@ jobs:
             _automation/exception-issues.json
             _automation/roadmap-source-audit.json
             _automation/roadmap-freshness-audit.json
+            _automation/roadmap-gap-queue.json
             _automation/roadmap-freshness-issue.json
             _automation/review-week.txt
             reviews/digests/*.json
