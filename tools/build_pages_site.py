@@ -40,10 +40,8 @@ def source_commit_metadata(root: Path, relative_path: str | None = None) -> dict
             ["log", "-1", "--format=%H%x00%cI", "--", relative_path],
         )
         if not value:
-            commit_sha = git_output(root, ["rev-parse", "HEAD"])
-            updated_at = git_output(root, ["show", "-s", "--format=%cI", commit_sha])
-        else:
-            commit_sha, updated_at = value.split("\x00", 1)
+            raise ValueError(f"no source commit found for {relative_path}")
+        commit_sha, updated_at = value.split("\x00", 1)
     else:
         commit_sha = os.environ.get("OPENFS_SOURCE_COMMIT") or os.environ.get(
             "GITHUB_SHA"
