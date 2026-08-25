@@ -527,6 +527,9 @@ class PagesSiteTests(unittest.TestCase):
             roadmap_index = (output / "roadmaps" / "index.html").read_text(
                 encoding="utf-8"
             )
+            evidence_index = (
+                output / "roadmaps" / "evidence" / "index.html"
+            ).read_text(encoding="utf-8")
             roadmap_detail = (
                 output
                 / "roadmaps"
@@ -543,6 +546,8 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn('id="memory-roadmap-timeline"', index)
             self.assertIn('id="roadmap-home-rows"', index)
             self.assertIn('id="roadmap-rows"', roadmap_index)
+            self.assertIn('id="source-class-summary"', evidence_index)
+            self.assertIn("sourceClassOrder", (output / "planning.js").read_text(encoding="utf-8"))
             self.assertIn('id="roadmap-timeline"', roadmap_detail)
             self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
