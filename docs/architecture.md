@@ -111,6 +111,20 @@ for the entire interval. OpenFS planning gates are separate `hpci-evaluation` or
 portfolio mappings, timing semantics, publication approval, or the declared public
 artifact set disagree.
 
+Tracks with meaningful technology generations may carry structured
+`generation_bands`. These bands are an OpenFS synthesis above standards-body and
+vendor lanes, not vendor commitments. Each band preserves independently stated
+start and end precision, source IDs, phase, confidence, and Consensus status.
+Generations may overlap, and a null end is rendered as an open-ended arrow rather
+than an invented replacement date. Standards-body activity remains a separate
+lane, so specification work is not conflated with product introduction.
+
+The configured horizon is a minimum display window. With
+`extend-to-latest-dated-evidence`, the Pages projection expands `end_year` to the
+latest source-backed milestone or generation boundary. Undated gaps and
+open-ended bands do not extend the timeline. The cross-roadmap comparison derives
+its year columns from the effective horizons and has no hard-coded 2032 ceiling.
+
 Reusable terminology and decision comparisons have one public source of truth:
 `knowledge/public/roadmap-reference-data.json`, under
 `schemas/roadmap-reference-data.schema.json`. It links each definition and each

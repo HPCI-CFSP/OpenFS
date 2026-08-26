@@ -100,7 +100,10 @@ class RoadmapAssuranceTests(unittest.TestCase):
                 entries[milestone_id]["semantic_verification"],
             )
         self.assertEqual(0, self.evidence["summary"]["independently_verified"])
-        self.assertEqual(len(milestones), self.evidence["summary"]["pending_independent_review"])
+        self.assertEqual(
+            len(milestones) + self.evidence["summary"]["generation_band_count"],
+            self.evidence["summary"]["pending_independent_review"],
+        )
         timing_summary = self.evidence["summary"]
         self.assertEqual(
             len(milestones),
@@ -125,6 +128,25 @@ class RoadmapAssuranceTests(unittest.TestCase):
             timing_summary["openfs_provisional_quarter"]
             + timing_summary["openfs_provisional_year"],
         )
+
+    def test_evidence_audit_covers_every_generation_band_exactly_once(self):
+        bands = {
+            band["generation_band_id"]: band
+            for roadmap in self.roadmaps
+            for track in roadmap["tracks"]
+            for band in track.get("generation_bands", [])
+        }
+        entries = {
+            entry["generation_band_id"]: entry
+            for entry in self.evidence["generation_band_entries"]
+        }
+        self.assertEqual(7, len(bands))
+        self.assertEqual(set(bands), set(entries))
+        self.assertEqual(len(bands), self.evidence["summary"]["generation_band_count"])
+        for band_id, band in bands.items():
+            self.assertEqual(band["source_ids"], entries[band_id]["source_ids"])
+            self.assertEqual(band["confidence"], entries[band_id]["confidence"])
+            self.assertEqual("openfs-synthesis-pending", entries[band_id]["review_status"])
 
     def test_source_audit_covers_every_registered_source_and_has_no_known_404(self):
         registered_items = [

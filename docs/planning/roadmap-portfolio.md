@@ -15,8 +15,8 @@ The machine-readable source of truth is [`config/roadmap-portfolio.json`](../../
 
 Each published roadmap should contain the following elements.
 
-1. A quarterly timeline from 2026 through approximately 2032. A milestone is assigned to one Q1-Q4 cell only when an official source supports that timing. Half-year timing spans the applicable two quarters, year-only timing spans Q1-Q4, and an item with no public year remains undated. A span is a timing-uncertainty window, not event duration.
-2. Separate vendor, standards-body, research, and deployment lanes where their timing differs.
+1. A quarterly timeline beginning in 2026, with approximately 2032 as the minimum initial endpoint rather than a permanent ceiling. A source-backed later milestone or generation boundary extends the timeline automatically. A milestone is assigned to one Q1-Q4 cell only when an official source supports that timing. Half-year timing spans the applicable two quarters, year-only timing spans Q1-Q4, and an item with no public year remains undated. A span is a timing-uncertainty window, not event duration.
+2. A structured generation outlook above the detailed lanes where the technology has meaningful generations. Generation bands may overlap, retain source-specific boundary precision, and expose confidence and Consensus status. Separate standards-body, vendor, research, and deployment lanes remain below it where their timing differs.
 3. The distinction among observed availability, standard release, vendor target, research concept, and timing not publicly available.
 4. Dependencies on other roadmaps, HPCI center constraints, uncertainties, and decision gates.
 5. Source links, an as-of date, an artifact commit, research coverage status, and Consensus Gate status.

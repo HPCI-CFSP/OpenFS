@@ -183,6 +183,11 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
         for milestone in lane["milestones"]
     ]
     sources = {source["source_id"]: source for source in roadmap["sources"]}
+    generation_bands = [
+        band
+        for track in roadmap["tracks"]
+        for band in track.get("generation_bands", [])
+    ]
     primary_source_requirements = []
     for milestone in milestones:
         if milestone["comparison_priority"] != "key" or milestone["timing_basis"] in {
@@ -205,6 +210,23 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
                     "source_options": source_options,
                 }
             )
+    for band in generation_bands:
+        source_options = [
+            {
+                "source_id": source_id,
+                "source_url": sources[source_id]["url"],
+                "source_class": sources[source_id]["source_class"],
+            }
+            for source_id in band["source_ids"]
+            if sources[source_id]["source_class"] != "openfs-governance"
+        ]
+        if source_options:
+            primary_source_requirements.append(
+                {
+                    "selector": band["generation_band_id"],
+                    "source_options": source_options,
+                }
+            )
     return {
         "unit_id": f"CRU-{roadmap['roadmap_id'].removeprefix('RM-')}",
         "kind": "roadmap",
@@ -214,6 +236,7 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
         "selectors": [
             roadmap["roadmap_id"],
             *[track["track_id"] for track in roadmap["tracks"]],
+            *[band["generation_band_id"] for band in generation_bands],
             *[milestone["milestone_id"] for milestone in milestones],
             *[gap["gap_id"] for gap in roadmap["coverage_gaps"]],
         ],
@@ -226,11 +249,13 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
             "出来事と将来目標が混同されていないか。",
             "四半期を直接支えない資料からQ1-Q4を推定していないか。",
             "重要な反例、競合候補、製品中止、時期変更がCoverage Gapから漏れていないか。",
+            "世代帯が単一ベンダー予測を業界合意として扱ったり、重複期間を消したりしていないか。",
         ],
         "falsification_prompts_en": [
             "Are observed events and forward targets kept distinct?",
             "Is any quarter inferred from a source that supports only a year or wider interval?",
             "Are material counterexamples, alternatives, cancellations, or schedule changes missing from Coverage Gaps?",
+            "Does any generation band turn a single-vendor projection into industry consensus or erase overlapping generations?",
         ],
     }
 
@@ -252,11 +277,11 @@ def shared_units() -> list[dict[str, Any]]:
                 "site/styles.css",
                 *ROADMAP_PATHS,
             ],
-            "selectors": ["ROADMAP-REFERENCE-DATA-001", "TERM-*", "CMP-*", "timing_precision", "half"],
+            "selectors": ["ROADMAP-REFERENCE-DATA-001", "TERM-*", "CMP-*", "GB-*", "timing_precision", "half", "extension_policy"],
             "primary_source_requirements": [],
             "required_checks": ["source-identity", "citation-entailment", "temporal-validity", "scope-alignment", "publication-boundary"],
-            "falsification_prompts_ja": ["用語定義または比較セルが、参照する一次資料の範囲を越えて断定していないか。", "比較対象の抽象度が違う場合、その差と比較上の注意が明示されているか。", "年・半期の矩形が、時期の不確実性ではなく事象の継続期間と誤読されないか。"],
-            "falsification_prompts_en": ["Does any definition or comparison cell claim more than its referenced primary sources support?", "Where options sit at different abstraction levels, is that difference and comparison caveat explicit?", "Could a year or half-year rectangle be misread as event duration rather than timing uncertainty?"],
+            "falsification_prompts_ja": ["用語定義または比較セルが、参照する一次資料の範囲を越えて断定していないか。", "比較対象の抽象度が違う場合、その差と比較上の注意が明示されているか。", "年・半期の矩形が、時期の不確実性ではなく事象の継続期間と誤読されないか。", "世代帯の重複、確度、暫定性、終了時期未確認が見失われていないか。", "2032年以降の列が年付き根拠だけで拡張され、未日付情報から生成されていないか。"],
+            "falsification_prompts_en": ["Does any definition or comparison cell claim more than its referenced primary sources support?", "Where options sit at different abstraction levels, is that difference and comparison caveat explicit?", "Could a year or half-year rectangle be misread as event duration rather than timing uncertainty?", "Are generation overlap, confidence, provisional status, and unevidenced end dates preserved?", "Are columns beyond 2032 extended only by dated evidence rather than undated information?"],
         },
         {
             "unit_id": "CRU-CENTER-PROFILES",
@@ -346,6 +371,11 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
             len(lane["milestones"])
             for roadmap in roadmaps
             for lane in roadmap["lanes"]
+        ),
+        "generation_band_count": sum(
+            len(track.get("generation_bands", []))
+            for roadmap in roadmaps
+            for track in roadmap["tracks"]
         ),
         "source_count": source_audit["summary"]["source_count"],
         "unique_source_url_count": source_audit["summary"]["unique_url_count"],
@@ -459,7 +489,8 @@ def readme(manifest: dict[str, Any]) -> str:
     return f"""# P0 roadmap v0.2 independent review package
 
 This package pins {summary['roadmap_count']} P0 roadmaps, {summary['milestone_count']}
-milestone records, {summary['source_count']} source registrations representing
+milestone records, {summary['generation_band_count']} synthesized generation bands,
+and {summary['source_count']} source registrations representing
 {summary['unique_source_url_count']} unique URLs,
 {summary['dependency_count']} cross-roadmap dependencies,
 {summary['coverage_gap_count']} prioritized Coverage Gaps, and
@@ -473,8 +504,8 @@ milestone records, {summary['source_count']} source registrations representing
    before calculating this digest.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
-   Record one conclusive primary-source check for every milestone listed in
-   `primary_source_requirements`, using one of that milestone's registered
+   Record one conclusive primary-source check for every milestone or generation
+   band listed in `primary_source_requirements`, using one of its registered
    `source_options`. Key OpenFS proposals and undated gaps remain subject to the
    unit assessment but do not masquerade as externally verified events.
 3. Actively seek counterevidence using each unit's falsification prompts. Keep
@@ -497,12 +528,13 @@ milestone records, {summary['source_count']} source registrations representing
 ## 日本語要約
 
 このパッケージは、P0の{summary['roadmap_count']}ロードマップ、
-{summary['milestone_count']}マイルストーン、{summary['source_count']}件の情報源登録
+{summary['milestone_count']}マイルストーン、{summary['generation_band_count']}世代帯、
+{summary['source_count']}件の情報源登録
 （重複除去{summary['unique_source_url_count']} URL）、
 {summary['dependency_count']}相互依存、{summary['coverage_gap_count']}件の優先度付きCoverage Gap、
 HPCI整備計画{summary['scenario_count']}案をコミット `{commit}` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
-マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
+マイルストーンまたは世代帯ごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
 independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
 有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ、2つの異なるHarness

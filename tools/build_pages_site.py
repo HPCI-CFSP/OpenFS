@@ -100,6 +100,21 @@ def render_template(path: Path, replacements: dict[str, str]) -> str:
     return value
 
 
+def timing_boundary_ordinal(boundary: dict[str, Any], edge: str) -> int:
+    """Return an inclusive quarter ordinal for a generation-band boundary."""
+    precision = boundary["precision"]
+    if precision == "quarter":
+        quarter = int(boundary["quarter"][1])
+    elif precision == "half-year":
+        if boundary["half"] == "H1":
+            quarter = 1 if edge == "start" else 2
+        else:
+            quarter = 3 if edge == "start" else 4
+    else:
+        quarter = 1 if edge == "start" else 4
+    return boundary["year"] * 4 + quarter - 1
+
+
 def public_projection(
     artifact: dict[str, Any],
     fields: list[str],
@@ -610,8 +625,9 @@ def collect_roadmaps(
             raise ValueError(f"{label} disagrees with its roadmap portfolio entry")
 
         start_year = projected["horizon"]["start_year"]
-        end_year = projected["horizon"]["end_year"]
-        if start_year > end_year:
+        configured_end_year = projected["horizon"]["end_year"]
+        extension_policy = projected["horizon"].get("extension_policy", "fixed")
+        if start_year > configured_end_year:
             raise ValueError(f"{label} has an invalid horizon")
         group_ids = [item["group_id"] for item in projected["groups"]]
         track_ids = [item["track_id"] for item in projected["tracks"]]
@@ -624,12 +640,54 @@ def collect_roadmaps(
         known_groups = set(group_ids)
         known_tracks = set(track_ids)
         known_sources = set(source_ids)
+        latest_dated_year = configured_end_year
+        generation_band_ids: set[str] = set()
         for track in projected["tracks"]:
             if track["group"] not in known_groups:
                 raise ValueError(f"track {track['track_id']} has an unknown group")
             unknown = set(track["source_ids"]) - known_sources
             if unknown:
                 raise ValueError(f"track {track['track_id']} references unknown sources: {sorted(unknown)}")
+            for band in track.get("generation_bands", []):
+                band_id = band["generation_band_id"]
+                if band_id in generation_band_ids:
+                    raise ValueError(f"duplicate roadmap generation band: {band_id}")
+                generation_band_ids.add(band_id)
+                unknown_sources = set(band["source_ids"]) - known_sources
+                if unknown_sources:
+                    raise ValueError(
+                        f"generation band {band_id} references unknown sources: "
+                        f"{sorted(unknown_sources)}"
+                    )
+                start = band["start"]
+                end = band["end"]
+                if start["year"] < start_year:
+                    raise ValueError(
+                        f"generation band {band_id} starts before the roadmap horizon"
+                    )
+                if end is not None and timing_boundary_ordinal(
+                    end, "end"
+                ) < timing_boundary_ordinal(start, "start"):
+                    raise ValueError(f"generation band {band_id} has a reversed range")
+                latest_dated_year = max(
+                    latest_dated_year,
+                    start["year"],
+                    end["year"] if end is not None else start["year"],
+                )
+
+        for lane in projected["lanes"]:
+            latest_dated_year = max([
+                latest_dated_year,
+                *(milestone["year"] for milestone in lane["milestones"] if milestone["year"] is not None),
+            ])
+        if extension_policy == "fixed" and latest_dated_year > configured_end_year:
+            raise ValueError(f"{label} has dated evidence outside its fixed horizon")
+        end_year = (
+            latest_dated_year
+            if extension_policy == "extend-to-latest-dated-evidence"
+            else configured_end_year
+        )
+        projected["horizon"]["end_year"] = end_year
 
         dependency_ids = {item["dependency_id"] for item in projected["dependencies"]}
         if len(dependency_ids) != len(projected["dependencies"]):

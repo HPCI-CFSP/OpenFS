@@ -50,7 +50,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
 
     def test_reference_data_covers_six_high_value_comparisons(self):
         result = self.collect_fixture(self.payload)
-        self.assertEqual(34, len(result["terms"]))
+        self.assertEqual(35, len(result["terms"]))
         self.assertEqual(
             {
                 "CMP-MEMORY-HIERARCHY",

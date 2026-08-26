@@ -80,18 +80,29 @@ def build(
     items: list[dict[str, Any]] = []
     roadmap_summaries: list[dict[str, Any]] = []
     total_milestones = 0
+    total_generation_bands = 0
     total_sources = 0
     for roadmap in roadmaps:
         roadmap_items: list[dict[str, Any]] = []
         milestones = [milestone for lane in roadmap["lanes"] for milestone in lane["milestones"]]
+        generation_bands = [
+            band
+            for track in roadmap.get("tracks", [])
+            for band in track.get("generation_bands", [])
+        ]
         source_registry = {source["source_id"]: source for source in roadmap["sources"]}
         total_milestones += len(milestones)
+        total_generation_bands += len(generation_bands)
         total_sources += len(roadmap["sources"])
         key_source_ids = {
             source_id
             for milestone in milestones
             if milestone["comparison_priority"] == "key"
             for source_id in milestone["source_ids"]
+        } | {
+            source_id
+            for band in generation_bands
+            for source_id in band["source_ids"]
         }
         for milestone in milestones:
             year = milestone["year"]
@@ -153,6 +164,29 @@ def build(
                             "独立Reviewで一次資料本文を確認し、公開日を出来事の日付として代用しない。",
                             "Verify the primary-source text during independent review; do not substitute publication date for event date.",
                         ))
+        for band in generation_bands:
+            if band["timing_basis"] not in TARGET_BASES or band["end"] is None:
+                continue
+            end = band["end"]
+            end_quarter = quarter_number(end["quarter"])
+            if end["precision"] == "half-year":
+                end_quarter = 2 if end["half"] == "H1" else 4
+            elif end["precision"] == "year":
+                end_quarter = 4
+            target_passed = end["year"] < as_of.year or (
+                end["year"] == as_of.year
+                and end_quarter is not None
+                and end_quarter < current_quarter
+            )
+            if target_passed:
+                roadmap_items.append(attention(
+                    roadmap["roadmap_id"], "generation-band", band["generation_band_id"], "high",
+                    "generation-window-passed",
+                    "世代見通しの公表目標窓を過ぎているため、標準化・製品化・延期を一次情報で再確認する必要がある。",
+                    "The published target window in the generation outlook has passed and needs primary-source confirmation of standardization, product introduction, or delay.",
+                    "世代帯を実績へ自動変換せず、公式更新を確認して境界・確度・Gapを改訂する。",
+                    "Do not convert the band into an observed result; check official updates and revise boundaries, confidence, and gaps.",
+                ))
         for source in roadmap["sources"]:
             if "published_at" not in source:
                 roadmap_items.append(attention(
@@ -178,6 +212,7 @@ def build(
         roadmap_summaries.append({
             "roadmap_id": roadmap["roadmap_id"],
             "milestone_count": len(milestones),
+            "generation_band_count": len(generation_bands),
             "source_count": len(roadmap["sources"]),
             "attention_count": len(roadmap_items),
             "critical": counts["critical"],
@@ -201,13 +236,14 @@ def build(
         "audit_id": f"RFA-{as_of.strftime('%Y%m%d')}-001",
         "as_of": as_of.isoformat(),
         "generated_at": generated,
-        "method_ja": "6ロードマップを機械走査し、未確定時期、期限経過目標、未来日付の実績、遡及報告、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
-        "method_en": "Mechanically scans six roadmaps and queues undated milestones, passed targets, future-dated observed events, retrospective reports, unrecorded source dates, and reachability warnings for follow-up.",
+        "method_ja": "6ロードマップを機械走査し、世代帯、未確定時期、期限経過目標、未来日付の実績、遡及報告、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
+        "method_en": "Mechanically scans six roadmaps and queues generation bands, undated milestones, passed targets, future-dated observed events, retrospective reports, unrecorded source dates, and reachability warnings for follow-up.",
         "caveat_ja": "鮮度注意は誤りの判定ではありません。古い一次資料や遡及報告が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
         "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {
             "roadmap_count": len(roadmaps),
             "milestone_count": total_milestones,
+            "generation_band_count": total_generation_bands,
             "source_count": total_sources,
             "attention_count": len(items),
             "critical": counts["critical"],
@@ -216,6 +252,7 @@ def build(
             "low": counts["low"],
             "no_public_date_milestones": reasons["no-public-date"],
             "past_target_rechecks": reasons["target-date-passed"],
+            "past_generation_window_rechecks": reasons["generation-window-passed"],
             "future_observed_conflicts": reasons["future-observed-conflict"],
             "retrospective_timing_checks": reasons["retrospective-source-timing-check"],
             "source_date_unknown": reasons["source-publication-date-unrecorded"],

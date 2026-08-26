@@ -27,6 +27,10 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             audit["summary"]["milestone_count"],
         )
         self.assertEqual(
+            sum(len(track.get("generation_bands", [])) for roadmap in roadmaps for track in roadmap["tracks"]),
+            audit["summary"]["generation_band_count"],
+        )
+        self.assertEqual(
             sum(len(roadmap["sources"]) for roadmap in roadmaps),
             audit["summary"]["source_count"],
         )
