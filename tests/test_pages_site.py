@@ -593,6 +593,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="source-class-summary"', evidence_index)
             self.assertIn("sourceClassOrder", (output / "planning.js").read_text(encoding="utf-8"))
             self.assertIn('id="roadmap-timeline"', roadmap_detail)
+            self.assertIn('id="roadmap-comparisons"', roadmap_detail)
+            self.assertIn('id="roadmap-glossary"', roadmap_detail)
+            self.assertIn('id="roadmap-term-dialog"', roadmap_detail)
             self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_detail)
@@ -602,8 +605,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn(
                 f'src="../data/openfs-public.js?v={asset_version}"', roadmap_index
             )
-            self.assertIn("roadmap-quarter-heading", roadmap_app)
-            self.assertIn('tr("quarterUnknown")', roadmap_app)
+            self.assertIn("roadmap-quarter-scale", roadmap_app)
+            self.assertIn("milestonePeriodLabel", roadmap_app)
+            self.assertNotIn('tr("quarterUnknown")', roadmap_app)
             self.assertNotIn('data-i18n="scopeMetric"', index)
             self.assertIn("openTopicDetail", app)
             self.assertIn("renderRoadmapHome", app)
