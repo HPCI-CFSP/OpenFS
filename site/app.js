@@ -33,7 +33,7 @@
       originHuman: "人の指示", originAi: "AI Consensus", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "確認済み", statusRetired: "廃止", cadenceWeekly: "週次", cadenceMonthly: "月次",
       cadenceQuarterly: "四半期", cadenceAnnual: "年次", cadenceEvent: "事象発生時",
-      findingAvailable: "公開知見", summaryPending: "公開知見未作成", closeDialog: "詳細を閉じる",
+      findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見未作成", closeDialog: "詳細を閉じる",
       topicDetailMeta: "Topic詳細", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "このTopicに紐づく調査結果はまだ公開されていません。今後の調査ループで更新されます。",
       topicResultsKicker: "Topic別の調査結果", topicResultsLead: "このTopicに直接関連付けられた公開知見を{runCount}件の調査Runから{findingCount}件表示しています。",
@@ -77,7 +77,7 @@
       originHuman: "human directive", originAi: "AI consensus", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", cadenceWeekly: "weekly", cadenceMonthly: "monthly",
       cadenceQuarterly: "quarterly", cadenceAnnual: "annual", cadenceEvent: "event-driven",
-      findingAvailable: "public findings", summaryPending: "public findings pending", closeDialog: "Close details",
+      findingAvailable: "public findings", decisionAvailable: "decision items", summaryPending: "public findings pending", closeDialog: "Close details",
       topicDetailMeta: "Topic details", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this Topic has been published yet. A future research cycle can update it.",
       topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this Topic from {runCount} research runs.",
@@ -431,10 +431,13 @@
       titleText.className = "topic-link-title";
       titleText.textContent = language === "ja" ? topic.title_ja : topic.title_en;
       const resultState = document.createElement("span");
-      resultState.className = `topic-result-state${topic.research_finding_count ? " available" : ""}`;
-      resultState.textContent = topic.research_finding_count
-        ? `${tr("findingAvailable")} ${topic.research_finding_count}`
-        : tr("summaryPending");
+      const resultCount = topic.decision_item_count || topic.research_finding_count;
+      resultState.className = `topic-result-state${resultCount ? " available" : ""}`;
+      resultState.textContent = topic.decision_item_count
+        ? `${tr("decisionAvailable")} ${topic.decision_item_count}`
+        : topic.research_finding_count
+          ? `${tr("findingAvailable")} ${topic.research_finding_count}`
+          : tr("summaryPending");
       titleButton.append(titleText, resultState);
       titleButton.addEventListener("click", () => openTopicDetail(topic.topic_id));
       titleCell.appendChild(titleButton);

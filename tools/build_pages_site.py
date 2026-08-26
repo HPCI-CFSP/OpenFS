@@ -1021,6 +1021,10 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topic_decision_support_required_bilingual_fields",
         "topic decision support surface",
     )
+    decision_profile_by_topic = {
+        profile["topic_id"]: profile
+        for profile in topic_decision_support["topic_profiles"]
+    }
     public_finding_ids = {
         finding["finding_id"]
         for summary in research_summaries
@@ -1039,6 +1043,11 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         )
     topics = []
     for topic in baseline["topics"]:
+        decision_profile = decision_profile_by_topic.get(topic["topic_id"])
+        decision_item_count = sum(
+            len(section["items"])
+            for section in decision_profile["sections"]
+        ) if decision_profile else 0
         summary_count = sum(
             topic["topic_id"] in summary["topic_ids"]
             for summary in research_summaries
@@ -1063,6 +1072,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 ),
                 "research_summary_count": summary_count,
                 "research_finding_count": finding_count,
+                "decision_item_count": decision_item_count,
             }
         )
 

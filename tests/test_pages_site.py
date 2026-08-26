@@ -301,6 +301,8 @@ class PagesSiteTests(unittest.TestCase):
                     for item in section["items"]
                 )
             )
+            topics_by_id = {topic["topic_id"]: topic for topic in result["topics"]}
+            self.assertGreater(topics_by_id["SSW-04"]["decision_item_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
             self.assertEqual(1, len(result["consensus_packages"]))
             package = result["consensus_packages"][0]
@@ -692,8 +694,13 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("renderRoadmapIndex", roadmap_app)
             self.assertIn("renderComparison", roadmap_app)
             self.assertIn('tr("findingAvailable")', app)
-            self.assertIn('tr("sourceSurvey")', app)
-            self.assertIn("research-source-title", app)
+            self.assertNotIn('tr("sourceSurvey")', app)
+            self.assertNotIn("research-source-title", app)
+            self.assertIn("decisionProfileForTopic", app)
+            self.assertIn("renderRegionFilter", app)
+            self.assertIn("renderPlatformMatrix", app)
+            self.assertIn("renderNumericalMatrix", app)
+            self.assertIn('localized(summary, "summary")', app)
             self.assertIn("renderConsensusReceipt", app)
             self.assertIn("consensusProof", app)
             self.assertIn("/commit/${harness.commit_sha}", app)
