@@ -9,6 +9,7 @@ becomes a contested item and an explicit Coverage Gap.
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -94,20 +95,66 @@ TRACK_CURRENT_MATURITY = {
 
 DOMAIN_CONDITIONS = {
     "architecture": (
-        ["代表アプリの実効性能・電力", "供給・RAS・保守", "ソフトウェアと施設の適合"],
+        ["代表アプリケーションの実効性能・消費電力", "供給・RAS・保守", "ソフトウェアと施設の適合"],
         ["Delivered application performance and power", "Supply, RAS, and service", "Software and facility fit"],
     ),
     "system-software": (
-        ["代表アプリの正当性と性能", "複数プラットフォームでの再現性", "版管理・保守責任・セキュリティ"],
-        ["Application correctness and performance", "Reproducibility across platforms", "Versioning, maintenance ownership, and security"],
+        ["代表アプリケーションの計算結果の妥当性と性能", "複数プラットフォームでの再現性", "版管理・保守責任・セキュリティ"],
+        ["Validity and performance of application results", "Reproducibility across platforms", "Versioning, maintenance ownership, and security"],
     ),
     "applications": (
-        ["利用分野と規模の代表性", "正当性・再現性・公開可能性", "性能・電力・費用・移植工数"],
-        ["Representativeness across domains and scales", "Correctness, reproducibility, and publishability", "Performance, power, cost, and porting effort"],
+        ["利用分野と規模の代表性", "計算結果の妥当性・再現性・公開可能性", "性能・電力・費用・移植工数"],
+        ["Representativeness across domains and scales", "Result validity, reproducibility, and publishability", "Performance, power, cost, and porting effort"],
     ),
     "cross-cutting": (
-        ["センター別の公開根拠", "予算・調達・運用条件", "依存関係と責任ある人の判断"],
-        ["Public evidence by center", "Budget, procurement, and operational conditions", "Dependencies and accountable human decision"],
+        ["センター別の公開根拠", "予算・調達・運用条件", "依存関係と判断責任者による決定"],
+        ["Public evidence by center", "Budget, procurement, and operational conditions", "Dependencies and a decision by an accountable human"],
+    ),
+}
+
+DOMAIN_PROFILE_SCOPE = {
+    "architecture": (
+        "調査基準日現在、公開情報で確認できる製品、標準、導入実績、公開計画",
+        "products, standards, documented deployments, and announced plans confirmed as of the research date",
+        "導入条件",
+        "adoption conditions",
+    ),
+    "system-software": (
+        "調査基準日現在、公開情報で確認できるソフトウェア、標準、導入実績、公開計画",
+        "software, standards, documented deployments, and announced plans confirmed as of the research date",
+        "移行・運用条件",
+        "migration and operational conditions",
+    ),
+    "applications": (
+        "調査基準日現在、公開情報で確認できるベンチマーク、ワークフロー、評価実績、公開計画",
+        "benchmarks, workflows, documented evaluations, and announced plans confirmed as of the research date",
+        "評価・利用条件",
+        "evaluation and use conditions",
+    ),
+    "cross-cutting": (
+        "調査基準日現在、公開情報で確認できる制度、運用方式、実施状況、公開計画",
+        "policies, operational practices, documented implementations, and announced plans confirmed as of the research date",
+        "実施・運用条件",
+        "implementation and operational conditions",
+    ),
+}
+
+DOMAIN_CURRENT_SECTION_SUMMARY = {
+    "architecture": (
+        "調査基準日現在、公開情報で確認できる製品、標準、導入実績、公開計画を、成熟度とともに示します。",
+        "This section presents products, standards, documented deployments, and announced plans confirmed by public evidence as of the research date, together with their maturity.",
+    ),
+    "system-software": (
+        "調査基準日現在、公開情報で確認できるソフトウェア、標準、導入実績、公開計画を、成熟度とともに示します。",
+        "This section presents software, standards, documented deployments, and announced plans confirmed by public evidence as of the research date, together with their maturity.",
+    ),
+    "applications": (
+        "調査基準日現在、公開情報で確認できるベンチマーク、ワークフロー、評価実績、公開計画を、成熟度とともに示します。",
+        "This section presents benchmarks, workflows, documented evaluations, and announced plans confirmed by public evidence as of the research date, together with their maturity.",
+    ),
+    "cross-cutting": (
+        "調査基準日現在、公開情報で確認できる制度、運用方式、実施状況、公開計画を、成熟度とともに示します。",
+        "This section presents policies, operational practices, documented implementations, and announced plans confirmed by public evidence as of the research date, together with their maturity.",
     ),
 }
 
@@ -122,18 +169,38 @@ def compact(value: str) -> str:
 
 def milestone_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
     year = item.get("year") or 9999
-    quarter = int(item["quarter"][1]) if item.get("quarter") else 5
-    return year, quarter, item["milestone_id"]
+    if item.get("quarter"):
+        period = int(item["quarter"][1])
+    elif item.get("half") == "H1":
+        period = 2
+    elif item.get("half") == "H2":
+        period = 4
+    else:
+        period = 4
+    return year, period, item["milestone_id"]
 
 
 def timing_text(item: dict[str, Any], language: str) -> str:
     if item.get("year") is None:
         return "時期未公表" if language == "ja" else "No public timing"
-    quarter = f" {item['quarter']}" if item.get("quarter") else ""
-    suffix = "（四半期未公表）" if language == "ja" and not quarter else ""
-    if language == "en" and not quarter:
-        suffix = " (quarter not public)"
-    return f"{item['year']}{quarter}{suffix}"
+    if item.get("quarter"):
+        return (
+            f"{item['year']}年{item['quarter']}"
+            if language == "ja"
+            else f"{item['quarter']} {item['year']}"
+        )
+    if item.get("half"):
+        half_ja = "前半" if item["half"] == "H1" else "後半"
+        return (
+            f"{item['year']}年{half_ja}（{item['half']}）"
+            if language == "ja"
+            else f"{item['half']} {item['year']}"
+        )
+    return (
+        f"{item['year']}年（四半期未公表）"
+        if language == "ja"
+        else f"{item['year']} (quarter not public)"
+    )
 
 
 def maturity(item: dict[str, Any]) -> str:
@@ -149,13 +216,35 @@ def maturity(item: dict[str, Any]) -> str:
     }.get(item.get("maturity"), "uncertain")
 
 
-def next_milestone(track_id: str, lanes: list[dict[str, Any]]) -> dict[str, Any] | None:
+def next_milestone(
+    track_id: str,
+    lanes: list[dict[str, Any]],
+    research_as_of: date,
+) -> dict[str, Any] | None:
+    current_quarter = (research_as_of.month - 1) // 3 + 1
+
+    def remains_future(item: dict[str, Any]) -> bool:
+        year = item.get("year")
+        if year is None:
+            return True
+        if year != research_as_of.year:
+            return year > research_as_of.year
+        if item.get("quarter"):
+            return int(item["quarter"][1]) > current_quarter
+        if item.get("half") == "H1":
+            return 2 > current_quarter
+        if item.get("half") == "H2":
+            return 4 > current_quarter
+        # A year-only target still spans the remaining quarters of the year.
+        return current_quarter < 4
+
     milestones = [
         milestone
         for lane in lanes
         if lane["track_id"] == track_id
         for milestone in lane["milestones"]
         if milestone.get("timing_basis") not in {"observed", "as-of-baseline", "openfs-provisional-plan"}
+        and remains_future(milestone)
     ]
     return min(milestones, key=milestone_sort_key) if milestones else None
 
@@ -183,9 +272,9 @@ def import_source(source: dict[str, Any]) -> dict[str, str]:
 def dimensions(topic_id: str, domain: str) -> list[dict[str, str]]:
     prefix = compact(topic_id)
     common = [
-        ("VALUE", "導入価値", "Deployment value", "代表的な利用で現在方式より有意な価値を示すか。", "Does it show material value over the current approach for representative use?"),
-        ("READY", "導入可能性", "Readiness", "製品、標準、供給、運用支援が必要時期に揃うか。", "Will products, standards, supply, and operational support align with the required date?"),
-        ("RISK", "残存リスク", "Residual risk", "未確認条件を実測・契約・fallbackで管理できるか。", "Can unknowns be managed through measurement, contracts, and fallback?"),
+        ("VALUE", "導入価値", "Deployment value", "代表的な利用条件において、現行方式よりも有意な価値を示すか。", "Does it show material value over the current approach for representative use?"),
+        ("READY", "導入可能性", "Readiness", "製品、標準、供給、運用支援が必要な時期に揃うか。", "Will products, standards, supply, and operational support align with the required date?"),
+        ("RISK", "残存リスク", "Residual risk", "未確認事項を実測、契約、代替策によって管理できるか。", "Can unknowns be managed through measurement, contracts, and fallback options?"),
     ]
     if domain == "applications":
         common[0] = ("REP", "代表性", "Representativeness", "利用分野、規模、実行形態を十分に代表するか。", "Does it represent relevant domains, scales, and execution modes?")
@@ -208,6 +297,7 @@ def generated_profile(
     lanes: list[dict[str, Any]],
     source_index: dict[str, dict[str, Any]],
     gap_id: str,
+    research_as_of: date,
 ) -> tuple[dict[str, Any], dict[str, Any], set[str]]:
     topic_id = topic["topic_id"]
     topic_key = compact(topic_id)
@@ -215,6 +305,17 @@ def generated_profile(
     future_items: list[dict[str, Any]] = []
     used_sources: set[str] = set()
     conditions_ja, conditions_en = DOMAIN_CONDITIONS[topic["domain"]]
+    current_scope_ja, current_scope_en, decision_scope_ja, decision_scope_en = (
+        DOMAIN_PROFILE_SCOPE[topic["domain"]]
+    )
+    current_summary_ja, current_summary_en = DOMAIN_CURRENT_SECTION_SUMMARY[
+        topic["domain"]
+    ]
+    as_of_ja = f"{research_as_of.year}年{research_as_of.month}月{research_as_of.day}日時点の公開情報"
+    as_of_en = (
+        f"Public information as of {research_as_of.strftime('%B')} "
+        f"{research_as_of.day}, {research_as_of.year}"
+    )
 
     for track_id in TOPIC_TRACKS[topic_id]:
         track = tracks[track_id]
@@ -227,8 +328,8 @@ def generated_profile(
             "name_en": track["name_en"],
             "stage": "current",
             "maturity": TRACK_CURRENT_MATURITY.get(track_id, "commercial"),
-            "timing_ja": "2026年8月時点の公開情報",
-            "timing_en": "Public information as of August 2026",
+            "timing_ja": as_of_ja,
+            "timing_en": as_of_en,
             "statement_ja": track["current_state_ja"],
             "statement_en": track["current_state_en"],
             "hpci_relevance_ja": track["hpci_implications_ja"],
@@ -241,7 +342,7 @@ def generated_profile(
             "consensus_status": "incomplete",
         })
 
-        milestone = next_milestone(track_id, lanes)
+        milestone = next_milestone(track_id, lanes, research_as_of)
         if milestone:
             future_source_ids = milestone["source_ids"]
             used_sources.update(future_source_ids)
@@ -287,23 +388,23 @@ def generated_profile(
 
     profile = {
         "topic_id": topic_id,
-        "summary_ja": f"現在利用・公開されている方式と近い将来の候補を分け、{topic['title_ja']}を採用判断に必要な条件、根拠、未確認事項まで整理する。",
-        "summary_en": f"Separates currently used or publicly documented approaches from near-term candidates and organizes {title_en} around evidence, adoption conditions, and unresolved questions.",
+        "summary_ja": f"{topic['title_ja']}について、{current_scope_ja}を最新状況として整理し、将来候補と区別して示します。計画・導入判断に必要な{decision_scope_ja}、根拠、未確認事項も併せて整理します。",
+        "summary_en": f"This profile of {title_en} separates the latest status verified as of the research date from future candidates. It also records the evidence, {decision_scope_en}, and unresolved questions needed for planning and adoption decisions.",
         "sections": [
             {
                 "section_id": f"TDS-{topic_key}-CURRENT",
-                "title_ja": "現在利用・確認できる方式",
-                "title_en": "Currently used or verified approaches",
-                "summary_ja": "公開一次情報で現在の製品、標準、運用または評価実績を確認できる項目を示す。",
-                "summary_en": "Shows products, standards, operations, or evaluations supported by current public primary sources.",
+                "title_ja": f"{topic['title_ja']}の最新状況（調査基準日現在）",
+                "title_en": f"Status as of the research date: {title_en}",
+                "summary_ja": current_summary_ja,
+                "summary_en": current_summary_en,
                 "items": current_items,
             },
             {
                 "section_id": f"TDS-{topic_key}-FUTURE",
-                "title_ja": "近い将来の候補と未確定事項",
-                "title_en": "Near-term candidates and unresolved points",
-                "summary_ja": "将来時期は公開された目標だけを記載し、未公表の時期や成立条件はCoverage Gapに残す。",
-                "summary_en": "Uses only published targets for future timing and leaves undisclosed dates or conditions as Coverage Gaps.",
+                "title_ja": f"{topic['title_ja']}の将来候補",
+                "title_en": f"Future candidates for {title_en}",
+                "summary_ja": "将来の時期は公表された目標だけを記載し、公表されていない時期や成立条件は未確認事項として残します。",
+                "summary_en": "This section uses only published targets for future timing and explicitly records any undisclosed dates or conditions as coverage gaps.",
                 "items": future_items,
             },
         ],
@@ -316,8 +417,8 @@ def generated_profile(
         "topic_ids": [topic_id],
         "priority": "P0" if topic_id in {"ARCH-01", "ARCH-04", "ARCH-06", "APP-01", "APP-02", "CROSS-01", "CROSS-02", "CROSS-03", "CROSS-06"} else "P1",
         "question_ja": topic["research_questions"][0],
-        "question_en": f"Which evidence is still required to make a deployment decision for {title_en}?",
-        "next_action_ja": f"{topic['evidence_expected'][0]}を追加収集し、代表条件で比較して更新する。",
+        "question_en": f"Which evidence is still required to make a planning or adoption decision for {title_en}?",
+        "next_action_ja": f"不足している一次情報（{topic['evidence_expected'][0]}）を追加で収集し、代表的な条件で比較した上で更新する。",
         "next_action_en": "Collect the missing primary evidence and update the comparison under representative conditions.",
         "status": "open",
     }
@@ -326,6 +427,7 @@ def generated_profile(
 
 def main() -> int:
     artifact = load_json(ARTIFACT_PATH)
+    research_as_of = date.fromisoformat(artifact["as_of"])
     baseline = load_json(BASELINE_PATH)
     i18n = load_json(I18N_PATH)
     roadmaps = [load_json(path) for path in sorted(ROADMAP_DIR.glob("*.json"))]
@@ -357,6 +459,7 @@ def main() -> int:
             lanes,
             roadmap_sources,
             gap_id,
+            research_as_of,
         )
         profiles_by_id[topic_id] = profile
         new_gaps.append(gap)
@@ -368,7 +471,7 @@ def main() -> int:
             existing_sources[source_id] = import_source(roadmap_sources[source_id])
 
     artifact["schema_version"] = "0.2.0"
-    artifact["as_of"] = "2026-08-27"
+    artifact["as_of"] = research_as_of.isoformat()
     artifact["topic_profiles"] = [profiles_by_id[topic["topic_id"]] for topic in partial_topics]
     artifact["sources"] = sorted(existing_sources.values(), key=lambda item: item["source_id"])
     artifact["coverage_gaps"] = preserved_gaps + new_gaps

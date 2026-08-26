@@ -64,7 +64,7 @@ def _default_closure_plan(gap: dict[str, Any]) -> dict[str, Any]:
                 "criterion_id": f"{gap['gap_id']}-C1",
                 "verification_method": "evidence-review",
                 "requirement_ja": (
-                    "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて"
+                    "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて"
                     "独立レビューする。"
                 ),
                 "requirement_en": (
@@ -85,8 +85,8 @@ def _consensus_closure_plan(gap: dict[str, Any]) -> dict[str, Any]:
                 "criterion_id": f"{gap['gap_id']}-C1",
                 "verification_method": "consensus-quorum",
                 "requirement_ja": (
-                    "異なる提供者・モデル・Harnessによる独立レビューがConsensus Policyの"
-                    "quorumと異議解消条件を満たす。"
+                    "異なるサービス提供者、モデル、ハーネスによる独立レビューが、"
+                    "合意判定方針で定めた定足数と異議解消の条件を満たす。"
                 ),
                 "requirement_en": (
                     "Independent reviews from distinct providers, models, and harnesses meet "
@@ -248,10 +248,10 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
         "queue_id": f"RGQ-{as_of.replace('-', '')}-001",
         "as_of": as_of,
         "generated_at": generated,
-        "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とする。P0のsource-discoveryには検索条件だけでなく、独立起源数と具体的な閉鎖条件を明示する。",
-        "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly. P0 source-discovery items carry explicit search plans, independent-origin minimums, and concrete closure criteria.",
-        "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。すべての閉鎖条件を検証し、必要な独立起源数とConsensus Gateを満たすまでstatusはopenのままにする。生成fallbackは探索開始点にすぎず、Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
-        "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved. Status remains open until every closure criterion is verified and the required independent-origin count and Consensus Gate are satisfied. A generated fallback is only a discovery starting point, and disabled Monitors do not run until production-readiness gates pass.",
+        "method_ja": "6本のロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
+        "method_en": "This queue collects every unresolved item from the six roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
+        "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
+        "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
         "summary": {
             "roadmap_count": len(roadmaps),
             "gap_count": len(assignments),

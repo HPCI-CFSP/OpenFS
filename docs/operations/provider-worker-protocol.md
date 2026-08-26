@@ -1,11 +1,11 @@
 # Provider Worker protocol
 
-The provider Worker is split across a trusted control process and an untrusted
+The Provider Worker is split across a trusted control process and an untrusted
 provider adapter. The adapter never edits Queue or Run Manifest state directly.
 
 1. The trusted controller leases one Work Item with `tools/run_controller.py`.
-2. `tools/prepare_worker_invocation.py` rechecks the lease, enabled pinned Agent,
-   public clearance, role output paths, and pinned Skill digest. It emits a
+2. `tools/prepare_worker_invocation.py` rechecks the lease, the enabled and pinned
+   Agent, public clearance, role output paths, and pinned Skill digest. It emits a
    secret-free invocation under `runs/<RUN>/worker-invocations/`.
 3. A provider-specific adapter reads that envelope, obtains credentials only from
    its process environment or approved secret store, applies the pinned Skill,
@@ -14,7 +14,7 @@ provider adapter. The adapter never edits Queue or Run Manifest state directly.
    `runs/<RUN>/worker-results/`. Provider request IDs are hashed; prompts, raw
    responses, credentials, headers, and secret values are not stored there.
 5. `tools/accept_worker_result.py` verifies both envelope digests, the pinned Run
-   controls, Agent registry, role permissions and Skill, provider/model binding,
+   controls, Agent registry, role permissions, pinned Skill, provider/model binding,
    exact output set and SHA-256 digests, usage measurement, and current lease
    ownership before delegating completion or failure to the Run Controller.
 
@@ -36,8 +36,33 @@ For a Work Item with `query_role: coverage-gap`, the adapter must retain
 responsive page never closes a Coverage Gap; evidence extraction, synthesis,
 independent review, and an explicit roadmap update remain separate steps.
 
-The contract does not make a provider integration production-ready by itself.
-The repository still requires a reviewed `research-worker.yml`, provider-specific
-adapter implementation, sandbox and egress tests, hard provider spend limits,
-enabled independent Agent bindings, and successful manual Runs. The aggregate
-production preflight continues to block until those components are present.
+The repository includes a manual, review-only workflow in
+`.github/workflows/research-worker.yml` and a fixed-endpoint adapter in
+`tools/execute_provider_work_item.py`. The workflow selects one leased Work Item,
+pins the configured model ID in the invocation envelope, requests structured
+output, validates every declared artifact before writing it, and uploads the
+result for review. It has no permission to push, open a pull request, merge, or
+promote canonical data. Provider request IDs are stored only as hashes, and the
+adapter never writes prompts, raw responses, headers, or credentials to an
+artifact.
+
+The adapter currently supports the OpenAI Responses API and the Anthropic
+Messages API through fixed HTTPS endpoints. It rejects redirects and disables
+environment-proxy discovery. Model IDs come from the enabled Agent registration
+and are copied into the Run-pinned invocation; a mutable workflow variable cannot
+change the model after the invocation has been prepared. Provider credentials
+remain process-environment inputs to the single provider-call step and are never
+part of the invocation or result contract.
+
+Each production request reserves a positive amount from the Run cost ceiling
+before dispatch. Measured token and Web-search usage is converted with
+owner-supplied rates. Missing rate information is reported as unknown rather than
+silently treated as zero. Repository-side accounting supplements, and does not
+replace, provider-side hard spend limits.
+
+These controls do not make provider integration production-ready by themselves.
+The aggregate preflight remains blocked until a production execution profile has
+verified sandbox and egress controls, owner attestations and provider-side spend
+limits are current, independent Agents and Monitors are enabled, and the required
+manual Pilot Runs have passed review. No live provider call is required or implied
+by repository validation.

@@ -62,8 +62,13 @@ def evaluate(
         errors.append("web_fetch methods must be exactly GET and HEAD")
     if set(fetch.get("allowed_schemes", [])) != {"https", "http"}:
         errors.append("web_fetch schemes must be HTTP and HTTPS only")
+    if fetch.get("allowed_ports") != [80, 443]:
+        errors.append("web_fetch ports must be exactly 80 and 443")
+    if not 0 < fetch.get("maximum_dns_answers", 0) <= 32:
+        errors.append("web_fetch maximum_dns_answers must be between 1 and 32")
     for field in (
         "anonymous_public_access_only",
+        "public_destination_only",
         "validate_dns_answers",
         "validate_each_redirect",
         "validate_connection_destination",

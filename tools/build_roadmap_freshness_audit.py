@@ -16,6 +16,12 @@ DEFAULT_OUTPUT = ROOT / "knowledge" / "public" / "audits" / "roadmap-freshness-a
 TARGET_BASES = {"vendor-target", "project-target", "policy-target"}
 OBSERVED_BASES = {"observed", "standard-release"}
 QUARTER = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
+REACHABILITY_LABELS_JA = {
+    "blocked": "自動取得が拒否された状態",
+    "error": "取得時にエラーが発生した状態",
+    "redirected": "別のURLへ転送された状態",
+    "unreachable": "到達できない状態",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -115,7 +121,7 @@ def build(
                     "no-public-date",
                     "公開された時期を確認できず、空欄を推測で補っていない。",
                     "No public date was confirmed; the timeline remains blank rather than inferred.",
-                    "公式プロジェクト・標準・ベンダー発表を次回ループで再検索する。",
+                    "公式プロジェクト、標準化団体、ベンダーの発表を次回の調査で再検索する。",
                     "Recheck official project, standards, and vendor announcements in the next loop.",
                 ))
             if basis in TARGET_BASES and year is not None:
@@ -144,7 +150,7 @@ def build(
                         "future-observed-conflict",
                         "実績として分類された時期が基準日より後で、時制が矛盾している。",
                         "The event is classified as observed but dated after the audit baseline.",
-                        "公開を停止し、日付またはtiming_basisを一次情報に照らして修正する。",
+                        "公開を停止し、日付または時期分類を一次情報に照らして修正する。",
                         "Block publication and correct the date or timing_basis against the primary source.",
                     ))
                 if milestone["timing_precision"] == "quarter" and quarter is not None:
@@ -161,7 +167,7 @@ def build(
                             "retrospective-source-timing-check",
                             "引用一次資料の公開四半期が、記録された実績四半期より後である。遡及報告は正当な場合があるが、出来事の時期を示す本文の確認が必要。",
                             "The cited primary sources were published after the recorded event quarter. Retrospective reporting may be valid, but the text must explicitly entail the event timing.",
-                            "独立Reviewで一次資料本文を確認し、公開日を出来事の日付として代用しない。",
+                            "独立レビューで一次資料の本文を確認し、公開日を出来事の日付として代用しない。",
                             "Verify the primary-source text during independent review; do not substitute publication date for event date.",
                         ))
         for band in generation_bands:
@@ -184,7 +190,7 @@ def build(
                     "generation-window-passed",
                     "世代見通しの公表目標窓を過ぎているため、標準化・製品化・延期を一次情報で再確認する必要がある。",
                     "The published target window in the generation outlook has passed and needs primary-source confirmation of standardization, product introduction, or delay.",
-                    "世代帯を実績へ自動変換せず、公式更新を確認して境界・確度・Gapを改訂する。",
+                    "世代区分を実績扱いへ自動変換せず、公式情報の更新を確認して境界、確度、未確認事項を改訂する。",
                     "Do not convert the band into an observed result; check official updates and revise boundaries, confidence, and gaps.",
                 ))
         for source in roadmap["sources"]:
@@ -192,7 +198,7 @@ def build(
                 roadmap_items.append(attention(
                     roadmap["roadmap_id"], "source", source["source_id"], "low",
                     "source-publication-date-unrecorded",
-                    "情報源の公開日が構造化記録されておらず、情報の新しさを自動確認できない。",
+                    "情報源の公開日が構造化されておらず、更新状況を自動確認できない。",
                     "The source publication date is not recorded, so freshness cannot be assessed automatically.",
                     "ページ履歴または文書メタデータから日付を確認し、推測できなければ未記録のまま残す。",
                     "Check page history or document metadata and leave it unrecorded if no date can be established.",
@@ -203,7 +209,7 @@ def build(
                     roadmap["roadmap_id"], "source", source["source_id"],
                     "high" if source["source_id"] in key_source_ids else "medium",
                     f"source-{status}",
-                    f"到達性監査はこの情報源を {status} と判定した。内容の誤りを意味しない。",
+                    f"到達性監査では、この情報源を{REACHABILITY_LABELS_JA.get(status, '要確認の状態')}と判定した。内容が誤っていることを意味しない。",
                     f"The reachability audit classified this source as {status}; this does not establish that its content is wrong.",
                     "公式の代替URLまたはアーカイブを探し、主張内容は独立に検証する。",
                     "Find an official alternate URL or archive and verify the claim independently.",
@@ -236,9 +242,9 @@ def build(
         "audit_id": f"RFA-{as_of.strftime('%Y%m%d')}-001",
         "as_of": as_of.isoformat(),
         "generated_at": generated,
-        "method_ja": "6ロードマップを機械走査し、世代帯、未確定時期、期限経過目標、未来日付の実績、遡及報告、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
-        "method_en": "Mechanically scans six roadmaps and queues generation bands, undated milestones, passed targets, future-dated observed events, retrospective reports, unrecorded source dates, and reachability warnings for follow-up.",
-        "caveat_ja": "更新確認の注意事項は誤りの判定ではありません。古い一次資料や遡及報告が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
+        "method_ja": "6本のロードマップを機械的に走査し、世代区分、時期未公表の項目、期限を過ぎた目標、基準日より後の実績、遡及報告、公開日が未記録の情報源、到達性の警告を、次回確認すべき項目として分類しました。",
+        "method_en": "This audit mechanically scans six roadmaps and identifies items that require follow-up: generation bands, undated milestones, passed targets, observed events dated after the audit baseline, retrospective reports, sources without recorded publication dates, and reachability warnings.",
+        "caveat_ja": "更新確認が必要という表示は、内容が誤っているという判定ではありません。過去の一次資料や遡及報告が現在も有効な場合があり、目標時期を過ぎただけでは、達成、延期、中止のいずれとも推定しません。",
         "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {
             "roadmap_count": len(roadmaps),

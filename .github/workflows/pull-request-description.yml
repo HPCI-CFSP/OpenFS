@@ -1,0 +1,22 @@
+name: Validate Pull Request Description
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-description:
+    runs-on: ubuntu-latest
+    steps:
+      # This job reads PR metadata but never checks out or executes the untrusted
+      # pull-request revision.
+      - name: Check out trusted base validator
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Reject placeholder title or description
+        run: python3 tools/check_pull_request_description.py --event "$GITHUB_EVENT_PATH"

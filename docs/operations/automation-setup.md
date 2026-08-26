@@ -3,14 +3,14 @@
 ## Current status
 
 As of 2026-08-27, the repository has a Run Controller, leased Work Items,
-configuration snapshots, Rights Gate, pinned automatic source-change detection, coverage reporting,
+configuration snapshots, a Rights Gate, commit-pinned source-change detection, coverage reporting,
 Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
 review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
 Pages publication. The repository retains 18 auditable Pilot Run manifests across
 memory (`OFS-001`), HPCI center (`OFS-003`), and worldwide technology (`OFS-005`)
 scopes: 13 completed and five deliberately cancelled while the harness was being
 corrected. The latest worldwide Run, `RUN-OFS005-PILOT-010`, completed 49 Work
-Items over 16 Sources, met its declared coverage scope, passed temporal-integrity
+Items covering 16 Sources, met its declared coverage scope, passed temporal-integrity
 checks, and produced eight provisional Claim proposals. They remain provisional
 because independent provider/model Consensus capacity is not configured; Pilot
 completion must not be read as formal research acceptance.
@@ -33,22 +33,23 @@ the minimum number of independent Origin Groups, requires a Consensus Gate, and
 lists concrete bilingual closure criteria. A newly added Gap remains assignable
 through deterministic generated query and closure defaults, while the queue
 exposes `query_plan_origin`, `closure_plan_origin`, and `closure_state` so reviewers
-can replace those defaults with domain-specific contracts. The current 13 P0
-source-discovery Gaps all have explicit plans; the fourteenth P0 item is the
-Consensus review assignment itself. A responsive result, a source count, or one
+can replace those defaults with domain-specific contracts. All 15 current P0
+source-discovery Gaps have explicit plans; the sixteenth P0 item is assigned to
+independent Consensus review. A responsive result, a source count, or one
 model's judgment cannot change an open Gap: every criterion must be verified and
 the independent-origin and Consensus requirements must pass.
 
 The weekly **control-plane** schedule is implemented in
 `.github/workflows/weekly-coordinator.yml`. It validates the repository and prepares
 one deduplicated coordination Issue. It makes no model call, performs no promotion,
-and publishes no research result. Provider API clients and an unattended research
-Worker are still intentionally disabled. Adding API keys alone does not start paid
-research.
+and publishes no research result. A manual, review-only Provider Worker workflow
+and a fixed-endpoint provider adapter now exist, but they remain blocked by the
+aggregate readiness gate and the `OPENFS_RESEARCH_ENABLED` kill switch. Adding API
+keys alone does not start paid research.
 
 ## Responsiveness target
 
-The worldwide Monitor has a one-day maximum unchecked interval. This is an
+The worldwide Monitor targets a maximum interval of one day between checks. This is an
 internal operational target, not a promise that every Topic changes every day.
 When production execution is enabled, the coordinator should prioritize newly
 detected official releases, security corrections, procurement notices, standards
@@ -57,18 +58,21 @@ only a visibly provisional update after source, retrieval, boundary, schema, and
 human-publication checks; independent verification and Consensus continue on the
 normal lane.
 
-The repository currently provides the weekly control-plane workflow, but the
-production worker and verified safe-fetch path remain disabled. Until those gates
-pass, the one-day target is a declared service objective rather than an active
-unattended guarantee. Public Pages therefore shows the last reflected update,
-verification state, and open Coverage Gaps instead of promising a fixed cadence.
+The repository currently provides the weekly control plane, the review-only
+Provider Worker, and a policy-enforcing Safe Web Fetch Broker. Production use of
+both network paths remains disabled until the deployed execution profile and
+owner-controlled settings pass review. Until then, the one-day target is a
+declared service objective rather than an active unattended guarantee. Public
+Pages therefore shows the last reflected update, verification state, and open
+Coverage Gaps instead of promising a fixed cadence.
 
-The existing roadmap URL audit still uses direct Python HTTP for local development.
-The scheduled Review now fails closed before that step and cannot become
-production-ready until it is replaced by
-`audit_roadmap_sources_via_fetch_broker.py` backed by a verified safe-fetch
-service. Registering a profile without changing that execution path is
-insufficient.
+Scheduled roadmap-source auditing is routed through
+`tools/audit_roadmap_sources_via_fetch_broker.py`; the legacy command delegates to
+the same implementation. Repository tests exercise DNS, redirect, address,
+method, media-type, response-size, and deadline controls. These tests verify code
+behavior, not the operating-system network isolation of a deployed runner. A
+production profile therefore remains ineligible until its platform evidence has
+been independently reviewed.
 
 ## Recommended provider arrangement
 
@@ -79,7 +83,7 @@ Use at least two independently administered model-provider paths for formal Cons
 
 The roles should be rotated across Runs so that one provider is not permanently the proposer or validator. Two executions of the same model, prompt, and tool configuration count as one independence group. If only one provider is configured, useful proposals may be generated, but they remain `provisional` and cannot pass the formal cross-group quorum.
 
-OpenFS is public-information-only. Provider jobs must never receive NDA, confidential, credential, personal, or unclassified internal material.
+OpenFS is restricted to public information. Provider jobs must never receive NDA-protected, confidential, credential-related, personal, or other non-public internal material.
 
 ## Settings the repository owner prepares
 
@@ -118,10 +122,18 @@ After the Pilot workflow defines and validates these names, add them at:
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
 | `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit; increase only after inspecting the generated plan |
-| `OPENFS_OPENAI_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
-| `OPENFS_ANTHROPIC_MODEL` | owner-approved model ID | Resolved and recorded in the Run manifest |
+| `OPENFS_INPUT_USD_PER_MILLION_TOKENS` | owner-approved rate | Input-token rate used for repository cost accounting |
+| `OPENFS_OUTPUT_USD_PER_MILLION_TOKENS` | owner-approved rate | Output-token rate used for repository cost accounting |
+| `OPENFS_PER_WEB_SEARCH_USD` | owner-approved rate | Per-search charge used when the provider reports Web-search usage |
+| `OPENFS_MAXIMUM_REQUEST_COST_USD` | owner decision | Positive reservation required before each provider request |
+| `OPENFS_WORKER_MAX_OUTPUT_TOKENS` | `4000` | Maximum structured output requested from the provider |
 
 Keep `OPENFS_RESEARCH_ENABLED=false` while the runner is absent or while a problem is under investigation. The repository `state/STOP` file is the second kill switch once the Run Controller is implemented.
+
+Approved model IDs are not workflow variables. Record an exact `model_id` for
+each enabled provider Agent in `config/agent-registry.json`; the controller pins
+that value in the invocation envelope. Aliases whose resolved version can change
+must be accompanied by the resolved provider identity recorded at execution time.
 
 ### 3. GitHub Actions permissions
 
@@ -163,7 +175,7 @@ Record these decisions in a reviewed pull request or Directive:
 
 - approved OpenAI and Anthropic model IDs;
 - maximum cost per Run and provider-side monthly limits;
-- whether source retrieval may use provider Web-search tools, direct HTTP retrieval, or both;
+- whether source retrieval may use provider-hosted Web search, direct HTTP retrieval, or both;
 - retention period for provider responses, GitHub artifacts, and search receipts;
 - the people who may approve high-impact recommendations and public release;
 - the initial Pilot scope, recommended as `OFS-001` only.
@@ -204,15 +216,20 @@ Record these decisions in a reviewed pull request or Directive:
    `python3 tools/check_research_web_security.py --require-production-profile`
    and set `OPENFS_SECURITY_PROFILE_ID` only after the deployed platform evidence
    has been reviewed.
-11. Enable provider calls first in manual Pilot mode. Enable unattended production
-   Runs only after owner review of cost, citations, dissent, false positives, and
-   generated pull-request paths.
-12. After accepted non-Recommendation Claims exist, manually run **Prepare OpenFS
+11. Enter exact approved model IDs in the enabled Agent records and configure the
+    repository accounting rates and a positive per-request reservation. Confirm
+    the same or stricter hard limits in the provider account.
+12. Enable provider calls first in manual Pilot mode. The **Execute OpenFS Research
+    Worker** workflow produces review artifacts only; inspect its invocation,
+    structured outputs, result envelope, usage, and cost record. Enable unattended
+    production Runs only after owner review of cost, citations, dissent, false
+    positives, and generated pull-request paths.
+13. After accepted non-Recommendation Claims exist, manually run **Prepare OpenFS
     Claim Promotions** with `publish_pr=false` and inspect its artifact and diff.
     Then test `publish_pr=true` and confirm branch protection requires human review.
     Set `OPENFS_PROMOTION_ENABLED=true` only after this succeeds. The Tuesday
     schedule prepares at most one open promotion PR and never merges it.
-13. Before relying on correction handling, create a test `canonical-status`
+14. Before relying on correction handling, create a test `canonical-status`
     Directive for a disposable accepted Claim and run
     `tools/record_claim_status.py` on a branch. Confirm the original record
     remains, the active index excludes it, the status history names the human
@@ -279,7 +296,7 @@ action updates one stable deduplication marker instead of opening one Issue per 
   digest-verified Agent outputs, expands deterministic follow-up Work Items, and
   opens one control-state pull request. If a prior control PR is still open, new
   Handoffs wait for the next cycle instead of creating a conflicting PR.
-- The **Weekly Review** research job has no model-provider secret, Issue-write
+- The **Weekly Review** workflow has no model-provider secret, Issue-write
   permission, or Git publication authority. It runs only with a selected,
   production-eligible Research Web security profile and emits internal artifacts
   plus sanitized Issue payloads. A separate downstream job receives only those

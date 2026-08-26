@@ -138,8 +138,9 @@ evaluation methods.
 
 The catalog dialog has a separate decision-support projection in
 `knowledge/public/topic-decision-support.json`. It is organized by canonical
-Topic and shows four explicitly different stages: current use, likely near-term
-options, research/prototypes, and contested paths. Every technology item carries
+topic and shows four explicitly different stages: the latest status confirmed as
+of the research date, likely near-term options, research/prototypes, and
+contested paths. Every technology item carries
 HPCI relevance, adoption conditions, actors, public sources, confidence, and
 Consensus state. Research-run summaries remain available as collapsed provenance
 and individual findings; their titles are not promoted into duplicate Topic
@@ -267,7 +268,8 @@ Accepted knowledge is projected into multiple HPCI system scenarios rather than 
 
 The current Center Profile contract contains twelve fields, including explicit
 `budget` and `procurement` constraints. `tools/build_center_profile_assurance.py`
-projects only aggregate status and official center links into the public plane.
+projects only aggregate status and official center links into the public
+repository and site.
 Profiles from the earlier ten-field contract stay immutable and appear as
 `not-collected` for the new fields until a later evidenced Run replaces them.
 

@@ -67,6 +67,7 @@ REQUIRED_FILES = [
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
     "docs/policies/research-web-access.md",
+    "docs/policies/language-and-terminology.md",
     "docs/security/threat-model.md",
     "docs/security/research-web-security-model.md",
     "config/consensus-policy.json",
@@ -194,6 +195,7 @@ REQUIRED_FILES = [
     "tools/check_workload_observation_summary.py",
     "tools/check_portability_capability_matrix.py",
     "tools/check_public_planning_surfaces.py",
+    "tools/check_public_language.py",
     "tools/check_scenario_portfolio.py",
     "tools/check_research_web_security.py",
     "tools/check_roadmap_dependency_register.py",
@@ -540,6 +542,12 @@ def validate_runtime_configuration(root: Path) -> list[str]:
         group = agent.get("agent_independence_group")
         if agent.get("enabled") and "unconfigured" in identity:
             errors.append(f"enabled agent has unconfigured identity: {agent.get('agent_id')}")
+        if (
+            agent.get("enabled")
+            and agent.get("role") in {"discovery", "extraction", "validator", "critic", "synthesis"}
+            and str(agent.get("model_id", "unconfigured")).lower() in {"", "none", "unconfigured"}
+        ):
+            errors.append(f"enabled provider agent lacks a requested model ID: {agent.get('agent_id')}")
         if agent.get("enabled") and agent.get("role") in {"validator", "critic"}:
             review_provenance = {
                 "review_origin_group": agent.get("review_origin_group"),
