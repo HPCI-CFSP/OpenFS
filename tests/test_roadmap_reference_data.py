@@ -48,9 +48,9 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 root, self.policy, self.roadmaps, False
             )
 
-    def test_reference_data_covers_six_high_value_comparisons(self):
+    def test_reference_data_covers_high_value_comparisons(self):
         result = self.collect_fixture(self.payload)
-        self.assertEqual(38, len(result["terms"]))
+        self.assertEqual(46, len(result["terms"]))
         self.assertEqual(
             {
                 "CMP-MEMORY-HIERARCHY",
@@ -59,6 +59,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "CMP-INTERCONNECT-ROLES",
                 "CMP-PORTABILITY-MODELS",
                 "CMP-EVALUATION-METHODS",
+                "CMP-AGENT-BENCHMARKS",
             },
             {item["comparison_id"] for item in result["comparison_sets"]},
         )
