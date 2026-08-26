@@ -101,6 +101,47 @@ def evaluate(
     expected_units = {unit["unit_id"] for unit in manifest["review_units"]}
     required_primary_checks: dict[str, dict[str, set[tuple[str, str, str]]]] = {}
     for unit in manifest["review_units"]:
+        if unit["unit_id"] == "CRU-TOPIC-DECISION-SUPPORT":
+            artifact = committed_json(
+                root,
+                manifest["base_commit"],
+                "knowledge/public/topic-decision-support.json",
+            )
+            review_source_classes = {
+                "official-vendor": "vendor-official",
+                "official-standard": "standards-body",
+                "official-project": "project-official",
+                "peer-reviewed": "academic-primary",
+                "research-artifact": "research-organization",
+            }
+            expected = {
+                source["source_id"]: {
+                    (
+                        source["source_id"],
+                        source["url"],
+                        review_source_classes[source["source_class"]],
+                    )
+                }
+                for source in artifact["sources"]
+            }
+            declared = {
+                requirement["selector"]: {
+                    (
+                        option["source_id"],
+                        option["source_url"],
+                        option["source_class"],
+                    )
+                    for option in requirement["source_options"]
+                }
+                for requirement in unit.get("primary_source_requirements", [])
+            }
+            if declared != expected:
+                integrity_errors.append(
+                    "primary_source_requirement_manifest_mismatch:"
+                    f"{unit['unit_id']}"
+                )
+            required_primary_checks[unit["unit_id"]] = expected
+            continue
         if unit["kind"] != "roadmap":
             continue
         roadmap_paths = [
