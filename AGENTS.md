@@ -106,6 +106,18 @@ When a task contains multiple investigations, organize them into separate task, 
   record `half: H1|H2`; Pages renders that uncertainty across two quarters. Pages
   renders year-only timing across Q1-Q4. These rectangles show the supported
   timing window, not event duration. Keep undated items separate.
+- When a track has meaningful generations, record its synthesized overview in
+  `track.generation_bands` and render it above standards-body and vendor lanes.
+  Every band must cite registered sources, preserve independent start/end timing
+  precision, allow overlapping generations, state confidence and Consensus
+  status, and use `openfs-synthesis` when combining evidence. Never invent an
+  exclusive generation cutoff. Put a standards-body lane before vendor lanes when
+  a standards organization owns the relevant specification.
+- Treat `horizon.end_year` as the minimum display endpoint only when
+  `extension_policy` is `extend-to-latest-dated-evidence`. Dated, approved
+  milestones or generation boundaries may extend Pages beyond it; undated gaps
+  and open-ended bands may not. Cross-roadmap comparison must derive its columns
+  from the effective artifact horizons instead of a hard-coded final year.
 - Maintain reusable bilingual term definitions and decision-oriented technology
   comparisons only in `knowledge/public/roadmap-reference-data.json`, validated by
   `schemas/roadmap-reference-data.schema.json`. Pages and other outputs must

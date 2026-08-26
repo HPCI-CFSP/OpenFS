@@ -1,22 +1,23 @@
 # P0 roadmap v0.2 independent review package
 
-This package pins 6 P0 roadmaps, 165
-milestone records, 134 source registrations representing
-121 unique URLs,
+This package pins 6 P0 roadmaps, 166
+milestone records, 7 synthesized generation bands,
+and 135 source registrations representing
+122 unique URLs,
 14 cross-roadmap dependencies,
 31 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `8c09b5229a6b3e3975e3f9795e2e862015882314`.
+3 provisional HPCI scenarios to commit `3d07832491dd2a05899815026586d3add3fdff37`.
 
 ## Review protocol
 
-1. Check out exactly `8c09b5229a6b3e3975e3f9795e2e862015882314`, verify every `artifact_manifest.sha256`, and
+1. Check out exactly `3d07832491dd2a05899815026586d3add3fdff37`, verify every `artifact_manifest.sha256`, and
    record the SHA-256 of the exact `manifest.json` bytes as
    `package_manifest_digest` in the review. Do not reserialize the manifest
    before calculating this digest.
 2. Review every `review_unit` independently. Inspect cited public primary sources;
    URL reachability alone is not evidence that a claim is correct.
-   Record one conclusive primary-source check for every milestone listed in
-   `primary_source_requirements`, using one of that milestone's registered
+   Record one conclusive primary-source check for every milestone or generation
+   band listed in `primary_source_requirements`, using one of its registered
    `source_options`. Key OpenFS proposals and undated gaps remain subject to the
    unit assessment but do not masquerade as externally verified events.
 3. Actively seek counterevidence using each unit's falsification prompts. Keep
@@ -39,12 +40,13 @@ milestone records, 134 source registrations representing
 ## 日本語要約
 
 このパッケージは、P0の6ロードマップ、
-165マイルストーン、134件の情報源登録
-（重複除去121 URL）、
+166マイルストーン、7世代帯、
+135件の情報源登録
+（重複除去122 URL）、
 14相互依存、31件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `8c09b5229a6b3e3975e3f9795e2e862015882314` に固定します。
+HPCI整備計画3案をコミット `3d07832491dd2a05899815026586d3add3fdff37` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
-マイルストーンごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
+マイルストーンまたは世代帯ごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
 independence groupは独立票に数えません。Reviewerは固定されたAgent Registryへ
 有効なAgentとして登録され、支持票は3モデル系統、2プロバイダ、2つの異なるHarness

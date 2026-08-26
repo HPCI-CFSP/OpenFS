@@ -22,32 +22,40 @@ research or claim that Consensus is complete.
    milestone when no public date exists. The renderer spans half-year entries
    across two quarters and year-only entries across Q1-Q4 as uncertainty windows,
    not durations. Do not interpolate between announced generations.
-4. Separate factual events from OpenFS planning. Only HPCI evaluation or adoption
+4. Add `generation_bands` only when a track has meaningful generations and the
+   overview improves an HPCI decision. Keep standards-body and vendor lanes
+   separate below it. Every band must preserve independent boundary precision,
+   cite registered sources, state phase, confidence, and Consensus status, and
+   allow overlapping generations. Use `openfs-synthesis` for a combined view;
+   never infer an exclusive replacement date. With
+   `extend-to-latest-dated-evidence`, later dated evidence extends the display
+   horizon, while undated gaps and open-ended bands do not.
+5. Separate factual events from OpenFS planning. Only HPCI evaluation or adoption
    gates may use `timing_basis: openfs-provisional-plan`.
-5. Link each track, milestone, and dependency to source IDs. Declare dependencies
+6. Link each track, milestone, generation band, and dependency to source IDs. Declare dependencies
    against stable roadmap IDs and distinguish evidence-backed relations from
    OpenFS assessment.
-6. Put every unresolved source, vendor, center, cost, performance, or later-horizon
+7. Put every unresolved source, vendor, center, cost, performance, or later-horizon
    question in `coverage_gaps`, including its decision impact and next action.
    Missing evidence remains a gap and never becomes a forecast. Assign `P0` only
    when the answer can change an HPCI architecture, facility, procurement,
    migration, or scenario decision; assign `P1` to material comparison gaps and
    `P2` to useful context. Revisit priority when dependencies change.
-7. Mark important cross-roadmap events `comparison_priority: key`; keep supporting
+8. Mark important cross-roadmap events `comparison_priority: key`; keep supporting
    releases and context as `supporting`.
-8. Put reusable bilingual definitions and high-value comparison matrices only in
+9. Put reusable bilingual definitions and high-value comparison matrices only in
    `knowledge/public/roadmap-reference-data.json`. Validate it with
    `schemas/roadmap-reference-data.schema.json`, cite roadmap source IDs for every
    term and comparison row, and reference it from generated pages. Add comparisons
    for material compute, packaging, interconnect, software, workload, and
    evaluation choices as well as memory, but only when the common axes improve an
    HPCI decision.
-9. Before handoff, run JSON Schema validation, repository validation, unit tests,
+10. Before handoff, run JSON Schema validation, repository validation, unit tests,
    both roadmap audit generators, Pages generation, and desktop/mobile visual
    checks. The public export remains
    `research_status: provisional` and `consensus_status: incomplete` until the
    configured independent-model Consensus Gate supplies an accepted receipt.
-10. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
+11. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
    complete review target. Then run
    `tools/build_consensus_review_package.py --base-commit <40-hex-commit>` and
    distribute that pinned package to blind reviewers. Reviewers must inspect every
@@ -55,6 +63,6 @@ research or claim that Consensus is complete.
    primary-source check for every roadmap, record provider/model/prompt/harness identity,
    and submit schema-valid assessments. Do not count this planner's own review,
    same-conversation forks, or shared-conclusion reviewers as independent.
-11. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
+12. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
     `ready-for-human-decision` result is not acceptance; high-impact adoption still
     requires the human decision required by policy.

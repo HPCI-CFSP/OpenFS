@@ -123,8 +123,51 @@ def build_entry(
     }
 
 
+def generation_band_timing_label(band: dict[str, Any], language: str) -> str:
+    def boundary_label(boundary: dict[str, Any]) -> str:
+        if boundary["precision"] == "quarter":
+            return f"{boundary['year']} {boundary['quarter']}"
+        if boundary["precision"] == "half-year":
+            return f"{boundary['year']} {boundary['half']}"
+        return str(boundary["year"])
+
+    start = boundary_label(band["start"])
+    if band["end"] is None:
+        end = "終了時期未確認" if language == "ja" else "end not evidenced"
+    else:
+        end = boundary_label(band["end"])
+    return f"{start} - {end}"
+
+
+def build_generation_band_entry(
+    roadmap_id: str, band: dict[str, Any]
+) -> dict[str, Any]:
+    return {
+        "roadmap_id": roadmap_id,
+        "generation_band_id": band["generation_band_id"],
+        "review_status": "openfs-synthesis-pending",
+        "claim_support": "registered-sources-cited",
+        "timing_status": "open-ended" if band["end"] is None else "bounded-window",
+        "confidence": band["confidence"],
+        "consensus_status": band["consensus_status"],
+        "source_ids": band["source_ids"],
+        "locator_hint_ja": (
+            f"引用元で「{band['label_ja']}」の各境界と統合根拠を照合。表示範囲は"
+            f"{generation_band_timing_label(band, 'ja')}。"
+        ),
+        "locator_hint_en": (
+            f"Cross-check every boundary and synthesis basis for '{band['label_en']}'. "
+            f"Displayed window: {generation_band_timing_label(band, 'en')}."
+        ),
+        "review_note_ja": "複数の公開情報を組み合わせたOpenFS暫定見通しであり、業界合意または採用判断ではない。",
+        "review_note_en": "This is a provisional OpenFS synthesis of public sources, not industry consensus or an adoption decision.",
+        "semantic_verification": "pending-independent-review",
+    }
+
+
 def build_audit(root: Path) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
+    generation_band_entries: list[dict[str, Any]] = []
     timing_counts: Counter[str] = Counter()
     for path in sorted((root / "knowledge" / "public" / "roadmaps").glob("*.json")):
         roadmap = load_json(path)
@@ -148,7 +191,15 @@ def build_audit(root: Path) -> dict[str, Any]:
                     timing_counts[f"openfs_governance_{milestone['timing_precision'].replace('-', '_')}"] += 1
                 else:
                     timing_counts[f"source_supported_{milestone['timing_precision'].replace('-', '_')}"] += 1
+        for track in roadmap["tracks"]:
+            for band in track.get("generation_bands", []):
+                generation_band_entries.append(
+                    build_generation_band_entry(roadmap["roadmap_id"], band)
+                )
     entries.sort(key=lambda item: (item["roadmap_id"], item["milestone_id"]))
+    generation_band_entries.sort(
+        key=lambda item: (item["roadmap_id"], item["generation_band_id"])
+    )
     counts = Counter(item["review_status"] for item in entries)
     return {
         "schema_version": "0.1.0",
@@ -157,10 +208,11 @@ def build_audit(root: Path) -> dict[str, Any]:
         "as_of": "2026-08-26",
         "review_scope": "single-model-structured-claim-classification",
         "consensus_status": "incomplete",
-        "method_ja": "6ロードマップの全マイルストーンについて、引用IDの存在、主張種別、時期表現の整合を機械的に分類し、主要な更新項目を単一モデルで一次情報と照合した。全件の独立した意味検証を示すものではなく、URL到達性監査とも分離している。独立モデルによるConsensusは未完了。",
-        "method_en": "Every milestone in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics, and major updates were checked by one model against primary sources. This is not independent semantic verification of every item and is separate from URL reachability. Independent-model Consensus remains incomplete.",
+        "method_ja": "6ロードマップの全マイルストーンと世代帯について、引用IDの存在、主張種別、時期表現の整合を機械的に分類し、主要な更新項目を単一モデルで一次情報と照合した。全件の独立した意味検証を示すものではなく、URL到達性監査とも分離している。独立モデルによるConsensusは未完了。",
+        "method_en": "Every milestone and generation band in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics, and major updates were checked by one model against primary sources. This is not independent semantic verification of every item and is separate from URL reachability. Independent-model Consensus remains incomplete.",
         "summary": {
             "milestone_count": len(entries),
+            "generation_band_count": len(generation_band_entries),
             "classified_primary": counts["classified-primary-event"],
             "classified_forward_looking": counts["classified-forward-looking"],
             "as_of_baseline": counts["as-of-baseline"],
@@ -168,7 +220,7 @@ def build_audit(root: Path) -> dict[str, Any]:
             "openfs_provisional": counts["openfs-provisional"],
             "openfs_governance_event": counts["openfs-governance-event"],
             "independently_verified": 0,
-            "pending_independent_review": len(entries),
+            "pending_independent_review": len(entries) + len(generation_band_entries),
             "source_supported_quarter": timing_counts["source_supported_quarter"],
             "source_supported_half_year": timing_counts["source_supported_half_year"],
             "source_supported_year": timing_counts["source_supported_year"],
@@ -179,6 +231,7 @@ def build_audit(root: Path) -> dict[str, Any]:
             "openfs_governance_year": timing_counts["openfs_governance_year"],
         },
         "entries": entries,
+        "generation_band_entries": generation_band_entries,
         "publication": {
             "information_classification": "public",
             "publication_approved": True,

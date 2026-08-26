@@ -17,10 +17,11 @@
     "caveat_en": {"type": "string", "minLength": 1},
     "summary": {
       "type": "object",
-      "required": ["roadmap_count", "milestone_count", "source_count", "attention_count", "critical", "high", "medium", "low", "no_public_date_milestones", "past_target_rechecks", "future_observed_conflicts", "retrospective_timing_checks", "source_date_unknown", "source_attention"],
+      "required": ["roadmap_count", "milestone_count", "generation_band_count", "source_count", "attention_count", "critical", "high", "medium", "low", "no_public_date_milestones", "past_target_rechecks", "past_generation_window_rechecks", "future_observed_conflicts", "retrospective_timing_checks", "source_date_unknown", "source_attention"],
       "properties": {
         "roadmap_count": {"type": "integer", "minimum": 1},
         "milestone_count": {"type": "integer", "minimum": 1},
+        "generation_band_count": {"type": "integer", "minimum": 0},
         "source_count": {"type": "integer", "minimum": 1},
         "attention_count": {"type": "integer", "minimum": 0},
         "critical": {"type": "integer", "minimum": 0},
@@ -29,6 +30,7 @@
         "low": {"type": "integer", "minimum": 0},
         "no_public_date_milestones": {"type": "integer", "minimum": 0},
         "past_target_rechecks": {"type": "integer", "minimum": 0},
+        "past_generation_window_rechecks": {"type": "integer", "minimum": 0},
         "future_observed_conflicts": {"type": "integer", "minimum": 0},
         "retrospective_timing_checks": {"type": "integer", "minimum": 0},
         "source_date_unknown": {"type": "integer", "minimum": 0},
@@ -40,10 +42,11 @@
       "type": "array", "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["roadmap_id", "milestone_count", "source_count", "attention_count", "critical", "high", "medium", "low"],
+        "required": ["roadmap_id", "milestone_count", "generation_band_count", "source_count", "attention_count", "critical", "high", "medium", "low"],
         "properties": {
           "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
           "milestone_count": {"type": "integer", "minimum": 1},
+          "generation_band_count": {"type": "integer", "minimum": 0},
           "source_count": {"type": "integer", "minimum": 1},
           "attention_count": {"type": "integer", "minimum": 0},
           "critical": {"type": "integer", "minimum": 0},
@@ -62,8 +65,8 @@
         "properties": {
           "attention_id": {"type": "string", "pattern": "^RFAI-[0-9]{4}$"},
           "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
-          "object_type": {"enum": ["milestone", "source"]},
-          "object_id": {"type": "string", "pattern": "^(MS|SRC)-[A-Z0-9-]+$"},
+          "object_type": {"enum": ["milestone", "generation-band", "source"]},
+          "object_id": {"type": "string", "pattern": "^(MS|GB|SRC)-[A-Z0-9-]+$"},
           "severity": {"enum": ["critical", "high", "medium", "low"]},
           "reason": {"type": "string", "pattern": "^[a-z0-9-]+$"},
           "reason_ja": {"type": "string", "minLength": 1},

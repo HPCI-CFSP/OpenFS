@@ -27,7 +27,8 @@
       "required": ["start_year", "end_year"],
       "properties": {
         "start_year": {"type": "integer", "minimum": 2020},
-        "end_year": {"type": "integer", "minimum": 2020}
+        "end_year": {"type": "integer", "minimum": 2020},
+        "extension_policy": {"enum": ["fixed", "extend-to-latest-dated-evidence"]}
       },
       "additionalProperties": false
     },
@@ -95,6 +96,64 @@
         "current_state_en": {"type": "string", "minLength": 1},
         "hpci_implications_ja": {"type": "string", "minLength": 1},
         "hpci_implications_en": {"type": "string", "minLength": 1},
+        "source_ids": {"$ref": "#/$defs/sourceIdList"},
+        "generation_bands": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/generationBand"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "timingBoundary": {
+      "type": "object",
+      "required": ["year", "quarter", "half", "precision"],
+      "properties": {
+        "year": {"type": "integer", "minimum": 2020},
+        "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
+        "half": {"enum": ["H1", "H2", null]},
+        "precision": {"enum": ["quarter", "half-year", "year"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"precision": {"const": "quarter"}}, "required": ["precision"]},
+          "then": {"properties": {"quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]}, "half": {"const": null}}}
+        },
+        {
+          "if": {"properties": {"precision": {"const": "half-year"}}, "required": ["precision"]},
+          "then": {"properties": {"quarter": {"const": null}, "half": {"enum": ["H1", "H2"]}}}
+        },
+        {
+          "if": {"properties": {"precision": {"const": "year"}}, "required": ["precision"]},
+          "then": {"properties": {"quarter": {"const": null}, "half": {"const": null}}}
+        }
+      ],
+      "additionalProperties": false
+    },
+    "generationBand": {
+      "type": "object",
+      "required": [
+        "generation_band_id", "generation", "phase", "start", "end",
+        "timing_basis", "confidence", "consensus_status", "label_ja", "label_en",
+        "detail_ja", "detail_en", "source_ids"
+      ],
+      "properties": {
+        "generation_band_id": {"type": "string", "pattern": "^GB-[A-Z0-9-]+$"},
+        "generation": {"type": "string", "minLength": 1},
+        "phase": {"enum": ["standardization", "introduction", "mainstream", "transition", "continuing"]},
+        "start": {"$ref": "#/$defs/timingBoundary"},
+        "end": {
+          "oneOf": [
+            {"$ref": "#/$defs/timingBoundary"},
+            {"type": "null"}
+          ]
+        },
+        "timing_basis": {"enum": ["observed", "standard-release", "vendor-target", "project-target", "openfs-synthesis"]},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "consensus_status": {"enum": ["incomplete", "accepted"]},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "detail_ja": {"type": "string", "minLength": 1},
+        "detail_en": {"type": "string", "minLength": 1},
         "source_ids": {"$ref": "#/$defs/sourceIdList"}
       },
       "additionalProperties": false

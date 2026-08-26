@@ -17,10 +17,11 @@
     "created_at": {"type": "string", "format": "date-time"},
     "portfolio_summary": {
       "type": "object",
-      "required": ["roadmap_count", "milestone_count", "source_count", "unique_source_url_count", "duplicate_source_registration_count", "coverage_gap_count", "dependency_count", "external_constraint_count", "scenario_count"],
+      "required": ["roadmap_count", "milestone_count", "generation_band_count", "source_count", "unique_source_url_count", "duplicate_source_registration_count", "coverage_gap_count", "dependency_count", "external_constraint_count", "scenario_count"],
       "properties": {
         "roadmap_count": {"type": "integer", "minimum": 1},
         "milestone_count": {"type": "integer", "minimum": 1},
+        "generation_band_count": {"type": "integer", "minimum": 0},
         "source_count": {"type": "integer", "minimum": 1},
         "unique_source_url_count": {"type": "integer", "minimum": 1},
         "duplicate_source_registration_count": {"type": "integer", "minimum": 0},
@@ -94,7 +95,7 @@
               "type": "object",
               "required": ["selector", "source_options"],
               "properties": {
-                "selector": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
+                "selector": {"type": "string", "pattern": "^(MS|GB)-[A-Z0-9-]+$"},
                 "source_options": {
                   "type": "array", "minItems": 1, "uniqueItems": true,
                   "items": {
