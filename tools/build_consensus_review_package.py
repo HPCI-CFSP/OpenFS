@@ -342,6 +342,13 @@ def topic_decision_unit(root: Path, commit: str) -> dict[str, Any]:
             for item in section["items"]
         )
     selectors.extend(gap["gap_id"] for gap in artifact["coverage_gaps"])
+    review_source_classes = {
+        "official-vendor": "vendor-official",
+        "official-standard": "standards-body",
+        "official-project": "project-official",
+        "peer-reviewed": "academic-primary",
+        "research-artifact": "research-organization",
+    }
     primary_source_requirements = [
         {
             "selector": source["source_id"],
@@ -349,7 +356,7 @@ def topic_decision_unit(root: Path, commit: str) -> dict[str, Any]:
                 {
                     "source_id": source["source_id"],
                     "source_url": source["url"],
-                    "source_class": source["source_class"],
+                    "source_class": review_source_classes[source["source_class"]],
                 }
             ],
         }
