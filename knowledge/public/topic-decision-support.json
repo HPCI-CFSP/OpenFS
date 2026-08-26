@@ -1,0 +1,757 @@
+{
+  "schema_version": "0.1.0",
+  "export_id": "TOPIC-DECISION-SUPPORT-001",
+  "status": "published",
+  "as_of": "2026-08-26",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "regions": [
+    {"region_id": "REG-JP", "name_ja": "日本", "name_en": "Japan", "classification": "country"},
+    {"region_id": "REG-US", "name_ja": "米国", "name_en": "United States", "classification": "country"},
+    {"region_id": "REG-CN", "name_ja": "中国", "name_en": "China", "classification": "country"},
+    {"region_id": "REG-EU", "name_ja": "欧州", "name_en": "Europe", "classification": "region"},
+    {"region_id": "REG-TW", "name_ja": "台湾", "name_en": "Taiwan", "classification": "country"},
+    {"region_id": "REG-KR", "name_ja": "韓国", "name_en": "South Korea", "classification": "country"},
+    {"region_id": "REG-MULTI", "name_ja": "多国籍・標準化団体", "name_en": "Multi-region and standards bodies", "classification": "multi-region"},
+    {"region_id": "REG-OTHER", "name_ja": "その他", "name_en": "Other", "classification": "other"}
+  ],
+  "actors": [
+    {
+      "actor_id": "ACT-PFN", "name": "Preferred Networks", "region_ids": ["REG-JP"],
+      "region_basis_ja": "日本を拠点とする設計・開発主体。製造地域とは分けて扱う。",
+      "region_basis_en": "Japan-based design and development organization; manufacturing location is tracked separately.",
+      "roles_ja": ["MN-Core設計", "コンパイラ・製品・クラウド提供"],
+      "roles_en": ["MN-Core design", "Compiler, product, and cloud delivery"],
+      "source_ids": ["SRC-TDS001", "SRC-TDS002"]
+    },
+    {
+      "actor_id": "ACT-KOBE", "name": "Kobe University", "region_ids": ["REG-JP"],
+      "region_basis_ja": "日本の共同研究機関。", "region_basis_en": "Japan-based research collaborator.",
+      "roles_ja": ["MN-Core共同研究開発"], "roles_en": ["MN-Core joint research and development"],
+      "source_ids": ["SRC-TDS001"]
+    },
+    {
+      "actor_id": "ACT-SAIMEMORY", "name": "SAIMEMORY", "region_ids": ["REG-JP", "REG-US"],
+      "region_basis_ja": "日本の事業主体とIntel由来技術の国際協業。", "region_basis_en": "Japan-based company collaborating internationally on Intel-derived technology.",
+      "roles_ja": ["次世代メモリアーキテクチャ・製造技術"], "roles_en": ["Next-generation memory architecture and manufacturing technology"],
+      "source_ids": ["SRC-TDS003"]
+    },
+    {
+      "actor_id": "ACT-FUJITSU", "name": "Fujitsu", "region_ids": ["REG-JP"],
+      "region_basis_ja": "日本を拠点とするCPU・HPCソフトウェア開発主体。", "region_basis_en": "Japan-based CPU and HPC software developer.",
+      "roles_ja": ["A64FX", "コンパイラ・MPI・数値計算ライブラリ"], "roles_en": ["A64FX", "Compilers, MPI, and numerical libraries"],
+      "source_ids": ["SRC-TDS008"]
+    },
+    {
+      "actor_id": "ACT-MICRON", "name": "Micron", "region_ids": ["REG-US"],
+      "region_basis_ja": "米国に本社を置くメモリベンダー。", "region_basis_en": "Memory vendor headquartered in the United States.",
+      "roles_ja": ["DDR・HBM・SOCAMM・CXLメモリ"], "roles_en": ["DDR, HBM, SOCAMM, and CXL memory"],
+      "source_ids": ["SRC-MEM002", "SRC-MEM011", "SRC-MEM031"]
+    },
+    {
+      "actor_id": "ACT-INTEL", "name": "Intel", "region_ids": ["REG-US"],
+      "region_basis_ja": "米国に本社を置くCPU・実装・ソフトウェア開発主体。", "region_basis_en": "US-headquartered CPU, packaging, and software developer.",
+      "roles_ja": ["Xeon", "Foveros Direct", "oneAPI"], "roles_en": ["Xeon", "Foveros Direct", "oneAPI"],
+      "source_ids": ["SRC-MEM020", "SRC-TDS006"]
+    },
+    {
+      "actor_id": "ACT-NVIDIA", "name": "NVIDIA", "region_ids": ["REG-US"],
+      "region_basis_ja": "米国に本社を置くCPU・GPU・ネットワーク・ソフトウェア開発主体。", "region_basis_en": "US-headquartered CPU, GPU, networking, and software developer.",
+      "roles_ja": ["Grace・GPU", "NVLink・Spectrum-X", "CUDA・NVHPC・NVPL"],
+      "roles_en": ["Grace and GPUs", "NVLink and Spectrum-X", "CUDA, NVHPC, and NVPL"],
+      "source_ids": ["SRC-TDS004", "SRC-TDS009", "SRC-TDS010", "SRC-TDS020"]
+    },
+    {
+      "actor_id": "ACT-AMD", "name": "AMD", "region_ids": ["REG-US"],
+      "region_basis_ja": "米国に本社を置くCPU・GPU・ソフトウェア開発主体。", "region_basis_en": "US-headquartered CPU, GPU, and software developer.",
+      "roles_ja": ["EPYC・Instinct", "AOCL・AOCC・ROCm"], "roles_en": ["EPYC and Instinct", "AOCL, AOCC, and ROCm"],
+      "source_ids": ["SRC-TDS007", "SRC-TDS011"]
+    },
+    {
+      "actor_id": "ACT-CXMT", "name": "CXMT", "region_ids": ["REG-CN"],
+      "region_basis_ja": "中国を拠点とするDRAM設計・製造主体。", "region_basis_en": "China-based DRAM designer and manufacturer.",
+      "roles_ja": ["DDR5・LPDDR5/5X"], "roles_en": ["DDR5 and LPDDR5/5X"],
+      "source_ids": ["SRC-TDS018"]
+    },
+    {
+      "actor_id": "ACT-UPMEM", "name": "UPMEM", "region_ids": ["REG-EU"],
+      "region_basis_ja": "フランスを拠点とするPIM開発主体。", "region_basis_en": "France-based PIM developer.",
+      "roles_ja": ["DDRベースPIM"], "roles_en": ["DDR-based PIM"],
+      "source_ids": ["SRC-MEM033"]
+    },
+    {
+      "actor_id": "ACT-IMEC", "name": "imec", "region_ids": ["REG-EU"],
+      "region_basis_ja": "ベルギーを拠点とする半導体研究機関。", "region_basis_en": "Belgium-based semiconductor research organization.",
+      "roles_ja": ["3Dメモリ・先端実装研究"], "roles_en": ["3D memory and advanced-integration research"],
+      "source_ids": ["SRC-TDS019"]
+    },
+    {
+      "actor_id": "ACT-TSMC", "name": "TSMC", "region_ids": ["REG-TW"],
+      "region_basis_ja": "台湾を拠点とするファウンドリ・先端実装提供主体。", "region_basis_en": "Taiwan-based foundry and advanced-packaging provider.",
+      "roles_ja": ["SoIC・D2W・W2W", "半導体製造"], "roles_en": ["SoIC, D2W, and W2W", "Semiconductor manufacturing"],
+      "source_ids": ["SRC-MEM018", "SRC-MEM035"]
+    },
+    {
+      "actor_id": "ACT-SAMSUNG", "name": "Samsung", "region_ids": ["REG-KR"],
+      "region_basis_ja": "韓国に本社を置くメモリ・半導体ベンダー。", "region_basis_en": "Memory and semiconductor vendor headquartered in South Korea.",
+      "roles_ja": ["DDR・LPDDR・HBM・SOCAMM・PIM"], "roles_en": ["DDR, LPDDR, HBM, SOCAMM, and PIM"],
+      "source_ids": ["SRC-MEM007", "SRC-MEM008", "SRC-MEM017"]
+    },
+    {
+      "actor_id": "ACT-SKHYNIX", "name": "SK hynix", "region_ids": ["REG-KR"],
+      "region_basis_ja": "韓国に本社を置くメモリベンダー。", "region_basis_en": "Memory vendor headquartered in South Korea.",
+      "roles_ja": ["DDR・LPDDR・HBM・SOCAMM・PIM"], "roles_en": ["DDR, LPDDR, HBM, SOCAMM, and PIM"],
+      "source_ids": ["SRC-MEM006", "SRC-MEM010", "SRC-MEM013", "SRC-MEM032"]
+    },
+    {
+      "actor_id": "ACT-JEDEC", "name": "JEDEC", "region_ids": ["REG-MULTI"],
+      "region_basis_ja": "国際的な半導体標準化団体。", "region_basis_en": "International semiconductor standards organization.",
+      "roles_ja": ["DDR・LPDDR・HBM標準化"], "roles_en": ["DDR, LPDDR, and HBM standardization"],
+      "source_ids": ["SRC-MEM005", "SRC-MEM038"]
+    },
+    {
+      "actor_id": "ACT-UEC", "name": "Ultra Ethernet Consortium", "region_ids": ["REG-MULTI"],
+      "region_basis_ja": "複数地域の企業によるEthernet技術団体。", "region_basis_en": "Multi-region industry consortium for Ethernet technology.",
+      "roles_ja": ["Ultra Ethernet・UET標準化"], "roles_en": ["Ultra Ethernet and UET specifications"],
+      "source_ids": ["SRC-NET001", "SRC-TDS021"]
+    },
+    {
+      "actor_id": "ACT-UALINK", "name": "UALink Consortium", "region_ids": ["REG-MULTI"],
+      "region_basis_ja": "複数地域の企業によるアクセラレータ接続標準化団体。", "region_basis_en": "Multi-region accelerator-interconnect standards consortium.",
+      "roles_ja": ["Scale-up接続標準化"], "roles_en": ["Scale-up interconnect standardization"],
+      "source_ids": ["SRC-NET004"]
+    },
+    {
+      "actor_id": "ACT-IBTA", "name": "InfiniBand Trade Association", "region_ids": ["REG-MULTI"],
+      "region_basis_ja": "InfiniBandとRoCEを扱う国際的な業界団体。", "region_basis_en": "International industry organization for InfiniBand and RoCE.",
+      "roles_ja": ["InfiniBand・RoCE仕様"], "roles_en": ["InfiniBand and RoCE specifications"],
+      "source_ids": ["SRC-TDS005"]
+    }
+  ],
+  "topic_profiles": [
+    {
+      "topic_id": "ARCH-02",
+      "summary_ja": "半導体・先端実装は、演算器単体の性能ではなく、プロセス、チップレット分割、接合、メモリ、熱、歩留まり、供給能力を一体で判断する。MN-Coreは日本発の設計・開発として追跡しつつ、製造・供給網とHPCI向けソフトウェア適合性を別に評価する。",
+      "summary_en": "Semiconductor and advanced-integration choices must be evaluated across process, chiplet partitioning, bonding, memory, thermals, yield, and supply rather than compute performance alone. MN-Core is tracked as Japan-originated design and development while manufacturing, supply, and HPCI software fit remain separate questions.",
+      "sections": [
+        {
+          "section_id": "TDS-ARCH02-DOMESTIC",
+          "title_ja": "日本発プロセッサ・アクセラレータ", "title_en": "Japan-originated processors and accelerators",
+          "summary_ja": "製品化済みと開発中を分け、設計主体、製造、提供形態、利用可能なソフトウェアを確認する。",
+          "summary_en": "Separate shipping products from programs under development and verify design ownership, manufacturing, delivery model, and usable software.",
+          "items": [
+            {
+              "item_id": "TDI-MNCORE2-CURRENT", "name_ja": "MN-Core 2", "name_en": "MN-Core 2",
+              "stage": "current", "maturity": "commercial", "timing_ja": "2023年稼働、2024年から製品・クラウド提供", "timing_en": "Operating in 2023; product and cloud availability from 2024",
+              "statement_ja": "PFNと神戸大学が共同開発した行列演算向けアクセラレータで、MN-Server 2、Devkit、クラウドの提供実績がある。",
+              "statement_en": "A matrix-compute accelerator co-developed by PFN and Kobe University with MN-Server 2, Devkit, and cloud delivery records.",
+              "hpci_relevance_ja": "AI for Scienceや低精度行列演算の国産選択肢になり得るが、一般HPCコード、MPI規模、倍精度実効性能を別途検証する必要がある。",
+              "hpci_relevance_en": "It may be a Japan-originated option for AI for Science and low-precision matrix workloads, but general HPC codes, MPI scale, and effective FP64 performance need separate validation.",
+              "adoption_conditions_ja": ["代表HPCIアプリの移植性", "複数ノード性能と運用支援", "長期供給とソフトウェア保守"],
+              "adoption_conditions_en": ["Portability of representative HPCI applications", "Multi-node performance and operational support", "Long-term supply and software maintenance"],
+              "actor_ids": ["ACT-PFN", "ACT-KOBE"], "source_ids": ["SRC-TDS001"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-MNCORE-L-FUTURE", "name_ja": "MN-Core Lシリーズ", "name_en": "MN-Core L series",
+              "stage": "near-term", "maturity": "announced", "timing_ja": "開発中。量産・HPCI導入時期は未確定", "timing_en": "Under development; volume-production and HPCI adoption timing are unconfirmed",
+              "statement_ja": "PFNは生成AI向けMN-Core L1000の開発を公表し、MN-Core Lシリーズの物理AI研究も進めている。",
+              "statement_en": "PFN announced development of the MN-Core L1000 for generative AI and is pursuing physical-AI research with the MN-Core L series.",
+              "hpci_relevance_ja": "学習・推論だけでなく科学AIワークロードへの適用範囲と、現行MN-Core 2からのソフトウェア継続性が判断点となる。",
+              "hpci_relevance_en": "Decision points include scientific-AI coverage beyond training and inference and software continuity from MN-Core 2.",
+              "adoption_conditions_ja": ["製品仕様と提供時期", "対応Framework・演算精度", "実アプリ比較"],
+              "adoption_conditions_en": ["Product specifications and availability", "Framework and precision support", "Application-level comparison"],
+              "actor_ids": ["ACT-PFN"], "source_ids": ["SRC-TDS002"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-MNCORE-SUPPLY", "name_ja": "MN-Core供給・製造境界", "name_en": "MN-Core supply and manufacturing boundary",
+              "stage": "contested", "maturity": "uncertain", "timing_ja": "継続調査", "timing_en": "Continuous investigation",
+              "statement_ja": "日本発の設計・開発であることと、製造装置、ファウンドリ、メモリ、基板を含む供給網全体が国内であることは同義ではない。",
+              "statement_en": "Japan-originated design and development do not imply that the complete foundry, equipment, memory, and substrate supply chain is domestic.",
+              "hpci_relevance_ja": "技術主権、調達継続性、輸出管理、障害時交換を別々の指標で評価する必要がある。",
+              "hpci_relevance_en": "Technology sovereignty, procurement continuity, export controls, and replacement logistics need separate metrics.",
+              "adoption_conditions_ja": ["供給網の公開情報", "保守交換体制", "複数年の調達可能性"],
+              "adoption_conditions_en": ["Public supply-chain evidence", "Maintenance and replacement model", "Multi-year procurement availability"],
+              "actor_ids": ["ACT-PFN"], "source_ids": ["SRC-TDS001"], "confidence": "low", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-ARCH02-INTEGRATION",
+          "title_ja": "チップレット・3D先端実装", "title_en": "Chiplets and advanced 3D integration",
+          "summary_ja": "TSV、D2W、W2W、hybrid bondingは代替関係だけではなく、製品要件に応じて組み合わせられる。",
+          "summary_en": "TSVs, D2W, W2W, and hybrid bonding are not only alternatives; they can be combined according to product constraints.",
+          "items": [
+            {
+              "item_id": "TDI-D2W-CURRENT", "name_ja": "D2W・hybrid bonding", "name_en": "D2W and hybrid bonding",
+              "stage": "current", "maturity": "commercial", "timing_ja": "2025年以降、先端製品へ量産適用", "timing_en": "Volume deployment in advanced products from 2025 onward",
+              "statement_ja": "TSMC SoIC Chip-on-WaferやIntel Foveros Direct 3Dは、既知良品ダイを用いる高密度異種統合を製品へ展開している。",
+              "statement_en": "TSMC SoIC Chip-on-Wafer and Intel Foveros Direct 3D are bringing dense heterogeneous integration with known-good dies into products.",
+              "hpci_relevance_ja": "CPU、GPU、cache、I/O、光、メモリを別processで統合できる一方、熱、歩留まり、vendor lock-inが制約となる。",
+              "hpci_relevance_en": "It can combine CPU, GPU, cache, I/O, optics, and memory across process nodes, while thermals, yield, and vendor lock-in remain constraints.",
+              "adoption_conditions_ja": ["熱設計と歩留まり", "KGD試験", "package供給能力"],
+              "adoption_conditions_en": ["Thermal design and yield", "Known-good-die testing", "Package supply capacity"],
+              "actor_ids": ["ACT-TSMC", "ACT-INTEL"], "source_ids": ["SRC-MEM018", "SRC-MEM020", "SRC-MEM035"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-W2W-RESEARCH", "name_ja": "W2W・将来3Dメモリ", "name_en": "W2W and future 3D memory",
+              "stage": "research", "maturity": "research", "timing_ja": "研究・限定製品段階。DRAM量産時期は未確定", "timing_en": "Research or limited-product stage; volume DRAM timing is unconfirmed",
+              "statement_ja": "W2Wは高密度・高処理量を狙えるが、die寸法整合と複合歩留まりの影響を受ける。imec等では将来3Dメモリ研究が続く。",
+              "statement_en": "W2W targets dense, high-throughput integration but is sensitive to die-size compatibility and compounded yield; organizations such as imec continue future 3D-memory research.",
+              "hpci_relevance_ja": "容量・bandwidthだけでなく、修理不能性、熱、量産歩留まりを採用条件に含める必要がある。",
+              "hpci_relevance_en": "Adoption criteria must include repair limitations, thermals, and volume yield in addition to capacity and bandwidth.",
+              "adoption_conditions_ja": ["量産実績", "熱・信頼性データ", "複数供給者"],
+              "adoption_conditions_en": ["Volume-production evidence", "Thermal and reliability data", "Multiple suppliers"],
+              "actor_ids": ["ACT-TSMC", "ACT-IMEC"], "source_ids": ["SRC-MEM018", "SRC-TDS019"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {"dimension_id": "DIM-ARCH02-PERF", "label_ja": "実効性能", "label_en": "Delivered performance", "question_ja": "代表アプリでprocess・packageの利点がtime-to-solutionへ現れるか。", "question_en": "Do process and package benefits improve time to solution on representative applications?"},
+        {"dimension_id": "DIM-ARCH02-SUPPLY", "label_ja": "供給・保守", "label_en": "Supply and service", "question_ja": "量産能力、交換単位、長期供給を確認できるか。", "question_en": "Can volume capacity, replacement units, and long-term supply be verified?"},
+        {"dimension_id": "DIM-ARCH02-SW", "label_ja": "ソフトウェア", "label_en": "Software", "question_ja": "既存HPCIアプリを継続的に移植・保守できるか。", "question_en": "Can existing HPCI applications be ported and maintained sustainably?"}
+      ],
+      "related_surface_ids": ["platform-software"],
+      "coverage_gap_ids": ["GAP-TDS-001", "GAP-TDS-002"]
+    },
+    {
+      "topic_id": "ARCH-03",
+      "summary_ja": "メモリ階層とデータ移動は、主記憶、容量拡張、3D実装、scale-up/scale-out接続、PIMを一体で扱う。現在利用できる製品、近い将来の標準・製品候補、研究段階、競合中の方式を区別し、HPCIアプリの帯域・遅延・容量・通信特性へ対応付ける。",
+      "summary_en": "Memory hierarchy and data movement are treated across main memory, capacity expansion, 3D integration, scale-up and scale-out fabrics, and PIM. Shipping products, near-term standards or products, research concepts, and competing approaches are separated and mapped to HPCI workload bandwidth, latency, capacity, and communication behavior.",
+      "sections": [
+        {
+          "section_id": "TDS-ARCH03-MAIN", "title_ja": "主記憶", "title_en": "Main memory",
+          "summary_ja": "CPU主記憶の容量・保守性と、アクセラレータ近傍メモリの帯域を役割分担する。", "summary_en": "Balance CPU-main-memory capacity and serviceability with near-accelerator bandwidth.",
+          "items": [
+            {
+              "item_id": "TDI-DDR5-CURRENT", "name_ja": "DDR5 RDIMM・MRDIMM", "name_en": "DDR5 RDIMM and MRDIMM",
+              "stage": "current", "maturity": "commercial", "timing_ja": "現在導入可能", "timing_en": "Deployable now",
+              "statement_ja": "DDR5はCPU直結主記憶の中心で、RDIMM、MRDIMM、3DS RDIMMにより帯域と容量が拡張されている。",
+              "statement_en": "DDR5 is the primary CPU-attached memory, with RDIMM, MRDIMM, and 3DS RDIMM extending bandwidth and capacity.",
+              "hpci_relevance_ja": "容量単価、交換性、CPU channel数に優れる一方、HBMより帯域が低く、memory-bound workloadでは役割分担が必要。",
+              "hpci_relevance_en": "It offers capacity economics and serviceability but less bandwidth than HBM, requiring explicit role division for memory-bound workloads.",
+              "adoption_conditions_ja": ["実効帯域・遅延", "容量単価", "CPU世代との整合"], "adoption_conditions_en": ["Effective bandwidth and latency", "Capacity cost", "CPU-generation compatibility"],
+              "actor_ids": ["ACT-JEDEC", "ACT-MICRON", "ACT-CXMT"], "source_ids": ["SRC-MEM002", "SRC-TDS018"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-HBM4-CURRENT", "name_ja": "HBM4", "name_en": "HBM4",
+              "stage": "current", "maturity": "commercial", "timing_ja": "2026年から商用導入", "timing_en": "Commercial introduction from 2026",
+              "statement_ja": "HBM4はSamsung、SK hynix、Micronが量産・出荷を公表し、AI/HPC accelerator近傍の高帯域メモリとして導入が始まっている。",
+              "statement_en": "Samsung, SK hynix, and Micron have announced HBM4 production or shipment, beginning commercial adoption as near-accelerator high-bandwidth memory.",
+              "hpci_relevance_ja": "GPU・accelerator選択と不可分で、ピーク帯域だけでなく容量、熱、供給配分、交換不能性が重要。",
+              "hpci_relevance_en": "It is inseparable from GPU or accelerator selection; capacity, thermals, supply allocation, and limited serviceability matter alongside peak bandwidth.",
+              "adoption_conditions_ja": ["熱的に持続可能な帯域", "容量と歩留まり", "複数年供給"], "adoption_conditions_en": ["Thermally sustainable bandwidth", "Capacity and yield", "Multi-year supply"],
+              "actor_ids": ["ACT-SAMSUNG", "ACT-SKHYNIX", "ACT-MICRON", "ACT-JEDEC"], "source_ids": ["SRC-MEM008", "SRC-MEM010", "SRC-MEM011", "SRC-MEM038"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-SOCAMM2-CURRENT", "name_ja": "SOCAMM2・LPDDR6", "name_en": "SOCAMM2 and LPDDR6",
+              "stage": "near-term", "maturity": "commercial", "timing_ja": "SOCAMM2は2026年量産、LPDDR6は規格公開・製品導入期", "timing_en": "SOCAMM2 entered production in 2026; LPDDR6 is in standard and product introduction",
+              "statement_ja": "低消費電力LPDDRを高密度server memoryへ展開する動きが進み、SOCAMM2量産とLPDDR6標準化が確認できる。",
+              "statement_en": "Low-power LPDDR is moving into dense server memory, with SOCAMM2 production and LPDDR6 standardization confirmed.",
+              "hpci_relevance_ja": "電力・容量密度に利点がある一方、ECC/RAS、platform依存、交換性、長期供給をRDIMMと比較する必要がある。",
+              "hpci_relevance_en": "Power and capacity density may improve, but ECC/RAS, platform dependence, serviceability, and long-term supply must be compared with RDIMM.",
+              "adoption_conditions_ja": ["server RAS", "標準化と相互運用", "field交換性"], "adoption_conditions_en": ["Server RAS", "Standardization and interoperability", "Field serviceability"],
+              "actor_ids": ["ACT-JEDEC", "ACT-SAMSUNG", "ACT-SKHYNIX", "ACT-MICRON"], "source_ids": ["SRC-MEM005", "SRC-MEM007", "SRC-MEM011", "SRC-MEM013"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-ARCH03-TIERING", "title_ja": "拡張・pooling・tiering", "title_en": "Expansion, pooling, and tiering",
+          "summary_ja": "容量を増やすことと、実アプリ性能が向上することを分けて評価する。", "summary_en": "Separate capacity expansion from demonstrated application benefit.",
+          "items": [
+            {
+              "item_id": "TDI-CXL2-CURRENT", "name_ja": "CXL 2.0 memory expansion", "name_en": "CXL 2.0 memory expansion",
+              "stage": "current", "maturity": "commercial", "timing_ja": "製品導入可能", "timing_en": "Products are deployable",
+              "statement_ja": "CXL 2.0 memory moduleは製品化され、CPU主記憶の容量拡張やtieringに利用できる。",
+              "statement_en": "CXL 2.0 memory modules are commercial and can support CPU-memory expansion or tiering.",
+              "hpci_relevance_ja": "容量制約の緩和が期待できるが、NUMA遅延、移行、page配置、scheduler連携を実測する必要がある。",
+              "hpci_relevance_en": "They may relieve capacity constraints, but NUMA latency, migration, page placement, and scheduler integration require measurement.",
+              "adoption_conditions_ja": ["実測遅延・bandwidth", "OS・scheduler統合", "障害分離"], "adoption_conditions_en": ["Measured latency and bandwidth", "OS and scheduler integration", "Failure isolation"],
+              "actor_ids": ["ACT-MICRON"], "source_ids": ["SRC-MEM031"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CXL4-NEAR", "name_ja": "CXL 3.x/4.0 pooling", "name_en": "CXL 3.x/4.0 pooling",
+              "stage": "near-term", "maturity": "standardized", "timing_ja": "仕様公開済み、4.0製品時期は未確定", "timing_en": "Specifications published; CXL 4.0 product timing is unconfirmed",
+              "statement_ja": "CXL 4.0仕様は公開済みだが、公開製品・実証は2.0から3.xが中心で、仕様世代と製品導入に時間差がある。",
+              "statement_en": "CXL 4.0 is published, but public products and demonstrations remain concentrated on 2.0 through 3.x, leaving a standards-to-product lag.",
+              "hpci_relevance_ja": "poolingでは公平性、輻輳、admission control、switch障害を含む運用評価が必要。",
+              "hpci_relevance_en": "Pooling requires operational evaluation of fairness, congestion, admission control, and switch failures.",
+              "adoption_conditions_ja": ["相互運用試験", "poolingの費用対効果", "運用・障害モデル"], "adoption_conditions_en": ["Interoperability tests", "Pooling cost effectiveness", "Operations and failure model"],
+              "actor_ids": ["ACT-INTEL", "ACT-MICRON"], "source_ids": ["SRC-MEM028", "SRC-MEM030"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CXL-BENEFIT-OPEN", "name_ja": "CXL poolingの実効便益", "name_en": "Delivered benefit of CXL pooling",
+              "stage": "contested", "maturity": "uncertain", "timing_ja": "HPCI実測待ち", "timing_en": "Awaiting HPCI measurements",
+              "statement_ja": "容量集約だけでは便益を確定できず、干渉、公平性、移行cost、利用率を含む実アプリ比較が不足している。",
+              "statement_en": "Capacity aggregation alone does not establish value; application comparisons covering interference, fairness, migration cost, and utilization remain insufficient.",
+              "hpci_relevance_ja": "調達量やnode memory構成を変え得るため、architecture決定前のP0検証対象となる。",
+              "hpci_relevance_en": "Because it can change procurement volume and node-memory design, this is a P0 validation need before architecture selection.",
+              "adoption_conditions_ja": ["実アプリA/B比較", "total cost", "複数vendor相互運用"], "adoption_conditions_en": ["Application A/B comparison", "Total cost", "Multi-vendor interoperability"],
+              "actor_ids": [], "source_ids": ["SRC-MEM028", "SRC-MEM031"], "confidence": "low", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-ARCH03-3D", "title_ja": "3D・先端接合方式", "title_en": "3D and advanced bonding",
+          "summary_ja": "接合方式、垂直配線、memory productを同じ成熟度として扱わない。", "summary_en": "Do not assign the same maturity to bonding methods, vertical interconnects, and memory products.",
+          "items": [
+            {
+              "item_id": "TDI-TSV-CURRENT", "name_ja": "TSV", "name_en": "TSV",
+              "stage": "current", "maturity": "commercial", "timing_ja": "HBM・3DS DRAMで量産利用", "timing_en": "Production use in HBM and 3DS DRAM",
+              "statement_ja": "TSVはHBMや3DS DRAMの積層dieを接続する量産基盤技術であり、接合方式そのものではない。",
+              "statement_en": "TSV is a production foundation for connecting stacked dies in HBM and 3DS DRAM; it is not itself a bonding method.",
+              "hpci_relevance_ja": "積層数、pitch、熱抵抗、反り、microbumpやhybrid bondingとの組合せをpackage単位で評価する。",
+              "hpci_relevance_en": "Evaluate stack height, pitch, thermal resistance, warpage, and combination with microbumps or hybrid bonding at package level.",
+              "adoption_conditions_ja": ["熱・反り", "stack歩留まり", "package修理性"], "adoption_conditions_en": ["Thermals and warpage", "Stack yield", "Package repairability"],
+              "actor_ids": ["ACT-SAMSUNG", "ACT-SKHYNIX", "ACT-MICRON"], "source_ids": ["SRC-MEM008", "SRC-MEM010", "SRC-MEM011"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-HYBRID-NEAR", "name_ja": "D2W・hybrid bonding", "name_en": "D2W and hybrid bonding",
+              "stage": "near-term", "maturity": "commercial", "timing_ja": "logicで量産適用、DRAM適用は製品別", "timing_en": "Production use in logic; DRAM adoption is product-specific",
+              "statement_ja": "D2Wは異なるdieを選別して統合でき、logic・cache・I/O・memoryの高密度接続を可能にする。",
+              "statement_en": "D2W can integrate selected heterogeneous dies and enable dense logic, cache, I/O, and memory connectivity.",
+              "hpci_relevance_ja": "memory bandwidth向上だけでなく、known-good-die、熱、供給者依存を確認する。",
+              "hpci_relevance_en": "Assess known-good-die handling, thermals, and supplier dependence in addition to bandwidth.",
+              "adoption_conditions_ja": ["DRAM製品での量産実績", "熱設計", "供給能力"], "adoption_conditions_en": ["Volume DRAM evidence", "Thermal design", "Supply capacity"],
+              "actor_ids": ["ACT-TSMC", "ACT-INTEL"], "source_ids": ["SRC-MEM018", "SRC-MEM020", "SRC-MEM035"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-3D-RESEARCH", "name_ja": "垂直cell・W2W 3D memory", "name_en": "Vertical-cell and W2W 3D memory",
+              "stage": "research", "maturity": "research", "timing_ja": "長期研究。量産時期未確認", "timing_en": "Long-term research; volume timing unconfirmed",
+              "statement_ja": "垂直cell DRAMやW2W memory conceptは研究が進むが、HPCI調達に使える量産時期と信頼性根拠は不足している。",
+              "statement_en": "Vertical-cell DRAM and W2W memory concepts are progressing in research, but procurement-grade volume timing and reliability evidence are missing.",
+              "hpci_relevance_ja": "2030年代候補として監視し、現行HBM/DDRの確定代替として扱わない。",
+              "hpci_relevance_en": "Monitor as a 2030s option without treating it as a confirmed replacement for current HBM or DDR.",
+              "adoption_conditions_ja": ["試作chip測定", "量産roadmap", "retention・endurance・熱"], "adoption_conditions_en": ["Prototype-chip measurements", "Volume roadmap", "Retention, endurance, and thermals"],
+              "actor_ids": ["ACT-IMEC", "ACT-SAIMEMORY"], "source_ids": ["SRC-TDS003", "SRC-TDS019"], "confidence": "low", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-ARCH03-FABRIC", "title_ja": "接続技術の役割", "title_en": "Roles of interconnect technologies",
+          "summary_ja": "Scale-up、scale-out、memory expansionは通信意味と運用範囲が異なるため、単一の勝者を決めない。", "summary_en": "Scale-up, scale-out, and memory expansion have different semantics and operational scopes, so no single winner is assumed.",
+          "items": [
+            {
+              "item_id": "TDI-IB-ROCE-CURRENT", "name_ja": "InfiniBand・Ethernet/RoCE", "name_en": "InfiniBand and Ethernet/RoCE",
+              "stage": "current", "maturity": "deployed", "timing_ja": "現在のscale-out主要選択肢", "timing_en": "Current major scale-out choices",
+              "statement_ja": "現行HPC・AI scale-outではInfiniBandとEthernet/RoCEが併存し、RDMA、輻輳制御、collective、運用ecosystemをそれぞれ提供する。",
+              "statement_en": "Current HPC and AI scale-out deployments use both InfiniBand and Ethernet/RoCE, each with RDMA, congestion control, collectives, and operational ecosystems.",
+              "hpci_relevance_ja": "既存center運用、MPI/NCCL、multi-tenant公平性、障害復旧、費用を同一trafficで比較する必要がある。",
+              "hpci_relevance_en": "HPCI should compare center operations, MPI/NCCL, multi-tenant fairness, failure recovery, and cost under common traffic.",
+              "adoption_conditions_ja": ["共通traffic benchmark", "障害・輻輳試験", "運用人材と費用"], "adoption_conditions_en": ["Common traffic benchmarks", "Failure and congestion tests", "Operations staffing and cost"],
+              "actor_ids": ["ACT-IBTA", "ACT-NVIDIA"], "source_ids": ["SRC-TDS004", "SRC-TDS005"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-UET-NEAR", "name_ja": "Ultra Ethernet・UET", "name_en": "Ultra Ethernet and UET",
+              "stage": "near-term", "maturity": "standardized", "timing_ja": "仕様公開済み、製品・相互運用の拡大待ち", "timing_en": "Specification published; awaiting broader products and interoperability",
+              "statement_ja": "UECはAI/HPC向けEthernet stackと新しいUET transportを仕様化している。RoCEの即時置換ではなく、製品成熟度を比較する段階にある。",
+              "statement_en": "UEC specifies an AI/HPC Ethernet stack and the new UET transport. It should be compared by product maturity rather than assumed to immediately replace RoCE.",
+              "hpci_relevance_ja": "open ecosystemの利点と、既存RoCE資産、MPI/collective対応、相互運用を比較する。",
+              "hpci_relevance_en": "Compare open-ecosystem benefits with existing RoCE assets, MPI and collective support, and interoperability.",
+              "adoption_conditions_ja": ["複数vendor製品", "MPI・collective統合", "RoCEとの移行・共存"], "adoption_conditions_en": ["Multi-vendor products", "MPI and collective integration", "Migration and coexistence with RoCE"],
+              "actor_ids": ["ACT-UEC"], "source_ids": ["SRC-NET001", "SRC-TDS021"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NVLINK-CURRENT", "name_ja": "NVLink・NVSwitch", "name_en": "NVLink and NVSwitch",
+              "stage": "current", "maturity": "deployed", "timing_ja": "NVIDIA GPU scale-upで製品利用", "timing_en": "Product deployment for NVIDIA GPU scale-up",
+              "statement_ja": "NVLink/NVSwitchはserver・rack内でNVIDIA GPUを高帯域all-to-all接続する実装済みscale-up fabricである。",
+              "statement_en": "NVLink and NVSwitch are deployed scale-up fabrics for high-bandwidth all-to-all NVIDIA GPU connectivity within servers and racks.",
+              "hpci_relevance_ja": "高い実効性能とsoftware統合の一方、NVIDIA platform依存、障害domain、費用を評価する。",
+              "hpci_relevance_en": "Evaluate strong delivered performance and software integration against NVIDIA-platform dependence, failure domains, and cost.",
+              "adoption_conditions_ja": ["実アプリscale-up効率", "vendor lock-in", "rack障害・保守"], "adoption_conditions_en": ["Application scale-up efficiency", "Vendor lock-in", "Rack failures and serviceability"],
+              "actor_ids": ["ACT-NVIDIA"], "source_ids": ["SRC-TDS020"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-UALINK-NEAR", "name_ja": "UALink", "name_en": "UALink",
+              "stage": "near-term", "maturity": "standardized", "timing_ja": "仕様公開済み、商用ecosystem形成中", "timing_en": "Specification published; commercial ecosystem forming",
+              "statement_ja": "UALinkは複数vendor acceleratorのload/store/atomicを扱うopen scale-up標準として仕様が公開された。",
+              "statement_en": "UALink is a published open scale-up specification for load, store, and atomic operations among multi-vendor accelerators.",
+              "hpci_relevance_ja": "NVLink代替の可能性はあるが、accelerator、switch、management、softwareの一式が揃う時期は未確定。",
+              "hpci_relevance_en": "It may provide an alternative to NVLink, but timing for complete accelerator, switch, management, and software stacks remains uncertain.",
+              "adoption_conditions_ja": ["商用accelerator・switch", "相互運用試験", "管理・RAS・collective"], "adoption_conditions_en": ["Commercial accelerators and switches", "Interoperability tests", "Management, RAS, and collectives"],
+              "actor_ids": ["ACT-UALINK", "ACT-AMD", "ACT-INTEL"], "source_ids": ["SRC-NET004"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-ARCH03-PIM", "title_ja": "PIM・near-memory", "title_en": "PIM and near-memory computing",
+          "summary_ja": "data movement削減の効果は、対象kernel、programming model、容量、host通信で決まる。", "summary_en": "Data-movement benefit depends on target kernels, programming model, capacity, and host communication.",
+          "items": [
+            {
+              "item_id": "TDI-UPMEM-CURRENT", "name_ja": "DDRベースPIM", "name_en": "DDR-based PIM",
+              "stage": "current", "maturity": "commercial", "timing_ja": "限定用途で商用利用可能", "timing_en": "Commercially available for bounded use cases",
+              "statement_ja": "UPMEMはDRAM内のDPUで演算するDDR moduleとsoftware stackを提供している。",
+              "statement_en": "UPMEM provides DDR modules with in-DRAM DPUs and a software stack.",
+              "hpci_relevance_ja": "data-parallel kernelで転送削減が期待できるが、演算機能、精度、host連携、code移植が制約となる。",
+              "hpci_relevance_en": "It may reduce transfer for data-parallel kernels, but compute capability, precision, host interaction, and code porting constrain adoption.",
+              "adoption_conditions_ja": ["代表kernel適合率", "end-to-end性能", "toolchain保守"], "adoption_conditions_en": ["Representative-kernel fit", "End-to-end performance", "Toolchain maintenance"],
+              "actor_ids": ["ACT-UPMEM"], "source_ids": ["SRC-MEM033"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIM-RESEARCH", "name_ja": "AiM・次世代PIM", "name_en": "AiM and next-generation PIM",
+              "stage": "research", "maturity": "prototype", "timing_ja": "展示・prototype段階", "timing_en": "Demonstration and prototype stage",
+              "statement_ja": "Samsung LPDDR-PIMやSK hynix GDDR6-AiM/AiMXは公開展示・prototypeがあるが、広範な量産日程は確認できない。",
+              "statement_en": "Samsung LPDDR-PIM and SK hynix GDDR6-AiM/AiMX have public demonstrations or prototypes, but broad volume-production timing is unconfirmed.",
+              "hpci_relevance_ja": "memory-bound kernelの可能性を実アプリで確認し、特殊APIとvendor継続性を評価する。",
+              "hpci_relevance_en": "Validate potential on memory-bound kernels in applications and assess specialized APIs and vendor continuity.",
+              "adoption_conditions_ja": ["量産製品", "compiler・library", "HPCI benchmark"], "adoption_conditions_en": ["Volume products", "Compilers and libraries", "HPCI benchmarks"],
+              "actor_ids": ["ACT-SAMSUNG", "ACT-SKHYNIX"], "source_ids": ["SRC-MEM017", "SRC-MEM032"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {"dimension_id": "DIM-ARCH03-WORKLOAD", "label_ja": "workload適合", "label_en": "Workload fit", "question_ja": "bandwidth、latency、capacity、通信律速のどれを改善するか。", "question_en": "Which of bandwidth, latency, capacity, or communication bottlenecks does it improve?"},
+        {"dimension_id": "DIM-ARCH03-TCO", "label_ja": "費用・電力", "label_en": "Cost and power", "question_ja": "node・rack・system全体で容量単価とenergy-to-solutionが改善するか。", "question_en": "Do capacity cost and energy to solution improve at node, rack, and system levels?"},
+        {"dimension_id": "DIM-ARCH03-OPS", "label_ja": "運用・保守", "label_en": "Operations and service", "question_ja": "交換、障害分離、telemetry、scheduler連携が可能か。", "question_en": "Are replacement, failure isolation, telemetry, and scheduler integration viable?"},
+        {"dimension_id": "DIM-ARCH03-SUPPLY", "label_ja": "供給・相互運用", "label_en": "Supply and interoperability", "question_ja": "複数vendor、標準適合、長期供給を確認できるか。", "question_en": "Can multi-vendor supply, standards conformance, and long-term availability be verified?"}
+      ],
+      "related_surface_ids": [],
+      "coverage_gap_ids": ["GAP-TDS-003", "GAP-TDS-004"]
+    },
+    {
+      "topic_id": "SSW-01",
+      "summary_ja": "性能可搬性はAPI対応の有無ではなく、同じsourceが各platformでbuild・correctness・性能・debug・保守を満たすかで評価する。platform別software stack表を正本とし、詳細はversionと公開根拠へ追跡する。",
+      "summary_en": "Performance portability is evaluated by whether common source meets build, correctness, performance, debugging, and maintenance needs on each platform, not by API presence alone. The platform software-stack matrix is the canonical comparison view.",
+      "sections": [
+        {
+          "section_id": "TDS-SSW01-PORTABILITY", "title_ja": "性能可搬化の現状と候補", "title_en": "Current and candidate portability layers",
+          "summary_ja": "vendor-native stackとportable layerを二者択一にせず、組合せと保守costを評価する。", "summary_en": "Evaluate combinations and maintenance cost rather than treating vendor-native and portable layers as mutually exclusive.",
+          "items": [
+            {
+              "item_id": "TDI-VENDOR-STACKS", "name_ja": "vendor-native stack", "name_en": "Vendor-native stacks", "stage": "current", "maturity": "deployed", "timing_ja": "現行platformで利用可能", "timing_en": "Available on current platforms",
+              "statement_ja": "oneAPI、Fujitsu Development Studio、CUDA/NVHPC、ROCmは各platform向けcompiler・library・profilerを提供する。", "statement_en": "oneAPI, Fujitsu Development Studio, CUDA/NVHPC, and ROCm provide platform-specific compilers, libraries, and profilers.",
+              "hpci_relevance_ja": "最高性能を得やすい一方、code分岐、version lock、vendor依存が増える。", "hpci_relevance_en": "They can deliver strong performance but increase code branches, version lock, and vendor dependence.",
+              "adoption_conditions_ja": ["保守工数", "複数世代support", "toolchain再現性"], "adoption_conditions_en": ["Maintenance effort", "Multi-generation support", "Toolchain reproducibility"],
+              "actor_ids": ["ACT-INTEL", "ACT-FUJITSU", "ACT-NVIDIA", "ACT-AMD"], "source_ids": ["SRC-TDS006", "SRC-TDS008", "SRC-TDS009", "SRC-TDS011"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-PORTABLE-LAYERS", "name_ja": "OpenMP・SYCL・Kokkos", "name_en": "OpenMP, SYCL, and Kokkos", "stage": "near-term", "maturity": "commercial", "timing_ja": "現行利用可能だが機能差が継続", "timing_en": "Usable now with continuing implementation differences",
+              "statement_ja": "portable APIは複数CPU/GPUを対象にできるが、compiler・backend・機能ごとの対応差が残る。", "statement_en": "Portable APIs can target multiple CPUs and GPUs, while compiler, backend, and feature differences remain.",
+              "hpci_relevance_ja": "同じfeature gridとbenchmarkでbuild、correctness、性能、debugを継続測定する必要がある。", "hpci_relevance_en": "HPCI needs continuous build, correctness, performance, and debugging measurements on a common feature grid and benchmarks.",
+              "adoption_conditions_ja": ["feature互換性", "性能差", "training・debug環境"], "adoption_conditions_en": ["Feature compatibility", "Performance variation", "Training and debugging environment"],
+              "actor_ids": [], "source_ids": ["SRC-PORT001", "SRC-PORT003", "SRC-PORT006"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-PORTABILITY-UNVERIFIED", "name_ja": "実アプリ可搬性", "name_en": "Application portability", "stage": "contested", "maturity": "uncertain", "timing_ja": "共通実測待ち", "timing_en": "Awaiting common measurements",
+              "statement_ja": "API対応表だけでは、代表HPCIアプリの移植工数、性能、長期保守性を比較できない。", "statement_en": "API support tables alone cannot compare porting effort, performance, and long-term maintenance for representative HPCI applications.",
+              "hpci_relevance_ja": "platform選定前に同一code・同一問題・同一correctness条件で比較する。", "hpci_relevance_en": "Compare common code and problem definitions under common correctness conditions before platform selection.",
+              "adoption_conditions_ja": ["複数compiler実測", "移植工数記録", "長期CI"], "adoption_conditions_en": ["Measurements across compilers", "Recorded porting effort", "Long-term CI"],
+              "actor_ids": [], "source_ids": ["SRC-PORT018", "SRC-PORT019"], "confidence": "low", "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {"dimension_id": "DIM-SSW01-CORRECT", "label_ja": "correctness", "label_en": "Correctness", "question_ja": "platform間で同じ結果と数値許容範囲を満たすか。", "question_en": "Do platforms meet common result and numerical-tolerance criteria?"},
+        {"dimension_id": "DIM-SSW01-EFFORT", "label_ja": "移植・保守工数", "label_en": "Porting and maintenance effort", "question_ja": "初回移植だけでなくversion更新を継続できるか。", "question_en": "Can version updates be sustained after initial porting?"},
+        {"dimension_id": "DIM-SSW01-PERF", "label_ja": "実効性能", "label_en": "Delivered performance", "question_ja": "portable層の性能差を許容できるか。", "question_en": "Is the performance difference of portability layers acceptable?"}
+      ],
+      "related_surface_ids": ["platform-software"],
+      "coverage_gap_ids": ["GAP-TDS-005"]
+    },
+    {
+      "topic_id": "SSW-02",
+      "summary_ja": "コンパイラ・言語・アプリ継続性は、CPU ISAだけでなく、Fortran/C/C++、OpenMP、accelerator API、MPI ABI、debugger、packageの組合せで決まる。対応表ではvendorの正式support、部分対応、community supportを区別する。",
+      "summary_en": "Compiler, language, and application continuity depend on Fortran/C/C++, OpenMP, accelerator APIs, MPI ABI, debuggers, and packaging as well as CPU ISA. The matrix separates vendor-supported, partial, and community support.",
+      "sections": [
+        {
+          "section_id": "TDS-SSW02-TOOLCHAINS", "title_ja": "toolchain継続性", "title_en": "Toolchain continuity",
+          "summary_ja": "platform別に正式support範囲とportable fallbackを確認する。", "summary_en": "Verify formal platform support and portable fallbacks per platform.",
+          "items": [
+            {
+              "item_id": "TDI-CPU-TOOLCHAINS", "name_ja": "x86・Arm CPU toolchain", "name_en": "x86 and Arm CPU toolchains", "stage": "current", "maturity": "deployed", "timing_ja": "現行利用可能", "timing_en": "Currently available",
+              "statement_ja": "Intel Xeon、AMD EPYC、Fujitsu A64FX、NVIDIA Graceにはvendor tuned compiler/libraryとGCC/LLVM系の選択肢がある。", "statement_en": "Intel Xeon, AMD EPYC, Fujitsu A64FX, and NVIDIA Grace have vendor-tuned compiler or library options alongside GCC or LLVM families.",
+              "hpci_relevance_ja": "binary compatibilityよりsource、build recipe、testの継続性を重視する。", "hpci_relevance_en": "Prioritize continuity of source, build recipes, and tests over binary compatibility alone.",
+              "adoption_conditions_ja": ["Fortran・C++標準", "OpenMP対応", "support期間"], "adoption_conditions_en": ["Fortran and C++ standards", "OpenMP support", "Support lifetime"],
+              "actor_ids": ["ACT-INTEL", "ACT-AMD", "ACT-FUJITSU", "ACT-NVIDIA"], "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS010"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-GPU-TOOLCHAINS", "name_ja": "NVIDIA・AMD GPU toolchain", "name_en": "NVIDIA and AMD GPU toolchains", "stage": "current", "maturity": "deployed", "timing_ja": "CUDA・ROCmを継続更新", "timing_en": "CUDA and ROCm are under continuous release",
+              "statement_ja": "CUDA/NVHPCとROCm/HIPはいずれもcompiler、math library、communication、profilerを含むが、API・hardware対応範囲は同一ではない。", "statement_en": "CUDA/NVHPC and ROCm/HIP both include compilers, math libraries, communication, and profilers, but API and hardware coverage differ.",
+              "hpci_relevance_ja": "representative applicationと導入予定GPU世代の組合せでversionを固定して検証する。", "hpci_relevance_en": "Pin and validate versions for representative applications and intended GPU generations.",
+              "adoption_conditions_ja": ["対象GPU世代support", "library API差", "CI・container"], "adoption_conditions_en": ["Target GPU-generation support", "Library API differences", "CI and containers"],
+              "actor_ids": ["ACT-NVIDIA", "ACT-AMD"], "source_ids": ["SRC-TDS009", "SRC-TDS011"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-MPI-ABI-NEAR", "name_ja": "MPI標準・ABI継続性", "name_en": "MPI standards and ABI continuity", "stage": "near-term", "maturity": "standardized", "timing_ja": "MPI 5.0公開、実装対応は継続", "timing_en": "MPI 5.0 published; implementation work continues",
+              "statement_ja": "MPI標準更新と実装対応には時間差があり、C/Fortran ABI、GPU-aware通信、fabric pluginを別々に確認する必要がある。", "statement_en": "MPI standards and implementations have a lag; C and Fortran ABI, GPU-aware communication, and fabric plugins need separate verification.",
+              "hpci_relevance_ja": "system更新時のapplication rebuild、library交換、運用影響を小さくする。", "hpci_relevance_en": "Reduce application rebuild, library replacement, and operational disruption during system refreshes.",
+              "adoption_conditions_ja": ["MPI feature対応", "ABI・Fortran", "GPU-aware・fabric"], "adoption_conditions_en": ["MPI feature coverage", "ABI and Fortran", "GPU-aware and fabric support"],
+              "actor_ids": [], "source_ids": ["SRC-PORT014", "SRC-PORT015"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {"dimension_id": "DIM-SSW02-STANDARDS", "label_ja": "標準対応", "label_en": "Standards coverage", "question_ja": "必要な言語・OpenMP・MPI機能が正式supportされるか。", "question_en": "Are required language, OpenMP, and MPI features formally supported?"},
+        {"dimension_id": "DIM-SSW02-LIFETIME", "label_ja": "support期間", "label_en": "Support lifetime", "question_ja": "system供用期間中にsecurity fixとtoolchain更新を受けられるか。", "question_en": "Are security fixes and toolchain updates available through the service life?"}
+      ],
+      "related_surface_ids": ["platform-software"],
+      "coverage_gap_ids": ["GAP-TDS-006"]
+    },
+    {
+      "topic_id": "SSW-04",
+      "summary_ja": "数値計算libraryはBLAS/LAPACK対応の有無だけでなく、対象algorithm、CPU/GPU最適化、分散実行、入力・演算・累積・出力精度、精度回復、再現性を分けて評価する。Ozaki schemeは低精度演算器を使う高精度演算エミュレーションとして整理する。",
+      "summary_en": "Numerical libraries are evaluated beyond BLAS or LAPACK presence: algorithm coverage, CPU/GPU tuning, distributed execution, input/compute/accumulation/output precision, accuracy recovery, and reproducibility are separated. The Ozaki scheme is classified as high-precision arithmetic emulation using low-precision engines.",
+      "sections": [
+        {
+          "section_id": "TDS-SSW04-LIBRARIES", "title_ja": "数値計算library", "title_en": "Numerical libraries",
+          "summary_ja": "vendor libraryとportable OSSをalgorithm・platform別に比較する。", "summary_en": "Compare vendor libraries and portable open source by algorithm and platform.",
+          "items": [
+            {
+              "item_id": "TDI-MATH-LIBS-CURRENT", "name_ja": "CPU/GPU最適化library", "name_en": "CPU/GPU optimized libraries", "stage": "current", "maturity": "deployed", "timing_ja": "現行platformで利用可能", "timing_en": "Available on current platforms",
+              "statement_ja": "oneMKL、AOCL、SSL II/BLAS、NVPL、cuBLAS/cuSOLVER、rocBLAS/rocSOLVER等がplatform別に提供される。", "statement_en": "oneMKL, AOCL, SSL II/BLAS, NVPL, cuBLAS/cuSOLVER, and rocBLAS/rocSOLVER are available for their respective platforms.",
+              "hpci_relevance_ja": "同じAPI名でもroutine、precision、distributed support、性能が異なるため、algorithm単位で確認する。", "hpci_relevance_en": "Even under common API names, routine, precision, distributed support, and performance differ, so evaluate by algorithm.",
+              "adoption_conditions_ja": ["routine coverage", "correctness・性能", "license・support"], "adoption_conditions_en": ["Routine coverage", "Correctness and performance", "License and support"],
+              "actor_ids": ["ACT-INTEL", "ACT-AMD", "ACT-FUJITSU", "ACT-NVIDIA"], "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS009", "SRC-TDS010", "SRC-TDS011"], "confidence": "high", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-MIXED-CURRENT", "name_ja": "混合精度・反復改良", "name_en": "Mixed precision and iterative refinement", "stage": "near-term", "maturity": "commercial", "timing_ja": "一部library・benchmarkで実用化", "timing_en": "Production use in selected libraries and benchmarks",
+              "statement_ja": "低精度factorizationやGEMMと高精度residual・correctionを組み合わせ、精度を維持しながら高速化する方式が実装されている。", "statement_en": "Implementations combine low-precision factorization or GEMM with higher-precision residuals and corrections to retain accuracy while accelerating work.",
+              "hpci_relevance_ja": "収束条件、ill-conditioned問題、energy-to-solutionをapplication別に検証する。", "hpci_relevance_en": "Validate convergence, ill-conditioned cases, and energy to solution by application.",
+              "adoption_conditions_ja": ["誤差・収束保証", "fallback path", "実アプリ精度"], "adoption_conditions_en": ["Error and convergence guarantees", "Fallback path", "Application accuracy"],
+              "actor_ids": ["ACT-NVIDIA", "ACT-AMD", "ACT-INTEL"], "source_ids": ["SRC-TDS017", "SRC-TDS024"], "confidence": "medium", "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-SSW04-ACCURACY", "title_ja": "高精度演算エミュレーション・数値健全性", "title_en": "High-precision emulation and numerical integrity",
+          "summary_ja": "低精度hardwareを使う高速化と、求める精度・再現性を同時に記録する。", "summary_en": "Record acceleration through low-precision hardware together with required accuracy and reproducibility.",
+          "items": [
+            {
+              "item_id": "TDI-OZAKI-RESEARCH", "name_ja": "Ozaki scheme・GEMMul8", "name_en": "Ozaki scheme and GEMMul8", "stage": "research", "maturity": "prototype", "timing_ja": "研究artifactと一部benchmark統合", "timing_en": "Research artifacts and selected benchmark integration",
+              "statement_ja": "Ozaki schemeは入力を分割し、INT8/FP8等の低精度matrix engineで複数GEMMを実行してFP32/FP64等をエミュレートする。RIKEN R-CCSのGEMMul8はCUDA/HIP backendを公開している。", "statement_en": "The Ozaki scheme splits inputs and uses multiple GEMMs on low-precision matrix engines such as INT8 or FP8 to emulate FP32 or FP64. RIKEN R-CCS publishes GEMMul8 with CUDA and HIP backends.",
+              "hpci_relevance_ja": "低精度matrix engineを科学計算へ転用できる可能性があるが、algorithm範囲、overhead、誤差、hardware世代依存を検証する。", "hpci_relevance_en": "It may repurpose low-precision matrix engines for scientific computing, but algorithm scope, overhead, error, and hardware-generation dependence require validation.",
+              "adoption_conditions_ja": ["bitwise・数値検証", "GEMM以外への適用", "複数GPU世代再現"], "adoption_conditions_en": ["Bitwise and numerical validation", "Coverage beyond GEMM", "Reproduction across GPU generations"],
+              "actor_ids": [], "source_ids": ["SRC-TDS015", "SRC-TDS016", "SRC-TDS017"], "confidence": "medium", "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-NUMERICAL-OPEN", "name_ja": "algorithm別精度・性能比較", "name_en": "Algorithm-level accuracy and performance comparison", "stage": "contested", "maturity": "uncertain", "timing_ja": "共通test不足", "timing_en": "Common tests are insufficient",
+              "statement_ja": "library資料だけではHPCI問題の条件数、収束、再現性、energy-to-solutionを横断比較できない。", "statement_en": "Library documentation alone cannot compare conditioning, convergence, reproducibility, and energy to solution across HPCI problems.",
+              "hpci_relevance_ja": "数値誤差を性能向上の代償として隠さず、共通matrix・solver・application testを整備する。", "hpci_relevance_en": "Do not hide numerical error as a performance tradeoff; build common matrix, solver, and application tests.",
+              "adoption_conditions_ja": ["共通test set", "誤差指標", "CPU/GPU横断実測"], "adoption_conditions_en": ["Common test set", "Error metrics", "Cross-CPU/GPU measurements"],
+              "actor_ids": [], "source_ids": ["SRC-TDS013", "SRC-TDS014", "SRC-TDS015"], "confidence": "low", "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {"dimension_id": "DIM-SSW04-COVERAGE", "label_ja": "algorithm coverage", "label_en": "Algorithm coverage", "question_ja": "必要routineと問題classをsupportするか。", "question_en": "Are required routines and problem classes supported?"},
+        {"dimension_id": "DIM-SSW04-PRECISION", "label_ja": "精度・再現性", "label_en": "Accuracy and reproducibility", "question_ja": "入力・演算・累積・出力精度とerror recoveryを説明できるか。", "question_en": "Can input, compute, accumulation, and output precision plus error recovery be explained?"},
+        {"dimension_id": "DIM-SSW04-DISTRIBUTED", "label_ja": "分散実行", "label_en": "Distributed execution", "question_ja": "複数node・GPUで性能と収束を維持できるか。", "question_en": "Are performance and convergence sustained across nodes and GPUs?"}
+      ],
+      "related_surface_ids": ["platform-software", "numerical-methods"],
+      "coverage_gap_ids": ["GAP-TDS-007", "GAP-TDS-008"]
+    }
+  ],
+  "platform_matrix": {
+    "title_ja": "主要CPU・GPUのソフトウェアスタック対応", "title_en": "Software-stack coverage for major CPUs and GPUs",
+    "summary_ja": "列はISAと製品名を混在させず、HPCIで比較可能なdeployment targetに揃えた。セルは正式対応、部分対応、community対応を区別し、空欄を非対応とは解釈しない。",
+    "summary_en": "Columns use comparable HPCI deployment targets rather than mixing ISAs and product names. Cells distinguish formal, partial, and community support; an empty cell does not imply unsupported.",
+    "platforms": [
+      {"platform_id": "PLAT-INTEL-XEON", "name": "Intel Xeon", "category": "cpu", "architecture": "x86-64", "vendor": "Intel", "region_ids": ["REG-US"], "notes_ja": "Intel oneAPIで正式最適化。", "notes_en": "Formally optimized by Intel oneAPI.", "source_ids": ["SRC-TDS006"]},
+      {"platform_id": "PLAT-AMD-EPYC", "name": "AMD EPYC", "category": "cpu", "architecture": "x86-64", "vendor": "AMD", "region_ids": ["REG-US"], "notes_ja": "AOCC・AOCLでZen向け最適化。", "notes_en": "Zen optimization through AOCC and AOCL.", "source_ids": ["SRC-TDS007"]},
+      {"platform_id": "PLAT-FUJITSU-A64FX", "name": "Fujitsu A64FX", "category": "cpu", "architecture": "Armv8-A + SVE", "vendor": "Fujitsu", "region_ids": ["REG-JP"], "notes_ja": "Fujitsu compiler・MPI・SSL IIとOSS toolchainを利用可能。", "notes_en": "Fujitsu compilers, MPI, SSL II, and open-source toolchains are available.", "source_ids": ["SRC-TDS008"]},
+      {"platform_id": "PLAT-NVIDIA-GRACE", "name": "NVIDIA Grace", "category": "cpu", "architecture": "Armv9-A / Neoverse V2", "vendor": "NVIDIA", "region_ids": ["REG-US"], "notes_ja": "NVHPCとNVPLがGrace向けに最適化。", "notes_en": "NVHPC and NVPL are optimized for Grace.", "source_ids": ["SRC-TDS010"]},
+      {"platform_id": "PLAT-NVIDIA-GPU", "name": "NVIDIA GPU", "category": "gpu", "architecture": "CUDA-capable GPU", "vendor": "NVIDIA", "region_ids": ["REG-US"], "notes_ja": "CUDA/NVHPC ecosystem。GPU世代別supportを確認する。", "notes_en": "CUDA/NVHPC ecosystem; verify support by GPU generation.", "source_ids": ["SRC-TDS009"]},
+      {"platform_id": "PLAT-AMD-GPU", "name": "AMD Instinct GPU", "category": "gpu", "architecture": "CDNA / ROCm-supported GPU", "vendor": "AMD", "region_ids": ["REG-US"], "notes_ja": "ROCm/HIP ecosystem。対応GPU・OS matrixを確認する。", "notes_en": "ROCm/HIP ecosystem; verify the GPU and OS compatibility matrix.", "source_ids": ["SRC-TDS011"]}
+    ],
+    "capabilities": [
+      {
+        "capability_id": "CAP-COMPILER", "label_ja": "Compiler・言語", "label_en": "Compilers and languages",
+        "entries": [
+          {"entry_id": "SWC-INTEL-COMPILER", "software_name": "Intel oneAPI DPC++/C++ and Fortran", "platform_ids": ["PLAT-INTEL-XEON"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "oneAPI 2026", "license_class": "proprietary", "summary_ja": "C/C++、Fortran、OpenMP、SYCL系toolchain。Intel platformが正式support範囲。", "summary_en": "C/C++, Fortran, OpenMP, and SYCL-family toolchain with formal Intel-platform support.", "source_ids": ["SRC-TDS006"]},
+          {"entry_id": "SWC-AMD-AOCC", "software_name": "AMD AOCC", "platform_ids": ["PLAT-AMD-EPYC"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "Current AMD developer release", "license_class": "proprietary", "summary_ja": "Zen/EPYC向けC/C++・Fortran compiler。", "summary_en": "C/C++ and Fortran compiler tuned for Zen and EPYC.", "source_ids": ["SRC-TDS007"]},
+          {"entry_id": "SWC-FUJITSU-COMPILER", "software_name": "Fujitsu Development Studio compilers", "platform_ids": ["PLAT-FUJITSU-A64FX"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "A64FX Development Studio", "license_class": "proprietary", "summary_ja": "A64FX SVE、OpenMP、Fortran/C/C++向け最適化。", "summary_en": "A64FX SVE, OpenMP, and Fortran/C/C++ optimization.", "source_ids": ["SRC-TDS008"]},
+          {"entry_id": "SWC-NVHPC", "software_name": "NVIDIA HPC Compilers", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "NVHPC current release", "license_class": "proprietary", "summary_ja": "x86-64/Arm hostとNVIDIA GPU向けC/C++・Fortran、OpenACC/OpenMP/CUDA。", "summary_en": "C/C++ and Fortran for x86-64/Arm hosts and NVIDIA GPUs with OpenACC, OpenMP, and CUDA.", "source_ids": ["SRC-TDS009"]},
+          {"entry_id": "SWC-ROCM-LLVM", "software_name": "ROCm LLVM / HIP", "platform_ids": ["PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "ROCm 7.14", "license_class": "open-source", "summary_ja": "AMD GPU向けHIP runtimeとLLVM toolchain。", "summary_en": "HIP runtime and LLVM toolchain for AMD GPUs.", "source_ids": ["SRC-TDS011"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-PARALLEL-API", "label_ja": "並列・accelerator API", "label_en": "Parallel and accelerator APIs",
+        "entries": [
+          {"entry_id": "SWC-OPENMP-CPU", "software_name": "OpenMP CPU", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE"], "support_level": "production", "optimization_level": "portable", "version_note": "Feature level varies by compiler", "license_class": "standard", "summary_ja": "CPU thread並列は広く利用可能だが、compilerごとに仕様versionと機能差がある。", "summary_en": "CPU threading is broadly available, while specification and feature coverage vary by compiler.", "source_ids": ["SRC-PORT018"]},
+          {"entry_id": "SWC-OPENMP-OFFLOAD", "software_name": "OpenMP target offload", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "partial", "optimization_level": "portable", "version_note": "Implementation-specific feature coverage", "license_class": "standard", "summary_ja": "GPU offloadは利用可能だが、compiler・機能・性能差を個別検証する。", "summary_en": "GPU offload is available, but compiler, feature, and performance differences need explicit testing.", "source_ids": ["SRC-PORT018"]},
+          {"entry_id": "SWC-CUDA", "software_name": "CUDA", "platform_ids": ["PLAT-NVIDIA-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "GPU-generation dependent", "license_class": "proprietary", "summary_ja": "NVIDIA GPU向けnative programming model。", "summary_en": "Native programming model for NVIDIA GPUs.", "source_ids": ["SRC-TDS009"]},
+          {"entry_id": "SWC-HIP", "software_name": "HIP", "platform_ids": ["PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "ROCm 7.14", "license_class": "open-source", "summary_ja": "AMD GPU向けnative portability/runtime layer。", "summary_en": "Native portability and runtime layer for AMD GPUs.", "source_ids": ["SRC-TDS011"]},
+          {"entry_id": "SWC-SYCL", "software_name": "SYCL", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "partial", "optimization_level": "portable", "version_note": "Backend and conformant-product dependent", "license_class": "standard", "summary_ja": "複数backendがあるが、製品適合とlibrary coverageを分けて確認する。", "summary_en": "Multiple backends exist; product conformance and library coverage require separate verification.", "source_ids": ["SRC-PORT003", "SRC-PORT019"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-MPI", "label_ja": "MPI・node間通信", "label_en": "MPI and inter-node communication",
+        "entries": [
+          {"entry_id": "SWC-OPENMPI", "software_name": "Open MPI / MPICH family", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "portable", "version_note": "GPU awareness and fabric plugins vary", "license_class": "open-source", "summary_ja": "CPU platformで広く利用され、GPU-aware通信はbuild・UCX/OFI・vendor設定に依存する。", "summary_en": "Broad CPU support; GPU awareness depends on build, UCX/OFI, and vendor configuration.", "source_ids": ["SRC-PORT015", "SRC-PORT026"]},
+          {"entry_id": "SWC-FUJITSU-MPI", "software_name": "Fujitsu MPI", "platform_ids": ["PLAT-FUJITSU-A64FX"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "A64FX / Tofu optimized", "license_class": "proprietary", "summary_ja": "A64FXとTofu向けcollective・通信最適化。", "summary_en": "Collective and communication optimization for A64FX and Tofu.", "source_ids": ["SRC-TDS026"]},
+          {"entry_id": "SWC-NCCL-RCCL", "software_name": "NCCL / RCCL", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "GPU and fabric dependent", "license_class": "open-source", "summary_ja": "GPU collective library。MPIとの役割分担とnetwork pluginを確認する。", "summary_en": "GPU collective libraries; verify division of roles with MPI and network plugins.", "source_ids": ["SRC-TDS011", "SRC-TDS022"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-BLAS", "label_ja": "BLAS・LAPACK", "label_en": "BLAS and LAPACK",
+        "entries": [
+          {"entry_id": "SWC-ONEMKL", "software_name": "Intel oneMKL", "platform_ids": ["PLAT-INTEL-XEON"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "oneMKL 2026", "license_class": "proprietary", "summary_ja": "BLAS、LAPACK、FFT、sparse、RNGをIntel CPU向けに最適化。", "summary_en": "BLAS, LAPACK, FFT, sparse, and RNG optimized for Intel CPUs.", "source_ids": ["SRC-TDS006"]},
+          {"entry_id": "SWC-AOCL", "software_name": "AMD AOCL", "platform_ids": ["PLAT-AMD-EPYC"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "AOCL 5.3", "license_class": "mixed", "summary_ja": "BLAS、LAPACK、ScaLAPACK、FFT、sparse等をZen/EPYC向けに最適化。", "summary_en": "BLAS, LAPACK, ScaLAPACK, FFT, sparse, and related libraries optimized for Zen and EPYC.", "source_ids": ["SRC-TDS007"]},
+          {"entry_id": "SWC-SSLII", "software_name": "Fujitsu BLAS/LAPACK and SSL II", "platform_ids": ["PLAT-FUJITSU-A64FX"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "A64FX Development Studio", "license_class": "proprietary", "summary_ja": "A64FX SVE・thread並列向けBLAS/LAPACK/SSL II。", "summary_en": "BLAS, LAPACK, and SSL II tuned for A64FX SVE and threading.", "source_ids": ["SRC-TDS008"]},
+          {"entry_id": "SWC-NVPL", "software_name": "NVIDIA NVPL", "platform_ids": ["PLAT-NVIDIA-GRACE"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "NVPL 25.5", "license_class": "proprietary", "summary_ja": "Grace向けBLAS、LAPACK、ScaLAPACK、FFT、sparse。", "summary_en": "BLAS, LAPACK, ScaLAPACK, FFT, and sparse libraries for Grace.", "source_ids": ["SRC-TDS010"]},
+          {"entry_id": "SWC-CUBLAS", "software_name": "cuBLAS / cuSOLVER", "platform_ids": ["PLAT-NVIDIA-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "CUDA toolkit dependent", "license_class": "proprietary", "summary_ja": "NVIDIA GPU向けBLAS・dense/sparse solver。Tensor Core精度modeはroutine別。", "summary_en": "BLAS and dense or sparse solvers for NVIDIA GPUs; Tensor Core precision modes vary by routine.", "source_ids": ["SRC-TDS009"]},
+          {"entry_id": "SWC-ROCBLAS", "software_name": "rocBLAS / rocSOLVER", "platform_ids": ["PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "ROCm 7.14", "license_class": "open-source", "summary_ja": "AMD GPU向けBLAS・LAPACK相当solver。", "summary_en": "BLAS and LAPACK-like solvers for AMD GPUs.", "source_ids": ["SRC-TDS011"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-FFT-SPARSE", "label_ja": "FFT・疎行列・solver", "label_en": "FFT, sparse, and solvers",
+        "entries": [
+          {"entry_id": "SWC-CPU-MATH-EXT", "software_name": "oneMKL / AOCL / SSL II / NVPL", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "Routine coverage varies", "license_class": "mixed", "summary_ja": "各CPU vendor stackにFFT・sparse・solverがあるがroutine coverageは同一でない。", "summary_en": "CPU vendor stacks include FFT, sparse, and solver capabilities, but routine coverage differs.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS010"]},
+          {"entry_id": "SWC-CUDA-MATH-EXT", "software_name": "cuFFT / cuSPARSE / cuSOLVER", "platform_ids": ["PLAT-NVIDIA-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "CUDA toolkit dependent", "license_class": "proprietary", "summary_ja": "NVIDIA GPU向けFFT、sparse、solver suite。", "summary_en": "FFT, sparse, and solver suite for NVIDIA GPUs.", "source_ids": ["SRC-TDS009"]},
+          {"entry_id": "SWC-ROCM-MATH-EXT", "software_name": "rocFFT / rocSPARSE / rocSOLVER", "platform_ids": ["PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "ROCm 7.14", "license_class": "open-source", "summary_ja": "AMD GPU向けFFT、sparse、solver suite。", "summary_en": "FFT, sparse, and solver suite for AMD GPUs.", "source_ids": ["SRC-TDS011"]},
+          {"entry_id": "SWC-PETSC", "software_name": "PETSc / SLEPc", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "partial", "optimization_level": "portable", "version_note": "Backend support differs", "license_class": "open-source", "summary_ja": "分散solver・eigensolverのportable layer。CUDA、HIP、Kokkos等のbackend完成度は異なる。", "summary_en": "Portable distributed solver and eigensolver layers with differing maturity across CUDA, HIP, and Kokkos backends.", "source_ids": ["SRC-TDS013", "SRC-TDS014"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-PORTABILITY", "label_ja": "性能可搬化framework", "label_en": "Performance-portability frameworks",
+        "entries": [
+          {"entry_id": "SWC-KOKKOS", "software_name": "Kokkos", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "community", "optimization_level": "portable", "version_note": "Backend and package dependent", "license_class": "open-source", "summary_ja": "CPU/GPU backendを抽象化するC++ performance portability framework。platform別CIと性能確認が必要。", "summary_en": "C++ performance-portability framework abstracting CPU and GPU backends; platform-specific CI and performance validation remain necessary.", "source_ids": ["SRC-PORT006"]},
+          {"entry_id": "SWC-PETSC-PORTABLE", "software_name": "PETSc runtime-selected backends", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "support_level": "partial", "optimization_level": "portable", "version_note": "CUDA supported; HIP matrix path remains evolving", "license_class": "open-source", "summary_ja": "同一APIからCUDA/HIP/Kokkos backendを選べるが、機能成熟度は一致しない。", "summary_en": "A common API can select CUDA, HIP, or Kokkos backends, but feature maturity is not equal.", "source_ids": ["SRC-TDS013"]}
+        ]
+      },
+      {
+        "capability_id": "CAP-PROFILING", "label_ja": "Profiler・debug・telemetry", "label_en": "Profiling, debugging, and telemetry",
+        "entries": [
+          {"entry_id": "SWC-VTUNE", "software_name": "Intel VTune and oneAPI tools", "platform_ids": ["PLAT-INTEL-XEON"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "oneAPI release aligned", "license_class": "proprietary", "summary_ja": "Intel CPU向けperformance analysis。", "summary_en": "Performance analysis for Intel CPUs.", "source_ids": ["SRC-TDS006"]},
+          {"entry_id": "SWC-AMD-PROF", "software_name": "AMD uProf / ROCm profilers", "platform_ids": ["PLAT-AMD-EPYC", "PLAT-AMD-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "CPU and ROCm releases differ", "license_class": "mixed", "summary_ja": "EPYC CPUとROCm GPUのprofiling tool群。", "summary_en": "Profiling tools for EPYC CPUs and ROCm GPUs.", "source_ids": ["SRC-TDS011"]},
+          {"entry_id": "SWC-FUJITSU-PROF", "software_name": "Fujitsu profiler", "platform_ids": ["PLAT-FUJITSU-A64FX"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "Development Studio", "license_class": "proprietary", "summary_ja": "A64FX・MPI/OpenMP向けperformance profiler。", "summary_en": "Performance profiler for A64FX and MPI/OpenMP.", "source_ids": ["SRC-TDS008"]},
+          {"entry_id": "SWC-NSIGHT", "software_name": "NVIDIA Nsight", "platform_ids": ["PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU"], "support_level": "production", "optimization_level": "vendor-tuned", "version_note": "CUDA and platform release dependent", "license_class": "proprietary", "summary_ja": "CPU/GPU timeline・kernel analysis。", "summary_en": "CPU/GPU timeline and kernel analysis.", "source_ids": ["SRC-TDS009"]}
+        ]
+      }
+    ]
+  },
+  "numerical_method_matrix": {
+    "title_ja": "数値計算アルゴリズム・実装・精度方式", "title_en": "Numerical algorithms, implementations, and precision modes",
+    "summary_ja": "BLAS等のAPI名とalgorithmを区別し、software、platform、license、分散対応、入力・演算・累積・出力精度、混合精度、精度エミュレーションを同じ形式で比較する。",
+    "summary_en": "The view separates APIs such as BLAS from algorithms and compares software, platform, license, distributed support, input/compute/accumulation/output precision, mixed precision, and precision emulation in a common format.",
+    "methods": [
+      {
+        "method_id": "NUM-DENSE-GEMM", "category_ja": "dense linear algebra", "category_en": "Dense linear algebra", "name_ja": "行列積（GEMM）", "name_en": "Matrix multiplication (GEMM)",
+        "purpose_ja": "dense行列積と多くのfactorization・AI kernelの基盤。", "purpose_en": "Foundation for dense products, factorizations, and many AI kernels.",
+        "implementations": [
+          {"implementation_id": "NMI-GEMM-CPU", "software_name": "oneMKL / AOCL / SSL II / NVPL", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP16/BF16/FP32/FP64: library dependent", "compute": "Native CPU vector and matrix instructions", "accumulation": "Routine and datatype dependent", "output": "Routine datatype", "mixed_precision": "Selected routines only", "emulation": "Not a common API guarantee"}, "distributed_support": "library-dependent", "notes_ja": "標準BLAS APIを中心にplatform別最適化。精度modeはlibraryごとに確認する。", "notes_en": "Platform tuning around standard BLAS APIs; verify precision modes per library.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS010"]},
+          {"implementation_id": "NMI-GEMM-CUDA", "software_name": "cuBLAS / cuBLASLt", "platform_ids": ["PLAT-NVIDIA-GPU"], "license_class": "proprietary", "support_level": "production", "precision": {"input": "FP4/FP8/FP16/BF16/TF32/FP32/FP64: hardware and API dependent", "compute": "CUDA cores or Tensor Cores", "accumulation": "Configurable for selected routines", "output": "API datatype dependent", "mixed_precision": "Supported by selected GEMM APIs", "emulation": "Ozaki-based paths are separate"}, "distributed_support": "library-dependent", "notes_ja": "Tensor Core modeはGPU世代とAPI設定に依存する。", "notes_en": "Tensor Core modes depend on GPU generation and API configuration.", "source_ids": ["SRC-TDS009"]},
+          {"implementation_id": "NMI-GEMM-ROCM", "software_name": "rocBLAS / hipBLASLt", "platform_ids": ["PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "production", "precision": {"input": "FP16/BF16/FP32/FP64 and device-dependent low precision", "compute": "GPU matrix and vector units", "accumulation": "Routine dependent", "output": "API datatype dependent", "mixed_precision": "Selected GEMM APIs", "emulation": "GEMMul8 is a separate research path"}, "distributed_support": "library-dependent", "notes_ja": "対応datatypeとmatrix instructionはGPU世代で確認する。", "notes_en": "Verify datatype and matrix-instruction support by GPU generation.", "source_ids": ["SRC-TDS011"]},
+          {"implementation_id": "NMI-GEMM-GEMMUL8", "software_name": "GEMMul8", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "research-artifact", "precision": {"input": "FP32/FP64/complex interfaces", "compute": "INT8 or FP8 matrix engines", "accumulation": "Higher-precision reconstruction", "output": "Emulated SGEMM/DGEMM/CGEMM/ZGEMM", "mixed_precision": "Core technique", "emulation": "Ozaki-II high-precision GEMM emulation"}, "distributed_support": "single-node", "notes_ja": "RIKEN R-CCSの研究artifact。bitwise reproducibilityを掲げるがHPCI実アプリ検証は別途必要。", "notes_en": "RIKEN R-CCS research artifact claiming bitwise reproducibility; HPCI application validation remains separate.", "source_ids": ["SRC-TDS015", "SRC-TDS016"]}
+        ]
+      },
+      {
+        "method_id": "NUM-DENSE-SOLVE", "category_ja": "dense linear algebra", "category_en": "Dense linear algebra", "name_ja": "dense連立一次方程式・factorization", "name_en": "Dense linear systems and factorizations",
+        "purpose_ja": "LU、Cholesky、QR等による連立一次方程式・least squares。", "purpose_en": "Linear systems and least squares through LU, Cholesky, QR, and related factorizations.",
+        "implementations": [
+          {"implementation_id": "NMI-DENSE-SOLVE-CPU", "software_name": "LAPACK implementations", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP32/FP64/complex", "compute": "Usually input precision", "accumulation": "Routine dependent", "output": "Input precision", "mixed_precision": "Vendor and routine dependent", "emulation": "Not generally exposed"}, "distributed_support": "library-dependent", "notes_ja": "LAPACK/ScaLAPACK APIのroutine coverageとthread・MPI性能を確認する。", "notes_en": "Verify LAPACK/ScaLAPACK routine coverage and thread or MPI performance.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS010"]},
+          {"implementation_id": "NMI-DENSE-SOLVE-GPU", "software_name": "cuSOLVER / rocSOLVER", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP32/FP64/complex and selected low precision", "compute": "GPU routine dependent", "accumulation": "Routine dependent", "output": "Routine datatype", "mixed_precision": "Selected APIs and external algorithms", "emulation": "Not a general solver guarantee"}, "distributed_support": "library-dependent", "notes_ja": "LAPACK相当routineの範囲とmulti-GPU対応はlibrary別。", "notes_en": "LAPACK-like routine and multi-GPU coverage differ by library.", "source_ids": ["SRC-TDS009", "SRC-TDS011"]},
+          {"implementation_id": "NMI-DENSE-SOLVE-MAGMA", "software_name": "MAGMA mixed-precision iterative refinement", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "experimental", "precision": {"input": "Typically FP64 target problem", "compute": "Lower-precision factorization and solves", "accumulation": "Higher-precision residual/correction", "output": "Target high precision", "mixed_precision": "Iterative refinement", "emulation": "Accuracy recovery rather than arithmetic emulation"}, "distributed_support": "library-dependent", "notes_ja": "収束はcondition numberと精度組合せに依存し、fallbackが必要。", "notes_en": "Convergence depends on conditioning and precision combination, requiring fallback paths.", "source_ids": ["SRC-TDS024"]}
+        ]
+      },
+      {
+        "method_id": "NUM-EIGEN-SVD", "category_ja": "eigen・decomposition", "category_en": "Eigenproblems and decompositions", "name_ja": "固有値・SVD", "name_en": "Eigenvalue problems and SVD",
+        "purpose_ja": "安定性解析、量子・材料、model reduction、data解析。", "purpose_en": "Stability analysis, quantum and materials workloads, model reduction, and data analysis.",
+        "implementations": [
+          {"implementation_id": "NMI-EIGEN-LAPACK", "software_name": "LAPACK / ScaLAPACK vendor implementations", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP32/FP64/complex", "compute": "Routine precision", "accumulation": "Routine dependent", "output": "Input precision", "mixed_precision": "Limited and implementation-specific", "emulation": "Not generally provided"}, "distributed_support": "library-dependent", "notes_ja": "dense問題のroutine・algorithmと分散supportはlibraryごとに異なる。", "notes_en": "Dense routine, algorithm, and distributed support differ by library.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS009", "SRC-TDS010", "SRC-TDS011"]},
+          {"implementation_id": "NMI-EIGEN-SLEPC", "software_name": "SLEPc", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "production", "precision": {"input": "PETSc scalar configuration", "compute": "Backend and solver dependent", "accumulation": "Backend dependent", "output": "Configured scalar precision", "mixed_precision": "Not a uniform cross-solver guarantee", "emulation": "Not a core feature"}, "distributed_support": "native", "notes_ja": "大規模疎固有値、SVD、nonlinear eigenproblemをPETSc上で扱う。GPU supportはPETSc backendに依存。", "notes_en": "Large sparse eigenproblems, SVD, and nonlinear eigenproblems on PETSc; GPU support depends on PETSc backends.", "source_ids": ["SRC-TDS014"]}
+        ]
+      },
+      {
+        "method_id": "NUM-SPARSE-SOLVE", "category_ja": "sparse・iterative", "category_en": "Sparse and iterative methods", "name_ja": "疎行列・iterative solver・preconditioner", "name_en": "Sparse matrices, iterative solvers, and preconditioners",
+        "purpose_ja": "PDE離散化等の大規模疎連立一次方程式。", "purpose_en": "Large sparse linear systems such as discretized PDEs.",
+        "implementations": [
+          {"implementation_id": "NMI-SPARSE-PETSC", "software_name": "PETSc", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "production", "precision": {"input": "Build-time scalar configuration", "compute": "Solver and backend dependent", "accumulation": "Backend dependent", "output": "Configured scalar precision", "mixed_precision": "Possible through selected packages; not uniform", "emulation": "Not a core feature"}, "distributed_support": "native", "notes_ja": "MPI分散solverと多数のpreconditionerを提供。CUDA/HIP/Kokkos backendの成熟度差を保持する。", "notes_en": "MPI-distributed solvers and many preconditioners; preserve maturity differences across CUDA, HIP, and Kokkos backends.", "source_ids": ["SRC-TDS013"]},
+          {"implementation_id": "NMI-SPARSE-VENDOR", "software_name": "oneMKL Sparse / AOCL-Sparse / cuSPARSE / rocSPARSE / NVPL Sparse", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "mixed", "support_level": "production", "precision": {"input": "Library datatype dependent", "compute": "Native platform kernels", "accumulation": "Routine dependent", "output": "Routine datatype", "mixed_precision": "Limited and routine-specific", "emulation": "Not generally provided"}, "distributed_support": "library-dependent", "notes_ja": "主にsparse kernelを提供し、solver・preconditionerは上位libraryと組み合わせる。", "notes_en": "Primarily sparse kernels, commonly combined with higher-level solver and preconditioner libraries.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS009", "SRC-TDS010", "SRC-TDS011"]}
+        ]
+      },
+      {
+        "method_id": "NUM-FFT", "category_ja": "spectral", "category_en": "Spectral methods", "name_ja": "高速Fourier変換（FFT）", "name_en": "Fast Fourier transform (FFT)",
+        "purpose_ja": "spectral法、信号処理、Poisson solver、電子状態計算等。", "purpose_en": "Spectral methods, signal processing, Poisson solvers, and electronic-structure workloads.",
+        "implementations": [
+          {"implementation_id": "NMI-FFT-CPU", "software_name": "oneMKL DFT / AOCL-FFTW/FFTZ / Fujitsu FFT / NVPL FFT / FFTW", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP32/FP64 real or complex", "compute": "Native CPU precision", "accumulation": "Algorithm dependent", "output": "Input precision", "mixed_precision": "Not a common API property", "emulation": "Not generally provided"}, "distributed_support": "library-dependent", "notes_ja": "FFTW互換性、shape、batch、MPI decompositionで性能が変わる。", "notes_en": "Performance varies with FFTW compatibility, shape, batching, and MPI decomposition.", "source_ids": ["SRC-TDS006", "SRC-TDS007", "SRC-TDS008", "SRC-TDS010", "SRC-TDS023"]},
+          {"implementation_id": "NMI-FFT-GPU", "software_name": "cuFFT / rocFFT", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "mixed", "support_level": "production", "precision": {"input": "FP16/FP32/FP64: library and transform dependent", "compute": "GPU kernels", "accumulation": "Implementation dependent", "output": "Configured transform datatype", "mixed_precision": "Selected transform paths only", "emulation": "Not generally provided"}, "distributed_support": "library-dependent", "notes_ja": "multi-GPU・MPI FFTはlibrary/pluginとdata decompositionを確認する。", "notes_en": "Multi-GPU or MPI FFT requires verification of libraries, plugins, and data decomposition.", "source_ids": ["SRC-TDS009", "SRC-TDS011"]}
+        ]
+      },
+      {
+        "method_id": "NUM-ACCURATE-REPRO", "category_ja": "数値健全性", "category_en": "Numerical integrity", "name_ja": "高精度・再現可能演算", "name_en": "High-accuracy and reproducible arithmetic",
+        "purpose_ja": "hardwareや並列順序が変わっても必要精度・再現性を維持する。", "purpose_en": "Maintain required accuracy and reproducibility across hardware and parallel execution order.",
+        "implementations": [
+          {"implementation_id": "NMI-ACCURATE-OZAKI", "software_name": "Ozaki scheme / GEMMul8", "platform_ids": ["PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "open-source", "support_level": "research-artifact", "precision": {"input": "High-precision target operands", "compute": "Multiple INT8/FP8 low-precision GEMMs", "accumulation": "Higher-precision reconstruction", "output": "Emulated high-precision GEMM", "mixed_precision": "Essential", "emulation": "High-precision arithmetic emulation"}, "distributed_support": "single-node", "notes_ja": "hardware emulatorではなく、algorithmによる高精度GEMM emulationとして分類する。", "notes_en": "Classified as algorithmic high-precision GEMM emulation, not a hardware emulator.", "source_ids": ["SRC-TDS015", "SRC-TDS016"]},
+          {"implementation_id": "NMI-ACCURATE-REFINE", "software_name": "Mixed-precision iterative refinement", "platform_ids": ["PLAT-INTEL-XEON", "PLAT-AMD-EPYC", "PLAT-FUJITSU-A64FX", "PLAT-NVIDIA-GRACE", "PLAT-NVIDIA-GPU", "PLAT-AMD-GPU"], "license_class": "mixed", "support_level": "experimental", "precision": {"input": "Target high precision", "compute": "Lower-precision factorization or preconditioner", "accumulation": "High-precision residual and correction", "output": "Target high precision when converged", "mixed_precision": "Essential", "emulation": "Accuracy recovery, not direct operation emulation"}, "distributed_support": "library-dependent", "notes_ja": "problem conditioningにより収束しない場合があり、精度判定とfallbackを必須とする。", "notes_en": "Convergence can fail with problem conditioning, so accuracy tests and fallback are mandatory.", "source_ids": ["SRC-TDS024"]}
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {"source_id": "SRC-TDS001", "title": "MN-Core Series", "publisher": "Preferred Networks", "url": "https://projects.preferred.jp/mn-core/en/", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS002", "title": "Development of MN-Core L1000 for Generative AI", "publisher": "Preferred Networks", "url": "https://www.preferred.jp/ja/news/pr20241115", "source_class": "official-vendor", "published_or_updated": "2024-11-15"},
+    {"source_id": "SRC-TDS003", "title": "SAIMEMORY and Intel Collaborate to Commercialize Next-generation Memory Technology", "publisher": "SAIMEMORY", "url": "https://www.saimemory.co.jp/assets/news/pdf/SAIMEMORY_PR_20260203_01_ENG.pdf", "source_class": "official-vendor", "published_or_updated": "2026-02-03"},
+    {"source_id": "SRC-TDS004", "title": "High-Performance Spectrum Ethernet Platform for AI Networking", "publisher": "NVIDIA", "url": "https://www.nvidia.com/en-us/networking/products/ethernet/", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS005", "title": "InfiniBand Specification Frequently Asked Questions", "publisher": "InfiniBand Trade Association", "url": "https://infinibandta.org/ibta-specification/", "source_class": "official-standard", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS006", "title": "Intel oneAPI Math Kernel Library and Toolkit 2026", "publisher": "Intel", "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/onemkl/2026.html", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-TDS007", "title": "AMD Optimizing CPU Libraries", "publisher": "AMD", "url": "https://www.amd.com/en/developer/aocl.html", "source_class": "official-vendor", "published_or_updated": "2026-05-18"},
+    {"source_id": "SRC-TDS008", "title": "Advanced Software for the FUJITSU Supercomputer PRIMEHPC FX1000", "publisher": "Fujitsu", "url": "https://www.fujitsu.com/downloads/SUPER/primehpc-fx1000-soft-en.pdf", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS009", "title": "NVIDIA HPC SDK", "publisher": "NVIDIA", "url": "https://developer.nvidia.com/hpc-sdk", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS010", "title": "NVIDIA Performance Libraries", "publisher": "NVIDIA", "url": "https://docs.nvidia.com/nvpl/25.5/introduction.html", "source_class": "official-vendor", "published_or_updated": "2025-05"},
+    {"source_id": "SRC-TDS011", "title": "What is ROCm?", "publisher": "AMD", "url": "https://rocm.docs.amd.com/en/latest/about/what-is-rocm.html", "source_class": "official-vendor", "published_or_updated": "ROCm 7.14"},
+    {"source_id": "SRC-TDS013", "title": "PETSc GPU Support Roadmap", "publisher": "PETSc Project", "url": "https://petsc.org/release/overview/gpu_roadmap/", "source_class": "official-project", "published_or_updated": "2026"},
+    {"source_id": "SRC-TDS014", "title": "SLEPc Getting Started", "publisher": "SLEPc Project", "url": "https://slepc.upv.es/release/documentation/manual/intro.html", "source_class": "official-project", "published_or_updated": "2026"},
+    {"source_id": "SRC-TDS015", "title": "GEMMul8", "publisher": "RIKEN R-CCS", "url": "https://github.com/RIKEN-RCCS/GEMMul8", "source_class": "research-artifact", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS016", "title": "DGEMM using FP64 Arithmetic Emulation and FP8 Tensor Cores with Ozaki Scheme", "publisher": "ACM", "url": "https://doi.org/10.1145/3784828.3785017", "source_class": "peer-reviewed", "published_or_updated": "2026-01-25"},
+    {"source_id": "SRC-TDS017", "title": "NVIDIA HPC Benchmarks Release Notes", "publisher": "NVIDIA", "url": "https://docs.nvidia.com/nvidia-hpc-benchmarks/release_notes.html", "source_class": "official-vendor", "published_or_updated": "2026-02"},
+    {"source_id": "SRC-TDS018", "title": "CXMT Products and Services", "publisher": "CXMT", "url": "https://www.cxmt.com/en/index.html", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS019", "title": "Imec demonstrates first 3D implementation of a charge coupled device for AI memory", "publisher": "imec", "url": "https://www.imec-int.com/en/press/imec-demonstrates-first-3d-implementation-charge-coupled-device-ai-memory-applications", "source_class": "official-project", "published_or_updated": "2026"},
+    {"source_id": "SRC-TDS020", "title": "NVLink and NVLink Switch", "publisher": "NVIDIA", "url": "https://www.nvidia.com/en-us/data-center/nvlink/", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS021", "title": "UEC 1.0 White Paper", "publisher": "Ultra Ethernet Consortium", "url": "https://ultraethernet.org/wp-content/uploads/sites/20/2025/06/UEC1.0Whitepaper.pdf", "source_class": "official-standard", "published_or_updated": "2025-06"},
+    {"source_id": "SRC-TDS022", "title": "ROCm Communication Libraries", "publisher": "AMD", "url": "https://rocm.docs.amd.com/en/latest/about/what-is-rocm.html", "source_class": "official-vendor", "published_or_updated": "ROCm 7.14"},
+    {"source_id": "SRC-TDS023", "title": "FFTW", "publisher": "FFTW Project", "url": "https://www.fftw.org/", "source_class": "official-project", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-TDS024", "title": "Investigating Half Precision Arithmetic to Accelerate Dense Linear System Solvers", "publisher": "Innovative Computing Laboratory", "url": "https://icl.utk.edu/projectsfiles/magma/pubs/68-main.pdf", "source_class": "peer-reviewed", "published_or_updated": "2017"},
+    {"source_id": "SRC-TDS026", "title": "Development Studio MPI User's Guide", "publisher": "Fujitsu", "url": "https://software.fujitsu.com/jp/manual/manualfiles/m230003/j2ul2480/02enz010/j2ul-2480-02enz0.pdf", "source_class": "official-vendor", "published_or_updated": "2023"},
+    {"source_id": "SRC-MEM002", "title": "MRDIMM", "publisher": "Micron", "url": "https://www.micron.com/products/memory/dram-modules/mrdimm", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-MEM005", "title": "JEDEC Releases New LPDDR6 Standard", "publisher": "JEDEC", "url": "https://www.jedec.org/news/pressreleases/jedec%C2%AE-releases-new-lpddr6-standard-enhance-mobile-and-ai-memory-performance", "source_class": "official-standard", "published_or_updated": "2025"},
+    {"source_id": "SRC-MEM006", "title": "SK hynix Develops 1c LPDDR6", "publisher": "SK hynix", "url": "https://news.skhynix.com/en/1c-lpddr6-development-2026/", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM007", "title": "Samsung Unveils HBM4E and Comprehensive AI Solutions at GTC 2026", "publisher": "Samsung", "url": "https://news.samsung.com/global/samsung-unveils-hbm4e-showcasing-comprehensive-ai-solutions-nvidia-partnership-and-vision-at-nvidia-gtc-2026", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM008", "title": "Samsung Ships Commercial HBM4", "publisher": "Samsung", "url": "https://news.samsung.com/global/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM010", "title": "SK hynix Ships HBM4E Samples", "publisher": "SK hynix", "url": "https://news.skhynix.com/en/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e-2/", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM011", "title": "Micron HBM4 and SOCAMM2 Production", "publisher": "Micron", "url": "https://investors.micron.com/news/press-release/2026/Micron-in-High-Volume-Production-of-HBM4-Designed-for-NVIDIA-Vera-Rubin-PCIe-Gen6-SSD-and-SOCAMM2-03-16-2026/default.aspx", "source_class": "official-vendor", "published_or_updated": "2026-03-16"},
+    {"source_id": "SRC-MEM013", "title": "SK hynix Begins Mass Production of 192GB SOCAMM2", "publisher": "SK hynix", "url": "https://news.skhynix.com/en/mass-production-socamm2-192gb/", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM017", "title": "Samsung Next-Generation 3D Memory Vision", "publisher": "Samsung", "url": "https://news.samsung.com/global/samsung-unveils-next-gen-3d-memory-vision-at-fms-2026-charting-the-future-of-ai-infrastructure", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM018", "title": "TSMC 2025 Annual Report", "publisher": "TSMC", "url": "https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report_E.pdf", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM020", "title": "Advanced Process Technologies for Data Center", "publisher": "Intel", "url": "https://www.intel.com/content/www/us/en/foundry/library/advanced-process-technologies-for-data-center.html", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-MEM028", "title": "CXL 4.0 Specification Release", "publisher": "CXL Consortium", "url": "https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-Specification-Release_FINAL_Website-Copy.pdf", "source_class": "official-standard", "published_or_updated": "2025-11"},
+    {"source_id": "SRC-MEM030", "title": "SK hynix at HPE Discover 2026", "publisher": "SK hynix", "url": "https://news.skhynix.com/en/hpe-discover-2026/", "source_class": "official-vendor", "published_or_updated": "2026"},
+    {"source_id": "SRC-MEM031", "title": "Micron CXL 2.0 Memory Expansion Modules", "publisher": "Micron", "url": "https://investors.micron.com/news/press-release/2023/Micron-Launches-Memory-Expansion-Module-Portfolio-to-Accelerate-CXL-2.0-Adoption-08-07-2023/default.aspx", "source_class": "official-vendor", "published_or_updated": "2023-08-07"},
+    {"source_id": "SRC-MEM032", "title": "SK hynix GDDR6-AiM Accelerator Card AiMX", "publisher": "SK hynix", "url": "https://news.skhynix.com/en/sk-hynix-debuts-first-gddr6-aim-accelerator-card-aimx-for-generative-ai/", "source_class": "official-vendor", "published_or_updated": "2023"},
+    {"source_id": "SRC-MEM033", "title": "UPMEM Technology", "publisher": "UPMEM", "url": "https://www.upmem.com/technology/", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-MEM035", "title": "TSMC SoIC", "publisher": "TSMC", "url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/SoIC_inDepth.htm", "source_class": "official-vendor", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-MEM038", "title": "JEDEC SPHBM4 Standard", "publisher": "JEDEC", "url": "https://www.jedec.org/news/pressreleases/new-jedec%C2%AE-sphbm4-standard-enables-hbm4-class-bandwidth-organic-substrates", "source_class": "official-standard", "published_or_updated": "2026"},
+    {"source_id": "SRC-NET001", "title": "Ultra Ethernet Specification History", "publisher": "Ultra Ethernet Consortium", "url": "https://ultraethernet.org/specification-history/", "source_class": "official-standard", "published_or_updated": "2026"},
+    {"source_id": "SRC-NET004", "title": "UALink Consortium Publishes Four Specifications", "publisher": "UALink Consortium", "url": "https://ualinkconsortium.org/wp-content/uploads/2026/04/UALink-2.0-Specification-PR_FINAL.pdf", "source_class": "official-standard", "published_or_updated": "2026-04"},
+    {"source_id": "SRC-PORT001", "title": "OpenMP 6.1 Public Comment Draft", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/home-news/public-comment-draft-6-1/", "source_class": "official-standard", "published_or_updated": "2026"},
+    {"source_id": "SRC-PORT003", "title": "SYCL Registry", "publisher": "Khronos Group", "url": "https://registry.khronos.org/SYCL/", "source_class": "official-standard", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-PORT006", "title": "Kokkos Releases", "publisher": "Kokkos Project", "url": "https://kokkos.org/about/releases/", "source_class": "official-project", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-PORT014", "title": "MPI 5.0 Documents", "publisher": "MPI Forum", "url": "https://www.mpi-forum.org/docs/", "source_class": "official-standard", "published_or_updated": "2026"},
+    {"source_id": "SRC-PORT015", "title": "Open MPI 5.0 Releases", "publisher": "Open MPI Project", "url": "https://www.open-mpi.org/software/ompi/v5.0/", "source_class": "official-project", "published_or_updated": "2026"},
+    {"source_id": "SRC-PORT018", "title": "OpenMP Compilers and Tools", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/resources/openmp-compilers-tools/", "source_class": "official-standard", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-PORT019", "title": "SYCL Conformant Products", "publisher": "Khronos Group", "url": "https://www.khronos.org/conformance/adopters/conformant-products/sycl", "source_class": "official-standard", "published_or_updated": "accessed 2026-08-26"},
+    {"source_id": "SRC-PORT026", "title": "MPICH 5.0.0 Released", "publisher": "MPICH Project", "url": "https://www.mpich.org/2026/02/04/mpich-5-0-0-released/", "source_class": "official-project", "published_or_updated": "2026-02-04"}
+  ],
+  "coverage_gaps": [
+    {"gap_id": "GAP-TDS-001", "topic_ids": ["ARCH-02", "ARCH-11"], "priority": "P0", "question_ja": "MN-Core 2/Lシリーズは代表HPCIアプリでGPU/CPUと比較してどの性能・電力・移植性を示すか。", "question_en": "How do MN-Core 2 and L-series compare with GPUs and CPUs on performance, power, and portability for representative HPCI applications?", "next_action_ja": "同一入力・精度・電力測定によるmulti-node benchmarkを実施する。", "next_action_en": "Run multi-node benchmarks with common inputs, accuracy, and power measurement.", "status": "open"},
+    {"gap_id": "GAP-TDS-002", "topic_ids": ["ARCH-02", "ARCH-07", "CROSS-11"], "priority": "P1", "question_ja": "日本発半導体の設計、製造、package、memory、保守の供給境界はどこか。", "question_en": "What are the design, manufacturing, packaging, memory, and service supply boundaries of Japan-originated semiconductors?", "next_action_ja": "役割別supplierと公開可能な長期供給条件を確認する。", "next_action_en": "Verify suppliers by role and publicly available long-term supply conditions.", "status": "open"},
+    {"gap_id": "GAP-TDS-003", "topic_ids": ["ARCH-03", "ARCH-08"], "priority": "P0", "question_ja": "DDR/HBM/SOCAMM/CXLの組合せは代表HPCIアプリのtime-to-solution、energy、costをどう変えるか。", "question_en": "How do DDR, HBM, SOCAMM, and CXL combinations change time to solution, energy, and cost for representative HPCI applications?", "next_action_ja": "共通memory sensitivity benchmarkと実アプリA/B測定を行う。", "next_action_en": "Run common memory-sensitivity benchmarks and application A/B measurements.", "status": "open"},
+    {"gap_id": "GAP-TDS-004", "topic_ids": ["ARCH-03", "ARCH-04"], "priority": "P0", "question_ja": "InfiniBand、RoCE/Spectrum-X、Ultra Ethernet、NVLink、UALinkの実効性能・障害・運用費を共通条件で比較できるか。", "question_en": "Can InfiniBand, RoCE/Spectrum-X, Ultra Ethernet, NVLink, and UALink be compared under common delivered-performance, failure, and operational-cost conditions?", "next_action_ja": "scale-up/scale-outを分けたtraffic・failure-injection・collective testを定義する。", "next_action_en": "Define separate scale-up and scale-out traffic, failure-injection, and collective tests.", "status": "open"},
+    {"gap_id": "GAP-TDS-005", "topic_ids": ["SSW-01", "SSW-10"], "priority": "P0", "question_ja": "同一HPCI codeの移植工数、correctness、性能、保守性を複数stackで比較できるか。", "question_en": "Can common HPCI code be compared across stacks for porting effort, correctness, performance, and maintainability?", "next_action_ja": "version固定のCIと共通feature gridを構築する。", "next_action_en": "Build version-pinned CI and a common feature grid.", "status": "open"},
+    {"gap_id": "GAP-TDS-006", "topic_ids": ["SSW-02", "SSW-03"], "priority": "P1", "question_ja": "MPI 5.0、Fortran ABI、GPU-aware通信の実装差はapplication継続性へどう影響するか。", "question_en": "How do MPI 5.0, Fortran ABI, and GPU-aware communication differences affect application continuity?", "next_action_ja": "compiler・MPI・fabricの組合せtestを自動化する。", "next_action_en": "Automate compiler, MPI, and fabric combination tests.", "status": "open"},
+    {"gap_id": "GAP-TDS-007", "topic_ids": ["SSW-04", "ARCH-13"], "priority": "P0", "question_ja": "混合精度・Ozaki schemeは代表HPCI solverで要求精度を保ちenergy-to-solutionを改善するか。", "question_en": "Do mixed precision and the Ozaki scheme preserve required accuracy and improve energy to solution in representative HPCI solvers?", "next_action_ja": "condition number、residual、再現性、fallbackを含むtest setを作る。", "next_action_en": "Create tests covering conditioning, residuals, reproducibility, and fallback.", "status": "open"},
+    {"gap_id": "GAP-TDS-008", "topic_ids": ["SSW-04", "APP-02"], "priority": "P1", "question_ja": "数値計算libraryのroutine・precision・分散supportを同一schemaで継続検証できるか。", "question_en": "Can numerical-library routine, precision, and distributed support be continuously validated under a common schema?", "next_action_ja": "library API probeと小規模correctness benchmarkをCIへ追加する。", "next_action_en": "Add library API probes and small correctness benchmarks to CI.", "status": "open"}
+  ],
+  "caveat_ja": "本データは公開情報から作成した単一モデルの暫定統合であり、独立モデルによるConsensus Gateは未完了です。地域は技術的優劣を示さず、設計・開発・製造・標準化の役割を一つの国籍へ単純化しません。対応表の空欄やnot-verifiedは非対応を意味しません。HPCIの正式な採用判断には利用できません。",
+  "caveat_en": "This is a provisional single-model synthesis from public information; independent-model Consensus is incomplete. Region does not indicate technical merit, and design, development, manufacturing, and standardization roles are not reduced to one nationality. Empty or not-verified matrix cells do not mean unsupported. This artifact is not a formal HPCI adoption decision.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-20260826-010",
+    "human_approval_directive_id": "DIR-900010"
+  }
+}

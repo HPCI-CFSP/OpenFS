@@ -1013,6 +1013,14 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     research_summaries = collect_topic_summaries(
         root, policy, valid_topic_ids, receipt_by_id
     )
+    topic_decision_support = collect_public_supplement(
+        root,
+        policy,
+        "included_public_topic_decision_support",
+        "topic_decision_support_public_fields",
+        "topic_decision_support_required_bilingual_fields",
+        "topic decision support surface",
+    )
     public_finding_ids = {
         finding["finding_id"]
         for summary in research_summaries
@@ -1104,6 +1112,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         },
         "topics": topics,
         "research_summaries": research_summaries,
+        "topic_decision_support": topic_decision_support,
         "consensus_receipts": consensus_receipts,
         "consensus_packages": consensus_packages,
         "technology_landscape": {

@@ -99,6 +99,25 @@ When a task contains multiple investigations, organize them into separate task, 
 
 ## Public roadmap artifacts
 
+- Maintain decision-oriented Topic summaries in
+  `knowledge/public/topic-decision-support.json`, validated by
+  `schemas/public-topic-decision-support.schema.json` and
+  `tools/check_public_planning_surfaces.py`. Present current use, likely near-term
+  options, research/prototype work, and contested paths separately. The canonical
+  Topic title must not be repeated as a synthetic subtopic, and research-run titles
+  are provenance, not a planning conclusion.
+- Regional views are filters over cited actors and their design, development,
+  manufacturing, or standardization roles. Do not duplicate conclusions into
+  country-specific pages, reduce a multi-region supply chain to one nationality,
+  treat region as technical merit, or restrict the world survey to a fixed set of
+  countries.
+- Keep the platform software matrix and numerical-method matrix in the same
+  structured public artifact. Distinguish formal, partial, experimental,
+  community, and unverified support. For numerical methods, record input,
+  compute, accumulation, and output precision separately; distinguish mixed
+  precision from high-precision emulation such as an Ozaki scheme. Blank or
+  unverified cells never prove that a capability is unsupported.
+
 - Build public roadmaps with `skills/roadmap-planning/SKILL.md` and
   `schemas/public-roadmap.schema.json`; do not introduce a roadmap-specific format.
 - Assign Q1-Q4 only when the cited public source supports that precision. Preserve
