@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/roadmap-reference-data.schema.json",
+  "title": "OpenFS Roadmap Glossary and Comparison Reference Data",
+  "type": "object",
+  "required": [
+    "schema_version", "export_id", "status", "as_of", "research_status",
+    "consensus_status", "terms", "comparison_sets", "caveat_ja", "caveat_en",
+    "publication"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"const": "ROADMAP-REFERENCE-DATA-001"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "research_status": {"enum": ["provisional", "accepted"]},
+    "consensus_status": {"enum": ["incomplete", "accepted"]},
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/term"}
+    },
+    "comparison_sets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/comparisonSet"}
+    },
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "roadmapIdList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"}
+    },
+    "sourceRef": {
+      "type": "object",
+      "required": ["roadmap_id", "source_id"],
+      "properties": {
+        "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+        "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+      },
+      "additionalProperties": false
+    },
+    "term": {
+      "type": "object",
+      "required": [
+        "term_id", "label_ja", "label_en", "aliases", "category",
+        "short_definition_ja", "short_definition_en", "definition_ja",
+        "definition_en", "roadmap_ids", "source_refs", "related_term_ids"
+      ],
+      "properties": {
+        "term_id": {"type": "string", "pattern": "^TERM-[A-Z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "aliases": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "minLength": 2}
+        },
+        "category": {
+          "enum": ["compute", "memory", "packaging", "interconnect", "software", "benchmark"]
+        },
+        "short_definition_ja": {"type": "string", "minLength": 1},
+        "short_definition_en": {"type": "string", "minLength": 1},
+        "definition_ja": {"type": "string", "minLength": 1},
+        "definition_en": {"type": "string", "minLength": 1},
+        "roadmap_ids": {"$ref": "#/$defs/roadmapIdList"},
+        "source_refs": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/sourceRef"}
+        },
+        "related_term_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^TERM-[A-Z0-9-]+$"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "comparisonColumn": {
+      "type": "object",
+      "required": ["column_id", "label_ja", "label_en"],
+      "properties": {
+        "column_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "comparisonCell": {
+      "type": "object",
+      "required": ["column_id", "text_ja", "text_en"],
+      "properties": {
+        "column_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "text_ja": {"type": "string", "minLength": 1},
+        "text_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "comparisonRow": {
+      "type": "object",
+      "required": ["term_id", "cells", "source_refs"],
+      "properties": {
+        "term_id": {"type": "string", "pattern": "^TERM-[A-Z0-9-]+$"},
+        "cells": {
+          "type": "array", "minItems": 2,
+          "items": {"$ref": "#/$defs/comparisonCell"}
+        },
+        "source_refs": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/sourceRef"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "comparisonSet": {
+      "type": "object",
+      "required": [
+        "comparison_id", "roadmap_ids", "title_ja", "title_en", "summary_ja",
+        "summary_en", "decision_use_ja", "decision_use_en", "caveat_ja",
+        "caveat_en", "columns", "rows"
+      ],
+      "properties": {
+        "comparison_id": {"type": "string", "pattern": "^CMP-[A-Z0-9-]+$"},
+        "roadmap_ids": {"$ref": "#/$defs/roadmapIdList"},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "decision_use_ja": {"type": "string", "minLength": 1},
+        "decision_use_en": {"type": "string", "minLength": 1},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1},
+        "columns": {
+          "type": "array", "minItems": 2,
+          "items": {"$ref": "#/$defs/comparisonColumn"}
+        },
+        "rows": {
+          "type": "array", "minItems": 2,
+          "items": {"$ref": "#/$defs/comparisonRow"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "information_classification", "publication_approved",
+        "publication_decision_id", "human_approval_directive_id"
+      ],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "pattern": "^PUBDEC-[A-Z0-9-]+$"},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

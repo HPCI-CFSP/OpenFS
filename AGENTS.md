@@ -102,7 +102,20 @@ When a task contains multiple investigations, organize them into separate task, 
 - Build public roadmaps with `skills/roadmap-planning/SKILL.md` and
   `schemas/public-roadmap.schema.json`; do not introduce a roadmap-specific format.
 - Assign Q1-Q4 only when the cited public source supports that precision. Preserve
-  half-year, year-only, and undated timing without inference.
+  half-year, year-only, and undated timing without inference. For `half-year`,
+  record `half: H1|H2`; Pages renders that uncertainty across two quarters. Pages
+  renders year-only timing across Q1-Q4. These rectangles show the supported
+  timing window, not event duration. Keep undated items separate.
+- Maintain reusable bilingual term definitions and decision-oriented technology
+  comparisons only in `knowledge/public/roadmap-reference-data.json`, validated by
+  `schemas/roadmap-reference-data.schema.json`. Pages and other outputs must
+  reference this central artifact instead of copying definitions into templates or
+  roadmap-specific files. Every term and comparison row must cite source IDs from
+  a published roadmap.
+- Add comparison sets when they materially help an HPCI choice across competing or
+  complementary options. Apply this to high-value compute, packaging, network,
+  software-portability, workload, and evaluation choices as well as memory; do not
+  create low-value tables merely to cover every term.
 - Label OpenFS evaluation and adoption gates as provisional plans and keep them
   distinct from vendor, standards, policy, and observed milestones.
 - Record unresolved research as structured Coverage Gaps with decision impact and

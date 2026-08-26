@@ -73,6 +73,7 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 | `data/` | 受理されたCanonical Source、Evidence、Finding Record |
 | `knowledge/` | Promotion済みCanonical Claim、追記専用Status Event、生成されたActive View |
 | `knowledge/public/roadmaps/` | 1つの共通Schemaを使う、人が公開承認した日英Roadmap Export |
+| `knowledge/public/roadmap-reference-data.json` | Roadmap用語と意思決定向け比較表を一元管理する日英データ |
 | `roadmaps/` | Scenario形式のRoadmap Draftと受理版 |
 | `reports/` | 生成されたReport DraftとExport |
 | `reviews/` | 人のDirective、Digest、Exception、Dissent、Commit固定のConsensus Review Package |
@@ -153,7 +154,7 @@ python3 tools/generate_scenario_views.py \
 python3 tools/build_pages_site.py --output _site
 ```
 
-公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧、専用の四半期詳細Page、重要Milestone、一次情報Coverage、Coverage Gap、依存関係を示す6本横断比較に分けて表示します。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。Roadmap、Scenario、Reportの公開には、それぞれ一致する人の`publication-approval` Directiveが必要です。詳細は`docs/publication/github-pages.md`を参照してください。
+公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧、根拠の精度を保つ四半期詳細Page、重要Milestone、一次情報Coverage、Coverage Gap、依存関係を示す6本横断比較に分けて表示します。年のみ・半期のみ公表された時期は、推測した四半期や事象の継続期間ではなく、Q1-Q4または2四半期にまたがる不確実性の範囲として表示します。関連用語から一元管理された説明と根拠資料を開くことができ、メモリ、計算、実装、インターコネクト、移植性、評価手法の価値が高い選択肢を共通比較表で確認できます。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。Roadmap、共通参照データ、Scenario、Reportの公開には、それぞれ一致する人の`publication-approval` Directiveが必要です。詳細は`docs/publication/github-pages.md`を参照してください。
 
 調査自動化はまだ有効化されていません。Provider Account、GitHub設定、3 RunのPilot手順は`docs/operations/automation-setup.md`に記載されています。API Keyを設定するだけではLoopは起動しません。
 

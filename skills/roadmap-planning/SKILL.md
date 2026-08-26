@@ -17,9 +17,11 @@ research or claim that Consensus is complete.
    and project sources. Use academic primary literature where it supplies the
    original result. Do not turn a secondary summary into a vendor commitment.
 3. Record Q1-Q4 only when the cited source supports that quarter or a narrower
-   date. Keep half-year and year-only statements at `quarter: null`; use an
-   undated milestone when no public date exists. Do not interpolate between
-   announced generations.
+   date. Keep half-year and year-only statements at `quarter: null`; set
+   `half: H1` or `half: H2` for supported half-year timing. Use an undated
+   milestone when no public date exists. The renderer spans half-year entries
+   across two quarters and year-only entries across Q1-Q4 as uncertainty windows,
+   not durations. Do not interpolate between announced generations.
 4. Separate factual events from OpenFS planning. Only HPCI evaluation or adoption
    gates may use `timing_basis: openfs-provisional-plan`.
 5. Link each track, milestone, and dependency to source IDs. Declare dependencies
@@ -33,12 +35,19 @@ research or claim that Consensus is complete.
    `P2` to useful context. Revisit priority when dependencies change.
 7. Mark important cross-roadmap events `comparison_priority: key`; keep supporting
    releases and context as `supporting`.
-8. Before handoff, run JSON Schema validation, repository validation, unit tests,
+8. Put reusable bilingual definitions and high-value comparison matrices only in
+   `knowledge/public/roadmap-reference-data.json`. Validate it with
+   `schemas/roadmap-reference-data.schema.json`, cite roadmap source IDs for every
+   term and comparison row, and reference it from generated pages. Add comparisons
+   for material compute, packaging, interconnect, software, workload, and
+   evaluation choices as well as memory, but only when the common axes improve an
+   HPCI decision.
+9. Before handoff, run JSON Schema validation, repository validation, unit tests,
    both roadmap audit generators, Pages generation, and desktop/mobile visual
    checks. The public export remains
    `research_status: provisional` and `consensus_status: incomplete` until the
    configured independent-model Consensus Gate supplies an accepted receipt.
-9. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
+10. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
    complete review target. Then run
    `tools/build_consensus_review_package.py --base-commit <40-hex-commit>` and
    distribute that pinned package to blind reviewers. Reviewers must inspect every
@@ -46,6 +55,6 @@ research or claim that Consensus is complete.
    primary-source check for every roadmap, record provider/model/prompt/harness identity,
    and submit schema-valid assessments. Do not count this planner's own review,
    same-conversation forks, or shared-conclusion reviewers as independent.
-10. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
+11. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
     `ready-for-human-decision` result is not acceptance; high-impact adoption still
     requires the human decision required by policy.

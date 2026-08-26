@@ -162,23 +162,26 @@ tbody tr:hover { background: #fafbfb; }
 .maturity-undated { --maturity-color: #68737d; --maturity-soft: #f1f3f4; }
 .legend-item[class*="maturity-"] { color: var(--maturity-color); }
 .roadmap-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid #bdc7ce; border-radius: 5px; background: var(--paper); box-shadow: var(--shadow); }
-.roadmap-table { width: 4432px; min-width: 4432px; table-layout: fixed; }
+.roadmap-table { table-layout: fixed; }
 .roadmap-table col.roadmap-tech-column { width: 180px; }
 .roadmap-table col.roadmap-vendor-column { width: 190px; }
-.roadmap-table col.roadmap-quarter-column { width: 112px; }
+.roadmap-table col.roadmap-year-column { width: 448px; }
 .roadmap-table col.roadmap-undated-column { width: 142px; }
 .roadmap-table th, .roadmap-table td { border-right: 1px solid var(--line); }
 .roadmap-table th:last-child, .roadmap-table td:last-child { border-right: 0; }
 .roadmap-table thead th { position: sticky; top: 0; z-index: 4; text-align: center; }
-.roadmap-table thead tr:first-child th { height: 35px; padding-block: 8px; }
-.roadmap-table thead tr:nth-child(2) th { top: 35px; height: 32px; padding-block: 7px; }
+.roadmap-table thead th { height: 57px; padding: 7px 8px; }
 .roadmap-table thead .roadmap-year-heading { color: var(--navy); background: #edf2f4; }
-.roadmap-table thead .roadmap-quarter-heading { color: var(--muted); background: var(--soft); font-size: 10px; }
+.roadmap-year-heading > strong { display: block; font-size: 12px; }
+.roadmap-quarter-scale { margin-top: 5px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); color: var(--muted); font-size: 9px; font-weight: 650; }
+.roadmap-quarter-scale span { border-left: 1px solid #cbd3d8; }
+.roadmap-quarter-scale span:last-child { border-right: 1px solid #cbd3d8; }
+.roadmap-undated-heading { font-size: 10px; }
 .roadmap-table thead .roadmap-tech-column { z-index: 7; }
 .roadmap-table thead .roadmap-vendor-column { z-index: 6; }
 .roadmap-table .roadmap-tech-column { width: 180px; position: sticky; left: 0; z-index: 3; background: #f7f9fa; }
 .roadmap-table .roadmap-vendor-column { width: 190px; position: sticky; left: 180px; z-index: 2; background: var(--paper); }
-.roadmap-table td { height: 70px; padding: 7px; vertical-align: middle; }
+.roadmap-table td { min-height: 70px; padding: 0; vertical-align: middle; }
 .roadmap-table tbody tr:hover td, .roadmap-table tbody tr:hover .roadmap-vendor-column { background: #fafbfb; }
 .roadmap-table tbody tr:hover .roadmap-tech-column { background: #f2f6f7; }
 .roadmap-technology-cell strong, .roadmap-technology-cell span, .roadmap-vendor-cell strong, .roadmap-vendor-cell span { display: block; }
@@ -186,9 +189,41 @@ tbody tr:hover { background: #fafbfb; }
 .roadmap-technology-cell span { margin-top: 3px; color: var(--green); font-size: 9px; font-weight: 750; }
 .roadmap-vendor-cell strong { color: var(--ink); font-size: 12px; }
 .roadmap-vendor-cell span { margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 450; line-height: 1.35; }
-.roadmap-milestone { width: 100%; min-height: 44px; margin: 2px 0; padding: 6px 7px; border: 1px solid var(--maturity-color); border-left-width: 4px; border-radius: 4px; background: var(--maturity-soft); color: var(--ink); cursor: pointer; font-size: 10px; font-weight: 700; line-height: 1.35; text-align: left; overflow-wrap: anywhere; }
+.roadmap-year-cell { background-image: linear-gradient(to right, transparent calc(25% - .5px), var(--line) calc(25% - .5px), var(--line) calc(25% + .5px), transparent calc(25% + .5px), transparent calc(50% - .5px), var(--line) calc(50% - .5px), var(--line) calc(50% + .5px), transparent calc(50% + .5px), transparent calc(75% - .5px), var(--line) calc(75% - .5px), var(--line) calc(75% + .5px), transparent calc(75% + .5px)); }
+.roadmap-year-lane { min-height: 69px; padding: 5px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(50px, auto); gap: 4px; align-content: center; }
+.roadmap-undated-cell { padding: 5px !important; }
+.roadmap-milestone { width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 5px 7px; border: 1px solid var(--maturity-color); border-left-width: 4px; border-radius: 4px; background: var(--maturity-soft); color: var(--ink); cursor: pointer; font-size: 10px; font-weight: 700; line-height: 1.3; text-align: left; overflow-wrap: anywhere; }
+.roadmap-milestone-period, .roadmap-milestone-label { display: block; }
+.roadmap-milestone-period { margin-bottom: 2px; color: var(--maturity-color); font-size: 8px; font-weight: 800; }
+.roadmap-milestone.precision-year, .roadmap-milestone.precision-half-year { border-style: dashed; border-left-style: solid; }
 .roadmap-milestone:hover, .roadmap-milestone:focus-visible { outline: 2px solid color-mix(in srgb, var(--maturity-color) 35%, transparent); outline-offset: 1px; }
 .roadmap-table-note { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+.glossary-term-link, .comparison-term-link, .glossary-entry-link, .related-term-link { padding: 0; border: 0; border-radius: 0; background: none; color: var(--green); font: inherit; font-weight: inherit; text-align: left; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; cursor: pointer; }
+.glossary-term-link:hover, .glossary-term-link:focus-visible, .comparison-term-link:hover, .comparison-term-link:focus-visible, .glossary-entry-link:hover, .glossary-entry-link:focus-visible, .related-term-link:hover, .related-term-link:focus-visible { color: var(--navy); outline: none; text-decoration-thickness: 2px; }
+.roadmap-reference-section { margin-top: 36px; }
+.roadmap-reference-section > h3 { margin: 2px 0 5px; font-size: 18px; }
+.roadmap-reference-section > p { max-width: 880px; margin: 0; color: var(--muted); font-size: 12px; }
+.technology-comparison { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.technology-comparison h4 { margin: 0 0 5px; color: var(--navy); font-size: 15px; }
+.technology-comparison-summary { max-width: 960px; margin: 0; font-size: 12px; }
+.technology-comparison-use { max-width: 960px; margin: 7px 0 10px; color: var(--muted); font-size: 11px; }
+.technology-comparison-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); }
+.technology-comparison-table { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+.technology-comparison-table th, .technology-comparison-table td { width: 210px; min-width: 210px; padding: 9px 11px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); vertical-align: top; font-size: 11px; line-height: 1.45; }
+.technology-comparison-table th:first-child { width: 160px; min-width: 160px; position: sticky; left: 0; z-index: 2; background: var(--paper); }
+.technology-comparison-table thead th { color: var(--navy); background: var(--soft); font-size: 10px; }
+.technology-comparison-table thead th:first-child { z-index: 3; background: var(--soft); }
+.technology-comparison-table tr:last-child th, .technology-comparison-table tr:last-child td { border-bottom: 0; }
+.technology-comparison-table th:last-child, .technology-comparison-table td:last-child { border-right: 0; }
+.technology-comparison-caveat { margin: 7px 0 0; color: var(--muted); font-size: 10px; }
+.roadmap-glossary { margin-top: 15px; border-top: 1px solid var(--line); }
+.roadmap-glossary-item { padding: 11px 0; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; border-bottom: 1px solid var(--line); }
+.roadmap-glossary-item > div { display: flex; align-items: baseline; gap: 10px; }
+.glossary-entry-link { color: var(--navy); font-weight: 750; }
+.roadmap-glossary-item > div span { color: var(--green); font-size: 9px; font-weight: 750; text-transform: uppercase; }
+.roadmap-glossary-item p { margin: 0; font-size: 12px; }
+.roadmap-reference-revision { margin-top: 9px !important; font-size: 10px !important; }
+.roadmap-reference-revision a { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .memory-detail-heading { margin: 34px 0 11px; }
 .memory-detail-heading h3 { margin: 2px 0 0; font-size: 18px; }
 .memory-technology-details { border-top: 1px solid var(--line); }
@@ -247,7 +282,14 @@ tbody tr:hover { background: #fafbfb; }
 .roadmap-milestone-detail h3 { margin: 13px 0 5px; }
 .roadmap-milestone-detail > p { margin: 0 0 18px; }
 .roadmap-dialog-meta-list { margin-bottom: 22px; }
+.roadmap-timing-note { margin: -11px 0 18px; color: var(--muted); font-size: 10px; }
 .roadmap-dialog-source-list { margin-bottom: 0; }
+.roadmap-term-detail { padding-top: 22px; }
+.roadmap-term-detail h3 { margin: 0 0 6px; }
+.roadmap-term-detail > p { margin: 0 0 22px; line-height: 1.7; }
+.roadmap-term-detail h4 { margin: 18px 0 7px; color: var(--green); font-size: 11px; }
+.roadmap-related-terms { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.related-term-link { font-size: 12px; }
 .roadmap-revision { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
 .roadmap-revision h3 { margin: 2px 0 12px; }
 .revision-meta { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--line); }
@@ -529,6 +571,7 @@ footer strong { color: var(--navy); }
   .roadmap-status > div:last-child { border-bottom: 0; }
   .memory-technology-note > summary { grid-template-columns: 1fr; gap: 3px; }
   .memory-technology-note-body { padding: 2px 15px 18px; }
+  .roadmap-glossary-item { grid-template-columns: 1fr; gap: 4px; }
   .roadmap-dependencies, .compare-controls, .compare-metrics, .compare-dependencies { grid-template-columns: 1fr; }
   .assurance-metrics, .dependency-register, .external-constraints, .center-impact-list, .technology-option-list, .scenario-two-column { grid-template-columns: 1fr; }
   .assurance-metrics > div, .assurance-metrics > div:nth-child(4n), .external-constraints article, .dependency-register article { border-right: 0; border-bottom: 1px solid var(--line); }

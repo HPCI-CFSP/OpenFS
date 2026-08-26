@@ -1,0 +1,498 @@
+{
+  "schema_version": "0.1.0",
+  "export_id": "ROADMAP-REFERENCE-DATA-001",
+  "status": "published",
+  "as_of": "2026-08-26",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "terms": [
+    {
+      "term_id": "TERM-DDR", "label_ja": "DDR", "label_en": "DDR", "aliases": ["DDR"], "category": "memory",
+      "short_definition_ja": "CPU主記憶で広く使われる標準DRAMインターフェース。", "short_definition_en": "A standard DRAM interface widely used for CPU main memory.",
+      "definition_ja": "DDRは世代ごとに転送速度やチャネル構成を更新する汎用DRAM規格で、サーバでは主にDIMMやRDIMMとして容量、ECC・RAS、交換性を確保する。帯域密度はHBMより低いが、大容量化と運用性に強みがある。", "definition_en": "DDR is a general-purpose DRAM standard whose generations advance transfer rate and channel organization. Servers commonly use DIMM or RDIMM forms for capacity, ECC and RAS, and field serviceability. Its bandwidth density is lower than HBM, but it is strong in capacity and operations.",
+      "roadmap_ids": ["RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM002"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM003"}], "related_term_ids": ["TERM-LPDDR", "TERM-HBM", "TERM-SOCAMM"]
+    },
+    {
+      "term_id": "TERM-LPDDR", "label_ja": "LPDDR", "label_en": "LPDDR", "aliases": ["LPDDR"], "category": "memory",
+      "short_definition_ja": "低消費電力を重視したDRAM規格。", "short_definition_en": "A DRAM standard optimized for low power.",
+      "definition_ja": "LPDDRは省電力と高いI/O効率を重視したDRAM規格で、モバイル機器に加えてAIサーバ向けにも利用範囲が広がっている。一般に基板やプロセッサ近傍へ強く統合されるため、ECC・RAS、容量、交換性、長期供給をDDR系サーバメモリと分けて評価する必要がある。", "definition_en": "LPDDR emphasizes low power and I/O efficiency and is expanding from mobile systems into AI servers. Because it is commonly integrated close to the processor or board, ECC and RAS, capacity, serviceability, and long-term supply must be evaluated separately from server DDR.",
+      "roadmap_ids": ["RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM005"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM006"}], "related_term_ids": ["TERM-DDR", "TERM-SOCAMM"]
+    },
+    {
+      "term_id": "TERM-HBM", "label_ja": "HBM", "label_en": "HBM", "aliases": ["HBM"], "category": "memory",
+      "short_definition_ja": "積層DRAMと広幅I/Oで高帯域を得るメモリ。", "short_definition_en": "Stacked DRAM using a wide I/O interface for high bandwidth.",
+      "definition_ja": "HBMは複数のDRAMダイを積層し、広いI/Oと先端実装でGPUやアクセラレータへ接続する。非常に高い帯域密度とエネルギー効率を得られる一方、容量単価、パッケージ複雑性、供給制約、現場交換の難しさがシステム設計を左右する。", "definition_en": "HBM stacks multiple DRAM dies and connects them to GPUs or accelerators through a wide interface and advanced packaging. It offers very high bandwidth density and energy efficiency, while cost per capacity, packaging complexity, supply, and limited field replacement shape system design.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM034"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM011"}], "related_term_ids": ["TERM-DDR", "TERM-TSV", "TERM-D2W"]
+    },
+    {
+      "term_id": "TERM-SOCAMM", "label_ja": "SOCAMM", "label_en": "SOCAMM", "aliases": ["SOCAMM"], "category": "memory",
+      "short_definition_ja": "LPDDR系デバイスをサーバ向け小型モジュールにしたメモリ形態。", "short_definition_en": "A compact server memory module form using LPDDR-class devices.",
+      "definition_ja": "SOCAMMはLPDDR系メモリの電力・実装密度をサーバで活用しつつ、モジュールとして搭載する形態である。DDR、LPDDR、HBMと同じ技術階層ではなく、デバイス技術とモジュール形態を組み合わせた選択肢なので、標準化、プラットフォーム依存、交換性を含めて比較する。", "definition_en": "SOCAMM packages LPDDR-class memory as a compact server module to combine power efficiency and density with modular deployment. It is not at exactly the same abstraction level as DDR, LPDDR, or HBM, so standardization, platform dependence, and serviceability must be included in comparisons.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM013"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM014"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM015"}], "related_term_ids": ["TERM-LPDDR", "TERM-DDR"]
+    },
+    {
+      "term_id": "TERM-W2W", "label_ja": "Wafer-to-wafer bonding", "label_en": "Wafer-to-wafer bonding", "aliases": ["Wafer-to-wafer bonding", "W2W"], "category": "packaging",
+      "short_definition_ja": "ウェハ同士を位置合わせして接合する積層実装。", "short_definition_en": "Stacked integration by aligning and bonding complete wafers.",
+      "definition_ja": "Wafer-to-wafer bondingは加工済みウェハ同士を接合する方式で、高い接続密度と量産効率を狙える。上下ウェハのダイ寸法や歩留まりの組合せに制約があり、不良ダイを含むウェハ同士を接合する損失も評価対象になる。", "definition_en": "Wafer-to-wafer bonding joins processed wafers to pursue dense interconnect and manufacturing efficiency. It constrains die-size pairing and combines wafer yields, so the cost of bonding wafers containing defective dies must be considered.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM018"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM019"}], "related_term_ids": ["TERM-D2W", "TERM-TSV", "TERM-CHIPLET"]
+    },
+    {
+      "term_id": "TERM-D2W", "label_ja": "Die-to-wafer bonding", "label_en": "Die-to-wafer bonding", "aliases": ["Die-to-wafer bonding", "D2W"], "category": "packaging",
+      "short_definition_ja": "選別した個片ダイをウェハへ接合する積層実装。", "short_definition_en": "Stacked integration that bonds selected individual dies to a wafer.",
+      "definition_ja": "Die-to-wafer bondingは良品選別したダイを対象ウェハへ配置・接合する方式で、異なるダイ寸法やプロセスを組み合わせやすい。柔軟性と歩留まり管理に利点がある一方、個片配置のスループット、位置合わせ、接合コストが課題となる。", "definition_en": "Die-to-wafer bonding places known-good dies onto a target wafer, supporting dissimilar die sizes and processes. It improves integration flexibility and yield control, while die-placement throughput, alignment, and bonding cost remain constraints.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM020"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM021"}], "related_term_ids": ["TERM-W2W", "TERM-TSV", "TERM-CHIPLET"]
+    },
+    {
+      "term_id": "TERM-TSV", "label_ja": "TSV", "label_en": "TSV", "aliases": ["TSV", "Through-Silicon Via"], "category": "packaging",
+      "short_definition_ja": "シリコンを貫通して上下ダイを電気接続する縦配線。", "short_definition_en": "A vertical electrical connection passing through silicon.",
+      "definition_ja": "TSVはシリコンダイを貫通する導体で、積層DRAMやロジックとメモリの上下接続に用いる。配線長とI/O電力を抑えられる一方、面積、熱、応力、製造工程、テスト性を含む実装設計が必要になる。", "definition_en": "A through-silicon via is a conductor through a silicon die used for vertical links in stacked DRAM and logic-memory integration. It shortens wiring and can reduce I/O power, while area, thermal and mechanical stress, process integration, and testability require careful design.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM034"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM022"}], "related_term_ids": ["TERM-HBM", "TERM-W2W", "TERM-D2W"]
+    },
+    {
+      "term_id": "TERM-CPO", "label_ja": "Co-Packaged Optics", "label_en": "Co-Packaged Optics", "aliases": ["Co-Packaged Optics", "CPO"], "category": "interconnect",
+      "short_definition_ja": "スイッチASICなどの近傍へ光エンジンを同一パッケージ実装する方式。", "short_definition_en": "Integration of optical engines in the same package as, or very near, a switch ASIC.",
+      "definition_ja": "Co-Packaged Opticsは高速電気配線を短くして帯域密度と電力効率を高めるため、光エンジンをスイッチASIC等の近傍へ実装する。光源の外付け・交換可能化など保守性の工夫が進むが、故障単位、修理時間、長期保守、価格は製品ごとに確認が必要である。", "definition_en": "Co-packaged optics places optical engines close to switch ASICs to shorten high-speed electrical paths and improve bandwidth density and power efficiency. External and replaceable lasers can improve serviceability, but failure units, repair time, support horizon, and price remain product-specific.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET021"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET025"}], "related_term_ids": ["TERM-ETHERNET", "TERM-ULTRA-ETHERNET", "TERM-IOWN-APN"]
+    },
+    {
+      "term_id": "TERM-CXL", "label_ja": "CXL", "label_en": "CXL", "aliases": ["CXL", "Compute Express Link"], "category": "interconnect",
+      "short_definition_ja": "PCIe物理層を利用するキャッシュ・メモリ整合I/O規格。", "short_definition_en": "A cache- and memory-coherent I/O standard using the PCIe physical layer.",
+      "definition_ja": "CXLはCPU、アクセラレータ、メモリ拡張装置などを接続し、世代に応じてキャッシュ整合、メモリ拡張・共有、スイッチ構成を提供する。仕様公開と製品・適合性・管理ソフトウェアの成熟は別に追跡する必要がある。", "definition_en": "CXL connects CPUs, accelerators, and memory expanders and, depending on generation, supports cache coherence, memory expansion and sharing, and switched topologies. Specification publication must be tracked separately from product, compliance, and management-software maturity.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET008"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET020"}], "related_term_ids": ["TERM-UALINK", "TERM-NVLINK", "TERM-PCI-FABRIC"]
+    },
+    {
+      "term_id": "TERM-PIM", "label_ja": "PIM", "label_en": "PIM", "aliases": ["PIM", "Processing-in-Memory"], "category": "memory",
+      "short_definition_ja": "メモリ内部または近傍で演算し、データ移動を減らす方式。", "short_definition_en": "Processing in or near memory to reduce data movement.",
+      "definition_ja": "Processing-in-Memoryはメモリアレイ内部または近傍へ演算機能を置き、CPUやGPUとのデータ移動を削減する。効果は演算パターン、プログラミングモデル、精度、容量、ホスト連携に依存し、通常メモリとの単純な帯域比較だけでは評価できない。", "definition_en": "Processing-in-memory places compute functions in or near memory arrays to reduce movement to CPUs or GPUs. Benefit depends on operation patterns, programming model, precision, capacity, and host integration and cannot be assessed through a simple bandwidth comparison with conventional memory.",
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM032"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM033"}], "related_term_ids": ["TERM-HBM", "TERM-ACCELERATOR", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-CPU", "label_ja": "CPU", "label_en": "CPU", "aliases": ["CPU"], "category": "compute",
+      "short_definition_ja": "汎用命令実行と制御を担う主プロセッサ。", "short_definition_en": "A primary processor for general-purpose instruction execution and control.",
+      "definition_ja": "CPUは複雑な制御、OS、逐次処理、幅広いアプリ互換性を担う汎用プロセッサである。HPCIではコア数やベクトル機能だけでなく、メモリ容量・帯域、I/O、コンパイラ、ノード当たり電力を含めて評価する。", "definition_en": "A CPU is a general-purpose processor supporting complex control, operating systems, serial work, and broad application compatibility. HPCI evaluation must include memory capacity and bandwidth, I/O, compiler support, and node power in addition to core and vector features.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-SSW-PORTABILITY", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP005"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP009"}], "related_term_ids": ["TERM-GPU", "TERM-ACCELERATOR", "TERM-RACK-SCALE"]
+    },
+    {
+      "term_id": "TERM-GPU", "label_ja": "GPU", "label_en": "GPU", "aliases": ["GPU"], "category": "compute",
+      "short_definition_ja": "多数の演算器で高いデータ並列性能を得るプロセッサ。", "short_definition_en": "A processor using many execution units for high data-parallel throughput.",
+      "definition_ja": "GPUは多数の並列演算器と高帯域メモリを組み合わせ、AIやHPCのデータ並列処理を高スループットで実行する。性能はカーネル並列性、メモリ局所性、通信、精度、ソフトウェアスタックへの適合に強く依存する。", "definition_en": "A GPU combines many parallel execution units with high-bandwidth memory for high-throughput AI and HPC data-parallel work. Results depend strongly on kernel parallelism, memory locality, communication, precision, and software-stack fit.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-SSW-PORTABILITY", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP001"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP002"}], "related_term_ids": ["TERM-CPU", "TERM-ACCELERATOR", "TERM-HBM"]
+    },
+    {
+      "term_id": "TERM-ACCELERATOR", "label_ja": "アクセラレータ", "label_en": "Accelerator", "aliases": ["アクセラレータ", "Accelerator"], "category": "compute",
+      "short_definition_ja": "特定の処理をCPUより効率良く実行する専用・準専用計算資源。", "short_definition_en": "A specialized compute resource designed to execute selected work more efficiently than a CPU.",
+      "definition_ja": "アクセラレータはAI、行列演算、ベクトル処理、暗号、データ処理など特定の処理を高効率化する。GPUも広義のアクセラレータだが、製品ごとに命令・精度・メモリ・通信・ツールが異なるため、対象アプリと移植費用を含む評価が必要である。", "definition_en": "Accelerators improve efficiency for selected work such as AI, matrix, vector, cryptographic, or data processing. GPUs are accelerators in a broad sense, but instruction, precision, memory, communication, and tools vary by product, requiring application and migration-cost evaluation.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-SSW-PORTABILITY", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP011"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP012"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP013"}], "related_term_ids": ["TERM-CPU", "TERM-GPU", "TERM-PIM"]
+    },
+    {
+      "term_id": "TERM-CHIPLET", "label_ja": "チップレット", "label_en": "Chiplet", "aliases": ["チップレット", "Chiplet"], "category": "packaging",
+      "short_definition_ja": "機能別の小さなダイをパッケージ内で接続して構成する方式。", "short_definition_en": "An approach that composes a package from smaller functional dies.",
+      "definition_ja": "チップレットは計算、I/O、キャッシュ等を複数のダイへ分割し、パッケージ内インターコネクトで統合する。プロセス最適化と歩留まりに利点がある一方、接続規格、帯域・遅延、電力、熱、テスト、供給者間相互運用が設計条件になる。", "definition_en": "Chiplets divide compute, I/O, cache, or other functions among dies connected inside a package. They enable process optimization and yield benefits, while interface standards, bandwidth and latency, power, thermal design, test, and multi-vendor interoperability become system constraints.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-HW-INTERCONNECT", "RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET004"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM035"}], "related_term_ids": ["TERM-W2W", "TERM-D2W", "TERM-CXL"]
+    },
+    {
+      "term_id": "TERM-RACK-SCALE", "label_ja": "ラックスケールシステム", "label_en": "Rack-scale system", "aliases": ["ラックスケール", "Rack-scale"], "category": "compute",
+      "short_definition_ja": "複数ノードや計算資源をラック単位で一体設計する構成。", "short_definition_en": "A system co-designed across multiple nodes and resources at rack scale.",
+      "definition_ja": "ラックスケールシステムは計算、メモリ、ネットワーク、電力、冷却、管理をラック単位で統合設計する。個々のチップ性能だけでなく、集合通信、障害領域、保守交換、受電・冷却密度、スケジューラとの整合が実効性能と可用性を決める。", "definition_en": "A rack-scale system co-designs compute, memory, networking, power, cooling, and management across a rack. Effective performance and availability depend on collectives, failure domains, service replacement, power and cooling density, and scheduler integration, not only chip performance.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP001"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP009"}], "related_term_ids": ["TERM-CPU", "TERM-GPU", "TERM-CPO"]
+    },
+    {
+      "term_id": "TERM-ETHERNET", "label_ja": "Ethernet", "label_en": "Ethernet", "aliases": ["Ethernet"], "category": "interconnect",
+      "short_definition_ja": "広いエコシステムを持つ標準ネットワーク技術。", "short_definition_en": "A standardized networking technology with a broad ecosystem.",
+      "definition_ja": "Ethernetはリンク速度、物理媒体、スイッチ、管理の広いエコシステムを持つ標準ネットワークである。HPC・AIではRDMA、輻輳制御、集合通信、テレメトリを組み合わせ、実アプリ通信で遅延・公平性・可用性を検証する。", "definition_en": "Ethernet is a standardized network with a broad ecosystem spanning link speeds, media, switches, and management. HPC and AI deployments combine it with RDMA, congestion control, collectives, and telemetry and must validate latency, fairness, and availability under application traffic.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET002"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET003"}], "related_term_ids": ["TERM-ULTRA-ETHERNET", "TERM-CPO"]
+    },
+    {
+      "term_id": "TERM-ULTRA-ETHERNET", "label_ja": "Ultra Ethernet", "label_en": "Ultra Ethernet", "aliases": ["Ultra Ethernet", "UEC"], "category": "interconnect",
+      "short_definition_ja": "AI・HPC向けにEthernetの転送・輻輳・管理機能を拡張する仕様群。", "short_definition_en": "Specifications extending Ethernet transport, congestion, and management for AI and HPC.",
+      "definition_ja": "Ultra EthernetはEthernetエコシステムを利用しながら、AI・HPC向けの高性能転送、輻輳制御、セキュリティ、管理を定義する。仕様の成立と、NIC・スイッチ・ソフトウェアの相互運用・実運用性能は別の成熟段階として確認する。", "definition_en": "Ultra Ethernet builds on the Ethernet ecosystem while defining high-performance transport, congestion control, security, and management for AI and HPC. Specification completion is distinct from interoperable NIC, switch, software, and operational performance maturity.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET001"}], "related_term_ids": ["TERM-ETHERNET", "TERM-UALINK"]
+    },
+    {
+      "term_id": "TERM-UALINK", "label_ja": "UALink", "label_en": "UALink", "aliases": ["UALink"], "category": "interconnect",
+      "short_definition_ja": "AIアクセラレータ間のスケールアップ接続を狙うオープン仕様。", "short_definition_en": "An open specification targeting scale-up links among AI accelerators.",
+      "definition_ja": "UALinkは同一システム内のアクセラレータ間を高帯域・低遅延で接続するスケールアップ仕様である。オープンな複数ベンダー実装を志向するが、仕様公開、チップ・スイッチ製品、管理、ソフトウェア統合、相互運用は段階別に評価する。", "definition_en": "UALink targets high-bandwidth, low-latency scale-up connectivity among accelerators in one system. It aims at an open multi-vendor ecosystem, while specifications, silicon and switches, management, software integration, and interoperability mature separately.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET004"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET016"}], "related_term_ids": ["TERM-NVLINK", "TERM-CXL", "TERM-ULTRA-ETHERNET"]
+    },
+    {
+      "term_id": "TERM-NVLINK", "label_ja": "NVLink", "label_en": "NVLink", "aliases": ["NVLink"], "category": "interconnect",
+      "short_definition_ja": "NVIDIA GPU・CPU間の高帯域スケールアップ接続。", "short_definition_en": "NVIDIA's high-bandwidth scale-up link for GPUs and CPUs.",
+      "definition_ja": "NVLinkはNVIDIAのGPUやCPUを高帯域・低遅延で接続し、システム内のアクセラレータ規模を拡張する。製品統合とソフトウェア最適化に強みがある一方、採用範囲、ベンダー依存、世代間移行、保守条件をHPCI構成で確認する。", "definition_en": "NVLink connects NVIDIA GPUs and CPUs at high bandwidth and low latency to scale accelerator domains. It benefits from product and software integration, while scope of adoption, vendor dependence, generational migration, and service terms require HPCI evaluation.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET005"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET015"}], "related_term_ids": ["TERM-UALINK", "TERM-CPO", "TERM-GPU"]
+    },
+    {
+      "term_id": "TERM-IOWN-APN", "label_ja": "IOWN APN", "label_en": "IOWN APN", "aliases": ["IOWN APN", "All-Photonics Network"], "category": "interconnect",
+      "short_definition_ja": "光波長を活用して拠点・データセンター等を接続するオールフォトニクスネットワーク。", "short_definition_en": "An all-photonics network using optical wavelengths across sites and data centers.",
+      "definition_ja": "IOWNのAll-Photonics Networkは低遅延・低揺らぎ・大容量・省電力を狙い、拠点間から装置・パッケージ内へ光接続範囲を広げる構想とサービス群である。HPCIでは距離、経路切替、冗長化、料金、SLA、保守を用途別に評価する。", "definition_en": "IOWN's All-Photonics Network targets low latency and jitter, high capacity, and power efficiency, with a roadmap extending optics from sites toward devices and packages. HPCI evaluation must cover distance, rerouting, redundancy, price, SLA, and maintenance by use case.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET011"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET022"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET023"}], "related_term_ids": ["TERM-CPO", "TERM-ETHERNET"]
+    },
+    {
+      "term_id": "TERM-PCI-FABRIC", "label_ja": "PCIe I/O fabric", "label_en": "PCIe I/O fabric", "aliases": ["PCIe", "PCI Express"], "category": "interconnect",
+      "short_definition_ja": "CPUとデバイスを接続する標準I/O基盤。", "short_definition_en": "A standard I/O foundation connecting CPUs and devices.",
+      "definition_ja": "PCI ExpressはCPU、GPU、NIC、ストレージ等を接続する標準I/Oで、CXLはその物理層を利用する。世代ごとのレーン速度だけでなく、スイッチ、ケーブル、信号距離、エラー処理、デバイス・ソフトウェア対応を含めて評価する。", "definition_en": "PCI Express is a standard I/O interface connecting CPUs, GPUs, NICs, and storage, and its physical layer is used by CXL. Evaluation includes switches, cables, reach, error handling, and device and software support in addition to lane rate.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET006"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET007"}], "related_term_ids": ["TERM-CXL", "TERM-GPU"]
+    },
+    {
+      "term_id": "TERM-OPENMP", "label_ja": "OpenMP", "label_en": "OpenMP", "aliases": ["OpenMP"], "category": "software",
+      "short_definition_ja": "共有メモリ並列とアクセラレータoffloadを指示文で表現する標準API。", "short_definition_en": "A directive-based standard API for shared-memory parallelism and accelerator offload.",
+      "definition_ja": "OpenMPはC、C++、Fortranへ指示文とランタイムAPIを追加し、CPU並列やアクセラレータoffloadを表現する。単一ソース移植に利点があるが、仕様版、言語、機能、backendごとの実装差を共通試験で確認する必要がある。", "definition_en": "OpenMP adds directives and runtime APIs to C, C++, and Fortran for CPU parallelism and accelerator offload. It supports single-source portability, but implementation differs by specification version, language, feature, and backend and requires common testing.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT001"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT018"}], "related_term_ids": ["TERM-SYCL", "TERM-KOKKOS", "TERM-LLVM-MLIR"]
+    },
+    {
+      "term_id": "TERM-SYCL", "label_ja": "SYCL", "label_en": "SYCL", "aliases": ["SYCL"], "category": "software",
+      "short_definition_ja": "C++で異種デバイスを扱うKhronos標準プログラミングモデル。", "short_definition_en": "A Khronos-standard C++ programming model for heterogeneous devices.",
+      "definition_ja": "SYCLは標準C++に近い単一ソース記述でCPU、GPU等の異種デバイスを扱う。標準と適合試験がある一方、利用可能なbackend、拡張、ライブラリ、デバッグ・性能ツール、製品適合範囲を実装別に確認する。", "definition_en": "SYCL uses a C++-oriented single-source model for CPUs, GPUs, and other heterogeneous devices. It has a standard and conformance process, while backend availability, extensions, libraries, debugging and performance tools, and product conformance remain implementation-specific.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT003"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT019"}], "related_term_ids": ["TERM-OPENMP", "TERM-KOKKOS", "TERM-ROCM"]
+    },
+    {
+      "term_id": "TERM-KOKKOS", "label_ja": "Kokkos", "label_en": "Kokkos", "aliases": ["Kokkos"], "category": "software",
+      "short_definition_ja": "C++抽象化により複数backendへ性能可搬性を提供するライブラリ。", "short_definition_en": "A C++ abstraction library for performance portability across backends.",
+      "definition_ja": "Kokkosは並列実行とデータ配置をC++抽象化で表し、複数のCPU・GPU backendへ展開する。アプリ側の移植面を統一できる一方、対応機能、依存ライブラリ、backend別最適化、ネイティブ実装との性能差を継続測定する。", "definition_en": "Kokkos expresses parallel execution and data placement through C++ abstractions mapped to CPU and GPU backends. It unifies an application portability layer, while feature support, dependent libraries, backend tuning, and performance relative to native implementations require continuous measurement.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT006"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT007"}], "related_term_ids": ["TERM-OPENMP", "TERM-SYCL", "TERM-ROCM"]
+    },
+    {
+      "term_id": "TERM-MPI", "label_ja": "MPI", "label_en": "MPI", "aliases": ["MPI", "Message Passing Interface"], "category": "software",
+      "short_definition_ja": "分散メモリ並列プログラムの通信を定義する標準API。", "short_definition_en": "A standard API for communication in distributed-memory parallel programs.",
+      "definition_ja": "MPIはプロセス間の点対点・集合通信、通信管理、I/O等を定義するHPCの中核標準である。規格版とMPICH・Open MPI等の実装版は別であり、ABI、Fortran、GPUメモリ、fabric provider、障害対応を個別に確認する。", "definition_en": "MPI is a core HPC standard defining point-to-point and collective communication, communicators, I/O, and related functions. Standard and implementation versions such as MPICH and Open MPI differ, so ABI, Fortran, GPU memory, fabric providers, and fault behavior need separate verification.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-INTERCONNECT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT014"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT017"}], "related_term_ids": ["TERM-LIBFABRIC", "TERM-ETHERNET", "TERM-ULTRA-ETHERNET"]
+    },
+    {
+      "term_id": "TERM-LIBFABRIC", "label_ja": "libfabric", "label_en": "libfabric", "aliases": ["libfabric"], "category": "software",
+      "short_definition_ja": "複数ネットワークproviderへ共通アクセスを提供する通信API・ライブラリ。", "short_definition_en": "A communication API and library providing common access to network providers.",
+      "definition_ja": "libfabricはネットワーク機能をprovider経由で公開し、上位ランタイムやアプリから複数のNIC・fabricを利用できるようにする。API対応だけでなく、provider品質、GPUメモリ、集合通信、エラー処理、対象NICでの性能が重要である。", "definition_en": "libfabric exposes network capabilities through providers so runtimes and applications can use multiple NICs and fabrics. Provider quality, GPU memory, collectives, error handling, and performance on target NICs matter beyond API availability.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-INTERCONNECT"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT016"}], "related_term_ids": ["TERM-MPI", "TERM-ETHERNET"]
+    },
+    {
+      "term_id": "TERM-LLVM-MLIR", "label_ja": "LLVM / MLIR", "label_en": "LLVM / MLIR", "aliases": ["LLVM", "MLIR", "Clang"], "category": "software",
+      "short_definition_ja": "コンパイラ基盤と多段中間表現による最適化エコシステム。", "short_definition_en": "A compiler infrastructure and multi-level intermediate-representation optimization ecosystem.",
+      "definition_ja": "LLVMはコンパイラbackend、最適化、ツールを提供し、Clang等の言語frontendを支える。MLIRは異なる抽象度の中間表現を接続し、ドメイン固有処理からハードウェア命令までの変換を構成する。リリース日と各backend・機能の成熟は分けて評価する。", "definition_en": "LLVM provides compiler backends, optimizations, and tools supporting frontends such as Clang. MLIR connects intermediate representations at multiple abstraction levels from domain operations to hardware instructions. Release dates and backend or feature maturity must be evaluated separately.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT005"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT028"}], "related_term_ids": ["TERM-OPENMP", "TERM-SYCL", "TERM-ROCM"]
+    },
+    {
+      "term_id": "TERM-ROCM", "label_ja": "ROCm", "label_en": "ROCm", "aliases": ["ROCm"], "category": "software",
+      "short_definition_ja": "AMD GPU向けのコンパイラ、ランタイム、ライブラリ、ツール群。", "short_definition_en": "AMD's compiler, runtime, library, and tool stack for GPUs.",
+      "definition_ja": "ROCmはAMD GPU向けのコンパイラ、HIPランタイム、数値・通信ライブラリ、デバッグ・性能ツールをまとめたソフトウェアスタックである。上位の可搬APIと併用できるが、GPU世代、OS、機能、保守版の対応範囲を確認する必要がある。", "definition_en": "ROCm is AMD's GPU software stack combining compilers, the HIP runtime, numerical and communication libraries, and debugging and performance tools. It can underpin higher-level portable APIs, while GPU generation, OS, feature, and support-release coverage must be checked.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT008"}], "related_term_ids": ["TERM-SYCL", "TERM-KOKKOS", "TERM-GPU"]
+    },
+    {
+      "term_id": "TERM-HPL", "label_ja": "HPL", "label_en": "HPL", "aliases": ["HPL"], "category": "benchmark",
+      "short_definition_ja": "倍精度密行列連立一次方程式でシステム演算性能を測るベンチマーク。", "short_definition_en": "A benchmark measuring system floating-point performance with double-precision dense linear equations.",
+      "definition_ja": "HPLは倍精度の密行列連立一次方程式を解き、大規模システムの演算・通信性能を測る。ピーク演算性能への到達度を示しやすい一方、メモリアクセスや疎行列、I/O、科学アプリ全体の代表値ではない。", "definition_en": "HPL solves double-precision dense linear equations to measure large-system compute and communication performance. It indicates utilization of peak arithmetic capability but is not representative of memory access, sparse work, I/O, or the full scientific workload portfolio.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-HPCG", "TERM-PROXY-APP"]
+    },
+    {
+      "term_id": "TERM-HPL-MXP", "label_ja": "HPL-MxP", "label_en": "HPL-MxP", "aliases": ["HPL-MxP"], "category": "benchmark",
+      "short_definition_ja": "混合精度演算を利用して反復改良で解精度を得るHPL系ベンチマーク。", "short_definition_en": "An HPL-family benchmark using mixed precision and iterative refinement.",
+      "definition_ja": "HPL-MxPは低精度・混合精度の高い演算性能を利用し、反復改良で必要な解精度を得る。AI向け行列演算器を含むシステムの能力を見やすいが、対象数値手法と異なるアプリへの一般化には注意が必要である。", "definition_en": "HPL-MxP uses high-throughput lower or mixed precision and iterative refinement to reach required solution accuracy. It exposes systems with AI-oriented matrix engines, but results must not be generalized automatically to applications using different numerical methods.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK004"}], "related_term_ids": ["TERM-HPL", "TERM-MLPERF"]
+    },
+    {
+      "term_id": "TERM-HPCG", "label_ja": "HPCG", "label_en": "HPCG", "aliases": ["HPCG"], "category": "benchmark",
+      "short_definition_ja": "疎行列、メモリ階層、通信を重視するHPCシステムベンチマーク。", "short_definition_en": "An HPC system benchmark emphasizing sparse computation, memory hierarchy, and communication.",
+      "definition_ja": "HPCGは疎行列ベクトル積、局所計算、集合通信などを含み、HPLよりもメモリ・通信制約の影響を強く表す。科学アプリ全体を代表するものではないが、演算ピークだけでは見えないシステムバランスの補助指標になる。", "definition_en": "HPCG includes sparse matrix-vector work, local kernels, and collectives and is more sensitive to memory and communication than HPL. It is not a complete proxy for scientific applications but complements peak-oriented measures with system-balance information.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK003"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK017"}], "related_term_ids": ["TERM-HPL", "TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-MLPERF", "label_ja": "MLPerf", "label_en": "MLPerf", "aliases": ["MLPerf"], "category": "benchmark",
+      "short_definition_ja": "AI学習・推論等を共通ルールで測るMLCommonsのベンチマーク群。", "short_definition_en": "MLCommons benchmark suites for AI training, inference, and related workloads under common rules.",
+      "definition_ja": "MLPerfはAI学習、推論、HPC等を対象に、モデル、データ、品質条件、提出ルールを定める。比較可能性に利点がある一方、科学AIの代表性、精度条件、closed/open division、ソフトウェア最適化を結果とともに確認する。", "definition_en": "MLPerf defines models, data, quality constraints, and submission rules for AI training, inference, HPC, and related suites. It improves comparability, while scientific-AI representativeness, accuracy constraints, closed or open divisions, and software optimization must accompany results.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK005"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK006"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK016"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-PROXY-APP"]
+    },
+    {
+      "term_id": "TERM-PROXY-APP", "label_ja": "Proxy application", "label_en": "Proxy application", "aliases": ["Proxy application", "Proxy app", "Proxyアプリ"], "category": "benchmark",
+      "short_definition_ja": "実アプリの主要な計算・通信特性を小さく再現する評価コード。", "short_definition_en": "A compact code reproducing important compute or communication characteristics of an application.",
+      "definition_ja": "Proxy applicationは大規模実アプリから主要kernel、通信、メモリ特性を抽出し、移植・性能分析を反復しやすくしたコードである。扱いやすい一方、実アプリとの差、入力規模、I/O、連成、実行時変動を明示して使う必要がある。", "definition_en": "A proxy application extracts important kernels, communication, or memory behavior from a larger application to make porting and analysis repeatable. Its difference from the full application, input scale, I/O, coupling, and runtime variation must be documented.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK008"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK009"}], "related_term_ids": ["TERM-PERFORMANCE-MODEL", "TERM-HPCG"]
+    },
+    {
+      "term_id": "TERM-PERFORMANCE-MODEL", "label_ja": "性能モデル", "label_en": "Performance model", "aliases": ["性能モデル", "Performance model"], "category": "benchmark",
+      "short_definition_ja": "計測値とシステム特性から将来構成の性能やボトルネックを推定するモデル。", "short_definition_en": "A model estimating performance or bottlenecks from measurements and system characteristics.",
+      "definition_ja": "性能モデルはアプリやProxyの計測値を計算、メモリ、通信、I/O等の説明変数と結び、未導入構成の性能や感度を推定する。校正データと検証データを分離し、誤差、適用範囲、外挿距離、不確実性を示さなければ調達判断に使えない。", "definition_en": "A performance model links application or proxy measurements to compute, memory, communication, I/O, or other explanatory variables to estimate unbuilt configurations. Calibration and validation data must be separated, and error, scope, extrapolation distance, and uncertainty are required for procurement use.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK018"}], "related_term_ids": ["TERM-PROXY-APP", "TERM-HPCG"]
+    }
+  ],
+  "comparison_sets": [
+    {
+      "comparison_id": "CMP-MEMORY-HIERARCHY", "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
+      "title_ja": "主記憶・高帯域メモリの比較", "title_en": "Main-memory and high-bandwidth-memory comparison",
+      "summary_ja": "DDR、LPDDR、HBM、SOCAMMを、同じ技術階層ではない点を明示しながら、HPCIノード設計に必要な軸で比較する。", "summary_en": "Compares DDR, LPDDR, HBM, and SOCAMM on HPCI node-design dimensions while making their differing abstraction levels explicit.",
+      "decision_use_ja": "容量、帯域、電力、交換性、プラットフォーム依存を組み合わせ、単一指標ではなくノード構成を選ぶために使う。", "decision_use_en": "Use capacity, bandwidth, power, serviceability, and platform dependence together to select node configurations rather than ranking one metric.",
+      "caveat_ja": "定量値は世代・ベンダー・搭載構成で変わる。SOCAMMはLPDDR系デバイスを使うモジュール形態であり、他の3項目と完全な同階層比較ではない。", "caveat_en": "Quantitative values vary by generation, vendor, and configuration. SOCAMM is a module form using LPDDR-class devices and is not at exactly the same abstraction level as the other entries.",
+      "columns": [
+        {"column_id": "overview", "label_ja": "位置付け", "label_en": "Position"},
+        {"column_id": "strengths", "label_ja": "主な利点", "label_en": "Strengths"},
+        {"column_id": "limitations", "label_ja": "主な制約", "label_en": "Limitations"},
+        {"column_id": "serviceability", "label_ja": "実装・交換性", "label_en": "Integration and serviceability"},
+        {"column_id": "recommended-use", "label_ja": "適した用途", "label_en": "Suitable use"}
+      ],
+      "rows": [
+        {"term_id": "TERM-DDR", "cells": [
+          {"column_id": "overview", "text_ja": "汎用CPU主記憶の標準DRAM。", "text_en": "Standard DRAM for general CPU main memory."},
+          {"column_id": "strengths", "text_ja": "大容量、成熟したECC・RAS、広い供給・運用実績。", "text_en": "High capacity, mature ECC and RAS, broad supply and operational experience."},
+          {"column_id": "limitations", "text_ja": "HBMより帯域密度とI/O効率が低い。", "text_en": "Lower bandwidth density and I/O efficiency than HBM."},
+          {"column_id": "serviceability", "text_ja": "DIMM/RDIMMなら現場交換しやすい。", "text_en": "DIMM and RDIMM forms are generally field-serviceable."},
+          {"column_id": "recommended-use", "text_ja": "容量重視、汎用HPC、長期運用ノード。", "text_en": "Capacity-oriented, general HPC, and long-lived nodes."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM002"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM003"}]},
+        {"term_id": "TERM-LPDDR", "cells": [
+          {"column_id": "overview", "text_ja": "省電力重視のDRAMデバイス規格。", "text_en": "A DRAM device standard emphasizing low power."},
+          {"column_id": "strengths", "text_ja": "I/O電力と実装密度に優れる。", "text_en": "Strong I/O power efficiency and package density."},
+          {"column_id": "limitations", "text_ja": "サーバ向けECC・RAS、容量、供給条件は構成依存。", "text_en": "Server ECC and RAS, capacity, and supply depend on implementation."},
+          {"column_id": "serviceability", "text_ja": "直付け構成では交換しにくい。", "text_en": "Soldered or tightly integrated forms are difficult to replace."},
+          {"column_id": "recommended-use", "text_ja": "電力・密度を重視する統合CPU/AIノード。", "text_en": "Integrated CPU or AI nodes prioritizing power and density."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM005"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM006"}]},
+        {"term_id": "TERM-HBM", "cells": [
+          {"column_id": "overview", "text_ja": "積層DRAMと広幅I/Oをパッケージ近傍で利用。", "text_en": "Stacked DRAM with a wide interface near the compute package."},
+          {"column_id": "strengths", "text_ja": "非常に高い帯域密度とデータ移動効率。", "text_en": "Very high bandwidth density and data-movement efficiency."},
+          {"column_id": "limitations", "text_ja": "容量単価、供給、熱、先端実装が制約。", "text_en": "Cost per capacity, supply, thermal design, and advanced packaging constrain deployment."},
+          {"column_id": "serviceability", "text_ja": "アクセラレータと一体で、メモリ単体交換は困難。", "text_en": "Integrated with the accelerator; memory-only field replacement is difficult."},
+          {"column_id": "recommended-use", "text_ja": "帯域律速HPC、AI学習、GPU/アクセラレータ。", "text_en": "Bandwidth-bound HPC, AI training, GPUs, and accelerators."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM034"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM011"}]},
+        {"term_id": "TERM-SOCAMM", "cells": [
+          {"column_id": "overview", "text_ja": "LPDDR系メモリを小型サーバモジュールとして実装。", "text_en": "LPDDR-class memory implemented as a compact server module."},
+          {"column_id": "strengths", "text_ja": "低電力・高密度とモジュール性の両立を狙う。", "text_en": "Targets low power and density while retaining modularity."},
+          {"column_id": "limitations", "text_ja": "プラットフォーム依存、標準化、長期供給の確認が必要。", "text_en": "Platform dependence, standardization, and long-term supply need confirmation."},
+          {"column_id": "serviceability", "text_ja": "直付けLPDDRより交換しやすいが、RDIMM同等性は実装確認が必要。", "text_en": "More serviceable than soldered LPDDR, but RDIMM-equivalent operations require validation."},
+          {"column_id": "recommended-use", "text_ja": "大容量・低電力AIサーバ、ラック密度重視構成。", "text_en": "High-capacity, low-power AI servers and rack-density-oriented systems."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM013"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM014"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-ADVANCED-INTEGRATION", "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE"],
+      "title_ja": "3D・先端接合方式の比較", "title_en": "3D and advanced-bonding comparison",
+      "summary_ja": "W2W、D2W、TSVを、接合単位、柔軟性、歩留まり、量産上の論点で比較する。", "summary_en": "Compares W2W, D2W, and TSV by integration unit, flexibility, yield, and manufacturing considerations.",
+      "decision_use_ja": "メモリ積層やチップレット構成の製造可能性、供給リスク、熱・テスト条件を整理するために使う。", "decision_use_en": "Use it to assess manufacturability, supply risk, thermal design, and test conditions for stacked memory and chiplets.",
+      "caveat_ja": "TSVは縦配線要素、W2W/D2Wは接合フローであり、直接代替だけを意味しない。実製品では組み合わせて用いられる。", "caveat_en": "TSV is a vertical interconnect element, while W2W and D2W are bonding flows; they are not only direct substitutes and may be combined in products.",
+      "columns": [
+        {"column_id": "unit", "label_ja": "接合・接続単位", "label_en": "Integration unit"},
+        {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
+        {"column_id": "limitations", "label_ja": "制約", "label_en": "Limitations"},
+        {"column_id": "use", "label_ja": "代表的な使い方", "label_en": "Representative use"}
+      ],
+      "rows": [
+        {"term_id": "TERM-W2W", "cells": [
+          {"column_id": "unit", "text_ja": "加工済みウェハ同士。", "text_en": "Processed wafer to processed wafer."},
+          {"column_id": "strengths", "text_ja": "高接続密度とウェハ単位処理。", "text_en": "Dense interconnect and wafer-level processing."},
+          {"column_id": "limitations", "text_ja": "ダイ寸法整合と上下ウェハ歩留まりの積。", "text_en": "Die-size matching and compounded wafer yield."},
+          {"column_id": "use", "text_ja": "同形状・高密度のメモリ/ロジック積層。", "text_en": "Dense memory or logic stacks with compatible die geometry."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM018"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM019"}]},
+        {"term_id": "TERM-D2W", "cells": [
+          {"column_id": "unit", "text_ja": "選別済み個片ダイをウェハへ接合。", "text_en": "Known-good individual dies bonded to a wafer."},
+          {"column_id": "strengths", "text_ja": "異種ダイ・寸法の柔軟性と良品選別。", "text_en": "Flexibility across dissimilar dies and known-good-die selection."},
+          {"column_id": "limitations", "text_ja": "個片配置の速度、位置合わせ、コスト。", "text_en": "Die-placement throughput, alignment, and cost."},
+          {"column_id": "use", "text_ja": "チップレット、ロジック・メモリ異種積層。", "text_en": "Chiplets and heterogeneous logic-memory integration."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM020"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM021"}]},
+        {"term_id": "TERM-TSV", "cells": [
+          {"column_id": "unit", "text_ja": "シリコンを貫通する縦配線。", "text_en": "A vertical conductor through silicon."},
+          {"column_id": "strengths", "text_ja": "短配線、高帯域、低I/O電力。", "text_en": "Short links, high bandwidth, and low I/O power."},
+          {"column_id": "limitations", "text_ja": "面積、熱・応力、工程、テスト性。", "text_en": "Area, thermal and mechanical stress, process, and testability."},
+          {"column_id": "use", "text_ja": "HBM等の積層DRAM内接続。", "text_en": "Vertical links inside stacked DRAM such as HBM."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM034"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM022"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-COMPUTE-PLATFORMS", "roadmap_ids": ["RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
+      "title_ja": "計算資源・システム粒度の比較", "title_en": "Compute-resource and system-granularity comparison",
+      "summary_ja": "CPU、GPU、専用アクセラレータ、ラックスケール構成を、役割と評価単位を混同しないように比較する。", "summary_en": "Compares CPUs, GPUs, specialized accelerators, and rack-scale systems without conflating component roles and system granularity.",
+      "decision_use_ja": "代表アプリ、移植費用、電力・冷却、通信、障害領域を含む候補ノード評価の入口にする。", "decision_use_en": "Use as an entry point for candidate-node evaluation including representative applications, migration cost, power and cooling, communication, and failure domains.",
+      "caveat_ja": "ラックスケールはCPUやGPUの代替デバイスではなく、それらを統合するシステム設計単位である。", "caveat_en": "Rack scale is a system-design unit integrating CPUs and GPUs, not a substitute device at the same layer.",
+      "columns": [
+        {"column_id": "parallelism", "label_ja": "主な並列性・粒度", "label_en": "Parallelism and granularity"},
+        {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
+        {"column_id": "constraints", "label_ja": "制約", "label_en": "Constraints"},
+        {"column_id": "workloads", "label_ja": "適合しやすい処理", "label_en": "Fitting work"},
+        {"column_id": "hpci-check", "label_ja": "HPCI評価点", "label_en": "HPCI checks"}
+      ],
+      "rows": [
+        {"term_id": "TERM-CPU", "cells": [
+          {"column_id": "parallelism", "text_ja": "低遅延コア、ベクトル、共有メモリ。", "text_en": "Low-latency cores, vectors, and shared memory."},
+          {"column_id": "strengths", "text_ja": "汎用性、複雑制御、成熟したOS・ツール。", "text_en": "Generality, complex control, and mature OS and tools."},
+          {"column_id": "constraints", "text_ja": "高スループット処理では電力・演算密度が制約。", "text_en": "Power and compute density constrain highly throughput-oriented work."},
+          {"column_id": "workloads", "text_ja": "逐次部、分岐、複雑データ構造、汎用HPC。", "text_en": "Serial regions, branching, complex data structures, and general HPC."},
+          {"column_id": "hpci-check", "text_ja": "メモリ容量・帯域、ベクトル化、I/O、ノード電力。", "text_en": "Memory capacity and bandwidth, vectorization, I/O, and node power."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP005"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP009"}]},
+        {"term_id": "TERM-GPU", "cells": [
+          {"column_id": "parallelism", "text_ja": "多数threadと高帯域メモリ。", "text_en": "Many threads and high-bandwidth memory."},
+          {"column_id": "strengths", "text_ja": "データ並列の高スループットとAI演算。", "text_en": "High data-parallel throughput and AI arithmetic."},
+          {"column_id": "constraints", "text_ja": "移植、分岐、データ移動、ソフトウェア依存。", "text_en": "Migration, divergence, data movement, and software dependence."},
+          {"column_id": "workloads", "text_ja": "行列、stencil、粒子、AI学習・推論。", "text_en": "Matrix, stencil, particle, and AI training or inference workloads."},
+          {"column_id": "hpci-check", "text_ja": "実アプリ性能、精度、通信、移植工数、保守期間。", "text_en": "Application performance, precision, communication, migration effort, and support horizon."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP001"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP002"}]},
+        {"term_id": "TERM-ACCELERATOR", "cells": [
+          {"column_id": "parallelism", "text_ja": "用途別の専用data pathや演算器。", "text_en": "Workload-specific data paths or execution units."},
+          {"column_id": "strengths", "text_ja": "対象処理の性能/電力を高められる。", "text_en": "Can improve performance per watt for target operations."},
+          {"column_id": "constraints", "text_ja": "適用範囲、API、供給、世代継続性。", "text_en": "Scope, APIs, supply, and generational continuity."},
+          {"column_id": "workloads", "text_ja": "AI、行列、ベクトル、データ処理等の適合領域。", "text_en": "Fitting AI, matrix, vector, or data-processing domains."},
+          {"column_id": "hpci-check", "text_ja": "対象アプリ率、fallback、コンパイラ、TCO。", "text_en": "Application coverage, fallback, compiler support, and TCO."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP011"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP012"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP013"}]},
+        {"term_id": "TERM-RACK-SCALE", "cells": [
+          {"column_id": "parallelism", "text_ja": "複数ノード・アクセラレータをラック単位で統合。", "text_en": "Multiple nodes and accelerators integrated at rack scale."},
+          {"column_id": "strengths", "text_ja": "通信、電力、冷却、管理の共同最適化。", "text_en": "Co-optimization of communication, power, cooling, and management."},
+          {"column_id": "constraints", "text_ja": "故障領域、保守、施設、ベンダー統合が複雑。", "text_en": "Complex failure domains, maintenance, facilities, and vendor integration."},
+          {"column_id": "workloads", "text_ja": "大規模分散AI、密結合HPC、混成workflow。", "text_en": "Large distributed AI, tightly coupled HPC, and mixed workflows."},
+          {"column_id": "hpci-check", "text_ja": "ラック実効性能、可用性、受電・冷却、スケジューラ。", "text_en": "Rack-level effective performance, availability, power and cooling, and scheduling."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP001"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP009"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-INTERCONNECT-ROLES", "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-X-BLUEPRINT"],
+      "title_ja": "接続技術の役割比較", "title_en": "Connectivity-technology role comparison",
+      "summary_ja": "Ethernet、Ultra Ethernet、UALink、NVLink、CXL、CPO、IOWN APNを、接続範囲と役割で整理する。", "summary_en": "Organizes Ethernet, Ultra Ethernet, UALink, NVLink, CXL, CPO, and IOWN APN by connection scope and role.",
+      "decision_use_ja": "scale-up、scale-out、I/O・メモリ、物理光実装、拠点間接続を混同せず、組合せとしてHPCIネットワークを設計する。", "decision_use_en": "Design HPCI networks as combinations without conflating scale-up, scale-out, I/O and memory, optical implementation, and inter-site connectivity.",
+      "caveat_ja": "これらは同じ層の直接代替ではない。CPOは物理実装方式、CXLはI/O・メモリ整合、UALink/NVLinkはscale-up、Ethernet系は主にscale-out、APNは広域を含む。", "caveat_en": "These are not direct substitutes at one layer. CPO is a physical integration method, CXL provides coherent I/O and memory, UALink and NVLink target scale-up, Ethernet families mainly serve scale-out, and APN includes wide-area scope.",
+      "columns": [
+        {"column_id": "scope", "label_ja": "主な接続範囲", "label_en": "Primary scope"},
+        {"column_id": "role", "label_ja": "主な役割", "label_en": "Primary role"},
+        {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
+        {"column_id": "constraints", "label_ja": "制約・確認点", "label_en": "Constraints and checks"}
+      ],
+      "rows": [
+        {"term_id": "TERM-ETHERNET", "cells": [
+          {"column_id": "scope", "text_ja": "ノード間、ラック間、データセンター。", "text_en": "Node, rack, and data-center networks."},
+          {"column_id": "role", "text_ja": "標準scale-outネットワーク。", "text_en": "Standards-based scale-out network."},
+          {"column_id": "strengths", "text_ja": "広いエコシステム、相互運用、運用経験。", "text_en": "Broad ecosystem, interoperability, and operational experience."},
+          {"column_id": "constraints", "text_ja": "RDMA・輻輳・集合通信の実装差。", "text_en": "RDMA, congestion-control, and collective implementation differences."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET002"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET003"}]},
+        {"term_id": "TERM-ULTRA-ETHERNET", "cells": [
+          {"column_id": "scope", "text_ja": "AI/HPC scale-out fabric。", "text_en": "AI and HPC scale-out fabrics."},
+          {"column_id": "role", "text_ja": "Ethernet上の高性能転送・輻輳・管理。", "text_en": "High-performance transport, congestion, and management over Ethernet."},
+          {"column_id": "strengths", "text_ja": "オープン仕様とEthernet資産の活用。", "text_en": "Open specifications and reuse of Ethernet assets."},
+          {"column_id": "constraints", "text_ja": "製品相互運用と実負荷成熟度は別途確認。", "text_en": "Product interoperability and workload maturity require separate validation."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET001"}]},
+        {"term_id": "TERM-UALINK", "cells": [
+          {"column_id": "scope", "text_ja": "同一システム内アクセラレータ群。", "text_en": "Accelerators within one system."},
+          {"column_id": "role", "text_ja": "オープンなscale-up接続。", "text_en": "Open scale-up connectivity."},
+          {"column_id": "strengths", "text_ja": "複数ベンダーを志向した高帯域接続。", "text_en": "High-bandwidth connectivity targeting multiple vendors."},
+          {"column_id": "constraints", "text_ja": "製品、管理、software、相互運用の成熟。", "text_en": "Silicon, management, software, and interoperability maturity."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET004"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET016"}]},
+        {"term_id": "TERM-NVLINK", "cells": [
+          {"column_id": "scope", "text_ja": "NVIDIA GPU/CPUのscale-up domain。", "text_en": "NVIDIA GPU and CPU scale-up domains."},
+          {"column_id": "role", "text_ja": "製品統合された高帯域接続。", "text_en": "Product-integrated high-bandwidth connectivity."},
+          {"column_id": "strengths", "text_ja": "GPU、switch、softwareの共同最適化。", "text_en": "Co-optimization across GPU, switch, and software."},
+          {"column_id": "constraints", "text_ja": "ベンダー依存、世代移行、採用範囲。", "text_en": "Vendor dependence, generation migration, and adoption scope."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET005"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET015"}]},
+        {"term_id": "TERM-CXL", "cells": [
+          {"column_id": "scope", "text_ja": "CPU・デバイス・メモリ拡張、rack内。", "text_en": "CPU, devices, and memory expansion, mainly within a rack."},
+          {"column_id": "role", "text_ja": "キャッシュ・メモリ整合I/O。", "text_en": "Cache- and memory-coherent I/O."},
+          {"column_id": "strengths", "text_ja": "メモリ拡張・共有・分離構成。", "text_en": "Memory expansion, sharing, and disaggregation."},
+          {"column_id": "constraints", "text_ja": "世代別製品、適合性、遅延、障害管理。", "text_en": "Generation-specific products, compliance, latency, and fault management."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET008"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET020"}]},
+        {"term_id": "TERM-CPO", "cells": [
+          {"column_id": "scope", "text_ja": "switch ASIC等のパッケージ近傍。", "text_en": "Near switch ASIC packages."},
+          {"column_id": "role", "text_ja": "電気I/Oを短縮する光物理実装。", "text_en": "Optical physical integration shortening electrical I/O."},
+          {"column_id": "strengths", "text_ja": "帯域密度と電力効率。", "text_en": "Bandwidth density and power efficiency."},
+          {"column_id": "constraints", "text_ja": "保守交換、故障率、価格、長期支援。", "text_en": "Service replacement, failure rates, price, and long-term support."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET021"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET025"}]},
+        {"term_id": "TERM-IOWN-APN", "cells": [
+          {"column_id": "scope", "text_ja": "拠点間、データセンター間から将来の装置内。", "text_en": "Inter-site and inter-data-center, extending toward in-device optics."},
+          {"column_id": "role", "text_ja": "低遅延・低揺らぎの光波長接続。", "text_en": "Low-latency, low-jitter wavelength connectivity."},
+          {"column_id": "strengths", "text_ja": "長距離・大容量・電力効率。", "text_en": "Reach, capacity, and power efficiency."},
+          {"column_id": "constraints", "text_ja": "価格、SLA、冗長化、復旧、利用可能地域。", "text_en": "Price, SLA, redundancy, restoration, and service area."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET011"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET022"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET023"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-PORTABILITY-MODELS", "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-APP-WORKLOADS"],
+      "title_ja": "性能可搬性レイヤの比較", "title_en": "Performance-portability layer comparison",
+      "summary_ja": "OpenMP、SYCL、Kokkos、LLVM/MLIR、ROCmを、標準、抽象化、コンパイラ基盤、vendor stackという異なる役割で整理する。", "summary_en": "Organizes OpenMP, SYCL, Kokkos, LLVM/MLIR, and ROCm across their distinct roles as standards, abstractions, compiler infrastructure, and vendor stacks.",
+      "decision_use_ja": "一つを勝者として選ぶのではなく、アプリ層からbackendまでの組合せ、移植工数、継続保守を設計する。", "decision_use_en": "Use it to design combinations from application layer to backend, migration effort, and long-term maintenance rather than choosing one winner.",
+      "caveat_ja": "各項目は同じレイヤの直接代替ではない。実装可能性と性能は対象backend・アプリで測定する必要がある。", "caveat_en": "The entries are not direct substitutes at one layer. Feasibility and performance require measurement on target backends and applications.",
+      "columns": [
+        {"column_id": "layer", "label_ja": "主なレイヤ", "label_en": "Primary layer"},
+        {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
+        {"column_id": "constraints", "label_ja": "制約", "label_en": "Constraints"},
+        {"column_id": "fit", "label_ja": "適した使い方", "label_en": "Suitable use"}
+      ],
+      "rows": [
+        {"term_id": "TERM-OPENMP", "cells": [
+          {"column_id": "layer", "text_ja": "C/C++/Fortran指示文・runtime標準。", "text_en": "C, C++, and Fortran directives and runtime standard."},
+          {"column_id": "strengths", "text_ja": "既存コードへの段階導入、CPU/offloadの共通表現。", "text_en": "Incremental adoption in existing code and common CPU or offload expression."},
+          {"column_id": "constraints", "text_ja": "仕様・言語・機能・backendごとの実装差。", "text_en": "Implementation differences by specification, language, feature, and backend."},
+          {"column_id": "fit", "text_ja": "Fortran/C/C++既存HPCコードの並列化・移植。", "text_en": "Parallelization and migration of existing Fortran, C, and C++ HPC code."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT001"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT018"}]},
+        {"term_id": "TERM-SYCL", "cells": [
+          {"column_id": "layer", "text_ja": "C++異種デバイス標準。", "text_en": "C++ heterogeneous-device standard."},
+          {"column_id": "strengths", "text_ja": "標準C++指向、単一ソース、適合制度。", "text_en": "Standard-C++ orientation, single source, and conformance process."},
+          {"column_id": "constraints", "text_ja": "backend・拡張・適合製品・ツール差。", "text_en": "Backend, extension, conformant-product, and tool differences."},
+          {"column_id": "fit", "text_ja": "C++中心の新規・改修異種計算コード。", "text_en": "New or modernized C++ heterogeneous-compute code."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT003"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT019"}]},
+        {"term_id": "TERM-KOKKOS", "cells": [
+          {"column_id": "layer", "text_ja": "C++性能可搬ライブラリ。", "text_en": "C++ performance-portability library."},
+          {"column_id": "strengths", "text_ja": "実行・data layout抽象化と複数backend。", "text_en": "Execution and data-layout abstraction across backends."},
+          {"column_id": "constraints", "text_ja": "依存ライブラリ、backend最適化、抽象化外処理。", "text_en": "Dependent libraries, backend tuning, and work outside the abstraction."},
+          {"column_id": "fit", "text_ja": "C++アプリの長期的な複数backend保守。", "text_en": "Long-term multi-backend maintenance of C++ applications."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT006"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT007"}]},
+        {"term_id": "TERM-LLVM-MLIR", "cells": [
+          {"column_id": "layer", "text_ja": "compiler・中間表現基盤。", "text_en": "Compiler and intermediate-representation infrastructure."},
+          {"column_id": "strengths", "text_ja": "複数frontend/backend、domain最適化の共通基盤。", "text_en": "Shared infrastructure across frontends, backends, and domain optimization."},
+          {"column_id": "constraints", "text_ja": "上位APIではなく、backend・pass成熟が必要。", "text_en": "Not an application API; backend and pass maturity are required."},
+          {"column_id": "fit", "text_ja": "compiler、DSL、AI支援最適化、vendor backend。", "text_en": "Compilers, DSLs, AI-assisted optimization, and vendor backends."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT005"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT028"}]},
+        {"term_id": "TERM-ROCM", "cells": [
+          {"column_id": "layer", "text_ja": "AMD GPU vendor software stack。", "text_en": "AMD GPU vendor software stack."},
+          {"column_id": "strengths", "text_ja": "compiler、runtime、library、toolの製品統合。", "text_en": "Product integration across compiler, runtime, libraries, and tools."},
+          {"column_id": "constraints", "text_ja": "対象GPU・OS・版の対応範囲とvendor依存。", "text_en": "GPU, OS, and release coverage and vendor dependence."},
+          {"column_id": "fit", "text_ja": "AMD GPUのnative性能と上位可搬層backend。", "text_en": "Native AMD GPU performance and a backend for portable layers."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT008"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-EVALUATION-METHODS", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"],
+      "title_ja": "性能評価手法の比較", "title_en": "Performance-evaluation method comparison",
+      "summary_ja": "HPL、HPL-MxP、HPCG、MLPerf、Proxy application、性能モデルが何を測り、何を測らないかを整理する。", "summary_en": "Clarifies what HPL, HPL-MxP, HPCG, MLPerf, proxy applications, and performance models measure and omit.",
+      "decision_use_ja": "単一ランキングを調達根拠にせず、代表アプリ、正当性、エネルギー、移植工数、可用性を含む評価portfolioを組む。", "decision_use_en": "Build an evaluation portfolio including representative applications, correctness, energy, migration effort, and availability rather than using one ranking for procurement.",
+      "caveat_ja": "測定対象と入力、精度条件、実行規則が異なるため、数値を異種ベンチマーク間で直接比較しない。性能モデルは検証誤差なしに実測の代替としない。", "caveat_en": "Do not compare scores directly across unlike benchmarks with different work, input, accuracy, and rules. A performance model does not replace measurement without validation error.",
+      "columns": [
+        {"column_id": "measures", "label_ja": "主に測るもの", "label_en": "Primarily measures"},
+        {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
+        {"column_id": "blind-spots", "label_ja": "見えにくい点", "label_en": "Blind spots"},
+        {"column_id": "use", "label_ja": "HPCIでの使い方", "label_en": "HPCI use"}
+      ],
+      "rows": [
+        {"term_id": "TERM-HPL", "cells": [
+          {"column_id": "measures", "text_ja": "倍精度密行列の演算・通信。", "text_en": "Double-precision dense linear algebra and communication."},
+          {"column_id": "strengths", "text_ja": "大規模演算ピーク活用と国際比較。", "text_en": "Large-scale peak utilization and international comparison."},
+          {"column_id": "blind-spots", "text_ja": "疎行列、memory-bound、I/O、アプリ多様性。", "text_en": "Sparse, memory-bound, I/O, and application diversity."},
+          {"column_id": "use", "text_ja": "演算・通信上限の一指標として利用。", "text_en": "Use as one bound on compute and communication capability."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}]},
+        {"term_id": "TERM-HPL-MXP", "cells": [
+          {"column_id": "measures", "text_ja": "混合精度行列演算と反復改良。", "text_en": "Mixed-precision matrix arithmetic and iterative refinement."},
+          {"column_id": "strengths", "text_ja": "AI行列演算器を含む混合精度能力。", "text_en": "Mixed-precision capability including AI matrix engines."},
+          {"column_id": "blind-spots", "text_ja": "異なる数値手法・精度要件への一般化。", "text_en": "Generalization to different numerical methods and accuracy needs."},
+          {"column_id": "use", "text_ja": "混合精度科学計算候補の上限評価。", "text_en": "Use as an upper-bound indicator for mixed-precision scientific candidates."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK004"}]},
+        {"term_id": "TERM-HPCG", "cells": [
+          {"column_id": "measures", "text_ja": "疎演算、メモリ、集合通信。", "text_en": "Sparse work, memory behavior, and collectives."},
+          {"column_id": "strengths", "text_ja": "HPLよりシステムバランスへ敏感。", "text_en": "More sensitive to system balance than HPL."},
+          {"column_id": "blind-spots", "text_ja": "科学アプリ全体、I/O、workflow。", "text_en": "The full scientific portfolio, I/O, and workflows."},
+          {"column_id": "use", "text_ja": "memory/communication-bound基線。", "text_en": "Use as a memory- and communication-bound baseline."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK003"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK017"}]},
+        {"term_id": "TERM-MLPERF", "cells": [
+          {"column_id": "measures", "text_ja": "定義済みAI学習・推論・HPC workload。", "text_en": "Defined AI training, inference, and HPC workloads."},
+          {"column_id": "strengths", "text_ja": "品質条件と提出規則を伴う比較。", "text_en": "Comparison with quality constraints and submission rules."},
+          {"column_id": "blind-spots", "text_ja": "HPCI固有科学AI、未収録model、運用workflow。", "text_en": "HPCI-specific scientific AI, unrepresented models, and operational workflows."},
+          {"column_id": "use", "text_ja": "AI基線と科学AI追加suiteの組合せ。", "text_en": "Combine an AI baseline with additional scientific-AI suites."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK005"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK006"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK016"}]},
+        {"term_id": "TERM-PROXY-APP", "cells": [
+          {"column_id": "measures", "text_ja": "実アプリの選択したkernel・通信・メモリ特性。", "text_en": "Selected kernels, communication, and memory behavior from applications."},
+          {"column_id": "strengths", "text_ja": "移植、計測、設計探索を反復しやすい。", "text_en": "Repeatable porting, measurement, and design exploration."},
+          {"column_id": "blind-spots", "text_ja": "全アプリ、入力規模、I/O、連成との差。", "text_en": "Differences from full applications, scale, I/O, and coupling."},
+          {"column_id": "use", "text_ja": "実アプリ照合付きの設計空間探索。", "text_en": "Use for design-space exploration cross-checked against full applications."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK008"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK009"}]},
+        {"term_id": "TERM-PERFORMANCE-MODEL", "cells": [
+          {"column_id": "measures", "text_ja": "計測と説明変数からの感度・外挿。", "text_en": "Sensitivity and extrapolation from measurements and explanatory variables."},
+          {"column_id": "strengths", "text_ja": "未導入構成と複数設計案を低コスト比較。", "text_en": "Low-cost comparison of unbuilt configurations and multiple designs."},
+          {"column_id": "blind-spots", "text_ja": "モデル外挙動、外挿距離、未知のsoftware効果。", "text_en": "Out-of-model behavior, extrapolation distance, and unknown software effects."},
+          {"column_id": "use", "text_ja": "holdout誤差と不確実性を伴う候補絞込み。", "text_en": "Use for candidate screening with holdout error and uncertainty."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK018"}]}
+      ]
+    }
+  ],
+  "caveat_ja": "本Artifactは公開一次情報から作成した単一モデルによる暫定用語・比較データです。定義は概念の範囲を示し、比較表は技術を単純順位付けしません。製品仕様、価格、実測性能、成熟度は世代・構成・時点で変わり、独立モデルによるConsensus Gateは未完了です。",
+  "caveat_en": "This artifact is provisional terminology and comparison data prepared by one model from public primary sources. Definitions scope concepts, and comparison tables do not produce a simple ranking. Product specifications, price, measured performance, and maturity vary by generation, configuration, and date; independent-model Consensus is incomplete.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-20260826-007",
+    "human_approval_directive_id": "DIR-900008"
+  }
+}
