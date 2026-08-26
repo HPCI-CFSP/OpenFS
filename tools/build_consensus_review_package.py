@@ -14,7 +14,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_ID = "CRP-P0-ROADMAPS-V02"
-DEFAULT_OUTPUT = ROOT / "reviews" / "consensus-packages" / PACKAGE_ID
 ROADMAP_PATHS = [
     f"knowledge/public/roadmaps/{name}.json"
     for name in (
@@ -119,6 +118,8 @@ ARTIFACTS = [
     ("tools/check_workload_observation_summary.py", "tool"),
     ("tools/check_portability_capability_matrix.py", "tool"),
     ("tools/check_scenario_portfolio.py", "tool"),
+    ("tools/add_budget_architecture_options.py", "tool"),
+    ("tools/expand_topic_decision_support.py", "tool"),
     ("tools/check_research_web_security.py", "tool"),
     ("tools/check_roadmap_dependency_register.py", "tool"),
     ("tools/check_public_planning_surfaces.py", "tool"),
@@ -149,12 +150,14 @@ ARTIFACTS = [
     ("skills/source-discovery/SKILL.md", "skill"),
     ("skills/roadmap-planning/SKILL.md", "skill"),
     ("AGENTS.md", "operations-guide"),
+    (".github/pull_request_template.md", "operations-guide"),
     ("docs/architecture.md", "operations-guide"),
     ("docs/planning/roadmap-portfolio.md", "operations-guide"),
     ("README.md", "operations-guide"),
     ("README.ja.md", "operations-guide"),
     ("docs/operations/automation-setup.md", "operations-guide"),
     ("docs/operations/provider-worker-protocol.md", "operations-guide"),
+    ("docs/policies/research-principles.md", "operations-guide"),
     ("docs/policies/research-web-access.md", "operations-guide"),
     ("docs/security/research-web-security-model.md", "operations-guide"),
     ("site/planning.js", "presentation"),
@@ -169,11 +172,13 @@ ARTIFACTS = [
     ("tests/test_pages_site.py", "tool"),
     ("tests/test_public_planning_surfaces.py", "tool"),
     ("tests/test_roadmap_reference_data.py", "tool"),
+    ("tests/test_scenario_portfolio.py", "tool"),
     ("reviews/directives/DIR-900006.json", "directive"),
     ("reviews/directives/DIR-900008.json", "directive"),
     ("reviews/directives/DIR-900009.json", "directive"),
     ("reviews/directives/DIR-900010.json", "directive"),
     ("reviews/directives/DIR-900011.json", "directive"),
+    ("reviews/directives/DIR-900012.json", "directive"),
     ("runs/RUN-OFS003-PILOT-005/center-profile-coverage.json", "run-audit"),
     ("runs/RUN-OFS003-PILOT-005/followup-effectiveness.json", "run-audit"),
     *[(path, "center-profile") for path in CENTER_PROFILE_PATHS],
@@ -386,7 +391,9 @@ def topic_decision_unit(root: Path, commit: str) -> dict[str, Any]:
             "knowledge/public/topic-summaries.json",
             "schemas/public-topic-decision-support.schema.json",
             "reviews/directives/DIR-900010.json",
+            "reviews/directives/DIR-900012.json",
             "config/publication-policy.json",
+            "tools/expand_topic_decision_support.py",
             "tools/check_public_planning_surfaces.py",
             "tools/build_pages_site.py",
             "site/app.js",
@@ -487,20 +494,20 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "scenario",
             "title_ja": "HPCI整備計画3シナリオ",
             "title_en": "Three HPCI infrastructure scenarios",
-            "artifact_paths": ["roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "config/scenario-policy.json", "schemas/system-scenario.schema.json", "schemas/published-scenario-set.schema.json", "tools/check_scenario_portfolio.py", "knowledge/public/dependencies/p0-roadmap-dependencies.json", "schemas/roadmap-dependency-register.schema.json", "tools/check_roadmap_dependency_register.py", *ROADMAP_PATHS],
-            "selectors": ["SCN-HPCI-BALANCED-001", "SCN-HPCI-AI-DATA-001", "SCN-HPCI-STAGED-001", "TOPT-*"],
+            "artifact_paths": ["roadmaps/scenarios/accepted/hpci-p0-scenarios.json", "config/scenario-policy.json", "schemas/system-scenario.schema.json", "schemas/published-scenario-set.schema.json", "tools/check_scenario_portfolio.py", "tools/add_budget_architecture_options.py", "reviews/directives/DIR-900012.json", "site/scenario-detail.html", "site/planning.js", "site/styles.css", "knowledge/public/dependencies/p0-roadmap-dependencies.json", "schemas/roadmap-dependency-register.schema.json", "tools/check_roadmap_dependency_register.py", *ROADMAP_PATHS],
+            "selectors": ["SCN-HPCI-BALANCED-001", "SCN-HPCI-AI-DATA-001", "SCN-HPCI-STAGED-001", "BREF-*", "BUD-*", "BCMP-*", "TOPT-*"],
             "primary_source_requirements": [],
             "required_checks": ["scope-alignment", "scenario-coherence", "fallback-viability", "dependency-validity", "coverage-gap-completeness"],
-            "falsification_prompts_ja": ["3案が実質的に同じ案の言い換えになっていないか。", "アーキテクチャ、ソフトウェア、アプリケーション、センター制約が一体で成立するか。", "fallbackが技術的・運用的に実行可能か。"],
-            "falsification_prompts_en": ["Are the three options genuinely distinct rather than paraphrases?", "Do architecture, software, applications, and center constraints form coherent plans?", "Are fallbacks technically and operationally viable?"],
+            "falsification_prompts_ja": ["3案が実質的に同じ案の言い換えになっていないか。", "アーキテクチャ、ソフトウェア、アプリケーション、センター制約が一体で成立するか。", "fallbackが技術的・運用的に実行可能か。", "公開予算事例の対象範囲が異なるのに同条件の総事業費として比較していないか。", "松竹梅のノード数を調達仕様や見積価格と誤読できる表示になっていないか。", "構成図がシナリオや予算帯を切り替えても同じ内容を示していないか。"],
+            "falsification_prompts_en": ["Are the three options genuinely distinct rather than paraphrases?", "Do architecture, software, applications, and center constraints form coherent plans?", "Are fallbacks technically and operationally viable?", "Are public budget examples with different scopes compared as if they were like-for-like total project costs?", "Could the Ume/Take/Matsu node counts be mistaken for procurement specifications or quotations?", "Does the architecture diagram fail to change with the selected scenario or budget tier?"],
         },
         {
             "unit_id": "CRU-PUBLICATION-ASSURANCE",
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "reviews/directives/DIR-900009.json", "config/consensus-policy.json", "config/publication-policy.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/hpci-system-inventory.json", "knowledge/public/application-performance-forecasts.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/public-hpci-system-inventory.schema.json", "schemas/public-application-performance-forecast.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/check_public_planning_surfaces.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/styles.css"],
-            "selectors": ["DIR-900006", "DIR-900009", "HPCI-SYSTEM-INVENTORY-001", "APP-PERFORMANCE-FORECAST-001", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "reviews/directives/DIR-900009.json", "reviews/directives/DIR-900012.json", "config/consensus-policy.json", "config/publication-policy.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/hpci-system-inventory.json", "knowledge/public/application-performance-forecasts.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/public-hpci-system-inventory.schema.json", "schemas/public-application-performance-forecast.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/check_public_planning_surfaces.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/pull_request_template.md", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "AGENTS.md", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "docs/policies/research-principles.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/styles.css"],
+            "selectors": ["DIR-900006", "DIR-900009", "DIR-900012", "HPCI-SYSTEM-INVENTORY-001", "APP-PERFORMANCE-FORECAST-001", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version"],
             "primary_source_requirements": [],
             "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
             "falsification_prompts_ja": ["未完了のConsensusを受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。", "Gap割当からWork Item、Source、no-resultまで来歴が途切れていないか。", "production-readiness前に本番検索を開始できないか。"],
@@ -509,7 +516,9 @@ def shared_units() -> list[dict[str, Any]]:
     ]
 
 
-def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, Any]:
+def build_manifest(
+    root: Path, base_commit: str, created_at: str, package_id: str = PACKAGE_ID
+) -> dict[str, Any]:
     policy = committed_json(root, base_commit, "config/consensus-policy.json")
     rule = policy["rules"]["high_impact_recommendation"]
     units = [
@@ -542,7 +551,7 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
     }
     return {
         "schema_version": "0.1.0",
-        "package_id": PACKAGE_ID,
+        "package_id": package_id,
         "status": "awaiting-independent-review",
         "object_type": "high-impact-recommendation",
         "base_commit": base_commit,
@@ -590,9 +599,9 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
             },
         ],
         "submission": {
-            "assessment_directory": f"assessments/{PACKAGE_ID}/",
+            "assessment_directory": f"assessments/{package_id}/",
             "assessment_schema": "schemas/consensus-package-review.schema.json",
-            "gate_command": f"python3 tools/evaluate_consensus_review_package.py reviews/consensus-packages/{PACKAGE_ID}/manifest.json",
+            "gate_command": f"python3 tools/evaluate_consensus_review_package.py reviews/consensus-packages/{package_id}/manifest.json",
         },
     }
 
@@ -640,8 +649,9 @@ def review_template(manifest: dict[str, Any], manifest_digest: str) -> dict[str,
 
 def readme(manifest: dict[str, Any]) -> str:
     commit = manifest["base_commit"]
+    package_id = manifest["package_id"]
     summary = manifest["portfolio_summary"]
-    return f"""# P0 roadmap v0.2 independent review package
+    return f"""# {package_id} independent review package
 
 This package pins {summary['roadmap_count']} P0 roadmaps, {summary['milestone_count']}
 milestone records, {summary['generation_band_count']} synthesized generation bands,
@@ -666,7 +676,7 @@ and {summary['source_count']} source registrations representing
 3. Actively seek counterevidence using each unit's falsification prompts. Keep
    unsupported timing as a Coverage Gap; do not infer a quarter.
 4. Fill `review-template.json`, remove `_template_notice`, assign a unique review
-   ID, and save it under `assessments/{PACKAGE_ID}/`. Do not edit the package manifest.
+   ID, and save it under `assessments/{package_id}/`. Do not edit the package manifest.
 5. Record provider, model family, prompt profile, independence/origin groups,
    harness repository, and harness commit. A fork of the author conversation is
    not an independent vote. The agent must be enabled in the commit-pinned Agent
@@ -702,7 +712,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--base-commit", required=True)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--package-id", default=PACKAGE_ID)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--created-at")
     args = parser.parse_args()
     commit = subprocess.run(
@@ -710,17 +721,18 @@ def main() -> int:
         cwd=args.root, check=True, text=True, stdout=subprocess.PIPE,
     ).stdout.strip()
     created_at = args.created_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    manifest = build_manifest(args.root, commit, created_at)
-    args.output.mkdir(parents=True, exist_ok=True)
+    manifest = build_manifest(args.root, commit, created_at, args.package_id)
+    output = args.output or args.root / "reviews" / "consensus-packages" / args.package_id
+    output.mkdir(parents=True, exist_ok=True)
     manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     manifest_digest = hashlib.sha256(manifest_bytes).hexdigest()
-    (args.output / "manifest.json").write_bytes(manifest_bytes)
-    (args.output / "review-template.json").write_text(
+    (output / "manifest.json").write_bytes(manifest_bytes)
+    (output / "review-template.json").write_text(
         json.dumps(review_template(manifest, manifest_digest), ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    (args.output / "README.md").write_text(readme(manifest), encoding="utf-8")
-    print(json.dumps({"package_id": PACKAGE_ID, "base_commit": commit, "artifacts": len(manifest["artifact_manifest"]), "review_units": len(manifest["review_units"])}, ensure_ascii=False))
+    (output / "README.md").write_text(readme(manifest), encoding="utf-8")
+    print(json.dumps({"package_id": args.package_id, "base_commit": commit, "artifacts": len(manifest["artifact_manifest"]), "review_units": len(manifest["review_units"])}, ensure_ascii=False))
     return 0
 
 

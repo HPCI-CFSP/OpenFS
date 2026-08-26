@@ -22,7 +22,7 @@
       roadmap: "ロードマップ", total: "合計", status: "状態", source: "情報源", url: "公開URL", relationship: "関係", criticality: "重要度", decisionImpact: "判断への影響", delayRisk: "遅延リスク", gates: "判断ゲート", high: "高", medium: "中", low: "低", commit: "Commit", priority: "優先度", scope: "確認対象", impact: "判断への影響", nextAction: "次の調査行動", open: "未解決",
       scenarioKicker: "SYSTEM PLANNING OPTIONS", scenarioIndexTitle: "システム整備計画案 3案比較", scenarioIndexLead: "同じ11評価軸、判断ゲート、時間軸で比較し、未確認条件を推測で埋めずに残します。",
       notRanking: "推奨順位ではありません", scenarioNotice: "3案はいずれも単一モデルによる暫定案で、センターProfile、価格、供給、施設条件、Consensusが未完了です。",
-      scenarioComparisonTitle: "共通形式で比較", commonDecisionGates: "共通判断ゲート", objective: "目的", architecture: "アーキテクチャ", systemSoftware: "システムソフトウェア", applications: "アプリケーション", unknownCount: "未確認条件", reversibility: "可逆性", openDetail: "詳細を見る",
+      scenarioComparisonTitle: "共通形式で比較", commonDecisionGates: "共通判断ゲート", objective: "目的", architecture: "アーキテクチャ", systemSoftware: "システムソフトウェア", applications: "アプリケーション", unknownCount: "未確認条件", reversibility: "可逆性", openDetail: "詳細を見る", budgetArchitectureTitle: "予算規模別のシステムアーキテクチャ案", budgetArchitectureLead: "梅・竹・松を切り替え、概算予算内で構成する場合の規模と接続関係を比較します。竹を基準案とします。", budgetArchitectureControl: "予算規模", budgetRange: "概算事業規模", analyticalEstimate: "OpenFS分析値", lowConfidence: "確信度: 低", cpuNodes: "CPUノード", acceleratorNodes: "アクセラレータノード", accelerators: "アクセラレータ", storageCapacity: "共有ストレージ", facilityClass: "施設規模", component: "構成要素", quantity: "概算規模", role: "役割", budgetReferenceCases: "予算・構成の公開参照例", referenceBudget: "公表規模", notPublished: "非公表", comparabilityNote: "比較上の注意", estimateMethod: "推定方法",
       planningHorizon: "計画期間", researchStatus: "調査状態", consensusStatus: "Consensus", updatedColumn: "更新日時", provisional: "暫定", incomplete: "未完了", implementationTimelineTitle: "計画案の時間的な展開", implementationTimelineLead: "各案が調査・実証から導入・展開へ進む想定を四半期単位で示します。すべてOpenFSの暫定計画であり、外部製品の確定日程ではありません。", implementationTimelineDetailLead: "分野別の調査、実証、判断、導入、展開を四半期単位で示します。各帯の期間はOpenFSの暫定計画です。", contextNotesTitle: "適用範囲に関する注記", hpciSpecific: "HPCI固有", reusable: "一般化可能", planVersion: "計画案の版", effectiveFrom: "適用開始日", reviewDue: "次回見直し期限", supersedes: "置換前の版", noSupersededVersion: "初版", timelineDomain: "分野", timelineQuarter: "四半期", stageResearch: "調査", stageEvaluation: "評価", stagePilot: "実証", stageDecision: "判断", stageDeployment: "導入", stageExpansion: "展開", stageOperation: "運用", stageRetirement: "更新・終了", portfolio: "計画全体", "storage-data": "ストレージ・データ", "facility-operations": "施設・運用", "procurement-governance": "調達・ガバナンス",
       centerImpacts: "センターへの影響", technologyOptions: "技術候補とfallback", decisionEvidenceContracts: "判断に必要な検証契約", decisionEvidenceContractsNote: "各契約の検証に合格してもConsensus候補になるだけで、自動採用されません。", coveredGaps: "対象P0 Gap", schemas: "Schema", validators: "Validator", acceptanceEffect: "効力", candidateOnly: "Consensus候補まで", evaluationAxes: "11評価軸", unscoredNote: "人が重みを承認していないため総合点は付けません。", decisionBlockingGaps: "正式判断を止めるP0 Gap", decisionBlockingGapsNote: "候補の比較は続けられますが、正式な推奨・採用には解消または記録付きの扱い決定が必要です。", uncertainties: "未確認条件", decisionGates: "判断ゲート", provenance: "PROVENANCE", traceability: "来歴と参照ID", sourceCommit: "ソースコミット",
       fit: "適合性", migration: "移行", unverified: "未確認", candidate: "候補", role: "役割", maturityGate: "成熟度ゲート", fallback: "Fallback", criterion: "評価軸", assessment: "暫定評価", evidence: "参照ID", optionDomain: "分野", compute: "計算ノード", memory: "メモリ", interconnect: "インターコネクト", "system-software": "システムソフトウェア", applicationsDomain: "アプリケーション",
@@ -43,7 +43,7 @@
       roadmap: "Roadmap", total: "Total", status: "Status", source: "Source", url: "Public URL", relationship: "Relationship", criticality: "Criticality", decisionImpact: "Decision impact", delayRisk: "Delay risk", gates: "Decision gates", high: "high", medium: "medium", low: "low", commit: "Commit", priority: "Priority", scope: "Scope", impact: "Decision impact", nextAction: "Next research action", open: "open",
       scenarioKicker: "SYSTEM PLANNING OPTIONS", scenarioIndexTitle: "Three system planning options", scenarioIndexLead: "Compare all three on the same eleven criteria, decision gates, and time axis without filling unknowns by inference.",
       notRanking: "Not a recommendation ranking", scenarioNotice: "All three are single-model provisional options. Center profiles, price, supply, facility conditions, and Consensus remain incomplete.",
-      scenarioComparisonTitle: "Common-format comparison", commonDecisionGates: "Common decision gates", objective: "Objective", architecture: "Architecture", systemSoftware: "System Software", applications: "Applications", unknownCount: "Unknown conditions", reversibility: "Reversibility", openDetail: "Open details",
+      scenarioComparisonTitle: "Common-format comparison", commonDecisionGates: "Common decision gates", objective: "Objective", architecture: "Architecture", systemSoftware: "System Software", applications: "Applications", unknownCount: "Unknown conditions", reversibility: "Reversibility", openDetail: "Open details", budgetArchitectureTitle: "Budget-scaled system architecture options", budgetArchitectureLead: "Switch among Ume, Take, and Matsu to compare estimated system scale and connectivity within each budget class. Take is the reference option.", budgetArchitectureControl: "Budget class", budgetRange: "Estimated program scale", analyticalEstimate: "OpenFS analytical estimate", lowConfidence: "confidence: low", cpuNodes: "CPU nodes", acceleratorNodes: "Accelerator nodes", accelerators: "Accelerators", storageCapacity: "Shared storage", facilityClass: "Facility class", component: "Component", quantity: "Estimated scale", role: "Role", budgetReferenceCases: "Public budget and topology reference cases", referenceBudget: "Published scale", notPublished: "not published", comparabilityNote: "Comparability note", estimateMethod: "Estimation method",
       planningHorizon: "Planning horizon", researchStatus: "Research status", consensusStatus: "Consensus", updatedColumn: "Updated", provisional: "provisional", incomplete: "incomplete", implementationTimelineTitle: "Time-phased implementation path", implementationTimelineLead: "Shows how each option could progress from research and pilots to deployment and expansion by quarter. All bands are provisional OpenFS plans, not confirmed external product schedules.", implementationTimelineDetailLead: "Shows research, evaluation, decisions, deployment, and expansion by domain and quarter. Each band is a provisional OpenFS plan.", contextNotesTitle: "Scope notes", hpciSpecific: "HPCI-specific", reusable: "Reusable", planVersion: "Plan version", effectiveFrom: "Effective from", reviewDue: "Review due", supersedes: "Supersedes", noSupersededVersion: "initial version", timelineDomain: "Domain", timelineQuarter: "Quarter", stageResearch: "research", stageEvaluation: "evaluation", stagePilot: "pilot", stageDecision: "decision", stageDeployment: "deployment", stageExpansion: "expansion", stageOperation: "operation", stageRetirement: "renewal / retirement", portfolio: "Overall plan", "storage-data": "Storage and data", "facility-operations": "Facilities and operations", "procurement-governance": "Procurement and governance",
       centerImpacts: "Center impacts", technologyOptions: "Technology options and fallback", decisionEvidenceContracts: "Decision evidence contracts", decisionEvidenceContractsNote: "Passing a contract only makes the result a Consensus candidate; it does not trigger automatic adoption.", coveredGaps: "Covered P0 Gaps", schemas: "Schemas", validators: "Validators", acceptanceEffect: "Effect", candidateOnly: "Consensus candidate only", evaluationAxes: "Eleven evaluation criteria", unscoredNote: "No total score is calculated before human approval of weights.", decisionBlockingGaps: "P0 Gaps blocking a formal decision", decisionBlockingGapsNote: "Candidate comparison can continue, but formal recommendation or adoption requires resolution or a recorded disposition.", uncertainties: "Uncertainties", decisionGates: "Decision gates", provenance: "PROVENANCE", traceability: "Traceability and references", sourceCommit: "Source commit",
       fit: "Fit", migration: "Migration", unverified: "Unverified", candidate: "Candidate", role: "Role", maturityGate: "Maturity gate", fallback: "Fallback", criterion: "Criterion", assessment: "Provisional assessment", evidence: "Evidence refs", optionDomain: "Domain", compute: "Compute", memory: "Memory", interconnect: "Interconnect", "system-software": "System Software", applicationsDomain: "Applications",
@@ -292,9 +292,92 @@
     const section = document.createElement("section"); section.className = "scenario-plan-section"; const title = document.createElement("h3"); title.textContent = tr(key); const summary = document.createElement("p"); summary.textContent = localized(value, "summary"); const list = document.createElement("ul"); localizedArray(value, "priorities").forEach((priority) => list.append(makeCell("li", priority))); const refs = document.createElement("p"); refs.className = "mono-list"; refs.textContent = (value.roadmap_refs || []).join(" · "); section.append(title, summary, list, refs); root.append(section);
   }
 
+  function budgetText(range) {
+    if (language === "ja") return `${range.lower.toLocaleString("ja-JP")}〜${range.upper.toLocaleString("ja-JP")}億円（基準 ${range.reference.toLocaleString("ja-JP")}億円）`;
+    const lower = range.lower / 10;
+    const upper = range.upper / 10;
+    const reference = range.reference / 10;
+    return `JPY ${lower.toLocaleString("en-US")}–${upper.toLocaleString("en-US")}B (reference ${reference.toLocaleString("en-US")}B)`;
+  }
+
+  function architectureComponent(component) {
+    const item = document.createElement("article");
+    item.className = `architecture-node architecture-${component.component_type}`;
+    const type = document.createElement("span"); type.className = "architecture-node-type"; type.textContent = component.component_type.replaceAll("-", " ");
+    const title = document.createElement("h4"); title.textContent = localized(component, "label");
+    const quantity = document.createElement("strong"); quantity.textContent = `${component.quantity.toLocaleString(language === "ja" ? "ja-JP" : "en-US")} ${localized(component, "unit")}`;
+    const role = document.createElement("p"); role.textContent = localized(component, "role");
+    item.append(type, title, quantity, role);
+    return item;
+  }
+
+  function renderArchitectureDiagram(option) {
+    const figure = document.getElementById("scenario-architecture-diagram");
+    figure.replaceChildren();
+    const groups = [
+      ["architecture-service-row", ["management"]],
+      ["architecture-compute-row", ["compute-cpu", "compute-accelerator", "large-memory", "pilot"]],
+      ["architecture-network-row", ["interconnect"]],
+      ["architecture-data-row", ["storage", "facility"]],
+    ];
+    groups.forEach(([className, types], index) => {
+      const row = document.createElement("div"); row.className = className;
+      option.components.filter((item) => types.includes(item.component_type)).forEach((item) => row.append(architectureComponent(item)));
+      if (row.childElementCount) figure.append(row);
+      if (row.childElementCount && index < groups.length - 1) {
+        const connector = document.createElement("div"); connector.className = "architecture-connector"; connector.setAttribute("aria-hidden", "true"); figure.append(connector);
+      }
+    });
+    const caption = document.createElement("figcaption"); caption.textContent = localized(option, "caveat"); figure.append(caption);
+  }
+
+  function renderArchitectureSpecs(option) {
+    const root = document.getElementById("scenario-architecture-specs");
+    const table = document.createElement("table"); table.className = "architecture-spec-table";
+    const head = document.createElement("thead"); const headRow = document.createElement("tr");
+    [tr("component"), tr("quantity"), tr("role")].forEach((label) => headRow.append(makeCell("th", label))); head.append(headRow);
+    const body = document.createElement("tbody");
+    option.components.forEach((item) => { const row = document.createElement("tr"); row.append(makeCell("th", localized(item, "label")), makeCell("td", `${item.quantity.toLocaleString(language === "ja" ? "ja-JP" : "en-US")} ${localized(item, "unit")}`), makeCell("td", localized(item, "role"))); body.append(row); });
+    table.append(head, body); root.replaceChildren(table);
+  }
+
+  function renderBudgetReferences(option) {
+    const byId = new Map((data.scenario_budget_references || []).map((item) => [item.case_id, item]));
+    const root = document.getElementById("scenario-budget-references"); root.replaceChildren();
+    option.reference_case_ids.map((id) => byId.get(id)).filter(Boolean).forEach((reference) => {
+      const item = document.createElement("article");
+      const title = document.createElement("h4"); const link = document.createElement("a"); link.href = reference.source_url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = localized(reference, "name"); title.append(link);
+      const configuration = document.createElement("p"); configuration.textContent = localized(reference, "configuration");
+      const meta = document.createElement("dl");
+      const budget = reference.budget_oku_jpy === null ? tr("notPublished") : (language === "ja" ? `${reference.budget_oku_jpy.toLocaleString("ja-JP")}億円` : `JPY ${(reference.budget_oku_jpy / 10).toLocaleString("en-US")}B`);
+      [[tr("referenceBudget"), budget], [tr("comparabilityNote"), localized(reference, "comparability_note")]].forEach(([term, value]) => { const group = document.createElement("div"); group.append(makeCell("dt", term), makeCell("dd", value)); meta.append(group); });
+      item.append(title, configuration, meta); root.append(item);
+    });
+  }
+
+  function renderBudgetOption(scenario, tier) {
+    const option = scenario.budget_options.find((item) => item.tier === tier) || scenario.budget_options[1];
+    document.querySelectorAll("[data-budget-tier]").forEach((button) => { const active = button.dataset.budgetTier === option.tier; button.classList.toggle("active", active); button.setAttribute("aria-pressed", String(active)); });
+    const summary = document.getElementById("scenario-budget-summary"); summary.replaceChildren();
+    const heading = document.createElement("div"); const label = document.createElement("strong"); label.textContent = localized(option, "label"); const budget = document.createElement("span"); budget.textContent = `${tr("budgetRange")}: ${budgetText(option.budget_range_oku_jpy)}`; heading.append(label, budget);
+    const badges = document.createElement("div"); badges.className = "architecture-badges"; [tr("analyticalEstimate"), tr("lowConfidence")].forEach((value) => { const badge = document.createElement("span"); badge.className = "status-badge"; badge.textContent = value; badges.append(badge); });
+    const method = document.createElement("p"); method.textContent = `${tr("estimateMethod")}: ${localized(option, "estimate_method")}`;
+    const aggregate = document.createElement("dl"); aggregate.className = "architecture-aggregate";
+    [[tr("cpuNodes"), option.aggregate.cpu_nodes.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("acceleratorNodes"), option.aggregate.accelerator_nodes.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("accelerators"), option.aggregate.accelerators.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("storageCapacity"), `${option.aggregate.storage_pb.toLocaleString(language === "ja" ? "ja-JP" : "en-US")} PB`], [tr("facilityClass"), localized(option.aggregate, "facility_class")]].forEach(([term, value]) => { const group = document.createElement("div"); group.append(makeCell("dt", term), makeCell("dd", value)); aggregate.append(group); });
+    summary.append(heading, badges, method, aggregate);
+    renderArchitectureDiagram(option); renderArchitectureSpecs(option); renderBudgetReferences(option);
+  }
+
+  function renderBudgetOptions(scenario) {
+    const root = document.getElementById("scenario-budget-options"); root.replaceChildren();
+    scenario.budget_options.forEach((option) => { const button = document.createElement("button"); button.type = "button"; button.dataset.budgetTier = option.tier; button.textContent = localized(option, "label"); button.addEventListener("click", () => renderBudgetOption(scenario, option.tier)); root.append(button); });
+    renderBudgetOption(scenario, "take");
+  }
+
   function renderScenarioDetail() {
     const scenario = data.scenarios.find((item) => item.scenario_id === document.body.dataset.scenarioId); if (!scenario) { document.querySelector("main").textContent = "Scenario unavailable."; return; }
     document.title = `${localized(scenario, "title")} | OpenFS`; setText("scenario-breadcrumb-title", localized(scenario, "title")); setText("scenario-id", scenario.scenario_id); setText("scenario-title", localized(scenario, "title")); setText("scenario-objective", localized(scenario, "objective")); setText("scenario-horizon", scenario.planning_horizon); setText("scenario-research-status", tr(scenario.research_status)); setText("scenario-consensus-status", tr(scenario.consensus_status)); setText("scenario-caveat", localized(scenario, "caveat")); setText("scenario-artifact-id", scenario.scenario_id); setText("scenario-plan-version", scenario.plan_version); setText("scenario-effective-from", scenario.effective_from); setText("scenario-review-due", scenario.review_due); setText("scenario-supersedes", scenario.supersedes.length ? scenario.supersedes.join(" · ") : tr("noSupersededVersion")); setText("scenario-evidence-refs", scenario.evidence_refs.join(" · ")); setText("scenario-revision-updated", formatJst(scenario.updated_at)); const updated = document.getElementById("scenario-updated"); updated.href = scenario.source_commit_url; updated.textContent = formatJst(scenario.updated_at); const commit = document.getElementById("scenario-source-commit"); commit.href = scenario.source_commit_url; commit.textContent = scenario.source_commit;
+    renderBudgetOptions(scenario);
     const timelineDomains = ["compute", "memory", "interconnect", "storage-data", "system-software", "applications", "facility-operations", "procurement-governance"];
     renderScenarioTimeline(
       document.getElementById("scenario-detail-timeline"),

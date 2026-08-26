@@ -285,7 +285,17 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
             decision_support = result["topic_decision_support"]
-            self.assertEqual(5, len(decision_support["topic_profiles"]))
+            partial_topic_ids = {
+                topic["topic_id"]
+                for topic in json.loads(
+                    (ROOT / "config/research-baseline.json").read_text(encoding="utf-8")
+                )["topics"]
+                if topic["status"] == "partial"
+            }
+            self.assertEqual(
+                partial_topic_ids,
+                {profile["topic_id"] for profile in decision_support["topic_profiles"]},
+            )
             self.assertEqual(6, len(decision_support["platform_matrix"]["platforms"]))
             self.assertEqual(6, len(decision_support["numerical_method_matrix"]["methods"]))
             self.assertNotIn("publication", decision_support)
@@ -303,6 +313,13 @@ class PagesSiteTests(unittest.TestCase):
             )
             topics_by_id = {topic["topic_id"]: topic for topic in result["topics"]}
             self.assertGreater(topics_by_id["SSW-04"]["decision_item_count"], 0)
+            self.assertNotIn("review_cadence", topics_by_id["ARCH-01"])
+            self.assertNotIn("catalog_origin", topics_by_id["ARCH-01"])
+            self.assertEqual(
+                "independent-review-pending",
+                topics_by_id["ARCH-01"]["verification_status"],
+            )
+            self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
             self.assertEqual(1, len(result["consensus_packages"]))
             package = result["consensus_packages"][0]
@@ -345,7 +362,9 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and scenario["plan_version"] == "0.3"
+                    and scenario["plan_version"] == "0.4"
+                    and [option["tier"] for option in scenario["budget_options"]]
+                    == ["ume", "take", "matsu"]
                     and len(scenario["implementation_path"]["phases"]) == 12
                     and {note["scope"] for note in scenario["context_notes"]}
                     == {"reusable", "hpci-specific"}
@@ -365,6 +384,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="scenario-evidence-contracts"', scenario_html)
             self.assertIn('id="scenario-detail-timeline"', scenario_html)
             self.assertIn('id="scenario-context-notes"', scenario_html)
+            self.assertIn('id="scenario-budget-options"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")

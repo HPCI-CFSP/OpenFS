@@ -2,7 +2,7 @@
 
 ## Current status
 
-As of 2026-08-24, the repository has a Run Controller, leased Work Items,
+As of 2026-08-27, the repository has a Run Controller, leased Work Items,
 configuration snapshots, Rights Gate, pinned automatic source-change detection, coverage reporting,
 Consensus-capacity preflight, deterministic Consensus decisions, weekly Digests,
 review Briefs, sanitized Issue payloads, budgets, stop records, and guarded GitHub
@@ -45,6 +45,23 @@ one deduplicated coordination Issue. It makes no model call, performs no promoti
 and publishes no research result. Provider API clients and an unattended research
 Worker are still intentionally disabled. Adding API keys alone does not start paid
 research.
+
+## Responsiveness target
+
+The worldwide Monitor has a one-day maximum unchecked interval. This is an
+internal operational target, not a promise that every Topic changes every day.
+When production execution is enabled, the coordinator should prioritize newly
+detected official releases, security corrections, procurement notices, standards
+updates, and roadmap changes ahead of routine queries. The fast lane may publish
+only a visibly provisional update after source, retrieval, boundary, schema, and
+human-publication checks; independent verification and Consensus continue on the
+normal lane.
+
+The repository currently provides the weekly control-plane workflow, but the
+production worker and verified safe-fetch path remain disabled. Until those gates
+pass, the one-day target is a declared service objective rather than an active
+unattended guarantee. Public Pages therefore shows the last reflected update,
+verification state, and open Coverage Gaps instead of promising a fixed cadence.
 
 The existing roadmap URL audit still uses direct Python HTTP for local development.
 The scheduled Review now fails closed before that step and cannot become

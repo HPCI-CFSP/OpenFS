@@ -19,6 +19,7 @@
     "applications",
     "center_impacts",
     "technology_options",
+    "budget_options",
     "context_notes",
     "implementation_path",
     "evaluation",
@@ -85,6 +86,12 @@
         "additionalProperties": false
       }
     },
+    "budget_options": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/budgetOption"}
+    },
     "context_notes": {
       "type": "array",
       "minItems": 1,
@@ -143,6 +150,67 @@
     }
   ],
   "$defs": {
+    "budgetOption": {
+      "type": "object",
+      "required": ["option_id", "tier", "label_ja", "label_en", "budget_range_oku_jpy", "estimate_method_ja", "estimate_method_en", "confidence", "reference_case_ids", "components", "aggregate", "caveat_ja", "caveat_en"],
+      "properties": {
+        "option_id": {"type": "string", "pattern": "^BUD-[A-Z0-9-]+$"},
+        "tier": {"enum": ["ume", "take", "matsu"]},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "budget_range_oku_jpy": {
+          "type": "object",
+          "required": ["lower", "reference", "upper"],
+          "properties": {
+            "lower": {"type": "number", "minimum": 0},
+            "reference": {"type": "number", "minimum": 0},
+            "upper": {"type": "number", "minimum": 0}
+          },
+          "additionalProperties": false
+        },
+        "estimate_method_ja": {"type": "string", "minLength": 1},
+        "estimate_method_en": {"type": "string", "minLength": 1},
+        "confidence": {"const": "low"},
+        "reference_case_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^BREF-[A-Z0-9-]+$"}},
+        "components": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "object",
+            "required": ["component_id", "component_type", "label_ja", "label_en", "quantity", "unit_ja", "unit_en", "role_ja", "role_en", "connection_ids"],
+            "properties": {
+              "component_id": {"type": "string", "pattern": "^BCMP-[A-Z0-9-]+$"},
+              "component_type": {"enum": ["compute-cpu", "compute-accelerator", "large-memory", "pilot", "interconnect", "storage", "management", "facility"]},
+              "label_ja": {"type": "string", "minLength": 1},
+              "label_en": {"type": "string", "minLength": 1},
+              "quantity": {"type": "number", "minimum": 0},
+              "unit_ja": {"type": "string", "minLength": 1},
+              "unit_en": {"type": "string", "minLength": 1},
+              "role_ja": {"type": "string", "minLength": 1},
+              "role_en": {"type": "string", "minLength": 1},
+              "connection_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^BCMP-[A-Z0-9-]+$"}}
+            },
+            "additionalProperties": false
+          }
+        },
+        "aggregate": {
+          "type": "object",
+          "required": ["cpu_nodes", "accelerator_nodes", "accelerators", "storage_pb", "facility_class_ja", "facility_class_en"],
+          "properties": {
+            "cpu_nodes": {"type": "integer", "minimum": 0},
+            "accelerator_nodes": {"type": "integer", "minimum": 0},
+            "accelerators": {"type": "integer", "minimum": 0},
+            "storage_pb": {"type": "number", "minimum": 0},
+            "facility_class_ja": {"type": "string", "minLength": 1},
+            "facility_class_en": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "quarterPoint": {
       "type": "object",
       "required": ["year", "quarter"],

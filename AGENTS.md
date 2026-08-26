@@ -107,6 +107,12 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 
 When a task contains multiple investigations, organize them into separate task, monitor, run, and artifact IDs. Do not mix unrelated investigations in a single output file.
 
+When a human states a general rule and gives one item as an example, apply the
+rule to every repository item that matches the stated scope. Before editing,
+enumerate that scope from structured data. If the boundary remains ambiguous,
+ask the human or complete the unambiguous subset and explicitly propose the
+remaining matching items; never silently treat the example as the full scope.
+
 ## Public roadmap artifacts
 
 - Maintain decision-oriented Topic summaries in
@@ -116,6 +122,11 @@ When a task contains multiple investigations, organize them into separate task, 
   options, research/prototype work, and contested paths separately. The canonical
   Topic title must not be repeated as a synthetic subtopic, and research-run titles
   are provenance, not a planning conclusion.
+- Every Topic whose catalog status is `partial` must have exactly one
+  decision-oriented public profile. Pages publication fails closed when a partial
+  Topic lacks the current/near-term comparison, adoption conditions, or Coverage
+  Gap. Keep Monitor cadence and catalog lineage inside the Harness; the public
+  catalog shows research state, verification state, last update, and open Gaps.
 - Regional views are filters over cited actors and their design, development,
   manufacturing, or standardization roles. Do not duplicate conclusions into
   country-specific pages, reduce a multi-region supply chain to one nationality,
