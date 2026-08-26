@@ -197,6 +197,21 @@ def collect_scenarios(
     return scenarios
 
 
+def collect_scenario_budget_references(
+    root: Path, policy: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Collect the single-source public budget reference cases for scenarios."""
+    references: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.glob(policy["accepted_scenario_glob"])):
+        payload = load_json(path)
+        for item in payload.get("budget_reference_cases", []):
+            case_id = item["case_id"]
+            if case_id in references and references[case_id] != item:
+                raise ValueError(f"conflicting scenario budget reference: {case_id}")
+            references[case_id] = item
+    return sorted(references.values(), key=lambda item: item["case_id"])
+
+
 def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
     index_path = root / policy["report_index"]
     if not index_path.exists():
@@ -1064,11 +1079,25 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 "title_ja": topic["title_ja"],
                 "title_en": i18n["topic_titles_en"][topic["topic_id"]],
                 "status": topic["status"],
-                "review_cadence": topic["review_cadence"],
-                "catalog_origin": (
-                    "protected-initial"
-                    if topic["topic_id"] in initial_ids
-                    else topic.get("catalog_origin", "human-directive")
+                "verification_status": (
+                    "consensus-verified"
+                    if decision_profile and topic_decision_support["consensus_status"] == "accepted"
+                    else "independent-review-pending"
+                    if decision_profile
+                    else "evidence-collected"
+                    if finding_count
+                    else "not-yet-reviewed"
+                ),
+                "last_updated_at": (
+                    topic_decision_support["updated_at"] if decision_profile else None
+                ),
+                "last_updated_commit_url": (
+                    topic_decision_support["source_commit_url"] if decision_profile else None
+                ),
+                "coverage_gap_count": (
+                    len(decision_profile["coverage_gap_ids"])
+                    if decision_profile
+                    else 0
                 ),
                 "research_summary_count": summary_count,
                 "research_finding_count": finding_count,
@@ -1077,6 +1106,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         )
 
     scenarios = collect_scenarios(root, policy)
+    scenario_budget_references = collect_scenario_budget_references(root, policy)
     consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
@@ -1144,6 +1174,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,
+        "scenario_budget_references": scenario_budget_references,
         "reports": reports,
         "publication": {
             "policy_id": policy["policy_id"],

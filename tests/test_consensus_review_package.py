@@ -107,7 +107,13 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         def fake_json(_root, _commit, path):
             if path == "config/agent-registry.json":
                 return registry
-            return load_json(ROOT / path)
+            result = subprocess.run(
+                ["git", "show", f"{self.manifest['base_commit']}:{path}"],
+                cwd=ROOT,
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+            return json.loads(result.stdout)
 
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             root = Path(tmp)

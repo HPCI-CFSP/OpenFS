@@ -15,26 +15,24 @@
       aboutLead: "OpenFSは、将来の計算・データ基盤のシステム整備計画を検討するため、計算機アーキテクチャ、メモリ・ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠付きの技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、情報の更新日と確認状況、Consensus状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
       overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示し、システム整備計画案と報告書は人の公開承認を通過した成果に限定します。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開計画案", scenarioMetricNote: "人の公開承認を通過した成果",
+      topicsMetric: "調査Topic", topicsMetricNote: "調査カタログに登録済み", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開計画案", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各Topicでは、現在利用中・近未来・研究段階・未確定の技術を分け、HPCI整備への関係、公開根拠、Coverage Gap、調査履歴を確認できます。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "Topic ID、名称",
-      tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
+      tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "調査状態", tableVerification: "検証状態", tableUpdated: "最終更新", tableGaps: "Gap",
       noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分野別のロードマップを一覧から選び、年表、根拠、HPCI整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開済みロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
       scenarioKicker: "計画の選択肢", scenarioTitle: "システム整備計画案",
       scenarioLead: "Architecture、System Software、Applications、運用主体への影響、技術動向、不確実性を一体で比較します。HPCI固有の条件は各計画案で注記します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
-      noScenarioText: "現在の4案はGenerator検証用の例示です。根拠・評価・人の公開承認を通過した案だけを公開します。",
+      noScenarioText: "根拠・評価・人の公開承認を通過した計画案が追加されると、ここへ表示します。",
       openScenarioComparison: "3つの計画案を比較する",
       reportKicker: "報告書", reportTitle: "報告書・Export", reportLead: "公開版には版、基準日、根拠への追跡、置換関係を付けます。",
       noReportTitle: "公開済み報告書はまだありません",
       noReportText: "Promotion workflowで受理され、人が公開を承認したExportが追加されると、ここへ自動表示されます。",
-      footerDescription: "HPCI-CFSP 公開調査ビュー", originInitial: "保護された初期項目",
-      originHuman: "人の指示", originAi: "AI Consensus", statusNotStarted: "未着手", statusPartial: "一部完了",
-      statusReviewed: "確認済み", statusRetired: "廃止", cadenceWeekly: "週次", cadenceMonthly: "月次",
-      cadenceQuarterly: "四半期", cadenceAnnual: "年次", cadenceEvent: "事象発生時",
+      footerDescription: "HPCI-CFSP 公開調査ビュー", statusNotStarted: "未着手", statusPartial: "一部完了",
+      statusReviewed: "確認済み", statusRetired: "廃止", verificationPending: "独立検証待ち", verificationAccepted: "Consensus確認済み", evidenceCollected: "根拠収集中", notYetReviewed: "未検証", noPublicUpdate: "未公開",
       findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見未作成", closeDialog: "詳細を閉じる",
       topicDetailMeta: "Topic詳細", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "このTopicに紐づく調査結果はまだ公開されていません。今後の調査ループで更新されます。",
@@ -51,7 +49,7 @@
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "現状とHPCI整備への示唆", currentState: "現在の状況", hpciImplications: "HPCI整備への示唆", roadmapCaveat: "公開時の注意事項",
       commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "公開時期なし", officialScanIncomplete: "一次情報の継続確認が必要"
-      ,decisionSummary: "整備判断向けの技術整理", provisionalNotice: "公開情報による暫定整理です。独立モデルによるConsensus Gateは未完了です。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "現在利用されている技術", nearTermStage: "近い将来の有力候補", researchStage: "研究・試作段階", contestedStage: "競合中・未確定の論点", maturity: "成熟度", timing: "時期", confidence: "確信度", hpciRelevance: "HPCI整備への関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能 / ソフトウェア", supportLevel: "対応", optimizationLevel: "最適化", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム / ソフトウェア", targetPlatforms: "対象platform", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "Coverage Gap", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査Runごとの来歴と抽出知見を確認する", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "community", notVerified: "未確認", vendorTuned: "vendor最適化", architectureTuned: "architecture最適化", portable: "可搬", generic: "汎用", researchArtifact: "研究artifact", native: "native", libraryDependent: "library依存", singleNode: "単一node"
+      ,decisionSummary: "整備判断向けの技術整理", provisionalNotice: "公開情報による暫定整理です。独立モデルによるConsensus Gateは未完了です。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "現在利用中・確認済みの方式", nearTermStage: "近い将来の有力候補", researchStage: "研究・試作段階", contestedStage: "競合中・未確定の論点", maturity: "成熟度", timing: "時期", confidence: "確信度", hpciRelevance: "HPCI整備への関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能 / ソフトウェア", supportLevel: "対応", optimizationLevel: "最適化", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム / ソフトウェア", targetPlatforms: "対象platform", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "Coverage Gap", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査Runごとの来歴と抽出知見を確認する", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "community", notVerified: "未確認", vendorTuned: "vendor最適化", architectureTuned: "architecture最適化", portable: "可搬", generic: "汎用", researchArtifact: "研究artifact", native: "native", libraryDependent: "library依存", singleNode: "単一node"
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of",
@@ -60,27 +58,25 @@
       aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory and networks, system software, and applications, and organizes the results into evidence-backed technology assessments, roadmaps, and system planning options while identifying unknowns, update and verification status, and Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
       overviewLead: "Research summaries derived from public information are shown with their validation status. System planning options and reports are limited to explicitly human-approved outputs.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published planning options", scenarioMetricNote: "Passed explicit human publication approval",
+      topicsMetric: "Research topics", topicsMetricNote: "Registered in the research catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published planning options", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each Topic separates current, near-term, research-stage, and unresolved technologies, with HPCI relevance, public evidence, Coverage Gaps, and research history.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
-      tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
+      tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Research status", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
       roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a domain roadmap and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
       scenarioTitle: "System planning options",
       scenarioLead: "Compare architecture, system software, applications, operator impacts, technology trends, and uncertainties as a coherent whole. HPCI-specific constraints are noted within each option.",
       noScenarioTitle: "No scenarios have been published",
-      noScenarioText: "The current four scenarios are generator examples. Only evidence-backed, evaluated, and human-approved scenarios are published.",
+      noScenarioText: "Evidence-backed, evaluated, and human-approved planning options will appear here.",
       openScenarioComparison: "Compare the three planning options",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
       reportLead: "Published versions carry a version, as-of date, evidence traceability, and supersession links.",
       noReportTitle: "No reports have been published",
       noReportText: "Exports appear here after acceptance by the promotion workflow and explicit human publication approval.",
-      footerDescription: "HPCI-CFSP public research view", originInitial: "protected initial",
-      originHuman: "human directive", originAi: "AI consensus", statusNotStarted: "not started", statusPartial: "partial",
-      statusReviewed: "reviewed", statusRetired: "retired", cadenceWeekly: "weekly", cadenceMonthly: "monthly",
-      cadenceQuarterly: "quarterly", cadenceAnnual: "annual", cadenceEvent: "event-driven",
+      footerDescription: "HPCI-CFSP public research view", statusNotStarted: "not started", statusPartial: "partial",
+      statusReviewed: "reviewed", statusRetired: "retired", verificationPending: "independent review pending", verificationAccepted: "Consensus verified", evidenceCollected: "evidence collected", notYetReviewed: "not reviewed", noPublicUpdate: "not published",
       findingAvailable: "public findings", decisionAvailable: "decision items", summaryPending: "public findings pending", closeDialog: "Close details",
       topicDetailMeta: "Topic details", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this Topic has been published yet. A future research cycle can update it.",
@@ -97,7 +93,7 @@
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Current state and implications for HPCI", currentState: "Current state", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
       commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required"
-      ,decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional public-source synthesis. Independent-model Consensus remains incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Technologies in current use", nearTermStage: "Likely near-term candidates", researchStage: "Research and prototype stage", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
+      ,decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional public-source synthesis. Independent-model Consensus remains incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Currently used or verified approaches", nearTermStage: "Likely near-term candidates", researchStage: "Research and prototype stage", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
     }
   };
 
@@ -110,8 +106,7 @@
     en: {hardware: "Hardware", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
   };
   const statusKeys = {"not-started": "statusNotStarted", partial: "statusPartial", reviewed: "statusReviewed", retired: "statusRetired"};
-  const cadenceKeys = {weekly: "cadenceWeekly", monthly: "cadenceMonthly", quarterly: "cadenceQuarterly", annual: "cadenceAnnual", "event-driven": "cadenceEvent"};
-  const originKeys = {"protected-initial": "originInitial", "human-directive": "originHuman", "ai-consensus": "originAi"};
+  const verificationKeys = {"independent-review-pending": "verificationPending", "consensus-verified": "verificationAccepted", "evidence-collected": "evidenceCollected", "not-yet-reviewed": "notYetReviewed"};
   const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
@@ -450,14 +445,26 @@
       domainCell.textContent = domainLabels[language][topic.domain];
       const statusCell = document.createElement("td");
       statusCell.textContent = tr(statusKeys[topic.status] || topic.status);
-      const cadenceCell = document.createElement("td");
-      cadenceCell.textContent = tr(cadenceKeys[topic.review_cadence] || topic.review_cadence);
-      const originCell = document.createElement("td");
-      const origin = document.createElement("span");
-      origin.className = `tag${topic.catalog_origin === "ai-consensus" ? " ai" : ""}`;
-      origin.textContent = tr(originKeys[topic.catalog_origin] || topic.catalog_origin);
-      originCell.appendChild(origin);
-      row.append(idCell, titleCell, domainCell, statusCell, cadenceCell, originCell);
+      const verificationCell = document.createElement("td");
+      const verification = document.createElement("span");
+      verification.className = `tag verification-${topic.verification_status}`;
+      verification.textContent = tr(verificationKeys[topic.verification_status] || topic.verification_status);
+      verificationCell.appendChild(verification);
+      const updatedCell = document.createElement("td");
+      if (topic.last_updated_at && topic.last_updated_commit_url) {
+        const updatedLink = document.createElement("a");
+        updatedLink.href = topic.last_updated_commit_url;
+        updatedLink.target = "_blank";
+        updatedLink.rel = "noopener noreferrer";
+        updatedLink.textContent = formatJst(topic.last_updated_at);
+        updatedCell.appendChild(updatedLink);
+      } else {
+        updatedCell.textContent = tr("noPublicUpdate");
+      }
+      const gapCell = document.createElement("td");
+      gapCell.className = "topic-gap-count";
+      gapCell.textContent = String(topic.coverage_gap_count);
+      row.append(idCell, titleCell, domainCell, statusCell, verificationCell, updatedCell, gapCell);
       root.appendChild(row);
     });
     document.getElementById("topic-empty").hidden = filtered.length !== 0;

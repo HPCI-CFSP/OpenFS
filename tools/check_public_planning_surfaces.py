@@ -35,6 +35,9 @@ def validate_topic_decision_support(root: Path) -> list[str]:
     artifact = load_json(path)
     baseline = load_json(root / "config/research-baseline.json")
     topic_ids = {item["topic_id"] for item in baseline["topics"]}
+    partial_topic_ids = {
+        item["topic_id"] for item in baseline["topics"] if item["status"] == "partial"
+    }
     source_ids = {item["source_id"] for item in artifact["sources"]}
     region_ids = {item["region_id"] for item in artifact["regions"]}
     actor_ids = {item["actor_id"] for item in artifact["actors"]}
@@ -85,11 +88,27 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                     errors.append(f"{item['item_id']} has unknown actors {sorted(unknown)}")
                 check_sources(item["item_id"], item["source_ids"])
 
+        stages = {
+            item["stage"]
+            for section in profile["sections"]
+            for item in section["items"]
+        }
+        if "current" not in stages:
+            errors.append(f"{profile['topic_id']} lacks a current-state item")
+        if not stages & {"near-term", "research", "contested"}:
+            errors.append(f"{profile['topic_id']} lacks a future or unresolved item")
+        if not profile["coverage_gap_ids"]:
+            errors.append(f"{profile['topic_id']} lacks an explicit Coverage Gap")
+
     check_duplicates("topic profile IDs", profile_ids)
     check_duplicates("topic decision section IDs", section_ids)
     check_duplicates("topic decision item IDs", technology_item_ids)
-    if not {"ARCH-02", "ARCH-03", "SSW-01", "SSW-02", "SSW-04"} <= set(profile_ids):
-        errors.append("topic decision support lacks one or more required ARCH/SSW profiles")
+    if set(profile_ids) != partial_topic_ids:
+        errors.append(
+            "topic decision profiles must exactly cover partial catalog Topics; "
+            f"missing={sorted(partial_topic_ids - set(profile_ids))}, "
+            f"extra={sorted(set(profile_ids) - partial_topic_ids)}"
+        )
     arch02 = next((item for item in artifact["topic_profiles"] if item["topic_id"] == "ARCH-02"), None)
     if arch02 and not any(
         "MN-Core" in item["name_en"]

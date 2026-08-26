@@ -285,7 +285,17 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
             decision_support = result["topic_decision_support"]
-            self.assertEqual(5, len(decision_support["topic_profiles"]))
+            partial_topic_ids = {
+                topic["topic_id"]
+                for topic in json.loads(
+                    (ROOT / "config/research-baseline.json").read_text(encoding="utf-8")
+                )["topics"]
+                if topic["status"] == "partial"
+            }
+            self.assertEqual(
+                partial_topic_ids,
+                {profile["topic_id"] for profile in decision_support["topic_profiles"]},
+            )
             self.assertEqual(6, len(decision_support["platform_matrix"]["platforms"]))
             self.assertEqual(6, len(decision_support["numerical_method_matrix"]["methods"]))
             self.assertNotIn("publication", decision_support)
@@ -303,15 +313,25 @@ class PagesSiteTests(unittest.TestCase):
             )
             topics_by_id = {topic["topic_id"]: topic for topic in result["topics"]}
             self.assertGreater(topics_by_id["SSW-04"]["decision_item_count"], 0)
+            self.assertNotIn("review_cadence", topics_by_id["ARCH-01"])
+            self.assertNotIn("catalog_origin", topics_by_id["ARCH-01"])
+            self.assertEqual(
+                "independent-review-pending",
+                topics_by_id["ARCH-01"]["verification_status"],
+            )
+            self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual(1, len(result["consensus_packages"]))
-            package = result["consensus_packages"][0]
-            self.assertEqual("CRP-P0-ROADMAPS-V02", package["package_id"])
-            self.assertEqual("incomplete", package["gate"]["status"])
-            self.assertEqual([], package["eligible_reviewers"])
-            self.assertGreaterEqual(package["artifact_count"], 20)
-            self.assertEqual(40, len(package["base_commit"]))
-            self.assertEqual(64, len(package["manifest_sha256"]))
+            self.assertEqual(2, len(result["consensus_packages"]))
+            self.assertEqual(
+                {"CRP-P0-ROADMAPS-V02", "CRP-P0-ROADMAPS-V03"},
+                {package["package_id"] for package in result["consensus_packages"]},
+            )
+            for package in result["consensus_packages"]:
+                self.assertEqual("incomplete", package["gate"]["status"])
+                self.assertEqual([], package["eligible_reviewers"])
+                self.assertGreaterEqual(package["artifact_count"], 20)
+                self.assertEqual(40, len(package["base_commit"]))
+                self.assertEqual(64, len(package["manifest_sha256"]))
             self.assertEqual(46, len(result["roadmap_reference_data"]["terms"]))
             self.assertEqual(
                 7, len(result["roadmap_reference_data"]["comparison_sets"])
@@ -345,7 +365,9 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and scenario["plan_version"] == "0.3"
+                    and scenario["plan_version"] == "0.4"
+                    and [option["tier"] for option in scenario["budget_options"]]
+                    == ["ume", "take", "matsu"]
                     and len(scenario["implementation_path"]["phases"]) == 12
                     and {note["scope"] for note in scenario["context_notes"]}
                     == {"reusable", "hpci-specific"}
@@ -365,6 +387,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="scenario-evidence-contracts"', scenario_html)
             self.assertIn('id="scenario-detail-timeline"', scenario_html)
             self.assertIn('id="scenario-context-notes"', scenario_html)
+            self.assertIn('id="scenario-budget-options"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")
@@ -735,6 +758,11 @@ class PagesSiteTests(unittest.TestCase):
         self.assertNotIn("整備シナリオ", combined)
         self.assertNotIn("情報の鮮度", combined)
         self.assertIn("let activeRoadmapMilestoneId = null;", combined)
+
+    def test_consensus_index_uses_each_package_version(self):
+        planning = (ROOT / "site" / "planning.js").read_text(encoding="utf-8")
+        self.assertIn('item.package_id.split("-").at(-1)', planning)
+        self.assertNotIn("P0 roadmaps · v0.2", planning)
 
     def test_consensus_package_requires_explicit_publication_directive(self):
         policy = self.publication_policy()

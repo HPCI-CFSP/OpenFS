@@ -128,6 +128,26 @@ class ScenarioPortfolioTests(unittest.TestCase):
             any("reusable and HPCI-specific" in item for item in result["calculation_errors"])
         )
 
+    def test_budget_tiers_and_references_fail_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["budget_options"][1]["tier"] = "ume"
+        changed["scenarios"][0]["budget_options"][2]["reference_case_ids"] = [
+            "BREF-NOT-REGISTERED"
+        ]
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("budget tiers" in item for item in result["calculation_errors"]))
+        self.assertTrue(any("unknown budget references" in item for item in result["calculation_errors"]))
+
+    def test_architecture_connections_fail_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["budget_options"][1]["components"][0][
+            "connection_ids"
+        ] = ["BCMP-NOT-REGISTERED"]
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("unknown connections" in item for item in result["calculation_errors"]))
+
 
 if __name__ == "__main__":
     unittest.main()

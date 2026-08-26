@@ -213,6 +213,13 @@ def evaluate(
             errors.append(f"scenario policy: invalid {name}={value}")
 
     scenario_ids = [item["scenario_id"] for item in scenarios]
+    budget_references = scenario_set.get("budget_reference_cases", [])
+    budget_reference_ids = [item.get("case_id") for item in budget_references]
+    if len(budget_reference_ids) != len(set(budget_reference_ids)):
+        errors.append("budget reference cases contain duplicate IDs")
+    known_budget_references = set(budget_reference_ids)
+    if len(known_budget_references) < 3:
+        errors.append("at least three public budget reference cases are required")
     if len(scenarios) != 3:
         errors.append(f"scenarios: expected exactly 3, found {len(scenarios)}")
     for value in sorted(_duplicates(scenario_ids)):
@@ -222,6 +229,38 @@ def evaluate(
     implementation_phase_count = 0
     for scenario in scenarios:
         scenario_id = scenario["scenario_id"]
+        budget_options = scenario.get("budget_options", [])
+        tiers = [item.get("tier") for item in budget_options]
+        if tiers != ["ume", "take", "matsu"]:
+            errors.append(f"{scenario_id}: budget tiers must be ordered ume, take, matsu")
+        references_by_tier: list[float] = []
+        for option in budget_options:
+            option_id = option.get("option_id", "unknown")
+            budget_range = option.get("budget_range_oku_jpy", {})
+            lower = budget_range.get("lower", -1)
+            reference = budget_range.get("reference", -1)
+            upper = budget_range.get("upper", -1)
+            if not lower <= reference <= upper:
+                errors.append(f"{scenario_id}:{option_id}: invalid budget range")
+            references_by_tier.append(reference)
+            unknown_budget_refs = set(option.get("reference_case_ids", [])) - known_budget_references
+            if unknown_budget_refs:
+                errors.append(
+                    f"{scenario_id}:{option_id}: unknown budget references {sorted(unknown_budget_refs)}"
+                )
+            component_ids = [item.get("component_id") for item in option.get("components", [])]
+            if len(component_ids) != len(set(component_ids)):
+                errors.append(f"{scenario_id}:{option_id}: duplicate architecture component IDs")
+            known_components = set(component_ids)
+            for component_item in option.get("components", []):
+                unknown_connections = set(component_item.get("connection_ids", [])) - known_components
+                if unknown_connections:
+                    errors.append(
+                        f"{scenario_id}:{option_id}:{component_item.get('component_id')}: "
+                        f"unknown connections {sorted(unknown_connections)}"
+                    )
+        if references_by_tier != sorted(references_by_tier) or len(set(references_by_tier)) != 3:
+            errors.append(f"{scenario_id}: budget reference values must increase by tier")
         try:
             effective_from = date.fromisoformat(scenario["effective_from"])
             review_due = date.fromisoformat(scenario["review_due"])
