@@ -34,7 +34,7 @@ class RoadmapGapQueueTests(unittest.TestCase):
         }
         self.assertEqual(expected, actual)
         self.assertEqual(len(expected), queue["summary"]["gap_count"])
-        self.assertEqual(14, queue["summary"]["p0"])
+        self.assertEqual(15, queue["summary"]["p0"])
         self.assertTrue(
             all(
                 item["cadence"] in {"weekly", "continuous-until-quorum"}

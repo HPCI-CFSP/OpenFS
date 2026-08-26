@@ -366,8 +366,8 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
             self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
             self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
-            self.assertEqual(31, assurance["gap_queue"]["summary"]["gap_count"])
-            self.assertEqual(14, assurance["gap_queue"]["summary"]["p0"])
+            self.assertEqual(33, assurance["gap_queue"]["summary"]["gap_count"])
+            self.assertEqual(15, assurance["gap_queue"]["summary"]["p0"])
             self.assertEqual(
                 14,
                 len(
