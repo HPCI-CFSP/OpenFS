@@ -113,7 +113,7 @@ def evaluate(
             required_primary_checks[unit["unit_id"]] = {}
         else:
             source_registry = {source["source_id"]: source for source in roadmap["sources"]}
-            expected = {
+            milestone_requirements = {
                 milestone["milestone_id"]: {
                     (
                         source_id,
@@ -128,7 +128,27 @@ def evaluate(
                 if milestone["comparison_priority"] == "key"
                 and milestone["timing_basis"] not in {"openfs-provisional-plan", "no-public-date"}
             }
-            expected = {selector: options for selector, options in expected.items() if options}
+            generation_band_requirements = {
+                band["generation_band_id"]: {
+                    (
+                        source_id,
+                        source_registry[source_id]["url"],
+                        source_registry[source_id]["source_class"],
+                    )
+                    for source_id in band["source_ids"]
+                    if source_registry[source_id]["source_class"] != "openfs-governance"
+                }
+                for track in roadmap.get("tracks", [])
+                for band in track.get("generation_bands", [])
+            }
+            expected = {
+                selector: options
+                for selector, options in {
+                    **milestone_requirements,
+                    **generation_band_requirements,
+                }.items()
+                if options
+            }
             declared = {
                 requirement["selector"]: {
                     (option["source_id"], option["source_url"], option["source_class"])

@@ -227,6 +227,27 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             }
             self.assertLessEqual(milestone_ids, set(unit["selectors"]), unit["unit_id"])
 
+    def test_roadmap_units_select_every_generation_band(self):
+        generation_band_count = 0
+        for unit in self.manifest["review_units"]:
+            if unit["kind"] != "roadmap":
+                continue
+            path = next(path for path in unit["artifact_paths"] if path.startswith("knowledge/public/roadmaps/"))
+            roadmap = load_json(ROOT / path)
+            generation_band_ids = {
+                band["generation_band_id"]
+                for track in roadmap["tracks"]
+                for band in track.get("generation_bands", [])
+            }
+            generation_band_count += len(generation_band_ids)
+            self.assertLessEqual(generation_band_ids, set(unit["selectors"]), unit["unit_id"])
+            declared = {
+                requirement["selector"]
+                for requirement in unit["primary_source_requirements"]
+            }
+            self.assertLessEqual(generation_band_ids, declared, unit["unit_id"])
+        self.assertEqual(7, generation_band_count)
+
     def test_four_registered_diverse_reviews_reach_only_human_decision(self):
         registry_digest = next(
             item["sha256"] for item in self.manifest["artifact_manifest"]
