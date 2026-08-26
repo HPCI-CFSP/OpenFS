@@ -28,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
     steps:
       - name: Check out repository
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -38,6 +37,18 @@ jobs:
         run: |
           python3 tools/validate_repository.py
           python3 -m unittest discover -s tests -v
+      - name: Require verified Research Web execution profile
+        env:
+          OPENFS_SECURITY_PROFILE_ID: ${{ vars.OPENFS_SECURITY_PROFILE_ID }}
+        run: |
+          test -n "$OPENFS_SECURITY_PROFILE_ID"
+          python3 tools/check_research_web_security.py \
+            --require-production-profile \
+            --profile-id "$OPENFS_SECURITY_PROFILE_ID"
+          mkdir -p _automation
+          python3 tools/evaluate_operational_readiness.py \
+            --require-ready \
+            --output _automation/operational-readiness.json
       - name: Generate review artifacts
         env:
           REQUESTED_WEEK: ${{ inputs.week }}
@@ -86,8 +97,34 @@ jobs:
             reviews/issues/groups/*.json
           if-no-files-found: error
           retention-days: 30
+      - name: Upload sanitized publication payloads
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: openfs-weekly-issue-payloads
+          path: |
+            _automation/exception-issues.json
+            _automation/roadmap-freshness-issue.json
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-issues:
+    needs: review
+    if: needs.review.result == 'success' && (vars.OPENFS_REVIEW_ENABLED == 'true' || inputs.publish_issues == true)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out trusted publication code
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Download sanitized publication payloads
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: openfs-weekly-issue-payloads
+          path: _automation
       - name: Publish or update grouped exception Issues
-        if: vars.OPENFS_REVIEW_ENABLED == 'true' || inputs.publish_issues == true
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |

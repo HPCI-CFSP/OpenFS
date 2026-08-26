@@ -53,6 +53,10 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "activation-policy.schema.json"
     if ref == "config/owner-controls.json":
         return "owner-controls.schema.json"
+    if ref == "config/research-web-security-policy.json":
+        return "research-web-security-policy.schema.json"
+    if ref == "config/execution-security-profiles.json":
+        return "execution-security-profile.schema.json"
     if ref == "config/roadmap-gap-query-overrides.json":
         return "roadmap-gap-query-overrides.schema.json"
     if ref == "config/roadmap-source-retrieval-reviews.json":

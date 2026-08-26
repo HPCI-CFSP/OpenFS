@@ -1,0 +1,102 @@
+{
+  "schema_version": "0.1.0",
+  "policy_id": "RESEARCH-WEB-SECURITY-001",
+  "default_decision": "deny",
+  "fail_closed": true,
+  "security_model": "broad-discovery-read-only-public-web-restricted-shell-network",
+  "capabilities": {
+    "web_search": {
+      "unknown_public_domains_allowed": true,
+      "managed_tool_required": true,
+      "shell_fallback_allowed": false,
+      "result_content_untrusted": true
+    },
+    "web_fetch": {
+      "allowed_methods": ["GET", "HEAD"],
+      "allowed_schemes": ["https", "http"],
+      "anonymous_public_access_only": true,
+      "forward_cookies": false,
+      "forward_authorization": false,
+      "forward_environment_credentials": false,
+      "validate_dns_answers": true,
+      "validate_each_redirect": true,
+      "validate_connection_destination": true,
+      "maximum_redirects": 8,
+      "maximum_response_bytes": 26214400,
+      "connect_timeout_seconds": 10,
+      "total_timeout_seconds": 45,
+      "allowed_media_types": [
+        "text/html",
+        "text/plain",
+        "text/markdown",
+        "application/pdf",
+        "application/json",
+        "application/xml",
+        "text/xml"
+      ]
+    },
+    "browser_read": {
+      "separate_from_web_fetch": true,
+      "persistent_profile_allowed": false,
+      "state_changing_actions_allowed": false,
+      "file_upload_allowed": false,
+      "credential_submission_allowed": false
+    },
+    "shell": {
+      "general_internet_access": false,
+      "arbitrary_socket_egress": false,
+      "proxy_bypass_allowed": false,
+      "hard_network_isolation_required": true
+    },
+    "dependency_install": {
+      "separate_capability": true,
+      "enabled_during_research_execution": false,
+      "registries_require_explicit_configuration": true
+    },
+    "git_publish": {
+      "separate_capability": true,
+      "repository": "https://github.com/HPCI-CFSP/OpenFS.git",
+      "protected_default_branch_write": false,
+      "agent_branch_prefix": "agent/",
+      "least_privilege_token_required": true
+    }
+  },
+  "network_boundaries": {
+    "blocked_hostnames": ["localhost", "localhost.localdomain"],
+    "blocked_hostname_suffixes": [".localhost", ".local", ".internal"],
+    "blocked_ipv4_cidrs": [
+      "0.0.0.0/8",
+      "10.0.0.0/8",
+      "100.64.0.0/10",
+      "127.0.0.0/8",
+      "169.254.0.0/16",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+      "198.18.0.0/15",
+      "224.0.0.0/4",
+      "240.0.0.0/4"
+    ],
+    "blocked_ipv6_cidrs": ["::/128", "::1/128", "fc00::/7", "fe80::/10", "ff00::/8"],
+    "cloud_metadata_addresses": ["169.254.169.254", "fd00:ec2::254"]
+  },
+  "required_audit_fields": [
+    "tool_name",
+    "requested_url",
+    "final_url",
+    "redirect_chain",
+    "http_status",
+    "media_type",
+    "response_bytes",
+    "retrieved_at",
+    "policy_decision",
+    "security_profile_id"
+  ],
+  "prohibited_log_fields": [
+    "authorization",
+    "cookie",
+    "proxy-authorization",
+    "api_key",
+    "access_token",
+    "environment_secret"
+  ]
+}

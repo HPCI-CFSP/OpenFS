@@ -345,16 +345,26 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
+                    and scenario["plan_version"] == "0.3"
+                    and len(scenario["implementation_path"]["phases"]) == 12
+                    and {note["scope"] for note in scenario["context_notes"]}
+                    == {"reusable", "hpci-specific"}
                     and len(scenario["decision_blocking_gap_refs"]) == 16
                     and len(scenario["decision_evidence_contracts"]) == 6
                     for scenario in result["scenarios"]
                 )
             )
+            planning_js = (ROOT / "site" / "planning.js").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn('`${tr("hpciSpecific")} · `', planning_js)
             scenario_html = (
                 output / result["scenarios"][0]["path"] / "index.html"
             ).read_text(encoding="utf-8")
             self.assertIn('id="scenario-blocking-gaps"', scenario_html)
             self.assertIn('id="scenario-evidence-contracts"', scenario_html)
+            self.assertIn('id="scenario-detail-timeline"', scenario_html)
+            self.assertIn('id="scenario-context-notes"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")
@@ -628,6 +638,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("Illustrative archetypes", rendered)
             self.assertIn("SUM-MEMORY-PILOT-003", rendered)
             self.assertIn("https://www.usenix.org/conference/nsdi26", rendered)
+
             self.assertIn("SRC-MEM037", rendered)
             self.assertIn("MEMTECH-SOCAMM", rendered)
             self.assertIn("ROADMAP-EVIDENCE-AUDIT-001", rendered)
@@ -707,6 +718,23 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("summary.summary_ja", app)
             self.assertNotIn("summary.summary_en", app)
             self.assertNotIn('scopeMetric:', app)
+
+    def test_public_planning_copy_uses_general_name_and_clear_update_wording(self):
+        paths = [
+            ROOT / "site" / "index.html",
+            ROOT / "site" / "app.js",
+            ROOT / "site" / "planning.js",
+            ROOT / "site" / "scenarios-index.html",
+            ROOT / "site" / "scenario-detail.html",
+            ROOT / "site" / "roadmap-evidence.html",
+        ]
+        combined = "\n".join(path.read_text(encoding="utf-8") for path in paths)
+        self.assertIn("システム整備計画案", combined)
+        self.assertIn("情報の更新日と確認状況", combined)
+        self.assertNotIn("HPCIシステム整備計画案", combined)
+        self.assertNotIn("整備シナリオ", combined)
+        self.assertNotIn("情報の鮮度", combined)
+        self.assertIn("let activeRoadmapMilestoneId = null;", combined)
 
     def test_consensus_package_requires_explicit_publication_directive(self):
         policy = self.publication_policy()
@@ -914,6 +942,8 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "公開用の要約",
             "objective_en": "Public summary",
+            "context_notes": [{"note_ja": "一般条件", "note_en": "Reusable condition"}],
+            "implementation_path": {"timeline_granularity": "quarter", "phases": []},
             "uncertainties": ["未確認条件"],
             "uncertainties_en": ["Unverified condition"],
             "decision_gates": ["人による判断"],
@@ -962,6 +992,8 @@ class PagesSiteTests(unittest.TestCase):
             "status": "published",
             "objective": "要約",
             "objective_en": "Summary",
+            "context_notes": [{"note_ja": "一般条件", "note_en": "Reusable condition"}],
+            "implementation_path": {"timeline_granularity": "quarter", "phases": []},
             "uncertainties": ["未確認条件"],
             "uncertainties_en": ["Unverified condition"],
             "decision_gates": ["人による判断"],

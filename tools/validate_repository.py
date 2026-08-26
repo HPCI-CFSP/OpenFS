@@ -66,7 +66,9 @@ REQUIRED_FILES = [
     "docs/policies/claim-acceptance.md",
     "docs/policies/information-boundary.md",
     "docs/policies/consensus-policy.md",
+    "docs/policies/research-web-access.md",
     "docs/security/threat-model.md",
+    "docs/security/research-web-security-model.md",
     "config/consensus-policy.json",
     "config/acquisition-policy.json",
     "config/source-registry.json",
@@ -83,6 +85,8 @@ REQUIRED_FILES = [
     "config/activation-policy.json",
     "config/owner-controls.json",
     "config/roadmap-gap-query-overrides.json",
+    "config/research-web-security-policy.json",
+    "config/execution-security-profiles.json",
     "schemas/proposal.schema.json",
     "schemas/claim.schema.json",
     "schemas/canonical-claim.schema.json",
@@ -151,6 +155,9 @@ REQUIRED_FILES = [
     "schemas/workload-observation-summary.schema.json",
     "schemas/portability-capability-matrix.schema.json",
     "schemas/roadmap-dependency-register.schema.json",
+    "schemas/research-web-security-policy.schema.json",
+    "schemas/execution-security-profile.schema.json",
+    "schemas/web-retrieval-receipt.schema.json",
     "skills/source-discovery/SKILL.md",
     "skills/worldwide-technology-survey/SKILL.md",
     "skills/evidence-extraction/SKILL.md",
@@ -188,6 +195,7 @@ REQUIRED_FILES = [
     "tools/check_portability_capability_matrix.py",
     "tools/check_public_planning_surfaces.py",
     "tools/check_scenario_portfolio.py",
+    "tools/check_research_web_security.py",
     "tools/check_roadmap_dependency_register.py",
     "tools/openfs_runtime.py",
     "tools/run_controller.py",
@@ -1601,6 +1609,17 @@ def validate_activation_configuration(root: Path) -> list[str]:
     errors: list[str] = []
     policy = load_json(root / "config" / "activation-policy.json")
     attestations = load_json(root / "config" / "owner-controls.json")
+
+    for key in (
+        "research_web_security_policy_ref",
+        "execution_security_profiles_ref",
+    ):
+        ref = policy.get(key, "")
+        parts = Path(ref).parts
+        if not ref or Path(ref).is_absolute() or ".." in parts or not (root / ref).is_file():
+            errors.append(f"activation policy has invalid or missing {key}: {ref}")
+    if policy.get("production_security_profile_required") is not True:
+        errors.append("activation policy must require a production Research Web security profile")
 
     def unique_ids(items: list[dict[str, Any]], label: str) -> set[str]:
         values = [item.get("control_id", "") for item in items]

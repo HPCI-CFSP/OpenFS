@@ -22,6 +22,9 @@ class OperationalReadinessTests(unittest.TestCase):
         self.write(
             "config/activation-policy.json",
             {
+                "research_web_security_policy_ref": "config/research-web-security-policy.json",
+                "execution_security_profiles_ref": "config/execution-security-profiles.json",
+                "production_security_profile_required": True,
                 "required_workflow_gates": [
                     {
                         "control_id": "gate",
@@ -43,6 +46,11 @@ class OperationalReadinessTests(unittest.TestCase):
                 "effect": "Default deny.",
             },
         )
+        for relative in (
+            "config/research-web-security-policy.json",
+            "config/execution-security-profiles.json",
+        ):
+            self.write(relative, json.loads((ROOT / relative).read_text(encoding="utf-8")))
         self.write(
             "config/owner-controls.json",
             {
@@ -89,6 +97,7 @@ class OperationalReadinessTests(unittest.TestCase):
                 "owner_controls_verified",
                 "production_components_present",
                 "research_monitor_enabled",
+                "research_web_security_profile_verified",
                 "workflow_gates_present",
             ],
             report["blockers"],
@@ -97,6 +106,7 @@ class OperationalReadinessTests(unittest.TestCase):
             [
                 "repair-gate",
                 "implement-worker",
+                "verify-research-web-security-profile",
                 "verify-budget",
                 "enable-reviewed-research-monitor",
             ],
@@ -128,6 +138,17 @@ class OperationalReadinessTests(unittest.TestCase):
                 ]
             },
         )
+        profiles = json.loads(
+            (self.root / "config/execution-security-profiles.json").read_text()
+        )
+        profile = profiles["profiles"][0]
+        profile["controls"] = {
+            control: "verified"
+            for control in profiles["required_verified_controls_for_production"]
+        }
+        profile["production_eligible"] = True
+        profile["verification_evidence"] = ["TEST-EVIDENCE-001"]
+        self.write("config/execution-security-profiles.json", profiles)
         self.write(
             "config/monitors/MON-TEST.json",
             {

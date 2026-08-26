@@ -1,5 +1,8 @@
 {
   "schema_version": "0.1.0",
+  "research_web_security_policy_ref": "config/research-web-security-policy.json",
+  "execution_security_profiles_ref": "config/execution-security-profiles.json",
+  "production_security_profile_required": true,
   "required_workflow_gates": [
     {"control_id": "coordinator-gate", "workflow_ref": ".github/workflows/weekly-coordinator.yml", "variable": "OPENFS_COORDINATOR_ENABLED"},
     {"control_id": "review-gate", "workflow_ref": ".github/workflows/weekly-review.yml", "variable": "OPENFS_REVIEW_ENABLED"},
@@ -17,6 +20,9 @@
         "OPENFS_RESEARCH_ENABLED",
         "evaluate_operational_readiness.py",
         "--require-ready",
+        "check_research_web_security.py",
+        "--require-production-profile",
+        "OPENFS_SECURITY_PROFILE_ID",
         "prepare_worker_invocation.py",
         "accept_worker_result.py"
       ]
@@ -31,6 +37,17 @@
         "worker-result.schema.json",
         "result_digest",
         "environment-only-not-artifact"
+      ]
+    },
+    {
+      "control_id": "safe-roadmap-source-audit",
+      "path": ".github/workflows/weekly-review.yml",
+      "purpose": "Route scheduled roadmap URL checks through the verified safe-fetch capability instead of direct Shell networking.",
+      "minimum_size_bytes": 1000,
+      "required_markers": [
+        "evaluate_operational_readiness.py",
+        "--require-ready",
+        "audit_roadmap_sources_via_fetch_broker.py"
       ]
     }
   ],

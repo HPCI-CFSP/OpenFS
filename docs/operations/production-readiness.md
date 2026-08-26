@@ -19,6 +19,9 @@ The report checks:
 
 - every scheduled workflow still contains its declared activation variable;
 - the provider Worker workflow and adapter actually exist;
+- a Research Web execution profile has independently verified managed search,
+  safe anonymous fetch, SSRF controls, Shell socket isolation, separate dependency
+  egress, and restricted Git publication;
 - at least one recurring research Monitor is enabled and every enabled Monitor
   passes its budget, Consensus-capacity, calibrated-policy, and reviewed-Pilot gate;
 - every required external control has a complete, unexpired owner attestation.
@@ -34,6 +37,10 @@ declares a minimum size and required protocol markers. An empty workflow or adap
 stub therefore remains blocked.
 
 `config/activation-policy.json` defines these requirements.
+The capability contract and platform profiles are in
+`config/research-web-security-policy.json` and
+`config/execution-security-profiles.json`; repository validation alone does not
+make a profile production eligible.
 `config/owner-controls.json` starts entirely `unverified`. After checking the real
 GitHub or provider setting, a human owner may change one control to `verified` and
 record `verified_by`, `verified_at`, `expires_at`, and a non-secret evidence

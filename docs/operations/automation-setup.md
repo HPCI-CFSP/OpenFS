@@ -46,6 +46,13 @@ and publishes no research result. Provider API clients and an unattended researc
 Worker are still intentionally disabled. Adding API keys alone does not start paid
 research.
 
+The existing roadmap URL audit still uses direct Python HTTP for local development.
+The scheduled Review now fails closed before that step and cannot become
+production-ready until it is replaced by
+`audit_roadmap_sources_via_fetch_broker.py` backed by a verified safe-fetch
+service. Registering a profile without changing that execution path is
+insufficient.
+
 ## Recommended provider arrangement
 
 Use at least two independently administered model-provider paths for formal Consensus:
@@ -90,6 +97,7 @@ After the Pilot workflow defines and validates these names, add them at:
 | `OPENFS_REVIEW_ENABLED` | `false` | Enables weekly internal Digest artifacts and grouped exception Issue updates |
 | `OPENFS_PROMOTION_ENABLED` | `false` | Enables reviewed Claim-promotion PR preparation; never auto-merges |
 | `OPENFS_RESEARCH_ENABLED` | `false` | Kill switch for provider-calling jobs |
+| `OPENFS_SECURITY_PROFILE_ID` | leave unset | Set only to a reviewed `production_eligible` profile after the production security check passes |
 | `OPENFS_AUTOMATION_MODE` | `pilot` | Manual Pilot; not weekly operation |
 | `OPENFS_MAX_COST_USD` | owner decision | Hard per-Run cost ceiling |
 | `OPENFS_MAX_WORK_ITEMS` | `10` | Initial Pilot scope limit; increase only after inspecting the generated plan |
@@ -175,7 +183,10 @@ Record these decisions in a reviewed pull request or Directive:
    reviewers; the repository ceiling is 200, while each Run should request the
    smallest limit that fits its inspected plan.
 10. Keep `OPENFS_RESEARCH_ENABLED=false` until the Worker passes manual secret,
-   budget, boundary, assignment, recovery, and Consensus-capacity tests.
+   budget, boundary, assignment, recovery, and Consensus-capacity tests. Run
+   `python3 tools/check_research_web_security.py --require-production-profile`
+   and set `OPENFS_SECURITY_PROFILE_ID` only after the deployed platform evidence
+   has been reviewed.
 11. Enable provider calls first in manual Pilot mode. Enable unattended production
    Runs only after owner review of cost, citations, dissent, false positives, and
    generated pull-request paths.
@@ -251,9 +262,11 @@ action updates one stable deduplication marker instead of opening one Issue per 
   digest-verified Agent outputs, expands deterministic follow-up Work Items, and
   opens one control-state pull request. If a prior control PR is still open, new
   Handoffs wait for the next cycle instead of creating a conflicting PR.
-- The **Weekly Review** job has no model-provider secret or content-write
-  permission. It emits an internal artifact and may create or update only sanitized,
-  managed GitHub Issues for currently open owner-action groups.
+- The **Weekly Review** research job has no model-provider secret, Issue-write
+  permission, or Git publication authority. It runs only with a selected,
+  production-eligible Research Web security profile and emits internal artifacts
+  plus sanitized Issue payloads. A separate downstream job receives only those
+  payloads and may create or update managed GitHub Issues.
 - The same job rebuilds the P0 roadmap source and freshness audits. One stable
   managed Issue lists only `critical` and `high` freshness attention, is updated
   rather than duplicated, and is closed when that priority queue is empty. The
