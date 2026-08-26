@@ -126,8 +126,11 @@ class ConsensusReviewPackageTests(unittest.TestCase):
 
     def test_package_covers_six_roadmaps_and_shared_review_units(self):
         units = self.manifest["review_units"]
-        self.assertEqual(11, len(units))
+        self.assertEqual(12, len(units))
         self.assertEqual(6, sum(unit["kind"] == "roadmap" for unit in units))
+        self.assertIn(
+            "CRU-ROADMAP-REFERENCE", {unit["unit_id"] for unit in units}
+        )
         self.assertEqual(
             {"center-profile", "cross-roadmap", "coverage-gap", "scenario", "publication-assurance"},
             {unit["kind"] for unit in units if unit["kind"] != "roadmap"},
@@ -147,6 +150,8 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertEqual(14, summary["dependency_count"])
         self.assertEqual(3, summary["scenario_count"])
         pinned_paths = {artifact["path"] for artifact in self.manifest["artifact_manifest"]}
+        self.assertIn("knowledge/public/roadmap-reference-data.json", pinned_paths)
+        self.assertIn("schemas/roadmap-reference-data.schema.json", pinned_paths)
         self.assertIn("knowledge/public/audits/roadmap-gap-queue.json", pinned_paths)
         self.assertIn("knowledge/public/audits/roadmap-source-triage.json", pinned_paths)
         self.assertIn("tools/run_controller.py", pinned_paths)
