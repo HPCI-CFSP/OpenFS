@@ -399,7 +399,8 @@
     data.consensus_packages.forEach((item) => {
       const card = document.createElement("article");
       const id = document.createElement("span"); id.className = "eyebrow"; id.textContent = item.package_id;
-      const title = document.createElement("h3"); const link = document.createElement("a"); link.href = consensusLink(item); link.textContent = `${item.portfolio_summary.roadmap_count} P0 roadmaps · v0.2`; title.append(link);
+      const packageVersion = item.package_id.split("-").at(-1);
+      const title = document.createElement("h3"); const link = document.createElement("a"); link.href = consensusLink(item); link.textContent = `${item.portfolio_summary.roadmap_count} P0 roadmaps · ${packageVersion}`; title.append(link);
       const status = document.createElement("span"); status.className = `status-badge status-${item.gate.status}`; status.textContent = tr(item.gate.status);
       const summary = document.createElement("p"); summary.textContent = `${item.portfolio_summary.milestone_count} ${tr("milestoneCount")} · ${item.portfolio_summary.source_count} ${tr("sourceCount")} · ${item.portfolio_summary.coverage_gap_count} Coverage Gaps`;
       const meta = document.createElement("p"); meta.className = "scenario-card-meta"; meta.textContent = `${tr("assessmentCount")}: ${item.gate.counts.assessments} · ${tr("supportCount")}: ${item.gate.counts.support}`;

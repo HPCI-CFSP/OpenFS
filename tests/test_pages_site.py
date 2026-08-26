@@ -321,14 +321,17 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual(1, len(result["consensus_packages"]))
-            package = result["consensus_packages"][0]
-            self.assertEqual("CRP-P0-ROADMAPS-V02", package["package_id"])
-            self.assertEqual("incomplete", package["gate"]["status"])
-            self.assertEqual([], package["eligible_reviewers"])
-            self.assertGreaterEqual(package["artifact_count"], 20)
-            self.assertEqual(40, len(package["base_commit"]))
-            self.assertEqual(64, len(package["manifest_sha256"]))
+            self.assertEqual(2, len(result["consensus_packages"]))
+            self.assertEqual(
+                {"CRP-P0-ROADMAPS-V02", "CRP-P0-ROADMAPS-V03"},
+                {package["package_id"] for package in result["consensus_packages"]},
+            )
+            for package in result["consensus_packages"]:
+                self.assertEqual("incomplete", package["gate"]["status"])
+                self.assertEqual([], package["eligible_reviewers"])
+                self.assertGreaterEqual(package["artifact_count"], 20)
+                self.assertEqual(40, len(package["base_commit"]))
+                self.assertEqual(64, len(package["manifest_sha256"]))
             self.assertEqual(46, len(result["roadmap_reference_data"]["terms"]))
             self.assertEqual(
                 7, len(result["roadmap_reference_data"]["comparison_sets"])
@@ -755,6 +758,11 @@ class PagesSiteTests(unittest.TestCase):
         self.assertNotIn("整備シナリオ", combined)
         self.assertNotIn("情報の鮮度", combined)
         self.assertIn("let activeRoadmapMilestoneId = null;", combined)
+
+    def test_consensus_index_uses_each_package_version(self):
+        planning = (ROOT / "site" / "planning.js").read_text(encoding="utf-8")
+        self.assertIn('item.package_id.split("-").at(-1)', planning)
+        self.assertNotIn("P0 roadmaps · v0.2", planning)
 
     def test_consensus_package_requires_explicit_publication_directive(self):
         policy = self.publication_policy()
