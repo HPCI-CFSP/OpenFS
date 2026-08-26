@@ -126,6 +126,7 @@
         "milestone_id": {"type": "string", "pattern": "^MS-[A-Z0-9-]+$"},
         "year": {"type": ["integer", "null"], "minimum": 2020},
         "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
+        "half": {"enum": ["H1", "H2", null]},
         "timing_precision": {"enum": ["quarter", "half-year", "year", "undated"]},
         "maturity": {"enum": ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"]},
         "event_type": {"enum": ["product", "standard", "research", "policy", "hpci-evaluation", "hpci-adoption"]},
@@ -141,6 +142,25 @@
           "items": {"type": "string", "pattern": "^(DEP|MS|RM)-[A-Z0-9-]+$"}
         }
       },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"timing_precision": {"const": "half-year"}},
+            "required": ["timing_precision"]
+          },
+          "then": {
+            "required": ["half"],
+            "properties": {
+              "year": {"type": "integer"},
+              "quarter": {"const": null},
+              "half": {"enum": ["H1", "H2"]}
+            }
+          },
+          "else": {
+            "properties": {"half": {"const": null}}
+          }
+        }
+      ],
       "additionalProperties": false
     },
     "dependency": {

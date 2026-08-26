@@ -100,12 +100,27 @@ milestones, dependencies, sources, and structured Coverage Gaps. The portfolio i
 `config/roadmap-portfolio.json` owns stable roadmap IDs and slugs.
 
 Quarter precision is evidence-constrained. A dated milestone may use Q1-Q4 only
-when its cited source supports that precision; half-year and year-only statements
-retain a null quarter, and missing public timing remains undated. OpenFS planning
-gates are separate `hpci-evaluation` or `hpci-adoption` events with
+when its cited source supports that precision. Half-year statements retain a null
+quarter and identify `H1` or `H2`; year-only statements retain a null quarter;
+missing public timing remains undated. The common Pages renderer draws half-year
+items across two quarter columns and year-only items across Q1-Q4. A rectangle is
+an evidence-supported uncertainty window, not an assertion that the event lasts
+for the entire interval. OpenFS planning gates are separate `hpci-evaluation` or
+`hpci-adoption` events with
 `openfs-provisional-plan` timing. Pages generation fails closed when references,
 portfolio mappings, timing semantics, publication approval, or the declared public
 artifact set disagree.
+
+Reusable terminology and decision comparisons have one public source of truth:
+`knowledge/public/roadmap-reference-data.json`, under
+`schemas/roadmap-reference-data.schema.json`. It links each definition and each
+comparison row to source IDs already controlled by the six roadmap exports. The
+Pages renderer selects the terms and comparison sets relevant to the current
+roadmap, makes terms interactive, and resolves citations back to those roadmap
+sources. Templates and roadmap exports do not carry duplicate glossary prose.
+Comparison sets are deliberately cross-domain: memory hierarchy, advanced
+integration, compute platforms, interconnect roles, portability models, and
+evaluation methods.
 
 The weekly review also rebuilds a freshness queue from the committed roadmaps and
 a fresh URL reachability scan. It flags undated milestones, passed target dates,

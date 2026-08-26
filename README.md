@@ -73,6 +73,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `data/` | Accepted canonical source, evidence, and finding records |
 | `knowledge/` | Promoted canonical Claims, append-only status events, and generated active views |
 | `knowledge/public/roadmaps/` | Human-approved bilingual public roadmap exports using one common schema |
+| `knowledge/public/roadmap-reference-data.json` | Single bilingual source for roadmap terminology and decision-oriented comparison tables |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, dissent, and commit-pinned Consensus review packages |
@@ -156,7 +157,7 @@ Build the public GitHub Pages view locally:
 python3 tools/build_pages_site.py --output _site
 ```
 
-The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, dedicated quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, Coverage Gaps, and dependencies. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Every roadmap, scenario, and report publication requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
+The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, evidence-constrained quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, Coverage Gaps, and dependencies. Year-only and half-year timing is shown as a Q1-Q4 or two-quarter uncertainty window, not as an invented quarter or event duration. Relevant terms open centrally maintained definitions and supporting sources, while high-value choices across memory, compute, integration, interconnect, portability, and evaluation are presented in common comparison tables. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Every roadmap, reference-data, scenario, and report publication requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
 
 Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 

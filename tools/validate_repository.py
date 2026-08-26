@@ -137,6 +137,8 @@ REQUIRED_FILES = [
     "schemas/public-topic-summary.schema.json",
     "schemas/public-consensus-receipt.schema.json",
     "schemas/public-roadmap.schema.json",
+    "schemas/roadmap-reference-data.schema.json",
+    "knowledge/public/roadmap-reference-data.json",
     "schemas/roadmap-freshness-audit.schema.json",
     "schemas/roadmap-gap-queue.schema.json",
     "schemas/roadmap-gap-query-overrides.schema.json",

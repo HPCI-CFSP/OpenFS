@@ -17,6 +17,7 @@ from build_pages_site import (  # noqa: E402
     collect_consensus_packages,
     collect_consensus_receipts,
     collect_roadmaps,
+    collect_roadmap_reference_data,
     collect_scenarios,
     collect_topic_summaries,
 )
@@ -235,6 +236,30 @@ class PagesSiteTests(unittest.TestCase):
         self.assertTrue(parser.fragment_links)
         self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
 
+    def test_roadmap_reference_data_and_detail_ui_are_connected(self):
+        policy = self.publication_policy()
+        roadmaps = collect_roadmaps(ROOT, policy, False)
+        reference_data = collect_roadmap_reference_data(
+            ROOT, policy, roadmaps, False
+        )
+        self.assertEqual(34, len(reference_data["terms"]))
+        self.assertEqual(6, len(reference_data["comparison_sets"]))
+        detail = (ROOT / "site" / "roadmap-detail.html").read_text(encoding="utf-8")
+        for element_id in (
+            'id="roadmap-comparisons"',
+            'id="roadmap-glossary"',
+            'id="roadmap-term-dialog"',
+        ):
+            self.assertIn(element_id, detail)
+
+    def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
+        script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
+        self.assertIn("function milestoneGridRange", script)
+        self.assertIn('milestone.half === "H1" ? [1, 3] : [3, 5]', script)
+        self.assertIn('return [1, 5]', script)
+        self.assertIn('Array(years.length).fill("roadmap-year-column")', script)
+        self.assertNotIn('fill("roadmap-quarter-column")', script)
+
     def test_build_publishes_catalog_and_approved_scenarios_only(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
@@ -250,6 +275,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(package["artifact_count"], 20)
             self.assertEqual(40, len(package["base_commit"]))
             self.assertEqual(64, len(package["manifest_sha256"]))
+            self.assertEqual(34, len(result["roadmap_reference_data"]["terms"]))
+            self.assertEqual(
+                6, len(result["roadmap_reference_data"]["comparison_sets"])
+            )
+            self.assertNotIn("publication", result["roadmap_reference_data"])
             self.assertEqual(
                 package["manifest_sha256"],
                 package["gate"]["package_manifest_digest"],
@@ -563,6 +593,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="source-class-summary"', evidence_index)
             self.assertIn("sourceClassOrder", (output / "planning.js").read_text(encoding="utf-8"))
             self.assertIn('id="roadmap-timeline"', roadmap_detail)
+            self.assertIn('id="roadmap-comparisons"', roadmap_detail)
+            self.assertIn('id="roadmap-glossary"', roadmap_detail)
+            self.assertIn('id="roadmap-term-dialog"', roadmap_detail)
             self.assertIn('data-roadmap-id="MEMORY-ROADMAP-EXPORT-001"', roadmap_detail)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_index)
             self.assertNotIn("{{ROOT_PREFIX}}", roadmap_detail)
@@ -572,8 +605,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn(
                 f'src="../data/openfs-public.js?v={asset_version}"', roadmap_index
             )
-            self.assertIn("roadmap-quarter-heading", roadmap_app)
-            self.assertIn('tr("quarterUnknown")', roadmap_app)
+            self.assertIn("roadmap-quarter-scale", roadmap_app)
+            self.assertIn("milestonePeriodLabel", roadmap_app)
+            self.assertNotIn('tr("quarterUnknown")', roadmap_app)
             self.assertNotIn('data-i18n="scopeMetric"', index)
             self.assertIn("openTopicDetail", app)
             self.assertIn("renderRoadmapHome", app)
@@ -672,6 +706,34 @@ class PagesSiteTests(unittest.TestCase):
             payload["lanes"][0]["milestones"][0]["timing_precision"] = "year"
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "inconsistent timing precision"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_half_year_milestone_requires_named_half(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            milestone = next(
+                item
+                for lane in payload["lanes"]
+                for item in lane["milestones"]
+                if item["milestone_id"] == "MS-LPDDR-SKHYNIX-2026"
+            )
+            milestone.pop("half")
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "half-year roadmap milestone"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_non_half_year_milestone_rejects_half_value(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload["lanes"][0]["milestones"][0]["half"] = "H1"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "unexpected half-year value"):
                 collect_roadmaps(root, policy, include_commit_metadata=False)
 
     def test_accepted_finding_publishes_consensus_receipt(self):

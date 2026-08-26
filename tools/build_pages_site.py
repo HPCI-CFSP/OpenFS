@@ -672,11 +672,12 @@ def collect_roadmaps(
                     raise ValueError(f"milestone {milestone_id} references unknown sources: {sorted(unknown_sources)}")
                 year = milestone["year"]
                 quarter = milestone["quarter"]
+                half = milestone.get("half")
                 precision = milestone["timing_precision"]
                 basis = milestone["timing_basis"]
                 maturity = milestone["maturity"]
                 if year is None:
-                    if quarter is not None or precision != "undated" or basis != "no-public-date":
+                    if quarter is not None or half is not None or precision != "undated" or basis != "no-public-date":
                         raise ValueError(f"undated roadmap milestone {milestone_id} has inconsistent timing fields")
                 elif not start_year <= year <= end_year:
                     raise ValueError(f"roadmap milestone {milestone_id} is outside the horizon")
@@ -684,6 +685,10 @@ def collect_roadmaps(
                     raise ValueError(f"dated roadmap milestone {milestone_id} is marked undated")
                 elif quarter is not None and precision != "quarter":
                     raise ValueError(f"quarterly roadmap milestone {milestone_id} has inconsistent timing precision")
+                elif precision == "half-year" and (quarter is not None or half not in {"H1", "H2"}):
+                    raise ValueError(f"half-year roadmap milestone {milestone_id} has inconsistent timing fields")
+                elif precision != "half-year" and half is not None:
+                    raise ValueError(f"roadmap milestone {milestone_id} has an unexpected half-year value")
                 elif quarter is None and precision not in {"half-year", "year"}:
                     raise ValueError(f"year-level roadmap milestone {milestone_id} has inconsistent timing precision")
                 if basis == "openfs-provisional-plan" and milestone["event_type"] not in {"hpci-evaluation", "hpci-adoption"}:
@@ -718,6 +723,124 @@ def collect_roadmaps(
             f"unexpected={sorted(seen_exports - expected_exports)}"
         )
     return roadmaps
+
+
+def collect_roadmap_reference_data(
+    root: Path,
+    policy: dict[str, Any],
+    roadmaps: list[dict[str, Any]],
+    include_commit_metadata: bool = True,
+) -> dict[str, Any]:
+    """Project and validate the single public glossary/comparison source."""
+    relative_path = policy["included_public_roadmap_reference_data"]
+    artifact = load_json(root / relative_path)
+    directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        artifact,
+        policy["roadmap_reference_data_public_fields"],
+        policy["required_publication_metadata"],
+        policy["roadmap_reference_data_required_bilingual_fields"],
+        directives,
+        f"roadmap reference data {artifact.get('export_id', relative_path)}",
+    )
+
+    roadmap_by_id = {roadmap["roadmap_id"]: roadmap for roadmap in roadmaps}
+    sources_by_roadmap = {
+        roadmap_id: {source["source_id"] for source in roadmap["sources"]}
+        for roadmap_id, roadmap in roadmap_by_id.items()
+    }
+
+    def validate_source_refs(source_refs: list[dict[str, str]], label: str) -> None:
+        seen: set[tuple[str, str]] = set()
+        for source_ref in source_refs:
+            roadmap_id = source_ref["roadmap_id"]
+            source_id = source_ref["source_id"]
+            key = (roadmap_id, source_id)
+            if key in seen:
+                raise ValueError(f"{label} has a duplicate source reference: {key}")
+            seen.add(key)
+            if roadmap_id not in roadmap_by_id:
+                raise ValueError(f"{label} references unknown roadmap: {roadmap_id}")
+            if source_id not in sources_by_roadmap[roadmap_id]:
+                raise ValueError(
+                    f"{label} references unknown source {source_id} in {roadmap_id}"
+                )
+
+    term_ids = [term["term_id"] for term in projected["terms"]]
+    if len(term_ids) != len(set(term_ids)):
+        raise ValueError("roadmap reference data has duplicate term IDs")
+    known_terms = set(term_ids)
+    alias_owners: dict[str, str] = {}
+    for term in projected["terms"]:
+        term_id = term["term_id"]
+        unknown_roadmaps = set(term["roadmap_ids"]) - set(roadmap_by_id)
+        if unknown_roadmaps:
+            raise ValueError(
+                f"term {term_id} references unknown roadmaps: {sorted(unknown_roadmaps)}"
+            )
+        unknown_related = set(term["related_term_ids"]) - known_terms
+        if unknown_related:
+            raise ValueError(
+                f"term {term_id} references unknown related terms: {sorted(unknown_related)}"
+            )
+        if term_id in term["related_term_ids"]:
+            raise ValueError(f"term {term_id} cannot relate to itself")
+        for alias in term["aliases"]:
+            normalized = alias.casefold()
+            owner = alias_owners.get(normalized)
+            if owner and owner != term_id:
+                raise ValueError(
+                    f"roadmap reference alias {alias!r} is shared by {owner} and {term_id}"
+                )
+            alias_owners[normalized] = term_id
+        validate_source_refs(term["source_refs"], f"term {term_id}")
+
+    comparison_ids = [item["comparison_id"] for item in projected["comparison_sets"]]
+    if len(comparison_ids) != len(set(comparison_ids)):
+        raise ValueError("roadmap reference data has duplicate comparison IDs")
+    for comparison in projected["comparison_sets"]:
+        comparison_id = comparison["comparison_id"]
+        comparison_roadmaps = set(comparison["roadmap_ids"])
+        unknown_roadmaps = comparison_roadmaps - set(roadmap_by_id)
+        if unknown_roadmaps:
+            raise ValueError(
+                f"comparison {comparison_id} references unknown roadmaps: "
+                f"{sorted(unknown_roadmaps)}"
+            )
+        column_ids = [column["column_id"] for column in comparison["columns"]]
+        if len(column_ids) != len(set(column_ids)):
+            raise ValueError(f"comparison {comparison_id} has duplicate column IDs")
+        row_terms = [row["term_id"] for row in comparison["rows"]]
+        if len(row_terms) != len(set(row_terms)):
+            raise ValueError(f"comparison {comparison_id} has duplicate term rows")
+        for row in comparison["rows"]:
+            term_id = row["term_id"]
+            if term_id not in known_terms:
+                raise ValueError(
+                    f"comparison {comparison_id} references unknown term: {term_id}"
+                )
+            term = next(item for item in projected["terms"] if item["term_id"] == term_id)
+            if not comparison_roadmaps.intersection(term["roadmap_ids"]):
+                raise ValueError(
+                    f"comparison {comparison_id} term {term_id} has no shared roadmap"
+                )
+            cell_ids = [cell["column_id"] for cell in row["cells"]]
+            if len(cell_ids) != len(set(cell_ids)) or set(cell_ids) != set(column_ids):
+                raise ValueError(
+                    f"comparison {comparison_id} term {term_id} cells do not match columns"
+                )
+            validate_source_refs(
+                row["source_refs"], f"comparison {comparison_id} term {term_id}"
+            )
+
+    if include_commit_metadata:
+        metadata = source_commit_metadata(root, relative_path)
+        projected.update(
+            updated_at=metadata["updated_at"],
+            source_commit=metadata["commit_sha"],
+            source_commit_url=metadata["commit_url"],
+        )
+    return projected
 
 
 def collect_roadmap_assurance(
@@ -852,6 +975,9 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
+    roadmap_reference_data = collect_roadmap_reference_data(
+        root, policy, roadmap_artifacts
+    )
     roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
@@ -890,6 +1016,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "evaluation_dimensions": technology_scope["required_evaluation_dimensions"],
         },
         "roadmap_artifacts": roadmap_artifacts,
+        "roadmap_reference_data": roadmap_reference_data,
         "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,
