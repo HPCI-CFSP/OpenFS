@@ -1,16 +1,16 @@
 # P0 roadmap v0.2 independent review package
 
-This package pins 6 P0 roadmaps, 173
+This package pins 6 P0 roadmaps, 179
 milestone records, 7 synthesized generation bands,
-and 142 source registrations representing
-129 unique URLs,
+and 151 source registrations representing
+138 unique URLs,
 14 cross-roadmap dependencies,
-33 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `134e366fee4d64d9c0409aa4db6d6b6e5539254e`.
+34 prioritized Coverage Gaps, and
+3 provisional HPCI scenarios to commit `5243637ea04a6c43b3e615320fe30b8851d93241`.
 
 ## Review protocol
 
-1. Check out exactly `134e366fee4d64d9c0409aa4db6d6b6e5539254e`, verify every `artifact_manifest.sha256`, and
+1. Check out exactly `5243637ea04a6c43b3e615320fe30b8851d93241`, verify every `artifact_manifest.sha256`, and
    record the SHA-256 of the exact `manifest.json` bytes as
    `package_manifest_digest` in the review. Do not reserialize the manifest
    before calculating this digest.
@@ -40,11 +40,11 @@ and 142 source registrations representing
 ## 日本語要約
 
 このパッケージは、P0の6ロードマップ、
-173マイルストーン、7世代帯、
-142件の情報源登録
-（重複除去129 URL）、
-14相互依存、33件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `134e366fee4d64d9c0409aa4db6d6b6e5539254e` に固定します。
+179マイルストーン、7世代帯、
+151件の情報源登録
+（重複除去138 URL）、
+14相互依存、34件の優先度付きCoverage Gap、
+HPCI整備計画3案をコミット `5243637ea04a6c43b3e615320fe30b8851d93241` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンまたは世代帯ごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ

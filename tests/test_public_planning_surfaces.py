@@ -35,6 +35,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             payload["forecasts"] = [
                 {
                     "forecast_id": "FORECAST-TEST-001",
+                    "forecast_class": "validated",
                     "application_id": "APP-EEA1-GENESIS",
                     "candidate_system_id": "CANDIDATE-TEST",
                     "fugaku_nodes": 4,
@@ -43,10 +44,13 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                     "metric_id": "time-to-solution",
                     "estimate": {"lower": 1.0, "base": 2.0, "upper": 3.0, "unit": "s"},
                     "model_card_id": "PMCARD-TEST-001",
+                    "assumption_ids": ["ASM-PERF-GENESIS"],
+                    "basis_source_ids": ["SRC-PERF001"],
                     "calibration_dataset_ids": ["DATA-SHARED"],
                     "validation_dataset_ids": ["DATA-SHARED"],
                     "confidence": "low",
                     "consensus_status": "incomplete",
+                    "procurement_eligible": False,
                 }
             ]
             path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")

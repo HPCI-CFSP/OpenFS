@@ -242,8 +242,8 @@ class PagesSiteTests(unittest.TestCase):
         reference_data = collect_roadmap_reference_data(
             ROOT, policy, roadmaps, False
         )
-        self.assertEqual(38, len(reference_data["terms"]))
-        self.assertEqual(6, len(reference_data["comparison_sets"]))
+        self.assertEqual(46, len(reference_data["terms"]))
+        self.assertEqual(7, len(reference_data["comparison_sets"]))
         detail = (ROOT / "site" / "roadmap-detail.html").read_text(encoding="utf-8")
         for element_id in (
             'id="roadmap-comparisons"',
@@ -293,9 +293,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(package["artifact_count"], 20)
             self.assertEqual(40, len(package["base_commit"]))
             self.assertEqual(64, len(package["manifest_sha256"]))
-            self.assertEqual(38, len(result["roadmap_reference_data"]["terms"]))
+            self.assertEqual(46, len(result["roadmap_reference_data"]["terms"]))
             self.assertEqual(
-                6, len(result["roadmap_reference_data"]["comparison_sets"])
+                7, len(result["roadmap_reference_data"]["comparison_sets"])
             )
             self.assertNotIn("publication", result["roadmap_reference_data"])
             self.assertEqual(27, len(result["hpci_system_inventory"]["systems"]))
@@ -304,7 +304,10 @@ class PagesSiteTests(unittest.TestCase):
                 [1, 4, 32, 128, 1024, 10000],
                 result["application_performance_forecasts"]["standard_fugaku_node_scales"],
             )
-            self.assertEqual([], result["application_performance_forecasts"]["forecasts"])
+            self.assertEqual(36, len(result["application_performance_forecasts"]["forecasts"]))
+            self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
+            self.assertEqual(8, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(6, len(result["application_performance_forecasts"]["assumptions"]))
             self.assertNotIn("publication", result["application_performance_forecasts"])
             self.assertEqual(
                 package["manifest_sha256"],
@@ -323,7 +326,7 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and len(scenario["decision_blocking_gap_refs"]) == 15
+                    and len(scenario["decision_blocking_gap_refs"]) == 16
                     and len(scenario["decision_evidence_contracts"]) == 6
                     for scenario in result["scenarios"]
                 )
@@ -372,10 +375,10 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
             self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
             self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
-            self.assertEqual(33, assurance["gap_queue"]["summary"]["gap_count"])
-            self.assertEqual(15, assurance["gap_queue"]["summary"]["p0"])
+            self.assertEqual(34, assurance["gap_queue"]["summary"]["gap_count"])
+            self.assertEqual(16, assurance["gap_queue"]["summary"]["p0"])
             self.assertEqual(
-                15,
+                16,
                 len(
                     [
                         item

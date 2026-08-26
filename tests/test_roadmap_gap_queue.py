@@ -34,7 +34,7 @@ class RoadmapGapQueueTests(unittest.TestCase):
         }
         self.assertEqual(expected, actual)
         self.assertEqual(len(expected), queue["summary"]["gap_count"])
-        self.assertEqual(15, queue["summary"]["p0"])
+        self.assertEqual(16, queue["summary"]["p0"])
         self.assertTrue(
             all(
                 item["cadence"] in {"weekly", "continuous-until-quorum"}
@@ -47,12 +47,12 @@ class RoadmapGapQueueTests(unittest.TestCase):
             for item in queue["assignments"]
             if item["priority"] == "P0" and item["workstream"] == "source-discovery"
         ]
-        self.assertEqual(14, len(p0_discovery))
+        self.assertEqual(15, len(p0_discovery))
         self.assertTrue(
             all(item["query_plan_origin"] == "explicit-override" for item in p0_discovery)
         )
-        self.assertEqual(14, queue["summary"]["explicit_query_overrides"])
-        self.assertEqual(14, queue["summary"]["p0_explicit_query_overrides"])
+        self.assertEqual(15, queue["summary"]["explicit_query_overrides"])
+        self.assertEqual(15, queue["summary"]["p0_explicit_query_overrides"])
         self.assertEqual(0, queue["summary"]["p0_generated_query_fallbacks"])
         p0_items = [item for item in queue["assignments"] if item["priority"] == "P0"]
         self.assertTrue(
