@@ -69,7 +69,7 @@ ARTIFACTS = [
     ("config/acquisition-policy.json", "policy"),
     ("config/activation-policy.json", "policy"),
     ("config/research-web-security-policy.json", "policy"),
-    ("config/execution-security-profiles.json", "security-profile"),
+    ("config/execution-security-profiles.json", "policy"),
     ("config/research-baseline.json", "research-contract"),
     ("config/source-registry.json", "registry"),
     ("config/hpci-center-registry.json", "registry"),
