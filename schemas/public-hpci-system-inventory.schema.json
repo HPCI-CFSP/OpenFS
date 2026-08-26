@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-hpci-system-inventory.schema.json",
+  "title": "OpenFS Public HPCI System Inventory",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "scope_ja", "scope_en", "availability_semantics_ja", "availability_semantics_en", "sources", "systems", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"type": "string", "pattern": "^HPCI-SYSTEM-INVENTORY-[A-Z0-9-]+$"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "research_status": {"enum": ["provisional", "accepted"]},
+    "consensus_status": {"enum": ["incomplete", "accepted"]},
+    "scope_ja": {"type": "string", "minLength": 1},
+    "scope_en": {"type": "string", "minLength": 1},
+    "availability_semantics_ja": {"type": "string", "minLength": 1},
+    "availability_semantics_en": {"type": "string", "minLength": 1},
+    "sources": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "systems": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/system"}
+    },
+    "coverage_gaps": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/gap"}
+    },
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "publication": {"$ref": "#/$defs/publication"}
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["source_id", "title", "publisher", "url", "source_class"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-HPCI-SYS[0-9]{3}$"},
+        "title": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri"},
+        "published_at": {"type": "string", "format": "date"},
+        "source_class": {"enum": ["government-official", "research-organization", "provider-official"]}
+      },
+      "additionalProperties": false
+    },
+    "quarterBoundary": {
+      "type": "object",
+      "required": ["year", "quarter"],
+      "properties": {
+        "year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]}
+      },
+      "additionalProperties": false
+    },
+    "availabilityWindow": {
+      "type": "object",
+      "required": ["window_id", "window_type", "start", "end", "timing_basis", "status", "source_ids"],
+      "properties": {
+        "window_id": {"type": "string", "pattern": "^WIN-HPCI-[A-Z0-9-]+$"},
+        "window_type": {"enum": ["annual-call-availability", "service-lifecycle", "observed-operation"]},
+        "start": {"$ref": "#/$defs/quarterBoundary"},
+        "end": {"$ref": "#/$defs/quarterBoundary"},
+        "timing_basis": {"enum": ["official-resource-list", "provider-announcement", "openfs-inference"]},
+        "status": {"enum": ["confirmed", "planned", "provisional"]},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "specifications": {
+      "type": "object",
+      "required": ["processor", "accelerator", "node_count", "system_peak_pf", "node_peak_tf", "node_memory", "interconnect", "storage"],
+      "properties": {
+        "processor": {"type": ["string", "null"]},
+        "accelerator": {"type": ["string", "null"]},
+        "node_count": {"type": ["integer", "null"], "minimum": 1},
+        "system_peak_pf": {"type": ["number", "null"], "minimum": 0},
+        "node_peak_tf": {"type": ["number", "null"], "minimum": 0},
+        "node_memory": {"type": ["string", "null"]},
+        "interconnect": {"type": ["string", "null"]},
+        "storage": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "system": {
+      "type": "object",
+      "required": ["system_id", "center_id", "provider_ja", "provider_en", "name_ja", "name_en", "architecture_class", "availability_windows", "specifications", "source_ids", "evidence_status"],
+      "properties": {
+        "system_id": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"},
+        "center_id": {"type": "string", "pattern": "^CENTER-[A-Z0-9-]+$"},
+        "provider_ja": {"type": "string", "minLength": 1},
+        "provider_en": {"type": "string", "minLength": 1},
+        "name_ja": {"type": "string", "minLength": 1},
+        "name_en": {"type": "string", "minLength": 1},
+        "architecture_class": {"enum": ["a64fx", "x86-cpu", "gpu", "cpu-gpu-integrated", "vector", "large-memory"]},
+        "availability_windows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/availabilityWindow"}},
+        "specifications": {"$ref": "#/$defs/specifications"},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "evidence_status": {"enum": ["official-architecture-map", "official-resource-page", "partial"]}
+      },
+      "additionalProperties": false
+    },
+    "gap": {
+      "type": "object",
+      "required": ["gap_id", "priority", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "status"],
+      "properties": {
+        "gap_id": {"type": "string", "pattern": "^GAP-HPCI-SYS-[0-9]{3}$"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "impact_ja": {"type": "string", "minLength": 1},
+        "impact_en": {"type": "string", "minLength": 1},
+        "next_action_ja": {"type": "string", "minLength": 1},
+        "next_action_en": {"type": "string", "minLength": 1},
+        "status": {"const": "open"}
+      },
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"type": "string", "pattern": "^DIR-[0-9]+$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

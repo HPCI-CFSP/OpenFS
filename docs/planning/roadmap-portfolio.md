@@ -78,6 +78,18 @@ calibration separation, units, thresholds, and system/workload/Origin-Group
 diversity. Passing this deterministic check only permits independent Consensus
 review; it does not close `GAP-WORK-003` or establish HPCI-wide validity.
 
+Two approved public supplements connect the initial roadmap wave to concrete HPCI
+planning surfaces. `knowledge/public/hpci-system-inventory.json` records the
+FY2026 HPCI resource list and published machine specifications for the reference
+blueprint. Its call-availability windows are not service-lifecycle or refresh
+dates. `knowledge/public/application-performance-forecasts.json` defines the EEA1
+comparison contract at 1, 4, 32, 128, 1,024, and about 10,000 Fugaku nodes for the
+workload roadmap. It separates strong scaling, weak scaling, and
+throughput/ensemble evaluation and keeps numerical forecasts empty until public
+calibration and independent validation are available. Both supplements are
+validated by JSON Schema and `tools/check_public_planning_surfaces.py` and remain
+Consensus-incomplete.
+
 Experimental comparisons shared by the compute, memory, portability, MPI, and
 performance-model workstreams use
 `schemas/benchmark-result-bundle.schema.json`. Candidate bundles preserve the

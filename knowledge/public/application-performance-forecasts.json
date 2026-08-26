@@ -1,0 +1,122 @@
+{
+  "schema_version": "0.1.0",
+  "export_id": "APP-PERFORMANCE-FORECAST-001",
+  "status": "published",
+  "as_of": "2026-08-26",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "title_ja": "EEA1アプリケーション性能予測面",
+  "title_en": "EEA1 application performance forecast surface",
+  "summary_ja": "富岳の全系を単一の1.0とせず、1、4、32、128、1,024、約10,000ノードを共通基準に、強スケーリング、弱スケーリング、スループットを分離して将来候補を比較するための公開契約。現時点では公開校正値が不足するため、数値予測をCoverage Gapのまま残す。",
+  "summary_en": "A public contract for comparing future candidates at 1, 4, 32, 128, 1,024, and about 10,000 Fugaku nodes, separating strong scaling, weak scaling, and throughput instead of defining the entire Fugaku system as 1.0. Numerical forecasts remain Coverage Gaps until public calibration data are available.",
+  "standard_fugaku_node_scales": [1, 4, 32, 128, 1024, 10000],
+  "scaling_modes": ["strong-scaling", "weak-scaling", "throughput-ensemble"],
+  "comparison_bases": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"],
+  "metric_policy": {
+    "primary_metric_ids": ["time-to-solution", "parallel-efficiency", "throughput", "energy-to-solution", "domain-rate"],
+    "secondary_metric_ids": ["achieved-flops"],
+    "flops_policy_ja": "達成FLOP/sは演算数の定義が版・入力・アルゴリズム間で安定し、time-to-solutionから再現計算できる場合だけ補助指標として掲載する。",
+    "flops_policy_en": "Publish achieved FLOP/s only as a secondary metric when operation counts are stable across the stated version, input, and algorithm and can be reproduced from time-to-solution."
+  },
+  "model_contract": {
+    "model_card_pattern": "PMCARD-*",
+    "equation_ja": "T_pred = T_compute + T_memory + T_communication + T_IO - T_overlap。各項は入力・実行規模・候補構成・モデル版と結び付ける。",
+    "equation_en": "T_pred = T_compute + T_memory + T_communication + T_IO - T_overlap. Each term is bound to the input, execution scale, candidate configuration, and model version.",
+    "required_uncertainty": "lower-base-upper",
+    "calibration_validation_split": true,
+    "procurement_use": "prohibited-until-validated"
+  },
+  "sources": [
+    {"source_id": "SRC-PERF001", "title": "『富岳』の次世代となる新たなフラッグシップシステムにおける基本設計技術報告書 第1.1版", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_ja.pdf", "published_at": "2026-05-29", "source_class": "research-organization"},
+    {"source_id": "SRC-PERF002", "title": "RIKEN-RCCS Benchpark", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchpark", "source_class": "project-official"},
+    {"source_id": "SRC-PERF003", "title": "RIKEN-RCCS Benchkit", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchkit", "source_class": "project-official"}
+  ],
+  "applications": [
+    {
+      "application_id": "APP-EEA1-GENESIS", "name": "GENESIS", "domain_ja": "生命科学・分子動力学", "domain_en": "Life science and molecular dynamics", "eea_group": "EEA1", "compute_characteristic_ids": [3], "scaling_modes": ["strong-scaling", "weak-scaling", "throughput-ensemble"], "primary_metric_ja": "同一入力のtime-to-solution", "primary_metric_en": "Time-to-solution for the same input", "domain_metric_ja": "シミュレーションns/day", "domain_metric_en": "Simulated ns/day",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準入力と公開実測時間が未登録。", "reason_en": "The standard input and public measured runtime are not registered."},
+        {"fugaku_nodes": 4, "status": "measurement-available", "reason_ja": "基本設計報告書は4ノードのMPI通信トレース取得を記載するが、公開runtimeは未登録。", "reason_en": "The basic-design report records a four-node MPI trace, but no public runtime is registered."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "通信・負荷不均衡を含む公開実測が必要。", "reason_en": "A public measurement including communication and imbalance is required."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "適用可能な問題規模と並列効率の確認が必要。", "reason_en": "Applicable problem size and parallel efficiency must be established."}
+      ],
+      "observed_scale_hints": [{"nodes": 4, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "MPI通信パターンをScore-Pで取得。runtime予測値ではない。", "note_en": "MPI communication was traced with Score-P; this is not a runtime forecast."}],
+      "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+    },
+    {
+      "application_id": "APP-EEA1-SALMON", "name": "SALMON", "domain_ja": "新物質・エネルギー・TDDFT", "domain_en": "Materials, energy, and TDDFT", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一物理条件のtime-to-solution", "primary_metric_en": "Time-to-solution for the same physical conditions", "domain_metric_ja": "電子時間発展step/s", "domain_metric_en": "Electronic time-evolution steps/s",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準スーパーセル入力の適合性が未確認。", "reason_en": "Applicability of a standard supercell input is unconfirmed."},
+        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "48ノード通信トレースはあるが、128ノードruntimeは未登録。", "reason_en": "A 48-node communication trace exists, but no 128-node runtime is registered."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "帯域と通信の外挿検証が必要。", "reason_en": "Bandwidth and communication extrapolation must be validated."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題拡大型入力と並列効率の確認が必要。", "reason_en": "A scaled problem and parallel-efficiency evidence are required."}
+      ],
+      "observed_scale_hints": [{"nodes": 48, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレース。標準規模128ノードの代替実測にはしない。", "note_en": "Communication was traced with SST/DUMPI; it is not substituted for a 128-node standard-scale measurement."}],
+      "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+    },
+    {
+      "application_id": "APP-EEA1-SCALE-LETKF", "name": "SCALE-LETKF", "domain_ja": "気象・気候・データ同化", "domain_en": "Weather, climate, and data assimilation", "eea_group": "EEA1", "compute_characteristic_ids": [1, 4, 5], "scaling_modes": ["weak-scaling", "throughput-ensemble"], "primary_metric_ja": "同一予報・同化窓のtime-to-solution", "primary_metric_en": "Time-to-solution for the same forecast and assimilation window", "domain_metric_ja": "予報日数/dayおよびensemble members/day", "domain_metric_en": "Forecast days/day and ensemble members/day",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "SCALEとLETKFを含む最小標準入力が未登録。", "reason_en": "A minimum standard input spanning SCALE and LETKF is not registered."},
+        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "同化ensemble条件を固定した公開実測が必要。", "reason_en": "A public measurement with fixed assimilation-ensemble conditions is required."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力または明示した弱スケーリング入力が必要。", "reason_en": "A same-input or explicitly weak-scaled input is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "計算・通信・I/O内訳の公開実測が必要。", "reason_en": "A public compute, communication, and I/O breakdown is required."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "ensemble並列と空間並列を分離した測定が必要。", "reason_en": "Measurements must separate ensemble and spatial parallelism."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "実運用可能な大規模入力とI/O制約の確認が必要。", "reason_en": "An operationally realistic large input and I/O constraints must be established."}
+      ],
+      "observed_scale_hints": [], "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-002"]
+    },
+    {
+      "application_id": "APP-EEA1-E-WAVE", "name": "E-Wave", "domain_ja": "地震・津波防災", "domain_en": "Earthquake and tsunami disaster science", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一波動伝播問題のtime-to-solution", "primary_metric_en": "Time-to-solution for the same wave-propagation problem", "domain_metric_ja": "time steps/s", "domain_metric_en": "Time steps/s",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "公開可能な標準メッシュと実測が未登録。", "reason_en": "No publishable standard mesh and measurement are registered."},
+        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "疎行列・Allreduce内訳が必要。", "reason_en": "Sparse-matrix and Allreduce breakdowns are required."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "低遅延通信を含む検証が必要。", "reason_en": "Validation including low-latency communication is required."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題規模、反復数、収束条件を固定した検証が必要。", "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."}
+      ],
+      "observed_scale_hints": [], "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+    },
+    {
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE", "name": "FrontFlow/blue", "domain_ja": "ものづくり・非構造格子CFD", "domain_en": "Manufacturing and unstructured-grid CFD", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一流体解析のtime-to-solution", "primary_metric_en": "Time-to-solution for the same CFD case", "domain_metric_ja": "time steps/s", "domain_metric_en": "Time steps/s",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準メッシュと公開runtimeが未登録。", "reason_en": "A standard mesh and public runtime are not registered."},
+        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "間接メモリアクセスと通信の内訳が必要。", "reason_en": "Indirect-memory and communication breakdowns are required."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "768ノード通信トレースはあるが、1,024ノードruntimeは未登録。", "reason_en": "A 768-node communication trace exists, but no 1,024-node runtime is registered."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "大規模メッシュと並列効率の公開検証が必要。", "reason_en": "Public validation for a large mesh and parallel efficiency is required."}
+      ],
+      "observed_scale_hints": [{"nodes": 768, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレース。1,024ノードの標準実測とは区別する。", "note_en": "Communication was traced with SST/DUMPI and remains distinct from a 1,024-node standard measurement."}],
+      "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+    },
+    {
+      "application_id": "APP-EEA1-LQCD-DWF-HMC", "name": "LQCD-DWF-HMC", "domain_ja": "基礎科学・格子QCD", "domain_en": "Fundamental science and lattice QCD", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一格子・収束条件のtime-to-solution", "primary_metric_en": "Time-to-solution for the same lattice and convergence conditions", "domain_metric_ja": "HMC trajectories/day", "domain_metric_en": "HMC trajectories/day",
+      "scale_readiness": [
+        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準格子が1ノードに適合するか未確認。", "reason_en": "It is unconfirmed whether the standard lattice fits one node."},
+        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
+        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "混合精度と収束条件を固定した実測が必要。", "reason_en": "A measurement with fixed mixed-precision and convergence conditions is required."},
+        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "1,024ノード標準入力の公開実測が必要。", "reason_en": "A public standard-input measurement at 1,024 nodes is required."},
+        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "2,048ノード通信トレースからの外挿だけでは不足。", "reason_en": "Extrapolation from the 2,048-node communication trace alone is insufficient."}
+      ],
+      "observed_scale_hints": [{"nodes": 2048, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレース。runtime、格子条件、収束条件を揃えた予測校正値ではない。", "note_en": "Communication was traced with SST/DUMPI; it is not a forecast calibration value with runtime, lattice, and convergence conditions fixed."}],
+      "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+    }
+  ],
+  "forecasts": [],
+  "coverage_gaps": [
+    {"gap_id": "GAP-PERF-001", "priority": "P0", "scope_ja": "EEA1 6アプリの版固定入力と6標準規模での富岳runtime・電力実測", "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales", "impact_ja": "候補機の数値予測と誤差検証を開始できない。", "impact_en": "Numerical candidate-system forecasting and error validation cannot begin.", "next_action_ja": "公開可能な入力をBenchpark/Benchkitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。", "next_action_en": "Register publishable inputs in Benchpark/Benchkit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.", "status": "open"},
+    {"gap_id": "GAP-PERF-002", "priority": "P0", "scope_ja": "計算・メモリ・通信・I/O・overlapモデルの公開係数、校正データ、独立検証誤差", "scope_en": "Public coefficients, calibration data, and independent validation error for compute, memory, communication, I/O, and overlap models", "impact_ja": "予測区間を再現・反証できず調達判断に利用できない。", "impact_en": "Forecast intervals cannot be reproduced or falsified and cannot support procurement.", "next_action_ja": "PMCARD Schemaでモデル版と適用範囲を登録し、校正系と独立検証系を分離する。", "next_action_en": "Register model versions and scope with PMCARD and separate calibration from independent validation systems.", "status": "open"},
+    {"gap_id": "GAP-PERF-003", "priority": "P1", "scope_ja": "同ノード数、同アクセラレータ数、同メモリ、同電力、同費用の候補構成対応表", "scope_en": "Candidate-configuration mappings for equal node, accelerator, memory, power, and cost comparisons", "impact_ja": "同ノード数だけの直感的だが不公平な比較へ偏る。", "impact_en": "Comparisons may default to intuitive but inequitable equal-node-count views.", "next_action_ja": "HPCIシステム台帳と候補製品仕様を接続し、各比較基準の構成と欠測を明示する。", "next_action_en": "Connect the HPCI inventory with candidate specifications and expose configurations and missing data for each comparison basis.", "status": "open"},
+    {"gap_id": "GAP-PERF-004", "priority": "P1", "scope_ja": "標準規模が適用不能なアプリ・入力の明示的なN/A判定", "scope_en": "Explicit N/A decisions where an application or input cannot use a standard scale", "impact_ja": "実行不能な規模を予測対象に含めるおそれがある。", "impact_en": "Infeasible scales may be included in forecasts.", "next_action_ja": "アプリ責任者がメモリ容量、分割可能性、科学的妥当性を確認し、理由付きnot-applicableへ変更する。", "next_action_en": "Application owners should confirm memory fit, decomposition, and scientific validity and mark unsupported scales not-applicable with reasons.", "status": "open"}
+  ],
+  "caveat_ja": "これは数値性能予測ではなく、数値を公開する前に満たすべき比較契約とCoverage Gapです。独立モデルConsensusは未完了で、forecasts配列は意図的に空です。",
+  "caveat_en": "This is a comparison contract and Coverage Gap surface, not a numerical performance prediction. Independent-model Consensus is incomplete, and the forecasts array is intentionally empty.",
+  "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-001", "human_approval_directive_id": "DIR-900009"}
+}

@@ -50,12 +50,22 @@ research or claim that Consensus is complete.
    for material compute, packaging, interconnect, software, workload, and
    evaluation choices as well as memory, but only when the common axes improve an
    HPCI decision.
-10. Before handoff, run JSON Schema validation, repository validation, unit tests,
+10. For the reference-blueprint roadmap, connect the FY-specific public resource
+    list through `knowledge/public/hpci-system-inventory.json`. Label annual HPCI
+    call availability as such; never reinterpret it as procurement, commissioning,
+    guaranteed service, retirement, or refresh timing. For the workload roadmap,
+    use `knowledge/public/application-performance-forecasts.json` and the standard
+    1, 4, 32, 128, 1,024, and about 10,000 Fugaku-node scales. Separate strong,
+    weak, and throughput/ensemble comparisons, keep achieved FLOP/s secondary, and
+    leave numerical forecasts empty when public calibration and independent
+    validation are missing. Run `tools/check_public_planning_surfaces.py` after
+    changing either artifact.
+11. Before handoff, run JSON Schema validation, repository validation, unit tests,
    both roadmap audit generators, Pages generation, and desktop/mobile visual
    checks. The public export remains
    `research_status: provisional` and `consensus_status: incomplete` until the
    configured independent-model Consensus Gate supplies an accepted receipt.
-11. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
+12. For a six-roadmap portfolio or an HPCI scenario recommendation, first commit the
    complete review target. Then run
    `tools/build_consensus_review_package.py --base-commit <40-hex-commit>` and
    distribute that pinned package to blind reviewers. Reviewers must inspect every
@@ -63,6 +73,6 @@ research or claim that Consensus is complete.
    primary-source check for every roadmap, record provider/model/prompt/harness identity,
    and submit schema-valid assessments. Do not count this planner's own review,
    same-conversation forks, or shared-conclusion reviewers as independent.
-12. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
+13. Run `tools/evaluate_consensus_review_package.py <manifest>`. A
     `ready-for-human-decision` result is not acceptance; high-impact adoption still
     requires the human decision required by policy.

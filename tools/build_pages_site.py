@@ -901,6 +901,35 @@ def collect_roadmap_reference_data(
     return projected
 
 
+def collect_public_supplement(
+    root: Path,
+    policy: dict[str, Any],
+    path_key: str,
+    fields_key: str,
+    bilingual_key: str,
+    label: str,
+) -> dict[str, Any]:
+    """Project one Directive-approved public planning supplement."""
+    relative_path = policy[path_key]
+    artifact = load_json(root / relative_path)
+    directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        artifact,
+        policy[fields_key],
+        policy["required_publication_metadata"],
+        policy[bilingual_key],
+        directives,
+        f"{label} {artifact.get('export_id', relative_path)}",
+    )
+    metadata = source_commit_metadata(root, relative_path)
+    projected.update(
+        updated_at=metadata["updated_at"],
+        source_commit=metadata["commit_sha"],
+        source_commit_url=metadata["commit_url"],
+    )
+    return projected
+
+
 def collect_roadmap_assurance(
     root: Path, policy: dict[str, Any]
 ) -> dict[str, Any]:
@@ -1036,6 +1065,22 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     roadmap_reference_data = collect_roadmap_reference_data(
         root, policy, roadmap_artifacts
     )
+    hpci_system_inventory = collect_public_supplement(
+        root,
+        policy,
+        "included_public_hpci_system_inventory",
+        "hpci_system_inventory_public_fields",
+        "hpci_system_inventory_required_bilingual_fields",
+        "HPCI system inventory",
+    )
+    application_performance_forecasts = collect_public_supplement(
+        root,
+        policy,
+        "included_public_application_performance_forecasts",
+        "application_performance_forecast_public_fields",
+        "application_performance_forecast_required_bilingual_fields",
+        "application performance forecast surface",
+    )
     roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
@@ -1075,6 +1120,8 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         },
         "roadmap_artifacts": roadmap_artifacts,
         "roadmap_reference_data": roadmap_reference_data,
+        "hpci_system_inventory": hpci_system_inventory,
+        "application_performance_forecasts": application_performance_forecasts,
         "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,

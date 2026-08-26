@@ -135,6 +135,28 @@ When a task contains multiple investigations, organize them into separate task, 
   architecture, facility, procurement, migration, or scenario decision; use `P1`
   for material comparison gaps and `P2` for useful context. Never fill a gap with
   an unsupported forecast.
+- Maintain the public FY-specific HPCI resource baseline in
+  `knowledge/public/hpci-system-inventory.json` and validate it with
+  `schemas/public-hpci-system-inventory.schema.json` and
+  `tools/check_public_planning_surfaces.py`. An annual HPCI call-availability
+  window is not a procurement, commissioning, guaranteed service, retirement, or
+  refresh window. Store those lifecycle events only when current provider primary
+  evidence supports their dates and semantics.
+- Maintain the EEA1 forecast contract in
+  `knowledge/public/application-performance-forecasts.json`. Compare applicable
+  1, 4, 32, 128, 1,024, and about 10,000 Fugaku-node scales; separate strong
+  scaling, weak scaling, and throughput/ensemble views; and preserve equal-node,
+  equal-CPU-or-accelerator, equal-memory, equal-power, and equal-cost bases. Mark
+  infeasible scales `not-applicable` with a reason. Do not invent a runtime,
+  speedup, energy, or achieved-FLOP/s value when versioned public calibration is
+  missing. Achieved FLOP/s is secondary to time-to-solution, parallel efficiency,
+  throughput, energy-to-solution, and a domain rate.
+- A numerical application forecast must use the declared
+  `T_pred = T_compute + T_memory + T_communication + T_IO - T_overlap` contract,
+  record lower/base/upper values, pin inputs and candidate configuration, and keep
+  calibration data separate from independent validation. Until these conditions
+  and Consensus are satisfied, leave `forecasts` empty and publish the Coverage
+  Gap; never use an unvalidated forecast for procurement scoring.
 - For every P0 source-discovery Gap, preserve an explicit closure plan in
   `config/roadmap-gap-query-overrides.json`. Finding a responsive page, increasing
   a source count, or receiving one model's approval never closes a Gap. Keep it
