@@ -47,12 +47,12 @@ class RoadmapGapQueueTests(unittest.TestCase):
             for item in queue["assignments"]
             if item["priority"] == "P0" and item["workstream"] == "source-discovery"
         ]
-        self.assertEqual(13, len(p0_discovery))
+        self.assertEqual(14, len(p0_discovery))
         self.assertTrue(
             all(item["query_plan_origin"] == "explicit-override" for item in p0_discovery)
         )
-        self.assertEqual(13, queue["summary"]["explicit_query_overrides"])
-        self.assertEqual(13, queue["summary"]["p0_explicit_query_overrides"])
+        self.assertEqual(14, queue["summary"]["explicit_query_overrides"])
+        self.assertEqual(14, queue["summary"]["p0_explicit_query_overrides"])
         self.assertEqual(0, queue["summary"]["p0_generated_query_fallbacks"])
         p0_items = [item for item in queue["assignments"] if item["priority"] == "P0"]
         self.assertTrue(

@@ -369,7 +369,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(33, assurance["gap_queue"]["summary"]["gap_count"])
             self.assertEqual(15, assurance["gap_queue"]["summary"]["p0"])
             self.assertEqual(
-                14,
+                15,
                 len(
                     [
                         item
