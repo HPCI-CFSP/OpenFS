@@ -173,8 +173,21 @@ class ConsensusReviewPackageTests(unittest.TestCase):
 
         units_by_id = {unit["unit_id"]: unit for unit in units}
         self.assertIn("CRU-TOPIC-DECISION-SUPPORT", units_by_id)
+        topic_support = json.loads(
+            subprocess.run(
+                [
+                    "git",
+                    "show",
+                    f"{self.manifest['base_commit']}:knowledge/public/topic-decision-support.json",
+                ],
+                cwd=ROOT,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            ).stdout
+        )
         self.assertEqual(
-            52,
+            len(topic_support["sources"]),
             len(units_by_id["CRU-TOPIC-DECISION-SUPPORT"]["primary_source_requirements"]),
         )
         self.assertIn(

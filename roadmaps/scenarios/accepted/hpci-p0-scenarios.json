@@ -3,16 +3,16 @@
   "set_id": "SCNSET-HPCI-P0-001",
   "as_of": "2026-08-27",
   "status": "published",
-  "title_ja": "システム整備計画案 3案比較",
+  "title_ja": "3つのシステム整備計画案",
   "title_en": "Three system planning options",
-  "notice_ja": "公開一次情報とOpenFS暫定評価に基づく比較案であり、推奨順位ではない。センターProfile、価格、供給、施設条件、Consensusは未完了。",
-  "notice_en": "These are comparison options based on public primary sources and OpenFS provisional assessment, not a ranking. Center profiles, price, supply, facility conditions, and Consensus remain incomplete.",
+  "notice_ja": "公開一次情報とOpenFSの暫定評価に基づく比較案であり、推奨順位を示すものではない。センタープロファイル、価格、供給条件、施設条件の確認と、独立したAIモデルによる合意判定は完了していない。",
+  "notice_en": "These options are based on public primary sources and provisional OpenFS assessments; they are not presented in a recommended order. Center profiles, prices, supply conditions, facility constraints, and Consensus review by independent models remain incomplete.",
   "consensus_status": "incomplete",
   "decision_evidence_contracts": [
     {
       "contract_id": "DCTR-SOURCE-EVIDENCE",
-      "title_ja": "一次情報・時期・Gap監査",
-      "title_en": "Primary-source, timing, and Gap assurance",
+      "title_ja": "一次情報・時期・未確認事項の監査",
+      "title_en": "Primary-source, timing, and coverage-gap assurance",
       "schema_paths": [
         "schemas/evidence-bundle.schema.json",
         "schemas/public-roadmap.schema.json",
@@ -49,8 +49,8 @@
         "GAP-PORT-004",
         "GAP-PORT-006"
       ],
-      "effect_ja": "正当性、性能、電力、RAS、移植工数、MPI/providerを同一条件で比較する。",
-      "effect_en": "Compare correctness, performance, energy, RAS, porting effort, and MPI/provider behavior under common conditions.",
+      "effect_ja": "計算結果の妥当性、性能、消費電力、RAS、移植工数、MPI実装、通信プロバイダーを同一条件で比較する。",
+      "effect_en": "Compare numerical correctness, performance, power consumption, RAS, porting effort, MPI implementations, and communication providers under common conditions.",
       "acceptance_effect": "candidate-only"
     },
     {
@@ -66,14 +66,14 @@
       "gap_refs": [
         "GAP-WORK-003"
       ],
-      "effect_ja": "式、入力、適用範囲、校正とholdout、予測誤差を固定して再計算する。",
-      "effect_en": "Pin and recompute equations, inputs, applicability, calibration versus holdout data, and prediction error.",
+      "effect_ja": "式と入力の版を固定して再計算し、適用範囲を明示した上で、校正データとホールドアウト検証データを分離し、予測誤差を測定する。",
+      "effect_en": "Version and recompute equations and inputs, document applicability, separate calibration data from holdout validation data, and measure prediction error.",
       "acceptance_effect": "candidate-only"
     },
     {
       "contract_id": "DCTR-WORKLOAD-OBSERVATION",
-      "title_ja": "匿名化した利用分布",
-      "title_en": "Privacy-preserving workload distributions",
+      "title_ja": "個別情報を公開しない利用分布",
+      "title_en": "Privacy-preserving aggregate workload distributions",
       "schema_paths": [
         "schemas/workload-observation-summary.schema.json"
       ],
@@ -84,8 +84,8 @@
         "GAP-WORK-001",
         "GAP-WORK-004"
       ],
-      "effect_ja": "個別jobや識別子を公開せず、センター横断の規模・用途・データ移動分布を比較する。",
-      "effect_en": "Compare scale, workload, and data-movement distributions across centers without publishing job rows or identifiers.",
+      "effect_ja": "個別ジョブや識別子を公開せず、センター横断の規模・用途・データ移動分布を比較する。",
+      "effect_en": "Compare scale, workload, and data-movement distributions across centers without publishing individual job records or identifiers.",
       "acceptance_effect": "candidate-only"
     },
     {
@@ -104,14 +104,14 @@
         "GAP-BLUE-001",
         "GAP-BLUE-003"
       ],
-      "effect_ja": "15提供機関の利用、施設、電力、予算、調達、移行条件を同じ契約で確認する。",
-      "effect_en": "Assess workload, facility, power, budget, procurement, and migration constraints under one contract for all 15 providers.",
+      "effect_ja": "15の提供機関について、利用実態、施設、電力、予算、調達、移行の各条件を共通の評価仕様で確認する。",
+      "effect_en": "Assess usage patterns, facilities, power, budgets, procurement, and migration constraints for all 15 providers using a common evidence specification.",
       "acceptance_effect": "candidate-only"
     },
     {
       "contract_id": "DCTR-GOVERNANCE",
-      "title_ja": "版・独立レビュー・公開判断",
-      "title_en": "Version, independent review, and publication decision",
+      "title_ja": "成果物の版固定・独立レビュー・公開判断",
+      "title_en": "Artifact versioning, independent review, and publication decision",
       "schema_paths": [
         "schemas/consensus-review-package.schema.json",
         "schemas/consensus-package-review.schema.json",
@@ -128,8 +128,8 @@
         "GAP-BLUE-006",
         "GAP-WORK-006"
       ],
-      "effect_ja": "コミットで固定した成果物を、独立したモデル、提供者、ハーネスで反証し、人による正式判断へ渡す。",
-      "effect_en": "Falsify commit-pinned artifacts across independent models, providers, and harnesses before accountable human decision.",
+      "effect_ja": "コミットで固定した成果物について、異なるモデル、AIサービス提供者、ハーネス構成を用いて反証を試み、その結果を判断責任を持つ人の正式な判断へ渡す。",
+      "effect_en": "Subject commit-pinned artifacts to falsification attempts using independent models, providers, and harness configurations before an accountable human decision is made.",
       "acceptance_effect": "candidate-only"
     }
   ],
@@ -137,8 +137,8 @@
     {
       "schema_version": "0.2.0",
       "scenario_id": "SCN-HPCI-BALANCED-001",
-      "title_ja": "バランス型・連合共通基盤",
-      "title_en": "Balanced federated common platform",
+      "title_ja": "バランス型・連携基盤",
+      "title_en": "Balanced federated infrastructure",
       "status": "published",
       "research_status": "provisional",
       "consensus_status": "incomplete",
@@ -157,7 +157,7 @@
         "summary_en": "A heterogeneous portfolio combining CPU-centric, GPU-centric, large-memory, and data-service resources.",
         "priorities_ja": [
           "HBMとDDR/SOCAMMの均衡",
-          "標準準拠scale-outと段階的CXL/CPO",
+          "標準準拠のスケールアウトと段階的なCXL/CPO",
           "センター別施設制約に応じた構成"
         ],
         "priorities_en": [
@@ -189,10 +189,10 @@
         ]
       },
       "applications": {
-        "summary_ja": "安定コアと更新可能な拡張部を持つ代表アプリ・Proxy・性能モデルを全センターで継続評価する。",
+        "summary_ja": "安定した中核部分と更新可能な拡張部分で構成する代表アプリケーション、プロキシアプリケーション、性能モデルを、全センターで継続的に評価する。",
         "summary_en": "Continuously evaluate a representative suite across centers with a stable core and evolvable application, proxy, and model extensions.",
         "priorities_ja": [
-          "従来HPCとAI for Scienceの両立",
+          "従来型HPCとAI for Scienceワークロードの両立",
           "性能・電力・データ移動・移植工数の同時計測",
           "四半期更新"
         ],
@@ -218,7 +218,7 @@
         {
           "note_id": "CTX-BAL-HPCI",
           "scope": "hpci-specific",
-          "note_ja": "15提供機関のセンターProfile、HPCI相互運用性、広域データ移動を共通判断条件とする部分はHPCI固有である。",
+          "note_ja": "15の提供機関に関するセンタープロファイル、HPCI相互運用性、広域データ移動を共通判断条件とする部分はHPCI固有である。",
           "note_en": "The shared decision requirements for profiles across fifteen providers, HPCI interoperability, and wide-area data movement are HPCI-specific.",
           "evidence_refs": [
             "GAP-BLUE-001",
@@ -234,8 +234,8 @@
           {
             "phase_id": "SPH-BAL-PORT-BASE",
             "domain": "portfolio",
-            "title_ja": "共通基準と現況確認",
-            "title_en": "Common baseline and current-state review",
+            "title_ja": "共通評価基準の整備と現状確認",
+            "title_en": "Common evaluation baseline and current-state assessment",
             "stage": "evaluation",
             "timing_basis": "openfs-provisional-plan",
             "start": {
@@ -246,7 +246,7 @@
               "year": 2027,
               "quarter": "Q2"
             },
-            "condition_ja": "共通計測基準と提供機関Profileを整備する。",
+            "condition_ja": "共通計測基準と提供機関プロファイルを整備する。",
             "condition_en": "Establish common measurement criteria and provider profiles.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -270,7 +270,7 @@
               "year": 2028,
               "quarter": "Q2"
             },
-            "condition_ja": "同じSuiteで構成差と移植性を比較する。",
+            "condition_ja": "同じ評価スイートで構成差と移植性を比較する。",
             "condition_en": "Compare configurations and portability with the same suite.",
             "dependency_refs": [
               "SPH-BAL-PORT-BASE"
@@ -384,7 +384,7 @@
           {
             "phase_id": "SPH-BAL-NET",
             "domain": "interconnect",
-            "title_ja": "標準fabricと光化",
+            "title_ja": "標準ファブリックと光接続の段階導入",
             "title_en": "Standards-based fabrics and optics",
             "stage": "deployment",
             "timing_basis": "openfs-provisional-plan",
@@ -408,7 +408,7 @@
           {
             "phase_id": "SPH-BAL-DATA",
             "domain": "storage-data",
-            "title_ja": "共通データ面",
+            "title_ja": "共通データプレーン",
             "title_en": "Common data plane",
             "stage": "deployment",
             "timing_basis": "openfs-provisional-plan",
@@ -432,7 +432,7 @@
           {
             "phase_id": "SPH-BAL-SW",
             "domain": "system-software",
-            "title_ja": "共通CIと互換層",
+            "title_ja": "共通の継続的インテグレーションと互換層",
             "title_en": "Common CI and compatibility layers",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -444,7 +444,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "MPI/OpenMP/SYCLと複数backendを継続検証する。",
+            "condition_ja": "MPI/OpenMP/SYCLと複数のバックエンドを継続検証する。",
             "condition_en": "Continuously validate MPI, OpenMP, SYCL, and multiple backends.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -456,7 +456,7 @@
           {
             "phase_id": "SPH-BAL-APP",
             "domain": "applications",
-            "title_ja": "共通評価Suite",
+            "title_ja": "共通評価スイート",
             "title_en": "Common evaluation suite",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -468,7 +468,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "安定コアを保ち四半期ごとに対象を拡張する。",
+            "condition_ja": "安定した中核部分を維持し、四半期ごとに評価対象を拡張する。",
             "condition_en": "Retain a stable core and extend coverage quarterly.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -504,8 +504,8 @@
           {
             "phase_id": "SPH-BAL-PROCURE",
             "domain": "procurement-governance",
-            "title_ja": "調達テンプレート判断",
-            "title_en": "Procurement-template decision",
+            "title_ja": "調達条件の策定",
+            "title_en": "Procurement-criteria definition",
             "stage": "decision",
             "timing_basis": "openfs-provisional-plan",
             "start": {
@@ -533,7 +533,7 @@
           "center_group_en": "General-purpose university centers",
           "fit": "広い利用分野を維持しつつ更新構成を調整しやすい。",
           "fit_en": "Supports broad user communities while allowing refresh configurations to vary.",
-          "migration": "共通環境へ段階移行し、センター固有backendを拡張として維持する。",
+          "migration": "共通環境へ段階移行し、センター固有のバックエンドを拡張として維持する。",
           "migration_en": "Migrate gradually to the common environment while retaining center-specific backends as extensions.",
           "unverified_conditions": [
             "利用分野構成",
@@ -553,7 +553,7 @@
           "center_group_en": "Accelerator- and data-intensive centers",
           "fit": "GPU/HBM比率とデータサービスを増やすことで適合可能。",
           "fit_en": "Can fit by increasing GPU/HBM share and data services.",
-          "migration": "共通APIとデータ面を維持しながら高密度区画を追加する。",
+          "migration": "共通APIとデータプレーンを維持しながら高密度計算区画を追加する。",
           "migration_en": "Add high-density partitions while preserving common APIs and data services.",
           "unverified_conditions": [
             "高密度設備余力",
@@ -575,7 +575,7 @@
           "candidate_en": "Multi-vendor CPU-centric and GPU-centric nodes",
           "role": "用途別区画を構成し、単一アクセラレータへの集中を避ける。",
           "role_en": "Build workload-specific partitions while avoiding concentration on one accelerator family.",
-          "maturity_gate": "代表アプリ性能、性能/W、供給、保守、複数backend移植性",
+          "maturity_gate": "代表アプリケーションの性能、電力当たり性能、供給、保守、複数バックエンドへの移植性",
           "maturity_gate_en": "Representative-application performance, performance per watt, supply, support, and multi-backend portability",
           "fallback": "CPU/GPU構成比を変更し、標準ジョブ・データ境界を維持する。",
           "fallback_en": "Change the CPU/GPU portfolio mix while preserving standard job and data boundaries.",
@@ -605,13 +605,13 @@
         {
           "option_id": "TOPT-BAL-INTERCONNECT",
           "domain": "interconnect",
-          "candidate": "標準準拠scale-out fabricと段階的CPO",
+          "candidate": "標準準拠のスケールアウト・ファブリックと段階的CPO",
           "candidate_en": "Standards-based scale-out fabrics with staged co-packaged optics",
-          "role": "センター内の相互接続とHPCI広域データ面を段階的に強化する。",
+          "role": "センター内の相互接続とHPCIの広域データプレーンを段階的に強化する。",
           "role_en": "Incrementally strengthen intra-center interconnects and the HPCI-wide data plane.",
           "maturity_gate": "実装間相互接続、障害分離、運用監視、光部品保守性",
           "maturity_gate_en": "Cross-implementation interoperability, fault isolation, observability, and optical-component serviceability",
-          "fallback": "標準電気fabricを本番に維持し、光化は交換可能な区画から導入する。",
+          "fallback": "標準化された電気インターコネクトを本番に維持し、光化は交換可能な区画から導入する。",
           "fallback_en": "Keep standards-based electrical fabrics in production and introduce optics in replaceable partitions.",
           "evidence_refs": [
             "RM-HW-INTERCONNECT",
@@ -622,11 +622,11 @@
         {
           "option_id": "TOPT-BAL-SOFTWARE",
           "domain": "system-software",
-          "candidate": "共通最小環境とセンター別backend拡張",
+          "candidate": "共通最小環境とセンター別のバックエンド拡張",
           "candidate_en": "A common minimum environment with center-specific backend extensions",
-          "role": "MPI/OpenMP/SYCLと性能可搬層を共通CIで継続検証する。",
-          "role_en": "Continuously validate MPI, OpenMP, SYCL, and portability layers in common CI.",
-          "maturity_gate": "複数ノード種での正当性、性能退行、再現性、保守期間",
+          "role": "MPI/OpenMP/SYCLと性能可搬層を共通の継続的インテグレーション環境で検証する。",
+          "role_en": "Continuously validate MPI, OpenMP, SYCL, and portability layers in a shared continuous-integration environment.",
+          "maturity_gate": "複数のノード種における計算結果の妥当性、性能退行、再現性、保守期間",
           "maturity_gate_en": "Correctness, performance regression, reproducibility, and support lifetime across node types",
           "fallback": "センター固有環境を互換層として保ち、共通APIへの移行を段階化する。",
           "fallback_en": "Retain center-specific environments as compatibility layers and stage migration to common APIs.",
@@ -640,14 +640,14 @@
         {
           "option_id": "TOPT-BAL-APPLICATIONS",
           "domain": "applications",
-          "candidate": "安定コアと四半期更新拡張を持つ全国評価suite",
+          "candidate": "安定した中核部分と、四半期ごとに更新する拡張部分で構成する全国共通の評価スイート",
           "candidate_en": "A national evaluation suite with a stable core and quarterly extensions",
-          "role": "従来HPC、AI for Science、データ処理を同じ判断ゲートで比較する。",
+          "role": "従来型HPC、AI for Science、データ処理を同じ判断ゲートで比較する。",
           "role_en": "Compare conventional HPC, AI for Science, and data processing under common decision gates.",
-          "maturity_gate": "センター・分野代表性、正答検証、性能・電力・移植工数の再現性",
+          "maturity_gate": "センターと分野の代表性、計算結果の妥当性検証、性能・電力・移植工数の再現性",
           "maturity_gate_en": "Center and domain representativeness, correctness, and reproducible performance, power, and porting effort",
-          "fallback": "安定コアを固定し、代表性が未確認の項目は拡張部またはCoverage Gapに残す。",
-          "fallback_en": "Freeze the stable core and retain unverified workloads in the extension or Coverage Gap backlog.",
+          "fallback": "安定した中核部分を固定し、代表性が未確認の項目は拡張部分または未確認事項に残す。",
+          "fallback_en": "Freeze the stable core and retain workloads with unverified representativeness in the extension set or coverage-gap backlog.",
           "evidence_refs": [
             "RM-APP-WORKLOADS",
             "MS-WORK-HPCI-2027Q4",
@@ -658,8 +658,8 @@
       "evaluation": {
         "application-coverage": {
           "score": null,
-          "rationale": "幅広い分野を意図するが、全センターProfileが未確定。",
-          "rationale_en": "Designed for broad coverage, but all-center profiles remain incomplete.",
+          "rationale": "幅広い分野を対象としているが、すべてのセンタープロファイルを確認できていない。",
+          "rationale_en": "The option is designed for broad coverage, but profiles for all centers remain incomplete.",
           "evidence_refs": [
             "GAP-WORK-001",
             "GAP-BLUE-001"
@@ -676,8 +676,8 @@
         },
         "power-facility-fit": {
           "score": null,
-          "rationale": "富岳NEXTの施設日程と設計目標は公開されたが、全センターの施設基線が未整備。",
-          "rationale_en": "FugakuNEXT facility timing and design targets are public, but an all-center facility baseline is missing.",
+          "rationale": "富岳NEXTの施設日程と設計目標は公開されたが、全センターの施設条件を比較するための基準情報が不足している。",
+          "rationale_en": "FugakuNEXT facility timing and design targets are public, but baseline information for comparing facility conditions across all centers is incomplete.",
           "evidence_refs": [
             "MS-BLUE-FACILITY-2026Q1",
             "MS-BLUE-FACILITY-2026Q2",
@@ -687,16 +687,16 @@
         },
         "lifecycle-cost": {
           "score": null,
-          "rationale": "移植と運用を含める設計だが価格・保守条件が未公開。",
-          "rationale_en": "Includes migration and operations conceptually, but price and support terms are unavailable.",
+          "rationale": "移植と運用を含む設計だが、価格と保守条件は公開されていない。",
+          "rationale_en": "The design includes migration and operations, but price and support terms are unavailable.",
           "evidence_refs": [
             "EXT-COST-SUPPLY"
           ]
         },
         "maturity-schedule": {
           "score": null,
-          "rationale": "複数候補と段階ゲートで不確実性を吸収する。",
-          "rationale_en": "Uses multiple candidates and staged gates to absorb schedule uncertainty.",
+          "rationale": "複数の候補と段階的な判断ゲートにより、日程の不確実性による影響を抑える。",
+          "rationale_en": "Multiple candidates and staged gates reduce exposure to schedule uncertainty.",
           "evidence_refs": [
             "MS-BLUE-HPCI-2027Q4",
             "MS-BLUE-HPCI-2028Q2"
@@ -705,7 +705,7 @@
         "software-migration": {
           "score": null,
           "rationale": "共通最小環境と移植性台帳を中心に置く。",
-          "rationale_en": "Centers the plan on a common minimum environment and portability ledger.",
+          "rationale_en": "The plan centers on a common minimum environment and portability ledger.",
           "evidence_refs": [
             "MS-PORT-HPCI-2027",
             "XDEP-PORT-COMP"
@@ -713,7 +713,7 @@
         },
         "operations-security": {
           "score": null,
-          "rationale": "共通運用は効率化余地があるが責任分界が未確定。",
+          "rationale": "共通運用によって効率化できる可能性があるが、責任分界は確定していない。",
           "rationale_en": "Common operations may improve efficiency, but responsibility boundaries are unresolved.",
           "evidence_refs": [
             "GAP-BLUE-004"
@@ -739,7 +739,7 @@
         },
         "center-fit": {
           "score": null,
-          "rationale": "センター別構成を許すがProfile完成が前提。",
+          "rationale": "センター別構成を許すがプロファイルの完成が前提。",
           "rationale_en": "Allows center-specific configurations but depends on completed profiles.",
           "evidence_refs": [
             "MS-BLUE-HPCI-2027Q2",
@@ -748,8 +748,8 @@
         },
         "reversibility": {
           "score": null,
-          "rationale": "複数区画と標準境界により比較的可逆。",
-          "rationale_en": "Multiple partitions and standard boundaries provide relative reversibility.",
+          "rationale": "複数の区画と標準化された境界により、比較的高い可逆性を確保できる。",
+          "rationale_en": "Multiple partitions and standardized boundaries provide a relatively high degree of reversibility.",
           "evidence_refs": [
             "MS-NET-HPCI-2027",
             "MS-PORT-HPCI-2027"
@@ -784,20 +784,20 @@
         "GAP-WORK-006"
       ],
       "uncertainties": [
-        "15センターの受理済みProfileがない",
+        "15センターの受理済みセンタープロファイルがない",
         "価格・供給量・保守条件が公開情報では不足",
         "富岳NEXTの施設マイルストーンは公開されたが全センター施設ロードマップはP0外"
       ],
       "uncertainties_en": [
         "No accepted profiles for all 15 centers",
         "Public price, supply-volume, and support information is insufficient",
-        "FugakuNEXT facility milestones are public, but an all-center facility roadmap is outside the current P0 set"
+        "FugakuNEXT facility milestones are public, but a facility roadmap covering all centers is outside the current P0 set"
       ],
       "decision_gates": [
         "2026 Q4: 共通計測基準",
-        "2027 Q2: 15センターProfile",
+        "2027 Q2: 15センタープロファイル",
         "2027 Q4: 複数構成比較",
-        "2028 Q2: 調達テンプレート実証"
+        "2028 Q2: 標準調達条件の実証"
       ],
       "decision_gates_en": [
         "2026 Q4: common measurement baseline",
@@ -805,8 +805,8 @@
         "2027 Q4: multi-configuration comparison",
         "2028 Q2: procurement-template pilot"
       ],
-      "caveat_ja": "単一モデルによる暫定シナリオ。Consensus Gateと人による採用判断は未完了で、推奨順位を示さない。",
-      "caveat_en": "A single-model provisional scenario. Consensus and human adoption decisions are incomplete, and no ranking is asserted.",
+      "caveat_ja": "単一のAIモデルが作成した暫定案である。独立したAIモデルによる合意判定（Consensus Gate）と人による採用判断は完了しておらず、3つの案の推奨順位を示すものではない。",
+      "caveat_en": "This is a provisional option prepared by one model. Consensus review by independent models is incomplete, and no human adoption decision has been made. The options are not ranked.",
       "publication": {
         "information_classification": "public",
         "publication_approved": true,
@@ -825,8 +825,8 @@
             "reference": 50,
             "upper": 70
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -838,13 +838,13 @@
             {
               "component_id": "BCMP-BALANCED-UME-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 96,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-BALANCED-UME-NET"
               ]
@@ -857,8 +857,8 @@
               "quantity": 96,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計384基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 384 accelerators",
+              "role_ja": "計384基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 384 accelerators",
               "connection_ids": [
                 "BCMP-BALANCED-UME-NET"
               ]
@@ -871,8 +871,8 @@
               "quantity": 8,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-BALANCED-UME-NET"
               ]
@@ -880,13 +880,13 @@
             {
               "component_id": "BCMP-BALANCED-UME-NET",
               "component_type": "interconnect",
-              "label_ja": "二面化した標準fabric",
+              "label_ja": "本番系と評価系に分けた標準ファブリック",
               "label_en": "Dual-plane standards-based fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-BALANCED-UME-CPU",
                 "BCMP-BALANCED-UME-ACC",
@@ -916,8 +916,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 4,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-BALANCED-UME-NET"
@@ -930,9 +930,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "既存の液冷対応センター増強",
-              "role_en": "Existing liquid-cooled center expansion",
+              "unit_en": "facility package",
+              "role_ja": "既存の液冷対応センターの増強",
+              "role_en": "Expansion of an existing liquid-cooled center",
               "connection_ids": [
                 "BCMP-BALANCED-UME-CPU",
                 "BCMP-BALANCED-UME-ACC",
@@ -946,11 +946,11 @@
             "accelerator_nodes": 96,
             "accelerators": 384,
             "storage_pb": 10,
-            "facility_class_ja": "既存の液冷対応センター増強",
-            "facility_class_en": "Existing liquid-cooled center expansion"
+            "facility_class_ja": "既存の液冷対応センターの増強",
+            "facility_class_en": "Expansion of an existing liquid-cooled center"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-BALANCED-TAKE",
@@ -962,8 +962,8 @@
             "reference": 400,
             "upper": 500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -975,13 +975,13 @@
             {
               "component_id": "BCMP-BALANCED-TAKE-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 1024,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-NET"
               ]
@@ -994,8 +994,8 @@
               "quantity": 512,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計2,048基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 2,048 accelerators",
+              "role_ja": "計2,048基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 2,048 accelerators",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-NET"
               ]
@@ -1008,8 +1008,8 @@
               "quantity": 32,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-NET"
               ]
@@ -1017,13 +1017,13 @@
             {
               "component_id": "BCMP-BALANCED-TAKE-NET",
               "component_type": "interconnect",
-              "label_ja": "二面化した標準fabric",
+              "label_ja": "本番系と評価系に分けた標準ファブリック",
               "label_en": "Dual-plane standards-based fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-CPU",
                 "BCMP-BALANCED-TAKE-ACC",
@@ -1053,8 +1053,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 16,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-NET"
@@ -1067,9 +1067,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "大規模センター増築・電力増強",
-              "role_en": "Major center and power expansion",
+              "unit_en": "facility package",
+              "role_ja": "大規模センターの増築・受電設備の増強",
+              "role_en": "Major center expansion with additional power infrastructure",
               "connection_ids": [
                 "BCMP-BALANCED-TAKE-CPU",
                 "BCMP-BALANCED-TAKE-ACC",
@@ -1083,11 +1083,11 @@
             "accelerator_nodes": 512,
             "accelerators": 2048,
             "storage_pb": 50,
-            "facility_class_ja": "大規模センター増築・電力増強",
-            "facility_class_en": "Major center and power expansion"
+            "facility_class_ja": "大規模センターの増築・受電設備の増強",
+            "facility_class_en": "Major center expansion with additional power infrastructure"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-BALANCED-MATSU",
@@ -1099,8 +1099,8 @@
             "reference": 1300,
             "upper": 1500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -1112,13 +1112,13 @@
             {
               "component_id": "BCMP-BALANCED-MATSU-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 8192,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-NET"
               ]
@@ -1131,8 +1131,8 @@
               "quantity": 2048,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計8,192基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 8,192 accelerators",
+              "role_ja": "計8,192基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 8,192 accelerators",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-NET"
               ]
@@ -1145,8 +1145,8 @@
               "quantity": 128,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-NET"
               ]
@@ -1154,13 +1154,13 @@
             {
               "component_id": "BCMP-BALANCED-MATSU-NET",
               "component_type": "interconnect",
-              "label_ja": "二面化した標準fabric",
+              "label_ja": "本番系と評価系に分けた標準ファブリック",
               "label_en": "Dual-plane standards-based fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-CPU",
                 "BCMP-BALANCED-MATSU-ACC",
@@ -1190,8 +1190,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 64,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-NET"
@@ -1204,9 +1204,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "専用施設を含むフラッグシップ級",
-              "role_en": "Flagship class including dedicated facilities",
+              "unit_en": "facility package",
+              "role_ja": "専用施設を含むフラッグシップ級システム",
+              "role_en": "Flagship-class system with dedicated facilities",
               "connection_ids": [
                 "BCMP-BALANCED-MATSU-CPU",
                 "BCMP-BALANCED-MATSU-ACC",
@@ -1220,11 +1220,11 @@
             "accelerator_nodes": 2048,
             "accelerators": 8192,
             "storage_pb": 200,
-            "facility_class_ja": "専用施設を含むフラッグシップ級",
-            "facility_class_en": "Flagship class including dedicated facilities"
+            "facility_class_ja": "専用施設を含むフラッグシップ級システム",
+            "facility_class_en": "Flagship-class system with dedicated facilities"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         }
       ]
     },
@@ -1247,17 +1247,17 @@
       "objective": "AI for Science、実験・観測データ、デジタルツインを中心に、高密度アクセラレータ、広帯域メモリ、光ネットワーク、データサービスへ重点配分する。",
       "objective_en": "Prioritize dense accelerators, high-bandwidth memory, optical networking, and data services for AI for Science, experimental and observational data, and digital twins.",
       "architecture": {
-        "summary_ja": "GPU/HBMラック、大容量CPUノード、高速ingest、階層ストレージを高帯域fabricで接続する。",
+        "summary_ja": "GPU/HBMラック、大容量CPUノード、高速なデータ取り込み、階層ストレージを高帯域ファブリックで接続する。",
         "summary_en": "Connect GPU/HBM racks, large-memory CPU nodes, high-speed ingest, and tiered storage with high-bandwidth fabrics.",
         "priorities_ja": [
           "HBM4/4EとSOCAMM2",
-          "高radix scale-up/scale-outとCPO",
-          "AIデータのingest・metadata・scratch"
+          "高ラディックスのスケールアップ／スケールアウトとCPO",
+          "AIデータの取り込み・メタデータ管理・一時ストレージ"
         ],
         "priorities_en": [
           "HBM4/4E and SOCAMM2",
           "High-radix scale-up/scale-out and CPO",
-          "AI-data ingest, metadata, and scratch"
+          "AI-data ingestion, metadata management, and scratch storage"
         ],
         "roadmap_refs": [
           "RM-HW-COMPUTE",
@@ -1266,10 +1266,10 @@
         ]
       },
       "system_software": {
-        "summary_ja": "バッチとコンテナ/ワークフローを併用し、AI frameworkとHPC精度・再現性を同時検証する。",
-        "summary_en": "Combine batch and container/workflow services while validating AI frameworks together with HPC accuracy and reproducibility.",
+        "summary_ja": "バッチ処理、コンテナ、ワークフローを併用し、AIフレームワークとHPCにおける計算精度・再現性を同時に検証する。",
+        "summary_en": "Combine batch processing, containers, and workflow services while validating AI frameworks together with numerical accuracy and reproducibility for HPC applications.",
         "priorities_ja": [
-          "GPU frameworkと通信library",
+          "GPUフレームワークと通信ライブラリ",
           "データ・モデル来歴",
           "CPU/GPU性能可搬性"
         ],
@@ -1283,15 +1283,15 @@
         ]
       },
       "applications": {
-        "summary_ja": "科学基盤モデル、AIサロゲート、simulation-AI連成、実験連携を重点評価し、従来HPCの最低容量を保つ。",
-        "summary_en": "Prioritize scientific foundation models, AI surrogates, simulation-AI coupling, and experiment integration while retaining minimum conventional-HPC capacity.",
+        "summary_ja": "科学基盤モデル、AIサロゲート、シミュレーション・AI連成、実験連携を重点的に評価し、従来型HPCに必要な計算容量も確保する。",
+        "summary_en": "Prioritize scientific foundation models, AI surrogates, simulation-AI coupling, and experiment integration while retaining the compute capacity required for conventional HPC.",
         "priorities_ja": [
-          "end-to-end科学成果時間",
-          "学習・推論・simulation連成",
+          "科学的成果を得るまでの所要時間",
+          "学習・推論・シミュレーション連成",
           "データ移動と電力"
         ],
         "priorities_en": [
-          "End-to-end time to scientific result",
+          "End-to-end time to scientific results",
           "Coupled training, inference, and simulation",
           "Data movement and power"
         ],
@@ -1303,7 +1303,7 @@
         {
           "note_id": "CTX-AI-REUSE",
           "scope": "reusable",
-          "note_ja": "AI・データ集約処理を、計算ノードだけでなくメモリ、ネットワーク、データ基盤、ソフトウェアを含むEnd-to-End指標で判断する考え方は一般化できる。",
+          "note_ja": "AI・データ集約処理を、計算ノードだけでなくメモリ、ネットワーク、データ基盤、ソフトウェアを含むエンドツーエンド指標で判断する考え方は、HPCI以外にも適用できる。",
           "note_en": "Evaluating AI- and data-intensive workloads with end-to-end metrics spanning compute, memory, networks, data services, and software is broadly reusable.",
           "evidence_refs": [
             "ROADMAP-DEPENDENCY-REGISTER-001"
@@ -1341,7 +1341,7 @@
               "quarter": "Q2"
             },
             "condition_ja": "科学成果までの時間とデータ移動を共通計測する。",
-            "condition_en": "Measure time to scientific result and data movement under common rules.",
+            "condition_en": "Measure time to scientific results and data movement under common rules.",
             "dependency_refs": [],
             "evidence_refs": [
               "MS-BLUE-HPCI-2027Q2"
@@ -1352,7 +1352,7 @@
           {
             "phase_id": "SPH-AI-PORT-PILOT",
             "domain": "portfolio",
-            "title_ja": "高密度・データ実証",
+            "title_ja": "高密度計算・データ処理の実証",
             "title_en": "Dense compute and data pilots",
             "stage": "pilot",
             "timing_basis": "openfs-provisional-plan",
@@ -1364,7 +1364,7 @@
               "year": 2028,
               "quarter": "Q2"
             },
-            "condition_ja": "高密度計算、光接続、CXLをEnd-to-Endで比較する。",
+            "condition_ja": "高密度計算、光接続、CXLをエンドツーエンドで比較する。",
             "condition_en": "Compare dense compute, optics, and CXL end to end.",
             "dependency_refs": [
               "SPH-AI-PORT-BASE"
@@ -1430,7 +1430,7 @@
           {
             "phase_id": "SPH-AI-COMPUTE",
             "domain": "compute",
-            "title_ja": "高密度accelerator実証",
+            "title_ja": "高密度アクセラレータ実証",
             "title_en": "Dense-accelerator pilot",
             "stage": "pilot",
             "timing_basis": "openfs-provisional-plan",
@@ -1442,7 +1442,7 @@
               "year": 2029,
               "quarter": "Q2"
             },
-            "condition_ja": "学習、推論、simulation結合を同じ区画で評価する。",
+            "condition_ja": "学習、推論、シミュレーション連成を同じ区画で評価する。",
             "condition_en": "Evaluate training, inference, and coupled simulation in the same partition.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1466,7 +1466,7 @@
               "year": 2029,
               "quarter": "Q4"
             },
-            "condition_ja": "HBM、SOCAMM、CXL/PIMの役割をworkload別に測る。",
+            "condition_ja": "HBM、SOCAMM、CXL/PIMの役割をワークロード別に測る。",
             "condition_en": "Measure the roles of HBM, SOCAMM, and CXL/PIM by workload.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1478,7 +1478,7 @@
           {
             "phase_id": "SPH-AI-NET",
             "domain": "interconnect",
-            "title_ja": "高radix・光接続",
+            "title_ja": "高ラディックスファブリックと光接続",
             "title_en": "High-radix fabrics and optics",
             "stage": "deployment",
             "timing_basis": "openfs-provisional-plan",
@@ -1490,7 +1490,7 @@
               "year": 2030,
               "quarter": "Q4"
             },
-            "condition_ja": "Scale-up/Scale-outとCPOの障害・保守条件を確認する。",
+            "condition_ja": "スケールアップ／スケールアウトとCPOの障害・保守条件を確認する。",
             "condition_en": "Validate failure and service conditions for scale-up, scale-out, and CPO.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1526,7 +1526,7 @@
           {
             "phase_id": "SPH-AI-SW",
             "domain": "system-software",
-            "title_ja": "AI/HPC共通workflow",
+            "title_ja": "AI/HPC共通ワークフロー",
             "title_en": "Common AI/HPC workflows",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -1538,7 +1538,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "複数GPU backendとbatch/container/workflowを継続検証する。",
+            "condition_ja": "複数のGPUバックエンドと、バッチ処理、コンテナ、ワークフローを継続的に検証する。",
             "condition_en": "Continuously validate multiple GPU backends with batch, container, and workflow services.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1550,7 +1550,7 @@
           {
             "phase_id": "SPH-AI-APP",
             "domain": "applications",
-            "title_ja": "AI for Science評価Suite",
+            "title_ja": "AI for Science評価スイート",
             "title_en": "AI for Science evaluation suite",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -1562,7 +1562,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "基盤モデル、surrogate、simulation結合を継続評価する。",
+            "condition_ja": "基盤モデル、サロゲートモデル、シミュレーション連成を継続的に評価する。",
             "condition_en": "Continuously evaluate foundation models, surrogates, and coupled simulation.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1610,7 +1610,7 @@
               "year": 2028,
               "quarter": "Q2"
             },
-            "condition_ja": "End-to-End指標と設備条件から導入範囲を決める。",
+            "condition_ja": "エンドツーエンド指標と設備条件に基づいて導入範囲を決める。",
             "condition_en": "Set deployment scope using end-to-end metrics and facility constraints.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -1627,7 +1627,7 @@
           "center_group_en": "AI-, data-, and experiment-coupled centers",
           "fit": "施設とデータ基盤が対応できれば高い適合性。",
           "fit_en": "High fit where facilities and data infrastructure can support dense systems.",
-          "migration": "framework、workflow、データ管理、利用支援を大幅に拡張する。",
+          "migration": "フレームワーク、ワークフロー、データ管理、利用支援を大幅に拡張する。",
           "migration_en": "Substantially expand frameworks, workflows, data management, and user support.",
           "unverified_conditions": [
             "電力・冷却",
@@ -1643,14 +1643,14 @@
           ]
         },
         {
-          "center_group": "CPU・従来simulation重点センター",
+          "center_group": "CPU・従来型シミュレーション重点センター",
           "center_group_en": "CPU- and conventional-simulation-oriented centers",
           "fit": "CPU容量不足を避けるため連合内の役割分担が必要。",
           "fit_en": "Requires federation role-sharing to avoid insufficient CPU capacity.",
           "migration": "CPU区画維持または他センター紹介と、AI併用経路を整える。",
           "migration_en": "Retain CPU partitions or referrals to other centers and establish AI-assisted paths.",
           "unverified_conditions": [
-            "CPU-only利用比率",
+            "CPUのみを使用する処理の比率",
             "GPU移植性",
             "広域転送費用"
           ],
@@ -1665,13 +1665,13 @@
         {
           "option_id": "TOPT-AI-COMPUTE",
           "domain": "compute",
-          "candidate": "rack-scale AIアクセラレータと大容量CPUノード",
+          "candidate": "ラックスケールAIアクセラレータと大容量CPUノード",
           "candidate_en": "Rack-scale AI accelerators and large-memory CPU nodes",
-          "role": "学習・推論・simulation連成を高密度区画で実行する。",
+          "role": "学習、推論、シミュレーション連成を高密度区画で実行する。",
           "role_en": "Run coupled training, inference, and simulation in dense partitions.",
-          "maturity_gate": "end-to-end科学成果時間、精度、性能/W、供給、保守",
-          "maturity_gate_en": "End-to-end time to scientific result, accuracy, performance per watt, supply, and support",
-          "fallback": "GPU世代またはベンダーを変更し、CPU区画と標準workflowを維持する。",
+          "maturity_gate": "科学的成果を得るまでのエンドツーエンド時間、精度、電力当たり性能、供給、保守",
+          "maturity_gate_en": "End-to-end time to scientific results, accuracy, performance per watt, supply, and support",
+          "fallback": "GPU世代またはベンダーを変更し、CPU区画と標準ワークフローを維持する。",
           "fallback_en": "Change GPU generation or vendor while retaining CPU partitions and standard workflows.",
           "evidence_refs": [
             "RM-HW-COMPUTE",
@@ -1686,7 +1686,7 @@
           "candidate_en": "HBM4/4E and SOCAMM2 with CXL/PIM evaluation partitions",
           "role": "本番の広帯域階層と容量拡張・データ近傍処理の実証を分ける。",
           "role_en": "Separate production high-bandwidth tiers from capacity-expansion and near-data-processing pilots.",
-          "maturity_gate": "実効帯域、容量、電力、RAS、software support、量産供給",
+          "maturity_gate": "実効帯域、容量、電力、RAS、ソフトウェア対応、量産供給",
           "maturity_gate_en": "Effective bandwidth, capacity, power, RAS, software support, and volume supply",
           "fallback": "CXL/PIMを縮退または延期し、HBMとホストメモリで本番要件を満たす。",
           "fallback_en": "Reduce or defer CXL/PIM and meet production requirements with HBM and host memory.",
@@ -1699,13 +1699,13 @@
         {
           "option_id": "TOPT-AI-INTERCONNECT",
           "domain": "interconnect",
-          "candidate": "高radix scale-up/scale-out fabricとCPO",
+          "candidate": "高ラディックスのスケールアップ／スケールアウト・ファブリックとCPO",
           "candidate_en": "High-radix scale-up and scale-out fabrics with co-packaged optics",
           "role": "大規模アクセラレータ集合と広域AIデータ転送を支える。",
           "role_en": "Support large accelerator pools and wide-area AI data transfer.",
-          "maturity_gate": "collective性能、輻輳、障害回復、光リンク保守、相互運用性",
+          "maturity_gate": "集合通信性能、輻輳、障害回復、光リンク保守、相互運用性",
           "maturity_gate_en": "Collective performance, congestion, failure recovery, optical-link serviceability, and interoperability",
-          "fallback": "電気fabricと交換可能opticsを本番に残し、CPO採用範囲を限定する。",
+          "fallback": "電気インターコネクトと着脱式光トランシーバーを本番に残し、CPO採用範囲を限定する。",
           "fallback_en": "Retain electrical fabrics and pluggable optics in production and limit CPO scope.",
           "evidence_refs": [
             "RM-HW-INTERCONNECT",
@@ -1716,13 +1716,13 @@
         {
           "option_id": "TOPT-AI-SOFTWARE",
           "domain": "system-software",
-          "candidate": "AI/HPC共通workflow、複数GPU backend、データ・モデル来歴",
+          "candidate": "AI/HPC共通ワークフロー、複数のGPUバックエンド、データとモデルの来歴管理",
           "candidate_en": "Common AI/HPC workflows, multiple GPU backends, and data/model provenance",
-          "role": "バッチ、コンテナ、workflow、通信libraryを一体で検証する。",
+          "role": "バッチ、コンテナ、ワークフロー、通信ライブラリを一体で検証する。",
           "role_en": "Validate batch, container, workflow, and communication libraries as one stack.",
-          "maturity_gate": "科学的正当性、framework互換、再現性、性能退行、セキュリティ",
+          "maturity_gate": "科学的妥当性、フレームワーク互換性、再現性、性能退行、セキュリティ",
           "maturity_gate_en": "Scientific correctness, framework compatibility, reproducibility, performance regression, and security",
-          "fallback": "互換性を確認したframework世代を固定し、backend移行を段階化する。",
+          "fallback": "互換性を確認したフレームワーク世代を固定し、バックエンド移行を段階化する。",
           "fallback_en": "Pin validated framework generations and stage backend migration.",
           "evidence_refs": [
             "RM-SSW-PORTABILITY",
@@ -1734,13 +1734,13 @@
         {
           "option_id": "TOPT-AI-APPLICATIONS",
           "domain": "applications",
-          "candidate": "科学基盤モデル、AIサロゲート、simulation-AI・実験連成suite",
+          "candidate": "科学基盤モデル、AIサロゲート、シミュレーション・AI連成、実験連携の評価スイート",
           "candidate_en": "A suite for scientific foundation models, AI surrogates, simulation-AI coupling, and experiment integration",
-          "role": "ノード性能ではなく科学成果までのend-to-end時間で投資を評価する。",
-          "role_en": "Evaluate investment by end-to-end time to scientific result rather than node performance alone.",
-          "maturity_gate": "全国代表性、精度、再学習費、データ移動、従来HPC最低容量",
-          "maturity_gate_en": "National representativeness, accuracy, retraining cost, data movement, and minimum conventional-HPC capacity",
-          "fallback": "AI拡張suiteと従来HPCコアを分離し、代表性不足の用途を本番要件から外す。",
+          "role": "ノード性能ではなく科学成果までのエンドツーエンド時間で投資を評価する。",
+          "role_en": "Evaluate investment by end-to-end time to scientific results rather than node performance alone.",
+          "maturity_gate": "全国的な代表性、精度、再学習費用、データ移動、従来型HPCに必要な計算容量",
+          "maturity_gate_en": "National representativeness, accuracy, retraining cost, data movement, and the compute capacity required for conventional HPC",
+          "fallback": "AI拡張スイートと従来型HPCのコア環境を分離し、代表性が不足する用途を本番要件から外す。",
           "fallback_en": "Separate the AI extension from the conventional-HPC core and exclude unrepresentative workloads from production requirements.",
           "evidence_refs": [
             "RM-APP-WORKLOADS",
@@ -1752,16 +1752,16 @@
       "evaluation": {
         "application-coverage": {
           "score": null,
-          "rationale": "AI for Scienceには強いが従来HPCの代表性確認が必要。",
-          "rationale_en": "Strong for AI for Science, but conventional-HPC coverage must be verified.",
+          "rationale": "AI for Scienceへの高い適合性が期待できる一方、従来型HPCワークロードの代表性を確認する必要がある。",
+          "rationale_en": "The option may be well suited to AI for Science, but its coverage of conventional HPC workloads must be verified.",
           "evidence_refs": [
             "GAP-WORK-004"
           ]
         },
         "time-to-solution": {
           "score": null,
-          "rationale": "適合workflowでは高い可能性があるがend-to-end実測が必要。",
-          "rationale_en": "May be strong for matching workflows, but end-to-end measurements are required.",
+          "rationale": "適合するワークフローでは高い性能が期待できるが、エンドツーエンドの実測が必要である。",
+          "rationale_en": "The option may perform well for suitable workflows, but end-to-end measurements are required.",
           "evidence_refs": [
             "MS-WORK-MLPERF-2026",
             "XDEP-WORK-COMP"
@@ -1770,14 +1770,14 @@
         "power-facility-fit": {
           "score": null,
           "rationale": "高密度化により最も厳しい制約となる。",
-          "rationale_en": "Dense deployment makes this the strongest constraint.",
+          "rationale_en": "Dense deployment makes facility compatibility the most stringent constraint.",
           "evidence_refs": [
             "EXT-FACILITY"
           ]
         },
         "lifecycle-cost": {
           "score": null,
-          "rationale": "電力、更新頻度、framework移行を含むTCOが未確認。",
+          "rationale": "電力、更新頻度、フレームワーク移行を含むTCOは確認できていない。",
           "rationale_en": "TCO including power, refresh cadence, and framework migration is unverified.",
           "evidence_refs": [
             "EXT-COST-SUPPLY"
@@ -1785,8 +1785,8 @@
         },
         "maturity-schedule": {
           "score": null,
-          "rationale": "2026-2028の製品目標は多いが供給確約と後半時期が不足。",
-          "rationale_en": "Many 2026-2028 targets exist, but supply commitments and later-horizon dates are limited.",
+          "rationale": "2026～2028年の製品目標は多いが、供給の確約と2029年以降の時期情報が不足している。",
+          "rationale_en": "Many 2026-2028 targets exist, but supply commitments and dates from 2029 onward are limited.",
           "evidence_refs": [
             "GAP-MEM001",
             "GAP-NET-001"
@@ -1794,8 +1794,8 @@
         },
         "software-migration": {
           "score": null,
-          "rationale": "framework適合は期待できるが科学コードの移植差が大きい。",
-          "rationale_en": "Framework fit may be strong, but scientific-code porting varies widely.",
+          "rationale": "フレームワークへの適合性は期待できるが、科学コードごとの移植性には大きな差がある。",
+          "rationale_en": "Framework compatibility may be strong, but porting requirements vary widely among scientific applications.",
           "evidence_refs": [
             "GAP-PORT-001",
             "GAP-PORT-003"
@@ -1803,15 +1803,15 @@
         },
         "operations-security": {
           "score": null,
-          "rationale": "モデル・データ来歴と対話サービス運用が追加要件。",
-          "rationale_en": "Model/data provenance and interactive-service operations add requirements.",
+          "rationale": "モデルとデータの来歴管理、および対話型サービスの運用が追加要件となる。",
+          "rationale_en": "Model and data provenance, together with interactive-service operations, add further requirements.",
           "evidence_refs": [
             "GAP-BLUE-004"
           ]
         },
         "hpci-interoperability": {
           "score": null,
-          "rationale": "大規模データ転送と共通認証・metadataが前提。",
+          "rationale": "大規模データ転送、共通の認証基盤、メタデータ管理が前提となる。",
           "rationale_en": "Depends on large-scale data transfer and common identity and metadata.",
           "evidence_refs": [
             "XDEP-NET-BLUE"
@@ -1819,7 +1819,7 @@
         },
         "technology-origin-and-ecosystem": {
           "score": null,
-          "rationale": "供給集中とソフトウェア依存を複数候補で検証する必要。",
+          "rationale": "供給の集中とソフトウェア依存のリスクを、複数の候補で検証する必要がある。",
           "rationale_en": "Supply concentration and software dependence require multi-option evaluation.",
           "evidence_refs": [
             "EXT-COST-SUPPLY"
@@ -1872,21 +1872,21 @@
         "GAP-WORK-006"
       ],
       "uncertainties": [
-        "科学AI workloadの全国代表性",
+        "科学AIワークロードの全国規模での代表性",
         "高密度施設対応",
         "GPU/HBM供給と価格",
         "CXL/PIMの本番時期"
       ],
       "uncertainties_en": [
-        "National representativeness of scientific-AI workloads",
+        "Representativeness of scientific-AI workloads across the national infrastructure",
         "High-density facility readiness",
         "GPU/HBM supply and price",
         "Production timing for CXL and PIM"
       ],
       "decision_gates": [
-        "2026 Q4: AI/HPC共通suite",
-        "2027 Q2: センター別データ・施設Profile",
-        "2027 Q4: end-to-end workflow比較",
+        "2026 Q4: AI/HPC共通評価スイート",
+        "2027 Q2: センター別のデータ・施設プロファイル",
+        "2027 Q4: エンドツーエンドのワークフロー比較",
         "2028 Q2: 高密度区画と光/CXL実証"
       ],
       "decision_gates_en": [
@@ -1895,8 +1895,8 @@
         "2027 Q4: end-to-end workflow comparison",
         "2028 Q2: dense-partition and optical/CXL pilot"
       ],
-      "caveat_ja": "単一モデルによる暫定シナリオ。AI需要、施設、価格の未確認値を推測で補っておらず、推奨順位を示さない。",
-      "caveat_en": "A single-model provisional scenario. Unknown AI demand, facility, and price values are not inferred, and no ranking is asserted.",
+      "caveat_ja": "単一のAIモデルが作成した暫定案である。AI需要、施設条件、価格について確認できていない値を推測で補わず、3つの案の推奨順位を示さない。",
+      "caveat_en": "This is a provisional option prepared by one model. Unknown AI demand, facility constraints, and prices are not inferred, and the options are not ranked.",
       "publication": {
         "information_classification": "public",
         "publication_approved": true,
@@ -1915,8 +1915,8 @@
             "reference": 50,
             "upper": 70
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -1928,13 +1928,13 @@
             {
               "component_id": "BCMP-AIDATA-UME-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 32,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-AIDATA-UME-NET"
               ]
@@ -1947,8 +1947,8 @@
               "quantity": 112,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計448基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 448 accelerators",
+              "role_ja": "計448基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 448 accelerators",
               "connection_ids": [
                 "BCMP-AIDATA-UME-NET"
               ]
@@ -1961,8 +1961,8 @@
               "quantity": 8,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-AIDATA-UME-NET"
               ]
@@ -1970,13 +1970,13 @@
             {
               "component_id": "BCMP-AIDATA-UME-NET",
               "component_type": "interconnect",
-              "label_ja": "高帯域scale-up＋scale-out fabric",
+              "label_ja": "高帯域のスケールアップ／スケールアウト・ファブリック",
               "label_en": "High-bandwidth scale-up and scale-out fabrics",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-AIDATA-UME-CPU",
                 "BCMP-AIDATA-UME-ACC",
@@ -2006,8 +2006,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 4,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-AIDATA-UME-NET"
@@ -2020,9 +2020,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "既存の液冷対応センター増強",
-              "role_en": "Existing liquid-cooled center expansion",
+              "unit_en": "facility package",
+              "role_ja": "既存の液冷対応センターの増強",
+              "role_en": "Expansion of an existing liquid-cooled center",
               "connection_ids": [
                 "BCMP-AIDATA-UME-CPU",
                 "BCMP-AIDATA-UME-ACC",
@@ -2036,11 +2036,11 @@
             "accelerator_nodes": 112,
             "accelerators": 448,
             "storage_pb": 15,
-            "facility_class_ja": "既存の液冷対応センター増強",
-            "facility_class_en": "Existing liquid-cooled center expansion"
+            "facility_class_ja": "既存の液冷対応センターの増強",
+            "facility_class_en": "Expansion of an existing liquid-cooled center"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-AIDATA-TAKE",
@@ -2052,8 +2052,8 @@
             "reference": 400,
             "upper": 500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -2065,13 +2065,13 @@
             {
               "component_id": "BCMP-AIDATA-TAKE-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 256,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-NET"
               ]
@@ -2084,8 +2084,8 @@
               "quantity": 768,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計3,072基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 3,072 accelerators",
+              "role_ja": "計3,072基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 3,072 accelerators",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-NET"
               ]
@@ -2098,8 +2098,8 @@
               "quantity": 32,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-NET"
               ]
@@ -2107,13 +2107,13 @@
             {
               "component_id": "BCMP-AIDATA-TAKE-NET",
               "component_type": "interconnect",
-              "label_ja": "高帯域scale-up＋scale-out fabric",
+              "label_ja": "高帯域のスケールアップ／スケールアウト・ファブリック",
               "label_en": "High-bandwidth scale-up and scale-out fabrics",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-CPU",
                 "BCMP-AIDATA-TAKE-ACC",
@@ -2143,8 +2143,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 24,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-NET"
@@ -2157,9 +2157,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "大規模センター増築・電力増強",
-              "role_en": "Major center and power expansion",
+              "unit_en": "facility package",
+              "role_ja": "大規模センターの増築・受電設備の増強",
+              "role_en": "Major center expansion with additional power infrastructure",
               "connection_ids": [
                 "BCMP-AIDATA-TAKE-CPU",
                 "BCMP-AIDATA-TAKE-ACC",
@@ -2173,11 +2173,11 @@
             "accelerator_nodes": 768,
             "accelerators": 3072,
             "storage_pb": 80,
-            "facility_class_ja": "大規模センター増築・電力増強",
-            "facility_class_en": "Major center and power expansion"
+            "facility_class_ja": "大規模センターの増築・受電設備の増強",
+            "facility_class_en": "Major center expansion with additional power infrastructure"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-AIDATA-MATSU",
@@ -2189,8 +2189,8 @@
             "reference": 1300,
             "upper": 1500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -2202,13 +2202,13 @@
             {
               "component_id": "BCMP-AIDATA-MATSU-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 1024,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-NET"
               ]
@@ -2221,8 +2221,8 @@
               "quantity": 2560,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計10,240基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 10,240 accelerators",
+              "role_ja": "計10,240基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 10,240 accelerators",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-NET"
               ]
@@ -2235,8 +2235,8 @@
               "quantity": 96,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-NET"
               ]
@@ -2244,13 +2244,13 @@
             {
               "component_id": "BCMP-AIDATA-MATSU-NET",
               "component_type": "interconnect",
-              "label_ja": "高帯域scale-up＋scale-out fabric",
+              "label_ja": "高帯域のスケールアップ／スケールアウト・ファブリック",
               "label_en": "High-bandwidth scale-up and scale-out fabrics",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-CPU",
                 "BCMP-AIDATA-MATSU-ACC",
@@ -2280,8 +2280,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 80,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-NET"
@@ -2294,9 +2294,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "専用施設を含むフラッグシップ級",
-              "role_en": "Flagship class including dedicated facilities",
+              "unit_en": "facility package",
+              "role_ja": "専用施設を含むフラッグシップ級システム",
+              "role_en": "Flagship-class system with dedicated facilities",
               "connection_ids": [
                 "BCMP-AIDATA-MATSU-CPU",
                 "BCMP-AIDATA-MATSU-ACC",
@@ -2310,19 +2310,19 @@
             "accelerator_nodes": 2560,
             "accelerators": 10240,
             "storage_pb": 300,
-            "facility_class_ja": "専用施設を含むフラッグシップ級",
-            "facility_class_en": "Flagship class including dedicated facilities"
+            "facility_class_ja": "専用施設を含むフラッグシップ級システム",
+            "facility_class_en": "Flagship-class system with dedicated facilities"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         }
       ]
     },
     {
       "schema_version": "0.2.0",
       "scenario_id": "SCN-HPCI-STAGED-001",
-      "title_ja": "段階導入・選択肢維持型",
-      "title_en": "Staged deployment with option preservation",
+      "title_ja": "段階導入・代替選択肢維持型",
+      "title_en": "Staged deployment with retained alternatives",
       "status": "published",
       "research_status": "provisional",
       "consensus_status": "incomplete",
@@ -2334,15 +2334,15 @@
         "SCN-HPCI-STAGED-001@0.3"
       ],
       "planning_horizon": "FY2026-FY2032",
-      "objective": "成熟した本番基盤を維持しつつ、新CPU/GPU、CPO、CXL、PIM、AI移植等を独立した評価区画から段階的に昇格させ、技術・供給・施設の不確実性を吸収する。",
-      "objective_en": "Maintain a mature production core while promoting new CPUs/GPUs, CPO, CXL, PIM, and AI migration from independent evaluation partitions through staged gates.",
+      "objective": "成熟した本番基盤を維持しつつ、新しいCPU/GPU、CPO、CXL、PIM、AIアプリケーションの移植などを独立した評価区画で検証し、段階的に本番環境へ移行することで、技術・供給・施設の不確実性に対応する。",
+      "objective_en": "Maintain a mature production core while evaluating new CPUs and GPUs, CPO, CXL, PIM, and AI-application migration in isolated evaluation partitions, then advance them into production through staged gates.",
       "architecture": {
-        "summary_ja": "安定本番区画、複数ベンダー評価区画、交換可能なデータ・ネットワーク境界で構成する。",
+        "summary_ja": "安定した本番区画、複数ベンダーの評価区画、交換可能なデータ・ネットワーク境界で構成する。",
         "summary_en": "Combine a stable production core, multi-vendor evaluation partitions, and replaceable data and network boundaries.",
         "priorities_ja": [
           "成熟技術の本番継続",
           "新技術の小規模実証から段階拡大",
-          "標準境界とfallback"
+          "標準境界と代替策"
         ],
         "priorities_en": [
           "Production continuity on mature technology",
@@ -2356,11 +2356,11 @@
         ]
       },
       "system_software": {
-        "summary_ja": "本番版と評価版を分離し、互換性・再現性・保守期間を昇格条件にする。",
-        "summary_en": "Separate production and evaluation stacks and use compatibility, reproducibility, and support horizon as promotion gates.",
+        "summary_ja": "本番環境と評価環境を分離し、互換性、再現性、保守期間を正式採用の条件にする。",
+        "summary_en": "Separate production and evaluation environments and use compatibility, reproducibility, and support horizon as conditions for formal adoption.",
         "priorities_ja": [
-          "version固定と更新経路",
-          "複数backend CI",
+          "ソフトウェアバージョンの固定と更新経路",
+          "複数バックエンドの継続的インテグレーション",
           "生成AI移植のテスト・来歴"
         ],
         "priorities_en": [
@@ -2373,17 +2373,17 @@
         ]
       },
       "applications": {
-        "summary_ja": "代表suiteで昇格判定し、未移植アプリと不利な結果を削除せず残す。",
-        "summary_en": "Use the representative suite for promotion decisions while retaining unported applications and unfavorable results.",
+        "summary_ja": "代表評価スイートで昇格を判定し、未移植のアプリケーションと不利な結果も削除せず残す。",
+        "summary_en": "Use the representative suite for production-adoption decisions while retaining unported applications and unfavorable results.",
         "priorities_ja": [
           "反証試験",
-          "pilot-to-production閾値",
-          "旧新環境の継続比較"
+          "実証から本番へ移行するための閾値",
+          "現行環境と候補環境の継続比較"
         ],
         "priorities_en": [
           "Falsification testing",
           "Pilot-to-production thresholds",
-          "Continuous comparison of old and new environments"
+          "Continuous comparison of current and candidate environments"
         ],
         "roadmap_refs": [
           "RM-APP-WORKLOADS"
@@ -2394,7 +2394,7 @@
           "note_id": "CTX-STAGED-REUSE",
           "scope": "reusable",
           "note_ja": "本番基盤と評価区画を分離し、共通の昇格・継続・停止基準で新技術を段階導入する考え方は、変化の速い計算基盤へ一般化できる。",
-          "note_en": "Separating production and evaluation partitions and using common promote, continue, and stop criteria is reusable for rapidly evolving computing infrastructure.",
+          "note_en": "Separating production and evaluation partitions and applying common promotion, continuation, and stop criteria is reusable for rapidly evolving computing infrastructure.",
           "evidence_refs": [
             "ROADMAP-DEPENDENCY-REGISTER-001"
           ]
@@ -2402,7 +2402,7 @@
         {
           "note_id": "CTX-STAGED-HPCI",
           "scope": "hpci-specific",
-          "note_ja": "評価区画を置く提供機関の選定、全国共通Suite、HPCI標準境界とセンター別移行計画はHPCI固有である。",
+          "note_ja": "評価区画を置く提供機関の選定、全国共通の評価スイート、HPCI標準境界とセンター別移行計画はHPCI固有である。",
           "note_en": "Selection of pilot providers, a national common suite, HPCI standard boundaries, and provider-specific migration plans are HPCI-specific.",
           "evidence_refs": [
             "GAP-BLUE-001",
@@ -2430,7 +2430,7 @@
               "year": 2027,
               "quarter": "Q2"
             },
-            "condition_ja": "共通Suite、実証protocol、評価提供機関を定める。",
+            "condition_ja": "共通評価スイート、実証プロトコル、評価提供機関を定める。",
             "condition_en": "Define the common suite, pilot protocol, and pilot providers.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -2455,7 +2455,7 @@
               "quarter": "Q2"
             },
             "condition_ja": "最初の昇格・継続・停止判断を行う。",
-            "condition_en": "Perform the first promote, continue, or stop decision.",
+            "condition_en": "Make the first promotion, continuation, or stop decision.",
             "dependency_refs": [
               "SPH-STG-PORT-BASE"
             ],
@@ -2480,8 +2480,8 @@
               "year": 2030,
               "quarter": "Q4"
             },
-            "condition_ja": "不適合技術を本番へ持ち込まず評価区画へ残す。",
-            "condition_en": "Keep technologies that do not pass gates outside production.",
+            "condition_ja": "要件を満たさない技術は本番環境へ移行せず、評価区画に残す。",
+            "condition_en": "Keep technologies that do not pass the gates in evaluation status and do not admit them to production.",
             "dependency_refs": [
               "SPH-STG-PORT-PILOT"
             ],
@@ -2506,7 +2506,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "本番coreを維持しながら次の評価区画を入れ替える。",
+            "condition_ja": "本番環境の中核構成を維持しながら、次の評価区画へ入れ替える。",
             "condition_en": "Retain the production core while rotating the next pilot partitions.",
             "dependency_refs": [
               "SPH-STG-PORT-DEPLOY"
@@ -2520,7 +2520,7 @@
           {
             "phase_id": "SPH-STG-COMPUTE",
             "domain": "compute",
-            "title_ja": "複数vendor評価区画",
+            "title_ja": "複数ベンダー評価区画",
             "title_en": "Multi-vendor compute pilots",
             "stage": "evaluation",
             "timing_basis": "openfs-provisional-plan",
@@ -2532,7 +2532,7 @@
               "year": 2029,
               "quarter": "Q4"
             },
-            "condition_ja": "本番CPU/GPU coreと新候補を同じSuiteで比較する。",
+            "condition_ja": "本番環境のCPU/GPU中核構成と新しい候補を、同じ評価スイートで比較する。",
             "condition_en": "Compare new candidates with the production CPU/GPU core using the same suite.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -2556,7 +2556,7 @@
               "year": 2029,
               "quarter": "Q4"
             },
-            "condition_ja": "SOCAMM、CXL、PIMを本番HBM/DDRと比較する。",
+            "condition_ja": "SOCAMM、CXL、PIMを本番環境のHBM/DDRと比較する。",
             "condition_en": "Compare SOCAMM, CXL, and PIM with production HBM and DDR tiers.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -2568,7 +2568,7 @@
           {
             "phase_id": "SPH-STG-NET",
             "domain": "interconnect",
-            "title_ja": "光・scale-up実証",
+            "title_ja": "光接続・スケールアップ実証",
             "title_en": "Optical and scale-up pilots",
             "stage": "pilot",
             "timing_basis": "openfs-provisional-plan",
@@ -2580,7 +2580,7 @@
               "year": 2030,
               "quarter": "Q2"
             },
-            "condition_ja": "標準境界で新fabricと光部品を交換可能にする。",
+            "condition_ja": "標準化された境界を設け、新しいファブリックと光部品を交換可能にする。",
             "condition_en": "Keep new fabrics and optics replaceable at standard boundaries.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -2616,7 +2616,7 @@
           {
             "phase_id": "SPH-STG-SW",
             "domain": "system-software",
-            "title_ja": "複数backend継続CI",
+            "title_ja": "複数バックエンドの継続的インテグレーション",
             "title_en": "Continuous multi-backend CI",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -2628,8 +2628,8 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "正当性、性能退行、再現性を自動昇格条件にする。",
-            "condition_en": "Use correctness, performance regression, and reproducibility as promotion gates.",
+            "condition_ja": "計算結果の妥当性、性能低下の有無、再現性を、正式採用を判断する条件にする。",
+            "condition_en": "Use correctness, the absence of unacceptable performance regressions, and reproducibility as conditions for formal adoption.",
             "dependency_refs": [],
             "evidence_refs": [
               "RM-SSW-PORTABILITY"
@@ -2640,7 +2640,7 @@
           {
             "phase_id": "SPH-STG-APP",
             "domain": "applications",
-            "title_ja": "昇格判断Suite",
+            "title_ja": "昇格判断用の評価スイート",
             "title_en": "Promotion-decision suite",
             "stage": "operation",
             "timing_basis": "openfs-provisional-plan",
@@ -2652,7 +2652,7 @@
               "year": 2032,
               "quarter": "Q4"
             },
-            "condition_ja": "有利・不利な結果と未移植アプリをともに保持する。",
+            "condition_ja": "有利な結果と不利な結果の両方を、未移植のアプリケーションとともに保持する。",
             "condition_en": "Retain favorable and unfavorable results together with unported applications.",
             "dependency_refs": [],
             "evidence_refs": [
@@ -2700,8 +2700,8 @@
               "year": 2028,
               "quarter": "Q2"
             },
-            "condition_ja": "共通基準で昇格・継続・停止とfallbackを記録する。",
-            "condition_en": "Record promote, continue, stop, and fallback decisions under common criteria.",
+            "condition_ja": "共通基準で昇格・継続・停止と代替策を記録する。",
+            "condition_en": "Record promotion, continuation, stop, and fallback decisions under common criteria.",
             "dependency_refs": [],
             "evidence_refs": [
               "MS-BLUE-HPCI-2028Q2"
@@ -2755,14 +2755,14 @@
         {
           "option_id": "TOPT-STAGED-COMPUTE",
           "domain": "compute",
-          "candidate": "本番CPU/GPUコアと複数ベンダー評価区画",
+          "candidate": "本番環境のCPU/GPU中核構成と複数ベンダー評価区画",
           "candidate_en": "A production CPU/GPU core with multi-vendor evaluation partitions",
-          "role": "実アプリで検証した用途・センターから新ノードを段階昇格する。",
+          "role": "実アプリケーションで検証した用途とセンターから、新ノードを段階的に本番導入する。",
           "role_en": "Promote new nodes incrementally by workload and center after application validation.",
-          "maturity_gate": "独立実測、性能/W、供給、SLA、移植性、施設適合、TCO",
+          "maturity_gate": "独立した実測、電力当たり性能、供給、SLA、移植性、施設適合性、TCO",
           "maturity_gate_en": "Independent measurements, performance per watt, supply, SLA, portability, facility fit, and TCO",
-          "fallback": "本番コアを継続し、次四半期または次調達波で再評価する。",
-          "fallback_en": "Continue the production core and reassess in the next quarter or procurement wave.",
+          "fallback": "本番環境の中核構成を継続し、次の四半期または調達機会に再評価する。",
+          "fallback_en": "Continue the production core and reassess in the next quarter or procurement cycle.",
           "evidence_refs": [
             "RM-HW-COMPUTE",
             "MS-COMP-HPCI-2027",
@@ -2776,7 +2776,7 @@
           "candidate_en": "Production HBM/DDR tiers with SOCAMM/CXL/PIM evaluation partitions",
           "role": "容量・帯域・データ移動の効果を用途別に検証してから拡大する。",
           "role_en": "Scale only after workload-specific validation of capacity, bandwidth, and data-movement effects.",
-          "maturity_gate": "実効性能、RAS、software integration、供給、再配置可能性",
+          "maturity_gate": "実効性能、RAS、ソフトウェア統合、供給、再配置可能性",
           "maturity_gate_en": "Effective performance, RAS, software integration, supply, and redeployability",
           "fallback": "評価区画を停止し、既存本番階層へ戻す。",
           "fallback_en": "Stop the pilot partition and return workloads to the existing production hierarchy.",
@@ -2789,13 +2789,13 @@
         {
           "option_id": "TOPT-STAGED-INTERCONNECT",
           "domain": "interconnect",
-          "candidate": "標準fabric本番面と光/CPO/新scale-up評価面",
+          "candidate": "標準ファブリックの本番系と、光接続・CPO・新しいスケールアップ方式の評価系",
           "candidate_en": "A production standards-based fabric with optical, CPO, and new scale-up pilots",
           "role": "標準境界で本番と実証を分離し、故障・運用を含めて比較する。",
           "role_en": "Separate production and pilots at standard boundaries and compare failure and operational behavior.",
-          "maturity_gate": "相互運用、tail latency、collective、障害回復、保守、電力",
+          "maturity_gate": "相互運用性、テールレイテンシ、集合通信、障害回復、保守性、消費電力",
           "maturity_gate_en": "Interoperability, tail latency, collectives, failure recovery, serviceability, and power",
-          "fallback": "標準本番fabricを維持し、実証リンクを撤去または交換する。",
+          "fallback": "標準ファブリックの本番系を維持し、実証リンクを撤去または交換する。",
           "fallback_en": "Keep the standards-based production fabric and remove or replace pilot links.",
           "evidence_refs": [
             "RM-HW-INTERCONNECT",
@@ -2806,13 +2806,13 @@
         {
           "option_id": "TOPT-STAGED-SOFTWARE",
           "domain": "system-software",
-          "candidate": "複数backend CIと本番・実証の互換層",
+          "candidate": "複数バックエンドの継続的インテグレーションと本番・実証の互換層",
           "candidate_en": "Multi-backend CI and compatibility layers spanning production and pilots",
-          "role": "正当性・性能退行・再現性を昇格条件として自動判定する。",
+          "role": "計算結果の妥当性、性能退行、再現性を昇格条件として自動判定する。",
           "role_en": "Use correctness, performance regression, and reproducibility as automated promotion gates.",
-          "maturity_gate": "継続CI、同一入力、許容退行幅、保守責任、security boundary",
-          "maturity_gate_en": "Continuous CI, identical inputs, regression tolerance, support ownership, and security boundaries",
-          "fallback": "本番toolchainを固定し、新backendを評価対象へ戻す。",
+          "maturity_gate": "継続的インテグレーション、同一入力、許容退行幅、保守責任、セキュリティ境界",
+          "maturity_gate_en": "Continuous integration, identical inputs, regression tolerance, support ownership, and security boundaries",
+          "fallback": "本番用ツールチェーンを固定し、新しいバックエンドを評価対象へ戻す。",
           "fallback_en": "Pin the production toolchain and return a new backend to evaluation status.",
           "evidence_refs": [
             "RM-SSW-PORTABILITY",
@@ -2824,14 +2824,14 @@
         {
           "option_id": "TOPT-STAGED-APPLICATIONS",
           "domain": "applications",
-          "candidate": "昇格・継続・停止判定に使う全国共通suite",
-          "candidate_en": "A national common suite for promote, continue, and stop decisions",
-          "role": "技術候補を同じ入力・正当性・運用条件で四半期比較する。",
+          "candidate": "昇格・継続・停止判定に使う全国共通の評価スイート",
+          "candidate_en": "A national common suite for promotion, continuation, and stop decisions",
+          "role": "技術候補を同じ入力、計算結果の妥当性、運用条件で四半期ごとに比較する。",
           "role_en": "Compare technology candidates quarterly using identical inputs, correctness, and operational conditions.",
           "maturity_gate": "代表性、再現性、性能・電力・費用・移植工数、独立再現",
           "maturity_gate_en": "Representativeness, reproducibility, performance, power, cost, porting effort, and independent replication",
-          "fallback": "不十分な候補をCoverage Gapへ戻し、安定コアで調達判断を継続する。",
-          "fallback_en": "Return insufficient candidates to Coverage Gaps and continue procurement decisions with the stable core.",
+          "fallback": "根拠が不十分な候補を未確認事項へ戻し、安定した中核部分に基づいて調達判断を継続する。",
+          "fallback_en": "Return candidates with insufficient evidence to the coverage-gap queue and continue procurement decisions with the stable core.",
           "evidence_refs": [
             "RM-APP-WORKLOADS",
             "MS-WORK-HPCI-2027Q4",
@@ -2842,8 +2842,8 @@
       "evaluation": {
         "application-coverage": {
           "score": null,
-          "rationale": "不適合アプリを残す設計だが全国suite完成が必要。",
-          "rationale_en": "Retains non-fitting applications, but requires a completed national suite.",
+          "rationale": "適合しないアプリケーションも残す設計だが、全国共通の評価スイートを完成させる必要がある。",
+          "rationale_en": "The option retains applications that do not fit candidate architectures, but it requires a completed national evaluation suite.",
           "evidence_refs": [
             "GAP-WORK-001"
           ]
@@ -2866,16 +2866,16 @@
         },
         "lifecycle-cost": {
           "score": null,
-          "rationale": "二重環境費用と失敗回避価値の比較が必要。",
-          "rationale_en": "Requires comparison of dual-environment cost against the value of avoiding failed adoption.",
+          "rationale": "本番環境と評価環境を並行して維持する費用を、採用失敗を回避できる価値と比較する必要がある。",
+          "rationale_en": "The cost of maintaining production and evaluation environments in parallel must be weighed against the value of avoiding a failed adoption.",
           "evidence_refs": [
             "EXT-COST-SUPPLY"
           ]
         },
         "maturity-schedule": {
           "score": null,
-          "rationale": "公開時期が弱い技術を未確定のまま扱える。",
-          "rationale_en": "Can retain technologies with weak public timing as unresolved options.",
+          "rationale": "公開日程の確度が低い技術を、未確認の選択肢として保持できる。",
+          "rationale_en": "Technologies with limited public schedule evidence can remain explicit unresolved options.",
           "evidence_refs": [
             "GAP-MEM001",
             "GAP-NET-002"
@@ -2883,8 +2883,8 @@
         },
         "software-migration": {
           "score": null,
-          "rationale": "複数backend CIと段階移植を中心に置く。",
-          "rationale_en": "Centers the plan on multi-backend CI and staged migration.",
+          "rationale": "複数バックエンドの継続的インテグレーションと段階移植を中心に置く。",
+          "rationale_en": "The plan centers on multi-backend CI and staged migration.",
           "evidence_refs": [
             "MS-PORT-HPCI-2027",
             "MS-PORT-HPCI-2028"
@@ -2892,7 +2892,7 @@
         },
         "operations-security": {
           "score": null,
-          "rationale": "本番と実証の責任境界・データ境界が追加で必要。",
+          "rationale": "本番環境と実証環境の間に、明確な責任境界とデータ境界を追加する必要がある。",
           "rationale_en": "Requires explicit production-pilot responsibility and data boundaries.",
           "evidence_refs": [
             "GAP-BLUE-004"
@@ -2900,7 +2900,7 @@
         },
         "hpci-interoperability": {
           "score": null,
-          "rationale": "標準境界を昇格条件にするが実装差を検証する必要。",
+          "rationale": "標準化された境界を昇格条件とするが、実装間の差を検証する必要がある。",
           "rationale_en": "Uses standard boundaries as gates but must validate implementation differences.",
           "evidence_refs": [
             "MS-NET-HPCI-2027",
@@ -2917,8 +2917,8 @@
         },
         "center-fit": {
           "score": null,
-          "rationale": "センター役割分担が成立すれば適合性を高められる。",
-          "rationale_en": "Can improve fit if center role-sharing is agreed.",
+          "rationale": "センター間で補完的な役割分担が成立すれば、適合性を高められる。",
+          "rationale_en": "Fit can improve if centers agree on complementary roles.",
           "evidence_refs": [
             "MS-BLUE-HPCI-2027Q2",
             "GAP-BLUE-001"
@@ -2926,8 +2926,8 @@
         },
         "reversibility": {
           "score": null,
-          "rationale": "本番コア、評価区画、fallbackにより最も可逆性を重視。",
-          "rationale_en": "Most explicitly prioritizes reversibility through a production core, pilot partitions, and fallback.",
+          "rationale": "本番環境の中核構成、評価区画、代替策により、可逆性を最も重視する。",
+          "rationale_en": "The option places the greatest emphasis on reversibility through a production core, pilot partitions, and fallback options.",
           "evidence_refs": [
             "MS-BLUE-HPCI-2028Q2"
           ]
@@ -2973,10 +2973,10 @@
         "Vendor supply timing"
       ],
       "decision_gates": [
-        "2026 Q4: 共通suiteと実証規約",
-        "2027 Q2: 実証センターとProfile",
+        "2026 Q4: 共通評価スイートと実証規約",
+        "2027 Q2: 実証センターとプロファイル",
         "2027 Q4: 第一回昇格・継続・停止判定",
-        "2028 Q2: 調達テンプレート実証"
+        "2028 Q2: 標準調達条件の実証"
       ],
       "decision_gates_en": [
         "2026 Q4: common suite and pilot protocol",
@@ -2984,8 +2984,8 @@
         "2027 Q4: first promote-continue-stop decision",
         "2028 Q2: procurement-template pilot"
       ],
-      "caveat_ja": "単一モデルによる暫定シナリオ。段階導入が常に低費用または高性能であるとは仮定せず、未確認条件をCoverage Gapとして残す。",
-      "caveat_en": "A single-model provisional scenario. It does not assume staged deployment is always cheaper or faster and retains unknown conditions as Coverage Gaps.",
+      "caveat_ja": "単一のAIモデルが作成した暫定案である。段階的な導入が常に低費用または高性能になるとは仮定せず、未確認の条件を明示的に残す。",
+      "caveat_en": "This is a provisional option prepared by one model. It does not assume that staged deployment always costs less or delivers higher performance, and it explicitly retains unresolved conditions.",
       "publication": {
         "information_classification": "public",
         "publication_approved": true,
@@ -3004,8 +3004,8 @@
             "reference": 50,
             "upper": 70
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -3017,13 +3017,13 @@
             {
               "component_id": "BCMP-STAGED-UME-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 64,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-STAGED-UME-NET"
               ]
@@ -3036,8 +3036,8 @@
               "quantity": 64,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計256基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 256 accelerators",
+              "role_ja": "計256基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 256 accelerators",
               "connection_ids": [
                 "BCMP-STAGED-UME-NET"
               ]
@@ -3050,8 +3050,8 @@
               "quantity": 16,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-STAGED-UME-NET"
               ]
@@ -3059,13 +3059,13 @@
             {
               "component_id": "BCMP-STAGED-UME-NET",
               "component_type": "interconnect",
-              "label_ja": "本番fabric＋分離された実証fabric",
+              "label_ja": "本番ファブリックと分離された実証用ファブリック",
               "label_en": "Production fabric plus isolated pilot fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-STAGED-UME-CPU",
                 "BCMP-STAGED-UME-ACC",
@@ -3095,8 +3095,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 4,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-STAGED-UME-NET"
@@ -3109,9 +3109,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "既存の液冷対応センター増強",
-              "role_en": "Existing liquid-cooled center expansion",
+              "unit_en": "facility package",
+              "role_ja": "既存の液冷対応センターの増強",
+              "role_en": "Expansion of an existing liquid-cooled center",
               "connection_ids": [
                 "BCMP-STAGED-UME-CPU",
                 "BCMP-STAGED-UME-ACC",
@@ -3125,11 +3125,11 @@
             "accelerator_nodes": 64,
             "accelerators": 256,
             "storage_pb": 10,
-            "facility_class_ja": "既存の液冷対応センター増強",
-            "facility_class_en": "Existing liquid-cooled center expansion"
+            "facility_class_ja": "既存の液冷対応センターの増強",
+            "facility_class_en": "Expansion of an existing liquid-cooled center"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-STAGED-TAKE",
@@ -3141,8 +3141,8 @@
             "reference": 400,
             "upper": 500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -3154,13 +3154,13 @@
             {
               "component_id": "BCMP-STAGED-TAKE-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 512,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-NET"
               ]
@@ -3173,8 +3173,8 @@
               "quantity": 320,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計1,280基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 1,280 accelerators",
+              "role_ja": "計1,280基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 1,280 accelerators",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-NET"
               ]
@@ -3187,8 +3187,8 @@
               "quantity": 64,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-NET"
               ]
@@ -3196,13 +3196,13 @@
             {
               "component_id": "BCMP-STAGED-TAKE-NET",
               "component_type": "interconnect",
-              "label_ja": "本番fabric＋分離された実証fabric",
+              "label_ja": "本番ファブリックと分離された実証用ファブリック",
               "label_en": "Production fabric plus isolated pilot fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-CPU",
                 "BCMP-STAGED-TAKE-ACC",
@@ -3232,8 +3232,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 10,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-NET"
@@ -3246,9 +3246,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "大規模センター増築・電力増強",
-              "role_en": "Major center and power expansion",
+              "unit_en": "facility package",
+              "role_ja": "大規模センターの増築・受電設備の増強",
+              "role_en": "Major center expansion with additional power infrastructure",
               "connection_ids": [
                 "BCMP-STAGED-TAKE-CPU",
                 "BCMP-STAGED-TAKE-ACC",
@@ -3262,11 +3262,11 @@
             "accelerator_nodes": 320,
             "accelerators": 1280,
             "storage_pb": 50,
-            "facility_class_ja": "大規模センター増築・電力増強",
-            "facility_class_en": "Major center and power expansion"
+            "facility_class_ja": "大規模センターの増築・受電設備の増強",
+            "facility_class_en": "Major center expansion with additional power infrastructure"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         },
         {
           "option_id": "BUD-STAGED-MATSU",
@@ -3278,8 +3278,8 @@
             "reference": 1300,
             "upper": 1500
           },
-          "estimate_method_ja": "公開された50億円・400億円・1,300億円級案件を予算規模の参照点とし、400ノード・4 GPU/ノードの公開構成を補助線に、戦略別の演算・network・storage・施設配分を置いたOpenFS分析値。",
-          "estimate_method_en": "An OpenFS analytical estimate using published JPY 5B, 40B, and 130B program classes as budget anchors and the public 400-node, four-GPU-per-node topology as a structural reference, then allocating capacity by strategy across compute, network, storage, and facilities.",
+          "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
+          "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
           "confidence": "low",
           "reference_case_ids": [
             "BREF-HPCI-AI-2025",
@@ -3291,13 +3291,13 @@
             {
               "component_id": "BCMP-STAGED-MATSU-CPU",
               "component_type": "compute-cpu",
-              "label_ja": "汎用・HPC CPU区画",
+              "label_ja": "汎用・HPC向けCPU区画",
               "label_en": "General-purpose and HPC CPU partition",
               "quantity": 4096,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CPU・大容量メモリ・既存HPCアプリ",
-              "role_en": "CPU, capacity-memory, and existing HPC applications",
+              "role_ja": "CPU計算資源、大容量メモリ、既存のHPCアプリケーション",
+              "role_en": "CPU compute capacity, high-capacity memory, and existing HPC applications",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-NET"
               ]
@@ -3310,8 +3310,8 @@
               "quantity": 1536,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "計6,144基を想定するAI/HPC演算",
-              "role_en": "AI/HPC compute assuming 6,144 accelerators",
+              "role_ja": "計6,144基のアクセラレータを想定したAI・HPC計算資源",
+              "role_en": "AI and HPC compute capacity based on 6,144 accelerators",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-NET"
               ]
@@ -3324,8 +3324,8 @@
               "quantity": 256,
               "unit_ja": "ノード",
               "unit_en": "nodes",
-              "role_ja": "CXL、PIM、wafer-scale等を本番と分離して評価",
-              "role_en": "Evaluate CXL, PIM, wafer-scale, and other options outside production",
+              "role_ja": "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価",
+              "role_en": "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-NET"
               ]
@@ -3333,13 +3333,13 @@
             {
               "component_id": "BCMP-STAGED-MATSU-NET",
               "component_type": "interconnect",
-              "label_ja": "本番fabric＋分離された実証fabric",
+              "label_ja": "本番ファブリックと分離された実証用ファブリック",
               "label_en": "Production fabric plus isolated pilot fabric",
               "quantity": 2,
               "unit_ja": "面",
               "unit_en": "planes",
-              "role_ja": "計算、データ、管理を故障領域と用途に応じて接続",
-              "role_en": "Connect compute, data, and management by fault domain and use",
+              "role_ja": "計算系、データ系、管理系を用途と障害領域に応じて分離・接続",
+              "role_en": "Separate and connect compute, data, and management planes according to purpose and failure domain",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-CPU",
                 "BCMP-STAGED-MATSU-ACC",
@@ -3369,8 +3369,8 @@
               "label_en": "Login, management, and observability",
               "quantity": 48,
               "unit_ja": "ノード相当",
-              "unit_en": "node equivalents",
-              "role_ja": "認証、scheduler、監視、CI、データ転送",
+              "unit_en": "equivalent nodes",
+              "role_ja": "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送",
               "role_en": "Identity, scheduler, monitoring, CI, and data transfer",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-NET"
@@ -3383,9 +3383,9 @@
               "label_en": "Facilities, power, and cooling",
               "quantity": 1,
               "unit_ja": "式",
-              "unit_en": "facility",
-              "role_ja": "専用施設を含むフラッグシップ級",
-              "role_en": "Flagship class including dedicated facilities",
+              "unit_en": "facility package",
+              "role_ja": "専用施設を含むフラッグシップ級システム",
+              "role_en": "Flagship-class system with dedicated facilities",
               "connection_ids": [
                 "BCMP-STAGED-MATSU-CPU",
                 "BCMP-STAGED-MATSU-ACC",
@@ -3399,11 +3399,11 @@
             "accelerator_nodes": 1536,
             "accelerators": 6144,
             "storage_pb": 200,
-            "facility_class_ja": "専用施設を含むフラッグシップ級",
-            "facility_class_en": "Flagship class including dedicated facilities"
+            "facility_class_ja": "専用施設を含むフラッグシップ級システム",
+            "facility_class_en": "Flagship-class system with dedicated facilities"
           },
-          "caveat_ja": "ノード数と容量はベンダー見積り、調達仕様、性能保証ではない。物価、為替、装置世代、建屋、受電、保守、ソフトウェア、人件費で大きく変わるため、RFIとセンターProfileで置き換える。",
-          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. Inflation, exchange rates, generation, buildings, power delivery, service, software, and staffing can materially change them; replace these estimates with RFI and center-profile evidence."
+          "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
+          "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles."
         }
       ]
     }
@@ -3414,9 +3414,9 @@
       "name_ja": "HPCI戦略プログラム向けAI計算資源増強",
       "name_en": "AI compute enhancement for the HPCI strategic program",
       "budget_oku_jpy": 50,
-      "scope_ja": "1課題あたりの支援上限。装置費だけとは限らない。",
+      "scope_ja": "1課題当たりの支援上限。装置費だけとは限らない。",
       "scope_en": "Maximum support per project; not necessarily hardware-only cost.",
-      "configuration_ja": "1課題あたり約500 GPU、AI計算性能4〜5 EFLOPSを想定。",
+      "configuration_ja": "1課題当たり約500基のGPUと、4～5 EFLOPSのAI向け演算性能を想定。",
       "configuration_en": "Assumes roughly 500 GPUs and 4-5 EFLOPS of AI compute per project.",
       "source_title": "AI for Science推進戦略の方向性（案）参考資料",
       "source_publisher": "文部科学省",
@@ -3432,7 +3432,7 @@
       "budget_oku_jpy": 400,
       "scope_ja": "令和5年度補正予算の整備事業規模。",
       "scope_en": "FY2023 supplementary-budget program scale.",
-      "configuration_ja": "公開資料はAI計算性能6.22 EFLOPSの整備を示す。",
+      "configuration_ja": "公開資料は、6.22 EFLOPSのAI向け演算性能を持つシステムの整備を示す。",
       "configuration_en": "The public strategy material reports 6.22 EFLOPS of AI compute.",
       "source_title": "半導体・デジタル産業戦略関連資料",
       "source_publisher": "経済産業省",
@@ -3446,7 +3446,7 @@
       "name_ja": "スーパーコンピュータ「富岳」整備",
       "name_en": "Fugaku supercomputer program",
       "budget_oku_jpy": 1300,
-      "scope_ja": "開発・製造等を含む総事業費の公表規模。",
+      "scope_ja": "開発・製造などを含む総事業費の公表規模。",
       "scope_en": "Published total program scale including development and manufacture.",
       "configuration_ja": "フラッグシップ級システムと開発を含む。",
       "configuration_en": "Includes a flagship-scale system and development program.",
@@ -3455,7 +3455,7 @@
       "source_url": "https://www.mext.go.jp/content/20220120-mxt_jyohoka01-000019552_05.pdf",
       "public_date": "2022-01-20",
       "comparability_note_ja": "独自CPU開発を含む国家プロジェクトであり、市販GPUシステムの調達費とは比較できない。",
-      "comparability_note_en": "This national program includes custom CPU development and is not directly comparable with commercial-GPU procurement."
+      "comparability_note_en": "This national program includes custom CPU development and is not directly comparable with the procurement of commercial GPU systems."
     },
     {
       "case_id": "BREF-RIKEN-AIFS-2026",
@@ -3464,8 +3464,8 @@
       "budget_oku_jpy": null,
       "scope_ja": "公開構成の参照例。契約金額の根拠には用いない。",
       "scope_en": "Public topology reference; not used as a contract-price basis.",
-      "configuration_ja": "400計算ノード、計1,600 GPU、XDR 800Gbps fat-tree、1.08PB実効NVMe Lustre。",
-      "configuration_en": "400 compute nodes, 1,600 GPUs, XDR 800Gbps fat-tree, and 1.08PB effective all-NVMe Lustre.",
+      "configuration_ja": "400計算ノード、計1,600基のGPU、XDR 800 Gbit/sのFat-tree（ファットツリー）、実効容量1.08 PBの全NVMe構成Lustre。",
+      "configuration_en": "400 compute nodes, 1,600 GPUs, an XDR 800 Gbit/s fat-tree network, and 1.08 PB of effective all-NVMe Lustre capacity.",
       "source_title": "AI-for-Science-Supercomputer README",
       "source_publisher": "RIKEN R-CCS",
       "source_url": "https://github.com/RIKEN-RCCS/AI-for-Science-Supercomputer",

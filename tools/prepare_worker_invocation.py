@@ -100,6 +100,8 @@ def prepare(
     if (
         str(agent.get("provider", "")).lower() in PLACEHOLDER_BINDINGS
         or str(agent.get("model_family", "")).lower() in PLACEHOLDER_BINDINGS
+        or str(agent.get("model_id", agent.get("model_family", ""))).lower()
+        in PLACEHOLDER_BINDINGS
     ):
         raise ValueError("provider Worker requires a configured provider and model")
     if agent.get("data_clearance") != "public":
@@ -132,6 +134,7 @@ def prepare(
         "provider_binding": {
             "provider": agent["provider"],
             "model_family": agent["model_family"],
+            "requested_model_id": agent.get("model_id", agent["model_family"]),
             "prompt_profile": agent["prompt_profile"],
             "network_access": agent["network_access"],
             "data_clearance": agent["data_clearance"],

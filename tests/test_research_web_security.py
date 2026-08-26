@@ -56,6 +56,13 @@ class ResearchWebSecurityTests(unittest.TestCase):
         self.assertFalse(result["valid"])
         self.assertTrue(any("not production eligible" in item for item in result["errors"]))
 
+    def test_scheduled_source_audit_uses_the_fetch_broker(self):
+        workflow = (ROOT / ".github/workflows/weekly-review.yml").read_text(encoding="utf-8")
+        legacy_entry_point = (ROOT / "tools/audit_roadmap_sources.py").read_text(encoding="utf-8")
+        self.assertIn("audit_roadmap_sources_via_fetch_broker.py", workflow)
+        self.assertNotIn("python3 tools/audit_roadmap_sources.py", workflow)
+        self.assertNotIn("urllib.request", legacy_entry_point)
+
 
 if __name__ == "__main__":
     unittest.main()

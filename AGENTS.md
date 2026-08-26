@@ -58,6 +58,7 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
 - Do not publish a scenario or report unless its Japanese and English public summaries are both present.
 - Treat `README.md` and `README.ja.md` as one synchronized public document. Any user-visible content or structure change to either file requires the corresponding change in the other file in the same pull request. Preserve matching `i18n-section` IDs and run `python3 tools/validate_readme_i18n.py`.
+- Follow `docs/policies/language-and-terminology.md` for all public prose. Keep Japanese and English fields semantically equivalent, preserve official names, and run `python3 tools/check_public_language.py` before publication.
 
 ## Write permissions by role
 

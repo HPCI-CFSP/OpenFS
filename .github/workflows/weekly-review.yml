@@ -52,13 +52,14 @@ jobs:
       - name: Generate review artifacts
         env:
           REQUESTED_WEEK: ${{ inputs.week }}
+          OPENFS_SECURITY_PROFILE_ID: ${{ vars.OPENFS_SECURITY_PROFILE_ID }}
         run: |
           WEEK="${REQUESTED_WEEK:-$(date -u --date='7 days ago' +%G-W%V)}"
           GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p _automation
-          python3 tools/audit_roadmap_sources.py \
+          python3 tools/audit_roadmap_sources_via_fetch_broker.py \
             --output _automation/roadmap-source-audit.json \
-            --timeout 25 \
+            --profile-id "$OPENFS_SECURITY_PROFILE_ID" \
             --workers 8
           python3 tools/build_roadmap_source_triage.py \
             --audit _automation/roadmap-source-audit.json \

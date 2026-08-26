@@ -19,21 +19,21 @@ STATUS_BY_BASIS = {
         "classified-primary-event",
         "official-primary-source-cited",
         "declared-event-timing",
-        "独立Reviewで、一次情報内の出来事と時期の含意を確認する必要がある。",
+        "独立レビューで、一次情報が出来事とその時期を実際に裏付けているか確認する必要がある。",
         "Independent review must verify that the primary source entails the event and timing.",
     ),
     "standard-release": (
         "classified-primary-event",
         "official-primary-source-cited",
         "declared-event-timing",
-        "独立Reviewで、標準化団体の公開履歴が版と公開時期を支えるか確認する必要がある。",
+        "独立レビューで、標準化団体の公開履歴が版番号と公開時期を裏付けているか確認する必要がある。",
         "Independent review must verify that the standards release record supports the version and timing.",
     ),
     "as-of-baseline": (
         "as-of-baseline",
         "current-state-only",
         "baseline-only",
-        "引用資料は基準日時点の提供状況を支えるが、発売開始年は確定しない。",
+        "引用資料は調査基準日現在の提供状況を裏付けているが、発売開始年までは確定できない。",
         "The source supports availability as of the baseline date, not the original launch year.",
     ),
     "vendor-target": (
@@ -61,7 +61,7 @@ STATUS_BY_BASIS = {
         "coverage-gap",
         "absence-not-exhaustively-provable",
         "unresolved",
-        "公開時期を確認できないため、推測せずCoverage Gapとして残す。",
+        "公開時期を確認できないため、推測で補わず、未確認事項として残す。",
         "No public timing was confirmed; retain the item as a Coverage Gap without extrapolation.",
     ),
     "openfs-provisional-plan": (
@@ -112,7 +112,7 @@ def build_entry(
         "timing_status": timing,
         "source_ids": milestone["source_ids"],
         "locator_hint_ja": (
-            f"引用元で「{milestone['label_ja']}」と時期「{timing_label(milestone, 'ja')}」を照合。"
+            f"独立レビューでは、引用元で「{milestone['label_ja']}」と時期「{timing_label(milestone, 'ja')}」を照合する必要がある。"
         ),
         "locator_hint_en": (
             f"Cross-check '{milestone['label_en']}' and timing '{timing_label(milestone, 'en')}' in the cited source."
@@ -123,20 +123,33 @@ def build_entry(
     }
 
 
-def generation_band_timing_label(band: dict[str, Any], language: str) -> str:
-    def boundary_label(boundary: dict[str, Any]) -> str:
-        if boundary["precision"] == "quarter":
-            return f"{boundary['year']} {boundary['quarter']}"
-        if boundary["precision"] == "half-year":
-            return f"{boundary['year']} {boundary['half']}"
-        return str(boundary["year"])
+def generation_band_boundary_label(boundary: dict[str, Any]) -> str:
+    if boundary["precision"] == "quarter":
+        return f"{boundary['year']} {boundary['quarter']}"
+    if boundary["precision"] == "half-year":
+        return f"{boundary['year']} {boundary['half']}"
+    return str(boundary["year"])
 
-    start = boundary_label(band["start"])
+
+def generation_band_timing_label(band: dict[str, Any], language: str) -> str:
+    start = generation_band_boundary_label(band["start"])
     if band["end"] is None:
-        end = "終了時期未確認" if language == "ja" else "end not evidenced"
+        end = "終了時期未確認" if language == "ja" else "end date not confirmed"
     else:
-        end = boundary_label(band["end"])
+        end = generation_band_boundary_label(band["end"])
     return f"{start} - {end}"
+
+
+def generation_band_locator(band: dict[str, Any], language: str) -> str:
+    if band["end"] is None:
+        start = generation_band_boundary_label(band["start"])
+        if language == "ja":
+            return f"表示開始は{start}であり、終了時期は確認できていない。"
+        return f"The displayed window starts in {start}; no end date has been confirmed."
+    timing = generation_band_timing_label(band, language)
+    if language == "ja":
+        return f"表示範囲は{timing}である。"
+    return f"The displayed window is {timing}."
 
 
 def build_generation_band_entry(
@@ -152,12 +165,12 @@ def build_generation_band_entry(
         "consensus_status": band["consensus_status"],
         "source_ids": band["source_ids"],
         "locator_hint_ja": (
-            f"引用元で「{band['label_ja']}」の各境界と統合根拠を照合。表示範囲は"
-            f"{generation_band_timing_label(band, 'ja')}。"
+            f"独立レビューでは、引用元で「{band['label_ja']}」の各境界と統合根拠を照合する必要がある。"
+            f"{generation_band_locator(band, 'ja')}"
         ),
         "locator_hint_en": (
             f"Cross-check every boundary and synthesis basis for '{band['label_en']}'. "
-            f"Displayed window: {generation_band_timing_label(band, 'en')}."
+            f"{generation_band_locator(band, 'en')}"
         ),
         "review_note_ja": "複数の公開情報を組み合わせたOpenFS暫定見通しであり、業界合意または採用判断ではない。",
         "review_note_en": "This is a provisional OpenFS synthesis of public sources, not industry consensus or an adoption decision.",
@@ -208,8 +221,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         "as_of": "2026-08-26",
         "review_scope": "single-model-structured-claim-classification",
         "consensus_status": "incomplete",
-        "method_ja": "6ロードマップの全マイルストーンと世代帯について、引用IDの存在、主張種別、時期表現の整合を機械的に分類し、主要な更新項目を単一モデルで一次情報と照合した。全件の独立した意味検証を示すものではなく、URL到達性監査とも分離している。独立モデルによるConsensusは未完了。",
-        "method_en": "Every milestone and generation band in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics, and major updates were checked by one model against primary sources. This is not independent semantic verification of every item and is separate from URL reachability. Independent-model Consensus remains incomplete.",
+        "method_ja": "6本のロードマップに含まれる全マイルストーンと世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",
+        "method_en": "Every milestone and generation band in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics. One model checked major updates against primary sources. This audit does not independently verify the meaning of every item and is separate from URL-reachability checks. Consensus review by independent models remains incomplete.",
         "summary": {
             "milestone_count": len(entries),
             "generation_band_count": len(generation_band_entries),

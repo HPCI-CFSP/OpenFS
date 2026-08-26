@@ -1,0 +1,133 @@
+name: Run One OpenFS Research Worker
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Existing non-terminal OpenFS Run ID
+        required: true
+        type: string
+      agent_id:
+        description: Enabled provider Agent that will lease one eligible Work Item
+        required: true
+        type: string
+      lease_seconds:
+        description: Lease duration for this one Worker attempt
+        required: true
+        default: "1800"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-research-${{ inputs.run_id }}-${{ inputs.agent_id }}
+  cancel-in-progress: false
+
+jobs:
+  execute-one-work-item:
+    if: vars.OPENFS_RESEARCH_ENABLED == 'true'
+    runs-on: [self-hosted, openfs-research]
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Check out trusted Run state
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Require reviewed production controls
+        env:
+          OPENFS_SECURITY_PROFILE_ID: ${{ vars.OPENFS_SECURITY_PROFILE_ID }}
+        run: |
+          mkdir -p _automation
+          test -n "$OPENFS_SECURITY_PROFILE_ID"
+          test ! -e state/STOP
+          python3 tools/check_research_web_security.py \
+            --require-production-profile \
+            --profile-id "$OPENFS_SECURITY_PROFILE_ID"
+          python3 tools/evaluate_operational_readiness.py \
+            --require-ready \
+            --output _automation/operational-readiness.json
+          python3 tools/validate_repository.py
+          python3 -m unittest discover -s tests -v
+
+      - name: Lease one eligible Work Item
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+          AGENT_ID: ${{ inputs.agent_id }}
+          LEASE_SECONDS: ${{ inputs.lease_seconds }}
+        run: |
+          mkdir -p _automation
+          python3 tools/run_controller.py lease \
+            --run-id "$RUN_ID" \
+            --agent-id "$AGENT_ID" \
+            --lease-seconds "$LEASE_SECONDS" \
+            > _automation/lease.json
+          python3 -c 'import json; value=json.load(open("_automation/lease.json")); print("WORK_ITEM_ID=" + value["work_item_id"])' >> "$GITHUB_ENV"
+
+      - name: Prepare the secret-free invocation
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+          AGENT_ID: ${{ inputs.agent_id }}
+        run: |
+          python3 tools/prepare_worker_invocation.py \
+            --run-id "$RUN_ID" \
+            --work-item-id "$WORK_ITEM_ID" \
+            --agent-id "$AGENT_ID" \
+            --output _automation/invocation.json
+          INVOCATION_ID="$(python3 -c 'import json; print(json.load(open("_automation/invocation.json"))["invocation_id"])')"
+          printf 'INVOCATION_ID=%s\n' "$INVOCATION_ID" >> "$GITHUB_ENV"
+          mkdir -p "runs/$RUN_ID/worker-invocations"
+          mv _automation/invocation.json "runs/$RUN_ID/worker-invocations/$INVOCATION_ID.json"
+
+      - name: Execute the fixed provider adapter
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENFS_INPUT_USD_PER_MILLION_TOKENS: ${{ vars.OPENFS_INPUT_USD_PER_MILLION_TOKENS }}
+          OPENFS_OUTPUT_USD_PER_MILLION_TOKENS: ${{ vars.OPENFS_OUTPUT_USD_PER_MILLION_TOKENS }}
+          OPENFS_PER_REQUEST_USD: ${{ vars.OPENFS_PER_REQUEST_USD }}
+          OPENFS_PER_WEB_SEARCH_USD: ${{ vars.OPENFS_PER_WEB_SEARCH_USD }}
+          OPENFS_MAXIMUM_REQUEST_COST_USD: ${{ vars.OPENFS_MAXIMUM_REQUEST_COST_USD }}
+          OPENFS_WORKER_MAX_OUTPUT_TOKENS: ${{ vars.OPENFS_WORKER_MAX_OUTPUT_TOKENS }}
+        run: |
+          set +e
+          python3 tools/execute_provider_work_item.py \
+            --invocation "runs/$RUN_ID/worker-invocations/$INVOCATION_ID.json" \
+            --output _automation/result.json \
+            --require-cost
+          EXECUTION_EXIT=$?
+          set -e
+          RESULT_ID="$(python3 -c 'import json; print(json.load(open("_automation/result.json"))["result_id"])')"
+          printf 'RESULT_ID=%s\n' "$RESULT_ID" >> "$GITHUB_ENV"
+          printf '%s\n' "$EXECUTION_EXIT" > _automation/execution-exit.txt
+          mkdir -p "runs/$RUN_ID/worker-results"
+          mv _automation/result.json "runs/$RUN_ID/worker-results/$RESULT_ID.json"
+
+      - name: Accept or reject the structured Worker result
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          python3 tools/accept_worker_result.py \
+            --invocation-ref "runs/$RUN_ID/worker-invocations/$INVOCATION_ID.json" \
+            --result-ref "runs/$RUN_ID/worker-results/$RESULT_ID.json"
+          python3 tools/validate_repository.py
+          test "$(cat _automation/execution-exit.txt)" = "0"
+
+      - name: Upload the review-only change bundle
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: openfs-worker-${{ inputs.run_id }}-${{ inputs.agent_id }}
+          path: |
+            _automation/
+            runs/${{ inputs.run_id }}/
+            queue/${{ inputs.run_id }}/
+            proposals/
+            assessments/
+            reviews/dissent/
+          if-no-files-found: warn
+          retention-days: 14

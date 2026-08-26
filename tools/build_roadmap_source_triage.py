@@ -62,7 +62,7 @@ def build_triage(root: Path, config_path: Path, audit_path: Path) -> dict[str, A
                 "http_status": result["http_status"],
                 "reviewed_at": review["reviewed_at"] if review_is_current else config["as_of"],
                 "review_outcome": review["review_outcome"] if review_is_current else "unresolved",
-                "note_ja": review["note_ja"] if review_is_current else "現行URLに一致する意味取得レビューがなく、再確認が必要。",
+                "note_ja": review["note_ja"] if review_is_current else "現在登録されているURLに一致する本文確認記録がないため、再確認が必要です。",
                 "note_en": review["note_en"] if review_is_current else "No semantic retrieval review matches the current URL; follow-up is required.",
             }
         )
@@ -78,8 +78,8 @@ def build_triage(root: Path, config_path: Path, audit_path: Path) -> dict[str, A
         "review_set_id": config["review_set_id"],
         "review_status": config["review_status"],
         "reviewer": config["reviewer"],
-        "caveat_ja": "HTTP到達性の警告を単一モデルで再確認した暫定記録であり、主張全体の独立検証やConsensus通過を意味しない。",
-        "caveat_en": "This is provisional single-model follow-up of HTTP reachability warnings; it is not independent validation of the full claim or Consensus acceptance.",
+        "caveat_ja": "HTTP到達性の警告を単一のAIモデルが再確認した暫定記録です。主張全体を独立に検証したことや、合意判定で受理されたことを意味しません。",
+        "caveat_en": "This is a provisional, single-model follow-up to HTTP-reachability warnings. It does not independently validate the full claim or indicate acceptance by the Consensus Gate.",
         "summary": {
             "non_reachable_count": len(entries),
             "reviewed_count": sum(item["review_outcome"] != "unresolved" for item in entries),

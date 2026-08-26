@@ -21,7 +21,7 @@ Research task
   -> Evidence excerpts
   -> Atomic claims
   -> Findings
-  -> Roadmap scenarios
+  -> Roadmaps and system planning options
   -> Reports
 ```
 
@@ -29,9 +29,11 @@ Research task
 
 ## Status
 
-This repository currently contains the Phase 0 design baseline, a replayable public-Web Pilot vertical slice, deterministic consensus and AI-topic-promotion paths, the official FY2022-FY2025 FS report inventory, a deterministic multi-scenario view generator, a review-only canonical Claim promotion path, and a deployed bilingual GitHub Pages public view. The first six common-format provisional roadmaps cover compute, memory, interconnect, performance portability, scientific workloads, and the HPCI reference blueprint; Pages provides individual quarterly views and a cross-roadmap comparison. Scheduled production provider dispatch and production report generation are not enabled yet; their workflows remain default-disabled until the owner completes the documented drills.
+This repository currently provides the Phase 0 design baseline, a replayable pilot of the end-to-end public-web research workflow, deterministic Consensus Gate logic, a controlled path for promoting AI-proposed research topics, the official inventory of FY2022-FY2025 FS reports, a deterministic generator for multiple system planning options, a review-gated path for promoting claims into canonical data, and a deployed bilingual GitHub Pages site.
 
-The first vertical slice is `OFS-001`, a recurring investigation of memory hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived baseline, `OFS-003` uses a dated HPCI provider registry and field-evidenced Center Profiles to build center-aware scenarios, `OFS-004` promotes Consensus-accepted AI Topic additions, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
+The first six provisional roadmaps use a common format and cover compute, memory, interconnect, performance portability, scientific workloads, and the HPCI reference blueprint. The public site provides quarterly detail views and a cross-roadmap comparison. Scheduled provider-backed research and production report generation are not enabled; their workflows remain disabled by default until the repository owner completes the documented readiness drills.
+
+The first implemented research workflow, `OFS-001`, repeatedly investigates memory-hierarchy candidates for HPCI in the 2030s. `OFS-002` maintains the FS-derived research baseline. `OFS-003` uses a dated HPCI provider registry and center profiles with field-level public evidence to build center-aware planning options. `OFS-004` promotes AI-proposed research topics accepted by the Consensus Gate, and `OFS-005` continuously surveys worldwide technology trends while prioritizing coverage of technologies developed in Japan.
 
 <!-- i18n-section: core-principles -->
 
@@ -44,8 +46,8 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 - Research agents propose. Independent agents assess. Deterministic code decides whether the configured quorum is met. Only the promotion workflow may update canonical data.
 - Canonical Claims are immutable. Human-authorized withdrawal or supersession adds a digest-pinned status event and changes generated active views; it never deletes history.
 - Facts, forecasts, and HPCI recommendations are different object types and pass different review gates.
-- Normal processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or NDA export.
-- Public-Web discovery, anonymous read-only retrieval, local Shell execution, dependency installation, and Git publication are separate capabilities. Repository rules do not prove network isolation; unattended production research remains disabled until a verified execution profile passes `python3 tools/check_research_web_security.py --require-production-profile`.
+- Routine processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or the transfer of NDA information between approved environments.
+- Public-web discovery, anonymous read-only retrieval, local shell execution, dependency installation, and GitHub publication are separate capabilities. Repository rules do not prove network isolation; unattended production research remains disabled until a verified execution profile passes `python3 tools/check_research_web_security.py --require-production-profile`.
 
 <!-- i18n-section: repository-map -->
 
@@ -57,24 +59,25 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/agent-onboarding.md` | First-run checklist, stop conditions, and role routing |
 | `docs/architecture.md` | End-to-end architecture, states, and trust boundaries |
 | `docs/policies/` | Human-owned decision and governance rules |
-| `docs/security/research-web-security-model.md` | Research-Web capability boundaries, deployment controls, and residual risks |
+| `docs/policies/language-and-terminology.md` | Bilingual writing, terminology, and single-source rules for public content |
+| `docs/security/research-web-security-model.md` | Web-research capability boundaries, deployment controls, and residual risks |
 | `docs/tasks/` | Research tasks and their expected outputs |
 | `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `docs/publication/` | GitHub Pages activation and public-output boundaries |
-| `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
+| `docs/operations/` | Owner setup, pilot activation, and recurring-operation procedures |
 | `config/` | Machine-readable agent, monitor, budget, consensus, and dated HPCI provider-scope settings |
 | `config/execution-security-profiles.json` | Declared platform controls and production-eligibility evidence; no current profile is eligible |
 | `schemas/` | JSON Schemas for durable research artifacts |
-| `skills/` | Versioned Discovery, extraction, synthesis, validation, and falsification procedures pinned into each Run |
-| `evals/` | Golden, adversarial, and replay evaluation cases |
+| `skills/` | Versioned discovery, extraction, synthesis, validation, and falsification procedures pinned into each run |
+| `evals/` | Golden-path, adversarial, and replay evaluation cases |
 | `tools/` | Deterministic validation and consensus commands |
 | `tests/` | Tests for deterministic harness behavior |
-| `proposals/` | Agent-produced candidates; not canonical |
+| `proposals/` | Agent-produced candidates; not canonical data |
 | `assessments/` | Independent reviews of proposals |
 | `decisions/` | Machine-generated consensus decisions |
 | `data/` | Accepted canonical source, evidence, and finding records |
-| `knowledge/` | Promoted canonical Claims, append-only status events, and generated active views |
+| `knowledge/` | Promoted canonical claims, append-only status events, and generated active views |
 | `knowledge/public/roadmaps/` | Human-approved bilingual public roadmap exports using one common schema |
 | `knowledge/public/roadmap-reference-data.json` | Single bilingual source for roadmap terminology and decision-oriented comparison tables |
 | `knowledge/public/hpci-system-inventory.json` | FY-specific public HPCI resource and machine-specification baseline; call availability is distinct from system lifecycle |
@@ -85,17 +88,17 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `runs/` | Immutable run manifests and run-scoped outputs |
 | `state/` | Watermarks and resumable scheduler state |
 
-Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding vertical slice is built. `config/skill-registry.json` deterministically selects and snapshots the procedure for each supported Work Item kind.
+Directories that do not yet contain implemented behavior are documented in `docs/architecture.md` and will be added when the corresponding workflow is implemented. `config/skill-registry.json` deterministically selects and snapshots the procedure for each supported work-item kind.
 
 <!-- i18n-section: research-baseline -->
 
 ## Research baseline
 
-New research Tasks and Monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-directed worldwide technology-horizon Topic with priority coverage for Japan.
+New research tasks and monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-requested topic for continuously monitoring worldwide technology trends while giving priority to coverage of technologies developed in Japan.
 
-OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, source-language coverage where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
+OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, review of sources in their original languages where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 
-The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additive Topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing Topics.
+The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additional topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing topics.
 
 <!-- i18n-section: local-validation -->
 
@@ -109,6 +112,7 @@ versions in `requirements-validation.txt`.
 python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
 python3 tools/check_research_web_security.py
+python3 tools/check_public_language.py
 python3 tools/validate_readme_i18n.py
 python3 tools/validate_workflows.py
 python3 tools/validate_json_schemas.py
@@ -143,8 +147,9 @@ python3 tools/evaluate_consensus_review_package.py \
 ```
 
 The evaluator can return `ready-for-human-decision`, but high-impact HPCI adoption
-still requires a reviewed human Directive. Each reviewer must record a conclusive,
-commit-pinned primary-source check for every roadmap unit. See
+still requires a human Directive that has been reviewed and approved. For every
+roadmap unit, each reviewer must record a conclusive primary-source check against
+the commit-pinned artifacts. See
 `docs/operations/independent-roadmap-review.md`.
 
 Render the illustrative multi-scenario example without ranking:
@@ -163,11 +168,13 @@ Build the public GitHub Pages view locally:
 python3 tools/build_pages_site.py --output _site
 ```
 
-The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, evidence-constrained quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, Coverage Gaps, and dependencies. Year-only and half-year timing is shown as a Q1-Q4 or two-quarter uncertainty window, not as an invented quarter or event duration. Where generations materially affect a decision, a source-backed OpenFS synthesis appears above standards-body and vendor lanes; generations may overlap, and open-ended bands do not invent a replacement date. Approximately 2032 is the minimum initial endpoint, and dated later evidence extends both detail and comparison columns automatically. Relevant terms open centrally maintained definitions and supporting sources, while high-value choices across memory, compute, integration, interconnect, portability, and evaluation are presented in common comparison tables. The reference-blueprint detail page also compares the FY2026 public HPCI resource inventory and nominal machine specifications, explicitly separating annual call availability from service lifecycle. The workload detail page presents six EEA1 applications against 1, 4, 32, 128, 1,024, and about 10,000 Fugaku-node scales; numerical forecasts remain absent until public calibration and independent validation are available. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Every roadmap, reference-data, public supplement, scenario, and report publication requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
+The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, evidence-constrained quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, coverage gaps, and dependencies. Year-only and half-year timing is shown as a Q1-Q4 or two-quarter uncertainty window, not as an invented quarter or event duration. Where generations materially affect a decision, a source-backed OpenFS synthesis appears above standards-body and vendor lanes; generations may overlap, and open-ended bands do not invent a replacement date. The initial display extends at least through approximately 2032, and later dated evidence automatically extends the detail and comparison columns. Relevant terms open centrally maintained definitions and supporting sources, while high-value choices across memory, compute, integration, interconnect, portability, and evaluation are presented in common comparison tables. The reference-blueprint detail page also compares the FY2026 public HPCI resource inventory and nominal machine specifications, explicitly separating annual call availability from service lifecycle. The workload detail page maps six EEA1 applications to reference scales equivalent to 1, 4, 32, 128, 1,024, and about 10,000 Fugaku nodes and displays low-confidence provisional numerical forecasts derived from public information. Until calibration and independent validation are complete, these forecasts cannot support procurement evaluation or performance guarantees. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Publication of any roadmap, reference data, public supplement, scenario, or report requires a matching human-approved directive with the `publication-approval` action. See `docs/publication/github-pages.md`.
 
-Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
+Research automation is not enabled yet. Provider accounts, GitHub settings, and the sequence of three manual pilot runs are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
 
-Before unattended public-Web research is enabled, a platform owner must verify managed search, safe anonymous fetch, DNS and redirect SSRF protection, Shell socket isolation, separate dependency egress, and restricted Git publication. The current repository profiles intentionally fail the production-profile check until that enforcement evidence exists; see `docs/security/research-web-security-model.md`.
+The repository now includes a policy-enforcing Safe Web Fetch Broker and a review-only Provider Worker workflow for the OpenAI and Anthropic APIs. Their presence does not make unattended research production-ready: the execution profile, provider-side spending limits, owner attestations, enabled Monitors, and reviewed pilot runs must still pass the aggregate readiness gate.
+
+Before unattended public-web research is enabled, a platform owner must verify managed search, safe anonymous fetch, DNS and redirect SSRF protection, shell socket isolation, separate dependency egress, and restricted GitHub publication. The current repository profiles intentionally fail the production-profile check until that enforcement evidence exists; see `docs/security/research-web-security-model.md`.
 
 <!-- i18n-section: human-directions -->
 
@@ -178,7 +185,7 @@ Humans add asynchronous instructions through either:
 - a GitHub Issue labeled `research-directive`; or
 - a reviewed directive file under `reviews/directives/`.
 
-Each directive will eventually be linked to the work items, runs, and decisions that processed it.
+Each directive is linked to the work items, runs, and decisions that process it.
 
 <!-- i18n-section: license -->
 

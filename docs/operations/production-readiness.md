@@ -18,9 +18,9 @@ from being inspected.
 The report checks:
 
 - every scheduled workflow still contains its declared activation variable;
-- the provider Worker workflow and adapter actually exist;
-- a Research Web execution profile has independently verified managed search,
-  safe anonymous fetch, SSRF controls, Shell socket isolation, separate dependency
+- the Provider Worker workflow and adapter exist and contain the required protocol markers;
+- a web-research execution profile has independently verified managed search,
+  safe anonymous fetch, SSRF controls, shell socket isolation, separate dependency
   egress, and restricted Git publication;
 - at least one recurring research Monitor is enabled and every enabled Monitor
   passes its budget, Consensus-capacity, calibrated-policy, and reviewed-Pilot gate;
@@ -40,7 +40,7 @@ stub therefore remains blocked.
 The capability contract and platform profiles are in
 `config/research-web-security-policy.json` and
 `config/execution-security-profiles.json`; repository validation alone does not
-make a profile production eligible.
+make a profile production-eligible.
 `config/owner-controls.json` starts entirely `unverified`. After checking the real
 GitHub or provider setting, a human owner may change one control to `verified` and
 record `verified_by`, `verified_at`, `expires_at`, and a non-secret evidence
@@ -51,9 +51,11 @@ Verification is not permanent. Every attestation expires so configuration drift
 must be checked periodically. Repository agents may report an expired or failed
 control but must not self-attest it as verified.
 
-As of the initial preflight implementation, production is intentionally blocked:
-the provider-backed Worker workflow and adapter are absent, recurring research
-Monitors are disabled, owner controls are unverified, the Consensus policy is
-uncalibrated, the budget lacks an approved cost ceiling, and no Monitor has its
-required reviewed manual Runs. This is a truthful activation boundary, not an
-error in Pilot artifacts.
+As of 2026-08-27, production remains intentionally blocked. The review-only
+Provider Worker and Safe Web Fetch Broker are present, so the component-existence
+checks can pass. However, no execution profile has reviewed evidence for all
+required platform controls, recurring research Monitors remain disabled, owner
+controls are unverified, the Consensus policy is uncalibrated, the budget lacks
+an approved cost ceiling, and no Monitor has completed the required manually
+initiated Runs with review approval.
+This accurately reflects the current activation boundary; it is not an error in the pilot artifacts.
