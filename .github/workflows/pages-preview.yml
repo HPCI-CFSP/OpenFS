@@ -13,9 +13,13 @@ on:
       - "reports/exports/**"
       - "reviews/directives/**"
       - "knowledge/public/**"
+      - "schemas/public-hpci-system-inventory.schema.json"
+      - "schemas/public-application-performance-forecast.schema.json"
       - "tools/build_pages_site.py"
+      - "tools/check_public_planning_surfaces.py"
       - "tools/validate_repository.py"
       - "tests/test_pages_site.py"
+      - "tests/test_public_planning_surfaces.py"
       - "LICENSE"
       - "NOTICE"
       - "THIRD_PARTY_NOTICES.md"
@@ -38,7 +42,9 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - name: Validate public inputs
-        run: python3 tools/validate_repository.py
+        run: |
+          python3 tools/validate_repository.py
+          python3 tools/check_public_planning_surfaces.py
       - name: Run Pages tests
         run: python3 -m unittest tests.test_pages_site -v
       - name: Build static preview

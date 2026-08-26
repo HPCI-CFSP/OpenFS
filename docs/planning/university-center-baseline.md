@@ -29,6 +29,15 @@ The historical FS2.0 RIKEN reports are discovery evidence, but the operational s
 
 `MON-HPCI-CENTERS-001` expands separate discovery Work Items for every registered provider. Query execution coverage and profile evidence completeness are different measurements: finding a provider page proves that a search was attempted, not that power, facility, users, software, or refresh constraints are known. OpenFS must not assume that every center wants the same hardware mix or software policy.
 
+The published FY2026 comparison baseline is
+`knowledge/public/hpci-system-inventory.json`. It records the systems and nominal
+specifications shown in the official HPCI architecture map and annual resource
+list. Its `annual-call-availability` windows indicate the period addressed by the
+FY2026 project call only. They are not evidence of procurement, formal service
+start, guaranteed uptime, migration, retirement, or refresh timing. Those facts
+remain separate Center Profile fields and require current provider primary
+evidence.
+
 Center Profile proposal contract `0.3.0` adds `budget` and `procurement` because
 `GAP-BLUE-003` cannot be evaluated from power and facility fields alone. Historical
 `0.2.0` proposals remain valid records; the public assurance projection marks the

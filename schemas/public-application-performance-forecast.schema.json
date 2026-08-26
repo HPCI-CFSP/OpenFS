@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
+  "title": "OpenFS Public Application Performance Forecast Surface",
+  "type": "object",
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "sources", "applications", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "research_status": {"enum": ["provisional", "accepted"]},
+    "consensus_status": {"enum": ["incomplete", "accepted"]},
+    "title_ja": {"type": "string", "minLength": 1},
+    "title_en": {"type": "string", "minLength": 1},
+    "summary_ja": {"type": "string", "minLength": 1},
+    "summary_en": {"type": "string", "minLength": 1},
+    "standard_fugaku_node_scales": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "integer", "minimum": 1}},
+    "scaling_modes": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]}},
+    "comparison_bases": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"enum": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"]}},
+    "metric_policy": {
+      "type": "object",
+      "required": ["primary_metric_ids", "secondary_metric_ids", "flops_policy_ja", "flops_policy_en"],
+      "properties": {
+        "primary_metric_ids": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"enum": ["time-to-solution", "parallel-efficiency", "throughput", "energy-to-solution", "domain-rate"]}},
+        "secondary_metric_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["achieved-flops"]}},
+        "flops_policy_ja": {"type": "string", "minLength": 1},
+        "flops_policy_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "model_contract": {
+      "type": "object",
+      "required": ["model_card_pattern", "equation_ja", "equation_en", "required_uncertainty", "calibration_validation_split", "procurement_use"],
+      "properties": {
+        "model_card_pattern": {"const": "PMCARD-*"},
+        "equation_ja": {"type": "string", "minLength": 1},
+        "equation_en": {"type": "string", "minLength": 1},
+        "required_uncertainty": {"const": "lower-base-upper"},
+        "calibration_validation_split": {"const": true},
+        "procurement_use": {"enum": ["prohibited-until-validated", "validated"]}
+      },
+      "additionalProperties": false
+    },
+    "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+    "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
+    "forecasts": {"type": "array", "items": {"$ref": "#/$defs/forecast"}},
+    "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "publication": {"$ref": "public-hpci-system-inventory.schema.json#/$defs/publication"}
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["source_id", "title", "publisher", "url", "source_class"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"},
+        "title": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri"},
+        "published_at": {"type": "string", "format": "date"},
+        "source_class": {"enum": ["research-organization", "project-official", "academic-primary", "government-official"]}
+      },
+      "additionalProperties": false
+    },
+    "scaleReadiness": {
+      "type": "object",
+      "required": ["fugaku_nodes", "status", "reason_ja", "reason_en"],
+      "properties": {
+        "fugaku_nodes": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["calibration-required", "measurement-available", "not-applicable", "forecast-available"]},
+        "reason_ja": {"type": "string", "minLength": 1},
+        "reason_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "observedScaleHint": {
+      "type": "object",
+      "required": ["nodes", "observation_type", "source_ids", "note_ja", "note_en"],
+      "properties": {
+        "nodes": {"type": "integer", "minimum": 1},
+        "observation_type": {"enum": ["communication-trace", "performance-model-validation", "benchmark"]},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "note_ja": {"type": "string", "minLength": 1},
+        "note_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "application": {
+      "type": "object",
+      "required": ["application_id", "name", "domain_ja", "domain_en", "eea_group", "compute_characteristic_ids", "scaling_modes", "primary_metric_ja", "primary_metric_en", "domain_metric_ja", "domain_metric_en", "scale_readiness", "observed_scale_hints", "source_ids", "coverage_gap_refs"],
+      "properties": {
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "name": {"type": "string", "minLength": 1},
+        "domain_ja": {"type": "string", "minLength": 1},
+        "domain_en": {"type": "string", "minLength": 1},
+        "eea_group": {"const": "EEA1"},
+        "compute_characteristic_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 1, "maximum": 6}},
+        "scaling_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]}},
+        "primary_metric_ja": {"type": "string", "minLength": 1},
+        "primary_metric_en": {"type": "string", "minLength": 1},
+        "domain_metric_ja": {"type": "string", "minLength": 1},
+        "domain_metric_en": {"type": "string", "minLength": 1},
+        "scale_readiness": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/scaleReadiness"}},
+        "observed_scale_hints": {"type": "array", "items": {"$ref": "#/$defs/observedScaleHint"}},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "coverage_gap_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-(WORK|PERF)-[A-Z0-9-]+$"}}
+      },
+      "additionalProperties": false
+    },
+    "estimate": {
+      "type": "object",
+      "required": ["lower", "base", "upper", "unit"],
+      "properties": {
+        "lower": {"type": "number", "minimum": 0},
+        "base": {"type": "number", "minimum": 0},
+        "upper": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "forecast": {
+      "type": "object",
+      "required": ["forecast_id", "application_id", "candidate_system_id", "fugaku_nodes", "scaling_mode", "comparison_basis", "metric_id", "estimate", "model_card_id", "calibration_dataset_ids", "validation_dataset_ids", "confidence", "consensus_status"],
+      "properties": {
+        "forecast_id": {"type": "string", "pattern": "^FORECAST-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "candidate_system_id": {"type": "string", "minLength": 1},
+        "fugaku_nodes": {"type": "integer", "minimum": 1},
+        "scaling_mode": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]},
+        "comparison_basis": {"enum": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"]},
+        "metric_id": {"enum": ["time-to-solution", "parallel-efficiency", "throughput", "energy-to-solution", "domain-rate", "achieved-flops"]},
+        "estimate": {"$ref": "#/$defs/estimate"},
+        "model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
+        "calibration_dataset_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "validation_dataset_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "consensus_status": {"enum": ["incomplete", "accepted"]}
+      },
+      "additionalProperties": false
+    },
+    "gap": {
+      "type": "object",
+      "required": ["gap_id", "priority", "scope_ja", "scope_en", "impact_ja", "impact_en", "next_action_ja", "next_action_en", "status"],
+      "properties": {
+        "gap_id": {"type": "string", "pattern": "^GAP-PERF-[0-9]{3}$"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "impact_ja": {"type": "string", "minLength": 1},
+        "impact_en": {"type": "string", "minLength": 1},
+        "next_action_ja": {"type": "string", "minLength": 1},
+        "next_action_en": {"type": "string", "minLength": 1},
+        "status": {"const": "open"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -32,8 +32,8 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
         result = self.evaluate()
         self.assertTrue(result["candidate_ready_for_consensus"])
         self.assertEqual([], result["calculation_errors"])
-        self.assertEqual(14, result["counts"]["open_p0_gaps"])
-        self.assertEqual(13, result["counts"]["edge_propagated_p0_gaps"])
+        self.assertEqual(15, result["counts"]["open_p0_gaps"])
+        self.assertEqual(14, result["counts"]["edge_propagated_p0_gaps"])
         self.assertEqual(1, result["counts"]["portfolio_gate_p0_gaps"])
         self.assertTrue(result["gaps_remain_open"])
 

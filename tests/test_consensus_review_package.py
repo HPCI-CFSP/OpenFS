@@ -158,6 +158,19 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertIn(".github/workflows/weekly-coordinator.yml", pinned_paths)
         self.assertIn("config/roadmap-gap-query-overrides.json", pinned_paths)
         self.assertIn("config/monitors/MON-MEMORY-001.json", pinned_paths)
+        self.assertIn("knowledge/public/hpci-system-inventory.json", pinned_paths)
+        self.assertIn("knowledge/public/application-performance-forecasts.json", pinned_paths)
+        self.assertIn("tools/check_public_planning_surfaces.py", pinned_paths)
+
+        units_by_id = {unit["unit_id"]: unit for unit in units}
+        self.assertIn(
+            "SRC-HPCI-SYS001",
+            {item["selector"] for item in units_by_id["CRU-X-BLUEPRINT"]["primary_source_requirements"]},
+        )
+        self.assertIn(
+            "SRC-PERF001",
+            {item["selector"] for item in units_by_id["CRU-APP-WORKLOADS"]["primary_source_requirements"]},
+        )
 
     def test_every_artifact_digest_matches_the_pinned_git_object(self):
         for artifact in self.manifest["artifact_manifest"]:

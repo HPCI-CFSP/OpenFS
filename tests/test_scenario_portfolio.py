@@ -33,7 +33,7 @@ class ScenarioPortfolioTests(unittest.TestCase):
         result = self.evaluate()
         self.assertTrue(result["candidate_ready_for_consensus"])
         self.assertEqual([], result["calculation_errors"])
-        self.assertEqual(14, result["counts"]["open_p0_gaps"])
+        self.assertEqual(15, result["counts"]["open_p0_gaps"])
         self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
         self.assertGreaterEqual(result["counts"]["known_evidence_references"], 300)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_candidate_domain_differences"], 3)

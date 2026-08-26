@@ -4,25 +4,25 @@
   "status": "published",
   "queue_id": "RGQ-20260826-001",
   "as_of": "2026-08-26",
-  "generated_at": "2026-08-26T03:32:54Z",
+  "generated_at": "2026-08-26T04:28:08Z",
   "method_ja": "6ロードマップの全Coverage Gapを優先度順に収集し、既存Monitorまたは独立Consensusパッケージへ明示的に割り当てた。P0は毎週、P1は毎月、P2は四半期ごとの再調査を原則とする。P0のsource-discoveryには検索条件だけでなく、独立起源数と具体的な閉鎖条件を明示する。",
   "method_en": "Collects every Coverage Gap from the six roadmaps, orders them by priority, and assigns each to an existing Monitor or the independent Consensus package. P0 is normally rechecked weekly, P1 monthly, and P2 quarterly. P0 source-discovery items carry explicit search plans, independent-origin minimums, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割当であり、Gapが解消したことを示さない。すべての閉鎖条件を検証し、必要な独立起源数とConsensus Gateを満たすまでstatusはopenのままにする。生成fallbackは探索開始点にすぎず、Monitorが無効の項目は本番準備ゲートを通過するまで自動検索されない。",
   "caveat_en": "This queue assigns research; it does not establish that a Gap is resolved. Status remains open until every closure criterion is verified and the required independent-origin count and Consensus Gate are satisfied. A generated fallback is only a discovery starting point, and disabled Monitors do not run until production-readiness gates pass.",
   "summary": {
     "roadmap_count": 6,
-    "gap_count": 31,
-    "p0": 14,
-    "p1": 11,
+    "gap_count": 33,
+    "p0": 15,
+    "p1": 12,
     "p2": 6,
-    "source_discovery": 30,
+    "source_discovery": 32,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 30,
+    "staged_monitor_disabled": 32,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 13,
-    "generated_query_fallbacks": 17,
-    "p0_explicit_query_overrides": 13,
+    "explicit_query_overrides": 14,
+    "generated_query_fallbacks": 18,
+    "p0_explicit_query_overrides": 14,
     "p0_generated_query_fallbacks": 0
   },
   "assignments": [
@@ -95,8 +95,8 @@
       "scope_en": "Published equations, inputs, errors, and validation data for extrapolation models",
       "impact_ja": "予測を調達採点へ監査可能な形で使えない。",
       "impact_en": "Predictions cannot yet be audited for procurement scoring.",
-      "next_action_ja": "モデルカードSchemaと予測対実測の継続検証をHarnessへ追加する。",
-      "next_action_en": "Add a model-card schema and continuous prediction-versus-measurement validation to the harness.",
+      "next_action_ja": "既存のモデルカードSchemaと6アプリ×6規模の予測契約へ、版固定入力、校正と独立検証、lower/base/upper、予測対実測誤差を登録する。",
+      "next_action_en": "Populate the existing model-card schema and six-application by six-scale contract with versioned inputs, separate calibration and validation, lower/base/upper estimates, and prediction-versus-measurement error.",
       "query_seeds": [
         {
           "language": "ja",
@@ -246,6 +246,61 @@
       "queue_item_id": "RGQ-0004"
     },
     {
+      "gap_id": "GAP-COMP-005",
+      "roadmap_id": "RM-HW-COMPUTE",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "Cerebras、SambaNova、GraphcoreとGPUの同一科学入力・精度・電力・費用比較",
+      "scope_en": "Same-input scientific accuracy, power, and cost comparison across Cerebras, SambaNova, Graphcore, and GPUs",
+      "impact_ja": "AIピーク値やtokens/sだけではHPCI・AI for Scienceへの適合性を判断できない。",
+      "impact_en": "AI peak figures or tokens/s alone cannot establish suitability for HPCI and AI for Science.",
+      "next_action_ja": "公開可能なEEA/Proxyを移植し、time-to-solution、energy-to-solution、精度、移植工数を共通条件で測定する。",
+      "next_action_en": "Port publishable EEA applications or proxies and measure time-to-solution, energy-to-solution, accuracy, and porting effort under common conditions.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "Cerebras WSE-3 SambaNova RDU Graphcore Bow IPU scientific computing benchmark time to solution energy accuracy"
+        },
+        {
+          "language": "en",
+          "query": "wafer scale dataflow accelerator GPU like for like HPC application benchmark porting effort power cost"
+        }
+      ],
+      "required_source_classes": [
+        "research-primary",
+        "peer-reviewed-research",
+        "vendor-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-005-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "公開可能な同一EEAまたはProxy、入力、精度条件をCerebras、SambaNova、Graphcore、GPUで実行し、time-to-solutionと結果正当性を比較する。",
+            "requirement_en": "Run the same publishable EEA application or proxy, input, and accuracy conditions on Cerebras, SambaNova, Graphcore, and GPUs and compare time-to-solution and correctness."
+          },
+          {
+            "criterion_id": "GAP-COMP-005-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "energy-to-solution、利用構成、費用条件、移植差分と工数を版固定し、2つ以上の独立Origin Groupで再現する。",
+            "requirement_en": "Pin energy-to-solution, used configuration, cost conditions, code changes, and porting effort and reproduce them across at least two independent Origin Groups."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0005"
+    },
+    {
       "gap_id": "GAP-NET-003",
       "roadmap_id": "RM-HW-INTERCONNECT",
       "priority": "P0",
@@ -298,7 +353,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0005"
+      "queue_item_id": "RGQ-0006"
     },
     {
       "gap_id": "GAP-NET-004",
@@ -354,7 +409,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0006"
+      "queue_item_id": "RGQ-0007"
     },
     {
       "gap_id": "GAP-MEM003",
@@ -414,7 +469,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0007"
+      "queue_item_id": "RGQ-0008"
     },
     {
       "gap_id": "GAP-PORT-001",
@@ -470,7 +525,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0008"
+      "queue_item_id": "RGQ-0009"
     },
     {
       "gap_id": "GAP-PORT-004",
@@ -525,7 +580,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0009"
+      "queue_item_id": "RGQ-0010"
     },
     {
       "gap_id": "GAP-PORT-006",
@@ -585,7 +640,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0010"
+      "queue_item_id": "RGQ-0011"
     },
     {
       "gap_id": "GAP-BLUE-001",
@@ -640,7 +695,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0011"
+      "queue_item_id": "RGQ-0012"
     },
     {
       "gap_id": "GAP-BLUE-002",
@@ -695,7 +750,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0012"
+      "queue_item_id": "RGQ-0013"
     },
     {
       "gap_id": "GAP-BLUE-003",
@@ -750,7 +805,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0013"
+      "queue_item_id": "RGQ-0014"
     },
     {
       "gap_id": "GAP-BLUE-006",
@@ -786,7 +841,7 @@
       "closure_plan_origin": "consensus-policy",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0014"
+      "queue_item_id": "RGQ-0015"
     },
     {
       "gap_id": "GAP-WORK-002",
@@ -838,7 +893,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0015"
+      "queue_item_id": "RGQ-0016"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -890,7 +945,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0016"
+      "queue_item_id": "RGQ-0017"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -942,7 +997,59 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0017"
+      "queue_item_id": "RGQ-0018"
+    },
+    {
+      "gap_id": "GAP-COMP-006",
+      "roadmap_id": "RM-HW-COMPUTE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "Cerebras WSE-3後継とGraphcore Bow後継の一次情報ロードマップ",
+      "scope_en": "Primary-source roadmaps after Cerebras WSE-3 and Graphcore Bow",
+      "impact_ja": "2027年以降の比較導入窓を作れない。",
+      "impact_en": "Prevents a comparative adoption window after 2027.",
+      "next_action_ja": "製品・SDK・サポート資料を月次追跡し、日程未公表の間はCoverage Gapを維持する。",
+      "next_action_en": "Monitor product, SDK, and support materials monthly and retain the Coverage Gap while timing remains unpublished.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "Cerebras WSE-3後継とGraphcore Bow後継の一次情報ロードマップ 製品・SDK・サポート資料を月次追跡し、日程未公表の間はCoverage Gapを維持する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Primary-source roadmaps after Cerebras WSE-3 and Graphcore Bow Monitor product, SDK, and support materials monthly and retain the Coverage Gap while timing remains unpublished. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-006-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Coverage Gapの対象を直接扱う一次情報を確認し、制約と反証候補を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0019"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -994,7 +1101,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0018"
+      "queue_item_id": "RGQ-0020"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1046,7 +1153,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0019"
+      "queue_item_id": "RGQ-0021"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1100,7 +1207,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0020"
+      "queue_item_id": "RGQ-0022"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -1154,7 +1261,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0021"
+      "queue_item_id": "RGQ-0023"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -1206,7 +1313,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0024"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -1258,7 +1365,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0025"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -1308,7 +1415,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -1358,7 +1465,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -1410,7 +1517,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -1462,7 +1569,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -1514,7 +1621,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -1568,7 +1675,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -1622,7 +1729,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -1674,7 +1781,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0033"
     }
   ],
   "publication": {

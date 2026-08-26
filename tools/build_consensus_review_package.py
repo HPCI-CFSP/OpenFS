@@ -50,6 +50,8 @@ ARTIFACTS = [
     *[(path, "roadmap") for path in ROADMAP_PATHS],
     ("knowledge/public/roadmap-reference-data.json", "reference-data"),
     ("knowledge/public/memory-technology-roadmap.json", "reference-data"),
+    ("knowledge/public/hpci-system-inventory.json", "planning-surface"),
+    ("knowledge/public/application-performance-forecasts.json", "planning-surface"),
     ("knowledge/public/audits/roadmap-source-audit.json", "source-audit"),
     ("knowledge/public/audits/roadmap-source-triage.json", "source-triage"),
     ("knowledge/public/audits/roadmap-evidence-audit.json", "evidence-audit"),
@@ -61,6 +63,8 @@ ARTIFACTS = [
     ("config/consensus-policy.json", "policy"),
     ("config/scenario-policy.json", "policy"),
     ("config/publication-policy.json", "policy"),
+    ("config/publication-i18n.json", "policy"),
+    ("config/research-baseline.json", "research-contract"),
     ("config/source-registry.json", "registry"),
     ("config/hpci-center-registry.json", "registry"),
     ("config/roadmap-gap-query-overrides.json", "query-plan"),
@@ -73,6 +77,8 @@ ARTIFACTS = [
     ("config/role-permissions.json", "policy"),
     ("schemas/public-roadmap.schema.json", "schema"),
     ("schemas/roadmap-reference-data.schema.json", "schema"),
+    ("schemas/public-hpci-system-inventory.schema.json", "schema"),
+    ("schemas/public-application-performance-forecast.schema.json", "schema"),
     ("schemas/center-profile.schema.json", "schema"),
     ("schemas/center-profile-assurance.schema.json", "schema"),
     ("schemas/system-scenario.schema.json", "schema"),
@@ -104,7 +110,10 @@ ARTIFACTS = [
     ("tools/check_portability_capability_matrix.py", "tool"),
     ("tools/check_scenario_portfolio.py", "tool"),
     ("tools/check_roadmap_dependency_register.py", "tool"),
+    ("tools/check_public_planning_surfaces.py", "tool"),
     ("docs/research-baseline/performance-model-validation.md", "research-contract"),
+    ("docs/research-baseline/README.md", "research-contract"),
+    ("docs/planning/university-center-baseline.md", "research-contract"),
     ("docs/research-baseline/reproducible-benchmark-results.md", "research-contract"),
     ("proposals/benchmark-results/README.md", "operations-guide"),
     ("docs/research-baseline/privacy-preserving-workload-observations.md", "research-contract"),
@@ -141,9 +150,11 @@ ARTIFACTS = [
     ("site/roadmaps.js", "presentation"),
     ("site/roadmap-detail.html", "presentation"),
     ("tests/test_pages_site.py", "tool"),
+    ("tests/test_public_planning_surfaces.py", "tool"),
     ("tests/test_roadmap_reference_data.py", "tool"),
     ("reviews/directives/DIR-900006.json", "directive"),
     ("reviews/directives/DIR-900008.json", "directive"),
+    ("reviews/directives/DIR-900009.json", "directive"),
     ("runs/RUN-OFS003-PILOT-005/center-profile-coverage.json", "run-audit"),
     ("runs/RUN-OFS003-PILOT-005/followup-effectiveness.json", "run-audit"),
     *[(path, "center-profile") for path in CENTER_PROFILE_PATHS],
@@ -176,7 +187,9 @@ def artifact_manifest(root: Path, commit: str) -> list[dict[str, str]]:
     ]
 
 
-def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
+def roadmap_unit(
+    root: Path, commit: str, path: str, roadmap: dict[str, Any]
+) -> dict[str, Any]:
     milestones = [
         milestone
         for lane in roadmap["lanes"]
@@ -187,6 +200,24 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
         band
         for track in roadmap["tracks"]
         for band in track.get("generation_bands", [])
+    ]
+    supplement_paths: list[str] = []
+    supplement_schema_paths: list[str] = []
+    if roadmap["roadmap_id"] == "RM-X-BLUEPRINT":
+        supplement_paths.append("knowledge/public/hpci-system-inventory.json")
+        supplement_schema_paths.append(
+            "schemas/public-hpci-system-inventory.schema.json"
+        )
+    if roadmap["roadmap_id"] == "RM-APP-WORKLOADS":
+        supplement_paths.append(
+            "knowledge/public/application-performance-forecasts.json"
+        )
+        supplement_schema_paths.append(
+            "schemas/public-application-performance-forecast.schema.json"
+        )
+    supplements = [
+        committed_json(root, commit, supplement_path)
+        for supplement_path in supplement_paths
     ]
     primary_source_requirements = []
     for milestone in milestones:
@@ -227,18 +258,48 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
                     "source_options": source_options,
                 }
             )
+    supplement_selectors: list[str] = []
+    for supplement in supplements:
+        supplement_selectors.append(supplement["export_id"])
+        supplement_selectors.extend(
+            source["source_id"] for source in supplement["sources"]
+        )
+        supplement_selectors.extend(
+            system["system_id"] for system in supplement.get("systems", [])
+        )
+        supplement_selectors.extend(
+            application["application_id"]
+            for application in supplement.get("applications", [])
+        )
+        supplement_selectors.extend(
+            gap["gap_id"] for gap in supplement["coverage_gaps"]
+        )
+        for source in supplement["sources"]:
+            primary_source_requirements.append(
+                {
+                    "selector": source["source_id"],
+                    "source_options": [
+                        {
+                            "source_id": source["source_id"],
+                            "source_url": source["url"],
+                            "source_class": source["source_class"],
+                        }
+                    ],
+                }
+            )
     return {
         "unit_id": f"CRU-{roadmap['roadmap_id'].removeprefix('RM-')}",
         "kind": "roadmap",
         "title_ja": roadmap["title_ja"],
         "title_en": roadmap["title_en"],
-        "artifact_paths": [path, "knowledge/public/roadmap-reference-data.json", "schemas/roadmap-reference-data.schema.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json"],
+        "artifact_paths": [path, "knowledge/public/roadmap-reference-data.json", "schemas/roadmap-reference-data.schema.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", *supplement_paths, *supplement_schema_paths, "tools/check_public_planning_surfaces.py"],
         "selectors": [
             roadmap["roadmap_id"],
             *[track["track_id"] for track in roadmap["tracks"]],
             *[band["generation_band_id"] for band in generation_bands],
             *[milestone["milestone_id"] for milestone in milestones],
             *[gap["gap_id"] for gap in roadmap["coverage_gaps"]],
+            *supplement_selectors,
         ],
         "primary_source_requirements": primary_source_requirements,
         "required_checks": [
@@ -250,12 +311,14 @@ def roadmap_unit(path: str, roadmap: dict[str, Any]) -> dict[str, Any]:
             "四半期を直接支えない資料からQ1-Q4を推定していないか。",
             "重要な反例、競合候補、製品中止、時期変更がCoverage Gapから漏れていないか。",
             "世代帯が単一ベンダー予測を業界合意として扱ったり、重複期間を消したりしていないか。",
+            "HPCI年度課題募集の提供期間をService Lifecycleと混同せず、校正・独立検証前の数値性能予測を掲載していないか。",
         ],
         "falsification_prompts_en": [
             "Are observed events and forward targets kept distinct?",
             "Is any quarter inferred from a source that supports only a year or wider interval?",
             "Are material counterexamples, alternatives, cancellations, or schedule changes missing from Coverage Gaps?",
             "Does any generation band turn a single-vendor projection into industry consensus or erase overlapping generations?",
+            "Are annual HPCI call windows kept distinct from service-lifecycle dates, and are numerical performance forecasts withheld until calibration and independent validation exist?",
         ],
     }
 
@@ -344,8 +407,8 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "config/consensus-policy.json", "config/publication-policy.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/styles.css"],
-            "selectors": ["DIR-900006", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "reviews/directives/DIR-900009.json", "config/consensus-policy.json", "config/publication-policy.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/hpci-system-inventory.json", "knowledge/public/application-performance-forecasts.json", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/public-hpci-system-inventory.schema.json", "schemas/public-application-performance-forecast.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/check_public_planning_surfaces.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/styles.css"],
+            "selectors": ["DIR-900006", "DIR-900009", "HPCI-SYSTEM-INVENTORY-001", "APP-PERFORMANCE-FORECAST-001", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version"],
             "primary_source_requirements": [],
             "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
             "falsification_prompts_ja": ["未完了のConsensusを受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。", "Gap割当からWork Item、Source、no-resultまで来歴が途切れていないか。", "production-readiness前に本番検索を開始できないか。"],
@@ -358,7 +421,7 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
     policy = committed_json(root, base_commit, "config/consensus-policy.json")
     rule = policy["rules"]["high_impact_recommendation"]
     units = [
-        roadmap_unit(path, committed_json(root, base_commit, path))
+        roadmap_unit(root, base_commit, path, committed_json(root, base_commit, path))
         for path in ROADMAP_PATHS
     ] + shared_units()
     roadmaps = [committed_json(root, base_commit, path) for path in ROADMAP_PATHS]

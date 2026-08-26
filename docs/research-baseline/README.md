@@ -87,7 +87,7 @@ The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Ad
 | `ARCH-09` | Strong/weak scaling and service characteristics |
 | `ARCH-10` | RAS, maintainability, and long lifecycle |
 | `ARCH-11` | Domestic processors, accelerators, and packaging technologies |
-| `ARCH-12` | Reconfigurable, dataflow, and domain-specific computing |
+| `ARCH-12` | Wafer-scale, reconfigurable dataflow, and domain-specific computing |
 | `ARCH-13` | Mixed precision, approximate computing, and numerical integrity |
 
 ### System-software additions

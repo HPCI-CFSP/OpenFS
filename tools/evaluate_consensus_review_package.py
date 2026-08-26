@@ -149,6 +149,26 @@ def evaluate(
                 }.items()
                 if options
             }
+            supplement_paths = [
+                path
+                for path in unit["artifact_paths"]
+                if path in {
+                    "knowledge/public/hpci-system-inventory.json",
+                    "knowledge/public/application-performance-forecasts.json",
+                }
+            ]
+            for supplement_path in supplement_paths:
+                supplement = committed_json(
+                    root, manifest["base_commit"], supplement_path
+                )
+                for source in supplement["sources"]:
+                    expected[source["source_id"]] = {
+                        (
+                            source["source_id"],
+                            source["url"],
+                            source["source_class"],
+                        )
+                    }
             declared = {
                 requirement["selector"]: {
                     (option["source_id"], option["source_url"], option["source_class"])

@@ -215,6 +215,24 @@
       "short_definition_ja": "計測値とシステム特性から将来構成の性能やボトルネックを推定するモデル。", "short_definition_en": "A model estimating performance or bottlenecks from measurements and system characteristics.",
       "definition_ja": "性能モデルはアプリやProxyの計測値を計算、メモリ、通信、I/O等の説明変数と結び、未導入構成の性能や感度を推定する。校正データと検証データを分離し、誤差、適用範囲、外挿距離、不確実性を示さなければ調達判断に使えない。", "definition_en": "A performance model links application or proxy measurements to compute, memory, communication, I/O, or other explanatory variables to estimate unbuilt configurations. Calibration and validation data must be separated, and error, scope, extrapolation distance, and uncertainty are required for procurement use.",
       "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK018"}], "related_term_ids": ["TERM-PROXY-APP", "TERM-HPCG"]
+    },
+    {
+      "term_id": "TERM-WAFER-SCALE-PROCESSOR", "label_ja": "Wafer-scaleプロセッサ", "label_en": "Wafer-scale processor", "aliases": ["Wafer-scaleプロセッサ", "Wafer-scale processor", "WSE"], "category": "compute",
+      "short_definition_ja": "ウェハ全体を切り分けず一つの計算デバイスとして利用するプロセッサ。", "short_definition_en": "A processor using an entire wafer as one compute device rather than dicing it into conventional chips.",
+      "definition_ja": "Wafer-scaleプロセッサは多数の計算コアと分散オンチップメモリをウェハ全体で接続し、チップ間データ移動を減らす。Cerebras WSEは代表例である。通常のGPUや、複数ダイを積層したwafer-on-wafer製品とは区別し、歩留まり回避、電力・冷却、外部メモリ、プログラミング、保守交換をシステム単位で評価する。", "definition_en": "A wafer-scale processor connects many compute cores and distributed on-chip memory across a full wafer to reduce inter-chip data movement. Cerebras WSE is the principal commercial example. It is distinct from conventional GPUs and wafer-on-wafer stacked dies; yield mitigation, power and cooling, external memory, programming, and service replacement require system-level evaluation.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP015"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP016"}], "related_term_ids": ["TERM-ACCELERATOR", "TERM-RDU", "TERM-IPU"]
+    },
+    {
+      "term_id": "TERM-RDU", "label_ja": "RDU", "label_en": "Reconfigurable Dataflow Unit", "aliases": ["RDU", "Reconfigurable Dataflow Unit"], "category": "compute",
+      "short_definition_ja": "計算グラフに合わせてデータ経路を再構成するSambaNovaのAIアクセラレータ。", "short_definition_en": "SambaNova's AI accelerator that reconfigures data paths around a computation graph.",
+      "definition_ja": "RDUは演算グラフをデバイス上のデータフローへ割り当て、不要な外部メモリアクセスを減らすことを狙う。SN50は第5世代製品として主に大規模・agentic inferenceを対象にする。wafer-scaleデバイスではなく、HPCIでは科学推論、モデル切替、メモリ容量、精度、MPI・scheduler統合を実測する必要がある。", "definition_en": "An RDU maps a computation graph onto device dataflow to reduce unnecessary external-memory access. The fifth-generation SN50 primarily targets large-scale and agentic inference. It is not a wafer-scale device; HPCI evaluation needs measurements for scientific inference, model switching, memory capacity, accuracy, MPI, and scheduler integration.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP017"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP018"}], "related_term_ids": ["TERM-WAFER-SCALE-PROCESSOR", "TERM-IPU", "TERM-ACCELERATOR"]
+    },
+    {
+      "term_id": "TERM-IPU", "label_ja": "IPU", "label_en": "Intelligence Processing Unit", "aliases": ["IPU", "Intelligence Processing Unit", "Bow IPU"], "category": "compute",
+      "short_definition_ja": "多数のtileと分散ローカルメモリで細粒度並列処理を行うGraphcoreのAIプロセッサ。", "short_definition_en": "Graphcore's AI processor using many tiles and distributed local memory for fine-grained parallelism.",
+      "definition_ja": "Graphcore IPUは多数の独立tile、各tileのローカルメモリ、IPU-Fabric、Poplar software stackを組み合わせる。Bow IPUは3D wafer-on-wafer bondingを用いるがウェハ全体を一つのプロセッサにしたwafer-scale製品ではない。HPCIではサポート期間、Poplar依存、実アプリ適合性、scale-out効率を確認する。", "definition_en": "Graphcore IPUs combine many independent tiles, local memory per tile, IPU-Fabric, and the Poplar software stack. Bow uses 3D wafer-on-wafer bonding but is not a full-wafer processor. HPCI needs to assess support lifetime, Poplar dependence, application fit, and scale-out efficiency.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP019"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP020"}], "related_term_ids": ["TERM-WAFER-SCALE-PROCESSOR", "TERM-RDU", "TERM-ACCELERATOR"]
     }
   ],
   "comparison_sets": [
@@ -298,9 +316,9 @@
     {
       "comparison_id": "CMP-COMPUTE-PLATFORMS", "roadmap_ids": ["RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
       "title_ja": "計算資源・システム粒度の比較", "title_en": "Compute-resource and system-granularity comparison",
-      "summary_ja": "CPU、GPU、専用アクセラレータ、ラックスケール構成を、役割と評価単位を混同しないように比較する。", "summary_en": "Compares CPUs, GPUs, specialized accelerators, and rack-scale systems without conflating component roles and system granularity.",
+      "summary_ja": "CPU、GPU、wafer-scaleプロセッサ、RDU、IPU、専用アクセラレータ、ラックスケール構成を、役割と評価単位を混同しないように比較する。", "summary_en": "Compares CPUs, GPUs, wafer-scale processors, RDUs, IPUs, specialized accelerators, and rack-scale systems without conflating component roles and system granularity.",
       "decision_use_ja": "代表アプリ、移植費用、電力・冷却、通信、障害領域を含む候補ノード評価の入口にする。", "decision_use_en": "Use as an entry point for candidate-node evaluation including representative applications, migration cost, power and cooling, communication, and failure domains.",
-      "caveat_ja": "ラックスケールはCPUやGPUの代替デバイスではなく、それらを統合するシステム設計単位である。", "caveat_en": "Rack scale is a system-design unit integrating CPUs and GPUs, not a substitute device at the same layer.",
+      "caveat_ja": "各項目は同じ抽象レベルの直接代替ではない。ラックスケールはデバイスを統合する設計単位で、Bowのwafer-on-wafer実装はwafer-scaleプロセッサとは異なる。", "caveat_en": "The entries are not direct substitutes at one abstraction level. Rack scale integrates devices, and Bow's wafer-on-wafer integration is distinct from a wafer-scale processor.",
       "columns": [
         {"column_id": "parallelism", "label_ja": "主な並列性・粒度", "label_en": "Parallelism and granularity"},
         {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
@@ -330,6 +348,27 @@
           {"column_id": "workloads", "text_ja": "AI、行列、ベクトル、データ処理等の適合領域。", "text_en": "Fitting AI, matrix, vector, or data-processing domains."},
           {"column_id": "hpci-check", "text_ja": "対象アプリ率、fallback、コンパイラ、TCO。", "text_en": "Application coverage, fallback, compiler support, and TCO."}
         ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP011"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP012"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP013"}]},
+        {"term_id": "TERM-WAFER-SCALE-PROCESSOR", "cells": [
+          {"column_id": "parallelism", "text_ja": "ウェハ全体の多数coreと分散SRAMを低遅延接続。", "text_en": "Many cores and distributed SRAM connected across a full wafer."},
+          {"column_id": "strengths", "text_ja": "大きなオンチップ容量・帯域、チップ間通信削減。", "text_en": "Large on-chip capacity and bandwidth with reduced inter-chip movement."},
+          {"column_id": "constraints", "text_ja": "専用SDK、外部メモリ、施設・保守、調達選択肢。", "text_en": "Specialized SDK, external memory, facilities and service, and procurement choice."},
+          {"column_id": "workloads", "text_ja": "大規模AI、局所データフロー、移植可能なHPC kernel。", "text_en": "Large AI, local dataflow, and portable HPC kernels."},
+          {"column_id": "hpci-check", "text_ja": "time/energy-to-solution、FP64、CSL工数、scale-out、国内保守。", "text_en": "Time and energy to solution, FP64, CSL effort, scale-out, and domestic support."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP015"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP016"}]},
+        {"term_id": "TERM-RDU", "cells": [
+          {"column_id": "parallelism", "text_ja": "計算グラフを再構成可能なdataflowへ割当。", "text_en": "Maps computation graphs onto reconfigurable dataflow."},
+          {"column_id": "strengths", "text_ja": "推論のデータ移動削減、モデル切替、外部大容量memory。", "text_en": "Reduced inference data movement, model switching, and large external memory."},
+          {"column_id": "constraints", "text_ja": "推論中心、専用stack、FP64・一般HPC根拠不足。", "text_en": "Inference focus, specialized stack, and limited FP64 or general-HPC evidence."},
+          {"column_id": "workloads", "text_ja": "大規模・agentic推論、複数model serving、科学推論。", "text_en": "Large and agentic inference, multi-model serving, and scientific inference."},
+          {"column_id": "hpci-check", "text_ja": "科学精度、tokens/Wだけでない実効性能、scheduler・MPI統合。", "text_en": "Scientific accuracy, useful performance beyond tokens/W, and scheduler and MPI integration."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP017"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP018"}]},
+        {"term_id": "TERM-IPU", "cells": [
+          {"column_id": "parallelism", "text_ja": "多数tileと分散local memoryによる細粒度並列。", "text_en": "Fine-grained parallelism across many tiles and distributed local memory."},
+          {"column_id": "strengths", "text_ja": "不規則・疎・graph処理と低遅延tile間通信。", "text_en": "Irregular, sparse, and graph work with low-latency tile communication."},
+          {"column_id": "constraints", "text_ja": "Poplar依存、memory model、製品・support roadmap不確実性。", "text_en": "Poplar dependence, memory model, and product and support-roadmap uncertainty."},
+          {"column_id": "workloads", "text_ja": "AI学習・推論、GNN、細粒度並列科学kernel。", "text_en": "AI training and inference, GNNs, and fine-grained scientific kernels."},
+          {"column_id": "hpci-check", "text_ja": "現行support、移植・正当性、scale-out、撤退・fallback。", "text_en": "Current support, porting and correctness, scale-out, and exit or fallback plans."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP019"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP020"}]},
         {"term_id": "TERM-RACK-SCALE", "cells": [
           {"column_id": "parallelism", "text_ja": "複数ノード・アクセラレータをラック単位で統合。", "text_en": "Multiple nodes and accelerators integrated at rack scale."},
           {"column_id": "strengths", "text_ja": "通信、電力、冷却、管理の共同最適化。", "text_en": "Co-optimization of communication, power, cooling, and management."},

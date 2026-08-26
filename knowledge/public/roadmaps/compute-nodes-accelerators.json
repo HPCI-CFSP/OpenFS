@@ -8,8 +8,8 @@
   "as_of": "2026-08-26",
   "title_ja": "計算ノード・プロセッサ・アクセラレータ",
   "title_en": "Compute nodes, processors, and accelerators",
-  "summary_ja": "2026年以降のCPU、GPU、ラックスケール構成、国内・欧州プロセッサ、富岳NEXTを、製品提供時期とHPCI評価判断の両面から比較する暫定ロードマップ。",
-  "summary_en": "A provisional comparison from 2026 onward of CPUs, GPUs, rack-scale systems, Japanese and European processors, and FugakuNEXT across product availability and HPCI evaluation decisions.",
+  "summary_ja": "2026年以降のCPU、GPU、wafer-scale・データフロー型アクセラレータ、ラックスケール構成、国内・欧州プロセッサ、富岳NEXTを、製品提供時期とHPCI評価判断の両面から比較する暫定ロードマップ。",
+  "summary_en": "A provisional comparison from 2026 onward of CPUs, GPUs, wafer-scale and dataflow accelerators, rack-scale systems, Japanese and European processors, and FugakuNEXT across product availability and HPCI evaluation decisions.",
   "horizon": {"start_year": 2026, "end_year": 2032, "extension_policy": "extend-to-latest-dated-evidence"},
   "timeline_granularity": "quarter",
   "research_status": "provisional",
@@ -17,6 +17,7 @@
   "consensus_status": "incomplete",
   "groups": [
     {"group_id": "accelerators", "name_ja": "アクセラレータ", "name_en": "Accelerators"},
+    {"group_id": "specialized-accelerators", "name_ja": "Wafer-scale・データフロー", "name_en": "Wafer-scale and dataflow"},
     {"group_id": "processors", "name_ja": "プロセッサ", "name_en": "Processors"},
     {"group_id": "systems", "name_ja": "ノード・システム", "name_en": "Nodes and systems"},
     {"group_id": "hpci-gates", "name_ja": "HPCI評価ゲート", "name_en": "HPCI evaluation gates"}
@@ -73,6 +74,32 @@
       "hpci_implications_ja": "施設電力・液冷、障害交換単位、調達分割可能性、運用ソフトウェアをノード選定時から含める必要がある。",
       "hpci_implications_en": "Node selection must include facility power and liquid cooling, service units, procurement modularity, and operational software.",
       "source_ids": ["SRC-COMP001", "SRC-COMP002"]
+    },
+    {
+      "track_id": "COMPUTE-WAFER-SCALE",
+      "group": "specialized-accelerators",
+      "name_ja": "Wafer-scaleプロセッサ",
+      "name_en": "Wafer-scale processors",
+      "summary_ja": "ウェハ全体を一つの計算デバイスとして利用する製品と、その大容量オンチップSRAM、電力・冷却、HPC SDKを追跡する。",
+      "summary_en": "Tracks products using an entire wafer as one compute device together with large on-chip SRAM, power and cooling, and HPC SDKs.",
+      "current_state_ja": "Cerebrasは5nm WSE-3を搭載するCS-3を2024年3月から出荷し、900,000 AIコア、44GB SRAM、125 PFLOP/sのAIピークを公表する。HPC向けにはCSLを用いるSDKを公開しているが、一般HPCアプリのFP64性能・移植費用・国内運用実績は十分に公開されていない。",
+      "current_state_en": "Cerebras has shipped the CS-3 with its 5 nm WSE-3 since March 2024 and publishes 900,000 AI cores, 44 GB SRAM, and 125 PFLOP/s peak AI performance. It offers an HPC SDK using CSL, but public evidence for FP64 application performance, porting cost, and Japanese operations remains limited.",
+      "hpci_implications_ja": "GPUの代替と決め付けず、局所データフロー、オンチップ容量、外部メモリ、scale-out、施設条件、SDKロックインをAI for ScienceとHPCの実アプリで評価する。",
+      "hpci_implications_en": "Do not assume a GPU replacement; evaluate local dataflow, on-chip capacity, external memory, scale-out, facility constraints, and SDK lock-in with real AI-for-Science and HPC applications.",
+      "source_ids": ["SRC-COMP015", "SRC-COMP016"]
+    },
+    {
+      "track_id": "COMPUTE-DATAFLOW",
+      "group": "specialized-accelerators",
+      "name_ja": "再構成可能データフロー・IPU",
+      "name_en": "Reconfigurable dataflow and IPU",
+      "summary_ja": "SambaNova RDUとGraphcore IPUを、wafer-scaleとは区別し、メモリ配置、グラフ実行、ソフトウェア、scale-outの観点で追跡する。",
+      "summary_en": "Tracks SambaNova RDUs and Graphcore IPUs separately from wafer-scale devices, focusing on memory placement, graph execution, software, and scale-out.",
+      "current_state_ja": "SambaNovaは第5世代SN50 RDUとSambaRack SN50を2026年2月に発表し、2026年後半の出荷開始を目標とする。GraphcoreのBow IPU/Bow Podは2022年から出荷され、現行ドキュメントはBow-2000をサポート対象とするが、2026年以降の新製品日程は確認できない。",
+      "current_state_en": "SambaNova announced its fifth-generation SN50 RDU and SambaRack SN50 in February 2026 and targets customer shipments in H2 2026. Graphcore's Bow IPU and Bow Pod have shipped since 2022, and current documentation lists Bow-2000 as supported, but no post-2026 product schedule was confirmed.",
+      "hpci_implications_ja": "生成AI指標だけでなく、科学推論、疎・不規則計算、モデル切替、FP64、MPI連携、コンテナ・スケジューラ統合、供給・保守継続性を共通試験する。",
+      "hpci_implications_en": "Common tests should cover scientific inference, sparse and irregular compute, model switching, FP64, MPI integration, container and scheduler integration, and supply and support continuity rather than generative-AI metrics alone.",
+      "source_ids": ["SRC-COMP017", "SRC-COMP018", "SRC-COMP019", "SRC-COMP020"]
     },
     {
       "track_id": "COMPUTE-FUGAKUNEXT",
@@ -140,6 +167,26 @@
       ]
     },
     {
+      "lane_id": "LANE-COMP-CEREBRAS", "track_id": "COMPUTE-WAFER-SCALE", "owner": "Cerebras", "scope_ja": "WSE-3 / CS-3 wafer-scaleシステム", "scope_en": "WSE-3 and CS-3 wafer-scale systems",
+      "milestones": [
+        {"milestone_id": "MS-COMP-CEREBRAS-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "as-of-baseline", "comparison_priority": "key", "label_ja": "CS-3/WSE-3提供基線", "label_en": "CS-3/WSE-3 availability baseline", "detail_ja": "2026年8月時点の製品基線。CerebrasはWSE-3搭載CS-3を2024年3月に出荷開始し、最大2,048台のscale-out構成とHPC向けCSL SDKを公表している。Q3は観測基準日で、製品発売時期ではない。", "detail_en": "Product baseline as of August 2026. Cerebras began shipping WSE-3-based CS-3 systems in March 2024 and publishes scale-out to 2,048 systems plus a CSL-based HPC SDK. Q3 is the observation baseline, not the launch date.", "source_ids": ["SRC-COMP015", "SRC-COMP016"], "dependency_refs": ["DEP-COMP-WORKLOAD-001", "DEP-COMP-NET-001", "DEP-COMP-BLUEPRINT-001"]}
+      ]
+    },
+    {
+      "lane_id": "LANE-COMP-SAMBANOVA", "track_id": "COMPUTE-DATAFLOW", "owner": "SambaNova", "scope_ja": "SN50 RDU / SambaRack SN50", "scope_en": "SN50 RDU and SambaRack SN50",
+      "milestones": [
+        {"milestone_id": "MS-COMP-SAMBANOVA-2026Q1", "year": 2026, "quarter": "Q1", "timing_precision": "quarter", "maturity": "published", "event_type": "product", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "第5世代SN50を発表", "label_en": "Fifth-generation SN50 announced", "detail_ja": "SambaNovaは2026年2月24日に第5世代SN50 RDUとSambaRack SN50を発表した。最大10兆パラメータ、最大256 RDUの構成はベンダー公表値で、HPCIアプリ性能ではない。", "detail_en": "SambaNova announced its fifth-generation SN50 RDU and SambaRack SN50 on February 24, 2026. Support claims up to 10 trillion parameters and up to 256 RDUs are vendor figures, not HPCI application results.", "source_ids": ["SRC-COMP017"], "dependency_refs": ["DEP-COMP-WORKLOAD-001", "DEP-COMP-NET-001"]},
+        {"milestone_id": "MS-COMP-SAMBANOVA-2026H2", "year": 2026, "quarter": null, "half": "H2", "timing_precision": "half-year", "maturity": "target", "event_type": "product", "timing_basis": "vendor-target", "comparison_priority": "key", "label_ja": "SN50顧客出荷目標", "label_en": "SN50 customer-shipment target", "detail_ja": "SambaNovaは2026年後半に顧客向け出荷開始を目標としている。一般提供、国内調達、HPC対応の時期とは区別する。", "detail_en": "SambaNova targets customer shipments in the second half of 2026. This is distinct from general availability, Japanese procurement, or HPC readiness.", "source_ids": ["SRC-COMP017"], "dependency_refs": ["DEP-COMP-BLUEPRINT-001"]}
+      ]
+    },
+    {
+      "lane_id": "LANE-COMP-GRAPHCORE", "track_id": "COMPUTE-DATAFLOW", "owner": "Graphcore", "scope_ja": "Bow IPU / Bow Pod", "scope_en": "Bow IPU and Bow Pod",
+      "milestones": [
+        {"milestone_id": "MS-COMP-GRAPHCORE-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "commercial", "event_type": "product", "timing_basis": "as-of-baseline", "comparison_priority": "supporting", "label_ja": "Bow-2000サポート基線", "label_en": "Bow-2000 support baseline", "detail_ja": "2026年8月時点でGraphcoreのシステムソフトウェア資料はBow-2000とBow Pod構成をサポート対象として記載する。Bowは2022年3月に出荷開始した3D wafer-on-wafer IPUであり、wafer-scaleプロセッサではない。Q3は観測基準日。", "detail_en": "As of August 2026, Graphcore system-software documentation lists Bow-2000 and Bow Pod configurations as supported. Bow began shipping in March 2022 and is a 3D wafer-on-wafer IPU, not a wafer-scale processor. Q3 is the observation baseline.", "source_ids": ["SRC-COMP019", "SRC-COMP020"], "dependency_refs": ["DEP-COMP-WORKLOAD-001", "DEP-COMP-PORT-001"]},
+        {"milestone_id": "MS-COMP-GRAPHCORE-UNDATED", "year": null, "quarter": null, "timing_precision": "undated", "maturity": "undated", "event_type": "product", "timing_basis": "no-public-date", "comparison_priority": "key", "label_ja": "Bow後継の公開日程未確認", "label_en": "Post-Bow schedule unconfirmed", "detail_ja": "2026年以降の新IPU製品・一般提供日程を一次情報で確認できないため、推測で世代を延長しない。", "detail_en": "No primary-source schedule for a new IPU product or general availability after 2026 was confirmed, so no generation is extrapolated.", "source_ids": ["SRC-COMP020"], "dependency_refs": ["DEP-COMP-BLUEPRINT-001"]}
+      ]
+    },
+    {
       "lane_id": "LANE-COMP-FUJITSU", "track_id": "COMPUTE-CPU", "owner": "Fujitsu", "scope_ja": "MONAKA / MONAKA-X", "scope_en": "MONAKA and MONAKA-X",
       "milestones": [
         {"milestone_id": "MS-COMP-FUJITSU-2027", "year": 2027, "quarter": null, "timing_precision": "year", "maturity": "target", "event_type": "product", "timing_basis": "vendor-target", "comparison_priority": "key", "label_ja": "MONAKAリリース予定", "label_en": "MONAKA scheduled release", "detail_ja": "2nm ArmベースCPUを2027年にリリース予定。四半期と量産規模は未公表。", "detail_en": "A 2 nm Arm-based CPU is scheduled for release in 2027; quarter and production scale are not public.", "source_ids": ["SRC-COMP005"], "dependency_refs": ["DEP-COMP-PORT-001"]},
@@ -189,13 +236,21 @@
     {"source_id": "SRC-COMP011", "title": "AMD Instinct MI430X GPUs", "publisher": "AMD", "url": "https://www.amd.com/en/products/accelerators/instinct/mi400/mi430x.html", "source_class": "vendor-official"},
     {"source_id": "SRC-COMP012", "title": "Intel to Expand AI Accelerator Portfolio with New GPU", "publisher": "Intel", "url": "https://newsroom.intel.com/artificial-intelligence/intel-to-expand-ai-accelerator-portfolio-with-new-gpu", "published_at": "2025-10-14", "source_class": "vendor-official"},
     {"source_id": "SRC-COMP013", "title": "Qualcomm Unveils Comprehensive Data Center Roadmap for the Agentic AI Era with New Qualcomm Dragonfly Portfolio", "publisher": "Qualcomm", "url": "https://www.qualcomm.com/news/releases/2026/06/qualcomm-unveils-comprehensive-data-center-roadmap-for-the-agent", "published_at": "2026-06-24", "source_class": "vendor-official"},
-    {"source_id": "SRC-COMP014", "title": "Intel Outlines Architectures for Agentic AI at Hot Chips 2026", "publisher": "Intel", "url": "https://newsroom.intel.com/client-computing/intel-outlines-architectures-for-agentic-ai-at-hot-chips-2026", "published_at": "2026-08-24", "source_class": "vendor-official"}
+    {"source_id": "SRC-COMP014", "title": "Intel Outlines Architectures for Agentic AI at Hot Chips 2026", "publisher": "Intel", "url": "https://newsroom.intel.com/client-computing/intel-outlines-architectures-for-agentic-ai-at-hot-chips-2026", "published_at": "2026-08-24", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP015", "title": "Cerebras Systems Unveils Third-Generation Wafer Scale Engine", "publisher": "Cerebras", "url": "https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine", "published_at": "2024-03-13", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP016", "title": "Supercharge your HPC Research with the Cerebras SDK", "publisher": "Cerebras", "url": "https://www.cerebras.ai/blog/supercharge-your-hpc-research-with-the-cerebras-sdk", "published_at": "2024-05-01", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP017", "title": "Introducing the SN50 RDU: Purpose-Built for Agentic Inference", "publisher": "SambaNova", "url": "https://sambanova.ai/blog/introducing-the-sn50-rdu-purpose-built-for-agentic-inference", "published_at": "2026-02-24", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP018", "title": "Texas Advanced Computing Center Deploys SambaNova Suite for Science", "publisher": "SambaNova", "url": "https://sambanova.ai/blog/tacc-deploys-sambanova-suite-ai-inference-for-scientific-research", "published_at": "2024-11-18", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP019", "title": "The WoW Factor: Graphcore Systems Get a Power and Efficiency Boost", "publisher": "Graphcore", "url": "https://www.graphcore.ai/posts/the-wow-factor-graphcore-systems-get-huge-power-and-efficiency-boost", "published_at": "2022-03-03", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP020", "title": "IPU-Machine System Software Release Notes", "publisher": "Graphcore", "url": "https://docs.graphcore.ai/projects/ipum-release-notes/en/latest/overview.html", "source_class": "vendor-official"}
   ],
   "coverage_gaps": [
     {"gap_id": "GAP-COMP-001", "priority": "P1", "scope_ja": "NVIDIAの2027年以降、AMD MI500/MI600、Qualcomm Dragonflyの四半期・HPC仕様", "scope_en": "Quarter-level timing and HPC specifications for NVIDIA post-2026, AMD MI500/MI600, and Qualcomm Dragonfly", "impact_ja": "2027〜2029年の比較導入窓を確定できない。", "impact_en": "Prevents confirmation of the 2027-2029 comparative adoption window.", "next_action_ja": "GTC、Advancing AI、Qualcomm Investor Day、ISC/SCの公式発表を毎月追跡する。", "next_action_en": "Monitor official GTC, Advancing AI, Qualcomm Investor Day, ISC, and SC announcements monthly.", "status": "open"},
     {"gap_id": "GAP-COMP-002", "priority": "P1", "scope_ja": "MONAKAの量産規模、価格、対応システム、MONAKA-X詳細", "scope_en": "MONAKA production scale, price, systems, and MONAKA-X details", "impact_ja": "国内CPUを大学センターへ展開する実現性を評価できない。", "impact_en": "Limits feasibility assessment for deploying the Japanese CPU at university centers.", "next_action_ja": "Fujitsu、NEDO、RIKENの一次情報と公開調達情報を継続確認する。", "next_action_en": "Continue reviewing Fujitsu, NEDO, RIKEN, and public procurement sources.", "status": "open"},
     {"gap_id": "GAP-COMP-003", "priority": "P2", "scope_ja": "2031〜2032年の製品ロードマップ", "scope_en": "Product roadmaps for 2031-2032", "impact_ja": "長期更新計画を製品世代へ直接対応付けられない。", "impact_en": "Long-term refresh plans cannot yet be mapped directly to product generations.", "next_action_ja": "推測で補わず、ベンダーが公表するまでGapとして維持する。", "next_action_en": "Do not extrapolate; retain as a gap until vendors publish targets.", "status": "open"},
-    {"gap_id": "GAP-COMP-004", "priority": "P0", "scope_ja": "同条件の実アプリ性能・電力・RAS比較", "scope_en": "Like-for-like application performance, power, and RAS comparison", "impact_ja": "公開仕様だけではHPCI採用順位を付けられない。", "impact_en": "Public specifications alone cannot rank HPCI adoption options.", "next_action_ja": "HPCI-CB上で再現可能な測定を行い、結果を別ArtifactとしてConsensusへ送る。", "next_action_en": "Run reproducible HPCI-CB measurements and submit results as separate artifacts to Consensus.", "status": "open"}
+    {"gap_id": "GAP-COMP-004", "priority": "P0", "scope_ja": "同条件の実アプリ性能・電力・RAS比較", "scope_en": "Like-for-like application performance, power, and RAS comparison", "impact_ja": "公開仕様だけではHPCI採用順位を付けられない。", "impact_en": "Public specifications alone cannot rank HPCI adoption options.", "next_action_ja": "HPCI-CB上で再現可能な測定を行い、結果を別ArtifactとしてConsensusへ送る。", "next_action_en": "Run reproducible HPCI-CB measurements and submit results as separate artifacts to Consensus.", "status": "open"},
+    {"gap_id": "GAP-COMP-005", "priority": "P0", "scope_ja": "Cerebras、SambaNova、GraphcoreとGPUの同一科学入力・精度・電力・費用比較", "scope_en": "Same-input scientific accuracy, power, and cost comparison across Cerebras, SambaNova, Graphcore, and GPUs", "impact_ja": "AIピーク値やtokens/sだけではHPCI・AI for Scienceへの適合性を判断できない。", "impact_en": "AI peak figures or tokens/s alone cannot establish suitability for HPCI and AI for Science.", "next_action_ja": "公開可能なEEA/Proxyを移植し、time-to-solution、energy-to-solution、精度、移植工数を共通条件で測定する。", "next_action_en": "Port publishable EEA applications or proxies and measure time-to-solution, energy-to-solution, accuracy, and porting effort under common conditions.", "status": "open"},
+    {"gap_id": "GAP-COMP-006", "priority": "P1", "scope_ja": "Cerebras WSE-3後継とGraphcore Bow後継の一次情報ロードマップ", "scope_en": "Primary-source roadmaps after Cerebras WSE-3 and Graphcore Bow", "impact_ja": "2027年以降の比較導入窓を作れない。", "impact_en": "Prevents a comparative adoption window after 2027.", "next_action_ja": "製品・SDK・サポート資料を月次追跡し、日程未公表の間はCoverage Gapを維持する。", "next_action_en": "Monitor product, SDK, and support materials monthly and retain the Coverage Gap while timing remains unpublished.", "status": "open"}
   ],
   "caveat_ja": "本ロードマップは公開一次情報とOpenFSの暫定評価ゲートを区別して整理した単一モデル作業版であり、独立モデルによるConsensus Gateは未完了です。将来時期は各発表時点の目標で、調達可能性を保証しません。",
   "caveat_en": "This is a single-model working draft that separates public primary-source milestones from OpenFS provisional evaluation gates; independent-model Consensus is incomplete. Future dates are targets as announced and do not guarantee procurement availability.",

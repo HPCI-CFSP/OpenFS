@@ -242,15 +242,28 @@ class PagesSiteTests(unittest.TestCase):
         reference_data = collect_roadmap_reference_data(
             ROOT, policy, roadmaps, False
         )
-        self.assertEqual(35, len(reference_data["terms"]))
+        self.assertEqual(38, len(reference_data["terms"]))
         self.assertEqual(6, len(reference_data["comparison_sets"]))
         detail = (ROOT / "site" / "roadmap-detail.html").read_text(encoding="utf-8")
         for element_id in (
             'id="roadmap-comparisons"',
             'id="roadmap-glossary"',
             'id="roadmap-term-dialog"',
+            'id="hpci-system-inventory-section"',
+            'id="hpci-inventory-table"',
+            'id="application-performance-section"',
+            'id="application-performance-table"',
         ):
             self.assertIn(element_id, detail)
+        script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
+        self.assertIn("function renderHPCIInventory", script)
+        self.assertIn("function renderApplicationPerformance", script)
+        performance_rows = script[script.index("performance.applications.forEach") :]
+        self.assertLess(
+            performance_rows.index("row.append(app);"),
+            performance_rows.index("performance.standard_fugaku_node_scales.forEach"),
+        )
+        self.assertNotIn("row.append(app, cell)", performance_rows)
 
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
@@ -280,11 +293,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(package["artifact_count"], 20)
             self.assertEqual(40, len(package["base_commit"]))
             self.assertEqual(64, len(package["manifest_sha256"]))
-            self.assertEqual(35, len(result["roadmap_reference_data"]["terms"]))
+            self.assertEqual(38, len(result["roadmap_reference_data"]["terms"]))
             self.assertEqual(
                 6, len(result["roadmap_reference_data"]["comparison_sets"])
             )
             self.assertNotIn("publication", result["roadmap_reference_data"])
+            self.assertEqual(27, len(result["hpci_system_inventory"]["systems"]))
+            self.assertNotIn("publication", result["hpci_system_inventory"])
+            self.assertEqual(
+                [1, 4, 32, 128, 1024, 10000],
+                result["application_performance_forecasts"]["standard_fugaku_node_scales"],
+            )
+            self.assertEqual([], result["application_performance_forecasts"]["forecasts"])
+            self.assertNotIn("publication", result["application_performance_forecasts"])
             self.assertEqual(
                 package["manifest_sha256"],
                 package["gate"]["package_manifest_digest"],
@@ -302,7 +323,7 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and len(scenario["decision_blocking_gap_refs"]) == 14
+                    and len(scenario["decision_blocking_gap_refs"]) == 15
                     and len(scenario["decision_evidence_contracts"]) == 6
                     for scenario in result["scenarios"]
                 )
@@ -351,10 +372,10 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
             self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
             self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
-            self.assertEqual(31, assurance["gap_queue"]["summary"]["gap_count"])
-            self.assertEqual(14, assurance["gap_queue"]["summary"]["p0"])
+            self.assertEqual(33, assurance["gap_queue"]["summary"]["gap_count"])
+            self.assertEqual(15, assurance["gap_queue"]["summary"]["p0"])
             self.assertEqual(
-                14,
+                15,
                 len(
                     [
                         item
