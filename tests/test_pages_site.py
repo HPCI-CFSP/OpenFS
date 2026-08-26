@@ -258,6 +258,12 @@ class PagesSiteTests(unittest.TestCase):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
         self.assertIn("function renderHPCIInventory", script)
         self.assertIn("function renderApplicationPerformance", script)
+        performance_rows = script[script.index("performance.applications.forEach") :]
+        self.assertLess(
+            performance_rows.index("row.append(app);"),
+            performance_rows.index("performance.standard_fugaku_node_scales.forEach"),
+        )
+        self.assertNotIn("row.append(app, cell)", performance_rows)
 
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
