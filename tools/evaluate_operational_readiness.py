@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from evaluate_monitor_readiness import evaluate as evaluate_monitor
+from check_research_web_security import evaluate as evaluate_research_web_security
 from openfs_runtime import atomic_write_json, isoformat, read_json
 
 
@@ -35,6 +36,11 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
     now = _instant(timestamp)
     policy = read_json(root / "config" / "activation-policy.json")
     attestations = read_json(root / "config" / "owner-controls.json")
+    research_web_security = evaluate_research_web_security(
+        read_json(_repository_path(root, policy["research_web_security_policy_ref"])),
+        read_json(_repository_path(root, policy["execution_security_profiles_ref"])),
+        require_production=policy["production_security_profile_required"],
+    )
 
     workflow_gates = []
     for item in policy["required_workflow_gates"]:
@@ -143,6 +149,7 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
         "production_components_present": all(
             item["passed"] for item in production_components
         ),
+        "research_web_security_profile_verified": research_web_security["valid"],
         "owner_controls_verified": all(item["verified"] for item in owner_controls),
         "research_monitor_enabled": bool(enabled),
         "enabled_monitors_ready": bool(enabled) and len(ready_enabled) == len(enabled),
@@ -167,6 +174,20 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
                     "refs": [item["ref"]],
                 }
             )
+    if not research_web_security["valid"]:
+        owner_actions.append(
+            {
+                "action_id": "verify-research-web-security-profile",
+                "summary": (
+                    "Deploy and independently verify the required Research Web "
+                    "network and capability controls."
+                ),
+                "refs": [
+                    policy["research_web_security_policy_ref"],
+                    policy["execution_security_profiles_ref"],
+                ],
+            }
+        )
     for item in owner_controls:
         if not item["verified"]:
             owner_actions.append(
@@ -200,7 +221,7 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
                 }
             )
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "evaluated_at": timestamp,
         "status": "ready" if not blockers else "blocked",
         "checks": checks,
@@ -208,6 +229,12 @@ def evaluate(root: Path, *, evaluated_at: str | None = None) -> dict[str, Any]:
         "owner_actions": owner_actions,
         "workflow_gates": workflow_gates,
         "production_components": production_components,
+        "research_web_security": {
+            "policy_id": research_web_security["policy_id"],
+            "valid": research_web_security["valid"],
+            "production_profiles": research_web_security["production_profiles"],
+            "errors": research_web_security["errors"],
+        },
         "owner_controls": owner_controls,
         "monitors": {
             "eligible_count": len(monitor_results),

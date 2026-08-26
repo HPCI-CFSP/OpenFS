@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/web-retrieval-receipt.schema.json",
+  "title": "OpenFS Safe Web Retrieval Receipt",
+  "type": "object",
+  "required": ["schema_version", "receipt_id", "tool_name", "security_profile_id", "requested_url", "final_url", "redirect_chain", "method", "http_status", "media_type", "response_bytes", "retrieved_at", "policy_decision", "content_sha256", "credentials_forwarded"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "receipt_id": {"type": "string", "pattern": "^WEB-[0-9A-F]{12}$"},
+    "tool_name": {"enum": ["web_fetch", "browser_read"]},
+    "security_profile_id": {"type": "string", "pattern": "^SEC-PROFILE-[A-Z0-9-]+$"},
+    "requested_url": {"type": "string", "format": "uri"},
+    "final_url": {"type": "string", "format": "uri"},
+    "redirect_chain": {"type": "array", "maxItems": 8, "items": {"type": "string", "format": "uri"}},
+    "method": {"enum": ["GET", "HEAD"]},
+    "http_status": {"type": "integer", "minimum": 100, "maximum": 599},
+    "media_type": {"type": "string", "minLength": 1},
+    "response_bytes": {"type": "integer", "minimum": 0, "maximum": 26214400},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "policy_decision": {"enum": ["allowed", "blocked"]},
+    "block_reason": {"type": ["string", "null"]},
+    "content_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "credentials_forwarded": {"const": false}
+  },
+  "additionalProperties": false
+}

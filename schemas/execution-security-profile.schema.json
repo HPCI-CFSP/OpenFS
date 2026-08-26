@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/execution-security-profile.schema.json",
+  "title": "OpenFS Execution Security Profile Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "policy_id", "required_verified_controls_for_production", "profiles"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "registry_id": {"const": "EXECUTION-SECURITY-PROFILES-001"},
+    "policy_id": {"const": "RESEARCH-WEB-SECURITY-001"},
+    "required_verified_controls_for_production": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["profile_id", "platform", "description", "controls", "behavioral_instructions_present", "schema_validation_present", "production_eligible", "verification_evidence", "limitations", "owner_action"],
+        "properties": {
+          "profile_id": {"type": "string", "pattern": "^SEC-PROFILE-[A-Z0-9-]+$"},
+          "platform": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1},
+          "controls": {"type": "object", "additionalProperties": {"enum": ["verified", "not-verified", "not-applicable"]}},
+          "behavioral_instructions_present": {"type": "boolean"},
+          "schema_validation_present": {"type": "boolean"},
+          "production_eligible": {"type": "boolean"},
+          "verification_evidence": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "owner_action": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

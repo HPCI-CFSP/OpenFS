@@ -10,10 +10,12 @@
   const copy = {
     ja: {
       languageControl: "表示言語", tagline: "公開調査カタログと整備計画成果", publicOnly: "公開情報のみ", siteUpdated: "サイト更新", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "基準日",
-      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "整備シナリオ", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
+      aboutKicker: "OPENFSについて",
+      aboutLead: "OpenFSは、将来の計算・データ基盤のシステム整備計画を検討するため、計算機アーキテクチャ、メモリ・ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠付きの技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、情報の更新日と確認状況、Consensus状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の現在地",
-      overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示し、整備シナリオと報告書は人の公開承認を通過した成果に限定します。",
-      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開シナリオ", scenarioMetricNote: "人の公開承認を通過した成果",
+      overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示し、システム整備計画案と報告書は人の公開承認を通過した成果に限定します。",
+      topicsMetric: "調査Topic", topicsMetricNote: "保護された初期項目を含む", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開計画案", scenarioMetricNote: "人の公開承認を通過した成果",
       reportMetric: "公開報告書", reportMetricNote: "来歴付きExport", revision: "改訂", officialSources: "登録済み公開資料",
       openGaps: "未解決Gap", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各Topicでは、現在利用中・近未来・研究段階・未確定の技術を分け、HPCI整備への関係、公開根拠、Coverage Gap、調査履歴を確認できます。",
@@ -21,11 +23,11 @@
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "状態", tableCadence: "更新", tableOrigin: "起点",
       noTopics: "条件に一致するTopicはありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分野別のロードマップを一覧から選び、年表、根拠、HPCI整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開済みロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
-      scenarioKicker: "ロードマップシナリオ", scenarioTitle: "HPCI整備シナリオ",
-      scenarioLead: "Architecture、System Software、Applications、センター影響、技術動向、不確実性を一体で比較します。",
+      scenarioKicker: "計画の選択肢", scenarioTitle: "システム整備計画案",
+      scenarioLead: "Architecture、System Software、Applications、運用主体への影響、技術動向、不確実性を一体で比較します。HPCI固有の条件は各計画案で注記します。",
       noScenarioTitle: "公開済みシナリオはまだありません",
       noScenarioText: "現在の4案はGenerator検証用の例示です。根拠・評価・人の公開承認を通過した案だけを公開します。",
-      openScenarioComparison: "3シナリオ比較を開く",
+      openScenarioComparison: "3つの計画案を比較する",
       reportKicker: "報告書", reportTitle: "報告書・Export", reportLead: "公開版には版、基準日、根拠への追跡、置換関係を付けます。",
       noReportTitle: "公開済み報告書はまだありません",
       noReportText: "Promotion workflowで受理され、人が公開を承認したExportが追加されると、ここへ自動表示されます。",
@@ -53,22 +55,24 @@
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of",
-      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "Roadmap scenarios", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
+      aboutKicker: "ABOUT OPENFS",
+      aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory and networks, system software, and applications, and organizes the results into evidence-backed technology assessments, roadmaps, and system planning options while identifying unknowns, update and verification status, and Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
-      overviewLead: "Research summaries derived from public information are shown with their validation status. Roadmap scenarios and reports are limited to explicitly human-approved outputs.",
-      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published scenarios", scenarioMetricNote: "Passed explicit human publication approval",
+      overviewLead: "Research summaries derived from public information are shown with their validation status. System planning options and reports are limited to explicitly human-approved outputs.",
+      topicsMetric: "Research topics", topicsMetricNote: "Includes the protected initial catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published planning options", scenarioMetricNote: "Passed explicit human publication approval",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each Topic separates current, near-term, research-stage, and unresolved technologies, with HPCI relevance, public evidence, Coverage Gaps, and research history.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Topic ID or title",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Status", tableCadence: "Review", tableOrigin: "Origin",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "Continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
-      roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a domain roadmap and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "ROADMAP SCENARIOS",
-      scenarioTitle: "HPCI infrastructure scenarios",
-      scenarioLead: "Compare architecture, system software, applications, center impacts, technology trends, and uncertainties as a coherent whole.",
+      roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a domain roadmap and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
+      scenarioTitle: "System planning options",
+      scenarioLead: "Compare architecture, system software, applications, operator impacts, technology trends, and uncertainties as a coherent whole. HPCI-specific constraints are noted within each option.",
       noScenarioTitle: "No scenarios have been published",
       noScenarioText: "The current four scenarios are generator examples. Only evidence-backed, evaluated, and human-approved scenarios are published.",
-      openScenarioComparison: "Open the three-scenario comparison",
+      openScenarioComparison: "Compare the three planning options",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
       reportLead: "Published versions carry a version, as-of date, evidence traceability, and supersession links.",
       noReportTitle: "No reports have been published",
@@ -115,6 +119,7 @@
   let language = readLanguage();
   let activeTopicId = null;
   let activeTopicRegion = "all";
+  let activeRoadmapMilestoneId = null;
 
   function readLanguage() {
     try {

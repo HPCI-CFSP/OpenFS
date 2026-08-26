@@ -10,7 +10,7 @@
   const copy = {
     ja: {
       languageControl: "表示言語", tagline: "公開調査カタログと整備計画成果", publicOnly: "公開情報のみ", siteUpdated: "サイト更新",
-      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "整備シナリオ", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       libraryKicker: "公開ロードマップ索引", libraryTitle: "ロードマップ一覧", libraryLead: "共通形式で作成したロードマップを分野別に確認し、6本比較で相互依存と判断時期を横断できます。",
       compareRoadmaps: "6本を比較", openEvidence: "根拠監査を開く", compareKicker: "P0初期公開波", compareTitle: "ロードマップ横断比較", compareLead: "重要マイルストーン、根拠カバレッジ、Coverage Gap、ロードマップ間依存を同じ尺度で比較します。",
       domainFilter: "分野フィルタ", all: "すべて", search: "検索", searchPlaceholder: "名称、分野", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", researchAsOf: "調査基準日", researchStatus: "調査状態", coverageStatus: "調査範囲", consensusStatus: "Consensus", updatedColumn: "更新日時", noRoadmaps: "条件に一致するロードマップはありません。",
@@ -31,7 +31,7 @@
     },
     en: {
       languageControl: "Display language", tagline: "Public research catalog and planning outputs", publicOnly: "Public information only", siteUpdated: "Site updated",
-      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "Roadmap scenarios", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       libraryKicker: "PUBLISHED ROADMAP INDEX", libraryTitle: "Roadmap library", libraryLead: "Review common-format roadmaps by domain, then use the six-roadmap comparison to trace dependencies and decision timing.",
       compareRoadmaps: "Compare six", openEvidence: "Open evidence assurance", compareKicker: "P0 INITIAL PUBLICATION WAVE", compareTitle: "Cross-roadmap comparison", compareLead: "Compare key milestones, evidence coverage, Coverage Gaps, and cross-roadmap dependencies on common scales.",
       domainFilter: "Domain filter", all: "All", search: "Search", searchPlaceholder: "Title or domain", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", researchAsOf: "Research as of", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus", updatedColumn: "Updated", noRoadmaps: "No roadmaps match the current filters.",

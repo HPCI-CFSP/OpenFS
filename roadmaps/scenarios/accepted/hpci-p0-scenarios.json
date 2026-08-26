@@ -1,10 +1,10 @@
 {
   "schema_version": "0.2.0",
   "set_id": "SCNSET-HPCI-P0-001",
-  "as_of": "2026-08-26",
+  "as_of": "2026-08-27",
   "status": "published",
-  "title_ja": "HPCI整備計画 3シナリオ比較",
-  "title_en": "Three-scenario comparison for HPCI infrastructure planning",
+  "title_ja": "システム整備計画案 3案比較",
+  "title_en": "Three system planning options",
   "notice_ja": "公開一次情報とOpenFS暫定評価に基づく比較案であり、推奨順位ではない。センターProfile、価格、供給、施設条件、Consensusは未完了。",
   "notice_en": "These are comparison options based on public primary sources and OpenFS provisional assessment, not a ranking. Center profiles, price, supply, facility conditions, and Consensus remain incomplete.",
   "consensus_status": "incomplete",
@@ -85,6 +85,10 @@
       "status": "published",
       "research_status": "provisional",
       "consensus_status": "incomplete",
+      "plan_version": "0.3",
+      "effective_from": "2026-08-27",
+      "review_due": "2026-11-27",
+      "supersedes": ["SCN-HPCI-BALANCED-001@0.2"],
       "planning_horizon": "FY2026-FY2032",
       "objective": "汎用計算、アクセラレータ、データ処理をセンターごとに配分し、共通ソフトウェア・データ・評価基盤で幅広いHPCI利用を支える。",
       "objective_en": "Distribute general-purpose compute, accelerators, and data processing across centers while supporting broad HPCI use through common software, data, and evaluation services.",
@@ -108,6 +112,29 @@
         "priorities_ja": ["従来HPCとAI for Scienceの両立", "性能・電力・データ移動・移植工数の同時計測", "四半期更新"],
         "priorities_en": ["Coverage of conventional HPC and AI for Science", "Joint measurement of performance, power, data movement, and porting effort", "Quarterly updates"],
         "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "context_notes": [
+        {"note_id": "CTX-BAL-REUSE", "scope": "reusable", "note_ja": "複数の計算・メモリ構成を共通ソフトウェアと評価基準で比較し、段階的に配備する考え方は、複数組織で構成する計算基盤へ一般化できる。", "note_en": "Comparing multiple compute and memory configurations under common software and evaluation criteria, then deploying them in stages, is reusable for multi-organization computing infrastructure.", "evidence_refs": ["ROADMAP-DEPENDENCY-REGISTER-001"]},
+        {"note_id": "CTX-BAL-HPCI", "scope": "hpci-specific", "note_ja": "15提供機関のセンターProfile、HPCI相互運用性、広域データ移動を共通判断条件とする部分はHPCI固有である。", "note_en": "The shared decision requirements for profiles across fifteen providers, HPCI interoperability, and wide-area data movement are HPCI-specific.", "evidence_refs": ["GAP-BLUE-001", "GAP-BLUE-003"]}
+      ],
+      "implementation_path": {
+        "start_year": 2026,
+        "end_year": 2032,
+        "timeline_granularity": "quarter",
+        "phases": [
+          {"phase_id": "SPH-BAL-PORT-BASE", "domain": "portfolio", "title_ja": "共通基準と現況確認", "title_en": "Common baseline and current-state review", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q3"}, "end": {"year": 2027, "quarter": "Q2"}, "condition_ja": "共通計測基準と提供機関Profileを整備する。", "condition_en": "Establish common measurement criteria and provider profiles.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2027Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-BAL-PORT-PILOT", "domain": "portfolio", "title_ja": "複数構成の実証", "title_en": "Multi-configuration pilots", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "同じSuiteで構成差と移植性を比較する。", "condition_en": "Compare configurations and portability with the same suite.", "dependency_refs": ["SPH-BAL-PORT-BASE"], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-PORT-DEPLOY", "domain": "portfolio", "title_ja": "段階導入", "title_en": "Staged deployment", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2028, "quarter": "Q3"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "検証済み区画から導入し標準境界を維持する。", "condition_en": "Deploy validated partitions while preserving standard boundaries.", "dependency_refs": ["SPH-BAL-PORT-PILOT"], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-PORT-EXPAND", "domain": "portfolio", "title_ja": "連合全体へ展開", "title_en": "Federation-wide expansion", "stage": "expansion", "timing_basis": "openfs-provisional-plan", "start": {"year": 2031, "quarter": "Q1"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "利用実績とセンター制約に応じて構成比を更新する。", "condition_en": "Update the portfolio mix using observed demand and provider constraints.", "dependency_refs": ["SPH-BAL-PORT-DEPLOY"], "evidence_refs": ["GAP-BLUE-001"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-BAL-COMPUTE", "domain": "compute", "title_ja": "異種ノード比較", "title_en": "Heterogeneous node comparison", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2028, "quarter": "Q4"}, "condition_ja": "CPU中心・GPU中心構成を同一条件で比較する。", "condition_en": "Compare CPU-centric and GPU-centric configurations under common conditions.", "dependency_refs": [], "evidence_refs": ["RM-HW-COMPUTE"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-MEMORY", "domain": "memory", "title_ja": "混成メモリ実証", "title_en": "Mixed-memory pilot", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2029, "quarter": "Q2"}, "condition_ja": "HBM、DDR/SOCAMM、CXLの帯域・容量・RASを測る。", "condition_en": "Measure bandwidth, capacity, and RAS across HBM, DDR/SOCAMM, and CXL.", "dependency_refs": [], "evidence_refs": ["RM-HW-MEMORY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-NET", "domain": "interconnect", "title_ja": "標準fabricと光化", "title_en": "Standards-based fabrics and optics", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2028, "quarter": "Q1"}, "end": {"year": 2030, "quarter": "Q2"}, "condition_ja": "相互運用性と保守性を確認した区画から光化する。", "condition_en": "Introduce optics first in partitions that pass interoperability and serviceability checks.", "dependency_refs": [], "evidence_refs": ["RM-HW-INTERCONNECT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-DATA", "domain": "storage-data", "title_ja": "共通データ面", "title_en": "Common data plane", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q1"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "計算世代をまたぐデータ移動と来歴を共通化する。", "condition_en": "Standardize data movement and provenance across computing generations.", "dependency_refs": [], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-BAL-SW", "domain": "system-software", "title_ja": "共通CIと互換層", "title_en": "Common CI and compatibility layers", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "MPI/OpenMP/SYCLと複数backendを継続検証する。", "condition_en": "Continuously validate MPI, OpenMP, SYCL, and multiple backends.", "dependency_refs": [], "evidence_refs": ["RM-SSW-PORTABILITY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-APP", "domain": "applications", "title_ja": "共通評価Suite", "title_en": "Common evaluation suite", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "安定コアを保ち四半期ごとに対象を拡張する。", "condition_en": "Retain a stable core and extend coverage quarterly.", "dependency_refs": [], "evidence_refs": ["RM-APP-WORKLOADS"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-BAL-FACILITY", "domain": "facility-operations", "title_ja": "施設・運用条件確認", "title_en": "Facility and operations review", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q1"}, "end": {"year": 2028, "quarter": "Q4"}, "condition_ja": "各提供機関の電力、冷却、人員、更新時期を確認する。", "condition_en": "Verify power, cooling, staffing, and refresh timing for each provider.", "dependency_refs": [], "evidence_refs": ["GAP-BLUE-003"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-BAL-PROCURE", "domain": "procurement-governance", "title_ja": "調達テンプレート判断", "title_en": "Procurement-template decision", "stage": "decision", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q4"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "比較結果を共同調達と段階導入の条件へ変換する。", "condition_en": "Translate comparison results into joint-procurement and staged-deployment conditions.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"}
+        ]
       },
       "center_impacts": [
         {
@@ -219,7 +246,7 @@
       "decision_gates_en": ["2026 Q4: common measurement baseline", "2027 Q2: 15-center profiles", "2027 Q4: multi-configuration comparison", "2028 Q2: procurement-template pilot"],
       "caveat_ja": "単一モデルによる暫定シナリオ。Consensus Gateと人による採用判断は未完了で、推奨順位を示さない。",
       "caveat_en": "A single-model provisional scenario. Consensus and human adoption decisions are incomplete, and no ranking is asserted.",
-      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260827-001", "human_approval_directive_id": "DIR-900011", "approved_at": "2026-08-27T00:00:00+09:00"}
     },
     {
       "schema_version": "0.2.0",
@@ -229,6 +256,10 @@
       "status": "published",
       "research_status": "provisional",
       "consensus_status": "incomplete",
+      "plan_version": "0.3",
+      "effective_from": "2026-08-27",
+      "review_due": "2026-11-27",
+      "supersedes": ["SCN-HPCI-AI-DATA-001@0.2"],
       "planning_horizon": "FY2026-FY2032",
       "objective": "AI for Science、実験・観測データ、デジタルツインを中心に、高密度アクセラレータ、広帯域メモリ、光ネットワーク、データサービスへ重点配分する。",
       "objective_en": "Prioritize dense accelerators, high-bandwidth memory, optical networking, and data services for AI for Science, experimental and observational data, and digital twins.",
@@ -252,6 +283,29 @@
         "priorities_ja": ["end-to-end科学成果時間", "学習・推論・simulation連成", "データ移動と電力"],
         "priorities_en": ["End-to-end time to scientific result", "Coupled training, inference, and simulation", "Data movement and power"],
         "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "context_notes": [
+        {"note_id": "CTX-AI-REUSE", "scope": "reusable", "note_ja": "AI・データ集約処理を、計算ノードだけでなくメモリ、ネットワーク、データ基盤、ソフトウェアを含むEnd-to-End指標で判断する考え方は一般化できる。", "note_en": "Evaluating AI- and data-intensive workloads with end-to-end metrics spanning compute, memory, networks, data services, and software is broadly reusable.", "evidence_refs": ["ROADMAP-DEPENDENCY-REGISTER-001"]},
+        {"note_id": "CTX-AI-HPCI", "scope": "hpci-specific", "note_ja": "実験・観測施設との広域連携、提供機関ごとの高密度設備余力、全国利用者への提供条件はHPCI固有の判断事項である。", "note_en": "Wide-area coupling to experimental facilities, provider-specific high-density facility headroom, and national access conditions are HPCI-specific decisions.", "evidence_refs": ["GAP-BLUE-001", "GAP-BLUE-003"]}
+      ],
+      "implementation_path": {
+        "start_year": 2026,
+        "end_year": 2032,
+        "timeline_granularity": "quarter",
+        "phases": [
+          {"phase_id": "SPH-AI-PORT-BASE", "domain": "portfolio", "title_ja": "AI/HPC共通基準", "title_en": "Common AI/HPC baseline", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q3"}, "end": {"year": 2027, "quarter": "Q2"}, "condition_ja": "科学成果までの時間とデータ移動を共通計測する。", "condition_en": "Measure time to scientific result and data movement under common rules.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2027Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-AI-PORT-PILOT", "domain": "portfolio", "title_ja": "高密度・データ実証", "title_en": "Dense compute and data pilots", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "高密度計算、光接続、CXLをEnd-to-Endで比較する。", "condition_en": "Compare dense compute, optics, and CXL end to end.", "dependency_refs": ["SPH-AI-PORT-BASE"], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-PORT-DEPLOY", "domain": "portfolio", "title_ja": "重点区画を導入", "title_en": "Deploy priority partitions", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2028, "quarter": "Q3"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "検証済みAI・データ区画を本番サービスへ移す。", "condition_en": "Move validated AI and data partitions into production service.", "dependency_refs": ["SPH-AI-PORT-PILOT"], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-PORT-EXPAND", "domain": "portfolio", "title_ja": "用途別に拡張", "title_en": "Workload-driven expansion", "stage": "expansion", "timing_basis": "openfs-provisional-plan", "start": {"year": 2031, "quarter": "Q1"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "実測された科学ワークフロー需要に応じて拡張する。", "condition_en": "Expand according to measured scientific-workflow demand.", "dependency_refs": ["SPH-AI-PORT-DEPLOY"], "evidence_refs": ["GAP-WORK-001"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-AI-COMPUTE", "domain": "compute", "title_ja": "高密度accelerator実証", "title_en": "Dense-accelerator pilot", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2029, "quarter": "Q2"}, "condition_ja": "学習、推論、simulation結合を同じ区画で評価する。", "condition_en": "Evaluate training, inference, and coupled simulation in the same partition.", "dependency_refs": [], "evidence_refs": ["RM-HW-COMPUTE"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-MEMORY", "domain": "memory", "title_ja": "高帯域・容量階層実証", "title_en": "Bandwidth and capacity hierarchy pilot", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2029, "quarter": "Q4"}, "condition_ja": "HBM、SOCAMM、CXL/PIMの役割をworkload別に測る。", "condition_en": "Measure the roles of HBM, SOCAMM, and CXL/PIM by workload.", "dependency_refs": [], "evidence_refs": ["RM-HW-MEMORY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-NET", "domain": "interconnect", "title_ja": "高radix・光接続", "title_en": "High-radix fabrics and optics", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2028, "quarter": "Q1"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "Scale-up/Scale-outとCPOの障害・保守条件を確認する。", "condition_en": "Validate failure and service conditions for scale-up, scale-out, and CPO.", "dependency_refs": [], "evidence_refs": ["RM-HW-INTERCONNECT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-DATA", "domain": "storage-data", "title_ja": "データ・モデル基盤", "title_en": "Data and model services", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "大規模データ、モデル、来歴、再現性を一体で扱う。", "condition_en": "Unify large-scale data, models, provenance, and reproducibility.", "dependency_refs": [], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-SW", "domain": "system-software", "title_ja": "AI/HPC共通workflow", "title_en": "Common AI/HPC workflows", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "複数GPU backendとbatch/container/workflowを継続検証する。", "condition_en": "Continuously validate multiple GPU backends with batch, container, and workflow services.", "dependency_refs": [], "evidence_refs": ["RM-SSW-PORTABILITY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-APP", "domain": "applications", "title_ja": "AI for Science評価Suite", "title_en": "AI for Science evaluation suite", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "基盤モデル、surrogate、simulation結合を継続評価する。", "condition_en": "Continuously evaluate foundation models, surrogates, and coupled simulation.", "dependency_refs": [], "evidence_refs": ["RM-APP-WORKLOADS"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-AI-FACILITY", "domain": "facility-operations", "title_ja": "高密度設備条件確認", "title_en": "High-density facility review", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q1"}, "end": {"year": 2028, "quarter": "Q4"}, "condition_ja": "電力、冷却、保守、人員、広域転送条件を確認する。", "condition_en": "Verify power, cooling, service, staffing, and wide-area transfer conditions.", "dependency_refs": [], "evidence_refs": ["GAP-BLUE-003"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-AI-PROCURE", "domain": "procurement-governance", "title_ja": "重点投資判断", "title_en": "Priority-investment decision", "stage": "decision", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q4"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "End-to-End指標と設備条件から導入範囲を決める。", "condition_en": "Set deployment scope using end-to-end metrics and facility constraints.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"}
+        ]
       },
       "center_impacts": [
         {
@@ -363,7 +417,7 @@
       "decision_gates_en": ["2026 Q4: common AI/HPC suite", "2027 Q2: center data and facility profiles", "2027 Q4: end-to-end workflow comparison", "2028 Q2: dense-partition and optical/CXL pilot"],
       "caveat_ja": "単一モデルによる暫定シナリオ。AI需要、施設、価格の未確認値を推測で補っておらず、推奨順位を示さない。",
       "caveat_en": "A single-model provisional scenario. Unknown AI demand, facility, and price values are not inferred, and no ranking is asserted.",
-      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260827-001", "human_approval_directive_id": "DIR-900011", "approved_at": "2026-08-27T00:00:00+09:00"}
     },
     {
       "schema_version": "0.2.0",
@@ -373,6 +427,10 @@
       "status": "published",
       "research_status": "provisional",
       "consensus_status": "incomplete",
+      "plan_version": "0.3",
+      "effective_from": "2026-08-27",
+      "review_due": "2026-11-27",
+      "supersedes": ["SCN-HPCI-STAGED-001@0.2"],
       "planning_horizon": "FY2026-FY2032",
       "objective": "成熟した本番基盤を維持しつつ、新CPU/GPU、CPO、CXL、PIM、AI移植等を独立した評価区画から段階的に昇格させ、技術・供給・施設の不確実性を吸収する。",
       "objective_en": "Maintain a mature production core while promoting new CPUs/GPUs, CPO, CXL, PIM, and AI migration from independent evaluation partitions through staged gates.",
@@ -396,6 +454,29 @@
         "priorities_ja": ["反証試験", "pilot-to-production閾値", "旧新環境の継続比較"],
         "priorities_en": ["Falsification testing", "Pilot-to-production thresholds", "Continuous comparison of old and new environments"],
         "roadmap_refs": ["RM-APP-WORKLOADS"]
+      },
+      "context_notes": [
+        {"note_id": "CTX-STAGED-REUSE", "scope": "reusable", "note_ja": "本番基盤と評価区画を分離し、共通の昇格・継続・停止基準で新技術を段階導入する考え方は、変化の速い計算基盤へ一般化できる。", "note_en": "Separating production and evaluation partitions and using common promote, continue, and stop criteria is reusable for rapidly evolving computing infrastructure.", "evidence_refs": ["ROADMAP-DEPENDENCY-REGISTER-001"]},
+        {"note_id": "CTX-STAGED-HPCI", "scope": "hpci-specific", "note_ja": "評価区画を置く提供機関の選定、全国共通Suite、HPCI標準境界とセンター別移行計画はHPCI固有である。", "note_en": "Selection of pilot providers, a national common suite, HPCI standard boundaries, and provider-specific migration plans are HPCI-specific.", "evidence_refs": ["GAP-BLUE-001", "GAP-WORK-001"]}
+      ],
+      "implementation_path": {
+        "start_year": 2026,
+        "end_year": 2032,
+        "timeline_granularity": "quarter",
+        "phases": [
+          {"phase_id": "SPH-STG-PORT-BASE", "domain": "portfolio", "title_ja": "本番・評価境界を定義", "title_en": "Define production and pilot boundaries", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q3"}, "end": {"year": 2027, "quarter": "Q2"}, "condition_ja": "共通Suite、実証protocol、評価提供機関を定める。", "condition_en": "Define the common suite, pilot protocol, and pilot providers.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2027Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-STG-PORT-PILOT", "domain": "portfolio", "title_ja": "独立評価区画を運用", "title_en": "Operate independent pilot partitions", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q3"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "最初の昇格・継続・停止判断を行う。", "condition_en": "Perform the first promote, continue, or stop decision.", "dependency_refs": ["SPH-STG-PORT-BASE"], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-PORT-DEPLOY", "domain": "portfolio", "title_ja": "合格技術だけを昇格", "title_en": "Promote only validated technologies", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2028, "quarter": "Q3"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "不適合技術を本番へ持ち込まず評価区画へ残す。", "condition_en": "Keep technologies that do not pass gates outside production.", "dependency_refs": ["SPH-STG-PORT-PILOT"], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-PORT-EXPAND", "domain": "portfolio", "title_ja": "複数世代を更新", "title_en": "Renew across multiple generations", "stage": "expansion", "timing_basis": "openfs-provisional-plan", "start": {"year": 2031, "quarter": "Q1"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "本番coreを維持しながら次の評価区画を入れ替える。", "condition_en": "Retain the production core while rotating the next pilot partitions.", "dependency_refs": ["SPH-STG-PORT-DEPLOY"], "evidence_refs": ["GAP-BLUE-002"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-COMPUTE", "domain": "compute", "title_ja": "複数vendor評価区画", "title_en": "Multi-vendor compute pilots", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2029, "quarter": "Q4"}, "condition_ja": "本番CPU/GPU coreと新候補を同じSuiteで比較する。", "condition_en": "Compare new candidates with the production CPU/GPU core using the same suite.", "dependency_refs": [], "evidence_refs": ["RM-HW-COMPUTE"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-MEMORY", "domain": "memory", "title_ja": "メモリ候補評価区画", "title_en": "Memory-option pilots", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q1"}, "end": {"year": 2029, "quarter": "Q4"}, "condition_ja": "SOCAMM、CXL、PIMを本番HBM/DDRと比較する。", "condition_en": "Compare SOCAMM, CXL, and PIM with production HBM and DDR tiers.", "dependency_refs": [], "evidence_refs": ["RM-HW-MEMORY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-NET", "domain": "interconnect", "title_ja": "光・scale-up実証", "title_en": "Optical and scale-up pilots", "stage": "pilot", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q2"}, "end": {"year": 2030, "quarter": "Q2"}, "condition_ja": "標準境界で新fabricと光部品を交換可能にする。", "condition_en": "Keep new fabrics and optics replaceable at standard boundaries.", "dependency_refs": [], "evidence_refs": ["RM-HW-INTERCONNECT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-DATA", "domain": "storage-data", "title_ja": "世代間データ境界", "title_en": "Cross-generation data boundary", "stage": "deployment", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2030, "quarter": "Q4"}, "condition_ja": "本番と評価区画のデータ形式・来歴を共通化する。", "condition_en": "Standardize data formats and provenance across production and pilot partitions.", "dependency_refs": [], "evidence_refs": ["RM-X-BLUEPRINT"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-SW", "domain": "system-software", "title_ja": "複数backend継続CI", "title_en": "Continuous multi-backend CI", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "正当性、性能退行、再現性を自動昇格条件にする。", "condition_en": "Use correctness, performance regression, and reproducibility as promotion gates.", "dependency_refs": [], "evidence_refs": ["RM-SSW-PORTABILITY"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-APP", "domain": "applications", "title_ja": "昇格判断Suite", "title_en": "Promotion-decision suite", "stage": "operation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2026, "quarter": "Q4"}, "end": {"year": 2032, "quarter": "Q4"}, "condition_ja": "有利・不利な結果と未移植アプリをともに保持する。", "condition_en": "Retain favorable and unfavorable results together with unported applications.", "dependency_refs": [], "evidence_refs": ["RM-APP-WORKLOADS"], "consensus_status": "incomplete", "context_scope": "reusable"},
+          {"phase_id": "SPH-STG-FACILITY", "domain": "facility-operations", "title_ja": "評価提供機関の準備", "title_en": "Pilot-provider readiness", "stage": "evaluation", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q1"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "電力、冷却、保守、人員、障害分離を確認する。", "condition_en": "Verify power, cooling, service, staffing, and fault isolation.", "dependency_refs": [], "evidence_refs": ["GAP-BLUE-003"], "consensus_status": "incomplete", "context_scope": "hpci-specific"},
+          {"phase_id": "SPH-STG-PROCURE", "domain": "procurement-governance", "title_ja": "最初の昇格判断", "title_en": "First promotion decision", "stage": "decision", "timing_basis": "openfs-provisional-plan", "start": {"year": 2027, "quarter": "Q4"}, "end": {"year": 2028, "quarter": "Q2"}, "condition_ja": "共通基準で昇格・継続・停止とfallbackを記録する。", "condition_en": "Record promote, continue, stop, and fallback decisions under common criteria.", "dependency_refs": [], "evidence_refs": ["MS-BLUE-HPCI-2028Q2"], "consensus_status": "incomplete", "context_scope": "hpci-specific"}
+        ]
       },
       "center_impacts": [
         {
@@ -507,7 +588,7 @@
       "decision_gates_en": ["2026 Q4: common suite and pilot protocol", "2027 Q2: pilot centers and profiles", "2027 Q4: first promote-continue-stop decision", "2028 Q2: procurement-template pilot"],
       "caveat_ja": "単一モデルによる暫定シナリオ。段階導入が常に低費用または高性能であるとは仮定せず、未確認条件をCoverage Gapとして残す。",
       "caveat_en": "A single-model provisional scenario. It does not assume staged deployment is always cheaper or faster and retains unknown conditions as Coverage Gaps.",
-      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260826-004", "human_approval_directive_id": "DIR-900006", "approved_at": "2026-08-26T00:45:20+09:00"}
+      "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260827-001", "human_approval_directive_id": "DIR-900011", "approved_at": "2026-08-27T00:00:00+09:00"}
     }
   ]
 }

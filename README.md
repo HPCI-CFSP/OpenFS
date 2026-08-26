@@ -45,6 +45,7 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 - Canonical Claims are immutable. Human-authorized withdrawal or supersession adds a digest-pinned status event and changes generated active views; it never deletes history.
 - Facts, forecasts, and HPCI recommendations are different object types and pass different review gates.
 - Normal processing is automated. Humans receive digests and intervene for exceptions, high-impact recommendations, policy changes, or NDA export.
+- Public-Web discovery, anonymous read-only retrieval, local Shell execution, dependency installation, and Git publication are separate capabilities. Repository rules do not prove network isolation; unattended production research remains disabled until a verified execution profile passes `python3 tools/check_research_web_security.py --require-production-profile`.
 
 <!-- i18n-section: repository-map -->
 
@@ -56,12 +57,14 @@ The first vertical slice is `OFS-001`, a recurring investigation of memory hiera
 | `docs/agent-onboarding.md` | First-run checklist, stop conditions, and role routing |
 | `docs/architecture.md` | End-to-end architecture, states, and trust boundaries |
 | `docs/policies/` | Human-owned decision and governance rules |
+| `docs/security/research-web-security-model.md` | Research-Web capability boundaries, deployment controls, and residual risks |
 | `docs/tasks/` | Research tasks and their expected outputs |
 | `docs/research-baseline/` | Human-readable FS-derived topic catalog, source corpus, and known gaps |
 | `docs/planning/` | University-center inputs, multi-scenario generation, and presentation rules |
 | `docs/publication/` | GitHub Pages activation and public-output boundaries |
 | `docs/operations/` | Owner setup, Pilot activation, and recurring-operation procedures |
 | `config/` | Machine-readable agent, monitor, budget, consensus, and dated HPCI provider-scope settings |
+| `config/execution-security-profiles.json` | Declared platform controls and production-eligibility evidence; no current profile is eligible |
 | `schemas/` | JSON Schemas for durable research artifacts |
 | `skills/` | Versioned Discovery, extraction, synthesis, validation, and falsification procedures pinned into each Run |
 | `evals/` | Golden, adversarial, and replay evaluation cases |
@@ -105,6 +108,7 @@ versions in `requirements-validation.txt`.
 ```bash
 python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/check_research_web_security.py
 python3 tools/validate_readme_i18n.py
 python3 tools/validate_workflows.py
 python3 tools/validate_json_schemas.py
@@ -162,6 +166,8 @@ python3 tools/build_pages_site.py --output _site
 The public site supports Japanese and English. Its roadmap library separates hardware, system software, application, and cross-cutting outlooks into a searchable index, evidence-constrained quarterly detail pages, and a six-roadmap comparison of key milestones, primary-source coverage, Coverage Gaps, and dependencies. Year-only and half-year timing is shown as a Q1-Q4 or two-quarter uncertainty window, not as an invented quarter or event duration. Where generations materially affect a decision, a source-backed OpenFS synthesis appears above standards-body and vendor lanes; generations may overlap, and open-ended bands do not invent a replacement date. Approximately 2032 is the minimum initial endpoint, and dated later evidence extends both detail and comparison columns automatically. Relevant terms open centrally maintained definitions and supporting sources, while high-value choices across memory, compute, integration, interconnect, portability, and evaluation are presented in common comparison tables. The reference-blueprint detail page also compares the FY2026 public HPCI resource inventory and nominal machine specifications, explicitly separating annual call availability from service lifecycle. The workload detail page presents six EEA1 applications against 1, 4, 32, 128, 1,024, and about 10,000 Fugaku-node scales; numerical forecasts remain absent until public calibration and independent validation are available. Repository administrators activate deployment once through **Settings → Pages → GitHub Actions** and the `OPENFS_PAGES_ENABLED=true` repository variable. Every roadmap, reference-data, public supplement, scenario, and report publication requires a matching human `publication-approval` Directive. See `docs/publication/github-pages.md`.
 
 Research automation is not enabled yet. Provider accounts, GitHub settings, and the three-Run Pilot sequence are documented in `docs/operations/automation-setup.md`; API keys alone do not activate the loop.
+
+Before unattended public-Web research is enabled, a platform owner must verify managed search, safe anonymous fetch, DNS and redirect SSRF protection, Shell socket isolation, separate dependency egress, and restricted Git publication. The current repository profiles intentionally fail the production-profile check until that enforcement evidence exists; see `docs/security/research-web-security-model.md`.
 
 <!-- i18n-section: human-directions -->
 

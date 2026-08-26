@@ -119,11 +119,18 @@ class WeeklyCoordinatorTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("OPENFS_REVIEW_ENABLED", workflow)
+        self.assertIn("OPENFS_SECURITY_PROFILE_ID", workflow)
+        self.assertIn("--require-production-profile", workflow)
+        self.assertIn("evaluate_operational_readiness.py", workflow)
+        self.assertIn("--require-ready", workflow)
+        self.assertIn("needs: review", workflow)
         self.assertIn("issues: write", workflow)
         self.assertNotIn("contents: write", workflow)
         self.assertNotIn("OPENAI_API_KEY", workflow)
         self.assertNotIn("ANTHROPIC_API_KEY", workflow)
         self.assertIn("7 days ago", workflow)
+        review_job = workflow.split("  publish-issues:", 1)[0]
+        self.assertNotIn("issues: write", review_job)
 
     def test_scheduled_cycle_without_enabled_monitors_is_blocked(self):
         self.write_json(

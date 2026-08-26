@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that the published HPCI scenario portfolio is comparable and gap-complete."""
+"""Check that published system planning options are comparable and gap-complete."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import itertools
 import json
 import re
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -39,6 +40,17 @@ DOMAIN_ROADMAPS = {
     "applications": "RM-APP-WORKLOADS",
 }
 DECISION_GATE_PATTERN = re.compile(r"^(\d{4}) Q([1-4]):\s+\S")
+TIMELINE_DOMAINS = {
+    "portfolio",
+    "compute",
+    "memory",
+    "interconnect",
+    "storage-data",
+    "system-software",
+    "applications",
+    "facility-operations",
+    "procurement-governance",
+}
 
 
 def _duplicates(values: list[str]) -> set[str]:
@@ -114,6 +126,68 @@ def _decision_gate_periods(
     return periods
 
 
+def _quarter_ordinal(point: dict[str, Any]) -> int:
+    return int(point["year"]) * 4 + int(str(point["quarter"])[1]) - 1
+
+
+def _validate_implementation_path(
+    scenario: dict[str, Any], known_references: set[str], errors: list[str]
+) -> int:
+    scenario_id = scenario["scenario_id"]
+    path = scenario.get("implementation_path", {})
+    start_year = path.get("start_year")
+    end_year = path.get("end_year")
+    if not isinstance(start_year, int) or not isinstance(end_year, int) or start_year > end_year:
+        errors.append(f"{scenario_id}: invalid implementation-path horizon")
+        return 0
+    if path.get("timeline_granularity") != "quarter":
+        errors.append(f"{scenario_id}: implementation path must use quarter granularity")
+
+    phases = path.get("phases", [])
+    phase_ids = [phase.get("phase_id") for phase in phases]
+    for value in sorted(_duplicates(phase_ids)):
+        errors.append(f"{scenario_id}: duplicate implementation phase {value}")
+    known_phase_ids = set(phase_ids)
+    domains = {phase.get("domain") for phase in phases}
+    if domains != TIMELINE_DOMAINS:
+        errors.append(
+            f"{scenario_id}: timeline domains mismatch; "
+            f"missing={sorted(TIMELINE_DOMAINS - domains)}, "
+            f"extra={sorted(domains - TIMELINE_DOMAINS)}"
+        )
+    lower = start_year * 4
+    upper = end_year * 4 + 3
+    for phase in phases:
+        phase_id = phase.get("phase_id", "<missing>")
+        try:
+            start = _quarter_ordinal(phase["start"])
+            end = _quarter_ordinal(phase["end"])
+        except (KeyError, TypeError, ValueError, IndexError):
+            errors.append(f"{scenario_id}:{phase_id}: malformed phase timing")
+            continue
+        if start > end:
+            errors.append(f"{scenario_id}:{phase_id}: phase ends before it starts")
+        if start < lower or end > upper:
+            errors.append(f"{scenario_id}:{phase_id}: phase is outside the implementation horizon")
+        if phase.get("timing_basis") != "openfs-provisional-plan":
+            errors.append(f"{scenario_id}:{phase_id}: phase is not labeled as an OpenFS provisional plan")
+        unknown_evidence = set(phase.get("evidence_refs", [])) - known_references
+        if unknown_evidence:
+            errors.append(
+                f"{scenario_id}:{phase_id}: unresolved phase evidence references "
+                f"{sorted(unknown_evidence)}"
+            )
+        unknown_dependencies = set(phase.get("dependency_refs", [])) - (
+            known_phase_ids | known_references
+        )
+        if unknown_dependencies:
+            errors.append(
+                f"{scenario_id}:{phase_id}: unresolved phase dependencies "
+                f"{sorted(unknown_dependencies)}"
+            )
+    return len(phases)
+
+
 def evaluate(
     scenario_set: dict[str, Any],
     roadmaps: list[dict[str, Any]],
@@ -145,8 +219,31 @@ def evaluate(
         errors.append(f"scenarios: duplicate scenario_id {value}")
 
     candidates_by_domain: dict[str, set[str]] = {domain: set() for domain in REQUIRED_DOMAINS}
+    implementation_phase_count = 0
     for scenario in scenarios:
         scenario_id = scenario["scenario_id"]
+        try:
+            effective_from = date.fromisoformat(scenario["effective_from"])
+            review_due = date.fromisoformat(scenario["review_due"])
+            if review_due <= effective_from:
+                errors.append(f"{scenario_id}: review_due must be after effective_from")
+        except (KeyError, TypeError, ValueError):
+            errors.append(f"{scenario_id}: invalid plan effective or review date")
+        note_scopes = {note.get("scope") for note in scenario.get("context_notes", [])}
+        if note_scopes != {"reusable", "hpci-specific"}:
+            errors.append(
+                f"{scenario_id}: context notes must distinguish reusable and HPCI-specific conditions"
+            )
+        for note in scenario.get("context_notes", []):
+            unknown_note_refs = set(note.get("evidence_refs", [])) - known_references
+            if unknown_note_refs:
+                errors.append(
+                    f"{scenario_id}:{note.get('note_id')}: unresolved context-note evidence "
+                    f"{sorted(unknown_note_refs)}"
+                )
+        implementation_phase_count += _validate_implementation_path(
+            scenario, known_references, errors
+        )
         evaluation_keys = set(scenario.get("evaluation", {}))
         if evaluation_keys != REQUIRED_CRITERIA:
             missing = sorted(REQUIRED_CRITERIA - evaluation_keys)
@@ -280,6 +377,7 @@ def evaluate(
             "open_p0_gaps": len(p0_gaps),
             "decision_evidence_contracts": len(contracts),
             "known_evidence_references": len(known_references),
+            "implementation_phases": implementation_phase_count,
             "minimum_pairwise_candidate_domain_differences": min(
                 pairwise_candidate_differences, default=0
             ),

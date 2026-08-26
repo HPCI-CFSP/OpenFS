@@ -35,6 +35,7 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertEqual([], result["calculation_errors"])
         self.assertEqual(16, result["counts"]["open_p0_gaps"])
         self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
+        self.assertEqual(36, result["counts"]["implementation_phases"])
         self.assertGreaterEqual(result["counts"]["known_evidence_references"], 300)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_candidate_domain_differences"], 3)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_fallback_domain_differences"], 3)
@@ -101,6 +102,31 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("out of order" in item for item in result["calculation_errors"]))
         self.assertTrue(any("differ between Japanese and English" in item for item in result["calculation_errors"]))
+
+    def test_implementation_phase_outside_horizon_fails_closed(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["implementation_path"]["phases"][0]["end"] = {
+            "year": 2033,
+            "quarter": "Q1",
+        }
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(
+            any("outside the implementation horizon" in item for item in result["calculation_errors"])
+        )
+
+    def test_context_notes_must_separate_reusable_and_hpci_specific_conditions(self):
+        changed = copy.deepcopy(self.scenario_set)
+        changed["scenarios"][0]["context_notes"] = [
+            note
+            for note in changed["scenarios"][0]["context_notes"]
+            if note["scope"] == "reusable"
+        ]
+        result = self.evaluate(changed)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(
+            any("reusable and HPCI-specific" in item for item in result["calculation_errors"])
+        )
 
 
 if __name__ == "__main__":

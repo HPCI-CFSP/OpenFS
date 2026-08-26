@@ -192,7 +192,7 @@ def build(
                 roadmap_items.append(attention(
                     roadmap["roadmap_id"], "source", source["source_id"], "low",
                     "source-publication-date-unrecorded",
-                    "情報源の公開日が構造化記録されておらず、鮮度を自動判定できない。",
+                    "情報源の公開日が構造化記録されておらず、情報の新しさを自動確認できない。",
                     "The source publication date is not recorded, so freshness cannot be assessed automatically.",
                     "ページ履歴または文書メタデータから日付を確認し、推測できなければ未記録のまま残す。",
                     "Check page history or document metadata and leave it unrecorded if no date can be established.",
@@ -238,7 +238,7 @@ def build(
         "generated_at": generated,
         "method_ja": "6ロードマップを機械走査し、世代帯、未確定時期、期限経過目標、未来日付の実績、遡及報告、情報源公開日未記録、到達性注意を次回調査キューとして分類した。",
         "method_en": "Mechanically scans six roadmaps and queues generation bands, undated milestones, passed targets, future-dated observed events, retrospective reports, unrecorded source dates, and reachability warnings for follow-up.",
-        "caveat_ja": "鮮度注意は誤りの判定ではありません。古い一次資料や遡及報告が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
+        "caveat_ja": "更新確認の注意事項は誤りの判定ではありません。古い一次資料や遡及報告が有効な場合もあり、目標時期の経過を達成・延期・中止のいずれとも推定しません。",
         "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {
             "roadmap_count": len(roadmaps),

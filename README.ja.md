@@ -45,6 +45,7 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 - Canonical Claimは不変です。人が承認した撤回または置換はDigest固定のStatus Eventを追加し、生成されるActive Viewを変更しますが、履歴は削除しません。
 - 事実、予測、HPCIへの提案は異なるObject Typeであり、それぞれ異なるReview Gateを通過します。
 - 通常処理は自動化します。人はDigestを受け取り、Exception、影響の大きい提案、Policy変更、NDA Exportに介入します。
+- 公開Webの探索、匿名かつ読み取り専用の取得、Local Shell実行、依存関係の導入、Git公開を別権限として扱います。Repositoryの規則だけでは通信遮断を証明できないため、検証済み実行Profileで`python3 tools/check_research_web_security.py --require-production-profile`に合格するまで、無人のProduction調査は無効です。
 
 <!-- i18n-section: repository-map -->
 
@@ -56,12 +57,14 @@ OpenFSは、将来のHPCI基盤に必要な技術、システム、運用モデ�
 | `docs/agent-onboarding.md` | 初回実行Checklist、停止条件、Role Routing |
 | `docs/architecture.md` | End-to-End Architecture、状態、Trust Boundary |
 | `docs/policies/` | 人が所有する判断・Governance規則 |
+| `docs/security/research-web-security-model.md` | 調査Webの権限境界、実行環境の制御、残るRisk |
 | `docs/tasks/` | 調査課題と期待される出力 |
 | `docs/research-baseline/` | FS由来の調査Topic Catalog、Source Corpus、既知のGapを人が読める形で記録 |
 | `docs/planning/` | 大学基盤センターの入力、複数Scenario生成、提示規則 |
 | `docs/publication/` | GitHub Pagesの有効化と公開出力の境界 |
 | `docs/operations/` | Owner設定、Pilot有効化、定期運用手順 |
 | `config/` | Agent、Monitor、Budget、Consensus、日付付きHPCI Provider Scopeの機械可読設定 |
+| `config/execution-security-profiles.json` | 実行環境の制御とProduction適格性の検証根拠。現在適格なProfileはありません |
 | `schemas/` | 永続的な調査ArtifactのJSON Schema |
 | `skills/` | 各Runに固定されるDiscovery、抽出、統合、検証、反証手順 |
 | `evals/` | Golden、Adversarial、Replay評価Case |
@@ -103,6 +106,7 @@ FS1.0の記録と各HPCIセンターの現在の一次根拠は、まだ完全�
 ```bash
 python3 -m pip install --requirement requirements-validation.txt
 python3 tools/validate_repository.py
+python3 tools/check_research_web_security.py
 python3 tools/validate_readme_i18n.py
 python3 tools/validate_workflows.py
 python3 tools/validate_json_schemas.py
@@ -159,6 +163,8 @@ python3 tools/build_pages_site.py --output _site
 公開Siteは日本語と英語に対応します。Roadmap LibraryはHardware、System Software、Application、分野横断の見通しを、検索可能な一覧、根拠の精度を保つ四半期詳細Page、重要Milestone、一次情報Coverage、Coverage Gap、依存関係を示す6本横断比較に分けて表示します。年のみ・半期のみ公表された時期は、推測した四半期や事象の継続期間ではなく、Q1-Q4または2四半期にまたがる不確実性の範囲として表示します。世代が判断に重要な技術では、根拠付きのOpenFS統合見通しを標準化団体・ベンダー行の上に表示します。世代の重複を許し、終了時期未確認の帯から置換日を捏造しません。2032年頃は初期表示の最小終端であり、それより後の年付き根拠が追加されると詳細・横断比較の列を自動延長します。関連用語から一元管理された説明と根拠資料を開くことができ、メモリ、計算、実装、インターコネクト、移植性、評価手法の価値が高い選択肢を共通比較表で確認できます。参照構成の詳細Pageでは、FY2026 HPCI公開資源台帳と公称マシン仕様も比較し、年度課題募集上の提供期間をService Lifecycleと明確に区別します。ワークロードの詳細Pageでは、EEA1の6アプリを富岳1、4、32、128、1,024、約10,000ノードの基準規模に対応付け、公開校正値と独立検証が揃うまで数値予測を掲載しません。Repository管理者は、**Settings → Pages → GitHub Actions**とRepository Variable `OPENFS_PAGES_ENABLED=true`を一度設定してDeploymentを有効化します。Roadmap、共通参照データ、公開Supplement、Scenario、Reportの公開には、それぞれ一致する人の`publication-approval` Directiveが必要です。詳細は`docs/publication/github-pages.md`を参照してください。
 
 調査自動化はまだ有効化されていません。Provider Account、GitHub設定、3 RunのPilot手順は`docs/operations/automation-setup.md`に記載されています。API Keyを設定するだけではLoopは起動しません。
+
+公開Webの無人調査を有効化する前に、実行環境のOwnerが、管理された検索、安全な匿名取得、DNS・Redirectに対するSSRF対策、Shell Socket遮断、依存関係用通信の分離、制限されたGit公開を検証する必要があります。現在のRepository Profileは、これらの強制を示す根拠が登録されるまで意図的にProduction Profile検査へ不合格となります。詳細は`docs/security/research-web-security-model.md`を参照してください。
 
 <!-- i18n-section: human-directions -->
 

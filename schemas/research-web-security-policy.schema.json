@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/research-web-security-policy.schema.json",
+  "title": "OpenFS Research Web Security Policy",
+  "type": "object",
+  "required": ["schema_version", "policy_id", "default_decision", "fail_closed", "security_model", "capabilities", "network_boundaries", "required_audit_fields", "prohibited_log_fields"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "policy_id": {"const": "RESEARCH-WEB-SECURITY-001"},
+    "default_decision": {"const": "deny"},
+    "fail_closed": {"const": true},
+    "security_model": {"type": "string", "minLength": 1},
+    "capabilities": {
+      "type": "object",
+      "required": ["web_search", "web_fetch", "browser_read", "shell", "dependency_install", "git_publish"],
+      "additionalProperties": {"type": "object"}
+    },
+    "network_boundaries": {
+      "type": "object",
+      "required": ["blocked_hostnames", "blocked_hostname_suffixes", "blocked_ipv4_cidrs", "blocked_ipv6_cidrs", "cloud_metadata_addresses"],
+      "additionalProperties": false,
+      "properties": {
+        "blocked_hostnames": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "blocked_hostname_suffixes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "blocked_ipv4_cidrs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "blocked_ipv6_cidrs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "cloud_metadata_addresses": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "required_audit_fields": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "prohibited_log_fields": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

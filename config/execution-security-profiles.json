@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1.0",
+  "registry_id": "EXECUTION-SECURITY-PROFILES-001",
+  "policy_id": "RESEARCH-WEB-SECURITY-001",
+  "required_verified_controls_for_production": [
+    "managed_web_search",
+    "safe_web_fetch_broker",
+    "redirect_and_dns_ssrf_protection",
+    "anonymous_credential_isolation",
+    "shell_socket_egress_block",
+    "proxy_bypass_block",
+    "separate_dependency_egress",
+    "restricted_git_publish"
+  ],
+  "profiles": [
+    {
+      "profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "platform": "portable-repository-policy",
+      "description": "Repository instructions, schemas, and deterministic checks only. No operating-system network boundary is asserted.",
+      "controls": {
+        "managed_web_search": "not-verified",
+        "safe_web_fetch_broker": "not-verified",
+        "redirect_and_dns_ssrf_protection": "not-verified",
+        "anonymous_credential_isolation": "not-verified",
+        "shell_socket_egress_block": "not-verified",
+        "proxy_bypass_block": "not-verified",
+        "separate_dependency_egress": "not-verified",
+        "restricted_git_publish": "not-verified"
+      },
+      "behavioral_instructions_present": true,
+      "schema_validation_present": true,
+      "production_eligible": false,
+      "verification_evidence": [],
+      "limitations": [
+        "AGENTS.md and Skills are behavioral controls, not a network sandbox.",
+        "URL registration validation does not verify DNS answers, redirects, or the actual connection destination.",
+        "The repository cannot disable arbitrary shell sockets on a managed platform by itself."
+      ],
+      "owner_action": "Configure and verify a platform or container profile that enforces every required production control."
+    },
+    {
+      "profile_id": "SEC-PROFILE-GITHUB-HOSTED-DEFAULT",
+      "platform": "github-hosted-actions",
+      "description": "Default GitHub-hosted runner behavior before an isolated fetch service and network-restricted research container are configured.",
+      "controls": {
+        "managed_web_search": "not-verified",
+        "safe_web_fetch_broker": "not-verified",
+        "redirect_and_dns_ssrf_protection": "not-verified",
+        "anonymous_credential_isolation": "not-verified",
+        "shell_socket_egress_block": "not-verified",
+        "proxy_bypass_block": "not-verified",
+        "separate_dependency_egress": "not-verified",
+        "restricted_git_publish": "not-verified"
+      },
+      "behavioral_instructions_present": true,
+      "schema_validation_present": true,
+      "production_eligible": false,
+      "verification_evidence": [],
+      "limitations": [
+        "A default hosted runner permits general network access from job processes.",
+        "Repository workflow text alone cannot prove per-tool socket isolation."
+      ],
+      "owner_action": "Run research shell steps in a network-disabled container and route search/fetch and Git publication through separately authenticated services."
+    }
+  ]
+}

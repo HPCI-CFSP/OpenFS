@@ -1,13 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/system-scenario.schema.json",
-  "title": "HPCI System Development Scenario",
+  "title": "System Planning Option",
   "type": "object",
   "required": [
     "schema_version",
     "scenario_id",
     "title_ja",
     "status",
+    "plan_version",
+    "effective_from",
+    "review_due",
+    "supersedes",
     "planning_horizon",
     "objective",
     "architecture",
@@ -15,6 +19,8 @@
     "applications",
     "center_impacts",
     "technology_options",
+    "context_notes",
+    "implementation_path",
     "evaluation",
     "evidence_refs",
     "uncertainties",
@@ -28,6 +34,10 @@
     "research_status": {"enum": ["provisional", "accepted"]},
     "consensus_status": {"enum": ["incomplete", "accepted"]},
     "status": {"enum": ["illustrative-example", "candidate", "under-review", "accepted", "published", "rejected", "superseded"]},
+    "plan_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+$"},
+    "effective_from": {"type": "string", "format": "date"},
+    "review_due": {"type": "string", "format": "date"},
+    "supersedes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^SCN-[A-Z0-9-]+@[0-9]+\\.[0-9]+$"}},
     "planning_horizon": {"type": "string", "minLength": 1},
     "objective": {"type": "string", "minLength": 1},
     "objective_en": {"type": "string", "minLength": 1},
@@ -75,6 +85,12 @@
         "additionalProperties": false
       }
     },
+    "context_notes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/contextNote"}
+    },
+    "implementation_path": {"$ref": "#/$defs/implementationPath"},
     "evaluation": {
       "type": "object",
       "additionalProperties": {
@@ -127,6 +143,59 @@
     }
   ],
   "$defs": {
+    "quarterPoint": {
+      "type": "object",
+      "required": ["year", "quarter"],
+      "properties": {
+        "year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]}
+      },
+      "additionalProperties": false
+    },
+    "contextNote": {
+      "type": "object",
+      "required": ["note_id", "scope", "note_ja", "note_en", "evidence_refs"],
+      "properties": {
+        "note_id": {"type": "string", "pattern": "^CTX-[A-Z0-9-]+$"},
+        "scope": {"enum": ["reusable", "hpci-specific"]},
+        "note_ja": {"type": "string", "minLength": 1},
+        "note_en": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "implementationPhase": {
+      "type": "object",
+      "required": ["phase_id", "domain", "title_ja", "title_en", "stage", "timing_basis", "start", "end", "condition_ja", "condition_en", "dependency_refs", "evidence_refs", "consensus_status", "context_scope"],
+      "properties": {
+        "phase_id": {"type": "string", "pattern": "^SPH-[A-Z0-9-]+$"},
+        "domain": {"enum": ["portfolio", "compute", "memory", "interconnect", "storage-data", "system-software", "applications", "facility-operations", "procurement-governance"]},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "stage": {"enum": ["research", "evaluation", "pilot", "decision", "deployment", "expansion", "operation", "retirement"]},
+        "timing_basis": {"const": "openfs-provisional-plan"},
+        "start": {"$ref": "#/$defs/quarterPoint"},
+        "end": {"$ref": "#/$defs/quarterPoint"},
+        "condition_ja": {"type": "string", "minLength": 1},
+        "condition_en": {"type": "string", "minLength": 1},
+        "dependency_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "consensus_status": {"enum": ["incomplete", "accepted"]},
+        "context_scope": {"enum": ["reusable", "hpci-specific"]}
+      },
+      "additionalProperties": false
+    },
+    "implementationPath": {
+      "type": "object",
+      "required": ["start_year", "end_year", "timeline_granularity", "phases"],
+      "properties": {
+        "start_year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "end_year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "timeline_granularity": {"const": "quarter"},
+        "phases": {"type": "array", "minItems": 9, "items": {"$ref": "#/$defs/implementationPhase"}}
+      },
+      "additionalProperties": false
+    },
     "decisionEvidenceContract": {
       "type": "object",
       "required": ["contract_id", "title_ja", "title_en", "schema_paths", "validator_paths", "gap_refs", "effect_ja", "effect_en", "acceptance_effect"],

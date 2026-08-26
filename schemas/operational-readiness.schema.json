@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["schema_version", "evaluated_at", "status", "checks", "blockers", "owner_actions", "workflow_gates", "production_components", "owner_controls", "monitors", "effect"],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"enum": ["0.1.0", "0.2.0"]},
     "evaluated_at": {"type": "string", "format": "date-time"},
     "status": {"enum": ["ready", "blocked"]},
     "checks": {
@@ -14,6 +14,7 @@
       "properties": {
         "workflow_gates_present": {"type": "boolean"},
         "production_components_present": {"type": "boolean"},
+        "research_web_security_profile_verified": {"type": "boolean"},
         "owner_controls_verified": {"type": "boolean"},
         "research_monitor_enabled": {"type": "boolean"},
         "enabled_monitors_ready": {"type": "boolean"}
@@ -27,6 +28,17 @@
     },
     "workflow_gates": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
     "production_components": {"type": "array", "items": {"$ref": "#/$defs/checkItem"}},
+    "research_web_security": {
+      "type": "object",
+      "required": ["policy_id", "valid", "production_profiles", "errors"],
+      "properties": {
+        "policy_id": {"type": "string"},
+        "valid": {"type": "boolean"},
+        "production_profiles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "owner_controls": {
       "type": "array",
       "items": {
@@ -68,6 +80,19 @@
     },
     "effect": {"type": "string", "minLength": 1}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": "0.2.0"}}},
+      "then": {
+        "required": ["research_web_security"],
+        "properties": {
+          "checks": {
+            "required": ["workflow_gates_present", "production_components_present", "research_web_security_profile_verified", "owner_controls_verified", "research_monitor_enabled", "enabled_monitors_ready"]
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "ownerAction": {
       "type": "object",
