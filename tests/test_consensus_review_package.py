@@ -126,7 +126,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
 
     def test_package_covers_six_roadmaps_and_shared_review_units(self):
         units = self.manifest["review_units"]
-        self.assertEqual(12, len(units))
+        self.assertEqual(13, len(units))
         self.assertEqual(6, sum(unit["kind"] == "roadmap" for unit in units))
         self.assertIn(
             "CRU-ROADMAP-REFERENCE", {unit["unit_id"] for unit in units}
@@ -161,8 +161,16 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         self.assertIn("knowledge/public/hpci-system-inventory.json", pinned_paths)
         self.assertIn("knowledge/public/application-performance-forecasts.json", pinned_paths)
         self.assertIn("tools/check_public_planning_surfaces.py", pinned_paths)
+        self.assertIn("knowledge/public/topic-decision-support.json", pinned_paths)
+        self.assertIn("schemas/public-topic-decision-support.schema.json", pinned_paths)
+        self.assertIn("reviews/directives/DIR-900010.json", pinned_paths)
 
         units_by_id = {unit["unit_id"]: unit for unit in units}
+        self.assertIn("CRU-TOPIC-DECISION-SUPPORT", units_by_id)
+        self.assertEqual(
+            52,
+            len(units_by_id["CRU-TOPIC-DECISION-SUPPORT"]["primary_source_requirements"]),
+        )
         self.assertIn(
             "SRC-HPCI-SYS001",
             {item["selector"] for item in units_by_id["CRU-X-BLUEPRINT"]["primary_source_requirements"]},

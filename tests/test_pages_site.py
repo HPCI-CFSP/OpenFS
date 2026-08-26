@@ -284,6 +284,25 @@ class PagesSiteTests(unittest.TestCase):
             result = build(ROOT, output)
             self.assertEqual(58, len(result["topics"]))
             self.assertEqual(3, len(result["research_summaries"]))
+            decision_support = result["topic_decision_support"]
+            self.assertEqual(5, len(decision_support["topic_profiles"]))
+            self.assertEqual(6, len(decision_support["platform_matrix"]["platforms"]))
+            self.assertEqual(6, len(decision_support["numerical_method_matrix"]["methods"]))
+            self.assertNotIn("publication", decision_support)
+            arch02 = next(
+                profile
+                for profile in decision_support["topic_profiles"]
+                if profile["topic_id"] == "ARCH-02"
+            )
+            self.assertTrue(
+                any(
+                    "MN-Core" in item["name_en"]
+                    for section in arch02["sections"]
+                    for item in section["items"]
+                )
+            )
+            topics_by_id = {topic["topic_id"]: topic for topic in result["topics"]}
+            self.assertGreater(topics_by_id["SSW-04"]["decision_item_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
             self.assertEqual(1, len(result["consensus_packages"]))
             package = result["consensus_packages"][0]
@@ -675,8 +694,13 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("renderRoadmapIndex", roadmap_app)
             self.assertIn("renderComparison", roadmap_app)
             self.assertIn('tr("findingAvailable")', app)
-            self.assertIn('tr("sourceSurvey")', app)
-            self.assertIn("research-source-title", app)
+            self.assertNotIn('tr("sourceSurvey")', app)
+            self.assertNotIn("research-source-title", app)
+            self.assertIn("decisionProfileForTopic", app)
+            self.assertIn("renderRegionFilter", app)
+            self.assertIn("renderPlatformMatrix", app)
+            self.assertIn("renderNumericalMatrix", app)
+            self.assertIn('localized(summary, "summary")', app)
             self.assertIn("renderConsensusReceipt", app)
             self.assertIn("consensusProof", app)
             self.assertIn("/commit/${harness.commit_sha}", app)

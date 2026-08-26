@@ -58,6 +58,29 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 any("reuses calibration data" in error for error in validate(root))
             )
 
+    def test_rejects_unknown_topic_decision_source(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in (
+                "config/research-baseline.json",
+                "config/hpci-center-registry.json",
+                "knowledge/public/hpci-system-inventory.json",
+                "knowledge/public/application-performance-forecasts.json",
+                "knowledge/public/topic-decision-support.json",
+            ):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(
+                    (ROOT / relative).read_text(encoding="utf-8"), encoding="utf-8"
+                )
+            path = root / "knowledge/public/topic-decision-support.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload["actors"][0]["source_ids"] = ["SRC-UNKNOWN"]
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            self.assertTrue(
+                any("unknown sources" in error for error in validate(root))
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

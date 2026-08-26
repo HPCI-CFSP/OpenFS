@@ -26,6 +26,119 @@ def duplicate_values(values: list[str]) -> list[str]:
     return sorted({value for value in values if values.count(value) > 1})
 
 
+def validate_topic_decision_support(root: Path) -> list[str]:
+    """Validate cross-references and publication semantics not expressible in JSON Schema."""
+    path = root / "knowledge/public/topic-decision-support.json"
+    if not path.exists():
+        return []
+    errors: list[str] = []
+    artifact = load_json(path)
+    baseline = load_json(root / "config/research-baseline.json")
+    topic_ids = {item["topic_id"] for item in baseline["topics"]}
+    source_ids = {item["source_id"] for item in artifact["sources"]}
+    region_ids = {item["region_id"] for item in artifact["regions"]}
+    actor_ids = {item["actor_id"] for item in artifact["actors"]}
+    gaps = {item["gap_id"]: item for item in artifact["coverage_gaps"]}
+
+    def check_duplicates(label: str, values: list[str]) -> None:
+        if duplicates := duplicate_values(values):
+            errors.append(f"duplicate {label}: {duplicates}")
+
+    def check_sources(label: str, refs: list[str]) -> None:
+        if unknown := set(refs) - source_ids:
+            errors.append(f"{label} has unknown sources {sorted(unknown)}")
+
+    check_duplicates("topic decision source IDs", [item["source_id"] for item in artifact["sources"]])
+    check_duplicates("topic decision region IDs", [item["region_id"] for item in artifact["regions"]])
+    check_duplicates("topic decision actor IDs", [item["actor_id"] for item in artifact["actors"]])
+    check_duplicates("topic decision gap IDs", list(gaps))
+
+    for actor in artifact["actors"]:
+        if unknown := set(actor["region_ids"]) - region_ids:
+            errors.append(f"{actor['actor_id']} has unknown regions {sorted(unknown)}")
+        if len(actor["roles_ja"]) != len(actor["roles_en"]):
+            errors.append(f"{actor['actor_id']} has unpaired bilingual roles")
+        check_sources(actor["actor_id"], actor["source_ids"])
+
+    profile_ids: list[str] = []
+    section_ids: list[str] = []
+    technology_item_ids: list[str] = []
+    for profile in artifact["topic_profiles"]:
+        profile_ids.append(profile["topic_id"])
+        if profile["topic_id"] not in topic_ids:
+            errors.append(f"topic profile references unknown Topic {profile['topic_id']}")
+        for gap_id in profile["coverage_gap_ids"]:
+            gap = gaps.get(gap_id)
+            if not gap:
+                errors.append(f"{profile['topic_id']} references unknown gap {gap_id}")
+            elif profile["topic_id"] not in gap["topic_ids"]:
+                errors.append(f"{gap_id} does not include profile Topic {profile['topic_id']}")
+        for section in profile["sections"]:
+            section_ids.append(section["section_id"])
+            for item in section["items"]:
+                technology_item_ids.append(item["item_id"])
+                if item["consensus_status"] != "incomplete":
+                    errors.append(f"{item['item_id']} must remain Consensus-incomplete")
+                if len(item["adoption_conditions_ja"]) != len(item["adoption_conditions_en"]):
+                    errors.append(f"{item['item_id']} has unpaired adoption conditions")
+                if unknown := set(item["actor_ids"]) - actor_ids:
+                    errors.append(f"{item['item_id']} has unknown actors {sorted(unknown)}")
+                check_sources(item["item_id"], item["source_ids"])
+
+    check_duplicates("topic profile IDs", profile_ids)
+    check_duplicates("topic decision section IDs", section_ids)
+    check_duplicates("topic decision item IDs", technology_item_ids)
+    if not {"ARCH-02", "ARCH-03", "SSW-01", "SSW-02", "SSW-04"} <= set(profile_ids):
+        errors.append("topic decision support lacks one or more required ARCH/SSW profiles")
+    arch02 = next((item for item in artifact["topic_profiles"] if item["topic_id"] == "ARCH-02"), None)
+    if arch02 and not any(
+        "MN-Core" in item["name_en"]
+        for section in arch02["sections"]
+        for item in section["items"]
+    ):
+        errors.append("ARCH-02 must include MN-Core")
+
+    platforms = artifact["platform_matrix"]["platforms"]
+    platform_ids = {item["platform_id"] for item in platforms}
+    check_duplicates("platform IDs", [item["platform_id"] for item in platforms])
+    for platform in platforms:
+        if unknown := set(platform["region_ids"]) - region_ids:
+            errors.append(f"{platform['platform_id']} has unknown regions {sorted(unknown)}")
+        check_sources(platform["platform_id"], platform["source_ids"])
+    capability_ids: list[str] = []
+    software_entry_ids: list[str] = []
+    for capability in artifact["platform_matrix"]["capabilities"]:
+        capability_ids.append(capability["capability_id"])
+        for entry in capability["entries"]:
+            software_entry_ids.append(entry["entry_id"])
+            if unknown := set(entry["platform_ids"]) - platform_ids:
+                errors.append(f"{entry['entry_id']} has unknown platforms {sorted(unknown)}")
+            check_sources(entry["entry_id"], entry["source_ids"])
+    check_duplicates("platform capability IDs", capability_ids)
+    check_duplicates("software capability entry IDs", software_entry_ids)
+
+    method_ids: list[str] = []
+    implementation_ids: list[str] = []
+    for method in artifact["numerical_method_matrix"]["methods"]:
+        method_ids.append(method["method_id"])
+        for implementation in method["implementations"]:
+            implementation_ids.append(implementation["implementation_id"])
+            if unknown := set(implementation["platform_ids"]) - platform_ids:
+                errors.append(
+                    f"{implementation['implementation_id']} has unknown platforms {sorted(unknown)}"
+                )
+            check_sources(implementation["implementation_id"], implementation["source_ids"])
+    check_duplicates("numerical method IDs", method_ids)
+    check_duplicates("numerical implementation IDs", implementation_ids)
+
+    for gap in gaps.values():
+        if unknown := set(gap["topic_ids"]) - topic_ids:
+            errors.append(f"{gap['gap_id']} has unknown Topics {sorted(unknown)}")
+    if artifact["consensus_status"] != "incomplete" or artifact["research_status"] != "provisional":
+        errors.append("topic decision support must remain provisional and Consensus-incomplete")
+    return errors
+
+
 def validate(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     center_registry = load_json(root / "config/hpci-center-registry.json")
@@ -293,6 +406,7 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 "procurement use requires accepted Consensus and published forecasts"
             )
+    errors.extend(validate_topic_decision_support(root))
     return errors
 
 

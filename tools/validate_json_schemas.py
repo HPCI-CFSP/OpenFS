@@ -59,6 +59,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "roadmap-source-retrieval-reviews.schema.json"
     if ref == "knowledge/public/topic-summaries.json":
         return "public-topic-summary.schema.json"
+    if ref == "knowledge/public/topic-decision-support.json":
+        return "public-topic-decision-support.schema.json"
     if ref == "knowledge/public/consensus-receipts.json":
         return "public-consensus-receipt.schema.json"
     if ref == "knowledge/public/roadmap-reference-data.json":

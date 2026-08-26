@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-topic-decision-support.schema.json",
+  "title": "OpenFS Public Topic Decision Support",
+  "type": "object",
+  "required": [
+    "schema_version", "export_id", "status", "as_of", "research_status",
+    "consensus_status", "regions", "actors", "topic_profiles",
+    "platform_matrix", "numerical_method_matrix", "sources", "coverage_gaps",
+    "caveat_ja", "caveat_en", "publication"
+  ],
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "required": ["ja", "en"],
+      "properties": {
+        "ja": {"type": "string", "minLength": 1},
+        "en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "sourceIds": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "technologyItem": {
+      "type": "object",
+      "required": [
+        "item_id", "name_ja", "name_en", "stage", "maturity",
+        "timing_ja", "timing_en", "statement_ja", "statement_en",
+        "hpci_relevance_ja", "hpci_relevance_en", "adoption_conditions_ja",
+        "adoption_conditions_en", "actor_ids", "source_ids", "confidence",
+        "consensus_status"
+      ],
+      "properties": {
+        "item_id": {"type": "string", "pattern": "^TDI-[A-Z0-9-]+$"},
+        "name_ja": {"type": "string", "minLength": 1},
+        "name_en": {"type": "string", "minLength": 1},
+        "stage": {"enum": ["current", "near-term", "research", "contested"]},
+        "maturity": {"enum": ["deployed", "commercial", "standardized", "sampling", "announced", "prototype", "research", "uncertain"]},
+        "timing_ja": {"type": "string", "minLength": 1},
+        "timing_en": {"type": "string", "minLength": 1},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "hpci_relevance_ja": {"type": "string", "minLength": 1},
+        "hpci_relevance_en": {"type": "string", "minLength": 1},
+        "adoption_conditions_ja": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "adoption_conditions_en": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+        "actor_ids": {"type": "array", "items": {"type": "string", "pattern": "^ACT-[A-Z0-9-]+$"}, "uniqueItems": true},
+        "source_ids": {"$ref": "#/$defs/sourceIds"},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "consensus_status": {"const": "incomplete"}
+      },
+      "additionalProperties": false
+    },
+    "softwareEntry": {
+      "type": "object",
+      "required": [
+        "entry_id", "software_name", "platform_ids", "support_level",
+        "optimization_level", "version_note", "license_class", "summary_ja",
+        "summary_en", "source_ids"
+      ],
+      "properties": {
+        "entry_id": {"type": "string", "pattern": "^SWC-[A-Z0-9-]+$"},
+        "software_name": {"type": "string", "minLength": 1},
+        "platform_ids": {"type": "array", "items": {"type": "string", "pattern": "^PLAT-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+        "support_level": {"enum": ["production", "partial", "experimental", "community", "not-verified"]},
+        "optimization_level": {"enum": ["vendor-tuned", "architecture-tuned", "portable", "generic", "not-verified"]},
+        "version_note": {"type": "string", "minLength": 1},
+        "license_class": {"enum": ["open-source", "proprietary", "mixed", "standard"]},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "source_ids": {"$ref": "#/$defs/sourceIds"}
+      },
+      "additionalProperties": false
+    },
+    "precisionProfile": {
+      "type": "object",
+      "required": ["input", "compute", "accumulation", "output", "mixed_precision", "emulation"],
+      "properties": {
+        "input": {"type": "string", "minLength": 1},
+        "compute": {"type": "string", "minLength": 1},
+        "accumulation": {"type": "string", "minLength": 1},
+        "output": {"type": "string", "minLength": 1},
+        "mixed_precision": {"type": "string", "minLength": 1},
+        "emulation": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "schema_version": {"type": "string"},
+    "export_id": {"const": "TOPIC-DECISION-SUPPORT-001"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "research_status": {"const": "provisional"},
+    "consensus_status": {"const": "incomplete"},
+    "regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["region_id", "name_ja", "name_en", "classification"],
+        "properties": {
+          "region_id": {"type": "string", "pattern": "^REG-[A-Z0-9-]+$"},
+          "name_ja": {"type": "string", "minLength": 1},
+          "name_en": {"type": "string", "minLength": 1},
+          "classification": {"enum": ["country", "region", "multi-region", "other"]}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 7
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["actor_id", "name", "region_ids", "region_basis_ja", "region_basis_en", "roles_ja", "roles_en", "source_ids"],
+        "properties": {
+          "actor_id": {"type": "string", "pattern": "^ACT-[A-Z0-9-]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "region_ids": {"type": "array", "items": {"type": "string", "pattern": "^REG-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+          "region_basis_ja": {"type": "string", "minLength": 1},
+          "region_basis_en": {"type": "string", "minLength": 1},
+          "roles_ja": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+          "roles_en": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+          "source_ids": {"$ref": "#/$defs/sourceIds"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "topic_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "topic_id", "summary_ja", "summary_en", "sections",
+          "hpci_decision_dimensions", "related_surface_ids", "coverage_gap_ids"
+        ],
+        "properties": {
+          "topic_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+          "summary_ja": {"type": "string", "minLength": 1},
+          "summary_en": {"type": "string", "minLength": 1},
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["section_id", "title_ja", "title_en", "summary_ja", "summary_en", "items"],
+              "properties": {
+                "section_id": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"},
+                "title_ja": {"type": "string", "minLength": 1},
+                "title_en": {"type": "string", "minLength": 1},
+                "summary_ja": {"type": "string", "minLength": 1},
+                "summary_en": {"type": "string", "minLength": 1},
+                "items": {"type": "array", "items": {"$ref": "#/$defs/technologyItem"}, "minItems": 1}
+              },
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "hpci_decision_dimensions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["dimension_id", "label_ja", "label_en", "question_ja", "question_en"],
+              "properties": {
+                "dimension_id": {"type": "string", "pattern": "^DIM-[A-Z0-9-]+$"},
+                "label_ja": {"type": "string", "minLength": 1},
+                "label_en": {"type": "string", "minLength": 1},
+                "question_ja": {"type": "string", "minLength": 1},
+                "question_en": {"type": "string", "minLength": 1}
+              },
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "related_surface_ids": {"type": "array", "items": {"enum": ["platform-software", "numerical-methods"]}, "uniqueItems": true},
+          "coverage_gap_ids": {"type": "array", "items": {"type": "string", "pattern": "^GAP-TDS-[0-9]{3}$"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 4
+    },
+    "platform_matrix": {
+      "type": "object",
+      "required": ["title_ja", "title_en", "summary_ja", "summary_en", "platforms", "capabilities"],
+      "properties": {
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["platform_id", "name", "category", "architecture", "vendor", "region_ids", "notes_ja", "notes_en", "source_ids"],
+            "properties": {
+              "platform_id": {"type": "string", "pattern": "^PLAT-[A-Z0-9-]+$"},
+              "name": {"type": "string", "minLength": 1},
+              "category": {"enum": ["cpu", "gpu", "accelerator"]},
+              "architecture": {"type": "string", "minLength": 1},
+              "vendor": {"type": "string", "minLength": 1},
+              "region_ids": {"type": "array", "items": {"type": "string", "pattern": "^REG-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+              "notes_ja": {"type": "string", "minLength": 1},
+              "notes_en": {"type": "string", "minLength": 1},
+              "source_ids": {"$ref": "#/$defs/sourceIds"}
+            },
+            "additionalProperties": false
+          },
+          "minItems": 6
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capability_id", "label_ja", "label_en", "entries"],
+            "properties": {
+              "capability_id": {"type": "string", "pattern": "^CAP-[A-Z0-9-]+$"},
+              "label_ja": {"type": "string", "minLength": 1},
+              "label_en": {"type": "string", "minLength": 1},
+              "entries": {"type": "array", "items": {"$ref": "#/$defs/softwareEntry"}, "minItems": 1}
+            },
+            "additionalProperties": false
+          },
+          "minItems": 6
+        }
+      },
+      "additionalProperties": false
+    },
+    "numerical_method_matrix": {
+      "type": "object",
+      "required": ["title_ja", "title_en", "summary_ja", "summary_en", "methods"],
+      "properties": {
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["method_id", "category_ja", "category_en", "name_ja", "name_en", "purpose_ja", "purpose_en", "implementations"],
+            "properties": {
+              "method_id": {"type": "string", "pattern": "^NUM-[A-Z0-9-]+$"},
+              "category_ja": {"type": "string", "minLength": 1},
+              "category_en": {"type": "string", "minLength": 1},
+              "name_ja": {"type": "string", "minLength": 1},
+              "name_en": {"type": "string", "minLength": 1},
+              "purpose_ja": {"type": "string", "minLength": 1},
+              "purpose_en": {"type": "string", "minLength": 1},
+              "implementations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["implementation_id", "software_name", "platform_ids", "license_class", "support_level", "precision", "distributed_support", "notes_ja", "notes_en", "source_ids"],
+                  "properties": {
+                    "implementation_id": {"type": "string", "pattern": "^NMI-[A-Z0-9-]+$"},
+                    "software_name": {"type": "string", "minLength": 1},
+                    "platform_ids": {"type": "array", "items": {"type": "string", "pattern": "^PLAT-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+                    "license_class": {"enum": ["open-source", "proprietary", "mixed"]},
+                    "support_level": {"enum": ["production", "partial", "experimental", "research-artifact"]},
+                    "precision": {"$ref": "#/$defs/precisionProfile"},
+                    "distributed_support": {"enum": ["native", "library-dependent", "single-node", "not-verified"]},
+                    "notes_ja": {"type": "string", "minLength": 1},
+                    "notes_en": {"type": "string", "minLength": 1},
+                    "source_ids": {"$ref": "#/$defs/sourceIds"}
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 6
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "title", "publisher", "url", "source_class", "published_or_updated"],
+        "properties": {
+          "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+          "title": {"type": "string", "minLength": 1},
+          "publisher": {"type": "string", "minLength": 1},
+          "url": {"type": "string", "format": "uri"},
+          "source_class": {"enum": ["official-vendor", "official-standard", "official-project", "peer-reviewed", "research-artifact"]},
+          "published_or_updated": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 10
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gap_id", "topic_ids", "priority", "question_ja", "question_en", "next_action_ja", "next_action_en", "status"],
+        "properties": {
+          "gap_id": {"type": "string", "pattern": "^GAP-TDS-[0-9]{3}$"},
+          "topic_ids": {"type": "array", "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"}, "minItems": 1, "uniqueItems": true},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "question_ja": {"type": "string", "minLength": 1},
+          "question_en": {"type": "string", "minLength": 1},
+          "next_action_ja": {"type": "string", "minLength": 1},
+          "next_action_en": {"type": "string", "minLength": 1},
+          "status": {"const": "open"}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "caveat_ja": {"type": "string", "minLength": 1},
+    "caveat_en": {"type": "string", "minLength": 1},
+    "publication": {
+      "type": "object",
+      "required": ["information_classification", "publication_approved", "publication_decision_id", "human_approval_directive_id"],
+      "properties": {
+        "information_classification": {"const": "public"},
+        "publication_approved": {"const": true},
+        "publication_decision_id": {"type": "string", "minLength": 1},
+        "human_approval_directive_id": {"const": "DIR-900010"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

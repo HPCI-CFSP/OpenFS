@@ -136,6 +136,24 @@ Comparison sets are deliberately cross-domain: memory hierarchy, advanced
 integration, compute platforms, interconnect roles, portability models, and
 evaluation methods.
 
+The catalog dialog has a separate decision-support projection in
+`knowledge/public/topic-decision-support.json`. It is organized by canonical
+Topic and shows four explicitly different stages: current use, likely near-term
+options, research/prototypes, and contested paths. Every technology item carries
+HPCI relevance, adoption conditions, actors, public sources, confidence, and
+Consensus state. Research-run summaries remain available as collapsed provenance
+and individual findings; their titles are not promoted into duplicate Topic
+headings or described as a vague "source survey."
+
+Regional presentation is a facet over structured actors rather than a parallel
+set of country reports. One actor can carry multiple region references, while its
+design, development, manufacturing, and standardization roles remain explicit.
+The list is extensible beyond Japan, the United States, China, and Europe, and a
+regional filter never implies technical preference. The same artifact is the
+single public source for the CPU/GPU software capability matrix and the numerical
+method matrix. The latter separates input, compute, accumulation, and output
+precision, mixed-precision methods, and high-precision emulation.
+
 The weekly review also rebuilds a freshness queue from the committed roadmaps and
 a fresh URL reachability scan. It flags undated milestones, passed target dates,
 future-dated observed events, missing source-date metadata, and retrieval

@@ -50,8 +50,10 @@ ARTIFACTS = [
     *[(path, "roadmap") for path in ROADMAP_PATHS],
     ("knowledge/public/roadmap-reference-data.json", "reference-data"),
     ("knowledge/public/memory-technology-roadmap.json", "reference-data"),
+    ("knowledge/public/topic-summaries.json", "planning-surface"),
     ("knowledge/public/hpci-system-inventory.json", "planning-surface"),
     ("knowledge/public/application-performance-forecasts.json", "planning-surface"),
+    ("knowledge/public/topic-decision-support.json", "planning-surface"),
     ("knowledge/public/audits/roadmap-source-audit.json", "source-audit"),
     ("knowledge/public/audits/roadmap-source-triage.json", "source-triage"),
     ("knowledge/public/audits/roadmap-evidence-audit.json", "evidence-audit"),
@@ -79,6 +81,7 @@ ARTIFACTS = [
     ("schemas/roadmap-reference-data.schema.json", "schema"),
     ("schemas/public-hpci-system-inventory.schema.json", "schema"),
     ("schemas/public-application-performance-forecast.schema.json", "schema"),
+    ("schemas/public-topic-decision-support.schema.json", "schema"),
     ("schemas/center-profile.schema.json", "schema"),
     ("schemas/center-profile-assurance.schema.json", "schema"),
     ("schemas/system-scenario.schema.json", "schema"),
@@ -147,6 +150,7 @@ ARTIFACTS = [
     ("site/planning.js", "presentation"),
     ("site/roadmap-evidence.html", "presentation"),
     ("site/styles.css", "presentation"),
+    ("site/app.js", "presentation"),
     ("site/roadmaps.js", "presentation"),
     ("site/roadmap-detail.html", "presentation"),
     ("tests/test_pages_site.py", "tool"),
@@ -155,6 +159,7 @@ ARTIFACTS = [
     ("reviews/directives/DIR-900006.json", "directive"),
     ("reviews/directives/DIR-900008.json", "directive"),
     ("reviews/directives/DIR-900009.json", "directive"),
+    ("reviews/directives/DIR-900010.json", "directive"),
     ("runs/RUN-OFS003-PILOT-005/center-profile-coverage.json", "run-audit"),
     ("runs/RUN-OFS003-PILOT-005/followup-effectiveness.json", "run-audit"),
     *[(path, "center-profile") for path in CENTER_PROFILE_PATHS],
@@ -323,6 +328,79 @@ def roadmap_unit(
     }
 
 
+def topic_decision_unit(root: Path, commit: str) -> dict[str, Any]:
+    artifact = committed_json(
+        root, commit, "knowledge/public/topic-decision-support.json"
+    )
+    selectors = [artifact["export_id"]]
+    for profile in artifact["topic_profiles"]:
+        selectors.append(profile["topic_id"])
+        selectors.extend(section["section_id"] for section in profile["sections"])
+        selectors.extend(
+            item["item_id"]
+            for section in profile["sections"]
+            for item in section["items"]
+        )
+    selectors.extend(gap["gap_id"] for gap in artifact["coverage_gaps"])
+    review_source_classes = {
+        "official-vendor": "vendor-official",
+        "official-standard": "standards-body",
+        "official-project": "project-official",
+        "peer-reviewed": "academic-primary",
+        "research-artifact": "research-organization",
+    }
+    primary_source_requirements = [
+        {
+            "selector": source["source_id"],
+            "source_options": [
+                {
+                    "source_id": source["source_id"],
+                    "source_url": source["url"],
+                    "source_class": review_source_classes[source["source_class"]],
+                }
+            ],
+        }
+        for source in artifact["sources"]
+    ]
+    return {
+        "unit_id": "CRU-TOPIC-DECISION-SUPPORT",
+        "kind": "publication-assurance",
+        "title_ja": "調査Topicの判断向け整理・地域表示・比較表",
+        "title_en": "Decision-oriented Topic synthesis, regional facets, and matrices",
+        "artifact_paths": [
+            "knowledge/public/topic-decision-support.json",
+            "knowledge/public/topic-summaries.json",
+            "schemas/public-topic-decision-support.schema.json",
+            "reviews/directives/DIR-900010.json",
+            "config/publication-policy.json",
+            "tools/check_public_planning_surfaces.py",
+            "tools/build_pages_site.py",
+            "site/app.js",
+            "site/styles.css",
+        ],
+        "selectors": selectors,
+        "primary_source_requirements": primary_source_requirements,
+        "required_checks": [
+            "source-identity", "citation-entailment", "scope-alignment",
+            "coverage-gap-completeness", "publication-boundary",
+        ],
+        "falsification_prompts_ja": [
+            "現在利用中、近未来候補、研究段階、競合中の区別が根拠より強く断定されていないか。",
+            "地域分類が技術的優劣や調達推奨へ読み替えられたり、設計・製造・標準化の役割を一国へ単純化していないか。",
+            "software対応表の空欄・未確認を非対応と誤認せず、正式supportとcommunity/実験対応を区別しているか。",
+            "混合精度とOzaki方式等の高精度演算エミュレーションを混同していないか。",
+            "MN-Coreを日本発の設計開発として扱いつつ、供給網全体を国産と断定していないか。",
+        ],
+        "falsification_prompts_en": [
+            "Are current, near-term, research, and contested stages stated no more strongly than the evidence supports?",
+            "Could regional classification be mistaken for technical merit or procurement preference, or collapse design, manufacturing, and standardization into one country?",
+            "Does the software matrix avoid treating blank or unverified cells as unsupported and distinguish formal support from community or experimental support?",
+            "Are mixed precision and high-precision emulation such as Ozaki methods kept distinct?",
+            "Is MN-Core identified as Japan-originated design and development without claiming that its entire supply chain is domestic?",
+        ],
+    }
+
+
 def shared_units() -> list[dict[str, Any]]:
     return [
         {
@@ -423,7 +501,7 @@ def build_manifest(root: Path, base_commit: str, created_at: str) -> dict[str, A
     units = [
         roadmap_unit(root, base_commit, path, committed_json(root, base_commit, path))
         for path in ROADMAP_PATHS
-    ] + shared_units()
+    ] + [topic_decision_unit(root, base_commit)] + shared_units()
     roadmaps = [committed_json(root, base_commit, path) for path in ROADMAP_PATHS]
     source_audit = committed_json(root, base_commit, "knowledge/public/audits/roadmap-source-audit.json")
     dependency_register = committed_json(root, base_commit, "knowledge/public/dependencies/p0-roadmap-dependencies.json")
