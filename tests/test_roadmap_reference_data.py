@@ -205,6 +205,16 @@ class RoadmapReferenceDataTests(unittest.TestCase):
         self.assertEqual("published", meta_announcement["maturity"])
         self.assertEqual("observed", meta_announcement["timing_basis"])
 
+        jalapeno = next(
+            milestone
+            for lane in compute["lanes"]
+            for milestone in lane["milestones"]
+            if milestone["milestone_id"] == "MS-COMP-BROADCOM-JALAPENO-2026Q2"
+        )
+        self.assertEqual("Q2", jalapeno["quarter"])
+        self.assertEqual("observed", jalapeno["timing_basis"])
+        self.assertEqual(["SRC-COMP026"], jalapeno["source_ids"])
+
     def test_storage_and_agent_tracks_keep_primary_source_coverage(self):
         blueprint = self.roadmap_by_id["RM-X-BLUEPRINT"]
         self.assertIn(
