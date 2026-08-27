@@ -232,6 +232,12 @@ remaining matching items; never silently treat the example as the full scope.
   `tools/check_agent_evaluation_bundle.py`. A container or an LLM-generated
   security score is not proof of enforced isolation, and a passing bundle is
   only a candidate for independent Consensus review.
+- Use `evals/agent-harness/public-pilot-suite.json` only for public development
+  and regression testing. Validate it with
+  `tools/check_agent_evaluation_task_suite.py`. Its prompts and expected facts
+  are public, so it is never a formal holdout and cannot establish
+  generalization. Formal evaluation requires hidden tasks and answers held by an
+  independent custodian outside this public repository.
 - Store privacy-reviewed aggregate workload candidates under
   `proposals/workload-observations/` using
   `schemas/workload-observation-summary.schema.json`. Aggregate inside the

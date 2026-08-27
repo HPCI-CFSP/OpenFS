@@ -44,6 +44,10 @@ def valid_bundle():
             "task_set_digest": DIGEST,
             "score_metric": "outcome score",
             "higher_is_better": True,
+            "rubric": [
+                {"criterion_id": "AEC-EVIDENCE", "description_ja": "根拠", "description_en": "evidence", "weight": 0.6, "partial_credit": True, "evaluator_type": "programmatic"},
+                {"criterion_id": "AEC-POLICY", "description_ja": "方針", "description_en": "policy", "weight": 0.4, "partial_credit": False, "evaluator_type": "independent-model"},
+            ],
         },
         "system_under_test": {
             "model": {"provider": "Provider A", "model_id": "model-a", "release": "2026-08-01"},
@@ -78,6 +82,8 @@ def valid_bundle():
             "test_visibility": "hidden",
             "dynamic_web": True,
             "dataset_digest": DIGEST,
+            "reference_answer_digest": DIGEST,
+            "reference_answer_location": "hidden-external",
             "web_snapshot_at": "2026-08-28T00:00:00Z",
             "web_receipt_bundle_digest": DIGEST,
             "contamination_assessment": "unknown",
@@ -148,6 +154,17 @@ class AgentEvaluationBundleTests(unittest.TestCase):
         result = evaluate(bundle)
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("must be 1.0" in item for item in result["control_errors"]))
+
+    def test_rubric_and_hidden_answer_controls_fail_closed(self):
+        bundle = valid_bundle()
+        bundle["benchmark"]["rubric"][1]["criterion_id"] = "AEC-EVIDENCE"
+        bundle["benchmark"]["rubric"][1]["weight"] = 0.3
+        bundle["dataset_control"]["reference_answer_location"] = "public"
+        result = evaluate(bundle)
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("criterion_id" in item for item in result["control_errors"]))
+        self.assertTrue(any("sum to 1.0" in item for item in result["control_errors"]))
+        self.assertTrue(any("public reference" in item for item in result["control_errors"]))
 
 
 if __name__ == "__main__":

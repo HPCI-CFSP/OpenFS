@@ -23,14 +23,31 @@
     "status": {"enum": ["provisional", "review-candidate", "accepted"]},
     "benchmark": {
       "type": "object",
-      "required": ["name", "version", "official_source_urls", "task_set_digest", "score_metric", "higher_is_better"],
+      "required": ["name", "version", "official_source_urls", "task_set_digest", "score_metric", "higher_is_better", "rubric"],
       "properties": {
         "name": {"type": "string", "minLength": 1},
         "version": {"type": "string", "minLength": 1},
         "official_source_urls": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "format": "uri"}},
         "task_set_digest": {"$ref": "#/$defs/digest"},
         "score_metric": {"type": "string", "minLength": 1},
-        "higher_is_better": {"type": "boolean"}
+        "higher_is_better": {"type": "boolean"},
+        "rubric": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "description_ja", "description_en", "weight", "partial_credit", "evaluator_type"],
+            "properties": {
+              "criterion_id": {"type": "string", "pattern": "^AEC-[A-Z0-9-]+$"},
+              "description_ja": {"type": "string", "minLength": 1},
+              "description_en": {"type": "string", "minLength": 1},
+              "weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+              "partial_credit": {"type": "boolean"},
+              "evaluator_type": {"enum": ["programmatic", "independent-model", "independent-human"]}
+            },
+            "additionalProperties": false
+          }
+        }
       },
       "additionalProperties": false
     },
@@ -138,13 +155,15 @@
     },
     "dataset_control": {
       "type": "object",
-      "required": ["development_visibility", "validation_visibility", "test_visibility", "dynamic_web", "dataset_digest", "contamination_assessment", "prior_test_exposures"],
+      "required": ["development_visibility", "validation_visibility", "test_visibility", "dynamic_web", "dataset_digest", "reference_answer_digest", "reference_answer_location", "contamination_assessment", "prior_test_exposures"],
       "properties": {
         "development_visibility": {"enum": ["public", "hidden", "unavailable"]},
         "validation_visibility": {"enum": ["public", "aggregate-only", "hidden", "unavailable"]},
         "test_visibility": {"enum": ["hidden", "public", "unavailable"]},
         "dynamic_web": {"type": "boolean"},
         "dataset_digest": {"$ref": "#/$defs/digest"},
+        "reference_answer_digest": {"$ref": "#/$defs/digest"},
+        "reference_answer_location": {"enum": ["programmatic-validator", "hidden-external", "public"]},
         "web_snapshot_at": {"type": "string", "format": "date-time"},
         "web_receipt_bundle_digest": {"$ref": "#/$defs/digest"},
         "contamination_assessment": {"enum": ["low", "medium", "high", "unknown"]},
@@ -209,7 +228,7 @@
         "repetition": {"type": "integer", "minimum": 1},
         "started_at": {"type": "string", "format": "date-time"},
         "ended_at": {"type": "string", "format": "date-time"},
-        "outcome_score": {"type": "number"},
+        "outcome_score": {"type": "number", "minimum": 0, "maximum": 1},
         "policy_pass": {"type": "boolean"},
         "trace_digest": {"$ref": "#/$defs/digest"},
         "artifact_digest": {"$ref": "#/$defs/digest"},

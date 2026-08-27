@@ -8,7 +8,9 @@ This directory stores provisional `AEVAL-*.json` bundles produced by an assigned
 The contract records the model and harness as separate versioned components. It
 also pins the prompt, tools, skills, evaluator, task set, budgets, execution
 boundary, network path, write roots, credential policy, holdout visibility, run
-traces, artifacts, token use, elapsed time, and cost. A container or a benchmark
+traces, artifacts, token use, elapsed time, cost, and a weighted partial-credit
+rubric. Reference answers are represented by a digest and storage mode; hidden
+answers remain outside this public repository. A container or a benchmark
 security score is not accepted as proof of network or permission isolation.
 
 Bundles are proposals, not published findings. Do not commit credentials, raw

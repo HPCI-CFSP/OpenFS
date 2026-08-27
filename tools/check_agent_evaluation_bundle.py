@@ -28,6 +28,13 @@ def evaluate(bundle: dict[str, Any]) -> dict[str, Any]:
     dataset = bundle["dataset_control"]
     acceptance = bundle["acceptance"]
 
+    rubric = bundle["benchmark"]["rubric"]
+    criterion_ids = [item["criterion_id"] for item in rubric]
+    if len(criterion_ids) != len(set(criterion_ids)):
+        errors.append("benchmark.rubric: criterion_id values must be unique")
+    if abs(sum(item["weight"] for item in rubric) - 1.0) > 1e-9:
+        errors.append("benchmark.rubric: weights must sum to 1.0")
+
     run_ids = [run["run_id"] for run in runs]
     repetitions = [run["repetition"] for run in runs]
     if len(run_ids) != len(set(run_ids)):
@@ -83,6 +90,8 @@ def evaluate(bundle: dict[str, Any]) -> dict[str, Any]:
         errors.append("execution_boundary: public web access requires a controlled outbound path")
     if acceptance["require_hidden_holdout"] and dataset["test_visibility"] != "hidden":
         errors.append("dataset_control: a hidden test partition is required")
+    if acceptance["require_hidden_holdout"] and dataset["reference_answer_location"] == "public":
+        errors.append("dataset_control: hidden holdout cannot use public reference answers")
     if dataset["dynamic_web"] and dataset.get("web_receipt_bundle_digest") is None:
         errors.append("dataset_control: dynamic web evaluation requires retrieval receipts")
     if acceptance["require_independent_evaluator"]:

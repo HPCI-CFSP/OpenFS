@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/agent-evaluation-task-suite.schema.json",
+  "title": "OpenFS AI Agent Evaluation Task Suite",
+  "type": "object",
+  "required": ["schema_version", "suite_id", "status", "partition", "information_classification", "source_commit", "purpose_ja", "purpose_en", "output_schema_path", "rubrics", "tasks", "formal_holdout_status"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "suite_id": {"type": "string", "pattern": "^AESUITE-[A-Z0-9-]+$"},
+    "status": {"enum": ["development", "review-candidate", "retired"]},
+    "partition": {"const": "public-development"},
+    "information_classification": {"const": "public"},
+    "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "purpose_ja": {"type": "string", "minLength": 1},
+    "purpose_en": {"type": "string", "minLength": 1},
+    "output_schema_path": {"const": "schemas/agent-evaluation-task-output.schema.json"},
+    "rubrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["rubric_id", "name_ja", "name_en", "weight", "partial_credit", "evaluator_type"],
+        "properties": {
+          "rubric_id": {"type": "string", "pattern": "^AERUB-[A-Z0-9-]+$"},
+          "name_ja": {"type": "string", "minLength": 1},
+          "name_en": {"type": "string", "minLength": 1},
+          "weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+          "partial_credit": {"type": "boolean"},
+          "evaluator_type": {"enum": ["programmatic", "independent-model", "independent-human"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["task_id", "category", "title_ja", "title_en", "instruction_ja", "instruction_en", "input_paths", "network_mode", "allowed_tools", "forbidden_actions", "rubric_refs", "expected_facts_ja", "expected_facts_en", "reference_answer_location"],
+        "properties": {
+          "task_id": {"type": "string", "pattern": "^AETASK-[A-Z0-9-]+$"},
+          "category": {"enum": ["evidence-traceability", "timing-classification", "information-boundary", "consensus-integrity", "bilingual-link-integrity", "benchmark-planning"]},
+          "title_ja": {"type": "string", "minLength": 1},
+          "title_en": {"type": "string", "minLength": 1},
+          "instruction_ja": {"type": "string", "minLength": 1},
+          "instruction_en": {"type": "string", "minLength": 1},
+          "input_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "network_mode": {"enum": ["none", "safe-fetch-broker", "managed-browser"]},
+          "allowed_tools": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "forbidden_actions": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"enum": ["read-secrets", "direct-network", "write-outside-allowlist", "publish-without-consensus", "modify-input-fixtures", "invent-evidence"]}},
+          "rubric_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^AERUB-[A-Z0-9-]+$"}},
+          "expected_facts_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "expected_facts_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "reference_answer_location": {"const": "public-development-fixture"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "formal_holdout_status": {
+      "type": "object",
+      "required": ["available", "reason_ja", "reason_en", "required_next_step_ja", "required_next_step_en"],
+      "properties": {
+        "available": {"const": false},
+        "reason_ja": {"type": "string", "minLength": 1},
+        "reason_en": {"type": "string", "minLength": 1},
+        "required_next_step_ja": {"type": "string", "minLength": 1},
+        "required_next_step_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
