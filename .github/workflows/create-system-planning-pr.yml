@@ -1,0 +1,55 @@
+name: Create replacement system planning pull request
+
+on:
+  push:
+    branches:
+      - automation/create-system-planning-pr-20260828
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out control branch
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Create or update replacement pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: main
+          HEAD_BRANCH: maintainer/system-planning-security-v2
+          PR_TITLE: Harden continuous research and expand decision evidence
+          BODY_FILE: .github/pr-body-system-planning-security.md
+        run: |
+          set -euo pipefail
+
+          existing="$(
+            gh api --method GET "repos/${GITHUB_REPOSITORY}/pulls" \
+              -f state=open \
+              -f base="${BASE_BRANCH}" \
+              -f head="HPCI-CFSP:${HEAD_BRANCH}" \
+              --jq '.[0].number // empty'
+          )"
+
+          if [[ -n "${existing}" ]]; then
+            response="$(
+              gh api --method PATCH "repos/${GITHUB_REPOSITORY}/pulls/${existing}" \
+                --raw-field title="${PR_TITLE}" \
+                --raw-field body="$(cat "${BODY_FILE}")"
+            )"
+          else
+            response="$(
+              gh api --method POST "repos/${GITHUB_REPOSITORY}/pulls" \
+                --raw-field title="${PR_TITLE}" \
+                --raw-field head="${HEAD_BRANCH}" \
+                --raw-field base="${BASE_BRANCH}" \
+                --raw-field body="$(cat "${BODY_FILE}")"
+            )"
+          fi
+
+          printf 'Pull request: %s\n' "$(jq -r '.html_url' <<<"${response}")"
