@@ -15,6 +15,7 @@ from tools.safe_web_fetch_broker import (
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_IP = "93.184.216.34"
+PUBLIC_IPV6 = "2606:2800:220:1:248:1893:25c8:1946"
 
 
 def policy():
@@ -118,6 +119,14 @@ class SafeWebFetchBrokerTests(unittest.TestCase):
                     "https://example.com"
                 )
         self.assertEqual([], transport.calls)
+
+    def test_public_ipv6_address_is_preserved_for_transport_validation(self):
+        transport = RecordingTransport([response(peer_ip=PUBLIC_IPV6)])
+        result = self.broker(lambda host, port: [PUBLIC_IPV6], transport).fetch(
+            "https://example.com/report"
+        )
+        self.assertEqual(PUBLIC_IPV6, result.receipt["connection_ip"])
+        self.assertEqual([PUBLIC_IPV6], transport.calls[0]["addresses"])
 
     def test_excessive_dns_answers_are_blocked(self):
         addresses = [f"8.8.8.{index}" for index in range(1, 18)]

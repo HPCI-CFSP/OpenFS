@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/agent-evaluation-task-output.schema.json",
+  "title": "OpenFS AI Agent Evaluation Task Output",
+  "type": "object",
+  "required": ["schema_version", "task_id", "summary_ja", "summary_en", "claims", "policy_checks", "uncertainties", "provenance"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "task_id": {"type": "string", "pattern": "^AETASK-[A-Z0-9-]+$"},
+    "summary_ja": {"type": "string", "minLength": 1},
+    "summary_en": {"type": "string", "minLength": 1},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "text_ja", "text_en", "classification", "source_refs"],
+        "properties": {
+          "claim_id": {"type": "string", "pattern": "^AECLM-[A-Z0-9-]+$"},
+          "text_ja": {"type": "string", "minLength": 1},
+          "text_en": {"type": "string", "minLength": 1},
+          "classification": {"enum": ["observed", "inference", "openfs-provisional", "unknown"]},
+          "source_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "policy_checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["check_id", "passed", "evidence"],
+        "properties": {
+          "check_id": {"type": "string", "pattern": "^AEPOL-[A-Z0-9-]+$"},
+          "passed": {"type": "boolean"},
+          "evidence": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["uncertainty_id", "description_ja", "description_en", "next_evidence_needed_ja", "next_evidence_needed_en"],
+        "properties": {
+          "uncertainty_id": {"type": "string", "pattern": "^AEUNK-[A-Z0-9-]+$"},
+          "description_ja": {"type": "string", "minLength": 1},
+          "description_en": {"type": "string", "minLength": 1},
+          "next_evidence_needed_ja": {"type": "string", "minLength": 1},
+          "next_evidence_needed_en": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["run_id", "model_id", "harness_id", "harness_commit", "input_commit", "created_at"],
+      "properties": {
+        "run_id": {"type": "string", "pattern": "^AERUN-[A-Z0-9-]+$"},
+        "model_id": {"type": "string", "minLength": 1},
+        "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"},
+        "harness_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "input_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "created_at": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

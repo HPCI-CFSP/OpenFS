@@ -169,7 +169,7 @@
     },
     "application": {
       "type": "object",
-      "required": ["application_id", "name", "domain_ja", "domain_en", "eea_group", "compute_characteristic_ids", "scaling_modes", "primary_metric_ja", "primary_metric_en", "domain_metric_ja", "domain_metric_en", "scale_readiness", "observed_scale_hints", "source_ids", "coverage_gap_refs"],
+      "required": ["application_id", "name", "domain_ja", "domain_en", "eea_group", "compute_characteristic_ids", "scaling_modes", "primary_metric_ja", "primary_metric_en", "domain_metric_ja", "domain_metric_en", "code_availability", "scale_readiness", "observed_scale_hints", "source_ids", "coverage_gap_refs"],
       "properties": {
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
         "name": {"type": "string", "minLength": 1},
@@ -182,10 +182,22 @@
         "primary_metric_en": {"type": "string", "minLength": 1},
         "domain_metric_ja": {"type": "string", "minLength": 1},
         "domain_metric_en": {"type": "string", "minLength": 1},
+        "code_availability": {"$ref": "#/$defs/codeAvailability"},
         "scale_readiness": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/scaleReadiness"}},
         "observed_scale_hints": {"type": "array", "items": {"$ref": "#/$defs/observedScaleHint"}},
         "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
         "coverage_gap_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-(WORK|PERF)-[A-Z0-9-]+$"}}
+      },
+      "additionalProperties": false
+    },
+    "codeAvailability": {
+      "type": "object",
+      "required": ["status", "source_ids", "note_ja", "note_en"],
+      "properties": {
+        "status": {"enum": ["public-source-confirmed", "unreleased-in-eea1-reference"]},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}},
+        "note_ja": {"type": "string", "minLength": 1},
+        "note_en": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
     },

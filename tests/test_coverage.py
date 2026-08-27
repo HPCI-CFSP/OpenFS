@@ -163,6 +163,7 @@ class CenterCoverageTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         for relative in (
             "config/acquisition-policy.json",
+            "config/agent-evaluation-policy.json",
             "config/agent-registry.json",
             "config/autonomy-policy.json",
             "config/budgets.json",
@@ -172,6 +173,7 @@ class CenterCoverageTests(unittest.TestCase):
             "config/source-registry.json",
             "config/hpci-center-registry.json",
             "config/monitors/MON-HPCI-CENTERS-001.json",
+            "evals/agent-harness/public-pilot-suite.json",
         ):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)

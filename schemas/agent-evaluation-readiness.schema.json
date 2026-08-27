@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/agent-evaluation-readiness.schema.json",
+  "title": "OpenFS AI Agent Evaluation Readiness",
+  "type": "object",
+  "required": ["schema_version", "policy_id", "evaluated_at", "status", "checks", "blockers", "agents", "configuration_digests", "effect"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "policy_id": {"type": "string", "pattern": "^AEVALPOL-[A-Z0-9-]+$"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["ready", "blocked"]},
+    "checks": {
+      "type": "object",
+      "required": ["policy_enforced", "public_development_suite_valid", "formal_holdout_available", "requested_agents_present", "all_requested_agents_ready"],
+      "properties": {
+        "policy_enforced": {"type": "boolean"},
+        "public_development_suite_valid": {"type": "boolean"},
+        "formal_holdout_available": {"type": "boolean"},
+        "requested_agents_present": {"type": "boolean"},
+        "all_requested_agents_ready": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "enabled", "role", "model_id", "harness_id", "status", "blockers", "accepted_bundle_refs"],
+        "properties": {
+          "agent_id": {"type": "string", "minLength": 1},
+          "enabled": {"type": "boolean"},
+          "role": {"type": "string", "minLength": 1},
+          "model_id": {"type": "string", "minLength": 1},
+          "harness_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["ready", "blocked"]},
+          "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "accepted_bundle_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "configuration_digests": {
+      "type": "object",
+      "required": ["policy", "agent_registry", "development_suite"],
+      "properties": {
+        "policy": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "agent_registry": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "development_suite": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

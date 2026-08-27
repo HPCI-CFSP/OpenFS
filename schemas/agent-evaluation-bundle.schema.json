@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/agent-evaluation-bundle.schema.json",
+  "title": "OpenFS AI Agent and Harness Evaluation Bundle",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "status",
+    "benchmark",
+    "system_under_test",
+    "protocol",
+    "execution_boundary",
+    "dataset_control",
+    "runs",
+    "acceptance",
+    "provenance",
+    "consensus_status"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "evaluation_id": {"type": "string", "pattern": "^AEVAL-[A-Z0-9-]+$"},
+    "status": {"enum": ["provisional", "review-candidate", "accepted"]},
+    "benchmark": {
+      "type": "object",
+      "required": ["name", "version", "official_source_urls", "task_set_digest", "score_metric", "higher_is_better", "rubric"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "official_source_urls": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "format": "uri"}},
+        "task_set_digest": {"$ref": "#/$defs/digest"},
+        "score_metric": {"type": "string", "minLength": 1},
+        "higher_is_better": {"type": "boolean"},
+        "rubric": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "description_ja", "description_en", "weight", "partial_credit", "evaluator_type"],
+            "properties": {
+              "criterion_id": {"type": "string", "pattern": "^AEC-[A-Z0-9-]+$"},
+              "description_ja": {"type": "string", "minLength": 1},
+              "description_en": {"type": "string", "minLength": 1},
+              "weight": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+              "partial_credit": {"type": "boolean"},
+              "evaluator_type": {"enum": ["programmatic", "independent-model", "independent-human"]}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "system_under_test": {
+      "type": "object",
+      "required": ["agent_id", "role", "origin_group", "prompt_profile", "model", "harness", "prompt_digest", "toolset_digest", "skillset_digest"],
+      "properties": {
+        "agent_id": {"type": "string", "minLength": 1},
+        "role": {"enum": ["discovery", "extraction", "validator", "critic", "synthesis"]},
+        "origin_group": {"type": "string", "minLength": 1},
+        "prompt_profile": {"type": "string", "minLength": 1},
+        "model": {
+          "type": "object",
+          "required": ["provider", "model_id", "release"],
+          "properties": {
+            "provider": {"type": "string", "minLength": 1},
+            "model_id": {"type": "string", "minLength": 1},
+            "release": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "harness": {
+          "type": "object",
+          "required": ["harness_id", "repository_url", "commit"],
+          "properties": {
+            "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"},
+            "repository_url": {"type": "string", "format": "uri"},
+            "commit": {"$ref": "#/$defs/commit"}
+          },
+          "additionalProperties": false
+        },
+        "prompt_digest": {"$ref": "#/$defs/digest"},
+        "toolset_digest": {"$ref": "#/$defs/digest"},
+        "skillset_digest": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "protocol": {
+      "type": "object",
+      "required": ["protocol_version", "protocol_digest", "evaluator", "minimum_repetitions", "timeout_seconds", "budget"],
+      "properties": {
+        "protocol_version": {"type": "string", "minLength": 1},
+        "protocol_digest": {"$ref": "#/$defs/digest"},
+        "evaluator": {
+          "type": "object",
+          "required": ["evaluator_id", "version", "provider", "model_id", "harness_id", "harness_repository_url", "harness_commit", "implementation_digest", "origin_group"],
+          "properties": {
+            "evaluator_id": {"type": "string", "minLength": 1},
+            "version": {"type": "string", "minLength": 1},
+            "provider": {"type": "string", "minLength": 1},
+            "model_id": {"type": "string", "minLength": 1},
+            "harness_id": {"type": "string", "pattern": "^HAR-[A-Z0-9-]+$"},
+            "harness_repository_url": {"type": "string", "format": "uri"},
+            "harness_commit": {"$ref": "#/$defs/commit"},
+            "implementation_digest": {"$ref": "#/$defs/digest"},
+            "origin_group": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "minimum_repetitions": {"type": "integer", "minimum": 3},
+        "timeout_seconds": {"type": "integer", "minimum": 1},
+        "budget": {
+          "type": "object",
+          "required": ["maximum_wall_seconds", "maximum_total_tokens", "maximum_cost", "currency", "cost_basis"],
+          "properties": {
+            "maximum_wall_seconds": {"type": "number", "exclusiveMinimum": 0},
+            "maximum_total_tokens": {"type": "integer", "minimum": 1},
+            "maximum_cost": {"type": "number", "minimum": 0},
+            "currency": {"const": "USD"},
+            "cost_basis": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_boundary": {
+      "type": "object",
+      "required": [
+        "environment_type",
+        "privilege_level",
+        "network_access",
+        "outbound_path",
+        "network_policy_digest",
+        "write_policy",
+        "write_roots",
+        "credential_policy",
+        "enforcement_evidence_digest",
+        "secret_scan_passed"
+      ],
+      "properties": {
+        "environment_type": {"enum": ["container", "virtual-machine", "bare-metal"]},
+        "privilege_level": {"enum": ["unprivileged", "privileged"]},
+        "network_access": {"enum": ["none", "allowlisted-public-web", "public-web"]},
+        "outbound_path": {"enum": ["none", "safe-fetch-broker", "managed-browser", "direct"]},
+        "network_policy_digest": {"$ref": "#/$defs/digest"},
+        "write_policy": {"const": "allowlist-only"},
+        "write_roots": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "credential_policy": {"enum": ["none", "scoped-allowlist"]},
+        "enforcement_evidence_digest": {"$ref": "#/$defs/digest"},
+        "secret_scan_passed": {"const": true}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"network_access": {"const": "none"}}},
+          "then": {"properties": {"outbound_path": {"const": "none"}}}
+        },
+        {
+          "if": {"properties": {"network_access": {"const": "allowlisted-public-web"}}},
+          "then": {"properties": {"outbound_path": {"enum": ["safe-fetch-broker", "managed-browser"]}}}
+        }
+      ]
+    },
+    "dataset_control": {
+      "type": "object",
+      "required": ["development_visibility", "validation_visibility", "test_visibility", "dynamic_web", "dataset_digest", "reference_answer_digest", "reference_answer_location", "holdout_attestation_ref", "contamination_assessment", "prior_test_exposures"],
+      "properties": {
+        "development_visibility": {"enum": ["public", "hidden", "unavailable"]},
+        "validation_visibility": {"enum": ["public", "aggregate-only", "hidden", "unavailable"]},
+        "test_visibility": {"enum": ["hidden", "public", "unavailable"]},
+        "dynamic_web": {"type": "boolean"},
+        "dataset_digest": {"$ref": "#/$defs/digest"},
+        "reference_answer_digest": {"$ref": "#/$defs/digest"},
+        "reference_answer_location": {"enum": ["programmatic-validator", "hidden-external", "public"]},
+        "holdout_attestation_ref": {"type": "string", "minLength": 1},
+        "web_snapshot_at": {"type": "string", "format": "date-time"},
+        "web_receipt_bundle_digest": {"$ref": "#/$defs/digest"},
+        "contamination_assessment": {"enum": ["low", "medium", "high", "unknown"]},
+        "prior_test_exposures": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false,
+      "if": {"properties": {"dynamic_web": {"const": true}}},
+      "then": {"required": ["web_snapshot_at", "web_receipt_bundle_digest"]}
+    },
+    "runs": {
+      "type": "array",
+      "minItems": 3,
+      "items": {"$ref": "#/$defs/run"}
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["minimum_policy_pass_rate", "score_threshold", "require_hidden_holdout", "require_independent_evaluator"],
+      "properties": {
+        "minimum_policy_pass_rate": {"const": 1.0},
+        "score_threshold": {"type": "number"},
+        "require_hidden_holdout": {"type": "boolean"},
+        "require_independent_evaluator": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["created_at", "base_commit", "author_agent_id", "author_model_id", "author_origin_group", "evidence_refs", "raw_bundle_uri", "raw_bundle_digest"],
+      "properties": {
+        "created_at": {"type": "string", "format": "date-time"},
+        "base_commit": {"$ref": "#/$defs/commit"},
+        "author_agent_id": {"type": "string", "minLength": 1},
+        "author_model_id": {"type": "string", "minLength": 1},
+        "author_origin_group": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "raw_bundle_uri": {"type": "string", "format": "uri"},
+        "raw_bundle_digest": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "consensus_status": {"enum": ["incomplete", "accepted"]},
+    "consensus_receipt_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^CONS-[A-Z0-9-]+$"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"consensus_status": {"const": "accepted"}}},
+      "then": {"required": ["consensus_receipt_ids"]}
+    },
+    {
+      "if": {"properties": {"status": {"const": "accepted"}}},
+      "then": {"properties": {"consensus_status": {"const": "accepted"}}}
+    }
+  ],
+  "$defs": {
+    "commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "run": {
+      "type": "object",
+      "required": ["run_id", "repetition", "started_at", "ended_at", "outcome_score", "policy_pass", "trace_digest", "artifact_digest", "usage"],
+      "properties": {
+        "run_id": {"type": "string", "pattern": "^AERUN-[A-Z0-9-]+$"},
+        "repetition": {"type": "integer", "minimum": 1},
+        "started_at": {"type": "string", "format": "date-time"},
+        "ended_at": {"type": "string", "format": "date-time"},
+        "outcome_score": {"type": "number", "minimum": 0, "maximum": 1},
+        "policy_pass": {"type": "boolean"},
+        "trace_digest": {"$ref": "#/$defs/digest"},
+        "artifact_digest": {"$ref": "#/$defs/digest"},
+        "usage": {
+          "type": "object",
+          "required": ["input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens", "wall_seconds", "cost", "currency"],
+          "properties": {
+            "input_tokens": {"type": "integer", "minimum": 0},
+            "output_tokens": {"type": "integer", "minimum": 0},
+            "cache_read_tokens": {"type": "integer", "minimum": 0},
+            "cache_write_tokens": {"type": "integer", "minimum": 0},
+            "wall_seconds": {"type": "number", "exclusiveMinimum": 0},
+            "cost": {"type": "number", "minimum": 0},
+            "currency": {"const": "USD"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

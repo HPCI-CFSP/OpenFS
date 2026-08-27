@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "export_id": "ROADMAP-REFERENCE-DATA-001",
   "status": "published",
-  "as_of": "2026-08-26",
+  "as_of": "2026-08-28",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "terms": [
@@ -70,7 +70,7 @@
       "term_id": "TERM-PIM", "label_ja": "PIM", "label_en": "PIM", "aliases": ["PIM", "Processing-in-Memory"], "category": "memory",
       "short_definition_ja": "メモリ内部または近傍で演算し、データ移動を減らす方式。", "short_definition_en": "Processing in or near memory to reduce data movement.",
       "definition_ja": "Processing-in-Memoryはメモリアレイ内部または近傍へ演算機能を置き、CPUやGPUとのデータ移動を削減する。効果は演算パターン、プログラミングモデル、精度、容量、ホスト連携に依存し、通常メモリとの単純な帯域比較だけでは評価できない。", "definition_en": "Processing-in-memory places compute functions in or near memory arrays to reduce movement to CPUs or GPUs. Benefit depends on operation patterns, programming model, precision, capacity, and host integration and cannot be assessed through a simple bandwidth comparison with conventional memory.",
-      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM032"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM033"}], "related_term_ids": ["TERM-HBM", "TERM-ACCELERATOR", "TERM-PERFORMANCE-MODEL"]
+      "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM032"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM033"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM041"}], "related_term_ids": ["TERM-HBM", "TERM-ACCELERATOR", "TERM-PERFORMANCE-MODEL"]
     },
     {
       "term_id": "TERM-CPU", "label_ja": "CPU", "label_en": "CPU", "aliases": ["CPU"], "category": "compute",
@@ -94,7 +94,13 @@
       "term_id": "TERM-CHIPLET", "label_ja": "チップレット", "label_en": "Chiplet", "aliases": ["チップレット", "Chiplet"], "category": "packaging",
       "short_definition_ja": "機能別の小さなダイをパッケージ内で接続して構成する方式。", "short_definition_en": "An approach that composes a package from smaller functional dies.",
       "definition_ja": "チップレットは計算、I/O、キャッシュなどの機能を複数のダイへ分割し、パッケージ内インターコネクトで統合する。製造プロセスの最適化と歩留まりに利点がある一方、接続規格、帯域と遅延、電力、熱、テスト、ベンダー間の相互運用性が設計条件になる。", "definition_en": "Chiplets divide compute, I/O, cache, and other functions among dies connected inside a package. They enable process optimization and yield benefits, while interface standards, bandwidth and latency, power, thermal design, testing, and multi-vendor interoperability become system constraints.",
-      "roadmap_ids": ["RM-HW-COMPUTE", "RM-HW-INTERCONNECT", "RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET004"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM035"}], "related_term_ids": ["TERM-W2W", "TERM-D2W", "TERM-CXL"]
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-HW-INTERCONNECT", "RM-HW-MEMORY"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET004"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM035"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP029"}], "related_term_ids": ["TERM-W2W", "TERM-D2W", "TERM-CXL", "TERM-UCIE"]
+    },
+    {
+      "term_id": "TERM-UCIE", "label_ja": "UCIe", "label_en": "UCIe", "aliases": ["UCIe", "Universal Chiplet Interconnect Express"], "category": "interconnect",
+      "short_definition_ja": "異種チップレットをパッケージ内で接続するための標準インターフェース。", "short_definition_en": "A standard interface for connecting heterogeneous chiplets within a package.",
+      "definition_ja": "UCIe（Universal Chiplet Interconnect Express）は、異なる機能や製造プロセスのチップレットをパッケージ内で接続する標準である。規格対応だけでは複数ベンダー間の相互運用やHPCI向けサーバー製品の提供を意味しないため、適合試験、パッケージ熱設計、テスト、故障時交換、ソフトウェアを製品ごとに確認する必要がある。", "definition_en": "Universal Chiplet Interconnect Express (UCIe) is a standard for connecting chiplets with different functions or process technologies within a package. Specification support alone does not establish multi-vendor interoperability or server-product availability for HPCI, so compliance testing, package thermals, testability, service replacement, and software must be verified per product.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-HW-INTERCONNECT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP029"}], "related_term_ids": ["TERM-CHIPLET", "TERM-CXL"]
     },
     {
       "term_id": "TERM-RACK-SCALE", "label_ja": "ラックスケールシステム", "label_en": "Rack-scale system", "aliases": ["ラックスケール", "Rack-scale"], "category": "compute",
@@ -177,80 +183,92 @@
     {
       "term_id": "TERM-ROCM", "label_ja": "ROCm", "label_en": "ROCm", "aliases": ["ROCm"], "category": "software",
       "short_definition_ja": "AMD GPU向けのコンパイラ、ランタイム、ライブラリ、ツール群。", "short_definition_en": "AMD's compiler, runtime, library, and tool stack for GPUs.",
-      "definition_ja": "ROCmはAMD GPU向けのコンパイラ、HIPランタイム、数値・通信ライブラリ、デバッグ・性能解析ツールをまとめたソフトウェアスタックである。上位の可搬性APIと併用できるが、GPU世代、OS、機能、保守版の対応範囲を確認する必要がある。", "definition_en": "ROCm is AMD's GPU software stack combining compilers, the HIP runtime, numerical and communication libraries, and debugging and performance-analysis tools. It can underpin higher-level portability APIs, while support across GPU generations, operating systems, features, and maintenance releases must be checked.",
-      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT008"}], "related_term_ids": ["TERM-SYCL", "TERM-KOKKOS", "TERM-GPU"]
+      "definition_ja": "ROCmはAMD GPU向けのコンパイラ、HIPランタイム、数値・通信ライブラリ、デバッグ・性能解析ツールをまとめたソフトウェアスタックである。ROCm 10では、Hyperloom、AMD Skills、ROCm CLIを統合するROCm.AIが一般提供されたが、CLIなど構成要素ごとの成熟度は異なる。上位の可搬性APIと併用できる一方、GPU世代、OS、機能、保守版の対応範囲を確認する必要がある。", "definition_en": "ROCm is AMD's GPU software stack combining compilers, the HIP runtime, numerical and communication libraries, and debugging and performance-analysis tools. ROCm 10 made ROCm.AI, which combines Hyperloom, AMD Skills, and the ROCm CLI, generally available, while individual components have different maturity levels. It can underpin higher-level portability APIs, but support across GPU generations, operating systems, features, and maintenance releases must be checked.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-HW-COMPUTE", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT008"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT037"}], "related_term_ids": ["TERM-SYCL", "TERM-KOKKOS", "TERM-GPU"]
     },
     {
       "term_id": "TERM-HPL", "label_ja": "HPL", "label_en": "HPL", "aliases": ["HPL"], "category": "benchmark",
       "short_definition_ja": "倍精度密行列連立一次方程式でシステム演算性能を測るベンチマーク。", "short_definition_en": "A benchmark measuring system floating-point performance with double-precision dense linear equations.",
       "definition_ja": "HPLは倍精度の密行列を係数とする連立一次方程式を解き、大規模システムの演算・通信性能を測る。ピーク演算性能への到達度を示しやすい一方、メモリアクセス、疎行列計算、I/O、科学アプリケーション全体を代表する指標ではない。", "definition_en": "HPL solves double-precision dense systems of linear equations to measure compute and communication performance on large systems. It indicates utilization of peak arithmetic capability but is not representative of memory access, sparse computation, I/O, or the full scientific workload portfolio.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-HPCG", "TERM-PROXY-APP"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK001"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK028"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-HPCG", "TERM-PROXY-APP"]
     },
     {
       "term_id": "TERM-HPL-MXP", "label_ja": "HPL-MxP", "label_en": "HPL-MxP", "aliases": ["HPL-MxP"], "category": "benchmark",
       "short_definition_ja": "混合精度演算を利用して反復改良で解精度を得るHPL系ベンチマーク。", "short_definition_en": "An HPL-family benchmark using mixed precision and iterative refinement.",
       "definition_ja": "HPL-MxPは低精度または混合精度の高い演算性能を利用し、反復改良によって必要な解精度を得る。AI向け行列演算器を備えたシステムの能力を把握しやすいが、異なる数値手法を用いるアプリケーションへの一般化には注意が必要である。", "definition_en": "HPL-MxP uses high-throughput lower-precision or mixed-precision arithmetic and iterative refinement to reach the required solution accuracy. It exposes the capabilities of systems with AI-oriented matrix engines, but results must not be generalized automatically to applications using different numerical methods.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK004"}], "related_term_ids": ["TERM-HPL", "TERM-MLPERF"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK004"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK030"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK031"}], "related_term_ids": ["TERM-HPL", "TERM-MLPERF"]
     },
     {
       "term_id": "TERM-HPCG", "label_ja": "HPCG", "label_en": "HPCG", "aliases": ["HPCG"], "category": "benchmark",
       "short_definition_ja": "疎行列、メモリ階層、通信を重視するHPCシステムベンチマーク。", "short_definition_en": "An HPC system benchmark emphasizing sparse computation, memory hierarchy, and communication.",
       "definition_ja": "HPCGは疎行列ベクトル積、局所計算、集合通信などを含み、HPLよりもメモリと通信の制約を強く反映する。科学アプリケーション全体を代表するものではないが、演算ピークだけでは見えないシステムバランスの補助指標になる。", "definition_en": "HPCG includes sparse matrix-vector work, local kernels, and collectives and is more sensitive to memory and communication than HPL. It is not a complete proxy for scientific applications but complements peak-oriented measures with system-balance information.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK003"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK017"}], "related_term_ids": ["TERM-HPL", "TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK003"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK017"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK029"}], "related_term_ids": ["TERM-HPL", "TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
     },
     {
       "term_id": "TERM-GRAPH500", "label_ja": "Graph500", "label_en": "Graph500", "aliases": ["Graph500", "Graph 500"], "category": "benchmark",
       "short_definition_ja": "BFS・SSSPでデータ集約型の不規則メモリアクセスと通信を測る大規模グラフベンチマーク。", "short_definition_en": "A large-scale graph benchmark measuring data-intensive irregular memory access and communication with BFS and SSSP.",
       "definition_ja": "Graph500は大規模グラフの生成、幅優先探索（BFS）、単一始点最短路（SSSP）を通じて、不規則なメモリアクセス、通信、負荷分散を評価する。主指標のGTEPSは探索した辺数/秒であり、HPLの密行列性能やHPCGの疎線形代数とは異なるシステム特性を補完する。", "definition_en": "Graph500 evaluates irregular memory access, communication, and load balance through large graph generation, breadth-first search (BFS), and single-source shortest paths (SSSP). Its GTEPS metric measures traversed edges per second and complements the dense linear algebra of HPL and sparse linear algebra of HPCG.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK019"}], "related_term_ids": ["TERM-HPL", "TERM-HPCG", "TERM-PROXY-APP"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-MEMORY", "RM-HW-INTERCONNECT", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK019"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK032"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK033"}], "related_term_ids": ["TERM-HPL", "TERM-HPCG", "TERM-PROXY-APP"]
     },
     {
       "term_id": "TERM-MLPERF", "label_ja": "MLPerf", "label_en": "MLPerf", "aliases": ["MLPerf"], "category": "benchmark",
       "short_definition_ja": "AI学習・推論等を共通ルールで測るMLCommonsのベンチマーク群。", "short_definition_en": "MLCommons benchmark suites for AI training, inference, and related workloads under common rules.",
       "definition_ja": "MLPerfは、AIの学習、推論、HPCなどを対象に、モデル、データ、品質条件、提出規則を定める。結果を比較しやすい一方、科学AIの代表性、精度条件、Closed DivisionとOpen Divisionの違い、ソフトウェア最適化の内容を結果とともに確認する必要がある。", "definition_en": "MLPerf defines models, data, quality constraints, and submission rules for AI training, inference, HPC, and related suites. It improves comparability, while scientific-AI representativeness, accuracy constraints, closed or open divisions, and software optimization must accompany results.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK005"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK006"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK016"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-PROXY-APP"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK005"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK006"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK016"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK034"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK035"}], "related_term_ids": ["TERM-HPL-MXP", "TERM-PROXY-APP"]
+    },
+    {
+      "term_id": "TERM-SPEC-CPU", "label_ja": "SPEC CPU", "label_en": "SPEC CPU", "aliases": ["SPEC CPU", "SPEC CPU 2026"], "category": "benchmark",
+      "short_definition_ja": "CPU、メモリ階層、コンパイラの計算集約型性能を測るライセンス制ベンチマーク群。", "short_definition_en": "Licensed benchmark suites measuring compute-intensive CPU, memory-hierarchy, and compiler performance.",
+      "definition_ja": "SPEC CPU 2026は整数・浮動小数点のspeed/rateスイートを共通規則で実行し、CPU、メモリ階層、コンパイラを比較する。結果は公開されるが、ソース、入力、評価ハーネスはSPECライセンスで配布され、一般公開リポジトリではない。ネットワーク、I/O、アクセラレータ、分散アプリケーションの評価は別途必要である。", "definition_en": "SPEC CPU 2026 runs integer and floating-point speed and rate suites under common rules to compare CPUs, memory hierarchies, and compilers. Results are public, but source code, inputs, and the evaluation harness are distributed under the SPEC license rather than a public repository. Networking, I/O, accelerators, and distributed applications require separate evaluation.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK011"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK043"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK044"}], "related_term_ids": ["TERM-HPL", "TERM-HPCG", "TERM-PROXY-APP"]
     },
     {
       "term_id": "TERM-HARNESS-BENCH", "label_ja": "Harness-Bench", "label_en": "Harness-Bench", "aliases": ["Harness-Bench"], "category": "benchmark",
       "short_definition_ja": "同一条件下でモデルとハーネスの組合せを比較するエージェント実行ベンチマーク。", "short_definition_en": "An agent-execution benchmark comparing model-harness pairings under shared conditions.",
       "definition_ja": "Harness-Benchは106件のサンドボックス化されたオフライン課題を用い、環境、予算、時間、評価器を共通化しながら複数モデルとハーネスを比較する。最終成果物だけでなく、実行履歴、使用量、検証結果、失敗形態を記録し、能力をモデル単体でなくモデルとハーネスの構成単位で扱う。", "definition_en": "Harness-Bench uses 106 sandboxed offline tasks to compare model-harness pairings with shared environments, budgets, timeouts, and evaluators. It records artifacts, traces, usage, validator outputs, and failure behavior and treats capability as a property of the model-harness configuration.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK020"}], "related_term_ids": ["TERM-HARNESSOPT-BENCH", "TERM-TUA-BENCH", "TERM-PAPERBENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK020"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK036"}], "related_term_ids": ["TERM-HARNESSOPT-BENCH", "TERM-TUA-BENCH", "TERM-PAPERBENCH"]
     },
     {
       "term_id": "TERM-HARNESSOPT-BENCH", "label_ja": "HarnessOpt-Bench", "label_en": "HarnessOpt-Bench", "aliases": ["HarnessOpt-Bench"], "category": "benchmark",
       "short_definition_ja": "AIによるハーネス改善能力をホールドアウト課題で測るベンチマーク。", "short_definition_en": "A benchmark measuring AI-driven harness optimization on a held-out partition.",
       "definition_ja": "HarnessOpt-BenchはAIがシードハーネスを編集し、限られた評価予算の中で改善版を選び、探索中に見えないホールドアウト課題で改善量を採点する。信頼実行環境による境界、資源計測、候補版の保存を重視し、ハーネス開発ループの再現性を評価する。", "definition_en": "HarnessOpt-Bench asks an AI to edit a seed harness, select an improved candidate under a fixed evaluation budget, and measures normalized gain on a held-out partition hidden during search. It emphasizes trusted execution boundaries, resource metering, candidate preservation, and reproducibility of the harness-development loop.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-SWE-BENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-SWE-BENCH"]
+    },
+    {
+      "term_id": "TERM-EVO-BENCH", "label_ja": "Evo-Bench", "label_en": "Evo-Bench", "aliases": ["Evo-Bench"], "category": "benchmark",
+      "short_definition_ja": "固定条件下でAIによるハーネス改善能力を測る公開ベンチマーク。", "short_definition_en": "A public benchmark measuring AI-driven harness improvement under controlled conditions.",
+      "definition_ja": "Evo-Benchは、Search、Office、Generalの5種類の既存ベンチマークから選んだ608件のハーネス感応課題を、160件の検証用と分離された448件の評価用に分ける。方策モデル、シードハーネス、評価手順、20反復・1,000ステップ・48時間の予算を固定し、評価用課題はハーネス確定後に採点する。", "definition_en": "Evo-Bench selects 608 harness-sensitive tasks from five established benchmarks across Search, Office, and General and separates them into 160 validation tasks and a disjoint 448-task evaluation suite. It fixes the policy model, seed harness, evaluation protocol, and a budget of 20 iterations, 1,000 steps, and 48 hours, then scores the evaluation suite after the harness is frozen.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-HARNESSOPT-BENCH"]
     },
     {
       "term_id": "TERM-SWE-BENCH", "label_ja": "SWE-bench", "label_en": "SWE-bench", "aliases": ["SWE-bench"], "category": "benchmark",
       "short_definition_ja": "実在するGitHub Issueに対するコード修正をテストで採点するベンチマーク。", "short_definition_en": "A benchmark grading code changes for real GitHub issues with repository tests.",
       "definition_ja": "SWE-benchは実在するGitHub Issueと対応するリポジトリ状態を与え、エージェントが生成した修正をテストで評価する。実務的なコード理解と編集を測れる一方、環境構築、テストの完全性、データ汚染、ハーネス差を結果とともに管理する必要がある。", "definition_en": "SWE-bench provides real GitHub issues and repository states and evaluates agent patches with tests. It measures practical code understanding and editing, while environment setup, test completeness, contamination, and harness differences must accompany results.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK021"}], "related_term_ids": ["TERM-TUA-BENCH", "TERM-HARNESS-BENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK021"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK037"}], "related_term_ids": ["TERM-TUA-BENCH", "TERM-HARNESS-BENCH"]
     },
     {
       "term_id": "TERM-GAIA", "label_ja": "GAIA", "label_en": "GAIA", "aliases": ["GAIA benchmark"], "category": "benchmark",
       "short_definition_ja": "推論、Web、ツール、複数形式の情報を組み合わせる汎用AIアシスタント評価。", "short_definition_en": "A general AI assistant benchmark combining reasoning, web use, tools, and multimodal information.",
       "definition_ja": "GAIAは推論、Web閲覧、ツール利用、複数形式の情報処理が必要な現実的質問を用いる。広いアシスタント能力を測れるが、動的Webの変化、外部サービス、回答判定、実行費用を固定・記録しなければ再現比較が難しい。", "definition_en": "GAIA uses realistic questions requiring reasoning, web browsing, tools, and multimodal information. It covers broad assistant capability, but dynamic web content, external services, answer grading, and execution cost need freezing or recording for reproducible comparison.",
-      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK022"}], "related_term_ids": ["TERM-TAU-BENCH", "TERM-PAPERBENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK022"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK038"}], "related_term_ids": ["TERM-TAU-BENCH", "TERM-PAPERBENCH"]
     },
     {
       "term_id": "TERM-TAU-BENCH", "label_ja": "tau-bench", "label_en": "tau-bench", "aliases": ["tau-bench", "τ-bench"], "category": "benchmark",
       "short_definition_ja": "利用者との対話、ツール操作、業務方針の遵守を動的環境で測るベンチマーク。", "short_definition_en": "A benchmark for user interaction, tool operation, and policy compliance in dynamic environments.",
       "definition_ja": "tau-benchは利用者役との複数ターン対話、APIツール操作、業務方針を組み合わせ、最終データベース状態と応答で評価する。pass^kにより繰り返し成功する信頼性も測るため、正答率だけでは見えない運用安定性の評価に使える。", "definition_en": "tau-bench combines multi-turn interaction with a user simulator, API tools, and domain policies and evaluates final database state and response. Its pass^k metric measures repeated reliability, exposing operational stability beyond one-run success.",
-      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK023"}], "related_term_ids": ["TERM-GAIA", "TERM-HARNESS-BENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK023"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK039"}], "related_term_ids": ["TERM-GAIA", "TERM-HARNESS-BENCH"]
     },
     {
       "term_id": "TERM-PAPERBENCH", "label_ja": "PaperBench", "label_en": "PaperBench", "aliases": ["PaperBench"], "category": "benchmark",
       "short_definition_ja": "研究論文の再現を長期タスクとして評価するエージェントベンチマーク。", "short_definition_en": "An agent benchmark evaluating long-horizon replication of research papers.",
       "definition_ja": "PaperBenchはICML論文を対象に、コードと実験を再現する長期研究タスクを細分化されたルーブリックで採点する。OpenFSに近い調査・実装の持続性を測れる一方、対象はAI研究であり、HPCI技術調査の根拠評価と情報境界は別途設計する必要がある。", "definition_en": "PaperBench evaluates long-horizon replication of ICML papers, including code and experiments, with granular rubrics. It is relevant to sustained research execution, but its AI-research scope does not replace HPCI-specific evidence grading and information-boundary tests.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-TUA-BENCH", "TERM-GAIA"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK040"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-TUA-BENCH", "TERM-GAIA"]
     },
     {
       "term_id": "TERM-TUA-BENCH", "label_ja": "TUA-Bench", "label_en": "TUA-Bench", "aliases": ["TUA-Bench"], "category": "benchmark",
       "short_definition_ja": "決定的な環境と実行結果で端末操作型エージェントを評価するベンチマーク。", "short_definition_en": "A benchmark evaluating terminal-use agents with deterministic setup and execution-based scoring.",
       "definition_ja": "TUA-Benchは科学・工学ワークフローを含む120件の端末操作課題を提供し、再現可能な環境構築と実行結果に基づいて採点する。HPCIではジョブ投入、ビルド、解析、成果物検証へ拡張できるが、安全なサンドボックスと外部ネットワーク制御が前提になる。", "definition_en": "TUA-Bench provides 120 terminal-interaction tasks, including scientific and engineering workflows, with deterministic setup and execution-based scoring. It can inform HPCI extensions for job submission, builds, analysis, and artifact validation, subject to safe sandboxing and network controls.",
-      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK025"}], "related_term_ids": ["TERM-SWE-BENCH", "TERM-PAPERBENCH", "TERM-HARNESS-BENCH"]
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK025"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK041"}], "related_term_ids": ["TERM-SWE-BENCH", "TERM-PAPERBENCH", "TERM-HARNESS-BENCH"]
     },
     {
       "term_id": "TERM-PROXY-APP", "label_ja": "プロキシアプリケーション", "label_en": "Proxy application", "aliases": ["Proxy application", "Proxy app", "Proxyアプリ", "プロキシアプリケーション"], "category": "benchmark",
@@ -281,6 +299,144 @@
       "short_definition_ja": "多数のタイルと分散ローカルメモリで細粒度並列処理を行うGraphcoreのAIプロセッサ。", "short_definition_en": "Graphcore's AI processor using many tiles and distributed local memory for fine-grained parallelism.",
       "definition_ja": "GraphcoreのIntelligence Processing Unit（IPU）は、多数の独立タイル、各タイルのローカルメモリ、IPU-Fabric、Poplarソフトウェアスタックを組み合わせる。Bow IPUは3Dウェハ間接合を用いるが、ウェハ全体を一つのプロセッサとして使うウェハスケール製品ではない。HPCIでは、サポート期間、Poplarへの依存、実アプリケーションへの適合性、スケールアウト効率を確認する。", "definition_en": "Graphcore's Intelligence Processing Unit (IPU) combines many independent tiles, local memory per tile, IPU-Fabric, and the Poplar software stack. Bow uses 3D wafer-on-wafer bonding but is not a full-wafer processor. HPCI needs to assess support lifetime, Poplar dependence, application fit, and scale-out efficiency.",
       "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP019"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP020"}], "related_term_ids": ["TERM-WAFER-SCALE-PROCESSOR", "TERM-RDU", "TERM-ACCELERATOR"]
+    },
+    {
+      "term_id": "TERM-AMD-MATRIX-CORE", "label_ja": "AMD Matrix Core", "label_en": "AMD Matrix Core", "aliases": ["AMD Matrix Core", "AMD Matrix Cores"], "category": "compute",
+      "short_definition_ja": "AMD Instinct GPUで行列積を高スループットに処理する演算器。", "short_definition_en": "Matrix engines in AMD Instinct GPUs for high-throughput matrix operations.",
+      "definition_ja": "AMD Matrix CoreはCDNA世代のInstinct GPUに組み込まれた行列演算器で、AI学習や混合精度科学計算を高速化する。2026年に新しく登場した名称ではなく、初代CDNA/MI100世代から用いられており、CDNA 5ではMXFP8、MXFP6、MXFP4などの低精度形式が拡充された。rocWMMAはMatrix Core向けC++ APIを提供するが、対応する入力・出力・累積精度はGPU世代ごとに異なる。採用時には理論値だけでなく、数値精度、ライブラリとハードウェアの組合せ、実アプリケーション性能を確認する。", "definition_en": "AMD Matrix Core denotes matrix engines integrated into CDNA-generation Instinct GPUs for AI training and mixed-precision scientific computing. The term did not originate in 2026; it has been used since the first CDNA/MI100 generation. CDNA 5 expands lower-precision formats including MXFP8, MXFP6, and MXFP4. rocWMMA provides a C++ API for Matrix Cores, but supported input, output, and accumulation types vary by GPU generation. Adoption requires application measurements, numerical-accuracy checks, and verification of the library-hardware combination rather than peak figures alone.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP021"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP022"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP023"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP028"}], "related_term_ids": ["TERM-GPU", "TERM-ROCM", "TERM-HPL-MXP"]
+    },
+    {
+      "term_id": "TERM-CUSTOM-XPU", "label_ja": "カスタムXPU", "label_en": "Custom XPU", "aliases": ["カスタムXPU", "Custom XPU", "Custom AI accelerator"], "category": "compute",
+      "short_definition_ja": "特定事業者のモデルやデータセンター向けに共同設計されるAIアクセラレータ。", "short_definition_en": "An AI accelerator co-designed for a particular operator's models and data centers.",
+      "definition_ja": "カスタムXPUは、特定のクラウド事業者やAI事業者が半導体企業と共同設計する専用アクセラレータである。Broadcomは3.5D XDSiPを用いた富士通向け2 nmカスタムCompute SoCの出荷開始を2026年2月に発表し、OpenAIとBroadcomはLLM推論向けJalapeñoのエンジニアリングサンプルを同年6月に公表した。BroadcomはMetaとのカスタムXPU計画も公表している。ただし、先端パッケージング基盤の量産や特定顧客への出荷は、一般販売されるAI XPUをHPCIが調達できることを意味しない。公開仕様、利用条件、ソフトウェア移植性、長期供給を別々に確認する必要がある。", "definition_en": "A custom XPU is an accelerator co-designed by a cloud or AI operator and a semiconductor supplier. Broadcom announced in February 2026 that it had begun shipping a 2 nm custom compute SoC for Fujitsu using 3.5D XDSiP, while OpenAI and Broadcom disclosed engineering samples of the Jalapeño LLM-inference processor in June. Broadcom has also announced a custom-XPU program with Meta. Production use of an advanced packaging platform or shipment to a specific customer does not mean that HPCI can procure a generally available AI XPU. Public specifications, access conditions, software portability, and long-term supply require separate verification.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP024"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP025"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP026"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP027"}], "related_term_ids": ["TERM-ACCELERATOR", "TERM-GPU", "TERM-RACK-SCALE"]
+    },
+    {
+      "term_id": "TERM-MEGATRON-LM", "label_ja": "Megatron-LM / Megatron Core", "label_en": "Megatron-LM / Megatron Core", "aliases": ["Megatron-LM", "Megatron Core", "Megatron-Core"], "category": "software",
+      "short_definition_ja": "大規模Transformer学習向けのNVIDIA製分散学習基盤。", "short_definition_en": "NVIDIA's distributed training stack for large Transformer models.",
+      "definition_ja": "Megatron-LMはテンソル、パイプライン、データ、エキスパート、コンテキストなどの並列方式を組み合わせる大規模モデル学習基盤であり、主要コンポーネントはMegatron Coreとして提供される。機能と対応モデルは継続的に更新されるため、導入時にはリリース版、依存ライブラリ、再現可能な構成を固定する。", "definition_en": "Megatron-LM is a large-model training stack combining tensor, pipeline, data, expert, context, and related forms of parallelism; its principal components are delivered as Megatron Core. Features and model coverage evolve continuously, so deployments must pin releases, dependencies, and reproducible configurations.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT029"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT030"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT031"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT034"}], "related_term_ids": ["TERM-MEGATRON-BRIDGE", "TERM-MEGATRON-DEEPSPEED", "TERM-GPU", "TERM-ROCM"]
+    },
+    {
+      "term_id": "TERM-MEGATRON-BRIDGE", "label_ja": "Megatron Bridge", "label_en": "Megatron Bridge", "aliases": ["Megatron Bridge", "NeMo Megatron Bridge"], "category": "software",
+      "short_definition_ja": "Megatron Coreと外部モデル形式を接続するNVIDIAの変換・学習基盤。", "short_definition_en": "NVIDIA's conversion and training layer connecting Megatron Core with external model formats.",
+      "definition_ja": "Megatron BridgeはMegatron Coreを基盤とし、Hugging Face形式との双方向チェックポイント変換、変換結果の検証、事前学習、SFT、LoRAのレシピを提供する。NeMoコンテナはBridgeとCoreの特定の組合せを固定するため、Bridgeの版だけでなく、Core、PyTorch、Transformer Engine、CUDAなどの組合せを一体として記録する必要がある。", "definition_en": "Megatron Bridge builds on Megatron Core and provides bidirectional Hugging Face checkpoint conversion, conversion verification, and recipes for pretraining, SFT, and LoRA. NeMo containers pin specific Bridge and Core combinations, so deployments must record Bridge together with the paired Core, PyTorch, Transformer Engine, CUDA, and related component versions.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT035"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT036"}], "related_term_ids": ["TERM-MEGATRON-LM", "TERM-MEGATRON-DEEPSPEED", "TERM-GPU"]
+    },
+    {
+      "term_id": "TERM-MEGATRON-DEEPSPEED", "label_ja": "Megatron-DeepSpeed", "label_en": "Megatron-DeepSpeed", "aliases": ["Megatron-DeepSpeed", "DeepSpeed Megatron"], "category": "software",
+      "short_definition_ja": "Megatron-LMへDeepSpeed機能を統合した派生リポジトリ。", "short_definition_en": "A derivative repository integrating DeepSpeed features with Megatron-LM.",
+      "definition_ja": "Megatron-DeepSpeedはMegatron-LMを基に、ZeRO、MoE、カリキュラム学習などのDeepSpeed機能を統合したリポジトリである。NVIDIAの最新Megatron Coreと同一ではなく、公開READMEが示す大規模な上流同期は2023年7月である。現行のDeepSpeedチュートリアルで利用例はあるが、採用前に最新モデル、精度、依存関係、保守状況を実測・確認する。", "definition_en": "Megatron-DeepSpeed derives from Megatron-LM and integrates DeepSpeed capabilities such as ZeRO, mixture-of-experts, and curriculum learning. It is not identical to current NVIDIA Megatron Core, and its public README identifies July 2023 as its latest major upstream sync. Current DeepSpeed tutorials still use it, but model coverage, accuracy, dependencies, and maintenance status need verification before adoption.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT032"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT033"}], "related_term_ids": ["TERM-MEGATRON-LM", "TERM-MEGATRON-BRIDGE", "TERM-GPU"]
+    },
+    {
+      "term_id": "TERM-DDN-EXASCALER", "label_ja": "DDN EXAScaler", "label_en": "DDN EXAScaler", "aliases": ["DDN EXAScaler", "EXAScaler"], "category": "software",
+      "short_definition_ja": "Lustreを基盤とするDDNのHPC・AI向け並列ファイルシステム。", "short_definition_en": "DDN's Lustre-based parallel file-system platform for HPC and AI.",
+      "definition_ja": "EXAScalerはLustreを基盤に、計算ノードへ高スループットのPOSIXファイルアクセスを提供するDDNのストレージ基盤である。大規模学習、チェックポイント、HPC I/Oが主な対象である。2026年3月にはマルチテナント、API駆動のプロビジョニング、テナント別の暗号化・クォータ管理を含む新リリースが発表されたが、発表時の提供予定と一般提供の完了を区別して追跡する。", "definition_en": "EXAScaler is DDN's Lustre-based storage platform providing high-throughput POSIX file access to compute nodes. Large-scale training, checkpointing, and HPC I/O are principal targets. A March 2026 announcement described a new release with multitenancy, API-driven provisioning, and per-tenant encryption and quotas; announcement-time availability targets must be tracked separately from confirmed general availability.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE013"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE025"}], "related_term_ids": ["TERM-LUSTRE", "TERM-DDN-INFINIA", "TERM-VAST-DATA-PLATFORM"]
+    },
+    {
+      "term_id": "TERM-DDN-INFINIA", "label_ja": "DDN Infinia", "label_en": "DDN Infinia", "aliases": ["DDN Infinia", "Infinia"], "category": "software",
+      "short_definition_ja": "POSIX、S3、分散メタデータ、KV機能を統合するDDNのソフトウェア定義データ基盤。", "short_definition_en": "DDN's software-defined data platform integrating POSIX, S3, distributed metadata, and key-value capabilities.",
+      "definition_ja": "InfiniaはS3アクセス、分散メタデータ、KV Store/KV Cacheを一つのソフトウェア定義基盤で扱い、推論やRAGを含むAIデータ処理を対象とする。2026年7月公開のInfinia 2.4ではマルチテナント、ID・セキュリティ機能を強化し、POSIX対応は限定提供段階とされた。EXAScalerとの置換を前提とせず、提供段階、データ経路、整合性、運用、既存POSIX資産との接続を評価する。", "definition_en": "Infinia combines S3 access, distributed metadata, and a key-value store or cache in a software-defined platform aimed at AI data processing including inference and RAG. Infinia 2.4, launched in July 2026, strengthened multitenancy, identity, and security features while describing POSIX support as limited availability. Evaluation should not assume direct substitution for EXAScaler and must cover release stage, data paths, consistency, operations, and connection to existing POSIX assets.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE014"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE015"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE026"}], "related_term_ids": ["TERM-DDN-EXASCALER", "TERM-VAST-DATA-PLATFORM"]
+    },
+    {
+      "term_id": "TERM-VAST-DATA-PLATFORM", "label_ja": "VAST Data Platform", "label_en": "VAST Data Platform", "aliases": ["VAST Data Platform", "VAST Data"], "category": "software",
+      "short_definition_ja": "ファイル、オブジェクト、データベース、データ処理を統合するVAST Dataの基盤。", "short_definition_en": "VAST Data's platform integrating file, object, database, and data-processing services.",
+      "definition_ja": "VAST Data PlatformはDataStore、DataBase、DataEngine、DataSpaceからなる統合データ基盤として公表されている。2026年8月に一般提供されたVAST AI OS 5.5は、ベクトル検索、データ層での分析、DataEngine関数向けの管理された実行環境などを追加した。一方、モデル提供は外部Kubernetesで実行する。HPCIで評価する際は、科学I/O、オブジェクト、AIパイプライン、広域連携を分け、性能、データモデル、障害復旧、運用ロックイン、移行費用を確認する。", "definition_en": "VAST Data presents its platform as an integration of DataStore, DataBase, DataEngine, and DataSpace. VAST AI OS 5.5, generally available in August 2026, adds vector retrieval, analytics at the data layer, and managed execution for DataEngine functions, while model serving remains on external Kubernetes. HPCI evaluation should separate scientific I/O, object access, AI pipelines, and geographic federation and examine performance, data models, recovery, operational lock-in, and migration cost.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE016"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE027"}], "related_term_ids": ["TERM-DDN-INFINIA", "TERM-DDN-EXASCALER"]
+    },
+    {
+      "term_id": "TERM-LUSTRE", "label_ja": "Lustre", "label_en": "Lustre", "aliases": ["Lustre", "Lustre file system"], "category": "software",
+      "short_definition_ja": "大規模HPCで広く使われるOSSの分散並列ファイルシステム。", "short_definition_en": "An open-source distributed parallel file system widely used in large HPC systems.",
+      "definition_ja": "Lustreはメタデータサービスとオブジェクトストレージを分離し、多数のクライアントへ並列POSIX I/Oを提供する。長いHPC運用実績を持つ一方、構成設計、監視、障害復旧、小ファイル、データライフサイクル管理はシステム全体で評価する必要がある。", "definition_en": "Lustre separates metadata services from object storage and provides parallel POSIX I/O to many clients. It has extensive HPC deployment experience, while configuration, monitoring, recovery, small-file behavior, and data-lifecycle management require system-level evaluation.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE017"}], "related_term_ids": ["TERM-DDN-EXASCALER", "TERM-BEEGFS", "TERM-DAOS"]
+    },
+    {
+      "term_id": "TERM-IBM-STORAGE-SCALE", "label_ja": "IBM Storage Scale", "label_en": "IBM Storage Scale", "aliases": ["IBM Storage Scale", "Spectrum Scale", "GPFS"], "category": "software",
+      "short_definition_ja": "ファイル、オブジェクト、階層管理などを提供するIBMの分散ストレージ基盤。", "short_definition_en": "IBM's distributed storage platform providing file, object, and data-management capabilities.",
+      "definition_ja": "IBM Storage ScaleはGPFSを基盤とし、分散ファイルアクセス、データ管理、階層化などを提供する。既存導入との連続性が利点になり得るが、対象機能、ライセンス、対応機器、保守、広域配置を構成ごとに比較する。", "definition_en": "IBM Storage Scale builds on GPFS and provides distributed file access, data management, and tiering capabilities. Continuity with existing deployments may be advantageous, but functions, licensing, supported hardware, service, and geographic deployment need configuration-specific comparison.",
+      "roadmap_ids": ["RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE018"}], "related_term_ids": ["TERM-LUSTRE", "TERM-BEEGFS", "TERM-DAOS"]
+    },
+    {
+      "term_id": "TERM-BEEGFS", "label_ja": "BeeGFS", "label_en": "BeeGFS", "aliases": ["BeeGFS", "BeeGFS parallel file system"], "category": "software",
+      "short_definition_ja": "HPC・AI向けの分散並列ファイルシステム。", "short_definition_en": "A distributed parallel file system for HPC and AI workloads.",
+      "definition_ja": "BeeGFSはメタデータとストレージサービスを分離し、複数サーバーへデータをストライプする並列ファイルシステムである。導入の柔軟性を評価できる一方、必要な可用性、運用ツール、POSIX挙動、長期保守、既存データ移行を実構成で確認する。", "definition_en": "BeeGFS separates metadata and storage services and stripes data across multiple servers. It can offer deployment flexibility, while required availability, operational tools, POSIX behavior, long-term support, and migration of existing data need validation on the intended configuration.",
+      "roadmap_ids": ["RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE019"}], "related_term_ids": ["TERM-LUSTRE", "TERM-IBM-STORAGE-SCALE", "TERM-DAOS"]
+    },
+    {
+      "term_id": "TERM-DAOS", "label_ja": "DAOS", "label_en": "DAOS", "aliases": ["DAOS", "Distributed Asynchronous Object Storage"], "category": "software",
+      "short_definition_ja": "オブジェクトとキー・バリュー指向APIを備えるOSSの分散ストレージ。", "short_definition_en": "Open-source distributed storage with object and key-value-oriented APIs.",
+      "definition_ja": "DAOSは分散非同期オブジェクトストレージとして、オブジェクト、配列、キー・バリューのAPIを提供し、上位層からPOSIX等のアクセスも構成できる。HPCIではクライアント対応、データモデル、永続媒体、障害復旧、既存アプリケーションとの互換性を評価する。", "definition_en": "DAOS provides distributed asynchronous object storage with object, array, and key-value APIs, with higher layers able to expose interfaces such as POSIX. HPCI evaluation needs to cover client support, data models, persistent media, recovery, and compatibility with existing applications.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE020"}], "related_term_ids": ["TERM-LUSTRE", "TERM-BEEGFS", "TERM-IBM-STORAGE-SCALE", "TERM-CEPH"]
+    },
+    {
+      "term_id": "TERM-GFARM", "label_ja": "Gfarm", "label_en": "Gfarm", "aliases": ["Gfarm", "Gfarm file system"], "category": "software",
+      "short_definition_ja": "大規模クラスタと広域データ共有に対応する日本発のOSS分散ファイルシステム。", "short_definition_en": "A Japan-originated open-source distributed file system for large clusters and wide-area data sharing.",
+      "definition_ja": "Gfarmはファイル複製の配置を制御しながら、機関や計算資源をまたぐデータ共有を支える分散ファイルシステムである。HPCI共有ストレージで現に利用されているため、将来計画では新規製品との性能比較だけでなく、既存データ、認証、広域運用、移行の継続性を評価する。", "definition_en": "Gfarm is a distributed file system supporting data sharing across institutions and computing resources with explicit replica-placement control. Because it is used by HPCI shared storage today, future planning should assess continuity of existing data, authentication, wide-area operations, and migration in addition to performance against newer products.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE021"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE022"}], "related_term_ids": ["TERM-LUSTRE", "TERM-CEPH", "TERM-IBM-STORAGE-SCALE"]
+    },
+    {
+      "term_id": "TERM-CEPH", "label_ja": "Ceph", "label_en": "Ceph", "aliases": ["Ceph", "CephFS", "RADOS"], "category": "software",
+      "short_definition_ja": "ファイル、オブジェクト、ブロックを同一基盤で提供するOSS分散ストレージ。", "short_definition_en": "Open-source distributed storage providing file, object, and block interfaces on one system.",
+      "definition_ja": "CephはRADOSを基盤に、CephFSによるファイル、RGWによるオブジェクト、RBDによるブロックアクセスを提供する。共通基盤へ複数用途を集約できる一方、HPC並列I/O、メタデータ、再配置中の性能、運用要員、障害復旧を対象規模で評価する。", "definition_en": "Ceph builds on RADOS to provide file access through CephFS, object access through RGW, and block access through RBD. It can consolidate multiple roles on one platform, while HPC parallel I/O, metadata, rebalance performance, staffing, and recovery need evaluation at the intended scale.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE023"}], "related_term_ids": ["TERM-GFARM", "TERM-DAOS", "TERM-LUSTRE"]
+    },
+    {
+      "term_id": "TERM-WEKA", "label_ja": "WEKA Data Platform", "label_en": "WEKA Data Platform", "aliases": ["WEKA", "WEKA Data Platform"], "category": "software",
+      "short_definition_ja": "POSIX、S3などを扱う商用のAI・HPC向けソフトウェア定義データ基盤。", "short_definition_en": "A commercial software-defined data platform for AI and HPC with interfaces including POSIX and S3.",
+      "definition_ja": "WEKA Data PlatformはPOSIX、NFS、SMB、S3、GPUDirect Storage、Kubernetes CSIなどのアクセスを掲げ、オンプレミスとクラウドのAI/HPCデータ処理を対象とする。ベンダー公表性能とは分けて、科学I/O、費用、ライセンス、オブジェクト階層化、障害復旧、運用ロックインを確認する。", "definition_en": "WEKA Data Platform advertises POSIX, NFS, SMB, S3, GPUDirect Storage, Kubernetes CSI, and related access for on-premises and cloud AI/HPC data processing. Scientific I/O, cost, licensing, object tiering, recovery, and operational lock-in must be assessed independently from vendor performance claims.",
+      "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE024"}], "related_term_ids": ["TERM-DDN-EXASCALER", "TERM-DDN-INFINIA", "TERM-VAST-DATA-PLATFORM"]
+    },
+    {
+      "term_id": "TERM-BENCHPARK", "label_ja": "Benchpark", "label_en": "Benchpark", "aliases": ["Benchpark", "LLNL Benchpark"], "category": "software",
+      "short_definition_ja": "ベンチマークと実行環境を再現可能な形で記述・展開するLLNLのOSS基盤。", "short_definition_en": "LLNL's open-source framework for describing and deploying reproducible benchmarks and execution environments.",
+      "definition_ja": "Benchparkは、Spackを含む構成記述を用いてベンチマーク、依存関係、システム設定、実験を再現するための基盤である。OpenFSでは、候補システム間で同じ実行定義を再利用し、実装差と環境差を追跡する役割として評価する。", "definition_en": "Benchpark uses configuration descriptions, including Spack-based environments, to reproduce benchmarks, dependencies, system settings, and experiments. OpenFS evaluates it as a way to reuse execution definitions across candidate systems while tracing implementation and environment differences.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK008"}], "related_term_ids": ["TERM-BENCHKIT", "TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-BENCHKIT", "label_ja": "BenchKit", "label_en": "BenchKit", "aliases": ["BenchKit", "RIKEN-RCCS BenchKit"], "category": "software",
+      "short_definition_ja": "複数アプリケーション・システムのビルド、実行、結果収集、性能推定を共通化するRIKEN R-CCSのOSS基盤。", "short_definition_en": "RIKEN R-CCS's open-source framework for common build, run, result-collection, and estimation workflows across applications and systems.",
+      "definition_ja": "BenchKitは、複数のアプリケーションと計算機について、クロスビルドとネイティブ実行、結果・プロファイラ情報の収集、性能推定、結果ポータル連携を共通手順で扱う。OpenFSでは、軽量な継続測定とセンター間の結果集約を担う候補として、再実行性、サイト固有設定の分離、失敗時の記録を検証する。", "definition_en": "BenchKit provides shared workflows for cross-build and native execution, result and profiler collection, performance estimation, and result-portal integration across applications and systems. OpenFS treats it as a candidate for lightweight continuous measurement and cross-center aggregation, subject to validation of rerun reproducibility, separation of site-specific settings, and failure recording.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK045"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-GENESIS", "label_ja": "GENESIS", "label_en": "GENESIS", "aliases": ["GENESIS molecular dynamics"], "category": "benchmark",
+      "short_definition_ja": "分子動力学計算を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for molecular dynamics.",
+      "definition_ja": "GENESISは生命科学向けの分子動力学ソフトウェアで、開発元の公式サイトと公開GitHubリポジトリを確認できる。OpenFSの性能比較では、公開コードの存在と、EEA1で用いた版、入力、ビルド条件が固定されていることを分けて評価する。", "definition_en": "GENESIS is molecular-dynamics software for life science with an official project website and public developer repository. OpenFS distinguishes public code availability from having the exact EEA1 version, input, and build conditions pinned for performance comparison.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK046"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-SALMON", "label_ja": "SALMON", "label_en": "SALMON", "aliases": ["Scalable Ab-initio Light-Matter simulator for Optics and Nanoscience"], "category": "benchmark",
+      "short_definition_ja": "実時間TDDFT計算を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for real-time TDDFT simulation.",
+      "definition_ja": "SALMONは光と物質の相互作用を扱う実時間TDDFTソフトウェアで、開発元の公開GitHubリポジトリを確認できる。性能比較には、対象版、物理条件、入力、MPI・OpenMP配置、コンパイラ条件の固定が必要である。", "definition_en": "SALMON is real-time TDDFT software for light-matter interaction with a public developer repository. Performance comparison requires the version, physical conditions, input, MPI and OpenMP placement, and compiler conditions to be pinned.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-SCALE-LETKF", "label_ja": "SCALE-LETKF", "label_en": "SCALE-LETKF", "aliases": ["SCALE LETKF"], "category": "benchmark",
+      "short_definition_ja": "気象モデルSCALEとLETKFデータ同化を組み合わせるFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application combining the SCALE weather model with LETKF data assimilation.",
+      "definition_ja": "SCALE-LETKFは気象計算とアンサンブルデータ同化を組み合わせる。公開GitHubリポジトリは確認できるが、OpenFSで再現可能な性能評価にするには初期条件、観測データ、アンサンブル設定、SCALEとLETKFの版を一体で固定する必要がある。", "definition_en": "SCALE-LETKF combines weather simulation with ensemble data assimilation. A public GitHub repository is available, but reproducible OpenFS performance evaluation requires the initial conditions, observations, ensemble configuration, and SCALE and LETKF versions to be pinned together.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK048"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-E-WAVE", "label_ja": "E-Wave", "label_en": "E-Wave", "aliases": ["E-wave FEM", "E-Wave FEM"], "category": "benchmark",
+      "short_definition_ja": "大規模地震動解析を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for large-scale seismic-wave simulation.",
+      "definition_ja": "E-Waveは大規模有限要素法による地震動計算を対象とする。JAMSTECの公式ページでE-wave FEMの利用を確認できる一方、FugakuNEXT ISC 2026資料ではEEA1コード本体は非公開とされている。公開プロキシまたは再配布可能な評価パッケージを確認する必要がある。", "definition_en": "E-Wave targets large-scale finite-element seismic-wave simulation. JAMSTEC's official page confirms use of E-wave FEM, while the FugakuNEXT ISC 2026 material marks the EEA1 codebase as unreleased. A public proxy or redistributable evaluation package is needed for reproducible comparison.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK002"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK051"}], "related_term_ids": ["TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-FRONTFLOW-BLUE", "label_ja": "FrontFlow/blue", "label_en": "FrontFlow/blue", "aliases": ["FFB", "FrontFlow_blue"], "category": "benchmark",
+      "short_definition_ja": "非構造格子CFDを対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for unstructured-grid CFD.",
+      "definition_ja": "FrontFlow/blueはLESに基づく非圧縮・非定常流れ向けの汎用CFDソフトウェアである。HPCIの公式ページで概要と利用可能施設を確認できる一方、FugakuNEXT ISC 2026資料ではEEA1コード本体は非公開とされている。", "definition_en": "FrontFlow/blue is general-purpose CFD software for incompressible unsteady flow based on LES. The HPCI official page documents the application and available facilities, while the FugakuNEXT ISC 2026 material marks the EEA1 codebase as unreleased.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK002"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK050"}], "related_term_ids": ["TERM-PROXY-APP", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-EEA1-LQCD-DWF-HMC", "label_ja": "LQCD-DWF-HMC", "label_en": "LQCD-DWF-HMC", "aliases": ["Lattice QCD DWF HMC"], "category": "benchmark",
+      "short_definition_ja": "ドメインウォールフェルミオンのHMC計算を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for HMC with domain-wall fermions.",
+      "definition_ja": "LQCD-DWF-HMCはBridge++を基盤とする格子QCDベンチマークである。公開GitHubリポジトリには富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例が含まれる。比較には格子サイズ、収束条件、混合精度設定、コミットの固定が必要である。", "definition_en": "LQCD-DWF-HMC is a lattice-QCD benchmark based on Bridge++. Its public GitHub repository includes build examples for Fugaku, general CPUs, and GPUs through OpenACC. Comparison requires the lattice size, convergence conditions, mixed-precision settings, and commit to be pinned.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK049"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
     }
   ],
   "comparison_sets": [
@@ -364,9 +520,9 @@
     {
       "comparison_id": "CMP-COMPUTE-PLATFORMS", "roadmap_ids": ["RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
       "title_ja": "計算資源・システム粒度の比較", "title_en": "Compute-resource and system-granularity comparison",
-      "summary_ja": "CPU、GPU、ウェハスケールプロセッサ、RDU、IPU、専用アクセラレータ、ラックスケール構成を、役割と評価単位を混同しないように比較する。", "summary_en": "Compares CPUs, GPUs, wafer-scale processors, RDUs, IPUs, specialized accelerators, and rack-scale systems without conflating component roles and system granularity.",
+      "summary_ja": "CPU、GPU、GPU内部の行列演算器、カスタムXPU、ウェハスケールプロセッサ、RDU、IPU、専用アクセラレータ、ラックスケール構成を、役割と評価単位を混同しないように比較する。", "summary_en": "Compares CPUs, GPUs, matrix engines inside GPUs, custom XPUs, wafer-scale processors, RDUs, IPUs, specialized accelerators, and rack-scale systems without conflating component roles and system granularity.",
       "decision_use_ja": "代表アプリケーション、移植費用、電力・冷却、通信、障害領域を含む候補ノード評価の出発点とする。", "decision_use_en": "Use this as a starting point for evaluating candidate nodes, including representative applications, porting cost, power and cooling, communication, and failure domains.",
-      "caveat_ja": "各項目は同じ抽象レベルの直接代替ではない。ラックスケールはデバイスを統合する設計単位で、Bowのウェハ間実装はウェハスケールプロセッサとは異なる。", "caveat_en": "The entries are not direct substitutes at one abstraction level. Rack scale integrates devices, and Bow's wafer-on-wafer integration is distinct from a wafer-scale processor.",
+      "caveat_ja": "各項目は同じ抽象レベルの直接代替ではない。Matrix CoreはGPU内部の演算機構、カスタムXPUは顧客別の共同設計、ラックスケールはデバイスを統合する設計単位である。Bowのウェハ間実装はウェハスケールプロセッサとは異なる。", "caveat_en": "The entries are not direct substitutes at one abstraction level. A Matrix Core is an execution engine inside a GPU, a custom XPU is a customer-specific co-design, and rack scale is a system-integration unit. Bow's wafer-on-wafer integration is distinct from a wafer-scale processor.",
       "columns": [
         {"column_id": "parallelism", "label_ja": "主な並列性・粒度", "label_en": "Parallelism and granularity"},
         {"column_id": "strengths", "label_ja": "利点", "label_en": "Strengths"},
@@ -389,6 +545,13 @@
           {"column_id": "workloads", "text_ja": "行列、ステンシル、粒子、AIの学習・推論。", "text_en": "Matrix, stencil, particle, and AI training or inference workloads."},
           {"column_id": "hpci-check", "text_ja": "実アプリケーション性能、精度、通信、移植工数、保守期間。", "text_en": "Application performance, numerical precision, communication, porting effort, and support horizon."}
         ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP001"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP002"}]},
+        {"term_id": "TERM-AMD-MATRIX-CORE", "cells": [
+          {"column_id": "parallelism", "text_ja": "AMD GPU内部で行列積・積和演算を高スループットで処理する演算機構。", "text_en": "Execution engines inside AMD GPUs for high-throughput matrix multiply and multiply-accumulate operations."},
+          {"column_id": "strengths", "text_ja": "低精度・混合精度の行列演算密度を高められる。", "text_en": "Raises arithmetic density for lower- and mixed-precision matrix operations."},
+          {"column_id": "constraints", "text_ja": "単体製品ではなく、対応形式、累積精度、疎性、ライブラリに性能が依存する。", "text_en": "Not a standalone product; performance depends on formats, accumulation precision, sparsity, and libraries."},
+          {"column_id": "workloads", "text_ja": "AI学習・推論、混合精度数値計算、密・疎行列処理。", "text_en": "AI training and inference, mixed-precision numerical work, and dense or sparse matrix processing."},
+          {"column_id": "hpci-check", "text_ja": "収束と数値誤差、実効性能、対応ライブラリ、GPU世代間の互換性。", "text_en": "Convergence and numerical error, delivered performance, library support, and compatibility across GPU generations."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP021"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP023"}]},
         {"term_id": "TERM-ACCELERATOR", "cells": [
           {"column_id": "parallelism", "text_ja": "用途別に設計した専用データ経路や演算器。", "text_en": "Workload-specific data paths or execution units."},
           {"column_id": "strengths", "text_ja": "対象処理の電力当たり性能を高められる。", "text_en": "Can improve performance per watt for target operations."},
@@ -396,6 +559,13 @@
           {"column_id": "workloads", "text_ja": "AI、行列、ベクトル、データ処理等の適合領域。", "text_en": "Fitting AI, matrix, vector, or data-processing domains."},
           {"column_id": "hpci-check", "text_ja": "対象アプリケーションの割合、代替策、コンパイラ対応、TCO。", "text_en": "Application coverage, fallback, compiler support, and TCO."}
         ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP011"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP012"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP013"}]},
+        {"term_id": "TERM-CUSTOM-XPU", "cells": [
+          {"column_id": "parallelism", "text_ja": "特定顧客のモデル、ネットワーク、ラック要件に合わせた専用アクセラレータとシステム。", "text_en": "Accelerators and systems co-designed for a customer's models, network, and rack requirements."},
+          {"column_id": "strengths", "text_ja": "対象ワークロードとデータセンター全体を共同最適化できる。", "text_en": "Enables co-optimization of target workloads and the surrounding data-center system."},
+          {"column_id": "constraints", "text_ja": "一般販売、仕様公開、ソフトウェア利用、供給契約が限定される場合がある。", "text_en": "General availability, public specifications, software access, and supply terms may be restricted."},
+          {"column_id": "workloads", "text_ja": "大規模AI学習・推論など、設計顧客が固定した主要処理。", "text_en": "Major workloads fixed by the design customer, such as large-scale AI training and inference."},
+          {"column_id": "hpci-check", "text_ja": "HPCIからの利用経路、FP64・科学AI適合、移植性、長期供給、代替手段。", "text_en": "HPCI access path, FP64 and scientific-AI fit, portability, long-term supply, and fallback."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP024"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP025"}]},
         {"term_id": "TERM-WAFER-SCALE-PROCESSOR", "cells": [
           {"column_id": "parallelism", "text_ja": "ウェハ全体に配置した多数のコアと分散SRAMを低遅延で接続。", "text_en": "Many cores and distributed SRAM connected across a full wafer."},
           {"column_id": "strengths", "text_ja": "大きなオンチップ容量・帯域、チップ間通信削減。", "text_en": "Large on-chip capacity and bandwidth with reduced inter-chip movement."},
@@ -429,9 +599,9 @@
     {
       "comparison_id": "CMP-INTERCONNECT-ROLES", "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-X-BLUEPRINT"],
       "title_ja": "接続技術の役割比較", "title_en": "Connectivity-technology role comparison",
-      "summary_ja": "Ethernet、Ultra Ethernet、UALink、NVLink、CXL、CPO、IOWN APNを、接続範囲と役割で整理する。", "summary_en": "Organizes Ethernet, Ultra Ethernet, UALink, NVLink, CXL, CPO, and IOWN APN by connection scope and role.",
+      "summary_ja": "Ethernet、Ultra Ethernet、UALink、NVLink、UCIe、CXL、CPO、IOWN APNを、接続範囲と役割で整理する。", "summary_en": "Organizes Ethernet, Ultra Ethernet, UALink, NVLink, UCIe, CXL, CPO, and IOWN APN by connection scope and role.",
       "decision_use_ja": "スケールアップ、スケールアウト、I/O・メモリ、物理光実装、拠点間接続を混同せず、組合せとしてHPCIネットワークを設計する。", "decision_use_en": "Design HPCI networks as combinations without conflating scale-up, scale-out, I/O and memory, optical implementation, and inter-site connectivity.",
-      "caveat_ja": "これらは同じ層の直接代替ではない。CPOは物理実装方式、CXLはI/O・メモリ整合、UALink/NVLinkはスケールアップ、Ethernet系は主にスケールアウト、APNは広域を含む。", "caveat_en": "These are not direct substitutes at one layer. CPO is a physical integration method, CXL provides coherent I/O and memory, UALink and NVLink target scale-up, Ethernet families mainly serve scale-out, and APN includes wide-area scope.",
+      "caveat_ja": "これらは同じ層の直接代替ではない。UCIeは主に単一パッケージ内のチップレット間接続、CPOは物理実装方式、CXLはI/O・メモリ整合、UALink/NVLinkはスケールアップ、Ethernet系は主にスケールアウト、APNは広域を含む。", "caveat_en": "These are not direct substitutes at one layer. UCIe primarily connects chiplets within one package, CPO is a physical integration method, CXL provides coherent I/O and memory, UALink and NVLink target scale-up, Ethernet families mainly serve scale-out, and APN includes wide-area scope.",
       "columns": [
         {"column_id": "scope", "label_ja": "主な接続範囲", "label_en": "Primary scope"},
         {"column_id": "role", "label_ja": "主な役割", "label_en": "Primary role"},
@@ -463,6 +633,12 @@
           {"column_id": "strengths", "text_ja": "GPU、スイッチ、ソフトウェアの共同最適化。", "text_en": "Co-optimization across GPU, switch, and software."},
           {"column_id": "constraints", "text_ja": "ベンダー依存、世代移行、採用範囲。", "text_en": "Vendor dependence, generation migration, and adoption scope."}
         ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET005"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET015"}]},
+        {"term_id": "TERM-UCIE", "cells": [
+          {"column_id": "scope", "text_ja": "単一パッケージ内の異種チップレット間。", "text_en": "Heterogeneous chiplets within one package."},
+          {"column_id": "role", "text_ja": "ダイ間の標準化された物理層、プロトコル、ソフトウェアモデル。", "text_en": "Standardized die-to-die physical layer, protocols, and software model."},
+          {"column_id": "strengths", "text_ja": "チップレット再利用と複数ベンダーによる部品統合の可能性。", "text_en": "Potential for chiplet reuse and multi-vendor component integration."},
+          {"column_id": "constraints", "text_ja": "対応製品、パッケージ実装、相互運用性、量産時期を個別に確認する必要がある。", "text_en": "Products, packaging implementation, interoperability, and production timing require separate verification."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP029"}]},
         {"term_id": "TERM-CXL", "cells": [
           {"column_id": "scope", "text_ja": "CPU・デバイス・メモリ拡張、ラック内。", "text_en": "CPU, devices, and memory expansion, mainly within a rack."},
           {"column_id": "role", "text_ja": "キャッシュ・メモリ整合I/O。", "text_en": "Cache- and memory-coherent I/O."},
@@ -610,6 +786,12 @@
           {"column_id": "strengths", "text_ja": "ハーネス改良ループと予算管理を監査可能にする。", "text_en": "Makes the harness-improvement loop and budget control auditable."},
           {"column_id": "hpci-use", "text_ja": "OpenFSハーネスの継続改善を回帰試験する。", "text_en": "Regression-test continuous OpenFS harness improvement."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "target", "text_ja": "AIによる長時間のハーネス改善。", "text_en": "Long-horizon AI-driven harness improvement."},
+          {"column_id": "grading", "text_ja": "固定条件での検証用160課題と、分離された評価用448課題。", "text_en": "A 160-task validation suite and disjoint 448-task evaluation suite under fixed conditions."},
+          {"column_id": "strengths", "text_ja": "方策モデルと実行予算を固定し、ハーネス改善の効果を分離。", "text_en": "Fixes the policy model and execution budget to isolate harness-improvement effects."},
+          {"column_id": "hpci-use", "text_ja": "OpenFSハーネス改善の対照実験とホールドアウト評価。", "text_en": "Controlled experiments and held-out evaluation for OpenFS harness changes."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
         {"term_id": "TERM-SWE-BENCH", "cells": [
           {"column_id": "target", "text_ja": "実リポジトリのIssue修正。", "text_en": "Repair of real repository issues."},
           {"column_id": "grading", "text_ja": "生成パッチをリポジトリのテストで採点。", "text_en": "Repository tests grade generated patches."},
@@ -640,6 +822,344 @@
           {"column_id": "strengths", "text_ja": "長い調査・実装・検証の持続性を測る。", "text_en": "Measures sustained research, implementation, and verification."},
           {"column_id": "hpci-use", "text_ja": "根拠付き技術調査と再現実験の長期評価。", "text_en": "Long-horizon evaluation of evidence-based research and replication."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-AGENT-EVALUATION-CONTROLS", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY", "RM-X-BLUEPRINT"],
+      "title_ja": "AIエージェント・ハーネス評価を成立させる統制", "title_en": "Controls required for credible AI agent and harness evaluation",
+      "summary_ja": "得点だけでなく、モデルとハーネスの識別、実行境界、費用・履歴、ホールドアウト、再現条件を比較し、OpenFSで不足する統制を示す。", "summary_en": "Compares model-harness identification, execution boundaries, cost and trace capture, holdouts, and reproducibility conditions, then identifies controls that OpenFS must add beyond each benchmark.",
+      "decision_use_ja": "OpenFSの正式評価では、モデル、ハーネス、プロンプト、ツール、権限、ネットワーク、データ版、評価器、予算を実行ごとに固定・記録する。ベンチマークの得点だけで安全性や再現性を認定しない。", "decision_use_en": "For formal OpenFS evaluation, pin and record the model, harness, prompt, tools, permissions, network policy, dataset version, evaluator, and budget for every run. A benchmark score alone does not establish safety or reproducibility.",
+      "caveat_ja": "ここでいうサンドボックスは実装ごとに強度が異なる。作業ディレクトリの分離、コンテナ、非特権実行、ネットワーク遮断を同一視せず、実際に強制される境界を個別に検証する。", "caveat_en": "Sandbox strength varies by implementation. Workspace separation, containers, unprivileged execution, and network denial are not equivalent; verify each boundary that is actually enforced.",
+      "columns": [
+        {"column_id": "configuration", "label_ja": "モデル・ハーネスの識別", "label_en": "Model-harness identification"},
+        {"column_id": "boundary", "label_ja": "実行境界・権限", "label_en": "Execution boundary and permissions"},
+        {"column_id": "records", "label_ja": "費用・履歴・再現記録", "label_en": "Cost, trace, and reproducibility records"},
+        {"column_id": "holdout", "label_ja": "ホールドアウト・汚染対策", "label_en": "Holdout and contamination control"},
+        {"column_id": "openfs-control", "label_ja": "OpenFSで補う統制", "label_en": "Additional OpenFS control"}
+      ],
+      "rows": [
+        {"term_id": "TERM-HARNESS-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "モデルとハーネスの組合せを結果の単位として扱う。", "text_en": "Treats each model-harness pairing as the reported configuration."},
+          {"column_id": "boundary", "text_ja": "課題ごとの作業領域は分離するが、公式実装のセキュリティ得点にはLLMルーブリックも含まれる。OS権限やネットワーク遮断の強制とは別に検証する。", "text_en": "Separates per-task workspaces, while the official implementation also uses an LLM rubric for its security score. Verify OS permissions and network denial independently."},
+          {"column_id": "records", "text_ja": "成果物、抽出した実行履歴、検証結果、経過時間を保存し、取得可能な場合はトークン使用量も記録する。", "text_en": "Stores artifacts, extracted traces, validator outputs, and elapsed time, with token usage when it can be observed."},
+          {"column_id": "holdout", "text_ja": "課題と評価実装が公開されているため、版を固定し、既知課題への最適化と未知課題への一般化を分ける。", "text_en": "Because tasks and evaluators are public, pin their versions and separate optimization on known tasks from generalization to unseen tasks."},
+          {"column_id": "openfs-control", "text_ja": "公開情報専用の読み取り経路、書込み許可リスト、ネットワーク拒否、資格情報非注入を外側の実行環境で強制する。", "text_en": "Enforce public-source-only reads, write allow-lists, network denial, and non-injection of credentials in the outer execution environment."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK020"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK036"}]},
+        {"term_id": "TERM-HARNESSOPT-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "共通ハーネスと各モデル固有ハーネスを用いた対照実験で、モデル効果とハーネス効果を分ける。", "text_en": "Uses controlled shared-harness and model-native-harness comparisons to separate model and harness effects."},
+          {"column_id": "boundary", "text_ja": "非特権の隔離環境、モデル許可リスト、資格情報とテスト状態の分離を信頼実行環境で強制する。", "text_en": "Uses a trusted execution environment to enforce unprivileged isolation, model allow-lists, and separation from credentials and test state."},
+          {"column_id": "records", "text_ja": "対象エージェントの評価回数・トークン予算を制限し、候補版と利用量を監査用に保存する。最適化側推論は計測されるが論文の実験では上限なし。", "text_en": "Caps target-agent evaluations and token use and preserves candidates and usage for audit; optimizer inference is metered but uncapped in the reported experiments."},
+          {"column_id": "holdout", "text_ja": "開発・検証・テストを分離し、探索中はテスト課題と得点を非公開にする。最終候補だけを信頼サーバーで評価する。", "text_en": "Separates development, validation, and test partitions; test cases and scores remain hidden during search and only the nominated candidate is tested by the trusted server."},
+          {"column_id": "openfs-control", "text_ja": "方法を設計原則として採用し、公開実装、第三者再現、運用費用を確認できるまでは正式ゲートの必須条件にしない。", "text_en": "Adopt the method as a design principle, but do not make it a mandatory formal gate until public implementation, independent reproduction, and operating cost are verified."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "方策モデル、シードハーネス、評価手順、実行予算を固定し、改善を行うモデルを別に記録する。", "text_en": "Fixes the policy model, seed harness, evaluation protocol, and execution budget and separately records the model performing the improvement."},
+          {"column_id": "boundary", "text_ja": "改善側は作業用ハーネスだけを書き換え、方策側には正解を見せない。評価用課題はハーネス確定まで分離する。Web利用課題では漏えい検査も必要である。", "text_en": "The evolver writes only its harness copy, the policy does not see answers, and evaluation tasks remain separated until the harness is frozen. Web-enabled tasks also require leakage screening."},
+          {"column_id": "records", "text_ja": "20反復、1,000ステップ、48時間の上限と、候補ハーネス、検証得点、最終評価を記録する。API費用と外部サービス版もOpenFS側で固定する。", "text_en": "Records the 20-iteration, 1,000-step, 48-hour limits together with candidate harnesses, validation scores, and final evaluation; OpenFS must also pin API cost and external-service versions."},
+          {"column_id": "holdout", "text_ja": "160件の検証用と448件の評価用を分離し、評価用課題はハーネス確定後にのみ採点する。OpenFS固有の非公開課題を追加して転用時の過適合を確認する。", "text_en": "Separates 160 validation tasks from 448 evaluation tasks and scores the latter only after the harness is frozen; add private OpenFS-specific tasks to detect transfer overfitting."},
+          {"column_id": "openfs-control", "text_ja": "公式実装を固定版で再現し、第三者反復、費用、外部API依存、ライセンスを確認してから正式な改善ゲートへ組み込む。", "text_en": "Reproduce a pinned official release and verify independent repetition, cost, external-API dependencies, and licensing before including it in a formal improvement gate."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
+        {"term_id": "TERM-SWE-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "提出物はモデル名とパッチで識別されるが、エージェントのハーネス、プロンプト、ツール、費用は別途記録が必要。", "text_en": "Predictions identify a model and patch, while agent harness, prompt, tools, and cost require separate reporting."},
+          {"column_id": "boundary", "text_ja": "公式評価は課題ごとのDocker環境でパッチを適用し、制限時間内にテストを実行する。生成時のネットワーク・権限は評価器の外側で管理する。", "text_en": "The official evaluator applies patches and runs tests in per-instance Docker environments with timeouts; generation-time network and permissions remain external controls."},
+          {"column_id": "records", "text_ja": "イメージ構築、課題実行、テスト結果をログへ保存する。モデル呼出しの費用と生成履歴は標準評価器だけでは揃わない。", "text_en": "Stores image-build, instance-run, and test-result logs; the standard evaluator alone does not normalize model-call cost or generation traces."},
+          {"column_id": "holdout", "text_ja": "テストで生成パッチを採点できる一方、実在Issueを基にした公開データであり、学習データ混入と既知解の影響を申告する。", "text_en": "Tests grade generated patches, but the dataset is built from public real-world issues, so training contamination and exposure to known solutions must be disclosed."},
+          {"column_id": "openfs-control", "text_ja": "同一課題でもハーネスとモデルを別IDで記録し、生成コンテナと採点コンテナを分離して、ネットワーク方針とAPI費用を付加する。", "text_en": "Record harness and model as separate IDs, separate generation from grading containers, and add network-policy and API-cost records."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK021"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK037"}]},
+        {"term_id": "TERM-TUA-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "エージェント実装、モデル、推論設定を実行コマンドで分けて指定できる。", "text_en": "Separately selects the agent implementation, model, and reasoning settings in the run configuration."},
+          {"column_id": "boundary", "text_ja": "DockerまたはPodmanで課題を実行する。コンテナ利用だけで外部通信が禁止されるわけではないため、ネットワークとマウントを別途制限する。", "text_en": "Runs tasks with Docker or Podman. Containers do not inherently deny external communication, so network and mount restrictions must be configured separately."},
+          {"column_id": "records", "text_ja": "実行ごとに出力先を分け、ログ、成果物、複数回実行の成功率を保持できる。標準化された費用欄は別途追加する。", "text_en": "Supports separate output directories with logs, artifacts, and repeated-run success rates; add a normalized cost record separately."},
+          {"column_id": "holdout", "text_ja": "課題が公開されるため、版固定と非公開のOpenFS固有課題を併用して過適合を検出する。", "text_en": "Because tasks are public, combine version pinning with private OpenFS-specific tasks to detect overfitting."},
+          {"column_id": "openfs-control", "text_ja": "科学ツール課題を再利用しつつ、CC BY-NC条件、取得アセットのライセンス、ネットワーク遮断を事前審査する。", "text_en": "Reuse scientific-tool tasks only after reviewing CC BY-NC terms, downloaded-asset licenses, and network isolation."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK025"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK041"}]},
+        {"term_id": "TERM-GAIA", "cells": [
+          {"column_id": "configuration", "text_ja": "最終回答を中心に評価するため、モデル、ハーネス、ブラウザ、検索、補助ツールをOpenFS側で完全に記録する。", "text_en": "Because scoring centers on final answers, OpenFS must fully record the model, harness, browser, search service, and auxiliary tools."},
+          {"column_id": "boundary", "text_ja": "Webや複数ツールの利用能力を測るが、OpenFSの情報境界や権限制御をそのまま保証する評価ではない。", "text_en": "Measures web and multi-tool use but does not itself establish OpenFS information-boundary or permission enforcement."},
+          {"column_id": "records", "text_ja": "公式データとリーダーボードはあるが、費用、履歴、Webスナップショットを同一条件にするには追加の実行ハーネスが必要。", "text_en": "Official data and a leaderboard exist, but normalized cost, traces, and web snapshots require an additional execution harness."},
+          {"column_id": "holdout", "text_ja": "アクセス制限付きデータと非公開テスト回答で漏えいを抑える。動的Webに依存する課題は取得時点も固定する。", "text_en": "Gated data and private test answers reduce leakage; tasks that depend on the live web also require a pinned retrieval time."},
+          {"column_id": "openfs-control", "text_ja": "取得URL、時刻、応答ハッシュ、検索結果、引用根拠を保存し、動的Webの変化と調査能力を分離する。", "text_en": "Store URLs, retrieval times, response hashes, search results, and cited evidence to separate web drift from research capability."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK022"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK038"}]},
+        {"term_id": "TERM-TAU-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "標準提出と、ルーター、追加ツール、変更プロンプト等を含むカスタム提出を区別する。モデルと利用者シミュレータも記録する。", "text_en": "Distinguishes standard submissions from custom routers, tools, prompts, or control flow, and records both agent and user-simulator models."},
+          {"column_id": "boundary", "text_ja": "方針、ツール、評価器への標準インターフェースを制約するが、OSレベルの情報境界を評価するものではない。", "text_en": "Constrains the benchmark interface to policies, tools, and evaluators, but is not an OS-level information-boundary test."},
+          {"column_id": "records", "text_ja": "対話履歴を保存し、pass^kで反復信頼性を測る。費用は提出可能だが任意のため、OpenFSでは必須にする。", "text_en": "Stores trajectories and measures repeated reliability with pass^k. Cost submission is optional, so OpenFS should require it."},
+          {"column_id": "holdout", "text_ja": "標準提出では非公開の目標、参照行動、評価器状態へのアクセスを禁じる。タスク版と利用者シミュレータを固定する。", "text_en": "Standard submissions prohibit access to hidden goals, reference actions, and evaluator state; pin the task release and user simulator."},
+          {"column_id": "openfs-control", "text_ja": "公開／非公開情報の混在、承認、書込み、引用といったOpenFS固有の方針違反課題を追加し、軌跡を独立評価する。", "text_en": "Add OpenFS-specific policy-violation tasks for public/private data, approval, writes, and citation, with independent trajectory review."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK023"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK039"}]},
+        {"term_id": "TERM-PAPERBENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "ソルバー、モデル、実行時間等を設定として分離できる。モデル単体ではなくエージェント構成として比較する。", "text_en": "Separates solver, model, run duration, and related settings; comparisons are therefore agent-configuration comparisons rather than model-only results."},
+          {"column_id": "boundary", "text_ja": "エージェント実行、GPUでの再現、採点を別コンテナで行う。一部課題は外部APIやデータ資格情報を必要とする。", "text_en": "Uses separate containers for agent rollout, GPU reproduction, and grading; some tasks require external API or dataset credentials."},
+          {"column_id": "records", "text_ja": "成果コード、再実行結果、階層ルーブリック、実行記録を残せるが、長時間・GPU・判定モデルの費用が大きい。", "text_en": "Preserves submitted code, reproduced results, hierarchical rubrics, and run records, but incurs substantial long-duration, GPU, and judge-model cost."},
+          {"column_id": "holdout", "text_ja": "採点ルーブリックと研究対象は公開され、禁止サイト一覧で原著コード利用を制限する。未知課題への一般化は別の非公開課題で確認する。", "text_en": "Rubrics and target papers are public, while blacklists restrict use of original implementations; unseen-task generalization needs a separate private set."},
+          {"column_id": "openfs-control", "text_ja": "軽量な段階評価を先に行い、正式候補だけを長期再現へ進める。判定モデルとは別の評価者と実行結果検証を組み合わせる。", "text_en": "Use lightweight staged screening before expensive replications, and combine a separate evaluator with executable-result checks."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK040"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-BENCHMARK-IMPORTANCE", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"],
+      "title_ja": "主要ベンチマークの根拠と調査優先度", "title_en": "Evidence and research priority for major benchmarks",
+      "summary_ja": "公開実装、継続的な結果公開、第三者利用、HPCIの判断への関連性を分けて評価する。", "summary_en": "Separately assesses public implementations, recurring published results, independent use, and relevance to HPCI decisions.",
+      "decision_use_ja": "知名度だけで順位を付けず、再現可能性と整備計画への寄与に応じて調査資源を配分する。", "decision_use_en": "Allocate research effort by reproducibility and contribution to infrastructure planning rather than name recognition alone.",
+      "caveat_ja": "優先度はベンチマークの普遍的な価値ではなく、OpenFSが現在深く追跡すべき度合いを示す。提出件数や利用実績は継続確認が必要である。", "caveat_en": "Priority indicates how deeply OpenFS should track a benchmark now, not universal value. Submission counts and independent adoption require continuing verification.",
+      "columns": [
+        {"column_id": "public-evidence", "label_ja": "公開実装・結果", "label_en": "Public code and results"},
+        {"column_id": "coverage", "label_ja": "主な価値と限界", "label_en": "Value and limitation"},
+        {"column_id": "priority", "label_ja": "OpenFS調査優先度", "label_en": "OpenFS research priority"}
+      ],
+      "rows": [
+        {"term_id": "TERM-HPL", "cells": [
+          {"column_id": "public-evidence", "text_ja": "Netlibの公式実装とTOP500の継続的な公開結果がある。", "text_en": "Official Netlib implementation and recurring public TOP500 results."},
+          {"column_id": "coverage", "text_ja": "国際比較に強いが、密行列演算へ偏る。", "text_en": "Strong for international comparison but centered on dense linear algebra."},
+          {"column_id": "priority", "text_ja": "高。必須の基準値だが、単独で採用判断しない。", "text_en": "High: an essential baseline, but never sufficient alone."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK028"}]},
+        {"term_id": "TERM-HPCG", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式リポジトリと継続的な公開結果がある。", "text_en": "Official repository and recurring public results."},
+          {"column_id": "coverage", "text_ja": "メモリ・通信バランスに有用だが、科学ワークロード全体ではない。", "text_en": "Useful for memory and communication balance, but not the full scientific portfolio."},
+          {"column_id": "priority", "text_ja": "高。HPLを補完するシステムバランス指標。", "text_en": "High: a system-balance complement to HPL."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK029"}]},
+        {"term_id": "TERM-HPL-MXP", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式ソフトウェア案内とOpenMxP実装が公開されている。", "text_en": "Official software guidance and the OpenMxP implementation are public."},
+          {"column_id": "coverage", "text_ja": "混合精度行列演算器の比較に有用だが、科学計算への一般化は限定的。", "text_en": "Useful for mixed-precision matrix engines, with limited generalization to science applications."},
+          {"column_id": "priority", "text_ja": "中。混合精度候補を評価する際は高優先度へ引き上げる。", "text_en": "Medium; raise to high when evaluating mixed-precision candidates."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK030"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK031"}]},
+        {"term_id": "TERM-GRAPH500", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式仕様・参照実装とランキングが公開されている。", "text_en": "Official specification, reference implementation, and rankings are public."},
+          {"column_id": "coverage", "text_ja": "不規則アクセスと通信を補完するが、対象アルゴリズムは限定的。", "text_en": "Complements irregular access and communication analysis but covers a narrow algorithm set."},
+          {"column_id": "priority", "text_ja": "中。データ移動・グラフ処理の検討では高。", "text_en": "Medium, or high for data-movement and graph-processing studies."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK032"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK033"}]},
+        {"term_id": "TERM-MLPERF", "cells": [
+          {"column_id": "public-evidence", "text_ja": "MLCommonsが学習・推論の参照実装と提出結果を公開する。", "text_en": "MLCommons publishes training and inference reference implementations and submissions."},
+          {"column_id": "coverage", "text_ja": "AIの国際比較に強いが、科学AIの代表性は別途検証が必要。", "text_en": "Strong for international AI comparison; scientific-AI representativeness needs separate validation."},
+          {"column_id": "priority", "text_ja": "高。科学AIスイートと組み合わせて追跡する。", "text_en": "High, tracked together with a scientific-AI suite."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK034"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK035"}]},
+        {"term_id": "TERM-SPEC-CPU", "cells": [
+          {"column_id": "public-evidence", "text_ja": "結果と規則は公開。ソース、入力、評価ハーネスはSPECライセンスで配布され、公開リポジトリはない。", "text_en": "Results and rules are public. Sources, inputs, and the evaluation harness are distributed under the SPEC license; no public repository is provided."},
+          {"column_id": "coverage", "text_ja": "CPU、メモリ階層、コンパイラの比較に強いが、ネットワーク、I/O、GPU、分散処理は対象外。", "text_en": "Strong for CPU, memory hierarchy, and compiler comparisons; excludes networking, I/O, GPUs, and distributed execution."},
+          {"column_id": "priority", "text_ja": "中。単一ノードの基準として追跡するが、再配布制約とHPCIアプリケーションとの差を考慮する。", "text_en": "Medium: track as a single-node baseline while accounting for redistribution constraints and differences from HPCI applications."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK043"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK044"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-AGENT-BENCHMARK-IMPORTANCE", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"],
+      "title_ja": "AIエージェント・ハーネス評価の比較と調査優先度", "title_en": "AI agent and harness benchmark comparison and research priority",
+      "summary_ja": "公開実装・データ・結果、OpenFSとの対象適合性、再利用上の制約を分けて評価する。", "summary_en": "Separately assesses public code, data, and results; fit to OpenFS; and reuse constraints.",
+      "decision_use_ja": "単一の総合順位を採用せず、コード修正、一般ツール利用、方針遵守、端末操作、長期研究、ハーネス差、ハーネス改善を補完的に測る評価群を選定する。", "decision_use_en": "Select a complementary suite for code repair, general tool use, policy compliance, terminal operation, long-horizon research, harness effects, and harness optimization instead of adopting one overall ranking.",
+      "caveat_ja": "優先度はOpenFSの評価設計への有用性を示す。新しいベンチマークの第三者利用、動的WebやモデルAPIへの依存、ライセンス、非公開テストへのアクセス条件は継続確認する。", "caveat_en": "Priority reflects usefulness for OpenFS evaluation design. Independent adoption, dependencies on dynamic web content or model APIs, licensing, and access to private tests require continuing review.",
+      "columns": [
+        {"column_id": "public-evidence", "label_ja": "公開実装・結果", "label_en": "Public code and results"},
+        {"column_id": "openfs-fit", "label_ja": "OpenFSで測れる能力", "label_en": "Capability relevant to OpenFS"},
+        {"column_id": "priority", "label_ja": "優先度・制約", "label_en": "Priority and constraints"}
+      ],
+      "rows": [
+        {"term_id": "TERM-HARNESS-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コードと論文結果を公開。新規プロジェクトのため第三者利用は継続確認する。", "text_en": "Official code and paper results are public; independent use remains to be tracked because the project is new."},
+          {"column_id": "openfs-fit", "text_ja": "モデルとハーネスの組合せ、費用、実行履歴、失敗形態を共通条件で比較できる。", "text_en": "Compares model-harness pairings, cost, traces, and failure modes under shared conditions."},
+          {"column_id": "priority", "text_ja": "高。OpenFSの構成単位評価に最も直接的だが、HPCI固有課題を追加する。", "text_en": "High: most directly aligned with configuration-level OpenFS evaluation, with HPCI-specific tasks still required."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK020"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK036"}]},
+        {"term_id": "TERM-HARNESSOPT-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "論文と公式研究ページは公開。論文は再現用アーティファクトの公開を述べるが、公式ページから公開コードの所在を確認できていない。", "text_en": "The paper and official research page are public. The paper states that reproducibility artifacts are released, but no public code location was confirmed from the official page."},
+          {"column_id": "openfs-fit", "text_ja": "固定した予算とホールドアウト課題で、AIによるハーネス改善そのものを評価できる。", "text_en": "Evaluates AI-driven harness improvement under a fixed budget and held-out tasks."},
+          {"column_id": "priority", "text_ja": "低。方法は重要だが、公開実装、第三者再現、運用費用を確認するまで正式評価には使わない。", "text_en": "Low: the method is important, but not used for formal evaluation until public code, independent reproduction, and operating cost are confirmed."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コード、データ、設定、論文結果が公開されている。公開直後のため第三者による独立再現は未確認である。", "text_en": "Official code, data, configurations, and paper results are public. Independent third-party reproduction has not yet been established because the release is new."},
+          {"column_id": "openfs-fit", "text_ja": "固定した方策モデル、シード、評価手順、予算と分離された評価課題により、ハーネス改善を比較できる。", "text_en": "Compares harness improvement with a fixed policy model, seed, evaluation protocol, budget, and disjoint evaluation tasks."},
+          {"column_id": "priority", "text_ja": "高。OpenFSの継続改善に直接適合するが、正式採用前に独立再現とHPCI固有課題で検証する。", "text_en": "High: directly aligned with continuous OpenFS improvement, subject to independent reproduction and validation on HPCI-specific tasks before formal adoption."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
+        {"term_id": "TERM-SWE-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コード、データ、Docker評価環境、公開結果がある。", "text_en": "Official code, data, Docker evaluation environments, and public results are available."},
+          {"column_id": "openfs-fit", "text_ja": "実在するリポジトリの理解、修正、テスト合格を評価できる。", "text_en": "Measures understanding, modification, and test-based repair of real repositories."},
+          {"column_id": "priority", "text_ja": "高。ハーネス実装の回帰試験に有用だが、調査の根拠品質は別課題で測る。", "text_en": "High: useful for harness implementation regression, while research-evidence quality needs separate tasks."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK021"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK037"}]},
+        {"term_id": "TERM-GAIA", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式データセットとリーダーボードがある。テスト回答は非公開で、データ利用には同意が必要。", "text_en": "An official dataset and leaderboard are available. Test answers are private and dataset access requires agreement."},
+          {"column_id": "openfs-fit", "text_ja": "Web閲覧、文書、ツール、複数形式の情報を横断する一般調査能力を評価できる。", "text_en": "Measures general research across web browsing, documents, tools, and multimodal information."},
+          {"column_id": "priority", "text_ja": "中。幅広い能力の補完評価に使うが、動的WebとHPCI固有の根拠判定は分離する。", "text_en": "Medium: complementary for broad capability, with dynamic web and HPCI-specific evidence grading kept separate."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK022"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK038"}]},
+        {"term_id": "TERM-TAU-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式実装と履歴結果が公開され、後継版も継続開発されている。", "text_en": "The official implementation and historical trajectories are public, and successor versions continue to be developed."},
+          {"column_id": "openfs-fit", "text_ja": "複数ターン対話、ツール操作、方針遵守、反復成功率を評価できる。", "text_en": "Measures multi-turn interaction, tool use, policy compliance, and repeated reliability."},
+          {"column_id": "priority", "text_ja": "高。情報境界と承認手順の評価に適するが、利用する版と方針データを固定する。", "text_en": "High: well suited to information-boundary and approval testing, with benchmark version and policy data pinned."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK023"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK039"}]},
+        {"term_id": "TERM-PAPERBENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コード、データ、ルーブリック、基準結果が公開されている。", "text_en": "Official code, data, rubrics, and baseline results are public."},
+          {"column_id": "openfs-fit", "text_ja": "長期にわたる調査、実装、実験再現、成果物評価を測れる。", "text_en": "Measures long-horizon research, implementation, experiment replication, and artifact grading."},
+          {"column_id": "priority", "text_ja": "高。OpenFSの長期タスクに近いが、実行費用が大きいため軽量課題と段階評価を併用する。", "text_en": "High: close to long-horizon OpenFS work, but paired with lighter tasks and staged evaluation because of high execution cost."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK040"}]},
+        {"term_id": "TERM-TUA-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コード、120件の課題、実行結果型のリーダーボードが公開されている。ライセンスはCC BY-NCである。", "text_en": "Official code, 120 tasks, and an execution-based leaderboard are public. The license is CC BY-NC."},
+          {"column_id": "openfs-fit", "text_ja": "端末操作、環境構築、科学・工学ツール、成果物の実行検証を評価できる。", "text_en": "Measures terminal operation, environment setup, scientific and engineering tools, and executable artifact verification."},
+          {"column_id": "priority", "text_ja": "中。技術的適合性は高いが、非商用条件と外部コンテンツのライセンスを確認して利用する。", "text_en": "Medium: technically well aligned, subject to review of the non-commercial terms and licenses of external content."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK025"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK041"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-AI-TRAINING-FRAMEWORKS", "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"],
+      "title_ja": "大規模AI学習基盤の比較", "title_en": "Large-scale AI training stack comparison",
+      "summary_ja": "Megatron-LM / Megatron Core、Megatron Bridge、Megatron-DeepSpeedの関係、機能、更新状況、採用条件を整理する。", "summary_en": "Clarifies the relationship, capabilities, update status, and adoption conditions of Megatron-LM / Megatron Core, Megatron Bridge, and Megatron-DeepSpeed.",
+      "decision_use_ja": "名称の近さから互換性を仮定せず、対象モデルと再現構成に適した実装を選ぶ。", "decision_use_en": "Choose the implementation suited to the target model and reproducible configuration without inferring compatibility from similar names.",
+      "caveat_ja": "リポジトリ更新日は機能の正しさや保守期間を保証しない。対象モデル、GPU、通信規模で実測する。", "caveat_en": "Repository recency does not guarantee correctness or support lifetime; measure on the intended models, GPUs, and communication scale.",
+      "columns": [
+        {"column_id": "position", "label_ja": "位置付け", "label_en": "Position"},
+        {"column_id": "strengths", "label_ja": "主な機能", "label_en": "Principal capabilities"},
+        {"column_id": "adoption", "label_ja": "採用時の確認事項", "label_en": "Adoption checks"}
+      ],
+      "rows": [
+        {"term_id": "TERM-MEGATRON-LM", "cells": [
+          {"column_id": "position", "text_ja": "NVIDIAが開発するMegatron Core中心の上流実装。", "text_en": "NVIDIA-developed upstream stack centered on Megatron Core."},
+          {"column_id": "strengths", "text_ja": "複数の並列方式、Transformerモデル、低精度学習を継続拡張。", "text_en": "Continuing expansion of parallelism modes, Transformer models, and lower-precision training."},
+          {"column_id": "adoption", "text_ja": "リリース版、GPU、通信ライブラリ、数値精度、再現レシピを固定する。", "text_en": "Pin releases, GPUs, communication libraries, numerical accuracy, and reproducible recipes."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT029"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT030"}]},
+        {"term_id": "TERM-MEGATRON-BRIDGE", "cells": [
+          {"column_id": "position", "text_ja": "Megatron CoreとHugging Faceモデルを接続するNVIDIAの変換・学習層。", "text_en": "NVIDIA's conversion and training layer connecting Megatron Core with Hugging Face models."},
+          {"column_id": "strengths", "text_ja": "双方向チェックポイント変換、変換検証、事前学習・SFT・LoRAレシピ。", "text_en": "Bidirectional checkpoint conversion, conversion verification, and pretraining, SFT, and LoRA recipes."},
+          {"column_id": "adoption", "text_ja": "Bridge、Core、コンテナ、依存ライブラリの対応版とチェックポイント形式を一体で固定する。", "text_en": "Pin compatible Bridge, Core, container, dependency, and checkpoint-format versions as one configuration."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT035"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT036"}]},
+        {"term_id": "TERM-MEGATRON-DEEPSPEED", "cells": [
+          {"column_id": "position", "text_ja": "Megatron-LM派生でDeepSpeed機能を統合する別リポジトリ。", "text_en": "A separate Megatron-LM derivative integrating DeepSpeed capabilities."},
+          {"column_id": "strengths", "text_ja": "ZeRO、MoE、カリキュラム学習等を組み合わせる。", "text_en": "Combines ZeRO, mixture-of-experts, curriculum learning, and related features."},
+          {"column_id": "adoption", "text_ja": "最新Megatron Coreとの差分、上流同期、依存版、対象モデルを確認する。", "text_en": "Verify differences from current Megatron Core, upstream synchronization, dependency versions, and model coverage."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT032"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT033"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-STORAGE-DATA-PLATFORMS", "roadmap_ids": ["RM-X-BLUEPRINT", "RM-APP-WORKLOADS"],
+      "title_ja": "ストレージ・AIデータ基盤の役割比較", "title_en": "Storage and AI data-platform role comparison",
+      "summary_ja": "HPC並列ファイルシステムとAI向け多プロトコル・データ処理基盤を同列にせず、主用途と検証課題を比較する。", "summary_en": "Compares principal roles and validation needs without treating HPC parallel file systems and AI-oriented multiprotocol data platforms as identical.",
+      "decision_use_ja": "単一製品へ全階層を集約する前提を置かず、ワークロード、データ寿命、障害条件、移行費用から組合せを選ぶ。", "decision_use_en": "Select a combination by workload, data lifetime, failure conditions, and migration cost without assuming one product should replace every tier.",
+      "caveat_ja": "製品説明は主にベンダーまたはプロジェクトの公式資料に基づく。性能と費用は共通条件で独立検証されていない。", "caveat_en": "Descriptions rely mainly on official vendor or project materials; performance and cost have not been independently validated under common conditions.",
+      "columns": [
+        {"column_id": "role", "label_ja": "主な位置付け", "label_en": "Principal role"},
+        {"column_id": "strengths", "label_ja": "期待される強み", "label_en": "Expected strengths"},
+        {"column_id": "validation", "label_ja": "重点検証項目", "label_en": "Priority validation"}
+      ],
+      "rows": [
+        {"term_id": "TERM-DDN-EXASCALER", "cells": [
+          {"column_id": "role", "text_ja": "Lustre基盤のHPC・AI学習向け並列POSIXストレージ。", "text_en": "Lustre-based parallel POSIX storage for HPC and AI training."},
+          {"column_id": "strengths", "text_ja": "大規模連続I/O、チェックポイント、HPC運用との親和性。", "text_en": "Large sequential I/O, checkpointing, and fit with HPC operations."},
+          {"column_id": "validation", "text_ja": "実効帯域、メタデータ、障害復旧、運用工数。", "text_en": "Sustained bandwidth, metadata, recovery, and operational effort."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE013"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE025"}]},
+        {"term_id": "TERM-DDN-INFINIA", "cells": [
+          {"column_id": "role", "text_ja": "S3、KV、限定提供段階のPOSIXを扱うAIデータ基盤。", "text_en": "AI data platform spanning S3, key-value access, and limited-availability POSIX support."},
+          {"column_id": "strengths", "text_ja": "推論・RAG、マルチテナント、ID・セキュリティ管理の統合を志向。", "text_en": "Targets integration of inference, RAG, multitenancy, identity, and security controls."},
+          {"column_id": "validation", "text_ja": "機能の提供段階、整合性、推論遅延、既存POSIX接続、移行費用。", "text_en": "Feature availability stage, consistency, inference latency, existing POSIX integration, and migration cost."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE014"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE015"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE026"}]},
+        {"term_id": "TERM-VAST-DATA-PLATFORM", "cells": [
+          {"column_id": "role", "text_ja": "ファイル・オブジェクト・データベース・処理の統合基盤。", "text_en": "Integrated file, object, database, and data-processing platform."},
+          {"column_id": "strengths", "text_ja": "AI OS 5.5でデータ、ベクトル検索、分析、DataEngine関数の実行を統合。", "text_en": "AI OS 5.5 integrates data, vector retrieval, analytics, and execution of DataEngine functions."},
+          {"column_id": "validation", "text_ja": "科学I/O、モデル提供との境界、復旧、運用ロックイン、広域配置。", "text_en": "Scientific I/O, the model-serving boundary, recovery, operational lock-in, and geographic placement."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE016"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE027"}]},
+        {"term_id": "TERM-LUSTRE", "cells": [
+          {"column_id": "role", "text_ja": "OSSの大規模並列POSIXファイルシステム。", "text_en": "Open-source large-scale parallel POSIX file system."},
+          {"column_id": "strengths", "text_ja": "HPCでの長い運用実績と広いエコシステム。", "text_en": "Extensive HPC operating history and ecosystem."},
+          {"column_id": "validation", "text_ja": "小ファイル、管理複雑性、復旧、データ寿命管理。", "text_en": "Small files, management complexity, recovery, and data lifecycle."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE017"}]},
+        {"term_id": "TERM-IBM-STORAGE-SCALE", "cells": [
+          {"column_id": "role", "text_ja": "GPFSを基盤とする企業向け分散データ管理。", "text_en": "Enterprise distributed data management based on GPFS."},
+          {"column_id": "strengths", "text_ja": "既存導入、ファイルアクセス、階層管理との連続性。", "text_en": "Continuity with existing deployments, file access, and tiering."},
+          {"column_id": "validation", "text_ja": "ライセンス、対応機器、保守、広域構成。", "text_en": "Licensing, supported hardware, service, and geographic configurations."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE018"}]},
+        {"term_id": "TERM-BEEGFS", "cells": [
+          {"column_id": "role", "text_ja": "柔軟に構成できるHPC・AI向け並列ファイルシステム。", "text_en": "Flexibly deployable parallel file system for HPC and AI."},
+          {"column_id": "strengths", "text_ja": "メタデータ・ストレージサービスの分離と拡張性。", "text_en": "Separated metadata and storage services with scaling flexibility."},
+          {"column_id": "validation", "text_ja": "可用性、運用ツール、長期保守、データ移行。", "text_en": "Availability, operational tooling, long-term support, and migration."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE019"}]},
+        {"term_id": "TERM-DAOS", "cells": [
+          {"column_id": "role", "text_ja": "オブジェクト・配列・KV指向の分散ストレージ。", "text_en": "Distributed storage oriented around objects, arrays, and key-value APIs."},
+          {"column_id": "strengths", "text_ja": "非同期APIと新しいデータモデルを利用できる。", "text_en": "Supports asynchronous APIs and newer data models."},
+          {"column_id": "validation", "text_ja": "クライアント対応、永続媒体、復旧、既存POSIX互換。", "text_en": "Client support, persistent media, recovery, and legacy POSIX compatibility."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE020"}]},
+        {"term_id": "TERM-GFARM", "cells": [
+          {"column_id": "role", "text_ja": "HPCIで利用中の広域分散ファイルシステム。", "text_en": "Wide-area distributed file system used by HPCI today."},
+          {"column_id": "strengths", "text_ja": "機関間共有、複製配置、既存データと運用の継続性。", "text_en": "Cross-institution sharing, replica placement, and continuity of existing data and operations."},
+          {"column_id": "validation", "text_ja": "認証、広域障害、メタデータ、AI/HPCデータ経路、次期構成への移行。", "text_en": "Authentication, wide-area failure, metadata, AI/HPC data paths, and migration to future configurations."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE021"}, {"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE022"}]},
+        {"term_id": "TERM-CEPH", "cells": [
+          {"column_id": "role", "text_ja": "ファイル・オブジェクト・ブロックを統合するOSS分散ストレージ。", "text_en": "Open-source distributed storage unifying file, object, and block access."},
+          {"column_id": "strengths", "text_ja": "用途統合、標準的なサーバー構成、広いOSSエコシステム。", "text_en": "Role consolidation, commodity-server deployment, and a broad open-source ecosystem."},
+          {"column_id": "validation", "text_ja": "HPC並列I/O、再配置時性能、運用要員、障害復旧。", "text_en": "HPC parallel I/O, rebalance performance, staffing, and recovery."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE023"}]},
+        {"term_id": "TERM-WEKA", "cells": [
+          {"column_id": "role", "text_ja": "POSIX・S3等を扱う商用AI/HPCデータ基盤。", "text_en": "Commercial AI/HPC data platform supporting POSIX, S3, and related interfaces."},
+          {"column_id": "strengths", "text_ja": "AIパイプライン、高速ファイルアクセス、オンプレミス・クラウド連携を統合。", "text_en": "Integrates AI pipelines, high-performance file access, and on-premises or cloud deployment."},
+          {"column_id": "validation", "text_ja": "科学I/O、費用、ライセンス、階層化、復旧、運用ロックイン。", "text_en": "Scientific I/O, cost, licensing, tiering, recovery, and operational lock-in."}
+        ], "source_refs": [{"roadmap_id": "RM-X-BLUEPRINT", "source_id": "SRC-BLUE024"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-CONTINUOUS-BENCHMARKING", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY", "RM-X-BLUEPRINT"],
+      "title_ja": "BenchparkとBenchKitの役割比較", "title_en": "Benchpark and BenchKit role comparison",
+      "summary_ja": "再現可能な実行環境の記述と、継続的なビルド・実行・結果集約という異なる役割を整理する。", "summary_en": "Separates reproducible execution-environment descriptions from continuous build, run, and result-aggregation workflows.",
+      "decision_use_ja": "どちらか一方へ統一する前提を置かず、Benchparkの再現可能な実験定義とBenchKitの継続実行を接続できるかを検証する。", "decision_use_en": "Do not assume one framework replaces the other; validate whether Benchpark's reproducible experiment definitions can connect to BenchKit's continuous execution workflows.",
+      "caveat_ja": "両プロジェクトの実装範囲と連携仕様は発展中である。基本設計の方針と、現在公開されているコードで実行できる機能を区別する。", "caveat_en": "Both projects continue to evolve. Keep the basic-design intent distinct from functionality demonstrated by the currently public code.",
+      "columns": [
+        {"column_id": "role", "label_ja": "主な役割", "label_en": "Principal role"},
+        {"column_id": "strengths", "label_ja": "期待される強み", "label_en": "Expected strengths"},
+        {"column_id": "validation", "label_ja": "重点検証項目", "label_en": "Priority validation"}
+      ],
+      "rows": [
+        {"term_id": "TERM-BENCHPARK", "cells": [
+          {"column_id": "role", "text_ja": "依存関係とシステム設定を含むベンチマーク実行環境の再現。", "text_en": "Reproduction of benchmark execution environments, including dependencies and system configuration."},
+          {"column_id": "strengths", "text_ja": "候補システム間で定義を再利用し、環境差を明示できる。", "text_en": "Reuses definitions across candidate systems and makes environment differences explicit."},
+          {"column_id": "validation", "text_ja": "対象アプリケーション、各センターのバックエンド、長期的な定義保守。", "text_en": "Application coverage, center backends, and long-term maintenance of definitions."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK008"}]},
+        {"term_id": "TERM-BENCHKIT", "cells": [
+          {"column_id": "role", "text_ja": "ビルド、実行、計測、結果集約、性能推定の継続パイプライン。", "text_en": "Continuous pipeline for build, execution, measurement, result aggregation, and performance estimation."},
+          {"column_id": "strengths", "text_ja": "軽量な反復実行とサイト固有設定の分離を志向する。", "text_en": "Targets lightweight repeated runs and separation of site-specific configuration."},
+          {"column_id": "validation", "text_ja": "失敗回復、結果スキーマ、権限境界、複数センターでの再実行性。", "text_en": "Failure recovery, result schemas, permission boundaries, and cross-center rerun reproducibility."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK045"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-EEA1-REPRODUCIBILITY", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY"],
+      "title_ja": "EEA1アプリケーションの公開コードと再現性", "title_en": "EEA1 public-code and reproducibility status",
+      "summary_ja": "6本のEEA1について、公開コードの確認状況と、同一条件の性能測定を再現するために不足する要素を分けて示す。", "summary_en": "Separates public-code availability from the missing elements needed to reproduce performance measurements under consistent conditions for the six EEA1 applications.",
+      "decision_use_ja": "候補システムの比較に進める前に、同一のコード、入力、ビルド、実行条件を用意できるかを判断する。", "decision_use_en": "Use this table to determine whether identical code, input, build, and run conditions can be prepared before comparing candidate systems.",
+      "caveat_ja": "公開コードがあることは、EEA1評価の再現可能性を保証しない。非公開は技術的な品質の評価ではなく、公開情報だけで比較する際の制約を示す。", "caveat_en": "Public code does not guarantee reproducibility of the EEA1 evaluation. An unreleased codebase is not a judgment of technical quality; it is a constraint on comparison using public information.",
+      "columns": [
+        {"column_id": "domain", "label_ja": "分野", "label_en": "Domain"},
+        {"column_id": "code", "label_ja": "公開コード", "label_en": "Public code"},
+        {"column_id": "confirmed", "label_ja": "確認済みの範囲", "label_en": "Confirmed scope"},
+        {"column_id": "gap", "label_ja": "再現性の不足", "label_en": "Reproducibility gap"}
+      ],
+      "rows": [
+        {"term_id": "TERM-EEA1-GENESIS", "cells": [
+          {"column_id": "domain", "text_ja": "生命科学・分子動力学", "text_en": "Life science and molecular dynamics"},
+          {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
+          {"column_id": "confirmed", "text_ja": "公式サイトと開発元リポジトリ", "text_en": "Official site and developer repository"},
+          {"column_id": "gap", "text_ja": "EEA1のコミット、入力、依存関係、実行条件", "text_en": "EEA1 commit, input, dependencies, and run conditions"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK046"}]},
+        {"term_id": "TERM-EEA1-SALMON", "cells": [
+          {"column_id": "domain", "text_ja": "材料科学・実時間TDDFT", "text_en": "Materials science and real-time TDDFT"},
+          {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
+          {"column_id": "confirmed", "text_ja": "開発元リポジトリ", "text_en": "Developer repository"},
+          {"column_id": "gap", "text_ja": "EEA1の版、物理条件、入力、並列配置", "text_en": "EEA1 version, physical conditions, input, and process placement"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}]},
+        {"term_id": "TERM-EEA1-SCALE-LETKF", "cells": [
+          {"column_id": "domain", "text_ja": "気象・データ同化", "text_en": "Weather and data assimilation"},
+          {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
+          {"column_id": "confirmed", "text_ja": "SCALE-LETKFリポジトリ", "text_en": "SCALE-LETKF repository"},
+          {"column_id": "gap", "text_ja": "初期条件、観測データ、アンサンブル設定、版の組合せ", "text_en": "Initial conditions, observations, ensemble setup, and version pairing"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK048"}]},
+        {"term_id": "TERM-EEA1-E-WAVE", "cells": [
+          {"column_id": "domain", "text_ja": "地震・津波防災", "text_en": "Earthquake and tsunami disaster science"},
+          {"column_id": "code", "text_ja": "EEA1コードは非公開", "text_en": "EEA1 code unreleased"},
+          {"column_id": "confirmed", "text_ja": "公式プロジェクトでE-wave FEMの利用を確認", "text_en": "E-wave FEM use confirmed by the official project"},
+          {"column_id": "gap", "text_ja": "公開プロキシまたは再配布可能な評価パッケージ", "text_en": "Public proxy or redistributable evaluation package"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK002"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK051"}]},
+        {"term_id": "TERM-EEA1-FRONTFLOW-BLUE", "cells": [
+          {"column_id": "domain", "text_ja": "ものづくり・非構造格子CFD", "text_en": "Manufacturing and unstructured-grid CFD"},
+          {"column_id": "code", "text_ja": "EEA1コードは非公開", "text_en": "EEA1 code unreleased"},
+          {"column_id": "confirmed", "text_ja": "HPCI公式説明と利用可能施設", "text_en": "HPCI official description and available facilities"},
+          {"column_id": "gap", "text_ja": "公開プロキシ、版固定入力、ビルド・実行手順", "text_en": "Public proxy, versioned input, and build and run procedures"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK002"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK050"}]},
+        {"term_id": "TERM-EEA1-LQCD-DWF-HMC", "cells": [
+          {"column_id": "domain", "text_ja": "基礎科学・格子QCD", "text_en": "Fundamental science and lattice QCD"},
+          {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
+          {"column_id": "confirmed", "text_ja": "富岳・汎用CPU・OpenACC GPUのビルド例", "text_en": "Fugaku, general-CPU, and OpenACC GPU build examples"},
+          {"column_id": "gap", "text_ja": "標準格子、収束条件、混合精度設定、コミット", "text_en": "Standard lattice, convergence, mixed precision, and commit"}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK049"}]}
       ]
     }
   ],

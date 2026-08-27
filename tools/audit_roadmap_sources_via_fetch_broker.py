@@ -90,14 +90,28 @@ def build_audit(root: Path, broker: SafeWebFetchBroker, workers: int) -> dict[st
     checked_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     as_of = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
     sources = collect_sources(root)
+    sources_by_url: dict[str, list[dict[str, Any]]] = {}
+    for source in sources:
+        sources_by_url.setdefault(source["url"], []).append(source)
     results: list[dict[str, Any]] = []
+    unique_url_results: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=workers) as executor:
-        futures = {executor.submit(check_source, source, broker): source for source in sources}
+        futures = {
+            executor.submit(check_source, registrations[0], broker): registrations
+            for registrations in sources_by_url.values()
+        }
         for future in as_completed(futures):
-            results.append(future.result())
+            result = future.result()
+            unique_url_results.append(result)
+            for registration in futures[future]:
+                results.append({**result, **registration})
     results.sort(key=lambda item: (item["roadmap_id"], item["source_id"]))
     summary = {
         status: sum(result["status"] == status for result in results)
+        for status in ("reachable", "access-restricted", "missing", "timeout", "error")
+    }
+    unique_url_status_counts = {
+        status: sum(result["status"] == status for result in unique_url_results)
         for status in ("reachable", "access-restricted", "missing", "timeout", "error")
     }
     source_class_counts = Counter(source["source_class"] for source in sources)
@@ -107,6 +121,10 @@ def build_audit(root: Path, broker: SafeWebFetchBroker, workers: int) -> dict[st
         for source in sources
         if source["source_class"] != "openfs-governance"
     }
+    public_results = [
+        {key: value for key, value in result.items() if key != "error_detail"}
+        for result in results
+    ]
     return {
         "schema_version": "0.1.0",
         "export_id": "ROADMAP-SOURCE-AUDIT-001",
@@ -114,14 +132,15 @@ def build_audit(root: Path, broker: SafeWebFetchBroker, workers: int) -> dict[st
         "audit_id": f"RSA-{as_of.replace('-', '')}-001",
         "as_of": as_of,
         "checked_at": checked_at,
-        "method": "Anonymous HTTP GET through the Safe Web Fetch Broker; redirects, DNS answers, and connection destinations are validated at every hop; at most the first 1 KiB is retained in memory and source bodies are not stored.",
-        "method_ja": "Safe Web Fetch Brokerを介して匿名のHTTP GETリクエストを送り、各ホップでリダイレクト先、DNS応答、実際の接続先を検証します。本文はメモリ上で先頭1 KiBまで取得し、保存しません。",
-        "method_en": "The audit sends anonymous HTTP GET requests through the Safe Web Fetch Broker. It validates redirects, DNS answers, and actual connection destinations at every hop, retains at most the first 1 KiB in memory, and does not store source bodies.",
+        "method": "One anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker; redirects, DNS answers, and connection destinations are validated at every hop; at most the first 1 KiB is retained in memory and source bodies are not stored. The result is mapped to every Source ID registered for that URL.",
+        "method_ja": "重複を除いたURLごとに、Safe Web Fetch Brokerを介して匿名のHTTP GETリクエストを1回送り、各ホップでリダイレクト先、DNS応答、実際の接続先を検証します。本文はメモリ上で先頭1 KiBまで取得し、保存しません。同じURLを登録した各Source IDには同一の取得結果を対応付けます。",
+        "method_en": "The audit sends one anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker. It validates redirects, DNS answers, and actual connection destinations at every hop, retains at most the first 1 KiB in memory, and does not store source bodies. The same retrieval result is mapped to every Source ID registered for that URL.",
         "caveat_ja": "到達性は、特定の実行環境から公開URLへ接続できたかを示すだけであり、資料中の主張の妥当性を保証しません。ブラウザで閲覧できる資料でも、403、429、タイムアウトなどが発生する場合があります。重複を除いたURL数は、独立した情報源の数とは限りません。",
         "caveat_en": "Reachability shows only whether a public URL was accessible from one execution environment; it does not validate claims in the source. A browser-accessible source may still return 403 or 429, or time out. The deduplicated URL count is not necessarily the number of independent information sources.",
         "user_agent": "OpenFS Safe Web Fetch Broker/0.1 (+https://github.com/HPCI-CFSP/OpenFS)",
         "summary": {
             "source_count": len(results),
+            "fetch_count": len(unique_url_results),
             "unique_url_count": len(unique_urls),
             "duplicate_registration_count": len(results) - len(unique_urls),
             "unique_external_url_count": len(unique_external_urls),
@@ -140,8 +159,10 @@ def build_audit(root: Path, broker: SafeWebFetchBroker, workers: int) -> dict[st
                     "openfs-governance",
                 )
             },
+            "unique_url_status_counts": unique_url_status_counts,
             **summary,
         },
+        "results": public_results,
         "publication": {
             "information_classification": "public",
             "publication_approved": True,

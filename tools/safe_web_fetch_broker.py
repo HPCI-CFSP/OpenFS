@@ -369,7 +369,11 @@ class SafeWebFetchBroker:
                     redirect_chain=redirect_chain,
                     method=method,
                 ) from exc
-            comparable = address.ipv4_mapped if isinstance(address, ipaddress.IPv6Address) else address
+            comparable = (
+                address.ipv4_mapped or address
+                if isinstance(address, ipaddress.IPv6Address)
+                else address
+            )
             if not comparable.is_global or comparable in self.metadata_addresses or any(
                 comparable.version == network.version and comparable in network
                 for network in self.blocked_networks

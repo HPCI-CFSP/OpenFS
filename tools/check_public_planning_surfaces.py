@@ -244,6 +244,15 @@ def validate(root: Path = ROOT) -> list[str]:
                 f"{application['application_id']} has unknown sources "
                 f"{sorted(unknown_sources)}"
             )
+        unknown_code_sources = (
+            set(application["code_availability"]["source_ids"])
+            - forecast_source_ids
+        )
+        if unknown_code_sources:
+            errors.append(
+                f"{application['application_id']} code availability has unknown sources "
+                f"{sorted(unknown_code_sources)}"
+            )
         for hint in application["observed_scale_hints"]:
             unknown_hint_sources = set(hint["source_ids"]) - forecast_source_ids
             if unknown_hint_sources:

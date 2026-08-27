@@ -1192,7 +1192,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "search.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
@@ -1208,6 +1208,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     serialized = json.dumps(public_data, ensure_ascii=False, separators=(",", ":"))
     (data_dir / "openfs-public.js").write_text(
         f"window.OPENFS_PUBLIC_DATA={serialized};\n", encoding="utf-8"
+    )
+    search_index = output / "search" / "index.html"
+    search_index.parent.mkdir(parents=True)
+    search_index.write_text(
+        render_template(
+            source / "search.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
     )
     roadmap_index = output / "roadmaps" / "index.html"
     roadmap_index.parent.mkdir(parents=True)

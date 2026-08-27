@@ -55,6 +55,7 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
     monitor = read_json(monitor_path)
     paths = [
         root / "config" / "acquisition-policy.json",
+        root / "config" / "agent-evaluation-policy.json",
         root / "config" / "agent-registry.json",
         root / "config" / "autonomy-policy.json",
         root / "config" / "budgets.json",
@@ -62,8 +63,12 @@ def _policy_hashes(root: Path, monitor_path: Path) -> dict[str, str]:
         root / "config" / "role-permissions.json",
         root / "config" / "skill-registry.json",
         root / "config" / "source-registry.json",
+        root / "evals" / "agent-harness" / "public-pilot-suite.json",
         monitor_path,
     ]
+    paths.extend(
+        sorted((root / "proposals" / "agent-evaluations").glob("AEVAL-*.json"))
+    )
     gap_queue_path = root / "knowledge/public/audits/roadmap-gap-queue.json"
     if gap_queue_path.is_file():
         paths.append(gap_queue_path)

@@ -53,6 +53,9 @@ jobs:
           python3 tools/evaluate_operational_readiness.py \
             --evaluated-at "$GENERATED_AT" \
             --output _automation/operational-readiness.json
+          python3 tools/evaluate_agent_evaluation_readiness.py \
+            --evaluated-at "$GENERATED_AT" \
+            --output _automation/agent-evaluation-readiness.json
           ARGS=(--week "$WEEK" --generated-at "$GENERATED_AT" --operational-readiness _automation/operational-readiness.json --output _automation/weekly-cycle.json)
           if [[ -n "$REQUESTED_MONITOR_ID" ]]; then
             ARGS+=(--monitor-id "$REQUESTED_MONITOR_ID")
@@ -68,6 +71,7 @@ jobs:
           path: |
             _automation/weekly-cycle.json
             _automation/operational-readiness.json
+            _automation/agent-evaluation-readiness.json
           if-no-files-found: error
           retention-days: 30
       - name: Publish coordination Issue

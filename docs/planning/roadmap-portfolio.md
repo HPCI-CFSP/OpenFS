@@ -98,6 +98,15 @@ individual repetitions, correctness, energy, failure/recovery, and porting
 records. `tools/check_benchmark_result_bundle.py` recomputes aggregates and
 applies Gap-specific checks before independent review.
 
+AI-agent and harness comparisons use
+`schemas/agent-evaluation-bundle.schema.json` instead. The contract keeps model
+and harness identity separate and pins prompts, tools, skills, task data,
+budgets, execution and network boundaries, holdout visibility, run traces,
+artifacts, token use, elapsed time, and cost. Dynamic-web evaluations also pin
+retrieval receipts. `tools/check_agent_evaluation_bundle.py` rejects direct
+outbound access, privileged candidate runs, missing holdouts when required,
+budget overruns, and non-independent evaluators before Consensus review.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone

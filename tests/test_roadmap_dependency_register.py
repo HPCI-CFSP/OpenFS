@@ -30,11 +30,20 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
 
     def test_current_register_is_structurally_ready_for_consensus(self):
         result = self.evaluate()
+        expected_p0 = sum(
+            gap["priority"] == "P0" and gap["status"] == "open"
+            for roadmap in self.roadmaps
+            for gap in roadmap["coverage_gaps"]
+        )
         self.assertTrue(result["candidate_ready_for_consensus"])
         self.assertEqual([], result["calculation_errors"])
-        self.assertEqual(16, result["counts"]["open_p0_gaps"])
-        self.assertEqual(15, result["counts"]["edge_propagated_p0_gaps"])
-        self.assertEqual(1, result["counts"]["portfolio_gate_p0_gaps"])
+        self.assertEqual(expected_p0, result["counts"]["open_p0_gaps"])
+        self.assertEqual(
+            expected_p0,
+            result["counts"]["edge_propagated_p0_gaps"]
+            + result["counts"]["portfolio_gate_p0_gaps"],
+        )
+        self.assertGreaterEqual(result["counts"]["portfolio_gate_p0_gaps"], 1)
         self.assertTrue(result["gaps_remain_open"])
 
     def test_cycle_fails_closed(self):

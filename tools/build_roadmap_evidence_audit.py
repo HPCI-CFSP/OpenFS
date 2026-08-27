@@ -182,8 +182,17 @@ def build_audit(root: Path) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     generation_band_entries: list[dict[str, Any]] = []
     timing_counts: Counter[str] = Counter()
-    for path in sorted((root / "knowledge" / "public" / "roadmaps").glob("*.json")):
-        roadmap = load_json(path)
+    roadmaps = [
+        load_json(path)
+        for path in sorted(
+            (root / "knowledge" / "public" / "roadmaps").glob("*.json")
+        )
+    ]
+    as_of_values = {roadmap["as_of"] for roadmap in roadmaps}
+    if len(as_of_values) != 1:
+        raise ValueError(f"roadmap as_of values disagree: {sorted(as_of_values)}")
+    as_of = as_of_values.pop()
+    for roadmap in roadmaps:
         source_classes = {
             source["source_id"]: source["source_class"]
             for source in roadmap["sources"]
@@ -218,7 +227,7 @@ def build_audit(root: Path) -> dict[str, Any]:
         "schema_version": "0.1.0",
         "export_id": "ROADMAP-EVIDENCE-AUDIT-001",
         "status": "published",
-        "as_of": "2026-08-26",
+        "as_of": as_of,
         "review_scope": "single-model-structured-claim-classification",
         "consensus_status": "incomplete",
         "method_ja": "6本のロードマップに含まれる全マイルストーンと世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",

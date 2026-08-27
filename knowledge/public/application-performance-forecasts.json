@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
-  "as_of": "2026-08-26",
+  "as_of": "2026-08-28",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーション性能予測",
@@ -38,13 +38,18 @@
   "sources": [
     {"source_id": "SRC-PERF001", "title": "『富岳』の次世代となる新たなフラッグシップシステムにおける基本設計技術報告書 第1.1版", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_ja.pdf", "published_at": "2026-05-29", "source_class": "research-organization"},
     {"source_id": "SRC-PERF002", "title": "RIKEN-RCCS Benchpark", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchpark", "source_class": "project-official"},
-    {"source_id": "SRC-PERF003", "title": "RIKEN-RCCS Benchkit", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchkit", "source_class": "project-official"},
+    {"source_id": "SRC-PERF003", "title": "RIKEN-RCCS BenchKit", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchkit", "source_class": "project-official"},
     {"source_id": "SRC-PERF004", "title": "HPCIシステム利用研究課題 利用報告書 hp230330", "publisher": "HPCI", "url": "https://www.hpci-office.jp/output/hp230330/outcome.pdf", "source_class": "government-official"},
     {"source_id": "SRC-PERF005", "title": "スーパーコンピュータ「富岳」のシステム構成", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/system/index.html", "source_class": "research-organization"},
     {"source_id": "SRC-PERF006", "title": "GENESIS", "publisher": "GENESIS developers / RIKEN", "url": "https://mdgenesis.org/", "source_class": "project-official"},
     {"source_id": "SRC-PERF007", "title": "SALMON", "publisher": "SALMON developers", "url": "https://github.com/SALMON-TDDFT/SALMON", "source_class": "project-official"},
     {"source_id": "SRC-PERF008", "title": "SCALE-RM: scale_letkf.F90", "publisher": "SCALE developers / RIKEN", "url": "https://scale.riken.jp/archives/5.5.0/d3/d43/scale__letkf_8F90.html", "source_class": "project-official"},
-    {"source_id": "SRC-PERF009", "title": "RIKEN-LQCD qws", "publisher": "RIKEN-LQCD", "url": "https://github.com/RIKEN-LQCD/qws", "source_class": "project-official"}
+    {"source_id": "SRC-PERF009", "title": "LQCD-DWF-HMC", "publisher": "LQCD-DWF-HMC developers", "url": "https://github.com/i-kanamori/LQCD-DWF-HMC", "source_class": "project-official"},
+    {"source_id": "SRC-PERF010", "title": "GENESIS source repository", "publisher": "GENESIS developers / RIKEN R-CCS", "url": "https://github.com/genesis-release-r-ccs/genesis", "source_class": "project-official"},
+    {"source_id": "SRC-PERF011", "title": "FugakuNEXT ISC2026 Poster and Handout", "publisher": "RIKEN R-CCS", "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf", "source_class": "research-organization"},
+    {"source_id": "SRC-PERF012", "title": "FrontFlow/blue", "publisher": "HPCI", "url": "https://www.hpci-office.jp/en/for_users/appli_software/appli_frontflowblue", "source_class": "government-official"},
+    {"source_id": "SRC-PERF013", "title": "E-wave FEM project information", "publisher": "JAMSTEC", "url": "https://www.jamstec.go.jp/fugaku-earthq/en/information_2021.html", "source_class": "research-organization"},
+    {"source_id": "SRC-PERF014", "title": "SCALE-LETKF source repository", "publisher": "SCALE-LETKF developers / RIKEN", "url": "https://github.com/scale-letkf-riken/scale-letkf", "source_class": "project-official"}
   ],
   "candidate_systems": [
     {
@@ -96,7 +101,8 @@
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "適用可能な問題規模と並列効率の確認が必要。", "reason_en": "Applicable problem size and parallel efficiency must be established."}
       ],
       "observed_scale_hints": [{"nodes": 4, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "MPI通信パターンをScore-Pで取得したもので、実行時間の予測値ではない。", "note_en": "MPI communication was traced with Score-P; this is not a runtime forecast."}],
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF006"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF006", "SRC-PERF010"], "note_ja": "公式Webサイトと開発元の公開GitHubリポジトリを確認した。予測の再現には、EEA1で使用した版と入力の固定が別途必要である。", "note_en": "The official website and the developers' public GitHub repository were confirmed. Reproducing the forecast still requires the EEA1 version and input to be pinned."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF006", "SRC-PERF010"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
     },
     {
       "application_id": "APP-EEA1-SALMON", "name": "SALMON", "domain_ja": "新物質・エネルギー・TDDFT", "domain_en": "Materials, energy, and TDDFT", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一物理条件の実行時間", "primary_metric_en": "Time-to-solution for the same physical conditions", "domain_metric_ja": "電子時間発展ステップ数/秒", "domain_metric_en": "Electronic time-evolution steps/s",
@@ -109,7 +115,8 @@
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題サイズを拡大した入力と並列効率の確認が必要。", "reason_en": "A larger problem instance and evidence of parallel efficiency are required."}
       ],
       "observed_scale_hints": [{"nodes": 48, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレースであり、標準規模である128ノードの実測値を代替するものではない。", "note_en": "Communication was traced with SST/DUMPI; the trace does not replace a measured result at the standard scale of 128 nodes."}],
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF007"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF007"], "note_ja": "開発元の公開GitHubリポジトリを確認した。EEA1で使用した版、入力、ビルド条件は未固定である。", "note_en": "The developers' public GitHub repository was confirmed. The EEA1 version, input, and build conditions are not yet pinned."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF007"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
     },
     {
       "application_id": "APP-EEA1-SCALE-LETKF", "name": "SCALE-LETKF", "domain_ja": "気象・気候・データ同化", "domain_en": "Weather, climate, and data assimilation", "eea_group": "EEA1", "compute_characteristic_ids": [1, 4, 5], "scaling_modes": ["weak-scaling", "throughput-ensemble"], "primary_metric_ja": "同一予報・同化期間の実行時間", "primary_metric_en": "Time-to-solution for the same forecast and assimilation window", "domain_metric_ja": "予報日数/日およびアンサンブルメンバー数/日", "domain_metric_en": "Forecast days/day and ensemble members/day",
@@ -121,7 +128,9 @@
         {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "アンサンブル並列と空間並列を分離した測定が必要。", "reason_en": "Measurements must separate ensemble and spatial parallelism."},
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "実運用可能な大規模入力とI/O制約の確認が必要。", "reason_en": "An operationally realistic large input and I/O constraints must be established."}
       ],
-      "observed_scale_hints": [], "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF008"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-002"]
+      "observed_scale_hints": [],
+      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF008", "SRC-PERF014"], "note_ja": "SCALE-RMの公開ソース文書とSCALE-LETKFの公開GitHubリポジトリを確認した。完全なEEA1入力と初期条件は未登録である。", "note_en": "Public SCALE-RM source documentation and the SCALE-LETKF GitHub repository were confirmed. A complete EEA1 input and initial conditions are not registered."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF008", "SRC-PERF014"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-002", "GAP-PERF-005"]
     },
     {
       "application_id": "APP-EEA1-E-WAVE", "name": "E-Wave", "domain_ja": "地震・津波防災", "domain_en": "Earthquake and tsunami disaster science", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一波動伝播問題の実行時間", "primary_metric_en": "Time-to-solution for the same wave-propagation problem", "domain_metric_ja": "時間ステップ数/秒", "domain_metric_en": "Time steps/s",
@@ -133,7 +142,9 @@
         {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "低遅延通信を含む検証が必要。", "reason_en": "Validation including low-latency communication is required."},
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題規模、反復数、収束条件を固定した検証が必要。", "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."}
       ],
-      "observed_scale_hints": [], "source_ids": ["SRC-PERF001"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+      "observed_scale_hints": [],
+      "code_availability": {"status": "unreleased-in-eea1-reference", "source_ids": ["SRC-PERF011", "SRC-PERF013"], "note_ja": "JAMSTECの公式ページでE-wave FEMの利用は確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。公開コードへのリンクは確認できていない。", "note_en": "JAMSTEC's official page confirms use of E-wave FEM, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased. No public code link was confirmed."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF011", "SRC-PERF013"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
     },
     {
       "application_id": "APP-EEA1-FRONTFLOW-BLUE", "name": "FrontFlow/blue", "domain_ja": "ものづくり・非構造格子CFD", "domain_en": "Manufacturing and unstructured-grid CFD", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一流体解析の実行時間", "primary_metric_en": "Time-to-solution for the same CFD case", "domain_metric_ja": "時間ステップ数/秒", "domain_metric_en": "Time steps/s",
@@ -146,7 +157,8 @@
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "大規模メッシュと並列効率の公開検証が必要。", "reason_en": "Public validation for a large mesh and parallel efficiency is required."}
       ],
       "observed_scale_hints": [{"nodes": 768, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレース。1,024ノードの標準実測とは区別する。", "note_en": "Communication was traced with SST/DUMPI and remains distinct from a 1,024-node standard measurement."}],
-      "source_ids": ["SRC-PERF001", "SRC-PERF004"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+      "code_availability": {"status": "unreleased-in-eea1-reference", "source_ids": ["SRC-PERF011", "SRC-PERF012"], "note_ja": "HPCIの公式ページでアプリケーションの概要と利用可能施設を確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。", "note_en": "The HPCI official page documents the application and available facilities, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF011", "SRC-PERF012"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
     },
     {
       "application_id": "APP-EEA1-LQCD-DWF-HMC", "name": "LQCD-DWF-HMC", "domain_ja": "基礎科学・格子QCD", "domain_en": "Fundamental science and lattice QCD", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一格子・収束条件の実行時間", "primary_metric_en": "Time-to-solution for the same lattice and convergence conditions", "domain_metric_ja": "HMCトラジェクトリ数/日", "domain_metric_en": "HMC trajectories/day",
@@ -159,7 +171,8 @@
         {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "2,048ノード通信トレースからの外挿だけでは不足。", "reason_en": "Extrapolation from the 2,048-node communication trace alone is insufficient."}
       ],
       "observed_scale_hints": [{"nodes": 2048, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレースであり、実行時間、格子条件、収束条件を揃えた予測校正値ではない。", "note_en": "Communication was traced with SST/DUMPI; it is not a forecast calibration value with runtime, lattice, and convergence conditions fixed."}],
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF009"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001"]
+      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF009"], "note_ja": "EEA1名と一致する公開GitHubリポジトリを確認した。富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例を含むが、標準入力と測定条件の固定は未完了である。", "note_en": "A public GitHub repository matching the EEA1 name was confirmed. It includes Fugaku, general-CPU, and OpenACC GPU build examples, but standard inputs and measurement conditions are not yet pinned."},
+      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF009"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
     }
   ],
   "forecasts": [
@@ -201,10 +214,11 @@
     {"forecast_id": "FORECAST-LQCD-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 0.7, "base": 1.4, "upper": 2.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false}
   ],
   "coverage_gaps": [
-    {"gap_id": "GAP-PERF-001", "priority": "P0", "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力", "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales", "impact_ja": "公開実測が一部の小規模入力に限られ、暫定予測の校正と予測誤差の検証を行えない。", "impact_en": "Public measurements cover only selected small inputs, preventing calibration and error validation of the provisional forecasts.", "next_action_ja": "公開可能な入力をBenchpark/Benchkitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。", "next_action_en": "Register publishable inputs in Benchpark/Benchkit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.", "status": "open"},
+    {"gap_id": "GAP-PERF-001", "priority": "P0", "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力", "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales", "impact_ja": "公開実測が一部の小規模入力に限られ、暫定予測の校正と予測誤差の検証を行えない。", "impact_en": "Public measurements cover only selected small inputs, preventing calibration and error validation of the provisional forecasts.", "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。", "next_action_en": "Register publishable inputs in Benchpark/BenchKit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.", "status": "open"},
     {"gap_id": "GAP-PERF-002", "priority": "P0", "scope_ja": "計算・メモリ・通信・I/Oと、計算・通信のオーバーラップを扱うモデルの公開係数、校正データ、独立検証誤差", "scope_en": "Published coefficients, calibration data, and independent-validation errors for models of compute, memory, communication, I/O, and compute-communication overlap", "impact_ja": "公開した分析式は再計算できるが、アプリケーション別の仮定と予測区間を実測で反証できず、調達判断には利用できない。", "impact_en": "The published analytical equation is reproducible, but application assumptions and forecast intervals cannot yet be falsified against measurements and cannot support procurement.", "next_action_ja": "PMCARDスキーマでモデル版と適用範囲を登録し、校正用データと独立検証用データを分離する。", "next_action_en": "Register model versions and applicability with PMCARD, and keep calibration datasets separate from independent-validation datasets.", "status": "open"},
     {"gap_id": "GAP-PERF-003", "priority": "P1", "scope_ja": "同一ノード数、同一アクセラレータ数、同一メモリ容量、同一消費電力、同一費用で比較するための候補構成対応表", "scope_en": "Candidate-configuration mappings for comparisons at equal node count, accelerator count, memory capacity, power, or cost", "impact_ja": "ノード当たりの性能、容量、消費電力が異なるため、同一ノード数だけでは候補間の比較条件がそろわない。", "impact_en": "Because per-node performance, capacity, and power differ, equal-node-count comparisons do not provide equivalent conditions.", "next_action_ja": "HPCIシステム台帳と候補製品仕様を接続し、各比較基準の構成と欠測を明示する。", "next_action_en": "Connect the HPCI inventory with candidate specifications and expose configurations and missing data for each comparison basis.", "status": "open"},
-    {"gap_id": "GAP-PERF-004", "priority": "P1", "scope_ja": "標準規模を適用できないアプリケーションまたは入力に対する明示的な「適用外」の判定", "scope_en": "Explicit not-applicable decisions where an application or input cannot use a standard scale", "impact_ja": "実行不能な規模を予測対象に含めるおそれがある。", "impact_en": "Infeasible scales may be included in forecasts.", "next_action_ja": "アプリケーション責任者がメモリ容量、分割可能性、科学的妥当性を確認し、理由を付けて「適用外」へ変更する。", "next_action_en": "Application owners should confirm memory fit, decomposition, and scientific validity, then mark unsupported scales as not applicable and record the reasons.", "status": "open"}
+    {"gap_id": "GAP-PERF-004", "priority": "P1", "scope_ja": "標準規模を適用できないアプリケーションまたは入力に対する明示的な「適用外」の判定", "scope_en": "Explicit not-applicable decisions where an application or input cannot use a standard scale", "impact_ja": "実行不能な規模を予測対象に含めるおそれがある。", "impact_en": "Infeasible scales may be included in forecasts.", "next_action_ja": "アプリケーション責任者がメモリ容量、分割可能性、科学的妥当性を確認し、理由を付けて「適用外」へ変更する。", "next_action_en": "Application owners should confirm memory fit, decomposition, and scientific validity, then mark unsupported scales as not applicable and record the reasons.", "status": "open"},
+    {"gap_id": "GAP-PERF-005", "priority": "P1", "scope_ja": "EEA1の6アプリケーションについて、版を固定した公開コード、入力、ビルド条件、実行手順を対応付けた再現性台帳", "scope_en": "A reproducibility register mapping versioned public code, inputs, build conditions, and run procedures for all six EEA1 applications", "impact_ja": "公開コードが確認できるアプリケーションでも、EEA1評価に用いた版と入力を一意に再実行できない。E-WaveとFrontFlow/blueは、2026年の公式資料でコード本体が非公開とされている。", "impact_en": "Even where public code is available, the exact EEA1 version and input cannot be rerun unambiguously. The 2026 official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.", "next_action_ja": "公開されている4本はコミット、入力、依存関係、実行コマンドを固定する。非公開の2本は、公開可能なプロキシまたは再配布可能な評価パッケージの提供可否を開発元へ確認する。", "next_action_en": "Pin commits, inputs, dependencies, and commands for the four public codebases. For the two unreleased codebases, ask the developers whether a public proxy or redistributable evaluation package can be provided.", "status": "open"}
   ],
   "caveat_ja": "数値は、公開された設計仮定と、校正されていないアプリケーション特性から算出した、確度の低い予測です。公開されていないベンダー評価値は使用していません。独立したAIモデルによる合意判定、候補機での実測、予測誤差の検証は未完了であり、調達評価や性能保証には使用できません。",
   "caveat_en": "The values are low-confidence analytical forecasts derived from public design assumptions and uncalibrated application characteristics. Unpublished vendor estimates are not used. Consensus review by independent models, measurements on candidate systems, and validation of forecast error are incomplete; the values therefore cannot support procurement evaluation or performance guarantees.",

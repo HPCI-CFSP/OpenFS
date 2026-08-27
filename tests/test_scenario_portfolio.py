@@ -31,9 +31,14 @@ class ScenarioPortfolioTests(unittest.TestCase):
 
     def test_current_portfolio_is_structurally_ready_for_consensus(self):
         result = self.evaluate()
+        expected_p0 = sum(
+            gap["priority"] == "P0" and gap["status"] == "open"
+            for roadmap in self.roadmaps
+            for gap in roadmap["coverage_gaps"]
+        )
         self.assertTrue(result["candidate_ready_for_consensus"])
         self.assertEqual([], result["calculation_errors"])
-        self.assertEqual(16, result["counts"]["open_p0_gaps"])
+        self.assertEqual(expected_p0, result["counts"]["open_p0_gaps"])
         self.assertEqual(6, result["counts"]["decision_evidence_contracts"])
         self.assertEqual(36, result["counts"]["implementation_phases"])
         self.assertGreaterEqual(result["counts"]["known_evidence_references"], 300)

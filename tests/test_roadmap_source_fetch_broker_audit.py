@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from audit_roadmap_sources_via_fetch_broker import check_source  # noqa: E402
+from audit_roadmap_sources_via_fetch_broker import build_audit, check_source  # noqa: E402
 from safe_web_fetch_broker import FetchBlocked, FetchResult  # noqa: E402
 
 
@@ -38,8 +38,10 @@ class StubBroker:
     def __init__(self, result=None, error=None):
         self.result = result
         self.error = error
+        self.calls = []
 
     def fetch(self, url, *, method, capture_limit):
+        self.calls.append(url)
         if self.error:
             raise self.error
         return self.result
@@ -65,6 +67,30 @@ class RoadmapSourceFetchBrokerAuditTests(unittest.TestCase):
         self.assertEqual("error", result["status"])
         self.assertEqual("policy-block", result["error_kind"])
         self.assertEqual("blocked", result["fetch_policy_decision"])
+
+    def test_published_audit_keeps_per_source_results_without_raw_errors(self):
+        blocked_receipt = receipt(
+            http_status=None,
+            media_type=None,
+            policy_decision="blocked",
+        )
+        audit = build_audit(
+            ROOT,
+            StubBroker(error=FetchBlocked("private destination", blocked_receipt)),
+            workers=2,
+        )
+        self.assertEqual(audit["summary"]["source_count"], len(audit["results"]))
+        self.assertTrue(all("error_detail" not in item for item in audit["results"]))
+        self.assertTrue(all(item["error_kind"] == "policy-block" for item in audit["results"]))
+
+    def test_duplicate_urls_are_fetched_once_and_mapped_to_each_source(self):
+        broker = StubBroker(FetchResult(b"ok", receipt()))
+        audit = build_audit(ROOT, broker, workers=2)
+        unique_urls = {item["url"] for item in audit["results"]}
+        self.assertEqual(len(unique_urls), len(broker.calls))
+        self.assertEqual(audit["summary"]["fetch_count"], len(unique_urls))
+        self.assertEqual(len(broker.calls), len(set(broker.calls)))
+        self.assertEqual(audit["summary"]["source_count"], len(audit["results"]))
 
 
 if __name__ == "__main__":

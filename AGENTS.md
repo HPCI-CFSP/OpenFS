@@ -169,6 +169,14 @@ remaining matching items; never silently treat the example as the full scope.
   complementary options. Apply this to high-value compute, packaging, network,
   software-portability, workload, and evaluation choices as well as memory; do not
   create low-value tables merely to cover every term.
+- Assess benchmark importance on separate, auditable dimensions: an official or
+  reproducible public implementation, recurring public results, independent
+  adoption or submissions, active governance and maintenance, HPCI workload
+  relevance, and likely influence on evaluation or procurement. News coverage is
+  supporting context only. Link the official code or benchmark site directly and
+  list papers as supporting references; never treat publication on a preprint
+  server alone as evidence of broad use. Record the result in the central glossary
+  and comparison data instead of duplicating rankings across pages.
 - Label OpenFS evaluation and adoption gates as provisional plans and keep them
   distinct from vendor, standards, policy, and observed milestones.
 - Record unresolved research as structured Coverage Gaps with decision impact and
@@ -215,6 +223,28 @@ remaining matching items; never silently treat the example as the full scope.
   Gap-specific correctness, energy, RAS, portability, and interoperability
   requirements. A passing bundle remains provisional until independent
   reproduction, Consensus, and the applicable human decision.
+- Store AI-agent and harness evaluation candidates under
+  `proposals/agent-evaluations/` using
+  `schemas/agent-evaluation-bundle.schema.json`. Record the model and harness as
+  separate versioned components and pin the prompt, tools, skills, evaluator,
+  task set, budget, execution boundary, network path, write roots, credentials,
+  holdout visibility, traces, artifacts, tokens, time, and cost. Run
+  `tools/check_agent_evaluation_bundle.py`. A container or an LLM-generated
+  security score is not proof of enforced isolation, and a passing bundle is
+  only a candidate for independent Consensus review.
+- Use `evals/agent-harness/public-pilot-suite.json` only for public development
+  and regression testing. Validate it with
+  `tools/check_agent_evaluation_task_suite.py`. Its prompts and expected facts
+  are public, so it is never a formal holdout and cannot establish
+  generalization. Formal evaluation requires hidden tasks and answers held by an
+  independent custodian outside this public repository.
+- Before a provider-backed Agent executes a production Work Item, run
+  `tools/evaluate_agent_evaluation_readiness.py --agent-id <agent-id>
+  --require-ready`. The gate binds an accepted evaluation to the exact Agent ID,
+  role, requested model ID, prompt profile, harness repository, and harness
+  commit. A stale or mismatched bundle, an unavailable external holdout, a
+  disabled Agent, or incomplete Consensus must block execution. Never replace
+  the external holdout with the public development suite.
 - Store privacy-reviewed aggregate workload candidates under
   `proposals/workload-observations/` using
   `schemas/workload-observation-summary.schema.json`. Aggregate inside the
