@@ -232,7 +232,26 @@ class RoadmapReferenceDataTests(unittest.TestCase):
             for milestone in lane["milestones"]
             if milestone["milestone_id"] == "MS-BLUE-DDN-INFINIA-2026Q3"
         )
-        self.assertEqual("as-of-baseline", infinia_baseline["timing_basis"])
+        self.assertEqual("observed", infinia_baseline["timing_basis"])
+        self.assertEqual(["SRC-BLUE014", "SRC-BLUE015", "SRC-BLUE026"], infinia_baseline["source_ids"])
+        vast_release = next(
+            milestone
+            for lane in blueprint["lanes"]
+            if lane["lane_id"] == "LANE-BLUE-VAST"
+            for milestone in lane["milestones"]
+            if milestone["milestone_id"] == "MS-BLUE-VAST-2026Q3"
+        )
+        self.assertEqual("observed", vast_release["timing_basis"])
+        self.assertIn("SRC-BLUE027", vast_release["source_ids"])
+        exascaler_announcement = next(
+            milestone
+            for lane in blueprint["lanes"]
+            if lane["lane_id"] == "LANE-BLUE-DDN-EXASCALER"
+            for milestone in lane["milestones"]
+            if milestone["milestone_id"] == "MS-BLUE-DDN-EXASCALER-2026Q1"
+        )
+        self.assertEqual("published", exascaler_announcement["maturity"])
+        self.assertEqual(["SRC-BLUE025"], exascaler_announcement["source_ids"])
         gfarm_sources = {
             source_id
             for lane in blueprint["lanes"]
