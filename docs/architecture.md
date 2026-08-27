@@ -133,8 +133,11 @@ Pages renderer selects the terms and comparison sets relevant to the current
 roadmap, makes terms interactive, and resolves citations back to those roadmap
 sources. Templates and roadmap exports do not carry duplicate glossary prose.
 Comparison sets are deliberately cross-domain: memory hierarchy, advanced
-integration, compute platforms, interconnect roles, portability models, and
-evaluation methods.
+integration, compute platforms, interconnect roles, portability models,
+evaluation methods, benchmark research priority, AI training stacks, and storage
+and AI data platforms. Benchmark priority is multi-dimensional rather than a
+popularity score: official code, recurring public results, independent use,
+maintenance, HPCI relevance, and decision impact remain separately inspectable.
 
 The catalog dialog has a separate decision-support projection in
 `knowledge/public/topic-decision-support.json`. It is organized by canonical
@@ -338,6 +341,14 @@ Emerging-topic agents create additive Research Topic Proposals with Japanese/Eng
 ## Public projection
 
 `tools/build_pages_site.py` projects only approved public paths into a static GitHub Pages artifact. Candidate and illustrative scenarios, proposals, assessments, runs, reviews, and private/NDA paths are excluded. A published artifact also needs explicit public-classification metadata and a Publication Decision ID; only allowlisted fields are copied. Pages publication is a view over published artifacts, not a promotion mechanism.
+
+The Pages cross-site search runs entirely in the browser over
+`data/openfs-public.js`. It indexes the already projected public topics,
+roadmaps, tracks, glossary terms, comparisons, planning options, and registered
+roadmap sources. Search results link to stable topic, track, and term query
+parameters. OpenFS does not commit a second hand-maintained search index or send
+queries to an external search service; the publication projection remains the
+single source of searchable content.
 
 ## Planned repository areas
 

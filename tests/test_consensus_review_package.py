@@ -441,7 +441,7 @@ class ConsensusReviewPackageTests(unittest.TestCase):
         )
         agent = self._registered_reviewer(1)
         review = self._review(agent, registry_digest)
-        review["reviewed_at"] = "2026-08-27T00:00:00Z"
+        review["reviewed_at"] = "2099-01-01T00:00:00Z"
         result = self._evaluate_synthetic([review], [agent])
         self.assertEqual([], result["review_results"]["eligible_review_ids"])
         self.assertTrue(

@@ -2,27 +2,27 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20260826-001",
-  "as_of": "2026-08-26",
-  "generated_at": "2026-08-26T10:31:20Z",
+  "queue_id": "RGQ-20260828-001",
+  "as_of": "2026-08-28",
+  "generated_at": "2026-08-28T02:10:00+09:00",
   "method_ja": "6本のロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the six roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
     "roadmap_count": 6,
-    "gap_count": 34,
-    "p0": 16,
-    "p1": 12,
+    "gap_count": 39,
+    "p0": 19,
+    "p1": 14,
     "p2": 6,
-    "source_discovery": 33,
+    "source_discovery": 38,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 33,
+    "staged_monitor_disabled": 38,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 15,
-    "generated_query_fallbacks": 18,
-    "p0_explicit_query_overrides": 15,
+    "explicit_query_overrides": 18,
+    "generated_query_fallbacks": 20,
+    "p0_explicit_query_overrides": 18,
     "p0_generated_query_fallbacks": 0
   },
   "assignments": [
@@ -360,6 +360,66 @@
       "queue_item_id": "RGQ-0006"
     },
     {
+      "gap_id": "GAP-COMP-007",
+      "roadmap_id": "RM-HW-COMPUTE",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "AMD Matrix CoreとBroadcomのカスタムXPUの科学計算精度、実効性能、利用条件",
+      "scope_en": "Scientific-computing accuracy, delivered performance, and access conditions for AMD Matrix Cores and Broadcom custom XPUs",
+      "impact_ja": "対応形式や顧客向け配備計画だけでは、HPCIの候補として比較できない。",
+      "impact_en": "Supported formats and customer deployment plans alone do not make the technologies comparable as HPCI candidates.",
+      "next_action_ja": "公開可能な混合精度・疎行列・科学AIワークロードで再現可能な測定を行い、カスタムXPUは一般提供・共同開発・クラウド利用の条件を一次情報で追跡する。",
+      "next_action_en": "Run reproducible mixed-precision, sparse-linear-algebra, and scientific-AI workloads, and track primary evidence for general availability, co-development, or cloud access to custom XPUs.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "AMD CDNA Matrix Core Instinct scientific computing mixed precision sparse benchmark accuracy power official"
+        },
+        {
+          "language": "en",
+          "query": "Broadcom custom XPU accelerator scientific AI benchmark access cloud co-development official"
+        },
+        {
+          "language": "ja",
+          "query": "AMD Matrix Core Broadcom カスタムXPU 科学計算 精度 実効性能 消費電力 利用条件"
+        }
+      ],
+      "required_source_classes": [
+        "vendor-primary",
+        "research-primary",
+        "peer-reviewed-research",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-007-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "版を固定した公開可能な混合精度、疎行列、科学AIワークロードを用い、AMD Matrix Coreと比較対象アクセラレータについて、計算結果の妥当性、解を得るまでの時間、消費エネルギーを同一条件で測定する。",
+            "requirement_en": "Using versioned, publishable mixed-precision, sparse-linear-algebra, and scientific-AI workloads, measure result correctness, time-to-solution, and energy-to-solution for AMD Matrix Cores and comparison accelerators under common conditions."
+          },
+          {
+            "criterion_id": "GAP-COMP-007-C2",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "BroadcomのカスタムXPUについて、一般提供、クラウド利用、共同開発の範囲、ソフトウェア利用条件、供給時期を公式情報で確認し、HPCIから利用可能な経路があるかを区別する。",
+            "requirement_en": "Confirm official terms for general availability, cloud access, co-development scope, software access, and supply timing for Broadcom custom XPUs, distinguishing whether an access path is available to HPCI."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0007"
+    },
+    {
       "gap_id": "GAP-NET-003",
       "roadmap_id": "RM-HW-INTERCONNECT",
       "priority": "P0",
@@ -412,7 +472,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0007"
+      "queue_item_id": "RGQ-0008"
     },
     {
       "gap_id": "GAP-NET-004",
@@ -468,7 +528,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0008"
+      "queue_item_id": "RGQ-0009"
     },
     {
       "gap_id": "GAP-MEM003",
@@ -528,7 +588,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0009"
+      "queue_item_id": "RGQ-0010"
     },
     {
       "gap_id": "GAP-PORT-001",
@@ -584,7 +644,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0010"
+      "queue_item_id": "RGQ-0011"
     },
     {
       "gap_id": "GAP-PORT-004",
@@ -639,7 +699,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0011"
+      "queue_item_id": "RGQ-0012"
     },
     {
       "gap_id": "GAP-PORT-006",
@@ -699,7 +759,66 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0012"
+      "queue_item_id": "RGQ-0013"
+    },
+    {
+      "gap_id": "GAP-PORT-007",
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "Megatron-LM、Megatron Core、Megatron-DeepSpeedの共通モデル・複数GPU環境での再現比較",
+      "scope_en": "Reproducible comparison of Megatron-LM, Megatron Core, and Megatron-DeepSpeed on common models and multiple GPU platforms",
+      "impact_ja": "機能一覧だけでは、チェックポイント互換性、収束、性能、障害回復、保守継続性を判断できない。",
+      "impact_en": "Feature lists alone do not establish checkpoint compatibility, convergence, performance, recovery, or maintenance continuity.",
+      "next_action_ja": "版を固定した小規模モデルと実運用規模の代表モデルについて、NVIDIAおよびAMD環境でビルド、収束、性能、チェックポイント再開を継続測定する。",
+      "next_action_en": "Continuously measure builds, convergence, performance, and checkpoint restart on NVIDIA and AMD systems using a versioned small model and a representative production-scale model.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "Megatron-LM Megatron Core Megatron-DeepSpeed release maintenance checkpoint compatibility convergence benchmark NVIDIA AMD"
+        },
+        {
+          "language": "en",
+          "query": "Megatron Core DeepSpeed common model reproducible throughput convergence checkpoint restart multi GPU benchmark"
+        },
+        {
+          "language": "ja",
+          "query": "Megatron-LM Megatron Core Megatron-DeepSpeed 保守状況 チェックポイント 収束 性能 比較"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "peer-reviewed-research"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-007-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "Megatron-LM、Megatron Core、Megatron-DeepSpeedのリリース、保守状態、対応モデル、並列化方式、チェックポイント形式を版付き一次情報で比較する。",
+            "requirement_en": "Compare versioned primary evidence for releases, maintenance status, supported models, parallelism methods, and checkpoint formats across Megatron-LM, Megatron Core, and Megatron-DeepSpeed."
+          },
+          {
+            "criterion_id": "GAP-PORT-007-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一モデル、データ、精度条件を用い、NVIDIAおよびAMD環境でビルド、収束、スループット、メモリ使用量、チェックポイント再開、障害回復を2つ以上の独立した実行環境で再現する。",
+            "requirement_en": "Using identical models, data, and accuracy conditions, reproduce build, convergence, throughput, memory use, checkpoint restart, and failure recovery on NVIDIA and AMD systems in at least two independent execution environments."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0014"
     },
     {
       "gap_id": "GAP-BLUE-001",
@@ -754,7 +873,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0013"
+      "queue_item_id": "RGQ-0015"
     },
     {
       "gap_id": "GAP-BLUE-002",
@@ -809,7 +928,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0014"
+      "queue_item_id": "RGQ-0016"
     },
     {
       "gap_id": "GAP-BLUE-003",
@@ -864,7 +983,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0015"
+      "queue_item_id": "RGQ-0017"
     },
     {
       "gap_id": "GAP-BLUE-006",
@@ -900,7 +1019,68 @@
       "closure_plan_origin": "consensus-policy",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0016"
+      "queue_item_id": "RGQ-0018"
+    },
+    {
+      "gap_id": "GAP-BLUE-007",
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "ストレージ・AIデータ基盤の共通条件による独立比較",
+      "scope_en": "Independent storage and AI-data-platform comparison under common conditions",
+      "impact_ja": "帯域、メタデータ性能、チェックポイント、RAG、障害復旧、運用費用のベンダー横断比較がなく、用途ごとの採用判断を支えられない。",
+      "impact_en": "Without cross-vendor measurements of bandwidth, metadata, checkpointing, RAG, recovery, and operating cost, the evidence cannot support workload-specific adoption decisions.",
+      "next_action_ja": "EXAScaler、Infinia、VAST Data Platform、Gfarm、Lustre、IBM Storage Scale、BeeGFS、DAOS、Ceph、WEKAを、同一のデータセット、障害条件、ノード規模、広域配置、運用手順で評価し、測定コードと結果を公開する。",
+      "next_action_en": "Evaluate EXAScaler, Infinia, VAST Data Platform, Gfarm, Lustre, IBM Storage Scale, BeeGFS, DAOS, Ceph, and WEKA with common datasets, failure conditions, node scales, geographic placement, and operating procedures, then publish the measurement code and results.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "DDN EXAScaler Infinia VAST Data Platform Lustre IBM Storage Scale BeeGFS DAOS independent benchmark checkpoint metadata RAG recovery"
+        },
+        {
+          "language": "en",
+          "query": "HPC AI storage platform common dataset node scale failure injection operations cost reproducible comparison"
+        },
+        {
+          "language": "ja",
+          "query": "HPC AI ストレージ基盤 比較 メタデータ チェックポイント RAG 障害復旧 運用費用"
+        }
+      ],
+      "required_source_classes": [
+        "vendor-primary",
+        "official-primary",
+        "research-primary",
+        "peer-reviewed-research",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-007-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "EXAScaler、Infinia、VAST Data Platform、Lustre、IBM Storage Scale、BeeGFS、DAOSを、同一データセット、ノード規模、クライアント構成で比較し、帯域、メタデータ性能、チェックポイント、RAGの測定コードと結果を公開する。",
+            "requirement_en": "Compare EXAScaler, Infinia, VAST Data Platform, Lustre, IBM Storage Scale, BeeGFS, and DAOS with common datasets, node scales, and client configurations, publishing measurement code and results for bandwidth, metadata, checkpointing, and RAG."
+          },
+          {
+            "criterion_id": "GAP-BLUE-007-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一の障害注入、復旧目標、運用手順を用いて復旧時間、データ整合性、管理工数、公開可能な費用条件を2つ以上の独立した実行環境で比較する。",
+            "requirement_en": "Using common fault injection, recovery objectives, and operating procedures, compare recovery time, data integrity, administrative effort, and publishable cost conditions in at least two independent execution environments."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0019"
     },
     {
       "gap_id": "GAP-WORK-002",
@@ -952,7 +1132,111 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0017"
+      "queue_item_id": "RGQ-0020"
+    },
+    {
+      "gap_id": "GAP-WORK-007",
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "ベンチマークごとの継続利用、独立提出、HPCIでの代表性を示す定量データ",
+      "scope_en": "Quantitative evidence of recurring use, independent submissions, and HPCI representativeness for each benchmark",
+      "impact_ja": "公開実装や結果の存在だけでは、調査・調達上の優先順位を一貫して決められない。",
+      "impact_en": "The existence of public code or results alone does not support consistent research or procurement priorities.",
+      "next_action_ja": "公式結果の提出組織数、更新間隔、HPCIでの実行実績、対象ワークロードとの対応を版付きで収集し、重要度を再評価する。",
+      "next_action_en": "Collect versioned counts of submitting organizations, update intervals, HPCI executions, and workload mappings, then reassess importance.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "ベンチマークごとの継続利用、独立提出、HPCIでの代表性を示す定量データ 公式結果の提出組織数、更新間隔、HPCIでの実行実績、対象ワークロードとの対応を版付きで収集し、重要度を再評価する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Quantitative evidence of recurring use, independent submissions, and HPCI representativeness for each benchmark Collect versioned counts of submitting organizations, update intervals, HPCI executions, and workload mappings, then reassess importance. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-007-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0021"
+    },
+    {
+      "gap_id": "GAP-WORK-008",
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "EEA1の6アプリケーションを同一条件で再実行するための、版固定コード、入力、依存関係、実行手順",
+      "scope_en": "Pinned code, inputs, dependencies, and run procedures for rerunning all six EEA1 applications under consistent conditions",
+      "impact_ja": "公開コードの有無だけでは、性能予測の校正値や候補機の測定値を再現可能に比較できない。E-WaveとFrontFlow/blueのEEA1コード本体は公式資料上で非公開である。",
+      "impact_en": "Code availability alone does not make forecast calibration or candidate-system measurements reproducibly comparable. The official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.",
+      "next_action_ja": "公開済み4本はコミットと入力をBenchparkまたはBenchKitの実行定義へ固定し、非公開2本は公開可能なプロキシまたは再配布可能な評価パッケージを開発元と検討する。",
+      "next_action_en": "Pin commits and inputs for the four public codebases in Benchpark or BenchKit execution definitions, and work with the developers on a public proxy or redistributable evaluation package for the two unreleased codebases.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "EEA1の6アプリケーションを同一条件で再実行するための、版固定コード、入力、依存関係、実行手順 公開済み4本はコミットと入力をBenchparkまたはBenchKitの実行定義へ固定し、非公開2本は公開可能なプロキシまたは再配布可能な評価パッケージを開発元と検討する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Pinned code, inputs, dependencies, and run procedures for rerunning all six EEA1 applications under consistent conditions Pin commits and inputs for the four public codebases in Benchpark or BenchKit execution definitions, and work with the developers on a public proxy or redistributable evaluation package for the two unreleased codebases. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-008-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0022"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -1004,7 +1288,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0018"
+      "queue_item_id": "RGQ-0023"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -1056,7 +1340,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0019"
+      "queue_item_id": "RGQ-0024"
     },
     {
       "gap_id": "GAP-COMP-006",
@@ -1108,7 +1392,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0020"
+      "queue_item_id": "RGQ-0025"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -1160,7 +1444,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0021"
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1212,7 +1496,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1266,7 +1550,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -1320,7 +1604,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -1372,7 +1656,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -1424,7 +1708,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -1474,7 +1758,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -1524,7 +1808,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -1576,7 +1860,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0034"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -1628,7 +1912,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -1680,7 +1964,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0036"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -1734,7 +2018,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -1788,7 +2072,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -1840,7 +2124,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0039"
     }
   ],
   "publication": {

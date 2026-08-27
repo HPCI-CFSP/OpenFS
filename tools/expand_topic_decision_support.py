@@ -25,25 +25,25 @@ PROTECTED_PROFILES = {"ARCH-02", "ARCH-03", "SSW-01", "SSW-02", "SSW-04"}
 # Every partially researched catalog item must map to reviewed roadmap tracks.
 # Existing hand-curated profiles remain authoritative and are not regenerated.
 TOPIC_TRACKS: dict[str, list[str]] = {
-    "ARCH-01": ["COMPUTE-CPU", "COMPUTE-GPU", "COMPUTE-RACK"],
+    "ARCH-01": ["COMPUTE-CPU", "COMPUTE-GPU", "COMPUTE-MATRIX-CUSTOM", "COMPUTE-RACK"],
     "ARCH-04": ["NET-ETHERNET", "NET-SCALEUP", "NET-CPO"],
     "ARCH-05": ["COMPUTE-RACK", "NET-IOFABRIC"],
     "ARCH-06": ["BLUE-FACILITY", "COMPUTE-HPCI-EVAL"],
     "SSW-03": ["PORT-COMMS"],
-    "SSW-05": ["BLUE-ESTATE", "NET-IOWN"],
+    "SSW-05": ["BLUE-ESTATE", "BLUE-DATA-PLATFORMS", "NET-IOWN"],
     "SSW-06": ["BLUE-POLICY", "BLUE-HPCI-GATES"],
     "SSW-07": ["WORK-CB", "WORK-MODELS"],
     "SSW-08": ["PORT-HPCI-EVAL", "BLUE-HPCI-GATES"],
-    "SSW-09": ["WORK-AI", "BLUE-POLICY"],
+    "SSW-09": ["WORK-AI", "PORT-AI-TRAINING", "BLUE-POLICY"],
     "APP-01": ["WORK-EEA", "WORK-HPCI-EVAL"],
     "APP-02": ["WORK-SYSTEM", "WORK-CB", "WORK-MODELS"],
     "APP-03": ["WORK-AI", "WORK-EEA"],
     "APP-04": ["WORK-AGENT"],
     "APP-05": ["PORT-AUTO"],
     "APP-06": ["WORK-AI", "PORT-AUTO"],
-    "CROSS-01": ["BLUE-POLICY", "BLUE-RB", "BLUE-ESTATE", "BLUE-FN", "BLUE-FACILITY"],
+    "CROSS-01": ["BLUE-POLICY", "BLUE-RB", "BLUE-ESTATE", "BLUE-DATA-PLATFORMS", "BLUE-FN", "BLUE-FACILITY"],
     "CROSS-02": ["WORK-CB", "WORK-SYSTEM", "WORK-AI", "WORK-AGENT"],
-    "CROSS-03": ["BLUE-ESTATE", "NET-HPCI-EVAL", "NET-IOWN"],
+    "CROSS-03": ["BLUE-ESTATE", "BLUE-DATA-PLATFORMS", "NET-HPCI-EVAL", "NET-IOWN"],
     "CROSS-06": ["BLUE-HPCI-GATES", "BLUE-POLICY", "BLUE-FN"],
     "CROSS-07": ["BLUE-DEPENDENCIES", "BLUE-HPCI-GATES"],
     "ARCH-12": ["COMPUTE-WAFER-SCALE", "COMPUTE-DATAFLOW"],
@@ -73,6 +73,7 @@ TRACK_CURRENT_MATURITY = {
     "BLUE-POLICY": "announced",
     "BLUE-RB": "research",
     "BLUE-ESTATE": "deployed",
+    "BLUE-DATA-PLATFORMS": "commercial",
     "BLUE-FN": "announced",
     "BLUE-FACILITY": "announced",
     "BLUE-DEPENDENCIES": "uncertain",
@@ -84,6 +85,7 @@ TRACK_CURRENT_MATURITY = {
     "PORT-VENDOR": "commercial",
     "PORT-AUTO": "prototype",
     "PORT-HPCI-EVAL": "uncertain",
+    "PORT-AI-TRAINING": "deployed",
     "WORK-EEA": "prototype",
     "WORK-SYSTEM": "deployed",
     "WORK-AI": "deployed",
@@ -91,6 +93,7 @@ TRACK_CURRENT_MATURITY = {
     "WORK-CB": "prototype",
     "WORK-MODELS": "research",
     "WORK-HPCI-EVAL": "research",
+    "COMPUTE-MATRIX-CUSTOM": "announced",
 }
 
 DOMAIN_CONDITIONS = {
@@ -165,6 +168,13 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def compact(value: str) -> str:
     return "".join(character for character in value.upper() if character.isalnum())
+
+
+def latest_research_date(artifact: dict[str, Any], roadmaps: list[dict[str, Any]]) -> date:
+    return max(
+        date.fromisoformat(artifact["as_of"]),
+        *(date.fromisoformat(roadmap["as_of"]) for roadmap in roadmaps),
+    )
 
 
 def milestone_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
@@ -427,10 +437,10 @@ def generated_profile(
 
 def main() -> int:
     artifact = load_json(ARTIFACT_PATH)
-    research_as_of = date.fromisoformat(artifact["as_of"])
     baseline = load_json(BASELINE_PATH)
     i18n = load_json(I18N_PATH)
     roadmaps = [load_json(path) for path in sorted(ROADMAP_DIR.glob("*.json"))]
+    research_as_of = latest_research_date(artifact, roadmaps)
     tracks = {track["track_id"]: track for roadmap in roadmaps for track in roadmap["tracks"]}
     lanes = [lane for roadmap in roadmaps for lane in roadmap["lanes"]]
     roadmap_sources = {source["source_id"]: source for roadmap in roadmaps for source in roadmap["sources"]}

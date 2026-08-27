@@ -165,12 +165,18 @@
         "lane_id": {"type": "string", "pattern": "^LANE-[A-Z0-9-]+$"},
         "track_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]+$"},
         "owner": {"type": "string", "minLength": 1},
+        "owner_ja": {"type": "string", "minLength": 1},
+        "owner_en": {"type": "string", "minLength": 1},
         "scope_ja": {"type": "string", "minLength": 1},
         "scope_en": {"type": "string", "minLength": 1},
         "milestones": {
           "type": "array", "minItems": 1,
           "items": {"$ref": "#/$defs/milestone"}
         }
+      },
+      "dependentRequired": {
+        "owner_ja": ["owner_en"],
+        "owner_en": ["owner_ja"]
       },
       "additionalProperties": false
     },

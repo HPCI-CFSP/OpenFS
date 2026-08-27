@@ -21,6 +21,7 @@ DEFAULT_MONITORS = {
 SPECIAL_ASSIGNMENTS = {
     "GAP-BLUE-002": "MON-FS-BASELINE-001",
     "GAP-BLUE-006": "CRP-P0-ROADMAPS-V02",
+    "GAP-BLUE-007": "MON-GLOBAL-TECH-001",
 }
 CADENCE = {"P0": "weekly", "P1": "monthly", "P2": "quarterly"}
 

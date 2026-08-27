@@ -3,10 +3,17 @@ from __future__ import annotations
 import unittest
 from datetime import date
 
-from tools.expand_topic_decision_support import next_milestone, timing_text
+from tools.expand_topic_decision_support import latest_research_date, next_milestone, timing_text
 
 
 class TopicDecisionSupportGenerationTests(unittest.TestCase):
+    def test_latest_roadmap_date_advances_the_generated_catalog(self):
+        selected = latest_research_date(
+            {"as_of": "2026-08-27"},
+            [{"as_of": "2026-08-28"}, {"as_of": "2026-08-28"}],
+        )
+        self.assertEqual(date(2026, 8, 28), selected)
+
     def test_next_milestone_excludes_completed_quarters(self):
         lanes = [
             {

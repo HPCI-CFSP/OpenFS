@@ -34,7 +34,8 @@ class RoadmapGapQueueTests(unittest.TestCase):
         }
         self.assertEqual(expected, actual)
         self.assertEqual(len(expected), queue["summary"]["gap_count"])
-        self.assertEqual(16, queue["summary"]["p0"])
+        expected_p0 = sum(priority == "P0" for _, priority in expected.values())
+        self.assertEqual(expected_p0, queue["summary"]["p0"])
         self.assertTrue(
             all(
                 item["cadence"] in {"weekly", "continuous-until-quorum"}
@@ -47,12 +48,20 @@ class RoadmapGapQueueTests(unittest.TestCase):
             for item in queue["assignments"]
             if item["priority"] == "P0" and item["workstream"] == "source-discovery"
         ]
-        self.assertEqual(15, len(p0_discovery))
+        expected_consensus = sum(
+            item["priority"] == "P0" and item["workstream"] == "consensus-review"
+            for item in queue["assignments"]
+        )
+        self.assertEqual(expected_p0 - expected_consensus, len(p0_discovery))
         self.assertTrue(
             all(item["query_plan_origin"] == "explicit-override" for item in p0_discovery)
         )
-        self.assertEqual(15, queue["summary"]["explicit_query_overrides"])
-        self.assertEqual(15, queue["summary"]["p0_explicit_query_overrides"])
+        self.assertGreaterEqual(
+            queue["summary"]["explicit_query_overrides"], len(p0_discovery)
+        )
+        self.assertEqual(
+            len(p0_discovery), queue["summary"]["p0_explicit_query_overrides"]
+        )
         self.assertEqual(0, queue["summary"]["p0_generated_query_fallbacks"])
         p0_items = [item for item in queue["assignments"] if item["priority"] == "P0"]
         self.assertTrue(

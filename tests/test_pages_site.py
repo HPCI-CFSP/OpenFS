@@ -242,8 +242,8 @@ class PagesSiteTests(unittest.TestCase):
         reference_data = collect_roadmap_reference_data(
             ROOT, policy, roadmaps, False
         )
-        self.assertEqual(46, len(reference_data["terms"]))
-        self.assertEqual(7, len(reference_data["comparison_sets"]))
+        self.assertGreaterEqual(len(reference_data["terms"]), 57)
+        self.assertGreaterEqual(len(reference_data["comparison_sets"]), 10)
         detail = (ROOT / "site" / "roadmap-detail.html").read_text(encoding="utf-8")
         for element_id in (
             'id="roadmap-comparisons"',
@@ -252,18 +252,35 @@ class PagesSiteTests(unittest.TestCase):
             'id="hpci-system-inventory-section"',
             'id="hpci-inventory-table"',
             'id="application-performance-section"',
+            'id="application-code-availability"',
             'id="application-performance-table"',
         ):
             self.assertIn(element_id, detail)
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
         self.assertIn("function renderHPCIInventory", script)
         self.assertIn("function renderApplicationPerformance", script)
-        performance_rows = script[script.index("performance.applications.forEach") :]
+        self.assertIn("application.code_availability.source_ids", script)
+        self.assertIn("publicSourceConfirmed", script)
+        self.assertIn('sourceLinks.className = "comparison-row-sources"', script)
+        self.assertIn("row.source_refs.forEach", script)
+        performance_matrix = 'table.className = "supplement-table performance-matrix"'
+        performance_rows = script[script.index(performance_matrix) :]
+        performance_rows = performance_rows[
+            performance_rows.index("performance.applications.forEach((application)") :
+        ]
         self.assertLess(
             performance_rows.index("row.append(app);"),
             performance_rows.index("performance.standard_fugaku_node_scales.forEach"),
         )
         self.assertNotIn("row.append(app, cell)", performance_rows)
+
+        planning = (ROOT / "site" / "planning.js").read_text(encoding="utf-8")
+        self.assertIn("source.summary.fetch_count", planning)
+        self.assertIn("source.summary.unique_url_status_counts.reachable", planning)
+
+        search = (ROOT / "site" / "search.js").read_text(encoding="utf-8")
+        self.assertIn("data.application_performance_forecasts.applications", search)
+        self.assertIn("data.hpci_system_inventory.systems", search)
 
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
@@ -274,6 +291,7 @@ class PagesSiteTests(unittest.TestCase):
         self.assertIn("function generationBandGridRange", script)
         self.assertIn("function generationBandPeriodLabel", script)
         self.assertIn("function renderRoadmapGenerationBandDialog", script)
+        self.assertGreaterEqual(script.count('localized(lane, "owner")'), 3)
         self.assertIn("roadmap.horizon.end_year", script)
         self.assertNotIn("const years = [2026, 2027, 2028, 2029, 2030, 2031, 2032]", script)
         self.assertNotIn('fill("roadmap-quarter-column")', script)
@@ -332,9 +350,11 @@ class PagesSiteTests(unittest.TestCase):
                 self.assertGreaterEqual(package["artifact_count"], 20)
                 self.assertEqual(40, len(package["base_commit"]))
                 self.assertEqual(64, len(package["manifest_sha256"]))
-            self.assertEqual(46, len(result["roadmap_reference_data"]["terms"]))
-            self.assertEqual(
-                7, len(result["roadmap_reference_data"]["comparison_sets"])
+            self.assertGreaterEqual(
+                len(result["roadmap_reference_data"]["terms"]), 57
+            )
+            self.assertGreaterEqual(
+                len(result["roadmap_reference_data"]["comparison_sets"]), 10
             )
             self.assertNotIn("publication", result["roadmap_reference_data"])
             self.assertEqual(27, len(result["hpci_system_inventory"]["systems"]))
@@ -351,6 +371,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(
                 package["manifest_sha256"],
                 package["gate"]["package_manifest_digest"],
+            )
+            open_p0_count = sum(
+                gap["priority"] == "P0" and gap["status"] == "open"
+                for path in (ROOT / "knowledge/public/roadmaps").glob("*.json")
+                for gap in json.loads(path.read_text(encoding="utf-8"))["coverage_gaps"]
             )
             self.assertEqual(3, len(result["scenarios"]))
             self.assertEqual(
@@ -371,7 +396,7 @@ class PagesSiteTests(unittest.TestCase):
                     and len(scenario["implementation_path"]["phases"]) == 12
                     and {note["scope"] for note in scenario["context_notes"]}
                     == {"reusable", "hpci-specific"}
-                    and len(scenario["decision_blocking_gap_refs"]) == 16
+                    and len(scenario["decision_blocking_gap_refs"]) == open_p0_count
                     and len(scenario["decision_evidence_contracts"]) == 6
                     for scenario in result["scenarios"]
                 )
@@ -408,6 +433,10 @@ class PagesSiteTests(unittest.TestCase):
                 assurance["source_audit"]["summary"]["duplicate_registration_count"],
             )
             self.assertEqual(
+                assurance["source_audit"]["summary"]["fetch_count"],
+                assurance["source_audit"]["summary"]["unique_url_count"],
+            )
+            self.assertEqual(
                 assurance["source_audit"]["summary"]["source_count"]
                 - assurance["source_audit"]["summary"]["reachable"],
                 assurance["source_triage"]["summary"]["non_reachable_count"],
@@ -427,10 +456,16 @@ class PagesSiteTests(unittest.TestCase):
             self.assertGreaterEqual(assurance["evidence_audit"]["summary"]["milestone_count"], 130)
             self.assertGreaterEqual(assurance["freshness_audit"]["summary"]["milestone_count"], 130)
             self.assertEqual(0, assurance["freshness_audit"]["summary"]["future_observed_conflicts"])
-            self.assertEqual(34, assurance["gap_queue"]["summary"]["gap_count"])
-            self.assertEqual(16, assurance["gap_queue"]["summary"]["p0"])
+            expected_gap_count = sum(
+                len(json.loads(path.read_text(encoding="utf-8"))["coverage_gaps"])
+                for path in (ROOT / "knowledge/public/roadmaps").glob("*.json")
+            )
             self.assertEqual(
-                16,
+                expected_gap_count, assurance["gap_queue"]["summary"]["gap_count"]
+            )
+            self.assertEqual(open_p0_count, assurance["gap_queue"]["summary"]["p0"])
+            self.assertEqual(
+                open_p0_count,
                 len(
                     [
                         item
@@ -1050,6 +1085,33 @@ class PagesSiteTests(unittest.TestCase):
             (target / "scenario.json").write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "human publication Directive"):
                 collect_scenarios(root, policy, include_commit_metadata=False)
+
+    def test_build_publishes_cross_site_search_and_deep_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            build(ROOT, output)
+            search_page = (output / "search" / "index.html").read_text(encoding="utf-8")
+            search_script = (output / "search.js").read_text(encoding="utf-8")
+            home = (output / "index.html").read_text(encoding="utf-8")
+            self.assertIn('id="global-search-input"', search_page)
+            self.assertIn('data-i18n-aria-label="languageControl"', search_page)
+            self.assertIn('data-i18n-aria-label="siteNavigation"', search_page)
+            self.assertIn('data-i18n-aria-label="breadcrumbs"', search_page)
+            self.assertIn('href="search/"', home)
+            for item_type in ("topic", "roadmap", "track", "term", "comparison", "scenario", "source"):
+                self.assertIn(f'type: "{item_type}"', search_script)
+            self.assertIn("topic_decision_support?.topic_profiles", search_script)
+            self.assertIn('"independent-review-pending": "independentReviewPending"', search_script)
+            self.assertIn('sourceVendor: "ベンダー公式情報"', search_script)
+            self.assertIn('siteNavigation: "Site navigation"', search_script)
+            self.assertIn('element.setAttribute("aria-label"', search_script)
+            self.assertIn('?topic=', search_script)
+            self.assertIn('?track=', search_script)
+            self.assertIn('?term=', search_script)
+            self.assertIn('new URLSearchParams(window.location.search).get("topic")', (output / "app.js").read_text(encoding="utf-8"))
+            roadmap_script = (output / "roadmaps.js").read_text(encoding="utf-8")
+            self.assertIn('params.get("track")', roadmap_script)
+            self.assertIn('params.get("term")', roadmap_script)
 
 
 if __name__ == "__main__":

@@ -169,6 +169,14 @@ remaining matching items; never silently treat the example as the full scope.
   complementary options. Apply this to high-value compute, packaging, network,
   software-portability, workload, and evaluation choices as well as memory; do not
   create low-value tables merely to cover every term.
+- Assess benchmark importance on separate, auditable dimensions: an official or
+  reproducible public implementation, recurring public results, independent
+  adoption or submissions, active governance and maintenance, HPCI workload
+  relevance, and likely influence on evaluation or procurement. News coverage is
+  supporting context only. Link the official code or benchmark site directly and
+  list papers as supporting references; never treat publication on a preprint
+  server alone as evidence of broad use. Record the result in the central glossary
+  and comparison data instead of duplicating rankings across pages.
 - Label OpenFS evaluation and adoption gates as provisional plans and keep them
   distinct from vendor, standards, policy, and observed milestones.
 - Record unresolved research as structured Coverage Gaps with decision impact and

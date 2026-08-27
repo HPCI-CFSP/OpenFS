@@ -33,6 +33,10 @@ class RoadmapAssuranceTests(unittest.TestCase):
         )
 
     def test_evidence_audit_covers_every_milestone_exactly_once(self):
+        self.assertEqual(
+            {roadmap["as_of"] for roadmap in self.roadmaps},
+            {self.evidence["as_of"]},
+        )
         milestone_items = [
             milestone
             for roadmap in self.roadmaps
@@ -168,6 +172,11 @@ class RoadmapAssuranceTests(unittest.TestCase):
         self.assertEqual(registered, audited)
         summary = self.sources["summary"]
         self.assertEqual(len(registered), summary["source_count"])
+        self.assertEqual(summary["unique_url_count"], summary["fetch_count"])
+        self.assertEqual(
+            summary["fetch_count"],
+            sum(summary["unique_url_status_counts"].values()),
+        )
         self.assertEqual(
             summary["source_count"] - summary["unique_url_count"],
             summary["duplicate_registration_count"],

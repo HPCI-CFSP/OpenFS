@@ -10,7 +10,7 @@
   const copy = {
     ja: {
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
-      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       aboutKicker: "OpenFSについて",
       aboutLead: "OpenFSは、将来の計算・データ基盤の整備計画を検討するため、計算機アーキテクチャ、メモリ、ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠をたどれる技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、各情報の更新日と確認状況、合意判定の状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の進捗状況",
@@ -53,7 +53,7 @@
     },
     en: {
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
-      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       aboutKicker: "ABOUT OPENFS",
       aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory, networks, system software, and applications. It publishes traceable technology assessments, roadmaps, and system planning options while clearly identifying unresolved questions, the date and verification status of each item, and its Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
@@ -1135,6 +1135,9 @@
   function openTopicDetail(topicId) {
     if (activeTopicId !== topicId) activeTopicRegion = "all";
     activeTopicId = topicId;
+    const url = new URL(window.location.href);
+    url.searchParams.set("topic", topicId);
+    window.history.replaceState(null, "", url);
     renderTopicDetail();
     const dialog = document.getElementById("topic-dialog");
     if (!dialog.open) dialog.showModal();
@@ -1270,6 +1273,11 @@
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
     activeTopicId = null;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("topic");
+    window.history.replaceState(null, "", url);
   });
   render();
+  const initialTopicId = new URLSearchParams(window.location.search).get("topic");
+  if (initialTopicId && data.topics.some((topic) => topic.topic_id === initialTopicId)) openTopicDetail(initialTopicId);
 })();

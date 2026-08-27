@@ -2,36 +2,44 @@
   "schema_version": "0.1.0",
   "export_id": "ROADMAP-SOURCE-AUDIT-001",
   "status": "published",
-  "audit_id": "RSA-20260826-001",
-  "as_of": "2026-08-26",
-  "checked_at": "2026-08-26T10:25:41Z",
-  "method": "HTTP GET with redirects; first 1 KiB read; source contents are not retained; unique URLs use exact registered strings",
-  "method_ja": "公開URLへリダイレクトに追随するHTTP GETリクエストを送り、先頭1 KiBだけを取得しました。本文は保存していません。登録件数とは別に、登録URLの文字列が完全に一致するものを重複として除き、URL数を集計しました。",
-  "method_en": "The audit followed redirects for HTTP GET requests and read only the first 1 KiB. It did not retain source contents. Exact registered URL strings were deduplicated separately from the registration count.",
+  "audit_id": "RSA-20260828-001",
+  "as_of": "2026-08-28",
+  "checked_at": "2026-08-27T16:59:32Z",
+  "method": "One anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker; redirects, DNS answers, and connection destinations are validated at every hop; at most the first 1 KiB is retained in memory and source bodies are not stored. The result is mapped to every Source ID registered for that URL.",
+  "method_ja": "重複を除いたURLごとに、Safe Web Fetch Brokerを介して匿名のHTTP GETリクエストを1回送り、各ホップでリダイレクト先、DNS応答、実際の接続先を検証します。本文はメモリ上で先頭1 KiBまで取得し、保存しません。同じURLを登録した各Source IDには同一の取得結果を対応付けます。",
+  "method_en": "The audit sends one anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker. It validates redirects, DNS answers, and actual connection destinations at every hop, retains at most the first 1 KiB in memory, and does not store source bodies. The same retrieval result is mapped to every Source ID registered for that URL.",
   "caveat_ja": "到達性は、特定の実行環境から公開URLへ接続できたかを示すだけであり、資料中の主張の妥当性を保証しません。ブラウザで閲覧できる資料でも、403、429、タイムアウトなどが発生する場合があります。重複を除いたURL数は、独立した情報源の数とは限りません。",
-  "caveat_en": "Reachability shows only whether a public URL was accessible from one execution environment; it does not validate claims in the source. A source accessible in a browser may still return 403 or 429, or time out. The deduplicated URL count is not necessarily the number of independent information sources.",
-  "user_agent": "OpenFS public-source-audit/0.1 (+https://github.com/HPCI-CFSP/OpenFS)",
+  "caveat_en": "Reachability shows only whether a public URL was accessible from one execution environment; it does not validate claims in the source. A browser-accessible source may still return 403 or 429, or time out. The deduplicated URL count is not necessarily the number of independent information sources.",
+  "user_agent": "OpenFS Safe Web Fetch Broker/0.1 (+https://github.com/HPCI-CFSP/OpenFS)",
   "summary": {
-    "source_count": 151,
-    "unique_url_count": 138,
+    "source_count": 198,
+    "fetch_count": 185,
+    "unique_url_count": 185,
     "duplicate_registration_count": 13,
-    "unique_external_url_count": 137,
-    "external_first_party_source_count": 150,
+    "unique_external_url_count": 184,
+    "external_first_party_source_count": 197,
     "openfs_governance_source_count": 1,
     "source_class_counts": {
-      "vendor-official": 63,
+      "vendor-official": 75,
       "standards-body": 24,
-      "government-official": 10,
-      "research-organization": 22,
-      "project-official": 21,
+      "government-official": 12,
+      "research-organization": 24,
+      "project-official": 52,
       "academic-primary": 10,
       "openfs-governance": 1
     },
-    "reachable": 137,
-    "access-restricted": 5,
+    "unique_url_status_counts": {
+      "reachable": 160,
+      "access-restricted": 4,
+      "missing": 0,
+      "timeout": 20,
+      "error": 1
+    },
+    "reachable": 164,
+    "access-restricted": 4,
     "missing": 0,
-    "timeout": 6,
-    "error": 3
+    "timeout": 29,
+    "error": 1
   },
   "results": [
     {
@@ -39,20 +47,30 @@
       "source_id": "SRC-WORK001",
       "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-4B6EFE69AEB5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
       "source_id": "SRC-WORK002",
       "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-BA4855B9F141",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -62,7 +80,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.top500.org/lists/hpcg/2026/06/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-223170537BA1",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -72,7 +94,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.top500.org/lists/top500/2026/06/highs/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5D9C5CA21107",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -82,7 +108,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://mlcommons.org/2026/04/mlperf-inference-v6-0-results/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E822D6F83823",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -92,17 +122,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://mlcommons.org/benchmarks/training-hpc/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-8FA0E7562DD9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
       "source_id": "SRC-WORK007",
       "url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-DAA8F84964DF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -112,7 +151,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://github.com/LLNL/benchpark",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-378616F862AC",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -122,7 +165,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/en/using_hpci/hardware_software_resource/2026",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-9963068CC6E6",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -132,7 +179,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://mlcommons.org/2026/06/mlperf-training-v6-0-results/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-FFFAD94CB3D5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -142,7 +193,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.spec.org/pressreleases/2026/20260505-spec-releases-cpu-2026-benchmark-suite/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-8ACFCDB14180",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -152,7 +207,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://mlcommons.org/working-groups/research/science/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-113E30D372CE",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -162,7 +221,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/about_hpci/statistics",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-81AE79B36405",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -172,17 +235,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/achievements/user_report",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-452B7DAC1BA6",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
       "source_id": "SRC-WORK015",
       "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/3/2/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/3/2/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-FF774248B305",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -192,7 +264,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2110.11466",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-75F441F12382",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -202,7 +278,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://netlib.org/utk/people/JackDongarra/PAPERS/HPCG-benchmark.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-0CAD571E36E0",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -212,7 +292,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2204.02235",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-AE04A8B486C3",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -222,7 +306,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://graph500.org/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5EAEC30BB040",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -232,7 +320,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2605.27922",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-7D61F297E496",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -242,7 +334,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://openreview.net/challenge?redirect=%2Fforum%3Fid%3DVTF8yNQM66",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-0078CDB5A408",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -252,7 +348,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://openreview.net/challenge?redirect=%2Fforum%3Fid%3Dfibxvahvs3",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-DBE62CAA61A5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -262,7 +362,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2406.12045",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-FA99F28796A0",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -272,7 +376,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://openai.com/index/paperbench/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-564388A2106B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -282,7 +390,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2606.28480",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5C48FC864E85",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -292,7 +404,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2507.02825",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-FFDC7FEFB5D1",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-APP-WORKLOADS",
@@ -302,7 +418,348 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://arxiv.org/abs/2608.06301",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-F01C3EAA51BC",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK028",
+      "url": "https://www.netlib.org/benchmark/hpl/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.netlib.org/benchmark/hpl/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-7CF31598B9E5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK029",
+      "url": "https://github.com/hpcg-benchmark/hpcg",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/hpcg-benchmark/hpcg",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-091A29674AD5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK030",
+      "url": "https://hpl-mxp.org/software.md",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://hpl-mxp.org/software.md",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-77180D56D6A2",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK031",
+      "url": "https://github.com/at-aaims/OpenMxP",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/at-aaims/OpenMxP",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-BA7709C94545",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK032",
+      "url": "https://graph500.org/?page_id=47",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://graph500.org/?page_id=47",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-93B8BE211A50",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK033",
+      "url": "https://github.com/graph500/graph500",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/graph500/graph500",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-EF56568B7F85",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK034",
+      "url": "https://github.com/mlcommons/training",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/mlcommons/training",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-89D3C9E218CE",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK035",
+      "url": "https://github.com/mlcommons/inference",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/mlcommons/inference",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-B704BD273393",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK036",
+      "url": "https://github.com/Qihoo360/harness-bench",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/Qihoo360/harness-bench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-B85A021A13EA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK037",
+      "url": "https://github.com/SWE-bench/SWE-bench",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/SWE-bench/SWE-bench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-3C1ACD521688",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK038",
+      "url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
+      "source_class": "project-official",
+      "status": "timeout",
+      "http_status": null,
+      "final_url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-25968D3DECFD",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK039",
+      "url": "https://github.com/sierra-research/tau2-bench",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/sierra-research/tau2-bench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-26BD5A15517C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK040",
+      "url": "https://github.com/openai/frontier-evals/tree/main/project/paperbench",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/openai/frontier-evals/tree/main/project/paperbench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5CA937B1C384",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK041",
+      "url": "https://github.com/facebookresearch/TUA-Bench",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/facebookresearch/TUA-Bench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C900C986D739",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK042",
+      "url": "https://labs.scale.com/papers/harnessopt-bench",
+      "source_class": "research-organization",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://labs.scale.com/papers/harnessopt-bench",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-35B86FD535C9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK043",
+      "url": "https://www.spec.org/cpu2026/results/cpu2026/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.spec.org/cpu2026/results/cpu2026/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-052967D07304",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK044",
+      "url": "https://www.spec.org/cpu2026/docs/licenses.html",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.spec.org/cpu2026/docs/licenses.html",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6561A03523C0",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK045",
+      "url": "https://github.com/RIKEN-RCCS/benchkit",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/RIKEN-RCCS/benchkit",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E0B099ADA34E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK046",
+      "url": "https://github.com/genesis-release-r-ccs/genesis",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/genesis-release-r-ccs/genesis",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C754A8D284E5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK047",
+      "url": "https://github.com/SALMON-TDDFT/SALMON",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/SALMON-TDDFT/SALMON",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-67076173D99E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK048",
+      "url": "https://github.com/scale-letkf-riken/scale-letkf",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/scale-letkf-riken/scale-letkf",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-BBA55BD09EA7",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK049",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-2592378BC49D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK050",
+      "url": "https://www.hpci-office.jp/en/for_users/appli_software/appli_frontflowblue",
+      "source_class": "government-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.hpci-office.jp/en/for_users/appli_software/appli_frontflowblue",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C04763215B56",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "source_id": "SRC-WORK051",
+      "url": "https://www.jamstec.go.jp/fugaku-earthq/en/information_2021.html",
+      "source_class": "research-organization",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.jamstec.go.jp/fugaku-earthq/en/information_2021.html",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-8BFF476EFC08",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -312,7 +769,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/vera-rubin-full-production-agentic-ai-factory",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-787779FABE07",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -322,7 +783,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://ir.amd.com/news-events/press-releases/detail/1294/aai-2026-amd-delivers-full-stack-compute-for-the-agentic-ai-era",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-0B170CA5DC8B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -332,7 +797,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://images.nvidia.com/nvimages/gtc/pdf/GTC2025_Highlights_v2.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-4CC3AF843714",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -343,8 +812,10 @@
       "http_status": 429,
       "final_url": "https://global.fujitsu/-/media/Project/Fujitsu/Fujitsu-HQ/ir/documents/IRDay/2025/20250909-01e-ja.pdf",
       "content_type": "text/html",
-      "error_kind": "http",
-      "error_detail": "Too Many Requests"
+      "retrieval_receipt_id": "WEB-645D1A0E96CD",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -355,18 +826,25 @@
       "http_status": 429,
       "final_url": "https://global.fujitsu/-/media/Project/Fujitsu/Fujitsu-HQ/technology/research/events/sca-hpcasia2026/SCAsia26-fujitsu-monaka.pdf?hash=4AE7FFE9580AF41DBFD0C2C25AA7CD2E&rev=06c786b0ab434abeb947c85682e0dc90",
       "content_type": "text/html",
-      "error_kind": "http",
-      "error_detail": "Too Many Requests"
+      "retrieval_receipt_id": "WEB-FFD6A1395FA3",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
       "source_id": "SRC-COMP006",
       "url": "https://www.riken.jp/en/news_pubs/news/2025/20250822_1/index.html",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.riken.jp/en/news_pubs/news/2025/20250822_1/index.html",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-B86600615314",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -376,27 +854,41 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.european-processor-initiative.eu/press-release-european-processor-initiative-successfully-concluded/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-F4B25ED187E5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
       "source_id": "SRC-COMP008",
       "url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-DAA8F84964DF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
       "source_id": "SRC-COMP009",
       "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-4B6EFE69AEB5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -406,7 +898,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/nvidia-vera-rubin-delivers-world-class-supercomputers-for-science",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-ADEDCC594292",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -417,8 +913,11 @@
       "http_status": null,
       "final_url": "https://www.amd.com/en/products/accelerators/instinct/mi400/mi430x.html",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "The read operation timed out"
+      "retrieval_receipt_id": "WEB-6ECA41D4972E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -428,7 +927,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://newsroom.intel.com/artificial-intelligence/intel-to-expand-ai-accelerator-portfolio-with-new-gpu",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6004B5D7CF40",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -438,7 +941,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.qualcomm.com/news/releases/2026/06/qualcomm-unveils-comprehensive-data-center-roadmap-for-the-agent",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-53247A0B3520",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -448,7 +955,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://newsroom.intel.com/client-computing/intel-outlines-architectures-for-agentic-ai-at-hot-chips-2026",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-DB54660513DA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -458,7 +969,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-95D7267BEEF7",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -468,7 +983,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.cerebras.ai/blog/supercharge-your-hpc-research-with-the-cerebras-sdk",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-26E50582F1BF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -478,7 +997,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://sambanova.ai/blog/introducing-the-sn50-rdu-purpose-built-for-agentic-inference",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-BE9FACAEAA0E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -488,7 +1011,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://sambanova.ai/blog/tacc-deploys-sambanova-suite-ai-inference-for-scientific-research",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6A344BCE8C62",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -498,7 +1025,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.graphcore.ai/posts/the-wow-factor-graphcore-systems-get-huge-power-and-efficiency-boost",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-800D5C9D982A",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-COMPUTE",
@@ -508,7 +1039,84 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://docs.graphcore.ai/projects/ipum-release-notes/en/latest/overview.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-05B72732CA64",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-HW-COMPUTE",
+      "source_id": "SRC-COMP021",
+      "url": "https://www.amd.com/en/technologies/cdna.html",
+      "source_class": "vendor-official",
+      "status": "timeout",
+      "http_status": null,
+      "final_url": "https://www.amd.com/en/technologies/cdna.html",
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-7A5ED8763435",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
+    },
+    {
+      "roadmap_id": "RM-HW-COMPUTE",
+      "source_id": "SRC-COMP022",
+      "url": "https://www.amd.com/en/products/accelerators/instinct/mi400.html",
+      "source_class": "vendor-official",
+      "status": "timeout",
+      "http_status": null,
+      "final_url": "https://www.amd.com/en/products/accelerators/instinct/mi400.html",
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-66ACDB1AC0B4",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
+    },
+    {
+      "roadmap_id": "RM-HW-COMPUTE",
+      "source_id": "SRC-COMP023",
+      "url": "https://www.amd.com/en/products/specifications/accelerators.html",
+      "source_class": "vendor-official",
+      "status": "timeout",
+      "http_status": null,
+      "final_url": "https://www.amd.com/en/products/specifications/accelerators.html",
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-4A495CDE1D86",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
+    },
+    {
+      "roadmap_id": "RM-HW-COMPUTE",
+      "source_id": "SRC-COMP024",
+      "url": "https://investors.broadcom.com/news-releases/news-release-details/openai-and-broadcom-announce-strategic-collaboration-deploy-10",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://investors.broadcom.com/news-releases/news-release-details/openai-and-broadcom-announce-strategic-collaboration-deploy-10",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-190B5357340A",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-HW-COMPUTE",
+      "source_id": "SRC-COMP025",
+      "url": "https://www.broadcom.com/company/news/product-releases/64236",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.broadcom.com/company/news/product-releases/64236",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-EB76DF9A75A4",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -518,7 +1126,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://ultraethernet.org/specification-history/",
-      "content_type": "text/html"
+      "content_type": "text/markdown",
+      "retrieval_receipt_id": "WEB-8BEE867C08AC",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -528,7 +1140,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.ieee802.org/3/dj/public/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-24306605896D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -538,7 +1154,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.ieee802.org/3/dj/public/26_01/index.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4D9CEE17FB64",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -548,7 +1168,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://ualinkconsortium.org/wp-content/uploads/2026/04/UALink-2.0-Specification-PR_FINAL.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-13D66F28640B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -558,7 +1182,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/rubin-platform-ai-supercomputer",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-47D83BD65F4F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -568,7 +1196,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://pcisig.com/faq?field_category_value%5B%5D=pci_express_7.0",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-1A069BA64AC3",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -578,7 +1210,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://pcisig.com/blog/pcier-80-specification-draft-05-now-available-track-2560-gts-transfer-speeds-2028",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-93523A2B5CB9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -588,7 +1224,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-Specification-Release_FINAL_Website-Copy.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-79102B5E0A84",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -598,7 +1238,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.broadcom.com/company/news/product-releases/64031",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-DBC89D88364B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -608,7 +1252,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/vera-rubin-full-production-agentic-ai-factory",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-787779FABE07",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -618,7 +1266,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.rd.ntt/e/forum/2024/keynote_2.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-1EDBC5151B91",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -628,27 +1280,41 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.rd.ntt/e/forum/2025/keynote_1.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-3ECCAD4042FD",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
       "source_id": "SRC-NET013",
       "url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-DAA8F84964DF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
       "source_id": "SRC-NET014",
       "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-4B6EFE69AEB5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -658,7 +1324,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://images.nvidia.com/nvimages/gtc/pdf/GTC26_SanJose_Highlights_Final.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-1AF37A8CAE6F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -668,7 +1338,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://ualinkconsortium.org/blog/ualink-roadmap-insights-accelerating-open-scalable-ai-networking-1296/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-EA692DE21986",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -678,7 +1352,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.ieee802.org/3/dj/projdoc/timeline_3dj_241114.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-951F3684BD01",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -688,7 +1366,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.ieee802.org/3/ballots/announce.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-13D51E774B7E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -698,9 +1380,12 @@
       "status": "access-restricted",
       "http_status": 403,
       "final_url": "https://www.marvell.com/company/newsroom/marvell-next-gen-cxl-switch-memory-pooling-breaks-ai-memory-wall.html",
-      "content_type": "text/html",
-      "error_kind": "http",
-      "error_detail": "Forbidden"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-9BA4C2056236",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "blocked",
+      "body_truncated": false,
+      "error_kind": "policy-block"
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -710,7 +1395,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://computeexpresslink.org/integrators-list/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E7C53A9C5C64",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -720,7 +1409,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.broadcom.com/products/fiber-optic-modules-components/co-packaged-optics/switches/bcm78909",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C4B8E53F28DB",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -730,7 +1423,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://group.ntt/en/newsrelease/2025/02/20/250220a.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-F876F700ADA2",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -740,7 +1437,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://group.ntt/en/newsrelease/2025/09/24/250924a.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6E319A9CDDB7",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -750,7 +1451,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://computeexpresslink.org/blog/increasing-tokens-per-dollar-with-cxl-fms-2026-recap-4788/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6A82BBECA167",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-INTERCONNECT",
@@ -760,7 +1465,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.broadcom.com/company/news/product-releases/63616",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-D787D7912E5F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -770,7 +1479,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://semiconductor.samsung.com/news-events/tech-blog/memory-tech-day-memory-in-the-age-of-ai-data/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-F13642C4157B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -780,7 +1493,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.micron.com/products/memory/dram-modules/mrdimm",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-B7F985714E3F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -790,7 +1507,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.micron.com/news/press-release/2026/Micron-Redefines-AI-Performance-With-Sampling-of-256GB-DDR5-Server-Module/default.aspx",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-84C797D69A80",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -800,7 +1521,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/mwc-2026/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6C93B676191B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -810,7 +1535,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.jedec.org/news/pressreleases/jedec%C2%AE-releases-new-lpddr6-standard-enhance-mobile-and-ai-memory-performance",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-60CB96319F4C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -820,17 +1549,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/1c-lpddr6-development-2026/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-000B993821AA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
       "source_id": "SRC-MEM007",
       "url": "https://news.samsung.com/global/samsung-unveils-hbm4e-showcasing-comprehensive-ai-solutions-nvidia-partnership-and-vision-at-nvidia-gtc-2026",
       "source_class": "vendor-official",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://news.samsung.com/global/samsung-unveils-hbm4e-showcasing-comprehensive-ai-solutions-nvidia-partnership-and-vision-at-nvidia-gtc-2026",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-B2A8244E31A8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -841,8 +1579,11 @@
       "http_status": null,
       "final_url": "https://news.samsung.com/global/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "The read operation timed out"
+      "retrieval_receipt_id": "WEB-77801FE3AD06",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -852,7 +1593,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://semiconductor.samsung.com/news-events/news/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-9CBC0510E6CE",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -862,7 +1607,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e-2/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5336233A5FBC",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -872,7 +1621,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.micron.com/news/press-release/2026/Micron-in-High-Volume-Production-of-HBM4-Designed-for-NVIDIA-Vera-Rubin-PCIe-Gen6-SSD-and-SOCAMM2-03-16-2026/default.aspx",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-33E9505B254C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -882,7 +1635,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.micron.com/news/press-release/2026/Micron-Technology-Inc--Reports-Record-Results-for-the-Third-Quarter-of-Fiscal-2026/default.aspx",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-2E8528CBC6CA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -892,7 +1649,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/mass-production-socamm2-192gb/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E451D7799463",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -902,7 +1663,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.micron.com/news/press-release/2026/Micron-Sets-New-Benchmark-With-the-Worlds-First-High-Capacity-256GB-LPDRAM-SOCAMM2-for-Data-Center-Infrastructure-03-03-2026/default.aspx",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-B48265BCD3C0",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -912,7 +1677,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-95AE99E2541D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -922,7 +1691,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/sk-hynix-presents-future-dram-technology-roadmap-at-ieee-vlsi-2025/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-6EF008A6CEB8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -933,8 +1706,11 @@
       "http_status": null,
       "final_url": "https://news.samsung.com/global/samsung-unveils-next-gen-3d-memory-vision-at-fms-2026-charting-the-future-of-ai-infrastructure",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "The read operation timed out"
+      "retrieval_receipt_id": "WEB-1CF64EF9B6E9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -944,7 +1720,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report_E.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-90E5D1BCB511",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -954,31 +1734,40 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://pr.tsmc.com/english/news/3302",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5F1C2A5C5EA9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
       "source_id": "SRC-MEM020",
       "url": "https://www.intel.com/content/www/us/en/foundry/library/advanced-process-technologies-for-data-center.html",
       "source_class": "vendor-official",
-      "status": "error",
-      "http_status": null,
+      "status": "reachable",
+      "http_status": 200,
       "final_url": "https://www.intel.com/content/www/us/en/foundry/library/advanced-process-technologies-for-data-center.html",
-      "content_type": null,
-      "error_kind": "network",
-      "error_detail": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-A027D948DCB5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
       "source_id": "SRC-MEM021",
       "url": "https://cdrdv2-public.intel.com/866623/xeon-6-plus-product-deck.pdf",
       "source_class": "vendor-official",
-      "status": "access-restricted",
-      "http_status": 403,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://cdrdv2-public.intel.com/866623/xeon-6-plus-product-deck.pdf",
-      "content_type": "application/xml",
-      "error_kind": "http",
-      "error_detail": "Forbidden"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-8730DBA8C166",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -988,7 +1777,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/gyujei-lee-next-gen-packaging-tech-key-to-hbm-success/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E4E9632C73E7",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -998,7 +1791,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-announces-tomahawkr-6-davisson-industrys-first-1024",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-78EAB34BAE18",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1008,7 +1805,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/nvidia-spectrum-x-co-packaged-optics-networking-switches-ai-factories/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4CBC834F97D8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1018,7 +1819,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://nvidianews.nvidia.com/news/vera-rubin-full-production-agentic-ai-factory",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-787779FABE07",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1028,7 +1833,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://sumitomoelectric.com/sites/default/files/2024-11/download_documents/Growth%20strategy%20for%20data%20center-related%20business.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-EF51D9C58D45",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1038,7 +1847,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.global.ntt/insights-hub/the-photonics-revolution/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-89A234FDCC0E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1048,7 +1861,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-Specification-Release_FINAL_Website-Copy.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-79102B5E0A84",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1058,7 +1875,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://semiconductor.samsung.com/cxl-memory/cmm-d/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4B84651B8DD7",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1068,7 +1889,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/hpe-discover-2026/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-A765DD444AE2",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1078,7 +1903,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://investors.micron.com/news/press-release/2023/Micron-Launches-Memory-Expansion-Module-Portfolio-to-Accelerate-CXL-2-0-Adoption-08-07-2023/default.aspx",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-D015D7FF7FBA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1088,7 +1917,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/sk-hynix-debuts-first-gddr6-aim-accelerator-card-aimx-for-generative-ai/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-77595B0841D5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1099,8 +1932,11 @@
       "http_status": null,
       "final_url": "https://www.upmem.com/technology/",
       "content_type": null,
-      "error_kind": "network",
-      "error_detail": "[Errno 8] nodename nor servname provided, or not known"
+      "retrieval_receipt_id": "WEB-C99BF9569E21",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "network"
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1110,7 +1946,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://semiconductor.samsung.com/dram/hbm/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C6A066A95C7E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1120,7 +1960,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/SoIC_inDepth.htm",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C210F015AFC2",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1130,7 +1974,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://semiconductor.samsung.com/kr/news-events/news/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-A469343908F1",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1140,7 +1988,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://news.skhynix.com/en/q2-2026-business-results/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-36A619114991",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1150,7 +2002,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.jedec.org/news/pressreleases/new-jedec%C2%AE-sphbm4-standard-enables-hbm4-class-bandwidth-organic-substrates",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-11534F53BBCF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-HW-MEMORY",
@@ -1161,8 +2017,11 @@
       "http_status": null,
       "final_url": "https://www.businesswire.com/news/home/20260430759074/en/",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "The read operation timed out"
+      "retrieval_receipt_id": "WEB-E072A6D2BF0D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1172,7 +2031,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.openmp.org/home-news/public-comment-draft-6-1/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-BED648AA85E9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1182,7 +2045,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.openmp.org/press-release/openmp-arb-releases-tr14/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-894EDA3F3E2D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1192,7 +2059,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://registry.khronos.org/SYCL/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-DFEB5C3F947C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1202,7 +2073,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://discourse.llvm.org/t/llvm-23-1-0-rc3-released/91551",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E969CADFCAA6",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1212,7 +2087,12 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.llvm.org/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-2AAACC92FAC8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "blocked",
+      "body_truncated": false,
+      "error_kind": "policy-block"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1222,7 +2102,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://kokkos.org/about/releases/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4B8F272531C9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1232,7 +2116,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://kokkos.org/blog/2026-kokkos-fft-v1-release/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-057608CA0205",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1242,7 +2130,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://rocm.docs.amd.com/en/latest/about/release-notes.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-BF4B66EFD754",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1252,37 +2144,56 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://developer.nvidia.com/hpc-sdk/downloads",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-A23FD6DAE885",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
       "source_id": "SRC-PORT010",
       "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-BA4855B9F141",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
       "source_id": "SRC-PORT011",
       "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_en.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-4B6EFE69AEB5",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
       "source_id": "SRC-PORT012",
       "url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-DAA8F84964DF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1292,7 +2203,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.openmp.org/2026/python-subcomittee/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C66E9F399CBA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1302,17 +2217,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.mpi-forum.org/docs/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-673F988E8968",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
       "source_id": "SRC-PORT015",
       "url": "https://www.open-mpi.org/software/ompi/v5.0/",
       "source_class": "project-official",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.open-mpi.org/software/ompi/v5.0/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-910989C9D72C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1322,7 +2246,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://github.com/ofiwg/libfabric/blob/main/NEWS.md?plain=1",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-20ABE90A047C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1332,7 +2260,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.mpi-forum.org/implementation-status/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-177441C5850D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1342,7 +2274,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.openmp.org/resources/openmp-compilers-tools/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-997F2A09324D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1352,7 +2288,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.khronos.org/conformance/adopters/conformant-products/sycl",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-9C2F756D2610",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1362,7 +2302,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://gcc.gnu.org/onlinedocs/libgomp.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-FCF2E255844F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1372,19 +2316,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://clang.llvm.org/docs/OpenMPSupport.html",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-833586618D5B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "blocked",
+      "body_truncated": false,
+      "error_kind": "policy-block"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
       "source_id": "SRC-PORT022",
       "url": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler.html?language=en",
       "source_class": "vendor-official",
-      "status": "error",
-      "http_status": null,
+      "status": "reachable",
+      "http_status": 200,
       "final_url": "https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler.html?language=en",
-      "content_type": null,
-      "error_kind": "network",
-      "error_detail": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-AF9ADC31921C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1394,7 +2345,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://docs.nvidia.com/hpc-sdk/compilers/hpc-compilers-user-guide/index.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-CF0252B0A2A9",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1405,8 +2360,11 @@
       "http_status": null,
       "final_url": "https://www.amd.com/en/developer/aocc.html",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "The read operation timed out"
+      "retrieval_receipt_id": "WEB-CE053C22CD50",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1417,8 +2375,10 @@
       "http_status": 429,
       "final_url": "https://global.fujitsu/ja-jp/documents/",
       "content_type": "text/html",
-      "error_kind": "http",
-      "error_detail": "Too Many Requests"
+      "retrieval_receipt_id": "WEB-5920C5968022",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1428,7 +2388,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.mpich.org/2026/02/04/mpich-5-0-0-released/",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-374E3CDE2879",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1439,8 +2403,11 @@
       "http_status": null,
       "final_url": "https://lists.mpich.org/pipermail/discuss/2026-April/006798.html",
       "content_type": null,
-      "error_kind": "timeout",
-      "error_detail": "timed out"
+      "retrieval_receipt_id": "WEB-4AADEEE099B8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",
@@ -1450,7 +2417,95 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://github.com/llvm/llvm-project/releases/tag/llvmorg-23.1.0",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-241F40559E90",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT029",
+      "url": "https://github.com/NVIDIA/Megatron-LM",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/NVIDIA/Megatron-LM",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-449CA1C5D011",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT030",
+      "url": "https://github.com/NVIDIA/Megatron-LM/releases",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/NVIDIA/Megatron-LM/releases",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-33F6F477EC43",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT031",
+      "url": "https://github.com/NVIDIA/Megatron-LM/issues/4997",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/NVIDIA/Megatron-LM/issues/4997",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C7CCBE0647A4",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT032",
+      "url": "https://github.com/deepspeedai/Megatron-DeepSpeed",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/deepspeedai/Megatron-DeepSpeed",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-5155594F5A2E",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT033",
+      "url": "https://www.deepspeed.ai/tutorials/ds-sequence/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.deepspeed.ai/tutorials/ds-sequence/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-38164AE1EB3A",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "source_id": "SRC-PORT034",
+      "url": "https://github.com/NVIDIA/Megatron-LM/issues/5676",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://github.com/NVIDIA/Megatron-LM/issues/5676",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-8C9019DCCF76",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1460,7 +2515,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.mext.go.jp/content/20260403-mxt_jyohoka01-000048752_2.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-4A1DEF041FB4",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1470,17 +2529,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.mext.go.jp/b_menu/shingi/chousa/shinkou/077/gijiroku/aifors_260327_002.html",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-38B4501A4F6C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
       "source_id": "SRC-BLUE003",
       "url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/research/feasibility-study/fs3/",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-DAA8F84964DF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1490,7 +2558,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/en/about_hpci/what_is_hpci/hpci_system_provider",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-240183CA3941",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1500,17 +2572,26 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/en/using_hpci/hardware_software_resource/2026",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-9963068CC6E6",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
       "source_id": "SRC-BLUE006",
       "url": "https://www.r-ccs.riken.jp/en/fugaku-next/index.html",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/fugaku-next/index.html",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-109D52761636",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1520,7 +2601,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/planning/roadmap-portfolio.md",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-1C4E32F62B49",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1530,27 +2615,41 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/en/news/news",
-      "content_type": "text/html"
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-A3DE3A78F4A8",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
       "source_id": "SRC-BLUE009",
       "url": "https://www.r-ccs.riken.jp/fugaku-next/fugaku-next-dbo/index.html",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/fugaku-next/fugaku-next-dbo/index.html",
-      "content_type": "text/html"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-5403C5365071",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
       "source_id": "SRC-BLUE010",
       "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
       "source_class": "research-organization",
-      "status": "reachable",
-      "http_status": 200,
+      "status": "timeout",
+      "http_status": null,
       "final_url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
-      "content_type": "application/pdf"
+      "content_type": null,
+      "retrieval_receipt_id": "WEB-BA4855B9F141",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false,
+      "error_kind": "timeout"
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1560,7 +2659,11 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/application/files/9517/6155/2081/r08_boshu_hpci_resource_j.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-2CE8BA20567F",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     },
     {
       "roadmap_id": "RM-X-BLUEPRINT",
@@ -1570,7 +2673,179 @@
       "status": "reachable",
       "http_status": 200,
       "final_url": "https://www.hpci-office.jp/application/files/1617/7442/4902/architecture_map.pdf",
-      "content_type": "application/pdf"
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-4DA1DCD51A8D",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE013",
+      "url": "https://www.ddn.com/products/lustre-file-system-exascaler/",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.ddn.com/products/lustre-file-system-exascaler/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-D8B7567AF5ED",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE014",
+      "url": "https://www.ddn.com/products/infinia/",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.ddn.com/products/infinia/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-70F7E0483943",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE015",
+      "url": "https://www.ddn.com/resources/whitepapers/infinia-whitepaper/",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.ddn.com/resources/whitepapers/infinia-whitepaper/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4D756BB913FC",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE016",
+      "url": "https://www.vastdata.com/whitepaper.pdf",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.vastdata.com/whitepaper.pdf",
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-E15CCB4EA1C6",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE017",
+      "url": "https://wiki.lustre.org/Introduction_to_Lustre",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://wiki.lustre.org/Introduction_to_Lustre",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-C1807646B352",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE018",
+      "url": "https://www.ibm.com/products/storage-scale",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.ibm.com/products/storage-scale",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-F849F95B9A2B",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE019",
+      "url": "https://www.beegfs.io/docs/whitepapers/Introduction_to_BeeGFS_by_ThinkParQ.pdf",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.beegfs.io/docs/whitepapers/Introduction_to_BeeGFS_by_ThinkParQ.pdf",
+      "content_type": "application/pdf",
+      "retrieval_receipt_id": "WEB-2AE234D774BF",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE020",
+      "url": "https://docs.daos.io/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://docs.daos.io/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-1B87B367C814",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": false
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE021",
+      "url": "https://oss-tsukuba.org/en/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://oss-tsukuba.org/en/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-31034B900378",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE022",
+      "url": "https://www.hpci-office.jp/for_users/hpci_info_manuals",
+      "source_class": "government-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.hpci-office.jp/for_users/hpci_info_manuals",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-4F94C99037FA",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE023",
+      "url": "https://docs.ceph.com/en/latest/architecture/",
+      "source_class": "project-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://docs.ceph.com/en/latest/architecture/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-E30657CC841C",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
+    },
+    {
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "source_id": "SRC-BLUE024",
+      "url": "https://www.weka.io/solutions/hpc-data-management/",
+      "source_class": "vendor-official",
+      "status": "reachable",
+      "http_status": 200,
+      "final_url": "https://www.weka.io/solutions/hpc-data-management/",
+      "content_type": "text/html",
+      "retrieval_receipt_id": "WEB-8E602D357793",
+      "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+      "fetch_policy_decision": "allowed",
+      "body_truncated": true
     }
   ],
   "publication": {
