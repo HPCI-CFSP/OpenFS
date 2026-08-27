@@ -6,11 +6,11 @@ and 207 source registrations representing
 194 unique URLs,
 14 cross-roadmap dependencies,
 39 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `ebbe1050b34eb1e7a522a1077c31e960e2d1bff5`.
+3 provisional HPCI scenarios to commit `0b1159bfe5d24ad535ca0bfaea6539be312d8fb1`.
 
 ## Review protocol
 
-1. Check out exactly `ebbe1050b34eb1e7a522a1077c31e960e2d1bff5`, verify every `artifact_manifest.sha256`, and
+1. Check out exactly `0b1159bfe5d24ad535ca0bfaea6539be312d8fb1`, verify every `artifact_manifest.sha256`, and
    record the SHA-256 of the exact `manifest.json` bytes as
    `package_manifest_digest` in the review. Do not reserialize the manifest
    before calculating this digest.
@@ -44,7 +44,7 @@ and 207 source registrations representing
 207件の情報源登録
 （重複除去194 URL）、
 14相互依存、39件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `ebbe1050b34eb1e7a522a1077c31e960e2d1bff5` に固定します。
+HPCI整備計画3案をコミット `0b1159bfe5d24ad535ca0bfaea6539be312d8fb1` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンまたは世代帯ごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
