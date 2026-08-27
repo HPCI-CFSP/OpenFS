@@ -58,6 +58,16 @@ class AgentPermissionTests(unittest.TestCase):
             self.assertEqual([], allowed)
             self.assertEqual([path], denied)
 
+    def test_only_synthesis_can_propose_agent_evaluation_bundles(self):
+        path = "proposals/agent-evaluations/AEVAL-TEST.json"
+        allowed, denied = check_paths("synthesis", [path], self.config)
+        self.assertEqual([path], allowed)
+        self.assertEqual([], denied)
+        for role in ("discovery", "extraction", "validator", "critic"):
+            allowed, denied = check_paths(role, [path], self.config)
+            self.assertEqual([], allowed)
+            self.assertEqual([path], denied)
+
     def test_consensus_package_reviews_follow_existing_role_boundaries(self):
         assessment = "assessments/CRP-P0-ROADMAPS-V02/CRV-INDEPENDENT-A.json"
         allowed, denied = check_paths("validator", [assessment], self.config)

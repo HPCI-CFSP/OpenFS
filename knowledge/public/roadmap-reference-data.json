@@ -795,6 +795,71 @@
       ]
     },
     {
+      "comparison_id": "CMP-AGENT-EVALUATION-CONTROLS", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-SSW-PORTABILITY", "RM-X-BLUEPRINT"],
+      "title_ja": "AIエージェント・ハーネス評価を成立させる統制", "title_en": "Controls required for credible AI agent and harness evaluation",
+      "summary_ja": "得点だけでなく、モデルとハーネスの識別、実行境界、費用・履歴、ホールドアウト、再現条件を比較し、OpenFSで不足する統制を示す。", "summary_en": "Compares model-harness identification, execution boundaries, cost and trace capture, holdouts, and reproducibility conditions, then identifies controls that OpenFS must add beyond each benchmark.",
+      "decision_use_ja": "OpenFSの正式評価では、モデル、ハーネス、プロンプト、ツール、権限、ネットワーク、データ版、評価器、予算を実行ごとに固定・記録する。ベンチマークの得点だけで安全性や再現性を認定しない。", "decision_use_en": "For formal OpenFS evaluation, pin and record the model, harness, prompt, tools, permissions, network policy, dataset version, evaluator, and budget for every run. A benchmark score alone does not establish safety or reproducibility.",
+      "caveat_ja": "ここでいうサンドボックスは実装ごとに強度が異なる。作業ディレクトリの分離、コンテナ、非特権実行、ネットワーク遮断を同一視せず、実際に強制される境界を個別に検証する。", "caveat_en": "Sandbox strength varies by implementation. Workspace separation, containers, unprivileged execution, and network denial are not equivalent; verify each boundary that is actually enforced.",
+      "columns": [
+        {"column_id": "configuration", "label_ja": "モデル・ハーネスの識別", "label_en": "Model-harness identification"},
+        {"column_id": "boundary", "label_ja": "実行境界・権限", "label_en": "Execution boundary and permissions"},
+        {"column_id": "records", "label_ja": "費用・履歴・再現記録", "label_en": "Cost, trace, and reproducibility records"},
+        {"column_id": "holdout", "label_ja": "ホールドアウト・汚染対策", "label_en": "Holdout and contamination control"},
+        {"column_id": "openfs-control", "label_ja": "OpenFSで補う統制", "label_en": "Additional OpenFS control"}
+      ],
+      "rows": [
+        {"term_id": "TERM-HARNESS-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "モデルとハーネスの組合せを結果の単位として扱う。", "text_en": "Treats each model-harness pairing as the reported configuration."},
+          {"column_id": "boundary", "text_ja": "課題ごとの作業領域は分離するが、公式実装のセキュリティ得点にはLLMルーブリックも含まれる。OS権限やネットワーク遮断の強制とは別に検証する。", "text_en": "Separates per-task workspaces, while the official implementation also uses an LLM rubric for its security score. Verify OS permissions and network denial independently."},
+          {"column_id": "records", "text_ja": "成果物、抽出した実行履歴、検証結果、経過時間を保存し、取得可能な場合はトークン使用量も記録する。", "text_en": "Stores artifacts, extracted traces, validator outputs, and elapsed time, with token usage when it can be observed."},
+          {"column_id": "holdout", "text_ja": "課題と評価実装が公開されているため、版を固定し、既知課題への最適化と未知課題への一般化を分ける。", "text_en": "Because tasks and evaluators are public, pin their versions and separate optimization on known tasks from generalization to unseen tasks."},
+          {"column_id": "openfs-control", "text_ja": "公開情報専用の読み取り経路、書込み許可リスト、ネットワーク拒否、資格情報非注入を外側の実行環境で強制する。", "text_en": "Enforce public-source-only reads, write allow-lists, network denial, and non-injection of credentials in the outer execution environment."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK020"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK036"}]},
+        {"term_id": "TERM-HARNESSOPT-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "共通ハーネスと各モデル固有ハーネスを用いた対照実験で、モデル効果とハーネス効果を分ける。", "text_en": "Uses controlled shared-harness and model-native-harness comparisons to separate model and harness effects."},
+          {"column_id": "boundary", "text_ja": "非特権の隔離環境、モデル許可リスト、資格情報とテスト状態の分離を信頼実行環境で強制する。", "text_en": "Uses a trusted execution environment to enforce unprivileged isolation, model allow-lists, and separation from credentials and test state."},
+          {"column_id": "records", "text_ja": "対象エージェントの評価回数・トークン予算を制限し、候補版と利用量を監査用に保存する。最適化側推論は計測されるが論文の実験では上限なし。", "text_en": "Caps target-agent evaluations and token use and preserves candidates and usage for audit; optimizer inference is metered but uncapped in the reported experiments."},
+          {"column_id": "holdout", "text_ja": "開発・検証・テストを分離し、探索中はテスト課題と得点を非公開にする。最終候補だけを信頼サーバーで評価する。", "text_en": "Separates development, validation, and test partitions; test cases and scores remain hidden during search and only the nominated candidate is tested by the trusted server."},
+          {"column_id": "openfs-control", "text_ja": "方法を設計原則として採用し、公開実装、第三者再現、運用費用を確認できるまでは正式ゲートの必須条件にしない。", "text_en": "Adopt the method as a design principle, but do not make it a mandatory formal gate until public implementation, independent reproduction, and operating cost are verified."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}]},
+        {"term_id": "TERM-SWE-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "提出物はモデル名とパッチで識別されるが、エージェントのハーネス、プロンプト、ツール、費用は別途記録が必要。", "text_en": "Predictions identify a model and patch, while agent harness, prompt, tools, and cost require separate reporting."},
+          {"column_id": "boundary", "text_ja": "公式評価は課題ごとのDocker環境でパッチを適用し、制限時間内にテストを実行する。生成時のネットワーク・権限は評価器の外側で管理する。", "text_en": "The official evaluator applies patches and runs tests in per-instance Docker environments with timeouts; generation-time network and permissions remain external controls."},
+          {"column_id": "records", "text_ja": "イメージ構築、課題実行、テスト結果をログへ保存する。モデル呼出しの費用と生成履歴は標準評価器だけでは揃わない。", "text_en": "Stores image-build, instance-run, and test-result logs; the standard evaluator alone does not normalize model-call cost or generation traces."},
+          {"column_id": "holdout", "text_ja": "テストで生成パッチを採点できる一方、実在Issueを基にした公開データであり、学習データ混入と既知解の影響を申告する。", "text_en": "Tests grade generated patches, but the dataset is built from public real-world issues, so training contamination and exposure to known solutions must be disclosed."},
+          {"column_id": "openfs-control", "text_ja": "同一課題でもハーネスとモデルを別IDで記録し、生成コンテナと採点コンテナを分離して、ネットワーク方針とAPI費用を付加する。", "text_en": "Record harness and model as separate IDs, separate generation from grading containers, and add network-policy and API-cost records."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK021"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK037"}]},
+        {"term_id": "TERM-TUA-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "エージェント実装、モデル、推論設定を実行コマンドで分けて指定できる。", "text_en": "Separately selects the agent implementation, model, and reasoning settings in the run configuration."},
+          {"column_id": "boundary", "text_ja": "DockerまたはPodmanで課題を実行する。コンテナ利用だけで外部通信が禁止されるわけではないため、ネットワークとマウントを別途制限する。", "text_en": "Runs tasks with Docker or Podman. Containers do not inherently deny external communication, so network and mount restrictions must be configured separately."},
+          {"column_id": "records", "text_ja": "実行ごとに出力先を分け、ログ、成果物、複数回実行の成功率を保持できる。標準化された費用欄は別途追加する。", "text_en": "Supports separate output directories with logs, artifacts, and repeated-run success rates; add a normalized cost record separately."},
+          {"column_id": "holdout", "text_ja": "課題が公開されるため、版固定と非公開のOpenFS固有課題を併用して過適合を検出する。", "text_en": "Because tasks are public, combine version pinning with private OpenFS-specific tasks to detect overfitting."},
+          {"column_id": "openfs-control", "text_ja": "科学ツール課題を再利用しつつ、CC BY-NC条件、取得アセットのライセンス、ネットワーク遮断を事前審査する。", "text_en": "Reuse scientific-tool tasks only after reviewing CC BY-NC terms, downloaded-asset licenses, and network isolation."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK025"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK041"}]},
+        {"term_id": "TERM-GAIA", "cells": [
+          {"column_id": "configuration", "text_ja": "最終回答を中心に評価するため、モデル、ハーネス、ブラウザ、検索、補助ツールをOpenFS側で完全に記録する。", "text_en": "Because scoring centers on final answers, OpenFS must fully record the model, harness, browser, search service, and auxiliary tools."},
+          {"column_id": "boundary", "text_ja": "Webや複数ツールの利用能力を測るが、OpenFSの情報境界や権限制御をそのまま保証する評価ではない。", "text_en": "Measures web and multi-tool use but does not itself establish OpenFS information-boundary or permission enforcement."},
+          {"column_id": "records", "text_ja": "公式データとリーダーボードはあるが、費用、履歴、Webスナップショットを同一条件にするには追加の実行ハーネスが必要。", "text_en": "Official data and a leaderboard exist, but normalized cost, traces, and web snapshots require an additional execution harness."},
+          {"column_id": "holdout", "text_ja": "アクセス制限付きデータと非公開テスト回答で漏えいを抑える。動的Webに依存する課題は取得時点も固定する。", "text_en": "Gated data and private test answers reduce leakage; tasks that depend on the live web also require a pinned retrieval time."},
+          {"column_id": "openfs-control", "text_ja": "取得URL、時刻、応答ハッシュ、検索結果、引用根拠を保存し、動的Webの変化と調査能力を分離する。", "text_en": "Store URLs, retrieval times, response hashes, search results, and cited evidence to separate web drift from research capability."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK022"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK038"}]},
+        {"term_id": "TERM-TAU-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "標準提出と、ルーター、追加ツール、変更プロンプト等を含むカスタム提出を区別する。モデルと利用者シミュレータも記録する。", "text_en": "Distinguishes standard submissions from custom routers, tools, prompts, or control flow, and records both agent and user-simulator models."},
+          {"column_id": "boundary", "text_ja": "方針、ツール、評価器への標準インターフェースを制約するが、OSレベルの情報境界を評価するものではない。", "text_en": "Constrains the benchmark interface to policies, tools, and evaluators, but is not an OS-level information-boundary test."},
+          {"column_id": "records", "text_ja": "対話履歴を保存し、pass^kで反復信頼性を測る。費用は提出可能だが任意のため、OpenFSでは必須にする。", "text_en": "Stores trajectories and measures repeated reliability with pass^k. Cost submission is optional, so OpenFS should require it."},
+          {"column_id": "holdout", "text_ja": "標準提出では非公開の目標、参照行動、評価器状態へのアクセスを禁じる。タスク版と利用者シミュレータを固定する。", "text_en": "Standard submissions prohibit access to hidden goals, reference actions, and evaluator state; pin the task release and user simulator."},
+          {"column_id": "openfs-control", "text_ja": "公開／非公開情報の混在、承認、書込み、引用といったOpenFS固有の方針違反課題を追加し、軌跡を独立評価する。", "text_en": "Add OpenFS-specific policy-violation tasks for public/private data, approval, writes, and citation, with independent trajectory review."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK023"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK039"}]},
+        {"term_id": "TERM-PAPERBENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "ソルバー、モデル、実行時間等を設定として分離できる。モデル単体ではなくエージェント構成として比較する。", "text_en": "Separates solver, model, run duration, and related settings; comparisons are therefore agent-configuration comparisons rather than model-only results."},
+          {"column_id": "boundary", "text_ja": "エージェント実行、GPUでの再現、採点を別コンテナで行う。一部課題は外部APIやデータ資格情報を必要とする。", "text_en": "Uses separate containers for agent rollout, GPU reproduction, and grading; some tasks require external API or dataset credentials."},
+          {"column_id": "records", "text_ja": "成果コード、再実行結果、階層ルーブリック、実行記録を残せるが、長時間・GPU・判定モデルの費用が大きい。", "text_en": "Preserves submitted code, reproduced results, hierarchical rubrics, and run records, but incurs substantial long-duration, GPU, and judge-model cost."},
+          {"column_id": "holdout", "text_ja": "採点ルーブリックと研究対象は公開され、禁止サイト一覧で原著コード利用を制限する。未知課題への一般化は別の非公開課題で確認する。", "text_en": "Rubrics and target papers are public, while blacklists restrict use of original implementations; unseen-task generalization needs a separate private set."},
+          {"column_id": "openfs-control", "text_ja": "軽量な段階評価を先に行い、正式候補だけを長期再現へ進める。判定モデルとは別の評価者と実行結果検証を組み合わせる。", "text_en": "Use lightweight staged screening before expensive replications, and combine a separate evaluator with executable-result checks."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK024"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK040"}]}
+      ]
+    },
+    {
       "comparison_id": "CMP-BENCHMARK-IMPORTANCE", "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"],
       "title_ja": "主要ベンチマークの根拠と調査優先度", "title_en": "Evidence and research priority for major benchmarks",
       "summary_ja": "公開実装、継続的な結果公開、第三者利用、HPCIの判断への関連性を分けて評価する。", "summary_en": "Separately assesses public implementations, recurring published results, independent use, and relevance to HPCI decisions.",

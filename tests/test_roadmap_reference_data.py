@@ -88,6 +88,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "CMP-PORTABILITY-MODELS",
                 "CMP-EVALUATION-METHODS",
                 "CMP-AGENT-BENCHMARKS",
+                "CMP-AGENT-EVALUATION-CONTROLS",
                 "CMP-AGENT-BENCHMARK-IMPORTANCE",
                 "CMP-BENCHMARK-IMPORTANCE",
                 "CMP-AI-TRAINING-FRAMEWORKS",
@@ -136,6 +137,22 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "TERM-TUA-BENCH",
             },
             agent_terms,
+        )
+
+        control_rows = comparisons["CMP-AGENT-EVALUATION-CONTROLS"]["rows"]
+        self.assertEqual(agent_terms, {row["term_id"] for row in control_rows})
+        self.assertTrue(
+            all(
+                {cell["column_id"] for cell in row["cells"]}
+                == {
+                    "configuration",
+                    "boundary",
+                    "records",
+                    "holdout",
+                    "openfs-control",
+                }
+                for row in control_rows
+            )
         )
 
         storage_terms = {

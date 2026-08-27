@@ -130,6 +130,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "center-profile.schema.json"
     if ref.startswith("proposals/benchmark-results/"):
         return "benchmark-result-bundle.schema.json"
+    if ref.startswith("proposals/agent-evaluations/"):
+        return "agent-evaluation-bundle.schema.json"
     if ref.startswith("proposals/workload-observations/"):
         return "workload-observation-summary.schema.json"
     if ref.startswith("proposals/portability-capability-matrices/"):

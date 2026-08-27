@@ -223,6 +223,15 @@ remaining matching items; never silently treat the example as the full scope.
   Gap-specific correctness, energy, RAS, portability, and interoperability
   requirements. A passing bundle remains provisional until independent
   reproduction, Consensus, and the applicable human decision.
+- Store AI-agent and harness evaluation candidates under
+  `proposals/agent-evaluations/` using
+  `schemas/agent-evaluation-bundle.schema.json`. Record the model and harness as
+  separate versioned components and pin the prompt, tools, skills, evaluator,
+  task set, budget, execution boundary, network path, write roots, credentials,
+  holdout visibility, traces, artifacts, tokens, time, and cost. Run
+  `tools/check_agent_evaluation_bundle.py`. A container or an LLM-generated
+  security score is not proof of enforced isolation, and a passing bundle is
+  only a candidate for independent Consensus review.
 - Store privacy-reviewed aggregate workload candidates under
   `proposals/workload-observations/` using
   `schemas/workload-observation-summary.schema.json`. Aggregate inside the
