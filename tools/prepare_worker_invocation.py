@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from check_agent_permissions import check_paths
+from evaluate_agent_evaluation_readiness import evaluate as evaluate_agent_readiness
 from openfs_runtime import (
     atomic_write_json,
     isoformat,
@@ -77,6 +78,18 @@ def prepare(
         raise RuntimeError("Worker invocation cannot use an expired lease")
     if manifest.get("status") not in {"created", "running"}:
         raise RuntimeError("Worker invocation requires a non-terminal Run")
+
+    evaluation_readiness = evaluate_agent_readiness(
+        root,
+        agent_ids=[agent_id],
+        run_id=run_id,
+        evaluated_at=timestamp,
+    )
+    if evaluation_readiness["status"] != "ready":
+        raise RuntimeError(
+            "provider Worker Agent evaluation is not ready: "
+            + ", ".join(evaluation_readiness["blockers"])
+        )
 
     snapshots = manifest.get("configuration_snapshots", {})
     registry_ref = snapshots.get("config/agent-registry.json", "")
@@ -159,6 +172,15 @@ def prepare(
             "agent_registry_digest": stable_digest(registry),
             "role_permissions_ref": permissions_ref,
             "role_permissions_digest": stable_digest(permissions),
+            "agent_evaluation_readiness_digest": stable_digest(
+                evaluation_readiness
+            ),
+            "agent_evaluation_policy_digest": evaluation_readiness[
+                "configuration_digests"
+            ]["policy"],
+            "accepted_agent_evaluation_bundle_refs": evaluation_readiness[
+                "agents"
+            ][0]["accepted_bundle_refs"],
         },
     }
     invocation_id = "WINV-" + stable_digest(core)[:16].upper()

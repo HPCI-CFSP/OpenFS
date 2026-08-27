@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/agent-evaluation-policy.schema.json",
+  "title": "OpenFS AI Agent Evaluation Policy",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "policy_id",
+    "status",
+    "development_suite_ref",
+    "applicable_roles",
+    "required_bundle_status",
+    "required_consensus_status",
+    "maximum_bundle_age_days",
+    "minimum_repetitions",
+    "formal_holdout",
+    "rerun_triggers",
+    "effect"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "policy_id": {"type": "string", "pattern": "^AEVALPOL-[A-Z0-9-]+$"},
+    "status": {"const": "enforced"},
+    "development_suite_ref": {"const": "evals/agent-harness/public-pilot-suite.json"},
+    "applicable_roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["discovery", "extraction", "validator", "critic", "synthesis"]}
+    },
+    "required_bundle_status": {"const": "accepted"},
+    "required_consensus_status": {"const": "accepted"},
+    "maximum_bundle_age_days": {"type": "integer", "minimum": 1},
+    "minimum_repetitions": {"type": "integer", "minimum": 3},
+    "formal_holdout": {
+      "type": "object",
+      "required": ["status", "custodian_id", "task_set_digest", "answer_set_digest", "attestation_ref"],
+      "properties": {
+        "status": {"enum": ["unavailable", "available"]},
+        "custodian_id": {"type": "string", "minLength": 1},
+        "task_set_digest": {"type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$"},
+        "answer_set_digest": {"type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$"},
+        "attestation_ref": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "available"}}},
+          "then": {
+            "properties": {
+              "custodian_id": {"not": {"const": "unconfigured"}},
+              "task_set_digest": {"type": "string"},
+              "answer_set_digest": {"type": "string"},
+              "attestation_ref": {"type": "string"}
+            }
+          }
+        }
+      ]
+    },
+    "rerun_triggers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "weekly-recheck",
+          "model-id-change",
+          "harness-commit-change",
+          "prompt-profile-change",
+          "toolset-change",
+          "skillset-change",
+          "execution-policy-change",
+          "task-suite-change"
+        ]
+      }
+    },
+    "effect": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

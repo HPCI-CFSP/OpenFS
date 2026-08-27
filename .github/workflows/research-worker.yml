@@ -50,6 +50,11 @@ jobs:
           python3 tools/evaluate_operational_readiness.py \
             --require-ready \
             --output _automation/operational-readiness.json
+          python3 tools/evaluate_agent_evaluation_readiness.py \
+            --agent-id "${{ inputs.agent_id }}" \
+            --run-id "${{ inputs.run_id }}" \
+            --require-ready \
+            --output _automation/agent-evaluation-readiness.json
           python3 tools/validate_repository.py
           python3 -m unittest discover -s tests -v
 

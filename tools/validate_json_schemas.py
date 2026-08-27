@@ -51,6 +51,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "hpci-center-registry.schema.json"
     if ref == "config/activation-policy.json":
         return "activation-policy.schema.json"
+    if ref == "config/agent-evaluation-policy.json":
+        return "agent-evaluation-policy.schema.json"
     if ref == "config/owner-controls.json":
         return "owner-controls.schema.json"
     if ref == "config/research-web-security-policy.json":
@@ -112,6 +114,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
     }
     if ref.startswith("runs/") and path.name in run_names:
         return run_names[path.name]
+    if ref.startswith("_automation/") and path.name == "agent-evaluation-readiness.json":
+        return "agent-evaluation-readiness.schema.json"
     if ref.startswith("runs/") and "/worker-invocations/" in ref:
         return "worker-invocation.schema.json"
     if ref.startswith("runs/") and "/worker-results/" in ref:

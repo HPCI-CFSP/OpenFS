@@ -36,6 +36,7 @@ class RunControllerTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         for relative in (
             "config/acquisition-policy.json",
+            "config/agent-evaluation-policy.json",
             "config/autonomy-policy.json",
             "config/budgets.json",
             "config/consensus-policy.json",
@@ -44,6 +45,7 @@ class RunControllerTests(unittest.TestCase):
             "config/source-registry.json",
             "config/agent-registry.json",
             "config/monitors/MON-MEMORY-001.json",
+            "evals/agent-harness/public-pilot-suite.json",
         ):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -119,6 +121,14 @@ class RunControllerTests(unittest.TestCase):
                 / first["configuration_snapshots"]["config/agent-registry.json"]
             ).is_file()
         )
+        for source_ref in (
+            "config/agent-evaluation-policy.json",
+            "evals/agent-harness/public-pilot-suite.json",
+        ):
+            self.assertIn(source_ref, first["policy_hashes"])
+            self.assertTrue(
+                (self.root / first["configuration_snapshots"][source_ref]).is_file()
+            )
         directive_source = "reviews/directives/DIR-000123.json"
         self.assertTrue((self.root / first["directive_snapshots"][directive_source]).is_file())
         self.assertEqual(64, len(first["directive_hashes"][directive_source]))

@@ -238,6 +238,13 @@ remaining matching items; never silently treat the example as the full scope.
   are public, so it is never a formal holdout and cannot establish
   generalization. Formal evaluation requires hidden tasks and answers held by an
   independent custodian outside this public repository.
+- Before a provider-backed Agent executes a production Work Item, run
+  `tools/evaluate_agent_evaluation_readiness.py --agent-id <agent-id>
+  --require-ready`. The gate binds an accepted evaluation to the exact Agent ID,
+  role, requested model ID, prompt profile, harness repository, and harness
+  commit. A stale or mismatched bundle, an unavailable external holdout, a
+  disabled Agent, or incomplete Consensus must block execution. Never replace
+  the external holdout with the public development suite.
 - Store privacy-reviewed aggregate workload candidates under
   `proposals/workload-observations/` using
   `schemas/workload-observation-summary.schema.json`. Aggregate inside the

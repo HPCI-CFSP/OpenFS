@@ -274,6 +274,17 @@ changes, the digest check invalidates that approval and blocks production.
 Use `tools/prepare_run_approval.py --run-id <RUN-ID>` to create a default-deny
 review draft with pinned digests; it deliberately leaves every human check false.
 
+An eligible Monitor also does not make a provider-backed Agent eligible. Before
+the Research Worker leases a Work Item, it runs
+`tools/evaluate_agent_evaluation_readiness.py --agent-id <agent-id>
+--require-ready`. Production remains blocked unless the exact model ID, prompt
+profile, harness repository and commit have a current accepted evaluation, the
+evaluation has passed independent Consensus, and an independent custodian has
+attested a hidden holdout without storing hidden tasks or answers in this public
+repository. The weekly Coordinator records the aggregate readiness report under
+`_automation/agent-evaluation-readiness.json`; a blocked report is an action list,
+not evidence that an evaluation was executed.
+
 The Weekly Digest groups open Exceptions that share the same kind, unmet
 requirements, and publication-blocking state into one Owner Action. Every original
 Exception reference remains listed, but repeated Consensus-capacity failures do not

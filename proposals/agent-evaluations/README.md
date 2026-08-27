@@ -18,3 +18,11 @@ private traces, NDA material, personal data, or hidden benchmark answers. Store
 raw artifacts at the declared immutable URI and commit only their digest. Passing
 the deterministic checker only makes a bundle eligible for independent Consensus
 review; publication still requires the applicable human decision.
+
+Each bundle must identify the evaluated registry `agent_id`, role, and prompt
+profile in addition to the model and harness. It must also identify the evaluator
+model and harness and bind the external holdout through task, answer, and
+attestation references. After independent Consensus marks a bundle accepted,
+`tools/evaluate_agent_evaluation_readiness.py` still verifies
+that it is current and exactly matches the production Agent configuration. Public
+development results cannot satisfy the external hidden-holdout requirement.

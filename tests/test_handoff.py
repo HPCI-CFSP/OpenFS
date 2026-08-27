@@ -25,6 +25,7 @@ class HandoffTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         for relative in (
             "config/acquisition-policy.json",
+            "config/agent-evaluation-policy.json",
             "config/autonomy-policy.json",
             "config/budgets.json",
             "config/consensus-policy.json",
@@ -32,6 +33,7 @@ class HandoffTests(unittest.TestCase):
             "config/skill-registry.json",
             "config/source-registry.json",
             "config/agent-registry.json",
+            "evals/agent-harness/public-pilot-suite.json",
             "config/monitors/MON-MEMORY-001.json",
         ):
             target = self.root / relative

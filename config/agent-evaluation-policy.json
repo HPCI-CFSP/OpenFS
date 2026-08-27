@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "policy_id": "AEVALPOL-OPENFS-001",
+  "status": "enforced",
+  "development_suite_ref": "evals/agent-harness/public-pilot-suite.json",
+  "applicable_roles": ["discovery", "extraction", "validator", "critic", "synthesis"],
+  "required_bundle_status": "accepted",
+  "required_consensus_status": "accepted",
+  "maximum_bundle_age_days": 30,
+  "minimum_repetitions": 3,
+  "formal_holdout": {
+    "status": "unavailable",
+    "custodian_id": "unconfigured",
+    "task_set_digest": null,
+    "answer_set_digest": null,
+    "attestation_ref": null
+  },
+  "rerun_triggers": [
+    "weekly-recheck",
+    "model-id-change",
+    "harness-commit-change",
+    "prompt-profile-change",
+    "toolset-change",
+    "skillset-change",
+    "execution-policy-change",
+    "task-suite-change"
+  ],
+  "effect": "A provider-backed Agent cannot execute production research unless its exact model, harness, prompt profile, and current accepted evaluation bundle pass this gate. Public development tasks alone never satisfy the formal holdout requirement."
+}

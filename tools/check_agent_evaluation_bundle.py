@@ -95,8 +95,17 @@ def evaluate(bundle: dict[str, Any]) -> dict[str, Any]:
     if dataset["dynamic_web"] and dataset.get("web_receipt_bundle_digest") is None:
         errors.append("dataset_control: dynamic web evaluation requires retrieval receipts")
     if acceptance["require_independent_evaluator"]:
-        if protocol["evaluator"]["origin_group"] == bundle["provenance"]["author_origin_group"]:
+        evaluator = protocol["evaluator"]
+        system = bundle["system_under_test"]
+        if evaluator["origin_group"] == bundle["provenance"]["author_origin_group"]:
             errors.append("protocol: evaluator origin group is not independent of the author")
+        if evaluator["origin_group"] == system["origin_group"]:
+            errors.append("protocol: evaluator origin group is not independent of the system under test")
+        if (
+            evaluator["provider"] == system["model"]["provider"]
+            and evaluator["model_id"] == system["model"]["model_id"]
+        ):
+            errors.append("protocol: evaluator model is identical to the system under test")
 
     if bundle["status"] == "accepted" and bundle["consensus_status"] != "accepted":
         errors.append("status: accepted requires accepted Consensus")

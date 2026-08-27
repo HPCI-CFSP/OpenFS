@@ -13,6 +13,10 @@ and receipt bundle so that web drift is not mistaken for agent improvement.
 The scoring rubric identifies each criterion, its weight, whether partial credit
 is allowed, and whether scoring is programmatic or performed by an independent
 model or human. Criterion weights must sum to one.
+The evaluator record pins its provider, model ID, harness repository and commit,
+implementation digest, and Origin Group. An evaluator from the same Origin Group
+or with the same provider/model identity as the system under test is not
+independent.
 
 Security claims are fail-closed. Review-candidate evaluations must be
 unprivileged and cannot use direct outbound network access. Network-disabled,
@@ -51,3 +55,24 @@ The suite is deliberately not a formal test partition. Its prompts and expected
 facts are public, making it suitable for development and regression testing but
 not for generalization claims. An independent custodian must create and retain
 the hidden tasks and answers used for formal evaluation.
+
+## Production activation
+
+`config/agent-evaluation-policy.json` defines the production gate and rerun
+triggers. `tools/evaluate_agent_evaluation_readiness.py` checks an enabled Agent
+against a current accepted bundle for the exact Agent ID, role, requested model
+ID, prompt profile, harness repository, and harness commit. It also requires an
+independent external holdout attestation represented only by non-secret digests
+and a reference; the hidden tasks and answers stay outside this repository.
+The task-set digest, answer-set digest, and attestation reference in the accepted
+bundle must exactly match the active policy; a different or stale holdout cannot
+be substituted.
+
+The Research Worker runs this gate with `--require-ready` before leasing a Work
+Item. A model, harness, prompt, tool, skill, execution-policy, or task-suite
+change invalidates the previous comparison basis and requires a new evaluation.
+The weekly Coordinator emits a readiness report for review but does not run a
+provider, disclose a holdout, or claim that an unavailable evaluation occurred.
+The current policy deliberately reports `blocked` until the owner configures
+exact Agent and harness identities, an independent custodian, usage and cost
+measurement, and accepted Consensus-reviewed bundles.

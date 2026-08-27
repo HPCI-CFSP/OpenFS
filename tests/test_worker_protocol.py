@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from copy import deepcopy
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +33,23 @@ class WorkerProtocolTests(unittest.TestCase):
         self.run_id = "RUN-WORKER-TEST"
         self.work_item_id = "WORK-000001"
         self.agent_id = "discovery-test"
+        self.evaluation_report = {
+            "status": "ready",
+            "blockers": [],
+            "configuration_digests": {"policy": "f" * 64},
+            "agents": [
+                {
+                    "accepted_bundle_refs": [
+                        "proposals/agent-evaluations/AEVAL-TEST-001.json"
+                    ]
+                }
+            ],
+        }
+        self.evaluation_patch = patch(
+            "prepare_worker_invocation.evaluate_agent_readiness",
+            return_value=self.evaluation_report,
+        )
+        self.evaluation_mock = self.evaluation_patch.start()
         self.registry_ref = f"runs/{self.run_id}/inputs/config/agent-registry.json"
         self.permissions_ref = f"runs/{self.run_id}/inputs/config/role-permissions.json"
         self.skill_ref = f"runs/{self.run_id}/inputs/skills/discovery/SKILL.md"
@@ -107,6 +125,7 @@ class WorkerProtocolTests(unittest.TestCase):
         )
 
     def tearDown(self):
+        self.evaluation_patch.stop()
         self.temporary.cleanup()
 
     def write(self, ref, value):
@@ -132,6 +151,24 @@ class WorkerProtocolTests(unittest.TestCase):
         self.assertEqual("provider-a", invocation["provider_binding"]["provider"])
         self.assertEqual(self.output_ref, invocation["constraints"]["output_paths"][0])
         self.assertEqual(64, len(invocation["invocation_digest"]))
+        self.assertEqual(
+            ["proposals/agent-evaluations/AEVAL-TEST-001.json"],
+            invocation["provenance"]["accepted_agent_evaluation_bundle_refs"],
+        )
+        self.evaluation_mock.assert_called_with(
+            self.root,
+            agent_ids=[self.agent_id],
+            run_id=self.run_id,
+            evaluated_at="2026-08-24T05:10:00Z",
+        )
+
+    def test_blocked_agent_evaluation_prevents_invocation(self):
+        self.evaluation_mock.return_value = {
+            "status": "blocked",
+            "blockers": ["formal_holdout_available"],
+        }
+        with self.assertRaisesRegex(RuntimeError, "evaluation is not ready"):
+            self.invocation()
 
     def test_output_identity_is_bound_to_lease(self):
         invocation = self.invocation()

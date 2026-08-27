@@ -50,6 +50,10 @@ def valid_bundle():
             ],
         },
         "system_under_test": {
+            "agent_id": "discovery-public-01",
+            "role": "discovery",
+            "origin_group": "ORG-SYSTEM",
+            "prompt_profile": "public-source-discovery-v1",
             "model": {"provider": "Provider A", "model_id": "model-a", "release": "2026-08-01"},
             "harness": {"harness_id": "HAR-OPENFS", "repository_url": "https://example.org/harness", "commit": "b" * 40},
             "prompt_digest": DIGEST,
@@ -59,7 +63,17 @@ def valid_bundle():
         "protocol": {
             "protocol_version": "1",
             "protocol_digest": DIGEST,
-            "evaluator": {"evaluator_id": "eval-a", "version": "1", "implementation_digest": DIGEST, "origin_group": "ORG-EVALUATOR"},
+            "evaluator": {
+                "evaluator_id": "eval-a",
+                "version": "1",
+                "provider": "Provider B",
+                "model_id": "model-b",
+                "harness_id": "HAR-EVALUATOR",
+                "harness_repository_url": "https://example.org/evaluator",
+                "harness_commit": "d" * 40,
+                "implementation_digest": DIGEST,
+                "origin_group": "ORG-EVALUATOR",
+            },
             "minimum_repetitions": 3,
             "timeout_seconds": 900,
             "budget": {"maximum_wall_seconds": 900, "maximum_total_tokens": 5000, "maximum_cost": 2.0, "currency": "USD", "cost_basis": "provider list price"},
@@ -84,6 +98,7 @@ def valid_bundle():
             "dataset_digest": DIGEST,
             "reference_answer_digest": DIGEST,
             "reference_answer_location": "hidden-external",
+            "holdout_attestation_ref": "external:holdout-attestation-001",
             "web_snapshot_at": "2026-08-28T00:00:00Z",
             "web_receipt_bundle_digest": DIGEST,
             "contamination_assessment": "unknown",
@@ -136,6 +151,23 @@ class AgentEvaluationBundleTests(unittest.TestCase):
         self.assertFalse(result["candidate_ready_for_consensus"])
         self.assertTrue(any("hidden test" in item for item in result["control_errors"]))
         self.assertTrue(any("not independent" in item for item in result["control_errors"]))
+
+    def test_evaluator_must_be_independent_of_system_under_test(self):
+        bundle = valid_bundle()
+        evaluator = bundle["protocol"]["evaluator"]
+        evaluator["origin_group"] = "ORG-SYSTEM"
+        evaluator["provider"] = "Provider A"
+        evaluator["model_id"] = "model-a"
+
+        result = evaluate(bundle)
+
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(
+            any("system under test" in item for item in result["control_errors"])
+        )
+        self.assertTrue(
+            any("evaluator model is identical" in item for item in result["control_errors"])
+        )
 
     def test_duplicate_runs_policy_failure_and_budget_overage_fail_closed(self):
         bundle = valid_bundle()
