@@ -222,6 +222,10 @@ class RoadmapReferenceDataTests(unittest.TestCase):
             {track["track_id"] for track in blueprint["tracks"]},
         )
         self.assertIn(
+            "BLUE-CENTER-LIFECYCLE",
+            {track["track_id"] for track in blueprint["tracks"]},
+        )
+        self.assertIn(
             "LANE-BLUE-GFARM",
             {lane["lane_id"] for lane in blueprint["lanes"]},
         )
@@ -260,6 +264,32 @@ class RoadmapReferenceDataTests(unittest.TestCase):
             for source_id in milestone["source_ids"]
         }
         self.assertTrue({"SRC-BLUE021", "SRC-BLUE022"}.issubset(gfarm_sources))
+
+        lifecycle_milestones = {
+            milestone["milestone_id"]: milestone
+            for lane in blueprint["lanes"]
+            if lane["track_id"] == "BLUE-CENTER-LIFECYCLE"
+            for milestone in lane["milestones"]
+        }
+        self.assertEqual(
+            {
+                "MS-BLUE-TSUKUBA-SIRIUS-2026Q1",
+                "MS-BLUE-NAGOYA-FLOW2-2026Q4",
+                "MS-BLUE-HOKKAIDO-GPU-2027Q2",
+                "MS-BLUE-OSAKA-END-2027Q2",
+                "MS-BLUE-HBW2-END-2029Q4",
+            },
+            set(lifecycle_milestones),
+        )
+        hokkaido = lifecycle_milestones["MS-BLUE-HOKKAIDO-GPU-2027Q2"]
+        self.assertIn("32基", hokkaido["detail_ja"])
+        self.assertNotIn("32 GPUノード", hokkaido["detail_ja"])
+        self.assertIn("32 refers to GPUs", hokkaido["detail_en"])
+        public_summaries = (
+            ROOT / "knowledge" / "public" / "topic-summaries.json"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("32 GPUノード", public_summaries)
+        self.assertNotIn("32-GPU-node", public_summaries)
 
         workloads = self.roadmap_by_id["RM-APP-WORKLOADS"]
         continuous_track = next(
