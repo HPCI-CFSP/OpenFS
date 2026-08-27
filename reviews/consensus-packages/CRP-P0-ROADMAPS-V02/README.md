@@ -1,16 +1,16 @@
 # CRP-P0-ROADMAPS-V02 independent review package
 
-This package pins 6 P0 roadmaps, 205
+This package pins 6 P0 roadmaps, 206
 milestone records, 7 synthesized generation bands,
-and 214 source registrations representing
-200 unique URLs,
+and 216 source registrations representing
+202 unique URLs,
 14 cross-roadmap dependencies,
 39 prioritized Coverage Gaps, and
-3 provisional HPCI scenarios to commit `cf9ce53f8379f531730010aff6675ad37ab3d8e1`.
+3 provisional HPCI scenarios to commit `88650387010e927a95d0f26d515f53ac4de51d05`.
 
 ## Review protocol
 
-1. Check out exactly `cf9ce53f8379f531730010aff6675ad37ab3d8e1`, verify every `artifact_manifest.sha256`, and
+1. Check out exactly `88650387010e927a95d0f26d515f53ac4de51d05`, verify every `artifact_manifest.sha256`, and
    record the SHA-256 of the exact `manifest.json` bytes as
    `package_manifest_digest` in the review. Do not reserialize the manifest
    before calculating this digest.
@@ -40,11 +40,11 @@ and 214 source registrations representing
 ## 日本語要約
 
 このパッケージは、P0の6ロードマップ、
-205マイルストーン、7世代帯、
-214件の情報源登録
-（重複除去200 URL）、
+206マイルストーン、7世代帯、
+216件の情報源登録
+（重複除去202 URL）、
 14相互依存、39件の優先度付きCoverage Gap、
-HPCI整備計画3案をコミット `cf9ce53f8379f531730010aff6675ad37ab3d8e1` に固定します。
+HPCI整備計画3案をコミット `88650387010e927a95d0f26d515f53ac4de51d05` に固定します。
 各review unitを独立に検証し、`primary_source_requirements` に列挙された重要
 マイルストーンまたは世代帯ごとに一次情報を照合して、反証を探索してください。URL到達性を内容の
 正しさとみなさず、四半期を推定で補わないでください。同一会話のforkや作成モデルと同じ
