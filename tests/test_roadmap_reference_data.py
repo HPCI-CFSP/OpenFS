@@ -233,6 +233,29 @@ class RoadmapReferenceDataTests(unittest.TestCase):
         self.assertEqual("observed", jalapeno["timing_basis"])
         self.assertEqual(["SRC-COMP026"], jalapeno["source_ids"])
 
+        ucie_milestones = {
+            milestone["milestone_id"]: milestone
+            for lane in compute["lanes"]
+            if lane["lane_id"] == "LANE-COMP-AMD-VERSAL-UCIE"
+            for milestone in lane["milestones"]
+        }
+        announcement = ucie_milestones["MS-COMP-AMD-UCIE-2026Q3"]
+        target = ucie_milestones["MS-COMP-AMD-UCIE-2027Q4"]
+        self.assertEqual("observed", announcement["timing_basis"])
+        self.assertEqual("published", announcement["maturity"])
+        self.assertEqual("vendor-target", target["timing_basis"])
+        self.assertEqual("target", target["maturity"])
+        self.assertEqual("Q4", target["quarter"])
+        self.assertEqual(["SRC-COMP029"], target["source_ids"])
+
+        comparisons = {
+            item["comparison_id"]: item
+            for item in self.payload["comparison_sets"]
+        }
+        interconnect = comparisons["CMP-INTERCONNECT-ROLES"]
+        self.assertIn("TERM-UCIE", {row["term_id"] for row in interconnect["rows"]})
+        self.assertIn("within one package", interconnect["caveat_en"])
+
     def test_storage_and_agent_tracks_keep_primary_source_coverage(self):
         blueprint = self.roadmap_by_id["RM-X-BLUEPRINT"]
         self.assertIn(
