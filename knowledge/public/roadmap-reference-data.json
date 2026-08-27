@@ -229,6 +229,12 @@
       "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-SWE-BENCH"]
     },
     {
+      "term_id": "TERM-EVO-BENCH", "label_ja": "Evo-Bench", "label_en": "Evo-Bench", "aliases": ["Evo-Bench"], "category": "benchmark",
+      "short_definition_ja": "固定条件下でAIによるハーネス改善能力を測る公開ベンチマーク。", "short_definition_en": "A public benchmark measuring AI-driven harness improvement under controlled conditions.",
+      "definition_ja": "Evo-Benchは、Search、Office、Generalの5種類の既存ベンチマークから選んだ608件のハーネス感応課題を、160件の検証用と分離された448件の評価用に分ける。方策モデル、シードハーネス、乱数シード、評価手順、20反復・1,000ステップ・48時間の予算を固定し、評価用課題はハーネス確定後に採点する。", "definition_en": "Evo-Bench selects 608 harness-sensitive tasks from five established benchmarks across Search, Office, and General and separates them into 160 validation tasks and a disjoint 448-task evaluation suite. It fixes the policy model, seed harness, random seed, evaluation protocol, and a budget of 20 iterations, 1,000 steps, and 48 hours, then scores the evaluation suite after the harness is frozen.",
+      "roadmap_ids": ["RM-APP-WORKLOADS", "RM-X-BLUEPRINT"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}], "related_term_ids": ["TERM-HARNESS-BENCH", "TERM-HARNESSOPT-BENCH"]
+    },
+    {
       "term_id": "TERM-SWE-BENCH", "label_ja": "SWE-bench", "label_en": "SWE-bench", "aliases": ["SWE-bench"], "category": "benchmark",
       "short_definition_ja": "実在するGitHub Issueに対するコード修正をテストで採点するベンチマーク。", "short_definition_en": "A benchmark grading code changes for real GitHub issues with repository tests.",
       "definition_ja": "SWE-benchは実在するGitHub Issueと対応するリポジトリ状態を与え、エージェントが生成した修正をテストで評価する。実務的なコード理解と編集を測れる一方、環境構築、テストの完全性、データ汚染、ハーネス差を結果とともに管理する必要がある。", "definition_en": "SWE-bench provides real GitHub issues and repository states and evaluates agent patches with tests. It measures practical code understanding and editing, while environment setup, test completeness, contamination, and harness differences must accompany results.",
@@ -768,6 +774,12 @@
           {"column_id": "strengths", "text_ja": "ハーネス改良ループと予算管理を監査可能にする。", "text_en": "Makes the harness-improvement loop and budget control auditable."},
           {"column_id": "hpci-use", "text_ja": "OpenFSハーネスの継続改善を回帰試験する。", "text_en": "Regression-test continuous OpenFS harness improvement."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "target", "text_ja": "AIによる長時間のハーネス改善。", "text_en": "Long-horizon AI-driven harness improvement."},
+          {"column_id": "grading", "text_ja": "固定条件での検証用160課題と、分離された評価用448課題。", "text_en": "A 160-task validation suite and disjoint 448-task evaluation suite under fixed conditions."},
+          {"column_id": "strengths", "text_ja": "方策モデルと実行予算を固定し、ハーネス改善の効果を分離。", "text_en": "Fixes the policy model and execution budget to isolate harness-improvement effects."},
+          {"column_id": "hpci-use", "text_ja": "OpenFSハーネス改善の対照実験とホールドアウト評価。", "text_en": "Controlled experiments and held-out evaluation for OpenFS harness changes."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
         {"term_id": "TERM-SWE-BENCH", "cells": [
           {"column_id": "target", "text_ja": "実リポジトリのIssue修正。", "text_en": "Repair of real repository issues."},
           {"column_id": "grading", "text_ja": "生成パッチをリポジトリのテストで採点。", "text_en": "Repository tests grade generated patches."},
@@ -828,6 +840,13 @@
           {"column_id": "holdout", "text_ja": "開発・検証・テストを分離し、探索中はテスト課題と得点を非公開にする。最終候補だけを信頼サーバーで評価する。", "text_en": "Separates development, validation, and test partitions; test cases and scores remain hidden during search and only the nominated candidate is tested by the trusted server."},
           {"column_id": "openfs-control", "text_ja": "方法を設計原則として採用し、公開実装、第三者再現、運用費用を確認できるまでは正式ゲートの必須条件にしない。", "text_en": "Adopt the method as a design principle, but do not make it a mandatory formal gate until public implementation, independent reproduction, and operating cost are verified."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "方策モデル、シードハーネス、乱数シード、評価手順、実行予算を固定し、改善を行うモデルを別に記録する。", "text_en": "Fixes the policy model, seed harness, random seed, evaluation protocol, and execution budget and separately records the model performing the improvement."},
+          {"column_id": "boundary", "text_ja": "改善側は作業用ハーネスだけを書き換え、方策側には正解を見せない。評価用課題はハーネス確定まで分離する。Web利用課題では漏えい検査も必要である。", "text_en": "The evolver writes only its harness copy, the policy does not see answers, and evaluation tasks remain separated until the harness is frozen. Web-enabled tasks also require leakage screening."},
+          {"column_id": "records", "text_ja": "20反復、1,000ステップ、48時間の上限と、候補ハーネス、検証得点、最終評価を記録する。API費用と外部サービス版もOpenFS側で固定する。", "text_en": "Records the 20-iteration, 1,000-step, 48-hour limits together with candidate harnesses, validation scores, and final evaluation; OpenFS must also pin API cost and external-service versions."},
+          {"column_id": "holdout", "text_ja": "160件の検証用と448件の評価用を分離し、評価用課題はハーネス確定後にのみ採点する。OpenFS固有の非公開課題を追加して転用時の過適合を確認する。", "text_en": "Separates 160 validation tasks from 448 evaluation tasks and scores the latter only after the harness is frozen; add private OpenFS-specific tasks to detect transfer overfitting."},
+          {"column_id": "openfs-control", "text_ja": "公式実装を固定版で再現し、第三者反復、費用、外部API依存、ライセンスを確認してから正式な改善ゲートへ組み込む。", "text_en": "Reproduce a pinned official release and verify independent repetition, cost, external-API dependencies, and licensing before including it in a formal improvement gate."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
         {"term_id": "TERM-SWE-BENCH", "cells": [
           {"column_id": "configuration", "text_ja": "提出物はモデル名とパッチで識別されるが、エージェントのハーネス、プロンプト、ツール、費用は別途記録が必要。", "text_en": "Predictions identify a model and patch, while agent harness, prompt, tools, and cost require separate reporting."},
           {"column_id": "boundary", "text_ja": "公式評価は課題ごとのDocker環境でパッチを適用し、制限時間内にテストを実行する。生成時のネットワーク・権限は評価器の外側で管理する。", "text_en": "The official evaluator applies patches and runs tests in per-instance Docker environments with timeouts; generation-time network and permissions remain external controls."},
@@ -931,6 +950,11 @@
           {"column_id": "openfs-fit", "text_ja": "固定した予算とホールドアウト課題で、AIによるハーネス改善そのものを評価できる。", "text_en": "Evaluates AI-driven harness improvement under a fixed budget and held-out tasks."},
           {"column_id": "priority", "text_ja": "低。方法は重要だが、公開実装、第三者再現、運用費用を確認するまで正式評価には使わない。", "text_en": "Low: the method is important, but not used for formal evaluation until public code, independent reproduction, and operating cost are confirmed."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK027"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK042"}]},
+        {"term_id": "TERM-EVO-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公式コード、データ、設定、論文結果が公開されている。公開直後のため第三者による独立再現は未確認である。", "text_en": "Official code, data, configurations, and paper results are public. Independent third-party reproduction has not yet been established because the release is new."},
+          {"column_id": "openfs-fit", "text_ja": "固定した方策モデル、シード、評価手順、予算と分離された評価課題により、ハーネス改善を比較できる。", "text_en": "Compares harness improvement with a fixed policy model, seed, evaluation protocol, budget, and disjoint evaluation tasks."},
+          {"column_id": "priority", "text_ja": "高。OpenFSの継続改善に直接適合するが、正式採用前に独立再現とHPCI固有課題で検証する。", "text_en": "High: directly aligned with continuous OpenFS improvement, subject to independent reproduction and validation on HPCI-specific tasks before formal adoption."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK052"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK053"}]},
         {"term_id": "TERM-SWE-BENCH", "cells": [
           {"column_id": "public-evidence", "text_ja": "公式コード、データ、Docker評価環境、公開結果がある。", "text_en": "Official code, data, Docker evaluation environments, and public results are available."},
           {"column_id": "openfs-fit", "text_ja": "実在するリポジトリの理解、修正、テスト合格を評価できる。", "text_en": "Measures understanding, modification, and test-based repair of real repositories."},

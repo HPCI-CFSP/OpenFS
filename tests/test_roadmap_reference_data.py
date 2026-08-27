@@ -130,6 +130,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
             {
                 "TERM-HARNESS-BENCH",
                 "TERM-HARNESSOPT-BENCH",
+                "TERM-EVO-BENCH",
                 "TERM-SWE-BENCH",
                 "TERM-GAIA",
                 "TERM-TAU-BENCH",
