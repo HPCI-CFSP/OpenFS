@@ -4,7 +4,7 @@
   "status": "published",
   "queue_id": "RGQ-20260828-001",
   "as_of": "2026-08-28",
-  "generated_at": "2026-08-27T18:34:53Z",
+  "generated_at": "2026-08-27T18:43:14Z",
   "method_ja": "6本のロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the six roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
@@ -771,24 +771,24 @@
       "task_id": "OFS-005",
       "monitor_enabled": false,
       "execution_state": "staged-monitor-disabled",
-      "scope_ja": "Megatron-LM、Megatron Core、Megatron-DeepSpeedの共通モデル・複数GPU環境での再現比較",
-      "scope_en": "Reproducible comparison of Megatron-LM, Megatron Core, and Megatron-DeepSpeed on common models and multiple GPU platforms",
+      "scope_ja": "Megatron Core、Megatron Bridge、Megatron-DeepSpeedの共通モデル・複数GPU環境での再現比較",
+      "scope_en": "Reproducible comparison of Megatron Core, Megatron Bridge, and Megatron-DeepSpeed on common models and multiple GPU platforms",
       "impact_ja": "機能一覧だけでは、チェックポイント互換性、収束、性能、障害回復、保守継続性を判断できない。",
       "impact_en": "Feature lists alone do not establish checkpoint compatibility, convergence, performance, recovery, or maintenance continuity.",
-      "next_action_ja": "版を固定した小規模モデルと実運用規模の代表モデルについて、NVIDIAおよびAMD環境でビルド、収束、性能、チェックポイント再開を継続測定する。",
-      "next_action_en": "Continuously measure builds, convergence, performance, and checkpoint restart on NVIDIA and AMD systems using a versioned small model and a representative production-scale model.",
+      "next_action_ja": "版を固定した小規模モデルと実運用規模の代表モデルについて、各スタックと依存ライブラリの組合せを固定し、NVIDIAおよびAMD環境でビルド可否、収束、性能、メモリ使用量、チェックポイント変換・再開、障害回復を継続測定する。未対応の組合せは推測で補わず、非対応として記録する。",
+      "next_action_en": "Pin each stack together with its dependency versions and continuously measure build support, convergence, performance, memory use, checkpoint conversion and restart, and failure recovery for a versioned small model and a representative production-scale model on NVIDIA and AMD systems. Record unsupported combinations as unsupported rather than inferring compatibility.",
       "query_seeds": [
         {
           "language": "en",
-          "query": "Megatron-LM Megatron Core Megatron-DeepSpeed release maintenance checkpoint compatibility convergence benchmark NVIDIA AMD"
+          "query": "Megatron Core Megatron Bridge Megatron-DeepSpeed release maintenance checkpoint compatibility convergence benchmark NVIDIA AMD"
         },
         {
           "language": "en",
-          "query": "Megatron Core DeepSpeed common model reproducible throughput convergence checkpoint restart multi GPU benchmark"
+          "query": "Megatron Bridge DeepSpeed common model reproducible throughput convergence checkpoint conversion restart multi GPU benchmark"
         },
         {
           "language": "ja",
-          "query": "Megatron-LM Megatron Core Megatron-DeepSpeed 保守状況 チェックポイント 収束 性能 比較"
+          "query": "Megatron Core Megatron Bridge Megatron-DeepSpeed 保守状況 チェックポイント 変換 収束 性能 比較"
         }
       ],
       "required_source_classes": [
@@ -804,14 +804,14 @@
           {
             "criterion_id": "GAP-PORT-007-C1",
             "verification_method": "evidence-review",
-            "requirement_ja": "Megatron-LM、Megatron Core、Megatron-DeepSpeedのリリース、保守状態、対応モデル、並列化方式、チェックポイント形式を版付き一次情報で比較する。",
-            "requirement_en": "Compare versioned primary evidence for releases, maintenance status, supported models, parallelism methods, and checkpoint formats across Megatron-LM, Megatron Core, and Megatron-DeepSpeed."
+            "requirement_ja": "Megatron Core、Megatron Bridge、Megatron-DeepSpeedのリリース、保守状態、対応モデル、並列化方式、依存版、チェックポイント形式と変換経路を版付き一次情報で比較する。",
+            "requirement_en": "Compare versioned primary evidence for releases, maintenance status, supported models, parallelism methods, dependency versions, checkpoint formats, and conversion paths across Megatron Core, Megatron Bridge, and Megatron-DeepSpeed."
           },
           {
             "criterion_id": "GAP-PORT-007-C2",
             "verification_method": "reproducible-measurement",
-            "requirement_ja": "同一モデル、データ、精度条件を用い、NVIDIAおよびAMD環境でビルド、収束、スループット、メモリ使用量、チェックポイント再開、障害回復を2つ以上の独立した実行環境で再現する。",
-            "requirement_en": "Using identical models, data, and accuracy conditions, reproduce build, convergence, throughput, memory use, checkpoint restart, and failure recovery on NVIDIA and AMD systems in at least two independent execution environments."
+            "requirement_ja": "同一モデル、データ、精度条件を用い、NVIDIAおよびAMD環境でビルド可否、収束、スループット、メモリ使用量、チェックポイント変換・再開、障害回復を2つ以上の独立した実行環境で再現し、未対応の組合せも記録する。",
+            "requirement_en": "Using identical models, data, and accuracy conditions, reproduce build support, convergence, throughput, memory use, checkpoint conversion and restart, and failure recovery on NVIDIA and AMD systems in at least two independent execution environments, recording unsupported combinations as well."
           }
         ]
       },
