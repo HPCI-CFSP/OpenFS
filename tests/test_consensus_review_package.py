@@ -259,7 +259,15 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             if unit["kind"] != "roadmap":
                 continue
             path = next(path for path in unit["artifact_paths"] if path.startswith("knowledge/public/roadmaps/"))
-            roadmap = load_json(ROOT / path)
+            roadmap = json.loads(
+                subprocess.run(
+                    ["git", "show", f"{self.manifest['base_commit']}:{path}"],
+                    cwd=ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout
+            )
             milestone_ids = {
                 milestone["milestone_id"]
                 for lane in roadmap["lanes"]
@@ -273,7 +281,15 @@ class ConsensusReviewPackageTests(unittest.TestCase):
             if unit["kind"] != "roadmap":
                 continue
             path = next(path for path in unit["artifact_paths"] if path.startswith("knowledge/public/roadmaps/"))
-            roadmap = load_json(ROOT / path)
+            roadmap = json.loads(
+                subprocess.run(
+                    ["git", "show", f"{self.manifest['base_commit']}:{path}"],
+                    cwd=ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout
+            )
             generation_band_ids = {
                 band["generation_band_id"]
                 for track in roadmap["tracks"]

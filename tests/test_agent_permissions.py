@@ -92,6 +92,7 @@ class AgentPermissionTests(unittest.TestCase):
             "topic-promotion",
             [
                 "config/research-baseline.json",
+                "config/catalog-taxonomy.json",
                 "config/publication-i18n.json",
                 "config/monitors/MON-AUTO-TOPICS-001.json",
                 "runs/RUN-001/topic-promotion.json",
@@ -100,7 +101,7 @@ class AgentPermissionTests(unittest.TestCase):
             ],
             self.config,
         )
-        self.assertEqual(4, len(allowed))
+        self.assertEqual(5, len(allowed))
         self.assertEqual(
             ["config/consensus-policy.json", "docs/research-baseline/README.md"],
             denied,

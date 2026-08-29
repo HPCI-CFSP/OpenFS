@@ -77,6 +77,7 @@ REQUIRED_FILES = [
     "config/skill-registry.json",
     "config/role-permissions.json",
     "config/research-baseline.json",
+    "config/catalog-taxonomy.json",
     "config/roadmap-portfolio.json",
     "config/scenario-policy.json",
     "config/global-technology-scope.json",
@@ -119,6 +120,7 @@ REQUIRED_FILES = [
     "schemas/weekly-cycle.schema.json",
     "schemas/handoff.schema.json",
     "schemas/research-baseline.schema.json",
+    "schemas/catalog-taxonomy.schema.json",
     "schemas/roadmap-portfolio.schema.json",
     "schemas/center-profile.schema.json",
     "schemas/center-profile-coverage.schema.json",
@@ -1513,6 +1515,60 @@ def validate_global_technology_scope(root: Path) -> list[str]:
     return errors
 
 
+def validate_catalog_taxonomy(root: Path) -> list[str]:
+    errors: list[str] = []
+    taxonomy = load_json(root / "config" / "catalog-taxonomy.json")
+    baseline = load_json(root / "config" / "research-baseline.json")
+    portfolio = load_json(root / "config" / "roadmap-portfolio.json")
+    expected_categories = [
+        "architecture-hardware",
+        "system-software-data-platform",
+        "applications-workloads",
+        "operations-facilities-security",
+        "access-governance",
+        "planning-evaluation-research",
+    ]
+    categories = taxonomy.get("categories", [])
+    if [item.get("category_id") for item in categories] != expected_categories:
+        errors.append("catalog taxonomy category IDs or order changed")
+    if [item.get("order") for item in categories] != list(range(1, 7)):
+        errors.append("catalog taxonomy orders must be 1 through 6")
+
+    active_topic_ids = {
+        topic["topic_id"] for topic in baseline.get("topics", [])
+        if topic.get("status") != "retired"
+    }
+    assigned_topics = [
+        topic_id for category in categories for topic_id in category.get("topic_ids", [])
+    ]
+    if len(assigned_topics) != len(set(assigned_topics)):
+        errors.append("catalog taxonomy assigns a topic to more than one category")
+    missing_topics = active_topic_ids - set(assigned_topics)
+    unknown_topics = set(assigned_topics) - active_topic_ids
+    if missing_topics:
+        errors.append(f"catalog taxonomy omits active topics: {sorted(missing_topics)}")
+    if unknown_topics:
+        errors.append(f"catalog taxonomy references unknown or retired topics: {sorted(unknown_topics)}")
+
+    roadmap_ids = {
+        item["roadmap_id"] for item in portfolio.get("roadmap_families", [])
+    }
+    assigned_roadmaps = [
+        roadmap_id
+        for category in categories
+        for roadmap_id in category.get("roadmap_ids", [])
+    ]
+    if len(assigned_roadmaps) != len(set(assigned_roadmaps)):
+        errors.append("catalog taxonomy assigns a roadmap to more than one category")
+    missing_roadmaps = roadmap_ids - set(assigned_roadmaps)
+    unknown_roadmaps = set(assigned_roadmaps) - roadmap_ids
+    if missing_roadmaps:
+        errors.append(f"catalog taxonomy omits roadmaps: {sorted(missing_roadmaps)}")
+    if unknown_roadmaps:
+        errors.append(f"catalog taxonomy references unknown roadmaps: {sorted(unknown_roadmaps)}")
+    return errors
+
+
 def validate_research_topic_configuration(root: Path) -> list[str]:
     errors: list[str] = []
     policy = load_json(root / "config" / "consensus-policy.json")
@@ -1527,6 +1583,7 @@ def validate_research_topic_configuration(root: Path) -> list[str]:
     allowed = set(permissions.get("roles", {}).get("topic-promotion", {}).get("allowed_write_patterns", []))
     expected = {
         "config/research-baseline.json",
+        "config/catalog-taxonomy.json",
         "config/publication-i18n.json",
         "config/monitors/MON-AUTO-TOPICS-001.json",
         "runs/**",
@@ -1903,6 +1960,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_center_registry(root))
     if (root / "config" / "research-baseline.json").exists():
         errors.extend(validate_research_baseline(root))
+    if (root / "config" / "catalog-taxonomy.json").exists():
+        errors.extend(validate_catalog_taxonomy(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
     if (root / "config" / "activation-policy.json").exists():

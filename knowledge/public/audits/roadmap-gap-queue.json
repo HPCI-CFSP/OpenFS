@@ -2,25 +2,25 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20260828-001",
-  "as_of": "2026-08-28",
-  "generated_at": "2026-08-27T19:28:01Z",
+  "queue_id": "RGQ-20260829-001",
+  "as_of": "2026-08-29",
+  "generated_at": "2026-08-29T00:00:00Z",
   "method_ja": "6本のロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the six roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
     "roadmap_count": 6,
-    "gap_count": 40,
+    "gap_count": 43,
     "p0": 19,
-    "p1": 15,
+    "p1": 18,
     "p2": 6,
-    "source_discovery": 39,
+    "source_discovery": 42,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 39,
+    "staged_monitor_disabled": 42,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 18,
+    "explicit_query_overrides": 21,
     "generated_query_fallbacks": 21,
     "p0_explicit_query_overrides": 18,
     "p0_generated_query_fallbacks": 0
@@ -1447,6 +1447,65 @@
       "queue_item_id": "RGQ-0026"
     },
     {
+      "gap_id": "GAP-COMP-009",
+      "roadmap_id": "RM-HW-COMPUTE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "代表的なエージェント型ワークロードによるコア数、周波数、電圧・周波数特性、同時実行数、電力、費用の再現比較",
+      "scope_en": "Reproducible comparison of core count, frequency, voltage-frequency operating points, concurrency, power, and cost using representative agentic workloads",
+      "impact_ja": "ベンダーの用途説明だけでは、高周波数・少コア、多コア、異種CPU/GPU構成のどれを採用すべきか判断できない。",
+      "impact_en": "Vendor positioning alone cannot determine whether fewer high-frequency cores, many cores, or heterogeneous CPU/GPU configurations should be adopted.",
+      "next_action_ja": "直列処理、推論、検索、ツール実行、通信待ちを記録する公開可能なワークロードを固定し、同一タスクで完了時間、p95・p99遅延、1ジュール当たりの処理件数、1タスク当たりの費用、1ノード当たりのエージェント数を測定する。",
+      "next_action_en": "Pin a publishable workload that records serial orchestration, inference, retrieval, tool execution, and communication waits, then measure completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node on identical tasks.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "エージェント型AI ワークロード CPU コア数 周波数 メモリ遅延 消費電力 再現可能 ベンチマーク"
+        },
+        {
+          "language": "en",
+          "query": "agentic AI workload CPU core count frequency memory latency power reproducible benchmark"
+        },
+        {
+          "language": "en",
+          "query": "agentic workload voltage frequency curve single thread throughput tool calling benchmark CPU"
+        }
+      ],
+      "required_source_classes": [
+        "research-primary",
+        "peer-reviewed-research",
+        "vendor-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-COMP-009-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "モデル、ハーネス、ツール、入力、同時実行数を固定し、CPUのコア数、周波数、メモリ構成を変えたときの応答時間、スループット、消費電力、費用を測定する。",
+            "requirement_en": "Hold the model, harness, tools, inputs, and concurrency constant and measure latency, throughput, power, and cost while varying CPU core count, frequency, and memory configuration."
+          },
+          {
+            "criterion_id": "GAP-COMP-009-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "少なくとも2種類のCPU系統と2つの独立した実行環境で再現し、V-f特性と並列度によって有利な構成が変わる境界を示す。",
+            "requirement_en": "Reproduce the study on at least two CPU families and two independent environments, identifying where the preferred configuration changes with the voltage-frequency curve and available parallelism."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0027"
+    },
+    {
       "gap_id": "GAP-NET-001",
       "roadmap_id": "RM-HW-INTERCONNECT",
       "priority": "P1",
@@ -1496,7 +1555,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1548,7 +1607,63 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0029"
+    },
+    {
+      "gap_id": "GAP-NET-006",
+      "roadmap_id": "RM-HW-INTERCONNECT",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "Cornelis CN5000・CN6000とRoCE・Ultra Ethernet・InfiniBandの相互運用、実効性能、運用、費用の独立比較",
+      "scope_en": "Independent comparison of Cornelis CN5000 and CN6000 with RoCE, Ultra Ethernet, and InfiniBand for interoperability, delivered performance, operations, and cost",
+      "impact_ja": "製品仕様だけでは、既存HPCI環境への統合、運用移行、調達時の代替可能性を判断できない。",
+      "impact_en": "Product specifications alone cannot determine integration with existing HPCI environments, operational migration, or substitutability in procurement.",
+      "next_action_ja": "同一のMPI・SHMEM・GPU集合通信・I/O混在負荷と障害注入を用い、テールレイテンシ、輻輳、回復時間、消費電力、管理工数、国内保守条件を測定する。",
+      "next_action_en": "Use identical MPI, SHMEM, GPU-collective, and mixed-I/O workloads with fault injection to measure tail latency, congestion, recovery time, power, administrative effort, and service conditions in Japan.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "Cornelis CN5000 CN6000 Omni-Path RoCE Ultra Ethernet general availability interoperability benchmark"
+        },
+        {
+          "language": "ja",
+          "query": "Cornelis CN6000 出荷時期 Omni-Path RoCE Ultra Ethernet 相互運用 性能 評価"
+        }
+      ],
+      "required_source_classes": [
+        "vendor-primary",
+        "standards-body",
+        "research-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-NET-006-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "CN6000の一般提供時期、対応プロトコル、スイッチおよびソフトウェアとの組合せ、長期保守条件を公式資料で確認する。",
+            "requirement_en": "Confirm official CN6000 general-availability timing, supported protocols, switch and software combinations, and long-term support terms."
+          },
+          {
+            "criterion_id": "GAP-NET-006-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一の通信・集団通信・ストレージI/O負荷でOmni-Path、RoCE、Ultra Ethernet候補を比較し、性能、輻輳制御、障害復旧、運用工数を独立に再現する。",
+            "requirement_en": "Compare Omni-Path, RoCE, and Ultra Ethernet candidates under common point-to-point, collective, and storage-I/O loads, independently reproducing performance, congestion control, recovery, and operational effort."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1602,7 +1717,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -1656,7 +1771,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -1708,7 +1823,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -1760,7 +1875,62 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0034"
+    },
+    {
+      "gap_id": "GAP-PORT-008",
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "LLM推論サービングフレームワークを、同一のモデル、精度、ハードウェア、到着過程、SLAで再現比較",
+      "scope_en": "Reproducible LLM-serving framework comparison using the same model, precision, hardware, arrival process, and SLA",
+      "impact_ja": "機能一覧や各プロジェクトの個別性能値だけでは、科学AIエージェント基盤の標準サービング層を選定できない。",
+      "impact_en": "Feature lists and project-specific performance claims cannot select a standard serving layer for scientific AI agents.",
+      "next_action_ja": "vLLM、llama.cpp、SGLang、TensorRT-LLM、TGI、ONNX Runtime GenAIの版と依存関係を固定し、TTFT、ITL、p95・p99遅延、スループット、メモリ、電力、障害回復、構造化出力、ツール呼び出しを共通条件で測定する。",
+      "next_action_en": "Pin versions and dependencies for vLLM, llama.cpp, SGLang, TensorRT-LLM, TGI, and ONNX Runtime GenAI, then measure TTFT, ITL, p95 and p99 latency, throughput, memory, power, recovery, structured output, and tool calling under common conditions.",
+      "query_seeds": [
+        {
+          "language": "en",
+          "query": "vLLM llama.cpp SGLang TensorRT-LLM TGI ONNX Runtime GenAI reproducible benchmark TTFT inter token latency throughput energy"
+        },
+        {
+          "language": "ja",
+          "query": "LLM 推論サービング vLLM llama.cpp SGLang 比較 TTFT トークン間遅延 スループット 消費電力"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "peer-reviewed-research"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-008-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "各フレームワークの対応ハードウェア、モデル形式、量子化、連続バッチ処理、KVキャッシュ、分散推論、API、保守状態を版付き一次情報で比較する。",
+            "requirement_en": "Compare versioned primary evidence for hardware, model formats, quantization, continuous batching, KV cache, distributed inference, APIs, and maintenance status across frameworks."
+          },
+          {
+            "criterion_id": "GAP-PORT-008-C2",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "同一モデル、精度、プロンプト分布、同時実行条件で、TTFT、トークン間遅延、スループット、メモリ、消費電力、失敗回復を複数ハードウェア上で再現する。",
+            "requirement_en": "Under identical model, accuracy, prompt distribution, and concurrency conditions, reproduce TTFT, inter-token latency, throughput, memory, power, and failure recovery on multiple hardware platforms."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -1810,7 +1980,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0036"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -1860,7 +2030,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -1912,7 +2082,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0035"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -1964,7 +2134,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0036"
+      "queue_item_id": "RGQ-0039"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -2016,7 +2186,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0037"
+      "queue_item_id": "RGQ-0040"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -2070,7 +2240,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0038"
+      "queue_item_id": "RGQ-0041"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -2124,7 +2294,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0039"
+      "queue_item_id": "RGQ-0042"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -2176,7 +2346,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0040"
+      "queue_item_id": "RGQ-0043"
     }
   ],
   "publication": {

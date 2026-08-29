@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "export_id": "ROADMAP-REFERENCE-DATA-001",
   "status": "published",
-  "as_of": "2026-08-28",
+  "as_of": "2026-08-29",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "terms": [
@@ -437,6 +437,78 @@
       "short_definition_ja": "ドメインウォールフェルミオンのHMC計算を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for HMC with domain-wall fermions.",
       "definition_ja": "LQCD-DWF-HMCはBridge++を基盤とする格子QCDベンチマークである。公開GitHubリポジトリには富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例が含まれる。比較には格子サイズ、収束条件、混合精度設定、コミットの固定が必要である。", "definition_en": "LQCD-DWF-HMC is a lattice-QCD benchmark based on Bridge++. Its public GitHub repository includes build examples for Fugaku, general CPUs, and GPUs through OpenACC. Comparison requires the lattice size, convergence conditions, mixed-precision settings, and commit to be pinned.",
       "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK049"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
+    },
+    {
+      "term_id": "TERM-AGENTIC-WORKLOAD", "label_ja": "エージェント型ワークロード", "label_en": "Agentic workload", "aliases": ["agentic AI workload", "AI agent workload"], "category": "compute",
+      "short_definition_ja": "モデル推論に加えて、計画、ツール呼び出し、外部処理、反復を含むワークロード。", "short_definition_en": "A workload combining model inference with planning, tool calls, external processing, and iteration.",
+      "definition_ja": "エージェント型ワークロードでは、モデル推論だけでなく、逐次的な制御、ツール呼び出し、検索、コード実行、待ち時間が全体性能を左右する。高周波数CPUが常に有利とは限らず、並列度、V-f特性、メモリ、I/O、ハーネス実装を固定した測定が必要である。", "definition_en": "Agentic workloads combine model inference with serial control, tool calls, retrieval, code execution, and waiting. High-frequency CPUs are not inherently superior; measurements must control parallelism, voltage-frequency behavior, memory, I/O, and harness implementation.",
+      "roadmap_ids": ["RM-HW-COMPUTE", "RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP030"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP031"}], "related_term_ids": ["TERM-VF-CURVE", "TERM-TTFT", "TERM-ITL"]
+    },
+    {
+      "term_id": "TERM-VF-CURVE", "label_ja": "電圧・周波数特性", "label_en": "Voltage-frequency curve", "aliases": ["V-f curve", "DVFS curve"], "category": "compute",
+      "short_definition_ja": "動作電圧と周波数、および消費電力・性能の関係。", "short_definition_en": "The relationship among operating voltage, frequency, power, and performance.",
+      "definition_ja": "V-f特性は、周波数を上げたときに必要な電圧と消費電力がどのように変わるかを示す。コア数と周波数の選択は、この特性、電力上限、逐次区間、並列度を合わせて評価する必要がある。", "definition_en": "The V-f curve describes how required voltage and power change with operating frequency. Core-count and frequency choices therefore need joint evaluation with power limits, serial regions, and workload parallelism.",
+      "roadmap_ids": ["RM-HW-COMPUTE"], "source_refs": [{"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP030"}, {"roadmap_id": "RM-HW-COMPUTE", "source_id": "SRC-COMP031"}], "related_term_ids": ["TERM-AGENTIC-WORKLOAD"]
+    },
+    {
+      "term_id": "TERM-OMNI-PATH", "label_ja": "Omni-Path", "label_en": "Omni-Path", "aliases": ["Intel Omni-Path Architecture", "Cornelis Omni-Path"], "category": "interconnect",
+      "short_definition_ja": "HPC向けに設計された低遅延・高帯域の通信ファブリック。", "short_definition_en": "A low-latency, high-bandwidth fabric designed for HPC.",
+      "definition_ja": "Omni-PathはHPCのメッセージ通信や集団通信を対象とするファブリックである。Cornelis NetworksはCN5000とOPXソフトウェアを提供し、CN6000ではOmni-Pathに加えてRoCEv2とUltra Ethernetへの対応を表明している。製品時期と相互運用性は個別確認が必要である。", "definition_en": "Omni-Path is a fabric for HPC messaging and collectives. Cornelis Networks provides CN5000 and the OPX software stack and has announced Omni-Path, RoCEv2, and Ultra Ethernet support for CN6000. Product timing and interoperability require separate verification.",
+      "roadmap_ids": ["RM-HW-INTERCONNECT"], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET027"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET028"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET029"}], "related_term_ids": ["TERM-ETHERNET", "TERM-ULTRA-ETHERNET"]
+    },
+    {
+      "term_id": "TERM-TTFT", "label_ja": "最初のトークンまでの時間", "label_en": "Time to first token", "aliases": ["TTFT", "time-to-first-token"], "category": "software",
+      "short_definition_ja": "要求受信から最初の出力トークンが返るまでの時間。", "short_definition_en": "Elapsed time from request arrival until the first output token.",
+      "definition_ja": "TTFTはプロンプト処理、キュー待ち、スケジューリングを含む初期応答性の指標である。スループットと別に測り、入力長、同時実行数、キャッシュ条件を固定する必要がある。", "definition_en": "TTFT measures initial responsiveness, including prompt processing, queueing, and scheduling. It should be reported separately from throughput with input length, concurrency, and cache state controlled.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT038"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT041"}], "related_term_ids": ["TERM-ITL", "TERM-KV-CACHE"]
+    },
+    {
+      "term_id": "TERM-ITL", "label_ja": "トークン間遅延", "label_en": "Inter-token latency", "aliases": ["ITL", "time per output token"], "category": "software",
+      "short_definition_ja": "最初の出力後、後続トークンを生成する間隔。", "short_definition_en": "The interval between generated tokens after the first output.",
+      "definition_ja": "トークン間遅延はデコード段階の対話応答性を表す。平均値だけでなく分位点を示し、バッチ処理、同時実行数、出力長、ハードウェア構成を固定して比較する。", "definition_en": "Inter-token latency captures decode-stage responsiveness. Comparisons should report percentiles, not only averages, while controlling batching, concurrency, output length, and hardware.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT038"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT042"}], "related_term_ids": ["TERM-TTFT", "TERM-KV-CACHE"]
+    },
+    {
+      "term_id": "TERM-KV-CACHE", "label_ja": "KVキャッシュ", "label_en": "KV cache", "aliases": ["key-value cache", "attention KV cache"], "category": "software",
+      "short_definition_ja": "過去トークンのAttention用キー・バリューを再利用する推論時キャッシュ。", "short_definition_en": "An inference-time cache that reuses attention keys and values for prior tokens.",
+      "definition_ja": "KVキャッシュは生成の再計算を減らす一方、モデル規模、系列長、同時実行数に応じて大きなメモリ容量を占める。ページング、量子化、共有、退避の実装差が性能と収容数を左右する。", "definition_en": "KV cache avoids recomputation during generation but can consume substantial memory as model size, sequence length, and concurrency grow. Paging, quantization, sharing, and offload implementations affect performance and capacity.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT038"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT040"}], "related_term_ids": ["TERM-TTFT", "TERM-ITL"]
+    },
+    {
+      "term_id": "TERM-VLLM", "label_ja": "vLLM", "label_en": "vLLM", "aliases": ["vLLM engine", "vLLM server"], "category": "software",
+      "short_definition_ja": "連続バッチ処理とKVキャッシュ管理を備えるオープンソースLLM推論・サービング基盤。", "short_definition_en": "An open-source LLM inference and serving stack with continuous batching and KV-cache management.",
+      "definition_ja": "vLLMはOpenAI互換API、分散推論、量子化、スケジューリング機能を提供する。対応範囲と性能はモデル、アクセラレータ、版で変わるため、採用時は対象構成で検証する。", "definition_en": "vLLM provides OpenAI-compatible APIs, distributed inference, quantization, and scheduling. Support and performance vary by model, accelerator, and version and require validation on the target configuration.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT038"}], "related_term_ids": ["TERM-LLAMACPP", "TERM-SGLANG", "TERM-TENSORRT-LLM"]
+    },
+    {
+      "term_id": "TERM-LLAMACPP", "label_ja": "llama.cpp", "label_en": "llama.cpp", "aliases": ["llama-server", "GGUF runtime"], "category": "software",
+      "short_definition_ja": "GGUFモデルをCPUや各種アクセラレータで実行する軽量なオープンソース推論基盤。", "short_definition_en": "A lightweight open-source inference stack for GGUF models on CPUs and multiple accelerators.",
+      "definition_ja": "llama.cppはローカル実行、量子化モデル、複数ハードウェアバックエンド、HTTPサーバーを提供する。大規模分散サービングよりも、可搬性、エッジ・CPU実行、組込みやすさが主要な比較軸となる。", "definition_en": "llama.cpp supports local execution, quantized models, multiple hardware backends, and an HTTP server. Its key comparison axes are portability, edge and CPU execution, and embeddability rather than only large distributed serving.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT039"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT040"}], "related_term_ids": ["TERM-VLLM", "TERM-ONNX-RUNTIME-GENAI"]
+    },
+    {
+      "term_id": "TERM-SGLANG", "label_ja": "SGLang", "label_en": "SGLang", "aliases": ["SGLang runtime", "SGLang server"], "category": "software",
+      "short_definition_ja": "生成AIプログラムとLLMサービングを対象とするオープンソース基盤。", "short_definition_en": "An open-source stack for generative-AI programs and LLM serving.",
+      "definition_ja": "SGLangは推論サーバーと、複数段階の生成処理を記述する機能を提供する。エージェント処理では、単一要求の速度に加えて構造化出力、キャッシュ、ツール連携、複数ターンの再現性を確認する。", "definition_en": "SGLang provides an inference server and facilities for multi-stage generative programs. Agentic evaluation should cover structured output, caching, tool integration, and multi-turn reproducibility in addition to single-request speed.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT041"}], "related_term_ids": ["TERM-VLLM", "TERM-TENSORRT-LLM"]
+    },
+    {
+      "term_id": "TERM-TENSORRT-LLM", "label_ja": "TensorRT-LLM", "label_en": "TensorRT-LLM", "aliases": ["TRT-LLM", "NVIDIA TensorRT-LLM"], "category": "software",
+      "short_definition_ja": "NVIDIA GPU向けに最適化されたLLM推論ライブラリと実行基盤。", "short_definition_en": "An LLM inference library and runtime optimized for NVIDIA GPUs.",
+      "definition_ja": "TensorRT-LLMはNVIDIA GPU向けカーネル、量子化、並列化、サービング統合を提供する。高い最適化余地がある一方、対応ハードウェア、ビルド、モデル変換、版依存を評価する必要がある。", "definition_en": "TensorRT-LLM provides NVIDIA-GPU kernels, quantization, parallelism, and serving integration. It offers substantial optimization potential while requiring evaluation of hardware scope, builds, model conversion, and version dependencies.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT042"}], "related_term_ids": ["TERM-VLLM", "TERM-SGLANG"]
+    },
+    {
+      "term_id": "TERM-TGI", "label_ja": "Text Generation Inference", "label_en": "Text Generation Inference", "aliases": ["TGI", "Hugging Face TGI"], "category": "software",
+      "short_definition_ja": "Hugging Faceが公開したLLMサービング基盤。", "short_definition_en": "An LLM serving stack published by Hugging Face.",
+      "definition_ja": "Text Generation Inferenceはストリーミング、バッチ処理、分散実行などを提供してきた。公式資料では保守モードへの移行が示されているため、新規採用では機能だけでなく保守方針と移行先を確認する。", "definition_en": "Text Generation Inference has provided streaming, batching, and distributed execution. Its official documentation indicates maintenance mode, so new adoption decisions should consider maintenance policy and migration paths as well as features.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT043"}], "related_term_ids": ["TERM-VLLM", "TERM-SGLANG"]
+    },
+    {
+      "term_id": "TERM-ONNX-RUNTIME-GENAI", "label_ja": "ONNX Runtime GenAI", "label_en": "ONNX Runtime GenAI", "aliases": ["ORT GenAI", "ONNX Runtime Generate API"], "category": "software",
+      "short_definition_ja": "ONNX Runtime上で生成AIモデルを実行するAPIとライブラリ。", "short_definition_en": "APIs and libraries for generative models on ONNX Runtime.",
+      "definition_ja": "ONNX Runtime GenAIはONNX Runtimeのプロバイダーとモデル形式を利用して生成処理を実行する。公式資料でPreviewとされる機能は、API安定性、対応モデル、運用機能を実機で確認する必要がある。", "definition_en": "ONNX Runtime GenAI runs generation using ONNX Runtime providers and model formats. Features marked Preview in official documentation require validation of API stability, model support, and operational capabilities.",
+      "roadmap_ids": ["RM-SSW-PORTABILITY"], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT044"}], "related_term_ids": ["TERM-LLAMACPP", "TERM-VLLM"]
     }
   ],
   "comparison_sets": [
@@ -599,7 +671,7 @@
     {
       "comparison_id": "CMP-INTERCONNECT-ROLES", "roadmap_ids": ["RM-HW-INTERCONNECT", "RM-HW-COMPUTE", "RM-HW-MEMORY", "RM-X-BLUEPRINT"],
       "title_ja": "接続技術の役割比較", "title_en": "Connectivity-technology role comparison",
-      "summary_ja": "Ethernet、Ultra Ethernet、UALink、NVLink、UCIe、CXL、CPO、IOWN APNを、接続範囲と役割で整理する。", "summary_en": "Organizes Ethernet, Ultra Ethernet, UALink, NVLink, UCIe, CXL, CPO, and IOWN APN by connection scope and role.",
+      "summary_ja": "Ethernet、Ultra Ethernet、Omni-Path、UALink、NVLink、UCIe、CXL、CPO、IOWN APNを、接続範囲と役割で整理する。", "summary_en": "Organizes Ethernet, Ultra Ethernet, Omni-Path, UALink, NVLink, UCIe, CXL, CPO, and IOWN APN by connection scope and role.",
       "decision_use_ja": "スケールアップ、スケールアウト、I/O・メモリ、物理光実装、拠点間接続を混同せず、組合せとしてHPCIネットワークを設計する。", "decision_use_en": "Design HPCI networks as combinations without conflating scale-up, scale-out, I/O and memory, optical implementation, and inter-site connectivity.",
       "caveat_ja": "これらは同じ層の直接代替ではない。UCIeは主に単一パッケージ内のチップレット間接続、CPOは物理実装方式、CXLはI/O・メモリ整合、UALink/NVLinkはスケールアップ、Ethernet系は主にスケールアウト、APNは広域を含む。", "caveat_en": "These are not direct substitutes at one layer. UCIe primarily connects chiplets within one package, CPO is a physical integration method, CXL provides coherent I/O and memory, UALink and NVLink target scale-up, Ethernet families mainly serve scale-out, and APN includes wide-area scope.",
       "columns": [
@@ -621,6 +693,12 @@
           {"column_id": "strengths", "text_ja": "オープン仕様とEthernet資産の活用。", "text_en": "Open specifications and reuse of Ethernet assets."},
           {"column_id": "constraints", "text_ja": "製品相互運用と実負荷成熟度は別途確認。", "text_en": "Product interoperability and workload maturity require separate validation."}
         ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET001"}]},
+        {"term_id": "TERM-OMNI-PATH", "cells": [
+          {"column_id": "scope", "text_ja": "HPCノード間、ラック間のスケールアウト通信。", "text_en": "HPC node and rack scale-out communication."},
+          {"column_id": "role", "text_ja": "低遅延メッセージ通信と集団通信。", "text_en": "Low-latency messaging and collective communication."},
+          {"column_id": "strengths", "text_ja": "HPC向け設計、OPXソフトウェア、既存導入実績。", "text_en": "HPC-oriented design, OPX software, and an existing deployment base."},
+          {"column_id": "constraints", "text_ja": "CN6000の提供時期、複数プロトコルの相互運用、運用・保守条件。", "text_en": "CN6000 availability, multi-protocol interoperability, and operating and support terms."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET027"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET028"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET029"}]},
         {"term_id": "TERM-UALINK", "cells": [
           {"column_id": "scope", "text_ja": "同一システム内アクセラレータ群。", "text_en": "Accelerators within one system."},
           {"column_id": "role", "text_ja": "オープンなスケールアップ接続。", "text_en": "Open scale-up connectivity."},
@@ -1160,6 +1238,57 @@
           {"column_id": "confirmed", "text_ja": "富岳・汎用CPU・OpenACC GPUのビルド例", "text_en": "Fugaku, general-CPU, and OpenACC GPU build examples"},
           {"column_id": "gap", "text_ja": "標準格子、収束条件、混合精度設定、コミット", "text_en": "Standard lattice, convergence, mixed precision, and commit"}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK049"}]}
+      ]
+    },
+    {
+      "comparison_id": "CMP-LLM-INFERENCE-SERVING", "roadmap_ids": ["RM-SSW-PORTABILITY", "RM-APP-WORKLOADS"],
+      "title_ja": "LLM推論サービング基盤の比較", "title_en": "LLM inference-serving stack comparison",
+      "summary_ja": "vLLM、llama.cpp、SGLang、TensorRT-LLM、Text Generation Inference、ONNX Runtime GenAIを、主用途と採用時の確認点で比較する。", "summary_en": "Compares vLLM, llama.cpp, SGLang, TensorRT-LLM, Text Generation Inference, and ONNX Runtime GenAI by primary use and adoption checks.",
+      "decision_use_ja": "単一の速度値で選ばず、対象ハードウェア、モデル形式、運用規模、API、保守状態を候補システムとワークロードに合わせて絞り込む。", "decision_use_en": "Use hardware, model format, operating scale, APIs, and maintenance status to shortlist stacks for target systems and workloads rather than selecting by one speed result.",
+      "caveat_ja": "機能と性能は版、モデル、量子化、ハードウェア、同時実行条件で変わる。表は順位付けではなく、再現可能な比較実験を設計するための整理である。", "caveat_en": "Features and performance vary with version, model, quantization, hardware, and concurrency. This table structures reproducible evaluation and is not a ranking.",
+      "columns": [
+        {"column_id": "focus", "label_ja": "主な位置付け", "label_en": "Primary focus"},
+        {"column_id": "hardware", "label_ja": "ハードウェア範囲", "label_en": "Hardware scope"},
+        {"column_id": "serving", "label_ja": "サービング機能", "label_en": "Serving capabilities"},
+        {"column_id": "checks", "label_ja": "採用時の確認点", "label_en": "Adoption checks"}
+      ],
+      "rows": [
+        {"term_id": "TERM-VLLM", "cells": [
+          {"column_id": "focus", "text_ja": "高スループットLLMサービング。", "text_en": "High-throughput LLM serving."},
+          {"column_id": "hardware", "text_ja": "GPUを中心に複数バックエンドを展開。", "text_en": "Multiple backends with a strong GPU focus."},
+          {"column_id": "serving", "text_ja": "連続バッチ処理、KVキャッシュ管理、分散推論、OpenAI互換API。", "text_en": "Continuous batching, KV-cache management, distributed inference, and OpenAI-compatible APIs."},
+          {"column_id": "checks", "text_ja": "対象モデル・アクセラレータの対応版、TTFTとトークン間遅延、障害回復。", "text_en": "Supported model and accelerator versions, TTFT, inter-token latency, and recovery."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT038"}]},
+        {"term_id": "TERM-LLAMACPP", "cells": [
+          {"column_id": "focus", "text_ja": "ローカル・CPU・エッジを含む可搬性の高い推論。", "text_en": "Portable inference spanning local, CPU, and edge use."},
+          {"column_id": "hardware", "text_ja": "CPUと複数のアクセラレータバックエンド。", "text_en": "CPUs and multiple accelerator backends."},
+          {"column_id": "serving", "text_ja": "GGUF、量子化、HTTPサーバー、組込み利用。", "text_en": "GGUF, quantization, an HTTP server, and embeddable use."},
+          {"column_id": "checks", "text_ja": "モデル変換、バックエンドごとの精度・性能、大規模分散時の運用性。", "text_en": "Model conversion, backend-specific accuracy and performance, and large-scale distributed operation."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT039"}, {"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT040"}]},
+        {"term_id": "TERM-SGLANG", "cells": [
+          {"column_id": "focus", "text_ja": "生成AIプログラムと推論サービング。", "text_en": "Generative-AI programs and inference serving."},
+          {"column_id": "hardware", "text_ja": "対応アクセラレータを版ごとに確認。", "text_en": "Accelerator support requires version-specific confirmation."},
+          {"column_id": "serving", "text_ja": "推論サーバー、構造化生成、キャッシュ、複数段階処理。", "text_en": "Inference server, structured generation, caching, and multi-stage programs."},
+          {"column_id": "checks", "text_ja": "エージェント処理の再現性、ツール連携、モデルとバックエンドの対応。", "text_en": "Agentic reproducibility, tool integration, and model and backend support."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT041"}]},
+        {"term_id": "TERM-TENSORRT-LLM", "cells": [
+          {"column_id": "focus", "text_ja": "NVIDIA GPU向け最適化推論。", "text_en": "Optimized inference for NVIDIA GPUs."},
+          {"column_id": "hardware", "text_ja": "NVIDIA GPU。", "text_en": "NVIDIA GPUs."},
+          {"column_id": "serving", "text_ja": "最適化カーネル、量子化、並列化、サーバー統合。", "text_en": "Optimized kernels, quantization, parallelism, and server integration."},
+          {"column_id": "checks", "text_ja": "モデル変換、ビルド複雑度、世代・版依存、他社ハードウェアとの可搬性。", "text_en": "Model conversion, build complexity, generation and version dependence, and portability beyond NVIDIA."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT042"}]},
+        {"term_id": "TERM-TGI", "cells": [
+          {"column_id": "focus", "text_ja": "Hugging Faceモデルのサービング。", "text_en": "Serving Hugging Face models."},
+          {"column_id": "hardware", "text_ja": "対応構成をリリースごとに確認。", "text_en": "Supported configurations require release-specific confirmation."},
+          {"column_id": "serving", "text_ja": "ストリーミング、バッチ処理、分散実行。", "text_en": "Streaming, batching, and distributed execution."},
+          {"column_id": "checks", "text_ja": "保守モード、セキュリティ修正、移行先、長期運用可否。", "text_en": "Maintenance mode, security fixes, migration path, and long-term operation."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT043"}]},
+        {"term_id": "TERM-ONNX-RUNTIME-GENAI", "cells": [
+          {"column_id": "focus", "text_ja": "ONNX Runtime上の生成AI推論。", "text_en": "Generative-AI inference on ONNX Runtime."},
+          {"column_id": "hardware", "text_ja": "ONNX Runtime実行プロバイダーに依存。", "text_en": "Depends on ONNX Runtime execution providers."},
+          {"column_id": "serving", "text_ja": "Generate API、モデル生成、実行プロバイダー連携。", "text_en": "Generate API, model generation, and execution-provider integration."},
+          {"column_id": "checks", "text_ja": "Preview機能のAPI安定性、対応モデル、サービング運用機能。", "text_en": "Preview API stability, model support, and serving operations."}
+        ], "source_refs": [{"roadmap_id": "RM-SSW-PORTABILITY", "source_id": "SRC-PORT044"}]}
       ]
     }
   ],

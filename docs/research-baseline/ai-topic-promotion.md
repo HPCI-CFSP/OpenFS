@@ -25,6 +25,7 @@ Emerging-topic discovery
 - why existing Topics are insufficient;
 - at least two Source Origin Groups and primary evidence;
 - research questions, expected evidence, outputs, and cadence;
+- exactly one public catalog category from `config/catalog-taxonomy.json`;
 - source classes, query families, languages, and freshness;
 - explicit falsification queries.
 
@@ -41,12 +42,14 @@ python3 tools/promote_research_topic.py \
   --baseline config/research-baseline.json \
   --monitor config/monitors/MON-AUTO-TOPICS-001.json \
   --i18n config/publication-i18n.json \
+  --taxonomy config/catalog-taxonomy.json \
   --output-baseline config/research-baseline.json \
   --output-monitor config/monitors/MON-AUTO-TOPICS-001.json \
-  --output-i18n config/publication-i18n.json
+  --output-i18n config/publication-i18n.json \
+  --output-taxonomy config/catalog-taxonomy.json
 ```
 
-The promotion tool verifies Decision acceptance, all policy checks, unique Topic ID, known source IDs, two actual Origin Groups, protected initial-catalog immutability, and additive-only behavior. It records Proposal and Decision IDs on the Topic and registers the Consensus-reviewed English title in the Pages translation catalog.
+The promotion tool verifies Decision acceptance, all policy checks, unique Topic ID, known source IDs, two actual Origin Groups, protected initial-catalog immutability, additive-only behavior, and a valid single category assignment. It records Proposal and Decision IDs on the Topic, registers the Consensus-reviewed English title in the Pages translation catalog, and appends the Topic ID to the selected taxonomy category.
 
 The next scheduler Run expands active accepted Topics for other agents:
 

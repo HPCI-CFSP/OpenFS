@@ -26,7 +26,7 @@ PROTECTED_PROFILES = {"ARCH-02", "ARCH-03", "SSW-01", "SSW-02", "SSW-04"}
 # Existing hand-curated profiles remain authoritative and are not regenerated.
 TOPIC_TRACKS: dict[str, list[str]] = {
     "ARCH-01": ["COMPUTE-CPU", "COMPUTE-GPU", "COMPUTE-MATRIX-CUSTOM", "COMPUTE-RACK"],
-    "ARCH-04": ["NET-ETHERNET", "NET-SCALEUP", "NET-CPO"],
+    "ARCH-04": ["NET-ETHERNET", "NET-HPC-FABRICS", "NET-SCALEUP", "NET-CPO"],
     "ARCH-05": ["COMPUTE-RACK", "NET-IOFABRIC"],
     "ARCH-06": ["BLUE-FACILITY", "COMPUTE-HPCI-EVAL"],
     "SSW-03": ["PORT-COMMS"],
@@ -38,7 +38,7 @@ TOPIC_TRACKS: dict[str, list[str]] = {
     "APP-01": ["WORK-EEA", "WORK-HPCI-EVAL"],
     "APP-02": ["WORK-SYSTEM", "WORK-CB", "WORK-MODELS"],
     "APP-03": ["WORK-AI", "WORK-EEA"],
-    "APP-04": ["WORK-AGENT"],
+    "APP-04": ["WORK-AGENT", "COMPUTE-AGENTIC-CPU", "PORT-AI-INFERENCE"],
     "APP-05": ["PORT-AUTO"],
     "APP-06": ["WORK-AI", "PORT-AUTO"],
     "CROSS-01": ["BLUE-POLICY", "BLUE-RB", "BLUE-ESTATE", "BLUE-DATA-PLATFORMS", "BLUE-FN", "BLUE-FACILITY"],
@@ -47,6 +47,9 @@ TOPIC_TRACKS: dict[str, list[str]] = {
     "CROSS-06": ["BLUE-HPCI-GATES", "BLUE-POLICY", "BLUE-FN"],
     "CROSS-07": ["BLUE-DEPENDENCIES", "BLUE-HPCI-GATES"],
     "ARCH-12": ["COMPUTE-WAFER-SCALE", "COMPUTE-DATAFLOW"],
+    "ARCH-14": ["COMPUTE-AGENTIC-CPU", "WORK-AGENT"],
+    "SSW-17": ["PORT-AI-INFERENCE"],
+    "APP-10": ["PORT-AI-INFERENCE", "WORK-AI", "WORK-AGENT"],
 }
 
 ACTORS_BY_PUBLISHER = {
@@ -55,7 +58,22 @@ ACTORS_BY_PUBLISHER = {
     "NVIDIA": ["ACT-NVIDIA"],
     "UALink Consortium": ["ACT-UALINK"],
     "Ultra Ethernet Consortium": ["ACT-UEC"],
+    "Cornelis Networks": ["ACT-CORNELIS"],
+    "vLLM Project": ["ACT-VLLM"],
+    "ggml-org": ["ACT-GGML"],
+    "SGLang Project": ["ACT-SGLANG"],
+    "Hugging Face": ["ACT-HUGGINGFACE"],
+    "Microsoft": ["ACT-MICROSOFT"],
 }
+
+GENERATED_ACTORS = [
+    {"actor_id": "ACT-CORNELIS", "name": "Cornelis Networks", "region_ids": ["REG-US"], "region_basis_ja": "米国を拠点とするHPCインターコネクト開発主体。", "region_basis_en": "US-based HPC interconnect developer.", "roles_ja": ["Omni-Path、CN5000・CN6000、OPXソフトウェア"], "roles_en": ["Omni-Path, CN5000 and CN6000, and OPX software"], "source_ids": ["SRC-NET027", "SRC-NET028", "SRC-NET029"]},
+    {"actor_id": "ACT-VLLM", "name": "vLLM Project", "region_ids": ["REG-MULTI"], "region_basis_ja": "複数地域の開発者が参加するオープンソースプロジェクト。", "region_basis_en": "Multi-region open-source project.", "roles_ja": ["LLM推論サービング"], "roles_en": ["LLM inference serving"], "source_ids": ["SRC-PORT038"]},
+    {"actor_id": "ACT-GGML", "name": "ggml-org", "region_ids": ["REG-MULTI"], "region_basis_ja": "複数地域の開発者が参加するオープンソースプロジェクト。", "region_basis_en": "Multi-region open-source project.", "roles_ja": ["llama.cpp、GGUF、ローカル推論"], "roles_en": ["llama.cpp, GGUF, and local inference"], "source_ids": ["SRC-PORT039", "SRC-PORT040"]},
+    {"actor_id": "ACT-SGLANG", "name": "SGLang Project", "region_ids": ["REG-MULTI"], "region_basis_ja": "複数地域の開発者が参加するオープンソースプロジェクト。", "region_basis_en": "Multi-region open-source project.", "roles_ja": ["生成AIプログラム、LLM推論サービング"], "roles_en": ["Generative-AI programs and LLM inference serving"], "source_ids": ["SRC-PORT041"]},
+    {"actor_id": "ACT-HUGGINGFACE", "name": "Hugging Face", "region_ids": ["REG-MULTI"], "region_basis_ja": "複数地域でモデル・データ・ソフトウェア基盤を提供する開発主体。", "region_basis_en": "Developer of model, data, and software infrastructure operating across regions.", "roles_ja": ["Text Generation Inference"], "roles_en": ["Text Generation Inference"], "source_ids": ["SRC-PORT043"]},
+    {"actor_id": "ACT-MICROSOFT", "name": "Microsoft", "region_ids": ["REG-US"], "region_basis_ja": "米国に本社を置くソフトウェア・クラウド開発主体。", "region_basis_en": "US-headquartered software and cloud developer.", "roles_ja": ["ONNX Runtime GenAI"], "roles_en": ["ONNX Runtime GenAI"], "source_ids": ["SRC-PORT044"]},
+]
 
 SOURCE_CLASS_MAP = {
     "vendor-official": "official-vendor",
@@ -94,6 +112,9 @@ TRACK_CURRENT_MATURITY = {
     "WORK-MODELS": "research",
     "WORK-HPCI-EVAL": "research",
     "COMPUTE-MATRIX-CUSTOM": "announced",
+    "COMPUTE-AGENTIC-CPU": "research",
+    "NET-HPC-FABRICS": "commercial",
+    "PORT-AI-INFERENCE": "deployed",
 }
 
 DOMAIN_CONDITIONS = {
@@ -483,6 +504,9 @@ def main() -> int:
     artifact["schema_version"] = "0.2.0"
     artifact["as_of"] = research_as_of.isoformat()
     artifact["topic_profiles"] = [profiles_by_id[topic["topic_id"]] for topic in partial_topics]
+    actors_by_id = {actor["actor_id"]: actor for actor in artifact["actors"]}
+    actors_by_id.update({actor["actor_id"]: actor for actor in GENERATED_ACTORS})
+    artifact["actors"] = sorted(actors_by_id.values(), key=lambda item: item["actor_id"])
     artifact["sources"] = sorted(existing_sources.values(), key=lambda item: item["source_id"])
     artifact["coverage_gaps"] = preserved_gaps + new_gaps
     artifact["publication"] = {

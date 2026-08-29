@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/compute-nodes-accelerators",
-  "as_of": "2026-08-28",
+  "as_of": "2026-08-29",
   "title_ja": "計算ノード・プロセッサ・アクセラレータ",
   "title_en": "Compute nodes, processors, and accelerators",
   "summary_ja": "2026年以降のCPU、GPU、ウェハスケール・データフロー型アクセラレータ、ラックスケール構成、日本・欧州のプロセッサ、富岳NEXTを対象に、製品の提供時期とHPCIでの評価時期を比較する暫定ロードマップです。",
@@ -74,6 +74,19 @@
       "hpci_implications_ja": "CPU単体の性能に加え、既存のCPU向けアプリケーションの移行費用、GPUとの密結合、メモリ帯域、国内の保守体制を評価する。",
       "hpci_implications_en": "Evaluation should cover migration costs for CPU applications, tight GPU coupling, memory bandwidth, and support available in Japan in addition to CPU performance.",
       "source_ids": ["SRC-COMP002", "SRC-COMP005", "SRC-COMP006"]
+    },
+    {
+      "track_id": "COMPUTE-AGENTIC-CPU",
+      "group": "processors",
+      "name_ja": "エージェント型ワークロード向けCPU設計",
+      "name_en": "CPU design for agentic workloads",
+      "summary_ja": "エージェント型ワークロードを直列処理、推論、検索、ツール実行、通信待ち、同時実行に分解し、コア数、周波数、電圧・周波数特性、メモリ、電力、費用の判断面を追跡する。",
+      "summary_en": "Decomposes agentic workloads into serial orchestration, inference, retrieval, tool execution, communication waits, and concurrency, then tracks core-count, frequency, voltage-frequency, memory, power, and cost tradeoffs.",
+      "current_state_ja": "2026年の企業向けCPU発表では、エージェント型AIが主要用途として強調された。一方、ベンダー資料は、エージェント型ワークロード全体が常に単一スレッド性能で律速されることや、高周波数・少コア構成が常に有利であることを示していない。CPU上の直列処理、GPU推論、検索・通信待ち、複数エージェントの同時実行を分けて評価する必要がある。",
+      "current_state_en": "Enterprise CPU presentations in 2026 emphasized agentic AI as a major target. Vendor material does not establish that an entire agentic workload is always limited by single-thread performance or that fewer high-frequency cores always win. Serial CPU orchestration, GPU inference, retrieval and communication waits, and concurrent agents must be measured separately.",
+      "hpci_implications_ja": "CPU選定ではコア数や周波数だけを比較せず、タスク完了時間、p95・p99遅延、tasks/J、cost/task、agents/nodeを、動作点と同時実行数を変えて測定する。",
+      "hpci_implications_en": "CPU selection should vary operating points and concurrency while measuring task completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node rather than comparing core count or frequency alone.",
+      "source_ids": ["SRC-COMP014", "SRC-COMP030", "SRC-COMP031"]
     },
     {
       "track_id": "COMPUTE-SOVEREIGN",
@@ -205,6 +218,18 @@
       ]
     },
     {
+      "lane_id": "LANE-COMP-AGENTIC-INTEL", "track_id": "COMPUTE-AGENTIC-CPU", "owner": "Intel", "scope_ja": "Agentic AI向けXeonアーキテクチャ", "scope_en": "Xeon architecture for agentic AI",
+      "milestones": [
+        {"milestone_id": "MS-COMP-AGENTIC-INTEL-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "published", "event_type": "research", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "Agentic AI向け構成を公表", "label_en": "Architecture positioned for agentic AI", "detail_ja": "IntelはHot Chips 2026に合わせ、Diamond Rapids Xeon、Crescent Island GPU、ネットワークをAgentic AI向けの構成として説明した。これは用途の位置付けと仕様の公表であり、Agentic workloadに対する高周波数・少コア構成の優位性を示す独立測定ではない。", "detail_en": "At Hot Chips 2026, Intel described Diamond Rapids Xeon, the Crescent Island GPU, and networking as an architecture for agentic AI. This establishes vendor positioning and disclosed architecture, not independent evidence that fewer high-frequency cores are superior for agentic workloads.", "source_ids": ["SRC-COMP014", "SRC-COMP031"], "dependency_refs": ["DEP-COMP-MEM-001", "DEP-COMP-NET-001", "DEP-COMP-WORKLOAD-001"]}
+      ]
+    },
+    {
+      "lane_id": "LANE-COMP-AGENTIC-NVIDIA", "track_id": "COMPUTE-AGENTIC-CPU", "owner": "NVIDIA", "scope_ja": "Vera CPUとAgentic AIプラットフォーム", "scope_en": "Vera CPU and the agentic AI platform",
+      "milestones": [
+        {"milestone_id": "MS-COMP-AGENTIC-NVIDIA-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "published", "event_type": "research", "timing_basis": "observed", "comparison_priority": "key", "label_ja": "Vera CPUの設計を説明", "label_en": "Vera CPU design presented", "detail_ja": "NVIDIAはHot Chips 2026でVera CPUをAgentic AI向けのCPUとして説明した。ベンダーは単一スレッド性能、帯域、電力効率を重視しているが、HPCI向けの負荷構成、同時実行数、費用条件での比較は未実施である。", "detail_en": "NVIDIA presented Vera CPU at Hot Chips 2026 as a CPU for agentic AI. The vendor emphasizes single-thread performance, bandwidth, and energy efficiency, but no comparison has yet been performed under HPCI workload mixes, concurrency, and cost conditions.", "source_ids": ["SRC-COMP030", "SRC-COMP031"], "dependency_refs": ["DEP-COMP-MEM-001", "DEP-COMP-NET-001", "DEP-COMP-WORKLOAD-001"]}
+      ]
+    },
+    {
       "lane_id": "LANE-COMP-INTEL", "track_id": "COMPUTE-GPU", "owner": "Intel", "scope_ja": "データセンターGPU", "scope_en": "Data-center GPU",
       "milestones": [
         {"milestone_id": "MS-COMP-INTEL-2026", "year": 2026, "quarter": null, "half": "H2", "timing_precision": "half-year", "maturity": "sample", "event_type": "product", "timing_basis": "vendor-target", "comparison_priority": "supporting", "label_ja": "Crescent Islandの顧客サンプル（2026年後半）", "label_en": "Crescent Island H2 samples", "detail_ja": "Intelは、大容量メモリと高い電力効率を重視した推論向けGPUの顧客サンプルを2026年後半に提供する予定である。HPCへの適合性は別途評価する必要がある。", "detail_en": "Intel plans to provide customer samples of Crescent Island, an inference GPU emphasizing high memory capacity and energy efficiency, in H2 2026. Its suitability for HPC requires separate evaluation.", "source_ids": ["SRC-COMP012"], "dependency_refs": ["DEP-COMP-WORKLOAD-001"]},
@@ -302,7 +327,9 @@
     {"source_id": "SRC-COMP026", "title": "OpenAI and Broadcom Unveil LLM-Optimized Intelligence Processor", "publisher": "Broadcom / OpenAI", "url": "https://investors.broadcom.com/news-releases/news-release-details/openai-and-broadcom-unveil-llm-optimized-intelligence-processor", "published_at": "2026-06-24", "source_class": "vendor-official"},
     {"source_id": "SRC-COMP027", "title": "Broadcom Ships 3.5D Face-to-Face Compute SoC Powering AI Revolution", "publisher": "Broadcom", "url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-ships-35d-face-face-compute-soc-powering-ai-revolution", "published_at": "2026-02-26", "source_class": "vendor-official"},
     {"source_id": "SRC-COMP028", "title": "rocWMMA 2.2.1 Documentation", "publisher": "AMD ROCm", "url": "https://rocm.docs.amd.com/projects/rocWMMA/en/latest/", "source_class": "vendor-official"},
-    {"source_id": "SRC-COMP029", "title": "AMD to Bring UCIe Connectivity to Select AMD Versal Adaptive SoCs", "publisher": "AMD", "url": "https://newsroom.amd.com/news/amd-brings-ucie-connectivity-versal-adaptive-socs/", "published_at": "2026-08-25", "source_class": "vendor-official"}
+    {"source_id": "SRC-COMP029", "title": "AMD to Bring UCIe Connectivity to Select AMD Versal Adaptive SoCs", "publisher": "AMD", "url": "https://newsroom.amd.com/news/amd-brings-ucie-connectivity-versal-adaptive-socs/", "published_at": "2026-08-25", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP030", "title": "NVIDIA at Hot Chips 2026", "publisher": "NVIDIA", "url": "https://www.nvidia.com/en-us/events/hot-chips-conference/", "published_at": "2026-08-25", "source_class": "vendor-official"},
+    {"source_id": "SRC-COMP031", "title": "Hot Chips 2026 Program", "publisher": "Hot Chips", "url": "https://hotchips.org/", "source_class": "research-organization"}
   ],
   "coverage_gaps": [
     {"gap_id": "GAP-COMP-001", "priority": "P1", "scope_ja": "NVIDIAの2027年以降、AMD MI500/MI600、Qualcomm Dragonflyの四半期・HPC仕様", "scope_en": "Quarter-level timing and HPC specifications for NVIDIA post-2026, AMD MI500/MI600, and Qualcomm Dragonfly", "impact_ja": "2027～2029年の比較導入時期を確定できない。", "impact_en": "This prevents confirmation of the comparative adoption period for 2027-2029.", "next_action_ja": "GTC、Advancing AI、Qualcomm Investor Day、ISC/SCの公式発表を毎月追跡する。", "next_action_en": "Monitor official GTC, Advancing AI, Qualcomm Investor Day, ISC, and SC announcements monthly.", "status": "open"},
@@ -312,7 +339,8 @@
     {"gap_id": "GAP-COMP-005", "priority": "P0", "scope_ja": "Cerebras、SambaNova、Graphcore、GPUを対象とした、同一の科学計算入力による精度・電力・費用比較", "scope_en": "Scientific accuracy, power, and cost comparison across Cerebras, SambaNova, Graphcore, and GPUs using identical inputs", "impact_ja": "AI演算のピーク性能やtokens/sだけでは、HPCIおよびAI for Scienceへの適合性を判断できない。", "impact_en": "Peak AI performance or tokens/s alone cannot establish suitability for HPCI and AI for Science.", "next_action_ja": "公開可能なEEAアプリケーションまたはプロキシを移植し、解を得るまでの時間と消費エネルギー、精度、移植工数を共通条件で測定する。", "next_action_en": "Port publishable EEA applications or proxies and measure time-to-solution, energy-to-solution, accuracy, and porting effort under common conditions.", "status": "open"},
     {"gap_id": "GAP-COMP-006", "priority": "P1", "scope_ja": "Cerebras WSE-3後継とGraphcore Bow後継の一次情報ロードマップ", "scope_en": "Primary-source roadmaps after Cerebras WSE-3 and Graphcore Bow", "impact_ja": "2027年以降の比較導入時期を設定できない。", "impact_en": "Prevents defining a comparative adoption window after 2027.", "next_action_ja": "製品、SDK、サポート資料を毎月確認し、日程が公表されるまで未確認事項として維持する。", "next_action_en": "Review product, SDK, and support materials monthly, and retain the item as a coverage gap while timing remains unpublished.", "status": "open"},
     {"gap_id": "GAP-COMP-007", "priority": "P0", "scope_ja": "AMD Matrix CoreとBroadcomのカスタムXPUの科学計算精度、実効性能、利用条件", "scope_en": "Scientific-computing accuracy, delivered performance, and access conditions for AMD Matrix Cores and Broadcom custom XPUs", "impact_ja": "対応形式や顧客向け配備計画だけでは、HPCIの候補として比較できない。", "impact_en": "Supported formats and customer deployment plans alone do not make the technologies comparable as HPCI candidates.", "next_action_ja": "公開可能な混合精度・疎行列・科学AIワークロードで再現可能な測定を行い、カスタムXPUは一般提供・共同開発・クラウド利用の条件を一次情報で追跡する。", "next_action_en": "Run reproducible mixed-precision, sparse-linear-algebra, and scientific-AI workloads, and track primary evidence for general availability, co-development, or cloud access to custom XPUs.", "status": "open"},
-    {"gap_id": "GAP-COMP-008", "priority": "P1", "scope_ja": "サーバー向けUCIe製品と複数ベンダー間の相互運用・保守条件", "scope_en": "Server-class UCIe products and multi-vendor interoperability and service conditions", "impact_ja": "組込み製品の発表だけでは、HPCIノードのチップレット構成や調達条件へ対応付けられない。", "impact_en": "An embedded-product announcement alone cannot establish chiplet configurations or procurement conditions for HPCI nodes.", "next_action_ja": "サーバーCPU・GPU・I/Oチップレット、適合試験、相互運用実証、熱・故障・交換単位、ソフトウェア公開範囲を一次情報で追跡する。", "next_action_en": "Track primary evidence for server CPU, GPU, and I/O chiplets, compliance and interoperability demonstrations, thermals, failure and replacement units, and software availability.", "status": "open"}
+    {"gap_id": "GAP-COMP-008", "priority": "P1", "scope_ja": "サーバー向けUCIe製品と複数ベンダー間の相互運用・保守条件", "scope_en": "Server-class UCIe products and multi-vendor interoperability and service conditions", "impact_ja": "組込み製品の発表だけでは、HPCIノードのチップレット構成や調達条件へ対応付けられない。", "impact_en": "An embedded-product announcement alone cannot establish chiplet configurations or procurement conditions for HPCI nodes.", "next_action_ja": "サーバーCPU・GPU・I/Oチップレット、適合試験、相互運用実証、熱・故障・交換単位、ソフトウェア公開範囲を一次情報で追跡する。", "next_action_en": "Track primary evidence for server CPU, GPU, and I/O chiplets, compliance and interoperability demonstrations, thermals, failure and replacement units, and software availability.", "status": "open"},
+    {"gap_id": "GAP-COMP-009", "priority": "P1", "scope_ja": "代表的なエージェント型ワークロードによるコア数、周波数、電圧・周波数特性、同時実行数、電力、費用の再現比較", "scope_en": "Reproducible comparison of core count, frequency, voltage-frequency operating points, concurrency, power, and cost using representative agentic workloads", "impact_ja": "ベンダーの用途説明だけでは、高周波数・少コア、多コア、異種CPU/GPU構成のどれを採用すべきか判断できない。", "impact_en": "Vendor positioning alone cannot determine whether fewer high-frequency cores, many cores, or heterogeneous CPU/GPU configurations should be adopted.", "next_action_ja": "直列処理、推論、検索、ツール実行、通信待ちを記録する公開可能なワークロードを固定し、同一タスクで完了時間、p95・p99遅延、1ジュール当たりの処理件数、1タスク当たりの費用、1ノード当たりのエージェント数を測定する。", "next_action_en": "Pin a publishable workload that records serial orchestration, inference, retrieval, tool execution, and communication waits, then measure completion time, p95 and p99 latency, tasks per joule, cost per task, and agents per node on identical tasks.", "status": "open"}
   ],
   "caveat_ja": "本ロードマップは、公開一次情報とOpenFSの暫定評価ゲートを区別して整理した、単一のAIモデルによる作業版です。独立したAIモデルによる合意判定は完了していません。将来の時期は各発表時点の目標であり、調達可能性を保証するものではありません。",
   "caveat_en": "This working draft was prepared by one model and distinguishes milestones supported by public primary sources from provisional OpenFS evaluation gates. Consensus review by independent models is incomplete. Future dates are announced targets and do not guarantee that products will be available for procurement.",

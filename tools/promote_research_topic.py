@@ -14,6 +14,14 @@ from typing import Any
 TOPIC_ID = re.compile(r"^(ARCH|SSW|APP|CROSS)-[0-9]{2}$")
 DOMAINS = {"architecture", "system-software", "applications", "cross-cutting"}
 CADENCES = {"weekly", "monthly", "quarterly", "annual", "event-driven"}
+CATEGORY_IDS = {
+    "architecture-hardware",
+    "system-software-data-platform",
+    "applications-workloads",
+    "operations-facilities-security",
+    "access-governance",
+    "planning-evaluation-research",
+}
 
 
 def load_json(path: Path) -> Any:
@@ -27,7 +35,8 @@ def validate_and_promote(
     baseline: dict[str, Any],
     monitor: dict[str, Any],
     i18n: dict[str, Any],
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    taxonomy: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
     if proposal.get("object_type") != "research_topic":
         raise ValueError("proposal object_type must be research_topic")
     if proposal.get("change_type") != "additive":
@@ -48,6 +57,9 @@ def validate_and_promote(
         raise ValueError(f"invalid topic ID: {topic_id}")
     if candidate.get("domain") not in DOMAINS:
         raise ValueError(f"invalid topic domain: {candidate.get('domain')}")
+    category_id = candidate.get("catalog_category_id")
+    if category_id not in CATEGORY_IDS:
+        raise ValueError(f"invalid catalog category: {category_id}")
     if candidate.get("review_cadence") not in CADENCES:
         raise ValueError(f"invalid review cadence: {candidate.get('review_cadence')}")
     for field in ("title_ja", "title_en", "research_questions", "evidence_expected", "outputs", "source_refs"):
@@ -74,6 +86,7 @@ def validate_and_promote(
 
     promoted_baseline = deepcopy(baseline)
     title_en = candidate.pop("title_en")
+    candidate.pop("catalog_category_id")
     candidate.update(
         {
             "status": "not-started",
@@ -113,7 +126,21 @@ def validate_and_promote(
     if topic_id in titles_en:
         raise ValueError(f"publication i18n already contains topic: {topic_id}")
     titles_en[topic_id] = title_en
-    return promoted_baseline, promoted_monitor, promoted_i18n
+    promoted_taxonomy = deepcopy(taxonomy)
+    matching_categories = [
+        category
+        for category in promoted_taxonomy.get("categories", [])
+        if category.get("category_id") == category_id
+    ]
+    if len(matching_categories) != 1:
+        raise ValueError(f"catalog taxonomy does not define exactly one category: {category_id}")
+    if any(
+        topic_id in category.get("topic_ids", [])
+        for category in promoted_taxonomy.get("categories", [])
+    ):
+        raise ValueError(f"catalog taxonomy already contains topic: {topic_id}")
+    matching_categories[0]["topic_ids"].append(topic_id)
+    return promoted_baseline, promoted_monitor, promoted_i18n, promoted_taxonomy
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -128,21 +155,25 @@ def main() -> int:
     parser.add_argument("--baseline", required=True, type=Path)
     parser.add_argument("--monitor", required=True, type=Path)
     parser.add_argument("--i18n", required=True, type=Path)
+    parser.add_argument("--taxonomy", required=True, type=Path)
     parser.add_argument("--output-baseline", required=True, type=Path)
     parser.add_argument("--output-monitor", required=True, type=Path)
     parser.add_argument("--output-i18n", required=True, type=Path)
+    parser.add_argument("--output-taxonomy", required=True, type=Path)
     args = parser.parse_args()
 
-    promoted_baseline, promoted_monitor, promoted_i18n = validate_and_promote(
+    promoted_baseline, promoted_monitor, promoted_i18n, promoted_taxonomy = validate_and_promote(
         load_json(args.proposal),
         load_json(args.decision),
         load_json(args.baseline),
         load_json(args.monitor),
         load_json(args.i18n),
+        load_json(args.taxonomy),
     )
     write_json(args.output_baseline, promoted_baseline)
     write_json(args.output_monitor, promoted_monitor)
     write_json(args.output_i18n, promoted_i18n)
+    write_json(args.output_taxonomy, promoted_taxonomy)
     print(
         f"Promoted {promoted_baseline['topics'][-1]['topic_id']} via "
         f"{promoted_baseline['topics'][-1]['added_by_decision_id']}"

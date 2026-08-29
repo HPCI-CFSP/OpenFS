@@ -336,7 +336,7 @@ The generator does not create authority. Missing center evidence remains visible
 
 ## Research-scope expansion
 
-Emerging-topic agents create additive Research Topic Proposals with Japanese/English titles, catalog-delta analysis, multiple Source Origin Groups, a Query Plan, and falsification queries. Independent validators and a critic assess the proposal, the deterministic Consensus Gate decides eligibility, and the `topic-promotion` role can update only the baseline, public title catalog, and automatic-topic monitor. The next Run expands accepted entries into Discovery Work Items for other agents.
+Emerging-topic agents create additive Research Topic Proposals with Japanese/English titles, one category from `config/catalog-taxonomy.json`, catalog-delta analysis, multiple Source Origin Groups, a Query Plan, and falsification queries. Independent validators and a critic assess the proposal, the deterministic Consensus Gate decides eligibility, and the `topic-promotion` role can update only the baseline, catalog taxonomy, public title catalog, and automatic-topic monitor. The next Run expands accepted entries into Discovery Work Items for other agents. Legacy four-domain fields remain stable compatibility metadata; public catalog and roadmap navigation is generated from the six-category taxonomy.
 
 ## Public projection
 

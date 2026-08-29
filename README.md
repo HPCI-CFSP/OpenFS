@@ -82,6 +82,7 @@ The first implemented research workflow, `OFS-001`, repeatedly investigates memo
 | `knowledge/public/roadmap-reference-data.json` | Single bilingual source for roadmap terminology and decision-oriented comparison tables |
 | `knowledge/public/hpci-system-inventory.json` | FY-specific public HPCI resource and machine-specification baseline; call availability is distinct from system lifecycle |
 | `knowledge/public/application-performance-forecasts.json` | EEA1 multi-scale forecast contract, readiness matrix, and validated numerical forecasts when available |
+| `config/catalog-taxonomy.json` | Canonical six-category assignment for every active Topic and roadmap; the Pages filters are generated from this file |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, dissent, and commit-pinned Consensus review packages |
@@ -94,7 +95,7 @@ Directories that do not yet contain implemented behavior are documented in `docs
 
 ## Research baseline
 
-New research tasks and monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 58 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and one human-requested topic for continuously monitoring worldwide technology trends while giving priority to coverage of technologies developed in Japan.
+New research tasks and monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 60 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and three human-requested additions for worldwide technology monitoring, agentic-workload CPU and node architecture, and LLM inference serving. `config/catalog-taxonomy.json` assigns every active Topic and roadmap to exactly one of six public categories without changing their stable IDs.
 
 OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, review of sources in their original languages where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 

@@ -7,7 +7,9 @@ OpenFS separates two structures that answer different questions.
 - A research Topic defines what evidence must be collected and evaluated.
 - A roadmap integrates evidence from multiple Topics into a time-ordered decision artifact for HPCI planning.
 
-Creating one roadmap for every Topic would produce 58 fragmented timelines with repeated dependencies. The initial portfolio therefore groups the current 58 Topics into 19 integrated roadmap families. Every Topic must be referenced by at least one family, and a Topic may support more than one family when it is genuinely cross-cutting.
+Creating one roadmap for every Topic would produce 60 fragmented timelines with repeated dependencies. The initial portfolio therefore groups the current 60 Topics into 19 integrated roadmap families. Every Topic must be referenced by at least one family, and a Topic may support more than one family when it is genuinely cross-cutting.
+
+The legacy four-domain fields remain stable compatibility metadata. Public navigation uses the six decision-oriented categories in `config/catalog-taxonomy.json`: architecture and hardware; system software and data platforms; applications and workloads; operations, facilities, and security; access and governance; and planning, evaluation, and research infrastructure.
 
 The machine-readable source of truth is [`config/roadmap-portfolio.json`](../../config/roadmap-portfolio.json). Schema validation checks its shape, while repository tests check complete and valid Topic coverage.
 
