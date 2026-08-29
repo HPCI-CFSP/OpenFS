@@ -35,8 +35,13 @@ def validate_topic_decision_support(root: Path) -> list[str]:
     artifact = load_json(path)
     baseline = load_json(root / "config/research-baseline.json")
     topic_ids = {item["topic_id"] for item in baseline["topics"]}
+    retired_topic_ids = {
+        item["topic_id"] for item in baseline["topics"] if item.get("retirement")
+    }
     partial_topic_ids = {
-        item["topic_id"] for item in baseline["topics"] if item["status"] == "partial"
+        item["topic_id"]
+        for item in baseline["topics"]
+        if item["status"] == "partial" and item["topic_id"] not in retired_topic_ids
     }
     source_ids = {item["source_id"] for item in artifact["sources"]}
     region_ids = {item["region_id"] for item in artifact["regions"]}
@@ -103,11 +108,12 @@ def validate_topic_decision_support(root: Path) -> list[str]:
     check_duplicates("topic profile IDs", profile_ids)
     check_duplicates("topic decision section IDs", section_ids)
     check_duplicates("topic decision item IDs", technology_item_ids)
-    if set(profile_ids) != partial_topic_ids:
+    active_profile_ids = set(profile_ids) - retired_topic_ids
+    if active_profile_ids != partial_topic_ids:
         errors.append(
-            "topic decision profiles must exactly cover partial catalog Topics; "
-            f"missing={sorted(partial_topic_ids - set(profile_ids))}, "
-            f"extra={sorted(set(profile_ids) - partial_topic_ids)}"
+            "active topic decision profiles must exactly cover active partial catalog Topics; "
+            f"missing={sorted(partial_topic_ids - active_profile_ids)}, "
+            f"extra={sorted(active_profile_ids - partial_topic_ids)}"
         )
     arch02 = next((item for item in artifact["topic_profiles"] if item["topic_id"] == "ARCH-02"), None)
     if arch02 and not any(

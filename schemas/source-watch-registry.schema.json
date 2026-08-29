@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/source-watch-registry.schema.json",
+  "title": "OpenFS Source Watch Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "status", "state_policy", "targets"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "registry_id": {"const": "SOURCE-WATCH-REGISTRY-001"},
+    "status": {"const": "active"},
+    "state_policy": {
+      "type": "object",
+      "required": ["canonical_fields_are_stable", "volatile_state_location", "semantic_change_required"],
+      "properties": {
+        "canonical_fields_are_stable": {"const": true},
+        "volatile_state_location": {"const": "runs/<run_id>/source-watch-state.json"},
+        "semantic_change_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "watch_id", "canonical_url", "publisher", "source_class", "watch_mode",
+          "priority", "languages", "topic_ids", "roadmap_ids", "monitor_ids",
+          "active", "change_policy"
+        ],
+        "properties": {
+          "watch_id": {"type": "string", "pattern": "^WATCH-[A-Z0-9-]+$"},
+          "canonical_url": {"type": "string", "format": "uri"},
+          "publisher": {"type": "string", "minLength": 1},
+          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official"]},
+          "watch_mode": {"enum": ["index", "release-feed", "resource-registry", "document-hub"]},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "languages": {"type": "array", "items": {"enum": ["ja", "en"]}, "minItems": 1, "uniqueItems": true},
+          "topic_ids": {"type": "array", "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"}, "minItems": 1, "uniqueItems": true},
+          "roadmap_ids": {"type": "array", "items": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+          "monitor_ids": {"type": "array", "items": {"type": "string", "pattern": "^MON-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
+          "active": {"type": "boolean"},
+          "successor_watch_id": {"type": "string", "pattern": "^WATCH-[A-Z0-9-]+$"},
+          "change_policy": {
+            "type": "object",
+            "required": ["ignore_nonsemantic_changes", "candidate_requires_primary_evidence", "consensus_required_for_catalog_update"],
+            "properties": {
+              "ignore_nonsemantic_changes": {"const": true},
+              "candidate_requires_primary_evidence": {"const": true},
+              "consensus_required_for_catalog_update": {"const": true}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -13,6 +13,7 @@ from typing import Any
 from openfs_runtime import exception_group_key, language_in_scope, stable_digest
 from register_source import canonicalize_url, publisher_authority
 from generate_knowledge_views import build_index, render_tbd
+from build_source_catalog_map import build as build_source_catalog_map
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,12 +48,14 @@ REQUIRED_FILES = [
     "docs/operations/provider-worker-protocol.md",
     "docs/governance/license-decision.md",
     "docs/research-baseline/ai-topic-promotion.md",
+    "docs/research-baseline/source-watch-and-evidence-map.md",
     "knowledge/README.md",
     "knowledge/public/README.md",
     "knowledge/public/topic-summaries.json",
     "knowledge/public/consensus-receipts.json",
     "knowledge/public/hpci-system-inventory.json",
     "knowledge/public/application-performance-forecasts.json",
+    "knowledge/public/source-catalog-map.json",
     "knowledge/public/roadmaps/compute-nodes-accelerators.json",
     "knowledge/public/roadmaps/interconnect-optics-disaggregation.json",
     "knowledge/public/roadmaps/memory-data-movement.json",
@@ -73,6 +76,7 @@ REQUIRED_FILES = [
     "config/consensus-policy.json",
     "config/acquisition-policy.json",
     "config/source-registry.json",
+    "config/source-watch-registry.json",
     "config/agent-registry.json",
     "config/skill-registry.json",
     "config/role-permissions.json",
@@ -98,6 +102,8 @@ REQUIRED_FILES = [
     "schemas/cost-summary.schema.json",
     "schemas/claim-proposal.schema.json",
     "schemas/source-lineage.schema.json",
+    "schemas/source-watch-registry.schema.json",
+    "schemas/source-catalog-map.schema.json",
     "schemas/assessment.schema.json",
     "schemas/decision.schema.json",
     "schemas/run.schema.json",
@@ -194,6 +200,7 @@ REQUIRED_FILES = [
     "tools/evaluate_promotion_readiness.py",
     "tools/expand_topic_monitor.py",
     "tools/build_pages_site.py",
+    "tools/build_source_catalog_map.py",
     "tools/build_roadmap_freshness_audit.py",
     "tools/build_roadmap_gap_queue.py",
     "tools/build_center_profile_assurance.py",
@@ -1454,6 +1461,15 @@ def validate_research_baseline(root: Path) -> list[str]:
                 f"research baseline topic {topic.get('topic_id')} references unknown sources: "
                 f"{sorted(unknown_sources)}"
             )
+        retirement = topic.get("retirement")
+        if topic.get("status") == "retired" and not retirement:
+            errors.append(f"retired research baseline topic lacks lineage: {topic.get('topic_id')}")
+        if topic.get("status") != "retired" and retirement:
+            errors.append(f"active research baseline topic declares retirement: {topic.get('topic_id')}")
+        if retirement:
+            successor_ids = set(retirement.get("successor_topic_ids", []))
+            if topic.get("topic_id") in successor_ids:
+                errors.append(f"retired topic points to itself: {topic.get('topic_id')}")
 
     initial_topic_ids = [
         "ARCH-01", "ARCH-02", "ARCH-03", "ARCH-04", "ARCH-05", "ARCH-06", "ARCH-07",
@@ -1471,6 +1487,14 @@ def validate_research_baseline(root: Path) -> list[str]:
     missing_additive_topics = required_additive_topics - set(topic_ids)
     if missing_additive_topics:
         errors.append(f"research baseline missing continuing-discovery topics: {sorted(missing_additive_topics)}")
+    known_topic_ids = set(topic_ids)
+    for topic in topics:
+        retirement = topic.get("retirement", {})
+        unknown_successors = set(retirement.get("successor_topic_ids", [])) - known_topic_ids
+        if unknown_successors:
+            errors.append(
+                f"retired topic {topic.get('topic_id')} has unknown successors: {sorted(unknown_successors)}"
+            )
 
     official_sources = [
         source for source in source_corpus
@@ -1522,17 +1546,21 @@ def validate_catalog_taxonomy(root: Path) -> list[str]:
     portfolio = load_json(root / "config" / "roadmap-portfolio.json")
     expected_categories = [
         "architecture-hardware",
-        "system-software-data-platform",
-        "applications-workloads",
-        "operations-facilities-security",
+        "system-software",
+        "applications",
+        "operations-procurement",
         "access-governance",
-        "planning-evaluation-research",
+        "cross-cutting",
     ]
     categories = taxonomy.get("categories", [])
     if [item.get("category_id") for item in categories] != expected_categories:
         errors.append("catalog taxonomy category IDs or order changed")
     if [item.get("order") for item in categories] != list(range(1, 7)):
         errors.append("catalog taxonomy orders must be 1 through 6")
+
+    expected_prefixes = ["ARCH", "SSW", "APP", "OPS", "GOV", "CROSS"]
+    if [item.get("display_prefix") for item in categories] != expected_prefixes:
+        errors.append("catalog taxonomy display prefixes or order changed")
 
     active_topic_ids = {
         topic["topic_id"] for topic in baseline.get("topics", [])
@@ -1549,6 +1577,22 @@ def validate_catalog_taxonomy(root: Path) -> list[str]:
         errors.append(f"catalog taxonomy omits active topics: {sorted(missing_topics)}")
     if unknown_topics:
         errors.append(f"catalog taxonomy references unknown or retired topics: {sorted(unknown_topics)}")
+    assigned_codes: list[str] = []
+    for category in categories:
+        topic_codes = category.get("topic_codes", {})
+        if set(topic_codes) != set(category.get("topic_ids", [])):
+            errors.append(
+                f"catalog taxonomy code coverage differs for {category.get('category_id')}"
+            )
+        prefix = category.get("display_prefix", "") + "-"
+        for topic_id, catalog_code in topic_codes.items():
+            if not catalog_code.startswith(prefix):
+                errors.append(
+                    f"catalog code {catalog_code} does not match category prefix for {topic_id}"
+                )
+            assigned_codes.append(catalog_code)
+    if len(assigned_codes) != len(set(assigned_codes)):
+        errors.append("catalog taxonomy assigns a display code more than once")
 
     roadmap_ids = {
         item["roadmap_id"] for item in portfolio.get("roadmap_families", [])
@@ -1599,6 +1643,48 @@ def validate_research_topic_configuration(root: Path) -> list[str]:
             errors.append(f"auto-topic monitor references unknown topic: {entry.get('topic_id')}")
         if not entry.get("decision_id"):
             errors.append(f"auto-topic monitor entry lacks decision: {entry.get('topic_id')}")
+    return errors
+
+
+def validate_source_watch_registry(root: Path) -> list[str]:
+    errors: list[str] = []
+    registry = load_json(root / "config" / "source-watch-registry.json")
+    baseline = load_json(root / "config" / "research-baseline.json")
+    portfolio = load_json(root / "config" / "roadmap-portfolio.json")
+    active_topics = {
+        topic["topic_id"]
+        for topic in baseline["topics"]
+        if topic["status"] != "retired"
+    }
+    roadmap_ids = {item["roadmap_id"] for item in portfolio["roadmap_families"]}
+    monitor_ids = {
+        load_json(path)["monitor_id"]
+        for path in (root / "config" / "monitors").glob("*.json")
+    }
+    targets = registry.get("targets", [])
+    watch_ids = [item.get("watch_id") for item in targets]
+    urls = [item.get("canonical_url") for item in targets if item.get("active")]
+    if len(watch_ids) != len(set(watch_ids)):
+        errors.append("source watch registry has duplicate Watch IDs")
+    if len(urls) != len(set(urls)):
+        errors.append("source watch registry has duplicate active URLs")
+    for target in targets:
+        watch_id = target.get("watch_id")
+        unknown_topics = set(target.get("topic_ids", [])) - active_topics
+        unknown_roadmaps = set(target.get("roadmap_ids", [])) - roadmap_ids
+        unknown_monitors = set(target.get("monitor_ids", [])) - monitor_ids
+        if unknown_topics:
+            errors.append(f"{watch_id} references unknown or retired Topics: {sorted(unknown_topics)}")
+        if unknown_roadmaps:
+            errors.append(f"{watch_id} references unknown Roadmaps: {sorted(unknown_roadmaps)}")
+        if unknown_monitors:
+            errors.append(f"{watch_id} references unknown Monitors: {sorted(unknown_monitors)}")
+        change_policy = target.get("change_policy", {})
+        if not all(change_policy.values()):
+            errors.append(f"{watch_id} weakens semantic-change or Consensus requirements")
+    map_path = root / "knowledge" / "public" / "source-catalog-map.json"
+    if map_path.is_file() and load_json(map_path) != build_source_catalog_map(root):
+        errors.append("generated source catalog map is stale or non-deterministic")
     return errors
 
 
@@ -1962,6 +2048,8 @@ def run(root: Path = ROOT) -> list[str]:
         errors.extend(validate_research_baseline(root))
     if (root / "config" / "catalog-taxonomy.json").exists():
         errors.extend(validate_catalog_taxonomy(root))
+    if (root / "config" / "source-watch-registry.json").exists():
+        errors.extend(validate_source_watch_registry(root))
     if (root / "config" / "scenario-policy.json").exists():
         errors.extend(validate_scenario_configuration(root))
     if (root / "config" / "activation-policy.json").exists():

@@ -82,7 +82,9 @@ The first implemented research workflow, `OFS-001`, repeatedly investigates memo
 | `knowledge/public/roadmap-reference-data.json` | Single bilingual source for roadmap terminology and decision-oriented comparison tables |
 | `knowledge/public/hpci-system-inventory.json` | FY-specific public HPCI resource and machine-specification baseline; call availability is distinct from system lifecycle |
 | `knowledge/public/application-performance-forecasts.json` | EEA1 multi-scale forecast contract, readiness matrix, and validated numerical forecasts when available |
-| `config/catalog-taxonomy.json` | Canonical six-category assignment for every active Topic and roadmap; the Pages filters are generated from this file |
+| `knowledge/public/source-catalog-map.json` | Generated exact-URL map to canonical Topics, roadmap families, and roadmap tracks |
+| `config/catalog-taxonomy.json` | Canonical six-category assignment and public display code for every active Topic and roadmap; Pages filters are generated from this file |
+| `config/source-watch-registry.json` | Stable recurring official pages to monitor and their affected Topics, roadmaps, and Monitors |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, dissent, and commit-pinned Consensus review packages |
@@ -95,7 +97,9 @@ Directories that do not yet contain implemented behavior are documented in `docs
 
 ## Research baseline
 
-New research tasks and monitors should select topics from `config/research-baseline.json`. `FSBASE-002` contains 60 topics: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and three human-requested additions for worldwide technology monitoring, agentic-workload CPU and node architecture, and LLM inference serving. `config/catalog-taxonomy.json` assigns every active Topic and roadmap to exactly one of six public categories without changing their stable IDs.
+New research tasks and monitors should select topics from `config/research-baseline.json`. `FSBASE-002` preserves 60 canonical Topic IDs: the protected 30-topic initial catalog, 27 additions from all 26 PDFs linked by MEXT for FY2022-FY2025, and three human-requested additions for worldwide technology monitoring, agentic-workload CPU and node architecture, and LLM inference serving. Six Topics have been retired with explicit successor lineage because their concerns were merged into another Topic or moved into the Harness or planning outputs; 54 active Topics appear on Pages. `config/catalog-taxonomy.json` assigns each active Topic and every roadmap to exactly one of six public categories and gives active Topics category-based public display codes without changing canonical IDs.
+
+The manually maintained Watch Registry separates recurring official index and release pages from exact evidence documents. `tools/build_source_catalog_map.py` generates the URL-to-Topic/Roadmap/Track map from registered public evidence. A changed Watch page is only a signal: a semantic change must be confirmed in an exact primary source and pass the applicable Consensus Gate before publication. Emerging-topic discovery can be initiated daily by `.github/workflows/emerging-topic-discovery.yml`; it remains fail-closed until the reviewed pilot, security-profile, budget, and Consensus-capacity gates are ready.
 
 OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, review of sources in their original languages where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 

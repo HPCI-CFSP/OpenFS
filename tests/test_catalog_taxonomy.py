@@ -22,15 +22,19 @@ class CatalogTaxonomyTests(unittest.TestCase):
         self.assertEqual(
             [
                 "architecture-hardware",
-                "system-software-data-platform",
-                "applications-workloads",
-                "operations-facilities-security",
+                "system-software",
+                "applications",
+                "operations-procurement",
                 "access-governance",
-                "planning-evaluation-research",
+                "cross-cutting",
             ],
             [category["category_id"] for category in self.taxonomy["categories"]],
         )
         self.assertEqual(list(range(1, 7)), [category["order"] for category in self.taxonomy["categories"]])
+        self.assertEqual(
+            ["ARCH", "SSW", "APP", "OPS", "GOV", "CROSS"],
+            [category["display_prefix"] for category in self.taxonomy["categories"]],
+        )
 
     def test_every_active_topic_is_assigned_exactly_once(self):
         active = {
@@ -45,6 +49,15 @@ class CatalogTaxonomyTests(unittest.TestCase):
         ]
         self.assertEqual(len(assigned), len(set(assigned)))
         self.assertEqual(active, set(assigned))
+
+    def test_display_codes_cover_topics_and_are_unique(self):
+        codes = []
+        for category in self.taxonomy["categories"]:
+            self.assertEqual(set(category["topic_ids"]), set(category["topic_codes"]))
+            for code in category["topic_codes"].values():
+                self.assertTrue(code.startswith(category["display_prefix"] + "-"))
+                codes.append(code)
+        self.assertEqual(len(codes), len(set(codes)))
 
     def test_every_roadmap_is_assigned_exactly_once(self):
         expected = {item["roadmap_id"] for item in self.portfolio["roadmap_families"]}

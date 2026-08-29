@@ -18,8 +18,8 @@
       topicsMetric: "調査項目", topicsMetricNote: "調査カタログに登録済み", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開計画案", scenarioMetricNote: "人による公開承認済み",
       reportMetric: "公開報告書", reportMetricNote: "来歴を確認できる出力", revision: "改訂", officialSources: "登録済みの公開資料",
       openGaps: "未確認事項", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
-      catalogLead: "各調査項目では、調査基準日現在の最新状況、近い将来の候補、研究段階の技術、見解が分かれている論点を区別して示します。HPCIシステム整備との関係、公開根拠、未確認事項、調査履歴も確認できます。",
-      domainFilter: "分類で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "調査項目ID、名称または分類",
+      catalogLead: "各調査項目では、調査基準日現在の最新状況、近い将来の方向性、中長期の研究開発候補、見解が分かれている論点を区別して示します。システム整備との関係、公開根拠、未確認事項、調査履歴、関連ロードマップも確認できます。",
+      domainFilter: "分類で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "表示コード、正規ID、名称または分類",
       tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableStatus: "調査状況", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
       noTopics: "条件に一致する調査項目はありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分類別のロードマップを一覧から選び、年表、根拠、HPCIシステム整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分類", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開中のロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
@@ -34,7 +34,7 @@
       footerDescription: "HPCI-CFSP 公開調査ビュー", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "レビュー済み", statusRetired: "廃止", verificationPending: "独立検証待ち", verificationAccepted: "合意判定で受理済み", evidenceCollected: "根拠あり・検証待ち", notYetReviewed: "未検証", noPublicUpdate: "公開結果なし",
       findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見を準備中", closeDialog: "詳細を閉じる",
-      topicDetailMeta: "調査項目の詳細", noSummaryTitle: "公開知見はまだありません",
+      topicDetailMeta: "調査項目の詳細", canonicalTopicId: "正規Topic ID", relatedRoadmaps: "関連ロードマップ", roadmapPlanned: "（作成予定）", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "この調査項目に対応する調査結果は、まだ公開されていません。今後の調査で公開可能な結果が得られた時点で更新します。",
       topicResultsKicker: "調査項目別の結果", topicResultsLead: "この調査項目に直接対応する公開知見を、{runCount}回の調査実行から{findingCount}件表示しています。",
       sourceSurvey: "情報源の調査記録", findings: "調査で得られた知見", sources: "根拠資料", sourceCaveat: "この調査実行の検証状況",
@@ -49,7 +49,7 @@
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項",
       commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "時期未公表", officialScanIncomplete: "一次情報の継続確認が必要",
-      decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の有力候補", researchStage: "研究・試作段階", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
+      decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
@@ -61,8 +61,8 @@
       topicsMetric: "Research topics", topicsMetricNote: "Registered in the research catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published planning options", scenarioMetricNote: "Human-approved for publication",
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
-      catalogLead: "Each research topic distinguishes the latest status confirmed as of the research date, likely near-term candidates, research-stage approaches, and unresolved questions. It also presents relevance to HPCI planning, public evidence, coverage gaps, and research history.",
-      domainFilter: "Category filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Topic ID, title, or category",
+      catalogLead: "Each research topic distinguishes the latest status confirmed as of the research date, near-term direction, mid- to long-term R&D candidates, and unresolved questions. It also presents relevance to system planning, public evidence, coverage gaps, research history, and related roadmaps.",
+      domainFilter: "Category filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Display code, canonical ID, title, or category",
       tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableStatus: "Research status", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "OpenFS continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
       roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a roadmap by category and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Category", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
@@ -78,7 +78,7 @@
       footerDescription: "HPCI-CFSP public research view", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", verificationPending: "independent review pending", verificationAccepted: "accepted through the Consensus Gate", evidenceCollected: "evidence available; review pending", notYetReviewed: "not reviewed", noPublicUpdate: "no public result",
       findingAvailable: "public findings", decisionAvailable: "technology synthesis", summaryPending: "public findings in preparation", closeDialog: "Close details",
-      topicDetailMeta: "Topic details", noSummaryTitle: "No public findings yet",
+      topicDetailMeta: "Topic details", canonicalTopicId: "Canonical Topic ID", relatedRoadmaps: "Related roadmaps", roadmapPlanned: "(planned)", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this topic has been published yet. This page will be updated when a later research cycle produces a publishable result.",
       topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this research topic from {runCount} research runs.",
       sourceSurvey: "SOURCE REVIEW", findings: "Research findings", sources: "Supporting sources", sourceCaveat: "Validation status for this research run",
@@ -93,7 +93,7 @@
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
       commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required",
-      decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Likely near-term candidates", researchStage: "Research and prototype stage", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
+      decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
     }
   };
 
@@ -425,7 +425,7 @@
     root.replaceChildren();
     const filtered = data.topics.filter((topic) => {
       const categoryMatch = activeCategory === "all" || topic.catalog_category_id === activeCategory;
-      const searchText = [topic.topic_id, topic.title_ja, topic.title_en, categoryLabel(topic.catalog_category_id)].join(" ").toLocaleLowerCase(language);
+      const searchText = [topic.catalog_code, topic.topic_id, topic.title_ja, topic.title_en, categoryLabel(topic.catalog_category_id)].join(" ").toLocaleLowerCase(language);
       return categoryMatch && (!query || searchText.includes(query));
     });
 
@@ -433,7 +433,7 @@
       const row = document.createElement("tr");
       const idCell = document.createElement("td");
       idCell.className = "topic-id";
-      idCell.textContent = topic.topic_id;
+      idCell.textContent = topic.catalog_code;
       const titleCell = document.createElement("td");
       const titleButton = document.createElement("button");
       titleButton.type = "button";
@@ -1108,9 +1108,9 @@
     if (!activeTopicId) return;
     const topic = data.topics.find((item) => item.topic_id === activeTopicId);
     if (!topic) return;
-    setText("topic-dialog-id", topic.topic_id);
+    setText("topic-dialog-id", topic.catalog_code);
     setText("topic-dialog-title", language === "ja" ? topic.title_ja : topic.title_en);
-    setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${categoryLabel(topic.catalog_category_id)}`);
+    setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${categoryLabel(topic.catalog_category_id)} / ${tr("canonicalTopicId")}: ${topic.topic_id}`);
     const root = document.getElementById("topic-dialog-content");
     root.replaceChildren();
     const summaries = summariesForTopic(topic.topic_id);
@@ -1124,7 +1124,6 @@
       body.textContent = tr("noSummaryText");
       empty.append(title, body);
       root.appendChild(empty);
-      return;
     }
     if (profile) {
       const overview = document.createElement("section");
@@ -1152,6 +1151,34 @@
       if (profile.related_surface_ids.includes("platform-software")) renderPlatformMatrix(root);
       if (profile.related_surface_ids.includes("numerical-methods")) renderNumericalMatrix(root);
       renderCoverageGaps(root, profile);
+    }
+    if (topic.related_roadmaps.length) {
+      const section = document.createElement("section");
+      section.className = "topic-related-roadmaps";
+      const heading = document.createElement("h3");
+      heading.textContent = tr("relatedRoadmaps");
+      const list = document.createElement("ul");
+      list.className = "related-roadmap-list";
+      topic.related_roadmaps.forEach((roadmap) => {
+        const item = document.createElement("li");
+        const title = language === "ja" ? roadmap.title_ja : roadmap.title_en;
+        if (roadmap.path) {
+          const link = document.createElement("a");
+          link.href = `${roadmap.path}?v=${encodeURIComponent(data.site.commit_sha)}`;
+          link.textContent = title;
+          item.appendChild(link);
+        } else {
+          const label = document.createElement("span");
+          label.textContent = title;
+          const status = document.createElement("small");
+          status.className = "roadmap-planned-label";
+          status.textContent = tr("roadmapPlanned");
+          item.append(label, status);
+        }
+        list.appendChild(item);
+      });
+      section.append(heading, list);
+      root.appendChild(section);
     }
     renderResearchHistory(root, summaries, !profile);
   }

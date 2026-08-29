@@ -20,7 +20,11 @@ class RoadmapPortfolioTests(unittest.TestCase):
 
     def test_portfolio_matches_baseline_and_covers_every_topic(self):
         self.assertEqual(self.baseline["baseline_id"], self.portfolio["baseline_id"])
-        baseline_ids = {topic["topic_id"] for topic in self.baseline["topics"]}
+        baseline_ids = {
+            topic["topic_id"]
+            for topic in self.baseline["topics"]
+            if not topic.get("retirement")
+        }
         mapped_ids = {
             topic_id
             for roadmap in self.portfolio["roadmap_families"]

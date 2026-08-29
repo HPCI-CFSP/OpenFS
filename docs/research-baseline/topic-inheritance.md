@@ -21,7 +21,7 @@
 
 - **Inherited:** all 30 protected initial Topics remain valid research entry points.
 - **Split for actionability:** 26 report-derived Topics separate recurring questions that need their own evidence, cadence, owner, or output.
-- **New process Topic:** `CROSS-17` institutionalizes independently reviewed AI proposals for emerging subjects.
+- **Harness process:** retired Topic `CROSS-17` preserves the origin of the independently reviewed AI-proposal path now implemented by `OFS-004` and `MON-EMERGING-TOPICS-001`.
 - **No retirements:** this review does not retire or narrow any initial Topic.
 
 The exact source references for every added Topic are machine-readable in `config/research-baseline.json`.

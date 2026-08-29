@@ -84,6 +84,19 @@ class ResearchBaselineTests(unittest.TestCase):
         self.assertNotIn("FSBASE-GAP-002", self.baseline["open_gap_ids"])
         self.assertNotIn("FSBASE-GAP-004", self.baseline["open_gap_ids"])
 
+    def test_retired_topics_preserve_lineage(self):
+        retired = {topic["topic_id"]: topic for topic in self.baseline["topics"] if topic["status"] == "retired"}
+        self.assertEqual(
+            {"APP-07", "CROSS-01", "CROSS-07", "CROSS-09", "CROSS-12", "CROSS-17"},
+            set(retired),
+        )
+        for topic in retired.values():
+            self.assertIn("retirement", topic)
+            self.assertTrue(
+                topic["retirement"].get("successor_topic_ids")
+                or topic["retirement"].get("successor_paths")
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

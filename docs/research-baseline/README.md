@@ -117,16 +117,16 @@ The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Ad
 
 | ID | Topic |
 |---|---|
-| `CROSS-08` | University infrastructure-center status, refresh plans, and constraints |
-| `CROSS-09` | Joint procurement, joint investment, and staged deployment |
-| `CROSS-10` | HPCI operating organization, responsibility, and workforce |
-| `CROSS-11` | Domestic technology sovereignty, deployment, and industrial impact |
-| `CROSS-12` | Center-specific adoption profiles and migration feasibility |
+| `CROSS-08` | HPCI center status, refresh plans, constraints, adoption profiles, and migration readiness |
+| `CROSS-09` | Joint procurement, joint investment, and staged deployment (retired into `CROSS-06`) |
+| `CROSS-10` | HPCI policy, decision making, and governance structure |
+| `CROSS-11` | Practical deployment, supply autonomy, and industrial impact of technologies originating in Japan |
+| `CROSS-12` | Center-specific adoption profiles and migration feasibility (retired into `CROSS-08`) |
 | `CROSS-13` | Multi-scenario system-plan generation, comparison, and presentation |
 | `CROSS-14` | Data and service continuity across compute generations |
 | `CROSS-15` | Resource ownership, funding, and charging models |
 | `CROSS-16` | Geographic placement, electricity, and facility proximity |
-| `CROSS-17` | AI-proposed emerging research topics |
+| `CROSS-17` | AI-proposed emerging research topics (retired into the Harness) |
 | `CROSS-18` | Worldwide and continuing survey of HPCI-related technology trends, with priority coverage for Japan |
 
 Detailed Japanese questions, expected evidence, outputs, source references, and cadence are in `config/research-baseline.json`. The review method and inheritance map are in `fs2-fs3-corpus-review.md` and `topic-inheritance.md`.
@@ -137,7 +137,7 @@ A roadmap research cycle is not coverage-complete merely because every row has s
 
 ## AI proposal lane
 
-`CROSS-17`, `OFS-004`, and `MON-EMERGING-TOPICS-001` keep discovery open beyond historical FS scope. A candidate must state its novelty relative to all current Topic IDs, cite at least two Origin Groups, include a falsification query, and pass the `research_topic` Consensus Gate before additive promotion. The accepted Topic and Query Plan are registered in `MON-AUTO-TOPICS-001` so other agents can research it in later Runs. See `ai-topic-promotion.md`.
+`OFS-004` and `MON-EMERGING-TOPICS-001` keep discovery open beyond historical FS scope; `CROSS-17` remains only as historical lineage. A candidate must state its novelty relative to all current Topic IDs, cite at least two Origin Groups, include a falsification query, and pass the `research_topic` Consensus Gate before additive promotion. The accepted Topic and Query Plan are registered in `MON-AUTO-TOPICS-001` so other agents can research it in later Runs. See `ai-topic-promotion.md`.
 
 `CROSS-18`, `OFS-005`, `MON-GLOBAL-TECH-001`, and `config/global-technology-scope.json` require worldwide discovery across regions, organizations, and source languages. Technologies developed in Japan receive priority coverage, including pre-commercial research, startups, standards, software, facilities, supply chains, negative results, and previously unknown categories, but are compared with international alternatives under the same criteria.
 

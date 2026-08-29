@@ -53,9 +53,10 @@ class ResearchTopicFlowTests(unittest.TestCase):
         )
         category = next(
             item for item in promoted_taxonomy["categories"]
-            if item["category_id"] == "operations-facilities-security"
+            if item["category_id"] == "operations-procurement"
         )
         self.assertIn("CROSS-99", category["topic_ids"])
+        self.assertRegex(category["topic_codes"]["CROSS-99"], r"^OPS-[0-9]{3}$")
         work = expand(
             promoted_monitor,
             promoted_baseline,
