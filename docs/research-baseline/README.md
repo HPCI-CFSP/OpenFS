@@ -6,7 +6,7 @@ This directory defines the research inventory that OpenFS agents use when creati
 
 An agent may and should propose candidate topics when new evidence appears. AI-originated proposals follow the same evidence, independent-review, and consensus process as human-originated proposals. An agent must not silently remove, merge, or narrow an existing topic. The original 30 IDs are explicitly protected in `config/research-baseline.json`.
 
-The machine-readable source of truth is `config/research-baseline.json`. This document is the human-readable view.
+The machine-readable source of truth is `config/research-baseline.json`. The six-category public classification is maintained separately in `config/catalog-taxonomy.json`, which must assign every active Topic and roadmap exactly once. This document is the human-readable view.
 
 ## How agents use the baseline
 
@@ -89,6 +89,7 @@ The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Ad
 | `ARCH-11` | Domestic processors, accelerators, and packaging technologies |
 | `ARCH-12` | Wafer-scale, reconfigurable dataflow, and domain-specific computing |
 | `ARCH-13` | Mixed precision, approximate computing, and numerical integrity |
+| `ARCH-14` | CPU and node architecture for agentic workloads |
 
 ### System-software additions
 
@@ -101,6 +102,7 @@ The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Ad
 | `SSW-14` | Confidential computing, privacy, and federated security |
 | `SSW-15` | Power/cooling telemetry and power-adaptive operation |
 | `SSW-16` | Unified HPC, AI, and experimental-facility workflow execution |
+| `SSW-17` | LLM inference serving and agent runtimes |
 
 ### Application additions
 

@@ -51,6 +51,7 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not invent citations, dates, quotations, model identities, source origins, or confidence values.
 - Do not silently remove, merge, narrow, split, or retire a research-baseline topic. Propose those changes through `OFS-002` with lineage and a reviewed human Directive.
 - Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog.
+- Treat `config/catalog-taxonomy.json` as the canonical public classification. Every active Topic and every roadmap must appear in exactly one of its six categories. Preserve legacy `domain` fields for compatibility, but do not derive Pages filters from them. A Consensus-accepted Topic proposal must declare its category, and deterministic promotion updates the taxonomy with the baseline, English title, and automatic monitor.
 - Research scope is worldwide. Read `config/global-technology-scope.json`, search across regions and source languages where feasible, and report uncovered regions and categories. Prioritize coverage of technologies developed in Japan without treating origin as evidence of technical merit or automatic adoption.
 - Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, budget, procurement, refresh, or staffing state without cited Evidence that remains inside the Monitor's freshness window. Every new Center Profile uses the complete current registry field set; fields absent from an older contract are `unknown`/`not-collected`, never implicitly complete. Any permitted field-level inheritance must pin the predecessor digest and original Evidence bundles and must re-enter Consensus as provisional.
 - A follow-up Run must pass the Profile continuity gate before publication. Investigate every reported regression rather than deleting or weakening predecessor Evidence.
@@ -66,7 +67,7 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Validator and critic agents write assessments and objections only.
 - The deterministic consensus tool writes decisions.
 - Only the promotion workflow may update `data/`, `knowledge/`, accepted roadmaps, report exports, or generated `TBD.md` content.
-- Only the narrowly scoped `topic-promotion` role may append a Consensus-accepted AI Topic to the research baseline, its English public title catalog, and `MON-AUTO-TOPICS-001`; it cannot modify policies or remove existing Topics.
+- Only the narrowly scoped `topic-promotion` role may append a Consensus-accepted AI Topic to the research baseline, catalog taxonomy, English public title catalog, and `MON-AUTO-TOPICS-001`; it cannot modify policies or remove existing Topics.
 - Agents must never push directly to a protected default branch.
 - Scheduled research agents must not use the `maintainer` role. `maintainer` is reserved for an explicit interactive request from an authorized human.
 

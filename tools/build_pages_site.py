@@ -61,11 +61,14 @@ def source_commit_metadata(root: Path, relative_path: str | None = None) -> dict
     }
 
 
-def roadmap_index_entry(roadmap: dict[str, Any]) -> dict[str, Any]:
+def roadmap_index_entry(
+    roadmap: dict[str, Any], category_by_roadmap: dict[str, str]
+) -> dict[str, Any]:
     return {
         "export_id": roadmap["export_id"],
         "roadmap_id": roadmap["roadmap_id"],
         "domain": roadmap["domain"],
+        "catalog_category_id": category_by_roadmap[roadmap["roadmap_id"]],
         "slug": roadmap["slug"],
         "path": f"roadmaps/{roadmap['slug']}/",
         "renderer": "common-quarterly",
@@ -1018,7 +1021,18 @@ def collect_roadmap_assurance(
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
+    catalog_taxonomy = load_json(root / "config" / "catalog-taxonomy.json")
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
+    category_by_topic = {
+        topic_id: category["category_id"]
+        for category in catalog_taxonomy["categories"]
+        for topic_id in category["topic_ids"]
+    }
+    category_by_roadmap = {
+        roadmap_id: category["category_id"]
+        for category in catalog_taxonomy["categories"]
+        for roadmap_id in category["roadmap_ids"]
+    }
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
     valid_topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
     consensus_receipts = collect_consensus_receipts(root, policy)
@@ -1076,6 +1090,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             {
                 "topic_id": topic["topic_id"],
                 "domain": topic["domain"],
+                "catalog_category_id": category_by_topic[topic["topic_id"]],
                 "title_ja": topic["title_ja"],
                 "title_en": i18n["topic_titles_en"][topic["topic_id"]],
                 "status": topic["status"],
@@ -1130,7 +1145,10 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "application performance forecast surface",
     )
     roadmap_assurance = collect_roadmap_assurance(root, policy)
-    roadmaps = [roadmap_index_entry(roadmap) for roadmap in roadmap_artifacts]
+    roadmaps = [
+        roadmap_index_entry(roadmap, category_by_roadmap)
+        for roadmap in roadmap_artifacts
+    ]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
     site_metadata = source_commit_metadata(root)
     official_sources = [
@@ -1151,6 +1169,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "open_gap_ids": baseline["open_gap_ids"],
         },
         "topics": topics,
+        "catalog_taxonomy": catalog_taxonomy,
         "research_summaries": research_summaries,
         "topic_decision_support": topic_decision_support,
         "consensus_receipts": consensus_receipts,

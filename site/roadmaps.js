@@ -11,9 +11,9 @@
     ja: {
       languageControl: "表示言語", publicStatus: "公開状態", siteNavigation: "サイト内ナビゲーション", breadcrumbs: "パンくずリスト", roadmapValidation: "ロードマップの検証状況", maturityLegend: "成熟度の凡例", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", licenseLabel: "ライセンス",
       navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
-      libraryKicker: "公開ロードマップ索引", libraryTitle: "ロードマップ一覧", libraryLead: "共通形式で作成したロードマップを分野別に確認できます。6本の横断比較では、相互依存関係と判断時期を同じ時間軸で確認できます。",
+      libraryKicker: "公開ロードマップ索引", libraryTitle: "ロードマップ一覧", libraryLead: "技術、ソフトウェア、アプリケーション、運用・制度、計画評価のロードマップを共通形式で確認できます。横断比較では、相互依存関係と判断時期を同じ時間軸で確認できます。",
       compareRoadmaps: "6本を比較", openEvidence: "根拠情報の監査を開く", compareKicker: "優先度P0のロードマップ", compareTitle: "ロードマップ横断比較", compareLead: "重要なマイルストーン、一次情報の確認状況、未確認事項、ロードマップ間の依存関係を同じ尺度で比較します。",
-      domainFilter: "分野で絞り込む", all: "すべて", domainHardware: "ハードウェア", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "名称または分野", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", researchAsOf: "調査基準日", researchStatus: "調査状況", coverageStatus: "調査範囲", consensusStatus: "合意判定状況", updatedColumn: "更新日時", noRoadmaps: "条件に一致するロードマップはありません。",
+      domainFilter: "分類で絞り込む", all: "すべて", domainHardware: "ハードウェア", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "名称または分類", roadmapColumn: "ロードマップ", domainColumn: "分類", horizonColumn: "対象期間", researchAsOf: "調査基準日", researchStatus: "調査状況", coverageStatus: "調査範囲", consensusStatus: "合意判定状況", updatedColumn: "更新日時", noRoadmaps: "条件に一致するロードマップはありません。",
       roadmapKicker: "根拠付き暫定ロードマップ", roadmapFilter: "項目群で絞り込む", trackColumn: "技術・判断項目", ownerColumn: "主体／対象", quarterUnknown: "四半期未公表", undatedColumn: "時期未公表", roadmapTableNote: "世代見通しは、標準化と製品に関する複数の公開情報を統合した暫定的な期間です。世代間の重複を許容します。各矩形は公開情報から確認できる時期の範囲を示します。年だけが公表された項目はQ1-Q4、半期だけが公表された項目は該当する2四半期にまたがって表示しますが、事象がその全期間に継続することを意味しません。空欄は、日程を確認できる公開情報がないことを示します。",
       trackNotesKicker: "項目別の注記", trackNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項", dependenciesKicker: "相互依存", dependenciesTitle: "他ロードマップとの依存関係", coverageGapsTitle: "未確認事項", gapImpact: "影響", gapNextAction: "次の確認",
       comparisonsKicker: "技術選択の比較", comparisonsTitle: "関連技術の比較表", comparisonsLead: "役割、利点、制約、適用先を共通の軸で比較します。", decisionUse: "判断への使い方", comparisonCaveat: "比較上の注意", glossaryKicker: "共通用語集", glossaryTitle: "このロードマップの用語", glossaryLead: "用語を選択すると、一元管理された説明と根拠資料を表示します。", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較の根拠", referenceRevision: "共通データ更新", timingWindow: "表示範囲", timingWindowNote: "表示範囲は公開情報の時期精度を表し、事象の継続期間ではありません。", quarterNotPublished: "四半期未公表",
@@ -32,9 +32,9 @@
     en: {
       languageControl: "Display language", publicStatus: "Publication status", siteNavigation: "Site navigation", breadcrumbs: "Breadcrumbs", roadmapValidation: "Roadmap validation status", maturityLegend: "Maturity legend", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", licenseLabel: "License",
       navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
-      libraryKicker: "PUBLISHED ROADMAP INDEX", libraryTitle: "Roadmap library", libraryLead: "Review common-format roadmaps by domain, then use the six-roadmap comparison to trace dependencies and decision timing.",
+      libraryKicker: "PUBLISHED ROADMAP INDEX", libraryTitle: "Roadmap library", libraryLead: "Review common-format roadmaps across technology, software, applications, operations, governance, and planning, then trace dependencies and decision timing.",
       compareRoadmaps: "Compare all six roadmaps", openEvidence: "Review evidence assurance", compareKicker: "P0 PRIORITY ROADMAPS", compareTitle: "Cross-roadmap comparison", compareLead: "Compare key milestones, primary-source coverage, coverage gaps, and dependencies across roadmaps on a common scale.",
-      domainFilter: "Domain filter", all: "All", domainHardware: "Hardware", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Title or domain", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", researchAsOf: "Research as of", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus", updatedColumn: "Updated", noRoadmaps: "No roadmaps match the current filters.",
+      domainFilter: "Category filter", all: "All", domainHardware: "Hardware", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Title or category", roadmapColumn: "Roadmap", domainColumn: "Category", horizonColumn: "Horizon", researchAsOf: "Research as of", researchStatus: "Research status", coverageStatus: "Coverage", consensusStatus: "Consensus", updatedColumn: "Updated", noRoadmaps: "No roadmaps match the current filters.",
       roadmapKicker: "EVIDENCE-BASED PROVISIONAL ROADMAP", roadmapFilter: "Filter by track group", trackColumn: "Technology / decision track", ownerColumn: "Owner / scope", quarterUnknown: "quarter not published", undatedColumn: "Timing not public", roadmapTableNote: "Generation outlooks are provisional bands synthesized from standards and product evidence, and generations may overlap. Each ordinary rectangle shows the timing window supported by public information. A year-only item spans Q1-Q4 and a half-year item spans two quarters; neither represents event duration. Blank cells mean no dated milestone was confirmed.",
       trackNotesKicker: "TRACK NOTES", trackNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat", dependenciesKicker: "INTERDEPENDENCIES", dependenciesTitle: "Dependencies on other roadmaps", coverageGapsTitle: "Coverage gaps", gapImpact: "Impact", gapNextAction: "Next check",
       comparisonsKicker: "TECHNOLOGY CHOICES", comparisonsTitle: "Related technology comparisons", comparisonsLead: "Compare roles, strengths, constraints, and suitable uses on common dimensions.", decisionUse: "How to use this comparison", comparisonCaveat: "Comparison caveat", glossaryKicker: "SHARED GLOSSARY", glossaryTitle: "Terms in this roadmap", glossaryLead: "Select a term to open its centrally maintained explanation and supporting sources.", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Glossary and comparison sources", referenceRevision: "Shared data updated", timingWindow: "Displayed window", timingWindowNote: "The displayed window expresses public timing precision, not the duration of the event.", quarterNotPublished: "quarter not published",
@@ -77,7 +77,7 @@
   const systemMetricKeys = {"node-fp64-peak": "nodeFp64Peak", "node-memory-bandwidth": "nodeMemoryBandwidth"};
   const page = document.body.dataset.page;
   let language = readLanguage();
-  let activeDomain = "all";
+  let activeCategory = "all";
   let activeRoadmapGroup = "all";
   let activeRoadmapMilestoneId = null;
   let activeRoadmapGenerationBandId = null;
@@ -91,6 +91,7 @@
   function rememberLanguage(value) { try { window.localStorage.setItem("openfs-language", value); } catch (_error) {} }
   function tr(key) { return copy[language][key] || key; }
   function localized(item, field) { return item?.[`${field}_${language}`] || item?.[field] || ""; }
+  function categoryLabel(categoryId) { const category = data.catalog_taxonomy.categories.find((item) => item.category_id === categoryId); return category ? category[`title_${language}`] : categoryId; }
   function setText(id, value) { const element = document.getElementById(id); if (element) element.textContent = value; }
   function setRoadmapLinkTitle(element, value) {
     const breakAt = value.indexOf("（");
@@ -121,17 +122,32 @@
     const query = document.getElementById("roadmap-search").value.trim().toLocaleLowerCase(language);
     const root = document.getElementById("roadmap-rows"); root.replaceChildren();
     const filtered = data.roadmaps.filter((roadmap) => {
-      const domainMatch = activeDomain === "all" || roadmap.domain === activeDomain;
-      const searchText = [roadmap.title_ja, roadmap.title_en, roadmap.domain, roadmap.roadmap_id].join(" ").toLocaleLowerCase(language);
-      return domainMatch && (!query || searchText.includes(query));
+      const categoryMatch = activeCategory === "all" || roadmap.catalog_category_id === activeCategory;
+      const searchText = [roadmap.title_ja, roadmap.title_en, categoryLabel(roadmap.catalog_category_id), roadmap.roadmap_id].join(" ").toLocaleLowerCase(language);
+      return categoryMatch && (!query || searchText.includes(query));
     });
     filtered.forEach((roadmap) => {
       const row = document.createElement("tr"); const title = document.createElement("td"); const link = document.createElement("a"); link.className = "roadmap-title-link"; link.href = `../${roadmap.path}?v=${encodeURIComponent(data.site.commit_sha)}`; setRoadmapLinkTitle(link, language === "ja" ? roadmap.title_ja : roadmap.title_en);
       const note = document.createElement("span"); note.className = "roadmap-row-note"; note.textContent = `${roadmap.track_count} ${tr("tracksUnit")} / ${roadmap.milestone_count} ${tr("milestonesUnit")} / ${roadmap.coverage_gap_count} ${tr("gapsUnit")}`; title.append(link, note);
-      const domain = document.createElement("td"); domain.textContent = domainLabels[language][roadmap.domain]; const horizon = document.createElement("td"); horizon.textContent = `${roadmap.horizon.start_year}-${roadmap.horizon.end_year}`; const asOf = document.createElement("td"); asOf.textContent = roadmap.as_of; const research = document.createElement("td"); research.textContent = statusLabel(roadmap.research_status); const consensus = document.createElement("td"); consensus.textContent = statusLabel(roadmap.consensus_status);
+      const domain = document.createElement("td"); domain.textContent = categoryLabel(roadmap.catalog_category_id); const horizon = document.createElement("td"); horizon.textContent = `${roadmap.horizon.start_year}-${roadmap.horizon.end_year}`; const asOf = document.createElement("td"); asOf.textContent = roadmap.as_of; const research = document.createElement("td"); research.textContent = statusLabel(roadmap.research_status); const consensus = document.createElement("td"); consensus.textContent = statusLabel(roadmap.consensus_status);
       const updated = document.createElement("td"); const commit = document.createElement("a"); commit.href = roadmap.source_commit_url; commit.target = "_blank"; commit.rel = "noopener noreferrer"; commit.textContent = formatJst(roadmap.updated_at); updated.append(commit); row.append(title, domain, horizon, asOf, research, consensus, updated); root.append(row);
     });
     document.getElementById("roadmap-empty").hidden = filtered.length !== 0;
+  }
+
+  function renderRoadmapCategoryFilter() {
+    const root = document.getElementById("roadmap-category-filter");
+    if (!root) return;
+    root.replaceChildren();
+    [{category_id: "all"}, ...data.catalog_taxonomy.categories].forEach((category) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.roadmapCategory = category.category_id;
+      button.textContent = category.category_id === "all" ? tr("all") : category[`title_${language}`];
+      button.classList.toggle("active", activeCategory === category.category_id);
+      button.addEventListener("click", () => { activeCategory = category.category_id; renderRoadmapCategoryFilter(); renderRoadmapIndex(); });
+      root.append(button);
+    });
   }
 
   function appendSourceList(root, roadmap, sourceIds) {
@@ -429,9 +445,8 @@
   }
   function renderComparison() { const artifacts = data.roadmap_artifacts.filter((item) => selectedRoadmaps.has(item.export_id)); renderCompareControls(); renderCompareMetrics(artifacts); renderCompareTimeline(artifacts); renderCompareDependencies(artifacts); }
 
-  function render() { applyStaticCopy(); if (page === "roadmap-index") renderRoadmapIndex(); if (page === "roadmap-detail") { renderRoadmapDetail(); renderRoadmapDialog(); renderRoadmapTermDialog(); } if (page === "roadmap-compare") renderComparison(); }
+  function render() { applyStaticCopy(); if (page === "roadmap-index") { renderRoadmapCategoryFilter(); renderRoadmapIndex(); } if (page === "roadmap-detail") { renderRoadmapDetail(); renderRoadmapDialog(); renderRoadmapTermDialog(); } if (page === "roadmap-compare") renderComparison(); }
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(language); render(); }));
-  document.querySelectorAll("[data-roadmap-domain]").forEach((button) => button.addEventListener("click", () => { activeDomain = button.dataset.roadmapDomain; document.querySelectorAll("[data-roadmap-domain]").forEach((item) => item.classList.toggle("active", item === button)); renderRoadmapIndex(); }));
   document.getElementById("roadmap-search")?.addEventListener("input", renderRoadmapIndex);
   const dialog = document.getElementById("roadmap-dialog"); document.getElementById("roadmap-dialog-close")?.addEventListener("click", () => dialog.close()); dialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); dialog?.addEventListener("close", () => { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; });
   const termDialog = document.getElementById("roadmap-term-dialog"); document.getElementById("roadmap-term-dialog-close")?.addEventListener("click", () => termDialog.close()); termDialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); termDialog?.addEventListener("close", () => { activeTermId = null; const url = new URL(window.location.href); url.searchParams.delete("term"); window.history.replaceState(null, "", url); });

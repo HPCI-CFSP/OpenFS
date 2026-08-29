@@ -19,6 +19,7 @@ The site builder reads only explicitly approved public paths. It does not direct
 - `knowledge/public/topic-summaries.json`: approved bilingual research summaries, provisional status, selected findings, and public source links shown from each Topic.
 - `knowledge/public/consensus-receipts.json`: approved public proof records for accepted Findings. Each Receipt lists the participating model and Agent identities, independence groups, Consensus policy result, harness repository, Run ID, and exact harness commit SHA without exposing raw Assessments or private Run content.
 - `knowledge/public/roadmaps/*.json`: approved bilingual roadmap artifacts using `schemas/public-roadmap.schema.json`. Each artifact declares a stable roadmap ID, domain, slug, groups, tracks, quarterly milestones, dependencies, sources, and structured Coverage Gaps.
+- `config/catalog-taxonomy.json`: canonical six-category mapping used to generate the research-catalog and roadmap filters. Legacy domain fields remain in artifacts for compatibility.
 
 The project site is `https://hpci-cfsp.github.io/OpenFS/`. Visitors can switch between Japanese and English; the selected language is retained locally in the browser. The home page contains only a compact roadmap entry list. `/roadmaps/` provides the searchable library, `/roadmaps/compare/` compares the initial six roadmaps, and each roadmap is rendered under `/roadmaps/<domain>/<slug>/` so it can be bookmarked and reviewed independently.
 

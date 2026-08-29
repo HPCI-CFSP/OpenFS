@@ -2,9 +2,9 @@
   "schema_version": "0.2.0",
   "baseline_id": "FSBASE-002",
   "baseline_status": "reviewed",
-  "catalog_revision": 2,
+  "catalog_revision": 3,
   "complete": false,
-  "derived_at": "2026-08-23",
+  "derived_at": "2026-08-29",
   "source_refs": [
     "FSBASE-SRC-001",
     "FSBASE-SRC-002",
@@ -945,7 +945,9 @@
       "domain": "applications",
       "title_ja": "科学AIエージェント",
       "research_questions": [
-        "複数AIエージェント型科学ワークフローの負荷、拡張性、信頼性、来歴、セキュリティ要件は何か"
+        "複数AIエージェント型科学ワークフローの負荷、拡張性、信頼性、来歴、セキュリティ要件は何か",
+        "オーケストレーションの直列区間、LLM推論、検索、ツール実行、通信待ち、同時実行をどのように分解して測定するか",
+        "タスク完了時間、p95・p99遅延、tasks/J、cost/task、agents/nodeをどのように評価するか"
       ],
       "evidence_expected": [
         "実ワークフロー計測",
@@ -1603,7 +1605,9 @@
       "domain": "applications",
       "title_ja": "大規模AI・LLM学習推論の負荷モデル",
       "research_questions": [
-        "学習、ファインチューニング、高スループット推論のメモリ、通信、I/O、電力特性は何か"
+        "学習、ファインチューニング、高スループット推論のメモリ、通信、I/O、電力特性は何か",
+        "PrefillとDecode、KVキャッシュ、バッチ処理、投機的デコーディング、分散推論は、TTFT、ITL、テール遅延、スループットにどう影響するか",
+        "エージェント型ワークロードの直列区間と同時実行数を含む負荷モデルを、CPU・GPU・ネットワークの構成判断へどう結び付けるか"
       ],
       "evidence_expected": [
         "実測・利用ログ",
@@ -1620,7 +1624,7 @@
         "FSBASE-SRC-021",
         "FSBASE-SRC-030"
       ],
-      "status": "not-started",
+      "status": "partial",
       "review_cadence": "monthly"
     },
     {
@@ -1937,6 +1941,62 @@
       ],
       "status": "not-started",
       "review_cadence": "weekly"
+    },
+    {
+      "topic_id": "ARCH-14",
+      "domain": "architecture",
+      "title_ja": "エージェント型ワークロード向けCPU・ノードアーキテクチャ",
+      "research_questions": [
+        "エージェント型ワークロードの直列処理、推論、検索、ツール実行、通信待ち、同時実行をどのように分解して測定するか",
+        "コア数、動作周波数、P-coreとE-core、SMT、キャッシュ、メモリ、電圧・周波数特性、電力、費用の間にどのようなトレードオフがあるか",
+        "タスク完了時間、p95・p99遅延、tasks/J、cost/task、agents/nodeのどの組合せを整備判断に用いるか"
+      ],
+      "evidence_expected": [
+        "再現可能なエージェント型ワークロードのトレースとベンチマーク",
+        "CPU・GPUの性能カウンタ、消費電力、同時実行数の測定結果",
+        "ベンダーの一次資料と独立した比較測定"
+      ],
+      "outputs": [
+        "エージェント型ワークロードの処理内訳",
+        "コア数・周波数・電力・費用の判断面",
+        "ノード構成候補と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-021",
+        "FSBASE-SRC-029",
+        "FSBASE-SRC-030"
+      ],
+      "status": "partial",
+      "review_cadence": "monthly",
+      "catalog_origin": "human-directive"
+    },
+    {
+      "topic_id": "SSW-17",
+      "domain": "system-software",
+      "title_ja": "LLM推論サービング・エージェント実行基盤",
+      "research_questions": [
+        "vLLM、llama.cpp、SGLang、TensorRT-LLM、TGI等は、対応ハードウェア、モデル形式、量子化、バッチ処理、KVキャッシュ、投機的デコーディング、分散推論をどこまで支援するか",
+        "構造化出力、ツール呼び出し、監視、障害回復、保守継続性を含め、科学AIエージェント向けの採用条件は何か",
+        "同一モデル、精度、ハードウェア、到着過程、SLAでTTFT、ITL、p95・p99遅延、スループット、メモリ、電力をどう比較するか"
+      ],
+      "evidence_expected": [
+        "公式ドキュメント、公開実装、リリース情報",
+        "共通条件で再現可能な性能・機能・障害回復測定",
+        "ライセンス、保守状況、対応ハードウェアの一次情報"
+      ],
+      "outputs": [
+        "推論サービングフレームワーク比較表",
+        "再現可能なベンチマーク計画",
+        "HPCI共通基盤への採用条件と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-021",
+        "FSBASE-SRC-029",
+        "FSBASE-SRC-030"
+      ],
+      "status": "partial",
+      "review_cadence": "monthly",
+      "catalog_origin": "human-directive"
     }
   ],
   "initial_catalog": {

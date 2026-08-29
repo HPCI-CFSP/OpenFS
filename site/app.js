@@ -19,10 +19,10 @@
       reportMetric: "公開報告書", reportMetricNote: "来歴を確認できる出力", revision: "改訂", officialSources: "登録済みの公開資料",
       openGaps: "未確認事項", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各調査項目では、調査基準日現在の最新状況、近い将来の候補、研究段階の技術、見解が分かれている論点を区別して示します。HPCIシステム整備との関係、公開根拠、未確認事項、調査履歴も確認できます。",
-      domainFilter: "分野で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "調査項目IDまたは名称",
-      tableId: "ID", tableTopic: "調査項目", tableDomain: "分野", tableStatus: "調査状況", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
+      domainFilter: "分類で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "調査項目ID、名称または分類",
+      tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableStatus: "調査状況", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
       noTopics: "条件に一致する調査項目はありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
-      roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分野別のロードマップを一覧から選び、年表、根拠、HPCIシステム整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分野", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開中のロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
+      roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分類別のロードマップを一覧から選び、年表、根拠、HPCIシステム整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分類", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開中のロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
       scenarioKicker: "計画の選択肢", scenarioTitle: "システム整備計画案",
       scenarioLead: "アーキテクチャ、システムソフトウェア、アプリケーション、運用主体への影響、技術動向、不確実性を一体として比較します。HPCI固有の条件は各計画案で注記します。",
       noScenarioTitle: "公開済みの計画案はまだありません",
@@ -62,10 +62,10 @@
       reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each research topic distinguishes the latest status confirmed as of the research date, likely near-term candidates, research-stage approaches, and unresolved questions. It also presents relevance to HPCI planning, public evidence, coverage gaps, and research history.",
-      domainFilter: "Domain filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Topic ID or title",
-      tableId: "ID", tableTopic: "Research topic", tableDomain: "Domain", tableStatus: "Research status", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
+      domainFilter: "Category filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Topic ID, title, or category",
+      tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableStatus: "Research status", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "OpenFS continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
-      roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a domain roadmap and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Domain", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
+      roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a roadmap by category and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Category", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
       scenarioTitle: "System planning options",
       scenarioLead: "Compare architecture, system software, applications, operator impacts, technology trends, and uncertainties as a coherent whole. HPCI-specific constraints are noted within each option.",
       noScenarioTitle: "No planning options have been published",
@@ -110,7 +110,7 @@
   const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
-  let activeDomain = "all";
+  let activeCategory = "all";
   let language = readLanguage();
   let activeTopicId = null;
   let activeTopicRegion = "all";
@@ -135,6 +135,10 @@
   }
 
   function tr(key) { return copy[language][key] || key; }
+  function categoryLabel(categoryId) {
+    const category = data.catalog_taxonomy.categories.find((item) => item.category_id === categoryId);
+    return category ? category[`title_${language}`] : categoryId;
+  }
   function formatJst(value) {
     const parts = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Tokyo",
@@ -205,7 +209,7 @@
       count.textContent = `${roadmap.track_count} ${language === "ja" ? "トラック" : "tracks"} / ${roadmap.milestone_count} ${language === "ja" ? "項目" : "milestones"}`;
       titleCell.append(link, count);
       const domain = document.createElement("td");
-      domain.textContent = roadmapDomainLabels[language][roadmap.domain] || roadmap.domain;
+      domain.textContent = categoryLabel(roadmap.catalog_category_id);
       const horizon = document.createElement("td");
       horizon.textContent = `${roadmap.horizon.start_year}-${roadmap.horizon.end_year}`;
       const asOf = document.createElement("td");
@@ -420,9 +424,9 @@
     const root = document.getElementById("topic-rows");
     root.replaceChildren();
     const filtered = data.topics.filter((topic) => {
-      const domainMatch = activeDomain === "all" || topic.domain === activeDomain;
-      const searchText = [topic.topic_id, topic.title_ja, topic.title_en].join(" ").toLocaleLowerCase(language);
-      return domainMatch && (!query || searchText.includes(query));
+      const categoryMatch = activeCategory === "all" || topic.catalog_category_id === activeCategory;
+      const searchText = [topic.topic_id, topic.title_ja, topic.title_en, categoryLabel(topic.catalog_category_id)].join(" ").toLocaleLowerCase(language);
+      return categoryMatch && (!query || searchText.includes(query));
     });
 
     filtered.forEach((topic) => {
@@ -450,7 +454,7 @@
       titleButton.addEventListener("click", () => openTopicDetail(topic.topic_id));
       titleCell.appendChild(titleButton);
       const domainCell = document.createElement("td");
-      domainCell.textContent = domainLabels[language][topic.domain];
+      domainCell.textContent = categoryLabel(topic.catalog_category_id);
       const statusCell = document.createElement("td");
       statusCell.textContent = tr(statusKeys[topic.status] || topic.status);
       const verificationCell = document.createElement("td");
@@ -476,6 +480,26 @@
       root.appendChild(row);
     });
     document.getElementById("topic-empty").hidden = filtered.length !== 0;
+  }
+
+  function renderTopicCategoryFilter() {
+    const root = document.getElementById("topic-category-filter");
+    if (!root) return;
+    root.replaceChildren();
+    [{category_id: "all", title_ja: tr("all"), title_en: tr("all")}, ...data.catalog_taxonomy.categories]
+      .forEach((category) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.category = category.category_id;
+        button.textContent = category.category_id === "all" ? tr("all") : category[`title_${language}`];
+        button.classList.toggle("active", activeCategory === category.category_id);
+        button.addEventListener("click", () => {
+          activeCategory = category.category_id;
+          renderTopicCategoryFilter();
+          renderTopics();
+        });
+        root.append(button);
+      });
   }
 
   function statusLabel(value) {
@@ -1086,7 +1110,7 @@
     if (!topic) return;
     setText("topic-dialog-id", topic.topic_id);
     setText("topic-dialog-title", language === "ja" ? topic.title_ja : topic.title_en);
-    setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${domainLabels[language][topic.domain]}`);
+    setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${categoryLabel(topic.catalog_category_id)}`);
     const root = document.getElementById("topic-dialog-content");
     root.replaceChildren();
     const summaries = summariesForTopic(topic.topic_id);
@@ -1242,6 +1266,7 @@
   function render() {
     applyStaticCopy();
     renderSummary();
+    renderTopicCategoryFilter();
     renderTopics();
     renderRoadmapHome();
     renderScenarios();
@@ -1255,13 +1280,6 @@
       language = button.dataset.language;
       rememberLanguage(language);
       render();
-    });
-  });
-  document.querySelectorAll("[data-domain]").forEach((button) => {
-    button.addEventListener("click", () => {
-      activeDomain = button.dataset.domain;
-      document.querySelectorAll("[data-domain]").forEach((item) => item.classList.toggle("active", item === button));
-      renderTopics();
     });
   });
   document.getElementById("topic-search").addEventListener("input", renderTopics);
