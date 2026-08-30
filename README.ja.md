@@ -188,6 +188,17 @@ python3 tools/build_pages_site.py --output _site
 
 各指示は、その指示を処理した作業項目、調査実行、判定結果と関連付けます。
 
+閲覧者は、[Feedback](https://hpci-cfsp.github.io/OpenFS/feedback/)または公開調査項目の
+Feedbackボタンから、誤りの報告、追加調査のリクエスト、改善提案を送れます。
+項目から開いたフォームには、正規の項目ID、公開ページ、表示言語、表示時のビルドの
+コミット情報が引き継がれます。投稿にはGitHubアカウントが必要ですが、Pagesに
+アクセストークンを埋め込むことはありません。投稿は公開されるため、機密情報、
+個人情報、脆弱性の詳細を含めないでください。第三者からのFeedbackは信頼できない
+入力として扱い、承認済みのDirectiveやConsensusの票とは区別します。
+検証から修正内容の公開までの流れは、[Feedbackの取扱方針](docs/operations/public-feedback.md)
+を参照してください。この機能によって投稿の自動振り分けや調査の自動実行が有効に
+なることはありません。
+
 <!-- i18n-section: license -->
 
 ## ライセンス

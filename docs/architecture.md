@@ -350,6 +350,18 @@ parameters. OpenFS does not commit a second hand-maintained search index or send
 queries to an external search service; the publication projection remains the
 single source of searchable content.
 
+## Public feedback
+
+Public error reports, research requests, and improvement suggestions are a separate
+intake channel from reviewed owner Directives. Feedback controls open a chooser
+whose GitHub forms carry canonical object IDs and the displayed build commit.
+No browser-side credential or provider call is involved. Scientific corrections
+use the existing review, Consensus, and publication boundaries. Research requests
+are candidates, not permission to dispatch work or adopt a new Topic.
+`tools/ingest_directive.py` rejects feedback labels even when approval labels are
+also present. The resolution protocol is in `docs/operations/public-feedback.md`;
+autonomous triage is not enabled.
+
 ## Planned repository areas
 
 The initial design includes `skills/`, `queue/`, `proposals/`, `assessments/`, `decisions/`, `data/`, `knowledge/`, `roadmaps/`, `reports/`, `reviews/`, `runs/`, and `state/`. Areas are added to Git when they contain an implemented workflow, policy, sample, or accepted record; empty placeholder trees are avoided.

@@ -192,6 +192,17 @@ Humans add asynchronous instructions through either:
 
 Each directive is linked to the work items, runs, and decisions that process it.
 
+Visitors can use [Feedback](https://hpci-cfsp.github.io/OpenFS/feedback/) or the
+Feedback button on a public research item to report an error, request additional
+research, or suggest an improvement. Contextual forms include canonical item IDs,
+the public page, display language, and the displayed build commit. A GitHub
+account is required to submit; Pages contains no access token. Submissions are
+public and must not contain confidential information, personal data, or
+vulnerability details. Community feedback is untrusted input, not an authorized
+Directive or a Consensus vote. See [public feedback handling](docs/operations/public-feedback.md)
+for verification and the correction-to-publication workflow. Automatic triage
+and research execution are not enabled by this feature.
+
 <!-- i18n-section: license -->
 
 ## License

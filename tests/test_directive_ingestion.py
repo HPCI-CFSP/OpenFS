@@ -47,6 +47,14 @@ class DirectiveIngestionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "public-information"):
             ingest_issue(issue)
 
+    def test_public_feedback_cannot_be_promoted_by_adding_approval_labels(self):
+        for label in ("public-feedback", "correction-report", "research-request", "improvement-proposal"):
+            with self.subTest(label=label):
+                issue = self.issue()
+                issue["labels"].append(label)
+                with self.assertRaisesRegex(ValueError, "Public feedback"):
+                    ingest_issue(issue)
+
     def test_write_is_idempotent_and_rejects_changed_content(self):
         directive = ingest_issue(self.issue())
         with tempfile.TemporaryDirectory() as directory:
