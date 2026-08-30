@@ -2,6 +2,7 @@ import copy
 import json
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -154,6 +155,17 @@ class ResearchUnitUpdateTests(unittest.TestCase):
         bundle["predecessor_updates"][0]["update_id"] = bundle["update_id"]
         with self.assertRaisesRegex(ValueError, "cyclic"):
             verify_pinned_input(ROOT, bundle)
+
+    def test_invalid_predecessor_is_rejected_before_git_or_file_lookup(self):
+        from jsonschema import ValidationError
+        bundle = json.loads((ROOT / "proposals/research-unit-updates/RUP-000004.json").read_text())
+        bundle["predecessor_updates"][0]["update_id"] = "../../outside"
+        with patch("apply_research_unit_update.subprocess.run") as git_read, \
+                patch("apply_research_unit_update.read") as bundle_read:
+            with self.assertRaises(ValidationError):
+                verify_pinned_input(ROOT, bundle)
+            git_read.assert_not_called()
+            bundle_read.assert_not_called()
 
     def test_projection_does_not_share_mutable_bundle_payloads(self):
         b, s, _ = self.apply()

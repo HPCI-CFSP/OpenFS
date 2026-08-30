@@ -34,6 +34,7 @@ def validate_contract(root, bundle):
 
 
 def verify_pinned_input(root, bundle):
+    validate_contract(root, bundle)
     commit = bundle["base_commit"]
     if not re.fullmatch(r"[0-9a-f]{40}", commit):
         raise ValueError("base commit must be a full hash")
