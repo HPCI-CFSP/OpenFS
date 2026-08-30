@@ -117,6 +117,8 @@
   let activeRoadmapMilestoneId = null;
 
   function readLanguage() {
+    const requested = new URLSearchParams(window.location.search).get("lang");
+    if (requested === "ja" || requested === "en") return requested;
     try {
       const stored = window.localStorage.getItem("openfs-language");
       if (stored === "ja" || stored === "en") return stored;
@@ -828,6 +830,7 @@
       conditionsTitle, conditions, actorsTitle, renderActorDetails(item.actor_ids, actorMap),
       sourcesTitle, renderDecisionSources(item.source_ids)
     );
+    article.append(topicFeedbackLink("technology", item.item_id, localized(item, "name")));
     return article;
   }
 
@@ -908,7 +911,7 @@
         name.textContent = entry.software_name;
         const meta = document.createElement("small");
         meta.textContent = `${entry.version_note} / ${entry.license_class}`;
-        software.append(name, meta);
+        software.append(name, meta, topicFeedbackLink("platform-matrix", entry.entry_id, entry.software_name, [capability.capability_id]));
         row.appendChild(software);
         matrix.platforms.forEach((platform) => {
           const cell = document.createElement("td");
@@ -977,7 +980,7 @@
         name.textContent = implementation.software_name;
         const meta = document.createElement("small");
         meta.textContent = `${enumLabel(implementation.support_level)} / ${implementation.license_class}`;
-        software.append(name, meta);
+        software.append(name, meta, topicFeedbackLink("numerical-matrix", implementation.implementation_id, implementation.software_name, [method.method_id]));
         const values = [
           implementation.platform_ids.map((platformId) => platformMap.get(platformId)?.name || platformId).join(" / "),
           implementation.precision.input,
@@ -1104,6 +1107,10 @@
     root.appendChild(history);
   }
 
+  function topicFeedbackLink(kind, id, title, relatedIds = []) {
+    return window.OpenFSFeedback.link({kind, id, title, relatedIds: [activeTopicId, ...relatedIds], path: `?topic=${encodeURIComponent(activeTopicId)}`});
+  }
+
   function renderTopicDetail() {
     if (!activeTopicId) return;
     const topic = data.topics.find((item) => item.topic_id === activeTopicId);
@@ -1111,6 +1118,7 @@
     setText("topic-dialog-id", topic.catalog_code);
     setText("topic-dialog-title", language === "ja" ? topic.title_ja : topic.title_en);
     setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${categoryLabel(topic.catalog_category_id)} / ${tr("canonicalTopicId")}: ${topic.topic_id}`);
+    window.OpenFSFeedback.mount("topic-feedback", {kind: "topic", id: topic.topic_id, title: localized(topic, "title"), path: `?topic=${encodeURIComponent(topic.topic_id)}`});
     const root = document.getElementById("topic-dialog-content");
     root.replaceChildren();
     const summaries = summariesForTopic(topic.topic_id);

@@ -40,6 +40,8 @@ def ingest_issue(issue: dict[str, Any]) -> dict[str, Any]:
     if issue["public_information_confirmed"] is not True:
         raise ValueError("Directive ingestion requires explicit public-information confirmation")
     labels = set(issue["labels"])
+    if labels & {"public-feedback", "correction-report", "research-request", "improvement-proposal"}:
+        raise ValueError("Public feedback is not an authorized research Directive")
     if "research-directive" not in labels:
         raise ValueError("Issue lacks the research-directive label")
     status = "approved" if "directive-approved" in labels else "proposed"

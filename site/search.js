@@ -11,7 +11,12 @@
   const typeKeys = {topic: "typeTopic", roadmap: "typeRoadmap", track: "typeTrack", application: "typeApplication", system: "typeSystem", term: "typeTerm", comparison: "typeComparison", scenario: "typeScenario", source: "typeSource"};
   let language = readLanguage();
 
-  function readLanguage() { try { const value = localStorage.getItem("openfs-language"); if (value === "ja" || value === "en") return value; } catch (_error) {} return "ja"; }
+  function readLanguage() {
+    const requested = new URLSearchParams(window.location.search).get("lang");
+    if (requested === "ja" || requested === "en") return requested;
+    try { const value = localStorage.getItem("openfs-language"); if (value === "ja" || value === "en") return value; } catch (_error) {}
+    return "ja";
+  }
   function rememberLanguage() { try { localStorage.setItem("openfs-language", language); } catch (_error) {} }
   function tr(key) { return copy[language][key] || key; }
   function localized(item, field) { return item?.[`${field}_${language}`] || item?.[field] || ""; }

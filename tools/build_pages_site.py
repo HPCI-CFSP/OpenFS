@@ -1269,7 +1269,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "search.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "search.js", "feedback.js"):
         shutil.copy2(source / filename, output / filename)
     data_dir = output / "data"
     data_dir.mkdir()
@@ -1291,6 +1291,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     search_index.write_text(
         render_template(
             source / "search.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    feedback_index = output / "feedback" / "index.html"
+    feedback_index.parent.mkdir(parents=True)
+    feedback_index.write_text(
+        render_template(
+            source / "feedback.html",
             {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
         ),
         encoding="utf-8",

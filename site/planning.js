@@ -57,6 +57,8 @@
   const rootPrefix = document.body.dataset.rootPrefix || "";
 
   function readLanguage() {
+    const requested = new URLSearchParams(window.location.search).get("lang");
+    if (requested === "ja" || requested === "en") return requested;
     try { const value = window.localStorage.getItem("openfs-language"); if (value === "ja" || value === "en") return value; } catch (_error) {}
     return "ja";
   }
@@ -369,7 +371,7 @@
     const method = document.createElement("p"); method.textContent = `${tr("estimateMethod")}: ${localized(option, "estimate_method")}`;
     const aggregate = document.createElement("dl"); aggregate.className = "architecture-aggregate";
     [[tr("cpuNodes"), option.aggregate.cpu_nodes.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("acceleratorNodes"), option.aggregate.accelerator_nodes.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("accelerators"), option.aggregate.accelerators.toLocaleString(language === "ja" ? "ja-JP" : "en-US")], [tr("storageCapacity"), `${option.aggregate.storage_pb.toLocaleString(language === "ja" ? "ja-JP" : "en-US")} PB`], [tr("facilityClass"), localized(option.aggregate, "facility_class")]].forEach(([term, value]) => { const group = document.createElement("div"); group.append(makeCell("dt", term), makeCell("dd", value)); aggregate.append(group); });
-    summary.append(heading, badges, method, aggregate);
+    summary.append(heading, badges, method, aggregate, window.OpenFSFeedback.link({kind: "scenario", id: `${scenario.scenario_id}/${option.tier}`, title: localized(option, "label"), relatedIds: [scenario.scenario_id], path: scenario.path}));
     renderArchitectureDiagram(option); renderArchitectureSpecs(option); renderBudgetReferences(option);
   }
 
@@ -382,6 +384,7 @@
   function renderScenarioDetail() {
     const scenario = data.scenarios.find((item) => item.scenario_id === document.body.dataset.scenarioId); if (!scenario) { document.querySelector("main").textContent = "Scenario unavailable."; return; }
     document.title = `${localized(scenario, "title")} | OpenFS`; setText("scenario-breadcrumb-title", localized(scenario, "title")); setText("scenario-id", scenario.scenario_id); setText("scenario-title", localized(scenario, "title")); setText("scenario-objective", localized(scenario, "objective")); setText("scenario-horizon", scenario.planning_horizon); setText("scenario-research-status", tr(scenario.research_status)); setText("scenario-consensus-status", tr(scenario.consensus_status)); setText("scenario-caveat", localized(scenario, "caveat")); setText("scenario-artifact-id", scenario.scenario_id); setText("scenario-plan-version", scenario.plan_version); setText("scenario-effective-from", scenario.effective_from); setText("scenario-review-due", scenario.review_due); setText("scenario-supersedes", scenario.supersedes.length ? scenario.supersedes.join(" · ") : tr("noSupersededVersion")); setText("scenario-evidence-refs", scenario.evidence_refs.join(" · ")); setText("scenario-revision-updated", formatJst(scenario.updated_at)); const updated = document.getElementById("scenario-updated"); updated.href = scenario.source_commit_url; updated.textContent = formatJst(scenario.updated_at); const commit = document.getElementById("scenario-source-commit"); commit.href = scenario.source_commit_url; commit.textContent = scenario.source_commit;
+    window.OpenFSFeedback.mount("scenario-feedback", {kind: "scenario", id: scenario.scenario_id, title: localized(scenario, "title"), path: scenario.path});
     renderBudgetOptions(scenario);
     const timelineDomains = ["compute", "memory", "interconnect", "storage-data", "system-software", "applications", "facility-operations", "procurement-governance"];
     renderScenarioTimeline(
