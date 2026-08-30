@@ -74,7 +74,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 

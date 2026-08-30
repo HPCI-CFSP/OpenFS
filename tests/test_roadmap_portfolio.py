@@ -47,7 +47,8 @@ class RoadmapPortfolioTests(unittest.TestCase):
         status_counts = Counter(
             roadmap["status"] for roadmap in self.portfolio["roadmap_families"]
         )
-        self.assertEqual(6, status_counts["published"])
+        public_artifacts = list((ROOT / "knowledge/public/roadmaps").glob("*.json"))
+        self.assertEqual(len(public_artifacts), status_counts["published"])
         for roadmap in self.portfolio["roadmap_families"]:
             if roadmap["status"] == "published":
                 self.assertTrue(roadmap["published_artifact_ids"])

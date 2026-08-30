@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from apply_research_unit_update import audit_updates, profile_for, project, verify_applied
+from apply_research_unit_update import audit_updates, profile_for, project, verify_applied, verify_pinned_input
 from openfs_runtime import stable_digest
 
 
@@ -140,6 +140,27 @@ class ResearchUnitUpdateTests(unittest.TestCase):
         profile_for(s, "SSW-05")["summary_en"] = "Unreviewed replacement"
         with self.assertRaisesRegex(ValueError, "summary drifted"):
             verify_applied(self.bundle, b, s)
+
+    def test_predecessor_replay_does_not_require_intermediate_branch_commit(self):
+        bundle = json.loads((ROOT / "proposals/research-unit-updates/RUP-000004.json").read_text())
+        self.assertEqual("b223280aeb8338e8952ae1f0d222327385b86d0a", bundle["base_commit"])
+        verify_pinned_input(ROOT, bundle)
+        bundle["predecessor_updates"][0]["bundle_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "predecessor chain"):
+            verify_pinned_input(ROOT, bundle)
+
+    def test_cycle_in_predecessor_chain_is_rejected(self):
+        bundle = json.loads((ROOT / "proposals/research-unit-updates/RUP-000004.json").read_text())
+        bundle["predecessor_updates"][0]["update_id"] = bundle["update_id"]
+        with self.assertRaisesRegex(ValueError, "cyclic"):
+            verify_pinned_input(ROOT, bundle)
+
+    def test_projection_does_not_share_mutable_bundle_payloads(self):
+        b, s, _ = self.apply()
+        expected = copy.deepcopy(self.bundle)
+        s["coverage_gaps"][-1]["status"] = "closed"
+        profile_for(s, "SSW-05")["sections"][-1]["items"][0]["name_en"] = "Changed"
+        self.assertEqual(expected, self.bundle)
 
 
 if __name__ == "__main__":

@@ -36,7 +36,10 @@ python3 tools/validate_json_schemas.py
 
 6. Regenerate the catalog, source map, and affected roadmap assurance artifacts.
    Check JA/EN equivalence, current links, source dates, and all existing tests.
-   Commit the input/output pair before creating a subsequent update to that Topic.
+   For successive updates in one PR, retain the reachable base commit and list
+   every intervening update in order in `predecessor_updates`, with its digest.
+   The verifier replays that exact chain and checks the resulting input digests.
+   Do not depend on an intermediate branch commit that a squash merge may remove.
    Review and publish through a PR; do not push to the protected default branch.
 
 ## Concurrency, history, and recovery

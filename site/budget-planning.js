@@ -62,7 +62,7 @@
       const heading = el("summary", item[`title_${language}`]); section.append(heading);
       const amount = item.amount; const values = el("dl", undefined, "procurement-facts");
       [[amount ? t[amount.kind] : t.contract, amount ? `${money(amount.value_jpy / 1e8, language)} · ${t[amount.tax_basis] || t.notKnown} · ${t[amount.payment_basis] || t.notKnown}` : t.notKnown],
-       [t.date, item.contract_date || t.notKnown], [t.unallocated, money(item.breakdown.unallocated_jpy === null ? null : item.breakdown.unallocated_jpy / 1e8, language)]]
+       [item.contract_date ? t.date : (language === "ja" ? "落札日" : "Award date"), item.contract_date || item.award_date || t.notKnown], [t.unallocated, money(item.breakdown.unallocated_jpy === null ? null : item.breakdown.unallocated_jpy / 1e8, language)]]
         .forEach(([label, value]) => { const group = el("div"); group.append(el("dt", label), el("dd", value)); values.append(group); });
       section.append(values, el("p", item[`scope_${language}`])); const documents = el("ul");
       if (item.contract_window) {

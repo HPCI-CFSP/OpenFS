@@ -250,8 +250,8 @@ def build(
         "audit_id": f"RFA-{as_of.strftime('%Y%m%d')}-001",
         "as_of": as_of.isoformat(),
         "generated_at": generated,
-        "method_ja": "6本のロードマップを機械的に走査し、世代区分、時期未公表の項目、期限を過ぎた目標、基準日より後の実績、遡及報告、公開日が未記録の情報源、到達性の警告を、次回確認すべき項目として分類しました。",
-        "method_en": "This audit mechanically scans six roadmaps and identifies items that require follow-up: generation bands, undated milestones, passed targets, observed events dated after the audit baseline, retrospective reports, sources without recorded publication dates, and reachability warnings.",
+        "method_ja": "公開ロードマップを機械的に走査し、世代区分、時期未公表の項目、期限を過ぎた目標、基準日より後の実績、遡及報告、公開日が未記録の情報源、到達性の警告を、次回確認すべき項目として分類しました。",
+        "method_en": "This audit mechanically scans published roadmaps and identifies items that require follow-up: generation bands, undated milestones, passed targets, observed events dated after the audit baseline, retrospective reports, sources without recorded publication dates, and reachability warnings.",
         "caveat_ja": "更新確認が必要という表示は、内容が誤っているという判定ではありません。過去の一次資料や遡及報告が現在も有効な場合があり、目標時期を過ぎただけでは、達成、延期、中止のいずれとも推定しません。",
         "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {

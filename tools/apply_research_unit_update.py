@@ -40,10 +40,24 @@ def verify_pinned_input(root, bundle):
     def at_base(ref):
         return json.loads(subprocess.run(["git", "show", f"{commit}:{ref}"], cwd=root,
                           capture_output=True, text=True, check=True).stdout)
-    profile = profile_for(at_base(SURFACE), bundle["topic_id"])
+    baseline, surface = at_base(BASELINE), at_base(SURFACE)
+    predecessors = bundle.get("predecessor_updates", [])
+    seen = {bundle["update_id"]}
+    for index, ref in enumerate(predecessors):
+        if ref["update_id"] in seen:
+            raise ValueError("cyclic or duplicate predecessor")
+        seen.add(ref["update_id"])
+        previous = read(root, f"proposals/research-unit-updates/{ref['update_id']}.json")
+        if (stable_digest(previous) != ref["bundle_sha256"]
+                or previous["base_commit"] != commit or previous["topic_id"] != bundle["topic_id"]
+                or previous.get("predecessor_updates", []) != predecessors[:index]
+                or datetime.fromisoformat(previous["created_at"]) > datetime.fromisoformat(bundle["created_at"])):
+            raise ValueError("predecessor chain does not match pinned input")
+        baseline, surface, _ = project(root, previous, baseline, surface)
+    profile = profile_for(surface, bundle["topic_id"])
     if stable_digest(profile) != bundle["before_profile_sha256"]:
         raise ValueError("profile input does not match the pinned commit")
-    topic = next(t for t in at_base(BASELINE)["topics"] if t["topic_id"] == bundle["topic_id"])
+    topic = next(t for t in baseline["topics"] if t["topic_id"] == bundle["topic_id"])
     units = {u["unit_id"]: u for u in topic["research_units"]}
     for assignment in bundle["units"]:
         if stable_digest(units.get(assignment["unit_id"])) != assignment["before_sha256"]:
