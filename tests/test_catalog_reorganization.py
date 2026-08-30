@@ -62,6 +62,7 @@ class CatalogReorganizationTests(unittest.TestCase):
     def test_legacy_links_expose_all_successors_and_moved_codes(self):
         aliases = catalog_aliases(ROOT, self.baseline, read("config/publication-i18n.json"), self.codes)
         by_id = {alias["topic_id"]: alias for alias in aliases}
+        self.assertTrue(all(alias["target_topic_ids"] or alias["output_path"] for alias in aliases))
         self.assertEqual(["APP-02", "APP-13", "APP-15"], by_id["ARCH-08"]["target_topic_ids"])
         self.assertEqual("SSW-005", by_id["SSW-05"]["legacy_code"])
         self.assertEqual(["SSW-05"], by_id["SSW-05"]["target_topic_ids"])

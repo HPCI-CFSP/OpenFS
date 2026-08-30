@@ -34,13 +34,18 @@ def catalog_aliases(root: Path, baseline: dict, i18n: dict, codes: dict) -> list
         old_code = entry.get("source_catalog_code")
         if topic["status"] != "retired" and (not old_code or old_code == codes.get(tid)):
             continue
+        successors = active_successors(tid, topics)
+        output_path = "#catalog" if tid == "CROSS-18" else "scenarios/" if tid in {"CROSS-01", "CROSS-13"} else None
+        paths = topic.get("retirement", {}).get("successor_paths", [])
+        if not successors and output_path is None and paths:
+            output_path = f"https://github.com/HPCI-CFSP/OpenFS/blob/{migration['base_commit']}/{paths[0]}"
         aliases.append({
             "topic_id": tid, "legacy_code": old_code,
             "title_ja": entry.get("source_title_ja", topic["title_ja"]),
             "title_en": entry.get("source_title_en", i18n["topic_titles_en"][tid]),
-            "target_topic_ids": active_successors(tid, topics),
+            "target_topic_ids": successors,
             "kind": topic.get("retirement", {}).get("kind", "moved"),
-            "output_path": "#catalog" if tid == "CROSS-18" else "scenarios/" if tid in {"CROSS-01", "CROSS-13"} else None,
+            "output_path": output_path,
         })
     return aliases
 

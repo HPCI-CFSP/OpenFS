@@ -73,6 +73,7 @@ test("every old ID and public code gives explicit successors; split links do not
     assert.equal(f.get("topic-dialog").open, true, id);
     if (data.topics.some((t) => t.topic_id === id)) continue;
     const links = f.walk(f.get("topic-dialog-content")).filter((el) => el.tagName === "a");
+    assert.ok(links.length > 0, `legacy entry lacks a destination: ${id}`);
     for (const tid of alias.target_topic_ids) assert.ok(links.some((link) => link.href.includes(`topic=${tid}`)), id);
     if (alias.target_topic_ids.length) {
       const tid = alias.target_topic_ids[0];
