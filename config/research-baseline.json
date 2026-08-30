@@ -1,10 +1,10 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "baseline_id": "FSBASE-002",
   "baseline_status": "reviewed",
-  "catalog_revision": 4,
+  "catalog_revision": 5,
   "complete": false,
-  "derived_at": "2026-08-29",
+  "derived_at": "2026-08-30",
   "source_refs": [
     "FSBASE-SRC-001",
     "FSBASE-SRC-002",
@@ -476,10 +476,11 @@
     {
       "topic_id": "ARCH-01",
       "domain": "architecture",
-      "title_ja": "異種計算資源とノードアーキテクチャ",
+      "title_ja": "ノードアーキテクチャ",
       "research_questions": [
-        "HPCIの利用領域に対しCPU、GPU、ベクトル、FPGA、AIアクセラレータをどう組み合わせるか",
-        "密結合・疎結合の境界と相互運用要件は何か"
+        "CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。",
+        "コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。",
+        "直列処理と同時実行に対し、コア数、周波数、P/Eコア、SMT、電圧・周波数特性のトレードオフをどう評価するか。"
       ],
       "evidence_expected": [
         "製品・研究ロードマップ",
@@ -497,14 +498,60 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。 コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。 直列処理と同時実行に対し、コア数、周波数、P/Eコア、SMT、電圧・周波数特性のトレードオフをどう評価するか。",
+      "summary_en": "How should CPU, GPU, vector, and accelerator products be combined given workloads, power, cost, and software support? How should cores, caches, memory, I/O, and tightly or loosely coupled resources be organized? How do core count, frequency, P/E cores, SMT, and voltage-frequency behavior trade off for serial work and concurrent agents?",
+      "related_topic_ids": [
+        "ARCH-03",
+        "ARCH-04",
+        "ARCH-05",
+        "ARCH-12",
+        "SSW-01",
+        "APP-13"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-01-U01",
+          "title_ja": "CPU・GPUと異種構成",
+          "title_en": "CPUs, GPUs, and heterogeneous nodes",
+          "question_ja": "CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。",
+          "question_en": "How should CPU, GPU, vector, and accelerator products be combined given workloads, power, cost, and software support?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH01-CURRENT",
+            "TDS-ARCH01-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "ARCH-01-U02",
+          "title_ja": "ノード内の構成",
+          "title_en": "Node organization",
+          "question_ja": "コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。",
+          "question_en": "How should cores, caches, memory, I/O, and tightly or loosely coupled resources be organized?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "ARCH-01-U03",
+          "title_ja": "エージェント処理向けCPU",
+          "title_en": "CPUs for agentic workloads",
+          "question_ja": "直列処理と同時実行に対し、コア数、周波数、P/Eコア、SMT、電圧・周波数特性のトレードオフをどう評価するか。",
+          "question_en": "How do core count, frequency, P/E cores, SMT, and voltage-frequency behavior trade off for serial work and concurrent agents?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH14-CURRENT",
+            "TDS-ARCH14-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "ARCH-02",
       "domain": "architecture",
-      "title_ja": "半導体・チップレット・先端実装",
+      "title_ja": "半導体プロセス・チップレット・先端実装",
       "research_questions": [
-        "プロセス、2.5D/3D/3.5D実装、チップレット、UCIe等が性能・歩留まり・費用をどう制約するか"
+        "プロセス、製造能力、歩留まりと費用が性能・電力・導入時期をどう制約するか。",
+        "UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。"
       ],
       "evidence_expected": [
         "ファウンドリ・標準化団体資料",
@@ -522,15 +569,46 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "プロセス、製造能力、歩留まりと費用が性能・電力・導入時期をどう制約するか。 UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。",
+      "summary_en": "How do process technology, production capacity, yield, and cost constrain performance, power, and deployment? How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?",
+      "related_topic_ids": [
+        "ARCH-03",
+        "ARCH-12",
+        "ARCH-07"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-02-U01",
+          "title_ja": "製造プロセスと供給",
+          "title_en": "Processes and production",
+          "question_ja": "プロセス、製造能力、歩留まりと費用が性能・電力・導入時期をどう制約するか。",
+          "question_en": "How do process technology, production capacity, yield, and cost constrain performance, power, and deployment?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "ARCH-02-U02",
+          "title_ja": "チップレットと接合",
+          "title_en": "Chiplets and bonding",
+          "question_ja": "UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。",
+          "question_en": "How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH02-INTEGRATION",
+            "TDS-ARCH03-3D"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "ARCH-03",
       "domain": "architecture",
-      "title_ja": "メモリ階層とデータ移動",
+      "title_ja": "メモリ技術",
       "research_questions": [
-        "帯域・遅延・容量特性に対しHBM、DDR、CXL、プール型・階層型・新興メモリをどう組み合わせるか",
-        "アクセス特性と性能特性をどう連続空間で分類するか"
+        "DDR・LPDDR・HBM・3D積層DRAM等を、帯域・遅延・容量・電力・費用・成熟度からどう比較するか。",
+        "SOCAMM等のモジュールとNVHBM等のカスタム実装を、それぞれ同じ技術階層の候補とどう比較するか。",
+        "アクセス特性に適したメモリ階層を、CXLによる増設・共有やPIMとの組合せも参照してどう構成するか。"
       ],
       "evidence_expected": [
         "標準・製品ロードマップ",
@@ -548,15 +626,58 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "weekly"
+      "review_cadence": "weekly",
+      "summary_ja": "DDR・LPDDR・HBM・3D積層DRAM等を、帯域・遅延・容量・電力・費用・成熟度からどう比較するか。 SOCAMM等のモジュールとNVHBM等のカスタム実装を、それぞれ同じ技術階層の候補とどう比較するか。 アクセス特性に適したメモリ階層を、CXLによる増設・共有やPIMとの組合せも参照してどう構成するか。",
+      "summary_en": "How do DDR, LPDDR, HBM, and 3D-stacked DRAM compare in bandwidth, latency, capacity, power, cost, and maturity? How should modules such as SOCAMM and custom implementations such as NVHBM be compared with alternatives at the same technical layer? How should memory hierarchies match access characteristics, including combinations with CXL expansion or sharing and PIM?",
+      "related_topic_ids": [
+        "ARCH-02",
+        "ARCH-04",
+        "ARCH-12",
+        "APP-02",
+        "APP-13"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-03-U01",
+          "title_ja": "メモリ規格・方式",
+          "title_en": "Memory standards and technologies",
+          "question_ja": "DDR・LPDDR・HBM・3D積層DRAM等を、帯域・遅延・容量・電力・費用・成熟度からどう比較するか。",
+          "question_en": "How do DDR, LPDDR, HBM, and 3D-stacked DRAM compare in bandwidth, latency, capacity, power, cost, and maturity?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH03-MAIN"
+          ]
+        },
+        {
+          "unit_id": "ARCH-03-U02",
+          "title_ja": "モジュール・カスタム実装",
+          "title_en": "Modules and custom implementations",
+          "question_ja": "SOCAMM等のモジュールとNVHBM等のカスタム実装を、それぞれ同じ技術階層の候補とどう比較するか。",
+          "question_en": "How should modules such as SOCAMM and custom implementations such as NVHBM be compared with alternatives at the same technical layer?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH03-MAIN"
+          ]
+        },
+        {
+          "unit_id": "ARCH-03-U03",
+          "title_ja": "メモリ階層の構成",
+          "title_en": "Memory hierarchy composition",
+          "question_ja": "アクセス特性に適したメモリ階層を、CXLによる増設・共有やPIMとの組合せも参照してどう構成するか。",
+          "question_en": "How should memory hierarchies match access characteristics, including combinations with CXL expansion or sharing and PIM?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "ARCH-04",
       "domain": "architecture",
-      "title_ja": "インターコネクトと光ネットワーク",
+      "title_ja": "インターコネクト・ネットワーク",
       "research_questions": [
-        "電気・光接続をスケールアップ／スケールアウトでどう使い分けるか",
-        "トポロジ、輻輳、集合通信、電力の要件は何か"
+        "PCIe、CXL、NVLink、UALink等の接続範囲、メモリ意味論、整合性、相互運用性をどう区別するか。",
+        "InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。",
+        "CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。"
       ],
       "evidence_expected": [
         "標準仕様",
@@ -574,14 +695,58 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "PCIe、CXL、NVLink、UALink等の接続範囲、メモリ意味論、整合性、相互運用性をどう区別するか。 InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。 CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。",
+      "summary_en": "How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantics, coherence, and interoperability? How do InfiniBand, Ethernet/RoCE, Ultra Ethernet, and Cornelis technologies compare in topology, congestion, latency, bandwidth, and power? How should electrical and optical links, including CPO, be selected based on reach, integration, power, serviceability, and standardization?",
+      "related_topic_ids": [
+        "ARCH-03",
+        "ARCH-05",
+        "SSW-03",
+        "SSW-05"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-04-U01",
+          "title_ja": "ノード内・Scale-up",
+          "title_en": "Intra-node and scale-up",
+          "question_ja": "PCIe、CXL、NVLink、UALink等の接続範囲、メモリ意味論、整合性、相互運用性をどう区別するか。",
+          "question_en": "How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantics, coherence, and interoperability?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH03-TIERING",
+            "TDS-ARCH03-FABRIC"
+          ]
+        },
+        {
+          "unit_id": "ARCH-04-U02",
+          "title_ja": "Scale-out・拠点間",
+          "title_en": "Scale-out and inter-site",
+          "question_ja": "InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。",
+          "question_en": "How do InfiniBand, Ethernet/RoCE, Ultra Ethernet, and Cornelis technologies compare in topology, congestion, latency, bandwidth, and power?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH04-CURRENT",
+            "TDS-ARCH04-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "ARCH-04-U03",
+          "title_ja": "光接続",
+          "title_en": "Optical connectivity",
+          "question_ja": "CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。",
+          "question_en": "How should electrical and optical links, including CPO, be selected based on reach, integration, power, serviceability, and standardization?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "ARCH-05",
       "domain": "architecture",
-      "title_ja": "システム構成と資源分離",
+      "title_ja": "システム構成",
       "research_questions": [
-        "大規模均質システムと小規模異種・分離型システムをHPCIでどう構成するか"
+        "均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。",
+        "ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。"
       ],
       "evidence_expected": [
         "参照アーキテクチャ",
@@ -598,14 +763,45 @@
         "FSBASE-SRC-004"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。 ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。",
+      "summary_en": "How should homogeneous or heterogeneous systems, racks, and disaggregated compute, memory, and storage be composed? How should nodes, networks, storage, and facility constraints be combined and checked for scalability and interoperability?",
+      "related_topic_ids": [
+        "ARCH-01",
+        "ARCH-04",
+        "SSW-05",
+        "ARCH-06"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-05-U01",
+          "title_ja": "ラック・システム構成",
+          "title_en": "Rack and system organization",
+          "question_ja": "均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。",
+          "question_en": "How should homogeneous or heterogeneous systems, racks, and disaggregated compute, memory, and storage be composed?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH05-CURRENT",
+            "TDS-ARCH05-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "ARCH-05-U02",
+          "title_ja": "全体の適合性",
+          "title_en": "System-level suitability",
+          "question_ja": "ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。",
+          "question_en": "How should nodes, networks, storage, and facility constraints be combined and checked for scalability and interoperability?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "ARCH-06",
       "domain": "architecture",
       "title_ja": "電力・冷却・施設",
       "research_questions": [
-        "電力枠、冷却方式、設備容量、運用費が実現可能な構成をどう制約するか"
+        "電力枠、冷却方式、設備容量、建屋、運用費と環境制約から実現可能な設備を調査する。"
       ],
       "evidence_expected": [
         "設備仕様・実績",
@@ -621,14 +817,35 @@
         "FSBASE-SRC-004"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "電力枠、冷却方式、設備容量、建屋、運用費と環境制約から実現可能な設備を調査する。",
+      "summary_en": "Investigate feasible facilities given power envelopes, cooling, capacity, buildings, operating costs, and environmental constraints.",
+      "related_topic_ids": [
+        "SSW-15",
+        "CROSS-16",
+        "ARCH-05"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-06-U01",
+          "title_ja": "設備設計と制約",
+          "title_en": "Facility design and constraints",
+          "question_ja": "電力枠、冷却方式、設備容量、建屋、運用費と環境制約から実現可能な設備を調査する。",
+          "question_en": "Investigate feasible facilities given power envelopes, cooling, capacity, buildings, operating costs, and environmental constraints.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH06-CURRENT",
+            "TDS-ARCH06-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "ARCH-07",
       "domain": "architecture",
-      "title_ja": "供給網・国内技術・経済安全保障",
+      "title_ja": "経済安全保障・サプライチェーン",
       "research_questions": [
-        "製造能力、国内技術、ベンダー集中、輸出管理、保守供給が選択肢にどう影響するか"
+        "日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。"
       ],
       "evidence_expected": [
         "公的政策文書",
@@ -644,14 +861,35 @@
         "FSBASE-SRC-004"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。",
+      "summary_en": "Compare worldwide manufacturing capacity, vendor concentration, export controls, and supply and support continuity, including Japan, without treating nationality as technical merit.",
+      "related_topic_ids": [
+        "CROSS-11",
+        "ARCH-02",
+        "CROSS-06"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-07-U01",
+          "title_ja": "世界の依存・供給リスク",
+          "title_en": "Global dependency and supply risks",
+          "question_ja": "日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。",
+          "question_en": "Compare worldwide manufacturing capacity, vendor concentration, export controls, and supply and support continuity, including Japan, without treating nationality as technical merit.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-01",
       "domain": "system-software",
-      "title_ja": "プログラミングモデルと性能可搬性",
+      "title_ja": "プログラミング環境・性能可搬性",
       "research_questions": [
-        "CUDA、OpenMP target、SYCL、Kokkos、oneAPI、ROCm、Julia等を異種HPCIでどう位置付けるか"
+        "CUDA・HIP、OpenMP、SYCL、Kokkos等の記述方法と機能を、SDK全体との違いを明示して比較する。",
+        "Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。",
+        "デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。",
+        "コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。"
       ],
       "evidence_expected": [
         "標準・実装状況",
@@ -669,7 +907,58 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "CUDA・HIP、OpenMP、SYCL、Kokkos等の記述方法と機能を、SDK全体との違いを明示して比較する。 Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。 デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。 コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。",
+      "summary_en": "Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and Kokkos, distinguishing them from complete SDKs. How should Fortran, C/C++, Python, compilers, SDKs such as ROCm and oneAPI, builds, and binary compatibility be sustained? How should debuggers, profilers, tracing, and porting tools be compared for platform coverage and practical usability? How should code changes, porting effort, feature support, reproducibility, and cross-platform performance retention be measured under matching conditions?",
+      "related_topic_ids": [
+        "SSW-03",
+        "SSW-04",
+        "SSW-08",
+        "SSW-10",
+        "SSW-05"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-01-U01",
+          "title_ja": "モデル・API・抽象化",
+          "title_en": "Models, APIs, and abstractions",
+          "question_ja": "CUDA・HIP、OpenMP、SYCL、Kokkos等の記述方法と機能を、SDK全体との違いを明示して比較する。",
+          "question_en": "Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and Kokkos, distinguishing them from complete SDKs.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW01-PORTABILITY"
+          ]
+        },
+        {
+          "unit_id": "SSW-01-U02",
+          "title_ja": "言語・コンパイラ・SDK",
+          "title_en": "Languages, compilers, and SDKs",
+          "question_ja": "Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。",
+          "question_en": "How should Fortran, C/C++, Python, compilers, SDKs such as ROCm and oneAPI, builds, and binary compatibility be sustained?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW02-TOOLCHAINS"
+          ]
+        },
+        {
+          "unit_id": "SSW-01-U03",
+          "title_ja": "開発・解析ツール",
+          "title_en": "Development and analysis tools",
+          "question_ja": "デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。",
+          "question_en": "How should debuggers, profilers, tracing, and porting tools be compared for platform coverage and practical usability?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "SSW-01-U04",
+          "title_ja": "移植と性能維持",
+          "title_en": "Porting and performance retention",
+          "question_ja": "コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。",
+          "question_en": "How should code changes, porting effort, feature support, reproducibility, and cross-platform performance retention be measured under matching conditions?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-02",
@@ -692,15 +981,24 @@
         "FSBASE-SRC-004",
         "FSBASE-SRC-005"
       ],
-      "status": "partial",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "SSW-01"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "SSW-03",
       "domain": "system-software",
-      "title_ja": "通信・ランタイム",
+      "title_ja": "通信ライブラリ",
       "research_questions": [
-        "MPI、UCX/UCC、集合通信、アクセラレータファブリックを階層ネットワークへどう対応させるか"
+        "MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。"
       ],
       "evidence_expected": [
         "標準・実装ロードマップ",
@@ -717,14 +1015,35 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。",
+      "summary_en": "Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, accelerators, interoperability, performance, and missing capabilities.",
+      "related_topic_ids": [
+        "ARCH-04",
+        "SSW-01"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-03-U01",
+          "title_ja": "通信と集合通信",
+          "title_en": "Communication and collectives",
+          "question_ja": "MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。",
+          "question_en": "Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, accelerators, interoperability, performance, and missing capabilities.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW03-CURRENT",
+            "TDS-SSW03-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "SSW-04",
       "domain": "system-software",
       "title_ja": "数値計算ライブラリとアルゴリズム",
       "research_questions": [
-        "行列、疎行列、FFT、混合精度、乱択、アクセラレータ向けライブラリの共通投資対象は何か"
+        "密・疎行列、FFT、乱択等の手法とOSS・商用実装を、対応CPU/GPU、分散対応と保守から比較する。",
+        "入力・演算・累積・出力精度を区別し、混合精度とOzaki方式等の高精度エミュレーションの実装対応を調査する。"
       ],
       "evidence_expected": [
         "ライブラリ機能・性能",
@@ -742,14 +1061,48 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "密・疎行列、FFT、乱択等の手法とOSS・商用実装を、対応CPU/GPU、分散対応と保守から比較する。 入力・演算・累積・出力精度を区別し、混合精度とOzaki方式等の高精度エミュレーションの実装対応を調査する。",
+      "summary_en": "Compare dense and sparse linear algebra, FFTs, randomized methods, and open-source or commercial implementations for CPU/GPU support, distribution, and maintenance. Distinguish input, compute, accumulation, and output precision, and investigate implementations of mixed precision and high-precision emulation such as Ozaki schemes.",
+      "related_topic_ids": [
+        "ARCH-13",
+        "SSW-01",
+        "SSW-08"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-04-U01",
+          "title_ja": "アルゴリズムと実装",
+          "title_en": "Algorithms and implementations",
+          "question_ja": "密・疎行列、FFT、乱択等の手法とOSS・商用実装を、対応CPU/GPU、分散対応と保守から比較する。",
+          "question_en": "Compare dense and sparse linear algebra, FFTs, randomized methods, and open-source or commercial implementations for CPU/GPU support, distribution, and maintenance.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW04-LIBRARIES"
+          ]
+        },
+        {
+          "unit_id": "SSW-04-U02",
+          "title_ja": "演算精度とエミュレーション",
+          "title_en": "Precision and emulation",
+          "question_ja": "入力・演算・累積・出力精度を区別し、混合精度とOzaki方式等の高精度エミュレーションの実装対応を調査する。",
+          "question_en": "Distinguish input, compute, accumulation, and output precision, and investigate implementations of mixed precision and high-precision emulation such as Ozaki schemes.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW04-ACCURACY"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "SSW-05",
       "domain": "system-software",
-      "title_ja": "ストレージ・ファイルシステム・データ管理",
+      "title_ja": "ストレージシステム・データ管理",
       "research_questions": [
-        "拠点、階層、AIパイプライン、アーカイブ、ワークフロー間でデータをどう移動・保存するか"
+        "SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。",
+        "NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。",
+        "並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。",
+        "階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。"
       ],
       "evidence_expected": [
         "I/O・容量測定",
@@ -766,14 +1119,63 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。 NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。 並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。 階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。",
+      "summary_en": "How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost? How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined? How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions? How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?",
+      "related_topic_ids": [
+        "ARCH-04",
+        "ARCH-05",
+        "CROSS-14",
+        "SSW-16"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-05-U01",
+          "title_ja": "記憶デバイス",
+          "title_en": "Storage devices",
+          "question_ja": "SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。",
+          "question_en": "How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "SSW-05-U02",
+          "title_ja": "接続・システム構成",
+          "title_en": "Connectivity and system organization",
+          "question_ja": "NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。",
+          "question_en": "How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "SSW-05-U03",
+          "title_ja": "保存方式・統合製品",
+          "title_en": "Storage software and integrated products",
+          "question_ja": "並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。",
+          "question_en": "How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW05-CURRENT",
+            "TDS-SSW05-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "SSW-05-U04",
+          "title_ja": "データ管理と転送",
+          "title_en": "Data management and transfer",
+          "question_ja": "階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。",
+          "question_en": "How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-06",
       "domain": "system-software",
-      "title_ja": "スケジューラ・OS・コンテナ・パッケージ・クラウド",
+      "title_ja": "資源管理・システム実行環境",
       "research_questions": [
-        "HPCとAI資源を分断せず構成可能にする資源管理・実行環境は何か"
+        "スケジューラ、OS、コンテナ、パッケージ配布、クラウド連携をHPCとAIの共存条件から比較する。"
       ],
       "evidence_expected": [
         "運用実績",
@@ -790,7 +1192,28 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "スケジューラ、OS、コンテナ、パッケージ配布、クラウド連携をHPCとAIの共存条件から比較する。",
+      "summary_en": "Compare schedulers, operating systems, containers, package distribution, and cloud integration for coexisting HPC and AI workloads.",
+      "related_topic_ids": [
+        "SSW-16",
+        "SSW-11",
+        "SSW-05"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-06-U01",
+          "title_ja": "ジョブ・実行環境",
+          "title_en": "Jobs and execution environments",
+          "question_ja": "スケジューラ、OS、コンテナ、パッケージ配布、クラウド連携をHPCとAIの共存条件から比較する。",
+          "question_en": "Compare schedulers, operating systems, containers, package distribution, and cloud integration for coexisting HPC and AI workloads.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW06-CURRENT",
+            "TDS-SSW06-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "SSW-07",
@@ -813,15 +1236,30 @@
         "FSBASE-SRC-004",
         "FSBASE-SRC-005"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "SSW-01",
+          "APP-02",
+          "APP-13",
+          "APP-15",
+          "ARCH-10",
+          "SSW-15"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "SSW-08",
       "domain": "system-software",
-      "title_ja": "ソフトウェア持続性とOSSガバナンス",
+      "title_ja": "ソフトウェアの保守継続性・開発体制",
       "research_questions": [
-        "国内開発、国際上流への貢献、採用、廃止を誰がどう判断・維持するか"
+        "OSS・商用ソフトの保守者、資金、更新、サポート期限、ライセンス、依存関係と代替先を確認する。",
+        "上流開発への貢献、共同保守、商用支援、国内開発・採用・撤退の責任分担と投資条件をどう決めるか。"
       ],
       "evidence_expected": [
         "保守者・資金・利用状況",
@@ -839,14 +1277,47 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "OSS・商用ソフトの保守者、資金、更新、サポート期限、ライセンス、依存関係と代替先を確認する。 上流開発への貢献、共同保守、商用支援、国内開発・採用・撤退の責任分担と投資条件をどう決めるか。",
+      "summary_en": "Assess maintainers, funding, releases, support lifetimes, licenses, dependencies, and alternatives for open-source and commercial software. How should upstream contributions, shared maintenance, commercial support, domestic development, adoption, and retirement be funded and governed?",
+      "related_topic_ids": [
+        "SSW-01",
+        "SSW-04",
+        "SSW-09",
+        "CROSS-15"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-08-U01",
+          "title_ja": "長期保守と依存リスク",
+          "title_en": "Maintenance and dependency risks",
+          "question_ja": "OSS・商用ソフトの保守者、資金、更新、サポート期限、ライセンス、依存関係と代替先を確認する。",
+          "question_en": "Assess maintainers, funding, releases, support lifetimes, licenses, dependencies, and alternatives for open-source and commercial software.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW08-CURRENT",
+            "TDS-SSW08-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "SSW-08-U02",
+          "title_ja": "開発・維持体制",
+          "title_en": "Development and support models",
+          "question_ja": "上流開発への貢献、共同保守、商用支援、国内開発・採用・撤退の責任分担と投資条件をどう決めるか。",
+          "question_en": "How should upstream contributions, shared maintenance, commercial support, domestic development, adoption, and retirement be funded and governed?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-09",
       "domain": "system-software",
-      "title_ja": "AI for Science共通基盤",
+      "title_ja": "AI学習・推論・エージェント実行基盤",
       "research_questions": [
-        "モデル、データ、ワークフロー、推論、実験連携のどこをHPCI共通機能とするか"
+        "学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。",
+        "vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。",
+        "構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。"
       ],
       "evidence_expected": [
         "科学ワークフロー事例",
@@ -864,14 +1335,58 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。 vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。 構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。",
+      "summary_en": "Compare training and distributed-training frameworks for hardware support, parallelism, precision, and model and data management. Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support. Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.",
+      "related_topic_ids": [
+        "SSW-16",
+        "APP-12",
+        "APP-13",
+        "SSW-08"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-09-U01",
+          "title_ja": "学習フレームワーク",
+          "title_en": "Training frameworks",
+          "question_ja": "学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。",
+          "question_en": "Compare training and distributed-training frameworks for hardware support, parallelism, precision, and model and data management.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW09-CURRENT",
+            "TDS-SSW09-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "SSW-09-U02",
+          "title_ja": "推論サービング",
+          "title_en": "Inference serving",
+          "question_ja": "vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。",
+          "question_en": "Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW17-CURRENT",
+            "TDS-SSW17-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "SSW-09-U03",
+          "title_ja": "エージェント実行",
+          "title_en": "Agent execution",
+          "question_ja": "構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。",
+          "question_en": "Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "APP-01",
       "domain": "applications",
-      "title_ja": "将来アプリケーションと利用者ニーズ",
+      "title_ja": "将来アプリケーションと利用者ニーズ（科学シミュレーション）",
       "research_questions": [
-        "対象期に重要となる科学分野、アルゴリズム、データ規模、対話形態、サービス水準は何か"
+        "生命・医療、材料、気候・防災、ものづくり、基礎・社会科学の重点分野、構成比と代表性をどう定めるか。",
+        "問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。"
       ],
       "evidence_expected": [
         "利用者調査",
@@ -889,14 +1404,46 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "生命・医療、材料、気候・防災、ものづくり、基礎・社会科学の重点分野、構成比と代表性をどう定めるか。 問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。",
+      "summary_en": "How should priority domains, portfolio shares, and representativeness be defined across life and medical sciences, materials, climate and disaster science, engineering, and basic and social sciences? How should problem size, required accuracy, compute and data volumes, interactivity, and AI or experimental coupling requirements be collected?",
+      "related_topic_ids": [
+        "APP-02",
+        "APP-12",
+        "APP-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-01-U01",
+          "title_ja": "科学分野と代表性",
+          "title_en": "Scientific domains and representativeness",
+          "question_ja": "生命・医療、材料、気候・防災、ものづくり、基礎・社会科学の重点分野、構成比と代表性をどう定めるか。",
+          "question_en": "How should priority domains, portfolio shares, and representativeness be defined across life and medical sciences, materials, climate and disaster science, engineering, and basic and social sciences?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP01-CURRENT",
+            "TDS-APP01-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-01-U02",
+          "title_ja": "将来の計算・データ要求",
+          "title_en": "Future compute and data needs",
+          "question_ja": "問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。",
+          "question_en": "How should problem size, required accuracy, compute and data volumes, interactivity, and AI or experimental coupling requirements be collected?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "APP-02",
       "domain": "applications",
-      "title_ja": "ベンチマーク・プロキシ・性能モデル",
+      "title_ja": "ベンチマーク・プロキシ・性能モデル（科学シミュレーション）",
       "research_questions": [
-        "候補アーキテクチャを継続的かつ再現可能に評価するために、どの代表アプリケーションと計算・通信パターン（Motif）を用いるべきか"
+        "HPL・HPCG・HPL-MxP・Graph500、実アプリ・Proxyを、科学分野の代表性と再現性から選定する。",
+        "FLOPS/Byte、帯域・遅延・容量・通信・I/O、強・弱スケーリングから実行時間・並列効率をモデル化し、複数ノード規模で検証する。",
+        "同じ問題・精度・資源条件で性能、電力、費用を反復測定し、校正と独立検証を分離する。"
       ],
       "evidence_expected": [
         "ベンチマーク集合",
@@ -913,7 +1460,53 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "HPL・HPCG・HPL-MxP・Graph500、実アプリ・Proxyを、科学分野の代表性と再現性から選定する。 FLOPS/Byte、帯域・遅延・容量・通信・I/O、強・弱スケーリングから実行時間・並列効率をモデル化し、複数ノード規模で検証する。 同じ問題・精度・資源条件で性能、電力、費用を反復測定し、校正と独立検証を分離する。",
+      "summary_en": "Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientific representativeness and reproducibility. Model runtime and parallel efficiency using FLOPS/Byte, bandwidth, latency, capacity, communication, I/O, and strong/weak scaling; validate at multiple node scales. Repeat performance, power, and cost measurements at matching problem, precision, and resource conditions, separating calibration from independent validation.",
+      "related_topic_ids": [
+        "APP-01",
+        "APP-13",
+        "APP-15",
+        "ARCH-13"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-02-U01",
+          "title_ja": "代表アプリとベンチマーク",
+          "title_en": "Representative applications and benchmarks",
+          "question_ja": "HPL・HPCG・HPL-MxP・Graph500、実アプリ・Proxyを、科学分野の代表性と再現性から選定する。",
+          "question_en": "Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientific representativeness and reproducibility.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP02-CURRENT",
+            "TDS-APP02-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-02-U02",
+          "title_ja": "性能律速と外挿",
+          "title_en": "Bottlenecks and extrapolation",
+          "question_ja": "FLOPS/Byte、帯域・遅延・容量・通信・I/O、強・弱スケーリングから実行時間・並列効率をモデル化し、複数ノード規模で検証する。",
+          "question_en": "Model runtime and parallel efficiency using FLOPS/Byte, bandwidth, latency, capacity, communication, I/O, and strong/weak scaling; validate at multiple node scales.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW07-CURRENT",
+            "TDS-SSW07-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-02-U03",
+          "title_ja": "継続比較",
+          "title_en": "Continuous comparison",
+          "question_ja": "同じ問題・精度・資源条件で性能、電力、費用を反復測定し、校正と独立検証を分離する。",
+          "question_en": "Repeat performance, power, and cost measurements at matching problem, precision, and resource conditions, separating calibration from independent validation.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-CROSS02-CURRENT",
+            "TDS-CROSS02-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "APP-03",
@@ -937,8 +1530,18 @@
         "FSBASE-SRC-004",
         "FSBASE-SRC-005"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-12",
+          "APP-13"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-04",
@@ -963,15 +1566,25 @@
         "FSBASE-SRC-001",
         "FSBASE-SRC-004"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-12",
+          "APP-13"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-05",
       "domain": "applications",
-      "title_ja": "コード生成と自動移植",
+      "title_ja": "AIコーディング技術",
       "research_questions": [
-        "AI支援生成、最適化、アクセラレータ移植はどこで生産性と正しさを両立できるか"
+        "AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。"
       ],
       "evidence_expected": [
         "正答性・性能評価",
@@ -988,7 +1601,28 @@
         "FSBASE-SRC-004"
       ],
       "status": "partial",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。",
+      "summary_en": "Evaluate productivity and correctness of AI code generation, optimization, and porting using independent tests and reproducible tasks.",
+      "related_topic_ids": [
+        "SSW-10",
+        "SSW-01",
+        "APP-13"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-05-U01",
+          "title_ja": "生成・移植・検証",
+          "title_en": "Generation, porting, and validation",
+          "question_ja": "AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。",
+          "question_en": "Evaluate productivity and correctness of AI code generation, optimization, and porting using independent tests and reproducible tasks.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP05-CURRENT",
+            "TDS-APP05-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "APP-06",
@@ -1012,8 +1646,18 @@
         "FSBASE-SRC-004",
         "FSBASE-SRC-005"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-14",
+          "APP-15"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-07",
@@ -1039,7 +1683,10 @@
       "review_cadence": "quarterly",
       "retirement": {
         "kind": "merged",
-        "successor_topic_ids": ["CROSS-08", "CROSS-10"],
+        "successor_topic_ids": [
+          "CROSS-08",
+          "CROSS-10"
+        ],
         "rationale_ja": "独立項目にはせず、利用者支援・移行能力は基盤センター条件へ、人材と責任分担は運営制度へ統合する。",
         "rationale_en": "User support and migration capability are incorporated into center conditions, while workforce and accountability are incorporated into governance."
       }
@@ -1069,7 +1716,11 @@
       "review_cadence": "quarterly",
       "retirement": {
         "kind": "output-owned",
-        "successor_paths": ["config/roadmap-portfolio.json", "docs/planning/roadmap-portfolio.md", "scenarios/"],
+        "successor_paths": [
+          "config/roadmap-portfolio.json",
+          "docs/planning/roadmap-portfolio.md",
+          "scenarios/"
+        ],
         "rationale_ja": "OpenFS自身が生成する参照構成と計画成果物であり、外部技術の調査項目から分離する。",
         "rationale_en": "The reference blueprint is an OpenFS planning output, so it is separated from the catalog of externally researched subjects."
       }
@@ -1095,15 +1746,28 @@
         "FSBASE-SRC-001",
         "FSBASE-SRC-004"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-02",
+          "APP-13",
+          "APP-15"
+        ],
+        "successor_paths": [
+          "docs/operations/catalog-maintenance.md"
+        ],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "CROSS-03",
       "domain": "cross-cutting",
-      "title_ja": "HPCI統合運用とデータ移動",
+      "title_ja": "HPCI統合運用",
       "research_questions": [
-        "ID、配分、ネットワーク、転送、カタログ、連合機能で拠点群をどう一体運用するか"
+        "ID、資源配分、転送、ネットワーク、カタログ等の個別技術を参照し、拠点群の一体運用と責任分担を設計する。"
       ],
       "evidence_expected": [
         "運用要件・実績",
@@ -1120,7 +1784,29 @@
         "FSBASE-SRC-004"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "ID、資源配分、転送、ネットワーク、カタログ等の個別技術を参照し、拠点群の一体運用と責任分担を設計する。",
+      "summary_en": "Use identity, allocation, transfer, network, and catalog technology records to design integrated multi-site operation and responsibilities.",
+      "related_topic_ids": [
+        "SSW-11",
+        "SSW-12",
+        "SSW-14",
+        "CROSS-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-03-U01",
+          "title_ja": "全体の運用要件",
+          "title_en": "Integrated operating requirements",
+          "question_ja": "ID、資源配分、転送、ネットワーク、カタログ等の個別技術を参照し、拠点群の一体運用と責任分担を設計する。",
+          "question_en": "Use identity, allocation, transfer, network, and catalog technology records to design integrated multi-site operation and responsibilities.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-CROSS03-CURRENT",
+            "TDS-CROSS03-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "CROSS-04",
@@ -1142,15 +1828,25 @@
       "source_refs": [
         "FSBASE-SRC-004"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "SSW-14",
+          "ARCH-10"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "CROSS-05",
       "domain": "cross-cutting",
       "title_ja": "量子・HPCハイブリッド運用",
       "research_questions": [
-        "どの用途、接続、スケジューリング、データ経路、成熟度条件で量子資源との連携が妥当か"
+        "量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。"
       ],
       "evidence_expected": [
         "実証結果",
@@ -1166,15 +1862,32 @@
         "FSBASE-SRC-004"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。",
+      "summary_en": "Investigate quantum-resource interfaces, reservations, scheduling, data paths, operational authority, and maturity requirements.",
+      "related_topic_ids": [
+        "APP-11",
+        "SSW-11"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-05-U01",
+          "title_ja": "ハイブリッド運用",
+          "title_en": "Hybrid operation",
+          "question_ja": "量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。",
+          "question_en": "Investigate quantum-resource interfaces, reservations, scheduling, data paths, operational authority, and maturity requirements.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-06",
       "domain": "cross-cutting",
       "title_ja": "調達・段階整備・ロードマップ",
       "research_questions": [
-        "成熟度、費用、導入時期、可逆性、不確実性から複数の実行可能シナリオをどう作るか",
-        "拠点間の共同調達、共同投資、段階整備をどの単位と時期で組み合わせるか"
+        "公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。",
+        "共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。"
       ],
       "evidence_expected": [
         "技術・市場ロードマップ",
@@ -1194,7 +1907,37 @@
         "FSBASE-SRC-005"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。 共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。",
+      "summary_en": "Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty. Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.",
+      "related_topic_ids": [
+        "ARCH-05",
+        "CROSS-08",
+        "CROSS-15"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-06-U01",
+          "title_ja": "調達条件と費用",
+          "title_en": "Procurement conditions and cost",
+          "question_ja": "公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。",
+          "question_en": "Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-CROSS06-CURRENT",
+            "TDS-CROSS06-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "CROSS-06-U02",
+          "title_ja": "共同調達と段階整備",
+          "title_en": "Joint procurement and staged deployment",
+          "question_ja": "共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。",
+          "question_en": "Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-07",
@@ -1221,7 +1964,12 @@
       "review_cadence": "monthly",
       "retirement": {
         "kind": "harness-owned",
-        "successor_paths": ["AGENTS.md", "docs/policies/", "config/consensus-policy.json", "reviews/"],
+        "successor_paths": [
+          "AGENTS.md",
+          "docs/policies/",
+          "config/consensus-policy.json",
+          "reviews/"
+        ],
         "rationale_ja": "来歴と継続調査の統制は調査対象ではなく、OpenFS Harnessの必須機能として管理する。",
         "rationale_en": "Provenance and continuity controls remain mandatory harness capabilities rather than public research subjects."
       }
@@ -1253,8 +2001,19 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-030"
       ],
-      "status": "not-started",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-02",
+          "APP-13",
+          "APP-15"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "ARCH-09",
@@ -1279,15 +2038,26 @@
         "FSBASE-SRC-021",
         "FSBASE-SRC-029"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-02",
+          "APP-13",
+          "APP-15"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "ARCH-10",
       "domain": "architecture",
       "title_ja": "RAS・保守性・長期ライフサイクル",
       "research_questions": [
-        "大規模異種システムを更新周期と製品サポート期間にわたり安定運用する要件は何か"
+        "信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。"
       ],
       "evidence_expected": [
         "障害・保守統計",
@@ -1306,7 +2076,25 @@
         "FSBASE-SRC-029"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。",
+      "summary_en": "Investigate reliability, availability, serviceability, resilience, support lifetimes, fault monitoring, and continuity during renewal.",
+      "related_topic_ids": [
+        "SSW-14",
+        "SSW-15",
+        "CROSS-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-10-U01",
+          "title_ja": "安定運用と保守",
+          "title_en": "Reliable operation and maintenance",
+          "question_ja": "信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。",
+          "question_en": "Investigate reliability, availability, serviceability, resilience, support lifetimes, fault monitoring, and continuity during renewal.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "ARCH-11",
@@ -1334,16 +2122,29 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-031"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "CROSS-11",
+          "ARCH-01",
+          "ARCH-02",
+          "ARCH-12"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "ARCH-12",
       "domain": "architecture",
-      "title_ja": "ウェハスケール・再構成可能データフロー・ドメイン特化計算",
+      "title_ja": "ドメイン特化型ハードウェア技術",
       "research_questions": [
-        "Cerebras WSEのウェハスケール構成、SambaNova RDU、Graphcore IPU、FPGAなどを、どのHPC・AI for Scienceアプリケーションと接続方式で評価・導入するか",
-        "非GPUアクセラレータのメモリモデル、スケールアップ／スケールアウト、ソフトウェア、保守、供給継続性を同じ条件でどう比較するか"
+        "Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。",
+        "PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。",
+        "量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。"
       ],
       "evidence_expected": [
         "世界の製品・研究ロードマップと国内プロトタイプ",
@@ -1361,14 +2162,58 @@
         "FSBASE-SRC-023"
       ],
       "status": "partial",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。 PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。 量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。",
+      "summary_en": "How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compare in architecture and application suitability? How should PIM and near-memory processing be evaluated for compute placement, memory models, software support, and reduced data movement? How do production readiness, scale-up/out, portability, maintenance, and supply continuity determine adoption conditions?",
+      "related_topic_ids": [
+        "ARCH-03",
+        "ARCH-13",
+        "SSW-01",
+        "CROSS-11"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-12-U01",
+          "title_ja": "専用アクセラレータ",
+          "title_en": "Specialized accelerators",
+          "question_ja": "Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。",
+          "question_en": "How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compare in architecture and application suitability?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH12-CURRENT",
+            "TDS-ARCH12-FUTURE",
+            "TDS-ARCH02-DOMESTIC"
+          ]
+        },
+        {
+          "unit_id": "ARCH-12-U02",
+          "title_ja": "PIM・データ近傍処理",
+          "title_en": "PIM and near-data processing",
+          "question_ja": "PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。",
+          "question_en": "How should PIM and near-memory processing be evaluated for compute placement, memory models, software support, and reduced data movement?",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-ARCH03-PIM"
+          ]
+        },
+        {
+          "unit_id": "ARCH-12-U03",
+          "title_ja": "導入・供給条件",
+          "title_en": "Deployment and supply conditions",
+          "question_ja": "量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。",
+          "question_en": "How do production readiness, scale-up/out, portability, maintenance, and supply continuity determine adoption conditions?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "ARCH-13",
       "domain": "architecture",
-      "title_ja": "混合精度・近似計算と数値健全性",
+      "title_ja": "混合精度・近似計算と数値的妥当性",
       "research_questions": [
-        "低精度・混合精度・近似計算を科学的正しさと省電力の両方からどう採用するか"
+        "精度、収束、保存則、再現性と科学的結論への影響から、混合精度・近似計算の許容条件をどう定めるか。",
+        "ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。"
       ],
       "evidence_expected": [
         "精度別性能・電力",
@@ -1386,14 +2231,42 @@
         "FSBASE-SRC-030"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "精度、収束、保存則、再現性と科学的結論への影響から、混合精度・近似計算の許容条件をどう定めるか。 ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。",
+      "summary_en": "How should acceptable mixed-precision and approximate-computing regimes be established from accuracy, convergence, conservation, reproducibility, and scientific conclusions? Using hardware and library support records, how should performance and energy gains be evaluated under matching error constraints?",
+      "related_topic_ids": [
+        "SSW-04",
+        "APP-02",
+        "APP-13",
+        "ARCH-12"
+      ],
+      "research_units": [
+        {
+          "unit_id": "ARCH-13-U01",
+          "title_ja": "科学的妥当性",
+          "title_en": "Scientific validity",
+          "question_ja": "精度、収束、保存則、再現性と科学的結論への影響から、混合精度・近似計算の許容条件をどう定めるか。",
+          "question_en": "How should acceptable mixed-precision and approximate-computing regimes be established from accuracy, convergence, conservation, reproducibility, and scientific conclusions?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "ARCH-13-U02",
+          "title_ja": "性能・省電力との比較",
+          "title_en": "Performance and energy trade-offs",
+          "question_ja": "ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。",
+          "question_en": "Using hardware and library support records, how should performance and energy gains be evaluated under matching error constraints?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-10",
       "domain": "system-software",
       "title_ja": "自動チューニングとコンパイラ支援最適化",
       "research_questions": [
-        "アーキテクチャ探索、移植、実行時適応を自動化する範囲と正答性保証は何か"
+        "コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。"
       ],
       "evidence_expected": [
         "チューニング性能・探索費用",
@@ -1412,14 +2285,32 @@
         "FSBASE-SRC-030"
       ],
       "status": "not-started",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。",
+      "summary_en": "Investigate automatic code and parameter search, accelerator porting, runtime adaptation, and correctness validation.",
+      "related_topic_ids": [
+        "SSW-01",
+        "APP-05",
+        "ARCH-13"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-10-U01",
+          "title_ja": "自動最適化機構",
+          "title_en": "Automatic optimization mechanisms",
+          "question_ja": "コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。",
+          "question_en": "Investigate automatic code and parameter search, accelerator porting, runtime adaptation, and correctness validation.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-11",
       "domain": "system-software",
       "title_ja": "連合資源抽象化・メタスケジューリング・緊急計算",
       "research_questions": [
-        "複数センターの資源を統合表示・予約・配分し、緊急ジョブを安全に処理する仕組みは何か"
+        "複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。"
       ],
       "evidence_expected": [
         "運用ポリシー",
@@ -1438,14 +2329,32 @@
         "FSBASE-SRC-028"
       ],
       "status": "not-started",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。",
+      "summary_en": "Compare approaches to cross-center resource discovery, reservation, allocation, urgent computing, autonomy, and authority.",
+      "related_topic_ids": [
+        "SSW-06",
+        "APP-14",
+        "CROSS-03"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-11-U01",
+          "title_ja": "連合配分と予約",
+          "title_en": "Federated allocation and reservation",
+          "question_ja": "複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。",
+          "question_en": "Compare approaches to cross-center resource discovery, reservation, allocation, urgent computing, autonomy, and authority.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-12",
       "domain": "system-software",
       "title_ja": "統合認証・認可・ポータル",
       "research_questions": [
-        "学認、SSO、グループ管理、プロジェクト管理、Webポータルをどう分離・連携するか"
+        "学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。"
       ],
       "evidence_expected": [
         "認証認可実証",
@@ -1462,7 +2371,24 @@
         "FSBASE-SRC-028"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。",
+      "summary_en": "Investigate integration and separation of federated identity, SSO, groups, projects, authorization, and web portals.",
+      "related_topic_ids": [
+        "SSW-14",
+        "CROSS-03"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-12-U01",
+          "title_ja": "認証と利用窓口",
+          "title_en": "Identity and access",
+          "question_ja": "学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。",
+          "question_en": "Investigate integration and separation of federated identity, SSO, groups, projects, authorization, and web portals.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-13",
@@ -1489,15 +2415,26 @@
         "FSBASE-SRC-028",
         "FSBASE-SRC-030"
       ],
-      "status": "not-started",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "SSW-05",
+          "CROSS-14"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "SSW-14",
       "domain": "system-software",
-      "title_ja": "機密計算・プライバシー・連合セキュリティ",
+      "title_ja": "セキュリティ・機密計算・プライバシー",
       "research_questions": [
-        "MFA、Confidential Computing、暗号化、プライバシー保護を性能影響込みでどう採用するか"
+        "ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。",
+        "機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。"
       ],
       "evidence_expected": [
         "脅威モデル",
@@ -1514,14 +2451,41 @@
         "FSBASE-SRC-028"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。 機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。",
+      "summary_en": "How should zero trust, MFA, encryption, supply-chain security, and incident response be implemented in federated operation? Compare confidential computing and privacy controls by threat model, performance impact, and operational constraints.",
+      "related_topic_ids": [
+        "SSW-12",
+        "ARCH-10",
+        "SSW-09"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-14-U01",
+          "title_ja": "予防・検知・対応",
+          "title_en": "Prevention, detection, and response",
+          "question_ja": "ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。",
+          "question_en": "How should zero trust, MFA, encryption, supply-chain security, and incident response be implemented in federated operation?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "SSW-14-U02",
+          "title_ja": "機密計算と性能影響",
+          "title_en": "Confidential computing and performance",
+          "question_ja": "機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。",
+          "question_en": "Compare confidential computing and privacy controls by threat model, performance impact, and operational constraints.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-15",
       "domain": "system-software",
       "title_ja": "電力・冷却テレメトリと電力適応運用",
       "research_questions": [
-        "ジョブ、GPU、電力、冷却水、地域電源を結び、どこまで電力制約型スケジューリングを行うか"
+        "ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。"
       ],
       "evidence_expected": [
         "設備・ジョブ時系列",
@@ -1539,14 +2503,32 @@
         "FSBASE-SRC-028"
       ],
       "status": "not-started",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。",
+      "summary_en": "Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate power-constrained scheduling and service monitoring.",
+      "related_topic_ids": [
+        "ARCH-06",
+        "CROSS-16",
+        "SSW-06"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-15-U01",
+          "title_ja": "計測と制御",
+          "title_en": "Measurement and control",
+          "question_ja": "ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。",
+          "question_en": "Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate power-constrained scheduling and service monitoring.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "SSW-16",
       "domain": "system-software",
-      "title_ja": "HPC・AI・実験施設ワークフロー実行基盤",
+      "title_ja": "科学ワークフロー実行基盤",
       "research_questions": [
-        "バッチ、Kubernetes、対話、実験ストリーム、AIエージェントを一貫して実行する制御面は何か"
+        "非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。"
       ],
       "evidence_expected": [
         "実運用ワークフロー",
@@ -1564,7 +2546,27 @@
         "FSBASE-SRC-030"
       ],
       "status": "not-started",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。",
+      "summary_en": "Compare platforms that consistently orchestrate, resume, and audit batch, Kubernetes, interactive, experimental-stream, and agent workloads, including non-AI processing.",
+      "related_topic_ids": [
+        "SSW-06",
+        "SSW-09",
+        "SSW-05",
+        "APP-12",
+        "APP-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "SSW-16-U01",
+          "title_ja": "実行制御と連携",
+          "title_en": "Orchestration and integration",
+          "question_ja": "非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。",
+          "question_en": "Compare platforms that consistently orchestrate, resume, and audit batch, Kubernetes, interactive, experimental-stream, and agent workloads, including non-AI processing.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "APP-08",
@@ -1593,8 +2595,19 @@
         "FSBASE-SRC-030",
         "FSBASE-SRC-031"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-01",
+          "APP-12",
+          "APP-14"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-09",
@@ -1618,8 +2631,18 @@
         "FSBASE-SRC-028",
         "FSBASE-SRC-031"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "retired",
+      "review_cadence": "quarterly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-14",
+          "APP-15"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-10",
@@ -1645,15 +2668,25 @@
         "FSBASE-SRC-021",
         "FSBASE-SRC-030"
       ],
-      "status": "partial",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "APP-12",
+          "APP-13"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "APP-11",
       "domain": "applications",
       "title_ja": "量子・Ising応用と古典計算基準",
       "research_questions": [
-        "材料・化学、最適化、計測等で量子・Ising連携が古典手法を上回る条件は何か"
+        "材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。"
       ],
       "evidence_expected": [
         "国内外実証",
@@ -1672,16 +2705,32 @@
         "FSBASE-SRC-031"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。",
+      "summary_en": "Investigate materials, chemistry, optimization, and sensing applications against classical methods at matching input/output, accuracy, and resource conditions.",
+      "related_topic_ids": [
+        "CROSS-05",
+        "APP-02"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-11-U01",
+          "title_ja": "応用と古典比較",
+          "title_en": "Applications and classical comparison",
+          "question_ja": "材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。",
+          "question_en": "Investigate materials, chemistry, optimization, and sensing applications against classical methods at matching input/output, accuracy, and resource conditions.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-08",
       "domain": "cross-cutting",
       "title_ja": "HPCI基盤センター現況・更新計画・制約",
       "research_questions": [
-        "各HPCI基盤センターの利用者、重点分野、設備、電力、建屋、更新時期、運用方針は何か",
-        "センターごとの利用者・設備条件に候補システムが適合し、既存アプリケーションと運用環境を移行できる条件は何か",
-        "利用者支援、教育、技術人材、利用障壁を計画評価へどう反映するか"
+        "利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。",
+        "既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。"
       ],
       "evidence_expected": [
         "センター一次資料",
@@ -1703,7 +2752,35 @@
         "FSBASE-SRC-029"
       ],
       "status": "not-started",
-      "review_cadence": "monthly"
+      "review_cadence": "monthly",
+      "summary_ja": "利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。 既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。",
+      "summary_en": "Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies. Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.",
+      "related_topic_ids": [
+        "ARCH-05",
+        "CROSS-06",
+        "CROSS-14",
+        "CROSS-16"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-08-U01",
+          "title_ja": "センター基礎情報",
+          "title_en": "Center baseline information",
+          "question_ja": "利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。",
+          "question_en": "Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "CROSS-08-U02",
+          "title_ja": "移行・採用条件",
+          "title_en": "Migration and adoption conditions",
+          "question_ja": "既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。",
+          "question_en": "Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-09",
@@ -1730,7 +2807,9 @@
       "review_cadence": "quarterly",
       "retirement": {
         "kind": "merged",
-        "successor_topic_ids": ["CROSS-06"],
+        "successor_topic_ids": [
+          "CROSS-06"
+        ],
         "rationale_ja": "共同調達・共同投資・段階整備は、調達とロードマップを一体で評価するCROSS-06へ統合する。",
         "rationale_en": "Joint procurement, co-investment, and phased deployment are consolidated into CROSS-06 for integrated procurement planning."
       }
@@ -1740,8 +2819,7 @@
       "domain": "cross-cutting",
       "title_ja": "HPCI政策・意思決定・運営体制",
       "research_questions": [
-        "HPCI計画推進委員会を含む政策形成、意思決定、実施、評価の役割と責任はどのように分担されているか",
-        "センター自治を保ちながら、調整組織、運用委託、技術職キャリアをどう設計するか"
+        "HPCI計画推進委員会等の政策形成・意思決定・実施・評価、センター自治、運用委託と人材体制を調査する。"
       ],
       "evidence_expected": [
         "国内外組織事例",
@@ -1759,15 +2837,37 @@
         "FSBASE-SRC-025",
         "FSBASE-SRC-027"
       ],
-      "status": "not-started",
-      "review_cadence": "quarterly"
+      "status": "partial",
+      "review_cadence": "quarterly",
+      "summary_ja": "HPCI計画推進委員会等の政策形成・意思決定・実施・評価、センター自治、運用委託と人材体制を調査する。",
+      "summary_en": "Investigate policy formation, decisions, implementation, and evaluation including the HPCI planning committee, center autonomy, operating arrangements, and staffing.",
+      "related_topic_ids": [
+        "CROSS-03",
+        "CROSS-15",
+        "CROSS-08"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-10-U01",
+          "title_ja": "制度と責任分担",
+          "title_en": "Policy and responsibilities",
+          "question_ja": "HPCI計画推進委員会等の政策形成・意思決定・実施・評価、センター自治、運用委託と人材体制を調査する。",
+          "question_en": "Investigate policy formation, decisions, implementation, and evaluation including the HPCI planning committee, center autonomy, operating arrangements, and staffing.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-SSW09-POLICY-CURRENT",
+            "TDS-SSW09-POLICY-FUTURE"
+          ]
+        }
+      ]
     },
     {
       "topic_id": "CROSS-11",
       "domain": "cross-cutting",
       "title_ja": "日本発技術の実用化・供給自立性・産業波及",
       "research_questions": [
-        "国内技術を研究試作で終わらせず、HPCI実装、保守、産業展開へつなぐ条件は何か"
+        "ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。",
+        "国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。"
       ],
       "evidence_expected": [
         "国内ロードマップ",
@@ -1788,7 +2888,36 @@
         "FSBASE-SRC-031"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。 国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。",
+      "summary_en": "Use shared hardware, system software, application, and operations records to assess conditions for Japanese-origin technologies to progress through prototypes, demonstrations, production, maintenance, and industrial deployment. Evaluate against international alternatives under common criteria and examine procurement, standardization, integration, and supply autonomy.",
+      "related_topic_ids": [
+        "ARCH-01",
+        "ARCH-02",
+        "ARCH-12",
+        "SSW-08",
+        "ARCH-07"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-11-U01",
+          "title_ja": "技術分野横断の実用化",
+          "title_en": "Cross-domain deployment",
+          "question_ja": "ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。",
+          "question_en": "Use shared hardware, system software, application, and operations records to assess conditions for Japanese-origin technologies to progress through prototypes, demonstrations, production, maintenance, and industrial deployment.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "CROSS-11-U02",
+          "title_ja": "国際技術との併用",
+          "title_en": "Integration with international alternatives",
+          "question_ja": "国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。",
+          "question_en": "Evaluate against international alternatives under common criteria and examine procurement, standardization, integration, and supply autonomy.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-12",
@@ -1818,7 +2947,9 @@
       "review_cadence": "monthly",
       "retirement": {
         "kind": "merged",
-        "successor_topic_ids": ["CROSS-08"],
+        "successor_topic_ids": [
+          "CROSS-08"
+        ],
         "rationale_ja": "センター別採用条件と移行容易性を、HPCI基盤センターの現況・制約・更新計画へ統合する。",
         "rationale_en": "Center-specific adoption and migration readiness are consolidated into the HPCI center conditions and refresh-planning topic."
       }
@@ -1846,15 +2977,27 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-030"
       ],
-      "status": "not-started",
-      "review_cadence": "monthly"
+      "status": "retired",
+      "review_cadence": "monthly",
+      "retirement": {
+        "kind": "output-owned",
+        "successor_topic_ids": [
+          "CROSS-06"
+        ],
+        "successor_paths": [
+          "docs/planning/scenario-generation.md",
+          "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
+        ],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "CROSS-14",
       "domain": "cross-cutting",
-      "title_ja": "計算機世代をまたぐデータ・サービス継続性",
+      "title_ja": "データ連携・世代更新時のサービス継続",
       "research_questions": [
-        "計算機更新と独立したデータ・ID・ワークフローサービスのライフサイクルをどう実現するか"
+        "計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。"
       ],
       "evidence_expected": [
         "世代移行事例",
@@ -1873,14 +3016,33 @@
         "FSBASE-SRC-030"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。",
+      "summary_en": "Investigate continuity of data, identity, and workflows independently of compute refresh, including migration time, retention, and responsibilities.",
+      "related_topic_ids": [
+        "SSW-05",
+        "SSW-12",
+        "SSW-16",
+        "CROSS-03"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-14-U01",
+          "title_ja": "移行と継続運用",
+          "title_en": "Migration and continuity",
+          "question_ja": "計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。",
+          "question_en": "Investigate continuity of data, identity, and workflows independently of compute refresh, including migration time, retention, and responsibilities.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-15",
       "domain": "cross-cutting",
       "title_ja": "資源所有・財源・利用料金モデル",
       "research_questions": [
-        "HPCI保有資源、センター提供資源、共同投資、利用料金をどう組み合わせるか"
+        "HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。"
       ],
       "evidence_expected": [
         "制度・予算資料",
@@ -1897,14 +3059,31 @@
         "FSBASE-SRC-027"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。",
+      "summary_en": "Compare HPCI and center resource ownership, joint investment, charging, and access models.",
+      "related_topic_ids": [
+        "CROSS-06",
+        "CROSS-10"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-15-U01",
+          "title_ja": "財源と利用制度",
+          "title_en": "Funding and access models",
+          "question_ja": "HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。",
+          "question_en": "Compare HPCI and center resource ownership, joint investment, charging, and access models.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-16",
       "domain": "cross-cutting",
       "title_ja": "地域配置・電力・実験施設近接性",
       "research_questions": [
-        "電力・炭素、災害分散、データ発生源、施設近接性から資源をどこへ配置するか"
+        "電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。"
       ],
       "evidence_expected": [
         "地域電力・設備データ",
@@ -1923,7 +3102,25 @@
         "FSBASE-SRC-031"
       ],
       "status": "not-started",
-      "review_cadence": "quarterly"
+      "review_cadence": "quarterly",
+      "summary_ja": "電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。",
+      "summary_en": "Compare resource placement based on electricity, carbon, disaster resilience, data sources, and proximity to experimental facilities.",
+      "related_topic_ids": [
+        "ARCH-06",
+        "SSW-15",
+        "APP-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "CROSS-16-U01",
+          "title_ja": "設置地域の選定",
+          "title_en": "Site selection",
+          "question_ja": "電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。",
+          "question_en": "Compare resource placement based on electricity, carbon, disaster resilience, data sources, and proximity to experimental facilities.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     },
     {
       "topic_id": "CROSS-17",
@@ -1951,7 +3148,11 @@
       "review_cadence": "weekly",
       "retirement": {
         "kind": "harness-owned",
-        "successor_paths": ["config/monitors/MON-EMERGING-TOPICS-001.json", "schemas/research-topic-proposal.schema.json", "tools/promote_research_topic.py"],
+        "successor_paths": [
+          "config/monitors/MON-EMERGING-TOPICS-001.json",
+          "schemas/research-topic-proposal.schema.json",
+          "tools/promote_research_topic.py"
+        ],
         "rationale_ja": "新規調査項目の発見は公開カタログ上の調査対象ではなく、Consensus Gateを伴うHarness機能として継続する。",
         "rationale_en": "Emerging-topic discovery remains a Consensus-gated harness capability rather than a subject in the public catalog."
       }
@@ -1985,8 +3186,18 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-031"
       ],
-      "status": "not-started",
-      "review_cadence": "weekly"
+      "status": "retired",
+      "review_cadence": "weekly",
+      "retirement": {
+        "kind": "harness-owned",
+        "successor_topic_ids": [],
+        "successor_paths": [
+          "docs/operations/catalog-maintenance.md",
+          "config/monitors/MON-GLOBAL-TECH-001.json"
+        ],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "ARCH-14",
@@ -2012,9 +3223,19 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-030"
       ],
-      "status": "partial",
+      "status": "retired",
       "review_cadence": "monthly",
-      "catalog_origin": "human-directive"
+      "catalog_origin": "human-directive",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "ARCH-01",
+          "APP-13"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
     },
     {
       "topic_id": "SSW-17",
@@ -2040,9 +3261,350 @@
         "FSBASE-SRC-029",
         "FSBASE-SRC-030"
       ],
-      "status": "partial",
+      "status": "retired",
       "review_cadence": "monthly",
-      "catalog_origin": "human-directive"
+      "catalog_origin": "human-directive",
+      "retirement": {
+        "kind": "merged",
+        "successor_topic_ids": [
+          "SSW-09"
+        ],
+        "successor_paths": [],
+        "rationale_ja": "承認されたカタログ再編により調査範囲を移管。旧IDと根拠は保持し、移管は調査完了や合意成立を意味しない。",
+        "rationale_en": "Scope transferred by the approved catalog reorganization. Historical IDs and evidence remain; transfer does not establish research completion or consensus."
+      }
+    },
+    {
+      "topic_id": "APP-12",
+      "domain": "applications",
+      "title_ja": "将来アプリケーションと利用者ニーズ（AIワークロード）",
+      "research_questions": [
+        "学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。",
+        "直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。"
+      ],
+      "evidence_expected": [
+        "エージェント基盤評価",
+        "データ・計算特性",
+        "トポロジ・メモリ感度",
+        "モデル規模別性能",
+        "ワークフロー実例",
+        "代表アプリケーションとプロキシアプリケーション",
+        "分野別ニーズ",
+        "利用実績",
+        "失敗・安全性事例",
+        "実ワークフロー計測",
+        "実測・利用ログ",
+        "科学成果評価"
+      ],
+      "outputs": [
+        "要求・評価条件の比較",
+        "根拠と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-001",
+        "FSBASE-SRC-004",
+        "FSBASE-SRC-005",
+        "FSBASE-SRC-008",
+        "FSBASE-SRC-009",
+        "FSBASE-SRC-014",
+        "FSBASE-SRC-017",
+        "FSBASE-SRC-021",
+        "FSBASE-SRC-022",
+        "FSBASE-SRC-023",
+        "FSBASE-SRC-030",
+        "FSBASE-SRC-031"
+      ],
+      "status": "partial",
+      "review_cadence": "weekly",
+      "catalog_origin": "human-directive",
+      "summary_ja": "学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。 直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。",
+      "summary_en": "Characterize model and data scales, quality targets, scientific representativeness, and simulation or experiment coupling for training, fine-tuning, and inference. Characterize serial orchestration, retrieval, tools, LLM inference, communication waits, concurrency, reliability, provenance, and safety requirements.",
+      "related_topic_ids": [
+        "APP-13",
+        "APP-01",
+        "APP-14",
+        "SSW-09",
+        "SSW-16"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-12-U01",
+          "title_ja": "学習・推論・AI for Science",
+          "title_en": "Training, inference, and AI for Science",
+          "question_ja": "学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。",
+          "question_en": "Characterize model and data scales, quality targets, scientific representativeness, and simulation or experiment coupling for training, fine-tuning, and inference.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP03-CURRENT",
+            "TDS-APP03-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-12-U02",
+          "title_ja": "科学AIエージェントの要求",
+          "title_en": "Scientific-agent requirements",
+          "question_ja": "直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。",
+          "question_en": "Characterize serial orchestration, retrieval, tools, LLM inference, communication waits, concurrency, reliability, provenance, and safety requirements.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
+    },
+    {
+      "topic_id": "APP-13",
+      "domain": "applications",
+      "title_ja": "ベンチマーク・プロキシ・性能モデル（AIワークロード）",
+      "research_questions": [
+        "MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。",
+        "モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。",
+        "Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。"
+      ],
+      "evidence_expected": [
+        "CPU・GPUの性能カウンタ、消費電力、同時実行数の測定結果",
+        "gem5等のシミュレーション",
+        "アプリケーション別のスケーリング測定",
+        "エージェント基盤評価",
+        "データ・計算特性",
+        "トポロジ・メモリ感度",
+        "ベンダーの一次資料と独立した比較測定",
+        "モデル規模別性能",
+        "ワークフロー実例",
+        "候補システム比較",
+        "再現可能なエージェント型ワークロードのトレースとベンチマーク",
+        "再現可能な結果",
+        "利用統計",
+        "失敗・安全性事例",
+        "実アプリケーションとプロキシアプリケーションの計測",
+        "実ワークフロー計測",
+        "実測・利用ログ",
+        "待ち時間・実行時間統計",
+        "性能モデルと誤差",
+        "性能再現性データ",
+        "測定仕様",
+        "科学成果評価",
+        "計測ツール評価",
+        "通信・同期分析"
+      ],
+      "outputs": [
+        "要求・評価条件の比較",
+        "根拠と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-001",
+        "FSBASE-SRC-004",
+        "FSBASE-SRC-005",
+        "FSBASE-SRC-007",
+        "FSBASE-SRC-013",
+        "FSBASE-SRC-014",
+        "FSBASE-SRC-021",
+        "FSBASE-SRC-022",
+        "FSBASE-SRC-029",
+        "FSBASE-SRC-030"
+      ],
+      "status": "partial",
+      "review_cadence": "weekly",
+      "catalog_origin": "human-directive",
+      "summary_ja": "MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。 モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。 Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。",
+      "summary_en": "Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior. Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions. Separate prefill/decode, arrival processes, batching, serial work, and concurrency, and independently validate predictions for changed resources.",
+      "related_topic_ids": [
+        "APP-12",
+        "APP-02",
+        "APP-15",
+        "ARCH-01",
+        "SSW-09"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-13-U01",
+          "title_ja": "学習・推論評価",
+          "title_en": "Training and inference evaluation",
+          "question_ja": "MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。",
+          "question_en": "Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP10-CURRENT",
+            "TDS-APP10-FUTURE",
+            "TDS-SSW09-EVAL-CURRENT",
+            "TDS-SSW09-EVAL-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-13-U02",
+          "title_ja": "エージェント・ハーネス評価",
+          "title_en": "Agent and harness evaluation",
+          "question_ja": "モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。",
+          "question_en": "Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP04-CURRENT",
+            "TDS-APP04-FUTURE",
+            "TDS-CROSS02-AI-CURRENT",
+            "TDS-CROSS02-AI-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-13-U03",
+          "title_ja": "負荷モデルと継続測定",
+          "title_en": "Load models and repeated measurement",
+          "question_ja": "Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。",
+          "question_en": "Separate prefill/decode, arrival processes, batching, serial work, and concurrency, and independently validate predictions for changed resources.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
+    },
+    {
+      "topic_id": "APP-14",
+      "domain": "applications",
+      "title_ja": "将来アプリケーションと利用者ニーズ（実験施設連携・リアルタイム処理）",
+      "research_questions": [
+        "実験自動化、デジタルツイン、観測・実験データ量、処理期限、人の承認と制御要件を整理する。",
+        "防災等の緊急処理、予約、優先度、権限、データ経路と実験施設間の代表性をどう確保するか。"
+      ],
+      "evidence_expected": [
+        "代表アプリケーションとプロキシアプリケーション",
+        "信頼性・再現性",
+        "分野別ニーズ",
+        "利用実績",
+        "実証ワークフロー",
+        "緊急運用ルール",
+        "自動実験事例",
+        "設備・データ連携要件",
+        "遅延・到着率"
+      ],
+      "outputs": [
+        "要求・評価条件の比較",
+        "根拠と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-001",
+        "FSBASE-SRC-004",
+        "FSBASE-SRC-005",
+        "FSBASE-SRC-008",
+        "FSBASE-SRC-009",
+        "FSBASE-SRC-014",
+        "FSBASE-SRC-017",
+        "FSBASE-SRC-022",
+        "FSBASE-SRC-023",
+        "FSBASE-SRC-025",
+        "FSBASE-SRC-028",
+        "FSBASE-SRC-030",
+        "FSBASE-SRC-031"
+      ],
+      "status": "partial",
+      "review_cadence": "weekly",
+      "catalog_origin": "human-directive",
+      "summary_ja": "実験自動化、デジタルツイン、観測・実験データ量、処理期限、人の承認と制御要件を整理する。 防災等の緊急処理、予約、優先度、権限、データ経路と実験施設間の代表性をどう確保するか。",
+      "summary_en": "Characterize experimental automation, digital twins, observation and experimental data rates, deadlines, human approval, and control requirements. How should urgent workloads such as disaster response, reservations, priorities, authority, data paths, and facility representativeness be covered?",
+      "related_topic_ids": [
+        "APP-15",
+        "APP-01",
+        "APP-12",
+        "SSW-16",
+        "SSW-11"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-14-U01",
+          "title_ja": "実験・閉ループ処理",
+          "title_en": "Experiments and closed-loop processing",
+          "question_ja": "実験自動化、デジタルツイン、観測・実験データ量、処理期限、人の承認と制御要件を整理する。",
+          "question_en": "Characterize experimental automation, digital twins, observation and experimental data rates, deadlines, human approval, and control requirements.",
+          "status": "partial",
+          "evidence_section_ids": [
+            "TDS-APP06-CURRENT",
+            "TDS-APP06-FUTURE"
+          ]
+        },
+        {
+          "unit_id": "APP-14-U02",
+          "title_ja": "緊急計算と代表性",
+          "title_en": "Urgent computing and representativeness",
+          "question_ja": "防災等の緊急処理、予約、優先度、権限、データ経路と実験施設間の代表性をどう確保するか。",
+          "question_en": "How should urgent workloads such as disaster response, reservations, priorities, authority, data paths, and facility representativeness be covered?",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
+    },
+    {
+      "topic_id": "APP-15",
+      "domain": "applications",
+      "title_ja": "ベンチマーク・プロキシ・性能モデル（実験施設連携・リアルタイム処理）",
+      "research_questions": [
+        "端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。",
+        "予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。"
+      ],
+      "evidence_expected": [
+        "gem5等のシミュレーション",
+        "アプリケーション別のスケーリング測定",
+        "信頼性・再現性",
+        "候補システム比較",
+        "再現可能な結果",
+        "利用統計",
+        "実アプリケーションとプロキシアプリケーションの計測",
+        "実証ワークフロー",
+        "待ち時間・実行時間統計",
+        "性能モデルと誤差",
+        "性能再現性データ",
+        "測定仕様",
+        "緊急運用ルール",
+        "自動実験事例",
+        "計測ツール評価",
+        "設備・データ連携要件",
+        "通信・同期分析",
+        "遅延・到着率"
+      ],
+      "outputs": [
+        "要求・評価条件の比較",
+        "根拠と未確認事項"
+      ],
+      "source_refs": [
+        "FSBASE-SRC-001",
+        "FSBASE-SRC-004",
+        "FSBASE-SRC-005",
+        "FSBASE-SRC-007",
+        "FSBASE-SRC-013",
+        "FSBASE-SRC-014",
+        "FSBASE-SRC-021",
+        "FSBASE-SRC-022",
+        "FSBASE-SRC-025",
+        "FSBASE-SRC-028",
+        "FSBASE-SRC-029",
+        "FSBASE-SRC-030",
+        "FSBASE-SRC-031"
+      ],
+      "status": "not-started",
+      "review_cadence": "weekly",
+      "catalog_origin": "human-directive",
+      "summary_ja": "端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。 予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。",
+      "summary_en": "Measure end-to-end latency, deadline compliance, jitter, and throughput with fixed input streams and load conditions. Build evaluation workflows including reservation waits, transfers, failures, and recovery, and repeat model calibration and independent validation.",
+      "related_topic_ids": [
+        "APP-14",
+        "APP-02",
+        "APP-13",
+        "CROSS-14"
+      ],
+      "research_units": [
+        {
+          "unit_id": "APP-15-U01",
+          "title_ja": "遅延・処理期限",
+          "title_en": "Latency and deadlines",
+          "question_ja": "端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。",
+          "question_en": "Measure end-to-end latency, deadline compliance, jitter, and throughput with fixed input streams and load conditions.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        },
+        {
+          "unit_id": "APP-15-U02",
+          "title_ja": "継続性と再現評価",
+          "title_en": "Continuity and reproducible evaluation",
+          "question_ja": "予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。",
+          "question_en": "Build evaluation workflows including reservation waits, transfers, failures, and recovery, and repeat model calibration and independent validation.",
+          "status": "not-started",
+          "evidence_section_ids": []
+        }
+      ]
     }
   ],
   "initial_catalog": {

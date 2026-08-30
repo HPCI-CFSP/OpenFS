@@ -76,7 +76,7 @@ class ResearchBaselineTests(unittest.TestCase):
         self.assertTrue(
             {"ARCH-11", "ARCH-12", "ARCH-14", "SSW-17", "CROSS-08", "CROSS-11", "CROSS-12", "CROSS-13", "CROSS-17", "CROSS-18"}.issubset(topic_ids)
         )
-        self.assertEqual(60, len(topic_ids))
+        self.assertEqual(64, len(topic_ids))
 
     def test_missing_fs1_material_remains_explicit_but_fs2_gap_is_closed(self):
         self.assertFalse(self.baseline["complete"])
@@ -87,7 +87,10 @@ class ResearchBaselineTests(unittest.TestCase):
     def test_retired_topics_preserve_lineage(self):
         retired = {topic["topic_id"]: topic for topic in self.baseline["topics"] if topic["status"] == "retired"}
         self.assertEqual(
-            {"APP-07", "CROSS-01", "CROSS-07", "CROSS-09", "CROSS-12", "CROSS-17"},
+            {"APP-07", "CROSS-01", "CROSS-07", "CROSS-09", "CROSS-12", "CROSS-17",
+             "ARCH-08", "ARCH-09", "ARCH-11", "ARCH-14", "SSW-02", "SSW-07",
+             "SSW-13", "SSW-17", "APP-03", "APP-04", "APP-06", "APP-08", "APP-09",
+             "APP-10", "CROSS-02", "CROSS-04", "CROSS-13", "CROSS-18"},
             set(retired),
         )
         for topic in retired.values():

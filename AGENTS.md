@@ -127,6 +127,15 @@ remaining matching items; never silently treat the example as the full scope.
 
 ## Public roadmap artifacts
 
+- Follow `docs/operations/catalog-maintenance.md` for catalog ownership and
+  migration. Read each active Topic's bilingual scope and `research_units` before
+  researching it; a merged Topic is not complete because one unit has evidence.
+  Keep one primary record for a technical claim and link related Topics. Never
+  infer relevance to every successor from an old broad Topic ID. Preserve retired
+  display codes in `reserved_topic_codes` and regenerate the current catalog and
+  source map after scope changes. Human-approved structural edits do not supply
+  independent scientific Consensus or authorize scheduled maintainer execution.
+
 - Maintain decision-oriented Topic summaries in
   `knowledge/public/topic-decision-support.json`, validated by
   `schemas/public-topic-decision-support.schema.json` and

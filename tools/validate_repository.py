@@ -14,6 +14,7 @@ from openfs_runtime import exception_group_key, language_in_scope, stable_digest
 from register_source import canonicalize_url, publisher_authority
 from generate_knowledge_views import build_index, render_tbd
 from build_source_catalog_map import build as build_source_catalog_map
+from catalog_lineage import validate_catalog_scope
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1431,7 +1432,7 @@ def validate_runtime_artifacts(root: Path) -> list[str]:
 
 def validate_research_baseline(root: Path) -> list[str]:
     baseline = load_json(root / "config" / "research-baseline.json")
-    errors: list[str] = []
+    errors: list[str] = validate_catalog_scope(root)
     source_corpus = baseline.get("source_corpus", [])
     source_ids = [source.get("source_id") for source in source_corpus]
     if len(source_ids) != len(set(source_ids)):
@@ -1585,6 +1586,12 @@ def validate_catalog_taxonomy(root: Path) -> list[str]:
                 f"catalog taxonomy code coverage differs for {category.get('category_id')}"
             )
         prefix = category.get("display_prefix", "") + "-"
+        if taxonomy.get("schema_version") == "0.3.0":
+            reserved = category.get("reserved_topic_codes", [])
+            if set(topic_codes.values()) - set(reserved) or len(reserved) != len(set(reserved)):
+                errors.append(f"catalog reserved codes are incomplete or duplicated for {category.get('category_id')}")
+            if any(not code.startswith(prefix) for code in reserved):
+                errors.append(f"catalog reserved code has wrong prefix for {category.get('category_id')}")
         for topic_id, catalog_code in topic_codes.items():
             if not catalog_code.startswith(prefix):
                 errors.append(

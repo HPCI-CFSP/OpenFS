@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 from check_procurement_costs import validate_register
 from estimate_system_cost import allocate_budget, contract_breakdown
+from catalog_lineage import catalog_aliases, current_finding_topics
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1092,6 +1093,13 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     research_summaries = collect_topic_summaries(
         root, policy, valid_topic_ids, receipt_by_id
     )
+    topic_by_id = {topic["topic_id"]: topic for topic in baseline["topics"]}
+    for summary in research_summaries:
+        for finding in summary["findings"]:
+            finding["catalog_topic_ids"] = current_finding_topics(finding, topic_by_id)
+        summary["catalog_topic_ids"] = sorted({
+            tid for finding in summary["findings"] for tid in finding["catalog_topic_ids"]
+        })
     topic_decision_support = collect_public_supplement(
         root,
         policy,
@@ -1134,11 +1142,11 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             for section in decision_profile["sections"]
         ) if decision_profile else 0
         summary_count = sum(
-            topic["topic_id"] in summary["topic_ids"]
+            topic["topic_id"] in summary["catalog_topic_ids"]
             for summary in research_summaries
         )
         finding_count = sum(
-            topic["topic_id"] in finding["topic_ids"]
+            topic["topic_id"] in finding["catalog_topic_ids"]
             for summary in research_summaries
             for finding in summary["findings"]
         )
@@ -1150,6 +1158,16 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 "catalog_category_id": category_by_topic[topic["topic_id"]],
                 "title_ja": topic["title_ja"],
                 "title_en": i18n["topic_titles_en"][topic["topic_id"]],
+                "summary_ja": topic.get("summary_ja", ""),
+                "summary_en": topic.get("summary_en", ""),
+                "research_units": [
+                    {key: unit[key] for key in (
+                        "unit_id", "title_ja", "title_en", "question_ja", "question_en",
+                        "status", "evidence_section_ids",
+                    )}
+                    for unit in topic.get("research_units", [])
+                ],
+                "related_topic_ids": topic.get("related_topic_ids", []),
                 "status": topic["status"],
                 "verification_status": (
                     "consensus-verified"
@@ -1271,6 +1289,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "open_gap_ids": baseline["open_gap_ids"],
         },
         "topics": topics,
+        "catalog_aliases": catalog_aliases(root, baseline, i18n, catalog_code_by_topic),
         "catalog_taxonomy": catalog_taxonomy,
         "research_summaries": research_summaries,
         "topic_decision_support": topic_decision_support,

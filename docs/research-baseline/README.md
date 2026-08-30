@@ -25,7 +25,7 @@ If no baseline topic fits, use `OFS-002` to propose a new topic before starting 
 
 ## Protected initial topic catalog
 
-The following 30 topics are the unchanged starting catalog from `FSBASE-001`. Additions extend this catalog; they do not replace it.
+The following table records the original 30-topic scope from `FSBASE-001`, not the current public titles or ownership. Protected identity means preserving canonical IDs and history, not prohibiting human-approved restructuring. See the generated [current catalog and migration table](current-catalog.md) for revision 5. The full original questions are retained in `config/catalog-migration.json` for the entries that were active before this revision.
 
 ### Architecture
 

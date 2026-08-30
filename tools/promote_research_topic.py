@@ -144,10 +144,12 @@ def validate_and_promote(
     existing_codes = matching_categories[0].setdefault("topic_codes", {})
     sequence_numbers = [
         int(code.rsplit("-", 1)[1])
-        for code in existing_codes.values()
+        for code in set(existing_codes.values()) | set(matching_categories[0].get("reserved_topic_codes", []))
         if code.startswith(prefix + "-")
     ]
     existing_codes[topic_id] = f"{prefix}-{max(sequence_numbers, default=0) + 1:03d}"
+    if "reserved_topic_codes" in matching_categories[0]:
+        matching_categories[0]["reserved_topic_codes"].append(existing_codes[topic_id])
     return promoted_baseline, promoted_monitor, promoted_i18n, promoted_taxonomy
 
 

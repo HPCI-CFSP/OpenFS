@@ -74,6 +74,17 @@ class ResearchTopicFlowTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "accepted decision"):
             validate_and_promote(self.proposal, decision, self.baseline, self.monitor, self.i18n, self.taxonomy)
 
+    def test_promotion_does_not_reuse_retired_public_codes(self):
+        category = next(c for c in self.taxonomy["categories"] if c["category_id"] == "operations-procurement")
+        category["reserved_topic_codes"].append("OPS-090")
+        decision = evaluate(self.proposal, self.assessments, self.policy, self.registry)
+        _, _, _, taxonomy = validate_and_promote(
+            self.proposal, decision, self.baseline, self.monitor, self.i18n, self.taxonomy
+        )
+        promoted = next(c for c in taxonomy["categories"] if c["category_id"] == "operations-procurement")
+        self.assertEqual("OPS-091", promoted["topic_codes"]["CROSS-99"])
+        self.assertIn("OPS-091", promoted["reserved_topic_codes"])
+
     def test_topic_with_one_actual_origin_cannot_promote(self):
         proposal = copy.deepcopy(self.proposal)
         proposal["candidate_topic"]["source_refs"] = ["FSBASE-SRC-029", "FSBASE-SRC-030"]
