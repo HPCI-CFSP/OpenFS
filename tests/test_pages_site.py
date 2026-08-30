@@ -247,6 +247,12 @@ class PagesSiteTests(unittest.TestCase):
         self.assertNotIn("actions/deploy-pages@", workflow)
         self.assertIn('"knowledge/public/**"', workflow)
         self.assertIn("fetch-depth: 0", workflow)
+        self.assertIn('- "requirements-validation.txt"', workflow)
+        self.assertIn("--requirement requirements-validation.txt", workflow)
+        self.assertLess(workflow.index("Install pinned contract validators"), workflow.index("Run Pages tests"))
+        self.assertLess(workflow.index("Install pinned contract validators"), workflow.index("Build static preview"))
+        self.assertIn('- "config/budget-planning.json"', workflow)
+        self.assertIn('- "config/catalog-taxonomy.json"', workflow)
 
     def test_page_fragment_navigation_has_unique_existing_targets(self):
         parser = PageStructureParser()

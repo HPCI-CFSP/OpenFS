@@ -8,6 +8,8 @@ on:
       - "assets/branding/**"
       - "config/publication-policy.json"
       - "config/publication-i18n.json"
+      - "config/catalog-taxonomy.json"
+      - "config/budget-planning.json"
       - "config/research-baseline.json"
       - "config/global-technology-scope.json"
       - "roadmaps/scenarios/accepted/**"
@@ -18,9 +20,17 @@ on:
       - "schemas/public-application-performance-forecast.schema.json"
       - "tools/build_pages_site.py"
       - "tools/check_public_planning_surfaces.py"
+      - "tools/check_procurement_costs.py"
+      - "tools/estimate_system_cost.py"
+      - "schemas/budget-planning.schema.json"
+      - "schemas/procurement-cost-register.schema.json"
+      - "schemas/system-scenario.schema.json"
       - "tools/validate_repository.py"
       - "tests/test_pages_site.py"
       - "tests/test_public_planning_surfaces.py"
+      - "tests/test_procurement_costs.py"
+      - "tests/test_budget_ui.js"
+      - "requirements-validation.txt"
       - "LICENSE"
       - "NOTICE"
       - "THIRD_PARTY_NOTICES.md"
@@ -46,6 +56,9 @@ jobs:
         run: |
           python3 tools/validate_repository.py
           python3 tools/check_public_planning_surfaces.py
+      - name: Install pinned contract validators
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
       - name: Run Pages tests
         run: python3 -m unittest tests.test_pages_site -v
       - name: Build static preview
