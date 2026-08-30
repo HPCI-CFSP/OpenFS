@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/procurement-cost-register.schema.json",
+  "title": "Public procurement cost and specification register",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "caveat_ja", "caveat_en", "sources", "cases", "coverage_gaps", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"}, "artifact_id": {"const": "PROCUREMENT-COST-001"}, "as_of": {"type": "string", "format": "date"},
+    "research_status": {"const": "provisional"}, "consensus_status": {"const": "incomplete"},
+    "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "caveat_ja": {"$ref": "#/$defs/text"}, "caveat_en": {"$ref": "#/$defs/text"},
+    "sources": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["source_id", "title", "url", "publisher", "origin_group", "checked_on", "locator", "retrieval_status"], "properties": {
+      "source_id": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"}, "url": {"type": "string", "format": "uri", "pattern": "^https://"}, "publisher": {"$ref": "#/$defs/text"}, "origin_group": {"$ref": "#/$defs/text"}, "checked_on": {"type": "string", "format": "date"}, "locator": {"$ref": "#/$defs/text"}, "retrieval_status": {"enum": ["read", "failed", "not-retrieved"]}
+    }}},
+    "cases": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/case"}},
+    "coverage_gaps": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["gap_id", "priority", "description_ja", "description_en", "next_action_ja", "next_action_en"], "properties": {"gap_id": {"$ref": "#/$defs/text"}, "priority": {"enum": ["P0", "P1", "P2"]}, "description_ja": {"$ref": "#/$defs/text"}, "description_en": {"$ref": "#/$defs/text"}, "next_action_ja": {"$ref": "#/$defs/text"}, "next_action_en": {"$ref": "#/$defs/text"}}}},
+    "publication": {"$ref": "https://hpci-cfsp.github.io/OpenFS/schemas/system-scenario.schema.json#/properties/publication"}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1}, "refs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/text"}},
+    "nullableDate": {"type": ["string", "null"], "format": "date"},
+    "amount": {"type": "object", "additionalProperties": false, "required": ["kind", "value_jpy", "tax_basis", "tax_rate", "payment_basis", "period_months", "source_refs"], "properties": {
+      "kind": {"enum": ["program-budget", "planned-price", "award", "contract"]}, "value_jpy": {"type": "number", "minimum": 0}, "tax_basis": {"enum": ["including-tax", "excluding-tax", "unknown"]}, "tax_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1}, "payment_basis": {"enum": ["total", "monthly", "unknown"]}, "period_months": {"type": ["integer", "null"], "minimum": 1}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}
+    }},
+    "case": {"type": "object", "additionalProperties": false, "required": ["case_id", "title_ja", "title_en", "buyer", "supplier", "contract_kind", "contract_date", "award_date", "amount", "documents", "configuration_match", "component_category", "itemized_costs", "related_case_ids", "aggregation_status", "scope_ja", "scope_en", "gap_ids"], "properties": {
+      "case_id": {"type": "string", "pattern": "^PROC-[A-Z0-9-]+$"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "buyer": {"$ref": "#/$defs/text"}, "supplier": {"type": ["string", "null"]}, "contract_kind": {"enum": ["purchase", "lease", "construction", "service", "unknown"]}, "contract_date": {"$ref": "#/$defs/nullableDate"}, "award_date": {"$ref": "#/$defs/nullableDate"}, "amount": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/amount"}]},
+      "documents": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "source_id", "access_status"], "properties": {"kind": {"enum": ["tender", "draft-specification", "final-specification", "correction", "award", "contract-result", "deployed-configuration"]}, "source_id": {"$ref": "#/$defs/text"}, "access_status": {"enum": ["public-read", "not-obtained", "expired", "registration-required", "confidentiality-required"]}}}},
+      "configuration_match": {"enum": ["unconfirmed", "confirmed"]}, "component_category": {"enum": ["system-package", "compute-cpu", "compute-accelerator", "interconnect", "storage", "facility", "software", "maintenance"]},
+      "itemized_costs": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["line_id", "basis", "value_jpy", "tax_basis", "source_refs"], "properties": {"line_id": {"$ref": "#/$defs/text"}, "basis": {"const": "observed"}, "value_jpy": {"type": "number", "minimum": 0}, "tax_basis": {"enum": ["including-tax", "excluding-tax"]}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}}},
+      "related_case_ids": {"$ref": "#/$defs/refs"}, "aggregation_status": {"enum": ["not-cleared", "shared-scope-unresolved"]}, "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"}, "gap_ids": {"$ref": "#/$defs/refs"}
+    }}
+  }
+}

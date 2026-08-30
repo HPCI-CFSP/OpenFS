@@ -39,10 +39,11 @@ class RoadmapReferenceDataTests(unittest.TestCase):
             artifact = root / self.policy["included_public_roadmap_reference_data"]
             artifact.parent.mkdir(parents=True)
             artifact.write_text(json.dumps(payload), encoding="utf-8")
-            directive = root / "reviews" / "directives" / "DIR-900008.json"
+            directive_name = self.payload["publication"]["human_approval_directive_id"] + ".json"
+            directive = root / "reviews" / "directives" / directive_name
             directive.parent.mkdir(parents=True)
             directive.write_text(
-                (ROOT / "reviews" / "directives" / "DIR-900008.json").read_text(
+                (ROOT / "reviews" / "directives" / directive_name).read_text(
                     encoding="utf-8"
                 ),
                 encoding="utf-8",

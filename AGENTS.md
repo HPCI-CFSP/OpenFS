@@ -60,6 +60,13 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - A follow-up Run must pass the Profile continuity gate before publication. Investigate every reported regression rather than deleting or weakening predecessor Evidence.
 - Do not present an illustrative or candidate system planning option as an HPCI recommendation. A plan must include architecture, system software, applications, center impacts, worldwide technology options, priority coverage of technologies developed in Japan, uncertainties, and decision gates. Mark HPCI-specific conditions at the affected element instead of making the whole planning method HPCI-specific.
 - Do not set evaluation weights, produce a total ranking, or authorize publication without a reviewed human Directive.
+- Follow `docs/planning/procurement-cost-estimation.md` for price research and
+  budget options. Keep contract totals, observed itemization, estimated costs,
+  allocation assumptions, and unknown residuals distinct. Do not infer academic
+  discounts, unit prices, quantities, or TCO from an unmatched package total.
+  Five budget ceilings and allocation profiles come from `config/budget-planning.json`;
+  changing a deployment year does not predict future prices. Restricted specifications
+  stay uncollected. Run `tools/check_procurement_costs.py` before publication.
 - Do not publish a scenario or report unless its Japanese and English public summaries are both present.
 - Treat `README.md` and `README.ja.md` as one synchronized public document. Any user-visible content or structure change to either file requires the corresponding change in the other file in the same pull request. Preserve matching `i18n-section` IDs and run `python3 tools/validate_readme_i18n.py`.
 - Follow `docs/policies/language-and-terminology.md` for all public prose. Keep Japanese and English fields semantically equivalent, preserve official names, and run `python3 tools/check_public_language.py` before publication.
@@ -292,6 +299,10 @@ remaining matching items; never silently treat the example as the full scope.
   exact source URL and becomes unresolved when that URL changes. Neither URL
   reachability nor single-model semantic retrieval is independent claim
   validation, and neither may be described as Consensus acceptance.
+  When direct network auditing is unavailable, `--offline-reconcile` reuses only
+  exact-URL observations and marks new URLs `error/not-audited`; it preserves
+  original retrieval dates and fetch counts and must not be described as a new
+  reachability check.
 - High-impact portfolio review uses the `high_impact_recommendation` Consensus
   rule. Keep public roadmaps and scenarios provisional until independent reviews,
   falsification, deterministic evaluation, and the required human decision pass.

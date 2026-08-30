@@ -87,6 +87,9 @@ The first implemented research workflow, `OFS-001`, repeatedly investigates memo
 | `knowledge/public/hpci-system-inventory.json` | FY-specific public HPCI resource and machine-specification baseline; call availability is distinct from system lifecycle |
 | `knowledge/public/application-performance-forecasts.json` | EEA1 multi-scale forecast contract, readiness matrix, and validated numerical forecasts when available |
 | `knowledge/public/source-catalog-map.json` | Generated exact-URL map to canonical Topics, roadmap families, and roadmap tracks |
+| `knowledge/public/procurement-cost-register.json` | Public contract prices, specification access, scope links, and unallocated cost breakdowns |
+| `config/budget-planning.json` | Five numeric budget ceilings and provisional allocation profiles; allocations are not price estimates |
+| `docs/planning/procurement-cost-estimation.md` | Public-only cost research, normalization, calibration requirements, and unresolved quantities/TCO |
 | `config/catalog-taxonomy.json` | Canonical six-category assignment and public display code for every active Topic and roadmap; Pages filters are generated from this file |
 | `config/source-watch-registry.json` | Stable recurring official pages to monitor and their affected Topics, roadmaps, and Monitors |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |

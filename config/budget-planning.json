@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1.0",
+  "planning_id": "BUDGET-PLANNING-001",
+  "price_basis_year": 2026,
+  "currency": "JPY",
+  "tax_basis": "excluding-tax",
+  "budget_ceilings_oku_jpy": [10, 30, 100, 300, 1000],
+  "default_budget_oku_jpy": 100,
+  "default_deployment_year": 2030,
+  "deployment_years": [2026, 2027, 2028, 2029, 2030, 2031, 2032],
+  "tco_years": 5,
+  "allocation_basis": "openfs-planning-assumption",
+  "scope_ja": "2026年価格・税抜の初期整備予算。機器、導入、必要な施設改修、予備費を含み、研究開発費と運用期間中の保守・電力・人件費は別扱いです。",
+  "scope_en": "Initial funding in constant 2026 JPY, excluding tax. Includes equipment, deployment, required facility work, and contingency; excludes R&D and recurring maintenance, energy, and staffing.",
+  "caveat_ja": "金額と配分率は比較用の仮定であり、調達実績の分布から確定した予算帯や、見積価格ではありません。導入年を変えても価格低下や機器世代を自動的に仮定しません。",
+  "caveat_en": "Budget levels and allocation shares are comparison assumptions, not price quotations or bands calibrated to procurement distributions. Changing the deployment year does not assume cheaper prices or future hardware generations.",
+  "components": [
+    {"id": "compute-cpu", "label_ja": "CPU計算ノード", "label_en": "CPU compute nodes", "unit_ja": "ノード", "unit_en": "nodes"},
+    {"id": "compute-accelerator", "label_ja": "GPU・アクセラレータノード", "label_en": "GPU and accelerator nodes", "unit_ja": "ノード", "unit_en": "nodes"},
+    {"id": "pilot", "label_ja": "大容量メモリ・新技術評価区画", "label_en": "Large-memory and emerging-technology pilot", "unit_ja": "ノード", "unit_en": "nodes"},
+    {"id": "interconnect", "label_ja": "インターコネクト", "label_en": "Interconnect", "unit_ja": "式", "unit_en": "system"},
+    {"id": "storage", "label_ja": "共有ストレージ", "label_en": "Shared storage", "unit_ja": "PB", "unit_en": "PB"},
+    {"id": "management", "label_ja": "管理・ソフトウェア基盤", "label_en": "Management and software", "unit_ja": "式", "unit_en": "system"},
+    {"id": "facility", "label_ja": "電源・冷却・施設改修", "label_en": "Power, cooling, and facility work", "unit_ja": "式", "unit_en": "system"},
+    {"id": "integration", "label_ja": "導入・移行", "label_en": "Deployment and migration", "unit_ja": "式", "unit_en": "system"},
+    {"id": "contingency", "label_ja": "予備費", "label_en": "Contingency", "unit_ja": "式", "unit_en": "allowance"}
+  ],
+  "profiles": [
+    {"scenario_id": "SCN-HPCI-BALANCED-001", "shares_percent": {"compute-cpu": 25, "compute-accelerator": 30, "pilot": 5, "interconnect": 10, "storage": 10, "management": 3, "facility": 10, "integration": 5, "contingency": 2}},
+    {"scenario_id": "SCN-HPCI-AI-DATA-001", "shares_percent": {"compute-cpu": 5, "compute-accelerator": 45, "pilot": 3, "interconnect": 12, "storage": 12, "management": 3, "facility": 12, "integration": 5, "contingency": 3}},
+    {"scenario_id": "SCN-HPCI-STAGED-001", "shares_percent": {"compute-cpu": 15, "compute-accelerator": 25, "pilot": 12, "interconnect": 10, "storage": 10, "management": 4, "facility": 10, "integration": 7, "contingency": 7}}
+  ]
+}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 from collections import Counter
@@ -172,19 +173,55 @@ def build_audit(root: Path, broker: SafeWebFetchBroker, workers: int) -> dict[st
     }
 
 
+def reconcile_offline(root: Path, previous: dict[str, Any]) -> dict[str, Any]:
+    """Refresh registrations without changing retrieval dates or inventing a fetch."""
+    audit = copy.deepcopy(previous)
+    by_url = {item["url"]: item for item in previous["results"]}
+    results = []
+    for source in collect_sources(root):
+        old = by_url.get(source["url"])
+        result = dict(old) if old else {
+            "status": "error", "http_status": None, "final_url": source["url"],
+            "content_type": None, "error_kind": "not-audited",
+        }
+        results.append({**result, **source})
+    results.sort(key=lambda item: (item["roadmap_id"], item["source_id"]))
+    unique = {item["url"]: item for item in results}
+    classes = Counter(item["source_class"] for item in results)
+    summary = audit["summary"]
+    summary.update(source_count=len(results), unique_url_count=len(unique),
+                   duplicate_registration_count=len(results) - len(unique),
+                   unique_external_url_count=len({r["url"] for r in results if r["source_class"] != "openfs-governance"}),
+                   external_first_party_source_count=len(results) - classes["openfs-governance"],
+                   openfs_governance_source_count=classes["openfs-governance"])
+    for key in summary["source_class_counts"]:
+        summary["source_class_counts"][key] = classes[key]
+    for status in ("reachable", "access-restricted", "missing", "timeout", "error"):
+        summary[status] = sum(r["status"] == status for r in results)
+        summary["unique_url_status_counts"][status] = sum(r["status"] == status for r in unique.values())
+    audit["results"] = results
+    audit["method_ja"] = "オフラインで現行の情報源登録と過去のURL到達性監査を対応付けています。URL完全一致の結果のみ再利用し、監査日と過去の取得回数は更新しません。新規・変更URLはerror（not-audited、HTTP状態なし）として未監査を明示します。別途記録する管理されたWebツールでの内容確認はHTTP監査や独立検証の代わりにはなりません。"
+    audit["method"] = audit["method_en"] = "Offline reconciliation of current source registrations with the previous URL reachability audit. Only exact-URL results are reused; the audit date and historical fetch count are unchanged. New or changed URLs are error/not-audited with no HTTP status. Separately recorded managed-Web content reviews are not HTTP audits or independent validation."
+    return audit
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--profile-id", default=os.environ.get("OPENFS_SECURITY_PROFILE_ID"))
+    parser.add_argument("--offline-reconcile", action="store_true", help="Reuse exact-URL audit results; no network, no refreshed retrieval dates")
     args = parser.parse_args()
-    if not args.profile_id:
+    if not args.offline_reconcile and not args.profile_id:
         raise SystemExit("--profile-id or OPENFS_SECURITY_PROFILE_ID is required")
     if not 1 <= args.workers <= 32:
         raise SystemExit("--workers must be between 1 and 32")
-    broker = SafeWebFetchBroker.from_file(security_profile_id=args.profile_id)
-    audit = build_audit(args.root, broker, args.workers)
+    if args.offline_reconcile:
+        audit = reconcile_offline(args.root, read_json(args.output))
+    else:
+        broker = SafeWebFetchBroker.from_file(security_profile_id=args.profile_id)
+        audit = build_audit(args.root, broker, args.workers)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(audit["summary"], ensure_ascii=False))

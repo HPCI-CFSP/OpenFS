@@ -493,7 +493,10 @@
         const button = document.createElement("button");
         button.type = "button";
         button.dataset.category = category.category_id;
-        button.textContent = category.category_id === "all" ? tr("all") : category[`title_${language}`];
+        button.textContent = category.category_id === "all" ? tr("all") : (category[`short_title_${language}`] || category[`title_${language}`]);
+        button.title = category.category_id === "all" ? tr("all") : category[`title_${language}`];
+        button.setAttribute("aria-label", button.title);
+        button.setAttribute("aria-pressed", String(activeCategory === category.category_id));
         button.classList.toggle("active", activeCategory === category.category_id);
         button.addEventListener("click", () => {
           activeCategory = category.category_id;

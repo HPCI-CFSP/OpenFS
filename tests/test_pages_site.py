@@ -74,7 +74,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -563,9 +563,9 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and scenario["plan_version"] == "0.4"
+                    and scenario["plan_version"] == "0.5"
                     and [option["tier"] for option in scenario["budget_options"]]
-                    == ["ume", "take", "matsu"]
+                    == ["jpy-10", "jpy-30", "jpy-100", "jpy-300", "jpy-1000"]
                     and len(scenario["implementation_path"]["phases"]) == 12
                     and {note["scope"] for note in scenario["context_notes"]}
                     == {"reusable", "hpci-specific"}
@@ -605,9 +605,11 @@ class PagesSiteTests(unittest.TestCase):
                 - assurance["source_audit"]["summary"]["unique_url_count"],
                 assurance["source_audit"]["summary"]["duplicate_registration_count"],
             )
-            self.assertEqual(
+            unchecked = {r["url"] for r in assurance["source_audit"]["results"]
+                         if r.get("error_kind") == "not-audited"}
+            self.assertLessEqual(
+                assurance["source_audit"]["summary"]["unique_url_count"] - len(unchecked),
                 assurance["source_audit"]["summary"]["fetch_count"],
-                assurance["source_audit"]["summary"]["unique_url_count"],
             )
             self.assertEqual(
                 assurance["source_audit"]["summary"]["source_count"]

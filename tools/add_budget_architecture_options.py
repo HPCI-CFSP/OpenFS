@@ -6,16 +6,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+from estimate_system_cost import allocate_budget
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PATH = ROOT / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
-
-BUDGETS = {
-    "ume": (40, 50, 70, "最小構成（梅）", "Minimum option (Ume)"),
-    "take": (300, 400, 500, "基準構成（竹）", "Reference option (Take)"),
-    "matsu": (1000, 1300, 1500, "拡張構成（松）", "Expanded option (Matsu)"),
-}
 
 REFERENCE_CASES = [
     {
@@ -84,119 +79,77 @@ REFERENCE_CASES = [
     },
 ]
 
-SIZES = {
-    "SCN-HPCI-BALANCED-001": {
-        "ume": (96, 96, 384, 8, 10),
-        "take": (1024, 512, 2048, 32, 50),
-        "matsu": (8192, 2048, 8192, 128, 200),
-    },
-    "SCN-HPCI-AI-DATA-001": {
-        "ume": (32, 112, 448, 8, 15),
-        "take": (256, 768, 3072, 32, 80),
-        "matsu": (1024, 2560, 10240, 96, 300),
-    },
-    "SCN-HPCI-STAGED-001": {
-        "ume": (64, 64, 256, 16, 10),
-        "take": (512, 320, 1280, 64, 50),
-        "matsu": (4096, 1536, 6144, 256, 200),
-    },
-}
-
-
-def component(
-    component_id: str,
-    component_type: str,
-    label_ja: str,
-    label_en: str,
-    quantity: float,
-    unit_ja: str,
-    unit_en: str,
-    role_ja: str,
-    role_en: str,
-    connections: list[str],
-) -> dict[str, Any]:
+def build_option(scenario: dict[str, Any], ceiling: int, config: dict[str, Any]) -> dict[str, Any]:
+    scenario_id = scenario["scenario_id"]
+    allocation = allocate_budget(config, scenario_id, ceiling, config["default_deployment_year"])
+    key = scenario_id.removeprefix("SCN-HPCI-").removesuffix("-001")
+    tier = f"jpy-{ceiling}"
+    ids = {c["id"]: f"BCMP-{key}-{ceiling}-{c['id'].upper()}" for c in config["components"]}
+    components = []
+    options = {item["domain"]: item for item in scenario["technology_options"]}
+    for item in config["components"]:
+        kind = item["id"]
+        if kind in {"integration", "contingency"}:
+            continue
+        connections = [ids["interconnect"]] if kind != "interconnect" else [
+            ids[c["id"]] for c in config["components"]
+            if c["id"] not in {"interconnect", "facility", "integration", "contingency"}]
+        if kind == "facility":
+            connections = [ids[key] for key in ("compute-cpu", "compute-accelerator", "pilot", "storage")]
+        domain = {"compute-cpu": "compute", "compute-accelerator": "compute", "pilot": "memory", "management": "system-software"}.get(kind, kind)
+        candidate = options.get(domain)
+        role_ja = candidate["role"] if candidate else {
+            "storage": "データ取り込み、一時保存、長期保存の要件から容量・帯域と階層構成を検討します。",
+            "facility": "受電、電力密度、液冷、既存設備との共用範囲と改修費を確認します。",
+        }[kind]
+        role_en = candidate["role_en"] if candidate else {
+            "storage": "Plan capacity, bandwidth, and tiers from ingestion, scratch, and retention requirements.",
+            "facility": "Verify power supply, density, liquid cooling, shared infrastructure, and retrofit costs.",
+        }[kind]
+        components.append({
+            "component_id": ids[kind], "component_type": kind,
+            "label_ja": item["label_ja"], "label_en": item["label_en"],
+            "quantity": None, "unit_ja": item["unit_ja"], "unit_en": item["unit_en"],
+            "role_ja": role_ja, "role_en": role_en,
+            "connection_ids": connections,
+        })
     return {
-        "component_id": component_id,
-        "component_type": component_type,
-        "label_ja": label_ja,
-        "label_en": label_en,
-        "quantity": quantity,
-        "unit_ja": unit_ja,
-        "unit_en": unit_en,
-        "role_ja": role_ja,
-        "role_en": role_en,
-        "connection_ids": connections,
-    }
-
-
-def build_option(scenario_id: str, tier: str, values: tuple[int, int, int, int, int]) -> dict[str, Any]:
-    cpu_nodes, accelerator_nodes, accelerators, pilot_nodes, storage_pb = values
-    key = scenario_id.removeprefix("SCN-HPCI-").removesuffix("-001").replace("-", "")
-    prefix = f"{key}-{tier}".upper()
-    lower, reference, upper, label_ja, label_en = BUDGETS[tier]
-    facility_ja = {"ume": "既存の液冷対応センターの増強", "take": "大規模センターの増築・受電設備の増強", "matsu": "専用施設を含むフラッグシップ級システム"}[tier]
-    facility_en = {"ume": "Expansion of an existing liquid-cooled center", "take": "Major center expansion with additional power infrastructure", "matsu": "Flagship-class system with dedicated facilities"}[tier]
-    fabric_label_ja = "本番系と評価系に分けた標準ファブリック"
-    fabric_label_en = "Dual-plane standards-based fabric"
-    if "AI-DATA" in scenario_id:
-        fabric_label_ja = "高帯域のスケールアップ／スケールアウト・ファブリック"
-        fabric_label_en = "High-bandwidth scale-up and scale-out fabrics"
-    if "STAGED" in scenario_id:
-        fabric_label_ja = "本番ファブリックと分離された実証用ファブリック"
-        fabric_label_en = "Production fabric plus isolated pilot fabric"
-    ids = {name: f"BCMP-{prefix}-{name}" for name in ("CPU", "ACC", "PILOT", "NET", "STORAGE", "MGMT", "FACILITY")}
-    components = [
-        component(ids["CPU"], "compute-cpu", "汎用・HPC向けCPU区画", "General-purpose and HPC CPU partition", cpu_nodes, "ノード", "nodes", "CPU計算資源、大容量メモリ、既存のHPCアプリケーション", "CPU compute capacity, high-capacity memory, and existing HPC applications", [ids["NET"]]),
-        component(ids["ACC"], "compute-accelerator", "GPU・アクセラレータ区画", "GPU and accelerator partition", accelerator_nodes, "ノード", "nodes", f"計{accelerators:,}基のアクセラレータを想定したAI・HPC計算資源", f"AI and HPC compute capacity based on {accelerators:,} accelerators", [ids["NET"]]),
-        component(ids["PILOT"], "pilot", "大容量メモリ・新技術評価区画", "Large-memory and emerging-technology pilot", pilot_nodes, "ノード", "nodes", "CXL、PIM、ウェハスケールプロセッサなどを本番環境から分離して評価", "Evaluate CXL, PIM, wafer-scale processors, and other options in a separate non-production environment", [ids["NET"]]),
-        component(ids["NET"], "interconnect", fabric_label_ja, fabric_label_en, 2, "面", "planes", "計算系、データ系、管理系を用途と障害領域に応じて分離・接続", "Separate and connect compute, data, and management planes according to purpose and failure domain", [ids["CPU"], ids["ACC"], ids["PILOT"], ids["STORAGE"], ids["MGMT"]]),
-        component(ids["STORAGE"], "storage", "階層型共有ストレージ", "Tiered shared storage", storage_pb, "PB（概算）", "PB (estimate)", "NVMe層、容量層、アーカイブ連携", "NVMe tier, capacity tier, and archive integration", [ids["NET"]]),
-        component(ids["MGMT"], "management", "ログイン・管理・可観測性", "Login, management, and observability", max(4, accelerator_nodes // 32), "ノード相当", "equivalent nodes", "認証、ジョブスケジューラー、監視、継続的インテグレーション、データ転送", "Identity, scheduler, monitoring, CI, and data transfer", [ids["NET"]]),
-        component(ids["FACILITY"], "facility", "施設・電力・冷却", "Facilities, power, and cooling", 1, "式", "facility package", facility_ja, facility_en, [ids["CPU"], ids["ACC"], ids["PILOT"], ids["STORAGE"]]),
-    ]
-    return {
-        "option_id": f"BUD-{prefix}",
-        "tier": tier,
-        "label_ja": label_ja,
-        "label_en": label_en,
-        "budget_range_oku_jpy": {"lower": lower, "reference": reference, "upper": upper},
-        "estimate_method_ja": "OpenFSは、公表された50億円、400億円、1,300億円級の事業を予算規模の参照点とし、1ノード当たり4基のGPUを搭載する400ノードの公開構成を構成上の参考例として用いました。その上で、計算、ネットワーク、ストレージ、施設への配分を計画案ごとに仮定し、システム規模を概算しました。",
-        "estimate_method_en": "OpenFS estimated the system scale by using published JPY 5 billion, JPY 40 billion, and JPY 130 billion program classes as budget reference points and a public 400-node topology with four GPUs per node as a structural example. The estimate assumes a planning-option-specific allocation across compute, network, storage, and facilities.",
+        "option_id": f"BUD-{key}-{ceiling}", "tier": tier,
+        "label_ja": f"{ceiling:,}億円", "label_en": f"JPY {ceiling / 10:g}B",
+        "budget_range_oku_jpy": {"lower": ceiling, "reference": ceiling, "upper": ceiling},
+        "estimate_method_ja": "設計方針ごとに仮配分した初期整備予算です。契約価格の推定ではなく、機器単価と施設条件の検証が済むまで数量・TCOは未算出とします。",
+        "estimate_method_en": "An initial budget allocation for this design strategy, not an estimated contract price. Quantities and TCO remain unknown until component pricing and facility constraints are validated.",
         "confidence": "low",
-        "reference_case_ids": ["BREF-HPCI-AI-2025", "BREF-ABCI30-2023", "BREF-FUGAKU-2022", "BREF-RIKEN-AIFS-2026"],
-        "components": components,
-        "aggregate": {
-            "cpu_nodes": cpu_nodes,
-            "accelerator_nodes": accelerator_nodes,
-            "accelerators": accelerators,
-            "storage_pb": storage_pb,
-            "facility_class_ja": facility_ja,
-            "facility_class_en": facility_en,
-        },
-        "caveat_ja": "ノード数と容量は、ベンダー見積り、調達仕様、性能保証ではありません。物価、為替、機器世代、施設・受電要件、保守、ソフトウェア、人件費によって大きく変わるため、正式な情報提供依頼（RFI）への回答と、確認済みのセンタープロファイルに基づく値へ置き換える必要があります。",
-        "caveat_en": "Node counts and capacity are not vendor quotations, procurement specifications, or performance guarantees. These values can vary materially with inflation, exchange rates, hardware generations, facility and power requirements, maintenance, software, and staffing. They must be replaced with values supported by formal requests for information (RFIs) and verified center profiles.",
+        "reference_case_ids": [r["case_id"] for r in REFERENCE_CASES],
+        "budget_allocation": allocation, "components": components,
+        "aggregate": {"cpu_nodes": None, "accelerator_nodes": None, "accelerators": None,
+                      "storage_pb": None, "facility_class_ja": "既存設備・改修範囲を要確認",
+                      "facility_class_en": "Existing facilities and required work need verification"},
+        "caveat_ja": "概念構成図です。数量・容量・実現可能性は未確認で、予算配分額は推定費用やベンダー見積りではありません。施設・電力・冷却条件と独立検証を確認してから構成規模を算出します。",
+        "caveat_en": "Conceptual topology. Quantities, capacity, and feasibility are unverified; allocations are neither cost estimates nor vendor quotes. Sizing requires facility, power, cooling, and independent validation evidence.",
     }
 
 
 def main() -> int:
     payload = json.loads(PATH.read_text(encoding="utf-8"))
-    payload["schema_version"] = "0.3.0"
+    config = json.loads((ROOT / "config/budget-planning.json").read_text(encoding="utf-8"))
     payload["budget_reference_cases"] = REFERENCE_CASES
     for scenario in payload["scenarios"]:
         scenario_id = scenario["scenario_id"]
-        scenario["plan_version"] = "0.4"
-        if f"{scenario_id}@0.3" not in scenario["supersedes"]:
-            scenario["supersedes"].append(f"{scenario_id}@0.3")
+        predecessor = f"{scenario_id}@{scenario['plan_version']}"
+        if scenario["plan_version"] != "0.5" and predecessor not in scenario["supersedes"]:
+            scenario["supersedes"].append(predecessor)
+        scenario["plan_version"] = "0.5"
+        scenario["effective_from"] = "2026-08-30"
         scenario["budget_options"] = [
-            build_option(scenario_id, tier, SIZES[scenario_id][tier])
-            for tier in ("ume", "take", "matsu")
+            build_option(scenario, ceiling, config)
+            for ceiling in config["budget_ceilings_oku_jpy"]
         ]
         scenario["publication"] = {
-            "information_classification": "public",
-            "publication_approved": True,
-            "publication_decision_id": "PUBDEC-20260827-003",
-            "human_approval_directive_id": "DIR-900012",
-            "approved_at": "2026-08-27T00:48:00+09:00",
+            "information_classification": "public", "publication_approved": True,
+            "publication_decision_id": "PUBDEC-20260830-001",
+            "human_approval_directive_id": "DIR-900013",
+            "approved_at": "2026-08-30T16:56:26+09:00",
         }
     PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return 0
