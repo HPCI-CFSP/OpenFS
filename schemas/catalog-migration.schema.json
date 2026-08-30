@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/catalog-migration.schema.json",
+  "title": "Reviewed catalog scope migration",
+  "type": "object",
+  "required": ["schema_version", "migration_id", "from_revision", "to_revision", "base_commit", "human_directive_id", "created_at", "entries", "section_moves", "workload_pairs"],
+  "$defs": {
+    "topic": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+    "topics": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/topic"}},
+    "strings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "migration_id": {"const": "CATALOG-MIGRATION-005"},
+    "from_revision": {"const": 4}, "to_revision": {"const": 5},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "human_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "entries": {"type": "array", "minItems": 54, "maxItems": 54, "items": {
+      "type": "object",
+      "required": ["source_topic_id", "source_catalog_code", "source_title_ja", "source_title_en", "source_status", "source_questions", "target_topic_ids", "target_paths", "action", "scope_note_ja", "scope_note_en"],
+      "properties": {
+        "source_topic_id": {"$ref": "#/$defs/topic"},
+        "source_catalog_code": {"type": "string", "pattern": "^(ARCH|SSW|APP|OPS|GOV|CROSS)-[0-9]{3}$"},
+        "source_title_ja": {"type": "string", "minLength": 1}, "source_title_en": {"type": "string", "minLength": 1},
+        "source_status": {"enum": ["not-started", "partial", "reviewed"]},
+        "source_questions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "target_topic_ids": {"$ref": "#/$defs/topics"}, "target_paths": {"$ref": "#/$defs/strings"},
+        "action": {"enum": ["retired", "moved", "revised"]},
+        "scope_note_ja": {"type": "string", "minLength": 1}, "scope_note_en": {"type": "string", "minLength": 1}
+      }, "additionalProperties": false
+    }},
+    "section_moves": {"type": "array", "items": {
+      "type": "object", "required": ["section_id", "source_topic_id", "target_topic_id"],
+      "properties": {"section_id": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}, "source_topic_id": {"$ref": "#/$defs/topic"}, "target_topic_id": {"$ref": "#/$defs/topic"}}, "additionalProperties": false
+    }},
+    "item_moves": {"type": "array", "items": {
+      "type": "object", "required": ["item_id", "source_topic_id", "target_topic_id", "target_section_id"],
+      "properties": {"item_id": {"type": "string", "pattern": "^TDI-[A-Z0-9-]+$"}, "source_topic_id": {"$ref": "#/$defs/topic"}, "target_topic_id": {"$ref": "#/$defs/topic"}, "target_section_id": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}}, "additionalProperties": false
+    }},
+    "workload_pairs": {"type": "array", "minItems": 3, "maxItems": 3, "items": {
+      "type": "object", "required": ["domain", "needs_topic_id", "evaluation_topic_id"],
+      "properties": {"domain": {"enum": ["simulation", "ai", "experimental-realtime"]}, "needs_topic_id": {"$ref": "#/$defs/topic"}, "evaluation_topic_id": {"$ref": "#/$defs/topic"}}, "additionalProperties": false
+    }}
+  }, "additionalProperties": false
+}

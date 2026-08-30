@@ -49,6 +49,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "research-baseline.schema.json"
     if ref == "config/catalog-taxonomy.json":
         return "catalog-taxonomy.schema.json"
+    if ref == "config/catalog-migration.json":
+        return "catalog-migration.schema.json"
     if ref == "config/roadmap-portfolio.json":
         return "roadmap-portfolio.schema.json"
     if ref == "config/skill-registry.json":

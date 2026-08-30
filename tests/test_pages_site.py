@@ -474,8 +474,8 @@ class PagesSiteTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             result = build(ROOT, output)
-            self.assertEqual(54, len(result["topics"]))
-            self.assertEqual(60, result["baseline"]["historical_topic_count"])
+            self.assertEqual(40, len(result["topics"]))
+            self.assertEqual(64, result["baseline"]["historical_topic_count"])
             self.assertTrue(all(topic["status"] != "retired" for topic in result["topics"]))
             self.assertEqual(6, len(result["catalog_taxonomy"]["categories"]))
             self.assertTrue(all(topic.get("catalog_category_id") for topic in result["topics"]))
@@ -499,7 +499,7 @@ class PagesSiteTests(unittest.TestCase):
             arch02 = next(
                 profile
                 for profile in decision_support["topic_profiles"]
-                if profile["topic_id"] == "ARCH-02"
+                if profile["topic_id"] == "ARCH-12"
             )
             self.assertTrue(
                 any(
@@ -683,7 +683,8 @@ class PagesSiteTests(unittest.TestCase):
                 30,
             )
             self.assertEqual([], result["reports"])
-            self.assertEqual("2026-08-29", result["catalog_as_of"])
+            baseline = json.loads((ROOT / "config/research-baseline.json").read_text(encoding="utf-8"))
+            self.assertEqual(baseline["derived_at"], result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))
             self.assertTrue(result["site"]["commit_url"].endswith(result["site"]["commit_sha"]))
             self.assertIn("T", result["site"]["updated_at"])
@@ -904,7 +905,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn("ROADMAP-DEPENDENCY-REGISTER-001", rendered)
             self.assertIn("SCN-HPCI-BALANCED-001", rendered)
             self.assertIn("CRP-P0-ROADMAPS-V02", rendered)
-            self.assertIn('"catalog_as_of":"2026-08-29"', rendered)
+            self.assertTrue(f'"catalog_as_of":"{baseline["derived_at"]}"' in rendered)
             self.assertIn('"path":"roadmaps/hardware/memory-data-movement/"', rendered)
             index = (output / "index.html").read_text(encoding="utf-8")
             asset_version = result["site"]["commit_sha"]

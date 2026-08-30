@@ -9,6 +9,7 @@
 
   const copy = {
     ja: {
+      scopeTitle: "調査範囲と進捗", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照",
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
       navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       aboutKicker: "OpenFSについて",
@@ -52,6 +53,7 @@
       decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
+      scopeTitle: "Research scope and progress", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence",
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
       navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       aboutKicker: "ABOUT OPENFS",
@@ -427,7 +429,7 @@
     root.replaceChildren();
     const filtered = data.topics.filter((topic) => {
       const categoryMatch = activeCategory === "all" || topic.catalog_category_id === activeCategory;
-      const searchText = [topic.catalog_code, topic.topic_id, topic.title_ja, topic.title_en, categoryLabel(topic.catalog_category_id)].join(" ").toLocaleLowerCase(language);
+      const searchText = [topic.catalog_code, topic.topic_id, topic.title_ja, topic.title_en, topic.summary_ja, topic.summary_en, ...(topic.research_units || []).flatMap((unit) => [unit.title_ja, unit.title_en, unit.question_ja, unit.question_en]), categoryLabel(topic.catalog_category_id)].join(" ").toLocaleLowerCase(language);
       return categoryMatch && (!query || searchText.includes(query));
     });
 
@@ -521,10 +523,10 @@
 
   function summariesForTopic(topicId) {
     return data.research_summaries
-      .filter((summary) => summary.topic_ids.includes(topicId))
+      .filter((summary) => (summary.catalog_topic_ids || summary.topic_ids).includes(topicId))
       .map((summary) => ({
         ...summary,
-        findings: summary.findings.filter((finding) => finding.topic_ids.includes(topicId))
+        findings: summary.findings.filter((finding) => (finding.catalog_topic_ids || finding.topic_ids).includes(topicId))
       }))
       .filter((summary) => summary.findings.length > 0)
       .sort((left, right) => (
@@ -790,6 +792,7 @@
   function renderTechnologyItem(item, actorMap) {
     const article = document.createElement("article");
     article.className = `decision-item decision-stage-${item.stage}`;
+    article.id = item.item_id;
     const header = document.createElement("div");
     header.className = "decision-item-header";
     const title = document.createElement("h5");
@@ -838,6 +841,7 @@
   }
 
   function renderDecisionSections(root, profile, actorMap) {
+    const renderedItems = new Map();
     const stageOrder = ["current", "near-term", "research", "contested"];
     const stageLabels = {
       current: "currentStage", "near-term": "nearTermStage",
@@ -850,6 +854,7 @@
       displayed += filtered.length;
       const section = document.createElement("section");
       section.className = "decision-technology-section";
+      section.id = profileSection.section_id;
       const title = document.createElement("h3");
       title.textContent = localized(profileSection, "title");
       const summary = document.createElement("p");
@@ -864,7 +869,23 @@
         heading.textContent = tr(stageLabels[stage]);
         const list = document.createElement("div");
         list.className = "decision-item-list";
-        items.forEach((item) => list.appendChild(renderTechnologyItem(item, actorMap)));
+        items.forEach((item) => {
+          const key = JSON.stringify(Object.fromEntries(Object.keys(item).filter((key) => key !== "item_id").sort().map((key) => [key, item[key]])));
+          const previous = renderedItems.get(key);
+          if (!previous) {
+            renderedItems.set(key, item.item_id);
+            list.appendChild(renderTechnologyItem(item, actorMap));
+            return;
+          }
+          const reference = document.createElement("p");
+          reference.id = item.item_id;
+          const link = document.createElement("a");
+          link.href = `#${previous}`;
+          link.textContent = `${localized(item, "name")}: ${tr("sharedEvidence")}`;
+          link.addEventListener("click", (event) => { event.preventDefault(); document.getElementById(previous)?.scrollIntoView({block: "start"}); });
+          reference.appendChild(link);
+          list.appendChild(reference);
+        });
         section.append(heading, list);
       });
       root.appendChild(section);
@@ -1117,13 +1138,17 @@
   function renderTopicDetail() {
     if (!activeTopicId) return;
     const topic = data.topics.find((item) => item.topic_id === activeTopicId);
-    if (!topic) return;
+    if (!topic) {
+      renderTopicAlias();
+      return;
+    }
     setText("topic-dialog-id", topic.catalog_code);
     setText("topic-dialog-title", language === "ja" ? topic.title_ja : topic.title_en);
     setText("topic-dialog-meta", `${tr("topicDetailMeta")} / ${categoryLabel(topic.catalog_category_id)} / ${tr("canonicalTopicId")}: ${topic.topic_id}`);
     window.OpenFSFeedback.mount("topic-feedback", {kind: "topic", id: topic.topic_id, title: localized(topic, "title"), path: `?topic=${encodeURIComponent(topic.topic_id)}`});
     const root = document.getElementById("topic-dialog-content");
     root.replaceChildren();
+    renderTopicScope(root, topic);
     const summaries = summariesForTopic(topic.topic_id);
     const profile = decisionProfileForTopic(topic.topic_id);
     if (!summaries.length && !profile) {
@@ -1195,6 +1220,10 @@
   }
 
   function openTopicDetail(topicId) {
+    const current = data.topics.find((topic) => topic.topic_id === topicId || topic.catalog_code === topicId);
+    const alias = (data.catalog_aliases || []).find((item) => item.topic_id === topicId || item.legacy_code === topicId);
+    if (!current && !alias) return;
+    topicId = current ? current.topic_id : topicId;
     if (activeTopicId !== topicId) activeTopicRegion = "all";
     activeTopicId = topicId;
     const url = new URL(window.location.href);
@@ -1203,6 +1232,86 @@
     renderTopicDetail();
     const dialog = document.getElementById("topic-dialog");
     if (!dialog.open) dialog.showModal();
+  }
+
+  function topicLinks(ids) {
+    const list = document.createElement("ul");
+    list.className = "related-roadmap-list";
+    ids.forEach((id) => {
+      const topic = data.topics.find((item) => item.topic_id === id);
+      if (!topic) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = `?topic=${encodeURIComponent(id)}&lang=${language}#catalog`;
+      link.textContent = `${topic.catalog_code}: ${localized(topic, "title")}`;
+      link.addEventListener("click", (event) => { event.preventDefault(); openTopicDetail(id); });
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    return list;
+  }
+
+  function renderTopicAlias() {
+    const alias = (data.catalog_aliases || []).find((item) => item.topic_id === activeTopicId || item.legacy_code === activeTopicId);
+    if (!alias) return;
+    setText("topic-dialog-id", alias.legacy_code || alias.topic_id);
+    setText("topic-dialog-title", localized(alias, "title"));
+    setText("topic-dialog-meta", tr("movedTopic"));
+    document.getElementById("topic-feedback").replaceChildren();
+    const root = document.getElementById("topic-dialog-content");
+    root.replaceChildren();
+    const note = document.createElement("p");
+    note.textContent = tr("movedTopicNote");
+    root.append(note, topicLinks(alias.target_topic_ids));
+    if (alias.output_path) {
+      const link = document.createElement("a");
+      link.href = alias.output_path;
+      link.textContent = tr("relatedOutput");
+      if (alias.output_path.startsWith("#")) link.addEventListener("click", () => document.getElementById("topic-dialog").close());
+      root.appendChild(link);
+    }
+  }
+
+  function renderTopicScope(root, topic) {
+    if (!topic.summary_ja && !topic.research_units?.length) return;
+    const section = document.createElement("section");
+    section.className = "topic-scope";
+    const heading = document.createElement("h3");
+    heading.textContent = tr("scopeTitle");
+    const summary = document.createElement("p");
+    summary.textContent = localized(topic, "summary");
+    const list = document.createElement("ul");
+    list.className = "research-unit-list";
+    (topic.research_units || []).forEach((unit) => {
+      const item = document.createElement("li");
+      const title = document.createElement("strong");
+      title.textContent = localized(unit, "title");
+      const status = document.createElement("span");
+      status.className = "research-unit-status";
+      status.textContent = tr(statusKeys[unit.status]);
+      const question = document.createElement("p");
+      question.textContent = localized(unit, "question");
+      item.append(title, status, question);
+      unit.evidence_section_ids.forEach((id, index) => {
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.textContent = `${tr("evidenceSections")} ${index + 1}`;
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (activeTopicRegion !== "all") { activeTopicRegion = "all"; renderTopicDetail(); }
+          document.getElementById(id)?.scrollIntoView({block: "start"});
+        });
+        item.appendChild(link);
+      });
+      list.appendChild(item);
+    });
+    section.append(heading, summary, list);
+    if (topic.related_topic_ids?.length) {
+      const related = document.createElement("h4");
+      related.textContent = tr("relatedTopics");
+      section.append(related, topicLinks(topic.related_topic_ids));
+    }
+    root.appendChild(section);
   }
 
   function findRoadmapMilestone(milestoneId) {
@@ -1335,5 +1444,5 @@
   });
   render();
   const initialTopicId = new URLSearchParams(window.location.search).get("topic");
-  if (initialTopicId && data.topics.some((topic) => topic.topic_id === initialTopicId)) openTopicDetail(initialTopicId);
+  if (initialTopicId) openTopicDetail(initialTopicId);
 })();

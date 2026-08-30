@@ -459,6 +459,12 @@ def generated_profile(
 def main() -> int:
     artifact = load_json(ARTIFACT_PATH)
     baseline = load_json(BASELINE_PATH)
+    if baseline.get("catalog_revision", 0) >= 5:
+        raise ValueError(
+            "Legacy whole-profile generation is disabled for catalog revision 5+. "
+            "Update assigned research units with preserved Evidence IDs; see "
+            "docs/operations/catalog-maintenance.md."
+        )
     i18n = load_json(I18N_PATH)
     roadmaps = [load_json(path) for path in sorted(ROADMAP_DIR.glob("*.json"))]
     research_as_of = latest_research_date(artifact, roadmaps)

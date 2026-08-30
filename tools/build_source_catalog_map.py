@@ -55,6 +55,14 @@ def _nested_source_ids(value: Any) -> set[str]:
 def build(root: Path) -> dict[str, Any]:
     portfolio = read_json(root / PORTFOLIO_PATH)
     decision_support = read_json(root / DECISION_SUPPORT_PATH)
+    active_ids = {
+        topic["topic_id"] for topic in read_json(root / "config/research-baseline.json")["topics"]
+        if topic["status"] != "retired"
+    }
+    decision_support["topic_profiles"] = [
+        profile for profile in decision_support["topic_profiles"]
+        if profile["topic_id"] in active_ids
+    ]
     watch_registry = read_json(root / WATCH_REGISTRY_PATH)
     active_watches = [item for item in watch_registry["targets"] if item["active"]]
     family_by_id = {

@@ -115,13 +115,13 @@ def validate_topic_decision_support(root: Path) -> list[str]:
             f"missing={sorted(partial_topic_ids - active_profile_ids)}, "
             f"extra={sorted(active_profile_ids - partial_topic_ids)}"
         )
-    arch02 = next((item for item in artifact["topic_profiles"] if item["topic_id"] == "ARCH-02"), None)
-    if arch02 and not any(
+    specialized = next((item for item in artifact["topic_profiles"] if item["topic_id"] == "ARCH-12"), None)
+    if specialized and not any(
         "MN-Core" in item["name_en"]
-        for section in arch02["sections"]
+        for section in specialized["sections"]
         for item in section["items"]
     ):
-        errors.append("ARCH-02 must include MN-Core")
+        errors.append("ARCH-12 must include MN-Core")
 
     platforms = artifact["platform_matrix"]["platforms"]
     platform_ids = {item["platform_id"] for item in platforms}
