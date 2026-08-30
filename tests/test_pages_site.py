@@ -5,14 +5,17 @@ import shutil
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from build_pages_site import (  # noqa: E402
+    PUBLIC_BRAND_ASSETS,
     build,
     collect_consensus_packages,
     collect_consensus_receipts,
@@ -20,6 +23,7 @@ from build_pages_site import (  # noqa: E402
     collect_roadmap_reference_data,
     collect_scenarios,
     collect_topic_summaries,
+    copy_brand_assets,
 )
 
 
@@ -28,13 +32,28 @@ class PageStructureParser(HTMLParser):
         super().__init__()
         self.ids = []
         self.fragment_links = []
+        self.images = []
+        self.links = []
+        self.headings = []
+        self.heading_level = None
 
-    def handle_starttag(self, _tag, attrs):
+    def handle_starttag(self, tag, attrs):
         values = dict(attrs)
         if values.get("id"):
             self.ids.append(values["id"])
         if values.get("href", "").startswith("#"):
             self.fragment_links.append(values["href"][1:])
+        if tag == "a":
+            self.links.append(values)
+        if tag in {"h1", "h2", "h3"}:
+            self.heading_level = tag
+            self.headings.append(tag)
+        if tag == "img":
+            self.images.append({**values, "heading": self.heading_level})
+
+    def handle_endtag(self, tag):
+        if tag == self.heading_level:
+            self.heading_level = None
 
 
 class PagesSiteTests(unittest.TestCase):
@@ -235,6 +254,155 @@ class PagesSiteTests(unittest.TestCase):
         self.assertEqual(len(parser.ids), len(set(parser.ids)))
         self.assertTrue(parser.fragment_links)
         self.assertEqual([], sorted(set(parser.fragment_links) - set(parser.ids)))
+
+    def test_readmes_share_the_standard_logo_and_pages_link(self):
+        logo_headers = []
+        for filename in ("README.md", "README.ja.md"):
+            with self.subTest(filename=filename):
+                text = (ROOT / filename).read_text(encoding="utf-8")
+                header = text.split("</h1>", 1)[0] + "</h1>"
+                logo_headers.append(header)
+                parser = PageStructureParser()
+                parser.feed(header)
+                self.assertEqual(["h1"], parser.headings)
+                self.assertEqual(1, len(parser.images))
+                self.assertEqual(
+                    {"src": "assets/branding/openfs-logo.svg", "alt": "OpenFS",
+                     "width": "285", "height": "130", "heading": "h1"},
+                    parser.images[0],
+                )
+                self.assertEqual(
+                    [{"href": "https://hpci-cfsp.github.io/OpenFS/"}], parser.links
+                )
+                self.assertNotIn("# OpenFS", text)
+        self.assertEqual(*logo_headers)
+
+    def test_brand_assets_are_self_contained_outlined_vectors(self):
+        namespace = {"s": "http://www.w3.org/2000/svg"}
+        allowed = {"svg", "title", "desc", "defs", "linearGradient", "stop", "mask", "path", "polygon", "g"}
+        allowed_attributes = {"id", "viewBox", "width", "height", "role", "aria-labelledby",
+                              "gradientUnits", "x1", "y1", "x2", "y2", "offset", "stop-color",
+                              "maskUnits", "x", "y", "style", "d", "fill", "points",
+                              "data-corner", "transform", "mask", "data-loop"}
+        definitions = []
+        faces = []
+        for filename in PUBLIC_BRAND_ASSETS:
+            with self.subTest(filename=filename):
+                root = ET.parse(ROOT / "assets" / "branding" / filename).getroot()
+                identifiers = [el.get("id") for el in root.iter() if el.get("id")]
+                self.assertEqual(len(identifiers), len(set(identifiers)))
+                self.assertEqual("OpenFS", root.find("s:title", namespace).text)
+                self.assertEqual(11, len(root.findall("s:defs/s:linearGradient", namespace)))
+                self.assertEqual(9, len(root.findall("s:defs/s:mask/s:polygon", namespace)))
+                for element in root.iter():
+                    self.assertIn(element.tag.split("}")[-1], allowed)
+                    self.assertTrue(set(element.attrib) <= allowed_attributes)
+                    for name, value in element.attrib.items():
+                        if name == "style":
+                            self.assertEqual("mask-type:luminance", value)
+                        if "url(" in value:
+                            self.assertTrue(value.startswith("url(#") and value.endswith(")"))
+                            self.assertIn(value[5:-1], identifiers)
+                wordmark = root.find("s:path[@id='wordmark']", namespace)
+                if filename == "openfs-symbol.svg":
+                    self.assertIsNone(wordmark)
+                else:
+                    self.assertEqual("#767676", wordmark.get("fill"))
+                    self.assertGreater(len(wordmark.get("d")), 1000)
+                definitions.append(ET.tostring(root.find("s:defs", namespace)))
+                faces.append([
+                    ET.tostring(group)
+                    for group in root.find("s:g[@id='symbol']", namespace)
+                ])
+        self.assertTrue(all(item == definitions[0] for item in definitions))
+        self.assertTrue(all(item == faces[0] for item in faces))
+
+    def test_brand_asset_copy_uses_an_allowlist(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "input"
+            source = root / "assets" / "branding"
+            source.mkdir(parents=True)
+            for filename in PUBLIC_BRAND_ASSETS:
+                shutil.copy2(ROOT / "assets" / "branding" / filename, source / filename)
+            for filename in ("logo-concept.md", "draft.svg", "comparison.html", "assets.zip"):
+                (source / filename).write_text("not for publication", encoding="utf-8")
+            output = Path(directory) / "output"
+            copy_brand_assets(root, output)
+            self.assertEqual(
+                set(PUBLIC_BRAND_ASSETS),
+                {path.name for path in (output / "assets" / "branding").iterdir()},
+            )
+            for filename in PUBLIC_BRAND_ASSETS:
+                self.assertEqual(
+                    (source / filename).read_bytes(),
+                    (output / "assets" / "branding" / filename).read_bytes(),
+                )
+
+    def test_missing_brand_asset_fails_the_build_step(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "input"
+            source = root / "assets" / "branding"
+            source.mkdir(parents=True)
+            for filename in PUBLIC_BRAND_ASSETS[:-1]:
+                shutil.copy2(ROOT / "assets" / "branding" / filename, source / filename)
+            with self.assertRaises(FileNotFoundError):
+                copy_brand_assets(root, Path(directory) / "output")
+
+    def test_brand_asset_changes_trigger_pages_and_preview(self):
+        for name in ("pages.yml", "pages-preview.yml"):
+            workflow = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+            self.assertIn('      - "assets/branding/**"', workflow)
+
+    def test_home_branding_does_not_replace_controls_or_publish_concept(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            data = build(ROOT, output)
+            html = (output / "index.html").read_text(encoding="utf-8")
+            parser = PageStructureParser()
+            parser.feed(html)
+            logo = next(image for image in parser.images if image.get("class") == "brand-logo")
+            self.assertEqual("h1", logo["heading"])
+            self.assertEqual("OpenFS", logo["alt"])
+            self.assertEqual(("344", "128"), (logo["width"], logo["height"]))
+            url = urlsplit(logo["src"])
+            self.assertEqual("assets/branding/openfs-logo-compact.svg", url.path)
+            self.assertEqual(f"v={data['site']['commit_sha']}", url.query)
+            self.assertEqual(
+                (ROOT / url.path).read_bytes(), (output / url.path).read_bytes()
+            )
+            self.assertEqual(1, parser.headings.count("h1"))
+            self.assertIn('data-i18n="tagline"', html)
+            self.assertIn('data-language="ja"', html)
+            self.assertIn('data-language="en"', html)
+            self.assertIn('id="site-updated"', html)
+            self.assertIn('data-i18n="aboutLead"', html)
+            self.assertTrue(any(link.get("class") == "brand-link" and link["href"] == "./" for link in parser.links))
+            self.assertFalse((output / "docs").exists())
+            self.assertEqual(set(PUBLIC_BRAND_ASSETS), {p.name for p in (output / "assets" / "branding").iterdir()})
+            for page in output.rglob("*.html"):
+                contents = page.read_text(encoding="utf-8")
+                self.assertNotIn("logo-concept", contents)
+                self.assertNotIn("調べ、確かめ、未来を描き続ける。", contents)
+            for stylesheet in (ROOT / "site" / "styles.css", output / "styles.css"):
+                css = stylesheet.read_text(encoding="utf-8")
+                self.assertIn(".identity.identity-branded", css)
+                self.assertIn("width: 150.5px; height: 56px;", css)
+                self.assertIn("width: 129px; height: 48px;", css)
+            # Shared CSS must not opt other pages into the home-only layout.
+            for page in (ROOT / "site").glob("*.html"):
+                if page.name != "index.html":
+                    self.assertNotIn("identity-branded", page.read_text(encoding="utf-8"))
+
+    def test_logo_concept_has_both_languages_and_local_asset_links(self):
+        document = ROOT / "docs" / "branding" / "logo-concept.md"
+        text = document.read_text(encoding="utf-8")
+        self.assertIn("## 日本語", text)
+        self.assertIn("## English", text)
+        self.assertIn("### 短い紹介文", text)
+        self.assertIn("### Short Description", text)
+        for name in PUBLIC_BRAND_ASSETS:
+            self.assertIn(f"../../assets/branding/{name}", text)
+            self.assertTrue((document.parent / "../../assets/branding" / name).is_file())
 
     def test_roadmap_reference_data_and_detail_ui_are_connected(self):
         policy = self.publication_policy()
