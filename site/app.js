@@ -1295,6 +1295,12 @@
       const question = document.createElement("p");
       question.textContent = localized(unit, "question");
       item.append(title, status, question);
+      if (unit.latest_update_id) {
+        const provenance = document.createElement("a");
+        provenance.href = `https://github.com/HPCI-CFSP/OpenFS/blob/${data.site.commit_sha}/proposals/research-unit-updates/${unit.latest_update_id}.json`;
+        provenance.textContent = language === "ja" ? "暫定調査の根拠・履歴" : "Provisional research provenance";
+        item.appendChild(provenance);
+      }
       unit.evidence_section_ids.forEach((id, index) => {
         const link = document.createElement("a");
         link.href = `#${id}`;

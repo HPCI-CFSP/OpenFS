@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-from estimate_system_cost import allocate_budget, contract_breakdown
+from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,6 +21,7 @@ def validate_register(payload: dict, config: dict) -> None:
         return set(values)
 
     sources = unique(payload["sources"], "source_id")
+    source_records = {s["source_id"]: s for s in payload["sources"]}
     cases = unique(payload["cases"], "case_id")
     gaps = unique(payload["coverage_gaps"], "gap_id")
     unique(config["components"], "id")
@@ -38,12 +40,29 @@ def validate_register(payload: dict, config: dict) -> None:
         refs.update(ref for line in case["itemized_costs"] for ref in line["source_refs"])
         if case["amount"]:
             refs.update(case["amount"]["source_refs"])
+        for field in ("contract_window", "configuration_observation"):
+            if case.get(field):
+                refs.update(case[field]["source_refs"])
         if refs - sources or set(case["related_case_ids"]) - cases or set(case["gap_ids"]) - gaps:
             raise ValueError(f"unresolved references: {case['case_id']}")
         if case["case_id"] in case["related_case_ids"]:
             raise ValueError("a procurement must not be related to itself")
         if not case["gap_ids"] and case["configuration_match"] == "unconfirmed":
             raise ValueError("unconfirmed configuration needs a gap")
+        for field in ("amount", "contract_window", "configuration_observation"):
+            if case.get(field) and any(source_records[r]["retrieval_status"] != "read"
+                                       for r in case[field]["source_refs"]):
+                raise ValueError(f"{field} must cite checked public sources")
+        if case.get("contract_window"):
+            window = case["contract_window"]
+            if date.fromisoformat(window["start"]) > date.fromisoformat(window["end"]):
+                raise ValueError("reversed contract window")
+        if case["configuration_match"] == "confirmed" and not (
+            case.get("configuration_observation") and any(
+                d["kind"] == "final-specification" and d["access_status"] == "public-read"
+                for d in case["documents"])):
+            raise ValueError("confirmed configuration requires public final specifications and a match record")
+        lease_period_total(case)
         contract_breakdown(case)
     for profile in config["profiles"]:
         for budget in levels:

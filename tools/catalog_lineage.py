@@ -68,6 +68,8 @@ def validate_catalog_scope(root: Path) -> list[str]:
     active = {tid for tid, t in topics.items() if t["status"] != "retired"}
     artifact = json.loads((root / "knowledge/public/topic-decision-support.json").read_text(encoding="utf-8"))
     sections = {s["section_id"]: p["topic_id"] for p in artifact["topic_profiles"] for s in p["sections"]}
+    archived = {sid for p in artifact["topic_profiles"] for sid in p.get("archived_section_ids", [])}
+    updates = {u["update_id"]: u for p in artifact["topic_profiles"] for u in p.get("research_updates", [])}
     unit_ids = set()
     for tid, topic in topics.items():
         try:
@@ -93,6 +95,12 @@ def validate_catalog_scope(root: Path) -> list[str]:
             refs = unit["evidence_section_ids"]
             if any(sections.get(ref) != tid for ref in refs):
                 errors.append(f"{uid} references a section owned by another Topic or missing")
+            if set(refs) & archived:
+                errors.append(f"{uid} references archived sections")
+            if unit.get("latest_update_id"):
+                update = updates.get(unit["latest_update_id"], {})
+                if uid not in update.get("unit_ids", []) or unit.get("last_researched_at") != update.get("created_at"):
+                    errors.append(f"{uid} has no matching provisional update receipt")
             if unit["status"] != "not-started" and not refs:
                 errors.append(f"{uid} claims progress without evidence")
             if unit["status"] == "reviewed":

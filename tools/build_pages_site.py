@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 from check_procurement_costs import validate_register
-from estimate_system_cost import allocate_budget, contract_breakdown
+from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
 from catalog_lineage import catalog_aliases, current_finding_topics
 
 
@@ -241,6 +241,7 @@ def collect_procurement_costs(root: Path, policy: dict[str, Any]) -> tuple[dict,
     projected = json.loads(json.dumps(projected))
     for case in projected["cases"]:
         case["breakdown"] = contract_breakdown(case)
+        case["lease_period_total"] = lease_period_total(case)
     return projected, config
 
 
@@ -1048,6 +1049,10 @@ def collect_roadmap_assurance(
 
 
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
+    from apply_research_unit_update import audit_updates
+    update_errors = audit_updates(root)
+    if update_errors:
+        raise ValueError("Research update provenance failed: " + "; ".join(update_errors))
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
     catalog_taxonomy = load_json(root / "config" / "catalog-taxonomy.json")
@@ -1109,6 +1114,9 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topic decision support surface",
     )
     active_topic_ids = {topic["topic_id"] for topic in active_topics}
+    for profile in topic_decision_support["topic_profiles"]:
+        profile["sections"] = [section for section in profile["sections"]
+                               if section["section_id"] not in profile.get("archived_section_ids", [])]
     topic_decision_support["topic_profiles"] = [
         profile
         for profile in topic_decision_support["topic_profiles"]
@@ -1163,8 +1171,8 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 "research_units": [
                     {key: unit[key] for key in (
                         "unit_id", "title_ja", "title_en", "question_ja", "question_en",
-                        "status", "evidence_section_ids",
-                    )}
+                        "status", "evidence_section_ids", "latest_update_id", "last_researched_at",
+                    ) if key in unit}
                     for unit in topic.get("research_units", [])
                 ],
                 "related_topic_ids": topic.get("related_topic_ids", []),

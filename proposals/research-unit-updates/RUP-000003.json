@@ -1,0 +1,322 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000003",
+  "topic_id": "CROSS-06",
+  "created_at": "2026-08-31T00:54:29+09:00",
+  "base_commit": "b223280aeb8338e8952ae1f0d222327385b86d0a",
+  "before_profile_sha256": "b828455ad3f4d2196c2d429c24dba179a5b5bbc1eba577e87e308e8800b9b316",
+  "human_directive_id": "DIR-900015",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "公開調達の価格・支払期間・構成資料を照合し、予算別計画へ使える情報と未確認事項を区別します。費用の小項目を更新しましたが、共同調達・段階整備の研究小項目は未着手です。",
+  "summary_en": "Public procurement prices, billing periods, and configuration documents are matched to distinguish usable planning evidence from unknowns. The cost unit is updated; the joint-procurement and staged-deployment unit remains unstarted.",
+  "units": [
+    {
+      "unit_id": "CROSS-06-U01",
+      "before_sha256": "665d605ae2d434d2cac188a0681b1182d5d0cedd3e1f32bc46e7919d9c97cdf4",
+      "evidence_section_ids": [
+        "TDS-PRP-EVIDENCE",
+        "TDS-PRP-PLANNING"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-PRP-EVIDENCE",
+      "title_ja": "公開契約と仕様の照合",
+      "title_en": "Matching public contracts and specifications",
+      "summary_ja": "価格と実導入構成を対応付け、未確認の内訳は未配賦のまま残します。",
+      "summary_en": "Link prices to deployed configurations and leave unverified components unallocated.",
+      "items": [
+        {
+          "item_id": "TDI-PRP-TERMS",
+          "name_ja": "購入・借入・保守の分離",
+          "name_en": "Separate purchases, leases, and maintenance",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+          "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+          "statement_ja": "名古屋大学と筑波大学の借入公告・落札公示、理研の富岳保守契約を価格台帳へ追加しました。金額は台帳を正本とし、支払単位、税、対象期間、内包範囲を区別します。",
+          "statement_en": "Lease tenders and awards for Nagoya and Tsukuba, plus RIKEN's Fugaku maintenance contract, were added to the cost register. That register is authoritative for amounts, billing units, taxes, periods, and scope.",
+          "hpci_relevance_ja": "HPCI調達の比較では、初期整備費と複数年の借入・保守費を同列の機器価格として扱いません。",
+          "hpci_relevance_en": "For HPCI comparisons, initial acquisition and multiyear lease/maintenance payments are not interchangeable hardware prices.",
+          "adoption_conditions_ja": [
+            "公式公告と落札公示を機関・件名・公告日で照合する。",
+            "部品内訳と運用費の境界を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Match official tender and award by buyer, title, and tender date.",
+            "Check itemization and operating-cost boundaries."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-PRP001",
+            "SRC-PRP002",
+            "SRC-PRP003",
+            "SRC-PRP004",
+            "SRC-PRP005"
+          ],
+          "confidence": "low",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-PRP-PERIOD",
+          "name_ja": "借入期間と稼働時期",
+          "name_en": "Lease periods and operational dates",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+          "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+          "statement_ja": "筑波大学の公告上の借入期間とSiriusの公表稼働日は異なります。借入の開始・終了を、そのまま実運用開始・廃止のロードマップへ転記しません。",
+          "statement_en": "The Tsukuba tender's lease window differs from Sirius's published operational start. Lease dates must not be copied directly into commissioning or retirement milestones.",
+          "hpci_relevance_ja": "HPCIの移行期間、課題配分、既存機の継続利用は、実運用の根拠を別に確認します。",
+          "hpci_relevance_en": "HPCI migration, allocations, and continued use of existing systems require separate operational evidence.",
+          "adoption_conditions_ja": [
+            "契約上の期間、利用公募期間、稼働期間を別の属性として記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Record contractual, allocation-call, and operational windows separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-PRP004",
+            "SRC-PRP008"
+          ],
+          "confidence": "low",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-PRP-CONFIG",
+          "name_ja": "構成資料の改訂と価格の対応",
+          "name_en": "Configuration revisions and price matching",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+          "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+          "statement_ja": "不老・弐は1月の発表資料と現在の構成ページでストレージ容量の記載が異なります。容量定義と構成変更の確認前に一つの値へ統一せず、価格との対応は未確認とします。",
+          "statement_en": "Furo-ni storage capacity differs between its January announcement and current system page. Do not collapse these into one value before checking capacity definitions and revisions; price matching remains unconfirmed.",
+          "hpci_relevance_ja": "構成差を無視した円／PBや円／GPUの比較は誤った設備案につながる可能性があります。",
+          "hpci_relevance_en": "Ignoring configuration differences can make JPY/PB or JPY/GPU comparisons misleading for system planning.",
+          "adoption_conditions_ja": [
+            "改訂仕様、保守対象、別契約設備、税と支払単位を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check revised specifications, maintenance coverage, separately contracted facilities, tax, and payment basis."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-PRP006",
+            "SRC-PRP007"
+          ],
+          "confidence": "low",
+          "consensus_status": "incomplete"
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-PRP-PLANNING",
+      "title_ja": "予算別構成案へ渡す条件",
+      "title_en": "Conditions for budget-based system options",
+      "summary_ja": "機器数量を決める前に、比較可能な価格根拠と施設条件を揃えます。",
+      "summary_en": "Establish comparable price evidence and facility constraints before selecting quantities.",
+      "items": [
+        {
+          "item_id": "TDI-PRP-CALIBRATION",
+          "name_ja": "価格校正と独立検証",
+          "name_en": "Price calibration and independent validation",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "OpenFSの検証計画。費用モデルは未校正。",
+          "timing_en": "OpenFS validation proposal; cost model remains uncalibrated.",
+          "statement_ja": "OpenFSでは、同世代・同範囲の公開内訳で費用モデルを校正し、別の調達案件で誤差を確認する方針です。現状の一式価格だけではノード単価や学術割引率を識別できません。",
+          "statement_en": "OpenFS proposes calibrating costs against comparable itemized procurements and testing error on separate cases. Current package prices alone cannot identify node prices or academic discounts.",
+          "hpci_relevance_ja": "五つの予算水準は比較のための上限枠であり、導入可能なノード数を保証しません。TCOには電力・人件費・保守等の追加根拠が必要です。",
+          "hpci_relevance_en": "The five budget levels are comparison ceilings, not guarantees of purchasable node counts. TCO needs additional evidence for energy, staffing, maintenance, and other costs.",
+          "adoption_conditions_ja": [
+            "未知の費用をゼロに置換しない。",
+            "校正と検証の案件を分離し、実現可能性とConsensusは未確認のまま示す。"
+          ],
+          "adoption_conditions_en": [
+            "Never replace unknown costs with zero.",
+            "Separate calibration and validation cases; retain unverified feasibility and incomplete Consensus."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-PRP001",
+            "SRC-PRP003",
+            "SRC-PRP005"
+          ],
+          "confidence": "low",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CROSS06-CURRENT",
+    "TDS-CROSS06-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-PRP001",
+        "title": "Furo NEXT award notice",
+        "publisher": "JETRO (Tokai National Higher Education and Research System announcement)",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/378419/2026011301550095.html",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "nagoya-furo-next-award-2025",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Award 2025-11-21; cites the 2025-07-07 tender",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP002",
+        "title": "Furo NEXT tender notice",
+        "publisher": "JETRO (Tokai National Higher Education and Research System announcement)",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/361212/2025070700450001.html",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "nagoya-furo-next-tender-2025",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Section 1(4): lease period; 1(6): 10% tax addition; 3(2): document distribution",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP003",
+        "title": "Unified-memory supercomputer award notice",
+        "publisher": "JETRO (University of Tsukuba announcement)",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/364518/2025081200620102.html",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "tsukuba-unified-memory-award-2025",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Monthly award 11,880,000 JPY; award 2025-06-12; cited tender 2025-03-11",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP004",
+        "title": "Unified-memory supercomputer tender, 2025-03-11",
+        "publisher": "University of Tsukuba",
+        "url": "https://zaimuhp2.sec.tsukuba.ac.jp/edit-ad/wp-content/uploads/310d51f2543b13abf737671c16b55fd6.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "tsukuba-unified-memory-tender-2025",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "PDF p.1: 2026-03-01 to 2032-02-29; monthly bidding; 10% tax addition",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP005",
+        "title": "FY2025 Fugaku maintenance contract notice",
+        "publisher": "JETRO (RIKEN announcement)",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/357318/2025060200860081.html",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "riken-fugaku-maintenance-2025",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Contract 2025-04-01; published 2025-06-02; maintenance package, not hardware purchase",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP006",
+        "title": "Furo-ni public system configuration",
+        "publisher": "Nagoya University",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "nagoya-furo-ni-configuration",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Type I / Type II node counts; effective shared storage capacity",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP007",
+        "title": "Furo-ni introduction announcement, 2026-01-21",
+        "publisher": "Nagoya University",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "nagoya-furo-ni-configuration",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "PDF pp.1-3: planned 2026-10-01 service; storage capacity differs from current system page",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PRP008",
+        "title": "Sirius operational system overview",
+        "publisher": "University of Tsukuba CCS",
+        "url": "https://www.ccs.tsukuba.ac.jp/supercomputer/",
+        "source_class": "official-project",
+        "published_or_updated": "see source title and locator"
+      },
+      "origin_group": "tsukuba-sirius-configuration",
+      "checked_at": "2026-08-31T00:54:29+09:00",
+      "locator": "Sirius section: service began 2026-03-27; 24 nodes with four MI300A APUs each",
+      "observation_ja": "価格台帳の対応資料を確認。",
+      "observation_en": "Checked the document linked from the procurement register.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-039",
+      "topic_ids": [
+        "CROSS-06"
+      ],
+      "priority": "P0",
+      "question_ja": "公開内訳、契約構成の一致、運用保守の包含関係が不足し、予算から数量を推定できません。",
+      "question_en": "Itemization, contract/configuration matching, and maintenance inclusions are insufficient to estimate quantities from budgets.",
+      "next_action_ja": "価格台帳のPCGを追跡し、独立検証可能な比較案件を集めます。共同調達条件は別の小項目で調査します。",
+      "next_action_en": "Track the register's PCG gaps and collect independently testable comparable cases; investigate joint procurement in its separate unit.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "PCG-001〜005の照合と価格内訳の取得を進める。",
+    "共同調達・段階整備は今回未調査。",
+    "独立したモデル・エージェントによるConsensusは未実施。"
+  ],
+  "remaining_work_en": [
+    "Resolve PCG-001 through PCG-005 and collect public itemization.",
+    "Joint procurement and staged deployment were not researched in this update.",
+    "Independent model/agent Consensus remains unperformed."
+  ]
+}
