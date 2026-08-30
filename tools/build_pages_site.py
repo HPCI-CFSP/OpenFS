@@ -1022,12 +1022,33 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     baseline = load_json(root / policy["included_catalog"])
     i18n = load_json(root / policy["included_i18n"])
     catalog_taxonomy = load_json(root / "config" / "catalog-taxonomy.json")
+    roadmap_portfolio = load_json(root / "config" / "roadmap-portfolio.json")
     technology_scope = load_json(root / "config" / "global-technology-scope.json")
     category_by_topic = {
         topic_id: category["category_id"]
         for category in catalog_taxonomy["categories"]
         for topic_id in category["topic_ids"]
     }
+    catalog_code_by_topic = {
+        topic_id: catalog_code
+        for category in catalog_taxonomy["categories"]
+        for topic_id, catalog_code in category["topic_codes"].items()
+    }
+    roadmap_refs_by_topic: dict[str, list[dict[str, Any]]] = {}
+    for family in roadmap_portfolio["roadmap_families"]:
+        roadmap_ref = {
+            "roadmap_id": family["roadmap_id"],
+            "status": family["status"],
+            "path": (
+                f"roadmaps/{family['slug']}/"
+                if family["status"] == "published"
+                else None
+            ),
+            "title_ja": family["title_ja"],
+            "title_en": family["title_en"],
+        }
+        for topic_id in family["source_topic_ids"]:
+            roadmap_refs_by_topic.setdefault(topic_id, []).append(roadmap_ref)
     category_by_roadmap = {
         roadmap_id: category["category_id"]
         for category in catalog_taxonomy["categories"]
@@ -1035,6 +1056,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     }
     initial_ids = set(baseline["initial_catalog"]["topic_ids"])
     valid_topic_ids = {topic["topic_id"] for topic in baseline["topics"]}
+    active_topics = [topic for topic in baseline["topics"] if topic["status"] != "retired"]
     consensus_receipts = collect_consensus_receipts(root, policy)
     receipt_by_id = {
         receipt["receipt_id"]: receipt for receipt in consensus_receipts
@@ -1050,6 +1072,12 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topic_decision_support_required_bilingual_fields",
         "topic decision support surface",
     )
+    active_topic_ids = {topic["topic_id"] for topic in active_topics}
+    topic_decision_support["topic_profiles"] = [
+        profile
+        for profile in topic_decision_support["topic_profiles"]
+        if profile["topic_id"] in active_topic_ids
+    ]
     decision_profile_by_topic = {
         profile["topic_id"]: profile
         for profile in topic_decision_support["topic_profiles"]
@@ -1071,7 +1099,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             f"{sorted(unlinked_receipts)}"
         )
     topics = []
-    for topic in baseline["topics"]:
+    for topic in active_topics:
         decision_profile = decision_profile_by_topic.get(topic["topic_id"])
         decision_item_count = sum(
             len(section["items"])
@@ -1089,6 +1117,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         topics.append(
             {
                 "topic_id": topic["topic_id"],
+                "catalog_code": catalog_code_by_topic[topic["topic_id"]],
                 "domain": topic["domain"],
                 "catalog_category_id": category_by_topic[topic["topic_id"]],
                 "title_ja": topic["title_ja"],
@@ -1117,6 +1146,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
                 "research_summary_count": summary_count,
                 "research_finding_count": finding_count,
                 "decision_item_count": decision_item_count,
+                "related_roadmaps": roadmap_refs_by_topic.get(topic["topic_id"], []),
             }
         )
 
@@ -1125,6 +1155,25 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
+    topic_ref_by_id = {
+        topic["topic_id"]: {
+            "topic_id": topic["topic_id"],
+            "catalog_code": topic["catalog_code"],
+            "title_ja": topic["title_ja"],
+            "title_en": topic["title_en"],
+        }
+        for topic in topics
+    }
+    family_by_roadmap = {
+        family["roadmap_id"]: family for family in roadmap_portfolio["roadmap_families"]
+    }
+    for roadmap in roadmap_artifacts:
+        family = family_by_roadmap[roadmap["roadmap_id"]]
+        roadmap["related_topics"] = [
+            topic_ref_by_id[topic_id]
+            for topic_id in family["source_topic_ids"]
+            if topic_id in topic_ref_by_id
+        ]
     roadmap_reference_data = collect_roadmap_reference_data(
         root, policy, roadmap_artifacts
     )
@@ -1149,6 +1198,14 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         roadmap_index_entry(roadmap, category_by_roadmap)
         for roadmap in roadmap_artifacts
     ]
+    for roadmap in roadmaps:
+        roadmap["related_topics"] = roadmap_artifacts[
+            next(
+                index
+                for index, artifact in enumerate(roadmap_artifacts)
+                if artifact["roadmap_id"] == roadmap["roadmap_id"]
+            )
+        ]["related_topics"]
     roadmaps.sort(key=lambda item: item["updated_at"], reverse=True)
     site_metadata = source_commit_metadata(root)
     official_sources = [
@@ -1163,6 +1220,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "baseline_id": baseline["baseline_id"],
             "catalog_revision": baseline["catalog_revision"],
             "topic_count": len(topics),
+            "historical_topic_count": len(baseline["topics"]),
             "protected_initial_count": len(initial_ids),
             "official_source_count": len(official_sources),
             "complete": baseline["complete"],

@@ -72,7 +72,27 @@
           "review_cadence": {"enum": ["weekly", "monthly", "quarterly", "annual", "event-driven"]},
           "catalog_origin": {"enum": ["human-directive", "ai-consensus"]},
           "proposal_id": {"type": "string"},
-          "added_by_decision_id": {"type": "string"}
+          "added_by_decision_id": {"type": "string"},
+          "retirement": {
+            "type": "object",
+            "required": ["kind", "rationale_ja", "rationale_en"],
+            "properties": {
+              "kind": {"enum": ["merged", "harness-owned", "output-owned"]},
+              "successor_topic_ids": {
+                "type": "array",
+                "items": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+                "uniqueItems": true
+              },
+              "successor_paths": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1},
+                "uniqueItems": true
+              },
+              "rationale_ja": {"type": "string", "minLength": 1},
+              "rationale_en": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       }

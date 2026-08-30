@@ -16,11 +16,11 @@ DOMAINS = {"architecture", "system-software", "applications", "cross-cutting"}
 CADENCES = {"weekly", "monthly", "quarterly", "annual", "event-driven"}
 CATEGORY_IDS = {
     "architecture-hardware",
-    "system-software-data-platform",
-    "applications-workloads",
-    "operations-facilities-security",
+    "system-software",
+    "applications",
+    "operations-procurement",
     "access-governance",
-    "planning-evaluation-research",
+    "cross-cutting",
 }
 
 
@@ -140,6 +140,14 @@ def validate_and_promote(
     ):
         raise ValueError(f"catalog taxonomy already contains topic: {topic_id}")
     matching_categories[0]["topic_ids"].append(topic_id)
+    prefix = matching_categories[0]["display_prefix"]
+    existing_codes = matching_categories[0].setdefault("topic_codes", {})
+    sequence_numbers = [
+        int(code.rsplit("-", 1)[1])
+        for code in existing_codes.values()
+        if code.startswith(prefix + "-")
+    ]
+    existing_codes[topic_id] = f"{prefix}-{max(sequence_numbers, default=0) + 1:03d}"
     return promoted_baseline, promoted_monitor, promoted_i18n, promoted_taxonomy
 
 

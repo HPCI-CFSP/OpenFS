@@ -300,7 +300,9 @@ class PagesSiteTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             result = build(ROOT, output)
-            self.assertEqual(60, len(result["topics"]))
+            self.assertEqual(54, len(result["topics"]))
+            self.assertEqual(60, result["baseline"]["historical_topic_count"])
+            self.assertTrue(all(topic["status"] != "retired" for topic in result["topics"]))
             self.assertEqual(6, len(result["catalog_taxonomy"]["categories"]))
             self.assertTrue(all(topic.get("catalog_category_id") for topic in result["topics"]))
             self.assertTrue(all(roadmap.get("catalog_category_id") for roadmap in result["roadmaps"]))
@@ -613,6 +615,25 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual("public-only", result["publication"]["information_plane"])
             self.assertEqual("Apache-2.0", result["publication"]["license"])
             self.assertTrue(all(topic["title_en"] for topic in result["topics"]))
+            self.assertEqual(
+                len(result["topics"]),
+                len({topic["catalog_code"] for topic in result["topics"]}),
+            )
+            self.assertTrue(all(topic["related_roadmaps"] for topic in result["topics"]))
+            self.assertTrue(
+                all(roadmap["related_topics"] for roadmap in result["roadmap_artifacts"])
+            )
+            published_roadmap_ids = {
+                roadmap["roadmap_id"] for roadmap in result["roadmap_artifacts"]
+            }
+            for topic in result["topics"]:
+                for roadmap in topic["related_roadmaps"]:
+                    if roadmap["status"] == "published":
+                        self.assertIn(roadmap["roadmap_id"], published_roadmap_ids)
+                        self.assertTrue(roadmap["path"])
+                    else:
+                        self.assertNotEqual("published", roadmap["status"])
+                        self.assertIsNone(roadmap["path"])
             self.assertTrue(
                 all(
                     "research_summary_count" in topic
@@ -685,6 +706,7 @@ class PagesSiteTests(unittest.TestCase):
                     / "index.html"
                 ).is_file()
             )
+
             self.assertTrue(
                 (
                     output
@@ -787,6 +809,18 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("summary.summary_ja", app)
             self.assertNotIn("summary.summary_en", app)
             self.assertNotIn('scopeMetric:', app)
+
+    def test_search_is_the_rightmost_primary_navigation_item(self):
+        for path in sorted((ROOT / "site").glob("*.html")):
+            text = path.read_text(encoding="utf-8")
+            if 'class="tabs"' not in text:
+                continue
+            first_tabs = text.split('class="tabs"', 1)[1].split("</nav>", 1)[0]
+            with self.subTest(path=path.name):
+                self.assertGreater(
+                    first_tabs.rfind('data-i18n="navSearch"'),
+                    first_tabs.rfind('data-i18n="navReports"'),
+                )
 
     def test_public_planning_copy_uses_general_name_and_clear_update_wording(self):
         paths = [

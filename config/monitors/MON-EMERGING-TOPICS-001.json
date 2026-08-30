@@ -2,11 +2,20 @@
   "schema_version": "0.1.0",
   "monitor_id": "MON-EMERGING-TOPICS-001",
   "task_id": "OFS-004",
-  "title": "AI-proposed emerging HPCI research topics",
+  "title": "AI-proposed emerging infrastructure research topics",
   "enabled": false,
   "languages": ["ja", "en"],
   "domains": ["architecture", "system-software", "applications", "cross-cutting"],
-  "topic_ids": ["CROSS-17"],
+  "topic_selector": {
+    "catalog_ref": "config/research-baseline.json",
+    "include_all_active_topics": true,
+    "selection_role": "overlap-and-gap-comparison"
+  },
+  "taxonomy_ref": "config/catalog-taxonomy.json",
+  "watch_registry_ref": "config/source-watch-registry.json",
+  "proposal_schema_ref": "schemas/research-topic-proposal.schema.json",
+  "consensus_policy_ref": "config/consensus-policy.json",
+  "promotion_tool_ref": "tools/promote_research_topic.py",
   "source_classes": ["official-primary", "standards-body", "peer-reviewed-research", "project-deliverable", "vendor-primary"],
   "query_families": [
     "future HPC architecture emerging technology roadmap",
@@ -25,7 +34,14 @@
     "require_independent_review": true,
     "may_remove_initial_topic": false
   },
-  "maximum_unchecked_days": 7,
+  "automation_contract": {
+    "scheduled_discovery": true,
+    "candidate_output": "proposals/research-topics/PRP-TOP-*.json",
+    "automatic_promotion_requires_accepted_decision": true,
+    "direct_publication_forbidden": true,
+    "non_additive_change_requires_human_directive": true
+  },
+  "maximum_unchecked_days": 1,
   "manual_run_requirement": 3,
   "coverage_status": "design-only"
 }

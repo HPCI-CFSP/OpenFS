@@ -33,7 +33,7 @@ Each published roadmap should contain the following elements.
 | Hardware | Interconnect, optics, and disaggregation | ARCH-04, 05, 08, 09 | Fabric topology and latency, bandwidth, failure-domain gates |
 | Hardware | Storage and data platforms | SSW-05, 13; CROSS-03, 14 | Tier placement, retention, transfer, and migration gates |
 | Hardware | Facility, power, and cooling | ARCH-06; SSW-15; CROSS-16 | Site limits and construction, commissioning gates |
-| Hardware | Supply chain, technology sovereignty, and lifecycle | ARCH-07, 10, 11; CROSS-09, 11, 15 | Procurement risks, maintenance horizon, and alternatives |
+| Hardware | Supply chain, technology sovereignty, and lifecycle | ARCH-07, 10, 11; CROSS-06, 11, 15 | Procurement risks, maintenance horizon, and alternatives |
 | System software | Performance portability, compilers, and automated optimization | SSW-01, 02, 04, 08, 10; APP-05; ARCH-13 | Porting paths and performance, reproducibility criteria |
 | System software | Communication, runtimes, scheduling, and operating systems | SSW-03, 06, 11; CROSS-03 | Federated execution model and compatibility gates |
 | System software | Data, AI, and experimental workflow platform | SSW-05, 09, 13, 16; APP-03, 06 | Reference workflows and interoperability gates |
@@ -42,17 +42,17 @@ Each published roadmap should contain the following elements.
 | Applications | Scientific workloads, benchmarks, and performance models | APP-01, 02, 08; ARCH-08, 09; CROSS-02 | Representative suite and prediction-quality gates |
 | Applications | AI for Science and scientific AI agents | APP-03-06, 10; SSW-09, 16 | Reference uses and compute, data, safety requirements |
 | Applications | Urgent, real-time, experimental, and quantum applications | APP-09, 11; CROSS-05; SSW-16 | Service levels and pilot-to-production gates |
-| Applications | Workforce, adoption, and software sustainability | APP-07; SSW-08; CROSS-10 | Skills, support, maintenance, and readiness plan |
-| Cross-cutting | HPCI reference blueprint and center adoption | CROSS-01, 08, 12; ARCH-01, 05, 06, 10 | Center profiles and standardization, exception gates |
-| Cross-cutting | Procurement, joint investment, and deployment scenarios | CROSS-06, 09, 13, 15 | Alternative investment and phased deployment scenarios |
-| Cross-cutting | Integrated operations, governance, and service continuity | CROSS-03, 04, 07, 10, 14 | Operational transition, accountability, and continuity gates |
-| Cross-cutting | Technology horizon scanning and new Topic discovery | CROSS-17, 18; ARCH-07, 11 | Signals, new Topic proposals, and Consensus Gate decisions |
+| Applications | User support, software sustainability, and governance | SSW-08; CROSS-08, 10 | Skills, support, maintenance, and readiness plan |
+| Cross-cutting | Reference architectures and center deployment | CROSS-08; ARCH-01, 05, 06, 10 | Center profiles and standardization, exception gates |
+| Cross-cutting | Procurement, joint investment, and deployment scenarios | CROSS-06, 13, 15 | Alternative investment and phased deployment scenarios |
+| Cross-cutting | Integrated operations, governance, and service continuity | CROSS-03, 04, 10, 14 | Operational transition, accountability, and continuity gates |
+| Cross-cutting | Technology horizon scanning | CROSS-18; ARCH-07, 11 | Signals, evidence gaps, and Consensus-gated catalog proposals |
 
 ### Initial P0 publication wave
 
 The first common-format publication wave contains six roadmaps: compute nodes,
 memory and data movement, interconnect and optics, performance portability,
-scientific workloads, and the HPCI reference blueprint. Together they form a
+scientific workloads, and the reference architecture and HPCI center deployment roadmap. Together they form a
 connected dependency graph from workload requirements through software and
 hardware choices to center-level decisions. This six-roadmap wave is a delivery
 milestone within the broader P0 backlog; it does not downgrade the remaining P0

@@ -1,0 +1,63 @@
+name: Discover Emerging Research Topics
+
+on:
+  schedule:
+    - cron: "43 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openfs-emerging-topic-discovery
+  cancel-in-progress: false
+
+jobs:
+  coordinate:
+    if: github.event_name == 'workflow_dispatch' || vars.OPENFS_EMERGING_TOPICS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out trusted harness
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Install pinned contract validators
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
+      - name: Require production-ready discovery controls
+        env:
+          OPENFS_SECURITY_PROFILE_ID: ${{ vars.OPENFS_SECURITY_PROFILE_ID }}
+        run: |
+          test -n "$OPENFS_SECURITY_PROFILE_ID"
+          mkdir -p _automation
+          python3 tools/check_research_web_security.py \
+            --require-production-profile \
+            --profile-id "$OPENFS_SECURITY_PROFILE_ID"
+          python3 tools/evaluate_monitor_readiness.py \
+            --monitor-id MON-EMERGING-TOPICS-001 \
+            --output _automation/emerging-topic-readiness.json
+          python3 tools/validate_repository.py
+          python3 -m unittest discover -s tests -v
+      - name: Prepare the recurring discovery cycle
+        run: |
+          WEEK="$(date -u +%G-W%V)"
+          GENERATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python3 tools/prepare_weekly_cycle.py \
+            --week "$WEEK" \
+            --generated-at "$GENERATED_AT" \
+            --monitor-id MON-EMERGING-TOPICS-001 \
+            --output _automation/emerging-topic-cycle.json
+      - name: Open or update the coordination Issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 tools/publish_github_issue.py --payload _automation/emerging-topic-cycle.json
+      - name: Upload review-only coordination artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: openfs-emerging-topic-discovery
+          path: _automation/
+          if-no-files-found: error
+          retention-days: 30

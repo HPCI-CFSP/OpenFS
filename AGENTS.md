@@ -50,8 +50,10 @@ Before writing, run `python3 tools/check_agent_permissions.py --role <role> <pla
 - Do not silently overwrite evidence. Add a new version and link it with `supersedes`, `was_revision_of`, or an equivalent schema field.
 - Do not invent citations, dates, quotations, model identities, source origins, or confidence values.
 - Do not silently remove, merge, narrow, split, or retire a research-baseline topic. Propose those changes through `OFS-002` with lineage and a reviewed human Directive.
-- Preserve every Topic ID listed in `config/research-baseline.json.initial_catalog.topic_ids`. AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog.
-- Treat `config/catalog-taxonomy.json` as the canonical public classification. Every active Topic and every roadmap must appear in exactly one of its six categories. Preserve legacy `domain` fields for compatibility, but do not derive Pages filters from them. A Consensus-accepted Topic proposal must declare its category, and deterministic promotion updates the taxonomy with the baseline, English title, and automatic monitor.
+- Preserve every canonical Topic ID listed in `config/research-baseline.json`, including retired IDs. Public display codes such as `OPS-001` come from `config/catalog-taxonomy.json` and may differ from canonical IDs; never rewrite historical provenance, Proposal, Assessment, or Decision references to use display codes. A merge, Harness transfer, or output transfer must set `status=retired` and record a structured successor in `retirement`.
+- Treat `config/catalog-taxonomy.json` as the canonical public classification. Every active Topic and every roadmap must appear in exactly one of its six categories, and every active Topic must have one unique display code under the category prefix. Preserve legacy `domain` fields for compatibility, but do not derive Pages filters from them. A Consensus-accepted Topic proposal must declare its category, and deterministic promotion updates the taxonomy with the baseline, English title, display code, and automatic monitor.
+- AI-originated additive Topics use `OFS-004`, the `research_topic` Consensus rule, and the `topic-promotion` role; they never replace the protected initial catalog. Emerging-topic discovery is a Harness function, not a public Topic. Compare every candidate with all active Topics, require a catalog delta and falsification review, and forbid direct publication.
+- Maintain recurring index, release, standards, committee, and resource pages in `config/source-watch-registry.json`. Maintain exact evidence URL-to-Topic/Roadmap/Track associations in the generated `knowledge/public/source-catalog-map.json`. A Watch-page HTML change is only a signal: ignore non-semantic changes and require an exact primary Evidence source plus Consensus before updating the catalog or a roadmap.
 - Research scope is worldwide. Read `config/global-technology-scope.json`, search across regions and source languages where feasible, and report uncovered regions and categories. Prioritize coverage of technologies developed in Japan without treating origin as evidence of technical merit or automatic adoption.
 - Treat center interviews and historical reports as dated evidence. Do not invent or carry forward a center's current system, demand, power, facility, budget, procurement, refresh, or staffing state without cited Evidence that remains inside the Monitor's freshness window. Every new Center Profile uses the complete current registry field set; fields absent from an older contract are `unknown`/`not-collected`, never implicitly complete. Any permitted field-level inheritance must pin the predecessor digest and original Evidence bundles and must re-enter Consensus as provisional.
 - A follow-up Run must pass the Profile continuity gate before publication. Investigate every reported regression rather than deleting or weakening predecessor Evidence.
@@ -129,6 +131,11 @@ remaining matching items; never silently treat the example as the full scope.
   Topic lacks the current/near-term comparison, adoption conditions, or Coverage
   Gap. Keep Monitor cadence and catalog lineage inside the Harness; the public
   catalog shows research state, verification state, last update, and open Gaps.
+- Structure each decision-oriented Topic summary as: current adoption status,
+  near-term direction, mid- to long-term R&D candidates, and contested or
+  unresolved issues. Keep the prose and structured items in one canonical
+  source and generate every public view from it. Link each Topic to all relevant
+  roadmap families and each roadmap back to all active source Topics.
 - Regional views are filters over cited actors and their design, development,
   manufacturing, or standardization roles. Do not duplicate conclusions into
   country-specific pages, reduce a multi-region supply chain to one nationality,
