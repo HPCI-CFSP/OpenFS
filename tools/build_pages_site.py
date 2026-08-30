@@ -16,6 +16,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_URL = "https://github.com/HPCI-CFSP/OpenFS"
+PUBLIC_BRAND_ASSETS = (
+    "openfs-logo.svg",
+    "openfs-logo-compact.svg",
+    "openfs-symbol.svg",
+)
 
 
 def load_json(path: Path) -> Any:
@@ -1263,6 +1268,15 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def copy_brand_assets(root: Path, output: Path) -> None:
+    source = root / "assets" / "branding"
+    destination = output / "assets" / "branding"
+    destination.mkdir(parents=True, exist_ok=True)
+    # Publish selected artwork only, not concept documents or design archives.
+    for filename in PUBLIC_BRAND_ASSETS:
+        shutil.copy2(source / filename, destination / filename)
+
+
 def build(root: Path, output: Path) -> dict[str, Any]:
     policy = load_json(root / "config" / "publication-policy.json")
     source = root / policy["site_source"]
@@ -1271,6 +1285,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     output.mkdir(parents=True)
     for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "search.js", "feedback.js"):
         shutil.copy2(source / filename, output / filename)
+    copy_brand_assets(root, output)
     data_dir = output / "data"
     data_dir.mkdir()
     public_data = build_public_data(root, policy)

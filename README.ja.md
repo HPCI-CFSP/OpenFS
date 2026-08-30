@@ -1,4 +1,8 @@
-# OpenFS
+<h1>
+  <a href="https://hpci-cfsp.github.io/OpenFS/">
+    <img src="assets/branding/openfs-logo.svg" alt="OpenFS" width="285" height="130">
+  </a>
+</h1>
 
 [English](README.md) | **日本語**
 
