@@ -87,6 +87,7 @@ test("every old ID and public code gives explicit successors; split links do not
 test("language switching and related-topic navigation retain the current scope", () => {
   const f = fixture("?topic=SSW-05&lang=ja");
   f.languageButtons[1].dispatch("click");
+  assert.equal(f.location.searchParams.get("lang"), "en");
   assert.equal(f.get("topic-dialog-title").textContent, "Storage systems and data management");
   const link = f.walk(f.get("topic-dialog-content")).find((el) => el.href?.includes("topic=CROSS-14"));
   link.dispatch("click");

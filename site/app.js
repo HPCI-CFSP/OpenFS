@@ -131,6 +131,9 @@
   }
 
   function rememberLanguage(value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", value);
+    window.history.replaceState(null, "", url);
     try {
       window.localStorage.setItem("openfs-language", value);
     } catch (_error) {
@@ -1305,7 +1308,9 @@
       });
       list.appendChild(item);
     });
-    section.append(heading, summary, list);
+    section.appendChild(heading);
+    if (!topic.research_units?.length) section.appendChild(summary);
+    section.appendChild(list);
     if (topic.related_topic_ids?.length) {
       const related = document.createElement("h4");
       related.textContent = tr("relatedTopics");
