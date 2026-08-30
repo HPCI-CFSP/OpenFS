@@ -229,8 +229,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         "as_of": as_of,
         "review_scope": "single-model-structured-claim-classification",
         "consensus_status": "incomplete",
-        "method_ja": "6本のロードマップに含まれる全マイルストーンと世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",
-        "method_en": "Every milestone and generation band in the six roadmaps was structurally classified for source-reference presence, claim type, and timing semantics. One model checked major updates against primary sources. This audit does not independently verify the meaning of every item and is separate from URL-reachability checks. Consensus review by independent models remains incomplete.",
+        "method_ja": "公開ロードマップに含まれる全マイルストーンと世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",
+        "method_en": "Every milestone and generation band in the published roadmaps was structurally classified for source-reference presence, claim type, and timing semantics. One model checked major updates against primary sources. This audit does not independently verify the meaning of every item and is separate from URL-reachability checks. Consensus review by independent models remains incomplete.",
         "summary": {
             "milestone_count": len(entries),
             "generation_band_count": len(generation_band_entries),

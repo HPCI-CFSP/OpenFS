@@ -2,27 +2,27 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20260830-001",
-  "as_of": "2026-08-30",
-  "generated_at": "2026-08-30T08:16:15Z",
-  "method_ja": "6本のロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
-  "method_en": "This queue collects every unresolved item from the six roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
+  "queue_id": "RGQ-20260831-001",
+  "as_of": "2026-08-31",
+  "generated_at": "2026-08-30T16:13:57Z",
+  "method_ja": "公開ロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
+  "method_en": "This queue collects every unresolved item from the published roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
-    "roadmap_count": 6,
-    "gap_count": 44,
-    "p0": 19,
-    "p1": 19,
-    "p2": 6,
-    "source_discovery": 43,
+    "roadmap_count": 7,
+    "gap_count": 47,
+    "p0": 20,
+    "p1": 20,
+    "p2": 7,
+    "source_discovery": 46,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 43,
+    "staged_monitor_disabled": 46,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 21,
-    "generated_query_fallbacks": 22,
-    "p0_explicit_query_overrides": 18,
+    "explicit_query_overrides": 22,
+    "generated_query_fallbacks": 24,
+    "p0_explicit_query_overrides": 19,
     "p0_generated_query_fallbacks": 0
   },
   "assignments": [
@@ -591,6 +591,61 @@
       "queue_item_id": "RGQ-0010"
     },
     {
+      "gap_id": "GAP-STOR-001",
+      "roadmap_id": "RM-HW-STORAGE",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "価格・混在I/O・復元性能の比較",
+      "scope_en": "Matched pricing, mixed I/O, and restoration",
+      "impact_ja": "媒体容量と公称帯域だけでは、予算・復旧時間を満たす構成を決められません。",
+      "impact_en": "Media capacity and nominal bandwidth cannot select a design meeting budget and recovery requirements.",
+      "next_action_ja": "同じ保護方式・容量基準・負荷で測定し、公開仕様と価格内訳を照合します。PCG-001〜003も参照します。",
+      "next_action_en": "Measure matching protection, capacity basis, and workload; match public specifications and itemized costs, also using PCG-001 through PCG-003.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "HPC ストレージ 調達 仕様書 実効容量 IOR mdtest チェックポイント 復元 費用"
+        },
+        {
+          "language": "en",
+          "query": "HPC storage public procurement specification mixed workload IOR mdtest checkpoint restore cost data protection"
+        }
+      ],
+      "required_source_classes": [
+        "procurement-primary",
+        "research-primary",
+        "vendor-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-STOR-001-C1",
+            "verification_method": "reproducible-measurement",
+            "requirement_ja": "データ・クライアント・キャッシュ・保護条件を固定し、科学I/Oと学習データ読出しの混在時性能、メタデータ、復元時間を独立環境で再現する。",
+            "requirement_en": "Reproduce mixed scientific-I/O and training-read performance, metadata behavior, and restore time in independent environments with pinned data, clients, cache, and protection."
+          },
+          {
+            "criterion_id": "GAP-STOR-001-C2",
+            "verification_method": "evidence-review",
+            "requirement_ja": "税込・期間・保守・実効容量を区別した調達資料を対応付け、内訳不明の残差と移行費用を明示する。",
+            "requirement_en": "Match procurement documents distinguishing tax, period, support, and usable capacity, explicitly retaining unitemized residuals and migration costs."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0011"
+    },
+    {
       "gap_id": "GAP-PORT-001",
       "roadmap_id": "RM-SSW-PORTABILITY",
       "priority": "P0",
@@ -644,7 +699,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0011"
+      "queue_item_id": "RGQ-0012"
     },
     {
       "gap_id": "GAP-PORT-004",
@@ -699,7 +754,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0012"
+      "queue_item_id": "RGQ-0013"
     },
     {
       "gap_id": "GAP-PORT-006",
@@ -759,7 +814,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0013"
+      "queue_item_id": "RGQ-0014"
     },
     {
       "gap_id": "GAP-PORT-007",
@@ -818,7 +873,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0014"
+      "queue_item_id": "RGQ-0015"
     },
     {
       "gap_id": "GAP-BLUE-001",
@@ -873,7 +928,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0015"
+      "queue_item_id": "RGQ-0016"
     },
     {
       "gap_id": "GAP-BLUE-002",
@@ -928,7 +983,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0016"
+      "queue_item_id": "RGQ-0017"
     },
     {
       "gap_id": "GAP-BLUE-003",
@@ -983,7 +1038,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0017"
+      "queue_item_id": "RGQ-0018"
     },
     {
       "gap_id": "GAP-BLUE-006",
@@ -1019,7 +1074,7 @@
       "closure_plan_origin": "consensus-policy",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0018"
+      "queue_item_id": "RGQ-0019"
     },
     {
       "gap_id": "GAP-BLUE-007",
@@ -1080,7 +1135,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0019"
+      "queue_item_id": "RGQ-0020"
     },
     {
       "gap_id": "GAP-WORK-002",
@@ -1132,7 +1187,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0020"
+      "queue_item_id": "RGQ-0021"
     },
     {
       "gap_id": "GAP-WORK-007",
@@ -1184,7 +1239,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0021"
+      "queue_item_id": "RGQ-0022"
     },
     {
       "gap_id": "GAP-WORK-008",
@@ -1236,7 +1291,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0023"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -1288,7 +1343,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0024"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -1340,7 +1395,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0025"
     },
     {
       "gap_id": "GAP-COMP-006",
@@ -1392,7 +1447,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-COMP-008",
@@ -1444,7 +1499,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-COMP-009",
@@ -1503,7 +1558,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -1555,7 +1610,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1607,7 +1662,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-NET-006",
@@ -1663,7 +1718,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1717,7 +1772,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -1771,7 +1826,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-MEM006",
@@ -1825,7 +1880,59 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0034"
+    },
+    {
+      "gap_id": "GAP-STOR-002",
+      "roadmap_id": "RM-HW-STORAGE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "機能別の一般提供と移行互換性",
+      "scope_en": "Feature-level GA and migration compatibility",
+      "impact_ja": "製品全体の発表や規格公開だけでは受入時の機能を保証できません。",
+      "impact_en": "Product announcements and standards releases do not guarantee acceptance-time functionality.",
+      "next_action_ja": "Infinia POSIX、NVMe実装、LTO移行をリリースノート・互換表・復元試験で確認します。",
+      "next_action_en": "Check Infinia POSIX, NVMe implementations, and LTO migration using release notes, compatibility matrices, and restoration tests.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "機能別の一般提供と移行互換性 Infinia POSIX、NVMe実装、LTO移行をリリースノート・互換表・復元試験で確認します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Feature-level GA and migration compatibility Check Infinia POSIX, NVMe implementations, and LTO migration using release notes, compatibility matrices, and restoration tests. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-STOR-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -1877,7 +1984,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0036"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -1929,7 +2036,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0035"
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-PORT-008",
@@ -1984,7 +2091,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0036"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -2034,7 +2141,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0037"
+      "queue_item_id": "RGQ-0039"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -2084,7 +2191,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0038"
+      "queue_item_id": "RGQ-0040"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -2136,7 +2243,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0039"
+      "queue_item_id": "RGQ-0041"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -2188,7 +2295,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0040"
+      "queue_item_id": "RGQ-0042"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -2240,7 +2347,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0041"
+      "queue_item_id": "RGQ-0043"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -2294,7 +2401,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0042"
+      "queue_item_id": "RGQ-0044"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -2348,7 +2455,59 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0043"
+      "queue_item_id": "RGQ-0045"
+    },
+    {
+      "gap_id": "GAP-STOR-003",
+      "roadmap_id": "RM-HW-STORAGE",
+      "priority": "P2",
+      "workstream": "source-discovery",
+      "cadence": "quarterly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "2027年以降の提供時期と未調査ベンダー",
+      "scope_en": "Availability after 2026 and unreviewed vendors",
+      "impact_ja": "今回の対象だけでは国内外の媒体・統合ストレージ市場を網羅できません。",
+      "impact_en": "This scan does not cover the full worldwide media and integrated-storage market.",
+      "next_action_ja": "Micron、Samsung、Western Digital、HPE、WEKA、IBM等の公開資料を追加調査し、未公表年を推測で埋めません。",
+      "next_action_en": "Extend primary-source coverage to Micron, Samsung, Western Digital, HPE, WEKA, IBM, and others; do not invent unannounced years.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "2027年以降の提供時期と未調査ベンダー Micron、Samsung、Western Digital、HPE、WEKA、IBM等の公開資料を追加調査し、未公表年を推測で埋めません。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Availability after 2026 and unreviewed vendors Extend primary-source coverage to Micron, Samsung, Western Digital, HPE, WEKA, IBM, and others; do not invent unannounced years. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-STOR-003-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0046"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -2400,7 +2559,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0044"
+      "queue_item_id": "RGQ-0047"
     }
   ],
   "publication": {

@@ -74,7 +74,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -665,9 +665,13 @@ class PagesSiteTests(unittest.TestCase):
                     if item["priority"] == "P0"
                 )
             )
+            dependency_register = json.loads(
+                (ROOT / "knowledge/public/dependencies/p0-roadmap-dependencies.json")
+                .read_text(encoding="utf-8")
+            )
             self.assertEqual(
-                14,
-                len(assurance["dependency_register"]["dependencies"]),
+                dependency_register["dependencies"],
+                assurance["dependency_register"]["dependencies"],
             )
             self.assertTrue(
                 all("publication" not in artifact for artifact in assurance.values())
@@ -688,7 +692,17 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(40, len(result["site"]["commit_sha"]))
             self.assertTrue(result["site"]["commit_url"].endswith(result["site"]["commit_sha"]))
             self.assertIn("T", result["site"]["updated_at"])
-            self.assertEqual(6, len(result["roadmaps"]))
+            roadmap_portfolio = json.loads(
+                (ROOT / "config/roadmap-portfolio.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                {
+                    roadmap["roadmap_id"]
+                    for roadmap in roadmap_portfolio["roadmap_families"]
+                    if roadmap["status"] == "published"
+                },
+                {roadmap["roadmap_id"] for roadmap in result["roadmaps"]},
+            )
             roadmap_index_by_id = {
                 roadmap["roadmap_id"]: roadmap for roadmap in result["roadmaps"]
             }

@@ -94,6 +94,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "CMP-BENCHMARK-IMPORTANCE",
                 "CMP-AI-TRAINING-FRAMEWORKS",
                 "CMP-STORAGE-DATA-PLATFORMS",
+                "CMP-STORAGE-MEDIA",
                 "CMP-CONTINUOUS-BENCHMARKING",
                 "CMP-EEA1-REPRODUCIBILITY",
             }.issubset(comparison_ids)

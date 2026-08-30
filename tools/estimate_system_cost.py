@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from calendar import monthrange
+from datetime import date
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
@@ -47,6 +49,23 @@ def normalize_amount(amount: dict[str, Any]) -> Decimal:
     elif amount["tax_basis"] != "excluding-tax":
         raise ValueError("tax basis is unknown")
     return value
+
+
+def lease_period_total(case: dict[str, Any]) -> dict[str, Any] | None:
+    """Arithmetic over the evidenced billing window, not equipment price or TCO."""
+    amount = case.get("amount")
+    window = case.get("contract_window")
+    if not amount or amount["payment_basis"] != "monthly" or not window:
+        return None
+    start, end = (date.fromisoformat(window[key]) for key in ("start", "end"))
+    months = (end.year - start.year) * 12 + end.month - start.month + 1
+    if end < start or start.day != 1 or end.day != monthrange(end.year, end.month)[1]:
+        raise ValueError("monthly arithmetic requires an explicit whole-month window")
+    if amount["period_months"] != months:
+        raise ValueError("billing months disagree with the evidenced window")
+    return {"value_jpy": float(number(amount["value_jpy"]) * months),
+            "months": months, "tax_basis": amount["tax_basis"],
+            "basis": "constant-monthly-rate-arithmetic", "window_basis": window["basis"]}
 
 
 def contract_breakdown(case: dict[str, Any]) -> dict[str, Any]:

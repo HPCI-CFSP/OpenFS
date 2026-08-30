@@ -136,6 +136,10 @@ remaining matching items; never silently treat the example as the full scope.
   source map after scope changes. Human-approved structural edits do not supply
   independent scientific Consensus or authorize scheduled maintainer execution.
 
+- For an explicit interactive single-model request, follow
+  `docs/operations/provisional-research-updates.md`
+  and run `tools/apply_research_unit_update.py --audit`. These updates remain
+  provisional and cannot enable scheduled production or satisfy Consensus.
 - Maintain decision-oriented Topic summaries in
   `knowledge/public/topic-decision-support.json`, validated by
   `schemas/public-topic-decision-support.schema.json` and

@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-08-30",
+  "as_of": "2026-08-31",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -3315,8 +3315,8 @@
     },
     {
       "topic_id": "SSW-05",
-      "summary_ja": "ストレージシステム・データ管理について、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。",
-      "summary_en": "Scope: Storage systems and data management. The public evidence below remains provisional; some research units and questions are still uncovered.",
+      "summary_ja": "記憶デバイス、接続、統合製品、データ管理を分けて比較します。容量や仕様の公称値だけで構成を決めず、実効I/O、復旧、移行、保守、費用の条件を照合する暫定調査です。",
+      "summary_en": "This provisional survey separates devices, connectivity, integrated products, and data management. Configuration choices require matched usable I/O, recovery, migration, support, and cost conditions, not nominal specifications alone.",
       "sections": [
         {
           "section_id": "TDS-SSW05-CURRENT",
@@ -3545,6 +3545,490 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-STP-DEVICES",
+          "title_ja": "記憶デバイス：容量と書込み特性",
+          "title_en": "Storage devices: capacity and write behavior",
+          "summary_ja": "SSD、HDD、テープを、アクセス頻度と復元時間の要件に応じて使い分けます。以下の容量はベンダー公称値であり、ファイルシステムの実効容量や独立測定値ではありません。",
+          "summary_en": "Match SSDs, HDDs, and tape to access frequency and restore-time requirements. Capacities below are vendor specifications, not usable filesystem capacities or independent measurements.",
+          "items": [
+            {
+              "item_id": "TDI-STP-QLC",
+              "name_ja": "大容量QLC SSD",
+              "name_en": "High-capacity QLC SSDs",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "LC9の現行仕様は、2.5インチ版が最大122.88 TB、E3.L版が245.76 TBです。両者はPCIe 5.0／NVMe 2.0対応で、フォームファクタや書込み条件を揃えて比較する必要があります。",
+              "statement_en": "Current LC9 specifications distinguish up to 122.88 TB in 2.5-inch from 245.76 TB in E3.L. Both use PCIe 5.0/NVMe 2.0; compare matching form factors and write conditions.",
+              "hpci_relevance_ja": "読み出し中心のデータセット置場を候補とし、チェックポイント用途では書込み耐久性と持続性能を別に評価します。これはOpenFSの適用上の考察です。",
+              "hpci_relevance_en": "OpenFS considers read-heavy datasets a candidate use; checkpoint storage needs separate endurance and sustained-write evaluation.",
+              "adoption_conditions_ja": [
+                "4 KiBと16 KiBの耐久性条件を混同しない",
+                "容量、消去符号、予備領域を含む実効容量を確認"
+              ],
+              "adoption_conditions_en": [
+                "Do not mix 4 KiB and 16 KiB endurance conditions",
+                "Verify usable capacity after protection and reserve space"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP001",
+                "SRC-STP002"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-HAMR",
+              "name_ja": "HAMR HDDと出荷範囲",
+              "name_en": "HAMR HDDs and shipment scope",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026 Q1：限定顧客への量産出荷を発表。一般提供拡大の時期は未確認。",
+              "timing_en": "2026 Q1: volume shipments to selected customers announced; broader availability timing unconfirmed.",
+              "statement_ja": "Seagateは2026年3月3日に、最大44 TBのMozaic 4+を2社のハイパースケーラーへ量産出荷中と発表しました。これは全顧客向けの一般販売開始とは異なります。",
+              "statement_en": "On March 3, 2026, Seagate reported volume shipments of Mozaic 4+ drives up to 44 TB to two hyperscalers. This is not a general-availability announcement for all customers.",
+              "hpci_relevance_ja": "大容量層の候補ですが、センターでの入手性、再構築時間、複数ジョブの同時アクセスを評価する必要があります。",
+              "hpci_relevance_en": "A capacity-tier candidate, subject to center-specific availability, rebuild time, and concurrent job access.",
+              "adoption_conditions_ja": [
+                "一般提供日と納期を別途確認",
+                "価格／TBだけでなく必要台数での帯域を比較"
+              ],
+              "adoption_conditions_en": [
+                "Verify general availability and delivery dates separately",
+                "Compare aggregate bandwidth at the required drive count, not only cost/TB"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP003"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-TAPE",
+              "name_ja": "LTO-10とアーカイブ移行",
+              "name_en": "LTO-10 and archive migration",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "IBMはLTO-10の30／40 TB非圧縮容量と最大400 MB/sの非圧縮転送速度を示しています。LTO ProgramはLTO-10に旧世代との後方互換性がないと説明しており、旧媒体の読出し設備を残す計画が必要です。",
+              "statement_en": "IBM lists 30/40 TB native LTO-10 capacity and up to 400 MB/s native throughput. The LTO Program states that LTO-10 is not backward compatible, requiring a plan to retain access to older media.",
+              "hpci_relevance_ja": "長期保存では媒体容量に加え、取出し・マウント・読出しを含む復元時間と世代更新費用を検討します。",
+              "hpci_relevance_en": "For long-term retention, evaluate restore time including retrieval and mounting, plus generation-migration costs.",
+              "adoption_conditions_ja": [
+                "圧縮比を仮定した容量を非圧縮値と比較しない",
+                "旧ドライブ保守と移行中の二重保管を予算化"
+              ],
+              "adoption_conditions_en": [
+                "Do not compare compression-dependent capacity with native capacity",
+                "Budget legacy-drive support and overlapping storage during migration"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP004",
+                "SRC-STP005"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-DENSITY-GAP",
+              "name_ja": "高密度化と実用条件の未確認事項",
+              "name_en": "Density gains and unresolved deployment conditions",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "将来の提供時期は未確認。",
+              "timing_en": "Future availability is unconfirmed.",
+              "statement_ja": "容量の増加だけでは、更新時のデータ移行、障害復旧、書込み寿命、電力、実調達費の改善を判断できません。将来世代の容量目標から販売年や四半期は推定しません。",
+              "statement_en": "Higher capacity alone does not establish improvements in migration, recovery, write life, power, or procurement cost. Capacity targets do not imply release years or quarters.",
+              "hpci_relevance_ja": "OpenFSの比較案では、実効容量とアクセス条件を固定し、性能・復旧時間・費用を同時に測定します。",
+              "hpci_relevance_en": "The proposed OpenFS comparison holds usable capacity and access conditions constant while measuring performance, recovery, and cost.",
+              "adoption_conditions_ja": [
+                "同一条件の測定と公開価格根拠を追加"
+              ],
+              "adoption_conditions_en": [
+                "Add matched-condition measurements and public cost evidence"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP001",
+                "SRC-STP003",
+                "SRC-STP005"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-STP-CONNECT",
+          "title_ja": "接続規格と分離型ストレージ",
+          "title_en": "Storage interfaces and disaggregation",
+          "summary_ja": "媒体の種類、NVMeコマンド、転送方式、ファイル／オブジェクトAPIを区別します。NVMe-oFをSSDの種類やファイルシステムとして扱いません。",
+          "summary_en": "Separate media, NVMe commands, transports, and file/object APIs. NVMe-oF is neither an SSD type nor a filesystem.",
+          "items": [
+            {
+              "item_id": "TDI-STP-NVME",
+              "name_ja": "NVMe 2.4仕様群と製品対応版",
+              "name_en": "NVMe 2.4 specification set and product support",
+              "stage": "current",
+              "maturity": "standardized",
+              "timing_ja": "2026 Q3：仕様群を公開。",
+              "timing_en": "2026 Q3: specification set published.",
+              "statement_ja": "NVM Expressは2026年8月4日に最新仕様群を公開し、一覧でNVMe 2.4と記載しています。基本仕様、コマンドセット、PCIe・RDMA・TCP転送仕様は別文書であり、製品が全機能を実装したことを意味しません。",
+              "statement_en": "NVM Express dates its latest specification set to August 4, 2026 and identifies it as NVMe 2.4. Base, command-set, and PCIe/RDMA/TCP transport specifications are separate documents; publication does not establish full product implementation.",
+              "hpci_relevance_ja": "規格版、必要機能、OS・ドライバ、コントローラの対応表を揃えて調達条件にします。",
+              "hpci_relevance_en": "Match specification versions and required features to OS, driver, and controller support before setting procurement requirements.",
+              "adoption_conditions_ja": [
+                "規格策定日を製品出荷日へ転用しない"
+              ],
+              "adoption_conditions_en": [
+                "Do not use specification release dates as product shipment dates"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP006"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-NVMEOF",
+              "name_ja": "NVMe-oFの導入判断",
+              "name_en": "NVMe-oF adoption conditions",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "PCIe直結とRDMA／TCP経由の接続では、共有範囲や障害領域が異なります。OpenFSでは、遠隔化の追加遅延、CPU負荷、経路切替、混雑時のp99遅延を比較条件とします。",
+              "statement_en": "PCIe-attached and RDMA/TCP-accessed storage have different sharing and failure boundaries. OpenFS proposes comparing remote-access latency, CPU overhead, failover, and p99 latency under congestion.",
+              "hpci_relevance_ja": "ストレージ分離による資源共有の利点と、ネットワーク増強・運用複雑化の負担を同時に評価します。",
+              "hpci_relevance_en": "Evaluate resource-sharing benefits against network investment and operational complexity.",
+              "adoption_conditions_ja": [
+                "同じ媒体・保護方式・キュー深度・負荷で比較"
+              ],
+              "adoption_conditions_en": [
+                "Compare the same media, protection, queue depth, and workload"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP006",
+                "SRC-STP009"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-STP-PRODUCTS",
+          "title_ja": "統合製品：提供機能と未確認機能",
+          "title_en": "Integrated products: available and unverified capabilities",
+          "summary_ja": "製品の構造と用途を比較し、宣伝上の倍率を横並びの性能順位には使いません。導入版、I/Oの意味、データ保護条件を揃えた比較が必要です。",
+          "summary_en": "Compare architecture and use cases without turning marketing speedups into rankings. Match deployed versions, I/O semantics, and data-protection settings.",
+          "items": [
+            {
+              "item_id": "TDI-STP-EXA",
+              "name_ja": "DDN EXAScaler",
+              "name_en": "DDN EXAScaler",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "EXAScalerはLustre系の並列ファイルシステム製品です。DDNは媒体配置と管理機能を説明していますが、公称性能倍率を他製品との同条件比較とはみなしません。",
+              "statement_en": "EXAScaler is a Lustre-based parallel filesystem product. DDN describes placement and management capabilities; advertised speedups are not matched-condition comparisons against other products.",
+              "hpci_relevance_ja": "既存MPI／POSIXアプリケーション、共有ファイル、大規模チェックポイントを評価の起点にします。",
+              "hpci_relevance_en": "Use existing MPI/POSIX applications, shared files, and large checkpoints as evaluation starting points.",
+              "adoption_conditions_ja": [
+                "メタデータ性能と障害復旧中の性能も確認"
+              ],
+              "adoption_conditions_en": [
+                "Check metadata performance and performance during recovery"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP007"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-INFINIA",
+              "name_ja": "DDN Infinia",
+              "name_en": "DDN Infinia",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "DDNはInfiniaを一般提供中とし、S3アクセス、メタデータ連携、推論データ経路を説明しています。一方、同資料のPOSIX等の追加機能は顧客検証中と記されています。",
+              "statement_en": "DDN describes Infinia as generally available with S3, metadata integration, and inference data paths. The same article identifies additional POSIX-related capabilities as undergoing customer validation.",
+              "hpci_relevance_ja": "AIデータレイク用途と、既存ファイル型アプリケーションの置換可否を別々に判定します。",
+              "hpci_relevance_en": "Assess AI data-lake use separately from replacement of existing file-oriented applications.",
+              "adoption_conditions_ja": [
+                "対象版の機能一覧とI/O意味論を確認"
+              ],
+              "adoption_conditions_en": [
+                "Verify the feature matrix and I/O semantics of the target version"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP008"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-INFINIA-FUTURE",
+              "name_ja": "InfiniaのPOSIX機能の提供確認",
+              "name_en": "Confirming Infinia POSIX availability",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "ベンダー目標：2026年夏。達成・四半期は未確認。",
+              "timing_en": "Vendor target: summer 2026; completion and quarter unconfirmed.",
+              "statement_ja": "公開記事はPOSIX等のGA目標を2026年夏としますが、今回、達成を裏付ける版付きリリースノートは確認できていません。夏を一律にQ3へ変換せず、提供時期は未確定として扱います。",
+              "statement_en": "The public article targets summer 2026 for POSIX-related GA, but this investigation has not verified completion in versioned release notes. Do not convert summer automatically into Q3.",
+              "hpci_relevance_ja": "既存HPCアプリケーションの採用判断には、提供済み機能、整合性、ロック、障害時動作の確認が必要です。",
+              "hpci_relevance_en": "Adoption for existing HPC applications needs confirmed availability, consistency, locking, and failure behavior.",
+              "adoption_conditions_ja": [
+                "公開リリースノートと再現可能な適合試験を追跡"
+              ],
+              "adoption_conditions_en": [
+                "Track public release notes and reproducible conformance tests"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP008"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-VAST",
+              "name_ja": "VAST DataStore／DASE",
+              "name_en": "VAST DataStore / DASE",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "VASTはDASEとして計算処理と共有ストレージを分離し、NVMe-oFを介して接続する構成を説明しています。DataStoreのファイル・オブジェクト・ブロックアクセスと、DataBase等の上位サービスは分けて比較します。",
+              "statement_en": "VAST describes DASE as separating compute services from shared storage connected over NVMe-oF. Compare DataStore file/object/block access separately from higher-level services such as DataBase.",
+              "hpci_relevance_ja": "共有データの複数API利用を検討できますが、既存POSIXアプリとの互換性や運用条件は個別評価が必要です。",
+              "hpci_relevance_en": "Multi-API access to shared data is a candidate use; compatibility with existing POSIX applications and operational conditions needs evaluation.",
+              "adoption_conditions_ja": [
+                "クライアント・ネットワーク・保護方式・ライセンス範囲を揃える"
+              ],
+              "adoption_conditions_en": [
+                "Match clients, networking, protection, and licensed scope"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP009"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-STP-DATA",
+          "title_ja": "データ管理・転送・評価",
+          "title_en": "Data management, transfer, and evaluation",
+          "summary_ja": "保存装置の性能と、データを利用可能な状態にするまでの時間を分けます。階層化や転送サービスを導入しても、保持責任や復元手順の確認は省略できません。",
+          "summary_en": "Separate storage-device performance from time until data becomes usable. Tiering and transfer services do not remove retention ownership or restore requirements.",
+          "items": [
+            {
+              "item_id": "TDI-STP-GLOBUS",
+              "name_ja": "DTNとGlobusによる転送",
+              "name_en": "DTNs and Globus transfer",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "Globus Connect Serverは複数のDTNでエンドポイントを構成する手順を公開しています。転送入口の設計はストレージAPIと分け、認証・ネットワーク・保守時の扱いも確認します。",
+              "statement_en": "Globus Connect Server documents multi-DTN endpoints. Transfer-service design is separate from storage APIs and requires authentication, networking, and maintenance planning.",
+              "hpci_relevance_ja": "サイト間転送では実データの移動時間、再試行、経路競合を含めて評価します。",
+              "hpci_relevance_en": "Evaluate inter-site transfer time with retries and competing traffic.",
+              "adoption_conditions_ja": [
+                "運用責任・サービス継続はOPS-012側の検討と対応づける"
+              ],
+              "adoption_conditions_en": [
+                "Link operational ownership and continuity to OPS-012"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP010"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-S3",
+              "name_ja": "オブジェクト保存とライフサイクル",
+              "name_en": "Object storage and lifecycle",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "Amazon S3の文書は階層移行、複製、Object Lock等を別の機能として示します。S3互換APIがあるだけで、他製品にも同じ保持・ロック・整合性機能があるとは判断しません。",
+              "statement_en": "Amazon S3 documents lifecycle transitions, replication, and Object Lock separately. An S3-compatible API does not establish identical retention, locking, or consistency in another product.",
+              "hpci_relevance_ja": "保管期間、復元時間、転送・取出し費用を含め、データの利用経路全体を比較します。",
+              "hpci_relevance_en": "Compare the whole data path, including retention, restore time, and transfer/retrieval charges.",
+              "adoption_conditions_ja": [
+                "実装ごとの機能適合と移行手段を検証"
+              ],
+              "adoption_conditions_en": [
+                "Validate implementation-specific conformance and migration paths"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP011"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP-IO-EVAL",
+              "name_ja": "IOR・mdtest・MLPerf Storage",
+              "name_en": "IOR, mdtest, and MLPerf Storage",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "IOR／mdtestの公式コードとMLPerf Storageの評価条件を確認しました。今回の調査は文献・仕様確認であり、ベンチマークを実行した結果ではありません。",
+              "statement_en": "Official IOR/mdtest code and MLPerf Storage evaluation conditions were checked. This is documentation research, not an executed benchmark result.",
+              "hpci_relevance_ja": "帯域、メタデータ操作、AIデータ供給を別々に評価し、キャッシュ状態とデータサイズを固定します。",
+              "hpci_relevance_en": "Evaluate bandwidth, metadata operations, and AI data supply separately with fixed cache state and dataset size.",
+              "adoption_conditions_ja": [
+                "コード版・クライアント数・保護方式を固定して再測定"
+              ],
+              "adoption_conditions_en": [
+                "Pin code, client counts, and protection before measurement"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP012",
+                "SRC-STP013"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-STP2-PRODUCTS",
+          "title_ja": "統合製品と機能別の提供状況",
+          "title_en": "Integrated products and feature-level availability",
+          "summary_ja": "発売済みの製品と、追加機能の提供段階を区別します。過去の記述は履歴に残し、8月の更新情報を照合しました。",
+          "summary_en": "Separate released products from the availability stage of added features. Prior text remains in history; August updates were checked.",
+          "items": [
+            {
+              "item_id": "TDI-STP2-EXA",
+              "name_ja": "DDN EXAScaler",
+              "name_en": "DDN EXAScaler",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "Lustre系の統合製品です。大規模ファイルI/Oと、AI向けのテナント分離・管理機能を別々に評価します。",
+              "statement_en": "A Lustre-based integrated product. Evaluate large-scale file I/O separately from AI-oriented tenancy and management features.",
+              "hpci_relevance_ja": "共有ファイルやチェックポイントが中心の構成で比較します。",
+              "hpci_relevance_en": "Compare configurations centered on shared files and checkpoints.",
+              "adoption_conditions_ja": [
+                "対象版と保守範囲を固定"
+              ],
+              "adoption_conditions_en": [
+                "Pin release and support scope"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP007",
+                "SRC-STP016"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP2-EXA-NEW",
+              "name_ja": "EXAScalerの新しいテナント管理機能",
+              "name_en": "New EXAScaler tenancy capabilities",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "発表：2026年Q1。GA目標：2026年夏。",
+              "timing_en": "Announcement: Q1 2026. GA target: summer 2026.",
+              "statement_ja": "2026年3月発表は、テナント別の暗号鍵管理、クォータ、API制御を含みます。夏までのGAは当時の目標であり、対象版の提供条件は未確認です。",
+              "statement_en": "The March 2026 announcement includes per-tenant key management, quotas, and API control. GA by summer was a target; release-specific availability remains unverified.",
+              "hpci_relevance_ja": "共同利用では隔離と障害復旧の試験が必要です。",
+              "hpci_relevance_en": "Shared use requires isolation and recovery tests.",
+              "adoption_conditions_ja": [
+                "目標を実績に置換しない"
+              ],
+              "adoption_conditions_en": [
+                "Do not substitute a target for an observed release"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP016"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP2-INFINIA",
+              "name_ja": "DDN Infinia 2.4",
+              "name_en": "DDN Infinia 2.4",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "2026年Q3の機能説明。POSIX機能の一般提供条件は未確認。",
+              "timing_en": "Q3 2026 capability description; POSIX general-availability terms unverified.",
+              "statement_ja": "8月の技術記事はS3との継続性とネイティブPOSIXクライアントを説明しています。旧記事の検証中という記述だけで現状を判断せず、機能単位のGAと適合範囲は未確認として残します。",
+              "statement_en": "The August technical article describes continued S3 support and a native POSIX client. Do not use the older validation-stage article alone to describe current status; feature-level GA and conformance remain unverified.",
+              "hpci_relevance_ja": "オブジェクト中心の用途と既存ファイル処理を分けて比較します。",
+              "hpci_relevance_en": "Compare object-centered use separately from existing file processing.",
+              "adoption_conditions_ja": [
+                "ロック・同時更新・耐障害性を対象版で確認"
+              ],
+              "adoption_conditions_en": [
+                "Check locking, concurrent updates, and failure behavior for the selected release"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP014"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-STP2-VAST",
+              "name_ja": "VAST AI OS 5.5",
+              "name_en": "VAST AI OS 5.5",
+              "stage": "current",
+              "maturity": "commercial",
+              "timing_ja": "一般提供発表：2026年Q3（8月6日）。",
+              "timing_en": "GA announcement: Q3 2026 (August 6).",
+              "statement_ja": "8月6日に一般提供を発表。DataBaseの検索とDataEngineの管理実行を拡充していますが、モデルサービングは引き続き外部Kubernetesで実行します。",
+              "statement_en": "GA was announced on August 6. DataBase retrieval and managed DataEngine execution expand, while model serving continues on external Kubernetes.",
+              "hpci_relevance_ja": "データ処理の統合範囲と推論計算側の責任を分けて設計します。",
+              "hpci_relevance_en": "Separate integrated data processing from inference-compute responsibilities.",
+              "adoption_conditions_ja": [
+                "DataStoreと上位サービスの費用・運用範囲を確認"
+              ],
+              "adoption_conditions_en": [
+                "Verify cost and operating scope for DataStore and higher-level services"
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-STP009",
+                "SRC-STP015"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -3574,7 +4058,40 @@
         "platform-software"
       ],
       "coverage_gap_ids": [
-        "GAP-TDS-014"
+        "GAP-TDS-014",
+        "GAP-TDS-035",
+        "GAP-TDS-036",
+        "GAP-TDS-040"
+      ],
+      "archived_section_ids": [
+        "TDS-SSW05-CURRENT",
+        "TDS-SSW05-FUTURE",
+        "TDS-STP-PRODUCTS"
+      ],
+      "research_updates": [
+        {
+          "update_id": "RUP-000001",
+          "bundle_sha256": "5010f8933c5807a9e90de723cda258a6c904c6c8767825cb3578764e2c196af6",
+          "base_commit": "b223280aeb8338e8952ae1f0d222327385b86d0a",
+          "unit_ids": [
+            "SSW-05-U01",
+            "SSW-05-U02",
+            "SSW-05-U03",
+            "SSW-05-U04"
+          ],
+          "created_at": "2026-08-31T00:47:01+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000004",
+          "bundle_sha256": "452e295bcae8cb8ee906fa481c43a338b9d26eda66f8e198b767288555e0d05d",
+          "base_commit": "b223280aeb8338e8952ae1f0d222327385b86d0a",
+          "unit_ids": [
+            "SSW-05-U03"
+          ],
+          "created_at": "2026-08-31T01:05:03+09:00",
+          "consensus_status": "incomplete"
+        }
       ]
     },
     {
@@ -5090,8 +5607,8 @@
     },
     {
       "topic_id": "APP-13",
-      "summary_ja": "ベンチマーク・プロキシ・性能モデル（AIワークロード）について、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。",
-      "summary_en": "Scope: Benchmarks, proxies, and performance models: AI workloads. The public evidence below remains provisional; some research units and questions are still uncovered.",
+      "summary_ja": "AI評価を、品質を揃えた学習・推論、エージェントとハーネスの課題達成、到着過程と資源律速の三つに分けて整理します。公式実装・規則を確認した暫定調査であり、ベンチマークの実行結果やモデル間の合意ではありません。",
+      "summary_en": "AI evaluation is organized into quality-matched training/inference, agent-harness task completion, and arrival/bottleneck models. This provisional review checks official implementations and rules; it contains neither benchmark executions nor multi-model Consensus.",
       "sections": [
         {
           "section_id": "TDS-APP04-CURRENT",
@@ -5860,6 +6377,287 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-AIP-EVALUATION",
+          "title_ja": "学習・推論の比較条件",
+          "title_en": "Training and inference comparison conditions",
+          "summary_ja": "公開ルールと計測用ツールを整理します。今回の更新では実測値を生成していません。",
+          "summary_en": "Public rules and measurement tools are reviewed; this update contains no newly measured performance.",
+          "items": [
+            {
+              "item_id": "TDI-AIP-TRAIN",
+              "name_ja": "品質を揃えた学習時間",
+              "name_en": "Training time at matched quality",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "MLPerf Trainingでは品質目標への到達を確認して時間を測定します。計時に含む前処理・品質評価にはベンチマーク固有の規則があり、単純なFLOPS比較とは異なります。",
+              "statement_en": "MLPerf Training measures time with a target-quality check. Benchmark-specific rules govern preprocessing and quality evaluation; this differs from a FLOPS-only comparison.",
+              "hpci_relevance_ja": "OpenFSでは、学習の収束条件、ノード数、電力とI/O条件を併記して候補構成を比較します。",
+              "hpci_relevance_en": "OpenFS should compare configurations with convergence criteria, node count, power, and I/O conditions recorded.",
+              "adoption_conditions_ja": [
+                "規則、実装、データセット、精度、並列方式の版を固定する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin rules, implementation, dataset, precision, and parallel configuration."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP001"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-INFERENCE",
+              "name_ja": "品質と応答制約を満たす推論",
+              "name_en": "Inference subject to quality and latency constraints",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "MLPerf InferenceのServer、Offline等は負荷条件と評価指標が異なります。遅延上限や品質基準も対象モデル・課題によって異なるため、異なるシナリオの値を同じ順位表に混在させません。",
+              "statement_en": "MLPerf Inference scenarios such as Server and Offline differ in load and metrics. Quality and latency constraints are benchmark-specific, so results from different scenarios should not share one ranking.",
+              "hpci_relevance_ja": "HPCIではバッチ推論と対話型サービスを区別し、必要な応答時間を満たす処理量を評価する案です。",
+              "hpci_relevance_en": "For HPCI, distinguish batch inference from interactive services and evaluate throughput meeting their response requirements.",
+              "adoption_conditions_ja": [
+                "同じシナリオ、規則版、品質、入力・出力条件で比較する。"
+              ],
+              "adoption_conditions_en": [
+                "Compare matching scenarios, rule versions, quality, and input/output conditions."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP002"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-QUALITY-GATE",
+              "name_ja": "科学AI用途への適合性",
+              "name_en": "Suitability for scientific AI",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "一般的なAIベンチマークの高得点だけでは、科学計算の保存則、誤差許容、再現性や研究課題の達成を保証できません。これはOpenFSの評価上の留意点です。",
+              "statement_en": "A strong generic AI benchmark result does not by itself establish scientific accuracy, conservation properties, reproducibility, or task completion. This is an OpenFS evaluation caveat.",
+              "hpci_relevance_ja": "科学分野ごとの受入基準と、既存の数値計算との併用条件を別途評価します。",
+              "hpci_relevance_en": "Evaluate domain-specific acceptance criteria and coexistence with numerical simulation separately.",
+              "adoption_conditions_ja": [
+                "科学AIの代表課題と検証データを選定する。"
+              ],
+              "adoption_conditions_en": [
+                "Select representative scientific-AI tasks and validation data."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP001",
+                "SRC-AIP002"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-AIP-AGENTS",
+          "title_ja": "エージェントとハーネスの評価",
+          "title_en": "Agent and harness evaluation",
+          "summary_ja": "成功判定の対象、課題の版、モデルとハーネスの組合せを区別します。",
+          "summary_en": "Distinguish success criteria, task versions, and model-harness pairings.",
+          "items": [
+            {
+              "item_id": "TDI-AIP-SWEBENCH",
+              "name_ja": "SWE-benchの実行結果判定",
+              "name_en": "SWE-bench execution-based grading",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "生成パッチを適用してテストし、課題が解決したかを判定します。実行完了、課題解決、未採点、環境エラーは同義ではありません。",
+              "statement_en": "Generated patches are applied and tested for issue resolution. Run completion, resolution, ungraded tasks, and environment errors are distinct outcomes.",
+              "hpci_relevance_ja": "HPCIソフトウェア修正の評価には有用ですが、数値精度・性能改善の評価は専用テストで補います。",
+              "hpci_relevance_en": "Useful for HPC software repair, with dedicated tests needed for numerical accuracy and performance changes.",
+              "adoption_conditions_ja": [
+                "分母、未提出、エラー、再試行を記録し、変更パッチをキャッシュ済みの同じRun IDで再採点しない。"
+              ],
+              "adoption_conditions_en": [
+                "Record denominators, missing submissions, errors, and retries; do not reuse a cached run ID for a changed patch."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP004"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-TAU",
+              "name_ja": "tau-Benchの版と採点変更",
+              "name_en": "tau-Bench versions and grading changes",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026年7月（Q3）に採点修正。",
+              "timing_en": "Grading revision in July 2026 (Q3).",
+              "statement_ja": "公式リポジトリはtau3-benchを案内し、2026年7月のv1.0.1でbanking_knowledgeの採点を修正しています。この領域の修正前後の結果は比較不能と明記されています。",
+              "statement_en": "The official repository now presents tau3-bench. Its July 2026 v1.0.1 revision changes banking_knowledge grading and explicitly makes affected pre/post-update results incomparable.",
+              "hpci_relevance_ja": "ツール利用や方針遵守の参考になりますが、顧客対応課題の結果を科学研究能力の評価に直結させません。",
+              "hpci_relevance_en": "It informs tool-use and policy-compliance evaluation, but customer-service results do not directly measure scientific research capability.",
+              "adoption_conditions_ja": [
+                "課題セット、採点コード、利用者シミュレータ、モデルとツール条件を固定する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin task set, grader, user simulator, model, and tool conditions."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP005"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-HARBOR",
+              "name_ja": "Terminal-BenchとHarbor",
+              "name_en": "Terminal-Bench and Harbor",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "旧Terminal-Benchリポジトリは、2.0の実行にはHarborを案内しています。Harborは複数のエージェントを版指定の課題で実行する公式ハーネスです。",
+              "statement_en": "The older Terminal-Bench repository directs 2.0 users to Harbor, the official harness for running agents against versioned tasks.",
+              "hpci_relevance_ja": "コンパイル、環境構築、データ処理などの完了性を測る候補です。隔離環境の準備費用も計測対象に含めます。",
+              "hpci_relevance_en": "A candidate for evaluating compilation, environment setup, and data-processing completion; environment provisioning cost should also be measured.",
+              "adoption_conditions_ja": [
+                "モデルだけでなくハーネスのコミット、環境イメージ、時間・ツール予算を固定する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin the harness commit, environment image, time budget, and tool budget as well as the model."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP006",
+                "SRC-AIP007"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-AGENT-METRICS",
+              "name_ja": "課題達成率と資源効率",
+              "name_en": "Task success and resource efficiency",
+              "stage": "near-term",
+              "maturity": "research",
+              "timing_ja": "OpenFSの測定計画。実測・独立検証は未実施。",
+              "timing_en": "OpenFS measurement proposal; no measurements or independent validation yet.",
+              "statement_ja": "OpenFSの測定案では、課題達成率、成功1件当たり費用・エネルギー、完了時間、失敗・再試行を併記します。LLMの出力トークン数だけでエージェントの有用性を評価しません。",
+              "statement_en": "The OpenFS measurement proposal records task success, cost and energy per success, completion time, failures, and retries. Output-token volume alone is not an agent-utility metric.",
+              "hpci_relevance_ja": "モデルを固定してハーネスを変える比較と、ハーネスを固定してモデルを変える比較を分離します。",
+              "hpci_relevance_en": "Separate fixed-model harness comparisons from fixed-harness model comparisons.",
+              "adoption_conditions_ja": [
+                "同一課題群と予算で反復し、実行環境エラーも除外せず報告する。"
+              ],
+              "adoption_conditions_en": [
+                "Repeat matching tasks and budgets; report environment failures rather than silently excluding them."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP004",
+                "SRC-AIP006"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-AIP-LOAD",
+          "title_ja": "到着過程・遅延分布・資源律速",
+          "title_en": "Arrivals, latency distributions, and bottlenecks",
+          "summary_ja": "比較条件を固定し、将来性能モデルに必要な測定項目を定義します。",
+          "summary_en": "Fix comparison conditions and identify measurements needed for future performance models.",
+          "items": [
+            {
+              "item_id": "TDI-AIP-ARRIVALS",
+              "name_ja": "要求到着率と同時実行数",
+              "name_en": "Arrival rate and concurrency",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "vLLMの計測CLIは要求到着率と同時実行上限を別に扱います。有限到着率ではPoisson／gamma分布を指定でき、無限大の設定は全要求を開始時に投入する条件です。",
+              "statement_en": "vLLM's benchmark CLI separates arrival rate from concurrency limits. Finite rates use Poisson/gamma arrivals; an infinite rate submits all requests at the start.",
+              "hpci_relevance_ja": "OpenFSでは投入率と実際の処理率を別に記録し、短いバーストと持続負荷を区別します。",
+              "hpci_relevance_en": "OpenFS should record offered and achieved rates separately and distinguish bursts from sustained load.",
+              "adoption_conditions_ja": [
+                "到着分布、ウォームアップ、入力・出力長、同時実行上限を記録する。"
+              ],
+              "adoption_conditions_en": [
+                "Record arrival distribution, warmup, input/output lengths, and concurrency cap."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP003"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-LATENCY",
+              "name_ja": "TTFT・TPOT・ITL・goodput",
+              "name_en": "TTFT, TPOT, ITL, and goodput",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "vLLMは遅延分布の指標としてTTFT、TPOT、ITL等を区別します。goodputの要求単位SLO指定はTTFT／TPOT／E2ELであり、ITLとTPOTを同じ設定名として扱いません。",
+              "statement_en": "vLLM distinguishes TTFT, TPOT, and ITL latency distributions. Request-level goodput SLO keys are TTFT/TPOT/E2EL; ITL and TPOT are not interchangeable settings.",
+              "hpci_relevance_ja": "平均だけでなくp95／p99と、品質・応答制約を満たした要求数を確認します。",
+              "hpci_relevance_en": "Inspect p95/p99 as well as means and count requests meeting quality and response requirements.",
+              "adoption_conditions_ja": [
+                "指標定義、単位、対象要求数、失敗件数を固定する。"
+              ],
+              "adoption_conditions_en": [
+                "Fix metric definitions, units, request counts, and failure accounting."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP003"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-AIP-SCALING",
+              "name_ja": "CPU・メモリ・GPUの感度測定",
+              "name_en": "CPU, memory, and GPU sensitivity",
+              "stage": "research",
+              "maturity": "research",
+              "timing_ja": "測定計画のみ。性能倍率は未算出。",
+              "timing_en": "Measurement proposal only; no predicted speedup is published.",
+              "statement_ja": "OpenFSではモデル、品質、負荷を固定し、CPU周波数・コア数、GPU数、KVキャッシュ配置、ネットワークを一つずつ変える測定を提案します。Prefill、Decode、ツール実行、待ち行列を分けて計測します。",
+              "statement_en": "OpenFS proposes holding model, quality, and workload fixed while varying CPU frequency/cores, GPU count, KV-cache placement, and network individually. Measure prefill, decode, tool execution, and queuing separately.",
+              "hpci_relevance_ja": "CPUの高周波数化と多数コア化の優劣は一律に決めず、達成率・遅延・費用・電力の制約下で判断します。",
+              "hpci_relevance_en": "Do not assume frequency or core count always wins; compare under success, latency, cost, and power constraints.",
+              "adoption_conditions_ja": [
+                "校正に使わない負荷・ノード数で予測誤差を確認し、未計測の外挿を実測値として表示しない。"
+              ],
+              "adoption_conditions_en": [
+                "Test prediction error on held-out loads and node counts; never label extrapolations as measurements."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-AIP002",
+                "SRC-AIP006"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -5893,7 +6691,33 @@
         "GAP-TDS-020",
         "GAP-TDS-026",
         "GAP-TDS-018",
-        "GAP-TDS-033"
+        "GAP-TDS-033",
+        "GAP-TDS-037",
+        "GAP-TDS-038"
+      ],
+      "archived_section_ids": [
+        "TDS-APP04-CURRENT",
+        "TDS-APP04-FUTURE",
+        "TDS-APP10-CURRENT",
+        "TDS-APP10-FUTURE",
+        "TDS-CROSS02-AI-CURRENT",
+        "TDS-CROSS02-AI-FUTURE",
+        "TDS-SSW09-EVAL-CURRENT",
+        "TDS-SSW09-EVAL-FUTURE"
+      ],
+      "research_updates": [
+        {
+          "update_id": "RUP-000002",
+          "bundle_sha256": "0c317a499875329e23c884785e57ec524c09786f04098a80415ceaf07e82d306",
+          "base_commit": "b223280aeb8338e8952ae1f0d222327385b86d0a",
+          "unit_ids": [
+            "APP-13-U01",
+            "APP-13-U02",
+            "APP-13-U03"
+          ],
+          "created_at": "2026-08-31T00:54:29+09:00",
+          "consensus_status": "incomplete"
+        }
       ]
     },
     {
@@ -6942,8 +7766,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "調達・段階整備・ロードマップについて、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。",
-      "summary_en": "Scope: Procurement, staged deployment, and roadmaps. The public evidence below remains provisional; some research units and questions are still uncovered.",
+      "summary_ja": "公開調達の価格・支払期間・構成資料を照合し、予算別計画へ使える情報と未確認事項を区別します。費用の小項目を更新しましたが、共同調達・段階整備の研究小項目は未着手です。",
+      "summary_en": "Public procurement prices, billing periods, and configuration documents are matched to distinguish usable planning evidence from unknowns. The cost unit is updated; the joint-procurement and staged-deployment unit remains unstarted.",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -7140,6 +7964,136 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-PRP-EVIDENCE",
+          "title_ja": "公開契約と仕様の照合",
+          "title_en": "Matching public contracts and specifications",
+          "summary_ja": "価格と実導入構成を対応付け、未確認の内訳は未配賦のまま残します。",
+          "summary_en": "Link prices to deployed configurations and leave unverified components unallocated.",
+          "items": [
+            {
+              "item_id": "TDI-PRP-TERMS",
+              "name_ja": "購入・借入・保守の分離",
+              "name_en": "Separate purchases, leases, and maintenance",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "名古屋大学と筑波大学の借入公告・落札公示、理研の富岳保守契約を価格台帳へ追加しました。金額は台帳を正本とし、支払単位、税、対象期間、内包範囲を区別します。",
+              "statement_en": "Lease tenders and awards for Nagoya and Tsukuba, plus RIKEN's Fugaku maintenance contract, were added to the cost register. That register is authoritative for amounts, billing units, taxes, periods, and scope.",
+              "hpci_relevance_ja": "HPCI調達の比較では、初期整備費と複数年の借入・保守費を同列の機器価格として扱いません。",
+              "hpci_relevance_en": "For HPCI comparisons, initial acquisition and multiyear lease/maintenance payments are not interchangeable hardware prices.",
+              "adoption_conditions_ja": [
+                "公式公告と落札公示を機関・件名・公告日で照合する。",
+                "部品内訳と運用費の境界を確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Match official tender and award by buyer, title, and tender date.",
+                "Check itemization and operating-cost boundaries."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PRP001",
+                "SRC-PRP002",
+                "SRC-PRP003",
+                "SRC-PRP004",
+                "SRC-PRP005"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-PRP-PERIOD",
+              "name_ja": "借入期間と稼働時期",
+              "name_en": "Lease periods and operational dates",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "筑波大学の公告上の借入期間とSiriusの公表稼働日は異なります。借入の開始・終了を、そのまま実運用開始・廃止のロードマップへ転記しません。",
+              "statement_en": "The Tsukuba tender's lease window differs from Sirius's published operational start. Lease dates must not be copied directly into commissioning or retirement milestones.",
+              "hpci_relevance_ja": "HPCIの移行期間、課題配分、既存機の継続利用は、実運用の根拠を別に確認します。",
+              "hpci_relevance_en": "HPCI migration, allocations, and continued use of existing systems require separate operational evidence.",
+              "adoption_conditions_ja": [
+                "契約上の期間、利用公募期間、稼働期間を別の属性として記録する。"
+              ],
+              "adoption_conditions_en": [
+                "Record contractual, allocation-call, and operational windows separately."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PRP004",
+                "SRC-PRP008"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-PRP-CONFIG",
+              "name_ja": "構成資料の改訂と価格の対応",
+              "name_en": "Configuration revisions and price matching",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "2026-08-31時点の公開情報。提供範囲は本文参照。",
+              "timing_en": "Public information checked on 2026-08-31; see the stated availability scope.",
+              "statement_ja": "不老・弐は1月の発表資料と現在の構成ページでストレージ容量の記載が異なります。容量定義と構成変更の確認前に一つの値へ統一せず、価格との対応は未確認とします。",
+              "statement_en": "Furo-ni storage capacity differs between its January announcement and current system page. Do not collapse these into one value before checking capacity definitions and revisions; price matching remains unconfirmed.",
+              "hpci_relevance_ja": "構成差を無視した円／PBや円／GPUの比較は誤った設備案につながる可能性があります。",
+              "hpci_relevance_en": "Ignoring configuration differences can make JPY/PB or JPY/GPU comparisons misleading for system planning.",
+              "adoption_conditions_ja": [
+                "改訂仕様、保守対象、別契約設備、税と支払単位を確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Check revised specifications, maintenance coverage, separately contracted facilities, tax, and payment basis."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PRP006",
+                "SRC-PRP007"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-PRP-PLANNING",
+          "title_ja": "予算別構成案へ渡す条件",
+          "title_en": "Conditions for budget-based system options",
+          "summary_ja": "機器数量を決める前に、比較可能な価格根拠と施設条件を揃えます。",
+          "summary_en": "Establish comparable price evidence and facility constraints before selecting quantities.",
+          "items": [
+            {
+              "item_id": "TDI-PRP-CALIBRATION",
+              "name_ja": "価格校正と独立検証",
+              "name_en": "Price calibration and independent validation",
+              "stage": "near-term",
+              "maturity": "research",
+              "timing_ja": "OpenFSの検証計画。費用モデルは未校正。",
+              "timing_en": "OpenFS validation proposal; cost model remains uncalibrated.",
+              "statement_ja": "OpenFSでは、同世代・同範囲の公開内訳で費用モデルを校正し、別の調達案件で誤差を確認する方針です。現状の一式価格だけではノード単価や学術割引率を識別できません。",
+              "statement_en": "OpenFS proposes calibrating costs against comparable itemized procurements and testing error on separate cases. Current package prices alone cannot identify node prices or academic discounts.",
+              "hpci_relevance_ja": "五つの予算水準は比較のための上限枠であり、導入可能なノード数を保証しません。TCOには電力・人件費・保守等の追加根拠が必要です。",
+              "hpci_relevance_en": "The five budget levels are comparison ceilings, not guarantees of purchasable node counts. TCO needs additional evidence for energy, staffing, maintenance, and other costs.",
+              "adoption_conditions_ja": [
+                "未知の費用をゼロに置換しない。",
+                "校正と検証の案件を分離し、実現可能性とConsensusは未確認のまま示す。"
+              ],
+              "adoption_conditions_en": [
+                "Never replace unknown costs with zero.",
+                "Separate calibration and validation cases; retain unverified feasibility and incomplete Consensus."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PRP001",
+                "SRC-PRP003",
+                "SRC-PRP005"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -7167,7 +8121,24 @@
       ],
       "related_surface_ids": [],
       "coverage_gap_ids": [
-        "GAP-TDS-028"
+        "GAP-TDS-028",
+        "GAP-TDS-039"
+      ],
+      "archived_section_ids": [
+        "TDS-CROSS06-CURRENT",
+        "TDS-CROSS06-FUTURE"
+      ],
+      "research_updates": [
+        {
+          "update_id": "RUP-000003",
+          "bundle_sha256": "2d74a571f3b269e5477878f8dbefb2e4c1cc61d14a9dedfb77f43686a6bb0a08",
+          "base_commit": "b223280aeb8338e8952ae1f0d222327385b86d0a",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-08-31T00:54:29+09:00",
+          "consensus_status": "incomplete"
+        }
       ]
     },
     {
@@ -10282,6 +11253,254 @@
       "url": "https://developer.nvidia.com/blog/nvidia-nvlink-fusion-brings-nvhbm-to-next-generation-ai-infrastructure/",
       "source_class": "official-vendor",
       "published_or_updated": "2026-08-26"
+    },
+    {
+      "source_id": "SRC-STP001",
+      "title": "LC9 Series (2.5-inch)",
+      "publisher": "KIOXIA",
+      "url": "https://www.kioxia.com/en-jp/business/ssd/enterprise-ssd/lc9.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated product specifications; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP002",
+      "title": "LC9 Series (E3.L)",
+      "publisher": "KIOXIA",
+      "url": "https://www.kioxia.com/en-jp/business/ssd/enterprise-ssd/lc9-e3l.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated product specifications; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP003",
+      "title": "Seagate delivers next-generation Mozaic 4+",
+      "publisher": "Seagate",
+      "url": "https://www.seagate.com/stories/articles/seagate-delivers-industrys-highest-capacity-hard-drives-with-next-generation-mozaic-4/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-03-03"
+    },
+    {
+      "source_id": "SRC-STP004",
+      "title": "IBM LTO Tape Drive",
+      "publisher": "IBM",
+      "url": "https://www.ibm.com/products/lto-tape-drive",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated product page; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP005",
+      "title": "LTO technology roadmap and compatibility",
+      "publisher": "LTO Program",
+      "url": "https://www.lto.org/roadmap/",
+      "source_class": "official-standard",
+      "published_or_updated": "Undated roadmap; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP006",
+      "title": "NVMe set of specifications",
+      "publisher": "NVM Express",
+      "url": "https://nvmexpress.org/specifications/",
+      "source_class": "official-standard",
+      "published_or_updated": "2026-08-04 specification set; page checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP007",
+      "title": "EXAScaler Lustre file system",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/products/lustre-file-system-exascaler/",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated product page; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP008",
+      "title": "Infinia expands to inference, data lakes, and multi-protocol workloads",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/blog/ddn-infinia-expands-to-power-inference-intelligent-data-lakes-and-multi-protocol-ai-workloads/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026 article; exact publication date not confirmed"
+    },
+    {
+      "source_id": "SRC-STP009",
+      "title": "VAST AI Operating System white paper",
+      "publisher": "VAST Data",
+      "url": "https://www.vastdata.com/whitepaper",
+      "source_class": "official-vendor",
+      "published_or_updated": "Living white paper; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP010",
+      "title": "Globus Connect Server v5 installation guide",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5/",
+      "source_class": "official-project",
+      "published_or_updated": "Living documentation; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP011",
+      "title": "What is Amazon S3?",
+      "publisher": "Amazon Web Services",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "Living documentation; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-STP012",
+      "title": "IOR and mdtest",
+      "publisher": "HPC I/O benchmark maintainers",
+      "url": "https://github.com/hpc/ior",
+      "source_class": "official-project",
+      "published_or_updated": "Repository README checked 2026-08-31; executable commit not pinned"
+    },
+    {
+      "source_id": "SRC-STP013",
+      "title": "MLPerf Storage benchmark",
+      "publisher": "MLCommons",
+      "url": "https://mlcommons.org/benchmarks/storage/",
+      "source_class": "official-project",
+      "published_or_updated": "Living benchmark page; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP001",
+      "title": "MLPerf Training rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/training_policies/blob/master/training_rules.adoc",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP002",
+      "title": "MLPerf Inference rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP003",
+      "title": "vLLM bench serve CLI",
+      "publisher": "vLLM Project",
+      "url": "https://docs.vllm.ai/en/latest/cli/bench/serve/",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP004",
+      "title": "SWE-bench evaluation guide",
+      "publisher": "SWE-bench Project",
+      "url": "https://www.swebench.com/SWE-bench/guides/evaluation/",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP005",
+      "title": "tau-Bench implementation and grading revision",
+      "publisher": "Sierra Research",
+      "url": "https://github.com/sierra-research/tau2-bench",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP006",
+      "title": "Harbor agent evaluation framework",
+      "publisher": "Harbor Framework Team",
+      "url": "https://github.com/harbor-framework/harbor",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-AIP007",
+      "title": "Terminal-Bench 1 repository and successor notice",
+      "publisher": "Harbor Framework Team",
+      "url": "https://github.com/harbor-framework/terminal-bench-1",
+      "source_class": "official-project",
+      "published_or_updated": "undated; checked 2026-08-31"
+    },
+    {
+      "source_id": "SRC-PRP001",
+      "title": "Furo NEXT award notice",
+      "publisher": "JETRO (Tokai National Higher Education and Research System announcement)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/378419/2026011301550095.html",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP002",
+      "title": "Furo NEXT tender notice",
+      "publisher": "JETRO (Tokai National Higher Education and Research System announcement)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/361212/2025070700450001.html",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP003",
+      "title": "Unified-memory supercomputer award notice",
+      "publisher": "JETRO (University of Tsukuba announcement)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/364518/2025081200620102.html",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP004",
+      "title": "Unified-memory supercomputer tender, 2025-03-11",
+      "publisher": "University of Tsukuba",
+      "url": "https://zaimuhp2.sec.tsukuba.ac.jp/edit-ad/wp-content/uploads/310d51f2543b13abf737671c16b55fd6.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP005",
+      "title": "FY2025 Fugaku maintenance contract notice",
+      "publisher": "JETRO (RIKEN announcement)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/357318/2025060200860081.html",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP006",
+      "title": "Furo-ni public system configuration",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP007",
+      "title": "Furo-ni introduction announcement, 2026-01-21",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-PRP008",
+      "title": "Sirius operational system overview",
+      "publisher": "University of Tsukuba CCS",
+      "url": "https://www.ccs.tsukuba.ac.jp/supercomputer/",
+      "source_class": "official-project",
+      "published_or_updated": "see source title and locator"
+    },
+    {
+      "source_id": "SRC-STP014",
+      "title": "Infinia 2.4: production AI data platform",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/blog/infinia-2-4-launch-for-gpu-utilization-production-ai/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-08-17"
+    },
+    {
+      "source_id": "SRC-STP015",
+      "title": "VAST AI OS 5.5 is generally available",
+      "publisher": "VAST Data",
+      "url": "https://www.vastdata.com/blog/vast-ai-os-5-5-is-generally-available",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-08-06"
+    },
+    {
+      "source_id": "SRC-STP016",
+      "title": "DDN platform releases for AI factories",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/press-releases/ddn-accelerates-inference-and-lowers-cost-per-token-while-expanding-multi-tenant-training-for-ai-factories/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-03-16"
     }
   ],
   "coverage_gaps": [
@@ -10727,6 +11946,78 @@
       "question_en": "Can NVHBM products, suppliers, production timing, and delivered performance and cost versus HBM4E be verified?",
       "next_action_ja": "メモリ供給元と採用側の一次情報、独立実測を追跡する。NVIDIAの二つの記事を独立した検証として数えない。",
       "next_action_en": "Track primary supplier and adopter evidence and independent measurements. Do not count the two NVIDIA articles as independent validation."
+    },
+    {
+      "gap_id": "GAP-TDS-035",
+      "topic_ids": [
+        "SSW-05"
+      ],
+      "priority": "P0",
+      "question_ja": "同じ実効容量・保護条件での性能、復旧時間、価格を比較できていません。",
+      "question_en": "Matched usable-capacity, protection, performance, recovery, and price evidence is missing.",
+      "next_action_ja": "IOR／mdtest／MLPerf Storageの版と入力を固定し、価格・保守範囲が明らかな公開案件と照合する。",
+      "next_action_en": "Pin IOR/mdtest/MLPerf Storage versions and inputs, and match public cases with explicit pricing and support scope.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-036",
+      "topic_ids": [
+        "SSW-05"
+      ],
+      "priority": "P1",
+      "question_ja": "追加機能の提供完了、将来製品の販売時期、媒体移行の実績が未確認です。",
+      "question_en": "Feature completion, future product sale dates, and migration evidence remain unconfirmed.",
+      "next_action_ja": "Infiniaの公開版別機能、HAMRの一般提供、LTO移行手順を継続確認する。",
+      "next_action_en": "Track public Infinia release capabilities, broad HAMR availability, and LTO migration procedures.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-037",
+      "topic_ids": [
+        "APP-13"
+      ],
+      "priority": "P0",
+      "question_ja": "品質・負荷・電力・費用を揃えた候補CPU/GPUとハーネスの比較測定がありません。",
+      "question_en": "No matched CPU/GPU and harness measurements covering quality, workload, energy, and cost are available.",
+      "next_action_ja": "公開可能な代表課題、隔離環境、測定予算を決め、版を固定した反復測定と独立検証を行います。",
+      "next_action_en": "Define public representative tasks, isolation, and measurement budgets, then perform version-pinned repeated measurements and independent validation.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-038",
+      "topic_ids": [
+        "APP-13"
+      ],
+      "priority": "P1",
+      "question_ja": "移動する公式文書の確認のみで、比較対象のリリースと評価分母をまだ固定していません。",
+      "question_en": "Official moving documentation was reviewed, but comparison releases and evaluation denominators are not yet frozen.",
+      "next_action_ja": "データ、採点器、モデル、ハーネスのコミットを固定し、採点変更は別系列として扱います。",
+      "next_action_en": "Pin datasets, graders, models, and harness commits; treat grading changes as separate comparison series.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-039",
+      "topic_ids": [
+        "CROSS-06"
+      ],
+      "priority": "P0",
+      "question_ja": "公開内訳、契約構成の一致、運用保守の包含関係が不足し、予算から数量を推定できません。",
+      "question_en": "Itemization, contract/configuration matching, and maintenance inclusions are insufficient to estimate quantities from budgets.",
+      "next_action_ja": "価格台帳のPCGを追跡し、独立検証可能な比較案件を集めます。共同調達条件は別の小項目で調査します。",
+      "next_action_en": "Track the register's PCG gaps and collect independently testable comparable cases; investigate joint procurement in its separate unit.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-040",
+      "topic_ids": [
+        "SSW-05"
+      ],
+      "priority": "P1",
+      "question_ja": "S3とファイルアクセスを混在させた場合の整合性・隔離・障害復旧を同条件で比較できるか。",
+      "question_en": "Can mixed S3/file consistency, isolation, and recovery be compared under matched conditions?",
+      "next_action_ja": "対象版の公開仕様と再現可能な適合試験を収集し、未確認機能を分ける。",
+      "next_action_en": "Collect versioned public specifications and reproducible conformance tests, separating unverified capabilities.",
+      "status": "open"
     }
   ],
   "caveat_ja": "本データセットは、公開情報から単一のAIモデルが作成した暫定的な統合結果です。独立したAIモデルによる合意判定は完了していません。地域分類は技術的な優劣を示しません。また、設計、開発、製造、標準化の役割を単一の国籍に帰属させません。対応表の空欄や「未確認」は、非対応を意味しません。HPCIの正式な採用判断には利用できません。",
@@ -10734,7 +12025,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-CATALOG-005",
-    "human_approval_directive_id": "DIR-900014"
+    "publication_decision_id": "PUBDEC-PROVISIONAL-UNIT-UPDATES-001",
+    "human_approval_directive_id": "DIR-900015"
   }
 }

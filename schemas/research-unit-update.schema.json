@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/research-unit-update.schema.json",
+  "title": "Human-authorized provisional research unit update",
+  "type": "object",
+  "required": ["schema_version", "update_id", "topic_id", "created_at", "base_commit", "before_profile_sha256", "human_directive_id", "research_status", "consensus_status", "execution", "summary_ja", "summary_en", "units", "sections", "archive_section_ids", "source_checks", "coverage_gaps", "remaining_work_ja", "remaining_work_en"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "update_id": {"type": "string", "pattern": "^RUP-[0-9]{6}$"},
+    "topic_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "predecessor_updates": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["update_id", "bundle_sha256"],
+        "properties": {
+          "update_id": {"type": "string", "pattern": "^RUP-[0-9]{6}$"},
+          "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "before_profile_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "human_directive_id": {"type": "string", "pattern": "^DIR-[0-9]{6}$"},
+    "research_status": {"const": "provisional"},
+    "consensus_status": {"const": "incomplete"},
+    "execution": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "agent_count", "model_count", "provider", "model_identity", "security_profile_id", "retrieval_capability"],
+      "properties": {
+        "mode": {"const": "interactive-human-authorized"},
+        "agent_count": {"const": 1}, "model_count": {"const": 1},
+        "provider": {"type": "string", "minLength": 1},
+        "model_identity": {"type": "string", "minLength": 1},
+        "security_profile_id": {"const": "SEC-PROFILE-REPOSITORY-ONLY"},
+        "retrieval_capability": {"const": "managed-web"}
+      }
+    },
+    "summary_ja": {"type": "string", "minLength": 1},
+    "summary_en": {"type": "string", "minLength": 1},
+    "units": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["unit_id", "before_sha256", "evidence_section_ids"],
+        "properties": {
+          "unit_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}-U[0-9]{2}$"},
+          "before_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "evidence_section_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}}
+        }
+      }
+    },
+    "sections": {"type": "array", "minItems": 1, "items": {"$ref": "https://hpci-cfsp.github.io/OpenFS/schemas/public-topic-decision-support.schema.json#/properties/topic_profiles/items/properties/sections/items"}},
+    "archive_section_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}},
+    "source_checks": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["source", "origin_group", "checked_at", "locator", "observation_ja", "observation_en", "result"],
+        "properties": {
+          "source": {"$ref": "https://hpci-cfsp.github.io/OpenFS/schemas/public-topic-decision-support.schema.json#/properties/sources/items"},
+          "origin_group": {"type": "string", "minLength": 1},
+          "checked_at": {"type": "string", "format": "date-time"},
+          "locator": {"type": "string", "minLength": 1},
+          "observation_ja": {"type": "string", "minLength": 1},
+          "observation_en": {"type": "string", "minLength": 1},
+          "result": {"const": "read-primary-single-model"}
+        }
+      }
+    },
+    "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "https://hpci-cfsp.github.io/OpenFS/schemas/public-topic-decision-support.schema.json#/properties/coverage_gaps/items"}},
+    "remaining_work_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "remaining_work_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  },
+  "additionalProperties": false
+}

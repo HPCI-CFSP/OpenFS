@@ -146,22 +146,22 @@ SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、�
 
 How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost? How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined? How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions? How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?
 
-- `SSW-05-U01` **記憶デバイス / Storage devices** (`not-started`)
+- `SSW-05-U01` **記憶デバイス / Storage devices** (`partial`)
   - SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。
   - How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost?
-  - Evidence sections: none / 未収集
-- `SSW-05-U02` **接続・システム構成 / Connectivity and system organization** (`not-started`)
+  - Evidence sections: TDS-STP-DEVICES
+- `SSW-05-U02` **接続・システム構成 / Connectivity and system organization** (`partial`)
   - NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。
   - How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-STP-CONNECT
 - `SSW-05-U03` **保存方式・統合製品 / Storage software and integrated products** (`partial`)
   - 並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。
   - How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions?
-  - Evidence sections: TDS-SSW05-CURRENT, TDS-SSW05-FUTURE
-- `SSW-05-U04` **データ管理と転送 / Data management and transfer** (`not-started`)
+  - Evidence sections: TDS-STP2-PRODUCTS
+- `SSW-05-U04` **データ管理と転送 / Data management and transfer** (`partial`)
   - 階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。
   - How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-STP-DATA
 
 Related / 関連: ARCH-004, ARCH-005, OPS-012, SSW-012
 
@@ -419,15 +419,15 @@ Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, IT
 - `APP-13-U01` **学習・推論評価 / Training and inference evaluation** (`partial`)
   - MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。
   - Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior.
-  - Evidence sections: TDS-APP10-CURRENT, TDS-APP10-FUTURE, TDS-SSW09-EVAL-CURRENT, TDS-SSW09-EVAL-FUTURE
+  - Evidence sections: TDS-AIP-EVALUATION
 - `APP-13-U02` **エージェント・ハーネス評価 / Agent and harness evaluation** (`partial`)
   - モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。
   - Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions.
-  - Evidence sections: TDS-APP04-CURRENT, TDS-APP04-FUTURE, TDS-CROSS02-AI-CURRENT, TDS-CROSS02-AI-FUTURE
-- `APP-13-U03` **負荷モデルと継続測定 / Load models and repeated measurement** (`not-started`)
+  - Evidence sections: TDS-AIP-AGENTS
+- `APP-13-U03` **負荷モデルと継続測定 / Load models and repeated measurement** (`partial`)
   - Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。
   - Separate prefill/decode, arrival processes, batching, serial work, and concurrency, and independently validate predictions for changed resources.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-AIP-LOAD
 
 Related / 関連: APP-012, APP-002, APP-015, ARCH-001, SSW-009
 
@@ -625,7 +625,7 @@ Use public budgets, contracts, and specifications to assess cost, deployment tim
 - `CROSS-06-U01` **調達条件と費用 / Procurement conditions and cost** (`partial`)
   - 公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。
   - Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty.
-  - Evidence sections: TDS-CROSS06-CURRENT, TDS-CROSS06-FUTURE
+  - Evidence sections: TDS-PRP-EVIDENCE, TDS-PRP-PLANNING
 - `CROSS-06-U02` **共同調達と段階整備 / Joint procurement and staged deployment** (`not-started`)
   - 共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。
   - Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.

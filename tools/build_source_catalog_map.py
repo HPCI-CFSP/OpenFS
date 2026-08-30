@@ -72,6 +72,8 @@ def build(root: Path) -> dict[str, Any]:
     direct_topics_by_source: dict[str, set[str]] = defaultdict(set)
     for profile in decision_support["topic_profiles"]:
         for section in profile["sections"]:
+            if section["section_id"] in profile.get("archived_section_ids", []):
+                continue
             for item in section["items"]:
                 for source_id in item["source_ids"]:
                     direct_topics_by_source[source_id].add(profile["topic_id"])

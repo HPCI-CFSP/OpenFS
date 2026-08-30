@@ -13,7 +13,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from estimate_system_cost import allocate_budget, contract_breakdown, estimate_configuration, normalize_amount
+from estimate_system_cost import allocate_budget, contract_breakdown, estimate_configuration, normalize_amount, lease_period_total
 from check_procurement_costs import validate_register
 from audit_roadmap_sources_via_fetch_broker import reconcile_offline
 from build_roadmap_freshness_audit import build as build_freshness
@@ -36,7 +36,8 @@ class ProcurementCostTests(unittest.TestCase):
         result = contract_breakdown(case)
         self.assertEqual(6731406000, result["unallocated_jpy"])
         self.assertEqual(0, result["itemized_jpy"])
-        self.assertIsNone(contract_breakdown(self.register["cases"][-1])["observed_total_jpy"])
+        jss4 = next(c for c in self.register["cases"] if c["case_id"] == "PROC-JAXA-JSS4-2025")
+        self.assertIsNone(contract_breakdown(jss4)["observed_total_jpy"])
         self.assertTrue(all(c["aggregation_status"] != "cleared" for c in self.register["cases"]))
 
     def test_itemization_needs_observed_evidence_and_matching_tax(self):
@@ -61,6 +62,36 @@ class ProcurementCostTests(unittest.TestCase):
                              ("value_jpy", float("inf")), ("value_jpy", -1), ("value_jpy", None)]:
             with self.subTest(field=field, value=value), self.assertRaises(ValueError):
                 normalize_amount({**amount, field: value})
+
+    def test_lease_arithmetic_is_not_purchase_price(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        result = lease_period_total(case)
+        self.assertEqual(855360000, result["value_jpy"])
+        self.assertEqual(72, result["months"])
+        self.assertEqual("tender-period", result["window_basis"])
+        self.assertIsNone(contract_breakdown(case)["observed_total_jpy"])
+        self.assertEqual("unconfirmed", case["configuration_match"])
+        for patch_value in [{"end": "2031-02-28"}, {"start": "2026-03-27"}, {"end": "2026-02-28"}]:
+            changed = copy.deepcopy(case)
+            changed["contract_window"].update(patch_value)
+            with self.subTest(patch_value=patch_value), self.assertRaises(ValueError):
+                lease_period_total(changed)
+
+    def test_unknown_payment_basis_cannot_be_normalized(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
+        self.assertIsNone(lease_period_total(case))
+        self.assertIsNone(contract_breakdown(case)["observed_total_jpy"])
+        with self.assertRaises(ValueError):
+            normalize_amount(case["amount"])
+
+    def test_matching_and_amount_need_checked_public_evidence(self):
+        self.register["cases"][0]["configuration_match"] = "confirmed"
+        with self.assertRaises(ValueError):
+            validate_register(self.register, self.config)
+        self.register["cases"][0]["configuration_match"] = "unconfirmed"
+        self.register["sources"][0]["retrieval_status"] = "not-retrieved"
+        with self.assertRaises(ValueError):
+            validate_register(self.register, self.config)
 
     def test_cost_intervals_require_complete_non_overlapping_scope(self):
         first = {"line_id": "CAPEX", "scope_ids": ["machine"], "phase": "initial",

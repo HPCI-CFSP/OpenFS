@@ -78,6 +78,10 @@ reclassification.
 
 ## Compatibility and validation
 
+For an explicitly human-authorized single-model update, use the
+[bounded provisional update procedure](provisional-research-updates.md). It pins
+the input commit, preserves prior sections, and leaves Consensus incomplete.
+
 The legacy `tools/expand_topic_decision_support.py` whole-profile bootstrap is
 blocked for revision 5 onward: its former topic-to-track map would undo ownership
 and overwrite item history. It is not a recurring research worker. Use scoped

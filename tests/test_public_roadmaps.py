@@ -26,15 +26,16 @@ class PublicRoadmapTests(unittest.TestCase):
             (ROOT / "config" / "roadmap-portfolio.json").read_text(encoding="utf-8")
         )
 
-    def test_initial_publication_wave_contains_exactly_six_roadmaps(self):
-        self.assertEqual(6, len(self.roadmaps))
-        self.assertEqual(EXPECTED_P0_WAVE, {item["roadmap_id"] for item in self.roadmaps})
+    def test_published_roadmaps_preserve_initial_wave_and_match_portfolio(self):
+        actual = {item["roadmap_id"] for item in self.roadmaps}
+        self.assertLessEqual(EXPECTED_P0_WAVE, actual)
+        self.assertIn("RM-HW-STORAGE", actual)
         published = {
             item["roadmap_id"]
             for item in self.portfolio["roadmap_families"]
             if item["status"] == "published"
         }
-        self.assertEqual(EXPECTED_P0_WAVE, published)
+        self.assertEqual(actual, published)
 
     def test_every_milestone_is_sourced_and_quarter_precision_is_explicit(self):
         for roadmap in self.roadmaps:
@@ -62,7 +63,7 @@ class PublicRoadmapTests(unittest.TestCase):
         self.assertTrue(gates)
 
     def test_coverage_gaps_are_actionable_and_dependency_graph_is_connected(self):
-        graph = {roadmap_id: set() for roadmap_id in EXPECTED_P0_WAVE}
+        graph = {roadmap["roadmap_id"]: set() for roadmap in self.roadmaps}
         for roadmap in self.roadmaps:
             self.assertTrue(roadmap["coverage_gaps"])
             for gap in roadmap["coverage_gaps"]:
@@ -83,7 +84,7 @@ class PublicRoadmapTests(unittest.TestCase):
                 continue
             visited.add(current)
             pending.extend(graph[current] - visited)
-        self.assertEqual(EXPECTED_P0_WAVE, visited)
+        self.assertEqual(set(graph), visited)
 
     def test_consensus_is_not_overstated(self):
         for roadmap in self.roadmaps:

@@ -1,0 +1,694 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "STORAGE-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-HW-STORAGE",
+  "status": "published",
+  "domain": "hardware",
+  "slug": "hardware/storage-data-platforms",
+  "as_of": "2026-08-31",
+  "title_ja": "ストレージ・データ基盤",
+  "title_en": "Storage and data platforms",
+  "summary_ja": "SSD・HDD・テープ、NVMe、統合ストレージ製品、データ継続を比較する暫定ロードマップです。調査カタログARCH-012の小項目と対応し、発売時期と資料確認時点を区別します。",
+  "summary_en": "A provisional roadmap for SSDs, HDDs, tape, NVMe, integrated storage products, and data continuity. It follows ARCH-012 research units and distinguishes release timing from an as-of observation.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "devices",
+      "name_ja": "記憶媒体",
+      "name_en": "Storage media"
+    },
+    {
+      "group_id": "connectivity",
+      "name_ja": "接続規格",
+      "name_en": "Connectivity standards"
+    },
+    {
+      "group_id": "platforms",
+      "name_ja": "統合製品・データ継続",
+      "name_en": "Integrated products and data continuity"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "STOR-SSD",
+      "group": "devices",
+      "name_ja": "大容量SSD",
+      "name_en": "High-capacity SSDs",
+      "summary_ja": "フォームファクタ、耐久性、I/O特性を区別します。",
+      "summary_en": "Separate form factor, endurance, and I/O characteristics.",
+      "current_state_ja": "LC9の2.5インチとE3.Lを別仕様として確認しました。容量だけでは書込み耐久性やチェックポイント性能を判定できません。",
+      "current_state_en": "LC9 2.5-inch and E3.L specifications were checked separately. Capacity alone does not establish write endurance or checkpoint performance.",
+      "hpci_implications_ja": "読取り中心のデータ階層と書込み中心の領域を分けて評価する案です。",
+      "hpci_implications_en": "Evaluate read-heavy data tiers separately from write-heavy areas.",
+      "source_ids": [
+        "SRC-STP001",
+        "SRC-STP002"
+      ]
+    },
+    {
+      "track_id": "STOR-HDD",
+      "group": "devices",
+      "name_ja": "HAMR HDD",
+      "name_en": "HAMR HDDs",
+      "summary_ja": "量産提供先と一般提供を区別します。",
+      "summary_en": "Distinguish volume customers from general availability.",
+      "current_state_ja": "Mozaic 4+の44 TB級は特定のハイパースケーラーへの量産であり、一般調達条件は別途確認が必要です。",
+      "current_state_en": "Mozaic 4+ at up to 44 TB is in volume delivery to selected hyperscalers; general procurement terms need separate confirmation.",
+      "hpci_implications_ja": "容量単価に加え、再構築時間、保護方式、アクセス並列度を確認します。",
+      "hpci_implications_en": "Check rebuild time, protection, and access parallelism as well as capacity cost.",
+      "source_ids": [
+        "SRC-STP003"
+      ]
+    },
+    {
+      "track_id": "STOR-TAPE",
+      "group": "devices",
+      "name_ja": "テープと世代間移行",
+      "name_en": "Tape and generational migration",
+      "summary_ja": "非圧縮容量と読出し互換性を追跡します。",
+      "summary_en": "Track native capacity and read compatibility.",
+      "current_state_ja": "LTO-10への移行では旧世代との互換性を前提にできません。ドライブと媒体の両方を管理する必要があります。",
+      "current_state_en": "Migration to LTO-10 cannot assume backward compatibility; both drives and media need lifecycle management.",
+      "hpci_implications_ja": "旧ドライブ保持、移行時間、リストア試験、再書込み費用を計画に含めます。",
+      "hpci_implications_en": "Plan for legacy-drive retention, migration time, restore tests, and rewrite cost.",
+      "source_ids": [
+        "SRC-STP004",
+        "SRC-STP005"
+      ]
+    },
+    {
+      "track_id": "STOR-NVME",
+      "group": "connectivity",
+      "name_ja": "NVMe・NVMe-oF",
+      "name_en": "NVMe and NVMe-oF",
+      "summary_ja": "規格の版とホスト・装置の実装を区別します。",
+      "summary_en": "Distinguish specification revisions from host and device implementations.",
+      "current_state_ja": "NVMe 2.4を含む仕様群は公開されていますが、各機能の製品対応は一括して確定しません。",
+      "current_state_en": "The specification suite including NVMe 2.4 is published, but support for each feature must be verified per product.",
+      "hpci_implications_ja": "PCIe・RDMA・TCP接続の性能と運用性を実構成で比較します。",
+      "hpci_implications_en": "Compare PCIe, RDMA, and TCP performance and operations in actual configurations.",
+      "source_ids": [
+        "SRC-STP006"
+      ]
+    },
+    {
+      "track_id": "STOR-PLATFORMS",
+      "group": "platforms",
+      "name_ja": "並列ファイルシステム・統合データ基盤",
+      "name_en": "Parallel filesystems and integrated data platforms",
+      "summary_ja": "EXAScaler、Infinia、VASTを機能単位で比較します。",
+      "summary_en": "Compare EXAScaler, Infinia, and VAST at feature level.",
+      "current_state_ja": "Infinia 2.4の機能説明とVAST AI OS 5.5の一般提供発表を確認。発売済み製品と機能別の提供条件を区別します。",
+      "current_state_en": "Infinia 2.4 feature documentation and the VAST AI OS 5.5 GA announcement were checked. Separate released products from feature-specific availability.",
+      "hpci_implications_ja": "メタデータ、S3／POSIX整合性、障害復旧、移行、保守範囲を確認します。",
+      "hpci_implications_en": "Check metadata behavior, S3/POSIX semantics, recovery, migration, and support scope.",
+      "source_ids": [
+        "SRC-STP007",
+        "SRC-STP008",
+        "SRC-STP009",
+        "SRC-STP014",
+        "SRC-STP015",
+        "SRC-STP016"
+      ]
+    },
+    {
+      "track_id": "STOR-CONTINUITY",
+      "group": "platforms",
+      "name_ja": "データ継続・受入評価",
+      "name_en": "Data continuity and acceptance testing",
+      "summary_ja": "転送、保存、再利用をI/O性能と一体で評価します。",
+      "summary_en": "Evaluate transfer, retention, and reuse together with I/O performance.",
+      "current_state_ja": "Globus、S3管理機能、IOR／mdtest、MLPerf Storageの公開文書を確認しました。今回実行したベンチマークはありません。",
+      "current_state_en": "Public documentation for Globus, S3 management, IOR/mdtest, and MLPerf Storage was reviewed. No benchmark was executed.",
+      "hpci_implications_ja": "データ所在・権限・保持・バックアップ復元を含む受入試験が必要です。",
+      "hpci_implications_en": "Acceptance tests should include location, permissions, retention, and restoration.",
+      "source_ids": [
+        "SRC-STP010",
+        "SRC-STP011",
+        "SRC-STP012",
+        "SRC-STP013"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-STOR-KIOXIA",
+      "track_id": "STOR-SSD",
+      "owner": "Kioxia",
+      "scope_ja": "LC9・形態別の仕様",
+      "scope_en": "LC9 form-specific specifications",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-LC9-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "LC9仕様確認",
+          "label_en": "LC9 specification check",
+          "detail_ja": "8月31日に現行仕様を確認。2.5インチ最大122.88 TB、E3.L最大245.76 TB。これは発売日を示すマイルストーンではありません。",
+          "detail_en": "Current specifications checked on August 31: up to 122.88 TB in 2.5-inch and 245.76 TB in E3.L. This milestone is not a release date.",
+          "source_ids": [
+            "SRC-STP001",
+            "SRC-STP002"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-SSD-FUTURE",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "次世代の提供時期未確認",
+          "label_en": "Next-generation availability unconfirmed",
+          "detail_ja": "後継SSDの容量・耐久性・製品提供時期を、この調査から2032年まで外挿しません。",
+          "detail_en": "Do not extrapolate successor SSD capacity, endurance, or availability through 2032 from this scan.",
+          "source_ids": [
+            "SRC-STP001",
+            "SRC-STP002"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-SEAGATE",
+      "track_id": "STOR-HDD",
+      "owner": "Seagate",
+      "scope_ja": "Mozaic 4+",
+      "scope_en": "Mozaic 4+",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-MOZAIC-VOLUME",
+          "year": 2026,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "限定顧客へ量産",
+          "label_en": "Volume delivery to selected customers",
+          "detail_ja": "3月3日の発表は2社のハイパースケーラー向け44 TB級の量産を示します。全顧客向け出荷とは区別します。",
+          "detail_en": "The March 3 announcement reports volume delivery at up to 44 TB to two hyperscalers, not unrestricted customer availability.",
+          "source_ids": [
+            "SRC-STP003"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-MOZAIC-GA",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "一般提供日未公表",
+          "label_en": "General-availability date unspecified",
+          "detail_ja": "一般提供を予定するとしていますが、当該発表に日付はありません。",
+          "detail_en": "General availability is planned without a date in this announcement.",
+          "source_ids": [
+            "SRC-STP003"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-LTO",
+      "track_id": "STOR-TAPE",
+      "owner": "IBM / LTO Program",
+      "scope_ja": "LTO-10と継続読出し",
+      "scope_en": "LTO-10 and continued readability",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-LTO10-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "LTO-10仕様確認",
+          "label_en": "LTO-10 specification check",
+          "detail_ja": "8月31日にIBMの30／40 TB非圧縮仕様と、LTO Programの後方互換性に関する制約を確認しました。発売四半期を意味しません。",
+          "detail_en": "On August 31, IBM's 30/40 TB native specifications and the LTO Program's backward-compatibility limitation were checked; this is not a release quarter.",
+          "source_ids": [
+            "SRC-STP004",
+            "SRC-STP005"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-LTO-FUTURE",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "将来世代の日程未確認",
+          "label_en": "Future-generation dates unconfirmed",
+          "detail_ja": "世代番号から発売年を推測せず、媒体、ドライブ、移行サービスの提供日を追跡します。",
+          "detail_en": "Do not derive release years from generation numbers; track media, drive, and migration-service availability.",
+          "source_ids": [
+            "SRC-STP005"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-NVMEXPRESS",
+      "track_id": "STOR-NVME",
+      "owner": "NVM Express",
+      "scope_ja": "仕様群",
+      "scope_en": "Specification suite",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-NVME24",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "standard",
+          "event_type": "standard",
+          "timing_basis": "standard-release",
+          "comparison_priority": "key",
+          "label_ja": "NVMe 2.4仕様公開",
+          "label_en": "NVMe 2.4 specification release",
+          "detail_ja": "2026年8月4日公開。Base、コマンドセット、トランスポートは別仕様であり、規格公開を製品対応完了とは扱いません。",
+          "detail_en": "Released on August 4, 2026. Base, command-set, and transport specifications are separate; publication is not proof of product implementation.",
+          "source_ids": [
+            "SRC-STP006"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-DDN-EXASCALER",
+      "track_id": "STOR-PLATFORMS",
+      "owner": "DDN",
+      "scope_ja": "EXAScaler",
+      "scope_en": "EXAScaler",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-EXASCALER-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "Lustre製品を確認",
+          "label_en": "Lustre product checked",
+          "detail_ja": "現行EXAScalerの公開製品説明を確認。性能数値の横比較には媒体・クライアント・I/O条件の一致が必要です。発売日ではありません。",
+          "detail_en": "Current EXAScaler product documentation checked; numerical comparisons need matching media, clients, and I/O conditions. Not a release date.",
+          "source_ids": [
+            "SRC-STP007"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-EXA-TENANCY",
+          "year": 2026,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "テナント管理機能を発表",
+          "label_en": "Tenancy capabilities announced",
+          "detail_ja": "3月16日発表。GAは夏までの目標で、達成を示す公開版情報は未確認です。",
+          "detail_en": "Announced March 16. GA by summer was a target; public release-specific completion evidence remains unverified.",
+          "source_ids": [
+            "SRC-STP016"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-DDN-INFINIA",
+      "track_id": "STOR-PLATFORMS",
+      "owner": "DDN",
+      "scope_ja": "Infinia・POSIX機能",
+      "scope_en": "Infinia and its POSIX feature",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-INFINIA-POSIX",
+          "year": 2026,
+          "quarter": null,
+          "timing_precision": "year",
+          "maturity": "target",
+          "event_type": "product",
+          "timing_basis": "vendor-target",
+          "comparison_priority": "key",
+          "label_ja": "POSIX GA目標（夏）",
+          "label_en": "POSIX GA target (summer)",
+          "detail_ja": "旧記事は2026年夏をGA目標とし、当時の顧客検証を説明しています。夏を特定四半期に置換しません。8月の機能説明は別項目に記録し、GA達成とは区別します。",
+          "detail_en": "The older article targets summer 2026 and describes customer validation at that time. Do not translate summer into a specific quarter. August capability documentation is a separate event, not proof of GA completion.",
+          "source_ids": [
+            "SRC-STP008"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-INFINIA-FOLLOWUP",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "機能別GAを再確認",
+          "label_en": "Recheck feature-specific GA",
+          "detail_ja": "S3製品の一般提供とPOSIX機能の一般提供を区別し、リリースノートで確定します。",
+          "detail_en": "Distinguish S3 product GA from POSIX feature GA and verify through release notes.",
+          "source_ids": [
+            "SRC-STP008"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-INFINIA24-CAPABILITIES",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "2.4機能説明を更新",
+          "label_en": "2.4 capabilities documented",
+          "detail_ja": "8月の技術記事はネイティブPOSIXクライアントとS3継続を説明。機能単位のGA条件は未確認です。",
+          "detail_en": "The August technical article describes a native POSIX client and continued S3 support. Feature-level GA terms remain unverified.",
+          "source_ids": [
+            "SRC-STP014"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-VAST",
+      "track_id": "STOR-PLATFORMS",
+      "owner": "VAST Data",
+      "scope_ja": "DASE・DataStore",
+      "scope_en": "DASE and DataStore",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-VAST-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "アーキテクチャ確認",
+          "label_en": "Architecture checked",
+          "detail_ja": "NVMe-oFを用いる共有ストレージとDataStoreの複数アクセス方式を確認。上位のDataBase機能とは区別します。発売日ではありません。",
+          "detail_en": "Shared storage over NVMe-oF and DataStore access methods were checked, separately from higher-level DataBase functions. Not a release date.",
+          "source_ids": [
+            "SRC-STP009"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-STOR-VAST55-GA",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "commercial",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "AI OS 5.5一般提供",
+          "label_en": "AI OS 5.5 GA",
+          "detail_ja": "8月6日にGA発表。DataEngineの管理実行を含みますが、モデルサービングは外部Kubernetesです。",
+          "detail_en": "GA announced August 6, including managed DataEngine execution; model serving remains on external Kubernetes.",
+          "source_ids": [
+            "SRC-STP015"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-STOR-OPENFS",
+      "track_id": "STOR-CONTINUITY",
+      "owner": "OpenFS",
+      "scope_ja": "評価条件の整備",
+      "scope_en": "Evaluation prerequisites",
+      "milestones": [
+        {
+          "milestone_id": "MS-STOR-EVALUATION",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "共通I/O・復元試験",
+          "label_en": "Matched I/O and restore tests",
+          "detail_ja": "データセット、クライアント、キャッシュ、保護方式を固定し、IOR／mdtestと科学AI入出力を測定するOpenFS案です。実施日は未設定で、測定済みではありません。",
+          "detail_en": "OpenFS proposes matching datasets, clients, cache state, and protection while measuring IOR/mdtest and scientific-AI I/O. No execution date is set and no measurements are claimed.",
+          "source_ids": [
+            "SRC-STP012",
+            "SRC-STP013"
+          ],
+          "dependency_refs": [
+            "DEP-STOR-BLUEPRINT-001"
+          ]
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-WORK-STOR-001",
+      "relationship": "informs",
+      "upstream_roadmap_id": "RM-APP-WORKLOADS",
+      "downstream_roadmap_id": "RM-HW-STORAGE",
+      "statement_ja": "チェックポイント、学習データ、メタデータの負荷がストレージの受入条件を決めます。",
+      "statement_en": "Checkpoint, training-data, and metadata loads define storage acceptance conditions.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-STP012",
+        "SRC-STP013"
+      ]
+    },
+    {
+      "dependency_id": "DEP-NET-STOR-001",
+      "relationship": "informs",
+      "upstream_roadmap_id": "RM-HW-INTERCONNECT",
+      "downstream_roadmap_id": "RM-HW-STORAGE",
+      "statement_ja": "NVMe-oFとクライアント通信は、ネットワークの障害・輻輳条件と一体で評価します。",
+      "statement_en": "Evaluate NVMe-oF and client traffic with network failure and congestion conditions.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-STP006",
+        "SRC-STP009"
+      ]
+    },
+    {
+      "dependency_id": "DEP-STOR-BLUEPRINT-001",
+      "relationship": "informs",
+      "upstream_roadmap_id": "RM-HW-STORAGE",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "媒体、ソフトウェア、保存・復元、保守費用の確認が、計画案のストレージ構成と移行時期を制約します。",
+      "statement_en": "Media, software, retention/restoration, and support costs constrain storage configurations and migration timing in system plans.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-STP005",
+        "SRC-STP007",
+        "SRC-STP010"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-STP001",
+      "title": "LC9 Series (2.5-inch)",
+      "publisher": "KIOXIA",
+      "url": "https://www.kioxia.com/en-jp/business/ssd/enterprise-ssd/lc9.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP002",
+      "title": "LC9 Series (E3.L)",
+      "publisher": "KIOXIA",
+      "url": "https://www.kioxia.com/en-jp/business/ssd/enterprise-ssd/lc9-e3l.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP003",
+      "title": "Seagate delivers next-generation Mozaic 4+",
+      "publisher": "Seagate",
+      "url": "https://www.seagate.com/stories/articles/seagate-delivers-industrys-highest-capacity-hard-drives-with-next-generation-mozaic-4/",
+      "source_class": "vendor-official",
+      "published_at": "2026-03-03"
+    },
+    {
+      "source_id": "SRC-STP004",
+      "title": "IBM LTO Tape Drive",
+      "publisher": "IBM",
+      "url": "https://www.ibm.com/products/lto-tape-drive",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP005",
+      "title": "LTO technology roadmap and compatibility",
+      "publisher": "LTO Program",
+      "url": "https://www.lto.org/roadmap/",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-STP006",
+      "title": "NVMe set of specifications",
+      "publisher": "NVM Express",
+      "url": "https://nvmexpress.org/specifications/",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-STP007",
+      "title": "EXAScaler AI and HPC Storage",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/products/lustre-file-system-exascaler/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP008",
+      "title": "Infinia expands to inference, data lakes, and multi-protocol workloads",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/blog/ddn-infinia-expands-to-power-inference-intelligent-data-lakes-and-multi-protocol-ai-workloads/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP009",
+      "title": "VAST AI Operating System white paper",
+      "publisher": "VAST Data",
+      "url": "https://www.vastdata.com/whitepaper",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP010",
+      "title": "Globus Connect Server v5 installation guide",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-STP011",
+      "title": "What is Amazon S3?",
+      "publisher": "Amazon Web Services",
+      "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-STP012",
+      "title": "IOR and mdtest",
+      "publisher": "HPC I/O benchmark maintainers",
+      "url": "https://github.com/hpc/ior",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-STP013",
+      "title": "MLPerf Storage benchmark",
+      "publisher": "MLCommons",
+      "url": "https://mlcommons.org/benchmarks/storage/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-STP014",
+      "title": "Infinia 2.4: production AI data platform",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/blog/infinia-2-4-launch-for-gpu-utilization-production-ai/",
+      "source_class": "vendor-official",
+      "published_at": "2026-08-17"
+    },
+    {
+      "source_id": "SRC-STP015",
+      "title": "VAST AI OS 5.5 Is Generally Available",
+      "publisher": "VAST Data",
+      "url": "https://www.vastdata.com/blog/vast-ai-os-5-5-is-generally-available",
+      "source_class": "vendor-official",
+      "published_at": "2026-08-06"
+    },
+    {
+      "source_id": "SRC-STP016",
+      "title": "DDN Accelerates Inference and Lowers Cost Per Token While Expanding Multi-Tenant Training for AI Factories",
+      "publisher": "DDN",
+      "url": "https://www.ddn.com/press-releases/ddn-accelerates-inference-and-lowers-cost-per-token-while-expanding-multi-tenant-training-for-ai-factories/",
+      "source_class": "vendor-official",
+      "published_at": "2026-03-16"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-STOR-001",
+      "priority": "P0",
+      "scope_ja": "価格・混在I/O・復元性能の比較",
+      "scope_en": "Matched pricing, mixed I/O, and restoration",
+      "impact_ja": "媒体容量と公称帯域だけでは、予算・復旧時間を満たす構成を決められません。",
+      "impact_en": "Media capacity and nominal bandwidth cannot select a design meeting budget and recovery requirements.",
+      "next_action_ja": "同じ保護方式・容量基準・負荷で測定し、公開仕様と価格内訳を照合します。PCG-001〜003も参照します。",
+      "next_action_en": "Measure matching protection, capacity basis, and workload; match public specifications and itemized costs, also using PCG-001 through PCG-003.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-STOR-002",
+      "priority": "P1",
+      "scope_ja": "機能別の一般提供と移行互換性",
+      "scope_en": "Feature-level GA and migration compatibility",
+      "impact_ja": "製品全体の発表や規格公開だけでは受入時の機能を保証できません。",
+      "impact_en": "Product announcements and standards releases do not guarantee acceptance-time functionality.",
+      "next_action_ja": "Infinia POSIX、NVMe実装、LTO移行をリリースノート・互換表・復元試験で確認します。",
+      "next_action_en": "Check Infinia POSIX, NVMe implementations, and LTO migration using release notes, compatibility matrices, and restoration tests.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-STOR-003",
+      "priority": "P2",
+      "scope_ja": "2027年以降の提供時期と未調査ベンダー",
+      "scope_en": "Availability after 2026 and unreviewed vendors",
+      "impact_ja": "今回の対象だけでは国内外の媒体・統合ストレージ市場を網羅できません。",
+      "impact_en": "This scan does not cover the full worldwide media and integrated-storage market.",
+      "next_action_ja": "Micron、Samsung、Western Digital、HPE、WEKA、IBM等の公開資料を追加調査し、未公表年を推測で埋めません。",
+      "next_action_en": "Extend primary-source coverage to Micron, Samsung, Western Digital, HPE, WEKA, IBM, and others; do not invent unannounced years.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによる合意判定は未完了です。資料確認時点は発売日ではなく、目標の記載は実現済みを意味しません。未調査ベンダー・機能・将来日程を未確認事項として残しています。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. An as-of documentation check is not a release date, and a target does not establish delivery. Unreviewed vendors, features, and future dates remain Coverage Gaps.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-PROVISIONAL-UNIT-UPDATES-001",
+    "human_approval_directive_id": "DIR-900015"
+  }
+}

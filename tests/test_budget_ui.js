@@ -94,11 +94,27 @@ test("comparison links retain budget/year and distinguish allocations from estim
   }
 });
 
-test("public register displays four cases with access restrictions and no raw HTML", () => {
+test("public register displays all cases with access restrictions and no raw HTML", () => {
   const f = fixture(); f.data.procurement_register.cases[0].title_en = "<script>not markup</script>";
   f.api.renderRegister(f.root, "en");
-  assert.equal(f.root.querySelectorAll("details").length, 4);
+  assert.equal(f.root.querySelectorAll("details").length, f.data.procurement_register.cases.length);
   assert.equal(f.root.querySelectorAll("summary")[0].textContent, "<script>not markup</script>");
   assert.ok(f.walk(f.root).some((e) => e.textContent?.includes("Confidentiality required; not obtained")));
   assert.ok(f.root.querySelectorAll("a").every((a) => a.href.startsWith("https://") && a.rel === "noopener noreferrer"));
+});
+
+test("lease period and award date remain distinct from commissioning and purchase cost", () => {
+  const f = fixture();
+  const caseData = f.data.procurement_register.cases.find((item) => item.case_id === "PROC-TSUKUBA-UNIFIED-MEMORY-2025");
+  caseData.lease_period_total = {months: 72, value_jpy: 855360000, tax_basis: "including-tax"};
+  for (const language of ["ja", "en"]) {
+    f.api.renderRegister(f.root, language);
+    const section = f.root.querySelectorAll("details").find((e) => e.id === `procurement-${caseData.case_id}`);
+    const text = f.walk(section).map((e) => e.textContent || "").join(" ");
+    assert.ok(text.includes("2026-03-01"));
+    assert.ok(text.includes("2032-02-29"));
+    assert.ok(text.includes(caseData.award_date));
+    assert.ok(text.includes(language === "ja" ? "購入価格・TCOではありません" : "Not purchase price or TCO"));
+    assert.ok(text.includes(language === "ja" ? "月額" : "Monthly"));
+  }
 });

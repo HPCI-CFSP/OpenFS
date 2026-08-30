@@ -41,6 +41,8 @@ def schema_registry(root: Path) -> tuple[dict[str, dict[str, Any]], Registry]:
 
 def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | None:
     ref = str(path.relative_to(root))
+    if ref.startswith("proposals/research-unit-updates/"):
+        return "research-unit-update.schema.json"
     if ref == "config/budget-planning.json":
         return "budget-planning.schema.json"
     if ref == "knowledge/public/procurement-cost-register.json":
@@ -207,6 +209,9 @@ def validate(root: Path = ROOT) -> tuple[list[str], int]:
             errors.append(
                 f"{path.relative_to(root)} [{schema_name}] {location}: {error.message}"
             )
+    if not errors and (root / "knowledge/public/topic-decision-support.json").exists():
+        from apply_research_unit_update import audit_updates
+        errors.extend(audit_updates(root))
     return errors, validated
 
 

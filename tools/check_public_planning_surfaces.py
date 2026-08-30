@@ -96,8 +96,11 @@ def validate_topic_decision_support(root: Path) -> list[str]:
         stages = {
             item["stage"]
             for section in profile["sections"]
+            if section["section_id"] not in profile.get("archived_section_ids", [])
             for item in section["items"]
         }
+        if set(profile.get("archived_section_ids", [])) - {s["section_id"] for s in profile["sections"]}:
+            errors.append(f"{profile['topic_id']} archives a missing section")
         if "current" not in stages:
             errors.append(f"{profile['topic_id']} lacks a current-state item")
         if not stages & {"near-term", "research", "contested"}:

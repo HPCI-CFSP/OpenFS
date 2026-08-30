@@ -76,6 +76,22 @@ missing terms block TCO and passing arithmetic never grants procurement authorit
 
 For the next research loop, search official university/agency award notices and
 itemized server, storage, network, and facility tenders. Track changed versions,
-failed retrievals, price dates, and explicit scope. Keep PCG-001 through PCG-004
+failed retrievals, price dates, and explicit scope. Keep all listed PCG gaps
 open until their stated evidence requirements are met; a new URL or another model's
 agreement alone does not close them. No unattended Run is enabled by this update.
+
+### Billing and configuration checks / 支払単位と構成の照合
+
+Match buyer, title, tender date cited by the award, and opening/award date before
+connecting documents. Similar names in different procurement years are not a match.
+The 2025 Tsukuba award cites the 2025-03-11 tender, not the similar 2024 tender.
+A `contract_window` preserves the evidenced tender or contract period; it is not
+an operational lifecycle event. `lease_period_total` is generated arithmetic only:
+unchanged monthly rate times whole calendar months, in the original tax basis.
+Do not infer a payment unit from the magnitude of a number. Keep unknown billing
+units unknown. Unmatched configurations cannot calibrate component prices.
+
+発注機関、件名、落札公示が参照する公告日、開札・落札日で照合します。同名の別年度
+案件を混同しません。月額一定の期間合計は機器購入費でもTCOでもなく、元の税区分の
+単純計算です。借入期間と稼働期間を区別し、公開構成は予定／稼働中の別と照合上の
+未確認事項を残します。仕様変更や資料間の差を推測で解消しません。

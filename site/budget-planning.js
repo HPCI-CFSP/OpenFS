@@ -62,9 +62,26 @@
       const heading = el("summary", item[`title_${language}`]); section.append(heading);
       const amount = item.amount; const values = el("dl", undefined, "procurement-facts");
       [[amount ? t[amount.kind] : t.contract, amount ? `${money(amount.value_jpy / 1e8, language)} · ${t[amount.tax_basis] || t.notKnown} · ${t[amount.payment_basis] || t.notKnown}` : t.notKnown],
-       [t.date, item.contract_date || t.notKnown], [t.unallocated, money(item.breakdown.unallocated_jpy === null ? null : item.breakdown.unallocated_jpy / 1e8, language)]]
+       [item.contract_date ? t.date : (language === "ja" ? "落札日" : "Award date"), item.contract_date || item.award_date || t.notKnown], [t.unallocated, money(item.breakdown.unallocated_jpy === null ? null : item.breakdown.unallocated_jpy / 1e8, language)]]
         .forEach(([label, value]) => { const group = el("div"); group.append(el("dt", label), el("dd", value)); values.append(group); });
-      section.append(values, el("p", item[`scope_${language}`]), el("h4", t.sources)); const documents = el("ul");
+      section.append(values, el("p", item[`scope_${language}`])); const documents = el("ul");
+      if (item.contract_window) {
+        const period = item.contract_window;
+        const label = language === "ja" ? "公告・契約に記載された期間" : "Period specified in the tender / contract";
+        section.append(el("p", `${label}: ${period.start} – ${period.end}`));
+      }
+      if (item.lease_period_total) {
+        const total = item.lease_period_total;
+        section.append(el("p", language === "ja"
+          ? `月額一定と仮定した${total.months}か月分の単純合計: ${money(total.value_jpy / 1e8, language)}（${t[total.tax_basis] || t.notKnown}）。購入価格・TCOではありません。`
+          : `Arithmetic total for ${total.months} months at an unchanged monthly rate: ${money(total.value_jpy / 1e8, language)} (${t[total.tax_basis] || t.notKnown}). Not purchase price or TCO.`));
+      }
+      if (item.configuration_observation) {
+        const observation = item.configuration_observation;
+        const label = language === "ja" ? "公開構成との対応確認" : "Public configuration matching";
+        section.append(el("h4", label), el("p", observation[`summary_${language}`]), el("p", observation[`match_caveat_${language}`]));
+      }
+      section.append(el("h4", t.sources));
       item.documents.forEach((doc) => { const source = sources.get(doc.source_id); const line = el("li"); const link = el("a", source.title); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer";
         line.append(el("strong", `${t[doc.kind]}: ${t[doc.access_status]}`), el("br"), link, el("small", `${t.checkDate}: ${source.checked_on} · ${source.locator}`)); documents.append(line); });
       section.append(documents, el("p", `${t.gaps}: ${item.gap_ids.join(" · ")}`, "mono-list")); root.append(section);
