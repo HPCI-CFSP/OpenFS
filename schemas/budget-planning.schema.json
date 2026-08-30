@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/budget-planning.schema.json",
+  "title": "Provisional budget allocation configuration",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "planning_id", "price_basis_year", "currency", "tax_basis", "budget_ceilings_oku_jpy", "default_budget_oku_jpy", "default_deployment_year", "deployment_years", "tco_years", "allocation_basis", "scope_ja", "scope_en", "caveat_ja", "caveat_en", "components", "profiles"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"}, "planning_id": {"const": "BUDGET-PLANNING-001"},
+    "price_basis_year": {"type": "integer", "minimum": 2020}, "currency": {"const": "JPY"}, "tax_basis": {"const": "excluding-tax"},
+    "budget_ceilings_oku_jpy": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000}},
+    "default_budget_oku_jpy": {"type": "number", "exclusiveMinimum": 0}, "default_deployment_year": {"type": "integer"},
+    "deployment_years": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 2020, "maximum": 2100}},
+    "tco_years": {"type": "integer", "minimum": 1}, "allocation_basis": {"const": "openfs-planning-assumption"},
+    "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"}, "caveat_ja": {"$ref": "#/$defs/text"}, "caveat_en": {"$ref": "#/$defs/text"},
+    "components": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "label_ja", "label_en", "unit_ja", "unit_en"], "properties": {"id": {"$ref": "#/$defs/text"}, "label_ja": {"$ref": "#/$defs/text"}, "label_en": {"$ref": "#/$defs/text"}, "unit_ja": {"$ref": "#/$defs/text"}, "unit_en": {"$ref": "#/$defs/text"}}}},
+    "profiles": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "object", "additionalProperties": false, "required": ["scenario_id", "shares_percent"], "properties": {"scenario_id": {"type": "string", "pattern": "^SCN-[A-Z0-9-]+$"}, "shares_percent": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}}}}}
+  },
+  "$defs": {"text": {"type": "string", "minLength": 1}}
+}

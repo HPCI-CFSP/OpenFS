@@ -106,9 +106,7 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
     if not roadmaps:
         raise ValueError("no public roadmaps found")
     as_of_values = {roadmap["as_of"] for roadmap in roadmaps}
-    if len(as_of_values) != 1:
-        raise ValueError(f"roadmap as_of values disagree: {sorted(as_of_values)}")
-    as_of = as_of_values.pop()
+    as_of = max(as_of_values)
     monitors = _monitor_index(root)
     overrides = _query_overrides(root)
 

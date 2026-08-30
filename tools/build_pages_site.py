@@ -12,6 +12,8 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
+from check_procurement_costs import validate_register
+from estimate_system_cost import allocate_budget, contract_breakdown
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -144,6 +146,7 @@ def public_projection(
         artifact.get("scenario_id")
         or artifact.get("report_id")
         or artifact.get("export_id")
+        or artifact.get("artifact_id")
     )
     if not directive_id or artifact_id not in approved_directives.get(directive_id, set()):
         raise ValueError(f"{label} has no matching human publication Directive")
@@ -218,6 +221,26 @@ def collect_scenario_budget_references(
                 raise ValueError(f"conflicting scenario budget reference: {case_id}")
             references[case_id] = item
     return sorted(references.values(), key=lambda item: item["case_id"])
+
+
+def collect_procurement_costs(root: Path, policy: dict[str, Any]) -> tuple[dict, dict]:
+    from validate_json_schemas import schema_registry, Draft202012Validator, FormatChecker
+    register = load_json(root / policy["procurement_register_path"])
+    config = load_json(root / "config/budget-planning.json")
+    schemas, registry = schema_registry(root)
+    for payload, schema_name in [(register, "procurement-cost-register.schema.json"),
+                                  (config, "budget-planning.schema.json")]:
+        Draft202012Validator(schemas[schema_name], registry=registry,
+                             format_checker=FormatChecker()).validate(payload)
+    validate_register(register, config)
+    projected = public_projection(
+        register, policy["procurement_public_fields"], policy["required_publication_metadata"],
+        ["title_ja", "title_en", "caveat_ja", "caveat_en"],
+        approved_publication_directives(root, policy), "procurement register")
+    projected = json.loads(json.dumps(projected))
+    for case in projected["cases"]:
+        case["breakdown"] = contract_breakdown(case)
+    return projected, config
 
 
 def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1157,6 +1180,22 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
 
     scenarios = collect_scenarios(root, policy)
     scenario_budget_references = collect_scenario_budget_references(root, policy)
+    procurement_register, budget_planning = collect_procurement_costs(root, policy)
+    for scenario in scenarios:
+        options = scenario["budget_options"]
+        expected_levels = budget_planning["budget_ceilings_oku_jpy"]
+        if [o.get("tier") for o in options] != [f"jpy-{v}" for v in expected_levels]:
+            raise ValueError("scenario budget levels disagree with budget planning config")
+        for option, ceiling in zip(options, expected_levels):
+            expected = allocate_budget(budget_planning, scenario["scenario_id"], ceiling,
+                                       budget_planning["default_deployment_year"])
+            if option.get("budget_allocation") != expected:
+                raise ValueError("scenario budget allocation is stale or unsupported")
+            if any(c["quantity"] is not None for c in option["components"]):
+                raise ValueError("uncalibrated procurement model cannot publish node quantities")
+            if any(option["aggregate"][key] is not None
+                   for key in ("cpu_nodes", "accelerator_nodes", "accelerators", "storage_pb")):
+                raise ValueError("uncalibrated procurement model cannot publish system totals")
     consensus_packages = collect_consensus_packages(root, policy)
     reports = collect_reports(root, policy)
     roadmap_artifacts = collect_roadmaps(root, policy)
@@ -1257,6 +1296,8 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "roadmaps": roadmaps,
         "scenarios": scenarios,
         "scenario_budget_references": scenario_budget_references,
+        "procurement_register": procurement_register,
+        "budget_planning": budget_planning,
         "reports": reports,
         "publication": {
             "policy_id": policy["policy_id"],
@@ -1283,7 +1324,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "search.js", "feedback.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js"):
         shutil.copy2(source / filename, output / filename)
     copy_brand_assets(root, output)
     data_dir = output / "data"

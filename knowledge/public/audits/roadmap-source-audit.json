@@ -5,22 +5,22 @@
   "audit_id": "RSA-20260829-001",
   "as_of": "2026-08-29",
   "checked_at": "2026-08-29T06:16:37Z",
-  "method": "One anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker; redirects, DNS answers, and connection destinations are validated at every hop; at most the first 1 KiB is retained in memory and source bodies are not stored. The result is mapped to every Source ID registered for that URL.",
-  "method_ja": "重複を除いたURLごとに、Safe Web Fetch Brokerを介して匿名のHTTP GETリクエストを1回送り、各ホップでリダイレクト先、DNS応答、実際の接続先を検証します。本文はメモリ上で先頭1 KiBまで取得し、保存しません。同じURLを登録した各Source IDには同一の取得結果を対応付けます。",
-  "method_en": "The audit sends one anonymous HTTP GET per distinct URL through the Safe Web Fetch Broker. It validates redirects, DNS answers, and actual connection destinations at every hop, retains at most the first 1 KiB in memory, and does not store source bodies. The same retrieval result is mapped to every Source ID registered for that URL.",
+  "method": "Offline reconciliation of current source registrations with the previous URL reachability audit. Only exact-URL results are reused; the audit date and historical fetch count are unchanged. New or changed URLs are error/not-audited with no HTTP status. Separately recorded managed-Web content reviews are not HTTP audits or independent validation.",
+  "method_ja": "オフラインで現行の情報源登録と過去のURL到達性監査を対応付けています。URL完全一致の結果のみ再利用し、監査日と過去の取得回数は更新しません。新規・変更URLはerror（not-audited、HTTP状態なし）として未監査を明示します。別途記録する管理されたWebツールでの内容確認はHTTP監査や独立検証の代わりにはなりません。",
+  "method_en": "Offline reconciliation of current source registrations with the previous URL reachability audit. Only exact-URL results are reused; the audit date and historical fetch count are unchanged. New or changed URLs are error/not-audited with no HTTP status. Separately recorded managed-Web content reviews are not HTTP audits or independent validation.",
   "caveat_ja": "到達性は、特定の実行環境から公開URLへ接続できたかを示すだけであり、資料中の主張の妥当性を保証しません。ブラウザで閲覧できる資料でも、403、429、タイムアウトなどが発生する場合があります。重複を除いたURL数は、独立した情報源の数とは限りません。",
   "caveat_en": "Reachability shows only whether a public URL was accessible from one execution environment; it does not validate claims in the source. A browser-accessible source may still return 403 or 429, or time out. The deduplicated URL count is not necessarily the number of independent information sources.",
   "user_agent": "OpenFS Safe Web Fetch Broker/0.1 (+https://github.com/HPCI-CFSP/OpenFS)",
   "summary": {
-    "source_count": 230,
+    "source_count": 232,
     "fetch_count": 216,
-    "unique_url_count": 216,
+    "unique_url_count": 218,
     "duplicate_registration_count": 14,
-    "unique_external_url_count": 215,
-    "external_first_party_source_count": 229,
+    "unique_external_url_count": 217,
+    "external_first_party_source_count": 231,
     "openfs_governance_source_count": 1,
     "source_class_counts": {
-      "vendor-official": 93,
+      "vendor-official": 95,
       "standards-body": 24,
       "government-official": 12,
       "research-organization": 30,
@@ -33,13 +33,13 @@
       "access-restricted": 5,
       "missing": 0,
       "timeout": 10,
-      "error": 2
+      "error": 4
     },
     "reachable": 213,
     "access-restricted": 5,
     "missing": 0,
     "timeout": 10,
-    "error": 2
+    "error": 4
   },
   "results": [
     {
@@ -2208,6 +2208,28 @@
       "fetch_policy_decision": "allowed",
       "body_truncated": false,
       "error_kind": "network"
+    },
+    {
+      "status": "error",
+      "http_status": null,
+      "final_url": "https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/",
+      "content_type": null,
+      "error_kind": "not-audited",
+      "roadmap_id": "RM-HW-MEMORY",
+      "source_id": "SRC-MEM042",
+      "url": "https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/",
+      "source_class": "vendor-official"
+    },
+    {
+      "status": "error",
+      "http_status": null,
+      "final_url": "https://developer.nvidia.com/blog/nvidia-nvlink-fusion-brings-nvhbm-to-next-generation-ai-infrastructure/",
+      "content_type": null,
+      "error_kind": "not-audited",
+      "roadmap_id": "RM-HW-MEMORY",
+      "source_id": "SRC-MEM043",
+      "url": "https://developer.nvidia.com/blog/nvidia-nvlink-fusion-brings-nvhbm-to-next-generation-ai-infrastructure/",
+      "source_class": "vendor-official"
     },
     {
       "roadmap_id": "RM-SSW-PORTABILITY",

@@ -196,6 +196,9 @@ def evaluate(
 ) -> dict[str, Any]:
     errors: list[str] = []
     scenarios = scenario_set["scenarios"]
+    from estimate_system_cost import allocate_budget
+    budget_config = json.loads((repository_root / "config/budget-planning.json").read_text())
+    budget_levels = budget_config["budget_ceilings_oku_jpy"]
     p0_gaps = _p0_gaps(roadmaps)
     known_references = _reference_index(roadmaps, repository_root, errors)
     scenario_policy = scenario_policy or {}
@@ -231,8 +234,8 @@ def evaluate(
         scenario_id = scenario["scenario_id"]
         budget_options = scenario.get("budget_options", [])
         tiers = [item.get("tier") for item in budget_options]
-        if tiers != ["ume", "take", "matsu"]:
-            errors.append(f"{scenario_id}: budget tiers must be ordered ume, take, matsu")
+        if tiers != [f"jpy-{value}" for value in budget_levels]:
+            errors.append(f"{scenario_id}: budget tiers must be ordered by the five numeric ceilings")
         references_by_tier: list[float] = []
         for option in budget_options:
             option_id = option.get("option_id", "unknown")
@@ -243,6 +246,16 @@ def evaluate(
             if not lower <= reference <= upper:
                 errors.append(f"{scenario_id}:{option_id}: invalid budget range")
             references_by_tier.append(reference)
+            try:
+                expected = allocate_budget(budget_config, scenario_id, reference,
+                                           budget_config["default_deployment_year"])
+                if option.get("budget_allocation") != expected:
+                    errors.append(f"{scenario_id}:{option_id}: budget allocation does not match config")
+            except (ValueError, KeyError, TypeError) as exc:
+                errors.append(f"{scenario_id}:{option_id}: invalid allocation: {exc}")
+            if any(option.get("aggregate", {}).get(key) is not None
+                   for key in ("cpu_nodes", "accelerator_nodes", "accelerators", "storage_pb")):
+                errors.append(f"{scenario_id}:{option_id}: unvalidated system totals must remain unknown")
             unknown_budget_refs = set(option.get("reference_case_ids", [])) - known_budget_references
             if unknown_budget_refs:
                 errors.append(
@@ -253,13 +266,15 @@ def evaluate(
                 errors.append(f"{scenario_id}:{option_id}: duplicate architecture component IDs")
             known_components = set(component_ids)
             for component_item in option.get("components", []):
+                if component_item.get("quantity") is not None:
+                    errors.append(f"{scenario_id}:{option_id}: unvalidated quantities must remain unknown")
                 unknown_connections = set(component_item.get("connection_ids", [])) - known_components
                 if unknown_connections:
                     errors.append(
                         f"{scenario_id}:{option_id}:{component_item.get('component_id')}: "
                         f"unknown connections {sorted(unknown_connections)}"
                     )
-        if references_by_tier != sorted(references_by_tier) or len(set(references_by_tier)) != 3:
+        if references_by_tier != budget_levels:
             errors.append(f"{scenario_id}: budget reference values must increase by tier")
         try:
             effective_from = date.fromisoformat(scenario["effective_from"])

@@ -2029,6 +2029,13 @@ def run(root: Path = ROOT) -> list[str]:
     errors.extend(validate_required_files(root))
     errors.extend(validate_json_files(root))
     errors.extend(validate_jsonl_files(root))
+    if (root / "knowledge/public/procurement-cost-register.json").exists():
+        from check_procurement_costs import validate_register
+        try:
+            validate_register(load_json(root / "knowledge/public/procurement-cost-register.json"),
+                              load_json(root / "config/budget-planning.json"))
+        except (ValueError, KeyError, TypeError) as exc:
+            errors.append(f"Procurement cost register: {exc}")
     errors.extend(validate_run_approvals(root))
     errors.extend(validate_issue_payloads(root))
     if (root / "schemas").exists():

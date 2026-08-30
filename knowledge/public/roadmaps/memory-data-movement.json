@@ -4,7 +4,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/memory-data-movement",
-  "as_of": "2026-08-29",
+  "as_of": "2026-08-30",
   "title_ja": "メモリ・データ移動技術ロードマップ（2026年以降）",
   "title_en": "Memory and Data-Movement Technology Roadmap, 2026 and Beyond",
   "summary_ja": "DDR、LPDDR、HBM、SOCAMM、3D積層DRAM、W2W/D2W接合、TSV、CPO、CXL、PIMについて、公開一次情報から標準化、世代の統合見通し、成熟度、ベンダー別の公表時期を整理する暫定ロードマップです。量産・出荷、サンプル、標準、ベンダー目標、概念実証を区別して表示します。",
@@ -1326,6 +1326,53 @@
       ],
       "track_id": "MEMTECH-PIM",
       "owner": "SK hynix"
+    },
+    {
+      "lane_id": "LANE-HBM-NVIDIA-NVHBM",
+      "track_id": "MEMTECH-HBM",
+      "owner": "NVIDIA",
+      "scope_ja": "NVHBM（カスタムHBMベースダイ）",
+      "scope_en": "NVHBM custom HBM base die",
+      "milestones": [
+        {
+          "milestone_id": "MS-HBM-NVHBM-ANNOUNCEMENT",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "research",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "NVHBM技術発表",
+          "label_en": "NVHBM technology announced",
+          "detail_ja": "NVIDIAが2026年8月26日に発表。Annapurna Labsとの協業を表明したが、量産・販売日程の発表ではない。",
+          "detail_en": "Announced on August 26, 2026, with Annapurna Labs collaboration; this is not a production or sales date.",
+          "source_ids": [
+            "SRC-MEM042",
+            "SRC-MEM043"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-HBM-NVHBM-AVAILABILITY",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "supporting",
+          "label_ja": "NVHBM量産・販売時期は未確認",
+          "label_en": "NVHBM production and sales timing unconfirmed",
+          "detail_ja": "発表から搭載製品、メモリ供給元別の出荷年・四半期を確定できない。既存HBM4E全体の移行日程とは同一視しない。",
+          "detail_en": "The announcements do not establish shipment years or quarters by product or memory supplier. Do not equate this with the overall HBM4E transition.",
+          "source_ids": [
+            "SRC-MEM042",
+            "SRC-MEM043"
+          ],
+          "dependency_refs": []
+        }
+      ]
     }
   ],
   "sources": [
@@ -1649,6 +1696,22 @@
       "url": "https://www.montage-tech.com/Press_Releases/20260731",
       "published_at": "2026-07-31",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-MEM042",
+      "title": "NVIDIA NVLink Fusion Expands With NVHBM Custom High-Bandwidth Memory",
+      "publisher": "NVIDIA",
+      "url": "https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/",
+      "published_at": "2026-08-26",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-MEM043",
+      "title": "NVIDIA NVLink Fusion Brings NVHBM to Next-Generation AI Infrastructure",
+      "publisher": "NVIDIA",
+      "url": "https://developer.nvidia.com/blog/nvidia-nvlink-fusion-brings-nvhbm-to-next-generation-ai-infrastructure/",
+      "published_at": "2026-08-26",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -1706,6 +1769,17 @@
       "next_action_ja": "四半期を裏付ける一次情報が出た場合だけ範囲を狭め、それまでは表示範囲を依存分析の時期幅として扱う。",
       "next_action_en": "Narrow the displayed window only when a primary source supports a quarter; until then, use the window as timing uncertainty in dependency analysis.",
       "status": "open"
+    },
+    {
+      "gap_id": "GAP-MEM006",
+      "priority": "P1",
+      "status": "open",
+      "scope_ja": "NVHBMの製品化日程、供給元別の実装、独立した実測が未確認。",
+      "scope_en": "NVHBM product timing, supplier implementations, and independent measurements are unconfirmed.",
+      "impact_ja": "HBM4Eとの価格・帯域・電力比較や採用年の確定はできない。",
+      "impact_en": "Price, bandwidth, and power comparisons with HBM4E and adoption dates cannot yet be established.",
+      "next_action_ja": "NVIDIA、AWS、メモリ供給元の公開情報を追跡し、搭載製品、出荷、比較条件と実測を確認する。",
+      "next_action_en": "Track NVIDIA, AWS, and memory suppliers for products, shipments, comparison conditions, and measurements."
     }
   ],
   "caveat_ja": "本ロードマップは、公開一次情報に基づくマイルストーンとOpenFSの暫定評価ゲートを区別して、単一のAIモデルが作成した作業版です。独立したAIモデルによる合意判定は完了しておらず、正式なHPCIシステム整備案ではありません。ベンダーが公表した目標は変更される可能性があります。",
@@ -1713,8 +1787,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-20260825-003",
-    "human_approval_directive_id": "DIR-900004"
+    "publication_decision_id": "PUBDEC-20260830-001",
+    "human_approval_directive_id": "DIR-900013"
   },
   "roadmap_id": "RM-HW-MEMORY",
   "groups": [
@@ -1837,7 +1911,9 @@
         "SRC-MEM011",
         "SRC-MEM012",
         "SRC-MEM037",
-        "SRC-MEM038"
+        "SRC-MEM038",
+        "SRC-MEM042",
+        "SRC-MEM043"
       ],
       "generation_bands": [
         {

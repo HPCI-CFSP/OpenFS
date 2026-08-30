@@ -73,13 +73,12 @@ def build(
     if not roadmaps:
         raise ValueError("no public roadmaps found")
     as_of_values = {roadmap["as_of"] for roadmap in roadmaps}
-    if len(as_of_values) != 1:
-        raise ValueError(f"roadmap as_of values disagree: {sorted(as_of_values)}")
-    as_of = date.fromisoformat(as_of_values.pop())
+    as_of = max(date.fromisoformat(value) for value in as_of_values)
     current_quarter = QUARTER[as_of.month]
     source_audit = load_json(source_audit_path or root / "knowledge/public/audits/roadmap-source-audit.json")
     reachability = {
-        (item["roadmap_id"], item["source_id"]): item["status"]
+        (item["roadmap_id"], item["source_id"]): (
+            "not-audited" if item.get("error_kind") == "not-audited" else item["status"])
         for item in source_audit["results"]
     }
 
@@ -204,7 +203,16 @@ def build(
                     "Check page history or document metadata and leave it unrecorded if no date can be established.",
                 ))
             status = reachability.get((roadmap["roadmap_id"], source["source_id"]))
-            if status and status != "reachable":
+            if status == "not-audited":
+                roadmap_items.append(attention(
+                    roadmap["roadmap_id"], "source", source["source_id"], "medium",
+                    "source-not-audited",
+                    "このURLのHTTP到達性監査は未実施です。接続失敗や資料の誤りを意味しません。",
+                    "HTTP reachability has not been audited for this URL. This is not a failed connection or a finding of error.",
+                    "実行環境の権限を確認後に匿名HTTP監査を行う。管理されたWebツールによる内容確認と独立検証は別に記録する。",
+                    "Audit anonymously only after execution authorization is verified. Record managed-Web content review and independent validation separately.",
+                ))
+            elif status and status != "reachable":
                 roadmap_items.append(attention(
                     roadmap["roadmap_id"], "source", source["source_id"],
                     "high" if source["source_id"] in key_source_ids else "medium",

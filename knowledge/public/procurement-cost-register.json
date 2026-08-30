@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1.0",
+  "artifact_id": "PROCUREMENT-COST-001",
+  "as_of": "2026-08-30",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "title_ja": "公開調達実績と仕様書の対応表",
+  "title_en": "Public procurement costs and specification register",
+  "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで合算や部品単価への換算を行いません。単一のAIモデルによる確認であり、独立したAIモデルの合意判定は未完了です。",
+  "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching, and maintenance terms. These single-model checks have not passed Consensus review by independent models.",
+  "sources": [
+    {"source_id": "PCS-RIKEN-CONTRACTS-2025", "title": "RIKEN competitive contract results, April-November 2025", "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251", "publisher": "RIKEN", "origin_group": "riken-aifs-contract-2025", "checked_on": "2026-08-30", "locator": "PDF p.11, AI for Science supercomputer row", "retrieval_status": "read"},
+    {"source_id": "PCS-RIKEN-WORKS-2025", "title": "RIKEN FY2025 construction contracts", "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004159.PDF/id/000000169", "publisher": "RIKEN", "origin_group": "riken-aifs-facility-contracts-2025", "checked_on": "2026-08-30", "locator": "PDF pp.1-2, AI supercomputer mechanical and electrical works", "retrieval_status": "read"},
+    {"source_id": "PCS-RIKEN-TENDER-2025", "title": "AI for Science supercomputer tender announcement", "url": "https://choutatsu.riken.jp/r-world/info/procurement/proc/detail/id/000040021", "publisher": "RIKEN", "origin_group": "riken-aifs-tender-2025", "checked_on": "2026-08-30", "locator": "Tender notice download; full specification not retrieved", "retrieval_status": "read"},
+    {"source_id": "PCS-RIKEN-AWARD-2025", "title": "AI for Science supercomputer award notice", "url": "https://www.jetro.go.jp/gov_procurement/national/articles/363598/2025080101170080.html", "publisher": "JETRO (RIKEN announcement)", "origin_group": "riken-aifs-contract-2025", "checked_on": "2026-08-30", "locator": "Award date 2025-06-10; publication 2025-08-01", "retrieval_status": "read"},
+    {"source_id": "PCS-RIKEN-CONFIG-2026", "title": "AI for Science Supercomputer public system overview", "url": "https://github.com/RIKEN-RCCS/AI-for-Science-Supercomputer", "publisher": "RIKEN R-CCS", "origin_group": "riken-aifs-configuration", "checked_on": "2026-08-30", "locator": "Overview: 400 compute nodes, four GPUs per node; not a priced bill of materials", "retrieval_status": "read"},
+    {"source_id": "PCS-JAXA-JSS4-TENDER", "title": "JSS4 supercomputer tender 25HM00215HQSI", "url": "https://stage.tksc.jaxa.jp/compe/comp/FY2025-0103.pdf", "publisher": "JAXA", "origin_group": "jaxa-jss4-tender-2025", "checked_on": "2026-08-30", "locator": "PDF pp.1-2, scope and specification-distribution conditions", "retrieval_status": "read"}
+  ],
+  "cases": [
+    {
+      "case_id": "PROC-RIKEN-AIFS-2025", "title_ja": "理研 AI for Science用スーパーコンピュータ一式", "title_en": "RIKEN AI for Science supercomputer package",
+      "buyer": "RIKEN", "supplier": "Fujitsu", "contract_kind": "purchase", "contract_date": "2025-06-30", "award_date": "2025-06-10",
+      "amount": {"kind": "contract", "value_jpy": 6731406000, "tax_basis": "including-tax", "tax_rate": null, "payment_basis": "total", "period_months": null, "source_refs": ["PCS-RIKEN-CONTRACTS-2025"]},
+      "documents": [{"kind": "tender", "source_id": "PCS-RIKEN-TENDER-2025", "access_status": "public-read"}, {"kind": "final-specification", "source_id": "PCS-RIKEN-TENDER-2025", "access_status": "not-obtained"}, {"kind": "award", "source_id": "PCS-RIKEN-AWARD-2025", "access_status": "public-read"}, {"kind": "contract-result", "source_id": "PCS-RIKEN-CONTRACTS-2025", "access_status": "public-read"}, {"kind": "deployed-configuration", "source_id": "PCS-RIKEN-CONFIG-2026", "access_status": "public-read"}],
+      "configuration_match": "unconfirmed", "component_category": "system-package", "itemized_costs": [],
+      "related_case_ids": ["PROC-RIKEN-AIFS-COOLING-2025", "PROC-RIKEN-AIFS-POWER-2025"], "aggregation_status": "not-cleared",
+      "scope_ja": "機器一式の契約総額。公開構成との契約範囲の一致、機器別価格、導入作業・保守の内包範囲は未確認です。",
+      "scope_en": "Total package contract. Matching to the public configuration, component prices, and included installation and maintenance are unconfirmed.",
+      "gap_ids": ["PCG-001", "PCG-002", "PCG-003"]
+    },
+    {
+      "case_id": "PROC-RIKEN-AIFS-COOLING-2025", "title_ja": "理研 AIスーパーコンピュータ設備増強工事（機械）", "title_en": "RIKEN AI supercomputer mechanical facility work",
+      "buyer": "RIKEN", "supplier": "Sanki Engineering", "contract_kind": "construction", "contract_date": "2025-07-25", "award_date": null,
+      "amount": {"kind": "contract", "value_jpy": 341000000, "tax_basis": "including-tax", "tax_rate": null, "payment_basis": "total", "period_months": null, "source_refs": ["PCS-RIKEN-WORKS-2025"]},
+      "documents": [{"kind": "contract-result", "source_id": "PCS-RIKEN-WORKS-2025", "access_status": "public-read"}, {"kind": "final-specification", "source_id": "PCS-RIKEN-WORKS-2025", "access_status": "not-obtained"}],
+      "configuration_match": "unconfirmed", "component_category": "facility", "itemized_costs": [],
+      "related_case_ids": ["PROC-RIKEN-AIFS-2025", "PROC-RIKEN-AIFS-POWER-2025"], "aggregation_status": "shared-scope-unresolved",
+      "scope_ja": "屋外冷却設備の設置工事。量子HPC用設備との配管・制御・ポンプ等の共用が記載されており、当該計算機への全額配賦はしません。税率は未確認です。",
+      "scope_en": "Outdoor cooling installation. Piping, controls, and pumps are shared with quantum-HPC facilities; the whole amount is not allocated to this computer. The tax rate is unconfirmed.",
+      "gap_ids": ["PCG-003"]
+    },
+    {
+      "case_id": "PROC-RIKEN-AIFS-POWER-2025", "title_ja": "理研 AIスーパーコンピュータ設備増強工事（電気）", "title_en": "RIKEN AI supercomputer electrical facility work",
+      "buyer": "RIKEN", "supplier": "Kinden", "contract_kind": "construction", "contract_date": "2025-07-25", "award_date": null,
+      "amount": {"kind": "contract", "value_jpy": 363000000, "tax_basis": "including-tax", "tax_rate": null, "payment_basis": "total", "period_months": null, "source_refs": ["PCS-RIKEN-WORKS-2025"]},
+      "documents": [{"kind": "contract-result", "source_id": "PCS-RIKEN-WORKS-2025", "access_status": "public-read"}, {"kind": "final-specification", "source_id": "PCS-RIKEN-WORKS-2025", "access_status": "not-obtained"}],
+      "configuration_match": "unconfirmed", "component_category": "facility", "itemized_costs": [],
+      "related_case_ids": ["PROC-RIKEN-AIFS-2025", "PROC-RIKEN-AIFS-COOLING-2025"], "aggregation_status": "shared-scope-unresolved",
+      "scope_ja": "計算機・冷却設備用電源の増強。富岳や量子HPC向け設備との接続・共用を含みます。税率、配賦範囲、他契約との重複は未確認です。",
+      "scope_en": "Power expansion for compute and cooling, with connections to or shared infrastructure with Fugaku and quantum HPC. Tax rate, allocation, and overlap with other contracts are unconfirmed.",
+      "gap_ids": ["PCG-003"]
+    },
+    {
+      "case_id": "PROC-JAXA-JSS4-2025", "title_ja": "JAXA JSS4 スーパーコンピュータ調達", "title_en": "JAXA JSS4 supercomputer procurement",
+      "buyer": "JAXA", "supplier": null, "contract_kind": "lease", "contract_date": null, "award_date": null, "amount": null,
+      "documents": [{"kind": "tender", "source_id": "PCS-JAXA-JSS4-TENDER", "access_status": "public-read"}, {"kind": "final-specification", "source_id": "PCS-JAXA-JSS4-TENDER", "access_status": "confidentiality-required"}],
+      "configuration_match": "unconfirmed", "component_category": "system-package", "itemized_costs": [], "related_case_ids": [], "aggregation_status": "not-cleared",
+      "scope_ja": "据付調整・賃貸借・保守運用支援を含む公告。仕様書の交付には秘密保持約款への同意が必要なため、OpenFSは公告の公開情報のみを記録します。落札額は今回未調査です。",
+      "scope_en": "The announcement covers installation, lease, and maintenance/operation support. Specifications require confidentiality commitments, so OpenFS records only the public announcement. Award value was not researched in this update.",
+      "gap_ids": ["PCG-004"]
+    }
+  ],
+  "coverage_gaps": [
+    {"gap_id": "PCG-001", "priority": "P0", "description_ja": "計算機一式の契約と実導入構成の対応が未確認です。", "description_en": "The package contract has not been matched to the deployed configuration.", "next_action_ja": "公開可能な最終仕様書、契約範囲、構成資料を照合します。", "next_action_en": "Match publicly usable final specifications, contract scope, and configuration records."},
+    {"gap_id": "PCG-002", "priority": "P0", "description_ja": "機器別の価格根拠と、費用モデルの独立検証案件が不足しています。", "description_en": "Component-price evidence and independent validation procurements are missing.", "next_action_ja": "CPU/GPUノード、ネットワーク、ストレージの内訳公開案件を追加し、校正用と検証用を分離します。", "next_action_en": "Add itemized CPU/GPU, network, and storage procurements; separate calibration from validation cases."},
+    {"gap_id": "PCG-003", "priority": "P0", "description_ja": "別契約の共用・重複、税率、施設条件、運用保守費が未確認です。", "description_en": "Shared scope, overlap, tax rates, facility constraints, and recurring costs are unconfirmed.", "next_action_ja": "契約別の包含・除外表を作り、二重計上を防いで5年間TCOを算出します。", "next_action_en": "Build an inclusion/exclusion matrix per contract before computing a five-year TCO without double counting."},
+    {"gap_id": "PCG-004", "priority": "P1", "description_ja": "JSS4の仕様書は公開利用可能な形で取得していません。", "description_en": "JSS4 specifications have not been obtained in a publicly usable form.", "next_action_ja": "秘密保持対象を取得せず、公開される落札結果とシステム概要を追跡します。", "next_action_en": "Track public award results and system descriptions without obtaining confidential specifications."}
+  ],
+  "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-20260830-001", "human_approval_directive_id": "DIR-900013", "approved_at": "2026-08-30T16:56:26+09:00"}
+}

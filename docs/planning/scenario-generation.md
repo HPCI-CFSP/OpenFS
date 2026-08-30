@@ -6,6 +6,12 @@ OpenFS must produce several feasible HPCI development plans, not one model-autho
 
 ## Inputs and trust
 
+Budget comparisons follow [Procurement Cost Evidence](procurement-cost-estimation.md).
+Use the five numeric ceilings and independent design profiles in
+`config/budget-planning.json`. Initial allocations are not cost estimates; missing
+unit costs, facility constraints, and independent calibration leave quantities and
+TCO uncomputed. Never restore fixed legacy node counts to fill those gaps.
+
 1. Use accepted Sources, Claims, Findings, and Roadmap Items. Provisional inputs must be labeled and cannot silently support an accepted recommendation.
 2. Load a current `center-profile` for every center in scope. Missing fields remain visible and reduce the scenario's readiness; they are not filled by inference from another center.
 3. Load the human-owned criteria and weights in `config/scenario-policy.json`. When any weight is `null`, the tool displays an unranked comparison.

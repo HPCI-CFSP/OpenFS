@@ -189,9 +189,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         )
     ]
     as_of_values = {roadmap["as_of"] for roadmap in roadmaps}
-    if len(as_of_values) != 1:
-        raise ValueError(f"roadmap as_of values disagree: {sorted(as_of_values)}")
-    as_of = as_of_values.pop()
+    # Roadmaps are updated independently; do not relabel untouched research.
+    as_of = max(as_of_values)
     for roadmap in roadmaps:
         source_classes = {
             source["source_id"]: source["source_class"]

@@ -89,7 +89,7 @@
     "budget_options": {
       "type": "array",
       "minItems": 3,
-      "maxItems": 3,
+      "maxItems": 5,
       "items": {"$ref": "#/$defs/budgetOption"}
     },
     "context_notes": {
@@ -155,7 +155,8 @@
       "required": ["option_id", "tier", "label_ja", "label_en", "budget_range_oku_jpy", "estimate_method_ja", "estimate_method_en", "confidence", "reference_case_ids", "components", "aggregate", "caveat_ja", "caveat_en"],
       "properties": {
         "option_id": {"type": "string", "pattern": "^BUD-[A-Z0-9-]+$"},
-        "tier": {"enum": ["ume", "take", "matsu"]},
+        "tier": {"type": "string", "pattern": "^(ume|take|matsu|jpy-[0-9]+(\\.[0-9]+)?)$"},
+        "budget_allocation": {"$ref": "#/$defs/budgetAllocation"},
         "label_ja": {"type": "string", "minLength": 1},
         "label_en": {"type": "string", "minLength": 1},
         "budget_range_oku_jpy": {
@@ -183,7 +184,7 @@
               "component_type": {"enum": ["compute-cpu", "compute-accelerator", "large-memory", "pilot", "interconnect", "storage", "management", "facility"]},
               "label_ja": {"type": "string", "minLength": 1},
               "label_en": {"type": "string", "minLength": 1},
-              "quantity": {"type": "number", "minimum": 0},
+              "quantity": {"type": ["number", "null"], "minimum": 0},
               "unit_ja": {"type": "string", "minLength": 1},
               "unit_en": {"type": "string", "minLength": 1},
               "role_ja": {"type": "string", "minLength": 1},
@@ -197,10 +198,10 @@
           "type": "object",
           "required": ["cpu_nodes", "accelerator_nodes", "accelerators", "storage_pb", "facility_class_ja", "facility_class_en"],
           "properties": {
-            "cpu_nodes": {"type": "integer", "minimum": 0},
-            "accelerator_nodes": {"type": "integer", "minimum": 0},
-            "accelerators": {"type": "integer", "minimum": 0},
-            "storage_pb": {"type": "number", "minimum": 0},
+            "cpu_nodes": {"type": ["integer", "null"], "minimum": 0},
+            "accelerator_nodes": {"type": ["integer", "null"], "minimum": 0},
+            "accelerators": {"type": ["integer", "null"], "minimum": 0},
+            "storage_pb": {"type": ["number", "null"], "minimum": 0},
             "facility_class_ja": {"type": "string", "minLength": 1},
             "facility_class_en": {"type": "string", "minLength": 1}
           },
@@ -210,6 +211,34 @@
         "caveat_en": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
+    },
+    "budgetAllocation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["budget_ceiling_oku_jpy", "deployment_year", "price_basis_year", "tax_basis", "basis", "feasibility_status", "allocations", "tco_years", "tco_oku_jpy", "gap_ids"],
+      "properties": {
+        "budget_ceiling_oku_jpy": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+        "deployment_year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "price_basis_year": {"type": "integer", "minimum": 2020},
+        "tax_basis": {"const": "excluding-tax"}, "basis": {"const": "openfs-planning-assumption"},
+        "feasibility_status": {"const": "unverified"},
+        "tco_years": {"type": "integer", "minimum": 1}, "tco_oku_jpy": {"type": "null"},
+        "gap_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^PCG-[0-9]+$"}},
+        "allocations": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["id", "label_ja", "label_en", "unit_ja", "unit_en", "share_percent", "allocation_oku_jpy", "estimated_cost_oku_jpy", "quantity"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "label_ja": {"type": "string", "minLength": 1}, "label_en": {"type": "string", "minLength": 1},
+              "unit_ja": {"type": "string", "minLength": 1}, "unit_en": {"type": "string", "minLength": 1},
+              "share_percent": {"type": "number", "minimum": 0, "maximum": 100},
+              "allocation_oku_jpy": {"type": "number", "minimum": 0},
+              "estimated_cost_oku_jpy": {"type": "null"}, "quantity": {"type": "null"}
+            }
+          }
+        }
+      }
     },
     "quarterPoint": {
       "type": "object",
