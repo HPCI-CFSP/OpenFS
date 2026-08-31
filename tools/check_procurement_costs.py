@@ -82,6 +82,11 @@ def validate_register(payload: dict, config: dict) -> None:
                                or reported["tax_basis"] != arithmetic["tax_basis"]):
                 raise ValueError("reported period total disagrees with billing arithmetic; reconcile the evidence")
             monthly = case.get("amount")
+            if monthly and monthly["payment_basis"] == "monthly" and monthly["period_months"] is not None:
+                if (monthly["period_months"] != months
+                        or number(reported["value_jpy"]) != number(monthly["value_jpy"]) * months
+                        or reported["tax_basis"] != monthly["tax_basis"]):
+                    raise ValueError("reported period total disagrees with the evidenced monthly amount or duration")
             if (monthly and monthly["payment_basis"] == "monthly"
                     and monthly["tax_rate"] is not None and reported["tax_rate"] is not None
                     and number(monthly["tax_rate"]) != number(reported["tax_rate"])):

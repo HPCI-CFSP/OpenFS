@@ -118,6 +118,27 @@ class ProcurementCostTests(unittest.TestCase):
         case["reported_period_total"]["period_months"] = None
         self.assertTrue(list(validator.iter_errors(self.register)))
 
+    def test_known_month_count_checks_do_not_depend_on_calendar_dates(self):
+        case_id = "PROC-TSUKUBA-UNIFIED-MEMORY-2025"
+        case = next(c for c in self.register["cases"] if c["case_id"] == case_id)
+        del case["contract_window"]
+        validate_register(self.register, self.config)
+        for field, value in (("value_jpy", 855360001), ("period_months", 60),
+                             ("tax_basis", "excluding-tax")):
+            changed = copy.deepcopy(self.register)
+            item = next(c for c in changed["cases"] if c["case_id"] == case_id)
+            item["reported_period_total"][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                validate_register(changed, self.config)
+
+    def test_reported_total_can_stand_alone_without_inferred_billing(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        del case["contract_window"]
+        case["amount"] = None
+        validate_register(self.register, self.config)
+        self.assertIsNone(lease_period_total(case))
+        self.assertEqual(855360000, case["reported_period_total"]["value_jpy"])
+
     def test_capacity_ids_are_unique_across_procurements(self):
         source_case = next(c for c in self.register["cases"] if c.get("storage_capacity_observations"))
         other_case = next(c for c in self.register["cases"] if c["case_id"] != source_case["case_id"])
