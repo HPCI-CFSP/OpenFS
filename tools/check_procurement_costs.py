@@ -65,6 +65,12 @@ def validate_register(payload: dict, config: dict) -> None:
         contract_sources = {doc["source_id"] for doc in case["documents"]
                             if doc["kind"] == "contract-result" and doc["access_status"] == "public-read"}
         date_refs = set(case.get("contract_date_source_refs", []))
+        amount = case.get("amount")
+        if case["contract_date"] and not date_refs and amount and amount["kind"] == "contract":
+            # Legacy records cite the same contract disclosure for date and amount.
+            date_refs = set(amount["source_refs"])
+        if case["contract_date"] and not date_refs:
+            raise ValueError("contract date requires an explicit checked contract result")
         if date_refs and (not case["contract_date"] or not date_refs <= contract_sources
                           or any(source_records[r]["retrieval_status"] != "read" for r in date_refs)):
             raise ValueError("contract date must cite a checked contract result")

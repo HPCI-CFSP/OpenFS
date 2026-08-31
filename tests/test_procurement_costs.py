@@ -152,6 +152,21 @@ class ProcurementCostTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_register(self.register, self.config)
 
+    def test_omitting_contract_date_references_cannot_bypass_provenance(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
+        case["contract_date"] = case["award_date"]
+        with self.assertRaisesRegex(ValueError, "contract date"):
+            validate_register(self.register, self.config)
+
+    def test_legacy_contract_date_requires_checked_contract_amount_source(self):
+        validate_register(self.register, self.config)
+        case = self.register["cases"][0]
+        self.assertEqual("contract", case["amount"]["kind"])
+        self.assertNotIn("contract_date_source_refs", case)
+        case["documents"] = [d for d in case["documents"] if d["kind"] != "contract-result"]
+        with self.assertRaisesRegex(ValueError, "contract date"):
+            validate_register(self.register, self.config)
+
     def test_storage_capacity_observations_keep_scope_and_basis(self):
         nagoya = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
         observations = nagoya["storage_capacity_observations"]
