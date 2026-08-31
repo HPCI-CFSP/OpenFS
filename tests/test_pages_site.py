@@ -24,6 +24,7 @@ from build_pages_site import (  # noqa: E402
     collect_scenarios,
     collect_topic_summaries,
     copy_brand_assets,
+    render_template,
 )
 
 
@@ -394,10 +395,50 @@ class PagesSiteTests(unittest.TestCase):
                 self.assertIn(".identity.identity-branded", css)
                 self.assertIn("width: 150.5px; height: 56px;", css)
                 self.assertIn("width: 129px; height: 48px;", css)
-            # Shared CSS must not opt other pages into the home-only layout.
-            for page in (ROOT / "site").glob("*.html"):
-                if page.name != "index.html":
-                    self.assertNotIn("identity-branded", page.read_text(encoding="utf-8"))
+
+    def test_every_page_uses_one_shared_logo_with_valid_relative_paths(self):
+        for template in (ROOT / "site").glob("*.html"):
+            content = template.read_text(encoding="utf-8")
+            with self.subTest(template=template.name):
+                self.assertEqual(1, content.count("{{SITE_IDENTITY}}"))
+                self.assertNotIn("openfs-logo", content)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            data = build(ROOT, output)
+            pages = list(output.rglob("*.html"))
+            self.assertGreaterEqual(len(pages), 19)
+            for page in pages:
+                with self.subTest(page=page.relative_to(output)):
+                    content = page.read_text(encoding="utf-8")
+                    parser = PageStructureParser()
+                    parser.feed(content)
+                    logos = [item for item in parser.images if item.get("class") == "brand-logo"]
+                    links = [item for item in parser.links if item.get("class") == "brand-link"]
+                    self.assertEqual(1, len(logos))
+                    self.assertEqual(1, len(links))
+                    self.assertEqual(1, parser.headings.count("h1"))
+                    self.assertEqual("h1", logos[0]["heading"])
+                    self.assertEqual("OpenFS", logos[0]["alt"])
+                    self.assertEqual(("344", "128"), (logos[0]["width"], logos[0]["height"]))
+                    url = urlsplit(logos[0]["src"])
+                    asset = (page.parent / url.path).resolve()
+                    self.assertEqual((output / "assets/branding/openfs-logo-compact.svg").resolve(), asset)
+                    self.assertTrue(asset.is_file())
+                    self.assertEqual(f"v={data['site']['commit_sha']}", url.query)
+                    self.assertEqual(output.resolve(), (page.parent / links[0]["href"]).resolve())
+                    self.assertIn('data-i18n="tagline"', content)
+                    self.assertIn('data-feedback-copy="tagline"', content)
+                    self.assertIn('data-language="ja"', content)
+                    self.assertIn('data-language="en"', content)
+                    self.assertNotIn("{{", content)
+            self.assertFalse((output / "partials").exists())
+
+    def test_missing_shared_identity_fails_template_generation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            template = Path(directory) / "index.html"
+            template.write_text("{{SITE_IDENTITY}}", encoding="utf-8")
+            with self.assertRaises(FileNotFoundError):
+                render_template(template, {"ASSET_VERSION": "test"})
 
     def test_logo_concept_has_both_languages_and_local_asset_links(self):
         document = ROOT / "docs" / "branding" / "logo-concept.md"

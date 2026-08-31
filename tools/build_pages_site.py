@@ -106,7 +106,11 @@ def roadmap_index_entry(
 
 def render_template(path: Path, replacements: dict[str, str]) -> str:
     value = path.read_text(encoding="utf-8")
-    for key, replacement in replacements.items():
+    if "{{SITE_IDENTITY}}" in value:
+        identity = (path.parent / "partials" / "identity.html").read_text(encoding="utf-8")
+        value = value.replace("{{SITE_IDENTITY}}", identity.rstrip())
+    variables = {"ROOT_PREFIX": "", "HOME_HREF": replacements.get("ROOT_PREFIX") or "./", **replacements}
+    for key, replacement in variables.items():
         value = value.replace(f"{{{{{key}}}}}", replacement)
     return value
 

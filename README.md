@@ -91,7 +91,7 @@ The first implemented research workflow, `OFS-001`, repeatedly investigates memo
 | `config/budget-planning.json` | Five numeric budget ceilings and provisional allocation profiles; allocations are not price estimates |
 | `docs/planning/procurement-cost-estimation.md` | Public-only cost research, normalization, calibration requirements, and unresolved quantities/TCO |
 | `config/catalog-taxonomy.json` | Canonical six-category assignment and public display code for every active Topic and roadmap; Pages filters are generated from this file |
-| `config/source-watch-registry.json` | Stable recurring official pages to monitor and their affected Topics, roadmaps, and Monitors |
+| `config/source-watch-registry.json` | Official pages and analytical discovery sites to monitor, their usage restrictions, and affected Topics, roadmaps, and Monitors |
 | `roadmaps/` | Scenario-based roadmap drafts and accepted versions |
 | `reports/` | Generated report drafts and exports |
 | `reviews/` | Human directives, digests, exceptions, dissent, and commit-pinned Consensus review packages |
@@ -115,6 +115,13 @@ The manually maintained Watch Registry separates recurring official index and re
 OpenFS research is worldwide. `config/global-technology-scope.json` requires regionally broad discovery, review of sources in their original languages where feasible, and comparison across international alternatives. Technologies developed in Japan receive priority search coverage so that domestic research, startups, standards, prototypes, and supply-chain capabilities are not overlooked; origin alone is not an adoption criterion.
 
 The FS1.0 record and current primary evidence for every HPCI center remain incomplete. AI agents may propose additional topics through `OFS-004`; independent review, the Consensus Gate, and deterministic promotion are required, and the automated path cannot remove or modify existing topics.
+
+SemiAnalysis and its public article index are registered as discovery leads;
+IEEE Roadmaps, IRDS, and HIR are registered for long-term technology context.
+Follow their [usage rules](docs/research-baseline/source-watch-and-evidence-map.md):
+public anonymous access only, exact-document evidence checks, and no promotion of
+analysis or roadmap targets into confirmed product releases. Registration does
+not enable automated research or establish Consensus.
 
 <!-- i18n-section: local-validation -->
 

@@ -7,7 +7,8 @@ specific statement.
 
 `config/source-watch-registry.json` is the manually reviewed list of recurring
 official indexes, release feeds, standards pages, committee pages, resource
-registries, and document hubs. Each target names the affected canonical Topic
+registries, document hubs, and explicitly classified analytical discovery sites.
+Each target names the affected canonical Topic
 IDs, roadmap IDs, and Monitor IDs. Stable routing fields live in the registry;
 timestamps, content digests, HTTP status, and change detections belong to the
 Run-specific `source-watch-state.json` file.
@@ -16,6 +17,36 @@ A changed page is not evidence by itself. The Worker classifies the change,
 ignores layout, advertising, ordering, and timestamp-only changes, and follows a
 semantic change to an exact primary document. The resulting proposal still
 requires independent validation and the applicable Consensus Gate.
+
+## Analytical sources and technology roadmaps
+
+The registry includes the following public entry points, checked on 2026-08-31:
+
+| Entry point | Use in OpenFS | Limitation |
+|---|---|---|
+| [SemiAnalysis](https://semianalysis.com/) | Discover semiconductor, AI-infrastructure, and cost questions | Analysis is not automatically primary evidence; estimates require assumptions and original evidence |
+| [SemiAnalysis archive](https://newsletter.semianalysis.com/archive) | Detect new articles without relying on the institutional-product homepage | Public titles and excerpts are leads; stop at subscription or authentication requirements |
+| [IEEE Roadmaps](https://roadmaps.ieee.org/roadmaps/) | Discover relevant roadmap programs and editions | An index may lag a program's own hub; not every roadmap is a normative standard |
+| [IRDS](https://irds.ieee.org/) | Track device and system technology outlooks | Pin the edition, chapter, table, and forecast assumptions; a forecast is not a product release |
+| [HIR](https://eps.ieee.org/technology/heterogeneous-integration-roadmap/) | Track heterogeneous integration and packaging challenges | Technology requirements and possible solutions are not vendor shipment commitments |
+
+These entries carry bilingual `usage_policy` notes. All retrieval remains
+anonymous and public-only; registration grants no login, subscription, copying,
+or publication rights. Follow the acquisition policy for any permitted excerpt.
+Classify each exact document separately. Original public measurements or code
+may be examined on their own merits; do not count a homepage, article, and
+reprint as independent evidence for the same underlying result.
+
+`independent-analysis` describes an analytical source class, not independence
+for Consensus. Such Watch targets must remain `discovery-lead` entries under
+the schema. Registering these URLs adds neither accepted evidence nor new
+roadmap milestones. It does not enable the currently disabled research Monitor.
+
+日本語: SemiAnalysisは新しい論点を見つける入口として使い、推定と実測を区別して
+元資料へ遡ります。有料・認証が必要な部分にはアクセスしません。IEEEのIRDS・HIRは
+長期的な技術見通しと課題を確認する資料として使い、版・章・表・予測前提を記録します。
+技術ロードマップを確定した規格や個別製品の発売予定とは扱いません。監視先への登録は、
+根拠の採用、Consensusの成立、自動調査の有効化を意味しません。
 
 ## Evidence map
 
