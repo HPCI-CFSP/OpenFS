@@ -1,0 +1,87 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000005",
+  "topic_id": "CROSS-06",
+  "created_at": "2026-08-31T13:06:00+09:00",
+  "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+  "before_profile_sha256": "ddc81312a41803778d37a62e29d1384d0a3d3e07ac08ea562d567626ec649cad",
+  "human_directive_id": "DIR-900016",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1,
+    "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "筑波大学の契約予定総額を一次資料で確認し、名古屋大学の容量表記を物理・実効・定義未記載に分けました。価格台帳を数値の正本とし、最終仕様書、部品価格、保守・施設費の包含は未確認のままです。共同調達・段階整備の調査単位は未着手です。",
+  "summary_en": "Primary evidence now confirms Tsukuba's planned contract total; Nagoya capacity statements are separated into physical, effective and unspecified bases. The cost register remains authoritative for numbers. Final specifications, component prices and maintenance/facility inclusions remain unverified; the joint-procurement and staged-deployment unit is unstarted.",
+  "units": [{
+    "unit_id": "CROSS-06-U01",
+    "before_sha256": "29d0b44efe5d954c830dd83447a860bf673b803e96e2febb186074742cddfb2e",
+    "evidence_section_ids": ["TDS-PCD-CONTRACTS", "TDS-PCD-SCOPE", "TDS-PRP-PLANNING"]
+  }],
+  "sections": [
+    {
+      "section_id": "TDS-PCD-CONTRACTS",
+      "title_ja": "契約公表額の確認状況", "title_en": "Verification of published contract amounts",
+      "summary_ja": "公表された予定総額と、支払実績・機器価格を区別します。", "summary_en": "Distinguish disclosed planned totals from payments made and hardware prices.",
+      "items": [{
+        "item_id": "TDI-PCD-TSUKUBA-TOTAL", "name_ja": "筑波大学の月額・予定総額", "name_en": "Tsukuba monthly amount and planned total",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2025年度第1四半期契約公表を2026-08-31に確認", "timing_en": "FY2025 Q1 contract disclosure checked on 2026-08-31",
+        "statement_ja": "大学の契約公表で、借入案件の契約日、月額に対応する単価、72か月分の予定総額を確認しました。数値と出典は公開調達台帳に集約します。予定総額は支払完了額でも機器購入価格でもなく、これだけでノード単価や学術割引率を求めることはできません。",
+        "statement_en": "The university's contract disclosure identifies the lease contract date, unit amount corresponding to the monthly payment, and planned total for 72 months. Numbers and sources are centralized in the public procurement register. The planned total is neither payments made nor a hardware purchase price and cannot by itself identify node prices or academic discounts.",
+        "hpci_relevance_ja": "整備案の費用比較では、契約期間、税、保守・設置費の範囲を揃えてから比較します。", "hpci_relevance_en": "Cost comparisons between planning options require aligned contract periods, tax treatment and maintenance/installation scope.",
+        "adoption_conditions_ja": ["最終仕様書と契約範囲を照合する。", "後日の増設費を既存契約へ加算しない。"],
+        "adoption_conditions_en": ["Match final specifications to contract scope.", "Do not add later expansion costs to the existing contract."],
+        "actor_ids": [], "source_ids": ["SRC-PCD001"], "confidence": "low", "consensus_status": "incomplete"
+      }]
+    },
+    {
+      "section_id": "TDS-PCD-SCOPE",
+      "title_ja": "容量・仕様と価格の対応", "title_en": "Matching capacity and specifications to prices",
+      "summary_ja": "同じPB表記でも対象や定義が異なるため、根拠ごとに保持します。", "summary_en": "Values expressed in PB can describe different scopes and definitions; retain each with its evidence.",
+      "items": [{
+        "item_id": "TDI-PCD-NAGOYA-CAPACITY", "name_ja": "不老・弐の容量表記の照合", "name_en": "Reconciling Furo-ni capacity statements",
+        "stage": "contested", "maturity": "uncertain", "timing_ja": "2026-08-31時点の公開資料", "timing_en": "Public documents checked on 2026-08-31",
+        "statement_ja": "導入発表には物理容量、現行構成ページには実効容量が明記されています。一方、発表の見出しとHPCI資源ページには定義が明記されていない総容量があります。台帳では資料ごとの値・対象・定義を分け、単なる数値差を構成変更や誤記と断定しません。",
+        "statement_en": "The introduction announcement explicitly gives physical capacity, while the current configuration page gives effective capacity. The announcement headline and HPCI resource page also contain totals without an explicit capacity basis. The register separates values, scope and definitions by source rather than treating a numerical difference as proof of a revision or error.",
+        "hpci_relevance_ja": "ストレージ費用や移行容量の比較では、物理容量、利用可能容量、課題への提供枠を足し合わせません。", "hpci_relevance_en": "Storage-cost and migration-capacity comparisons must not add physical capacity, usable capacity and project-allocation envelopes.",
+        "adoption_conditions_ja": ["仕様改訂と容量定義の対応を確認する。", "最終仕様・支払単位が未確認の間は円／PBや円／GPUを算出しない。"],
+        "adoption_conditions_en": ["Check specification revisions and capacity definitions.", "Do not compute JPY/PB or JPY/GPU while final scope and payment basis remain unresolved."],
+        "actor_ids": [], "source_ids": ["SRC-PCD002", "SRC-PCD003", "SRC-PCD004"], "confidence": "low", "consensus_status": "incomplete"
+      }]
+    }
+  ],
+  "archive_section_ids": ["TDS-PRP-EVIDENCE"],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-PCD001", "title": "FY2025 Q1 government procurement contracts, row 1", "publisher": "University of Tsukuba", "url": "https://zaimuhp2.sec.tsukuba.ac.jp/edit-ad/wp-content/data/fy2025-1q-seifu.pdf", "source_class": "official-project", "published_or_updated": "FY2025 Q1; publication day not stated"},
+      "origin_group": "tsukuba-unified-memory-award-2025", "checked_at": "2026-08-31T12:54:22+09:00", "locator": "PDF p.1 row 1, unit amount / planned total columns",
+      "observation_ja": "契約日2025-06-12、数量72、単価11,880,000円、税込予定総額855,360,000円。表の画像取得は失敗したため、抽出テキストと既存の月額公告を照合した。",
+      "observation_en": "Contract date 2025-06-12; quantity 72; unit amount JPY 11,880,000; tax-inclusive planned total JPY 855,360,000. The table screenshot failed, so extracted text was checked against the existing monthly tender.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-PCD002", "title": "Furo-ni public system configuration", "publisher": "Nagoya University", "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html", "source_class": "official-project", "published_or_updated": "Page date not stated"},
+      "origin_group": "nagoya-furo-ni-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "Shared storage specifications",
+      "observation_ja": "共有ストレージの実効容量は37.44 PBと明記されている。", "observation_en": "Shared storage is explicitly described as 37.44 PB effective capacity.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-PCD003", "title": "Furo-ni introduction announcement", "publisher": "Nagoya University", "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf", "source_class": "official-project", "published_or_updated": "2026-01-21"},
+      "origin_group": "nagoya-furo-ni-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "PDF pp.1-3: headline total and physical storage",
+      "observation_ja": "1-2ページの45 PBと、3ページの物理容量48.4 PBを別の記載として保持する。", "observation_en": "Retain the 45 PB on pages 1-2 separately from the explicitly physical 48.4 PB on page 3.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-PCD004", "title": "FY2026 HPCI Furo-II Type II resource information", "publisher": "HPCI / Nagoya University", "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/itc_nagoya-u_2026-6", "source_class": "official-project", "published_or_updated": "FY2026; page update date not stated"},
+      "origin_group": "nagoya-furo-ni-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "System information and per-user storage limit",
+      "observation_ja": "システム情報の48 PBは容量定義未記載。1ユーザー上限256 TBと区別する。", "observation_en": "The system's 48 PB has no explicit capacity basis; distinguish it from the 256 TB per-user limit.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [{
+    "gap_id": "GAP-TDS-041", "topic_ids": ["CROSS-06"], "priority": "P0",
+    "question_ja": "契約予定総額を確認できても、部品価格、保守・施設費の包含、増設との境界は未確定です。", "question_en": "A confirmed planned contract total does not resolve component prices, maintenance/facility inclusions or expansion boundaries.",
+    "next_action_ja": "調達台帳の未確認事項を追跡し、公開可能な最終仕様書と契約内訳を照合する。", "next_action_en": "Follow the procurement register's gaps and match publicly usable final specifications and itemization.", "status": "open"
+  }],
+  "remaining_work_ja": ["名古屋大学の支払単位と容量定義の残りを確認する。", "両案件の最終仕様・費用内訳・契約変更は未確認。", "共同調達・段階整備と独立したConsensusは未実施。"],
+  "remaining_work_en": ["Resolve Nagoya's payment basis and remaining capacity definitions.", "Final specifications, itemization and contract amendments remain unverified for both cases.", "Joint procurement, staged deployment and independent Consensus remain unperformed."]
+}

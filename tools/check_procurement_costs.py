@@ -8,7 +8,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
+from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total, number
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,6 +23,8 @@ def validate_register(payload: dict, config: dict) -> None:
     sources = unique(payload["sources"], "source_id")
     source_records = {s["source_id"]: s for s in payload["sources"]}
     cases = unique(payload["cases"], "case_id")
+    unique([entry for case in payload["cases"] for entry in case.get("storage_capacity_observations", [])],
+           "observation_id")
     gaps = unique(payload["coverage_gaps"], "gap_id")
     unique(config["components"], "id")
     unique(config["profiles"], "scenario_id")
@@ -40,19 +42,50 @@ def validate_register(payload: dict, config: dict) -> None:
         refs.update(ref for line in case["itemized_costs"] for ref in line["source_refs"])
         if case["amount"]:
             refs.update(case["amount"]["source_refs"])
-        for field in ("contract_window", "configuration_observation"):
+        for field in ("contract_window", "configuration_observation", "reported_period_total"):
             if case.get(field):
                 refs.update(case[field]["source_refs"])
+        refs.update(case.get("contract_date_source_refs", []))
+        capacities = case.get("storage_capacity_observations", [])
+        refs.update(ref for entry in capacities for ref in entry["source_refs"])
         if refs - sources or set(case["related_case_ids"]) - cases or set(case["gap_ids"]) - gaps:
             raise ValueError(f"unresolved references: {case['case_id']}")
         if case["case_id"] in case["related_case_ids"]:
             raise ValueError("a procurement must not be related to itself")
         if not case["gap_ids"] and case["configuration_match"] == "unconfirmed":
             raise ValueError("unconfirmed configuration needs a gap")
-        for field in ("amount", "contract_window", "configuration_observation"):
+        for field in ("amount", "contract_window", "configuration_observation", "reported_period_total"):
             if case.get(field) and any(source_records[r]["retrieval_status"] != "read"
                                        for r in case[field]["source_refs"]):
                 raise ValueError(f"{field} must cite checked public sources")
+        for entry in capacities:
+            if not entry["source_refs"] or any(source_records[r]["retrieval_status"] != "read"
+                                               for r in entry["source_refs"]):
+                raise ValueError("storage capacity must cite checked public sources")
+        contract_sources = {doc["source_id"] for doc in case["documents"]
+                            if doc["kind"] == "contract-result" and doc["access_status"] == "public-read"}
+        date_refs = set(case.get("contract_date_source_refs", []))
+        if date_refs and (not case["contract_date"] or not date_refs <= contract_sources
+                          or any(source_records[r]["retrieval_status"] != "read" for r in date_refs)):
+            raise ValueError("contract date must cite a checked contract result")
+        reported = case.get("reported_period_total")
+        if reported:
+            months = reported["period_months"]
+            if not isinstance(months, int) or isinstance(months, bool) or months <= 0:
+                raise ValueError("reported period total requires an explicit positive month count")
+            if (reported["kind"] != "contract" or reported["payment_basis"] != "total"
+                    or not reported["source_refs"] or not set(reported["source_refs"]) <= contract_sources):
+                raise ValueError("reported period total requires an explicit public contract result")
+            arithmetic = lease_period_total(case)
+            if arithmetic and (number(reported["value_jpy"]) != number(arithmetic["value_jpy"])
+                               or reported["period_months"] != arithmetic["months"]
+                               or reported["tax_basis"] != arithmetic["tax_basis"]):
+                raise ValueError("reported period total disagrees with billing arithmetic; reconcile the evidence")
+            monthly = case.get("amount")
+            if (monthly and monthly["payment_basis"] == "monthly"
+                    and monthly["tax_rate"] is not None and reported["tax_rate"] is not None
+                    and number(monthly["tax_rate"]) != number(reported["tax_rate"])):
+                raise ValueError("reported period total disagrees with the monthly tax rate")
         if case.get("contract_window"):
             window = case["contract_window"]
             if date.fromisoformat(window["start"]) > date.fromisoformat(window["end"]):

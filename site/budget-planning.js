@@ -53,7 +53,30 @@
     const caption = el("caption", t.allocation); table.append(caption, head, body); tableWrap.append(table);
     root.append(heading, scope, tableWrap, el("p", t.notice, "budget-caveat"), el("p", config[`caveat_${language}`], "budget-caveat"));
   }
-  function renderRegister(root, language) {
+  function sourceLink(source) {
+    const link = el("a", source.title); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer";
+    return link;
+  }
+  function renderCapacities(section, observations, sources, language) {
+    if (!observations?.length) return;
+    const labels = language === "ja"
+      ? {title: "ストレージ容量の定義と対象範囲", scope: "対象", value: "公表値", basis: "容量の定義", note: "解釈上の注意", source: "出典", physical: "物理容量", effective: "実効容量", allocation: "提供枠", unspecified: "定義未記載", planned: "計画構成", operating: "稼働構成"}
+      : {title: "Storage capacity: definitions and scope", scope: "Scope", value: "Published value", basis: "Capacity basis", note: "Interpretation", source: "Source", physical: "Physical", effective: "Effective", allocation: "Allocation", unspecified: "Not specified", planned: "Planned configuration", operating: "Operating configuration"};
+    const wrap = el("div", undefined, "table-wrap"); const table = el("table", undefined, "procurement-capacity-table");
+    const head = el("thead"); const row = el("tr");
+    [labels.scope, labels.value, labels.basis, labels.note, labels.source].forEach((label) => row.append(el("th", label)));
+    head.append(row); const body = el("tbody");
+    observations.forEach((observation) => {
+      const line = el("tr"); line.id = observation.observation_id;
+      const scope = el("th", observation[`scope_${language}`]); scope.scope = "row";
+      const value = el("td", `${observation.value} ${observation.unit}`);
+      value.append(el("small", labels[observation.configuration_status]));
+      const refs = el("td"); observation.source_refs.forEach((ref) => refs.append(sourceLink(sources.get(ref))));
+      line.append(scope, value, el("td", labels[observation.capacity_basis]), el("td", observation[`caveat_${language}`]), refs); body.append(line);
+    });
+    table.append(el("caption", labels.title), head, body); wrap.append(table); section.append(wrap);
+  }
+  function renderRegister(root, language, rootPrefix = "../") {
     const register = context().procurement_register; const t = copy[language]; root.replaceChildren();
     const sources = new Map(register.sources.map((s) => [s.source_id, s]));
     root.append(el("p", register[`caveat_${language}`]), el("p", `${t.independence} · ${register.as_of}`, "budget-status"));
@@ -70,7 +93,13 @@
         const label = language === "ja" ? "公告・契約に記載された期間" : "Period specified in the tender / contract";
         section.append(el("p", `${label}: ${period.start} – ${period.end}`));
       }
-      if (item.lease_period_total) {
+      if (item.reported_period_total) {
+        const total = item.reported_period_total;
+        const paragraph = el("p", language === "ja"
+          ? `契約資料に記載された予定総額（${total.period_months}か月）: ${money(total.value_jpy / 1e8, language)}（${t[total.tax_basis] || t.notKnown}）。購入価格・TCOではありません。`
+          : `Planned total reported in the contract disclosure (${total.period_months} months): ${money(total.value_jpy / 1e8, language)} (${t[total.tax_basis] || t.notKnown}). Not purchase price or TCO.`);
+        total.source_refs.forEach((ref) => paragraph.append(" ", sourceLink(sources.get(ref)))); section.append(paragraph);
+      } else if (item.lease_period_total) {
         const total = item.lease_period_total;
         section.append(el("p", language === "ja"
           ? `月額一定と仮定した${total.months}か月分の単純合計: ${money(total.value_jpy / 1e8, language)}（${t[total.tax_basis] || t.notKnown}）。購入価格・TCOではありません。`
@@ -81,10 +110,21 @@
         const label = language === "ja" ? "公開構成との対応確認" : "Public configuration matching";
         section.append(el("h4", label), el("p", observation[`summary_${language}`]), el("p", observation[`match_caveat_${language}`]));
       }
+      renderCapacities(section, item.storage_capacity_observations, sources, language);
+      if (item.linked_systems?.length) {
+        const links = el("p", language === "ja" ? "対応候補の仕様・運用日程: " : "Candidate system specifications and operational dates: ");
+        item.linked_systems.forEach((system) => {
+          const link = el("a", system[`name_${language}`]);
+          link.href = `${rootPrefix}${system.inventory_path}?lang=${language}#${system.system_id}`;
+          links.append(link, " ");
+        });
+        section.append(links);
+      }
       section.append(el("h4", t.sources));
-      item.documents.forEach((doc) => { const source = sources.get(doc.source_id); const line = el("li"); const link = el("a", source.title); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer";
+      item.documents.forEach((doc) => { const source = sources.get(doc.source_id); const line = el("li"); const link = sourceLink(source);
         line.append(el("strong", `${t[doc.kind]}: ${t[doc.access_status]}`), el("br"), link, el("small", `${t.checkDate}: ${source.checked_on} · ${source.locator}`)); documents.append(line); });
       section.append(documents, el("p", `${t.gaps}: ${item.gap_ids.join(" · ")}`, "mono-list")); root.append(section);
+      if (location.hash.slice(1) === section.id) section.open = true;
     });
     root.append(el("h4", t.gaps)); register.coverage_gaps.forEach((gap) => { const item = el("p"); item.append(el("strong", `${gap.gap_id} (${gap.priority}) `), gap[`description_${language}`], el("br"), `${t.next}: ${gap[`next_action_${language}`]}`); root.append(item); });
   }

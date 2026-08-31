@@ -48,6 +48,16 @@ class RoadmapSourceTriageTests(unittest.TestCase):
             "unresolved",
             next(item for item in triage["entries"] if item["source_id"] == changed["entries"][0]["source_id"])["review_outcome"],
         )
+        self.assertIsNone(next(item for item in triage["entries"] if item["source_id"] == changed["entries"][0]["source_id"])["reviewed_at"])
+
+    def test_new_manual_checks_do_not_rewrite_http_audit_results(self):
+        config = ROOT / "config/roadmap-source-retrieval-reviews.json"
+        audit = ROOT / "knowledge/public/audits/roadmap-source-audit.json"
+        result = build_triage(ROOT, config, audit)
+        added = [e for e in result["entries"] if e["source_id"] in {"SRC-BLUE033", "SRC-BLUE034"}]
+        self.assertEqual(2, len(added))
+        self.assertTrue(all(e["http_audit_status"] == "error" and e["http_status"] is None for e in added))
+        self.assertTrue(all(e["review_outcome"] == "exact-url-content-confirmed" for e in added))
 
 
 if __name__ == "__main__":

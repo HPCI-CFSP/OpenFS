@@ -62,7 +62,11 @@
     try { const value = window.localStorage.getItem("openfs-language"); if (value === "ja" || value === "en") return value; } catch (_error) {}
     return "ja";
   }
-  function rememberLanguage(value) { try { window.localStorage.setItem("openfs-language", value); } catch (_error) {} }
+  function rememberLanguage(value) {
+    try { window.localStorage.setItem("openfs-language", value); } catch (_error) {}
+    const url = new URL(window.location.href); url.searchParams.set("lang", value);
+    window.history.replaceState(null, "", url);
+  }
   function tr(key) { return copy[language][key] || key; }
   function localized(item, field) { return item?.[`${field}_${language}`] || item?.[field] || ""; }
   function localizedArray(item, field) { const value = item?.[`${field}_${language}`] || item?.[field] || []; return Array.isArray(value) ? value : []; }
@@ -291,7 +295,7 @@
       window.OpenFSBudget.renderAllocations(document.getElementById("portfolio-budget-comparison"), data.scenarios, state, language, rootPrefix);
       refreshScenarioLinks();
     });
-    window.OpenFSBudget.renderRegister(document.getElementById("portfolio-procurement-register"), language);
+    window.OpenFSBudget.renderRegister(document.getElementById("portfolio-procurement-register"), language, rootPrefix);
     renderScenarioTimeline(
       document.getElementById("scenario-portfolio-timeline"),
       data.scenarios.map((scenario) => ({
@@ -373,7 +377,7 @@
       renderArchitectureDiagram(scenario.budget_options[0], window.OpenFSBudget.allocation(data.budget_planning, scenario.scenario_id, state.budget));
       renderArchitectureSpecs(scenario.budget_options[0]);
     });
-    window.OpenFSBudget.renderRegister(document.getElementById("scenario-budget-references"), language);
+    window.OpenFSBudget.renderRegister(document.getElementById("scenario-budget-references"), language, rootPrefix);
   }
 
   function renderScenarioDetail() {

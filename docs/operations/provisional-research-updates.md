@@ -2,7 +2,8 @@
 
 ## Authority and scope
 
-This interactive maintainer workflow implements `DIR-900015`. It is not a
+This interactive maintainer workflow was introduced by `DIR-900015`; the bounded
+first-profile path was added under `DIR-900016`. It is not a
 scheduled worker or a Consensus promotion. One model may update a named research
 unit with primary-source checks, but the result remains `partial`, `provisional`,
 and `consensus_status=incomplete`. Do not enable agents, monitors, publication
@@ -20,7 +21,10 @@ rights, scoring, or procurement decisions through this workflow.
    unresolved; do not refresh their verification dates or use a shell fallback.
 4. Create a new `proposals/research-unit-updates/RUP-NNNNNN.json` under
    `schemas/research-unit-update.schema.json`. Append new section, item, source,
-   and Gap IDs. Archive replaced sections without deleting their payloads. Every
+   and Gap IDs. A correction may reuse the profile's existing open Gaps instead
+   of creating duplicates; every retained Gap must exist and cover the selected
+   Topic, and at least one open Gap must remain. Archive replaced
+   sections without deleting their payloads. Every
    new section must be assigned to one of the selected units. Keep unselected
    units unchanged and state remaining research explicitly.
 5. Check permissions and obtain the artifact-specific human publication Directive.
@@ -44,6 +48,16 @@ python3 tools/validate_json_schemas.py
 
 ## Concurrency, history, and recovery
 
+If the selected Topic has no public profile yet, pin `before_profile_sha256` to
+the stable digest of JSON `null` and explicitly supply `initial_profile_metadata`
+(decision dimensions and related public surfaces). Initialization is allowed
+only for a `not-started` Topic whose units are all unstarted and have no linked
+evidence. It cannot replace a profile or discard partial unit work. The new
+profile is still partial and Consensus-incomplete; unselected units stay
+unstarted. A simultaneous profile creation fails the input-digest check.
+The publication Decision ID is taken from the artifact's approving Directive,
+not a hard-coded ID shared across unrelated updates.
+
 The projector checks the whole profile and selected units before changing either
 document. A stale input must be rebased and researched again where necessary;
 never solve a conflict by taking one agent's entire profile. Applied bundles and
@@ -65,7 +79,15 @@ The audit checks provenance consistency, not the truth or completeness of claims
 この手順は、人間が明示的に依頼した対話型の暫定調査に限ります。対象の調査単位、
 入力コミット、更新前のハッシュ、一次情報の確認箇所を記録し、既存の根拠は削除せず
 新しい版を追加します。競合時は更新を止め、他の変更を確認してから作り直します。
-途中で書き込みが止まった場合は、2つの投影ファイルの整合性を確認して復旧します。
-調査済みの項目も暫定のままであり、単一モデルによる確認をConsensusや独立検証と
+訂正では既存の未解決Gapを保持でき、重複するGapを追加する必要はありません。
+ただし、保持するGapは対象項目に対応する既存の記録である必要があり、
+暫定結果には少なくとも1件の未解決Gapが必要です。
+途中で書き込みが止まった場合は、更新対象の2ファイルの整合性を確認して復旧します。
+調査済みの項目も暫定のままであり、単一のAIモデルによる確認をConsensusや独立検証と
 表示してはいけません。未調査項目、取得に失敗した資料、未解決のCoverage Gapを
 残し、無人運転や調達判断をこの手順から有効化しないでください。
+公開プロファイルがない項目では、JSONのnullのダイジェストを入力として固定し、
+判断軸と関連公開ページを明示して初回作成できます。対象と全調査単位が未着手で、
+根拠がまだ紐付いていない場合に限ります。既存の部分的な調査を上書きせず、
+同時に別のプロファイルが作成されていた場合は処理を止めます。公開承認のDecision IDは、
+その成果物を承認するDirectiveから取得します。
