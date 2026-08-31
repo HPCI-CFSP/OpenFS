@@ -1,0 +1,527 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000019",
+  "topic_id": "ARCH-01",
+  "created_at": "2026-08-31T21:31:55+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "74c129e86c2ee2c917a26bfb56abfa1c4440bf7ea55645a9d5a069c186bb00cd",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "CPU中心、ベクトル機、GPU併用、CPU・GPU統合型を、演算精度、メモリ配置、ソフトウェア移植、同時実行の条件で比較します。エージェント処理では単一要求の応答時間と全体の処理量を分け、高クロック・少コアが常に有利とは仮定しません。製品仕様と限定条件での研究結果を区別した暫定調査です。",
+  "summary_en": "CPU-centric, vector, discrete-GPU and integrated CPU-GPU designs are compared by precision, memory placement, software migration and concurrency. Agent evaluation separates per-request latency from aggregate throughput without assuming that fewer, faster cores always win. This provisional review distinguishes product specifications from condition-specific research results.",
+  "units": [
+    {
+      "unit_id": "ARCH-01-U01",
+      "before_sha256": "aeb1206ac4e2a29dcf3219a2e096147b87d533077f5dfac1efa1932a31f59c75",
+      "evidence_section_ids": [
+        "TDS-ARCH01-CURRENT",
+        "TDS-ARCH01-FUTURE",
+        "TDS-HC26-ARCH-01-U1",
+        "TDS-HW1-ARCH-01-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-01-U02",
+      "before_sha256": "7bd0ae0b9032096637735aafacd440beb331de108c13052d5accd471b84d9494",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-01-U02"
+      ]
+    },
+    {
+      "unit_id": "ARCH-01-U03",
+      "before_sha256": "509cbeb7b95ae905f538bdf238d9d2878d6937b00eac80592fd27bd5db83af39",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-01-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-01-U01",
+      "title_ja": "計算資源の選択：命令・精度・移植性",
+      "title_en": "Selecting compute resources: instructions, precision and portability",
+      "summary_ja": "製品名やピーク演算性能だけでは、科学シミュレーションとAIの適性を同じ順位にできません。既存アプリケーションが利用する命令とメモリ構成から候補を絞ります。",
+      "summary_en": "Product names and peak arithmetic rates do not establish one ranking for scientific simulation and AI. Candidate selection starts with application instructions and memory organization.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-CPU-FAMILIES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-EPYC",
+            "SRC-HW1-XEON6"
+          ],
+          "actor_ids": [
+            "ACT-AMD",
+            "ACT-INTEL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "x86 CPU：コア数と1コア当たりの資源",
+          "name_en": "x86 CPUs: core count and per-core resources",
+          "timing_ja": "公開製品・設計資料を2026-08-31に確認",
+          "timing_en": "Public product and architecture documents checked 2026-08-31",
+          "statement_ja": "EPYC 9005の設計資料では、Zen 5は最大128コア、Zen 5cは最大192コアで、32 MBのL3を共有するコア数も8と16で異なります。Xeon 6ではPコア系列にAVX-512・AMXがあり、Eコア系列の命令対応は同じではありません。コア数だけで計算能力や移植性を比較できません。",
+          "statement_en": "The EPYC 9005 architecture guide distinguishes up to 128 Zen 5 cores from 192 Zen 5c cores, with eight versus sixteen cores sharing 32 MB of L3. Xeon 6 P-core products provide AVX-512 and AMX; E-core instruction support differs. Core count alone is not a compute-capability or portability comparison.",
+          "hpci_relevance_ja": "OpenFSの評価方針として、帯域・キャッシュ容量をコア数で割った条件と、必要命令の有無を併記します。",
+          "hpci_relevance_en": "OpenFS proposes reporting bandwidth/cache resources per core alongside required instruction support.",
+          "adoption_conditions_ja": [
+            "SKU、DIMM構成、NUMA配置、SMT、コンパイラを固定して測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin SKU, DIMM population, NUMA placement, SMT and compiler for measurement."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-VECTOR-DEPLOYED",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-A64FX",
+            "SRC-HW1-AOBA"
+          ],
+          "actor_ids": [
+            "ACT-FUJITSU"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "A64FX・SX-Aurora：高帯域メモリを使うCPU・ベクトル機",
+          "name_en": "A64FX and SX-Aurora: CPUs/vector engines with high-bandwidth memory",
+          "timing_ja": "既存構成。AOBA-Sは2023-08-01運用開始",
+          "timing_en": "Existing configurations; AOBA-S began operation 2023-08-01",
+          "statement_ja": "A64FXは48計算コア、4 CMG、32 GiBのHBM2を備えます。東北大学AOBA-SのType 30A VEは96 GB・公称2.45 TB/sで、x86のVHとPCIe接続します。VEとGPUを同じオフロード方式と決め付けず、実行モデルを確認します。AOBA-Sでは旧AOBA-A向けバイナリの再コンパイルが必要です。",
+          "statement_en": "A64FX has 48 compute cores, four CMGs and 32 GiB HBM2. Tohoku's AOBA-S Type 30A VE provides 96 GB and nominal 2.45 TB/s, connected to an x86 VH through PCIe. VE and GPU execution models should not be conflated. AOBA-S requires recompilation of binaries built for AOBA-A.",
+          "hpci_relevance_ja": "既存のベクトル化・メモリ帯域重視アプリケーションでは、GPUへの移植費用を含めて比較する価値があります。",
+          "hpci_relevance_en": "Bandwidth-intensive and vectorized applications warrant comparison that includes the cost of GPU migration.",
+          "adoption_conditions_ja": [
+            "実際に利用できるメモリ容量、ベクトル化率、通信、コンパイラ版を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check usable memory, vectorization, communication and compiler version."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-GPU-PRECISION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-MI300A"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GPUの通常演算と行列演算を区別する",
+          "name_en": "Separate GPU vector and matrix arithmetic",
+          "timing_ja": "MI300Aは2023年発売の比較基準例",
+          "timing_en": "MI300A is a comparison baseline launched in 2023",
+          "statement_ja": "MI300Aの公称FP64性能は通常演算61.3 TFLOP/sと行列演算122.6 TFLOP/sに分かれます。低精度や構造化疎行列を用いたAIのピーク値も別条件です。これらの値を混在させた順位は、科学アプリケーションの実効性能を示しません。",
+          "statement_en": "MI300A specifies 61.3 TFLOP/s for FP64 vector arithmetic and 122.6 TFLOP/s for FP64 matrix arithmetic. Low-precision and structured-sparsity AI peaks have different conditions again. A ranking mixing these rates does not represent delivered scientific-application performance.",
+          "hpci_relevance_ja": "将来GPUの比較表も、入力・積和・出力精度、密行列か疎行列か、利用ライブラリを揃えます。",
+          "hpci_relevance_en": "Future GPU comparisons should match input, accumulation and output precision, dense/sparse operation and libraries.",
+          "adoption_conditions_ja": [
+            "数値精度の合格条件と処理完了時間を先に定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Define numerical acceptance criteria and time-to-solution before ranking."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-01-U02",
+      "title_ja": "ノード内メモリの配置とCPU・GPUの結合",
+      "title_en": "Memory placement and CPU-GPU coupling inside a node",
+      "summary_ja": "統合メモリという名称だけでは、物理メモリの共有、キャッシュ整合性、ページ移動の仕組みはわかりません。容量と転送経路を明示して比較します。",
+      "summary_en": "The term unified memory alone does not specify physical sharing, cache coherence or page migration. Comparisons need explicit capacity and transfer paths.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-NODE-DDR",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-EPYC"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CPU中心：DIMM容量とNUMA配置",
+          "name_en": "CPU-centric nodes: DIMM capacity and NUMA placement",
+          "timing_ja": "EPYC 9005の2025年4月設計資料に基づく",
+          "timing_en": "Based on the April 2025 EPYC 9005 architecture guide",
+          "statement_ja": "EPYC 9005は中央I/Oダイを介してCCD、最大12チャネルのDDR5、PCIe 5.0・CXL 2.0を接続します。コアを増やしてもメモリチャネルは同比率で増えません。DIMM容量、チャネル充填、CCD内の共有キャッシュとNUMA配置が、帯域を共有する負荷の性能を左右します。",
+          "statement_en": "EPYC 9005 connects CCDs, up to twelve DDR5 channels and PCIe 5.0/CXL 2.0 through a central I/O die. Memory channels do not increase in proportion to core count. DIMM capacity/population, shared CCD cache and NUMA placement matter for workloads sharing bandwidth.",
+          "hpci_relevance_ja": "大容量データを持つCPUアプリケーションの基準構成として、容量不足と帯域不足を別々に評価します。",
+          "hpci_relevance_en": "For large CPU-resident datasets, evaluate capacity limits separately from bandwidth limits.",
+          "adoption_conditions_ja": [
+            "最新SKUの対応速度とOEM構成を別途確認し、旧版資料の上限を一律に適用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify current SKU/OEM memory speeds separately; do not apply an older guide's limits universally."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-NODE-COHERENT",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-CUDA-UM"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CPU・GPUの整合メモリ：共有アドレスでも配置は重要",
+          "name_en": "Coherent CPU-GPU memory: placement still matters",
+          "timing_ja": "現行CUDAの公開仕様を確認",
+          "timing_en": "Checked current public CUDA documentation",
+          "statement_ja": "Grace Hopperなどのハードウェア整合型と、Linux HMMを使うソフトウェア整合型は、似たプログラミングモデルでもページフォールトと移動の挙動が異なります。整合性があっても遠隔メモリへのアクセスは無料ではなく、割当API、ページサイズ、CPU/GPUのアクセス方向を確認する必要があります。",
+          "statement_en": "Hardware-coherent platforms such as Grace Hopper and software-coherent Linux HMM platforms expose similar programming models but different fault/migration behavior. Coherence does not make remote memory access free; allocator, page size and CPU/GPU access direction remain important.",
+          "hpci_relevance_ja": "頻繁にCPUとGPUを往復する処理では、転送を隠せるか、共有領域が競合するかを検証します。",
+          "hpci_relevance_en": "For frequent CPU-GPU exchanges, verify transfer overlap and contention on shared data.",
+          "adoption_conditions_ja": [
+            "ドライバ・カーネル・CUDA版を固定し、明示コピーと統合メモリを比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin driver, kernel and CUDA versions when comparing explicit copies with unified memory."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-NODE-UPM",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-MI300A",
+            "SRC-HW1-MI300A-STUDY"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MI300A：CPUとGPUが同じHBMを共有",
+          "name_en": "MI300A: CPU and GPU share the same HBM",
+          "timing_ja": "2025年のMI300A研究に基づく",
+          "timing_en": "Based on the 2025 MI300A study",
+          "statement_ja": "MI300Aは24 CPUコアとGPUが128 GBのHBM3を共有する構成です。別々のCPU/GPUメモリに同じ配列を複製する必要を減らせますが、CPUとGPUで容量・帯域を共用します。共有物理メモリでも、割当方式、キャッシュ、同期の評価は必要です。",
+          "statement_en": "MI300A combines 24 CPU cores and a GPU sharing 128 GB HBM3. It can reduce duplicate arrays in separate CPU/GPU memories, but CPU and GPU share capacity and bandwidth. Allocation, cache and synchronization still require evaluation even with unified physical memory.",
+          "hpci_relevance_ja": "大きな中間配列を共有する科学コードでは移植の候補になりますが、対象コードでの優位性は未検証です。",
+          "hpci_relevance_en": "Scientific codes sharing large intermediate arrays are candidates, but superiority for a target code is unverified.",
+          "adoption_conditions_ja": [
+            "全プロセスの合計メモリ量とCPU/GPU同時実行時の帯域競合を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check aggregate process memory and bandwidth contention during concurrent CPU/GPU execution."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-01-U03",
+      "title_ja": "エージェント処理：直列応答と同時実行を分ける",
+      "title_en": "Agent workloads: separate serial response from concurrency",
+      "summary_ja": "処理全体のうち、CPU実行・GPU推論・メモリ待ち・外部サービス待ちを分解します。高周波数、コア数、SMTの効果はそれぞれ別の実験で確認します。",
+      "summary_en": "Decompose CPU execution, GPU inference, memory stalls and external-service waits. Frequency, core-count and SMT effects require separate experiments.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-AGENT-CORE-CHOICE",
+          "stage": "current",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-XEON6PLUS",
+            "SRC-HW1-VERA"
+          ],
+          "actor_ids": [
+            "ACT-INTEL",
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Pコア・Eコア・高帯域CPUは併存する候補",
+          "name_en": "P-core, E-core and high-bandwidth CPUs remain alternative candidates",
+          "timing_ja": "2026年の公開製品説明",
+          "timing_en": "Public product descriptions in 2026",
+          "statement_ja": "Intelは最大288 EコアのXeon 6+もエージェント型AI向けと位置付けています。一方、NVIDIA Veraは88コア・176スレッドと高帯域LPDDR5Xを組み合わせます。これらはベンダーの設計方針であり、高クロックか多コアかの普遍的な勝者を示す実験ではありません。",
+          "statement_en": "Intel also positions up-to-288-E-core Xeon 6+ for agentic AI, while NVIDIA Vera combines 88 cores/176 threads with high-bandwidth LPDDR5X. These are vendor design directions, not experiments establishing a universal frequency-versus-core-count winner.",
+          "hpci_relevance_ja": "応答時間を重視する少数ジョブと、多数の独立したサンドボックスでは、異なるCPU構成を評価します。",
+          "hpci_relevance_en": "Evaluate different CPU configurations for latency-sensitive jobs and many independent sandboxes.",
+          "adoption_conditions_ja": [
+            "同じ課題・品質・CPU予算で、P50/P95遅延、達成課題数、電力量を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Match tasks, quality and CPU budgets; compare P50/P95 latency, completed tasks and energy."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-AGENT-CORE-SWEEP",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW1-AGENTSYS"
+          ],
+          "actor_ids": [],
+          "confidence": "low",
+          "consensus_status": "incomplete",
+          "name_ja": "CPU割当を増やすと律速箇所も変わる",
+          "name_en": "Changing CPU allocation can move the bottleneck",
+          "timing_ja": "2026年8月のプレプリント。独立再現は未実施",
+          "timing_en": "August 2026 preprint; no independent reproduction here",
+          "statement_ja": "AgentSysBenchの研究は、コード実行を含む10課題でサンドボックスを8-96 CPUコアに変え、CPU割当増加によって律速がツール実行からLLMへ移る例を報告しています。したがって非LLM処理が長いという事実だけでは、単一スレッド性能が支配的とは判断できません。",
+          "statement_en": "The AgentSysBench study varies sandbox allocations from 8 to 96 CPU cores over ten code-execution tasks and reports cases where the bottleneck moves from tools to the LLM. Long non-LLM time alone therefore does not establish dominance of single-thread performance.",
+          "hpci_relevance_ja": "OpenFSでは低同時実行と飽和付近の負荷を分け、コア割当とメモリ容量を同時に記録する方針です。",
+          "hpci_relevance_en": "OpenFS proposes separate low-concurrency and near-saturation tests with recorded core allocations and memory capacity.",
+          "adoption_conditions_ja": [
+            "公開コードと完全な測定条件を確認する。既存プレプリントだけで調達順位を付けない。"
+          ],
+          "adoption_conditions_en": [
+            "Obtain public code and complete measurement conditions; do not rank procurement choices from a preprint alone."
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-AGENT-VF-EVIDENCE",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-HW1-A64FX",
+            "SRC-HW1-CPUAGENT"
+          ],
+          "actor_ids": [],
+          "confidence": "low",
+          "consensus_status": "incomplete",
+          "name_ja": "周波数・電力評価の限界と確認事項",
+          "name_en": "Limits and checks for frequency and energy evaluation",
+          "timing_ja": "比較可能な周波数・SMT実測は未確認",
+          "timing_en": "Comparable frequency/SMT measurements remain unverified",
+          "statement_ja": "A64FXのガイドでは、2.0から2.2 GHzへの変更でCPU電圧は上がりますがHBM周波数は変わらず、メモリ帯域律速では高速化を期待できないと説明しています。別のCPU中心エージェント研究には電力測定GPUの本文・図注の不一致があります。その電力割合やCPU処理割合を、将来CPUの周波数効果へ転用しません。",
+          "statement_en": "The A64FX guide explains that boosting 2.0 to 2.2 GHz raises CPU voltage without changing HBM frequency, so memory-bandwidth-bound work need not accelerate. A separate CPU-centric agent study has conflicting GPU identities in its energy-method text and figure caption. Its energy or CPU-time fractions are not transferred into future-CPU frequency predictions.",
+          "hpci_relevance_ja": "周波数、消費電力、待機時間を同時測定し、命令実行の短縮と外部待ちの削減を混同しないことが必要です。",
+          "hpci_relevance_en": "Measure frequency, power and waiting together without conflating faster instruction execution with reduced external waiting.",
+          "adoption_conditions_ja": [
+            "GPU名の不一致、測定範囲、アイドル電力控除を確認し、同一機上の周波数・SMT実験を追加する。"
+          ],
+          "adoption_conditions_en": [
+            "Resolve GPU identity, measurement boundary and idle-power subtraction; add same-host frequency/SMT sweeps."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH14-CURRENT",
+    "TDS-ARCH14-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-A64FX",
+        "title": "Programming Guide (Processors), V1.4",
+        "publisher": "Fujitsu; publicly hosted with permission by RIKEN R-CCS",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/user-guide/prog-guide/pdf/en/processors_programming_guide.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2021-08"
+      },
+      "origin_group": "fujitsu-a64fx-programming-guide-v1-4",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Cover public-release permission; printed pp. 4-8 and 113 (Boost Mode)",
+      "observation_ja": "48計算コア、4 CMG、32 GiB HBM2と周波数変更時の律速別の説明を本文で確認。PDF再配布は行わない。スクリーンショット取得は失敗。",
+      "observation_en": "Text confirms 48 compute cores, four CMGs, 32 GiB HBM2 and bottleneck-dependent boost behavior. No PDF redistribution; screenshot retrieval failed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-AGENTSYS",
+        "title": "From LLM Inference to Agentic Workloads: Characterization and Implications for Serving Systems, arXiv:2608.15127v1",
+        "publisher": "AgentSysBench study authors",
+        "url": "https://arxiv.org/html/2608.15127v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08; version 1"
+      },
+      "origin_group": "agentsysbench-2608-15127",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Sections 4.3, 5.4, 6.2 and conclusion",
+      "observation_ja": "10課題のCPU割当を8-96コアで変えた実験と、待機状態・活動中メモリの区別を確認。コードは公開予定との記述で、再現済みではない。",
+      "observation_en": "Checked 8-96-core allocation experiments over ten tasks and idle/active-state distinctions. Code is described as forthcoming, not reproduced here.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-AOBA",
+        "title": "Subsystem AOBA-S",
+        "publisher": "Tohoku University Cyberscience Center",
+        "url": "https://www.ss.cc.tohoku.ac.jp/aoba-s/",
+        "source_class": "official-project",
+        "published_or_updated": "2023-09-11"
+      },
+      "origin_group": "tohoku-aoba-s-provider-description",
+      "checked_at": "2026-08-31T21:29:28+09:00",
+      "locator": "System overview; Type 30A table; compilation and execution instructions",
+      "observation_ja": "2023年8月の運用開始、VEとVHの役割、VE30Aの容量・帯域と再コンパイル要件を確認。将来の提供期間は推定しない。",
+      "observation_en": "Checked August 2023 commissioning, VE/VH roles, VE30A memory/bandwidth and recompilation requirements; no future service window inferred.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CPUAGENT",
+        "title": "A CPU-Centric Perspective on Agentic AI, arXiv:2511.00739v1",
+        "publisher": "Raj et al.",
+        "url": "https://arxiv.org/html/2511.00739v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-11; version 1"
+      },
+      "origin_group": "raj-cpu-agent-2511-00739",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Sections 4.1, 4.3, 4.4; Figure 5 caption; Section 6 setup",
+      "observation_ja": "遅延評価は48コアEmerald RapidsとB200。電力測定本文は別のThreadripper/H200、図注はB200で不一致。周波数の比較実験は確認できない。",
+      "observation_en": "Latency uses 48-core Emerald Rapids/B200. Energy text specifies another Threadripper/H200 host, but Figure 5 says B200. No frequency-sweep evidence identified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CUDA-UM",
+        "title": "CUDA Programming Guide: Unified Memory",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/unified-memory.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "nvidia-cuda-unified-memory-guide",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "4.1.1; CPU and GPU Page Tables; Access Counter Migration; Mixing Hardware and Software Coherency",
+      "observation_ja": "共通のプログラミングモデルでも、ハードウェア整合性、ページ移動、割当方法で挙動が異なる。複数ホストの通信は別ライブラリの契約を要する。",
+      "observation_en": "A shared programming model does not equal identical coherence, migration or allocation behavior; multi-host communication requires separate library contracts.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-EPYC",
+        "title": "AMD EPYC 9005 Processor Architecture Overview, revision 1.0",
+        "publisher": "AMD",
+        "url": "https://docs.amd.com/api/khub/documents/iZ5eCtQ5v6PyPN7wEd8HQg/content",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-04-23"
+      },
+      "origin_group": "amd-epyc9005-architecture-r1",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Table 1-1 and sections Core Complex, I/O Die, Memory/I/O/Connectivity (PDF pp. 3-6)",
+      "observation_ja": "Zen 5とZen 5cのコア数、共有L3、12メモリチャネル、PCIe/CXLを確認。数値は2025年4月版の構成に限定する。",
+      "observation_en": "Checked core/cache organization, twelve memory channels and PCIe/CXL; specifications are scoped to the April 2025 revision.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MI300A",
+        "title": "AMD Instinct MI300A Accelerators: product specifications",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/products/accelerators/instinct/mi300/mi300a.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "launch 2023-12-06; living specifications checked 2026-08-31"
+      },
+      "origin_group": "amd-mi300a-product-specification",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "CPU Specifications; GPU Memory; FP64 vector and matrix specifications",
+      "observation_ja": "24 Zen 4コアと128 GB HBM3、FP64通常演算と行列演算の別々の公称値を確認。実アプリケーションの達成性能ではない。",
+      "observation_en": "Checked 24 Zen 4 cores, 128 GB HBM3 and separate nominal FP64 vector/matrix rates, not achieved application performance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MI300A-STUDY",
+        "title": "Dissecting CPU-GPU Unified Physical Memory on AMD MI300A APUs, arXiv:2508.12743v1",
+        "publisher": "Wahlgren et al., KTH and LLNL",
+        "url": "https://arxiv.org/html/2508.12743v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-08-18"
+      },
+      "origin_group": "wahlgren-mi300a-upm-2508-12743",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Sections 2.2-2.3 and characterization scope",
+      "observation_ja": "MI300Aの共有物理メモリと割当方式を確認。GH200とは同じ統合メモリという表現でも物理構成が異なる。",
+      "observation_en": "Checked MI300A shared physical memory and allocation mechanisms; the physical organization differs from GH200 despite both offering unified-memory programming.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-VERA",
+        "title": "NVIDIA Vera CPU",
+        "publisher": "NVIDIA",
+        "url": "https://www.nvidia.com/en-us/data-center/vera-cpu/",
+        "source_class": "official-vendor",
+        "published_or_updated": "undated product page; checked 2026-08-31"
+      },
+      "origin_group": "nvidia-vera-product-specification",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Olympus Cores; LPDDR5X Memory Subsystem; Second-Generation SCF; NVLink-C2C",
+      "observation_ja": "88コア・176スレッド、LPDDR5X、NVLink-C2Cの公称仕様を確認。ページだけでは全OEM構成の一般提供日を確定しない。",
+      "observation_en": "Checked nominal 88-core/176-thread, LPDDR5X and NVLink-C2C specifications, not general availability of every OEM configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-XEON6",
+        "title": "Intel Xeon 6 Product Brief",
+        "publisher": "Intel",
+        "url": "https://www.intel.com/content/www/us/en/products/docs/xeon-6-product-brief.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "undated product brief; checked 2026-08-31"
+      },
+      "origin_group": "intel-xeon6-product-brief",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "P-cores and E-cores; Highlight Technologies comparison",
+      "observation_ja": "PコアとEコアの製品系列、ベクトル・行列命令とメモリ対応の違いを確認。ベンダーの倍率は共通比較値に採用しない。",
+      "observation_en": "Checked separate P/E product families and vector/matrix and memory capabilities; vendor speedup claims are not common comparison results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-XEON6PLUS",
+        "title": "Intel Puts Agentic AI to Work with Xeon 6+, Networking, and AI Systems",
+        "publisher": "Intel",
+        "url": "https://newsroom.intel.com/data-center/intel-puts-agentic-ai-xeon-6-networking-ai-systems",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06; exact day not yet checked"
+      },
+      "origin_group": "intel-xeon6plus-computex-2026",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Introducing Intel Xeon 6+ Processors; key highlights and ecosystem paragraph",
+      "observation_ja": "最大288 Eコア製品もエージェント型AI向けとして公表されている。高クロック・少コアだけが候補という一般化は成立しない。",
+      "observation_en": "The issuer also positions up-to-288-E-core CPUs for agentic AI; that contradicts an exclusive high-frequency/few-core candidate set.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-054",
+      "topic_ids": [
+        "ARCH-01"
+      ],
+      "priority": "P0",
+      "question_ja": "同じ科学・エージェント課題で、CPU/GPU構成、周波数、SMT、メモリ配置を変えた実効性能とシステム電力量を比較できるか。",
+      "question_en": "Can delivered performance and system energy be compared for identical scientific/agent tasks across CPU/GPU configurations, frequency, SMT and memory placement?",
+      "next_action_ja": "公開実装・入力・品質条件を固定した測定を収集する。エージェント論文のGPU名不一致と、非LLM時間に含まれる外部待ちを確認する。",
+      "next_action_en": "Collect measurements with pinned public implementations, inputs and quality; resolve the agent paper's GPU-identity discrepancy and external waits included in non-LLM time.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "製品・ソフトウェア版を固定した独立測定、供給・保守・費用、将来世代の実効性能は未確認です。",
+    "この調査は単一モデルによる暫定結果であり、Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Independent version-pinned measurements, supply/support/cost and delivered performance of future generations remain unverified.",
+    "This single-model investigation remains provisional and has not completed Consensus."
+  ]
+}

@@ -22,6 +22,12 @@ research or claim that Consensus is complete.
    milestone when no public date exists. The renderer spans half-year entries
    across two quarters and year-only entries across Q1-Q4 as uncertainty windows,
    not durations. Do not interpolate between announced generations.
+   When the source states a window crossing calendar years (for example Japanese
+   FY2026), use `timing_precision: quarter-range`, `year: 2026`, `quarter: Q2`,
+   `end_year: 2027`, `end_quarter: Q1`, and explain the fiscal-year convention in
+   both detail fields. Do not narrow the event to either endpoint or infer a
+   range from two unrelated sources. A deadline such as "by October" is not a
+   Q4 start; preserve the wider supported window and the deadline in prose.
 4. Add `generation_bands` only when a track has meaningful generations and the
    overview improves an HPCI decision. Keep standards-body and vendor lanes
    separate below it. Every band must preserve independent boundary precision,

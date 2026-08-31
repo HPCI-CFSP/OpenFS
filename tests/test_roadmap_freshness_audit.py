@@ -18,6 +18,37 @@ def load_json(path: Path):
 
 
 class RoadmapFreshnessAuditTests(unittest.TestCase):
+    def test_half_year_and_fiscal_year_use_window_end_for_expiry(self):
+        cases = [
+            ("H1", {"year": 2026, "quarter": None, "half": "H1", "timing_precision": "half-year"}, True),
+            ("H2", {"year": 2026, "quarter": None, "half": "H2", "timing_precision": "half-year"}, False),
+            ("FY26", {"year": 2026, "quarter": "Q2", "end_year": 2027, "end_quarter": "Q1", "timing_precision": "quarter-range"}, False),
+            ("FY25", {"year": 2025, "quarter": "Q2", "end_year": 2026, "end_quarter": "Q1", "timing_precision": "quarter-range"}, True),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "knowledge/public/roadmaps").mkdir(parents=True)
+            (root / "knowledge/public/audits").mkdir(parents=True)
+            milestones = [{"milestone_id": f"MS-{name}", "timing_basis": "vendor-target",
+                           "comparison_priority": "key", "source_ids": ["SRC-TIMING"], **fields}
+                          for name, fields, _ in cases]
+            roadmap = {"roadmap_id": "RM-TIMING", "as_of": "2026-08-31",
+                       "sources": [{"source_id": "SRC-TIMING", "source_class": "vendor-official", "url": "https://example.org/"}],
+                       "lanes": [{"milestones": milestones}]}
+            path = root / "knowledge/public/roadmaps/test.json"
+            path.write_text(json.dumps(roadmap), encoding="utf-8")
+            (root / "knowledge/public/audits/roadmap-source-audit.json").write_text('{"results": []}', encoding="utf-8")
+            audit = build(root, "2026-08-31T00:00:00Z")
+            passed = {item["object_id"] for item in audit["attention_items"] if item["reason"] == "target-date-passed"}
+            self.assertEqual({f"MS-{name}" for name, _, expired in cases if expired}, passed)
+            for milestone in milestones:
+                milestone["timing_basis"] = "observed"
+            milestones.append({**milestones[1], "milestone_id": "MS-NEXT-H1", "year": 2027, "half": "H1"})
+            path.write_text(json.dumps(roadmap), encoding="utf-8")
+            audit = build(root, "2026-08-31T00:00:00Z")
+            future = {item["object_id"] for item in audit["attention_items"] if item["reason"] == "future-observed-conflict"}
+            self.assertEqual({"MS-NEXT-H1"}, future)
+
     def test_published_audit_matches_the_current_portfolio(self):
         audit = load_json(ROOT / "knowledge/public/audits/roadmap-freshness-audit.json")
         roadmaps = [load_json(path) for path in sorted((ROOT / "knowledge/public/roadmaps").glob("*.json"))]

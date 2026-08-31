@@ -13,6 +13,11 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+if __package__:
+    from .roadmap_timing import milestone_quarter_window
+else:
+    from roadmap_timing import milestone_quarter_window
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_PATH = ROOT / "knowledge/public/topic-decision-support.json"
@@ -199,6 +204,9 @@ def latest_research_date(artifact: dict[str, Any], roadmaps: list[dict[str, Any]
 
 
 def milestone_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
+    if item.get("timing_precision") == "quarter-range":
+        end = milestone_quarter_window(item)[1]
+        return end // 4, end % 4 + 1, item["milestone_id"]
     year = item.get("year") or 9999
     if item.get("quarter"):
         period = int(item["quarter"][1])
@@ -212,6 +220,11 @@ def milestone_sort_key(item: dict[str, Any]) -> tuple[int, int, str]:
 
 
 def timing_text(item: dict[str, Any], language: str) -> str:
+    if item.get("timing_precision") == "quarter-range":
+        milestone_quarter_window(item)
+        if language == "ja":
+            return f"{item['year']}年{item['quarter']}〜{item['end_year']}年{item['end_quarter']}"
+        return f"{item['year']} {item['quarter']} - {item['end_year']} {item['end_quarter']}"
     if item.get("year") is None:
         return "時期未公表" if language == "ja" else "No public timing"
     if item.get("quarter"):
@@ -255,6 +268,8 @@ def next_milestone(
     current_quarter = (research_as_of.month - 1) // 3 + 1
 
     def remains_future(item: dict[str, Any]) -> bool:
+        if item.get("timing_precision") == "quarter-range":
+            return milestone_quarter_window(item)[1] > research_as_of.year * 4 + current_quarter - 1
         year = item.get("year")
         if year is None:
             return True

@@ -1,0 +1,417 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000025",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-08-31T22:07:02+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "56cdbe20d5a924e62d99039697113aaec75a8a2655ed367a847a575a116cac19",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ノード・ラック・システムの構成を、利用可能な資源、通信階層、I/O、電力・冷却、移行条件に分けて比較します。実際の運用資料と将来の提供目標を区別し、資料内の数値不整合は未確認事項として残します。単一モデルによる暫定調査です。",
+  "summary_en": "Compare node, rack and system composition by usable resources, communication hierarchy, I/O, power/cooling and migration conditions. Distinguish operating documentation from future availability targets and retain source inconsistencies as gaps. This is a provisional single-model review.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "84ab39feb67ad208d67ebb9a729b110b9edd955f5941c49e7c25371d1c191300",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "7466c9758e348aa0c8a10f8f00755bf4e1fdf50132aceb7ad955f4bb626fc68d",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-05-U01",
+      "title_ja": "構成単位と通信・I/Oの階層",
+      "title_en": "Composition units and communication/I/O hierarchy",
+      "summary_ja": "GPUのパッケージ数とソフトウェアが認識するデバイス数を分け、ノード内接続・計算網・共有ストレージを一体として整理します。",
+      "summary_en": "Distinguish physical GPU packages from software-visible devices and map within-node links, compute fabric and shared storage together.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-RIKEN-AIFS-LAYERS",
+          "stage": "current",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-RIKEN-AIFS"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "理研AI for Science: 計算網とI/O網を分けた構成",
+          "name_en": "RIKEN AI for Science: separate compute and I/O fabrics",
+          "timing_ja": "2026年5月15日更新の公開README。運用文書は更新中。",
+          "timing_en": "Public README updated May 15, 2026; operating documentation remains in development.",
+          "statement_ja": "400基のGB200 NVL4ノードは各2 Grace CPU・4 B200 GPUで構成され、計算用XDR網、前段・共有ファイル用NDR網、局所NVMe、共有Lustreを区別しています。",
+          "statement_en": "The 400 GB200 NVL4 nodes each contain two Grace CPUs and four B200 GPUs, with distinct XDR compute fabric, NDR frontend/file access, local NVMe and shared Lustre.",
+          "hpci_relevance_ja": "搭載量の合計だけでなく、学習データ投入・チェックポイント・計算通信が通る経路を比較します。HPCIに適用する場合は共用運用条件を別途確認します。",
+          "hpci_relevance_en": "Compare paths for input, checkpoints and compute communication, not just aggregate capacity. Applying this to HPCI also requires shared-use operating conditions.",
+          "adoption_conditions_ja": [
+            "版付き構成、実効I/O、受入れ・運用開始の確認"
+          ],
+          "adoption_conditions_en": [
+            "Versioned configuration, delivered I/O and acceptance/service-start confirmation"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-JUPITER-MODULES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-JUPITER-CONFIG"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA",
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUPITER: 異種モジュールを共通網で接続",
+          "name_en": "JUPITER: heterogeneous modules on a common fabric",
+          "timing_ja": "2026年8月31日に利用者向け構成文書を確認。",
+          "timing_en": "User configuration documentation checked August 31, 2026.",
+          "statement_ja": "Boosterは4 GH200を持つ5884ノードで、Cluster・ストレージとNDR網を共有します。一方、CPU ClusterのAMD/SiPearl部分は同文書でも設置予定とされ、全モジュールの稼働済みとは扱いません。",
+          "statement_en": "The Booster has 5,884 four-GH200 nodes sharing NDR fabric with Cluster/storage. The CPU Cluster's AMD/SiPearl portions are still described as pending installation, not all operational modules.",
+          "hpci_relevance_ja": "異種資源への処理分担には、同時実行、転送、ジョブ管理、共通I/Oの競合を含めます。",
+          "hpci_relevance_en": "Work partitioning must include concurrency, transfers, scheduling and shared-I/O contention.",
+          "adoption_conditions_ja": [
+            "モジュール別の供用状態と同時使用時の性能"
+          ],
+          "adoption_conditions_en": [
+            "Per-module service state and concurrent-use performance"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-LUMI-COUNTING",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-LUMIG"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LUMI-G: 4パッケージと8デバイスを区別",
+          "name_en": "LUMI-G: four packages versus eight devices",
+          "timing_ja": "2026年8月31日に利用者文書を確認。",
+          "timing_en": "User documentation checked August 31, 2026.",
+          "statement_ja": "LUMI-Gの1ノードは4 MI250Xパッケージですが、HIP/Slurmでは8 GCDを扱います。CPU/GPUのNUMA対応を確認する必要があり、計算ノードに局所ディスクはありません。",
+          "statement_en": "A LUMI-G node has four MI250X packages but exposes eight GCDs to HIP/Slurm. CPU/GPU NUMA mapping must be checked, and compute nodes have no local disks.",
+          "hpci_relevance_ja": "『GPU当たり』性能の分母を統一し、データ配置とI/O待ちを含むノード性能で比較します。",
+          "hpci_relevance_en": "Normalize the denominator of per-GPU results and compare node performance including placement and I/O stalls.",
+          "adoption_conditions_ja": [
+            "パッケージ・GCD・ノード数、割当てとデータ配置"
+          ],
+          "adoption_conditions_en": [
+            "Package/GCD/node counts, allocation and placement"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-HELIOS-DELIVERY",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HC26-HELIOS"
+          ],
+          "actor_ids": [
+            "ACT-AMD",
+            "ACT-MICROSOFT"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Helios: ラック構成と提供形態",
+          "name_en": "Helios: rack composition and delivery model",
+          "timing_ja": "2026年後半に顧客出荷を開始する計画。",
+          "timing_en": "Customer shipments planned to start in H2 2026.",
+          "statement_ja": "MI455X、EPYC Venice、Pensando、ROCmを組み合わせます。Azureでの利用計画は装置の一般販売・任意の研究機関への納入保証とは異なります。",
+          "statement_en": "The stack combines MI455X, EPYC Venice, Pensando and ROCm. Planned Azure use does not guarantee general hardware sales or delivery to arbitrary research institutions.",
+          "hpci_relevance_ja": "一括提供による整合性と、装置交換・世代混在・独自運用への制約を比較します。",
+          "hpci_relevance_en": "Compare integrated-stack consistency against replacement, mixed-generation and custom-operation constraints.",
+          "adoption_conditions_ja": [
+            "提供形態、対応版、保守、施設適合"
+          ],
+          "adoption_conditions_en": [
+            "Delivery model, supported releases, service and facility fit"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-05-U02",
+      "title_ja": "システム全体で成立するための条件",
+      "title_en": "Conditions for system-level viability",
+      "summary_ja": "装置の公称性能を足すだけでは、処理時間・電力・費用は決まりません。依存関係と比較境界を揃え、未確認の数値を採用係数にしない方針です。",
+      "summary_en": "Summing nominal device performance does not determine runtime, energy or cost. Match dependencies and comparison boundaries; do not turn unverified values into planning multipliers.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-GB200-FACILITY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-GB200-SUPERPOD"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GB200参照設計: 液冷だけでは完結しない",
+          "name_en": "GB200 reference design: liquid cooling is not the whole facility",
+          "timing_ja": "2025年11月19日版のGB200参照設計。",
+          "timing_en": "GB200 reference architecture dated November 19, 2025.",
+          "statement_ja": "8ラックのScalable Unitに設計TDP 1.2MWを示し、液冷と空冷の双方を要求しています。この値は実測平均電力でもPUE込み施設電力でもなく、RubinやHeliosへ転用できません。",
+          "statement_en": "An eight-rack Scalable Unit has 1.2MW design TDP and requires liquid and air cooling. This is neither measured average nor PUE-inclusive facility power, and cannot be transferred to Rubin or Helios.",
+          "hpci_relevance_ja": "受電・冷却水・空調・ネットワーク・保守空間を含め、既設施設への収容可能性を確認します。",
+          "hpci_relevance_en": "Check fit in existing facilities including power, water, air cooling, network and maintenance space.",
+          "adoption_conditions_ja": [
+            "ピーク/平均/施設全体の境界、温度条件、冗長性"
+          ],
+          "adoption_conditions_en": [
+            "Peak/average/facility boundaries, temperatures and redundancy"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-DISAGG-ENDTOEND",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HC26-DISAGG"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Prefill/Decode分離: 転送・待ち行列込みで評価",
+          "name_en": "Prefill/decode disaggregation: include transfers and queues",
+          "timing_ja": "Cerebras Cloudでの提供目標は2026年後半。",
+          "timing_en": "Cerebras Cloud availability targeted for H2 2026.",
+          "statement_ja": "AMDとCerebrasはHelios側でprompt処理、WSE側でdecodeを担う計画を示しています。OpenFSではKVキャッシュ転送、到着負荷、障害復旧を含めた一連の処理の測定を採用条件とします。",
+          "statement_en": "AMD/Cerebras plan Helios prompt processing and WSE decode. OpenFS requires end-to-end evaluation including KV transfer, arrival load and recovery before adoption.",
+          "hpci_relevance_ja": "処理分離が有効かは、モデル・文脈長・遅延制約・装置比率で変わります。メーカーの最大効率比をそのまま使いません。",
+          "hpci_relevance_en": "Benefits depend on model, context length, latency constraints and device ratio; vendor peak efficiency ratios are not directly adopted.",
+          "adoption_conditions_ja": [
+            "同品質、TTFT/TPOT分布、転送量、負荷配分と電力境界"
+          ],
+          "adoption_conditions_en": [
+            "Matched quality, TTFT/TPOT distributions, traffic, balancing and power boundary"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-SYSTEM-COST-BOUNDARY",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-HW1-JUPITER-OVERVIEW"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "導入規模と費用: 契約範囲を先に確認",
+          "name_en": "System size and cost: establish contract scope first",
+          "timing_ja": "JUPITER旧概要は2026年6月26日更新。",
+          "timing_en": "Retired JUPITER overview updated June 26, 2026.",
+          "statement_ja": "JUPITERの5億ユーロという公開予算は取得と運用を含みます。これをノード数で割ってハードウェア単価としたり、為替換算だけで国内調達費へ適用したりできません。",
+          "statement_en": "JUPITER's published EUR 500 million budget includes acquisition and operation. Dividing it by node count does not yield hardware unit prices; currency conversion alone does not make it a domestic procurement estimate.",
+          "hpci_relevance_ja": "契約期間、税、保守、設備、電力、性能保証を揃え、価格不明の要素は残余として残します。",
+          "hpci_relevance_en": "Match duration, tax, service, facilities, energy and performance guarantees; leave unpriced components as unresolved residuals.",
+          "adoption_conditions_ja": [
+            "公開契約・仕様書と費用境界の対応"
+          ],
+          "adoption_conditions_en": [
+            "Matched public contracts/specifications and cost boundaries"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-SYSTEM-SOURCE-DISCREPANCY",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-HW1-RIKEN-AIFS",
+            "SRC-HW1-JUPITER-OVERVIEW",
+            "SRC-HW1-JUPITER-CONFIG"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "公開構成の版差・集計不整合",
+          "name_en": "Version differences and inconsistent aggregates",
+          "timing_ja": "2026年8月31日の照合結果。",
+          "timing_en": "Cross-check performed August 31, 2026.",
+          "statement_ja": "理研READMEの全CPU帯域はノード値×台数と一致せず、JUPITERの旧概要と利用者文書にも大容量CPUノード数等の差があります。原典を無断修正せず、当該数値を性能外挿から除外します。",
+          "statement_en": "The RIKEN README's aggregate CPU bandwidth differs from node bandwidth times node count; JUPITER's old overview and user docs also differ on large-memory CPU nodes. Do not alter the sources or use these values for extrapolation.",
+          "hpci_relevance_ja": "資料の日付・版・集計範囲を固定し、供用時の構成や測定記録で解消する必要があります。",
+          "hpci_relevance_en": "Resolve discrepancies using pinned dates, versions, aggregation scope and service-time configuration or measurements.",
+          "adoption_conditions_ja": [
+            "版付きの訂正、構成確定資料、計測記録"
+          ],
+          "adoption_conditions_en": [
+            "Versioned corrections, finalized configurations and measurements"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH05-CURRENT",
+    "TDS-ARCH05-FUTURE",
+    "TDS-HC26-ARCH-05-U1"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-DISAGG",
+        "title": "AMD and Cerebras disaggregated inference",
+        "publisher": "AMD",
+        "url": "https://newsroom.amd.com/news/aai-2026-cerebras-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-23"
+      },
+      "origin_group": "amd-cerebras-disaggregation-20260723",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "Workflow split and Cerebras Cloud availability paragraphs",
+      "observation_ja": "Heliosのprompt処理とWSEのdecodeを組み合わせる計画。Cerebras Cloudで2026年後半の提供目標であり、最大5倍T/s/Wはメーカー予測として採用係数にしない。",
+      "observation_en": "The plan combines Helios prompt processing with WSE decode, targeting Cerebras Cloud in H2 2026. The up-to-5x T/s/W claim is a vendor projection, not an adoption multiplier.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-HELIOS",
+        "title": "Microsoft Azure and AMD AI infrastructure",
+        "publisher": "AMD",
+        "url": "https://newsroom.amd.com/news/microsoft-azure-ai-infrastructure/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-20"
+      },
+      "origin_group": "amd-helios-azure-20260720",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "News highlights and shipment/stack paragraphs",
+      "observation_ja": "HeliosはMI455X、Venice、Pensando、ROCmを組み合わせ、顧客向け出荷開始は2026年後半の予定。クラウドVM提供と学術機関への装置納入を区別。",
+      "observation_en": "Helios combines MI455X, Venice, Pensando and ROCm; customer shipments are planned for H2 2026. Cloud VM availability is distinct from hardware delivery to research centers.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-GB200-SUPERPOD",
+        "title": "DGX SuperPOD GB200 Reference Architecture: architecture",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-gb200/latest/dgx-superpod-architecture.html",
+        "source_class": "official-project",
+        "published_or_updated": "2025-11-19"
+      },
+      "origin_group": "nvidia-gb200-superpod-reference",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "Scalable Unit and power/cooling requirements",
+      "observation_ja": "1 SUは8ラック、設計TDP 1.2MW。液冷と空冷の両方を必要とする。実測平均電力、PUE込み施設電力、Rubinの値とは扱わない。",
+      "observation_en": "One SU has eight racks and 1.2MW design TDP; both liquid and air cooling are required. This is not measured average power, PUE-inclusive facility power or a Rubin value.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-JUPITER-CONFIG",
+        "title": "JUPITER user documentation: Configuration",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/configuration.html",
+        "source_class": "official-project",
+        "published_or_updated": "undated operating documentation; checked 2026-08-31"
+      },
+      "origin_group": "jsc-jupiter-configuration",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "Hardware overview, Booster/Cluster design, Network Design and Software Overview",
+      "observation_ja": "5884 Boosterノード、4 GH200/ノード、共通NDR網を確認。582 AMD/162 SiPearlノードは設置予定表記。大容量CPUノード数・容量とcNVLink方向表記は旧概要と食い違うため採用しない。",
+      "observation_en": "Checked 5,884 Booster nodes, four GH200 per node and shared NDR fabric. The 582 AMD/162 SiPearl nodes remain described as planned installation. Large-memory node counts/capacity and cNVLink directionality differ from the retired overview and are not adopted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-JUPITER-OVERVIEW",
+        "title": "JUPITER Technical Overview",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://www.fz-juelich.de/en/jsc/jupiter/tech/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-26; page no longer maintained"
+      },
+      "origin_group": "jsc-jupiter-configuration",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "Budget, Booster/Cluster, network, storage, maintenance notice",
+      "observation_ja": "5億ユーロは取得と運用を含む。旧概要はCPU Clusterを設置予定・設置中と記載し、現行利用者文書へ誘導している。",
+      "observation_en": "EUR 500 million includes acquisition and operation. The retired overview describes planned/in-progress CPU Cluster installation and points to user documentation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-LUMIG",
+        "title": "LUMI documentation: LUMI-G",
+        "publisher": "LUMI consortium",
+        "url": "https://docs.lumi-supercomputer.eu/hardware/lumig/",
+        "source_class": "official-project",
+        "published_or_updated": "undated operating documentation; checked 2026-08-31"
+      },
+      "origin_group": "lumi-hardware-documentation",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "GPU nodes, GCD/NUMA mapping and local-storage note",
+      "observation_ja": "2978ノード、4 MI250Xパッケージが8 GCDとして見える。GPUとNUMA番号の対応は自明でなく、計算ノードに局所ディスクはない。",
+      "observation_en": "Checked 2,978 nodes with four MI250X packages exposed as eight GCDs. GPU/NUMA IDs do not imply identical mapping; compute nodes have no local disks.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-RIKEN-AIFS",
+        "title": "AI for Science Supercomputer: public system overview",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/AI-for-Science-Supercomputer",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-15 (README last-updated field)"
+      },
+      "origin_group": "riken-aifs-public-overview",
+      "checked_at": "2026-08-31T22:05:25+09:00",
+      "locator": "README: system overview, node specifications, networks, storage and status notices",
+      "observation_ja": "400 GB200 NVL4ノード、計算・前段ネットワーク、局所NVMeと共有Lustreを確認。集計CPU帯域とノード値の積に不一致があり、構成が更新中である点も保持。",
+      "observation_en": "Checked 400 GB200 NVL4 nodes, compute/frontend networks, local NVMe and shared Lustre. Retain the aggregate-versus-node CPU-bandwidth discrepancy and evolving configuration status.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-060",
+      "topic_ids": [
+        "ARCH-05"
+      ],
+      "priority": "P0",
+      "question_ja": "システム構成、供用状態、施設条件、費用境界を揃えて候補を比較できるか。",
+      "question_en": "Can candidate systems be compared with matched configuration, service state, facility conditions and cost boundaries?",
+      "next_action_ja": "版付きの確定構成、施設・保守仕様、並行負荷と復旧測定を集める。理研のCPU帯域集計とJUPITERの資料間差を確認し、未確認のCPU Cluster供用・ラック出荷・推論サービス開始を達成済みとしない。",
+      "next_action_en": "Collect finalized versioned configurations, facility/service specifications and concurrent-load/recovery measurements. Resolve RIKEN CPU-bandwidth aggregation and JUPITER version discrepancies; do not mark unverified CPU Cluster service, rack shipments or inference-service starts as achieved.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "契約範囲を揃えた費用と施設適合の確認",
+    "現行構成の数値不整合と供用状態の解消",
+    "異種処理分担の実測と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Matched-scope cost and facility-fit checks",
+    "Resolve current-configuration discrepancies and service state",
+    "Measured heterogeneous workflows and independent Consensus"
+  ]
+}

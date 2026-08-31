@@ -48,6 +48,28 @@ class PublicLanguageTests(unittest.TestCase):
                 any("未確認事項" in error for error in validate(root))
             )
 
+    def test_archived_catalog_wording_is_preserved_but_current_wording_is_checked(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "knowledge/public/topic-decision-support.json"
+            target.parent.mkdir(parents=True)
+            (root / "README.md").write_text("OpenFS\n")
+            (root / "README.ja.md").write_text("OpenFS\n")
+            section = {"section_id": "TDS-OLD", "summary_ja": "Coverage Gapとして残す。",
+                       "summary_en": "Retain as an unresolved item."}
+            payload = {"topic_profiles": [{"sections": [section], "archived_section_ids": ["TDS-OLD"]}]}
+            target.write_text(json.dumps(payload, ensure_ascii=False))
+            before = target.read_bytes()
+            self.assertEqual([], validate(root))
+            self.assertEqual(before, target.read_bytes())
+            payload["topic_profiles"][0]["archived_section_ids"] = []
+            target.write_text(json.dumps(payload, ensure_ascii=False))
+            self.assertTrue(any("未確認事項" in error for error in validate(root)))
+            payload["topic_profiles"][0]["archived_section_ids"] = ["TDS-OLD"]
+            del section["summary_en"]
+            target.write_text(json.dumps(payload, ensure_ascii=False))
+            self.assertTrue(any("has no summary_en" in error for error in validate(root)))
+
     def test_openfs_proposal_fragment_is_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

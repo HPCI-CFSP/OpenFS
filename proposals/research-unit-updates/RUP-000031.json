@@ -1,0 +1,320 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000031",
+  "topic_id": "ARCH-03",
+  "created_at": "2026-08-31T22:29:17+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "2c56c16a34a65ae5e466f1d417fb394d5024e04f3a75bc105fe097774bd4d945",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "DRAMの規格・モジュール・カスタム実装と、メモリ階層の容量・帯域・遅延・ソフトウェア条件を比較します。追加調査ではNANDベースのHBFをHBMとは区別し、仕様発表、サンプル目標、シミュレーション結果の適用範囲を整理しました。単一のAIモデルによる暫定結果です。",
+  "summary_en": "Compare DRAM standards, modules/custom implementations and hierarchy capacity, bandwidth, latency and software conditions. Follow-up distinguishes NAND-based HBF from HBM and separates specification announcements, sample targets and simulation scope. Results remain provisional and single-model.",
+  "units": [
+    {
+      "unit_id": "ARCH-03-U01",
+      "before_sha256": "c5d21247a30c653e76e427949780d5f80093c47835bde3ff093abf9c6b0327c2",
+      "evidence_section_ids": [
+        "TDS-HW2-ARCH-03-U01",
+        "TDS-HW3-ARCH-03-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW3-ARCH-03-U01",
+      "title_ja": "DRAMの世代・方式と供給状況",
+      "title_en": "DRAM generations, technologies and supply",
+      "summary_ja": "DDR、LPDDR、HBMは用途と接続条件が異なります。試供・量産・搭載システムの出荷を分けて比較します。",
+      "summary_en": "DDR, LPDDR and HBM serve different roles and interfaces. Sampling, volume production and shipment of equipped systems are separate milestones.",
+      "items": [
+        {
+          "item_id": "TDI-HW3-DDR-CHOICE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-MEM002"
+          ],
+          "actor_ids": [
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "DDR5: RDIMMとMRDIMMの互換性",
+          "name_en": "DDR5: RDIMM/MRDIMM compatibility",
+          "timing_ja": "第1世代MRDIMMの製品提供を確認。DDR6移行日は未確定。",
+          "timing_en": "First-generation MRDIMM offerings verified; DDR6 transition timing remains unresolved.",
+          "statement_ja": "DDR5は容量重視のCPUに直結する主記憶の選択肢です。MicronのMRDIMMは32-256GBを掲載していますが、第1世代は対応するXeon 6向けで、旧CPUや任意のDDR5スロットに挿して使えるわけではありません。",
+          "statement_en": "DDR5 is an option for capacity-oriented CPU memory. Micron lists 32-256GB MRDIMMs, but first-generation modules require compatible Xeon 6 platforms, not older CPUs or arbitrary DDR5 slots.",
+          "hpci_relevance_ja": "CPU・BIOS・モジュールの組合せとチャネル実装数を固定して、容量当たり費用とアプリケーション性能を比較します。",
+          "hpci_relevance_en": "Fix CPU/BIOS/module combinations and populated channels when comparing cost per capacity and application performance.",
+          "adoption_conditions_ja": [
+            "メーカーの互換性表と熱設計"
+          ],
+          "adoption_conditions_en": [
+            "Vendor compatibility matrix and thermal design"
+          ]
+        },
+        {
+          "item_id": "TDI-HW3-CXMT-SUPPLY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-TDS018"
+          ],
+          "actor_ids": [
+            "ACT-CXMT"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXMT: DDR5・LPDDR5/5Xの公開製品情報",
+          "name_en": "CXMT: public DDR5 and LPDDR5/5X offerings",
+          "timing_ja": "2026年8月31日に製品掲載を確認。個別の納入日は未確認。",
+          "timing_en": "Product listings checked August 31, 2026; individual delivery dates unverified.",
+          "statement_ja": "CXMTはDDR5とモジュール、LPDDR5/5Xを掲載しています。製品一覧は供給候補の根拠ですが、サーバー別の認定やLPDDR6量産の確認には追加の一次資料が必要です。",
+          "statement_en": "CXMT lists DDR5/components and modules and LPDDR5/5X. Listings identify a supplier candidate, not server-specific qualification or verification of LPDDR6 volume production.",
+          "hpci_relevance_ja": "複数調達先を検討する際には、互換性、品質保証、長期供給、適用される取引条件を確認します。",
+          "hpci_relevance_en": "Multi-sourcing requires compatibility, quality assurance, long-term supply and applicable transaction conditions.",
+          "adoption_conditions_ja": [
+            "型番別の仕様・認定・供給条件"
+          ],
+          "adoption_conditions_en": [
+            "Part-specific specifications, qualification and supply terms"
+          ]
+        },
+        {
+          "item_id": "TDI-HW3-LPDDR6-SCOPE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-LPDDR6-SK"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LPDDR6: モバイル製品からサーバーへの距離",
+          "name_en": "LPDDR6: mobile readiness is not server readiness",
+          "timing_ja": "SK hynixは2026年後半の供給を目標。サーバー採用時期は未確認。",
+          "timing_en": "SK hynix targets supply in H2 2026; server adoption timing unverified.",
+          "statement_ja": "SK hynixは16Gb LPDDR6の開発完了を公表しましたが、対象はモバイル・オンデバイスAIです。LPDDR6チップの供給と、サーバーCPU・SOCAMMへの採用は異なる段階です。",
+          "statement_en": "SK hynix reports completed development of 16Gb LPDDR6 for mobile/on-device AI. Chip supply and adoption by server CPUs or SOCAMM are different stages.",
+          "hpci_relevance_ja": "低消費電力主記憶として追跡しつつ、ECC・容量・温度・長期運転の要件を満たす製品を確認します。",
+          "hpci_relevance_en": "Track low-power memory while requiring product evidence for ECC, capacity, temperature and sustained operation.",
+          "adoption_conditions_ja": [
+            "対応CPU・モジュールとサーバー認定"
+          ],
+          "adoption_conditions_en": [
+            "Compatible CPUs/modules and server qualification"
+          ]
+        },
+        {
+          "item_id": "TDI-HW3-HBM-STAGES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-MEM008",
+            "SRC-MEM010",
+            "SRC-MEM011"
+          ],
+          "actor_ids": [
+            "ACT-SAMSUNG",
+            "ACT-SKHYNIX",
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBM4・HBM4E: 容量と出荷段階を区別",
+          "name_en": "HBM4/HBM4E: separate capacity and shipment stages",
+          "timing_ja": "Samsungは2026年2月にHBM4出荷、Micronは同年Q1に36GB品出荷。HBM4Eは試供を確認。",
+          "timing_en": "Samsung reported HBM4 shipments in February 2026; Micron shipped 36GB parts in Q1. HBM4E evidence concerns samples.",
+          "statement_ja": "Micronの48GB・16層HBM4と、SK hynixの48GB・12層HBM4Eは試供であり、同じ量産製品ではありません。世代・容量・積層数・採用アクセラレータを揃えて比較する必要があります。",
+          "statement_en": "Micron's 48GB/16-high HBM4 and SK hynix's 48GB/12-high HBM4E are samples, not interchangeable volume products. Match generation, capacity, stack height and adopting accelerator.",
+          "hpci_relevance_ja": "パッケージごとの使用可能容量、実効帯域、熱設計、供給数量を確認します。単一スタックの公称帯域をシステム性能としません。",
+          "hpci_relevance_en": "Check usable package capacity, sustained bandwidth, thermals and supply volume; stack-rated bandwidth is not system performance.",
+          "adoption_conditions_ja": [
+            "製品認定と量産出荷の区別"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish product qualification from volume shipment"
+          ]
+        },
+        {
+          "item_id": "TDI-HW3-HBM-SUPPLY-INDIANA",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-SK-INDIANA"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBM供給: 前工程と後工程の地域分担",
+          "name_en": "HBM supply: fabrication versus packaging locations",
+          "timing_ja": "SK hynixのIndiana拠点は2029年後半の量産目標。",
+          "timing_en": "SK hynix targets Indiana volume production in H2 2029.",
+          "statement_ja": "2026年8月の計画では韓国製ウェハをIndianaで実装・検査します。米国内の拠点新設を、すべての製造工程や供給依存の国内化とは解釈しません。",
+          "statement_en": "The August 2026 plan sends Korean wafers to Indiana for packaging/testing. A new US site does not mean all fabrication stages or dependencies become domestic.",
+          "hpci_relevance_ja": "供給の分散を評価するには製造工程別の依存関係と認定時期を確認します。建屋完成と製品出荷も分けます。",
+          "hpci_relevance_en": "Assess diversification by manufacturing step and qualification timing; distinguish facility completion from product shipment.",
+          "adoption_conditions_ja": [
+            "生産能力・対象世代・認定・納入条件"
+          ],
+          "adoption_conditions_en": [
+            "Capacity, target generation, qualification and delivery terms"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-HW1-ARCH-03-U01"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-LPDDR6-SK",
+        "title": "SK hynix Develops 1c LPDDR6, 6th-Generation 10nm-Class DRAM",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/1c-lpddr6-development-2026/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-10"
+      },
+      "origin_group": "skhynix-lpddr6-development2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Development completion; H1 preparation and H2 supply plan; target applications",
+      "observation_ja": "16Gb LPDDR6の開発と2026年後半供給目標を確認。モバイル向けで、サーバー用SOCAMM認定を示さない。",
+      "observation_en": "Checked 16Gb LPDDR6 development and H2 2026 supply target for mobile use, not server SOCAMM qualification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SK-INDIANA",
+        "title": "SK hynix Holds Groundbreaking Ceremony for HBM Production Base in Indiana",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/groundbreaking-ceremony-in-indiana/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-28"
+      },
+      "origin_group": "skhynix-indiana-groundbreaking2026",
+      "checked_at": "2026-08-31T21:40:00+09:00",
+      "locator": "Investment of Over $4 Billion for First US HBM Production Base",
+      "observation_ja": "クリーンルームは2028年10月まで、量産は2029年後半という計画。韓国製ウェハの米国での実装・検査であり、全工程の米国内製造ではない。",
+      "observation_en": "Plans target cleanroom opening by October 2028 and production in H2 2029; Korean wafers receive US packaging/testing, not wholly US fabrication.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM002",
+        "title": "MRDIMM",
+        "publisher": "Micron",
+        "url": "https://www.micron.com/products/memory/dram-modules/mrdimm",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "micron-mrdimm-product",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Product capacities; FAQ on first-generation compatibility and second-generation JEDEC definition",
+      "observation_ja": "32-256GBと第1世代の対応CPU制約を確認。任意のDDR5スロットで交換できるとはしない。",
+      "observation_en": "Checked 32-256GB capacities and first-generation CPU restrictions; not a drop-in option for arbitrary DDR5 slots.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM008",
+        "title": "Samsung Ships Commercial HBM4",
+        "publisher": "Samsung",
+        "url": "https://news.samsung.com/global/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "samsung-hbm4-commercial-shipment",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "February 12 dateline; production/shipment statement; roadmap paragraph",
+      "observation_ja": "2026年2月12日のHBM4量産・顧客出荷と、当時のHBM4E試供予定を確認。後の決算発表と時系列で比較する。",
+      "observation_en": "Checked February 12 HBM4 production/customer shipments and the then-current HBM4E sampling plan; compare chronologically with later results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM010",
+        "title": "SK hynix Ships HBM4E Samples",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e-2/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "skhynix-hbm4e-samples-june2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "June 18 dateline; 12-layer sampling; 48GB and MR-MUF description",
+      "observation_ja": "48GB・12層HBM4Eの試供を確認。本文に確定的な量産四半期はない。",
+      "observation_en": "Checked 48GB 12-layer HBM4E samples; no committed volume-production quarter is stated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM011",
+        "title": "Micron HBM4 and SOCAMM2 Production",
+        "publisher": "Micron",
+        "url": "https://investors.micron.com/news/press-release/2026/Micron-in-High-Volume-Production-of-HBM4-Designed-for-NVIDIA-Vera-Rubin-PCIe-Gen6-SSD-and-SOCAMM2-03-16-2026/default.aspx",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "micron-gtc2026-memory-storage-production",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Production highlights and body; footnotes 1-6",
+      "observation_ja": "36GB HBM4の暦年Q1出荷、48GBの試供、192GB SOCAMM2量産を区別。効率の根拠は内部計算・試験で、独立実測ではない。",
+      "observation_en": "Distinguished calendar-Q1 36GB HBM4 shipments, 48GB samples and 192GB SOCAMM2 production; efficiency claims use internal calculations/tests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS018",
+        "title": "CXMT Products and Services",
+        "publisher": "CXMT",
+        "url": "https://www.cxmt.com/en/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "cxmt-products-overview",
+      "checked_at": "2026-08-31T21:40:15+09:00",
+      "locator": "Products and Services: DDR5/DDR5 module and LPDDR5/5X",
+      "observation_ja": "DDR5モジュールとLPDDR5/5Xの製品掲載を確認。LPDDR6量産の報道は、このページの一次情報では確認できない。",
+      "observation_en": "Checked DDR5/module and LPDDR5/5X listings. This page does not substantiate reports of LPDDR6 volume production.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "DDR6とLPDDR6サーバー製品の一次資料",
+    "階層別のアクセス・電力実測と対応OSの版",
+    "価格・供給数量・独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Primary evidence for DDR6 and LPDDR6 server products",
+    "Tier-specific access/power measurements and pinned OS support",
+    "Prices, supply volumes and independent Consensus"
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000021",
+      "bundle_sha256": "34abe8a90a27608adb53dd74236faf0db53e3a1960c3a92986237a0f46ed6d06"
+    },
+    {
+      "update_id": "RUP-000026",
+      "bundle_sha256": "50a82162aa42f0a4b23c488819773a36b63ede50cde5c82d488a451536771ca2"
+    }
+  ]
+}

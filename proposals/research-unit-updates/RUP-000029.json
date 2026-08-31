@@ -1,0 +1,164 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000029",
+  "topic_id": "ARCH-12",
+  "created_at": "2026-08-31T22:12:26+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "92688e5ca1995eb48429c84260695c1598658f60c781a3c57fda71130fd7980a",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "専用アクセラレータ、PIM・データ近傍処理、SDKと供給条件を比較します。追加調査ではETHEREALの評価範囲とMX1の過去の公開構成を確認しました。異なる精度・測定範囲の性能比を採用係数にせず、未確認の現行仕様と独立Consensusを残します。",
+  "summary_en": "Compare specialized accelerators, PIM/near-data processing, SDKs and supply. Follow-up checks ETHEREAL's measurement boundary and MX1's earlier public design. Ratios across unequal precision or measurement boundaries are not planning multipliers; current-specification gaps and independent Consensus remain open.",
+  "units": [
+    {
+      "unit_id": "ARCH-12-U01",
+      "before_sha256": "9132c42498962c0116bcc6d2f172513508fde10d1d41d09a5cadb0c498debceb",
+      "evidence_section_ids": [
+        "TDS-ARCH02-DOMESTIC",
+        "TDS-HC26-ARCH-12-U1",
+        "TDS-HW1-ARCH-12-U01",
+        "TDS-HW2-ARCH-12-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-12-U02",
+      "before_sha256": "2e02e9d12965fb8fa37bc21cbf51ee8a84f930237e89c92006fdb83a300aa19e",
+      "evidence_section_ids": [
+        "TDS-ARCH03-PIM",
+        "TDS-HC26-ARCH-12-U2",
+        "TDS-HW1-ARCH-12-U02",
+        "TDS-HW2-ARCH-12-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW2-ARCH-12-U01",
+      "title_ja": "イベント駆動GNNの測定範囲",
+      "title_en": "Measurement scope for event-driven GNNs",
+      "summary_ja": "講演タイトルの数字ではなく、論文の測定条件を基準に評価します。",
+      "summary_en": "Evaluate the paper's measurement conditions rather than numbers in talk titles.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-ETHEREAL-BOUNDARY",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW2-ETHEREAL-FULL"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ETHEREAL: チップ外処理と精度の条件",
+          "name_en": "ETHEREAL: off-chip work and precision conditions",
+          "timing_ja": "2026年8月18日版の論文本文。",
+          "timing_en": "Full paper version dated August 18, 2026.",
+          "statement_ja": "25.6マイクロ秒・1.6マイクロジュールは混合4/8bitのDAGr-GNN条件です。YOLO末尾3層はチップ外で評価し、外部3DメモリはFPGA BRAMで模擬しています。GPU基準とは精度・グラフ条件も異なります。",
+          "statement_en": "The 25.6-microsecond/1.6-microjoule result uses mixed 4/8-bit DAGr-GNN. Final three YOLO layers are evaluated off-chip and external 3D memory is emulated in FPGA BRAM. GPU baselines also differ in precision/graph choices.",
+          "hpci_relevance_ja": "実験設備に近いエッジ前処理の候補ですが、全システムの遅延・電力や科学GNN全般の高速化を示す値ではありません。講演の17マイクロ秒との対応は未解決です。",
+          "hpci_relevance_en": "A candidate for edge preprocessing near instruments, not a full-system latency/energy result or a general scientific-GNN speedup. Reconciliation with the talk's 17 microseconds remains unresolved.",
+          "adoption_conditions_ja": [
+            "チップ外処理・外部メモリ込みの評価、同じ精度と検出品質"
+          ],
+          "adoption_conditions_en": [
+            "Include off-chip work/external memory and match precision/detection quality"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW2-ARCH-12-U02",
+      "title_ja": "MX1: 公開済み構成と現行版の未確認事項",
+      "title_en": "MX1: published architecture and current-version gaps",
+      "summary_ja": "取得できた過去の講演資料を、その時点の構成に限って使用します。",
+      "summary_en": "Use the retrieved earlier presentation only for its contemporary configuration.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-MX1-HISTORICAL-BASELINE",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW2-MX1-FMS2025"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MX1: CXLメモリ拡張と近傍演算",
+          "name_en": "MX1: CXL memory expansion and near-memory compute",
+          "timing_ja": "2025年8月のFMS公開講演資料。2026年版への読み替えはしない。",
+          "timing_en": "Public FMS presentation, August 2025; not substituted for a 2026 version.",
+          "statement_ja": "当時の資料はCXL3.0、DDR5約1TB、RISC-V演算、PXLランタイム、XFLAREによる分析処理、QEMU評価経路を説明します。現在のCXL3.2製品の仕様・出荷・Hot Chips実測を証明する資料ではありません。",
+          "statement_en": "The earlier deck describes CXL3.0, about 1TB DDR5, RISC-V compute, PXL, XFLARE analytics and QEMU evaluation. It does not establish current CXL3.2 specifications, shipment or Hot Chips measurements.",
+          "hpci_relevance_ja": "CXLで容量を足す効果と演算オフロードの効果を分離し、ホスト処理・転送・圧縮・キャッシュを含めて比較します。",
+          "hpci_relevance_en": "Separate memory-expansion benefits from compute offload and include host work, transfers, compression and cache effects.",
+          "adoption_conditions_ja": [
+            "現行SDK/製品資料、ホスト対応、再現手順、一般供給"
+          ],
+          "adoption_conditions_en": [
+            "Current SDK/product documentation, host support, reproduction and general supply"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW2-ETHEREAL-FULL",
+        "title": "ETHEREAL: 25.6-microsecond event-driven GNN processor",
+        "publisher": "Kneip et al.",
+        "url": "https://arxiv.org/html/2608.17787v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08-18"
+      },
+      "origin_group": "ethereal-authors-issuer",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Sections VI-A/VI-C/VI-D, Figures 17 and 20-21",
+      "observation_ja": "25.6us/1.6uJはDAGr-GNNの混合4/8bit条件。YOLO末尾3層はチップ外、外部3DメモリはFPGA BRAM模擬。GPU基準と精度・グラフ構造が異なり17usとの対応は未解決。",
+      "observation_en": "25.6us/1.6uJ uses mixed 4/8-bit DAGr-GNN. Final three YOLO layers are off-chip and external 3D memory is emulated in FPGA BRAM. Precision/graph choices differ from GPU baselines; reconciliation with 17us remains unresolved.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-MX1-FMS2025",
+        "title": "How CXL Computational Memory Will Revolutionize Data Processing",
+        "publisher": "XCENA (FMS 2025 presentation)",
+        "url": "https://files.futurememorystorage.com/proceedings/2025/20250807_CXLT-301-1_Kim-2025-07-27-01.00.16.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-08-07 (proceedings date)"
+      },
+      "origin_group": "xcena-mx1-fms2025",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Pages 2, 8-12: CXL 3.0 MX1, near-memory processing, PXL/XFLARE and QEMU",
+      "observation_ja": "過去のCXL3.0/約1TB構成とPXL、XFLARE、QEMU経路を確認。現在のCXL3.2製品仕様やHot Chips 2026の実測を証明しない。SDK現行ページは取得失敗。",
+      "observation_en": "Confirms the earlier CXL3.0/~1TB design and PXL, XFLARE, QEMU path, not current CXL3.2 specifications or Hot Chips 2026 measurements. Current SDK-page retrieval failed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "ETHEREALの17/25.6マイクロ秒の版・境界対応",
+    "MX1現行製品ページの取得失敗、SDK・供給と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Reconcile ETHEREAL's 17/25.6 microseconds by version and boundary",
+    "Failed current MX1 product retrieval, SDK/supply checks and independent Consensus"
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000023",
+      "bundle_sha256": "6d0da752ccbe37b41696e55ca8b4ddf0b9eecfbae649f412c47376556fb10fe2"
+    }
+  ]
+}

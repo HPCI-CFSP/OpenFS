@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -500,8 +500,9 @@ class PagesSiteTests(unittest.TestCase):
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
         self.assertIn("function milestoneGridRange", script)
-        self.assertIn('milestone.half === "H1" ? [1, 3] : [3, 5]', script)
-        self.assertIn('return [1, 5]', script)
+        self.assertIn('milestone.half === "H1" ? [offset + 1, offset + 3] : [offset + 3, offset + 5]', script)
+        self.assertIn('return [offset + 1, offset + 5]', script)
+        self.assertIn('milestone.timing_precision === "quarter-range"', script)
         self.assertIn('Array(years.length).fill("roadmap-year-column")', script)
         self.assertIn("function generationBandGridRange", script)
         self.assertIn("function generationBandPeriodLabel", script)
@@ -510,6 +511,10 @@ class PagesSiteTests(unittest.TestCase):
         self.assertIn("roadmap.horizon.end_year", script)
         self.assertNotIn("const years = [2026, 2027, 2028, 2029, 2030, 2031, 2032]", script)
         self.assertNotIn('fill("roadmap-quarter-column")', script)
+        for name in ["pages.yml", "pages-preview.yml"]:
+            workflow = (ROOT / ".github/workflows" / name).read_text()
+            self.assertIn('"tools/roadmap_timing.py"', workflow)
+            self.assertIn('"schemas/public-roadmap.schema.json"', workflow)
 
     def test_build_publishes_catalog_and_approved_scenarios_only(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -757,7 +762,7 @@ class PagesSiteTests(unittest.TestCase):
                 memory_index["path"],
             )
             self.assertEqual("common-quarterly", memory_index["renderer"])
-            self.assertEqual(11, memory_index["track_count"])
+            self.assertEqual(12, memory_index["track_count"])
             self.assertGreaterEqual(memory_index["milestone_count"], 50)
             roadmap_by_id = {
                 roadmap["roadmap_id"]: roadmap
@@ -777,7 +782,8 @@ class PagesSiteTests(unittest.TestCase):
                 memory_roadmap["horizon"],
             )
             self.assertEqual("quarter", memory_roadmap["timeline_granularity"])
-            self.assertEqual(11, len(memory_roadmap["tracks"]))
+            self.assertEqual(12, len(memory_roadmap["tracks"]))
+            self.assertIn("MEMTECH-HBF", {track["track_id"] for track in memory_roadmap["tracks"]})
             self.assertEqual(
                 "JEDEC",
                 next(
@@ -1160,6 +1166,28 @@ class PagesSiteTests(unittest.TestCase):
             payload["lanes"][0]["milestones"][0]["year"] = 2034
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "outside its fixed horizon"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_cross_year_window_controls_horizon_and_cannot_reverse(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            milestone = payload["lanes"][0]["milestones"][0]
+            milestone.update(year=2032, quarter="Q2", half=None,
+                             timing_precision="quarter-range", end_year=2033, end_quarter="Q1")
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            result = collect_roadmaps(root, policy, include_commit_metadata=False)
+            self.assertEqual(2033, next(r for r in result if r["roadmap_id"] == "RM-HW-MEMORY")["horizon"]["end_year"])
+            payload["horizon"]["extension_policy"] = "fixed"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "outside its fixed horizon"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+            payload["horizon"]["extension_policy"] = "extend-to-latest-dated-evidence"
+            milestone["end_year"] = 2031
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "reversed"):
                 collect_roadmaps(root, policy, include_commit_metadata=False)
 
     def test_generation_band_rejects_unknown_source(self):

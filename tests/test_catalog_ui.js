@@ -110,3 +110,26 @@ test("category filters and research-unit keywords find the reorganized storage t
   assert.equal(f.get("topic-rows").children.length, 1);
   assert.ok(f.get("topic-rows").textContent.includes("ARCH-012"));
 });
+
+test("hardware follow-ups show each current item in its own bilingual catalog", () => {
+  let itemCount = 0;
+  for (const profile of data.topic_decision_support.topic_profiles) {
+    const sections = profile.sections.filter((s) => /^TDS-HW[123]-/.test(s.section_id));
+    if (!sections.length) continue;
+    itemCount += sections.reduce((count, section) => count + section.items.length, 0);
+    for (const language of ["ja", "en"]) {
+      const f = fixture(`?topic=${profile.topic_id}&lang=${language}`);
+      for (const section of sections) {
+        const visible = f.get(section.section_id);
+        assert.ok(visible, section.section_id);
+        for (const item of section.items) {
+          assert.ok(visible.textContent.includes(item[`name_${language}`]), item.item_id);
+          assert.ok(visible.textContent.includes(item[`statement_${language}`]), item.item_id);
+          assert.equal(item.consensus_status, "incomplete");
+        }
+      }
+      for (const archived of profile.archived_section_ids || []) assert.equal(f.get(archived), undefined);
+    }
+  }
+  assert.equal(itemCount, 87);
+});

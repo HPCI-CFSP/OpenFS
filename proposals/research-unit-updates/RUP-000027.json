@@ -1,0 +1,104 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000027",
+  "topic_id": "ARCH-04",
+  "created_at": "2026-08-31T22:12:23+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "e2c9469937aeadd539ae48d94b5451f8de3e384c2a2b0f940ae2913d263acca8",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ノード内・Scale-up、Scale-out・拠点間、光接続を分け、実装、相互運用、電力、保守条件を比較します。追加調査ではThor Ultraの公開発表を確認しましたが、メーカーの適合主張を独立認証とはせず、供給・実測の未確認事項を残します。",
+  "summary_en": "Compare intra-node/scale-up, scale-out/inter-site and optical links by implementation, interoperability, power and service conditions. Follow-up checks Thor Ultra's public announcement without treating vendor compliance claims as independent certification; supply and measurement gaps remain.",
+  "units": [
+    {
+      "unit_id": "ARCH-04-U02",
+      "before_sha256": "d537adda0e88e1226766c9442cc6933bac6d13db2466a5d22f25f7636c4b69ec",
+      "evidence_section_ids": [
+        "TDS-ARCH04-CURRENT",
+        "TDS-HC26-ARCH-04-U2",
+        "TDS-HW1-ARCH-04-U02",
+        "TDS-HW2-ARCH-04-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW2-ARCH-04-U02",
+      "title_ja": "Thor Ultra: 機能発表と利用可能性",
+      "title_en": "Thor Ultra: announced features and practical availability",
+      "summary_ja": "関連する公開発表を確認したもので、Hot Chips講演全体の検証ではありません。",
+      "summary_en": "Related public announcement checked, not the complete Hot Chips presentation.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-THOR-ULTRA",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW2-THOR-ANNOUNCEMENT"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "800G Thor Ultraの通信・セキュリティ機能",
+          "name_en": "800G Thor Ultra transport and security capabilities",
+          "timing_ja": "2025年10月14日時点でサンプル提供中と発表。",
+          "timing_en": "Sampling announced October 14, 2025.",
+          "statement_ja": "BroadcomはPCIe6 x16、パケット単位の複数経路、順序外データ配置、選択再送、輻輳制御、PSP暗号処理を説明しています。UEC機能適合はメーカーの主張であり、第三者認証・全XPUとの相互運用保証とは異なります。",
+          "statement_en": "Broadcom describes PCIe6 x16, packet multipathing, out-of-order placement, selective retransmission, congestion control and PSP. Claimed UEC feature compliance is not third-party certification or universal XPU interoperability.",
+          "hpci_relevance_ja": "RoCEとの移行、ドライバー・集合通信、NICとスイッチの対応版、暗号有無による遅延・電力を評価します。",
+          "hpci_relevance_en": "Evaluate RoCE migration, drivers/collectives, matched NIC/switch releases and latency/power with encryption enabled or disabled.",
+          "adoption_conditions_ja": [
+            "一般供給・国内保守、版付き適合、混雑時のジョブ完了時間"
+          ],
+          "adoption_conditions_en": [
+            "General supply/Japan support, versioned conformance and job completion under congestion"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW2-THOR-ANNOUNCEMENT",
+        "title": "Broadcom introduces 800G Thor Ultra AI Ethernet NIC",
+        "publisher": "Broadcom",
+        "url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-introduces-industrys-first-800g-ai-ethernet-nic",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-10-14"
+      },
+      "origin_group": "broadcom-thor-ultra-20251014",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "RDMA capabilities, interface/security bullets and Availability",
+      "observation_ja": "800G、PCIe6 x16、順序外配置、選択再送、輻輳制御、PSPを説明し、当時サンプル提供中。UEC適合はメーカー主張で独立認証としない。",
+      "observation_en": "Describes 800G, PCIe6 x16, out-of-order placement, selective retransmission, congestion control and PSP; sampling at announcement. UEC compliance is issuer-reported, not independent certification.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Thor Ultraと競合NICの同一条件測定・供給確認",
+    "既存の通信・光接続Gapと独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Matched Thor Ultra/competing NIC measurements and supply confirmation",
+    "Existing fabric/optics gaps and independent Consensus"
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000022",
+      "bundle_sha256": "0ebb6b3479c1c3adacffae3416bb8eced556f5bd01296fed29a66529d36616af"
+    }
+  ]
+}

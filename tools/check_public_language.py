@@ -421,6 +421,15 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{relative}: cannot read JSON: {exc}")
             continue
         _validate_pairs(payload, str(relative), errors)
+        if relative == PUBLIC_ROOT / "topic-decision-support.json":
+            # Historical sections are immutable and excluded from Pages. Their
+            # bilingual/schema integrity still applies; wording applies to the
+            # current projection, as in the catalog and conference renderers.
+            payload = {**payload, "topic_profiles": [
+                {**profile, "sections": [section for section in profile["sections"]
+                                         if section["section_id"] not in profile.get("archived_section_ids", [])]}
+                for profile in payload.get("topic_profiles", [])
+            ]}
         _validate_wording(payload, relative, errors)
         _validate_sentence_endings(payload, str(relative), errors)
 

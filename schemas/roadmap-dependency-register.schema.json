@@ -76,9 +76,14 @@
       "properties": {
         "information_classification": {"const": "public"},
         "publication_approved": {"const": true},
-        "publication_decision_id": {"const": "PUBDEC-20260826-003"},
-        "human_approval_directive_id": {"enum": ["DIR-900006", "DIR-900015"]}
+        "publication_decision_id": {"enum": ["PUBDEC-20260826-003", "PUBDEC-HARDWARE-RESEARCH-20260831"]},
+        "human_approval_directive_id": {"enum": ["DIR-900006", "DIR-900015", "DIR-900018"]}
       },
+      "allOf": [{
+        "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900018"}}},
+        "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-HARDWARE-RESEARCH-20260831"}}},
+        "else": {"properties": {"publication_decision_id": {"const": "PUBDEC-20260826-003"}}}
+      }],
       "additionalProperties": false
     }
   },

@@ -45,7 +45,7 @@ class PublicRoadmapTests(unittest.TestCase):
                     self.assertTrue(milestone["source_ids"])
                     self.assertLessEqual(set(milestone["source_ids"]), source_ids)
                     if milestone["quarter"] is not None:
-                        self.assertEqual("quarter", milestone["timing_precision"])
+                        self.assertIn(milestone["timing_precision"], {"quarter", "quarter-range"})
                     if milestone["year"] is None:
                         self.assertEqual("undated", milestone["timing_precision"])
                         self.assertEqual("no-public-date", milestone["timing_basis"])

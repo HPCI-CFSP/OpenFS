@@ -12,7 +12,9 @@ const data = JSON.parse(JSON.stringify(seed.window.OPENFS_PUBLIC_DATA));
 const site = path.dirname(path.dirname(process.env.OPENFS_TEST_PUBLIC_DATA));
 
 // Offline rendering and event checks; not browser layout or pixel verification.
-function fixture(slug = "reference-blueprint-centers", query = "") {
+function fixture(slug = "reference-blueprint-centers", query = "", mutate = () => {}) {
+  const publicData = structuredClone(data);
+  mutate(publicData);
   const walk = (node) => typeof node === "string" ? [] : [node, ...node.children.flatMap(walk)];
   class Element {
     constructor(tag) {
@@ -47,11 +49,11 @@ function fixture(slug = "reference-blueprint-centers", query = "") {
       const [id, cls] = selector.split(" ");
       return walk(get(id.slice(1)) || new Element("div")).find((el) => el.className?.split(" ").includes(cls?.slice(1)));
     }};
-  const artifact = data.roadmap_artifacts.find((r) => r.slug === slug);
+  const artifact = publicData.roadmap_artifacts.find((r) => r.slug === slug);
   const builtPage = readFileSync(path.join(site, "roadmaps", slug, "index.html"), "utf8");
   document.body.dataset = {page: "roadmap-detail", rootPrefix: builtPage.match(/data-root-prefix="([^"]*)"/)[1], roadmapId: artifact.export_id};
   const location = new URL(`https://hpci-cfsp.github.io/OpenFS/roadmaps/${slug}/${query}`);
-  const window = {OPENFS_PUBLIC_DATA: structuredClone(data), location,
+  const window = {OPENFS_PUBLIC_DATA: publicData, location,
     localStorage: {getItem: () => null, setItem() {}},
     history: {replaceState(_a, _b, url) { location.href = String(url); }},
     OpenFSFeedback: {mount() {}, link: () => new Element("a")}};
@@ -136,5 +138,56 @@ test("language switches preserve the open event, anchor, and shareable URL", () 
     assert.equal(f.get("roadmap-dialog-title").textContent, milestone[`label_${language}`]);
     const reloaded = fixture(roadmap.slug, `${f.location.search}${f.location.hash}`);
     assert.equal(reloaded.get("roadmap-dialog-title").textContent, milestone[`label_${language}`]);
+  }
+});
+
+test("cross-year windows render once across the year boundary without collisions", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-HW-MEMORY");
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`, (payload) => {
+      const artifact = payload.roadmap_artifacts.find((r) => r.roadmap_id === roadmap.roadmap_id);
+      const lane = artifact.lanes[0];
+      lane.milestones = [
+        {...lane.milestones[0], milestone_id: "MS-TEST-FISCAL", year: 2032, quarter: "Q2", half: null,
+          end_year: 2033, end_quarter: "Q1", timing_precision: "quarter-range",
+          label_ja: "年度の範囲", label_en: "Fiscal window"},
+        {...lane.milestones[0], milestone_id: "MS-TEST-OVERLAP", year: 2033, quarter: "Q1", half: null,
+          timing_precision: "quarter", label_ja: "重複", label_en: "Overlap"}
+      ];
+      artifact.horizon.end_year = 2033;
+    });
+    const buttons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-milestone "));
+    const fiscal = buttons.filter((button) => button.textContent.includes(language === "ja" ? "年度の範囲" : "Fiscal window"));
+    assert.equal(fiscal.length, 1);
+    const offset = (2032 - roadmap.horizon.start_year) * 4;
+    assert.equal(fiscal[0].style.gridColumn, `${offset + 2} / ${offset + 6}`);
+    assert.ok(fiscal[0].textContent.includes("2032 Q2 - 2033 Q1"));
+    const overlap = buttons.find((button) => button.textContent.includes(language === "ja" ? "重複" : "Overlap"));
+    assert.notEqual(overlap.style.gridRow, fiscal[0].style.gridRow);
+    fiscal[0].dispatch("click");
+    assert.equal(f.get("roadmap-dialog").open, true);
+    assert.ok(f.get("roadmap-dialog-content").textContent.includes("2032 Q2 - 2033 Q1"));
+    assert.ok(!f.get("roadmap-dialog-meta").textContent.includes("2032 2032"));
+    assert.equal(f.location.searchParams.get("milestone"), "MS-TEST-FISCAL");
+  }
+});
+
+test("each dated event occupies its exact quarter width on a common grid", () => {
+  for (const roadmap of data.roadmap_artifacts) {
+    const f = fixture(roadmap.slug, "?lang=en");
+    const buttons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-milestone "));
+    const milestones = roadmap.lanes.flatMap((lane) => lane.milestones);
+    assert.equal(buttons.length, milestones.length);
+    for (const button of buttons) {
+      button.dispatch("click");
+      const milestone = milestones.find((item) => item.milestone_id === f.location.searchParams.get("milestone"));
+      assert.ok(milestone);
+      if (milestone.year === null) continue;
+      const [start, end] = button.style.gridColumn.split(" / ").map(Number);
+      const width = milestone.timing_precision === "quarter-range"
+        ? (milestone.end_year - milestone.year) * 4 + Number(milestone.end_quarter[1]) - Number(milestone.quarter[1]) + 1
+        : {quarter: 1, "half-year": 2, year: 4}[milestone.timing_precision];
+      assert.equal(end - start, width, milestone.milestone_id);
+    }
   }
 });

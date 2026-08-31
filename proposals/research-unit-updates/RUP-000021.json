@@ -1,0 +1,750 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000021",
+  "topic_id": "ARCH-03",
+  "created_at": "2026-08-31T21:42:27+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "e84514e2319d38dbaa8d7b3819a0da585cb1cd14015ef945f2edf2ad985ae673",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "メモリを規格・方式、モジュール・カスタム実装、階層構成に分け、入手段階と評価条件を整理しました。帯域の公称値だけでなく容量、配置、移動、互換性を比較します。将来の価格・供給量や未確認の製品時期は推定で補わない、単一モデルによる暫定結果です。",
+  "summary_en": "This provisional single-model review separates memory technologies, modules/custom integration and hierarchy design. Compare capacity, placement, movement and compatibility as well as rated bandwidth. Unknown future prices, volumes and product dates are not invented.",
+  "units": [
+    {
+      "unit_id": "ARCH-03-U01",
+      "before_sha256": "71e29583d5a745f91abb4eb2bc970d058c819b81f9b2f572c87561947a9f583d",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-03-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-03-U02",
+      "before_sha256": "69e3ee871baa10f09d072163a6a707423575a3da41d1e8748553842c83988f84",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-03-U02"
+      ]
+    },
+    {
+      "unit_id": "ARCH-03-U03",
+      "before_sha256": "cddd72ee93ac19e94febe134fb752ba765a3038c55e8ba5fb6ce76d4a7818b10",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-03-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-03-U01",
+      "title_ja": "DRAMの世代・方式と供給状況",
+      "title_en": "DRAM generations, technologies and supply",
+      "summary_ja": "DDR、LPDDR、HBMは用途と接続条件が異なります。試供・量産・搭載システムの出荷を分けて比較します。",
+      "summary_en": "DDR, LPDDR and HBM serve different roles and interfaces. Sampling, volume production and shipment of equipped systems are separate milestones.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-DDR-CHOICE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-MEM002"
+          ],
+          "actor_ids": [
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "DDR5: RDIMMとMRDIMMの互換性",
+          "name_en": "DDR5: RDIMM/MRDIMM compatibility",
+          "timing_ja": "第1世代MRDIMMの製品提供を確認。DDR6移行日は未確定。",
+          "timing_en": "First-generation MRDIMM offerings verified; DDR6 transition timing remains unresolved.",
+          "statement_ja": "DDR5は容量重視のCPU主記憶の選択肢です。MicronのMRDIMMは32-256GBを掲載していますが、第1世代は対応するXeon 6向けで、旧CPUや任意のDDR5スロットに挿して使えるわけではありません。",
+          "statement_en": "DDR5 is an option for capacity-oriented CPU memory. Micron lists 32-256GB MRDIMMs, but first-generation modules require compatible Xeon 6 platforms, not older CPUs or arbitrary DDR5 slots.",
+          "hpci_relevance_ja": "CPU・BIOS・モジュールの組合せとチャネル実装数を固定して、容量当たり費用とアプリケーション性能を比較します。",
+          "hpci_relevance_en": "Fix CPU/BIOS/module combinations and populated channels when comparing cost per capacity and application performance.",
+          "adoption_conditions_ja": [
+            "メーカーの互換性表と熱設計"
+          ],
+          "adoption_conditions_en": [
+            "Vendor compatibility matrix and thermal design"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CXMT-SUPPLY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-TDS018"
+          ],
+          "actor_ids": [
+            "ACT-CXMT"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXMT: DDR5・LPDDR5/5Xの公開製品情報",
+          "name_en": "CXMT: public DDR5 and LPDDR5/5X offerings",
+          "timing_ja": "2026年8月31日に製品掲載を確認。個別の納入日は未確認。",
+          "timing_en": "Product listings checked August 31, 2026; individual delivery dates unverified.",
+          "statement_ja": "CXMTはDDR5とモジュール、LPDDR5/5Xを掲載しています。製品一覧は供給候補の根拠ですが、サーバー別の認定やLPDDR6量産の確認には追加の一次資料が必要です。",
+          "statement_en": "CXMT lists DDR5/components and modules and LPDDR5/5X. Listings identify a supplier candidate, not server-specific qualification or verification of LPDDR6 volume production.",
+          "hpci_relevance_ja": "複数調達先を検討する際には、互換性、品質保証、長期供給、適用される取引条件を確認します。",
+          "hpci_relevance_en": "Multi-sourcing requires compatibility, quality assurance, long-term supply and applicable transaction conditions.",
+          "adoption_conditions_ja": [
+            "型番別の仕様・認定・供給条件"
+          ],
+          "adoption_conditions_en": [
+            "Part-specific specifications, qualification and supply terms"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-LPDDR6-SCOPE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-LPDDR6-SK"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LPDDR6: モバイル製品からサーバーへの距離",
+          "name_en": "LPDDR6: mobile readiness is not server readiness",
+          "timing_ja": "SK hynixは2026年後半の供給を目標。サーバー採用時期は未確認。",
+          "timing_en": "SK hynix targets supply in H2 2026; server adoption timing unverified.",
+          "statement_ja": "SK hynixは16Gb LPDDR6の開発完了を公表しましたが、対象はモバイル・オンデバイスAIです。LPDDR6チップの供給と、サーバーCPU・SOCAMMへの採用は異なる段階です。",
+          "statement_en": "SK hynix reports completed development of 16Gb LPDDR6 for mobile/on-device AI. Chip supply and adoption by server CPUs or SOCAMM are different stages.",
+          "hpci_relevance_ja": "低消費電力主記憶として追跡しつつ、ECC・容量・温度・長期運転の要件を満たす製品を確認します。",
+          "hpci_relevance_en": "Track low-power memory while requiring product evidence for ECC, capacity, temperature and sustained operation.",
+          "adoption_conditions_ja": [
+            "対応CPU・モジュールとサーバー認定"
+          ],
+          "adoption_conditions_en": [
+            "Compatible CPUs/modules and server qualification"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-HBM-STAGES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-MEM008",
+            "SRC-MEM010",
+            "SRC-MEM011"
+          ],
+          "actor_ids": [
+            "ACT-SAMSUNG",
+            "ACT-SKHYNIX",
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBM4・HBM4E: 容量と出荷段階を区別",
+          "name_en": "HBM4/HBM4E: separate capacity and shipment stages",
+          "timing_ja": "Samsungは2026年2月にHBM4出荷、Micronは同年Q1に36GB品出荷。HBM4Eは試供を確認。",
+          "timing_en": "Samsung reported HBM4 shipments in February 2026; Micron shipped 36GB parts in Q1. HBM4E evidence concerns samples.",
+          "statement_ja": "Micronの48GB・16層HBM4と、SK hynixの48GB・12層HBM4Eは試供であり、同じ量産製品ではありません。世代・容量・積層数・採用アクセラレータを揃えて比較する必要があります。",
+          "statement_en": "Micron's 48GB/16-high HBM4 and SK hynix's 48GB/12-high HBM4E are samples, not interchangeable volume products. Match generation, capacity, stack height and adopting accelerator.",
+          "hpci_relevance_ja": "パッケージごとの使用可能容量、実効帯域、熱設計、供給数量を確認します。単一スタックの公称帯域をシステム性能としません。",
+          "hpci_relevance_en": "Check usable package capacity, sustained bandwidth, thermals and supply volume; stack-rated bandwidth is not system performance.",
+          "adoption_conditions_ja": [
+            "製品認定と量産出荷の区別"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish product qualification from volume shipment"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-HBM-SUPPLY-INDIANA",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-SK-INDIANA"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBM供給: 前工程と後工程の地域分担",
+          "name_en": "HBM supply: fabrication versus packaging locations",
+          "timing_ja": "SK hynixのIndiana拠点は2029年後半の量産目標。",
+          "timing_en": "SK hynix targets Indiana volume production in H2 2029.",
+          "statement_ja": "2026年8月の計画では韓国製ウェハをIndianaで実装・検査します。米国内の拠点新設を、すべての製造工程や供給依存の国内化とは解釈しません。",
+          "statement_en": "The August 2026 plan sends Korean wafers to Indiana for packaging/testing. A new US site does not mean all fabrication stages or dependencies become domestic.",
+          "hpci_relevance_ja": "供給の分散を評価するには製造工程別の依存関係と認定時期を確認します。建屋完成と製品出荷も分けます。",
+          "hpci_relevance_en": "Assess diversification by manufacturing step and qualification timing; distinguish facility completion from product shipment.",
+          "adoption_conditions_ja": [
+            "生産能力・対象世代・認定・納入条件"
+          ],
+          "adoption_conditions_en": [
+            "Capacity, target generation, qualification and delivery terms"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-03-U02",
+      "title_ja": "モジュール・カスタム実装の選択",
+      "title_en": "Module and custom-integration choices",
+      "summary_ja": "SOCAMMはモジュール、NVHBMはコントローラーを含むカスタム実装、zHBMやZAMは異なる将来構想です。JEDEC世代規格と同列に並べません。",
+      "summary_en": "SOCAMM is a module, NVHBM a custom controller/integration approach, and zHBM/ZAM distinct future concepts. They are not parallel JEDEC generation standards.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-SOCAMM-CONDITIONS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-SOCAMM256",
+            "SRC-MEM011"
+          ],
+          "actor_ids": [
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SOCAMM2: 容量・交換性・比較条件",
+          "name_en": "SOCAMM2: capacity, serviceability and comparisons",
+          "timing_ja": "Micronは192GB品の量産、256GB品の試供を2026年3月に公表。",
+          "timing_en": "Micron announced 192GB production and 256GB sampling in March 2026.",
+          "statement_ja": "LPDDRをサーバー向け交換可能モジュールにする方式です。256GB発表のTTFT改善は2TB対1.5TBのLPDRAM容量比較に基づく投影で、DDR対LPDDRの一般的な性能差ではありません。",
+          "statement_en": "SOCAMM2 packages LPDDR in a serviceable server module. The 256GB announcement's TTFT projection compares 2TB with 1.5TB of LPDRAM, not generic DDR versus LPDDR performance.",
+          "hpci_relevance_ja": "容量不足による退避を減らす効果と、媒体・インターフェースの効果を分離します。CPU対応、交換手順、冷却も確認します。",
+          "hpci_relevance_en": "Separate capacity/offload effects from media/interface effects; check CPU support, replacement procedures and cooling.",
+          "adoption_conditions_ja": [
+            "同容量・同負荷での性能とシステム電力量"
+          ],
+          "adoption_conditions_en": [
+            "Matched-capacity/workload performance and system energy"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-NVHBM-READINESS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-MEM042"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVHBM: HBMベースダイへの機能移動",
+          "name_en": "NVHBM: moving functions into the HBM base die",
+          "timing_ja": "2026年8月26日発表。製品の発売四半期は未公表。",
+          "timing_en": "Announced August 26, 2026; no product launch quarter disclosed.",
+          "statement_ja": "NVIDIAはメモリコントローラーをXPUからHBMベースダイへ移す方式と、複数メモリ供給者による実装を説明しています。これは標準HBMの世代更新ではなく、コントローラー・実装・IP利用条件を含む選択です。",
+          "statement_en": "NVIDIA describes moving the memory controller from the XPU into the HBM base die with multi-provider implementation. This is a controller/integration/IP choice, not merely a standard HBM generation change.",
+          "hpci_relevance_ja": "公称の帯域・電力改善とは別に、認定済みの供給者、移植性、契約上の制約、対応XPUを確認します。",
+          "hpci_relevance_en": "Beyond claimed bandwidth/power gains, verify qualified suppliers, portability, contractual constraints and compatible XPUs.",
+          "adoption_conditions_ja": [
+            "製品仕様・供給日・対応ソフトウェア"
+          ],
+          "adoption_conditions_en": [
+            "Product specifications, supply date and software support"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-ZHBM-CONCEPT",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HC26-SAMSUNG"
+          ],
+          "actor_ids": [
+            "ACT-SAMSUNG"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "zHBM: アクセラレータ上への積層構想",
+          "name_en": "zHBM: stacking memory above an accelerator",
+          "timing_ja": "2026年Q3に概念モデルを発表。量産時期は未確認。",
+          "timing_en": "Concept models presented in Q3 2026; volume timing unverified.",
+          "statement_ja": "SamsungのzHBMはHBMをアクセラレータの横ではなく上へ置く構想です。短い配線を狙う一方、HBM5比の投影値を販売製品の実測値と扱うことはできません。",
+          "statement_en": "Samsung's zHBM concept places HBM above rather than beside an accelerator. Shorter paths are an objective, but HBM5-relative projections are not measurements of shipping products.",
+          "hpci_relevance_ja": "熱源の積層、放熱経路、接合後の検査、故障時の交換範囲を実証で確認します。",
+          "hpci_relevance_en": "Require demonstrations of stacked heat sources, cooling paths, post-bond tests and failure replacement scope.",
+          "adoption_conditions_ja": [
+            "試作シリコンと測定条件、量産計画"
+          ],
+          "adoption_conditions_en": [
+            "Prototype silicon, measurement conditions and production plan"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-ZAM-FISCAL",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW1-ZAM"
+          ],
+          "actor_ids": [
+            "ACT-SAIMEMORY",
+            "ACT-INTEL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ZAM: 年度で示された試作・実用化計画",
+          "name_en": "ZAM: fiscal-year prototype/commercialization targets",
+          "timing_ja": "試作は2027年度、実用化は2029年度の目標。暦年とは異なる。",
+          "timing_en": "Prototypes target FY2027; commercialization FY2029, not calendar years.",
+          "statement_ja": "SAIMEMORYとIntelはZAMの研究開発協業を公表しています。2027年度は2028年3月までを含むため、2027年Q4までに試作完了すると読み替えません。zHBMとも別の構想です。",
+          "statement_en": "SAIMEMORY/Intel announced ZAM R&D collaboration. FY2027 extends through March 2028, so it does not mean prototype completion by calendar Q4 2027. ZAM is also distinct from zHBM.",
+          "hpci_relevance_ja": "日本発の選択肢として追跡し、実用化の定義、実測、対応コントローラー、供給体制を確認します。",
+          "hpci_relevance_en": "Track as a Japanese option while clarifying commercialization scope, measurements, controllers and supply arrangements.",
+          "adoption_conditions_ja": [
+            "試作品の公開評価と製品化判断"
+          ],
+          "adoption_conditions_en": [
+            "Public prototype evaluation and productization decision"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-03-U03",
+      "title_ja": "アクセス特性に応じたメモリ階層",
+      "title_en": "Memory hierarchies matched to access behavior",
+      "summary_ja": "大容量化、帯域拡張、データ移動削減は異なる改善です。評価はアクセス元、常駐データ量、再利用、同時要求、処理全体の時間で行います。",
+      "summary_en": "Capacity expansion, bandwidth and reduced movement are different benefits. Evaluate initiators, resident working sets, reuse, concurrency and end-to-end time.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-MRDIMM-MEASURED",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-MRDIMM-STUDY"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "帯域律速と低負荷時の遅延を分けた実測例",
+          "name_en": "Measured bandwidth-bound versus unloaded behavior",
+          "timing_ja": "2026年5月のXeon 6980P評価。単一プラットフォームの結果。",
+          "timing_en": "May 2026 Xeon 6980P evaluation on one platform.",
+          "statement_ja": "BSC/UPC・Micron・Intelの共著研究は、各チャネル64GBのRDIMM-6400とMRDIMM-8800を比較し、帯域律速負荷で27-41%の性能向上を報告しています。低負荷の遅延ベンチマークは3-4%で、全アプリが同じ比率で改善するわけではありません。",
+          "statement_en": "A BSC/UPC/Micron/Intel study compared 64GB-per-channel RDIMM-6400 and MRDIMM-8800, reporting 27-41% improvement for bandwidth-bound workloads but 3-4% for unloaded-latency tests, not uniform application gains.",
+          "hpci_relevance_ja": "同一CPU・容量比較は有用ですが、メーカー共著であり独立追試ではありません。論文中の省エネルギー率と効率向上率は意味が異なるため転用しません。",
+          "hpci_relevance_en": "The matched CPU/capacity comparison is useful but vendor-coauthored, not an independent replication. Differing energy-saving versus efficiency-increase wording is not reused numerically.",
+          "adoption_conditions_ja": [
+            "対象コード・入力と電力測定範囲を固定"
+          ],
+          "adoption_conditions_en": [
+            "Pin code, inputs and power measurement boundaries"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-GH-PLACEMENT",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-GH-STUDY",
+            "SRC-HW1-CUDA-UM"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CPU側LPDDRとGPU側HBMの使い分け",
+          "name_en": "Placing data in CPU LPDDR versus GPU HBM",
+          "timing_ja": "GH200・CUDA 12.4の2024年評価。別世代への自動外挿はしない。",
+          "timing_en": "2024 GH200/CUDA 12.4 study; no automatic extrapolation to other generations.",
+          "statement_ja": "6種類のHPC負荷の研究では、初回アクセス元、ページサイズ、割当方法、容量超過が挙動を変えています。共有アドレス空間があっても全メモリがHBM帯域で使えるわけではありません。報告時間からCPU初期化を除いた条件にも注意が必要です。",
+          "statement_en": "A six-workload study shows sensitivity to first touch, page size, allocation and oversubscription. A shared address space does not give all memory HBM bandwidth; reported timings also exclude CPU initialization.",
+          "hpci_relevance_ja": "HBMに収まる場合と超える場合を分け、割当・転送・初期化を含む時間を評価します。",
+          "hpci_relevance_en": "Separate HBM-resident and oversubscribed cases; measure allocation, movement and initialization as well as compute.",
+          "adoption_conditions_ja": [
+            "OS・ドライバー・CUDAとページ配置を固定"
+          ],
+          "adoption_conditions_en": [
+            "Pin OS, driver, CUDA and page placement"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CXL-TIER-CONDITIONS",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-HW1-CXL-LINUX",
+            "SRC-HW1-CXL-MATURITY",
+            "SRC-HW1-NUMA-PERF"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXL拡張メモリ: 容量と性能配置",
+          "name_en": "CXL expansion: capacity and performance placement",
+          "timing_ja": "Linux公開文書で構成経路を確認。採用ディストリビューションの対応は別途確認。",
+          "timing_en": "Configuration paths checked in Linux documentation; deployment-distribution support needs separate verification.",
+          "statement_ja": "CXL Type-3メモリはDAXデバイスまたは通常のメモリページとして扱う経路があります。NUMA性能属性はアクセス元との組で決まり、公開される帯域・遅延属性は実アプリの実測ではありません。",
+          "statement_en": "CXL Type-3 memory can be exposed as DAX or ordinary pages. NUMA attributes depend on initiator-target pairs; published bandwidth/latency attributes are not application measurements.",
+          "hpci_relevance_ja": "頻繁に使うデータの配置、ページ移動、共有上流リンクの競合、BIOS・OSの対応を含めて評価します。",
+          "hpci_relevance_en": "Evaluate hot-data placement, migration, shared-upstream contention and BIOS/OS support.",
+          "adoption_conditions_ja": [
+            "機能ごとのカーネル版・RAS・ホットプラグ検証",
+            "公称容量ではなく使用可能容量と移動コスト"
+          ],
+          "adoption_conditions_en": [
+            "Version-specific feature, RAS and hotplug validation",
+            "Usable capacity and migration costs, not rated capacity alone"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CXL-PIM-TIER",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-SK-FMS"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXL・DRAM・SSD・メモリ近傍演算の組合せ",
+          "name_en": "Combining CXL, DRAM, SSD and near-memory compute",
+          "timing_ja": "SK hynixはFMS 2026で実演。一般提供と独立実測は未確認。",
+          "timing_en": "SK hynix demonstrated systems at FMS 2026; general availability and independent measurements unverified.",
+          "statement_ja": "CMM-HybridはDRAMとSSDの階層、CMM-Axはメモリ側の演算を使う構成として紹介されています。容量追加と演算オフロードは別の効果で、製品名だけから性能やキャッシュ整合性を推定しません。",
+          "statement_en": "CMM-Hybrid is presented as a DRAM/SSD hierarchy and CMM-Ax as memory-side compute. Capacity expansion and compute offload are different benefits; names alone establish neither performance nor coherence.",
+          "hpci_relevance_ja": "KVキャッシュのヒット率、再利用、先読み失敗、転送時間を含めた検証が必要です。演算の詳細は特化型ハードウェアの調査と結び付けます。",
+          "hpci_relevance_en": "Evaluate KV-cache hit/reuse rates, failed prefetches and transfer time; link compute details to specialized-hardware research.",
+          "adoption_conditions_ja": [
+            "公開コード・負荷・構成・エンドツーエンド測定"
+          ],
+          "adoption_conditions_en": [
+            "Public code, workload, configuration and end-to-end measurements"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH03-MAIN",
+    "TDS-HC26-ARCH-03-U2"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-SAMSUNG",
+        "title": "Samsung 3D memory vision at FMS 2026",
+        "publisher": "Samsung",
+        "url": "https://news.samsung.com/global/samsung-unveils-next-gen-3d-memory-vision-at-fms-2026-charting-the-future-of-ai-infrastructure",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-05"
+      },
+      "origin_group": "samsung-fms2026-3d-memory",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Samsung's Vision for Next-Generation 3D Memory",
+      "observation_ja": "zHBMはアクセラレータ上にメモリを置く概念モデル。HBM5との倍率比較は製品間の独立測定として採用しない。",
+      "observation_en": "zHBM is a concept with memory above the accelerator; HBM5-relative projections are not independent product measurements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CUDA-UM",
+        "title": "CUDA Programming Guide: Unified Memory",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/unified-memory.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "nvidia-cuda-unified-memory-guide",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "4.1.1; CPU and GPU Page Tables; Access Counter Migration; Mixing Hardware and Software Coherency",
+      "observation_ja": "共通のプログラミングモデルでも、ハードウェア整合性、ページ移動、割当方法で挙動が異なる。複数ホストの通信は別ライブラリの契約を要する。",
+      "observation_en": "A shared programming model does not equal identical coherence, migration or allocation behavior; multi-host communication requires separate library contracts.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CXL-LINUX",
+        "title": "Linux kernel CXL documentation: configuration overview",
+        "publisher": "Linux kernel development community",
+        "url": "https://docs.kernel.org/driver-api/cxl/linux/overview.html",
+        "source_class": "official-project",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "linux-cxl-configuration-overview",
+      "checked_at": "2026-08-31T21:40:00+09:00",
+      "locator": "Early boot through DAX and memory-hotplug configuration",
+      "observation_ja": "Type-3メモリをDAXまたは通常ページとして公開する経路を確認。導入OSの版・BIOS・デコーダ設定の確認が必要。",
+      "observation_en": "Checked Type-3 exposure as DAX or ordinary pages; deployment needs pinned OS, BIOS and decoder configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CXL-MATURITY",
+        "title": "Linux kernel CXL Subsystem Maturity Map",
+        "publisher": "Linux kernel development community",
+        "url": "https://docs.kernel.org/driver-api/cxl/maturity-map.html",
+        "source_class": "official-project",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "linux-cxl-maturity-map",
+      "checked_at": "2026-08-31T21:40:00+09:00",
+      "locator": "Maturity-score definitions; RAS; memory-pooling; multi-host sharing",
+      "observation_ja": "機能ごとに成熟度が異なることを確認。更新日・対象カーネル版がページにないため、表の点数を全製品の現状とはしない。",
+      "observation_en": "Feature maturity varies. The page lacks an explicit kernel-version/date boundary, so scores are not universal product-state claims.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-GH-STUDY",
+        "title": "Harnessing Integrated CPU-GPU System Memory for HPC: a first look into Grace Hopper, arXiv:2407.07850v1",
+        "publisher": "Schieffer et al., KTH and William & Mary",
+        "url": "https://arxiv.org/html/2407.07850v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-07-10"
+      },
+      "origin_group": "schieffer-grace-hopper-2407-07850",
+      "checked_at": "2026-08-31T21:27:50+09:00",
+      "locator": "Sections 3, 5-7; Tables 1-2; Figures 11-13",
+      "observation_ja": "CUDA 12.4のGH200で6負荷を評価。Qiskitの自然な容量超過と、予約領域による模擬的な容量超過を区別している。",
+      "observation_en": "Six workloads on GH200/CUDA 12.4 distinguish natural Qiskit oversubscription from artificially reserved GPU capacity.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-LPDDR6-SK",
+        "title": "SK hynix Develops 1c LPDDR6, 6th-Generation 10nm-Class DRAM",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/1c-lpddr6-development-2026/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-10"
+      },
+      "origin_group": "skhynix-lpddr6-development2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Development completion; H1 preparation and H2 supply plan; target applications",
+      "observation_ja": "16Gb LPDDR6の開発と2026年後半供給目標を確認。モバイル向けで、サーバー用SOCAMM認定を示さない。",
+      "observation_en": "Checked 16Gb LPDDR6 development and H2 2026 supply target for mobile use, not server SOCAMM qualification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MRDIMM-STUDY",
+        "title": "Performance and Energy Benefits of MRDIMMs, arXiv:2605.02371v1",
+        "publisher": "Diaz et al., BSC/UPC with Micron and Intel coauthors",
+        "url": "https://arxiv.org/html/2605.02371v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-05-04"
+      },
+      "origin_group": "diaz-mrdimm-2605-02371",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Sections III-VI; Figures 2-5",
+      "observation_ja": "6980P、各チャネル64GB、RDIMM-6400対MRDIMM-8800の同一容量比較。メーカー共著。省エネルギー率と効率向上率の表現が一致しないため、その数値を転用しない。",
+      "observation_en": "Matched 64GB-per-channel RDIMM-6400/MRDIMM-8800 on Xeon 6980P, with vendor coauthors. Energy-saving and efficiency-increase wording differs; those percentages are not reused.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-NUMA-PERF",
+        "title": "Linux kernel documentation: NUMA Memory Performance",
+        "publisher": "Linux kernel development community",
+        "url": "https://docs.kernel.org/admin-guide/mm/numaperf.html",
+        "source_class": "official-project",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "linux-numa-performance-doc",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "NUMA Locality; NUMA Performance; NUMA Cache",
+      "observation_ja": "アクセス元とメモリの組ごとの性能属性を確認。sysfs値は定格値で、アプリ実測ではない。",
+      "observation_en": "Checked initiator-target performance attributes; sysfs values are rated platform attributes, not application measurements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SK-FMS",
+        "title": "The Next-Generation Memory Architecture in the AI Era? SK hynix Charts the Direction at FMS 2026",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/fms-2026/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-07"
+      },
+      "origin_group": "skhynix-fms2026-report",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "HBF panel; NAND/eSSD roadmap; CXL-based demonstrations",
+      "observation_ja": "HBF、CXL/DRAM/SSD階層、CMM-Ax実演を確認。実演は一般提供ではなく、MICRO採択はメーカー記述のみ。",
+      "observation_en": "Checked HBF, CXL/DRAM/SSD tiering and CMM-Ax demonstrations; not general availability, and MICRO acceptance is issuer-reported only.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SK-INDIANA",
+        "title": "SK hynix Holds Groundbreaking Ceremony for HBM Production Base in Indiana",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/groundbreaking-ceremony-in-indiana/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-28"
+      },
+      "origin_group": "skhynix-indiana-groundbreaking2026",
+      "checked_at": "2026-08-31T21:40:00+09:00",
+      "locator": "Investment of Over $4 Billion for First US HBM Production Base",
+      "observation_ja": "クリーンルームは2028年10月まで、量産は2029年後半という計画。韓国製ウェハの米国での実装・検査であり、全工程の米国内製造ではない。",
+      "observation_en": "Plans target cleanroom opening by October 2028 and production in H2 2029; Korean wafers receive US packaging/testing, not wholly US fabrication.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SOCAMM256",
+        "title": "Micron Sets New Benchmark With the World's First High-Capacity 256GB LPDRAM SOCAMM2 for Data Center Infrastructure",
+        "publisher": "Micron",
+        "url": "https://investors.micron.com/news/press-release/2026/Micron-Sets-New-Benchmark-With-the-Worlds-First-High-Capacity-256GB-LPDRAM-SOCAMM2-for-Data-Center-Infrastructure-03-03-2026/default.aspx",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-03"
+      },
+      "origin_group": "micron-socamm256-march2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Customer samples; footnotes 1-3",
+      "observation_ja": "256GBは試供。2.3倍TTFTは2TB対1.5TBの容量条件での投影値、電力比は128GBモジュールと2枚の64GB RDIMMの比較。",
+      "observation_en": "256GB is sampling. The 2.3x TTFT projection compares 2TB with 1.5TB; the power comparison uses a 128GB module versus two 64GB RDIMMs.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-ZAM",
+        "title": "SoftBank Corp. Subsidiary SAIMEMORY and Intel Collaborate to Commercialize Next-generation Memory Technology",
+        "publisher": "SAIMEMORY and SoftBank",
+        "url": "https://www.saimemory.co.jp/en/news/press/20260203_01/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-02-03"
+      },
+      "origin_group": "saimemory-intel-zam-feb2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Collaboration and FY2027/FY2029 targets",
+      "observation_ja": "試作は2027年度、実用化は2029年度目標。2027年度末が2028年3月31日であることを明記している。",
+      "observation_en": "Prototypes target FY2027 and commercialization FY2029; FY2027 explicitly ends March 31, 2028.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM002",
+        "title": "MRDIMM",
+        "publisher": "Micron",
+        "url": "https://www.micron.com/products/memory/dram-modules/mrdimm",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "micron-mrdimm-product",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Product capacities; FAQ on first-generation compatibility and second-generation JEDEC definition",
+      "observation_ja": "32-256GBと第1世代の対応CPU制約を確認。任意のDDR5スロットで交換できるとはしない。",
+      "observation_en": "Checked 32-256GB capacities and first-generation CPU restrictions; not a drop-in option for arbitrary DDR5 slots.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM008",
+        "title": "Samsung Ships Commercial HBM4",
+        "publisher": "Samsung",
+        "url": "https://news.samsung.com/global/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "samsung-hbm4-commercial-shipment",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "February 12 dateline; production/shipment statement; roadmap paragraph",
+      "observation_ja": "2026年2月12日のHBM4量産・顧客出荷と、当時のHBM4E試供予定を確認。後の決算発表と時系列で比較する。",
+      "observation_en": "Checked February 12 HBM4 production/customer shipments and the then-current HBM4E sampling plan; compare chronologically with later results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM010",
+        "title": "SK hynix Ships HBM4E Samples",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/sk-hynix-ships-samples-of-12-layer-next-gen-hbm4e-2/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "skhynix-hbm4e-samples-june2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "June 18 dateline; 12-layer sampling; 48GB and MR-MUF description",
+      "observation_ja": "48GB・12層HBM4Eの試供を確認。本文に確定的な量産四半期はない。",
+      "observation_en": "Checked 48GB 12-layer HBM4E samples; no committed volume-production quarter is stated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM011",
+        "title": "Micron HBM4 and SOCAMM2 Production",
+        "publisher": "Micron",
+        "url": "https://investors.micron.com/news/press-release/2026/Micron-in-High-Volume-Production-of-HBM4-Designed-for-NVIDIA-Vera-Rubin-PCIe-Gen6-SSD-and-SOCAMM2-03-16-2026/default.aspx",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "micron-gtc2026-memory-storage-production",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Production highlights and body; footnotes 1-6",
+      "observation_ja": "36GB HBM4の暦年Q1出荷、48GBの試供、192GB SOCAMM2量産を区別。効率の根拠は内部計算・試験で、独立実測ではない。",
+      "observation_en": "Distinguished calendar-Q1 36GB HBM4 shipments, 48GB samples and 192GB SOCAMM2 production; efficiency claims use internal calculations/tests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM042",
+        "title": "NVIDIA NVLink Fusion Expands With NVHBM Custom High-Bandwidth Memory",
+        "publisher": "NVIDIA",
+        "url": "https://blogs.nvidia.com/blog/nvlink-fusion-nvhbm-custom-high-bandwidth-memory/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "nvidia-nvhbm-august2026",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Custom controller/base die; multi-provider implementation; Annapurna collaboration",
+      "observation_ja": "ベースダイのコントローラーと協業を確認。発表本文に製品の発売四半期はない。",
+      "observation_en": "Checked the base-die controller and partner collaboration; no product release quarter is provided.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS018",
+        "title": "CXMT Products and Services",
+        "publisher": "CXMT",
+        "url": "https://www.cxmt.com/en/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "cxmt-products-overview",
+      "checked_at": "2026-08-31T21:40:15+09:00",
+      "locator": "Products and Services: DDR5/DDR5 module and LPDDR5/5X",
+      "observation_ja": "DDR5モジュールとLPDDR5/5Xの製品掲載を確認。LPDDR6量産の報道は、このページの一次情報では確認できない。",
+      "observation_en": "Checked DDR5/module and LPDDR5/5X listings. This page does not substantiate reports of LPDDR6 volume production.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-056",
+      "topic_ids": [
+        "ARCH-03"
+      ],
+      "priority": "P0",
+      "question_ja": "DDR6、LPDDR6サーバー採用、カスタムHBM、CXL/PIM階層の時期と同条件性能を確定できるか。",
+      "question_en": "Can DDR6, server LPDDR6, custom HBM and CXL/PIM hierarchy timing and matched-condition performance be established?",
+      "next_action_ja": "JEDEC本文の再確認、顧客製品認定、公開コードと入力、費用・供給条件を収集する。今回のJEDEC取得失敗を確認済みにせず、既存根拠と区別する。",
+      "next_action_en": "Collect standards text, product qualification, public code/inputs and cost/supply evidence. Do not count this run's failed JEDEC retrievals as new verification.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "DDR6とLPDDR6サーバー製品の一次資料",
+    "階層別のアクセス・電力実測と対応OSの版",
+    "価格・供給数量・独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Primary evidence for DDR6 and LPDDR6 server products",
+    "Tier-specific access/power measurements and pinned OS support",
+    "Prices, supply volumes and independent Consensus"
+  ]
+}
