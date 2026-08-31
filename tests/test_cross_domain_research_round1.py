@@ -270,6 +270,29 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
             self.assertNotIn("SRC-PERF015", result["basis_source_ids"])
             self.assertEqual([], result["calibration_dataset_ids"])
 
+    def test_porting_measurements_keep_cmg_and_study_version_boundaries(self):
+        update = read("proposals/research-unit-updates/RUP-000121.json")
+        items = {i["item_id"]: i for s in update["sections"] for i in s["items"]}
+        nicam = items["TDI-CD5-NICAM-KOKKOS-CMG-BASELINE"]
+        for fragment in ("one A64FX CMG with 12 cores", "mp_nsw6", "excluding I/O",
+                         "not speedups over one Fugaku node or for full NICAM"):
+            self.assertIn(fragment, nicam["statement_en"])
+        self.assertTrue(any("33%" in c and "29%" in c for c in nicam["adoption_conditions_en"]))
+        self.assertIn("unmeasured is not evidence of failure",
+                      items["TDI-CD5-PORTABILITY-COHORT-METRIC"]["statement_en"])
+        self.assertIn("page-update date is not a new measurement date",
+                      items["TDI-CD5-PORTABILITY-STUDY-VERSION-SCOPE"]["statement_en"])
+        self.assertEqual("incomplete", update["consensus_status"])
+        self.assertEqual([], update["archive_section_ids"])
+        corrected = read("proposals/research-unit-updates/RUP-000122.json")
+        self.assertIn("単一のAIモデル", corrected["summary_ja"])
+        self.assertEqual(update["summary_en"], corrected["summary_en"])
+        self.assertEqual(["TDS-CD5-SSW-01-U04"], corrected["archive_section_ids"])
+        self.assertEqual(
+            [{k: v for k, v in i.items() if k != "item_id"} for i in update["sections"][0]["items"]],
+            [{k: v for k, v in i.items() if k != "item_id"} for i in corrected["sections"][0]["items"]],
+        )
+
     def test_legacy_what_if_values_are_explicitly_uncalibrated(self):
         forecast = read("knowledge/public/application-performance-forecasts.json")
         self.assertEqual(36, len(forecast["forecasts"]))

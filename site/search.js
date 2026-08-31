@@ -29,6 +29,10 @@
   function normalize(value) { return String(value || "").normalize("NFKC").toLocaleLowerCase(language).replace(/\s+/g, ""); }
   function flatten(value) { if (value === null || value === undefined) return ""; if (typeof value === "string" || typeof value === "number") return String(value); if (Array.isArray(value)) return value.map(flatten).join(" "); if (typeof value === "object") return Object.values(value).map(flatten).join(" "); return ""; }
   function roadmapPath(roadmapId) { return data.roadmaps.find((item) => item.roadmap_id === roadmapId)?.path || "roadmaps/"; }
+  function activeSections(profile) {
+    const archived = new Set(profile?.archived_section_ids || []);
+    return (profile?.sections || []).filter((section) => !archived.has(section.section_id));
+  }
   function statusLabel(status) {
     const keys = {incomplete: "consensusIncomplete", "independent-review-pending": "independentReviewPending", provisional: "provisional", "academic-primary": "sourceAcademic", "government-official": "sourceGovernment", "openfs-governance": "sourceGovernance", "project-official": "sourceProject", "research-organization": "sourceResearchOrganization", "standards-body": "sourceStandards", "vendor-official": "sourceVendor"};
     Object.assign(keys, {"official-project": "sourceProject", "official-vendor": "sourceVendor", "official-standard": "sourceStandards", "research-artifact": "sourceResearch", "peer-reviewed": "sourcePeerReviewed"});
@@ -64,9 +68,18 @@
     }));
     const categories = new Map(data.catalog_taxonomy.categories.map((item) => [item.category_id, item]));
     const profileMap = new Map((data.topic_decision_support?.topic_profiles || []).map((item) => [item.topic_id, item]));
-    data.topics.forEach((topic) => { const category = categories.get(topic.catalog_category_id); items.push({type: "topic", id: topic.catalog_code, title_ja: topic.title_ja, title_en: topic.title_en, body_ja: `正規Topic ID: ${topic.topic_id}。${profileMap.get(topic.topic_id)?.summary_ja || ""}`, body_en: `Canonical Topic ID: ${topic.topic_id}. ${profileMap.get(topic.topic_id)?.summary_en || ""}`, search: flatten([topic, category, profileMap.get(topic.topic_id)]), href: `${rootPrefix}?topic=${encodeURIComponent(topic.topic_id)}#catalog`, status: topic.verification_status}); });
+    data.topics.forEach((topic) => {
+      const category = categories.get(topic.catalog_category_id);
+      const profile = profileMap.get(topic.topic_id);
+      items.push({type: "topic", id: topic.catalog_code, title_ja: topic.title_ja, title_en: topic.title_en,
+        body_ja: `正規Topic ID: ${topic.topic_id}。${profile?.summary_ja || ""}`,
+        body_en: `Canonical Topic ID: ${topic.topic_id}. ${profile?.summary_en || ""}`,
+        search: flatten([topic, category?.title_ja, category?.title_en, profile?.summary_ja,
+          profile?.summary_en, profile?.hpci_decision_dimensions, activeSections(profile)]),
+        href: `${rootPrefix}?topic=${encodeURIComponent(topic.topic_id)}#catalog`, status: topic.verification_status});
+    });
     data.roadmap_artifacts.forEach((roadmap) => {
-      const index = data.roadmaps.find((item) => item.roadmap_id === roadmap.roadmap_id); const category = categories.get(index?.catalog_category_id); items.push({type: "roadmap", id: roadmap.roadmap_id, title_ja: roadmap.title_ja, title_en: roadmap.title_en, body_ja: roadmap.summary_ja, body_en: roadmap.summary_en, search: flatten([roadmap, category]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}`, status: roadmap.consensus_status});
+      const index = data.roadmaps.find((item) => item.roadmap_id === roadmap.roadmap_id); const category = categories.get(index?.catalog_category_id); items.push({type: "roadmap", id: roadmap.roadmap_id, title_ja: roadmap.title_ja, title_en: roadmap.title_en, body_ja: roadmap.summary_ja, body_en: roadmap.summary_en, search: flatten([roadmap, category?.title_ja, category?.title_en]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}`, status: roadmap.consensus_status});
       roadmap.tracks.forEach((track) => items.push({type: "track", id: track.track_id, title_ja: track.name_ja, title_en: track.name_en, body_ja: track.summary_ja, body_en: track.summary_en, search: flatten([track, roadmap.title_ja, roadmap.title_en]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}?track=${encodeURIComponent(track.track_id)}#roadmap-track-details`, status: roadmap.consensus_status}));
       roadmap.sources.forEach((source) => addSource(source, roadmap));
     });
@@ -85,9 +98,7 @@
     // Source metadata alone is not evidence of an active public catalog claim.
     data.topics.forEach((topic) => {
       const profile = profileMap.get(topic.topic_id);
-      const archived = new Set(profile?.archived_section_ids || []);
-      (profile?.sections || []).filter((section) => !archived.has(section.section_id))
-        .forEach((section) => addReferencedSources(section, topic));
+      activeSections(profile).forEach((section) => addReferencedSources(section, topic));
     });
     for (const key of ["platform_matrix", "numerical_method_matrix"]) {
       const matrix = support?.[key];

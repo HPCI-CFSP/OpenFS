@@ -95,12 +95,23 @@ The tarball was not downloaded, no code was executed, and artifact/tag/EEA1
 correspondence remains unverified. The shared glossary, comparison and code links
 are synchronized without changing any performance-model coefficients.
 
+`RUP-000121` adds a NICAM/Kokkos porting case and portability-measurement
+conditions. Its GPU ratios use one A64FX CMG with 12 cores, not a Fugaku node
+or the whole application. CPU regressions, timing exclusions, unavailable code
+retrieval and unperformed reproduction remain visible. Portability metrics need
+fixed platform cohorts and reference runtimes; unmeasured does not mean failed.
+A research-page update date is not a new benchmark measurement date.
+`RUP-000122` only aligns the Japanese summary with the terminology policy,
+preserving its predecessor and all measurement claims; it is not new research.
+
 Search now indexes sources cited by active catalog claims and software matrices,
 not just roadmap sources. Identical URLs retain all source IDs and classifications
 without duplicate result cards. Archived-only, retired-topic-only and unreferenced
 catalog metadata do not enter this source index. Corrections take display-title
 precedence for matching URLs. Offline DOM tests cover both languages, filters,
-links and correction handling; these are not browser-layout tests.
+links and correction handling; these are not browser-layout tests. Topic search
+also excludes archived claim text and provenance-only history, while category
+membership tables no longer cause unrelated topics or roadmaps to match a code.
 
 The existing EEA1 table retains all 36 numerical results, equations and numeric
 assumptions unchanged. Its Japanese and English prose and cell labels now say
@@ -229,12 +240,22 @@ SALMONの再取得では、先に2.2.2と表示された配布ページに2.3.0�
 しておらず、配布物・タグ・EEA1評価版の対応は未検証です。用語集、比較表、
 コードへのリンクを揃えましたが、性能モデルの係数は変更していません。
 
+`RUP-000121`ではNICAMのKokkos移植事例と性能可搬性の測定条件を追加しました。
+GPUの比較基準はA64FXの1 CMG・12コアであり、富岳1ノードや全アプリではありません。
+CPU側の性能低下、測定からの除外区間、コード取得失敗、再現実行の未実施を明記します。
+可搬性指標は対象機種と基準時間を固定する必要があり、未測定を失敗とは扱いません。
+研究紹介ページの更新日も、新しいベンチマークの測定日とは区別します。
+`RUP-000122`は日本語要約の用語訂正だけを行い、原記録と測定に関する記述を
+保持しています。新しい調査としては数えません。
+
 検索にはロードマップの資料に加え、公開中のカタログの主張とソフトウェア比較表が
 引用する資料を含めました。同じURLの結果はまとめ、すべての情報源IDと分類を保持します。
 アーカイブ済みの主張だけが使う資料、廃止項目だけの資料、未参照のメタデータは
 カタログ資料の検索索引に入れません。URLが一致する場合は訂正後の題名を優先します。
 日英、フィルター、リンク、訂正の扱いをオフラインDOMテストで確認する構成であり、
-ブラウザーでのレイアウト検証とは区別します。
+ブラウザーでのレイアウト検証とは区別します。調査項目の検索でも過去版の文章や
+来歴だけの記録は除外し、カテゴリの所属表に含まれるIDが無関係なカタログや
+ロードマップに一致する問題を修正しました。
 
 既存EEA1表の36件の数値、計算式、数値の仮定は変更せず、日英の説明とセルの表示を
 「未校正のwhat-if試算」と明確化しました。GENESISの0.75や規模別の保持係数は

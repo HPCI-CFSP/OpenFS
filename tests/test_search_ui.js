@@ -148,3 +148,29 @@ test("a corrected catalog title takes precedence over legacy roadmap metadata fo
   assert.equal(link.textContent, "Corrected publication title");
   assert.ok(f.results()[0].textContent.includes("SRC-SEARCH-LEGACY-ROADMAP"));
 });
+
+test("topic search excludes archived claims while retaining current claims", () => {
+  for (const language of ["ja", "en"]) {
+    for (const [query, expected] of [["SRC-SEARCH-ARCHIVED", 0], ["SRC-SEARCH-ACTIVE", 1]]) {
+      const f = fixture(query, language, addSyntheticSources);
+      f.get("global-search-type").value = "topic";
+      f.get("global-search-type").dispatch("change");
+      assert.equal(f.results().length, expected, query);
+    }
+  }
+});
+
+test("category membership metadata does not match neighboring topics or roadmaps", () => {
+  for (const language of ["ja", "en"]) {
+    const f = fixture("CATEGORY-ONLY-PROBE", language, (payload) => {
+      for (const category of payload.catalog_taxonomy.categories) {
+        category.topic_codes["UNRELATED-TOPIC"] = "CATEGORY-ONLY-PROBE";
+      }
+    });
+    for (const type of ["topic", "roadmap", "all"]) {
+      f.get("global-search-type").value = type;
+      f.get("global-search-type").dispatch("change");
+      assert.equal(f.results().length, 0, type);
+    }
+  }
+});

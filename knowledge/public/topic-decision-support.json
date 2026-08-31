@@ -6122,8 +6122,8 @@
     },
     {
       "topic_id": "SSW-01",
-      "summary_ja": "プログラミング仕様、コンパイラ実装、センターの導入手順を区別し、版・対象機種・数値精度・実測性能・保守条件を比較します。Bishengの公開資料も含めた単一のAIモデルによる暫定調査であり、実機検証や独立Consensusは未完了です。",
-      "summary_en": "The provisional single-model review separates programming specifications, compiler implementations and center deployment instructions, comparing versions, targets, numerical behavior, measured performance and maintenance. It now includes public Bisheng documentation; execution testing and independent Consensus remain incomplete.",
+      "summary_ja": "プログラミング仕様、コンパイラ実装、センターの導入手順を区別し、版・対象機種・数値精度・実測性能・保守条件を比較します。NICAMの移植事例と性能可搬性の測定方法も調べ、実行できることと性能を維持できることを分けました。単一のAIモデルの暫定調査であり、実機検証や独立Consensusは未完了です。",
+      "summary_en": "The provisional single-model review separates programming specifications, compiler implementations and center deployment instructions, comparing versions, targets, numerical behavior, measured performance and maintenance. NICAM porting and portability measurement distinguish successful execution from retained performance. Execution testing and independent Consensus remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW01-PORTABILITY",
@@ -6912,6 +6912,192 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-CD5-SSW-01-U04",
+          "title_ja": "移植性能の比較基準と適用限界",
+          "title_en": "Porting-performance baselines and limits",
+          "summary_ja": "同じ入力、測定区間、比較機種、実装条件を固定し、移植工数も別に記録します。",
+          "summary_en": "Fix inputs, timed regions, target platforms and implementation conditions; record engineering effort separately.",
+          "items": [
+            {
+              "item_id": "TDI-CD5-NICAM-KOKKOS-CMG-BASELINE",
+              "stage": "research",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS120",
+                "SRC-CDS121"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "NICAM雲微物理: 1 CMG基準の移植評価",
+              "name_en": "NICAM microphysics: porting against one CMG",
+              "timing_ja": "2026-06-15公開の研究",
+              "timing_en": "Study published June 15, 2026",
+              "statement_ja": "Kokkos 4.6.1による雲微物理カーネルの移植は、A64FXの1 CMG・12コアのFortran実装比で、V100が2.53倍、H100が5.31倍と報告されています。計測はmp_nsw6に限られ、I/O、初期化、結果確認等は除外されます。富岳1ノードやNICAM全体の高速化率ではありません。CPU側のベクトル化とGPU側の小ループ起動が課題として残ります。",
+              "statement_en": "A Kokkos 4.6.1 microphysics port reports 2.53x on V100 and 5.31x on H100 relative to Fortran on one A64FX CMG with 12 cores. Timing covers mp_nsw6, excluding I/O, initialization and result checking. These are not speedups over one Fugaku node or for full NICAM. CPU vectorization and GPU small-loop launches remain challenges.",
+              "hpci_relevance_ja": "日本の科学コードをGPUへ移す際、部分カーネルの成功と全体性能・保守工数を分離する事例です。",
+              "hpci_relevance_en": "This Japanese scientific-code case separates kernel gains from whole-application performance and maintenance effort.",
+              "adoption_conditions_ja": [
+                "原論文の入力16641×96、計測区間、コア数を保ち、別条件の比へ変換しない。",
+                "同じ基準でOpenMP版はA64FX約33%、Xeon約29%、Grace約123%。GPUの向上をCPUでの性能維持と同一視しない。",
+                "公開コードへのリンクは論文にあるが、今回の取得は失敗。コード・入力の固定と再現実行は未完了。"
+              ],
+              "adoption_conditions_en": [
+                "Retain the paper's 16641x96 input, timed region and core count; do not convert to unmatched ratios.",
+                "Against the same baseline, the OpenMP port achieves about 33% on A64FX, 29% on Xeon and 123% on Grace. GPU gains do not establish retained CPU performance.",
+                "The paper links code, but retrieval failed here. Code/input pinning and reproduction remain incomplete."
+              ]
+            },
+            {
+              "item_id": "TDI-CD5-PORTABILITY-COHORT-METRIC",
+              "stage": "current",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS119",
+                "SRC-CDS122"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "性能可搬性指標: 対象集合と基準時間",
+              "name_en": "Portability metrics: cohort and reference runtime",
+              "timing_ja": "2016年の指標提案と2025年の適用研究",
+              "timing_en": "2016 metric proposal and 2025 application",
+              "statement_ja": "対象機種を固定し、同一問題の機種別効率を調和平均する指標があります。2025年の適用例は各機種で観測した最短時間を基準とします。未対応を0とする定義ですが、未測定は失敗の証拠ではありません。機種集合や参照実装が変われば値も変わり、移植工数は別途評価します。",
+              "statement_en": "One metric takes the harmonic mean of per-platform efficiencies for a fixed problem and platform set. The 2025 application uses each platform's best observed runtime. Unsupported cases score zero, but unmeasured is not evidence of failure. Changing platforms or reference implementations changes the result; porting effort needs separate assessment.",
+              "hpci_relevance_ja": "単一の高速化率で言語・機種を順位付けせず、比較条件を明示する方法です。",
+              "hpci_relevance_en": "This makes comparison conditions explicit without ranking languages or machines from one speedup.",
+              "adoption_conditions_ja": [
+                "比較集合、未測定項目、正解条件、絶対時間を併記する。"
+              ],
+              "adoption_conditions_en": [
+                "Report the cohort, unmeasured cases, correctness criteria and absolute runtimes."
+              ]
+            },
+            {
+              "item_id": "TDI-CD5-PORTABILITY-STUDY-VERSION-SCOPE",
+              "stage": "current",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS122",
+                "SRC-CDS123"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "複数モデル比較: 概要ページと論文の範囲差",
+              "name_en": "Multi-model studies: overview versus paper scope",
+              "timing_ja": "ICS2025論文と2026-08-26更新表記の概要",
+              "timing_en": "ICS 2025 paper and overview marked updated August 26, 2026",
+              "statement_ja": "UMD等の研究は7つのプログラミングモデルと5つのプロキシを比較します。概要は4機種ですが、後続論文はH100を含む5機種です。MI250Xは1 GCDが対象で、機器全体とは限りません。ページ更新日を新しい測定日とせず、計測区間とコンパイラ条件を版ごとに確認します。",
+              "statement_en": "The UMD-led study compares seven programming models and five proxies. Its overview covers four systems; the later paper covers five including H100. MI250X measurements use one GCD, not necessarily a whole device. A page-update date is not a new measurement date; check timed regions and compilers per version.",
+              "hpci_relevance_ja": "過去の比較を現行SDKや全アプリケーションへの保証へ拡張しないための条件です。",
+              "hpci_relevance_en": "These conditions prevent extending historical comparisons to current SDKs or all applications.",
+              "adoption_conditions_ja": [
+                "ベンチマーク版・データ転送の包含・ウォームアップ・繰返しを揃える。",
+                "OpenFSでの再実行や最新機種での再評価は未実施。"
+              ],
+              "adoption_conditions_en": [
+                "Match benchmark revisions, transfer inclusion, warmup and repetition.",
+                "OpenFS reproduction and reevaluation on current hardware remain undone."
+              ]
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-CD6-SSW-01-U04",
+          "title_ja": "移植性能の比較基準と適用限界",
+          "title_en": "Porting-performance baselines and limits",
+          "summary_ja": "同じ入力、測定区間、比較機種、実装条件を固定し、移植工数も別に記録します。",
+          "summary_en": "Fix inputs, timed regions, target platforms and implementation conditions; record engineering effort separately.",
+          "items": [
+            {
+              "item_id": "TDI-CD6-NICAM-KOKKOS-CMG-BASELINE",
+              "stage": "research",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS120",
+                "SRC-CDS121"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "NICAM雲微物理: 1 CMG基準の移植評価",
+              "name_en": "NICAM microphysics: porting against one CMG",
+              "timing_ja": "2026-06-15公開の研究",
+              "timing_en": "Study published June 15, 2026",
+              "statement_ja": "Kokkos 4.6.1による雲微物理カーネルの移植は、A64FXの1 CMG・12コアのFortran実装比で、V100が2.53倍、H100が5.31倍と報告されています。計測はmp_nsw6に限られ、I/O、初期化、結果確認等は除外されます。富岳1ノードやNICAM全体の高速化率ではありません。CPU側のベクトル化とGPU側の小ループ起動が課題として残ります。",
+              "statement_en": "A Kokkos 4.6.1 microphysics port reports 2.53x on V100 and 5.31x on H100 relative to Fortran on one A64FX CMG with 12 cores. Timing covers mp_nsw6, excluding I/O, initialization and result checking. These are not speedups over one Fugaku node or for full NICAM. CPU vectorization and GPU small-loop launches remain challenges.",
+              "hpci_relevance_ja": "日本の科学コードをGPUへ移す際、部分カーネルの成功と全体性能・保守工数を分離する事例です。",
+              "hpci_relevance_en": "This Japanese scientific-code case separates kernel gains from whole-application performance and maintenance effort.",
+              "adoption_conditions_ja": [
+                "原論文の入力16641×96、計測区間、コア数を保ち、別条件の比へ変換しない。",
+                "同じ基準でOpenMP版はA64FX約33%、Xeon約29%、Grace約123%。GPUの向上をCPUでの性能維持と同一視しない。",
+                "公開コードへのリンクは論文にあるが、今回の取得は失敗。コード・入力の固定と再現実行は未完了。"
+              ],
+              "adoption_conditions_en": [
+                "Retain the paper's 16641x96 input, timed region and core count; do not convert to unmatched ratios.",
+                "Against the same baseline, the OpenMP port achieves about 33% on A64FX, 29% on Xeon and 123% on Grace. GPU gains do not establish retained CPU performance.",
+                "The paper links code, but retrieval failed here. Code/input pinning and reproduction remain incomplete."
+              ]
+            },
+            {
+              "item_id": "TDI-CD6-PORTABILITY-COHORT-METRIC",
+              "stage": "current",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS119",
+                "SRC-CDS122"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "性能可搬性指標: 対象集合と基準時間",
+              "name_en": "Portability metrics: cohort and reference runtime",
+              "timing_ja": "2016年の指標提案と2025年の適用研究",
+              "timing_en": "2016 metric proposal and 2025 application",
+              "statement_ja": "対象機種を固定し、同一問題の機種別効率を調和平均する指標があります。2025年の適用例は各機種で観測した最短時間を基準とします。未対応を0とする定義ですが、未測定は失敗の証拠ではありません。機種集合や参照実装が変われば値も変わり、移植工数は別途評価します。",
+              "statement_en": "One metric takes the harmonic mean of per-platform efficiencies for a fixed problem and platform set. The 2025 application uses each platform's best observed runtime. Unsupported cases score zero, but unmeasured is not evidence of failure. Changing platforms or reference implementations changes the result; porting effort needs separate assessment.",
+              "hpci_relevance_ja": "単一の高速化率で言語・機種を順位付けせず、比較条件を明示する方法です。",
+              "hpci_relevance_en": "This makes comparison conditions explicit without ranking languages or machines from one speedup.",
+              "adoption_conditions_ja": [
+                "比較集合、未測定項目、正解条件、絶対時間を併記する。"
+              ],
+              "adoption_conditions_en": [
+                "Report the cohort, unmeasured cases, correctness criteria and absolute runtimes."
+              ]
+            },
+            {
+              "item_id": "TDI-CD6-PORTABILITY-STUDY-VERSION-SCOPE",
+              "stage": "current",
+              "maturity": "research",
+              "source_ids": [
+                "SRC-CDS122",
+                "SRC-CDS123"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "複数モデル比較: 概要ページと論文の範囲差",
+              "name_en": "Multi-model studies: overview versus paper scope",
+              "timing_ja": "ICS2025論文と2026-08-26更新表記の概要",
+              "timing_en": "ICS 2025 paper and overview marked updated August 26, 2026",
+              "statement_ja": "UMD等の研究は7つのプログラミングモデルと5つのプロキシを比較します。概要は4機種ですが、後続論文はH100を含む5機種です。MI250Xは1 GCDが対象で、機器全体とは限りません。ページ更新日を新しい測定日とせず、計測区間とコンパイラ条件を版ごとに確認します。",
+              "statement_en": "The UMD-led study compares seven programming models and five proxies. Its overview covers four systems; the later paper covers five including H100. MI250X measurements use one GCD, not necessarily a whole device. A page-update date is not a new measurement date; check timed regions and compilers per version.",
+              "hpci_relevance_ja": "過去の比較を現行SDKや全アプリケーションへの保証へ拡張しないための条件です。",
+              "hpci_relevance_en": "These conditions prevent extending historical comparisons to current SDKs or all applications.",
+              "adoption_conditions_ja": [
+                "ベンチマーク版・データ転送の包含・ウォームアップ・繰返しを揃える。",
+                "OpenFSでの再実行や最新機種での再評価は未実施。"
+              ],
+              "adoption_conditions_en": [
+                "Match benchmark revisions, transfer inclusion, warmup and repetition.",
+                "OpenFS reproduction and reevaluation on current hardware remain undone."
+              ]
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -6945,7 +7131,9 @@
         "GAP-TDS-006",
         "GAP-TDS-050"
       ],
-      "archived_section_ids": [],
+      "archived_section_ids": [
+        "TDS-CD5-SSW-01-U04"
+      ],
       "research_updates": [
         {
           "update_id": "RUP-000015",
@@ -7008,6 +7196,26 @@
             "SSW-01-U02"
           ],
           "created_at": "2026-09-01T04:36:48+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000121",
+          "bundle_sha256": "c87cd68f5d560a958b8eccffa28739fd516d45b91141e08423101b8181269984",
+          "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+          "unit_ids": [
+            "SSW-01-U04"
+          ],
+          "created_at": "2026-09-01T05:46:46+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000122",
+          "bundle_sha256": "93c02ef920c5a7db46b66e3d7b15e77f10968e981b60b8e7b09cb97a988bdc0d",
+          "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+          "unit_ids": [
+            "SSW-01-U04"
+          ],
+          "created_at": "2026-09-01T05:47:46+09:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -35552,6 +35760,46 @@
       "url": "https://github.com/SALMON-TDDFT/SALMON2/releases",
       "source_class": "official-project",
       "published_or_updated": "Retrieved listing still presents 2.2.2 as latest; retrieval/cache timing unresolved"
+    },
+    {
+      "source_id": "SRC-CDS119",
+      "title": "A Metric for Performance Portability",
+      "publisher": "Pennycook, Sewall and Lee / PMBS 2016",
+      "url": "https://www.dcs.warwick.ac.uk/pmbs/pmbs16/PMBS/papers/paper7.pdf",
+      "source_class": "research-artifact",
+      "published_or_updated": "2016; arXiv v1 submitted 2016-11-22"
+    },
+    {
+      "source_id": "SRC-CDS120",
+      "title": "Porting NICAM Microphysics to Kokkos: A Case Study in Performance Portability for Atmospheric Models",
+      "publisher": "Ren et al. / Information Processing Society of Japan",
+      "url": "https://www.jstage.jst.go.jp/article/ipsjjip/34/0/34_503/_pdf/-char/ja",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2026-06-15; JIP34 pp.503-513"
+    },
+    {
+      "source_id": "SRC-CDS121",
+      "title": "NICAM microphysics Kokkos paper: publication metadata and abstract",
+      "publisher": "J-STAGE / Information Processing Society of Japan",
+      "url": "https://www.jstage.jst.go.jp/article/ipsjjip/34/0/34_503/_article/-char/ja",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2026-06-15; accepted2025-12-11"
+    },
+    {
+      "source_id": "SRC-CDS122",
+      "title": "Taking GPU Programming Models to Task for Performance Portability",
+      "publisher": "Davis et al. / ICS2025 author manuscript",
+      "url": "https://www.cs.umd.edu/~bhatele/pubs/pdf/2025/ics2025.pdf",
+      "source_class": "research-artifact",
+      "published_or_updated": "ICS2025,2025-06-08 to2025-06-11; DOI10.1145/3721145.3730423"
+    },
+    {
+      "source_id": "SRC-CDS123",
+      "title": "Performance Portability research overview",
+      "publisher": "University of Maryland Parallel Software and Systems Group",
+      "url": "https://pssg.cs.umd.edu/research/performance-portability/",
+      "source_class": "official-project",
+      "published_or_updated": "Page marked updated2026-08-26; study configurations are older"
     }
   ],
   "coverage_gaps": [
