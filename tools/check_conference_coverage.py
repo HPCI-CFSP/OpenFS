@@ -71,7 +71,8 @@ def validate_coverage(payload: dict, baseline: dict, surface: dict) -> None:
     for announcement in payload["related_announcements"]:
         claim = claims.get(announcement["technical_item_id"])
         if (not claim or claim[0] != announcement["topic_id"]
-                or set(announcement["source_ids"]) - sources.keys()):
+                or set(announcement["source_ids"]) - sources.keys()
+                or not set(claim[1]["source_ids"]) <= set(announcement["source_ids"])):
             raise ValueError("unresolved related announcement")
     for gap in payload["coverage_gaps"]:
         if set(gap["source_ids"]) - sources.keys():

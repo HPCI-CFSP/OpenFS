@@ -65,6 +65,10 @@ class ConferenceCoverageTests(unittest.TestCase):
         entry["primary_topic_id"] = "ARCH-03"
         with self.assertRaises(ValueError): self.check()
 
+    def test_related_announcement_cites_the_whole_shared_claim(self):
+        self.payload["related_announcements"][0]["source_ids"] = ["SRC-HC26-NVHBM"]
+        with self.assertRaises(ValueError): self.check()
+
     def test_publication_authorization_is_required(self):
         policy = read("config/publication-policy.json")
         result = collect_conference_coverage(ROOT, policy)
