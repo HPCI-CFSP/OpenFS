@@ -1,0 +1,471 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000046",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-01T01:16:39+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "287c57bec8e0efcca90f3be0309f82077e6cb873df880ba186dc8bb881d1e9f2",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学AIの負荷を、科学基盤モデルの学習・適応、シミュレーション内のAI推論、データ解析と科学エージェントに分けました。GPU演算に加え、CPU前処理、データ検索、モデル・データの保管、再検証が必要です。科学的な精度と適用範囲を維持した総処理時間・資源量を比較します。",
+  "summary_en": "Scientific AI workloads are separated into foundation-model training/adaptation, inference within simulations, data analysis and scientific agents. CPU preprocessing, data search, storage and verification matter alongside GPU computation. Comparisons must preserve scientific quality and scope while accounting for total time and resources.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "5db2b31f643c581bd2d00cf3b825de26252cb57c9bdf178493e01597a177ad9e",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U01"
+      ]
+    },
+    {
+      "unit_id": "APP-12-U02",
+      "before_sha256": "82c5c3b0747549a611a67d850bb48986cfcc3c7448f43f6c56ab698a6042e1cf",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-APP-12-U01",
+      "title_ja": "科学AIモデルの学習・適応・推論",
+      "title_en": "Scientific-model training, adaptation and inference",
+      "summary_ja": "同じAIでも、分野と処理段階によって必要な資源が異なります。",
+      "summary_en": "Resource requirements differ by scientific domain and workflow stage.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-AURORA-SCIENCE-WORKLOAD",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA046",
+            "SRC-CDA047"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Aurora: 地球システムの基盤モデル",
+          "name_en": "Aurora: Earth-system foundation model",
+          "timing_ja": "2025年の論文と公開実装",
+          "timing_en": "2025 paper and public implementation",
+          "statement_ja": "Auroraは多様な地球科学データで事前学習し、大気質、波浪、台風、気象予測へ適応するモデルです。精度は変数・高度・予測期間ごとに評価されます。推論の高速化率を、事前学習やデータ整備まで含む総費用の削減率とは解釈しません。",
+          "statement_en": "Aurora is pretrained on diverse Earth-science data and adapted to air quality, waves, cyclones and weather. Quality varies by variable, altitude and forecast horizon. Inference speedups do not establish equivalent savings in pretraining and data preparation.",
+          "hpci_relevance_ja": "長期の学習用設備と、多数の予測を返す推論用設備を分けて検討できます。",
+          "hpci_relevance_en": "Training capacity and high-volume forecast serving can be planned separately.",
+          "adoption_conditions_ja": [
+            "格子、予測期間、変数、学習外事象と数値モデルの比較条件を固定する。",
+            "データ取得・前処理・再学習も計時と費用に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Fix grids, horizons, variables, out-of-distribution events and numerical-model controls.",
+            "Include data acquisition, preprocessing and retraining in time and cost."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-DEEPMD-SCIENCE-ADAPTATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA048",
+            "SRC-CDA049"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "DeePMD-kit: 原子間ポテンシャルとモデル適応",
+          "name_en": "DeePMD-kit: interatomic potentials and adaptation",
+          "timing_ja": "v3.2.0公開版と現行資料",
+          "timing_en": "Public v3.2.0 and current documentation",
+          "statement_ja": "v3.2.0はDPA4、局所性と推論効率を重視するDPA4C、学習済みモデルを別の物性へ適応するDPA-ADAPTを含みます。学習、追加学習、分子動力学中の反復推論は別の負荷です。リリース記録では複数バックエンドが拡張されていますが、各機能の対応は個別確認が必要です。",
+          "statement_en": "Version 3.2.0 includes DPA4, local inference-oriented DPA4C and DPA-ADAPT for downstream properties. Training, fine-tuning and repeated MD inference are different workloads. Multiple backends have expanded, but feature support must be checked individually.",
+          "hpci_relevance_ja": "学習用大規模GPUと、シミュレーションに組み込む低遅延推論の要求を分けます。",
+          "hpci_relevance_en": "Separate large training GPUs from low-latency inference embedded in simulations.",
+          "adoption_conditions_ja": [
+            "エネルギー・力・応力と長時間安定性を対象材料で検証する。",
+            "GROMACS組込パッチ削除など移行時の互換性変更を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate energy, forces, stress and long-run stability on target materials.",
+            "Check migration changes such as removed in-tree GROMACS patches."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ALPHAFOLD-STAGED-RESOURCES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA050",
+            "SRC-CDA051"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AlphaFold 3: CPU検索とGPU推論の分離",
+          "name_en": "AlphaFold 3: separate CPU search and GPU inference",
+          "timing_ja": "公開推論実装・性能資料",
+          "timing_en": "Public inference implementation and performance guidance",
+          "statement_ja": "AlphaFold 3は配列・鋳型検索を行うCPU側処理とGPU推論を別々に実行できます。検索にはCPU、主記憶、データベースI/Oが必要で、結果の再利用も可能です。公開性能表のコンパイルを除く推論時間は全工程の時間ではなく、GPUメモリ不足による主記憶への退避も性能を変えます。",
+          "statement_en": "AlphaFold 3 can separate CPU sequence/template search from GPU inference. Search needs CPU, RAM and database I/O, and its results can be reused. Published compile-free inference times exclude other stages; spilling GPU data into host memory also changes performance.",
+          "hpci_relevance_ja": "GPU台数だけでなく、前処理用CPU・メモリ・共有データ基盤を設計します。",
+          "hpci_relevance_en": "Plan preprocessing CPUs, RAM and shared data infrastructure, not GPU count alone.",
+          "adoption_conditions_ja": [
+            "配列長、複合体、乱数試行、検索再利用、コンパイル込み・なしを明示する。",
+            "コード、重み、データの利用条件を別々に確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Declare sequence/complex size, seeds, search reuse and compilation boundaries.",
+            "Check code, weight and data terms separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PFP8-SCIENCE-SERVICE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDA052"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Matlantis/PFP: 国内の材料計算サービス",
+          "name_en": "Matlantis/PFP: Japanese materials-computing service",
+          "timing_ja": "PFP v8論文: 2026年3月、提供条件は個別確認",
+          "timing_en": "PFP v8 paper: March 2026; verify service terms separately",
+          "statement_ja": "PFP v8の論文は、r2SCAN等を学習したポテンシャルと実験値との比較を報告し、Matlantisサービス上での提供を記載しています。対象の汎関数・材料・物性により誤差が異なるため、汎用という名称だけで全材料への適合を保証しません。これは学習済みモデルのサービス利用と、自前学習の設備需要を分ける事例です。",
+          "statement_en": "The PFP v8 paper reports r2SCAN-based potentials, experimental comparisons and Matlantis service availability. Errors depend on functional, material and property; universal branding is not universal validation. Service use of pretrained models should be separated from infrastructure for local training.",
+          "hpci_relevance_ja": "日本発技術も、実測品質とデータ利用・持ち出し条件で比較します。",
+          "hpci_relevance_en": "Compare Japanese technology through measured quality and data-use/export conditions.",
+          "adoption_conditions_ja": [
+            "閉じたサービスの利用実績を、任意GPUへの導入可能性とは扱わない。",
+            "提供版、料金、データ保管条件は未確認として残す。"
+          ],
+          "adoption_conditions_en": [
+            "Service availability does not imply deployability on arbitrary GPUs.",
+            "Current service version, pricing and data retention remain unverified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SCIENTIFIC-MODEL-AGENT-ADOPTION",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA049",
+            "SRC-CDA054"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "科学モデルとエージェントの接続",
+          "name_en": "Connecting scientific models and agents",
+          "timing_ja": "公開機能を使った検証段階、普及時期は未確定",
+          "timing_en": "Validation using public capabilities; adoption timing uncertain",
+          "statement_ja": "科学ソフトウェアのAgent Skillsや解析エージェントにより、設定・学習・推論を反復する構成が実装可能になっています。OpenFSでは、入力検査、失敗時の停止、結果の独立検証を含めた実用評価を次段階とします。手順が公開されていること自体は、自律実行の安全性や科学的正しさの証明ではありません。",
+          "statement_en": "Agent Skills and analysis agents make iterative configuration, training and inference possible. OpenFS identifies input checks, failure stops and independent result validation as the next evaluation step. Published procedures do not themselves establish safe autonomy or scientific correctness.",
+          "hpci_relevance_ja": "対話処理、短時間ジョブ、長時間計算の混在需要を見積もる対象です。",
+          "hpci_relevance_en": "This creates mixed demand for interactive, short and long-running jobs.",
+          "adoption_conditions_ja": [
+            "ツール権限、予算、再試行上限と実験設備への操作境界を固定する。",
+            "ここでの方向性はOpenFSの暫定検討であり、実証済み構成ではない。"
+          ],
+          "adoption_conditions_en": [
+            "Fix tool permissions, budgets, retry limits and instrument-control boundaries.",
+            "This is provisional OpenFS analysis, not a validated deployment."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-12-U02",
+      "title_ja": "科学エージェントの実行特性と結論の検証",
+      "title_en": "Scientific-agent execution and conclusion validation",
+      "summary_ja": "探索量、完了率、科学的な有効性を別々に評価します。",
+      "summary_en": "Evaluate exploration volume, completion and scientific validity separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-SCIENCEAGENTBENCH-VERIFIED",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA053"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ScienceAgentBench: 科学解析課題の評価",
+          "name_en": "ScienceAgentBench: scientific-analysis tasks",
+          "timing_ja": "2026-04-30にverified版を追加",
+          "timing_en": "Verified split added 2026-04-30",
+          "statement_ja": "ScienceAgentBenchは4分野44論文に由来する102課題を用い、Pythonプログラム、実行結果、費用を評価します。2026年には偽陰性を緩和するverified版が追加されました。課題と評価器の版が異なる成績を直接比較せず、全研究工程の自動化を示す試験とも扱いません。",
+          "statement_en": "ScienceAgentBench evaluates Python programs, outputs and costs on 102 tasks from 44 papers in four fields. A verified split was added in 2026 to reduce false negatives. Scores from different task/evaluator versions are not directly comparable and do not establish end-to-end research autonomy.",
+          "hpci_relevance_ja": "科学解析に必要なCPU処理、ツール呼出し、推論量を測る候補です。",
+          "hpci_relevance_en": "It is a candidate for measuring scientific-analysis CPU work, tool calls and inference demand.",
+          "adoption_conditions_ja": [
+            "モデル・Harness・課題・評価器を同時に固定する。",
+            "公開問題を独立した非公開評価とみなさない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin model, harness, task set and evaluator together.",
+            "Public tasks are not an independent hidden evaluation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-KOSMOS-SCIENTIFIC-LOOP",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA054"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Kosmos: 並列探索と科学的解釈",
+          "name_en": "Kosmos: parallel exploration and scientific interpretation",
+          "timing_ja": "2025年11月の公開研究",
+          "timing_en": "Public research, November 2025",
+          "statement_ja": "Kosmosは共有する構造化文脈を使い、文献調査と解析を並列に反復します。論文自身も解釈の誤り、入力データへの依存、人による評価の必要性を報告しています。多数の探索を実行したことや推定された専門家相当時間を、検証済み成果や実測の労働時間削減とは同一視しません。",
+          "statement_en": "Kosmos iterates parallel literature search and analysis through structured shared context. The paper reports interpretation errors, data dependence and a need for human evaluation. Exploration volume and estimated expert-equivalent time are not verified discoveries or measured labor savings.",
+          "hpci_relevance_ja": "並列推論だけでなく、文脈統合・データ解析・検証に資源が必要です。",
+          "hpci_relevance_en": "Resources are needed for context integration, data analysis and verification, not only parallel inference.",
+          "adoption_conditions_ja": [
+            "探索、統合、待機、解析を分けて実行履歴を測る。",
+            "論文時点の制限を最新サービスの仕様と断定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure exploration, integration, waits and analysis separately.",
+            "Do not treat paper-era limitations as current service specifications."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SCIENTIFIC-AGENT-NULL-MODEL",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA055",
+            "SRC-CDA054"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "仮説の検証: 帰無モデルと独立データ",
+          "name_en": "Hypothesis testing: null models and independent data",
+          "timing_ja": "2025年の独立監査、対象は3課題",
+          "timing_en": "2025 independent audit covering three tasks",
+          "statement_ja": "Kosmosを調べた別研究の要旨は、3課題について支持される結果、不確定な結果、誤った仮説が混在したと報告しています。これは限定された監査で、全科学エージェントの正答率を示しません。計算が正常終了しても、適切な対照と科学的解釈が必要という論点として扱います。",
+          "statement_en": "A separate Kosmos audit abstract reports supported, uncertain and false hypotheses across three tasks. This limited audit is not an accuracy estimate for all scientific agents. It illustrates that successful execution still requires appropriate controls and scientific interpretation.",
+          "hpci_relevance_ja": "検証用計算・独立データ・専門的確認も資源計画の対象です。",
+          "hpci_relevance_en": "Verification compute, independent data and expert review belong in resource planning.",
+          "adoption_conditions_ja": [
+            "今回確認したのは要旨であり、本文・再現計算は追加確認する。",
+            "既知解、無作為対照、学習外データで反証可能にする。"
+          ],
+          "adoption_conditions_en": [
+            "Only the abstract was verified here; full text and replication remain open.",
+            "Use known answers, random controls and held-out data to make claims falsifiable."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-APP03-CURRENT",
+    "TDS-APP03-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA046",
+        "title": "A foundation model for the Earth system",
+        "publisher": "Bodnar and coauthors / Nature",
+        "url": "https://www.nature.com/articles/s41586-025-09005-y",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2025-05-21"
+      },
+      "origin_group": "aurora-authors",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Model, training and forecast evaluations; code availability",
+      "observation_ja": "学習・追加学習・推論の区別と、対象別の精度比較を確認。",
+      "observation_en": "Read training/fine-tuning/inference distinctions and task-specific quality comparisons.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA047",
+        "title": "Aurora Earth-system forecasting implementation",
+        "publisher": "Microsoft / Aurora authors",
+        "url": "https://github.com/microsoft/aurora",
+        "source_class": "official-project",
+        "published_or_updated": "README accessed 2026-09-01"
+      },
+      "origin_group": "aurora-authors",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Model variants, inputs and public implementation",
+      "observation_ja": "変数・圧力面・格子を持つ入力と公開実装を確認。",
+      "observation_en": "Read variable/pressure-level/grid inputs and public implementation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA048",
+        "title": "DeePMD-kit multi-task training",
+        "publisher": "DeepModeling",
+        "url": "https://docs.deepmodeling.com/projects/deepmd/en/latest/train/multi-task-training.html",
+        "source_class": "official-project",
+        "published_or_updated": "latest documentation accessed 2026-09-01"
+      },
+      "origin_group": "deepmodeling",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Theory and backend-specific options",
+      "observation_ja": "共有記述子とタスク別モデル、バックエンド・評価条件の限定を確認。",
+      "observation_en": "Read shared descriptors, task-specific models and backend/validation restrictions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA049",
+        "title": "DeePMD-kit v3.2.0 release notes",
+        "publisher": "DeepModeling",
+        "url": "https://github.com/deepmodeling/deepmd-kit/releases",
+        "source_class": "official-project",
+        "published_or_updated": "v3.2.0; release list displays 19 Aug"
+      },
+      "origin_group": "deepmodeling",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "v3.2.0 highlights and breaking changes",
+      "observation_ja": "DPA4/DPA4C、学習済みモデルの適応、Agent Skills、GROMACS組込パッチ削除を確認。",
+      "observation_en": "Read DPA4/DPA4C, adaptation, Agent Skills and removed in-tree GROMACS patches.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA050",
+        "title": "AlphaFold 3 performance and staged execution",
+        "publisher": "Google DeepMind",
+        "url": "https://github.com/google-deepmind/alphafold3/blob/main/docs/performance.md",
+        "source_class": "official-project",
+        "published_or_updated": "main documentation accessed 2026-09-01"
+      },
+      "origin_group": "alphafold3-deepmind",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "CPU data pipeline, compile-free timing, accelerator requirements",
+      "observation_ja": "CPU検索とGPU推論の分離、計時範囲、メモリ不足時の性能低下を確認。",
+      "observation_en": "Read CPU-search/GPU-inference separation, timing boundaries and memory-spill costs.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA051",
+        "title": "AlphaFold 3 public inference pipeline",
+        "publisher": "Google DeepMind",
+        "url": "https://github.com/google-deepmind/alphafold3",
+        "source_class": "official-project",
+        "published_or_updated": "README accessed 2026-09-01"
+      },
+      "origin_group": "alphafold3-deepmind",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Parameters, licensing and disclaimer",
+      "observation_ja": "コード、モデル重み、参照データの条件が別であることを確認。実行・重み取得は未実施。",
+      "observation_en": "Read separate code, weights and reference-data terms; no execution or weight download.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA052",
+        "title": "Matlantis-PFP v8 with r2SCAN training",
+        "publisher": "Matlantis-PFP authors",
+        "url": "https://arxiv.org/html/2603.11063v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-03-09 v1"
+      },
+      "origin_group": "matlantis-pfp",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Abstract, methods, validation and melting-point limitations",
+      "observation_ja": "商用サービス上のPFP v8、汎関数と実験比較、対象依存の限界を確認。",
+      "observation_en": "Read service-based PFP v8, functional/experimental comparisons and scope limitations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA053",
+        "title": "ScienceAgentBench verified scientific tasks",
+        "publisher": "OSU NLP Group / ScienceAgentBench authors",
+        "url": "https://github.com/OSU-NLP-Group/ScienceAgentBench",
+        "source_class": "official-project",
+        "published_or_updated": "verified split announced 2026-04-30"
+      },
+      "origin_group": "scienceagentbench-authors",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Summary, verified split announcement and evaluation outputs",
+      "observation_ja": "102課題、44論文、4分野と偽陰性を緩和するverified版の追加を確認。",
+      "observation_en": "Read 102 tasks/44 papers/four fields and verified split to reduce false negatives.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA054",
+        "title": "Kosmos: An AI Scientist for Autonomous Discovery",
+        "publisher": "Kosmos / Edison Scientific authors",
+        "url": "https://arxiv.org/html/2511.02824v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-11-04 v1"
+      },
+      "origin_group": "kosmos-edison",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "System architecture, expert evaluation and limitations",
+      "observation_ja": "並列探索と共有文脈、解釈の誤り、データ・人による検証の必要性を確認。",
+      "observation_en": "Read parallel exploration/shared context, interpretation errors and data/human-validation limits.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA055",
+        "title": "When AI Does Science: Evaluating KOSMOS in Radiation Biology",
+        "publisher": "Humza Nusrat and Omar Nusrat",
+        "url": "https://arxiv.org/abs/2511.13825",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-11-17 v1"
+      },
+      "origin_group": "nusrat-kosmos-audit",
+      "checked_at": "2026-09-01T01:14:47+09:00",
+      "locator": "Abstract and submission metadata only; HTML unavailable",
+      "observation_ja": "3課題の帰無モデル監査という限定範囲と、正・不確定・誤仮説が混在する要旨を確認。本文は未確認。",
+      "observation_en": "Read abstract-only null-model audit of three tasks with supported, uncertain and false hypotheses; full text not verified.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-072",
+      "topic_ids": [
+        "APP-12"
+      ],
+      "priority": "P1",
+      "question_ja": "科学AIの代表的負荷について、同じ科学的精度で学習・推論・解析・検証の総資源量を比較できるか。",
+      "question_en": "Can training, inference, analysis and verification resources be compared at matching scientific quality for representative scientific-AI workloads?",
+      "next_action_ja": "公開入力と版を固定し、前処理・I/O・待機を含む計測資料を収集する。科学エージェント監査の本文と国内サービスの現行条件も確認する。",
+      "next_action_en": "Pin public inputs and versions and collect measurements including preprocessing, I/O and queues; verify full agent-audit papers and current Japanese service conditions.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "分野の網羅性と国内外での利用割合は未確認であり、需要比率は置かない。",
+    "DeePMDの最新版リリース記述と個別マニュアルのバックエンド対応には差があり、実装別の確認が残る。",
+    "科学エージェントの独立再現、費用、電力、長時間運転は未検証。",
+    "単一モデルによる暫定調査であり、Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Disciplinary coverage and regional usage shares are unverified; no demand weights are assigned.",
+    "DeePMD release notes and individual manuals differ in backend coverage; implementation-level verification remains.",
+    "Independent replication, cost, energy and long-running operation of scientific agents remain unverified.",
+    "This single-model review remains provisional with incomplete Consensus."
+  ]
+}

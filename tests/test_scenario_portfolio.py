@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import copy
 import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -45,6 +47,16 @@ class ScenarioPortfolioTests(unittest.TestCase):
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_candidate_domain_differences"], 3)
         self.assertGreaterEqual(result["counts"]["minimum_pairwise_fallback_domain_differences"], 3)
         self.assertTrue(result["gaps_remain_open"])
+
+    def test_module_entrypoint_does_not_depend_on_other_tests_import_paths(self):
+        completed = subprocess.run(
+            [sys.executable, "-m", "tools.check_scenario_portfolio"],
+            cwd=ROOT, capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stdout + completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual([], result["calculation_errors"])
+        self.assertEqual("incomplete", result["consensus_status"])
 
     def test_missing_gap_assignment_fails_closed(self):
         changed = copy.deepcopy(self.scenario_set)

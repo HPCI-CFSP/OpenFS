@@ -1,0 +1,174 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000118",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-01T05:13:03+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "c7d6ae9b391a7c9111c1ec6a6a3e37f4a62cfb2214c7b1559073239b95baf1f9",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験設備連携・リアルタイム処理の評価は、入力から利用可能な結果までの遅延、処理期限を守れた割合、データ品質、障害後の回復を対象にします。通信だけの測定と全工程の評価を分け、計算資源が空いている理想条件だけでなく、予約・競合・再試行を含む再現可能な比較を目指します。",
+  "summary_en": "Evaluation of instrument-linked and real-time processing covers input-to-usable-result latency, deadline attainment, data quality and recovery. Separate network-only measurements from complete workflows, and compare reproducible conditions including reservations, contention and retries rather than idle-resource ideal cases alone.",
+  "units": [
+    {
+      "unit_id": "APP-15-U02",
+      "before_sha256": "cf4e844737e5d943c276705deadd677508a2930ca82c622b08f8e3712bfee06e",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U02",
+        "TDS-CD3-APP-15-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-15-U02",
+      "title_ja": "予約と再投入を含む処理期限の評価",
+      "title_en": "Deadline evaluation across reservations and requeues",
+      "summary_ja": "資源の予約、優先枠、処理完了の保証を区別します。",
+      "summary_en": "Distinguish reservations, priority access and completion guarantees.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-NERSC-RESERVATION-END-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA116"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "予約の終了時刻も評価条件",
+          "name_en": "Reservation end is part of the evaluation contract",
+          "timing_ja": "2026年9月1日に確認した公開規則",
+          "timing_en": "Public policy read September 1, 2026",
+          "statement_ja": "NERSCの予約申請は1週間以上前の連絡を要し、予約終了時には実行中のジョブも停止されます。指定した実行時間が予約期間より長くても、計算の継続は保証されません。実験から結果返却までの比較では、予約の開始・終了と保存・再開に必要な時間も記録します。",
+          "statement_en": "NERSC reservations require at least one week's notice and terminate running jobs when the reservation ends. A longer requested walltime does not assure continued execution. End-to-end comparisons should record reservation boundaries and time needed to save and resume work.",
+          "hpci_relevance_ja": "予定の変わる実験に対し、予約だけで処理期限を満たせると仮定しないために必要です。",
+          "hpci_relevance_en": "This prevents assuming that reservations alone meet deadlines for changing experiments.",
+          "adoption_conditions_ja": [
+            "これはNERSCの条件であり、HPCI各センターの規則を別に調べる。",
+            "実行時間と資源割当から差し引かれる時間を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "These are NERSC conditions; investigate each HPCI center separately.",
+            "Separate runtime from time charged against a resource allocation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-NERSC-REALTIME-ADMISSION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA117"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "realtime枠: 承認と用途の制約",
+          "name_en": "Realtime access: approval and workload constraints",
+          "timing_ja": "2026年9月1日に確認した公開文書",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "NERSCのrealtime枠はビームライン等の外部の実時間要件を持つ処理向けで、特別な承認と限られた資源枠を必要とします。通常のバッチ処理を速く終えるための枠ではありません。この機能の存在だけで、全要求の待ち時間や完了期限が保証されるとは判断しません。",
+          "statement_en": "NERSC realtime access requires special approval for external live workloads such as beamlines and has limited capacity. It is not intended to accelerate ordinary batch turnaround. Its existence alone does not establish waiting-time or completion guarantees for all requests.",
+          "hpci_relevance_ja": "用途に合う利用資格と、実測した応答時間を分けて比較します。",
+          "hpci_relevance_en": "Compare workload eligibility separately from measured response times.",
+          "adoption_conditions_ja": [
+            "受付拒否、待機、期限超過も全要求の評価に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Include rejection, waiting and deadline misses when evaluating all offered requests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-NERSC-PREEMPT-TIMEOUT-REQUEUE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA117"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "プリエンプションと時間制限超過の再開条件",
+          "name_en": "Different recovery paths for preemption and time-limit expiry",
+          "timing_ja": "2026年9月1日に確認した公開文書",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "NERSCの例では、プリエンプション時の自動再投入は、時間制限を超えたジョブの再投入を意味しません。また、同じジョブIDの複数回の実行を区別して履歴を取得する必要があります。OpenFSでは再実行を含む総費用・未処理データ・期限達成率を評価対象とします。",
+          "statement_en": "NERSC's examples distinguish automatic requeue after preemption from time-limit expiry and require explicit retrieval of repeated executions under one job ID. OpenFS proposes evaluating total retry cost, missing data and deadline attainment across all attempts.",
+          "hpci_relevance_ja": "最後に成功した実行だけを残し、中断による損失を隠す評価を防ぎます。",
+          "hpci_relevance_en": "This avoids evaluations that retain only a final successful attempt and hide interruption costs.",
+          "adoption_conditions_ja": [
+            "本調査ではプリエンプションや実サービスの試験を行っていない。"
+          ],
+          "adoption_conditions_en": [
+            "No preemption or live-service tests were performed in this study."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA116",
+        "title": "NERSC reservations: notice, accounting and reservation end",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/jobs/reservations/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01; publication date not established"
+      },
+      "origin_group": "nersc-operations-policy",
+      "checked_at": "2026-09-01T04:51:44+09:00",
+      "locator": "Requesting a reservation; Charging; Job scripts for reservations",
+      "observation_ja": "1週間以上前の予約申請、未使用時間も対象とする割当消費、予約終了時のジョブ停止を確認。一般バッチの高速化保証ではない。",
+      "observation_en": "Read at-least-one-week advance notice, charging against allocations for idle reserved capacity and job termination at reservation end; not guaranteed fast regular batch throughput.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA117",
+        "title": "NERSC example jobs: realtime access and preemption semantics",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/jobs/examples/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01; publication date not established"
+      },
+      "origin_group": "nersc-operations-policy",
+      "checked_at": "2026-09-01T04:51:44+09:00",
+      "locator": "Realtime and Preemptible Jobs sections",
+      "observation_ja": "realtimeは外部実験等に限定した要承認枠。プリエンプション時の再投入と時間制限超過は別の処理であり、実行履歴の全試行を保持する必要がある。",
+      "observation_en": "Realtime requires approval for external experimental needs. Requeue on preemption differs from time-limit expiry; evaluation must retain every execution attempt.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "センターごとの実測待ち時間、再開費用、実験の処理期限を対応付けた検証は未実施。",
+    "公開規則の暫定調査であり、独立Consensusやサービス品質保証ではない。"
+  ],
+  "remaining_work_en": [
+    "Center-specific validation linking measured waits, restart costs and experimental deadlines remains undone.",
+    "This is provisional public-policy research, not independent Consensus or service assurance."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000049",
+      "bundle_sha256": "9fdab650a772e66d701b6e1097c92e08834b33ffb4ccb5c51770449c849d2c6d"
+    },
+    {
+      "update_id": "RUP-000071",
+      "bundle_sha256": "bbbdb82cc3411140e9c0c60190d996b460fd86d4aa2da5773c99bb9568764c98"
+    }
+  ]
+}

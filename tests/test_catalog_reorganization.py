@@ -57,7 +57,9 @@ class CatalogReorganizationTests(unittest.TestCase):
         ids = [p[key] for p in pairs for key in ("needs_topic_id", "evaluation_topic_id")]
         self.assertEqual(6, len(set(ids)))
         self.assertTrue(set(ids) <= self.codes.keys())
-        self.assertEqual("not-started", self.topics["APP-15"]["status"])
+        questions = [tuple(unit["question_en"] for unit in self.topics[tid]["research_units"])
+                     for tid in ids]
+        self.assertEqual(6, len(set(questions)))
 
     def test_legacy_links_expose_all_successors_and_moved_codes(self):
         aliases = catalog_aliases(ROOT, self.baseline, read("config/publication-i18n.json"), self.codes)
@@ -93,7 +95,9 @@ class CatalogReorganizationTests(unittest.TestCase):
     def test_incomplete_units_cannot_claim_progress_or_review(self):
         modified = copy.deepcopy(self.baseline)
         topic = next(t for t in modified["topics"] if t["topic_id"] == "APP-15")
+        topic["research_units"][0]["evidence_section_ids"] = []
         topic["research_units"][0]["status"] = "reviewed"
+        topic["research_units"][1]["status"] = "not-started"
         topic["status"] = "reviewed"
         with patch("catalog_lineage.load_catalog", return_value=modified):
             errors = validate_catalog_scope(ROOT)
@@ -128,7 +132,7 @@ class CatalogReorganizationTests(unittest.TestCase):
             output = Path(directory) / "site"
             build(ROOT, output)
             env = dict(os.environ, OPENFS_TEST_PUBLIC_DATA=str(output / "data/openfs-public.js"))
-            result = subprocess.run([node, "--test", "tests/test_catalog_ui.js"], cwd=ROOT,
+            result = subprocess.run([node, "--test", "tests/test_catalog_ui.js", "tests/test_search_ui.js"], cwd=ROOT,
                                     env=env, capture_output=True, text=True)
             self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 

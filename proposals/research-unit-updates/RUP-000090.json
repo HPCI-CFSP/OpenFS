@@ -1,0 +1,218 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000090",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-01T03:43:17+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "90b42016e5d97916ed1fe4c585471dbd899c581327a245e9916faf49f4589e48",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AI基盤を学習・推論・エージェント実行に分け、版間互換性、KV転送、状態保存、権限制御を比較しました。推論ではupstreamの公開版、ベンダーの対応版、機能の併用条件を区別しています。単一のAIモデルによる文献調査であり、性能の実測や実運用への適合確認は未実施です。",
+  "summary_en": "This single-model review separates training, inference and agent execution across version compatibility, KV transfer, persistence and authorization. It distinguishes upstream releases, vendor-supported versions and composable inference features. Performance measurements and production qualification remain unperformed.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "283b8a0516678be0901092923d72918398dabbbe83fa71b1d7622e8fdbbb4a42",
+      "evidence_section_ids": [
+        "TDS-HC26-SSW-09-U2",
+        "TDS-CD1-SSW-09-U02",
+        "TDS-CD2-SSW-09-U02",
+        "TDS-CD4-SSW-09-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-SSW-09-U02",
+      "title_ja": "対応版と機能併用条件の照合",
+      "title_en": "Cross-checking supported versions and feature combinations",
+      "summary_ja": "同じ推論エンジン名でも、GPU世代・配布物・backend・機能の組合せによって利用条件が異なります。",
+      "summary_en": "An inference-engine name alone does not identify the supported GPU, distribution, backend or feature combination.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-VLLM-UPSTREAM-VENDOR-VERSIONS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS077",
+            "SRC-CDS089",
+            "SRC-CDS090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "vLLM公開版とROCmの対応版",
+          "name_en": "vLLM release versus ROCm support version",
+          "timing_ja": "2026-08-26公開版とdevelop資料を別々に確認",
+          "timing_en": "Release and develop documentation inspected separately",
+          "statement_ja": "vLLMの公開版は0.28.0ですが、確認したROCm Core SDK 10.0.0のdevelop資料はvLLM 0.27.0対応を掲げています。これは0.28.0の非対応を証明するものでも、全GPUでの動作保証でもありません。vLLM資料のROCm最低要件、wheel構成、コンテナの選択も別々に確認します。",
+          "statement_en": "Upstream vLLM has released 0.28.0, while the inspected ROCm Core SDK 10.0.0 develop documentation lists vLLM 0.27.0. This neither proves 0.28.0 unsupported nor guarantees every GPU. Check minimum ROCm requirements, wheel variants and container selection separately.",
+          "hpci_relevance_ja": "新規GPUの採用時に、最新版の存在をそのまま採用可能性と見なす誤りを防ぎます。",
+          "hpci_relevance_en": "Prevents equating an upstream release with deployability on a selected GPU.",
+          "adoption_conditions_ja": [
+            "GPU型番、driver、PyTorch、ROCm、wheelまたはコンテナdigestを固定して検証する。",
+            "旧rocm/vllmイメージの非推奨化と、ROCm backend全体の廃止を混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Qualify a pinned GPU, driver, PyTorch, ROCm and wheel/container digest.",
+            "Do not confuse deprecation of old rocm/vllm images with retirement of the ROCm backend."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-VLLM-FEATURE-COMPOSITION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS091"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "個別対応・併用制約・未確認の区別",
+          "name_en": "Individual support, composition limits and unknowns",
+          "timing_ja": "v0.28.0文書内の比較表、各行の実測は未実施",
+          "timing_en": "Matrix in v0.28.0 documentation; rows not independently tested",
+          "statement_ja": "表ではLoRAと投機的Decodeの併用が非対応で、multimodal LoRAは言語backboneに限定されています。AMDのprompt embeddingsは未確認扱いです。これらをすべて単純な対応・非対応の二値へ潰さず、資料の版と対象モデルを残します。",
+          "statement_en": "The matrix marks LoRA plus speculative decoding incompatible, restricts multimodal LoRA to the language backbone, and leaves AMD prompt embeddings unknown. Preserve these distinctions and the documentation/model context rather than reducing all entries to a binary support flag.",
+          "hpci_relevance_ja": "科学エージェントのモデル切替、LoRA、画像入力を組み合わせた仕様の実現性を確認します。",
+          "hpci_relevance_en": "Qualify combinations of model switching, LoRA and visual inputs needed by scientific agents.",
+          "adoption_conditions_ja": [
+            "表の記載を将来版へ外挿せず、採用版で回帰試験を行う。"
+          ],
+          "adoption_conditions_en": [
+            "Do not extrapolate the matrix to future versions; regression-test the deployment version."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-VLLM-XPU-PIPELINE-BOUNDARY",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDS090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Intel XPUのpipeline parallelの適用範囲",
+          "name_en": "Scope of Intel XPU pipeline parallelism",
+          "timing_ja": "v0.28.0資料ではbeta",
+          "timing_en": "Beta in v0.28.0 documentation",
+          "statement_ja": "XPUのpipeline parallelはonline serving向けのbetaで、単一ノードのmp backendに限定して記述されています。この記載をマルチノード構成の対応証拠として用いません。",
+          "statement_en": "XPU pipeline parallelism is documented as beta for online serving on a single node with the mp backend. This is not evidence of multi-node support.",
+          "hpci_relevance_ja": "代替アクセラレータの選定で、ノード内の実装とシステム規模での利用条件を区別します。",
+          "hpci_relevance_en": "Separates within-node implementation from system-scale deployment requirements.",
+          "adoption_conditions_ja": [
+            "マルチノードの成熟時期は未定として残す。"
+          ],
+          "adoption_conditions_en": [
+            "Leave the multi-node maturity timeline unresolved."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD3-SSW-09-U02"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS077",
+        "title": "vLLM 0.28.0 release",
+        "publisher": "vLLM Project",
+        "url": "https://github.com/vllm-project/vllm/releases/tag/v0.28.0",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-26; tag v0.28.0, commit 2cf0a69"
+      },
+      "origin_group": "vllm-project",
+      "checked_at": "2026-09-01T02:43:40+09:00",
+      "locator": "Release header; tiered KV cache; new defaults; breaking changes; release artifacts",
+      "observation_ja": "0.28.0の版別変更と配布対象を確認。性能向上率は採用せず、既定設定と依存関係の変化を記録する。",
+      "observation_en": "Read version-specific changes and artifact targets; record default/dependency changes without adopting speedup claims.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS089",
+        "title": "ROCm Core SDK 10.0.0 component matrix and release notes (develop page)",
+        "publisher": "AMD",
+        "url": "https://rocm.docs.amd.com/en/develop/about/release-notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26; develop page inspected 2026-09-01"
+      },
+      "origin_group": "AMD-ROCm-10-release",
+      "checked_at": "2026-09-01T03:01:26+09:00",
+      "locator": "ROCm Core SDK components; rocFFT and RCCL changes; AI ecosystem support",
+      "observation_ja": "rocBLAS 5.6.0、rocSOLVER 3.36.0、RCCL 2.30.7などの構成版を掲載。rocFFTの任意RCCL経路は単一ノード・単一プロセス内の複数GPU向けです。",
+      "observation_en": "Lists components including rocBLAS 5.6.0, rocSOLVER 3.36.0 and RCCL 2.30.7. The optional rocFFT RCCL path is single-node, single-process, multi-GPU.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS090",
+        "title": "vLLM 0.28.0 GPU installation and platform requirements",
+        "publisher": "vLLM project",
+        "url": "https://docs.vllm.ai/en/v0.28.0/getting_started/installation/gpu/",
+        "source_class": "official-project",
+        "published_or_updated": "v0.28.0 documentation; page footer 2026-05-11, not the release date"
+      },
+      "origin_group": "vLLM-028-documentation",
+      "checked_at": "2026-09-01T03:22:21+09:00",
+      "locator": "GPU requirements; AMD image deprecation; Supported features / Intel XPU",
+      "observation_ja": "ROCmの対応要件とwheel構成版は別。AMD旧イメージから公式イメージへの移行を案内し、XPUのpipeline parallelを単一ノード・mp backendのbetaと記載しています。",
+      "observation_en": "Distinguishes ROCm requirements from wheel variants, directs users from older AMD images to official images, and bounds XPU pipeline parallelism to single-node mp-backend beta support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS091",
+        "title": "vLLM 0.28.0 feature combinations and hardware compatibility matrix",
+        "publisher": "vLLM project",
+        "url": "https://docs.vllm.ai/en/v0.28.0/features/",
+        "source_class": "official-project",
+        "published_or_updated": "v0.28.0 documentation; page footer 2026-05-01, not the release date"
+      },
+      "origin_group": "vLLM-028-documentation",
+      "checked_at": "2026-09-01T03:22:21+09:00",
+      "locator": "Compatibility Matrix / Feature x Feature and Feature x Hardware; footnotes",
+      "observation_ja": "表はLoRAと投機的Decodeの併用を非対応とし、AMDのprompt embeddingsを未確認と区別しています。multimodal LoRAは言語backboneに限定されます。",
+      "observation_en": "The matrix marks LoRA/speculative decoding incompatible, distinguishes unknown AMD prompt-embedding support, and limits multimodal LoRA to the language backbone.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "同一モデル・精度・到着過程・品質・SLOで、GPU/backend別の性能と障害回復を比較する。",
+    "古いページ末尾の日付を版の公開日として使わず、release記録と切り分ける。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Compare performance and recovery across GPU/backends at matched model, precision, arrival process, quality and SLO.",
+    "Keep page-footer dates distinct from release dates.",
+    "Independent-model Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000038",
+      "bundle_sha256": "a541a77b75b3f86d4cd0886440f6883e018475143aa3a8701c2b9f5c96b019c6"
+    },
+    {
+      "update_id": "RUP-000075",
+      "bundle_sha256": "2c6fb088fefafe97ad7951bbe834a668ade57938511178a50e670bacfe4f6242"
+    },
+    {
+      "update_id": "RUP-000083",
+      "bundle_sha256": "26c781c4954a0e47d4034cea42672f0883887bba3354c415d9ce922e0824f51c"
+    }
+  ]
+}

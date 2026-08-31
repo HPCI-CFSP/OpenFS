@@ -1,0 +1,133 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000098",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-01T04:05:38+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "b6159351bbbc44125d31dff6c57f908b2174a9dbed1803d57e2a369fd7c55e60",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIフレームワークと推論実行系を、学習・推論機能、配布版、ベンダーの検証対象、対象機種、運用条件で比較します。MindSporeの配布情報も追加しましたが、公開版の存在を互換性や性能の実証とは扱いません。単一のAIモデルによる暫定結果で、独立Consensusは未完了です。",
+  "summary_en": "Compare AI frameworks and inference runtimes by training/inference functions, released versions, vendor qualification, target systems and operational conditions. Added MindSpore distribution evidence does not turn release availability into compatibility or performance proof. Results remain single-model, provisional and Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U01",
+      "before_sha256": "d3309830ff967ea1bddbec8e4a6a277f1a3fb998d89e7e8636ff4b379fa6e308",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-09-U01",
+        "TDS-CD5-SSW-09-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD5-SSW-09-U01",
+      "title_ja": "MindSporeの配布版と対応環境の確認",
+      "title_en": "MindSpore release and environment verification",
+      "summary_ja": "配布メタデータと説明文に版のずれがあり、導入条件は版ごとの照合が必要です。",
+      "summary_en": "Distribution metadata and descriptive text refer to different versions, requiring version-specific reconciliation.",
+      "items": [
+        {
+          "item_id": "TDI-CD5-MINDSPORE-210-DISTRIBUTION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS101",
+            "SRC-CDS102"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MindSpore 2.10.0と互換表の版ずれ",
+          "name_en": "MindSpore 2.10.0 and version-misaligned compatibility text",
+          "timing_ja": "配布物のアップロードは2026-07-31",
+          "timing_en": "Artifacts uploaded 2026-07-31",
+          "statement_ja": "PyPIには2.10.0の配布物がありますが、同じページの導入例は2.7.1、保守表の先頭は2.9です。2.9.0版FAQにも過去版のCANN対応説明が残るため、2.10.0の対応GPU・Ascend・CANNの確定表には転用しません。",
+          "statement_en": "PyPI lists 2.10.0 artifacts, but its installation example uses 2.7.1 and its maintenance table starts at 2.9. The 2.9.0 FAQ also retains historical CANN guidance, so these descriptions cannot establish a definitive 2.10.0 GPU/Ascend/CANN matrix.",
+          "hpci_relevance_ja": "中国発のAIソフトウェアも比較対象とし、配布版と実行環境の組合せを確認します。",
+          "hpci_relevance_en": "Include Chinese AI software in comparisons while verifying release/environment combinations.",
+          "adoption_conditions_ja": [
+            "2.10.0のリリースノート、対応機種、CANN・ドライバ・Pythonの組合せを固定する。",
+            "配布ページの情報だけで性能、全機能対応、長期保守を断定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin 2.10.0 release notes, hardware and CANN/driver/Python combinations.",
+            "Do not infer performance, full feature support or long-term maintenance from a distribution page alone."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS101",
+        "title": "MindSpore PyPI release metadata and project description",
+        "publisher": "MindSpore authors / PyPI",
+        "url": "https://pypi.org/project/mindspore/",
+        "source_class": "official-project",
+        "published_or_updated": "2.10.0 artifacts uploaded 2026-07-31; description contains older versions"
+      },
+      "origin_group": "MindSpore-release-documentation",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "Key dates; built distributions; installation; maintenance status",
+      "observation_ja": "2.10.0の配布物と7月31日のアップロードを確認しました。一方、説明の導入例は2.7.1、保守表の先頭は2.9で、対応環境の版整合は未確認です。",
+      "observation_en": "Lists 2.10.0 artifacts uploaded July 31. The installation example still uses 2.7.1 and the maintenance table starts with 2.9, leaving version-aligned support unconfirmed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS102",
+        "title": "MindSpore 2.9.0 installation FAQ",
+        "publisher": "MindSpore community",
+        "url": "https://www.mindspore.cn/docs/zh-CN/r2.9.0/faq/installation.html",
+        "source_class": "official-project",
+        "published_or_updated": "Versioned 2.9.0 FAQ; individual answer dates not established"
+      },
+      "origin_group": "MindSpore-release-documentation",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "Compatibility; undefined symbols; multiple Ascend software packages",
+      "observation_ja": "2.7.2とCANN 8.5.0の対応理由など、過去版についての説明が残っています。2.10.0の完全な互換表の根拠にはしません。",
+      "observation_en": "Retains historical guidance, including why 2.7.2 pairs with CANN 8.5.0. It is not evidence for a complete 2.10.0 compatibility matrix.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "MindSporeの現行版について、版が一致した互換表と分散学習・科学AIの再現結果を確認する必要があります。",
+    "取得した各資料は同じ開発元に由来し、独立した検証票には数えません。"
+  ],
+  "remaining_work_en": [
+    "MindSpore still needs a version-aligned compatibility matrix and reproducible distributed-training/scientific-AI results.",
+    "The inspected materials derive from the same project and do not count as independent validation votes."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000038",
+      "bundle_sha256": "a541a77b75b3f86d4cd0886440f6883e018475143aa3a8701c2b9f5c96b019c6"
+    },
+    {
+      "update_id": "RUP-000075",
+      "bundle_sha256": "2c6fb088fefafe97ad7951bbe834a668ade57938511178a50e670bacfe4f6242"
+    },
+    {
+      "update_id": "RUP-000083",
+      "bundle_sha256": "26c781c4954a0e47d4034cea42672f0883887bba3354c415d9ce922e0824f51c"
+    },
+    {
+      "update_id": "RUP-000090",
+      "bundle_sha256": "d5c80a35c18b14c6e1bb7d6b2a1d15984f438c719b8bda42e3108ebd4590a2ef"
+    }
+  ]
+}

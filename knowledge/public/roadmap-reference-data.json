@@ -2,10 +2,22 @@
   "schema_version": "0.1.0",
   "export_id": "ROADMAP-REFERENCE-DATA-001",
   "status": "published",
-  "as_of": "2026-08-31",
+  "as_of": "2026-09-01",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "terms": [
+    {
+      "term_id": "TERM-TERMINAL-BENCH", "label_ja": "Terminal-Bench", "label_en": "Terminal-Bench", "aliases": ["Terminal-Bench", "Terminal Bench"], "category": "benchmark",
+      "short_definition_ja": "端末環境での実作業を通してAIエージェントを評価するベンチマーク。", "short_definition_en": "A benchmark evaluating AI agents through practical terminal tasks.",
+      "definition_ja": "モデルとハーネスを組み合わせて評価します。4.0では課題と実行資源が変わったため再実行が必要です。公開課題での得点は、非公開課題への汎化や実行環境の安全性を保証しません。", "definition_en": "Evaluates model-harness combinations. Version 4.0 changes tasks and execution resources, requiring reruns. Public-task scores establish neither generalization to private tasks nor execution-environment safety.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK055"}], "related_term_ids": ["TERM-TERMINAL-BENCH-SCIENCE", "TERM-SWE-BENCH", "TERM-TUA-BENCH"]
+    },
+    {
+      "term_id": "TERM-TERMINAL-BENCH-SCIENCE", "label_ja": "Terminal-Bench-Science", "label_en": "Terminal-Bench-Science", "aliases": ["Terminal-Bench-Science", "Terminal Bench Science"], "category": "benchmark",
+      "short_definition_ja": "科学研究ワークフローの成果物を検査するAIエージェント評価。", "short_definition_en": "AI-agent evaluation through artifacts from scientific research workflows.",
+      "definition_ja": "0.1は5分野の70課題を公開し、課題固有の検査で分析・計算等の成果物を評価します。分野の広さとHPCI利用実態の代表性は別であり、対象研究に合わせた追加検証が必要です。", "definition_en": "Version 0.1 publishes 70 tasks across five scientific domains, grading analysis and computational artifacts with task-specific checks. Breadth is not HPCI workload representativeness; additional validation must match the intended research.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK056"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK057"}], "related_term_ids": ["TERM-TERMINAL-BENCH", "TERM-PAPERBENCH"]
+    },
     {
       "term_id": "TERM-QLC-SSD",
       "label_ja": "QLC SSD",
@@ -813,8 +825,8 @@
     {
       "term_id": "TERM-EEA1-SALMON", "label_ja": "SALMON", "label_en": "SALMON", "aliases": ["Scalable Ab-initio Light-Matter simulator for Optics and Nanoscience"], "category": "benchmark",
       "short_definition_ja": "実時間TDDFT計算を対象とするFugakuNEXT EEA1アプリケーション。", "short_definition_en": "A FugakuNEXT EEA1 application for real-time TDDFT simulation.",
-      "definition_ja": "SALMONは光と物質の相互作用を扱う実時間TDDFTソフトウェアで、開発元の公開GitHubリポジトリを確認できる。性能比較には、対象版、物理条件、入力、MPI・OpenMP配置、コンパイラ条件の固定が必要である。", "definition_en": "SALMON is real-time TDDFT software for light-matter interaction with a public developer repository. Performance comparison requires the version, physical conditions, input, MPI and OpenMP placement, and compiler conditions to be pinned.",
-      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
+      "definition_ja": "SALMONは光と物質の相互作用を扱う実時間TDDFTソフトウェアである。2系の公開開発リポジトリはSALMON2で、旧版のSALMONとは区別する。性能比較には、配布物とコードの対応、物理条件、入力、MPI・OpenMP配置、コンパイラ条件の固定が必要である。マニュアル上の機能対応だけでは、EEA1評価の再現や性能を確認したことにはならない。", "definition_en": "SALMON is real-time TDDFT software for light-matter interaction. Its public version-2 development repository is SALMON2, distinct from legacy SALMON. Performance comparison requires artifact-to-code correspondence, physical conditions, inputs, MPI/OpenMP placement and compiler conditions to be pinned. Documented functionality does not establish EEA1 reproducibility or performance.",
+      "roadmap_ids": ["RM-APP-WORKLOADS"], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK073"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK074"}], "related_term_ids": ["TERM-BENCHPARK", "TERM-BENCHKIT", "TERM-PERFORMANCE-MODEL"]
     },
     {
       "term_id": "TERM-EEA1-SCALE-LETKF", "label_ja": "SCALE-LETKF", "label_en": "SCALE-LETKF", "aliases": ["SCALE LETKF"], "category": "benchmark",
@@ -1548,6 +1560,18 @@
         {"column_id": "hpci-use", "label_ja": "OpenFS・HPCIでの使い方", "label_en": "OpenFS and HPCI use"}
       ],
       "rows": [
+        {"term_id": "TERM-TERMINAL-BENCH", "cells": [
+          {"column_id": "target", "text_ja": "端末での複数段階の作業。", "text_en": "Multistep terminal tasks."},
+          {"column_id": "grading", "text_ja": "課題ごとの実行結果を検査。", "text_en": "Task-specific checks of execution outcomes."},
+          {"column_id": "strengths", "text_ja": "公開課題・環境・結果を版付きで比較できる。", "text_en": "Versioned public tasks, environments and results."},
+          {"column_id": "hpci-use", "text_ja": "解析・ビルド作業の補助評価。HPCI固有の処理と権限は別に検証。", "text_en": "Supplement analysis/build evaluation; validate HPCI tasks and permissions separately."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK055"}]},
+        {"term_id": "TERM-TERMINAL-BENCH-SCIENCE", "cells": [
+          {"column_id": "target", "text_ja": "複数科学分野の研究ワークフロー。", "text_en": "Research workflows across scientific domains."},
+          {"column_id": "grading", "text_ja": "解析・シミュレーション等の成果物を課題別に検査。", "text_en": "Task-specific checks of analysis, simulation and other artifacts."},
+          {"column_id": "strengths", "text_ja": "一般的な端末作業を科学研究側へ拡張。", "text_en": "Extends general terminal tasks toward scientific research."},
+          {"column_id": "hpci-use", "text_ja": "科学的有用性の補助評価。全国のアプリ利用を代表するとは限らない。", "text_en": "Supplement scientific-utility evaluation; not necessarily representative of national application use."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK056"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK057"}]},
         {"term_id": "TERM-HARNESS-BENCH", "cells": [
           {"column_id": "target", "text_ja": "モデルとハーネスの構成差。", "text_en": "Differences among model-harness configurations."},
           {"column_id": "grading", "text_ja": "共通条件の106課題、成果物・履歴・使用量・検証結果。", "text_en": "106 tasks under shared conditions with artifacts, traces, usage, and validators."},
@@ -1612,6 +1636,20 @@
         {"column_id": "openfs-control", "label_ja": "OpenFSで補う統制", "label_en": "Additional OpenFS control"}
       ],
       "rows": [
+        {"term_id": "TERM-TERMINAL-BENCH", "cells": [
+          {"column_id": "configuration", "text_ja": "モデル、ハーネス、課題・評価器の版を記録。", "text_en": "Record model, harness, task and evaluator versions."},
+          {"column_id": "boundary", "text_ja": "権限・通信制限は別途検証。", "text_en": "Verify permissions and network restrictions separately."},
+          {"column_id": "records", "text_ja": "資源上限、試行、費用を保存。", "text_en": "Preserve resource limits, trials and cost."},
+          {"column_id": "holdout", "text_ja": "公開課題は非公開ホールドアウトではない。", "text_en": "Public tasks are not private holdouts."},
+          {"column_id": "openfs-control", "text_ja": "未知課題と外側の権限制御を追加検証。", "text_en": "Add unseen-task and outer-boundary validation."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK055"}]},
+        {"term_id": "TERM-TERMINAL-BENCH-SCIENCE", "cells": [
+          {"column_id": "configuration", "text_ja": "モデルとハーネスを分け、版を固定。", "text_en": "Separate model from harness and pin revisions."},
+          {"column_id": "boundary", "text_ja": "科学課題の成功は安全性の認定ではない。", "text_en": "Scientific success is not safety certification."},
+          {"column_id": "records", "text_ja": "成果物、分野、試行と費用を保存。", "text_en": "Preserve artifacts, domains, trials and cost."},
+          {"column_id": "holdout", "text_ja": "公開課題への既知解の影響を確認。", "text_en": "Check exposure to public-task solutions."},
+          {"column_id": "openfs-control", "text_ja": "独立保管した課題と科学的妥当性検査を追加。", "text_en": "Add independently held tasks and scientific-validity checks."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK056"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK057"}]},
         {"term_id": "TERM-HARNESS-BENCH", "cells": [
           {"column_id": "configuration", "text_ja": "モデルとハーネスの組合せを結果の単位として扱う。", "text_en": "Treats each model-harness pairing as the reported configuration."},
           {"column_id": "boundary", "text_ja": "課題ごとの作業領域は分離するが、公式実装のセキュリティ得点にはLLMルーブリックも含まれる。OS権限やネットワーク遮断の強制とは別に検証する。", "text_en": "Separates per-task workspaces, while the official implementation also uses an LLM rubric for its security score. Verify OS permissions and network denial independently."},
@@ -1726,6 +1764,16 @@
         {"column_id": "priority", "label_ja": "優先度・制約", "label_en": "Priority and constraints"}
       ],
       "rows": [
+        {"term_id": "TERM-TERMINAL-BENCH", "cells": [
+          {"column_id": "public-evidence", "text_ja": "公開実装・版付き課題・結果あり。版間比較には再評価が必要。", "text_en": "Public implementation, versioned tasks and results; cross-version comparison requires re-evaluation."},
+          {"column_id": "openfs-fit", "text_ja": "端末作業と複数段階の実行。", "text_en": "Terminal work and multistep execution."},
+          {"column_id": "priority", "text_ja": "中。再利用候補として追跡し、独立利用とHPCI適合性を確認する。", "text_en": "Medium: track for reuse and verify independent adoption and HPCI fit."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK055"}]},
+        {"term_id": "TERM-TERMINAL-BENCH-SCIENCE", "cells": [
+          {"column_id": "public-evidence", "text_ja": "0.1のコード・課題・評価結果あり。長期の第三者利用は未確認。", "text_en": "Version 0.1 code, tasks and results are public; sustained independent adoption is unconfirmed."},
+          {"column_id": "openfs-fit", "text_ja": "科学的な解析・計算の成果物。", "text_en": "Artifacts from scientific analysis and computation."},
+          {"column_id": "priority", "text_ja": "中。対象との関連は強いが、独立再現と分野別被覆を確認する。", "text_en": "Medium: strong subject fit, subject to independent reproduction and domain-coverage checks."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK056"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK057"}]},
         {"term_id": "TERM-HARNESS-BENCH", "cells": [
           {"column_id": "public-evidence", "text_ja": "公式コードと論文結果を公開。新規プロジェクトのため第三者利用は継続確認する。", "text_en": "Official code and paper results are public; independent use remains to be tracked because the project is new."},
           {"column_id": "openfs-fit", "text_ja": "モデルとハーネスの組合せ、費用、実行履歴、失敗形態を共通条件で比較できる。", "text_en": "Compares model-harness pairings, cost, traces, and failure modes under shared conditions."},
@@ -2160,21 +2208,21 @@
         {"term_id": "TERM-EEA1-GENESIS", "cells": [
           {"column_id": "domain", "text_ja": "生命科学・分子動力学", "text_en": "Life science and molecular dynamics"},
           {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
-          {"column_id": "confirmed", "text_ja": "公式サイトと開発元リポジトリ", "text_en": "Official site and developer repository"},
-          {"column_id": "gap", "text_ja": "EEA1のコミット、入力、依存関係、実行条件", "text_en": "EEA1 commit, input, dependencies, and run conditions"}
-        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK046"}]},
+          {"column_id": "confirmed", "text_ja": "CGDYN論文のコード・入力と、別センターの2.1.6.1 GPU導入例。後者は単精度・sm_80で試験例外あり。", "text_en": "CGDYN paper code/inputs and another center's 2.1.6.1 GPU recipe; the latter uses single precision and sm_80, with test exceptions."},
+          {"column_id": "gap", "text_ja": "原子・粗視化モデル、精度、入力、版と計測区間を一致させる。EEA1の75%という高速化可能割合は確認できない。", "text_en": "Match atomistic/coarse-grained model, precision, input, revision and timed stages. No EEA1 75% accelerable fraction was established."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK046"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK068"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK069"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK070"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK071"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK072"}]},
         {"term_id": "TERM-EEA1-SALMON", "cells": [
           {"column_id": "domain", "text_ja": "材料科学・実時間TDDFT", "text_en": "Materials science and real-time TDDFT"},
           {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
-          {"column_id": "confirmed", "text_ja": "開発元リポジトリ", "text_en": "Developer repository"},
-          {"column_id": "gap", "text_ja": "EEA1の版、物理条件、入力、並列配置", "text_en": "EEA1 version, physical conditions, input, and process placement"}
-        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}]},
+          {"column_id": "confirmed", "text_ja": "2.3.0配布案内とマニュアルを確認。GPU試験範囲はNVHPC/NVIDIA。DCによる初期化、ScaLAPACKを要するCheFSI、OpenACCで使えない組込みr2SCANを区別する。", "text_en": "2.3.0 download listing and manual confirmed. GPU tests cover NVHPC/NVIDIA. Distinguish DC initialization, CheFSI requiring ScaLAPACK, and built-in r2SCAN unavailable with OpenACC."},
+          {"column_id": "gap", "text_ja": "SALMON2のタグ・配布物・EEA1入力の対応、精度回復処理、初期化を含む時間を検証する。旧checkpointの密度欠落時の挙動、self checkpointのプロセス数・配置にも注意。", "text_en": "Verify SALMON2 tag/artifact/EEA1 input correspondence, accuracy refinement and time including initialization. Check old checkpoints without ground-state density and self-checkpoint process count/assignment."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK047"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK064"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK065"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK061"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK062"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK063"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK073"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK074"}]},
         {"term_id": "TERM-EEA1-SCALE-LETKF", "cells": [
           {"column_id": "domain", "text_ja": "気象・データ同化", "text_en": "Weather and data assimilation"},
-          {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
-          {"column_id": "confirmed", "text_ja": "SCALE-LETKFリポジトリ", "text_en": "SCALE-LETKF repository"},
-          {"column_id": "gap", "text_ja": "初期条件、観測データ、アンサンブル設定、版の組合せ", "text_en": "Initial conditions, observations, ensemble setup, and version pairing"}
-        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK048"}]},
+          {"column_id": "code", "text_ja": "公開リポジトリの過去確認あり。今回の再取得は失敗。", "text_en": "Public repository previously confirmed; current retrieval failed."},
+          {"column_id": "confirmed", "text_ja": "SCALE配布は5.5.5。3月資料では予報GPU実装は最適化不足、同化は検討中。", "text_en": "SCALE distribution lists 5.5.5. March material describes simulation GPU tuning as incomplete and assimilation as under consideration."},
+          {"column_id": "gap", "text_ja": "9月時点の移植状態、SCALE/LETKFの版組合せ、初期・観測データ、アンサンブル全体の時間。", "text_en": "September porting status, SCALE/LETKF revision pairing, initial/observational data and total ensemble time."}
+        ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK048"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK066"}, {"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK067"}]},
         {"term_id": "TERM-EEA1-E-WAVE", "cells": [
           {"column_id": "domain", "text_ja": "地震・津波防災", "text_en": "Earthquake and tsunami disaster science"},
           {"column_id": "code", "text_ja": "EEA1コードは非公開", "text_en": "EEA1 code unreleased"},
@@ -2190,8 +2238,8 @@
         {"term_id": "TERM-EEA1-LQCD-DWF-HMC", "cells": [
           {"column_id": "domain", "text_ja": "基礎科学・格子QCD", "text_en": "Fundamental science and lattice QCD"},
           {"column_id": "code", "text_ja": "公開GitHubを確認", "text_en": "Public GitHub confirmed"},
-          {"column_id": "confirmed", "text_ja": "富岳・汎用CPU・OpenACC GPUのビルド例", "text_en": "Fugaku, general-CPU, and OpenACC GPU build examples"},
-          {"column_id": "gap", "text_ja": "標準格子、収束条件、混合精度設定、コミット", "text_en": "Standard lattice, convergence, mixed precision, and commit"}
+          {"column_id": "confirmed", "text_ja": "富岳・汎用CPU・OpenACC GPUの例。corelibは配列配置が異なり、混合精度を使わない。", "text_en": "Fugaku, general-CPU and OpenACC GPU examples; corelib uses a different layout without mixed precision."},
+          {"column_id": "gap", "text_ja": "格子・収束条件・精度・コミットを固定。ログのFLOP数に開発元の注意があり、時間と正しさを別途検証。", "text_en": "Pin lattice, convergence, precision and commit. The developer warns about logged FLOP counts; validate runtime and correctness separately."}
         ], "source_refs": [{"roadmap_id": "RM-APP-WORKLOADS", "source_id": "SRC-WORK049"}]}
       ]
     },
@@ -2252,7 +2300,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-HARDWARE-RESEARCH-20260831",
-    "human_approval_directive_id": "DIR-900018"
+    "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901",
+    "human_approval_directive_id": "DIR-900019"
   }
 }

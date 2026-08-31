@@ -1,0 +1,450 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000050",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-01T01:31:58+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "b91e0166e7df0dfaee7b3dc6be225740ccaf9a4219572891bcfb7a4a3bb999cb",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "施設設計では、受電枠、ラック密度、液冷と残存空冷、保守時の冗長性、用水、排熱利用を同時に確認します。公開された設計目標と年度実績を分け、設備容量を現在利用できる余力と見なしません。富岳NEXTの工事境界と改訂日程、ABCIの施設仕様、LUMIの実績を比較の起点にします。",
+  "summary_en": "Facility planning jointly examines electrical capacity, rack density, liquid and residual-air cooling, maintenance redundancy, water and heat reuse. Separate design targets from annual observations and installed capacity from available headroom. FugakuNEXT scope/revised schedules, ABCI specifications and LUMI operating data provide initial comparison cases.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "8658c699837d46228c91f5001273ff3a3f4b124f8c7841ce9bb46cee269ee0d2",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-ARCH-06-U01",
+      "title_ja": "冷却方式・評価範囲・建設と保守の条件",
+      "title_en": "Cooling, measurement boundaries, construction and maintenance",
+      "summary_ja": "高密度化の実装条件を、発表済みの能力と未確定の接続条件に分けて整理します。",
+      "summary_en": "Separate published capabilities from unresolved integration conditions for higher-density systems.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-ABCI-FACILITY-DATED",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ABCI: 日付付きの施設能力",
+          "name_en": "ABCI: dated facility capacity",
+          "timing_ja": "2024年12月時点の仕様",
+          "timing_en": "Specifications as of December 2024",
+          "statement_ja": "ABCIは70kW/ラックの冷却能力と5.2MWの冷却・電力設備容量、年間PUE 1.1以下を掲載しています。これは施設紹介に記載された過去時点の条件であり、現在の空き電力や追加設置可能なラック数ではありません。PUEの測定期間や負荷率も揃えて比較する必要があります。",
+          "statement_en": "ABCI lists 70kW/rack cooling, 5.2MW cooling/electrical capacity and annual PUE at or below 1.1. These are dated facility statements, not current spare power or additional rack capacity. Comparable PUE analysis also needs reporting periods and loading.",
+          "hpci_relevance_ja": "既存センターへの増設可否を、設備の銘板容量だけで判断しないための例です。",
+          "hpci_relevance_en": "It illustrates why nameplate capacity alone cannot establish upgrade feasibility.",
+          "adoption_conditions_ja": [
+            "現在の契約電力、既存負荷、冗長系への割当を別途確認する。",
+            "施設実績と新機種の必要条件を同じ時点・範囲に揃える。"
+          ],
+          "adoption_conditions_en": [
+            "Verify current contracted power, existing loads and redundancy allocations.",
+            "Align facility observations and new-system requirements in date and scope."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-DGX-RESIDUAL-AIR",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO004"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "液冷ラックにも残る空冷負荷",
+          "name_en": "Residual air cooling in liquid-cooled racks",
+          "timing_ja": "2026年3月更新のDGX GB200文書",
+          "timing_en": "DGX GB200 documentation updated March 2026",
+          "statement_ja": "DGX GB200ではCPU/GPUを液冷しても、ネットワーク、ストレージ、電源などに空冷部分が残ります。液冷ラックの採用だけで室内空調を不要とはできず、冷水配管、空気流路、保守空間を一体で設計する必要があります。",
+          "statement_en": "DGX GB200 uses liquid cooling for CPUs/GPUs but retains air-cooled network, storage and power components. A liquid-cooled rack therefore does not eliminate room cooling; water piping, airflow and service clearance must be designed together.",
+          "hpci_relevance_ja": "既存施設の液冷化に必要な改修範囲を明確にします。",
+          "hpci_relevance_en": "This clarifies the retrofit scope for liquid cooling.",
+          "adoption_conditions_ja": [
+            "ラック全体の空冷・液冷への熱配分を機種ごとに確認する。",
+            "CDUと施設水系の温度・圧力・水質条件を照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify rack-level air/liquid heat splits for each model.",
+            "Match CDU and facility-water temperature, pressure and chemistry."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-LUMI-2025-HEAT-OBSERVED",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO008"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LUMI: 排熱利用を含む2025年実績",
+          "name_en": "LUMI: 2025 results including heat reuse",
+          "timing_ja": "2025年実績、2026年3月公表資料",
+          "timing_en": "2025 results reported in March 2026",
+          "statement_ja": "CSCはLUMIの2025年についてPUE 1.25、WUE 0.004L/kWh、ERE 0.553、排熱供給約34.1GWhを報告しています。PUEは排熱の再利用を差し引く指標ではありません。低温地域の結果をそのまま国内へ移さず、熱需要、負荷率、ヒートポンプを含む評価範囲を確認します。",
+          "statement_en": "CSC reports 2025 LUMI PUE 1.25, WUE 0.004L/kWh, ERE 0.553 and about 34.1GWh reused heat. PUE does not subtract recovered heat. Transfer to other sites requires checking heat demand, loading and accounting boundaries including heat pumps.",
+          "hpci_relevance_ja": "単一のPUE順位よりも、電力・用水・有効な熱利用を分けて設備を選ぶ材料です。",
+          "hpci_relevance_en": "It supports separate energy, water and useful-heat comparisons instead of a single PUE ranking.",
+          "adoption_conditions_ja": [
+            "年度・施設・IT電力の範囲を揃え、EREをPUEと同一視しない。",
+            "過去の排熱利用予測ではなく、当該年度の報告値を用いる。"
+          ],
+          "adoption_conditions_en": [
+            "Align year/facility/IT boundaries; ERE and PUE are different metrics.",
+            "Use reported annual values rather than earlier heat-reuse projections."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FUGAKUNEXT-DBO-REVISED",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-BLUE009"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "富岳NEXT: 改訂された施設整備日程",
+          "name_en": "FugakuNEXT: revised facility schedule",
+          "timing_ja": "2026年Q4の選定・契約、2029年12月引渡し期限",
+          "timing_en": "Q4 2026 selection/contracts; December 2029 handover deadline",
+          "statement_ja": "9月1日の公開予定表では、優先交渉権者選定が10月16日、基本協定が10月下旬頃、基本契約が12月下旬頃です。旧記述の10月9日・10月中旬を改訂します。施設引渡し期限は2029年12月で、いずれも予定であり完了実績ではありません。",
+          "statement_en": "The schedule read on September 1 targets October 16 preferred-bidder selection, late-October agreement and late-December contract, replacing the prior October 9/mid-October text. Facility handover is due by December 2029. These are plans, not completed events.",
+          "hpci_relevance_ja": "HPCI特有の条件: 富岳NEXTの調達・設計確定と計算機導入を結び付ける判断点です。",
+          "hpci_relevance_en": "HPCI-specific: these are coordination gates between FugakuNEXT facility and compute-system procurement.",
+          "adoption_conditions_ja": [
+            "契約成立・設計変更の公表を別イベントとして追跡する。",
+            "施設引渡し日を計算機の共用開始日と同一視しない。"
+          ],
+          "adoption_conditions_en": [
+            "Track contract execution and design changes as distinct events.",
+            "Do not equate facility handover with computing-service launch."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FUGAKUNEXT-PARTIAL-PUE-SCOPE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO001"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "富岳NEXT: 部分PUEと冷却工事の境界",
+          "name_en": "FugakuNEXT: partial-PUE and cooling-work boundaries",
+          "timing_ja": "2026年7月31日要求水準書",
+          "timing_en": "July 31, 2026 requirements",
+          "statement_ja": "計算機室のpPUE要件は平均20MW負荷等の条件付きで1.1以下、目標1.05以下です。全施設の実測PUEではありません。屋上ヘッダー以降のCDU等は別工事で、流量・圧力は2028年度頃の調整事項です。施設側と計算機側を別々に最適化すると、接続条件が整わない可能性があります。",
+          "statement_en": "Compute-room pPUE is required at or below 1.1, targeting 1.05, under conditions including a 20MW average load. It is not measured whole-facility PUE. Downstream CDUs are separate work; flow/pressure need coordination around FY2028. Independent facility/system optimization can leave incompatible interfaces.",
+          "hpci_relevance_ja": "HPCI特有の契約境界を明示し、一般的な液冷選定では接続責任を確認する教訓として扱います。",
+          "hpci_relevance_en": "Identify this HPCI-specific contract boundary; the general lesson is explicit cooling-interface responsibility.",
+          "adoption_conditions_ja": [
+            "UPSの対象はストレージ・ネットワーク等で、計算系全体の無停電保証とはしない。",
+            "要求水温の記述間の整合と改訂を継続確認する。"
+          ],
+          "adoption_conditions_en": [
+            "UPS coverage for storage/network is not whole-compute uninterrupted power.",
+            "Continue checking consistency and revisions of water-temperature requirements."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NIDEC-CDU-MATURITY",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO005",
+            "SRC-CDO006"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ニデック: 2MW級CDUと保守性",
+          "name_en": "Nidec: 2MW-class CDUs and serviceability",
+          "timing_ja": "2025年12月試作発表、現行製品紹介を確認",
+          "timing_en": "December 2025 prototype announcement; current lineup reviewed",
+          "statement_ja": "ニデックは2MW級CDUを公表し、現行紹介ではフィルターやポンプの保守、冗長化を重視しています。ただし、製品の定格、公開検証設備の能力、量産出荷実績は別です。試作発表と製品紹介だけで、対象センターへの納期や定格負荷での検証完了を確定しません。",
+          "statement_en": "Nidec has announced 2MW-class CDUs and emphasizes filter/pump servicing and redundancy. Product rating, published test-facility capacity and volume shipments are distinct. A prototype release and lineup page do not establish site delivery or completed full-rated-load qualification.",
+          "hpci_relevance_ja": "日本発の冷却技術を国際的なラック設計と組み合わせる候補です。",
+          "hpci_relevance_en": "This is a Japanese-developed cooling option for international rack architectures.",
+          "adoption_conditions_ja": [
+            "実負荷・冗長時の能力、接続規格、保守契約を検証する。",
+            "同一企業の複数ページを独立した実証と数えない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify loaded/redundant capacity, interfaces and service contracts.",
+            "Do not count multiple vendor pages as independent validation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-IMMERSION-INTEGRATION-QUALIFICATION",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO007"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "液浸冷却: 材料適合と保守保証",
+          "name_en": "Immersion: material compatibility and service assurance",
+          "timing_ja": "OCPの継続的な設計・評価活動",
+          "timing_en": "Ongoing OCP design and qualification work",
+          "statement_ja": "液浸冷却は単相・二相、液体、タンク、CDU、機器材料を一体で評価する必要があります。OCPの公開活動は相互運用や評価の土台ですが、保証や長期支援は活動範囲外です。公開仕様への適合だけで、HPC機器の長期保守が確保されたとは扱いません。",
+          "statement_en": "Immersion requires joint qualification of single/two-phase mode, fluids, tanks, CDUs and IT materials. OCP work supports design/qualification, but warranty and long-term support are outside its scope. Public-specification alignment alone does not secure long-term HPC service.",
+          "hpci_relevance_ja": "高密度化の候補を、熱性能だけでなく交換・故障解析・保証条件で比較します。",
+          "hpci_relevance_en": "Compare high-density options by replacement, failure analysis and warranty as well as thermal capability.",
+          "adoption_conditions_ja": [
+            "材料適合試験と機器ベンダーの保証条件を確認する。",
+            "液体処理・交換作業と停止時間を運用費に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Check material tests and equipment-vendor warranty terms.",
+            "Include fluid handling, replacement work and downtime in operating costs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HEAT-WATER-BOUNDARIES",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDO003",
+            "SRC-CDO009"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "排熱・用水・冗長性: 最適条件は立地と負荷で変わる",
+          "name_en": "Heat, water and redundancy: optima depend on site and load",
+          "timing_ja": "導入地域と年間運用条件に依存",
+          "timing_en": "Depends on location and annual operating conditions",
+          "statement_ja": "温水利用は熱需要家の距離、必要温度、季節需要、契約に左右され、利用先が停止しても放熱できる経路が必要です。節水が追加電力を要する場合もあります。効率だけを上げるために必要な冗長性を削らず、年間の電力・水・利用可能性・費用を比較します。",
+          "statement_en": "Heat reuse depends on customer distance, temperature, seasonality and contracts, with backup heat rejection needed when demand disappears. Water savings may require additional energy. Compare annual energy, water, availability and cost without removing required redundancy merely to improve efficiency.",
+          "hpci_relevance_ja": "設備の単一指標では決められないトレードオフをシステム整備計画へ渡します。",
+          "hpci_relevance_en": "This supplies planning trade-offs that no single facility metric resolves.",
+          "adoption_conditions_ja": [
+            "IT電力と施設補機電力、年間水量の境界を明記する。",
+            "設計値、ベンダー試験、施設実測を別の根拠種別として保持する。"
+          ],
+          "adoption_conditions_en": [
+            "State IT/auxiliary energy and annual-water accounting boundaries.",
+            "Keep design values, vendor tests and facility observations distinct."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH06-CURRENT",
+    "TDS-ARCH06-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-BLUE009",
+        "title": "Solicitation for the design, construction, operation, and maintenance of the new FugakuNEXT building",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://www.r-ccs.riken.jp/fugaku-next/fugaku-next-dbo/index.html",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "riken-fugakunext-dbo",
+      "checked_at": "2026-09-01T01:31:00+09:00",
+      "locator": "Current planned schedule, rows October 16 through March 2036",
+      "observation_ja": "優先交渉権者選定10月16日、基本協定10月下旬、基本契約12月下旬、引渡し2029年12月期限を確認。既存記述と相違。",
+      "observation_en": "Confirmed planned October 16 selection, late-October agreement, late-December contract and December 2029 handover deadline; differs from prior text.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO001",
+        "title": "富岳NEXT新建屋DBO要求水準書 共通事項及び施設整備編 2026年7月31日修正版",
+        "publisher": "RIKEN",
+        "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext-dbo_2026-0731_2-1.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-31"
+      },
+      "origin_group": "riken-fugakunext-dbo",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "PDF pages 27-29 and 31; annex facility and power requirements",
+      "observation_ja": "pPUEの負荷・範囲条件、冷却配管とCDUの工事境界、2028年度頃の調整、限定されたUPS範囲を確認。後の再取得は失敗したが先行取得本文を確認済み。",
+      "observation_en": "Read pPUE load/boundary conditions, piping/CDU scope, FY2028 coordination and limited UPS coverage. Later refetch failed; earlier retrieved text was read.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO002",
+        "title": "ABCI データセンター施設",
+        "publisher": "AIST / ABCI",
+        "url": "https://abci.ai/ja/about_abci/datacenter_facility.html",
+        "source_class": "official-project",
+        "published_or_updated": "As of 2024-12"
+      },
+      "origin_group": "aist-abci-facility",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "Dated facility specifications, cooling and PUE",
+      "observation_ja": "2024年12月時点のラック冷却能力、設備容量、PUE記述を確認。2026年の空き容量は示されない。",
+      "observation_en": "Read December 2024 rack-cooling/capacity/PUE specifications; no 2026 spare-capacity statement.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO003",
+        "title": "Best Practices Guide for Energy-Efficient Data Center Design",
+        "publisher": "US Department of Energy / FEMP",
+        "url": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2024-07"
+      },
+      "origin_group": "doe-femp-facility",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "Sections 5.6, 6, 7 and 8; liquid cooling, UPS, heat reuse and metrics",
+      "observation_ja": "液冷と残存空冷、負荷率・冗長化、排熱利用先と代替放熱経路、評価範囲を確認。転載された図は採用しない。",
+      "observation_en": "Read liquid/residual-air cooling, loading/redundancy, heat customers and backup heat rejection, and metric boundaries; reproduced figures not adopted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO004",
+        "title": "DGX GB200 hardware overview",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/dgx/dgxgb200-user-guide/hardware.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-03"
+      },
+      "origin_group": "nvidia-dgx-liquid-facility",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "Cooling, compute trays, power shelves and fans",
+      "observation_ja": "CPU/GPUの液冷とネットワーク・ストレージ・電源の空冷を確認。液冷を全発熱の水冷と解釈しない。",
+      "observation_en": "Read CPU/GPU liquid cooling and network/storage/power air cooling; liquid cooling does not mean all heat is water-cooled.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO005",
+        "title": "Nidec in-row liquid-cooling lineup",
+        "publisher": "Nidec",
+        "url": "https://www.nidec.com/en/products/liquid-cooling-line-up/products/in-row/",
+        "source_class": "official-vendor",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nidec-liquid-cooling",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "NIR2.5, Project Deschutes 5 and validation-facility descriptions",
+      "observation_ja": "2MW級CDU、保守機能と検証設備の能力を確認。製品定格、検証能力、販売開始は別の情報。",
+      "observation_en": "Read 2MW-class CDUs, maintenance features and validation-facility capacity; rating, test capability and commercial availability are distinct.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO006",
+        "title": "ニデック、2MWクラスのCDU試作品を開発",
+        "publisher": "Nidec",
+        "url": "https://www.nidec.com/jp/product/news/2025/news1203-01/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-12-03"
+      },
+      "origin_group": "nidec-liquid-cooling",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "Two-page announcement, prototype and SC25 exhibition",
+      "observation_ja": "2025年末の段階は試作品で、量産販売日を確認できない。",
+      "observation_en": "Confirmed prototype status in late 2025, without a verified volume-sales date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO007",
+        "title": "Open Compute Project Immersion Cooling",
+        "publisher": "Open Compute Project",
+        "url": "https://www.opencompute.org/community/immersion",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "ocp-immersion",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "Scope, material compatibility and exclusions",
+      "observation_ja": "液浸の方式・材料評価と、保証や長期支援が活動範囲外であることを確認。",
+      "observation_en": "Read immersion modes/material qualification and exclusion of warranty/long-term support from project scope.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO008",
+        "title": "CSC Sustainability Report 2025",
+        "publisher": "CSC - IT Center for Science",
+        "url": "https://csc.fi/app/uploads/2026/03/SustainabilityReport_2025.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03, reporting year 2025"
+      },
+      "origin_group": "csc-lumi-sustainability",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "PDF page 20, printed page 21, LUMI 2025 table and heat-reuse text",
+      "observation_ja": "PUE 1.25、WUE 0.004、ERE 0.553、供給熱量約34.1GWhの2025年報告を確認。予測値や施設全体と混同しない。",
+      "observation_en": "Read 2025 reported PUE 1.25, WUE 0.004, ERE 0.553 and about 34.1GWh reused heat; distinguish forecasts and reporting boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO009",
+        "title": "Cooling Water Efficiency Opportunities for Federal Data Centers",
+        "publisher": "US Department of Energy / FEMP",
+        "url": "https://www.energy.gov/cmei/femp/cooling-water-efficiency-opportunities-federal-data-centers",
+        "source_class": "official-project",
+        "published_or_updated": "2019-01-09"
+      },
+      "origin_group": "doe-femp-facility",
+      "checked_at": "2026-09-01T01:29:51+09:00",
+      "locator": "PUE/WUE definitions and water-energy trade-offs",
+      "observation_ja": "施設電力量とIT電力量、水使用量の境界、節水と電力のトレードオフを確認。",
+      "observation_en": "Read facility/IT energy and water boundaries and water-energy trade-offs.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-076",
+      "topic_ids": [
+        "ARCH-06"
+      ],
+      "priority": "P0",
+      "question_ja": "各センターの実利用可能電力・冷却能力、接続温度・圧力と改修費を同じ範囲で比較できるか。",
+      "question_en": "Can usable site power/cooling, interface temperature/pressure and retrofit costs be compared on consistent boundaries?",
+      "next_action_ja": "施設の改訂仕様と年度実績を照合し、冷却工事・CDU・UPSの責任境界および未確定条件をセンター別に記録する。",
+      "next_action_en": "Reconcile revised specifications and annual observations, recording cooling/CDU/UPS responsibility and unresolved interfaces by center.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "公開値から現在の余剰電力、導入可能ノード数、全施設TCOを推定していない。",
+    "富岳NEXTの水温・流量条件、CDUの実負荷検証と供給時期は追加確認が必要。",
+    "単一モデルの暫定調査であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Current spare power, feasible node counts and whole-facility TCO were not inferred from published values.",
+    "FugakuNEXT water/flow conditions and CDU loaded qualification/availability require further checks.",
+    "This single-model review remains provisional with incomplete independent Consensus."
+  ]
+}

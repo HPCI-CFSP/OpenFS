@@ -1,0 +1,422 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000052",
+  "topic_id": "SSW-11",
+  "created_at": "2026-09-01T01:37:05+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "連合資源管理は、共通の資源表示、実行先選択、割当・予約、サイト内タスク実行、課金・権限を分けて設計します。単一クラスタ向けの機能やPilot内の高い処理率を、センター横断の即時実行保証と見なしません。既存の運用自治を保ち、対応範囲を段階的に広げる方式を比較します。",
+  "summary_en": "Federation separates common resource discovery, site selection, allocation/reservation, site-local task execution and accounting/authority. Single-cluster features and pilot throughput do not establish immediate cross-center execution. Compare staged integration approaches that preserve local operational autonomy.",
+  "units": [
+    {
+      "unit_id": "SSW-11-U01",
+      "before_sha256": "68523104d1111bf82d41187e255bdb2d8f6d0dbdf434ff140f7c06590ac4b43c",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-11-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-11-U01",
+      "title_ja": "サイト選択・資源割当・実行管理の役割分担",
+      "title_en": "Site selection, allocation and execution responsibilities",
+      "summary_ja": "連合方式の名称よりも、何を調整し何をサイトに残すかを比較します。",
+      "summary_en": "Compare what each mechanism coordinates and what remains site-local.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-SLURM-FEDERATION-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO019",
+            "SRC-CDO020"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slurm Federation: 実行先の調整",
+          "name_en": "Slurm Federation: selecting an execution cluster",
+          "timing_ja": "現行公開ガイド",
+          "timing_en": "Current public guides",
+          "statement_ja": "Slurm Federationは候補クラスタに兄弟ジョブを置き、各サイトの方針を使って一つの実行先を調整します。配列ジョブは投入元に限定され、異種ジョブの構成要素を連合サイト間に分割しません。投入元の資源検証に失敗した要求が、他サイトで実行可能でも拒否される制限があります。",
+          "statement_en": "Slurm Federation coordinates sibling jobs to select one execution cluster under local policies. Arrays remain at the origin, and heterogeneous-job components are not split across federated sites. Origin-side resource validation can reject a request even when another cluster could run it.",
+          "hpci_relevance_ja": "サイト選択を一本化する候補ですが、広域MPIの同時資源確保とは区別します。",
+          "hpci_relevance_en": "It can unify site selection but is distinct from coordinated cross-site MPI allocation.",
+          "adoption_conditions_ja": [
+            "データ・実行環境・利用権限を候補サイトに事前に揃える。",
+            "再キューをチェックポイント付きのライブ移行と呼ばない。"
+          ],
+          "adoption_conditions_en": [
+            "Ensure data, execution environments and permissions at candidate sites.",
+            "Do not equate requeueing with checkpointed live migration."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-UNICORE-BROKER-SEMANTICS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO021"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UNICORE: 共通APIと実行先選択方針",
+          "name_en": "UNICORE: common APIs and site-selection policy",
+          "timing_ja": "公開UCCマニュアル",
+          "timing_en": "Public UCC manual",
+          "statement_ja": "UNICOREはジョブやデータ操作を共通のクライアントから扱います。UCCの通常実行は要件を満たすサイトを選べますが、バッチモードは既定で乱択であり重み付け等を指定できます。API統一だけで最短完了時刻を予測するわけではなく、投入可能時刻の指定も開始予約とは異なります。",
+          "statement_en": "UNICORE exposes job/data operations through common clients. UCC can select a suitable site for normal execution, while batch mode defaults to random selection with configurable weights. API uniformity is not earliest-completion prediction; a not-before submission time is not a start reservation.",
+          "hpci_relevance_ja": "異種バッチ系の連携と、上位の配分最適化を分離して検討できます。",
+          "hpci_relevance_en": "This separates heterogeneous batch integration from higher-level allocation optimization.",
+          "adoption_conditions_ja": [
+            "実際のサーバ版、認可、対応バッチ系とデータ転送条件を確認する。",
+            "サイト選択の規則を明示し、予測済みと未予測を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify deployed server versions, authorization, batch adapters and data transfer.",
+            "State selection rules and distinguish predicted from unpredicted outcomes."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HTCONDORCE-DELEGATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO025",
+            "SRC-CDO026"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HTCondor-CE: サイトへの資源要求の委譲",
+          "name_en": "HTCondor-CE: delegated site resource requests",
+          "timing_ja": "現行OSG運用文書",
+          "timing_en": "Current OSG operational documentation",
+          "statement_ja": "HTCondor-CEは遠隔の資源割当要求を認可し、ローカルのバッチ系へ渡す入口です。Pilotが取得した資源に利用者ジョブを流す方式で、サイトの認可や口座対応を置き換えません。複数の入口やローカル投入が共存する場合、会計情報の二重計上を防ぐ設定も必要です。",
+          "statement_en": "HTCondor-CE authorizes remote allocation requests and delegates them to a local batch system. User work flows into pilot allocations without replacing site authorization/account mapping. Multiple gateways and local submissions also need accounting safeguards against double counting.",
+          "hpci_relevance_ja": "多数の独立タスクに適した連携例を、HPC全系ジョブの要件と分けて比較します。",
+          "hpci_relevance_en": "This provides an independent-task federation case to compare separately from large coupled HPC jobs.",
+          "adoption_conditions_ja": [
+            "利用者追跡、共同体とローカル口座の対応、利用上限を設計する。",
+            "入口の認証成功を資源配分・実行開始の成功と同一視しない。"
+          ],
+          "adoption_conditions_en": [
+            "Design user traceability, collaboration-to-account mapping and limits.",
+            "Authentication success at the gateway is not successful allocation or execution."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FLUX-PILOT-BOUNDARIES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO023",
+            "SRC-CDO024"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Flux・RADICAL-Pilot: 割当後のタスク管理",
+          "name_en": "Flux and RADICAL-Pilot: tasks after allocation",
+          "timing_ja": "公開設計ガイドとRP 1.92.0文書",
+          "timing_en": "Public design guide and RP 1.92.0 documentation",
+          "statement_ja": "Fluxの子インスタンスは親から与えられた部分資源を管理し、RADICAL-Pilotも先にバッチ資源を取得してからタスクを配置します。短いタスクをまとめる効果はありますが、最初の割当待ちはサイトのスケジューラに依存します。割当内の処理率向上を、そのまま広域サービスの応答時間改善とはしません。",
+          "statement_en": "Flux children manage parent-granted resources, while RADICAL-Pilot obtains batch allocations before placing tasks. These approaches can consolidate short tasks, but initial queue time remains site-controlled. Higher in-allocation throughput is not automatically shorter federated service response.",
+          "hpci_relevance_ja": "既存スケジューラを保ったまま段階導入する候補です。",
+          "hpci_relevance_en": "They support staged adoption while retaining existing schedulers.",
+          "adoption_conditions_ja": [
+            "割当の未使用時間、終了時の未完了タスク、データ転送を評価する。",
+            "古いガイドの性能例を現行機種の実測と見なさない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure idle allocation time, tasks unfinished at expiry and data transfer.",
+            "Do not treat historical guide benchmarks as current-system measurements."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPCI-FEDERATION-PROPOSAL",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO022"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPCI: オンデマンド・統一窓口の提言",
+          "name_en": "HPCI: proposals for on-demand access and common interfaces",
+          "timing_ja": "2025年提言、実装時期は別途確認",
+          "timing_en": "2025 recommendations; deployment dates separately unverified",
+          "statement_ja": "HPCIコンソーシアムはオンデマンド資源、異種資源連携、ポータル統一を提言しています。記載された年度は実施提案であり、全センターでのサービス開始を示しません。共通窓口、権限、データ連携を先行させ、全施設を一度に統合する前に限られた用途で確認する方針です。",
+          "statement_en": "The HPCI Consortium recommends on-demand resources, heterogeneous integration and unified portals. Proposed years do not demonstrate launch at every center. OpenFS favors validating bounded use cases with common access, permissions and data handling before broader integration.",
+          "hpci_relevance_ja": "HPCI固有の制度・自治と、一般的な連合実行技術を接続する検討です。",
+          "hpci_relevance_en": "This connects HPCI-specific institutions/autonomy with general federation technology.",
+          "adoption_conditions_ja": [
+            "提言、採択、予算化、試行、運用開始を別イベントで追跡する。",
+            "センターの受入条件を確認せず一律の優先順位を設定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Track recommendation, adoption, funding, pilot and service launch separately.",
+            "Do not impose common priority without confirmed site acceptance."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-URGENT-FEDERATION-GATES",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDA075",
+            "SRC-CDA076",
+            "SRC-CDO019"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "緊急計算: 技術的優先制御と発動権限",
+          "name_en": "Urgent computing: priority controls and activation authority",
+          "timing_ja": "制度・施設ごとの条件に依存",
+          "timing_en": "Depends on institutional and site-specific conditions",
+          "statement_ja": "緊急計算には優先キューだけでなく、発動を承認する主体、確保可能な資源、通常利用への影響、データ準備が必要です。EuroHPCの応答・指示期限と計算完了期限、NERSCの特別な実時間枠と通常の優先枠を分けて扱います。ネットワーク分断時の再試行や精算まで含む検証は未実施です。",
+          "statement_en": "Urgent computing needs activation authority, available resources, displacement rules and prepared data beyond priority queues. Distinguish EuroHPC response/instruction deadlines from completion deadlines and NERSC special realtime access from ordinary premium priority. Partition/retry/accounting validation remains unperformed.",
+          "hpci_relevance_ja": "災害対応や実験連携で、実行可能な制度と技術の組合せを選ぶ条件です。",
+          "hpci_relevance_en": "These conditions govern workable institutional/technical combinations for emergencies and instruments.",
+          "adoption_conditions_ja": [
+            "事前予約、割込み、代替サイトと費用負担を契約・方針に明記する。",
+            "期限達成率を全投入要求に対して計測する。"
+          ],
+          "adoption_conditions_en": [
+            "Document reservations, preemption, fallback sites and cost responsibility.",
+            "Measure deadline attainment over all offered requests."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA075",
+        "title": "EuroHPC Access Policy v2.0: Supercomputers and AI Factories",
+        "publisher": "EuroHPC Joint Undertaking",
+        "url": "https://www.eurohpc-ju.europa.eu/document/download/30614065-6dd6-4206-8065-fc97948e5e2c_en?filename=EuroHPC+JU+-+Access+Policy+v2.0+Final_0.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-12 (cover)"
+      },
+      "origin_group": "eurohpc-access-policy",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Section 5.3, printed pages 35-36",
+      "observation_ja": "緊急アクセスの要請・承認・資源確認、24時間以内の応答・指示を確認。計算完了期限ではない。",
+      "observation_en": "Read emergency request/approval/resource checks and 24-hour response/instruction, not a completion deadline.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA076",
+        "title": "NERSC Resource Usage Policies",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/policies/resource-usage/",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nersc-operations-policy",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Reservations, Premium and Realtime QOS",
+      "observation_ja": "Realtimeの特別申請、Premiumとの違い、予約未使用時間も課金する境界を確認。",
+      "observation_en": "Read special-request Realtime access, distinction from Premium and charging of unused reserved time.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO019",
+        "title": "Slurm Federated Scheduling Guide",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/federation.html",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "schedmd-federation",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Overview, scheduling/requeue, arrays and limitations",
+      "observation_ja": "兄弟ジョブの選択実行、再キュー、ローカル検証・配列制限を確認。サイト横断の単一MPI実行ではない。",
+      "observation_en": "Read sibling-job selection, requeue, local validation and array limitations; not one cross-site MPI allocation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO020",
+        "title": "Slurm Heterogeneous Job Support",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/heterogeneous_jobs.html",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "schedmd-federation",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Federated execution limitation and component allocation",
+      "observation_ja": "連合内の異種ジョブは投入元クラスタ全体で実行し、別サイトに構成要素を分散しないことを確認。",
+      "observation_en": "Read restriction that federated heterogeneous jobs stay entirely on their submission cluster, without cross-site component placement.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO021",
+        "title": "UNICORE UCC Manual",
+        "publisher": "Forschungszentrum Juelich / UNICORE",
+        "url": "https://unicore-docs.readthedocs.io/en/latest/user-docs/ucc/ucc-manual.html",
+        "source_class": "official-project",
+        "published_or_updated": "Public manual accessed 2026-09-01"
+      },
+      "origin_group": "jsc-unicore",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Resource Selection, batch-mode weights, Not before and allocations",
+      "observation_ja": "通常の実行先選択とバッチの乱択・重み付け、投入時刻と割当開始の違いを確認。",
+      "observation_en": "Read site selection, batch random/weighted choice and submission-time versus allocation-start distinctions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO022",
+        "title": "次世代計算基盤のユーザビリティに関する提言",
+        "publisher": "HPCI Consortium",
+        "url": "https://hpci-c.jp/about/pdf/20250221_teigen.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-02-21"
+      },
+      "origin_group": "hpci-consortium-usability",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Sections 3.2, 4.1 and 4.2; recommendations and proposed dates",
+      "observation_ja": "異種資源連携、オンデマンド枠、統一UIの提言を確認。提案された年度を実装済みと扱わない。",
+      "observation_en": "Read recommendations for heterogeneous integration, on-demand access and common UI; proposed dates are not deployment evidence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO023",
+        "title": "Flux Learning Guide",
+        "publisher": "Flux Framework / LLNL",
+        "url": "https://flux-framework.readthedocs.io/en/latest/guides/learning_guide.html",
+        "source_class": "official-project",
+        "published_or_updated": "Guide derived from 2021 R&D entry; accessed 2026-09-01"
+      },
+      "origin_group": "llnl-flux",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Hierarchical bounding, single-user instances and limitations",
+      "observation_ja": "親が割当てた部分資源内の階層管理と移行工数を確認。2021年由来の説明と注記。",
+      "observation_en": "Read hierarchical management within parent allocations and migration effort; noted 2021-origin explanation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO024",
+        "title": "RADICAL-Pilot Getting Started",
+        "publisher": "RADICAL Collaboration",
+        "url": "https://radicalpilot.readthedocs.io/en/stable/getting_started.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.92.0 stable documentation accessed 2026-09-01"
+      },
+      "origin_group": "radical-pilot",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Pilot submission, queue-time disclaimer and runtime expiration",
+      "observation_ja": "割当待ちはバッチ系が制御し、Pilot内のタスク実行とは別であることを確認。",
+      "observation_en": "Read that batch systems control allocation waits, separately from pilot-internal task execution.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO025",
+        "title": "HTCondor-CE Overview",
+        "publisher": "HTCondor / University of Wisconsin-Madison",
+        "url": "https://htcondor.org/htcondor-ce/overview/",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "htcondor-ce",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Compute Entrypoint and resource-allocation routing",
+      "observation_ja": "遠隔資源要求を認可し、ローカルのバッチ系へ委譲するゲートウェイとして確認。",
+      "observation_en": "Read gateway authorization and delegation of remote resource requests to local batch systems.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO026",
+        "title": "Installing and Maintaining HTCondor-CE",
+        "publisher": "OSG Consortium",
+        "url": "https://osg-htc.org/docs/compute-element/install-htcondor-ce/",
+        "source_class": "official-project",
+        "published_or_updated": "OSG 25 documentation accessed 2026-09-01"
+      },
+      "origin_group": "osg-operations",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Local mapping, token authorization and accounting with multiple CEs",
+      "observation_ja": "共有資源要求の権限・ローカル口座対応、複数入口の二重集計防止を確認。",
+      "observation_en": "Read permission/local-account mapping and avoiding accounting duplication across multiple gateways.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-078",
+      "topic_ids": [
+        "SSW-11"
+      ],
+      "priority": "P1",
+      "question_ja": "異なるセンター方針を保ちながら、待機・転送・再試行・精算を整合させる連合実行を実証できるか。",
+      "question_en": "Can federation reconcile queues, transfers, retries and accounting while preserving distinct site policies?",
+      "next_action_ja": "公開APIと運用条件を対応付け、少数サイト・限定ワークロードの設計と障害時の整合性検証を準備する。",
+      "next_action_en": "Map public APIs to operational conditions and design a bounded multi-site workload with failure-consistency checks.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "共通予約の実運用実績やサイト横断の障害試験は未確認。",
+    "待機時間、転送費、緊急時の費用負担を定量化するための公開データが不足。",
+    "単一モデルの暫定調査であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Operational joint-reservation evidence and cross-site failure tests remain unverified.",
+    "Public data are insufficient to quantify queues, transfer costs and emergency cost sharing.",
+    "This single-model review remains provisional with incomplete independent Consensus."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW11-AUTHORITY",
+        "label_ja": "運用自治と権限",
+        "label_en": "Autonomy and authority",
+        "question_ja": "サイトが配分・停止・緊急時優先順位を制御できるか。",
+        "question_en": "Can sites control allocation, withdrawal and emergency priority?"
+      },
+      {
+        "dimension_id": "DIM-SSW11-LATENCY",
+        "label_ja": "割当から完了まで",
+        "label_en": "Allocation to completion",
+        "question_ja": "待機・転送・計算を含む利用者の期限に対応できるか。",
+        "question_en": "Can user deadlines be met including queues, transfer and computation?"
+      },
+      {
+        "dimension_id": "DIM-SSW11-CONTINUITY",
+        "label_ja": "状態と精算の整合",
+        "label_en": "State and accounting consistency",
+        "question_ja": "通信断や再試行でも重複実行・二重計上を防げるか。",
+        "question_en": "Can duplicate execution/accounting be avoided during partitions and retries?"
+      }
+    ]
+  }
+}

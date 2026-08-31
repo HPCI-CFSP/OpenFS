@@ -1,0 +1,208 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000114",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-01T04:43:32+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "4bba604462737efa19174c36348933abc6f77fa45596512d183233485faae2bf",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学シミュレーションの代表性、性能律速、継続比較を分け、計算・メモリ・通信・I/Oと精度条件をそろえて評価します。EEA1の再現性条件に加え、SQUIDのソフトウェア更新による改善例を調べました。公開性能比を新ハードウェアの予測や総電力量の削減率へ転用せず、校正不足を残しています。",
+  "summary_en": "Separate scientific representativeness, bottlenecks and continuous comparison under matched compute, memory, communication, I/O and accuracy conditions. SQUID software-tuning examples complement EEA1 reproducibility checks. Published ratios do not become new-hardware predictions or total-energy savings; missing calibration remains explicit.",
+  "units": [
+    {
+      "unit_id": "APP-02-U03",
+      "before_sha256": "d7cb13edfc6fa8316f630ff3e7d279d85f3f967e7464e15e2dfa43552baa73f5",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-02-U03",
+        "TDS-CD2-APP-02-U03",
+        "TDS-CD3-APP-02-U03",
+        "TDS-CD4-APP-02-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-APP-02-U03",
+      "title_ja": "継続ベンチマークの合否・集計・測定条件",
+      "title_en": "Continuous benchmarks: validation, aggregation and measurement conditions",
+      "summary_ja": "実行成功、性能の合否、統計的な比較を区別します。",
+      "summary_en": "Distinguish successful execution, performance checks and statistical comparison.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-REFRAME-PERFORMANCE-VALIDATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA113"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ReFrame: 成功表示と性能維持は別",
+          "name_en": "ReFrame: a passing session is not proof of maintained performance",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "ReFrameは参照値がない性能指標を記録しても、その性能の合否は判定しません。dry-runは実行を行わず、対象環境の条件が合わなければ実行0件でも成功表示となる例があります。閾値は利用者が設定する許容差であり、統計的な信頼区間ではありません。",
+          "statement_en": "ReFrame logs metrics without validating performance when references are absent. Dry-run does not execute tests, and environment filtering can yield a passing session with zero cases. User-chosen tolerances are acceptance limits, not statistical confidence intervals.",
+          "hpci_relevance_ja": "センター更新前後の比較では、必要な機種・環境で実際に測定したかを確認します。",
+          "hpci_relevance_en": "Before/after center comparisons must verify actual measurements on required systems and environments.",
+          "adoption_conditions_ja": [
+            "必須のテスト件数、実行モード、参照値、精度条件を検査する。",
+            "今回の調査ではReFrameや対象ベンチマークを実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "Check required case counts, execution mode, references and accuracy conditions.",
+            "Neither ReFrame nor target benchmarks were executed in this study."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-JUBE-RESULT-EXTRACTION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA114"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUBE: 出力抽出と再解析の条件",
+          "name_en": "JUBE: extraction and reanalysis conditions",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "JUBEの結果抽出は、同じパターンが複数一致すると既定では最初の値のみを採用します。また、既存の解析結果がある場合、resultは再解析せず保存済みの値を利用します。反復測定の平均や最新ログを自動的に採用するとは限りません。",
+          "statement_en": "JUBE defaults to the first value when a pattern matches multiple times. If analysis already exists, result reuses stored values without reanalysis. Neither an average over repetitions nor extraction from the latest logs should be assumed.",
+          "hpci_relevance_ja": "計測コードを変更した後の比較や、複数回の測定集計で取り違えを防ぎます。",
+          "hpci_relevance_en": "This prevents mismatches after measurement-code changes and when aggregating repeated runs.",
+          "adoption_conditions_ja": [
+            "抽出対象、集約規則、元ログと設定の版、再解析の有無を固定する。",
+            "最良値、中央値、平均値を区別し、失敗試行を別に保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin extraction targets, aggregation rules, log/configuration versions and reanalysis status.",
+            "Distinguish best, median and mean values and retain failed trials separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-NERSC-MEASUREMENT-VARIABILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA115"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "性能ばらつき: 実行配置と競合の記録",
+          "name_en": "Performance variability: placement and contention records",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "NERSCは、実行ファイルの配置、他ジョブの通信、CPUへの割当て、OS処理などを性能ばらつきの要因として挙げています。OpenFSでは入力やソフトウェア版だけでなく、配置と競合条件も比較条件として記録する方針です。サイト固有のランク数や設定を、他の機種の最適値とは扱いません。",
+          "statement_en": "NERSC identifies executable placement, competing communication, affinity and OS activity as variability sources. OpenFS proposes recording placement and contention alongside inputs and software versions. Site-specific rank counts and settings are not assumed optimal on other systems.",
+          "hpci_relevance_ja": "小さな性能差を製品差と誤認せず、候補構成の実測比較に必要な条件をそろえます。",
+          "hpci_relevance_en": "Match conditions before interpreting small differences as product advantages.",
+          "adoption_conditions_ja": [
+            "ウォームアップ、反復回数、配置、同時負荷、計時範囲を明記する。",
+            "結果の分布と外れ値の扱いを残し、単発の比率を将来性能へ外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Declare warmup, repetition count, placement, concurrent load and timing boundaries.",
+            "Preserve distributions and outlier handling rather than extrapolating one ratio to future performance."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA113",
+        "title": "ReFrame tutorial: performance references and test coverage",
+        "publisher": "ReFrame developers",
+        "url": "https://reframe-hpc.readthedocs.io/en/stable/tutorial.html",
+        "source_class": "official-project",
+        "published_or_updated": "4.10.3 documentation accessed 2026-09-01; example logs retain older versions"
+      },
+      "origin_group": "reframe-project",
+      "checked_at": "2026-09-01T04:42:41+09:00",
+      "locator": "Adding performance references, dry-run mode, systems and environments",
+      "observation_ja": "参照値なしでは性能を記録するだけで合否判定しない。dry-runは実行せず、環境条件が合わないと0件でも成功表示となる例がある。",
+      "observation_en": "Without references, performance is logged but not validated. Dry-run does not execute, and environment filtering can produce a passed session with zero cases.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA114",
+        "title": "JUBE tutorial: result extraction and analysis reuse",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/jube/docu/tutorial.html",
+        "source_class": "official-project",
+        "published_or_updated": "2.7.1 documentation accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jube",
+      "checked_at": "2026-09-01T04:42:41+09:00",
+      "locator": "Creating a result table; multiple pattern matches and reanalysis",
+      "observation_ja": "複数一致時は既定で最初の値のみ抽出する。既存解析があるresultはその結果を再利用し、再解析は明示操作となる。",
+      "observation_en": "Multiple pattern matches default to the first value; result reuses existing analysis unless reanalysis is explicitly requested.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA115",
+        "title": "NERSC performance variability guidance",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/performance/variability/",
+        "source_class": "official-project",
+        "published_or_updated": "Live guidance accessed 2026-09-01; publication date not established"
+      },
+      "origin_group": "nersc-operations",
+      "checked_at": "2026-09-01T04:42:41+09:00",
+      "locator": "Executable placement, network congestion, affinity and core specialization",
+      "observation_ja": "実行ファイルの配置、他ジョブによる通信競合、CPU配置、OS処理が性能ばらつきへ影響する。サイト固有の推奨値を他機種へ一般化しない。",
+      "observation_en": "Executable placement, competing network traffic, affinity and OS activity affect variability; site-specific settings are not universal recommendations.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "実機による再現、必要テスト数の設計、性能分布に基づく閾値設定は未実施。",
+    "単一モデルの公開資料調査であり、独立Consensusや性能保証ではない。"
+  ],
+  "remaining_work_en": [
+    "Hardware reproduction, required-suite design and distribution-based threshold selection remain undone.",
+    "This is single-model public-document research, not independent Consensus or a performance guarantee."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000042",
+      "bundle_sha256": "41213f9fad54ba2701499dd684d162544a648ab7d1db360731867e5e5cc03029"
+    },
+    {
+      "update_id": "RUP-000076",
+      "bundle_sha256": "0702e3790a8f3a41b517de5cf37bf290da9c3ad78653b0d818601043d7946d70"
+    },
+    {
+      "update_id": "RUP-000081",
+      "bundle_sha256": "edd732a5067c98b5c37fb4fac710a34af647db874c780e522e7dff2928d14be9"
+    },
+    {
+      "update_id": "RUP-000088",
+      "bundle_sha256": "e7494a081d30971fc2a3491c694bdfc072e09d4a4916bcaf4f78df659648cd15"
+    },
+    {
+      "update_id": "RUP-000091",
+      "bundle_sha256": "fe997f605a4edac3d128af5d1e51a63c7c211a0372e6755513738e5c6edf2b44"
+    }
+  ]
+}

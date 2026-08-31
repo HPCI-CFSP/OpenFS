@@ -1,0 +1,172 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000073",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-01T02:33:26+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "710ac000a634b26ced88d4b27ebb4233257069ae01a632b1c3ef365e72b9a61e",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学ワークフローを、タスク依存関係の実行、結果の再利用、ストリーミング連携、対話・AIによる制御に分けて比較します。Parsl、Nextflow、Pegasus、ADIOS2、Colmena、WHEELについて、再開の粒度とデータ・認証・運用条件を整理しました。一つの製品による全面的な統一や、実時間処理の期限保証を前提にはしません。",
+  "summary_en": "Compare scientific workflows across task dependencies, result reuse, streaming and interactive/AI steering. For Parsl, Nextflow, Pegasus, ADIOS2, Colmena and WHEEL, distinguish recovery granularity and data, identity and operational conditions. Do not assume comprehensive unification by one product or guaranteed real-time deadlines.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "cd1314a4f3e1035a653f8962ce301bd2f0671217bc377ad2bffa7f18441d1e65",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01",
+        "TDS-CD2-SSW-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-16-U01",
+      "title_ja": "今後の検証課題: 施設をまたぐ一貫した再開",
+      "title_en": "Open validation questions: consistent cross-site recovery",
+      "summary_ja": "各製品の再開機能を組み合わせても、全工程の整合性は別途検証が必要です。",
+      "summary_en": "Combining product-level recovery features still requires end-to-end consistency validation.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-WORKFLOW-CROSSSITE-RECOVERY-GAP",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDS066",
+            "SRC-CDS067",
+            "SRC-CDS070",
+            "SRC-CDS071",
+            "SRC-CDS074"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "未解決: 再実行・ストリーム欠落・権限更新の整合",
+          "name_en": "Unresolved: retries, stream loss and credential renewal",
+          "timing_ja": "共通の適合基準と実運用での達成時期は未確認",
+          "timing_en": "Common qualification criteria and operational delivery are unverified",
+          "statement_ja": "タスクの再実行、キャッシュからの再利用、ストリームの待機・破棄は、異なる障害対処です。OpenFSでは、施設間の通信断や権限失効を含む同一の処理で、重複実行、欠落、中間結果の誤再利用を調べる必要があると判断します。過去の連携実証だけでは、現在の全センターで同じ動作を保証できません。",
+          "statement_en": "Task retries, cache reuse and stream blocking/dropping address different failures. OpenFS assesses a need to test duplicate execution, loss and stale intermediate reuse in the same workflow, including intersite outages and expired authorization. Historical integration demonstrations do not guarantee uniform behavior across today's centers.",
+          "hpci_relevance_ja": "実験データ処理と長時間のシミュレーションを接続する際の、再開手順と責任分担を決める論点です。",
+          "hpci_relevance_en": "This informs recovery procedures and responsibilities when connecting instruments with long simulations.",
+          "adoption_conditions_ja": [
+            "採用版を固定し、計算・転送・認証の停止点を変えた公開試験を収集する。",
+            "処理期限の保証は、ジョブ待ち時間を含む別の評価として扱う。"
+          ],
+          "adoption_conditions_en": [
+            "Collect version-pinned public tests that fail computation, transfer and authentication at different points.",
+            "Assess deadline guarantees separately, including batch queue delays."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS066",
+        "title": "Parsl memoization and checkpointing",
+        "publisher": "Parsl Project",
+        "url": "https://parsl.readthedocs.io/en/latest/userguide/workflows/checkpoints.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.3.0-dev documentation accessed 2026-09-01"
+      },
+      "origin_group": "parsl-project",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "App equivalence; caveats; checkpointing",
+      "observation_ja": "関数名による同値判定、関数内部変更がcacheを無効化しない注意、完了結果の保存を確認。",
+      "observation_en": "Read function-name equivalence, the warning that body changes do not invalidate caches, and persistence of completed results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS067",
+        "title": "Nextflow caching and resuming",
+        "publisher": "Seqera / Nextflow",
+        "url": "https://docs.seqera.io/nextflow/cache-and-resume",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "seqera-nextflow",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Task hash; work directory; modified inputs",
+      "observation_ja": "cacheと作業出力の両方を必要とする再開、入力属性hash、非決定的な入力対応付けの注意を確認。",
+      "observation_en": "Read cache-plus-output requirements, input-attribute hashing and nondeterministic input-pairing caveats.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS070",
+        "title": "Pegasus WMS monitoring, debugging and statistics",
+        "publisher": "Pegasus Project / USC ISI",
+        "url": "https://pegasus.isi.edu/documentation/user-guide/monitoring-debugging-stats.html",
+        "source_class": "official-project",
+        "published_or_updated": "5.1.2 documentation accessed 2026-09-01"
+      },
+      "origin_group": "pegasus-isi",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Resubmitting failed workflows; workflow/job wall-time definitions",
+      "observation_ja": "rescue DAGが完了jobのみを省略し、実行途中の復旧はアプリcheckpointに依存することを確認。",
+      "observation_en": "Read that rescue DAGs skip completed jobs; partial-job recovery requires application checkpoint support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS071",
+        "title": "ADIOS2 supported engines: SST streaming",
+        "publisher": "ADIOS2 Project",
+        "url": "https://adios2.readthedocs.io/en/latest/engines/engines.html",
+        "source_class": "official-project",
+        "published_or_updated": "2.12.0-rc1 documentation accessed 2026-09-01"
+      },
+      "origin_group": "adios2-project",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "SST semantics; QueueFullPolicy; reader absence; transport",
+      "observation_ja": "Block/Discardの交換条件、reader不在時の例外、step単位の通信を確認。永続保存や期限保証とは異なる。",
+      "observation_en": "Read Block/Discard trade-offs, no-reader exceptions and step-based transport; these are not persistence or deadline guarantees.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS074",
+        "title": "HPCI project hp220355: preliminary multi-system workflow study",
+        "publisher": "RIKEN R-CCS / HPCI Office",
+        "url": "https://www.hpci-office.jp/output/hp220355/outcome.pdf",
+        "source_class": "research-artifact",
+        "published_or_updated": "report for usage period 2023-02-08 to 2024-02-07"
+      },
+      "origin_group": "riken-hp220355",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Sections 5.2, 5.3 and 6; text read, figure screenshot unavailable",
+      "observation_ja": "JAXA側mesh生成、富岳への転送・解析の実証と、当時の認証・転送上の課題を本文で確認。図の取得はcache miss。",
+      "observation_en": "Read the JAXA mesh-generation, transfer and Fugaku-analysis demonstration and historical authentication/transfer gaps. Figure retrieval returned cache miss.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "施設間の障害試験と実運用での復旧実績は不足しています。",
+    "独立したAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Cross-site fault tests and operational recovery evidence remain insufficient.",
+    "Consensus review by independent AI models remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000040",
+      "bundle_sha256": "69cef4a37856ecaeb2b2ebf568e2349a0dabf8847f00fc104264f2b552dc45e9"
+    }
+  ]
+}

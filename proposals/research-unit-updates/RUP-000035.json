@@ -1,0 +1,423 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000035",
+  "topic_id": "SSW-04",
+  "created_at": "2026-09-01T00:38:53+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "a02de8a62dd051cecbf1a8ba927bcaaf69378ef47f3ab360b25af43ee6ba4418",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "密行列、疎行列、FFTと精度制御を分け、CPU/GPUバックエンドだけでなく分散実行、対応演算、ビルド条件まで確認します。ライブラリの採用可否は同じ問題・誤差条件で比較する必要があり、以下は文書・公開コードに基づく暫定結果です。",
+  "summary_en": "Dense algebra, sparse solvers, FFT and precision control are reviewed separately, including distributed execution, routine coverage and build conditions. Adoption requires matched problems and error criteria; these are provisional findings from documentation and public code.",
+  "units": [
+    {
+      "unit_id": "SSW-04-U01",
+      "before_sha256": "4e8a1cf68bfc634999db65ae129a23813adc9c57cc97f5c2e04a1cb5b2c60f8b",
+      "evidence_section_ids": [
+        "TDS-SSW04-LIBRARIES",
+        "TDS-CD1-SSW-04-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-04-U02",
+      "before_sha256": "5723ef9db72ba2f1205d19e3e3db36c30a29fd9e30db63c9ee9dcd0deb2e3b00",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-04-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-04-U01",
+      "title_ja": "アルゴリズム・実行環境別の対応範囲",
+      "title_en": "Coverage by algorithm and execution environment",
+      "summary_ja": "共通API、GPU対応、分散実行はそれぞれ別の確認項目です。",
+      "summary_en": "Shared APIs, GPU support and distributed execution require separate checks.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-SLATE-DISTRIBUTED",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS021"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SLATE: 分散密行列計算",
+          "name_en": "SLATE: distributed dense algebra",
+          "timing_ja": "公開実装を2026-09-01確認",
+          "timing_en": "Public implementation inspected 2026-09-01",
+          "statement_ja": "SLATEは密行列の線形方程式、最小二乗、固有値等を分散メモリ環境で扱い、MPI/OpenMP、CUDA/HIP、ベンダーの数値カーネルを組み合わせます。単一GPUのBLASと同じ階層の製品ではなく、ScaLAPACKからの移行も使用ルーチンとデータ分散方式ごとに確認します。",
+          "statement_en": "SLATE combines MPI/OpenMP, CUDA/HIP and vendor kernels for distributed dense solvers, least squares and eigenproblems. It occupies a different layer from single-GPU BLAS. ScaLAPACK migration needs checks of the routines and data distributions actually used.",
+          "hpci_relevance_ja": "ノード内演算とノード間通信を含む全体の計算時間で比較します。",
+          "hpci_relevance_en": "Compare end-to-end time, including local computation and inter-node communication.",
+          "adoption_conditions_ja": [
+            "行列サイズ、分散、GPU数、前処理時間を揃える。",
+            "公開API一覧で必要なルーチンを照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Match matrix size, distribution, GPU count and setup time.",
+            "Check required routines against the public API."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ONEMATH-BACKENDS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS022"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "oneMath: 共通APIとバックエンドの差",
+          "name_en": "oneMath: common APIs and backend differences",
+          "timing_ja": "公開ビルド文書を2026-09-01確認",
+          "timing_en": "Public build documentation checked 2026-09-01",
+          "statement_ja": "oneMathはBLAS、LAPACK、FFT、乱数、疎行列演算などをバックエンド別に構成します。共通SYCL APIがあることと、全ベンダーで全演算が同じ条件で使えることは別です。公式文書の複数ベンダーDFT構成例にも未サポートとの注記があります。",
+          "statement_en": "oneMath configures BLAS, LAPACK, FFT, RNG and sparse operations by backend. A common SYCL API does not imply uniform coverage across vendors. Even the documented multi-vendor DFT build example carries an unsupported-configuration caveat.",
+          "hpci_relevance_ja": "移植可能性をAPI表記だけで判断せず、必要な演算と配布構成を確認します。",
+          "hpci_relevance_en": "Assess portability against required operations and supported distributions, not API labels alone.",
+          "adoption_conditions_ja": [
+            "ドメイン、データ型、コンパイラ、バックエンドを版付きで記録する。",
+            "未試験の組合せを対応済みと表示しない。"
+          ],
+          "adoption_conditions_en": [
+            "Version domain, datatype, compiler and backend choices.",
+            "Do not label untested combinations as qualified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PETSC-HIP-DOC-CONFLICT",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-TDS013",
+            "SRC-CDS023"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PETSc: 概要表と個別GPU APIの差",
+          "name_en": "PETSc: overview versus concrete GPU APIs",
+          "timing_ja": "3.25.4系文書を2026-09-01照合",
+          "timing_en": "3.25.4-series documentation cross-checked 2026-09-01",
+          "statement_ja": "概要表ではHIP行列が開発中とされていますが、同じリリース系列の個別マニュアルにはAMD GPU用のMATAIJHIPSPARSEとMPI構成が記載されています。したがって、HIP行列が全く使えないとも、全ソルバーがGPU上で完結するとも判断できません。",
+          "statement_en": "The overview calls HIP matrices in development, while the same release series documents MATAIJHIPSPARSE and MPI variants for AMD GPUs. Neither complete absence of HIP matrices nor GPU-resident execution of every solver follows from these documents.",
+          "hpci_relevance_ja": "調達対応表は、疎行列形式・演算・前処理・ソルバーの組合せ単位で作成します。",
+          "hpci_relevance_en": "Build procurement support tables by matrix format, operation, preconditioner and solver combination.",
+          "adoption_conditions_ja": [
+            "具体的APIと実装・試験を優先して確認する。",
+            "文書の更新日だけで機能成熟度を判断しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify concrete APIs, implementations and tests.",
+            "Do not infer maturity from a documentation timestamp."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HEFFTE-DISTRIBUTED-FFT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS024"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "heFFTe: 分散FFTと通信経路",
+          "name_en": "heFFTe: distributed FFT and communication paths",
+          "timing_ja": "v2.3文書の確認。最新版という意味ではありません。",
+          "timing_en": "Inspection of v2.3 documentation, not a claim that it is the latest release.",
+          "statement_ja": "heFFTeはMPIとCPU/GPU FFTバックエンドを組み合わせます。確認した文書ではGPUバックエンドを一つ選択し、GPU-aware MPIが利用できない場合はホスト経由へ切り替えられます。GPU上のFFTだけが速くても、再分散通信を含む分散FFTが速いとは限りません。",
+          "statement_en": "heFFTe combines MPI with CPU/GPU FFT backends. The inspected documentation selects one GPU backend and allows host staging when GPU-aware MPI is unavailable. Fast local FFTs do not establish fast distributed FFTs once redistribution is included.",
+          "hpci_relevance_ja": "通信ライブラリ、NIC配置、GPUメモリ容量と一体で評価します。",
+          "hpci_relevance_en": "Evaluate alongside communication libraries, NIC placement and GPU memory capacity.",
+          "adoption_conditions_ja": [
+            "現在採用する版の対応表を再確認する。",
+            "全体形状、分割、転送・再配置時間を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Recheck support for the release selected for deployment.",
+            "Record global shape, partitioning, transfer and redistribution time."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-04-U02",
+      "title_ja": "混合精度と高精度演算エミュレーション",
+      "title_en": "Mixed precision and high-precision emulation",
+      "summary_ja": "演算精度の変更、反復改良、エミュレーションを区別し、適用条件と失敗時の切替を記録します。",
+      "summary_en": "Distinguish reduced precision, refinement and emulation, recording conditions and fallback paths.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-GINKGO-PRECISION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS025",
+            "SRC-CDS026"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Ginkgo: 反復改良とビルド時の精度設定",
+          "name_en": "Ginkgo: refinement and build-time precision settings",
+          "timing_ja": "1.8.0の公開例とmain由来1.11.0のビルド文書を区別",
+          "timing_en": "Historical 1.8.0 example distinguished from main-based 1.11.0 build documentation",
+          "statement_ja": "公開例はFP32の内側CGをFP64の反復改良に組み込みます。一方、真の混合精度カーネルを生成するビルド設定は既定で無効です。利用可能な型だけでなく、変換コスト、コンパイラの浮動小数点設定、残差と収束回数を確認する必要があります。",
+          "statement_en": "The public example embeds FP32 inner CG in FP64 refinement. Separately, true mixed-precision kernel generation defaults off. Qualification must include conversion cost, compiler floating-point settings, residuals and iteration counts, not merely available datatypes.",
+          "hpci_relevance_ja": "必要精度までの総時間を比較し、低精度カーネル単体の速度を全体へ外挿しません。",
+          "hpci_relevance_en": "Compare total time to required accuracy; do not extrapolate isolated low-precision kernel speed.",
+          "adoption_conditions_ja": [
+            "問題の条件数・前処理と停止条件を揃える。",
+            "サンプル出力を今回の実測値として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Match conditioning, preconditioning and stopping criteria.",
+            "Do not present example output as measurements from this review."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CUBLAS-EMULATION-CONTROL",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS027"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "cuBLAS: 仮数長制御とFP64への切替",
+          "name_en": "cuBLAS: mantissa control and FP64 fallback",
+          "timing_ja": "CUDA 13.0 Update 2の固定版文書",
+          "timing_en": "Pinned CUDA 13.0 Update 2 documentation",
+          "statement_ja": "FP64向け固定小数点エミュレーションは入力のダイナミックレンジに依存します。動的制御は必要な仮数長が上限を超えるとネイティブFP64へ切り替えますが、固定仮数長では同等精度を保証しません。文書はIEEE-754準拠ともしておらず、作業領域も追加で必要です。",
+          "statement_en": "FP64 fixed-point emulation depends on input dynamic range. Dynamic control falls back to native FP64 when required mantissas exceed the limit; fixed mantissas do not guarantee equivalent accuracy. Documentation also excludes IEEE-754 compliance and requires extra workspace.",
+          "hpci_relevance_ja": "精度とメモリ容量を含めた採用条件にし、エミュレーションを常時高速なFP64の代替とはしません。",
+          "hpci_relevance_en": "Qualify accuracy and memory requirements rather than assuming an always-faster FP64 replacement.",
+          "adoption_conditions_ja": [
+            "誤差、切替率、作業領域を実入力で測る。"
+          ],
+          "adoption_conditions_en": [
+            "Measure error, fallback frequency and workspace on real inputs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GEMMUL8-EXTENSIONS",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-TDS015"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GEMMul8: GEMM以外への拡張",
+          "name_en": "GEMMul8: extensions beyond GEMM",
+          "timing_ja": "2026-09-01のmain説明を確認。安定版・保守契約は未確認。",
+          "timing_en": "Main README checked 2026-09-01; stable-release and support commitments unverified.",
+          "statement_ja": "Ozaki Scheme IIに基づくGEMMul8は、対称・Hermitian・三角行列などのBLAS Level-3系へ拡張されています。CUDA/HIPを利用できますが、HopperでのFP8エミュレーションは非対応です。TRSMは対角ブロックをネイティブBLASで解き、更新にエミュレーションを使う混成実装です。",
+          "statement_en": "Ozaki Scheme II-based GEMMul8 extends to symmetric, Hermitian and triangular BLAS Level-3-style routines. CUDA/HIP paths exist, but Hopper FP8 emulation is unsupported. TRSM combines native BLAS diagonal-block solves with emulated updates.",
+          "hpci_relevance_ja": "日本発の数値計算技術として追跡し、演算ごとの精度・実装範囲を国際的な代替手法と比較します。",
+          "hpci_relevance_en": "Track this Japanese research contribution against international alternatives by operation and numerical behavior.",
+          "adoption_conditions_ja": [
+            "演算別の誤差と、変換・復元を含む時間を確認する。",
+            "低精度エンジンの有無と実際の実装対応を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Check per-operation error and time including conversion/reconstruction.",
+            "Separate hardware engine availability from implementation support."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-SSW04-ACCURACY"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS021",
+        "title": "SLATE official repository",
+        "publisher": "Innovative Computing Laboratory, University of Tennessee",
+        "url": "https://github.com/icl-utk-edu/slate",
+        "source_class": "official-project",
+        "published_or_updated": "Master README inspected 2026-09-01; revision not exposed"
+      },
+      "origin_group": "icl-utk",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "About; MPI/OpenMP/CUDA/HIP and vendor-kernel dependencies",
+      "observation_ja": "分散メモリ密行列計算をMPI等とベンダーカーネルで実装。ルーチン単位の移行確認が必要。",
+      "observation_en": "Distributed dense algebra uses MPI and vendor kernels; migration needs routine-level qualification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS022",
+        "title": "oneMath: building with DPC++",
+        "publisher": "UXL Foundation",
+        "url": "https://uxlfoundation.github.io/oneMath/building_the_project_with_dpcpp.html",
+        "source_class": "official-project",
+        "published_or_updated": "0.1 documentation inspected 2026-09-01"
+      },
+      "origin_group": "uxl-foundation",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Backend options; unsupported multi-vendor DFT build example",
+      "observation_ja": "共通APIとバックエンドの組合せを説明するが、全構成の対応・試験を保証していない。",
+      "observation_en": "Documents shared APIs and backend combinations without qualifying every configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS023",
+        "title": "PETSc MATAIJHIPSPARSE API",
+        "publisher": "PETSc Project",
+        "url": "https://petsc.org/release/manualpages/Mat/MATAIJHIPSPARSE/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-25; v3.25.4-20-gfcf7181b00b"
+      },
+      "origin_group": "petsc-project",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Matrix-type description, single/multiple process distinction, implementation link",
+      "observation_ja": "AMD GPU向け疎行列型とMPI/単一プロセス構成を文書化。全ソルバーのGPU完結は未検証。",
+      "observation_en": "Documents AMD GPU sparse matrices for MPI/single-process use, not qualification of every solver.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS024",
+        "title": "heFFTe v2.3 installation and GPU-aware MPI",
+        "publisher": "heFFTe Project, Innovative Computing Laboratory",
+        "url": "https://icl-utk-edu.github.io/heffte/md_doxygen_installation.html",
+        "source_class": "official-project",
+        "published_or_updated": "v2.3 documentation inspected 2026-09-01; not asserted latest"
+      },
+      "origin_group": "icl-utk",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Available backend libraries; only one GPU backend; GPU-aware MPI",
+      "observation_ja": "GPUバックエンドは一つ選択。GPU-aware MPIを無効にしてホスト経由へ切替可能。",
+      "observation_en": "Select one GPU backend; GPU-aware MPI can be disabled in favor of host staging.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS025",
+        "title": "Ginkgo mixed-precision iterative-refinement example",
+        "publisher": "Ginkgo Project",
+        "url": "https://ginkgo-project.github.io/ginkgo-generated-documentation/doc/master/mixed_precision_ir.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.8.0 example inspected 2026-09-01; historical documentation"
+      },
+      "origin_group": "ginkgo-project",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Introduction and inner/outer solver precision; residual and iteration checks",
+      "observation_ja": "FP32内側CGとFP64外側反復改良の公開例。実行例は全問題での収束保証ではない。",
+      "observation_en": "Public FP32 inner-CG/FP64 outer-refinement example; sample output does not guarantee general convergence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS026",
+        "title": "Ginkgo build-time precision and backend options",
+        "publisher": "Ginkgo Project",
+        "url": "https://ginkgo-project.github.io/ginkgo-generated-documentation/doc/main/install_ginkgo.html",
+        "source_class": "official-project",
+        "published_or_updated": "Main-based 1.11.0 documentation inspected 2026-09-01"
+      },
+      "origin_group": "ginkgo-project",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "GINKGO_MIXED_PRECISION, SYCL floating-point flag, backend build options",
+      "observation_ja": "真の混合精度カーネル生成は既定OFF。コンパイラ設定も数値試験結果へ影響する。",
+      "observation_en": "True mixed-precision kernel generation defaults off; compiler settings also affect numerical tests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS027",
+        "title": "cuBLAS 13.0 Update 2 floating-point emulation",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/cuda/archive/13.0.2/cublas/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "CUDA 13.0.2 archived documentation"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "1.5.2 dynamic/fixed mantissa; workspace and IEEE-754 limitation",
+      "observation_ja": "動的仮数長は必要時にFP64へ戻る。固定仮数長は同等精度を保証せず、IEEE-754互換ともしていない。",
+      "observation_en": "Dynamic mantissas can fall back to FP64; fixed mantissas do not guarantee equivalent accuracy or IEEE-754 compliance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS013",
+        "title": "PETSc GPU Support Roadmap",
+        "publisher": "PETSc Project",
+        "url": "https://petsc.org/release/overview/gpu_roadmap/",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "petsc-project",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "GPU support table; v3.25.4-22-gab79ce791859 footer",
+      "observation_ja": "概要表はHIP Matを開発中と表示。具体的なHIPSPARSE APIの存在とは区別して読む必要がある。",
+      "observation_en": "The overview labels HIP Mat in development; this must be distinguished from the concrete HIPSPARSE API.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS015",
+        "title": "GEMMul8",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/GEMMul8",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "riken-rccs",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Supported operations; Hopper FP8 caution; TRSM implementation",
+      "observation_ja": "BLAS Level-3系へ拡張。HopperのFP8は非対応で、TRSMは対角ブロックにネイティブBLASを用いる。",
+      "observation_en": "Extends to BLAS Level-3-style routines; Hopper FP8 is unsupported and TRSM retains native diagonal-block solves.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-061",
+      "topic_ids": [
+        "SSW-04"
+      ],
+      "priority": "P1",
+      "question_ja": "GPU対応概要と個別APIの差を解消し、同じ問題・精度・版でライブラリを比較できるか。",
+      "question_en": "Can overview/API discrepancies be resolved and libraries compared on matched problems, precision and versions?",
+      "next_action_ja": "PETScの具体的な演算・前処理の試験を確認し、oneMath、SLATE、heFFTe、Ginkgo、GEMMul8について採用版、データ変換、通信、精度、保守条件を照合する。",
+      "next_action_en": "Inspect PETSc operation/preconditioner tests and qualify selected versions, conversion, communication, accuracy and support for oneMath, SLATE, heFFTe, Ginkgo and GEMMul8.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "各CPU/GPUで必要な演算と混合精度設定を同一問題で比較する。",
+    "概要表とAPIの差、版の異なる文書、未公開の保守条件を解消する。",
+    "文書調査のみであり、性能実測・独立モデルによるConsensusは未実施。"
+  ],
+  "remaining_work_en": [
+    "Compare required routines and mixed-precision settings across CPUs/GPUs on identical problems.",
+    "Resolve overview/API differences, version mismatches and unpublished support terms.",
+    "This document review contains no new performance measurements or independent-model Consensus."
+  ]
+}

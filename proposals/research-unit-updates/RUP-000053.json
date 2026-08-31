@@ -1,0 +1,438 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000053",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-01T01:41:50+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "共通認証、本人確認、課題・グループごとの認可、各センターのローカルアカウントを分離して設計します。ポータルへのログイン成功は計算資源の利用許可ではありません。国際的な認証保証の規格と日本の実証動向を照合し、失効、更新、利用終了時の処理まで比較します。",
+  "summary_en": "Design common authentication, identity proofing, project/group authorization and site-local accounts as separate responsibilities. Portal login does not grant compute allocations. Compare international assurance standards with Japanese pilots, including revocation, renewal and end-of-project handling.",
+  "units": [
+    {
+      "unit_id": "SSW-12-U01",
+      "before_sha256": "e7cedfa5eb21c939090a79f2b7ef5276dcd7ff760ec9a7cf4055dddad847aa71",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-12-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-12-U01",
+      "title_ja": "認証保証・ローカル権限・資格情報の継続管理",
+      "title_en": "Assurance, local permissions and credential lifecycle",
+      "summary_ja": "現在のHPCI方式、国際標準、次世代の実証を区別します。",
+      "summary_en": "Separate current HPCI operation, international standards and next-generation pilots.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-HPCI-IDENTITY-AUTHORITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO027",
+            "SRC-CDO029"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPCI: 個人IDと課題・サイト権限の分離",
+          "name_en": "HPCI: persistent identity versus project/site authority",
+          "timing_ja": "2026年版ガイドと公開ログイン手順",
+          "timing_en": "2026 guide and public login procedures",
+          "statement_ja": "HPCI-IDは個人を識別し、課題採択後のHPCIアカウントや各資源のローカルアカウントとは役割が異なります。OAuthへの移行後も、課題・サイトごとの利用権限は必要です。公開ログイン手順は二要素認証を要求し、接続方式ごとに多段接続やストレージ対応の差があります。",
+          "statement_en": "An HPCI-ID identifies a person separately from project-enabled HPCI accounts and site-local accounts. OAuth migration does not remove project/site authorization. Public login procedures require two-factor authentication and distinguish client support for multihop access and storage.",
+          "hpci_relevance_ja": "HPCI固有の口座構造を、共通ポータルで隠蔽しすぎない設計が必要です。",
+          "hpci_relevance_en": "Common portals must preserve HPCI-specific account and authorization distinctions.",
+          "adoption_conditions_ja": [
+            "所属変更、複数課題、利用終了時の権限を別々に確認する。",
+            "2024年の接続手順の制限を現行環境で再確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check affiliation changes, multiple projects and project termination separately.",
+            "Recheck limitations from the 2024 login guide against deployed environments."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPCI-CREDENTIAL-RENEWAL",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO036"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPCI共用ストレージ: 短命トークンと更新継続",
+          "name_en": "HPCI shared storage: short tokens and sustained renewal",
+          "timing_ja": "2026年4月11日版",
+          "timing_en": "April 11, 2026 manual",
+          "statement_ja": "共用ストレージのアクセストークンは10分で失効し、jwt-agentが継続更新します。一方、更新に用いる情報は再発行または1年経過まで有効とされ、両者の寿命は異なります。更新プロセスの停止でアクセス不能になり得るため、長時間ジョブの運用では更新経路も依存関係です。",
+          "statement_en": "Shared-storage access tokens expire after ten minutes and are renewed by jwt-agent. Renewal information has a different lifetime, until regeneration or one year according to the manual. Renewal-process failure can prevent access, making the renewal path a dependency of long-running jobs.",
+          "hpci_relevance_ja": "短いトークン寿命だけで資格情報全体の露出リスクを評価できません。",
+          "hpci_relevance_en": "Short access-token lifetime alone does not characterize overall credential exposure.",
+          "adoption_conditions_ja": [
+            "資格情報をジョブログや公開資料に出さず、更新停止・失効を検証する。",
+            "実際の接続や資格情報の取得は本調査では実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "Keep credentials out of job logs/public artifacts and test renewal failure and revocation.",
+            "This research performed no actual connections or credential acquisition."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-OOD-LOCAL-MAPPING",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO034"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Open OnDemand: 認証済み利用者とOS口座の対応",
+          "name_en": "Open OnDemand: mapping authenticated identities to OS users",
+          "timing_ja": "4.2.0文書",
+          "timing_en": "4.2.0 documentation",
+          "statement_ja": "Open OnDemandは認証結果をLinuxユーザへ対応付け、利用者別Webサーバへの経路を選びます。4.0以降はUIDも使用できます。メールのドメインを省略する便宜設定は、複数機関で同じユーザ名がある構成では一意性を別途確認する必要があります。",
+          "statement_en": "Open OnDemand maps authentication results to Linux users and routes to per-user web servers; UID mapping is available since 4.0. Convenience mappings that strip email domains require a separate uniqueness review when institutions reuse usernames.",
+          "hpci_relevance_ja": "入口の統一に加え、各サイトで衝突しない権限対応が必要です。",
+          "hpci_relevance_en": "Unified access also requires collision-free permission mapping at each site.",
+          "adoption_conditions_ja": [
+            "発行元と安定した識別子を使う対応表を検討し、曖昧な対応を拒否する。",
+            "認証成功でローカル口座や計算時間が自動付与されると想定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Consider issuer-scoped stable identifiers and reject ambiguous mappings.",
+            "Do not assume authentication automatically creates local accounts or grants compute time."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-REFEDS-ASSURANCE-V2",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO030",
+            "SRC-CDO031",
+            "SRC-CDO037"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "REFEDS: 身元・MFA・インシデント対応を区別",
+          "name_en": "REFEDS: identity, MFA and incident-response assurance",
+          "timing_ja": "MFA 2.0は2026年6月10日公開",
+          "timing_en": "MFA 2.0 published June 10, 2026",
+          "statement_ja": "RAFは身元確認等、MFA Profileは認証イベント、Sirtfiは機関間のインシデント対応を扱います。MFA 2.0は一般的なMFAとフィッシング耐性MFAの信号を分けますが、端末侵害等を防ぐ包括保証ではありません。Sirtfiの表明は自己評価でも可能で、第三者認証とは異なります。",
+          "statement_en": "RAF addresses identity assurance, the MFA Profile authentication events, and Sirtfi inter-organizational incident response. MFA 2.0 distinguishes general from phishing-resistant MFA signalling but does not guarantee protection against endpoint compromise. Sirtfi can be self-asserted and is not external certification.",
+          "hpci_relevance_ja": "異なる保証のラベルを一つの安全性スコアにまとめないための基準です。",
+          "hpci_relevance_en": "These distinctions prevent collapsing different assurances into one security score.",
+          "adoption_conditions_ja": [
+            "索引の旧版表記だけで判断せず、規格本文と実装版を確認する。",
+            "要求した認証水準を満たせない場合の拒否動作も確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check normative documents and implementation versions, not stale index labels.",
+            "Check rejection when requested authentication strength cannot be met."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GAKUNIN-TRIAL-STAGE",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO035",
+            "SRC-CDO038"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "学認: 高保証認証とIdPホスティングの実証",
+          "name_en": "GakuNin: higher-assurance and hosted-IdP pilots",
+          "timing_ja": "2026年1-3月の実証募集と継続検討",
+          "timing_en": "January-March 2026 trial announcement and continuing development",
+          "statement_ja": "NIIはIAL2・AAL2のIdP/SP運用を2026年1-3月の実証対象として募集しました。研究開発ページは追加の実証募集やIdPホスティングの検討を記載しています。これらを全参加機関での本運用開始やHPCI全体の移行完了とは扱いません。",
+          "statement_en": "NII invited IdP/SP participation in IAL2/AAL2 trials for January-March 2026. Its research page describes further trial recruitment and hosted-IdP development. These records do not establish production rollout across all participating institutions or an HPCI-wide transition.",
+          "hpci_relevance_ja": "運用負担を軽減する候補ですが、提供条件と移行責任の確認が必要です。",
+          "hpci_relevance_en": "These may reduce operational burden, subject to service terms and migration responsibilities.",
+          "adoption_conditions_ja": [
+            "実証報告、採用機関、保証水準、障害時支援を追加確認する。",
+            "一般公開の移行日が確認できるまで導入時期を確定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify trial results, adopters, assurance levels and outage support.",
+            "Do not fix deployment dates without public transition evidence."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-OPENID-FEDERATION-LIFECYCLE",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO032",
+            "SRC-CDO033"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "OpenID Federation: 動的な信頼確立と失効設計",
+          "name_en": "OpenID Federation: dynamic trust and revocation design",
+          "timing_ja": "1.0 Finalは2026年2月17日承認",
+          "timing_en": "1.0 Final approved February 17, 2026",
+          "statement_ja": "OpenID Federation 1.0は署名された情報と信頼連鎖により、多者間のOIDC/OAuth連携を支えます。ただし規格11.4は独自の失効手続きを定義せず、定期再確認を前提とします。HPCへ導入する場合、緊急失効とキャッシュ有効期間は連合の運用設計として補う必要があります。",
+          "statement_en": "OpenID Federation 1.0 supports multilateral OIDC/OAuth trust through signed statements and trust chains. Section 11.4 does not define its own revocation procedure, relying on regular reevaluation. HPC adoption therefore needs federation-specific emergency revocation and cache-lifetime design.",
+          "hpci_relevance_ja": "信頼先の管理を拡張する候補ですが、計算資源配分の制度を代替しません。",
+          "hpci_relevance_en": "It can scale trust management but does not replace compute-allocation policy.",
+          "adoption_conditions_ja": [
+            "鍵更新、信頼先撤回、通信断時の挙動を相互運用試験に含める。",
+            "規格承認日をセンター導入日としてロードマップに載せない。"
+          ],
+          "adoption_conditions_en": [
+            "Include key rollover, trust withdrawal and network failures in interoperability tests.",
+            "Do not present standard approval as center deployment."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO027",
+        "title": "HPCI クイックスタートガイド HPCI-UM01-001-31",
+        "publisher": "HPCI / RIST",
+        "url": "https://www.hpci-office.jp/download_file/view/10e18227-b957-41b4-942e-70036697c946/578",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-31"
+      },
+      "origin_group": "hpci-access-guidance",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Sections 2.2-2.6 and 3; ID, project account and local account roles",
+      "observation_ja": "不変のHPCI-IDと課題期間に紐付くHPCIアカウント、サイト固有口座を区別して確認。",
+      "observation_en": "Read persistent HPCI-ID, project-lifetime HPCI account and site-local account distinctions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO029",
+        "title": "HPCIログインマニュアル OAuth対応版 HPCI-CA01-003-02",
+        "publisher": "HPCI / RIST",
+        "url": "https://www.hpci-office.jp/download_file/view/68464801-f085-4d7c-973f-8060425f0e20/578",
+        "source_class": "official-project",
+        "published_or_updated": "2024-06-07"
+      },
+      "origin_group": "hpci-access-guidance",
+      "checked_at": "2026-09-01T01:35:19+09:00",
+      "locator": "Section 1.1, required TOTP and jwt-agent/oidc-agent feature differences",
+      "observation_ja": "二要素認証必須、共有ストレージと多段接続のクライアント差を確認。認証・接続は実行していない。",
+      "observation_en": "Read mandatory two-factor authentication and client differences for shared storage/multihop; no authentication or connections executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO030",
+        "title": "REFEDS Assurance Suite overview",
+        "publisher": "REFEDS",
+        "url": "https://wiki.refeds.org/display/ASS",
+        "source_class": "official-standard",
+        "published_or_updated": "2024-03-22 overview; accessed 2026-09-01"
+      },
+      "origin_group": "refeds-assurance",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Assurance suite components; stale MFA version pointer",
+      "observation_ja": "身元確認と認証方式の保証を区別。一覧のMFA 1.2表記は本文の2.0に追随していない。",
+      "observation_en": "Distinguished identity and authentication assurance; overview's MFA 1.2 label lags the normative 2.0 document.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO031",
+        "title": "REFEDS MFA Profile Version 2.0",
+        "publisher": "REFEDS",
+        "url": "https://refeds.org/profile/mfa",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-06-10"
+      },
+      "origin_group": "refeds-assurance",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Sections 1.4-1.6, revision history, 3 and 4",
+      "observation_ja": "2026年6月10日の2.0、フィッシング耐性MFAの区別と要求を満たせない場合のエラー、端末侵害等の対象外を確認。",
+      "observation_en": "Read June 10, 2026 v2.0, phishing-resistant MFA distinction, failure signalling and exclusions such as endpoint compromise.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO032",
+        "title": "OpenID Federation 1.0 Final Specification Approved",
+        "publisher": "OpenID Foundation",
+        "url": "https://openid.net/openid-federation-1-0-final-specification-approved/",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-02-17"
+      },
+      "origin_group": "openid-federation",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Approval announcement and normative specification link",
+      "observation_ja": "Final承認日を確認。個別HPCサービスへの導入済みとはしていない。",
+      "observation_en": "Verified Final approval date, not deployment at particular HPC services.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO033",
+        "title": "OpenID Federation 1.0 Final",
+        "publisher": "OpenID Foundation",
+        "url": "https://openid.net/specs/openid-federation-1_0-final.html",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-02-17"
+      },
+      "origin_group": "openid-federation",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Abstract; sections 10-12, especially 11.4 revocation",
+      "observation_ja": "信頼連鎖、登録、定期的な再確認を調査。規格自身は失効手続きを定義せず連合ごとの設計が必要。",
+      "observation_en": "Read trust chains, registration and periodic reevaluation; the specification leaves revocation procedures to federations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO034",
+        "title": "Open OnDemand Setup User Mapping",
+        "publisher": "Ohio Supercomputer Center / Open OnDemand",
+        "url": "https://osc.github.io/ood-documentation/latest/authentication/overview/map-user.html",
+        "source_class": "official-project",
+        "published_or_updated": "4.2.0 documentation accessed 2026-09-01"
+      },
+      "origin_group": "osc-openondemand",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Remote User, Dex Automatic Configuration, UID support",
+      "observation_ja": "認証された利用者からローカルユーザへの対応付けとPUNを確認。ドメイン省略の便宜設定を広域連合へ無条件に流用しない。",
+      "observation_en": "Read identity-to-local-user mapping and PUN routing; domain-stripping convenience defaults need review for federation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO035",
+        "title": "次世代認証基盤 IAL2・AAL2中規模実証実験の案内",
+        "publisher": "NII / GakuNin",
+        "url": "https://www.gakunin.jp/news/20251208",
+        "source_class": "official-project",
+        "published_or_updated": "2025-12-08"
+      },
+      "origin_group": "nii-nextgen-identity",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Overview and 2026 January-March trial period",
+      "observation_ja": "2026年1-3月の実証募集を確認。2025年1-3月の別の実証や本運用開始とは区別。",
+      "observation_en": "Read January-March 2026 trial announcement; distinct from the earlier 2025 trial and production launch.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO036",
+        "title": "HPCI共用ストレージ利用マニュアル HPCI-ST01-007",
+        "publisher": "HPCI / RIST",
+        "url": "https://www.hpci-office.jp/download_file/view/d8c3560c-af25-4749-b1b9-b7d3fee547a7/578",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-11"
+      },
+      "origin_group": "hpci-access-guidance",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Pages 1-4; token lifetimes, renewal, replication and checksums",
+      "observation_ja": "10分のアクセストークンと更新資格情報の有効期間、複製完了確認、チェックサムを確認。認証・コマンドは実行していない。",
+      "observation_en": "Read ten-minute access tokens versus renewal-credential lifetime, replication completion and checksum procedures; executed no authentication or commands.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO037",
+        "title": "Sirtfi Frequently Asked Questions",
+        "publisher": "REFEDS",
+        "url": "https://wiki.refeds.org/display/SIRTFI/FAQs",
+        "source_class": "official-standard",
+        "published_or_updated": "Public v2 FAQ accessed 2026-09-01"
+      },
+      "origin_group": "refeds-sirtfi",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Self-assessment, scope, OS1-6 and incident response",
+      "observation_ja": "自己評価で表明可能、身元保証ではないこと、対応期限は組織毎に定めることを確認。",
+      "observation_en": "Read self-assertion, distinction from identity assurance and organization-specific response times.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO038",
+        "title": "NII Trust and Digital ID Center: Research and Development",
+        "publisher": "National Institute of Informatics",
+        "url": "https://trustdigitalidcenter.jp/?page_id=42",
+        "source_class": "official-project",
+        "published_or_updated": "Live research overview accessed 2026-09-01"
+      },
+      "origin_group": "nii-nextgen-identity",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Medium-scale trials and hosted IdP sections",
+      "observation_ja": "2026年の追加募集予定とIdPホスティングの実証段階を確認。本運用移行日は未提示。",
+      "observation_en": "Read planned further 2026 recruitment and hosted-IdP pilot stage; no production transition date specified.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-079",
+      "topic_ids": [
+        "SSW-12"
+      ],
+      "priority": "P1",
+      "question_ja": "本人確認、認証、課題権限、サイト口座の失効・更新を複数センターで整合させられるか。",
+      "question_en": "Can identity proofing, authentication, project authorization and site-account renewal/revocation remain consistent across centers?",
+      "next_action_ja": "現行のセンター別対応表と実証結果を集め、権限失効、長時間処理、障害時の試験条件を整理する。",
+      "next_action_en": "Collect current site capability mappings and pilot results; define tests for revocation, long-running work and failures.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "学認の実証結果とHPCI各センターでの高保証認証の採用状況は未確認。",
+    "ACCESSの詳細公開文書は取得失敗のため、方式比較の追加調査として残す。",
+    "単一モデルによる文書調査であり、独立Consensusや実機接続試験は未実施。"
+  ],
+  "remaining_work_en": [
+    "GakuNin trial outcomes and higher-assurance adoption at individual HPCI centers remain unverified.",
+    "ACCESS detailed public documentation could not be retrieved and remains a comparison gap.",
+    "This is a single-model document review without independent Consensus or live connection tests."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW12-LIFECYCLE",
+        "label_ja": "IDと権限の有効期間",
+        "label_en": "Identity and authorization lifetimes",
+        "question_ja": "異動や課題終了時にもIDを保ち、不要な権限を確実に失効できるか。",
+        "question_en": "Can identities persist across affiliation changes while expired project privileges are removed?"
+      },
+      {
+        "dimension_id": "DIM-SSW12-ASSURANCE",
+        "label_ja": "本人確認と認証保証",
+        "label_en": "Proofing and authentication assurance",
+        "question_ja": "サービスが必要とする保証水準を機関間で確認できるか。",
+        "question_en": "Can services verify required assurance levels across institutions?"
+      },
+      {
+        "dimension_id": "DIM-SSW12-USABILITY",
+        "label_ja": "継続実行と利用窓口",
+        "label_en": "Continuous execution and access interfaces",
+        "question_ja": "長時間ジョブやデータ転送を安全に継続し、障害から復旧できるか。",
+        "question_en": "Can long jobs and transfers continue securely and recover from failures?"
+      }
+    ]
+  }
+}

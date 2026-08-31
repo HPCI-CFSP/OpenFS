@@ -1,0 +1,187 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000078",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T02:57:37+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "2234114012eda8ecc9a5082c32effd187ef09f7fbb4408807aa53b19a3d91311",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミングモデルの仕様と各コンパイラの対応範囲を分け、版・対象機種・実行時ライブラリ・既知の不具合を確認します。GPU移植ではソース互換性だけでなく、数値精度、データ移動、実測性能、保守可能性を比較します。単一モデルによる暫定結果です。",
+  "summary_en": "The review separates programming-model specifications from compiler coverage and checks versions, target platforms, runtimes and known defects. GPU migration requires comparisons of numerical behavior, data movement, measured performance and maintainability, not only source compatibility. Results remain single-model and provisional.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "6ae64129d08b254a50b1c01f5710225a74f5a1f5fa868e8dc50cfa77b133f1cd",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02",
+        "TDS-CD2-SSW-01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-01-U02",
+      "title_ja": "配布版と将来のツールチェーン移行",
+      "title_en": "Released versions and planned toolchain transitions",
+      "summary_ja": "ツールキット全体、構成要素、文書更新日の3つを区別します。",
+      "summary_en": "Separate suite versions, component versions and documentation-update dates.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-INTEL-SUITE-COMPONENTS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS084",
+            "SRC-CDS085"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "oneAPI 2026.1とifx修正版",
+          "name_en": "oneAPI 2026.1 and the ifx patch",
+          "timing_ja": "2026-07-07のツールキット、07-29のifx 2026.1.1",
+          "timing_en": "Toolkit: 2026-07-07; ifx 2026.1.1: 2026-07-29",
+          "statement_ja": "ツールキットと構成要素の版は一致せず、ifxには配列コピーの誤コンパイル修正があります。2026.1版runtime containerは未公開と明記されており、ツールキット公開を配布形態すべての提供完了とは扱いません。",
+          "statement_en": "Suite and component versions differ; the ifx patch fixes an array-copy miscompilation. A 2026.1 runtime container is explicitly unpublished, so a toolkit release does not prove availability of every distribution form.",
+          "hpci_relevance_ja": "科学コードの更新判断には既知問題と回帰試験を含めます。",
+          "hpci_relevance_en": "Include known issues and regression tests in scientific-code upgrade decisions.",
+          "adoption_conditions_ja": [
+            "ifxの残存するCOMMONブロック制約を該当コードで確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check the remaining ifx COMMON-block limitation against affected code."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AOCC-52-CPU",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS086"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AOCC 5.2のCPU向けコンパイラ",
+          "name_en": "AOCC 5.2 CPU compiler",
+          "timing_ja": "2026-05-12公開",
+          "timing_en": "Released 2026-05-12",
+          "statement_ja": "C/C++とFortranでOpenMPの対応範囲が異なり、Fortran coarrayは非対応です。DO CONCURRENTの並列化追加をGPU移植機能と同一視しません。",
+          "statement_en": "C/C++ and Fortran have different OpenMP coverage, and Fortran coarrays are unsupported. Added DO CONCURRENT parallelization should not be equated with GPU porting.",
+          "hpci_relevance_ja": "既存Fortranコードの言語機能とCPU並列化要件で評価します。",
+          "hpci_relevance_en": "Evaluate against legacy Fortran features and CPU-parallelism requirements.",
+          "adoption_conditions_ja": [
+            "LLVM基盤の版だけで、現在のupstream Flangと同一機能とは判断しない。"
+          ],
+          "adoption_conditions_en": [
+            "The LLVM base version does not establish parity with current upstream Flang."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AOCC6-PLANNED-TRANSITION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDS086"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AOCC 6.0のFortran・デバッグ移行計画",
+          "name_en": "Planned AOCC 6.0 Fortran/debug transition",
+          "timing_ja": "公開日は未公表",
+          "timing_en": "Release date undisclosed",
+          "statement_ja": "llvm-flang由来のaof追加とDWARFv5の既定化が計画されています。classic Flangも既定コンパイラとして残す予定で、置換完了や公開時期は確定していません。",
+          "statement_en": "Plans add llvm-flang-based aof and default to DWARFv5, while retaining classic Flang as the default compiler. Completed replacement and release timing are not established.",
+          "hpci_relevance_ja": "コンパイラとデバッガの組合せを移行試験に含めます。",
+          "hpci_relevance_en": "Include compiler/debugger combinations in migration tests.",
+          "adoption_conditions_ja": [
+            "正式版の機能表と実際の配布物を確認してから採用する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify final feature coverage and actual artifacts before adoption."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS084",
+        "title": "Intel oneAPI Toolkit 2026 release notes and component versions",
+        "publisher": "Intel",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-toolkit/2026.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-07; oneAPI 2026.1"
+      },
+      "origin_group": "intel",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "Release history; component table; limitations; deprecations",
+      "observation_ja": "ツールキットと構成要素の版が異なる。2026.1のruntime container未公開、DPC++ Compatibility Tool削除、2027.0からのoneDNN同梱終了予定を確認。",
+      "observation_en": "Suite and component versions differ; read the missing 2026.1 runtime container, removed DPC++ Compatibility Tool and planned oneDNN unbundling from 2027.0.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS085",
+        "title": "Intel Fortran Compiler 2026 release notes",
+        "publisher": "Intel",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/fortran-compiler/2026.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "updated 2026-08-17; ifx 2026.1.1 released 2026-07-29"
+      },
+      "origin_group": "intel",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "Release history; 2026.1.1 fixes; COMMON block limitation",
+      "observation_ja": "7月29日の修正版と8月17日の文書更新を分離。最適化時の誤コンパイル修正と残存するCOMMON制約を確認。",
+      "observation_en": "Separated the July 29 patch from the August 17 documentation update; read optimizer miscompilation fixes and the remaining COMMON limitation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS086",
+        "title": "AMD Optimizing C/C++ and Fortran Compilers 5.2 and 6.0 announcement",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/developer/aocc.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "5.2 released 2026-05-12; AOCC 6.0 timing undisclosed"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "5.2 download table; language features; AOCC 6.0 announcement",
+      "observation_ja": "5.2の公開と6.0の計画を区別。aof導入後もclassic Flangが既定となる予定で、DWARFv5移行も確認。",
+      "observation_en": "Distinguished released 5.2 from planned 6.0; read the planned aof addition with classic Flang still default and the DWARFv5 transition.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "OpenMP/SYCL等の機能試験と代表アプリの数値回帰・性能試験を複数機種で再現する必要があります。",
+    "将来版の公開予定と現行版の提供実績を継続して区別します。独立Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "OpenMP/SYCL feature tests and representative-application numerical/performance regressions still need reproduction across systems.",
+    "Continue distinguishing future plans from released artifacts; independent Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000033",
+      "bundle_sha256": "080f801882833b90ca2d6981acbef738306ded05d57972415095f7b611e4714f"
+    }
+  ]
+}

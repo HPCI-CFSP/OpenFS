@@ -1,0 +1,423 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000040",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-01T00:53:57+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学ワークフローを、タスク依存関係の実行、状態の再利用、ストリーミング連携、対話・AIによる制御に分けて比較します。Parsl、Nextflow、Pegasus、ADIOS2、Colmena、WHEELの公開資料から、再開の粒度とデータ・認証・運用条件を整理しました。すべてを一つの製品で統一できる、あるいはリアルタイム期限を保証できるとはしていません。",
+  "summary_en": "Scientific workflows are compared across dependency execution, state reuse, streaming and interactive/AI steering. Public Parsl, Nextflow, Pegasus, ADIOS2, Colmena and WHEEL sources clarify restart granularity and data, authentication and operational requirements. No single-product unification or real-time deadline guarantee is assumed.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "fe22ed36d819cadd2008cfddfe42505ab3221316d606e0fda352fdcd8c7d313d",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-16-U01",
+      "title_ja": "実行制御・再開・ストリーム・対話の比較",
+      "title_en": "Orchestration, recovery, streaming and interaction",
+      "summary_ja": "workflowの再開と実行中アプリケーションのcheckpoint復旧を区別します。",
+      "summary_en": "Distinguish workflow resumption from restoring a running application's checkpoint.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-PARSL-CACHE-IDENTITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS066"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Parsl: task結果の再利用と同値判定",
+          "name_en": "Parsl: task-result reuse and equivalence",
+          "timing_ja": "1.3.0-dev資料のBasicMemoizer",
+          "timing_en": "BasicMemoizer in 1.3.0-dev documentation",
+          "statement_ja": "Parslの標準memoizerは完了taskの結果を保存・再利用しますが、資料上の関数同値判定は関数名に依存し、関数内部の変更だけではcacheが無効化されません。cache機能の有効化も必要です。コード更新や非決定的処理では、明示的な版・入力・環境識別とcache方針が重要です。",
+          "statement_en": "Parsl's basic memoizer persists completed-task results, but documented app equivalence uses the function name; body changes alone do not invalidate cached results. Caching must also be enabled. Code changes and nondeterministic work require explicit version/input/environment identity and cache policy.",
+          "hpci_relevance_ja": "Python主体の反復実験を効率化しつつ、古い結果の誤再利用を防ぎます。",
+          "hpci_relevance_en": "Support iterative Python workflows while preventing stale-result reuse.",
+          "adoption_conditions_ja": [
+            "採用版とmemoizerを固定し、変更時の無効化を試験する。",
+            "task結果の保存を実行中プロセスの保存と混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the version/memoizer and test invalidation on changes.",
+            "Do not conflate task-result persistence with process checkpointing."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NEXTFLOW-CACHE-STORAGE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS067",
+            "SRC-CDS068",
+            "SRC-CDS069"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Nextflow: 実行先の抽象化と再開用データ",
+          "name_en": "Nextflow: execution abstraction and recovery data",
+          "timing_ja": "公開資料を確認、機能は採用版に依存",
+          "timing_en": "Public documentation inspected; features depend on deployment version",
+          "statement_ja": "NextflowはSlurm、TCS、Kubernetes等をexecutorで切り替えられます。再開には一致するtask cacheと作業directory内の出力の両方が必要です。実行先を変えるだけで保存方式や資源制約が同じになるわけではなく、Kubernetesでは共有volumeまたは別の対応データ経路を設計します。",
+          "statement_en": "Nextflow abstracts Slurm, TCS, Kubernetes and other executors. Resumption requires both matching task metadata and retained work-directory outputs. Switching executors does not equalize storage or resource semantics; Kubernetes needs suitable shared volumes or an alternative supported data path.",
+          "hpci_relevance_ja": "センター更新時のpipeline移行と、中間データ保持費用を合わせて検討します。",
+          "hpci_relevance_en": "Plan pipeline migration together with intermediate-data retention costs.",
+          "adoption_conditions_ja": [
+            "入力hash方式とcontainer digestを固定し、cache誤再利用を試験する。",
+            "保守されていないkuberun方式を新規標準構成として推奨しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin input-hash policy and container digests; test false cache hits.",
+            "Do not recommend unmaintained kuberun as a new standard deployment."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PEGASUS-RESCUE-GRANULARITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS070"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Pegasus: rescue DAGとアプリケーションcheckpoint",
+          "name_en": "Pegasus: rescue DAGs versus application checkpoints",
+          "timing_ja": "Pegasus WMS 5.1.2資料",
+          "timing_en": "Pegasus WMS 5.1.2 documentation",
+          "statement_ja": "Pegasusのrescue DAGは成功済みjobを省略して残りを実行しますが、途中まで進んだjobの内部状態は、アプリケーション自身がcheckpointを持たない限り復元しません。workflow経過時間とjob時間の総和、再試行時間も別の指標です。再開機能の有無だけでは失敗時の損失を比較できません。",
+          "statement_en": "Pegasus rescue DAGs skip successful jobs, but cannot restore partial-job state without application checkpointing. Workflow elapsed time, summed job time and retries are distinct metrics. A recovery checkbox alone does not quantify failure losses.",
+          "hpci_relevance_ja": "長いMPI計算を含むDAGで、job粒度とcheckpoint間隔を設計します。",
+          "hpci_relevance_en": "Choose job granularity and checkpoint intervals for DAGs containing long MPI computations.",
+          "adoption_conditions_ja": [
+            "中間出力、依存関係、実行環境の再利用条件を確認する。",
+            "再試行による資源消費と待ち時間を含めて比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify reuse conditions for outputs, dependencies and execution environment.",
+            "Include retry resource use and queue delays."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ADIOS2-STREAM-BACKPRESSURE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS071"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ADIOS2 SST: 欠落と待機の交換条件",
+          "name_en": "ADIOS2 SST: dropping versus blocking",
+          "timing_ja": "2.12.0-rc1表記の資料、安定版差分は要確認",
+          "timing_en": "Documentation labeled 2.12.0-rc1; stable-version differences require checking",
+          "statement_ja": "SSTはstep単位でproducerとconsumerを連携し、queueが満杯のとき待機するか破棄するかを選べます。Blockでもreader不在かつ保持queueがない場合はstepが失われ得ます。stream連携を導入するだけで、全データの永続保存や処理期限が保証されるわけではありません。",
+          "statement_en": "SST couples producers and consumers by steps and allows blocking or dropping on queue pressure. Even Block can discard steps when no readers and no reserve retention exist. Streaming alone guarantees neither durable retention of all data nor deadlines.",
+          "hpci_relevance_ja": "実験装置・可視化・AI解析の速度差を、欠落許容性とメモリ量で設計します。",
+          "hpci_relevance_en": "Design experiment, visualization and AI coupling around loss tolerance and buffering.",
+          "adoption_conditions_ja": [
+            "reader切断、遅延、再接続、期限超過時の方針を明示する。",
+            "RC資料の機能を安定版の全構成で利用可能とはしない。"
+          ],
+          "adoption_conditions_en": [
+            "Specify reader failure, delay, reconnect and deadline-miss policies.",
+            "Do not assume RC-documented features exist in all stable configurations."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-COLMENA-STEERING-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS072"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Colmena: 探索方針と実行基盤の分離",
+          "name_en": "Colmena: steering separated from execution",
+          "timing_ja": "公開設計資料",
+          "timing_en": "Public design documentation",
+          "statement_ja": "Colmenaは次の計算を決めるThinkerと、Parsl等に計算を委譲するTask Serverを分離します。結果を完了順に受け取るため、動的な探索やAIとsimulationの反復に適します。一方、queue、直列化、共有状態、失敗時の再開は別に設計し、資料中のagentを必ずLLMと解釈しません。",
+          "statement_en": "Colmena separates a Thinker choosing computations from a Task Server delegating execution to systems such as Parsl. Completion-order results support dynamic simulation/AI campaigns. Queues, serialization, shared state and recovery still need design; its agents are not necessarily LLMs.",
+          "hpci_relevance_ja": "科学アプリケーションの探索戦略を特定schedulerから切り離す候補です。",
+          "hpci_relevance_en": "It can decouple scientific steering strategies from a particular scheduler.",
+          "adoption_conditions_ja": [
+            "未信頼の直列化データを無条件に実行側へ渡さない。",
+            "制御側CPU、queue、データ転送を含むend-to-end時間を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Do not pass untrusted serialized objects unconditionally to execution services.",
+            "Measure end-to-end time including control CPUs, queues and transfers."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-WHEEL-FUGAKU-WORKFLOW",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS073",
+            "SRC-CDS074",
+            "SRC-CDS075"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "WHEEL・Open OnDemand: 国内の対話・施設間実行事例",
+          "name_en": "WHEEL and Open OnDemand: Japanese interactive/cross-site examples",
+          "timing_ja": "2023〜2024年の実証報告と2026-09-01に閲覧した利用案内",
+          "timing_en": "2023-2024 study plus user guidance inspected 2026-09-01",
+          "statement_ja": "WHEELは九州大学での開発を起点に理研で開発が継続され、富岳の公開利用案内にも掲載されています。hp220355ではJAXA側のmesh生成、転送、富岳でのOpenFOAM解析を連携しました。当時は認証操作や転送速度が課題であり、その後の解消状況は追加確認が必要です。",
+          "statement_en": "WHEEL originated at Kyushu University, continued in the RIKEN fork and appears in Fugaku's public user guidance. Project hp220355 linked JAXA mesh generation, transfer and Fugaku OpenFOAM analysis. Authentication interactions and transfer speed were historical limitations; their current resolution needs checking.",
+          "hpci_relevance_ja": "HPCI固有の事例として、国内センター間の接続要件と利用者操作を検討できます。",
+          "hpci_relevance_en": "As an HPCI-specific example, it informs domestic cross-center integration and user interaction.",
+          "adoption_conditions_ja": [
+            "過去の実証を現在の全センターでのサービス保証としない。",
+            "対話画面を閉じる操作と計算session終了を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not turn a historical demonstration into a present all-center service guarantee.",
+            "Distinguish closing the UI from terminating its compute session."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS066",
+        "title": "Parsl memoization and checkpointing",
+        "publisher": "Parsl Project",
+        "url": "https://parsl.readthedocs.io/en/latest/userguide/workflows/checkpoints.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.3.0-dev documentation accessed 2026-09-01"
+      },
+      "origin_group": "parsl-project",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "App equivalence; caveats; checkpointing",
+      "observation_ja": "関数名による同値判定、関数内部変更がcacheを無効化しない注意、完了結果の保存を確認。",
+      "observation_en": "Read function-name equivalence, the warning that body changes do not invalidate caches, and persistence of completed results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS067",
+        "title": "Nextflow caching and resuming",
+        "publisher": "Seqera / Nextflow",
+        "url": "https://docs.seqera.io/nextflow/cache-and-resume",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "seqera-nextflow",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Task hash; work directory; modified inputs",
+      "observation_ja": "cacheと作業出力の両方を必要とする再開、入力属性hash、非決定的な入力対応付けの注意を確認。",
+      "observation_en": "Read cache-plus-output requirements, input-attribute hashing and nondeterministic input-pairing caveats.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS068",
+        "title": "Nextflow executors",
+        "publisher": "Seqera / Nextflow",
+        "url": "https://docs.seqera.io/nextflow/executor",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "seqera-nextflow",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "HPC and cloud executor lists",
+      "observation_ja": "Slurm、TCS、Flux、Kubernetes等の実行抽象化を確認。機能や性能の完全同等性を意味しない。",
+      "observation_en": "Read Slurm, TCS, Flux and Kubernetes execution abstraction; this does not establish complete functional/performance equivalence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS069",
+        "title": "Nextflow Kubernetes integration",
+        "publisher": "Seqera / Nextflow",
+        "url": "https://docs.seqera.io/nextflow/kubernetes",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "seqera-nextflow",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Requirements; Fusion alternative; kuberun deprecation warning",
+      "observation_ja": "共有volumeを使う構成とFusionによる代替を区別。kuberunの保守終了注意を確認。",
+      "observation_en": "Distinguished shared-volume deployment from Fusion alternatives and read the unmaintained-kuberun warning.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS070",
+        "title": "Pegasus WMS monitoring, debugging and statistics",
+        "publisher": "Pegasus Project / USC ISI",
+        "url": "https://pegasus.isi.edu/documentation/user-guide/monitoring-debugging-stats.html",
+        "source_class": "official-project",
+        "published_or_updated": "5.1.2 documentation accessed 2026-09-01"
+      },
+      "origin_group": "pegasus-isi",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Resubmitting failed workflows; workflow/job wall-time definitions",
+      "observation_ja": "rescue DAGが完了jobのみを省略し、実行途中の復旧はアプリcheckpointに依存することを確認。",
+      "observation_en": "Read that rescue DAGs skip completed jobs; partial-job recovery requires application checkpoint support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS071",
+        "title": "ADIOS2 supported engines: SST streaming",
+        "publisher": "ADIOS2 Project",
+        "url": "https://adios2.readthedocs.io/en/latest/engines/engines.html",
+        "source_class": "official-project",
+        "published_or_updated": "2.12.0-rc1 documentation accessed 2026-09-01"
+      },
+      "origin_group": "adios2-project",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "SST semantics; QueueFullPolicy; reader absence; transport",
+      "observation_ja": "Block/Discardの交換条件、reader不在時の例外、step単位の通信を確認。永続保存や期限保証とは異なる。",
+      "observation_en": "Read Block/Discard trade-offs, no-reader exceptions and step-based transport; these are not persistence or deadline guarantees.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS072",
+        "title": "Colmena design",
+        "publisher": "Colmena / ExaLearn project",
+        "url": "https://colmena.readthedocs.io/en/latest/design.html",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "colmena-exalearn",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Thinker and Doer; queues; task lifecycle",
+      "observation_ja": "探索方針とタスク実行の分離、結果の到着順処理、直列化とqueueの構成を確認。",
+      "observation_en": "Read separation of steering from execution, completion-order processing, serialization and queues.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS073",
+        "title": "Fugaku Open OnDemand interactive applications",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://riken-rccs.github.io/ondemand_fugaku/interactive_ja.html",
+        "source_class": "official-project",
+        "published_or_updated": "public user manual accessed 2026-09-01"
+      },
+      "origin_group": "riken-fugaku-operations",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Interactive application list; queued/running lifecycle",
+      "observation_ja": "WHEEL、Jupyter等の公開利用案内と、ブラウザを閉じてもsessionが終了しないという注意を確認。",
+      "observation_en": "Read public WHEEL/Jupyter access guidance and the warning that closing a browser tab does not terminate a session.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS074",
+        "title": "HPCI project hp220355: preliminary multi-system workflow study",
+        "publisher": "RIKEN R-CCS / HPCI Office",
+        "url": "https://www.hpci-office.jp/output/hp220355/outcome.pdf",
+        "source_class": "research-artifact",
+        "published_or_updated": "report for usage period 2023-02-08 to 2024-02-07"
+      },
+      "origin_group": "riken-hp220355",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "Sections 5.2, 5.3 and 6; text read, figure screenshot unavailable",
+      "observation_ja": "JAXA側mesh生成、富岳への転送・解析の実証と、当時の認証・転送上の課題を本文で確認。図の取得はcache miss。",
+      "observation_en": "Read the JAXA mesh-generation, transfer and Fugaku-analysis demonstration and historical authentication/transfer gaps. Figure retrieval returned cache miss.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS075",
+        "title": "RIKEN-RCCS WHEEL public repository",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/WHEEL",
+        "source_class": "official-project",
+        "published_or_updated": "master README accessed 2026-09-01"
+      },
+      "origin_group": "riken-wheel",
+      "checked_at": "2026-09-01T00:52:27+09:00",
+      "locator": "User guide; project history",
+      "observation_ja": "九州大学での原開発と理研forkでの開発継続、公開user guideを確認。導入手順は実行していない。",
+      "observation_en": "Read Kyushu origin, continued RIKEN fork development and public user-guide links; no installation procedure executed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-066",
+      "topic_ids": [
+        "SSW-16"
+      ],
+      "priority": "P1",
+      "question_ja": "同じ科学workflowについて、再開損失・データ欠落・施設間認証・運用負荷を比較できるか。",
+      "question_en": "Can recovery losses, data loss, cross-site authentication and operational effort be compared for the same scientific workflow?",
+      "next_action_ja": "代表DAGとstream処理を固定し、Parsl/Nextflow/Pegasus/WHEEL等の公開障害試験、実験装置連携、現行認証対応を調べる。",
+      "next_action_en": "Fix representative DAG/stream workloads and investigate published fault tests, instrument integration and current authentication for Parsl, Nextflow, Pegasus, WHEEL and related systems.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "WHEELの現行版におけるOIDC・データ転送・scheduler連携の対応範囲を追加確認する。",
+    "Nextflow等の開発版記述と安定版の差、共有filesystem不要構成の費用・制約を比較する。",
+    "実時間期限や設備制御の安全性は別の実証が必要。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Check current WHEEL OIDC, transfer and scheduler integration support.",
+    "Compare development/stable differences and costs/constraints of deployments without shared filesystems.",
+    "Real-time deadlines and safe instrument control need separate validation.",
+    "Independent-model Consensus remains incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW16-RESTART",
+        "label_ja": "再開の粒度",
+        "label_en": "Recovery granularity",
+        "question_ja": "task、プロセス、データstreamのどこから復旧できるか。",
+        "question_en": "At which task, process or stream boundary is recovery possible?"
+      },
+      {
+        "dimension_id": "DIM-SSW16-INTEGRATION",
+        "label_ja": "施設間連携",
+        "label_en": "Cross-site integration",
+        "question_ja": "データ、認証、queue、権限の違いをどこで吸収するか。",
+        "question_en": "Where are data, identity, queue and authority differences handled?"
+      },
+      {
+        "dimension_id": "DIM-SSW16-AUDIT",
+        "label_ja": "再現性と監査",
+        "label_en": "Reproducibility and audit",
+        "question_ja": "入力・コード・環境・結果・失敗を追跡できるか。",
+        "question_en": "Can inputs, code, environment, results and failures be traced?"
+      }
+    ]
+  }
+}

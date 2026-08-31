@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000072",
+  "topic_id": "SSW-10",
+  "created_at": "2026-09-01T02:33:22+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "3e8a8d85b23f7a1987908865b258cfa2d59c558d65e38a55356dbd28e3fd71ed",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "自動最適化を、HPCアプリケーション全体のパラメータ探索、カーネル単位の調整、コンパイラ変換の制御に分けて比較します。候補の発見と採用判断を分離し、探索費用、計算結果の妥当性、再現性、消費エネルギーを評価します。以下は文書に基づく暫定調査であり、最適構成や性能向上率を実測したものではありません。",
+  "summary_en": "Compare application-level parameter search, kernel tuning and compiler-transformation control. Separate candidate discovery from qualification and assess search cost, correctness, reproducibility and energy. This provisional document review has not measured an optimal configuration or speedup.",
+  "units": [
+    {
+      "unit_id": "SSW-10-U01",
+      "before_sha256": "05eac19a69d8e985376db0b52c5642ccbe93a560435130c333768f7e525fed37",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-10-U01",
+        "TDS-CD2-SSW-10-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-10-U01",
+      "title_ja": "今後の検証課題: 最適化結果の適用範囲と回収可能性",
+      "title_en": "Open validation questions: applicability and amortization",
+      "summary_ja": "既存ツールの機能だけでは保証できない、入力・機種の変更と探索費用の影響を整理します。",
+      "summary_en": "Identify input, platform and search-cost issues that existing tool features do not resolve.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-TUNING-QUALIFICATION-GAP",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDS059",
+            "SRC-CDS060",
+            "SRC-CDS064",
+            "SRC-CDS065"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "未解決: 他の入力・機種での正味の改善",
+          "name_en": "Unresolved: net gains on other inputs and platforms",
+          "timing_ja": "検証条件の確立時期は未確定",
+          "timing_en": "No established qualification date",
+          "statement_ja": "履歴の再利用、出力検証、電力測定は個別に利用できますが、その組合せだけで別入力・別機種における正味の改善は保証されません。OpenFSでは、探索と独立検証を分け、失敗候補、再探索費用、測定範囲を含めて比較する必要があると判断します。これは製品の将来機能の予告ではありません。",
+          "statement_en": "History reuse, output checks and energy measurement are available separately, but combining them does not guarantee net gains on other inputs or platforms. OpenFS assesses that tuning must be separated from independent validation, including failed candidates, retuning cost and measurement boundaries. This is not a forecast of product features.",
+          "hpci_relevance_ja": "調達時の一度の最適化だけでなく、運用中のソフトウェア更新に伴う再検証費用を見積もる論点です。",
+          "hpci_relevance_en": "This affects both procurement tuning and requalification costs after software updates.",
+          "adoption_conditions_ja": [
+            "未使用の入力、異なる精度条件、対象機種での比較を追加調査する。",
+            "探索を含む総時間と総エネルギーを、本番実行の削減分と比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Seek held-out inputs, alternative precision requirements and target-platform comparisons.",
+            "Compare total search time and energy with production savings."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS059",
+        "title": "GPTune public implementation and constraints",
+        "publisher": "GPTune project",
+        "url": "https://github.com/gptune/GPTune",
+        "source_class": "official-project",
+        "published_or_updated": "master README accessed 2026-09-01"
+      },
+      "origin_group": "gptune-lbl-berkeley",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Features; parameter spaces; constraints; site examples",
+      "observation_ja": "複数課題・転移学習、履歴DB、制約、MPI環境依存を確認。履歴の転用を無条件の性能保証とは扱わない。",
+      "observation_en": "Read multitask/transfer learning, history database, constraints and MPI/site dependencies; transferred history is not unconditional performance evidence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS060",
+        "title": "Kernel Tuner correctness verification",
+        "publisher": "Kernel Tuner project",
+        "url": "https://kerneltuner.github.io/kernel_tuner/stable/correctness.html",
+        "source_class": "official-project",
+        "published_or_updated": "page labeled 1.5.0 accessed 2026-09-01"
+      },
+      "origin_group": "kernel-tuner-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "answer and verify; pre-benchmark output checks",
+      "observation_ja": "answerを指定した場合の候補ごとの検証と独自verify関数を確認。検証は自動で常に有効とは限らない。",
+      "observation_en": "Read per-candidate checks when answer is supplied and custom verify support; verification is not unconditionally enabled.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS064",
+        "title": "Optuna project overview",
+        "publisher": "Preferred Networks / Optuna project",
+        "url": "https://optuna.org/",
+        "source_class": "official-project",
+        "published_or_updated": "public project page accessed 2026-09-01"
+      },
+      "origin_group": "pfn-optuna",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Optimization features; project attribution",
+      "observation_ja": "PFNの公開プロジェクトとして、探索とpruning、可視化、公開論文への案内を確認。",
+      "observation_en": "Read PFN project attribution, search/pruning, visualization and links to its public paper.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS065",
+        "title": "Kernel Tuner measurement observers",
+        "publisher": "Kernel Tuner project",
+        "url": "https://kerneltuner.github.io/kernel_tuner/stable/observers.html",
+        "source_class": "official-project",
+        "published_or_updated": "page labeled 1.5.0 accessed 2026-09-01"
+      },
+      "origin_group": "kernel-tuner-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "NVMLObserver, PMTObserver and continuous benchmarking",
+      "observation_ja": "NVML/PMTによる計測と、短いkernelに対する反復計測の必要、電力制御権限を確認。",
+      "observation_en": "Read NVML/PMT measurements, repeated measurement for short kernels and privileged power controls.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "代表アプリケーションでの正味の改善と費用回収は未検証です。",
+    "独立したAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Net gains and cost amortization on representative applications remain unverified.",
+    "Consensus review by independent AI models remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000039",
+      "bundle_sha256": "4a82334813341299f75711baf1429b83139d14ea84e3b254341cd3d49ba41f48"
+    }
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000120",
+  "topic_id": "APP-01",
+  "created_at": "2026-09-01T05:13:57+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "cc252b5492055aef1638a163d5701f368fb33943a5f993f4ffccc9f164a7a5f9",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学シミュレーションの代表性を、利用実績、科学分野、計算特性、将来の問題規模の四つから整理します。富岳の公開産業利用統計、FugakuNEXTの評価対象、国内外の公開科学コードを参照し、単一スイートでは見えない需要と移行条件を残しました。分野の重みや将来性能は未確定です。",
+  "summary_en": "Scientific-simulation coverage is organized by observed use, scientific domain, computational behavior and future problem size. Public Fugaku industrial statistics, FugakuNEXT evaluation targets and international scientific codes expose needs and migration conditions not captured by one suite. Domain weights and future performance remain unresolved.",
+  "units": [
+    {
+      "unit_id": "APP-01-U02",
+      "before_sha256": "d90670c4486b7988314527d70095208f3fb247626edd0233c7e0c5379278d8d3",
+      "evidence_section_ids": [
+        "TDS-CD3-APP-01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-01-U02",
+      "title_ja": "将来の計算・データ要求",
+      "title_en": "Future compute and data needs",
+      "summary_ja": "問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。",
+      "summary_en": "How should problem size, required accuracy, compute and data volumes, interactivity, and AI or experimental coupling requirements be collected?",
+      "items": [
+        {
+          "item_id": "TDI-CD3-SALMON-SCIENCE-DEMAND",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA005"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SALMON: 光・電子ダイナミクスの連成要求",
+          "name_en": "SALMON: coupled light/electron dynamics",
+          "timing_ja": "公開科学機能の説明",
+          "timing_en": "Published scientific capabilities",
+          "statement_ja": "SALMONは実空間・実時間TDDFTと電磁場の連成を扱い、空間格子・軌道・k点で並列化します。要求調査では原子数だけでなく、格子、軌道数、時間刻み、追跡時間、出力頻度を収集する必要があります。必要メモリや時間の増加を単一のFLOPS倍率で代用しません。",
+          "statement_en": "SALMON couples real-space/time TDDFT with electromagnetic fields and parallelizes over grids, orbitals and k-points. Requirements should include grids, orbital counts, timesteps, simulated duration and output frequency, not only atom counts. Memory and runtime growth cannot be reduced to one FLOPS multiplier.",
+          "hpci_relevance_ja": "メモリ容量、帯域、連成通信と可視化・保存の構成を具体化します。",
+          "hpci_relevance_en": "Inform memory, bandwidth, coupling, visualization and storage choices.",
+          "adoption_conditions_ja": [
+            "物理モデルと解像度・許容誤差を先に固定する。",
+            "将来要求の数値は利用者の根拠が得られるまで未確定とする。"
+          ],
+          "adoption_conditions_en": [
+            "Fix the physics, resolution and tolerances first.",
+            "Leave future numerical requirements unresolved until supported by users."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SALMON-230-ANNOUNCEMENT",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA118",
+            "SRC-CDA119",
+            "SRC-CDA120",
+            "SRC-CDA121"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SALMON 2.3.0: 配布案内とマニュアルを再確認",
+          "name_en": "SALMON 2.3.0: download listing and manual rechecked",
+          "timing_ja": "2026年8月31日付の公開版、9月1日再確認",
+          "timing_en": "Release dated August 31, 2026, rechecked September 1",
+          "statement_ja": "再取得した公式配布ページには2.3.0のソースとマニュアルへのリンクがあり、2.3.0 PDFも確認できました。以前の2.2.2表示は過去の取得記録として残します。今回のGitHub release一覧はなお2.2.2を最新と表示しており、配布物とタグの同一性、EEA1評価版、実行性能は未検証です。2系の開発先はSALMON2です。",
+          "statement_en": "The newly retrieved official download page lists 2.3.0 source/manual links and its PDF is readable. Retain the earlier 2.2.2 listing as a historical observation. Retrieved GitHub releases still label 2.2.2 latest; tarball/tag identity, the EEA1 revision and execution performance remain unverified. Version-2 development uses SALMON2.",
+          "hpci_relevance_ja": "告知、資料の取得、コードの同一性、実行検証を分けて管理します。",
+          "hpci_relevance_en": "Track announcements, document retrieval, code identity and execution checks separately.",
+          "adoption_conditions_ja": [
+            "tarballの取得・チェックサム照合・実行は未実施。",
+            "同名のRNA-seqソフトや旧SALMONリポジトリと混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "The tarball was not retrieved, checksum-verified or executed.",
+            "Do not confuse unrelated RNA-seq software or the legacy SALMON repository with SALMON2."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SCALE-ENSEMBLE-IO-DEMAND",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA006"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SCALE: 複数領域・複数ケースとI/O",
+          "name_en": "SCALE: nested domains, multiple cases and I/O",
+          "timing_ja": "SCALE-RMの公開機能",
+          "timing_en": "Published SCALE-RM capabilities",
+          "statement_ja": "SCALE-RMはMPI領域分割、領域ネスティング、複数計算ケースの実行、netCDF入出力を提供します。将来需要は単一計算の大規模化だけでなく、同時計算ケース数、領域間依存、初期・境界データ、出力保持量として収集する方針です。ここではSCALE-RMの説明をSCALE-LETKF全体の実測値には置き換えません。",
+          "statement_en": "SCALE-RM provides MPI decomposition, nesting, multi-case execution and netCDF I/O. Future demand should capture concurrent cases, inter-domain dependencies, initial/boundary data and retained output, not only a larger single run. SCALE-RM documentation is not treated as a measurement of the whole SCALE-LETKF workflow.",
+          "hpci_relevance_ja": "計算能力とアンサンブル throughput、データ供給・保存の均衡を検討します。",
+          "hpci_relevance_en": "Balance compute capacity, ensemble throughput and data supply/storage.",
+          "adoption_conditions_ja": [
+            "単一計算ケースの時間と全アンサンブルの完了時間を分ける。",
+            "同化・観測連携は対応する追加資料で検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate single-case latency from ensemble completion time.",
+            "Validate assimilation and observation coupling with additional sources."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-WARPX-MULTIPHYSICS-DEMAND",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA007"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "WarpX: 複数物理と異種計算環境",
+          "name_en": "WarpX: multiphysics and heterogeneous platforms",
+          "timing_ja": "26.08資料",
+          "timing_en": "26.08 documentation",
+          "statement_ja": "WarpXはPIC、格子細分化、複数物理を扱い、CPUおよびNVIDIA・AMD・Intel GPUを対象とします。Pythonから他コードやAIとの連携も可能です。採用検討では粒子数、格子、負荷偏り、診断出力、連成頻度を固定し、対応機種の一覧を同等性能の証明とはしません。",
+          "statement_en": "WarpX supports PIC, mesh refinement and multiphysics on CPUs and NVIDIA, AMD and Intel GPUs, with Python coupling to other codes or AI. Evaluation should fix particles, grids, imbalance, diagnostic output and coupling frequency; a platform list does not prove equal performance.",
+          "hpci_relevance_ja": "国内コードと海外コードを共通の負荷特性で比較する候補です。",
+          "hpci_relevance_en": "It provides an international counterpart for workload-based comparisons.",
+          "adoption_conditions_ja": [
+            "必要な物理機能とGPUバックエンドの組合せを確認する。",
+            "負荷分散とI/Oを含む全体時間を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Check required physics/backend combinations.",
+            "Compare end-to-end time including balancing and I/O."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SALMON-230-SCIENCE-AND-BUILDS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA119"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "2.3.0の手法と実行環境の条件",
+          "name_en": "Version-2.3.0 methods and build constraints",
+          "timing_ja": "2026年8月31日版マニュアル",
+          "timing_en": "Manual dated August 31, 2026",
+          "statement_ja": "2.3.0はDC法を正式対応とし、ScaLAPACKを要するCheFSIを追加しています。組込みr2SCANは非スピン分極計算に限られ、OpenACCビルドは非対応です。GPU節はNVHPC/NVIDIAを試験範囲とし、CPUでのDFTとGPUでのTDDFTを推奨しています。新機能を任意の物理条件・GPUへ一般化しません。",
+          "statement_en": "Version 2.3.0 documents supported DC and CheFSI requiring ScaLAPACK. Built-in r2SCAN is limited to spin-unpolarized calculations without OpenACC builds. The GPU section identifies NVHPC/NVIDIA as tested scope and recommends CPU DFT/GPU TDDFT. Do not generalize features to arbitrary physics or GPUs.",
+          "hpci_relevance_ja": "手法・物理条件・依存ライブラリを合わせて候補機への移行条件を定めます。",
+          "hpci_relevance_en": "Define migration conditions jointly from method, physics and library dependencies.",
+          "adoption_conditions_ja": [
+            "性能改善の記述を、OpenFSで確認した速度向上や予測値として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Performance-improvement descriptions are not OpenFS-measured speedups or forecasts."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SALMON-230-RESTART-SEMANTICS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA119"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "再開ファイルの意味と科学的再現性",
+          "name_en": "Restart semantics and scientific reproducibility",
+          "timing_ja": "2.3.0の修正履歴",
+          "timing_en": "Version-2.3.0 correction history",
+          "statement_ja": "修正履歴では、実時間計算の再開時に使う基底状態密度の参照を保存・復元する変更を記載しています。密度を含まない旧チェックポイントは警告付きで従来挙動を維持します。再開できることだけで、版をまたいだ物理量の同等性を確認したとは扱いません。",
+          "statement_en": "The changes save and restore the ground-state density reference for real-time restarts; old checkpoints lacking that density retain previous behavior with a warning. Successful restart alone does not establish equivalent physical results across versions.",
+          "hpci_relevance_ja": "再開時間の比較と、再開後の物理量の検証を分けます。",
+          "hpci_relevance_en": "Separate restart-time comparisons from validation of resumed physical results.",
+          "adoption_conditions_ja": [
+            "旧版・新版と中断なしの計算を同じ入力で比較する検証は未実施。"
+          ],
+          "adoption_conditions_en": [
+            "Matched-input comparisons of old/new versions and uninterrupted runs remain undone."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD2-APP-01-U02"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA005",
+        "title": "SALMON overview and scientific capabilities",
+        "publisher": "SALMON developers",
+        "url": "https://salmon-tddft.jp/about.html",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-01"
+      },
+      "origin_group": "salmon-project",
+      "checked_at": "2026-09-01T00:57:04+09:00",
+      "locator": "Overview and coupled electron/light dynamics",
+      "observation_ja": "実空間・実時間TDDFT、光との連成、空間・軌道・k点並列を確認。",
+      "observation_en": "Read real-space/time TDDFT, coupled light dynamics and space/orbital/k-point parallelism.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA006",
+        "title": "SCALE regional atmospheric model",
+        "publisher": "RIKEN / Team SCALE",
+        "url": "https://scale.riken.jp/scale-rm/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-01"
+      },
+      "origin_group": "riken-scale",
+      "checked_at": "2026-09-01T00:57:04+09:00",
+      "locator": "Framework and physical processes",
+      "observation_ja": "MPI領域分割、online/offline nesting、複数case、netCDF出力を確認。",
+      "observation_en": "Read MPI decomposition, online/offline nesting, multi-case execution and netCDF output.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA007",
+        "title": "WarpX scientific and platform capabilities",
+        "publisher": "WarpX collaboration",
+        "url": "https://warpx.readthedocs.io/en/latest/",
+        "source_class": "official-project",
+        "published_or_updated": "26.08 documentation accessed 2026-09-01"
+      },
+      "origin_group": "warpx-collaboration",
+      "checked_at": "2026-09-01T00:57:04+09:00",
+      "locator": "Features and parallel platforms",
+      "observation_ja": "PIC、複数物理、mesh refinement、CPU/NVIDIA/AMD/Intel GPUとPython連携を確認。",
+      "observation_en": "Read PIC, multiphysics, mesh refinement, CPU/NVIDIA/AMD/Intel GPU support and Python coupling.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA118",
+        "title": "SALMON download page: 2.3.0 listing observed September 1",
+        "publisher": "SALMON developers",
+        "url": "https://salmon-tddft.jp/download.html",
+        "source_class": "official-project",
+        "published_or_updated": "Release listing dated 2026-08-31"
+      },
+      "origin_group": "SALMON-developer-release",
+      "checked_at": "2026-09-01T05:03:33+09:00",
+      "locator": "Latest Release table, lines 22-29 in managed Web extraction",
+      "observation_ja": "再取得時は2.3.0のソースtarballとマニュアルへのリンク、8月31日の日付を確認。以前の2.2.2表示の確認記録を上書きせず、新しい観察として保存する。tarballの取得、チェックサム照合、コード実行は未実施。",
+      "observation_en": "The newly retrieved table lists 2.3.0 source-tarball/manual links dated August 31. Preserve the earlier observation of a 2.2.2 listing rather than overwrite it. The tarball was not retrieved, checksum-verified or executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA119",
+        "title": "SALMON document, Release v.2.3.0",
+        "publisher": "SALMON developers",
+        "url": "https://salmon-tddft.jp/download/Manual_SALMON-v.2.3.0_simple_20260831.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-31"
+      },
+      "origin_group": "SALMON-developer-release",
+      "checked_at": "2026-09-01T05:03:33+09:00",
+      "locator": "Cover; section 2.6.5 (PDF page 19); section 5.2 (PDF pages 179-181); selected sections, not all 187 pages",
+      "observation_ja": "GPU節はNVHPC/NVIDIAの試験範囲とCPUでのDFT・GPUでのTDDFTを推奨。変更履歴はDC正式対応、ScaLAPACKを要するCheFSI、組込みr2SCANの非スピン分極・OpenACC非対応、RT再開時の密度参照修正を記載。速度向上や科学的妥当性は未測定。",
+      "observation_en": "The GPU section limits tested scope to NVHPC/NVIDIA and recommends CPU DFT/GPU TDDFT. Changes document supported DC, CheFSI requiring ScaLAPACK, built-in r2SCAN restricted to spin-unpolarized non-OpenACC builds, and corrected density references for RT restart. Speedup and scientific validity were not measured.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA120",
+        "title": "SALMON2 development repository",
+        "publisher": "SALMON developers",
+        "url": "https://github.com/SALMON-TDDFT/SALMON2",
+        "source_class": "official-project",
+        "published_or_updated": "Repository read September 1, 2026; evaluation revision not pinned"
+      },
+      "origin_group": "SALMON-developer-release",
+      "checked_at": "2026-09-01T05:08:25+09:00",
+      "locator": "Repository identity, develop-2.0.0 branch and code listing; project linked by official version-2 release guidance",
+      "observation_ja": "SALMON-TDDFT/SALMON2は2系の開発先。旧SALMONリポジトリや同名のRNA-seqソフトと区別する。表示されたdevelop-2.0.0ブランチを2.3.0の配布物またはEEA1の評価版と同一視しない。",
+      "observation_en": "SALMON-TDDFT/SALMON2 is the version-2 development repository, distinct from the legacy SALMON repository and unrelated RNA-seq software of the same name. The displayed develop-2.0.0 branch is not assumed identical to the 2.3.0 tarball or EEA1 evaluation revision.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA121",
+        "title": "SALMON2 GitHub releases: retrieved listing on September 1",
+        "publisher": "SALMON developers",
+        "url": "https://github.com/SALMON-TDDFT/SALMON2/releases",
+        "source_class": "official-project",
+        "published_or_updated": "Retrieved listing still presents 2.2.2 as latest; retrieval/cache timing unresolved"
+      },
+      "origin_group": "SALMON-developer-release",
+      "checked_at": "2026-09-01T05:03:33+09:00",
+      "locator": "Latest release and 2.2.2 notes, managed Web extraction lines 140-205",
+      "observation_ja": "今回の取得一覧は2.2.2をLatestと表示。公式配布ページと2.3.0 PDFで確認した情報と区別し、GitHubタグ・配布物の同一性は未検証とする。",
+      "observation_en": "The retrieved GitHub listing still labels 2.2.2 latest. Distinguish it from the official download page and 2.3.0 PDF; tag/tarball identity remains unverified.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "配布コードと評価版の固定、ビルド・再開・性能の検証は未完了。",
+    "初回調査と追加確認は単一モデルによるものであり、独立Consensusではない。"
+  ],
+  "remaining_work_en": [
+    "Release/evaluation code pinning and build, restart and performance validation remain incomplete.",
+    "The initial and follow-up checks are from one model, not independent Consensus."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000041",
+      "bundle_sha256": "3b37cb03392037232adba6e27ff211b204f6a5f6c1d6bad1adf615d7f32cbbea"
+    },
+    {
+      "update_id": "RUP-000103",
+      "bundle_sha256": "66026d6ddf4cb357286914319a874087dfef6b23ee0078bbacc5de9a9dc885ba"
+    }
+  ]
+}

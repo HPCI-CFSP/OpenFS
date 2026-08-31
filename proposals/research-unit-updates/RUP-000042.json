@@ -1,0 +1,574 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000042",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-01T01:01:10+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "ca6055078371ce869ff933699a12abe324d63af1b6c915b6796e89a77485b56b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学計算の評価は、HPL・HPCG・HPL-MxP・Graph500と実アプリケーションを組み合わせ、数値精度・問題規模・資源数を揃えて行います。Roofline/ECMの適用範囲、プロファイラの擾乱、Benchpark・BenchKit・ReFrameによる条件記録を補強しました。新たな実機計測や校正済みの将来性能予測は行っていません。",
+  "summary_en": "Scientific evaluation combines HPL, HPCG, HPL-MxP, Graph500 and real applications under matched accuracy, problem size and resource conditions. This update clarifies Roofline/ECM limits, profiler perturbation and configuration recording with Benchpark, BenchKit and ReFrame. No new hardware measurements or calibrated future-performance predictions were produced.",
+  "units": [
+    {
+      "unit_id": "APP-02-U01",
+      "before_sha256": "ce0f69cb3c4f97aa489a30e3673221e348feaed469261f361f0a05670f075fc4",
+      "evidence_section_ids": [
+        "TDS-APP02-CURRENT",
+        "TDS-APP02-FUTURE",
+        "TDS-CD1-APP-02-U01"
+      ]
+    },
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "ee324274cf912a0765464b2bfb92511569f042196f94a60396ce504d9162abfb",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02"
+      ]
+    },
+    {
+      "unit_id": "APP-02-U03",
+      "before_sha256": "3c2afb5fd7307833b3b70b9f2d324ed1109dfe2bb190533f7c1c7478d4d38a87",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-02-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-APP-02-U01",
+      "title_ja": "標準ベンチマークの測定対象と条件",
+      "title_en": "Benchmark meaning and validity conditions",
+      "summary_ja": "FLOP/s、TEPS、科学的成果までの時間を混同せず、補完的に使います。",
+      "summary_en": "Use FLOP/s, TEPS and scientific time-to-solution as complementary, distinct metrics.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-HPL-DENSE-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-WORK028"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPL: 倍精度の密行列求解",
+          "name_en": "HPL: double-precision dense solving",
+          "timing_ja": "HPL 2.3公開資料",
+          "timing_en": "Public HPL 2.3 documentation",
+          "statement_ja": "HPLは倍精度の密連立一次方程式を解き、解の精度と実行時間を検査します。演算器・BLAS・通信を含むシステム評価の基準ですが、疎行列、低演算密度、I/O主体の科学処理を単独で代表しません。",
+          "statement_en": "HPL checks solution accuracy and runtime for a double-precision dense linear system. It is a system-level reference involving arithmetic, BLAS and communication, not a standalone proxy for sparse, low-intensity or I/O-dominated science.",
+          "hpci_relevance_ja": "ピーク性能に近い密計算の基準と、実アプリケーション性能を分けます。",
+          "hpci_relevance_en": "Separate dense-compute capability from application performance.",
+          "adoption_conditions_ja": [
+            "問題サイズ、process grid、BLAS、使用資源を記録する。",
+            "高速化率を他のアルゴリズムへ直接転用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record problem size, process grid, BLAS and resources.",
+            "Do not transfer speedups directly to other algorithms."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPCG-VALIDITY-CONTRACT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-WORK029"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPCG: 疎な反復法と実行条件",
+          "name_en": "HPCG: sparse iteration and run conditions",
+          "timing_ja": "公開参照実装Revision 3.1",
+          "timing_en": "Public reference implementation Revision 3.1",
+          "statement_ja": "HPCGはmultigrid前処理付き共役勾配法を実行し、準備・最適化の時間も500反復で償却して評価します。通常の公式実行には1800秒以上と主記憶の少なくとも1/4を使う問題が必要で、READMEには限定的なQuick Path例外もあります。短い試行を無条件に公式スコアと同列にしません。",
+          "statement_en": "HPCG runs multigrid-preconditioned CG and amortizes setup/optimization over 500 iterations. Normal official runs require at least 1800 seconds and a problem using at least one quarter of main memory, with a limited documented Quick Path exception. Short trial runs are not automatically comparable official scores.",
+          "hpci_relevance_ja": "キャッシュ内に収まる小問題だけでメモリ・通信構成を判断しないための基準です。",
+          "hpci_relevance_en": "Avoid judging memory and communication from cache-resident toy cases.",
+          "adoption_conditions_ja": [
+            "参照版・最適化版・問題寸法・実行時間を記録する。",
+            "例外適用は主催者の条件を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Record reference/optimized version, dimensions and duration.",
+            "Check organizer conditions before using exceptions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPLMXP-ACCURACY-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA012",
+            "SRC-WORK030"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPL-MxP: 低精度演算と解の精度を分離",
+          "name_en": "HPL-MxP: arithmetic precision versus solution accuracy",
+          "timing_ja": "公開仕様・実装案内",
+          "timing_en": "Public specification and implementation guidance",
+          "statement_ja": "HPL-MxPは低精度LU分解と反復改良を組み合わせ、64bit精度の解を目指します。参照実装とベンダー最適化版があり、低精度演算器の有効活用を評価できますが、LLM学習の収束や推論品質を直接測るベンチマークではありません。",
+          "statement_en": "HPL-MxP combines low-precision LU with iterative refinement toward 64-bit solution accuracy. Reference and optimized implementations assess low-precision arithmetic use, but do not directly measure LLM training convergence or inference quality.",
+          "hpci_relevance_ja": "混合精度に適した求解と、一般科学計算の精度要求を切り分けます。",
+          "hpci_relevance_en": "Distinguish suitable mixed-precision solves from general scientific accuracy requirements.",
+          "adoption_conditions_ja": [
+            "入力・内部演算・蓄積・出力精度と残差条件を確認する。",
+            "機種間で使用実装と検証条件を揃える。"
+          ],
+          "adoption_conditions_en": [
+            "Check input, compute, accumulation, output precision and residual criteria.",
+            "Match implementation and validation conditions across systems."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GRAPH500-METRIC-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA011"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Graph500: BFS・SSSPと不規則アクセス",
+          "name_en": "Graph500: BFS, SSSP and irregular access",
+          "timing_ja": "公開仕様v2.0",
+          "timing_en": "Public specification v2.0",
+          "statement_ja": "Graph500はグラフ構築、BFS、SSSPを区別して計時し、探索のTEPSを報告します。BFSとSSSPは別規模でも実行可能で、TEPS集計には調和平均を使います。FLOP/sへの換算や、BFS順位をSSSP性能の順位とみなすことはできません。",
+          "statement_en": "Graph500 times construction, BFS and SSSP separately and reports traversal TEPS. BFS and SSSP may use different scales; TEPS aggregation uses harmonic means. It is not convertible to FLOP/s, and a BFS ranking is not an SSSP ranking.",
+          "hpci_relevance_ja": "不規則メモリアクセス・通信を密計算と別に評価します。",
+          "hpci_relevance_en": "Evaluate irregular memory/communication separately from dense compute.",
+          "adoption_conditions_ja": [
+            "scale、edge factor、kernel、妥当性検査を記録する。",
+            "構築時間と探索時間を残し、全処理時間との違いを示す。"
+          ],
+          "adoption_conditions_en": [
+            "Record scale, edge factor, kernel and validation.",
+            "Retain construction/traversal times and distinguish end-to-end time."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-02-U02",
+      "title_ja": "階層ごとの律速モデルと計測の限界",
+      "title_en": "Hierarchical bottlenecks and measurement limits",
+      "summary_ja": "性能上限モデルを、校正済みの実行時間予測と区別します。",
+      "summary_en": "Distinguish performance ceilings from calibrated runtime predictions.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-ROOFLINE-BOUND-NOT-FORECAST",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA009"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Roofline: 上限と実効帯域",
+          "name_en": "Roofline: ceilings and attainable bandwidth",
+          "timing_ja": "NERSC公開手法、例は機種・時期依存",
+          "timing_en": "Public NERSC method; examples are platform/date-specific",
+          "statement_ja": "Rooflineは演算性能、帯域、演算密度から性能の上限を示します。演算密度のByteはDRAM、L2等で異なり、ベンダー公称値だけでなく実効帯域の確認が重要です。上限に届かない原因や通信・I/O・依存遅延を残したまま、上限値を実行性能として表示しません。",
+          "statement_en": "Roofline bounds performance using compute throughput, bandwidth and arithmetic intensity. Byte counts differ at DRAM, L2 and other levels; attainable bandwidth matters beyond vendor peaks. A ceiling is not presented as achieved performance while communication, I/O and dependencies remain unresolved.",
+          "hpci_relevance_ja": "HBM増速とcache改善のどちらが効くかを、対象階層から判断します。",
+          "hpci_relevance_en": "Assess HBM versus cache improvements at the relevant hierarchy.",
+          "adoption_conditions_ja": [
+            "演算数・転送量・時間の対象区間と単位を一致させる。",
+            "旧世代のcounter名・転送粒度を新世代へ流用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Match regions and units for operations, bytes and time.",
+            "Do not reuse old counter names or transaction sizes unverified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ECM-OVERLAP-ASSUMPTIONS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA010"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ECM: 命令実行・転送・重なりの分解",
+          "name_en": "ECM: execution, transfer and overlap",
+          "timing_ja": "公開解析モデル",
+          "timing_en": "Published analytical model",
+          "statement_ja": "ECMは命令実行とメモリ階層の転送時間を分け、機種ごとの重なり方を使って組み合わせます。基本モデルには転送遅延を隠せる等の仮定があります。全転送を足す、または最大値だけを取るという一律の計算をせず、対象CPUとloopで校正します。",
+          "statement_en": "ECM separates instruction execution and hierarchy transfers, combining them using machine-specific overlap. Its basic form assumes conditions such as hidden transfer latency. Calibrate for the CPU and loop rather than universally summing every transfer or taking only the maximum.",
+          "hpci_relevance_ja": "低演算密度コードでも帯域以外が律速する場合を検討します。",
+          "hpci_relevance_en": "Investigate non-bandwidth limits even in low-intensity loops.",
+          "adoption_conditions_ja": [
+            "機種固有のcache経路・命令律速・重なり仮定を記録する。",
+            "GPUや通信を含む全体モデルへ無検証で拡張しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record cache paths, instruction limits and overlap assumptions.",
+            "Do not extend it unvalidated to GPUs or distributed execution."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PROFILER-PERTURBATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS010"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "プロファイラによる実行条件の変化",
+          "name_en": "Profiler-induced execution changes",
+          "timing_ja": "Nsight Compute 13.3表記の資料",
+          "timing_en": "Documentation labeled Nsight Compute 13.3",
+          "statement_ja": "Nsight Computeの計測では、再実行、cache flush、clock制御、kernel直列化が通常実行と異なる条件を作り得ます。取得counterと通常時の全体時間を別に保存し、CPU・GPU・通信の重なりを計測設定だけで失わないようにします。",
+          "statement_en": "Nsight Compute replay, cache flushing, clock control and kernel serialization can change execution conditions. Preserve counters separately from normal end-to-end timing and avoid losing CPU/GPU/communication overlap through profiling settings.",
+          "hpci_relevance_ja": "計測擾乱をGPU性能低下や将来アーキテクチャの限界と誤認しません。",
+          "hpci_relevance_en": "Avoid mistaking profiling perturbation for architectural limits.",
+          "adoption_conditions_ja": [
+            "profiler版・replay・cache・clock設定を記録する。",
+            "機種や権限の制限を守り、管理設定を無断変更しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record profiler version and replay/cache/clock settings.",
+            "Respect platform/permission limits; do not alter administration settings without authorization."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-02-U03",
+      "title_ja": "継続比較の条件固定と推定来歴",
+      "title_en": "Pinned conditions and estimation provenance",
+      "summary_ja": "再実行可能な設定と、妥当な性能予測は別の成果として検証します。",
+      "summary_en": "Validate rerunnable configurations and valid predictions as distinct outcomes.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-BENCHPARK-THREE-LAYERS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-WORK008"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Benchpark: system・benchmark・experimentの分離",
+          "name_en": "Benchpark: system, benchmark and experiment separation",
+          "timing_ja": "公開repositoryを確認",
+          "timing_en": "Public repository inspected",
+          "statement_ja": "Benchparkはシステム、コード・build/run、実験条件を分け、SpackとRambleで再利用可能な設定を共有します。OpenFSでは版、入力、compiler、MPI、資源割当を比較単位に固定する参考になります。ただし設定の共有だけでは同じ性能や校正精度は保証されません。",
+          "statement_en": "Benchpark separates system, benchmark build/run and experiment specifications using Spack and Ramble. It informs pinning revisions, inputs, compilers, MPI and allocations in OpenFS comparisons. Shared specifications alone do not guarantee equal performance or calibration accuracy.",
+          "hpci_relevance_ja": "センター更新前後の比較で、意図しない設定差を検出します。",
+          "hpci_relevance_en": "Detect unintended configuration differences across center upgrades.",
+          "adoption_conditions_ja": [
+            "build成功、計算妥当性、性能回帰を別々に判定する。",
+            "権限・ネットワーク・資源費用の許可を実行前に得る。"
+          ],
+          "adoption_conditions_en": [
+            "Judge build success, numerical validity and performance regression separately.",
+            "Obtain authority for execution, networking and resource cost."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-BENCHKIT-APPLICABILITY",
+          "stage": "current",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-WORK045",
+            "SRC-CDA014"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "BenchKit: 計測値と推定packageの対応",
+          "name_en": "BenchKit: measurements mapped to estimation packages",
+          "timing_ja": "develop branchの公開資料",
+          "timing_en": "Public develop-branch documentation",
+          "statement_ja": "BenchKitは計測側の入力と推定packageの責任を分け、要求したpackageと実際に適用したpackage、適用可否、仮定等を記録する構造です。機能の存在と推定精度の実証を分け、入力不足時に別モデルへ切り替わった場合も来歴を残すことが重要です。",
+          "statement_en": "BenchKit separates measured inputs from estimation-package responsibilities and records requested/applied packages, applicability and assumptions. Capability is distinct from demonstrated accuracy; fallback to another model on incomplete input must remain visible in provenance.",
+          "hpci_relevance_ja": "OpenFSの予測値がどの観測・仮定から得られたかを追跡する参考になります。",
+          "hpci_relevance_en": "This informs traceability from OpenFS estimates to observations and assumptions.",
+          "adoption_conditions_ja": [
+            "推定packageの版・適用範囲・不足入力を保存する。",
+            "この調査ではBenchKitを導入・実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve package revision, applicability and missing inputs.",
+            "BenchKit was not installed or executed in this survey."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-REFRAME-CONDITION-BASELINES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA013"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ReFrame: 条件別の性能基準",
+          "name_en": "ReFrame: condition-specific performance references",
+          "timing_ja": "4.10.3資料、custom indexingは4.10追加",
+          "timing_en": "4.10.3 documentation; custom indexing added in 4.10",
+          "statement_ja": "ReFrameはthread数・配置、環境等で性能参照値を分け、外部YAMLにも保存できます。単一の閾値を全構成へ使うのでなく、条件別に妥当性と性能を判定する構成が可能です。custom buildでは環境管理・副作用の責任が残ります。",
+          "statement_en": "ReFrame supports performance references indexed by threads, placement, environment and other conditions, including external YAML. This enables condition-specific checks rather than one threshold for every configuration. Custom builds retain responsibility for environment management and side effects.",
+          "hpci_relevance_ja": "調達後の性能回帰と、意図した実行条件変更を区別します。",
+          "hpci_relevance_en": "Separate regressions from deliberate configuration changes.",
+          "adoption_conditions_ja": [
+            "基準値の由来と更新理由をreviewし、劣化を基準更新だけで隠さない。",
+            "例示された値を実測値として登録しない。"
+          ],
+          "adoption_conditions_en": [
+            "Review reference provenance and updates; do not conceal regressions by resetting baselines.",
+            "Do not register documentation example values as measurements."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CROSS02-CURRENT",
+    "TDS-CROSS02-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA009",
+        "title": "NERSC Roofline performance model",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/tools/performance/roofline/",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "nersc-performance",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Performance envelope; ERT; arithmetic intensity",
+      "observation_ja": "上限モデル、実測可能な帯域、階層ごとのByte定義を確認。古いV100例を新GPUへ直接移さない。",
+      "observation_en": "Read ceilings, attainable bandwidth and hierarchy-specific bytes; do not transfer old V100 examples directly to new GPUs.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA010",
+        "title": "Execution-Cache-Memory performance model",
+        "publisher": "NHR at FAU",
+        "url": "https://hpc.fau.de/research/ecm/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-01"
+      },
+      "origin_group": "fau-ecm",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "In-core, transfer and machine models",
+      "observation_ja": "命令実行・階層転送・重なりを分離し、遅延隠蔽等の仮定を持つモデルであると確認。",
+      "observation_en": "Read separate execution, transfer and overlap components and assumptions such as hidden transfer latency.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA011",
+        "title": "Graph500 benchmark specification",
+        "publisher": "Graph500 Steering Committee",
+        "url": "https://graph500.org/?page_id=12",
+        "source_class": "official-project",
+        "published_or_updated": "2017-06-21 specification accessed 2026-09-01"
+      },
+      "origin_group": "graph500",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Kernels, validation and TEPS output",
+      "observation_ja": "BFS/SSSPの独立測定、scale、構築時間、TEPSの調和平均を確認。",
+      "observation_en": "Read separate BFS/SSSP measurement, scale, construction time and harmonic-mean TEPS.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA012",
+        "title": "HPL-MxP mixed-precision benchmark overview",
+        "publisher": "HPL-MxP project",
+        "url": "https://hpl-mxp.org/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-01"
+      },
+      "origin_group": "icl-hplmxp",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Low-precision factorization and iterative refinement",
+      "observation_ja": "低精度LUと64bit精度への反復改良を確認。AIモデル品質評価そのものではない。",
+      "observation_en": "Read low-precision LU with refinement toward 64-bit accuracy; this is not AI model-quality evaluation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA013",
+        "title": "ReFrame performance references and build integration",
+        "publisher": "ReFrame project",
+        "url": "https://reframe-hpc.readthedocs.io/en/stable/howto.html",
+        "source_class": "official-project",
+        "published_or_updated": "4.10.3 documentation accessed 2026-09-01"
+      },
+      "origin_group": "reframe-project",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Custom performance reference indexing; external references; environment management",
+      "observation_ja": "thread配置等で参照値を分ける機能と、custom buildの副作用・再現性の責任を確認。",
+      "observation_en": "Read parameter-specific references and custom-build responsibility for side effects and reproducibility.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA014",
+        "title": "BenchKit estimation introduction guide",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/benchkit/blob/develop/docs/guides/add-estimation.md",
+        "source_class": "official-project",
+        "published_or_updated": "develop documentation accessed 2026-09-01"
+      },
+      "origin_group": "riken-benchkit",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Application/package responsibilities; applicability and metadata",
+      "observation_ja": "計測入力と推定packageの分担、requested/applied package、適用不可・仮定の保持を確認。",
+      "observation_en": "Read measurement/package separation and retained requested/applied packages, applicability and assumptions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS010",
+        "title": "NVIDIA Nsight Compute profiling guide",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "13.3 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Replay; Overhead; measurement serialization",
+      "observation_ja": "カウンタ収集は再実行やメモリ退避を伴い得る。ツール動作中のホスト計時を通常実行時間と混同しない。",
+      "observation_en": "Collection can require replay and memory save/restore; profiled host timing is not ordinary execution time.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK008",
+        "title": "LLNL Benchpark",
+        "publisher": "Lawrence Livermore National Laboratory",
+        "url": "https://github.com/LLNL/benchpark",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "llnl-benchpark",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "README specification layers",
+      "observation_ja": "system、benchmark、experimentの3層とSpack/Rambleの役割を確認。",
+      "observation_en": "Read system, benchmark and experiment layers and the roles of Spack/Ramble.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK028",
+        "title": "HPL Benchmark: Official Source and Documentation",
+        "publisher": "Netlib",
+        "url": "https://www.netlib.org/benchmark/hpl/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "icl-hpl",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "HPL definition and requirements",
+      "observation_ja": "倍精度密連立一次方程式、MPI/BLAS依存、精度検証を確認。",
+      "observation_en": "Read the FP64 dense solve, MPI/BLAS dependencies and accuracy checks.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK029",
+        "title": "Official HPCG Benchmark Source Code",
+        "publisher": "HPCG project",
+        "url": "https://github.com/hpcg-benchmark/hpcg",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "hpcg-project",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "README introduction and valid runs",
+      "observation_ja": "PCG、setup償却、原則1800秒・主記憶1/4の条件と例外を確認。",
+      "observation_en": "Read PCG, setup amortization, normal 1800-second/quarter-memory requirements and exceptions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK030",
+        "title": "HPL-MxP Software and Reference Implementation",
+        "publisher": "HPL-MxP project",
+        "url": "https://hpl-mxp.org/software.md",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "icl-hplmxp",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "Reference and vendor implementations",
+      "observation_ja": "参照実装とベンダー最適化版を区別。リンクだけで取得・実行したとはしない。",
+      "observation_en": "Distinguished reference and optimized implementations; linked availability is not retrieval or execution.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK045",
+        "title": "BenchKit: Tools for Continuous Software Development for HPC",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/benchkit",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "riken-benchkit",
+      "checked_at": "2026-09-01T00:59:29+09:00",
+      "locator": "README purpose and estimation links",
+      "observation_ja": "build/run、計測結果、profiler、推定・portal連携の公開構成を確認。",
+      "observation_en": "Read public build/run, result/profiler collection, estimation and portal integration.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-068",
+      "topic_ids": [
+        "APP-02"
+      ],
+      "priority": "P0",
+      "question_ja": "公開入力・固定版・複数機種/規模の実測を使い、外挿誤差と科学的妥当性を独立に検証できるか。",
+      "question_en": "Can extrapolation error and scientific validity be independently tested using public inputs, pinned revisions and measurements across systems/scales?",
+      "next_action_ja": "校正用と検証用の実測を分離し、1/4/32/128/1024/約10000ノードの適用範囲、容量制約、同一費用・電力等の比較条件を確認する。",
+      "next_action_en": "Separate calibration and holdout measurements; check applicability at 1/4/32/128/1024/about 10000 nodes, capacity constraints and matched cost/power conditions.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "既存の仮定ベース予測とAGENTS・model contractの表記整合を再点検する。",
+    "benchmark別の重要度・コード・結果リンクとこの本文の対応を検証する。",
+    "実測データを取得していない項目に新たな数値予測を追加しない。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Reconcile existing assumption-based forecasts with AGENTS/model-contract wording.",
+    "Verify alignment with benchmark importance, code and results links.",
+    "Do not add new numerical predictions without measurements.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

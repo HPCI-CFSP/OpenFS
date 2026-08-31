@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000111",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-01T04:37:06+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "4ce5b7574eb14e3ff7d5bdb8aea7804f4dd00e896b20ccc67e56f8bceabdf33a",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学ワークフローを、タスク依存関係の実行、結果の再利用、ストリーミング連携、対話・AIによる制御に分けて比較します。Parsl、Nextflow、Pegasus、ADIOS2、Colmena、WHEELについて、再開の粒度とデータ・認証・運用条件を整理しました。一つの製品による全面的な統一や、実時間処理の期限保証を前提にはしません。",
+  "summary_en": "Compare scientific workflows across task dependencies, result reuse, streaming and interactive/AI steering. For Parsl, Nextflow, Pegasus, ADIOS2, Colmena and WHEEL, distinguish recovery granularity and data, identity and operational conditions. Do not assume comprehensive unification by one product or guaranteed real-time deadlines.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "aa3cb80f40baf1b1b967d7d3a15108c5a09bcf86897e0369f9f39c695dd1c92c",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01",
+        "TDS-CD2-SSW-16-U01",
+        "TDS-CD3-SSW-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-SSW-16-U01",
+      "title_ja": "研究クラウドとバッチ計算の役割分担",
+      "title_en": "Research-cloud and batch-computing roles",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-NIRIN-HPC-CLOUD-INTEGRATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS109"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NCI Nirin: 長時間サービスとHPCデータの接続",
+          "name_en": "NCI Nirin: long-running services connected to HPC data",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "豪州NCIのNirinはOpenStackを用い、Webサービス、データベース、対話環境などをGadiと研究データ基盤に接続します。長時間サービスを通常のバッチジョブと分けて提供する構成例です。Flex-Use資源は2026年末頃の提供に向け開発中とされ、配分・可用性・自動切替えの保証まではこの概要から確認できません。",
+          "statement_en": "Australia's NCI Nirin uses OpenStack to connect web services, databases and interactive environments with Gadi and research data. It illustrates separating long-running services from ordinary batch jobs. Flex-Use resources are described as under development for late 2026; the overview does not establish allocation, availability or automatic-failover guarantees.",
+          "hpci_relevance_ja": "科学AIエージェントの継続制御と、大規模な学習・解析ジョブを別の資源に配置する検討材料です。",
+          "hpci_relevance_en": "This informs placing persistent scientific-agent control separately from large training/analysis jobs.",
+          "adoption_conditions_ja": [
+            "認証・データ権限・永続状態・再試行・利用枠を連携条件として確認する。",
+            "同一施設内の接続例を、拠点間での低遅延や期限保証へ一般化しない。"
+          ],
+          "adoption_conditions_en": [
+            "Check identity, data authorization, persistent state, retries and quotas as integration conditions.",
+            "Do not generalize an on-site integration to cross-site low latency or deadline guarantees."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS109",
+        "title": "NCI Nirin research-cloud systems",
+        "publisher": "National Computational Infrastructure, Australia",
+        "url": "https://www.nci.org.au/infrastructure/cloud-systems",
+        "source_class": "official-project",
+        "published_or_updated": "Undated live overview accessed 2026-09-01"
+      },
+      "origin_group": "nci-australia-platforms",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Platform software, storage integration and flex-use development status",
+      "observation_ja": "OpenStackの長時間サービス・対話処理とGadi/共有データ接続を確認。Flex-Useは2026年末頃予定で開発中、具体的SLAや配分規則は未取得。",
+      "observation_en": "Read OpenStack long-running/interactive services and Gadi/shared-data integration; Flex-Use remains under development for late 2026, with detailed SLA/allocation rules uncollected.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "利用制度の詳細ページは取得に失敗。実際のサービス水準、障害復旧、バッチとの資源競合は未確認。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "Detailed access-policy retrieval failed; actual service levels, recovery and competition with batch resources remain unverified.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000040",
+      "bundle_sha256": "69cef4a37856ecaeb2b2ebf568e2349a0dabf8847f00fc104264f2b552dc45e9"
+    },
+    {
+      "update_id": "RUP-000073",
+      "bundle_sha256": "046606c6fa81785d4b8a7144a54e7def5aa06eade8e80cf0598035068e8e4a92"
+    }
+  ]
+}

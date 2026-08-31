@@ -1,0 +1,127 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000094",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-01T04:05:27+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "5e0e25bf0866f6887a09929d6de4cb470453b6f874deb27004a036a40e951ed5",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験設備連携をデータ取得・転送・解析・結果返却の全工程で比較します。公開されたSPring-8の要件を追加し、解析の期限と遠隔ストレージ操作の遅延、設備内の即時処理とHPCIの長期保存を区別しました。国内外の実証、研究目標、継続サービスは同一視しません。",
+  "summary_en": "Compare the full acquisition/transfer/analysis/feedback pipeline. Public SPring-8 requirements distinguish analysis deadlines from remote-storage latency, and local prompt processing from HPCI long-term storage. Demonstrations, research targets and sustained services remain separate.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "5c29c0d85dac9ef1faae3c7f472bbaa6e2d4e30582d1d014ab661e4f1f2e7364",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U01",
+        "TDS-CD2-APP-14-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-14-U01",
+      "title_ja": "SPring-8: 解析期限とデータ配置の分離",
+      "title_en": "SPring-8: separating analysis deadlines from data placement",
+      "summary_ja": "設備側の要件を確認し、通信速度だけで全工程の性能を判断しません。",
+      "summary_en": "Use instrument-side requirements rather than link speed alone to assess the pipeline.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-SPRING8-ANALYSIS-VERSUS-METADATA",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA100"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "秒〜分の解析と低遅延ファイル操作",
+          "name_en": "Seconds-to-minutes analysis and low-latency file operations",
+          "timing_ja": "2026年5月22日の公開説明",
+          "timing_en": "Public explanation, May 22, 2026",
+          "statement_ja": "説明では、実験解析は概ね秒〜分で進めばよい一方、遠隔ストレージの一覧・メタデータ操作には低遅延が効くとされています。設備内基盤は即時解析に重点を置き、大規模解析・長期保存はHPCI等と分担します。これは全ビームライン共通の期限保証ではありません。",
+          "statement_en": "The presentation distinguishes seconds-to-minutes experimental analysis from latency-sensitive remote-file listings/metadata. Local infrastructure emphasizes prompt analysis, with large analysis and long-term storage shared with HPCI and others. This is not a uniform beamline deadline guarantee.",
+          "hpci_relevance_ja": "計算、データ配置、保存の責任と性能条件を別に設計します。",
+          "hpci_relevance_en": "Design compute, placement and retention responsibilities and performance conditions separately.",
+          "adoption_conditions_ja": [
+            "装置・データ類型別に入力量、解析期限、保存期間を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check input volume, analysis deadline and retention by instrument and data type."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-SPRING8-DIRECT-STORAGE-RESEARCH",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA100"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "直接ストレージ接続の研究と運用条件",
+          "name_en": "Direct-storage research and operational conditions",
+          "timing_ja": "同会合で研究開発中と説明",
+          "timing_en": "Described as R&D at the same meeting",
+          "statement_ja": "富岳ストレージへ直接書くIOWN活用や経路分離は研究開発の説明です。専用的な通信経路だけで、認証、監査、データ公開判断、障害復旧が解決するとは扱いません。一般提供の開始日と適用範囲は未確認です。",
+          "statement_en": "IOWN-enabled direct writes to Fugaku storage and path isolation are described as R&D. Dedicated transport alone does not solve identity, audit, disclosure decisions or recovery. General-service timing and scope remain unconfirmed.",
+          "hpci_relevance_ja": "移動回数の削減と利用者・施設の管理責任を併せて評価します。",
+          "hpci_relevance_en": "Evaluate reduced staging together with user and facility responsibilities.",
+          "adoption_conditions_ja": [
+            "研究構想を現行サービスや機密性の保証へ読み替えない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not treat the concept as an available service or confidentiality guarantee."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA100",
+        "title": "AI for Science研究データWG 第5回 議事録",
+        "publisher": "MEXT / RIKEN SPring-8 presentation",
+        "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu29/006/gijiroku/mext_00005.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-22 meeting"
+      },
+      "origin_group": "spring8-data-infrastructure-mext20260522",
+      "checked_at": "2026-09-01T03:45:24+09:00",
+      "locator": "Hatsui presentation and questions: local processing, HPCI storage, seconds/minutes, remote metadata and IOWN R&D",
+      "observation_ja": "設備内処理と長期保存の分担、解析期限と遠隔ファイル操作の遅延を区別。IOWN構想を稼働サービスとは扱わない。",
+      "observation_en": "Separated local processing/long-term storage and analysis deadlines/remote-file latency; IOWN R&D is not a confirmed service.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "現在のビームライン別提供範囲と、実測の期限達成率・復旧時間を確認する。",
+    "本文確認による暫定整理であり、実機試験や独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Verify current beamline coverage, measured deadline attainment and recovery times.",
+    "This provisional text-based synthesis has no hardware tests or independent Consensus."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000048",
+      "bundle_sha256": "5a0be205d634f6a6f122c6330cc9d078055104004f29616b10431b948ee2983e"
+    }
+  ]
+}

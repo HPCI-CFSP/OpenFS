@@ -1,0 +1,433 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000051",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-01T01:34:14+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "RASは部品の故障率だけでなく、停止の範囲、復旧時間、失われた計算量、計画保守、長期の部品・ソフトウェア供給で評価します。施設の稼働率と個々のジョブの成功率を分け、障害検知から再開までをアプリケーション、通信、スケジューラ、保存系を通して確認します。",
+  "summary_en": "Assess RAS through outage scope, recovery time, lost work, planned maintenance and long-term hardware/software supply, not component failure rates alone. Distinguish facility availability from individual job success and trace detection-to-recovery across applications, communication, schedulers and storage.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "8afcfb60dbfe78593a9995ea5543ffd20f9abb7ed25fd958686c5688651aa982",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-10-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-ARCH-10-U01",
+      "title_ja": "稼働実績・多層復旧・長期保守",
+      "title_en": "Operating evidence, layered recovery and long-term support",
+      "summary_ja": "公開実績と実装の制約を使い、可用性の意味を揃えて比較します。",
+      "summary_en": "Use operating evidence and implementation limits to compare availability on explicit terms.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-FUGAKU-AVAILABILITY-DENOMINATOR",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO010"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "富岳: 稼働率と利用率を分離",
+          "name_en": "Fugaku: availability versus utilization",
+          "timing_ja": "2024年度実績",
+          "timing_en": "FY2024 observations",
+          "statement_ja": "富岳年報は平均稼働率99.9%、利用率90.7%、計画保守11.3日を報告しています。稼働率の分母は計画保守を除いた時間です。これを一年の全時間に対する可用性、全ジョブの成功率、将来システムの保証値と読み替えません。",
+          "statement_en": "Fugaku reports 99.9% average availability, 90.7% utilization and 11.3 planned maintenance days for FY2024. The availability denominator excludes planned maintenance. It is not calendar-time availability, all-job success or a future-system guarantee.",
+          "hpci_relevance_ja": "HPCI特有の実績を、次期調達の要求値と区別して比較できます。",
+          "hpci_relevance_en": "This separates HPCI-specific observations from next-procurement requirements.",
+          "adoption_conditions_ja": [
+            "年度・停止の範囲・計画保守の扱いを付記する。",
+            "全系停止がなくても局所障害やジョブ再実行は別に調べる。"
+          ],
+          "adoption_conditions_en": [
+            "Record year, outage scope and planned-maintenance treatment.",
+            "Check local failures and reruns separately from whole-system outages."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FRONTIER-SA-OA-LIFECYCLE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO011"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "FrontierとSummit: 可用性と周辺系更新",
+          "name_en": "Frontier and Summit: availability and peripheral renewal",
+          "timing_ja": "2024年実績、2025年4月報告",
+          "timing_en": "CY2024 observations reported April 2025",
+          "statement_ja": "OLCFはFrontierの予定稼働時間に対する可用性99.81%と、計画停止も含む全時間に対する98.49%を区別しています。全系MTTFは個別ジョブの無故障時間ではありません。またSummitの延命では、旧ネットワーク製品の調達不可に伴う後継機器との相互運用問題が報告されています。",
+          "statement_en": "OLCF distinguishes Frontier scheduled availability of 99.81% from overall availability of 98.49% including planned outages. Full-system MTTF is not individual-job failure-free time. Summit life extension also exposed interoperability problems after older network technology became unavailable.",
+          "hpci_relevance_ja": "延命時には計算機本体だけでなく、ストレージ接続とソフトウェアの継続支援が必要です。",
+          "hpci_relevance_en": "Life extension needs continued storage-interface and software support, not just compute spares.",
+          "adoption_conditions_ja": [
+            "年度の異なる機種を単一の信頼性順位にしない。",
+            "交換部品・新旧混在構成の相互運用を調達前に確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not rank reliability across unmatched years and systems.",
+            "Qualify spares and mixed-generation interoperability before procurement."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SCR-FAILURE-DOMAINS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO012",
+            "SRC-CDO013"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SCR: 障害領域に合わせた多段チェックポイント",
+          "name_en": "SCR: multilevel checkpoints matched to failure domains",
+          "timing_ja": "SCR 3.1.0公開文書",
+          "timing_en": "Public SCR 3.1.0 documentation",
+          "statement_ja": "SCRはローカル保存、複製、XOR、Reed-Solomonを使い分け、健全なノードが残れば同一資源割当内で再開できます。ただし冗長性を超える同時障害や保存途中の障害には限界があります。非同期転送の開始と共有ファイルシステムへの永続化完了は異なるため、保存完了点を明示します。",
+          "statement_en": "SCR combines local, replicated, XOR and Reed-Solomon storage and can restart within an allocation with sufficient healthy nodes. Correlated failures beyond redundancy and interrupted checkpoints remain risks. Starting an asynchronous flush differs from persistence in the shared file system; identify the completion boundary.",
+          "hpci_relevance_ja": "再実行損失と保存負荷を減らす一方、保護対象と予備ノード費用を明確にします。",
+          "hpci_relevance_en": "It reduces rerun/I/O cost while making protection scope and spare-node costs explicit.",
+          "adoption_conditions_ja": [
+            "ノード、電源、スイッチ等の共通故障領域に冗長コピーを集めない。",
+            "復旧試験とアプリケーション状態の整合確認を別途行う。"
+          ],
+          "adoption_conditions_en": [
+            "Do not concentrate redundant copies in a shared node/power/switch failure domain.",
+            "Perform recovery tests and application-state consistency checks separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ULFM-RECOVERY-STACK",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO014"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ULFM: 通信の復旧機能と実行条件",
+          "name_en": "ULFM: communication recovery and launch constraints",
+          "timing_ja": "Open MPI 5.0.9の文書範囲",
+          "timing_en": "Open MPI 5.0.9 documentation scope",
+          "statement_ja": "ULFMは実行時に有効化が必要で、通常のMPI実行を自動的に耐障害化するものではありません。文書ではSlurm割当内のmpirunを用い、srunによる直接起動を非対応としています。UCX PMLやMPI I/O等にも制限があり、通信復旧とアプリケーション状態の回復を別々に設計します。",
+          "statement_en": "ULFM needs runtime activation; ordinary MPI execution is not automatically fault tolerant. The documentation requires mpirun within a Slurm allocation rather than direct srun and lists UCX-PML/MPI-I/O limitations. Communication repair and application-state recovery require separate design.",
+          "hpci_relevance_ja": "MPI、ネットワーク、スケジューラの組合せを含む採用条件を明らかにします。",
+          "hpci_relevance_en": "It exposes adoption conditions across MPI, networks and schedulers.",
+          "adoption_conditions_ja": [
+            "利用する版と通信経路で障害後の挙動を検証する。",
+            "ランクの再構成だけで計算状態が復元されたとはしない。"
+          ],
+          "adoption_conditions_en": [
+            "Validate post-failure behavior for the chosen version and transport.",
+            "Rank reconfiguration alone does not restore computational state."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GPU-ERROR-RECOVERY-SCOPE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO015",
+            "SRC-CDO016"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GPU RAS: 記録・隔離・再開を区別",
+          "name_en": "GPU RAS: separate reporting, containment and restart",
+          "timing_ja": "現行Xidカタログ、AMD SMI 26.2.2",
+          "timing_en": "Current Xid catalog and AMD SMI 26.2.2",
+          "statement_ja": "NVIDIAのXid 94/95はアプリケーションに局所化した障害と複数アプリケーションに及ぶ障害で復旧範囲が異なります。AMDのCPERやAFIDはエラー記録・診断の仕組みで、記録形式の共通化は誤り訂正そのものではありません。エラー件数だけで装置交換や自動再実行を決めない方針です。",
+          "statement_en": "NVIDIA Xid 94/95 distinguish application-contained from wider failures with different recovery scopes. AMD CPER/AFID support reporting/diagnostics; common record formats are not error correction. Error counts alone should not decide device replacement or automatic reruns.",
+          "hpci_relevance_ja": "複数ベンダー環境で、単純なエラー数比較による誤判断を避けます。",
+          "hpci_relevance_en": "This avoids misleading raw-error-count comparisons across vendors.",
+          "adoption_conditions_ja": [
+            "機種・ファームウェア・ドライバ版とイベントの重複を記録する。",
+            "復旧操作は管理者の手順・権限に従い、本調査では実行しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record hardware/firmware/driver versions and correlated duplicate events.",
+            "Recovery actions require authorized operational procedures; none were executed here."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NVRX-V06-SPARES",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO017",
+            "SRC-CDO018"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVRx: 学習再開と予備ノードの統合",
+          "name_en": "NVRx: training restart and spare-node integration",
+          "timing_ja": "v0.6.0の公開機能、実験的プロジェクト",
+          "timing_en": "Public v0.6.0 capabilities; experimental project",
+          "statement_ja": "NVIDIA Resiliency Extensionは学習の再開、ハング検知、非同期チェックポイントを組み合わせます。v0.6.0はv0.5の予備ノード制限を改善しましたが、外部制御面や原因分析は実験的で、依存ライブラリにも版の制約があります。機能の存在を全構成での無停止学習保証とはしません。",
+          "statement_en": "NVRx combines training restart, hang detection and asynchronous checkpoints. v0.6.0 improves the v0.5 spare-node limitation, while external orchestration and attribution remain experimental with version-constrained dependencies. Feature availability is not uninterrupted-training assurance for every configuration.",
+          "hpci_relevance_ja": "大規模AI学習の有効計算時間を、GPU台数だけでなく復旧能力から評価する候補です。",
+          "hpci_relevance_en": "It supports evaluating useful large-scale AI capacity through recovery rather than GPU count alone.",
+          "adoption_conditions_ja": [
+            "モデル・最適化器・乱数・データ位置の復元を検証する。",
+            "予備ノードとトポロジー条件、再起動上限、破損状態の排除を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify model, optimizer, random-state and data-position restoration.",
+            "Check spare/topology requirements, restart limits and rejection of corrupt state."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-RAS-ADOPTION-PROTOCOL",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDO011",
+            "SRC-CDO012",
+            "SRC-CDO017"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "採用評価: 復旧時間と科学的な有効計算量",
+          "name_en": "Adoption evaluation: recovery and useful scientific work",
+          "timing_ja": "OpenFSの暫定評価方針、障害実験未実施",
+          "timing_en": "Provisional OpenFS protocol; no failure experiments",
+          "statement_ja": "次期システムでは、故障検知、隔離、チェックポイント読込み、再実行を分けて測る方針です。通常時のオーバーヘッド、予備資源、失われた計算量と結果の妥当性も合わせて評価します。公開された全系稼働率から、特定規模ジョブの故障率や最適保存間隔を逆算しません。",
+          "statement_en": "The proposed assessment separates detection, containment, checkpoint loading and rerun time, alongside steady-state overhead, spares, lost work and result validity. Whole-system availability cannot determine a particular job's failure rate or optimal checkpoint interval.",
+          "hpci_relevance_ja": "RAS機能を整備計画の有効性能・費用・移行条件へ結び付けます。",
+          "hpci_relevance_en": "It connects RAS capabilities to useful performance, cost and migration conditions.",
+          "adoption_conditions_ja": [
+            "機器の実験は許可された検証環境だけで行う。",
+            "同時故障や共有ストレージ停止を独立ノード故障と分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Run device experiments only in authorized test environments.",
+            "Separate correlated/shared-storage outages from independent node failures."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO010",
+        "title": "富岳年報2024 2-1 稼働状況",
+        "publisher": "RIKEN R-CCS / RIST",
+        "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/1/",
+        "source_class": "official-project",
+        "published_or_updated": "FY2024 report"
+      },
+      "origin_group": "riken-fugaku-operations",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Sections 2-1-1/2, annual availability and utilization, maintenance exclusion formula",
+      "observation_ja": "稼働率99.9%、利用率90.7%、計画保守11.3日と分母の定義を確認。2026年実績ではない。",
+      "observation_en": "Read 99.9% availability, 90.7% utilization, 11.3 planned maintenance days and denominator definition; not 2026 results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO011",
+        "title": "2024 OLCF Operational Assessment",
+        "publisher": "Oak Ridge Leadership Computing Facility",
+        "url": "https://www.olcf.ornl.gov/wp-content/uploads/2024-OLCF-Operational-Assessment-Report.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-04, reporting CY2024"
+      },
+      "origin_group": "olcf-annual-operations",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Printed pages 21-25 and Appendix D; Frontier metrics and Summit/Alpine2 interoperability",
+      "observation_ja": "予定稼働率と全時間稼働率、全系MTTF、旧ネットワーク調達不可に伴う相互運用問題を確認。",
+      "observation_en": "Read scheduled/overall availability, full-system MTTF and interoperability issues after old network technology became unavailable.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO012",
+        "title": "SCR 3.1.0 Concepts",
+        "publisher": "Scalable Checkpoint/Restart project",
+        "url": "https://scr.readthedocs.io/en/latest/users/overview.html",
+        "source_class": "official-project",
+        "published_or_updated": "3.1.0 documentation accessed 2026-09-01"
+      },
+      "origin_group": "llnl-scr",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Redundancy schemes, scalable restart and catastrophic failures",
+      "observation_ja": "ローカル・分散冗長キャッシュ、同一割当内再開、保護範囲を超える障害への限界を確認。",
+      "observation_en": "Read local/redundant caches, restart within allocation and failures beyond redundancy coverage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO013",
+        "title": "SCR 3.1.0 Configure a job",
+        "publisher": "Scalable Checkpoint/Restart project",
+        "url": "https://scr.readthedocs.io/en/latest/users/config.html",
+        "source_class": "official-project",
+        "published_or_updated": "3.1.0 documentation accessed 2026-09-01"
+      },
+      "origin_group": "llnl-scr",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Cache size, asynchronous flush and process-count changes",
+      "observation_ja": "非同期化は既定でなく、再開時のプロセス数変更にも条件があることを確認。",
+      "observation_en": "Read opt-in asynchronous flush and conditions for changed process counts on restart.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO014",
+        "title": "Open MPI 5.0.9 User-Level Fault Mitigation",
+        "publisher": "Open MPI project",
+        "url": "https://docs.open-mpi.org/en/v5.0.9/features/ulfm.html",
+        "source_class": "official-project",
+        "published_or_updated": "5.0.9 documentation accessed 2026-09-01"
+      },
+      "origin_group": "openmpi-ulfm",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Runtime activation, scheduler launch and known limitations",
+      "observation_ja": "ULFM既定無効、mpirunとスケジューラの条件、UCX PML等の制限を確認。",
+      "observation_en": "Read disabled-by-default runtime, mpirun/scheduler conditions and UCX-PML/other limitations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO015",
+        "title": "Analyzing Xid Errors with the Xid Catalog",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-gpu-ras",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Xid 94/95, recovery actions and version-specific decoding",
+      "observation_ja": "局所化したエラーと非局所化エラーの復旧範囲、ドライバ版による解釈差を確認。操作は実行していない。",
+      "observation_en": "Read contained/uncontained recovery scope and version-dependent decoding; no operations executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO016",
+        "title": "AMD SMI 26.2.2 Reliability, availability, serviceability",
+        "publisher": "AMD",
+        "url": "https://rocm.docs.amd.com/projects/amdsmi/en/docs-7.2.2/conceptual/ras.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "26.2.2 documentation accessed 2026-09-01"
+      },
+      "origin_group": "amd-gpu-ras",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "ECC, CPER, AFID and reporting APIs",
+      "observation_ja": "訂正機能と共通エラー記録形式・サービス識別子を区別して確認。",
+      "observation_en": "Read correction mechanisms separately from common error records and service identifiers.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO017",
+        "title": "NVIDIA Resiliency Extension releases",
+        "publisher": "NVIDIA",
+        "url": "https://github.com/NVIDIA/nvidia-resiliency-ext/releases",
+        "source_class": "official-vendor",
+        "published_or_updated": "v0.6.0 release notes accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-nvrx",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "v0.6.0 hot-spare support versus v0.5 limitation; experimental control/attribution",
+      "observation_ja": "0.6で予備ノード支援が追加され、外部制御と原因分析は実験的と確認。表示日から年は推定しない。",
+      "observation_en": "Read v0.6 hot-spare support and experimental external control/attribution; did not infer a release year from a partial date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO018",
+        "title": "NVIDIA Resiliency Extension README",
+        "publisher": "NVIDIA",
+        "url": "https://github.com/NVIDIA/nvidia-resiliency-ext",
+        "source_class": "official-vendor",
+        "published_or_updated": "README accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-nvrx",
+      "checked_at": "2026-09-01T01:32:40+09:00",
+      "locator": "Experimental-status notice, components and dependency matrix",
+      "observation_ja": "プロジェクトの実験的状態、チェックポイントと再開の役割、依存版制約を確認。",
+      "observation_en": "Read experimental status, checkpoint/restart roles and dependency-version constraints.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-077",
+      "topic_ids": [
+        "ARCH-10"
+      ],
+      "priority": "P0",
+      "question_ja": "候補構成の障害領域、復旧実測、長期支援期限を揃えて有効計算量と費用を評価できるか。",
+      "question_en": "Can matched failure domains, measured recovery and support lifetimes establish useful capacity and cost for candidate systems?",
+      "next_action_ja": "部品・通信・保存系の支援期限と既知不具合を整理し、規模別の公開障害トレースおよび再開試験を照合する。",
+      "next_action_en": "Map component/network/storage support horizons and known issues, then compare public scale-specific failure traces and recovery tests.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "2024年度・暦年の実績を2026年現在の可用性に外挿していない。",
+    "候補機種の保守契約、現行の部品供給期限と独立した復旧測定は未収集。",
+    "単一モデルの暫定調査であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "FY/CY2024 observations were not extrapolated to current 2026 availability.",
+    "Candidate service contracts, current parts-supply horizons and independent recovery measurements remain uncollected.",
+    "This single-model review remains provisional with incomplete independent Consensus."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-ARCH10-FAILURE",
+        "label_ja": "障害範囲と復旧",
+        "label_en": "Failure scope and recovery",
+        "question_ja": "局所障害を隔離し、許容時間内に科学計算を再開できるか。",
+        "question_en": "Can local faults be contained and scientific work resume within acceptable time?"
+      },
+      {
+        "dimension_id": "DIM-ARCH10-LOSTWORK",
+        "label_ja": "有効計算時間",
+        "label_en": "Useful compute time",
+        "question_ja": "保守・再実行・予備資源を含めて成果に使える計算量を確保できるか。",
+        "question_en": "Is useful capacity adequate after maintenance, reruns and spare resources?"
+      },
+      {
+        "dimension_id": "DIM-ARCH10-LIFETIME",
+        "label_ja": "供給と延命",
+        "label_en": "Supply and life extension",
+        "question_ja": "更新後も部品・ドライバ・周辺系の組合せを保守できるか。",
+        "question_en": "Can parts, drivers and peripheral combinations remain supported through upgrades?"
+      }
+    ]
+  }
+}

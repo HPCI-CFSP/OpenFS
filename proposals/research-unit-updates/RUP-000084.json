@@ -1,0 +1,264 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000084",
+  "topic_id": "SSW-08",
+  "created_at": "2026-09-01T03:26:49+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "f9fcd41c246d8f1e2232bef4c8607094eb2b189dd3801d3ce16510736241bd7e",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "保守期間、更新互換性、品質試験、担当組織、継続費用を評価軸とし、PETSc・Slurm・E4S/PESOに欧州EESSI・EPICUREの比較を加えました。配布基盤への参加、期間限定の移植支援、製品の長期保守は別の責任です。公開資料による暫定比較で、保守契約や将来資金の継続は未確認です。",
+  "summary_en": "The comparison adds European EESSI and EPICURE to PETSc, Slurm and E4S/PESO across maintenance, upgrade compatibility, testing, ownership and resources. Distribution membership, time-limited porting assistance and long-term product stewardship are different responsibilities. Contracts and future funding remain unverified.",
+  "units": [
+    {
+      "unit_id": "SSW-08-U01",
+      "before_sha256": "6a0fa4195539f35dc8574a770459803ae0667fac266be0402b7a4af9250f87c8",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-08-U01",
+        "TDS-CD2-SSW-08-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-08-U02",
+      "before_sha256": "0e7ab197d9bb5e2a125df9b9085d1e56d2f4b0be87245e7fe678258a80dd907c",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-08-U02",
+        "TDS-CD2-SSW-08-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-08-U01",
+      "title_ja": "再現性と脆弱性対応を両立する配布方針",
+      "title_en": "Distribution policies balancing reproducibility and security",
+      "summary_ja": "固定版を残す方針にも、脆弱性やライセンスに起因する例外があります。",
+      "summary_en": "Retention of pinned stacks can have security and licensing exceptions.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-EESSI-RETENTION-EXCEPTIONS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS092"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EESSI: stack全体と個別packageの廃止条件",
+          "name_en": "EESSI: stack and package retirement differ",
+          "timing_ja": "2025年8月の公開方針",
+          "timing_en": "Public policy dated August 2025",
+          "statement_ja": "EESSIはstack全体の削除前に1年以上の非推奨期間と利用可能なアーカイブを要求します。一方、個別packageにはセキュリティ、ライセンス、保守不能による別の削除条件があります。1年間の猶予を全packageの利用保証と読み替えません。",
+          "statement_en": "EESSI requires at least one year of deprecation and a usable archive before removing an entire stack. Individual packages have separate security, licensing and maintainability removal conditions. The one-year interval is not a guarantee that every package remains usable.",
+          "hpci_relevance_ja": "長期実験の再現環境を維持しつつ、危険な旧版を無条件に使い続けない運用を検討します。",
+          "hpci_relevance_en": "Plan reproducible long-running studies without unconditional use of unsafe old versions.",
+          "adoption_conditions_ja": [
+            "配布版だけでなく再ビルド履歴・入力・試験結果・ローカル設定を保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Retain rebuild history, inputs, tests and local configuration as well as the stack version."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-EESSI-ASPIRATIONAL-ROADMAP",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDS094"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EESSI: 共同目標と納入保証の区別",
+          "name_en": "EESSI: shared priorities are not delivery commitments",
+          "timing_ja": "2026-05-27改訂、今後6〜12か月の目標",
+          "timing_en": "Revised 2026-05-27; goals for the following 6-12 months",
+          "statement_ja": "EESSIのロードマップはROCmや新CPUへの対応、年次stack、ライセンス可視化、共同保守を挙げていますが、達成を保証しないと明記しています。個々の機能の提供四半期や継続支援期間は未確定として扱います。",
+          "statement_en": "EESSI lists ROCm/new-CPU support, annual stacks, license visibility and shared maintenance, but explicitly disclaims guaranteed completion. Individual feature quarters and sustained support horizons remain unsettled.",
+          "hpci_relevance_ja": "将来の調達仕様をコミュニティの努力目標だけに依存させないための確認点です。",
+          "hpci_relevance_en": "Avoid making procurement depend solely on community aspirations.",
+          "adoption_conditions_ja": [
+            "実際のリリースと対象構成の試験を確認してから採用条件へ反映する。"
+          ],
+          "adoption_conditions_en": [
+            "Require an actual release and target-configuration tests before treating a goal as qualified support."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD2-SSW-08-U02",
+      "title_ja": "欧州の共同支援と支援終了後の保守責任",
+      "title_en": "European shared support and ownership after an engagement",
+      "summary_ja": "移植支援を受けた後も、上流統合と更新追随の担当を残す必要があります。",
+      "summary_en": "Porting assistance still needs an owner for upstream integration and later upgrades.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-EPICURE-FUNDING-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS096",
+            "SRC-CDS098"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EPICURE: 採択課題への高度アプリ支援",
+          "name_en": "EPICURE: advanced support for allocated projects",
+          "timing_ja": "公表事業期間は2024-02-01〜2028-01-31",
+          "timing_en": "Published project period 2024-02-01 to 2028-01-31",
+          "statement_ja": "EPICUREはEuroHPC採択課題を対象に移植・最適化等を支援します。4年間の総予算1000万ユーロのうちEU拠出は500万ユーロです。これはハードウェア購入費や欧州HPCソフトウェア全体の保守費ではなく、2028年以降の支援保証でもありません。",
+          "statement_en": "EPICURE supports porting and optimization for EuroHPC allocation projects. Its four-year EUR10 million budget includes EUR5 million from the EU. This is neither hardware spending nor all European HPC software maintenance, and it does not guarantee support beyond 2028.",
+          "hpci_relevance_ja": "HPCIでも購入費と別に、機種移行・共同検証の支援体制を設計する参考になります。",
+          "hpci_relevance_en": "It informs an HPCI support function for migration and shared testing separate from purchase budgets.",
+          "adoption_conditions_ja": [
+            "対象コード、支援成果物、上流採用、支援終了後の担当を合意する。",
+            "この総額を単価や日本で必要な予算へ換算しない。"
+          ],
+          "adoption_conditions_en": [
+            "Agree scope, deliverables, upstream acceptance and post-engagement ownership.",
+            "Do not convert the total into unit prices or a required Japanese budget."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-EPICURE-SUPPORT-DURATION-CONFLICT",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDS096",
+            "SRC-CDS097"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "支援期間の説明に残る不一致",
+          "name_en": "Unresolved support-duration descriptions",
+          "timing_ja": "2026-09-01に公開ページを照合",
+          "timing_en": "Public pages cross-checked 2026-09-01",
+          "statement_ja": "サービスページは3〜12か月、概要は3〜18か月、Objectivesは3〜6か月と記載しています。異なる支援区分か更新差かは確認できず、すべての応募者に一律の期間が保証されるとは扱いません。",
+          "statement_en": "The service page states 3-12 months, the overview 3-18 and objectives 3-6. Whether these reflect support tiers or update drift is unresolved; no uniform entitlement is inferred.",
+          "hpci_relevance_ja": "移行計画では採択条件と実際の支援期間を確認し、計画の遅延リスクを残します。",
+          "hpci_relevance_en": "Migration plans need confirmed eligibility and engagement duration, with delay risk retained.",
+          "adoption_conditions_ja": [
+            "ログインを必要とする申請情報にはアクセスせず、公開条件の再確認を次回課題とする。"
+          ],
+          "adoption_conditions_en": [
+            "Do not access authenticated application details; recheck public conditions in a follow-up."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS092",
+        "title": "EESSI project policies",
+        "publisher": "EESSI",
+        "url": "https://www.eessi.io/docs/governance/policies/",
+        "source_class": "official-project",
+        "published_or_updated": "Policy last updated 2025-08-08; footer 2025-08-25"
+      },
+      "origin_group": "EESSI-governance",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "Sections 2.2-2.4 and 4",
+      "observation_ja": "stack削除には非推奨化から1年以上とアーカイブを要求しますが、個別ソフトウェアにはライセンス・セキュリティ・保守不能による削除条件があります。",
+      "observation_en": "Stack removal requires at least one year after deprecation and an archive; individual packages have separate license, security and maintainability removal conditions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS094",
+        "title": "EESSI roadmap revised May 27, 2026",
+        "publisher": "EESSI Steering Committee",
+        "url": "https://www.eessi.io/docs/roadmap/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-27 revision; footer 2026-05-28"
+      },
+      "origin_group": "EESSI-governance",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "Opening caveat; Hardware Enablement; Software Stack; Sustainability",
+      "observation_ja": "6〜12か月の目標を示すが達成保証ではないと明記。ROCm、新CPU、年次stack、ライセンス可視化と保守体制を挙げています。",
+      "observation_en": "Sets explicitly aspirational 6-12-month goals including ROCm, new CPUs, yearly stacks, license visibility and maintenance structures; no delivery guarantee.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS096",
+        "title": "EPICURE support services and eligibility",
+        "publisher": "EPICURE",
+        "url": "https://epicure-hpc.eu/support-services/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated public service page inspected 2026-09-01"
+      },
+      "origin_group": "EPICURE-service-description",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "Services; eligibility; duration",
+      "observation_ja": "稼働中のEuroHPC JU採択課題を対象とし、支援期間は3〜12か月と記載。移植、性能解析、最適化等を説明しています。",
+      "observation_en": "Targets active EuroHPC JU allocation projects, states 3-12 months, and describes porting, analysis and optimization support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS097",
+        "title": "EPICURE mission, objectives and work-package responsibilities",
+        "publisher": "EPICURE",
+        "url": "https://epicure-hpc.eu/about/about-us/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated public overview inspected 2026-09-01"
+      },
+      "origin_group": "EPICURE-service-description",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "About Us II; Mission; Objectives; WP2-WP4",
+      "observation_ja": "説明文は3〜18か月、Objectivesは3〜6か月とし、サービスページの3〜12か月とも一致しません。応募者全員への期間保証として使えません。",
+      "observation_en": "The overview says 3-18 months, objectives say 3-6, and the service page says 3-12. These cannot establish a uniform guaranteed engagement duration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS098",
+        "title": "EPICURE project duration and funding",
+        "publisher": "EuroHPC JU",
+        "url": "https://www.eurohpc-ju.europa.eu/research-innovation/our-projects/epicure_en",
+        "source_class": "official-project",
+        "published_or_updated": "Project registry inspected 2026-09-01; 2024-02-01 to 2028-01-31"
+      },
+      "origin_group": "EuroHPC-EPICURE-grant",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "Project duration; overall budget; EU contribution; service scope",
+      "observation_ja": "4年間の総額1000万ユーロ、EU拠出500万ユーロ。アプリケーション支援事業であり、全HPCソフトウェアの開発費ではありません。",
+      "observation_en": "Four-year overall budget EUR10 million with EUR5 million EU contribution, for application support rather than all HPC software development.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "EESSIの最新配布manifestとROCm対応の現在地、EPICUREの期間表記、2028年以降の継続財源を確認する。",
+    "日本の共同保守費用や固定版への修正責任は、公開契約・事業資料ごとに追加確認する。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Verify current EESSI manifests/ROCm support, EPICURE duration descriptions and post-2028 funding.",
+    "Seek public Japanese contracts/program records for joint-maintenance costs and backport ownership.",
+    "Independent-model Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000037",
+      "bundle_sha256": "ead1ce676c8390cf23c54dec709e7f730ade07d56da1d86486e85c26d42d54c0"
+    }
+  ]
+}

@@ -10,6 +10,10 @@
   };
   copy.ja.typeConference = "会議発表";
   copy.en.typeConference = "Conference entry";
+  copy.ja.sourceResearch = "研究資料";
+  copy.en.sourceResearch = "Research artifact";
+  copy.ja.sourcePeerReviewed = "査読付き文献";
+  copy.en.sourcePeerReviewed = "Peer-reviewed publication";
   const typeKeys = {conference: "typeConference", topic: "typeTopic", roadmap: "typeRoadmap", track: "typeTrack", application: "typeApplication", system: "typeSystem", term: "typeTerm", comparison: "typeComparison", scenario: "typeScenario", source: "typeSource"};
   let language = readLanguage();
 
@@ -25,13 +29,38 @@
   function normalize(value) { return String(value || "").normalize("NFKC").toLocaleLowerCase(language).replace(/\s+/g, ""); }
   function flatten(value) { if (value === null || value === undefined) return ""; if (typeof value === "string" || typeof value === "number") return String(value); if (Array.isArray(value)) return value.map(flatten).join(" "); if (typeof value === "object") return Object.values(value).map(flatten).join(" "); return ""; }
   function roadmapPath(roadmapId) { return data.roadmaps.find((item) => item.roadmap_id === roadmapId)?.path || "roadmaps/"; }
+  function activeSections(profile) {
+    const archived = new Set(profile?.archived_section_ids || []);
+    return (profile?.sections || []).filter((section) => !archived.has(section.section_id));
+  }
   function statusLabel(status) {
     const keys = {incomplete: "consensusIncomplete", "independent-review-pending": "independentReviewPending", provisional: "provisional", "academic-primary": "sourceAcademic", "government-official": "sourceGovernment", "openfs-governance": "sourceGovernance", "project-official": "sourceProject", "research-organization": "sourceResearchOrganization", "standards-body": "sourceStandards", "vendor-official": "sourceVendor"};
+    Object.assign(keys, {"official-project": "sourceProject", "official-vendor": "sourceVendor", "official-standard": "sourceStandards", "research-artifact": "sourceResearch", "peer-reviewed": "sourcePeerReviewed"});
     return keys[status] ? tr(keys[status]) : status || "";
   }
 
   function searchItems() {
     const items = [];
+    const sourcesByUrl = new Map();
+    function addSource(source, context) {
+      let item = sourcesByUrl.get(source.url);
+      if (!item) {
+        item = {type: "source", id: "", title_ja: source.title, title_en: source.title,
+          href: source.url, external: true, search: "", sourceIds: [], sourceClasses: [],
+          contexts_ja: [], contexts_en: []};
+        sourcesByUrl.set(source.url, item); items.push(item);
+      }
+      if (!item.sourceIds.includes(source.source_id)) item.sourceIds.push(source.source_id);
+      if (!item.sourceClasses.includes(source.source_class)) item.sourceClasses.push(source.source_class);
+      item.id = item.sourceIds.join(" / ");
+      if (source.correction) item.title_ja = item.title_en = source.title;
+      for (const lang of ["ja", "en"]) {
+        const label = `${source.publisher} / ${context[`title_${lang}`]}`;
+        if (!item[`contexts_${lang}`].includes(label)) item[`contexts_${lang}`].push(label);
+        item[`body_${lang}`] = item[`contexts_${lang}`].join("; ");
+      }
+      item.search += " " + flatten([source, context.title_ja, context.title_en]);
+    }
     (data.conference_coverage?.entries || []).forEach((entry) => items.push({
       type: "conference", id: entry.entry_id, title_ja: `Hot Chips 2026: ${entry.label_ja}`, title_en: `Hot Chips 2026: ${entry.label_en}`,
       body_ja: entry.gap_ja, body_en: entry.gap_en, search: flatten(entry),
@@ -39,12 +68,43 @@
     }));
     const categories = new Map(data.catalog_taxonomy.categories.map((item) => [item.category_id, item]));
     const profileMap = new Map((data.topic_decision_support?.topic_profiles || []).map((item) => [item.topic_id, item]));
-    data.topics.forEach((topic) => { const category = categories.get(topic.catalog_category_id); items.push({type: "topic", id: topic.catalog_code, title_ja: topic.title_ja, title_en: topic.title_en, body_ja: `正規Topic ID: ${topic.topic_id}。${profileMap.get(topic.topic_id)?.summary_ja || ""}`, body_en: `Canonical Topic ID: ${topic.topic_id}. ${profileMap.get(topic.topic_id)?.summary_en || ""}`, search: flatten([topic, category, profileMap.get(topic.topic_id)]), href: `${rootPrefix}?topic=${encodeURIComponent(topic.topic_id)}#catalog`, status: topic.verification_status}); });
-    data.roadmap_artifacts.forEach((roadmap) => {
-      const index = data.roadmaps.find((item) => item.roadmap_id === roadmap.roadmap_id); const category = categories.get(index?.catalog_category_id); items.push({type: "roadmap", id: roadmap.roadmap_id, title_ja: roadmap.title_ja, title_en: roadmap.title_en, body_ja: roadmap.summary_ja, body_en: roadmap.summary_en, search: flatten([roadmap, category]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}`, status: roadmap.consensus_status});
-      roadmap.tracks.forEach((track) => items.push({type: "track", id: track.track_id, title_ja: track.name_ja, title_en: track.name_en, body_ja: track.summary_ja, body_en: track.summary_en, search: flatten([track, roadmap.title_ja, roadmap.title_en]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}?track=${encodeURIComponent(track.track_id)}#roadmap-track-details`, status: roadmap.consensus_status}));
-      roadmap.sources.forEach((source) => items.push({type: "source", id: source.source_id, title_ja: source.title, title_en: source.title, body_ja: `${source.publisher} / ${roadmap.title_ja}`, body_en: `${source.publisher} / ${roadmap.title_en}`, search: flatten([source, roadmap.title_ja, roadmap.title_en]), href: source.url, external: true, status: source.source_class}));
+    data.topics.forEach((topic) => {
+      const category = categories.get(topic.catalog_category_id);
+      const profile = profileMap.get(topic.topic_id);
+      items.push({type: "topic", id: topic.catalog_code, title_ja: topic.title_ja, title_en: topic.title_en,
+        body_ja: `正規Topic ID: ${topic.topic_id}。${profile?.summary_ja || ""}`,
+        body_en: `Canonical Topic ID: ${topic.topic_id}. ${profile?.summary_en || ""}`,
+        search: flatten([topic, category?.title_ja, category?.title_en, profile?.summary_ja,
+          profile?.summary_en, profile?.hpci_decision_dimensions, activeSections(profile)]),
+        href: `${rootPrefix}?topic=${encodeURIComponent(topic.topic_id)}#catalog`, status: topic.verification_status});
     });
+    data.roadmap_artifacts.forEach((roadmap) => {
+      const index = data.roadmaps.find((item) => item.roadmap_id === roadmap.roadmap_id); const category = categories.get(index?.catalog_category_id); items.push({type: "roadmap", id: roadmap.roadmap_id, title_ja: roadmap.title_ja, title_en: roadmap.title_en, body_ja: roadmap.summary_ja, body_en: roadmap.summary_en, search: flatten([roadmap, category?.title_ja, category?.title_en]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}`, status: roadmap.consensus_status});
+      roadmap.tracks.forEach((track) => items.push({type: "track", id: track.track_id, title_ja: track.name_ja, title_en: track.name_en, body_ja: track.summary_ja, body_en: track.summary_en, search: flatten([track, roadmap.title_ja, roadmap.title_en]), href: `${rootPrefix}${roadmapPath(roadmap.roadmap_id)}?track=${encodeURIComponent(track.track_id)}#roadmap-track-details`, status: roadmap.consensus_status}));
+      roadmap.sources.forEach((source) => addSource(source, roadmap));
+    });
+    const support = data.topic_decision_support;
+    const catalogSources = new Map((support?.sources || []).map((source) => [source.source_id, source]));
+    function addReferencedSources(value, context) {
+      if (!value || typeof value !== "object") return;
+      if (Array.isArray(value)) { value.forEach((child) => addReferencedSources(child, context)); return; }
+      (value.source_ids || []).forEach((id) => {
+        const source = catalogSources.get(id); if (source) addSource(source, context);
+      });
+      Object.entries(value).forEach(([key, child]) => {
+        if (key !== "source_ids") addReferencedSources(child, context);
+      });
+    }
+    // Source metadata alone is not evidence of an active public catalog claim.
+    data.topics.forEach((topic) => {
+      const profile = profileMap.get(topic.topic_id);
+      activeSections(profile).forEach((section) => addReferencedSources(section, topic));
+    });
+    for (const key of ["platform_matrix", "numerical_method_matrix"]) {
+      const matrix = support?.[key];
+      addReferencedSources(matrix, {title_ja: matrix?.title_ja || copy.ja.typeComparison,
+        title_en: matrix?.title_en || copy.en.typeComparison});
+    }
     data.roadmap_reference_data.terms.forEach((term) => items.push({type: "term", id: term.term_id, title_ja: term.label_ja, title_en: term.label_en, body_ja: term.short_definition_ja, body_en: term.short_definition_en, search: flatten(term), href: `${rootPrefix}${roadmapPath(term.roadmap_ids[0])}?term=${encodeURIComponent(term.term_id)}#roadmap-glossary`, status: data.roadmap_reference_data.consensus_status}));
     data.roadmap_reference_data.comparison_sets.forEach((comparison) => items.push({type: "comparison", id: comparison.comparison_id, title_ja: comparison.title_ja, title_en: comparison.title_en, body_ja: comparison.summary_ja, body_en: comparison.summary_en, search: flatten(comparison), href: `${rootPrefix}${roadmapPath(comparison.roadmap_ids[0])}#roadmap-comparisons`, status: data.roadmap_reference_data.consensus_status}));
     data.application_performance_forecasts.applications.forEach((application) => items.push({type: "application", id: application.application_id, title_ja: application.name, title_en: application.name, body_ja: `${application.domain_ja}。${application.code_availability.note_ja}`, body_en: `${application.domain_en}. ${application.code_availability.note_en}`, search: flatten(application), href: `${rootPrefix}${roadmapPath("RM-APP-WORKLOADS")}#application-performance-section`, status: data.application_performance_forecasts.consensus_status}));
@@ -79,15 +139,15 @@
       const meta = document.createElement("div"); meta.className = "global-search-result-meta"; const type = document.createElement("span"); type.textContent = tr(typeKeys[result.type]); const id = document.createElement("code"); id.textContent = result.id; meta.append(type, id);
       const title = document.createElement("h3"); const link = document.createElement("a"); link.href = result.href; if (result.external) { link.target = "_blank"; link.rel = "noopener noreferrer"; } link.textContent = localized(result, "title"); title.append(link);
       const body = document.createElement("p"); body.textContent = localized(result, "body");
-      const status = document.createElement("small"); status.textContent = statusLabel(result.status);
+      const status = document.createElement("small"); status.textContent = result.sourceClasses ? result.sourceClasses.map(statusLabel).join(" / ") : statusLabel(result.status);
       article.append(meta, title, body, status); root.append(article);
     });
   }
-  function syncUrl() { const url = new URL(window.location.href); const value = document.getElementById("global-search-input").value.trim(); if (value) url.searchParams.set("q", value); else url.searchParams.delete("q"); history.replaceState(null, "", url); }
+  function syncUrl() { const url = new URL(window.location.href); const value = document.getElementById("global-search-input").value.trim(); if (value) url.searchParams.set("q", value); else url.searchParams.delete("q"); url.searchParams.set("lang", language); history.replaceState(null, "", url); }
   const params = new URLSearchParams(window.location.search); document.getElementById("global-search-input").value = params.get("q") || "";
   document.getElementById("global-search-form").addEventListener("submit", (event) => { event.preventDefault(); syncUrl(); render(); });
   document.getElementById("global-search-input").addEventListener("input", () => { syncUrl(); render(); });
   document.getElementById("global-search-type").addEventListener("change", render);
-  document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(); render(); }));
+  document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(); syncUrl(); render(); }));
   render();
 })();

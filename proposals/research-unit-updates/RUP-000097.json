@@ -1,0 +1,154 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000097",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T04:05:35+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "e6ee664f618b953bbd17ec162effb6b295057c268d7baad64fd533805aa76736",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミング仕様、コンパイラ実装、センターの導入手順を区別し、版・対象機種・数値精度・実測性能・保守条件を比較します。Bishengの公開資料も含めた単一のAIモデルによる暫定調査であり、実機検証や独立Consensusは未完了です。",
+  "summary_en": "The provisional single-model review separates programming specifications, compiler implementations and center deployment instructions, comparing versions, targets, numerical behavior, measured performance and maintenance. It now includes public Bisheng documentation; execution testing and independent Consensus remain incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "256162be3bfc3bc88572cf9d94323056ef57450ba5d866640ef8bd58f389548b",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02",
+        "TDS-CD2-SSW-01-U02",
+        "TDS-CD3-SSW-01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-SSW-01-U02",
+      "title_ja": "Bishengと中国の大学センターの開発環境",
+      "title_en": "Bisheng and a Chinese university development environment",
+      "summary_ja": "ベンダーの機能説明とセンターの利用手順は、異なる確認対象として扱います。",
+      "summary_en": "Vendor feature descriptions and center usage instructions establish different facts.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-BISHENG-LANGUAGE-BOUNDARIES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS099"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Bishengの言語処理系と最適化",
+          "name_en": "Bisheng language frontends and optimization",
+          "timing_ja": "版と公開日は未確認",
+          "timing_en": "Version and publication date unconfirmed",
+          "statement_ja": "Huaweiの資料はC/C++/Fortran、OpenMP拡張、Autotunerを説明しています。Fortranの記述はflang1/flang2で、現在のLLVM Flangと同等の機能や全OpenMP機能の対応を確認したものではありません。",
+          "statement_en": "Huawei documents C/C++/Fortran, OpenMP extensions and Autotuner. Its Fortran description uses flang1/flang2; this does not establish feature parity with current LLVM Flang or complete OpenMP coverage.",
+          "hpci_relevance_ja": "Arm向けコンパイラの選択肢として、既存科学コードの移植条件を比較します。",
+          "hpci_relevance_en": "Compare porting requirements for existing scientific codes as an Arm compiler option.",
+          "adoption_conditions_ja": [
+            "対象版の言語機能、ランタイム、数値回帰と性能を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify version-specific language features, runtimes, numerical regressions and performance."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SJTU-BISHENG-USAGE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS100"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "上海交通大学のBisheng利用手順",
+          "name_en": "SJTU Bisheng usage instructions",
+          "timing_ja": "ページ末尾の日付は2026-08-14",
+          "timing_en": "Page footer dated 2026-08-14",
+          "statement_ja": "センターの手順にはARMノード向けのbisheng/1.3.1-gcc-9.3.0が記載されています。文書の日付はコンパイラの公開日や現在の稼働確認を意味せず、OpenFSでは接続・実行していません。",
+          "statement_en": "The center documents bisheng/1.3.1-gcc-9.3.0 for ARM nodes. The page date is neither the compiler release date nor confirmation of current operation; OpenFS did not connect or execute it.",
+          "hpci_relevance_ja": "製品紹介に加えて、利用者が再現するための環境情報を確認します。",
+          "hpci_relevance_en": "Check reproducible user-environment information in addition to product descriptions.",
+          "adoption_conditions_ja": [
+            "導入時点のモジュールとMPI・数値ライブラリの組合せを照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Reconcile installed modules with MPI and numerical-library combinations at deployment."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS099",
+        "title": "Bisheng compiler introduction and language frontends",
+        "publisher": "Huawei Kunpeng community",
+        "url": "https://www.hikunpeng.com/document/detail/zh/kunpengdevps/compilation/ug-bisheng/kunpengbisheng_06_0001.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Version and publication date not established"
+      },
+      "origin_group": "Huawei-Bisheng-documentation",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "Overview; Features; Supported programming languages",
+      "observation_ja": "C/C++/Fortran、OpenMP拡張、Autotunerを説明しています。Fortranの説明はflang1/flang2で、現在のupstream LLVM Flangとの同等性は確認できません。",
+      "observation_en": "Describes C/C++/Fortran, OpenMP extensions and Autotuner. The Fortran description uses flang1/flang2 and does not establish parity with current upstream LLVM Flang.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS100",
+        "title": "SJTU HPC Bisheng compiler usage",
+        "publisher": "Shanghai Jiao Tong University Network and Information Center",
+        "url": "https://docs.hpc.sjtu.edu.cn/app/compilers_and_languages/bisheng.html",
+        "source_class": "official-project",
+        "published_or_updated": "Page footer: 2026-08-14; not a compiler release date"
+      },
+      "origin_group": "SJTU-HPC-user-manual",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "bisheng compiler usage and page footer",
+      "observation_ja": "ARMノード向けにbisheng/1.3.1-gcc-9.3.0を使う手順があります。実機への接続や動作確認はしていません。",
+      "observation_en": "Documents bisheng/1.3.1-gcc-9.3.0 on ARM nodes. No connection to the system or execution test was performed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "版を固定した言語機能表、配布条件、代表アプリの再現結果が不足しています。",
+    "地域やベンダーの存在だけでは移植性や性能の優位性を判断しません。独立Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Version-pinned feature matrices, distribution conditions and representative-application reproductions remain missing.",
+    "Region or vendor presence alone does not establish portability or performance superiority; independent Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000033",
+      "bundle_sha256": "080f801882833b90ca2d6981acbef738306ded05d57972415095f7b611e4714f"
+    },
+    {
+      "update_id": "RUP-000078",
+      "bundle_sha256": "41fab704a904e4be56b0a054cbf325268ab13edc252c55c2aabbba3669359470"
+    },
+    {
+      "update_id": "RUP-000079",
+      "bundle_sha256": "0f4b021d97a7731113faa99d46f8c79afc9b725342325a5804ee9cfaaf324541"
+    }
+  ]
+}

@@ -1,0 +1,463 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000036",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-01T00:41:35+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "a5899c48e130e32e63f43aa0bbf3c384232dc3313e33a720c57fc1a35f6a30c9",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCとAIを共用する実行環境を、ジョブ配置、コンテナ、依存ライブラリ、OS資源制御、クラウド増設に分けて整理しました。以前の政策中心の概要を具体的な技術調査へ置き換えています。以下は単一モデルによる暫定結果で、実クラスタでの統合検証は未実施です。",
+  "summary_en": "This review separates HPC/AI execution environments into scheduling, containers, dependencies, OS resource control and cloud expansion. It replaces earlier policy-oriented summaries with technical findings. Results remain single-model provisional research without cluster integration tests.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "d36ce4e167327fd557ae4daff8a0152bc5892d83c19d83ce4948e17161d607a3",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-06-U01",
+      "title_ja": "資源管理と実行環境の統合条件",
+      "title_en": "Integration conditions for resource management and runtimes",
+      "summary_ja": "製品を並べるだけでなく、資源の管理者と互換性の境界を確認します。",
+      "summary_en": "Identify resource ownership and compatibility boundaries, not merely product choices.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-SLINKY-ROLES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS028"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slinky: OperatorとBridgeの役割",
+          "name_en": "Slinky: operator and bridge roles",
+          "timing_ja": "公開プロジェクトを2026-09-01確認",
+          "timing_en": "Public projects checked 2026-09-01",
+          "statement_ja": "slurm-operatorはSlurmクラスタをKubernetesのPodとして管理・拡縮し、slurm-bridgeはSlurmをKubernetes負荷のスケジューラとして使います。連携という名称が同じでも、資源配置の責任主体が異なります。両方のスケジューラが同じGPUを独立に割り当てない設計が必要です。",
+          "statement_en": "slurm-operator manages and scales Slurm clusters as Kubernetes pods; slurm-bridge uses Slurm to schedule Kubernetes workloads. These are different scheduling ownership models. The integration must prevent independent allocation of the same GPU by both schedulers.",
+          "hpci_relevance_ja": "MPIバッチと常駐推論サービスを共用する構成候補になります。",
+          "hpci_relevance_en": "Provides candidate integration patterns for MPI batches and persistent inference services.",
+          "adoption_conditions_ja": [
+            "対応版、GPUデバイス管理、優先順位、課金単位を照合する。",
+            "詳細文書の取得不足と実サイト採用条件は未解決。"
+          ],
+          "adoption_conditions_en": [
+            "Match versions, device management, priority and accounting units.",
+            "Detailed-document access and site qualification remain unresolved."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-K8S-GANG-MATURITY",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDS034",
+            "SRC-CDS035"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Kubernetes: ワークロード単位の配置",
+          "name_en": "Kubernetes: workload-level placement",
+          "timing_ja": "v1.36でAPI変更。Job連携は確認時点でalpha。",
+          "timing_en": "API changes in v1.36; Job integration is alpha at inspection.",
+          "statement_ja": "Workload/PodGroupは複数Podのまとまった配置を扱いますが、v1.36でAPI構造が変更され、Jobとのgang scheduling連携は既定無効のalphaです。Indexed等の条件もあり、一般的な全HPCジョブの同時起動・再開をそのまま保証するものではありません。",
+          "statement_en": "Workload/PodGroup handles grouped pod placement, but v1.36 changed the API structure and Job gang-scheduling integration remains disabled-by-default alpha. Conditions such as Indexed Jobs apply; this is not a blanket guarantee for synchronized launch or recovery of all HPC jobs.",
+          "hpci_relevance_ja": "密結合学習・シミュレーションの配置機能として、安定性と移行負担を評価します。",
+          "hpci_relevance_en": "Assess stability and migration effort for tightly coupled training/simulation placement.",
+          "adoption_conditions_ja": [
+            "採用するKubernetes版とfeature gateを固定する。",
+            "配置成立とアプリケーションの準備完了を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the Kubernetes version and feature gates.",
+            "Distinguish placement from application readiness."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-APPTAINER-HOST-CONTRACT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS030",
+            "SRC-CDS031"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Apptainer: ホストとの互換性",
+          "name_en": "Apptainer: host compatibility",
+          "timing_ja": "1.5文書を確認",
+          "timing_en": "1.5 documentation inspected",
+          "statement_ja": "MPIコンテナはホストのMPI実装・ABIとPMI2/PMIx等の起動方式に依存します。GPU利用もホストのドライバ・ライブラリを取り込むためlibc等の差を受けます。イメージを保存しただけでは、別センターで同じ挙動・性能になるとは限りません。",
+          "statement_en": "MPI containers depend on host MPI implementation/ABI and launch mechanisms such as PMI2/PMIx. GPU execution binds host drivers/libraries and can encounter libc mismatches. Saving an image alone does not establish identical behavior or performance at another center.",
+          "hpci_relevance_ja": "センター間移行時の検証範囲をイメージ外のMPI・GPU・OSまで広げます。",
+          "hpci_relevance_en": "Include external MPI, GPU and OS dependencies in inter-center migration tests.",
+          "adoption_conditions_ja": [
+            "イメージdigest、ドライバ、MPIとネットワークを記録する。",
+            "GPU可視性の環境変数をセキュリティ隔離とみなさない。"
+          ],
+          "adoption_conditions_en": [
+            "Record image digest, drivers, MPI and network.",
+            "Do not treat GPU-visibility variables as security isolation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SLURM-OCI-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS029"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slurm OCI: 配布と隔離の境界",
+          "name_en": "Slurm OCI: distribution and isolation boundaries",
+          "timing_ja": "公開制限事項を2026-09-01確認",
+          "timing_en": "Public limitations checked 2026-09-01",
+          "statement_ja": "SlurmのOCI対応は非特権実行を前提とし、イメージの実行ノードへの配布を自動で行いません。通常のOCI経路ではカスタムネットワークも対象外です。実行環境の再現、イメージ配布、通信制限、利用者間隔離は別々に設計する必要があります。",
+          "statement_en": "Slurm OCI support assumes unprivileged execution and does not automatically distribute bundles to execution nodes. Custom networking is outside the normal OCI path. Runtime reproducibility, image distribution, network restrictions and tenant isolation need separate designs.",
+          "hpci_relevance_ja": "コンテナ対応という調達要件を、配布・権限・通信まで具体化します。",
+          "hpci_relevance_en": "Expand container requirements to distribution, permissions and communications.",
+          "adoption_conditions_ja": [
+            "参考設定をそのまま本番の安全性保証として使わない。",
+            "障害時のイメージ取得と一斉起動負荷を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not treat example configurations as production security assurance.",
+            "Check image retrieval failures and launch bursts."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SPACK-REPRODUCIBILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS032",
+            "SRC-CDS033"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Spack: 依存関係の固定と配布",
+          "name_en": "Spack: dependency pinning and distribution",
+          "timing_ja": "1.3.0.dev0文書。利用版の再確認が必要。",
+          "timing_en": "1.3.0.dev0 documentation; deployed-release checks required.",
+          "statement_ja": "spack.yamlは要求仕様、spack.lockは依存関係を解決した構成です。lockfileの共有は再構築を助けますが、マシン互換性や外部ライブラリなどの条件が残ります。buildcacheの署名機構も設定により無効化できるため、存在するだけで配布物の信頼性は保証されません。",
+          "statement_en": "spack.yaml describes requirements and spack.lock records concretized dependencies. Lockfiles aid rebuilding but retain machine and external-library conditions. Buildcache signatures can be disabled, so feature availability alone does not establish distribution trust.",
+          "hpci_relevance_ja": "センター共通環境を再構築可能な仕様と検証済み配布物で管理します。",
+          "hpci_relevance_en": "Manage shared environments through rebuildable specifications and verified artifacts.",
+          "adoption_conditions_ja": [
+            "Spack・レシピ・コンパイラ・外部依存の版を固定する。",
+            "署名設定と信頼鍵の管理責任を明確にする。"
+          ],
+          "adoption_conditions_en": [
+            "Pin Spack, recipes, compilers and external dependencies.",
+            "Assign responsibility for signature policy and trusted keys."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CGROUP-V2-OWNERSHIP",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS036"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "cgroup v2: OSと資源管理系の責任分担",
+          "name_en": "cgroup v2: OS and scheduler ownership",
+          "timing_ja": "公開設計文書を確認",
+          "timing_en": "Public design documentation inspected",
+          "statement_ja": "Slurmのcgroup v2設計はsystemdの単一管理者規則と委譲された階層に従います。独自にcgroupを操作すると、再起動・設定再読込時に資源制御が崩れる場合があります。OSを単なる配布名ではなく、systemd・kernel・コンテナ・デバイス制御の組合せとして評価します。",
+          "statement_en": "Slurm's cgroup v2 design follows systemd ownership and delegated hierarchies. Uncoordinated cgroup manipulation can disrupt controls during restarts or reloads. Evaluate the OS as a kernel/systemd/container/device-control combination, not just a distribution name.",
+          "hpci_relevance_ja": "CPU・メモリ・GPUの利用制限とデーモン更新時の継続性に関わります。",
+          "hpci_relevance_en": "Affects resource limits and continuity during daemon updates.",
+          "adoption_conditions_ja": [
+            "デーモン再起動、OOM、ジョブ終了時の後処理を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Test daemon restarts, OOM behavior and job cleanup."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FLUX-HIERARCHY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS038"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Flux: 割当内の階層型ジョブ管理",
+          "name_en": "Flux: hierarchical jobs within allocations",
+          "timing_ja": "公開操作文書を2026-09-01確認",
+          "timing_en": "Public operational guide checked 2026-09-01",
+          "statement_ja": "Fluxは親の割当内で子インスタンスを動かし、多数の計算を階層的に管理できます。他の資源管理系の割当内でも利用可能ですが、子ジョブの状態、失敗、資源使用を追跡する必要があります。階層化そのものを性能向上率やセンター間運用の保証には換算しません。",
+          "statement_en": "Flux can manage nested instances within a parent allocation, including allocations from other resource managers. Child-job states, failures and resource use still require tracking. Hierarchy alone establishes neither a speedup nor cross-center operational readiness.",
+          "hpci_relevance_ja": "アンサンブルや短時間の多数タスクで、中央スケジューラへの依頼粒度を検討できます。",
+          "hpci_relevance_en": "Supports evaluating allocation granularity for ensembles and many short tasks.",
+          "adoption_conditions_ja": [
+            "親子の利用時間・課金・取消し・状態集約を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check parent/child walltime, accounting, cancellation and status aggregation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CLOUD-READINESS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS037"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "クラウド増設: 割当と利用可能時刻の違い",
+          "name_en": "Cloud expansion: allocation versus readiness",
+          "timing_ja": "Slurmの公開ライフサイクル仕様",
+          "timing_en": "Public Slurm lifecycle semantics",
+          "statement_ja": "SlurmはAPIを通じたクラウド増設に対応しますが、起動率、登録期限、失敗時のDOWN化とジョブ再投入が伴います。資源が割り当てられた時刻と全ノードを使える時刻は異なります。費用評価には起動待ち、データ転送、保持時間、失敗後の再実行も含めます。",
+          "statement_en": "Slurm supports cloud expansion through provider APIs, with boot-rate limits, registration deadlines, DOWN states and requeues. Allocation time differs from full-node readiness. Cost evaluation should include startup, data transfer, retention and reruns after failure.",
+          "hpci_relevance_ja": "オンプレミス容量と一時増設を、同じ完了期限・費用範囲で比較します。",
+          "hpci_relevance_en": "Compare on-premises capacity and temporary expansion with matched deadlines and cost boundaries.",
+          "adoption_conditions_ja": [
+            "APIの存在を在庫・価格・起動時間の保証とみなさない。",
+            "データ持出し、予算上限、取消し時の解放を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not infer capacity, pricing or boot-time guarantees from API support.",
+            "Validate data boundaries, spending caps and release on cancellation."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-SSW06-CURRENT",
+    "TDS-SSW06-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS028",
+        "title": "Slinky: Slurm and Kubernetes interoperability",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/slinky.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public overview inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "slurm-operator and slurm-bridge descriptions",
+      "observation_ja": "SlurmをPodとして管理するOperatorと、Kubernetes負荷をSlurmで配置するBridgeは役割が異なる。",
+      "observation_en": "The operator manages Slurm as pods; the bridge uses Slurm to schedule Kubernetes workloads.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS029",
+        "title": "Slurm OCI containers guide",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/containers.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Overview and known limitations",
+      "observation_ja": "rootless OCIに対応するが、バンドル配置とネットワーク構成は別途必要。設定例は安全性の保証ではない。",
+      "observation_en": "Rootless OCI support still requires bundle placement and network configuration; examples do not establish security.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS030",
+        "title": "Apptainer 1.5 MPI applications",
+        "publisher": "Apptainer Project",
+        "url": "https://apptainer.org/docs/user/latest/mpi.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.5 documentation inspected 2026-09-01"
+      },
+      "origin_group": "apptainer-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Hybrid/bind model requirements; troubleshooting PMI2/PMIx",
+      "observation_ja": "MPIのABI・実装とプロセス起動方式の互換性が必要で、イメージだけでは移植性を保証しない。",
+      "observation_en": "MPI implementation/ABI and process-manager compatibility remain necessary beyond container packaging.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS031",
+        "title": "Apptainer 1.5 GPU and device support",
+        "publisher": "Apptainer Project",
+        "url": "https://apptainer.org/docs/user/latest/gpu.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.5 documentation inspected 2026-09-01"
+      },
+      "origin_group": "apptainer-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Host library binding, libc mismatch, GPU visibility",
+      "observation_ja": "GPUライブラリをホストから取り込み、libc等の差が問題になる。環境変数による可視性と隔離を混同しない。",
+      "observation_en": "Host GPU libraries can encounter libc mismatches; environment-based visibility is not a security boundary.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS032",
+        "title": "Spack environments and lockfiles",
+        "publisher": "Spack Project",
+        "url": "https://spack.readthedocs.io/en/latest/environments.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.3.0.dev0 documentation inspected 2026-09-01"
+      },
+      "origin_group": "spack-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Manifest versus lockfile; compatible-machine qualification",
+      "observation_ja": "manifestと依存関係解決済みlockfileを区別。同一specの再現は互換マシン等の条件付き。",
+      "observation_en": "Distinguishes manifests from concrete lockfiles; reproducing specs depends on compatible machines and configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS033",
+        "title": "Spack build caches and signatures",
+        "publisher": "Spack Project",
+        "url": "https://spack.readthedocs.io/en/latest/binary_caches.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.3.0.dev0 documentation inspected 2026-09-01"
+      },
+      "origin_group": "spack-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Build Cache Signing",
+      "observation_ja": "キャッシュ配布に署名・検証機構があるが無効化も可能。設定と信頼鍵を確認する。",
+      "observation_en": "Cache signing/verification exists but can be disabled; inspect configuration and trusted keys.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS034",
+        "title": "Kubernetes Workload API",
+        "publisher": "Kubernetes Project",
+        "url": "https://kubernetes.io/docs/concepts/workloads/workload-api/",
+        "source_class": "official-project",
+        "published_or_updated": "Public documentation inspected 2026-09-01; includes v1.37 alpha features"
+      },
+      "origin_group": "kubernetes-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Gang scheduling with Jobs; WorkloadWithJob feature gate",
+      "observation_ja": "Jobとのgang scheduling連携はalphaで既定無効。API提供と本番採用を分ける。",
+      "observation_en": "Job gang-scheduling integration is alpha and disabled by default; API presence is not production qualification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS035",
+        "title": "Kubernetes v1.36 workload-aware scheduling",
+        "publisher": "Kubernetes Project",
+        "url": "https://kubernetes.io/blog/2026/05/13/kubernetes-v1-36-advancing-workload-aware-scheduling/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-13"
+      },
+      "origin_group": "kubernetes-project",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Workload/PodGroup API changes; Job integration conditions",
+      "observation_ja": "v1alpha1からv1alpha2へ変更し、Job統合にはIndexed等の条件がある。",
+      "observation_en": "Describes v1alpha1-to-v1alpha2 changes and conditions such as Indexed Jobs for integration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS036",
+        "title": "Slurm cgroup v2 plugin design",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/cgroup_v2.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Following systemd rules; delegated subtree and slurmd restart",
+      "observation_ja": "systemdのsingle-writer規則と委譲されたcgroup階層の管理が必要。",
+      "observation_en": "Requires coexistence with systemd single-writer rules and delegated cgroup hierarchies.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS037",
+        "title": "Slurm power saving and cloud resource lifecycle",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/power_save.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Overview; ResumeTimeout; Hybrid Cluster; Cloud Accounting",
+      "observation_ja": "クラウド増設も起動率・登録待ち・失敗時再投入を伴う。割当と利用可能時刻は異なる。",
+      "observation_en": "Cloud expansion includes boot rates, registration and requeue behavior; allocation and readiness are distinct.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS038",
+        "title": "Working with Flux job hierarchies",
+        "publisher": "Flux Framework Project",
+        "url": "https://flux-framework.readthedocs.io/en/latest/jobs/hierarchies.html",
+        "source_class": "official-project",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "flux-framework",
+      "checked_at": "2026-09-01T00:39:58+09:00",
+      "locator": "Job hierarchy; foreign resource manager; nested job inspection",
+      "observation_ja": "他の資源管理系の割当内でも階層化できるが、子インスタンスの状態管理が必要。",
+      "observation_en": "Hierarchies can run inside another resource manager's allocation, with nested-state management still required.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-062",
+      "topic_ids": [
+        "SSW-06"
+      ],
+      "priority": "P1",
+      "question_ja": "HPCバッチと推論サービスを共用する場合、資源競合・隔離・再開・費用を同じ条件で比較できるか。",
+      "question_en": "Can shared HPC-batch/inference systems be compared for contention, isolation, restart and cost under matched conditions?",
+      "next_action_ja": "Slurm/Slinky、Kubernetes、Fluxの採用版と実サイト構成を集め、同じGPU・負荷・優先順位での起動遅延、干渉、障害復旧、利用制限を照合する。",
+      "next_action_en": "Collect deployed versions/site configurations of Slurm/Slinky, Kubernetes and Flux; compare launch delays, interference, recovery and limits with matched GPUs, workloads and priorities.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "Slinky詳細文書の取得と版別の制約確認を継続する。",
+    "商用OSの保守期間とセンターでの実際の組合せを追加する。",
+    "コンテナ化前後の同一条件測定と独立Consensusは未実施。"
+  ],
+  "remaining_work_en": [
+    "Continue retrieval of detailed Slinky documentation and version-specific constraints.",
+    "Add commercial OS support lifetimes and real center configurations.",
+    "Matched native/container measurements and independent Consensus remain outstanding."
+  ]
+}

@@ -1,0 +1,862 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000102",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-01T04:07:02+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "b7a5ba021619a79ff2037dbb27a3f97a57f3ad2d01b9824d85d7f25d6788e967",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIフレームワークと推論実行系を、学習・推論機能、配布版、ベンダーの検証対象、対象機種、運用条件で比較します。MindSporeの配布情報も追加しましたが、公開版の存在を互換性や性能の実証とは扱いません。単一のAIモデルによる暫定結果で、独立Consensusは未完了です。",
+  "summary_en": "Compare AI frameworks and inference runtimes by training/inference functions, released versions, vendor qualification, target systems and operational conditions. Added MindSpore distribution evidence does not turn release availability into compatibility or performance proof. Results remain single-model, provisional and Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U01",
+      "before_sha256": "be63e38b85f7ec746a9da692a3996f5f3fbe15281814821db89229d181ab94df",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "ac3979c45f280c3e12a48113d5c35699d1764731f773b805bb8378a0b24a84a1",
+      "evidence_section_ids": [
+        "TDS-HC26-SSW-09-U2",
+        "TDS-CD6-SSW-09-U02"
+      ]
+    },
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "22270be4ce35c099d9d00afc434be0872f935092c94a26de44d42616f2f6d6cc",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD6-SSW-09-U01",
+      "title_ja": "学習フレームワーク",
+      "title_en": "Training frameworks",
+      "summary_ja": "学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。",
+      "summary_en": "Compare training and distributed-training frameworks for hardware support, parallelism, precision, and model and data management.",
+      "items": [
+        {
+          "item_id": "TDI-CD6-MEGATRON-PARTITIONING",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS048",
+            "SRC-PORT032"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Megatron-LM/CoreとMegatron-DeepSpeedの区別",
+          "name_en": "Distinguishing Megatron-LM/Core and Megatron-DeepSpeed",
+          "timing_ja": "公開実装を確認、フォーク間の最新機能互換は未確認",
+          "timing_en": "Public implementations inspected; current cross-fork parity unverified",
+          "statement_ja": "Megatron Coreのデータ・テンソル・パイプライン・コンテキスト・エキスパート並列は、分割する対象と通信パターンが異なります。Megatron-DeepSpeedは別フォークであり、READMEは2023年7月の同期と継承した例の非互換の可能性を明記しています。同じMegatronという名称だけでは設定やチェックポイントの互換性を仮定できません。",
+          "statement_en": "Megatron Core's data, tensor, pipeline, context and expert parallelism partition different objects and induce different communication patterns. Megatron-DeepSpeed is a separate fork whose README documents a July 2023 sync and warns about inherited examples. Shared naming does not establish configuration or checkpoint compatibility.",
+          "hpci_relevance_ja": "候補GPUの台数だけでなく、ノード内外の通信、モデル形状、実際に使うフォークを固定して設計します。",
+          "hpci_relevance_en": "Size systems using topology, model shape and the actual fork, not GPU count alone.",
+          "adoption_conditions_ja": [
+            "依存するPyTorch、TransformerEngine、通信ライブラリを版ごとに固定する。",
+            "同期履歴を最終更新日や保守終了日と読み替えない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin PyTorch, TransformerEngine and communication dependencies per version.",
+            "Do not interpret the documented sync as a last-update or support-end date."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-ZERO-OFFLOAD-BOUNDARIES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS050"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ZeRO: メモリ削減とCPU・I/O負荷のトレードオフ",
+          "name_en": "ZeRO: trading GPU memory for CPU and I/O work",
+          "timing_ja": "DeepSpeed 0.19.6資料",
+          "timing_en": "DeepSpeed 0.19.6 documentation",
+          "statement_ja": "ZeROはオプティマイザ状態、勾配、パラメータを段階的に分散します。パラメータのCPU/NVMe退避はStage 3、オプティマイザ状態の退避はStage 1〜3が対象で、オプティマイザの計算はCPU側へ移ります。GPUメモリ容量を節約できても、CPU、PCIe、ネットワーク、ストレージが新しい律速になり得ます。",
+          "statement_en": "ZeRO progressively partitions optimizer state, gradients and parameters. Parameter CPU/NVMe offload applies to stage 3; optimizer offload applies to stages 1-3 and moves optimizer computation to CPUs. Saving GPU memory can expose CPU, PCIe, network or storage bottlenecks.",
+          "hpci_relevance_ja": "GPU中心の見積りにホストメモリ、CPU処理、退避用I/Oの要件を加えます。",
+          "hpci_relevance_en": "Include host memory, CPU work and offload I/O in GPU-system sizing.",
+          "adoption_conditions_ja": [
+            "同一モデル・精度・グローバルバッチサイズで学習ステップ当たりの時間と品質を比較する。",
+            "保存と再開の形式はZeROの段階とは別に検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare step time and quality at matched model, precision and global batch.",
+            "Validate checkpoint formats independently of ZeRO stage."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-MEGATRON-RESTART-COMPATIBILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS049"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "モデル重みの互換性と学習再開の互換性",
+          "name_en": "Weight compatibility versus training restart compatibility",
+          "timing_ja": "Megatron Core 0.16.1の文書化された制約",
+          "timing_en": "Documented constraints in Megatron Core 0.16.1",
+          "statement_ja": "資料では0.14未満のオプティマイザ状態を読み込めない一方、旧モデル重みは読み込めるとされています。また通常のdp_reshardable形式ではモデル並列構成を変更できず、fully_reshardable形式は柔軟性と保存・読込み時間のトレードオフになります。重みだけの移行を学習の完全な継続とみなしません。",
+          "statement_en": "The documentation distinguishes loadable older model weights from unsupported pre-0.14 optimizer states. The default dp_reshardable format does not allow model-parallel changes; fully_reshardable trades checkpoint speed for flexibility. Weight-only migration is not full training continuation.",
+          "hpci_relevance_ja": "システム更新や資源縮退に伴う再開費用と再学習リスクを評価します。",
+          "hpci_relevance_en": "Evaluate restart costs and retraining risks during upgrades or reduced allocations.",
+          "adoption_conditions_ja": [
+            "オプティマイザの状態、乱数状態、学習率スケジューラ、データの読込み位置を含む再開試験を行う。",
+            "記載された移行手順は実行確認が必要であり、ここでは検証済みとしない。"
+          ],
+          "adoption_conditions_en": [
+            "Test optimizer, RNG, scheduler and dataset-position restoration.",
+            "The documented migration procedure still requires execution-based validation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-MEGATRON-GTP-EXPERIMENTAL",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDS051"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GTP: 必要時の重みの再構成を用いる実験的並列化",
+          "name_en": "GTP: experimental per-weight rematerialization",
+          "timing_ja": "latest資料で実験的機能、安定化時期は未定",
+          "timing_en": "Experimental in latest documentation; stabilization date unspecified",
+          "statement_ja": "GTPはテンソル並列と重みの再構成を組み合わせ、必要な重みを通信で集めて計算後に解放する方式です。資料はTransformerEngine 2.19以上を条件とし、APIや動作の変更可能性を明記しています。既存方式に対する優位性はネットワークとモデル形状を揃えた試験が必要です。",
+          "statement_en": "GTP combines tensor parallelism with gathering individual weights on demand and releasing them after computation. Documentation requires TransformerEngine >=2.19 and warns of API/behavior changes. Superiority over established methods requires matched topology and model tests.",
+          "hpci_relevance_ja": "メモリ容量と通信重複の設計空間を広げる候補として追跡します。",
+          "hpci_relevance_en": "Track it as a candidate that changes memory/communication trade-offs.",
+          "adoption_conditions_ja": [
+            "開発版の記述を安定版の提供保証や製品日程へ変換しない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not turn development documentation into stable-release or product commitments."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-MINDSPORE-210-DISTRIBUTION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS101",
+            "SRC-CDS102"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MindSpore 2.10.0と互換表の版ずれ",
+          "name_en": "MindSpore 2.10.0 and version-misaligned compatibility text",
+          "timing_ja": "配布物のアップロードは2026-07-31",
+          "timing_en": "Artifacts uploaded 2026-07-31",
+          "statement_ja": "PyPIには2.10.0の配布物がありますが、同じページの導入例は2.7.1、保守表の先頭は2.9です。2.9.0版FAQにも過去版のCANN対応説明が残るため、2.10.0の対応GPU・Ascend・CANNの確定表には転用しません。",
+          "statement_en": "PyPI lists 2.10.0 artifacts, but its installation example uses 2.7.1 and its maintenance table starts at 2.9. The 2.9.0 FAQ also retains historical CANN guidance, so these descriptions cannot establish a definitive 2.10.0 GPU/Ascend/CANN matrix.",
+          "hpci_relevance_ja": "中国発のAIソフトウェアも比較対象とし、配布版と実行環境の組合せを確認します。",
+          "hpci_relevance_en": "Include Chinese AI software in comparisons while verifying release/environment combinations.",
+          "adoption_conditions_ja": [
+            "2.10.0のリリースノート、対応機種、CANN・ドライバ・Pythonの組合せを固定する。",
+            "配布ページの情報だけで性能、全機能対応、長期保守を断定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin 2.10.0 release notes, hardware and CANN/driver/Python combinations.",
+            "Do not infer performance, full feature support or long-term maintenance from a distribution page alone."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD6-SSW-09-U02",
+      "title_ja": "推論サービング",
+      "title_en": "Inference serving",
+      "summary_ja": "vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。",
+      "summary_en": "Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support.",
+      "items": [
+        {
+          "item_id": "TDI-CD6-VLLM-PREFILL-CACHING",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS053"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Prefix caching: 入力の共通部分の再利用",
+          "name_en": "Where prefix caching helps",
+          "timing_ja": "vLLM公開資料を確認",
+          "timing_en": "Public vLLM documentation inspected",
+          "statement_ja": "入力に共通部分を持つ要求では、KVキャッシュを再利用してPrefillの再計算を省けます。ただし新規トークンを生成するDecode自体を速くする機能ではなく、共通部分がない要求や長い出力では効果が限られます。測定時にはキャッシュの有無（ウォーム／コールド）を揃える必要があります。",
+          "statement_en": "Reusing KV entries avoids repeated prefill for shared input prefixes. It does not accelerate decoding itself, and benefits are limited without prefix sharing or with long outputs. Comparisons must control warm/cold cache conditions.",
+          "hpci_relevance_ja": "反復対話や共通資料を扱う科学エージェントに適した負荷モデルを選びます。",
+          "hpci_relevance_en": "Use workload models reflecting repeated dialogue and shared scientific context.",
+          "adoption_conditions_ja": [
+            "入力の共通部分の割合と入力・出力長の分布を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Report prefix-sharing rates and input/output length distributions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-PD-DISAGGREGATION-NETWORK",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDS052",
+            "SRC-CDS055"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Prefill/Decode分離とKV転送",
+          "name_en": "Prefill/decode separation and KV transfer",
+          "timing_ja": "vLLMでは実験的機能、SGLangにも実装",
+          "timing_en": "Experimental in vLLM; also implemented in SGLang",
+          "statement_ja": "vLLMはPrefillとDecodeの分離をTTFT・ITLの独立調整とテール遅延管理に位置付け、スループット改善を保証していません。SGLangはMooncake/NIXLとルータを提供します。分離によりKV転送、GPUとNICの対応、ルーティング負荷が重要となり、統合実行が常に劣るとは言えません。",
+          "statement_en": "vLLM frames separation as independent TTFT/ITL tuning and tail-latency control, not a throughput improvement. SGLang supplies Mooncake/NIXL and routing. KV transfer, GPU/NIC placement and routing overhead become material; integrated serving is not inherently inferior.",
+          "hpci_relevance_ja": "ネットワーク帯域・ホストCPU・GPU割当を推論サービス全体として評価します。",
+          "hpci_relevance_en": "Evaluate network, host CPU and GPU allocation as one service.",
+          "adoption_conditions_ja": [
+            "同一SLOと品質で統合・分離を比較する。",
+            "KV通信だけでなく補助通信と障害復旧を含める。"
+          ],
+          "adoption_conditions_en": [
+            "Compare integrated and disaggregated serving at equal SLO and quality.",
+            "Include auxiliary traffic and failure recovery, not only KV transport."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-LLAMACPP-SERVER-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-PORT039",
+            "SRC-PORT040"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "llama.cpp: 軽量推論と複数要求のサービング",
+          "name_en": "llama.cpp: lightweight inference and multi-request serving",
+          "timing_ja": "master資料を確認、採用時にcommit固定が必要",
+          "timing_en": "Master documentation inspected; pin a deployment commit",
+          "statement_ja": "llama.cppはC/C++のCPU/GPU推論だけでなく、サーバーで継続的バッチ処理や複数利用者、ツール呼出し等を扱います。単独利用専用と分類するのは不正確です。一方、API互換や量子化の対応は、全モデルの品質や大規模分散処理の性能、商用APIの全機能との同等性を意味しません。",
+          "statement_en": "llama.cpp includes continuous batching, multiple-user serving and tool calling in addition to C/C++ CPU/GPU inference. It is not single-user-only. API compatibility and quantization support do not establish model quality, large-scale distributed performance or full commercial-API equivalence.",
+          "hpci_relevance_ja": "小規模・CPU併用・ローカル実行の候補を、大規模GPUサービスと別の条件で比較します。",
+          "hpci_relevance_en": "Compare small-scale, CPU-assisted and local deployments with appropriately matched service requirements.",
+          "adoption_conditions_ja": [
+            "GGUF、バックエンド、量子化、コンテキスト長を固定する。",
+            "認証、要求制限、監査は配備側でも検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin GGUF model, backend, quantization and context length.",
+            "Verify authentication, request limits and auditing in the deployment."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-TRTLLM-FEATURE-COMBINATIONS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS056"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TensorRT LLM: 個別機能と併用可能性",
+          "name_en": "TensorRT LLM: individual features versus combinations",
+          "timing_ja": "2026-08-27更新、資料commit 785c948",
+          "timing_en": "Documentation updated 2026-08-27 at commit 785c948",
+          "statement_ja": "公式の組合せ表では、投機的デコーディングとパイプライン並列は非対応であり、LoRAと複数機能の併用には未試験の組合せがあります。機能一覧にそれぞれ掲載されていても同時に使えるとは限りません。未試験は非対応と区別し、必要な組合せを採用版で確認します。",
+          "statement_en": "The official matrix marks speculative decoding with pipeline parallelism unsupported and several LoRA combinations untested. Separately listed features are not necessarily composable. Keep untested distinct from unsupported and qualify required combinations in the selected version.",
+          "hpci_relevance_ja": "調達仕様の機能チェックを、実際のモデルと機能の組合せ試験へつなげます。",
+          "hpci_relevance_en": "Turn procurement feature checklists into model-specific combination tests.",
+          "adoption_conditions_ja": [
+            "表を更新したコミットとGPU世代を記録する。",
+            "この表から他の推論基盤との性能順位を導かない。"
+          ],
+          "adoption_conditions_en": [
+            "Record the matrix commit and GPU generation.",
+            "Do not derive a cross-framework performance ranking from the matrix."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-VLLM028-DEFAULT-DRIFT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS077"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "vLLM 0.28.0: 設定と依存関係の変化",
+          "name_en": "vLLM 0.28.0: default and dependency changes",
+          "timing_ja": "2026-08-26、タグのcommitは2cf0a69",
+          "timing_en": "2026-08-26; release tag commit 2cf0a69",
+          "statement_ja": "既定のバッチトークン上限は8192から16384へ変わり、bitsandbytesは外部プラグインへ移りました。版更新の比較では同じ設定とモデル品質を固定します。",
+          "statement_en": "The default batched-token cap changes from 8192 to 16384; bitsandbytes moves to an external plugin. Compare upgrades at matched settings and model quality.",
+          "hpci_relevance_ja": "推論基盤の選定・更新に伴う回帰評価の条件です。",
+          "hpci_relevance_en": "Defines regression-test conditions for serving-stack selection and upgrades.",
+          "adoption_conditions_ja": [
+            "ピーク値ではなく同じ負荷と応答期限で比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare matched loads and response deadlines, not only peak rates."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-VLLM-UPSTREAM-VENDOR-VERSIONS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS077",
+            "SRC-CDS089",
+            "SRC-CDS090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "vLLM公開版とROCmの対応版",
+          "name_en": "vLLM release versus ROCm support version",
+          "timing_ja": "2026-08-26公開版とdevelop資料を別々に確認",
+          "timing_en": "Release and develop documentation inspected separately",
+          "statement_ja": "vLLMの公開版は0.28.0ですが、確認したROCm Core SDK 10.0.0のdevelop資料はvLLM 0.27.0対応を掲げています。これは0.28.0の非対応を証明するものでも、全GPUでの動作保証でもありません。vLLM資料のROCm最低要件、wheelパッケージ構成、コンテナの選択も別々に確認します。",
+          "statement_en": "Upstream vLLM has released 0.28.0, while the inspected ROCm Core SDK 10.0.0 develop documentation lists vLLM 0.27.0. This neither proves 0.28.0 unsupported nor guarantees every GPU. Check minimum ROCm requirements, wheel variants and container selection separately.",
+          "hpci_relevance_ja": "新規GPUの採用時に、最新版の存在をそのまま採用可能性と見なす誤りを防ぎます。",
+          "hpci_relevance_en": "Prevents equating an upstream release with deployability on a selected GPU.",
+          "adoption_conditions_ja": [
+            "GPU型番、ドライバ、PyTorch、ROCm、wheelパッケージまたはコンテナダイジェストを固定して検証する。",
+            "旧rocm/vllmイメージの非推奨化と、ROCmバックエンド全体の廃止を混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Qualify a pinned GPU, driver, PyTorch, ROCm and wheel/container digest.",
+            "Do not confuse deprecation of old rocm/vllm images with retirement of the ROCm backend."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-VLLM-FEATURE-COMPOSITION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS091"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "個別対応・併用制約・未確認の区別",
+          "name_en": "Individual support, composition limits and unknowns",
+          "timing_ja": "v0.28.0文書内の比較表、各行の実測は未実施",
+          "timing_en": "Matrix in v0.28.0 documentation; rows not independently tested",
+          "statement_ja": "表ではLoRAと投機的デコーディングの併用が非対応で、マルチモーダルLoRAは言語モデル部分に限定されています。AMDのプロンプトの埋め込み表現は未確認扱いです。これらをすべて単純な対応・非対応の二値へ潰さず、資料の版と対象モデルを残します。",
+          "statement_en": "The matrix marks LoRA plus speculative decoding incompatible, restricts multimodal LoRA to the language backbone, and leaves AMD prompt embeddings unknown. Preserve these distinctions and the documentation/model context rather than reducing all entries to a binary support flag.",
+          "hpci_relevance_ja": "科学エージェントのモデル切替、LoRA、画像入力を組み合わせた仕様の実現性を確認します。",
+          "hpci_relevance_en": "Qualify combinations of model switching, LoRA and visual inputs needed by scientific agents.",
+          "adoption_conditions_ja": [
+            "表の記載を将来版へ外挿せず、採用版で回帰試験を行う。"
+          ],
+          "adoption_conditions_en": [
+            "Do not extrapolate the matrix to future versions; regression-test the deployment version."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-VLLM-XPU-PIPELINE-BOUNDARY",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDS090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Intel XPUのパイプライン並列の適用範囲",
+          "name_en": "Scope of Intel XPU pipeline parallelism",
+          "timing_ja": "v0.28.0資料ではベータ版",
+          "timing_en": "Beta in v0.28.0 documentation",
+          "statement_ja": "XPUのパイプライン並列はオンライン推論サービス向けのベータ版で、単一ノードのmp バックエンドに限定して記述されています。この記載をマルチノード構成の対応証拠として用いません。",
+          "statement_en": "XPU pipeline parallelism is documented as beta for online serving on a single node with the mp backend. This is not evidence of multi-node support.",
+          "hpci_relevance_ja": "代替アクセラレータの選定で、ノード内の実装とシステム規模での利用条件を区別します。",
+          "hpci_relevance_en": "Separates within-node implementation from system-scale deployment requirements.",
+          "adoption_conditions_ja": [
+            "マルチノードの成熟時期は未定として残す。"
+          ],
+          "adoption_conditions_en": [
+            "Leave the multi-node maturity timeline unresolved."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD6-SSW-09-U03",
+      "title_ja": "エージェント実行",
+      "title_en": "Agent execution",
+      "summary_ja": "構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。",
+      "summary_en": "Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.",
+      "items": [
+        {
+          "item_id": "TDI-CD6-LANGGRAPH-IDEMPOTENT-REPLAY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS057"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "継続実行と副作用の重複防止",
+          "name_en": "Durable execution and duplicate side effects",
+          "timing_ja": "LangGraph公開Functional API資料",
+          "timing_en": "Public LangGraph Functional API documentation",
+          "statement_ja": "LangGraphはタスク結果を保存して再開時に再利用しますが、処理開始後に完了記録を残せず失敗したタスクは再実行され得ます。外部ジョブ投入や書込みには冪等キー、既存結果の照合、状態の保存が必要です。チェックポイント機能があるだけで外部操作が一度だけ実行されるとは限りません。",
+          "statement_en": "LangGraph persists task results for replay, but a task that fails before recording completion may run again. External job submission and writes need idempotency keys, result reconciliation and persistent state. Checkpointing alone does not make external effects exactly-once.",
+          "hpci_relevance_ja": "長時間の科学ワークフローや調査エージェントで、再開時の二重投入を防ぐ要件になります。",
+          "hpci_relevance_en": "This informs duplicate-submission controls for long scientific and research-agent workflows.",
+          "adoption_conditions_ja": [
+            "保存先障害、再実行、取消し、部分成功を試験する。",
+            "これは設計要件の調査であり、OpenFSに新しい実行基盤を有効化するものではない。"
+          ],
+          "adoption_conditions_en": [
+            "Test storage failure, replay, cancellation and partial success.",
+            "This researches requirements; it does not enable a new OpenFS runtime."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-TOOL-CALL-SCHEMA-NOT-AUTHORITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS054"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ツール呼出しの構文制約と意味・権限の検証",
+          "name_en": "Tool-call syntax versus semantics and authorization",
+          "timing_ja": "vLLM latest資料、版とパーサーへの依存あり",
+          "timing_en": "vLLM latest documentation; version/parser dependent",
+          "statement_ja": "vLLMのnamed/required呼出しとauto呼出しではスキーマ制約の条件が異なり、autoではstrict設定等と対応パーサーが関係します。正しいJSONやスキーマ適合は、正しいツールの選択、引数の妥当性、実行権限を保証しません。実行前の検証はハーネス側の責任として残ります。",
+          "statement_en": "vLLM's named/required and automatic modes impose schemas differently; auto depends on strict settings and compatible parsers. Valid JSON or schema conformance does not establish correct tool choice, valid semantics or permission. Pre-execution checks remain a harness responsibility.",
+          "hpci_relevance_ja": "エージェント用CPU・GPUの性能評価に、誤操作の抑止と検証費用を含めます。",
+          "hpci_relevance_en": "Include validation costs and erroneous-action prevention in agent-system evaluations.",
+          "adoption_conditions_ja": [
+            "不正引数、未許可操作、プロンプトインジェクションを別々に評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate invalid arguments, unauthorized actions and prompt injection separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD6-MCP-AUDIENCE-AUTHORIZATION",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDS058"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MCP: 接続標準化と認可境界",
+          "name_en": "MCP: interoperable connections and authorization boundaries",
+          "timing_ja": "2025-11-25版のHTTP認可仕様",
+          "timing_en": "HTTP authorization specification version 2025-11-25",
+          "statement_ja": "MCPのHTTP認可仕様は、トークンがそのサーバー向けに発行されたことの検証を求め、受信トークンを下流サービスへそのまま渡すことを禁じています。共通プロトコルを採用しても各ツールの権限、利用者の同意、秘密情報の保存は別に設計する必要があります。",
+          "statement_en": "MCP's HTTP authorization specification requires checking the token's intended server and prohibits passing an incoming token unchanged to downstream services. A shared protocol does not replace tool permissions, user consent or secure credential storage.",
+          "hpci_relevance_ja": "複数機関の計算・データ資源をエージェントへ接続する際の責任境界を定めます。",
+          "hpci_relevance_en": "Define responsibility boundaries when agents connect to multi-institution compute and data resources.",
+          "adoption_conditions_ja": [
+            "このHTTP仕様をstdioや任意のSDKの自動的な適合証明としない。",
+            "失効、最小権限、監査、独立したネットワーク制御を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not treat this HTTP specification as automatic conformance of stdio or arbitrary SDKs.",
+            "Verify revocation, least privilege, auditing and independent network enforcement."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD1-SSW-09-U01",
+    "TDS-CD1-SSW-09-U02",
+    "TDS-CD1-SSW-09-U03",
+    "TDS-CD2-SSW-09-U02",
+    "TDS-CD4-SSW-09-U02",
+    "TDS-CD5-SSW-09-U01"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS048",
+        "title": "Megatron Core parallelism guide",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-megatron",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Parallelism selection and combinations",
+      "observation_ja": "データ・テンソル・パイプライン・コンテキスト・Expert並列の役割と組合せを確認。単純なGPU数の積は比較根拠として使用しない。",
+      "observation_en": "Read partitioning roles and combinations. Do not use the simplified GPU-count product as comparison evidence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS049",
+        "title": "Megatron Core 0.16.1 distributed checkpointing",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/megatron-core/developer-guide/0.16.1/api-guide/core/dist_checkpointing.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "version 0.16.1 documentation"
+      },
+      "origin_group": "nvidia-megatron",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Checkpoint compatibility and optimizer state formats",
+      "observation_ja": "0.14未満の最適化器状態の非互換と、モデル並列変更に対応する保存形式の条件を確認。移行手順は未実行。",
+      "observation_en": "Read pre-0.14 optimizer incompatibility and model-parallel resharding constraints; migration was not executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS050",
+        "title": "DeepSpeed ZeRO configuration, documentation 0.19.6",
+        "publisher": "DeepSpeed project",
+        "url": "https://deepspeed.readthedocs.io/en/latest/zero3.html",
+        "source_class": "official-project",
+        "published_or_updated": "documentation 0.19.6 accessed 2026-09-01"
+      },
+      "origin_group": "deepspeed-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "ZeRO stages, offload_param and offload_optimizer",
+      "observation_ja": "状態分割の段階、パラメータのCPU/NVMe退避、CPUによる最適化器計算を確認。",
+      "observation_en": "Read state partitioning stages, CPU/NVMe parameter offload and CPU optimizer computation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS051",
+        "title": "Megatron Core Generalized Tensor Parallelism",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/api-guide/core/generalized_tensor_parallel.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "experimental living documentation accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-megatron",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Experimental warning and GTP weight materialization",
+      "observation_ja": "API変更の可能性、TransformerEngine 2.19以上という条件、重み単位の再実体化を確認。性能値は採用しない。",
+      "observation_en": "Read experimental/API warning, TransformerEngine >=2.19 requirement and per-weight rematerialization; no performance claim adopted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS052",
+        "title": "vLLM disaggregated prefilling (experimental)",
+        "publisher": "vLLM Project",
+        "url": "https://docs.vllm.ai/en/latest/features/disagg_prefill/",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "vllm-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Why disaggregated prefilling; experimental warning",
+      "observation_ja": "TTFTとITLの別々の調整、テール遅延の管理、スループット改善を目的としないという注意を確認。",
+      "observation_en": "Read separate TTFT/ITL tuning, tail-latency motivation and the explicit throughput limitation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS053",
+        "title": "vLLM automatic prefix caching",
+        "publisher": "vLLM Project",
+        "url": "https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "vllm-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Introduction and Limits",
+      "observation_ja": "共有prefixのprefill再利用と、decode自体やprefixを共有しない要求では利得が限定されることを確認。",
+      "observation_en": "Read shared-prefix prefill reuse and limitations for decode-heavy or non-sharing requests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS054",
+        "title": "vLLM tool calling and constrained decoding",
+        "publisher": "vLLM Project",
+        "url": "https://docs.vllm.ai/en/latest/features/tool_calling/",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "vllm-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Constrained Decoding Behavior and Strict Mode",
+      "observation_ja": "named/requiredとautoの制約差、strict設定、parserの条件を確認。構文制約を実行許可や意味の正しさと同一視しない。",
+      "observation_en": "Read named/required versus auto constraints, strict settings and parser conditions; syntax enforcement is not authorization or semantic correctness.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS055",
+        "title": "SGLang PD Disaggregation",
+        "publisher": "SGLang Project",
+        "url": "https://docs.sglang.io/docs/advanced_features/pd_disaggregation",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "sglang-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "PD motivation, router, transfer engines, GPU/NIC mapping",
+      "observation_ja": "Mooncake/NIXL、ルータ、GPU別NIC指定を確認。KV通信と補助TCP通信の両方に留意。",
+      "observation_en": "Read Mooncake/NIXL, routing and per-GPU NIC mapping; account for both KV transport and auxiliary TCP.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS056",
+        "title": "TensorRT LLM feature combination matrix",
+        "publisher": "NVIDIA",
+        "url": "https://nvidia.github.io/TensorRT-LLM/features/feature-combination-matrix.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-27; documentation commit 785c948"
+      },
+      "origin_group": "nvidia-tensorrt-llm",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Feature matrix rows for speculative decoding, LoRA and pipeline parallelism",
+      "observation_ja": "非対応と未試験の区別、投機的decodeとpipeline並列の非対応、LoRAとの未試験組合せを確認。",
+      "observation_en": "Read distinctions between unsupported and untested combinations, including speculative decoding/pipeline parallelism and LoRA combinations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS057",
+        "title": "LangGraph Functional API overview",
+        "publisher": "LangChain",
+        "url": "https://docs.langchain.com/oss/python/langgraph/functional-api",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "langchain-langgraph",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Determinism, idempotency and side effects",
+      "observation_ja": "task結果の保存と、途中失敗時の再実行に備えた冪等性の必要を確認。exactly-once副作用は保証されない。",
+      "observation_en": "Read persisted task results and idempotency requirements for replay; exactly-once external side effects are not guaranteed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS058",
+        "title": "MCP authorization specification 2025-11-25",
+        "publisher": "Model Context Protocol",
+        "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+        "source_class": "official-standard",
+        "published_or_updated": "2025-11-25 version"
+      },
+      "origin_group": "mcp-specification",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Scope; token audience binding; access-token privilege restriction",
+      "observation_ja": "HTTP向け認可、宛先検証、受信tokenの下流へのそのままの転送禁止を確認。モデルの出力品質とは別の責任。",
+      "observation_en": "Read HTTP authorization, audience validation and prohibition of incoming-token passthrough, independently of model quality.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS077",
+        "title": "vLLM 0.28.0 release",
+        "publisher": "vLLM Project",
+        "url": "https://github.com/vllm-project/vllm/releases/tag/v0.28.0",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-26; tag v0.28.0, commit 2cf0a69"
+      },
+      "origin_group": "vllm-project",
+      "checked_at": "2026-09-01T02:43:40+09:00",
+      "locator": "Release header; tiered KV cache; new defaults; breaking changes; release artifacts",
+      "observation_ja": "0.28.0の版別変更と配布対象を確認。性能向上率は採用せず、既定設定と依存関係の変化を記録する。",
+      "observation_en": "Read version-specific changes and artifact targets; record default/dependency changes without adopting speedup claims.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS089",
+        "title": "ROCm Core SDK 10.0.0 component matrix and release notes (develop page)",
+        "publisher": "AMD",
+        "url": "https://rocm.docs.amd.com/en/develop/about/release-notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26; develop page inspected 2026-09-01"
+      },
+      "origin_group": "AMD-ROCm-10-release",
+      "checked_at": "2026-09-01T03:01:26+09:00",
+      "locator": "ROCm Core SDK components; rocFFT and RCCL changes; AI ecosystem support",
+      "observation_ja": "rocBLAS 5.6.0、rocSOLVER 3.36.0、RCCL 2.30.7などの構成版を掲載。rocFFTの任意RCCL経路は単一ノード・単一プロセス内の複数GPU向けです。",
+      "observation_en": "Lists components including rocBLAS 5.6.0, rocSOLVER 3.36.0 and RCCL 2.30.7. The optional rocFFT RCCL path is single-node, single-process, multi-GPU.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS090",
+        "title": "vLLM 0.28.0 GPU installation and platform requirements",
+        "publisher": "vLLM project",
+        "url": "https://docs.vllm.ai/en/v0.28.0/getting_started/installation/gpu/",
+        "source_class": "official-project",
+        "published_or_updated": "v0.28.0 documentation; page footer 2026-05-11, not the release date"
+      },
+      "origin_group": "vLLM-028-documentation",
+      "checked_at": "2026-09-01T03:22:21+09:00",
+      "locator": "GPU requirements; AMD image deprecation; Supported features / Intel XPU",
+      "observation_ja": "ROCmの対応要件とwheel構成版は別。AMD旧イメージから公式イメージへの移行を案内し、XPUのpipeline parallelを単一ノード・mp backendのbetaと記載しています。",
+      "observation_en": "Distinguishes ROCm requirements from wheel variants, directs users from older AMD images to official images, and bounds XPU pipeline parallelism to single-node mp-backend beta support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS091",
+        "title": "vLLM 0.28.0 feature combinations and hardware compatibility matrix",
+        "publisher": "vLLM project",
+        "url": "https://docs.vllm.ai/en/v0.28.0/features/",
+        "source_class": "official-project",
+        "published_or_updated": "v0.28.0 documentation; page footer 2026-05-01, not the release date"
+      },
+      "origin_group": "vLLM-028-documentation",
+      "checked_at": "2026-09-01T03:22:21+09:00",
+      "locator": "Compatibility Matrix / Feature x Feature and Feature x Hardware; footnotes",
+      "observation_ja": "表はLoRAと投機的Decodeの併用を非対応とし、AMDのprompt embeddingsを未確認と区別しています。multimodal LoRAは言語backboneに限定されます。",
+      "observation_en": "The matrix marks LoRA/speculative decoding incompatible, distinguishes unknown AMD prompt-embedding support, and limits multimodal LoRA to the language backbone.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS101",
+        "title": "MindSpore PyPI release metadata and project description",
+        "publisher": "MindSpore authors / PyPI",
+        "url": "https://pypi.org/project/mindspore/",
+        "source_class": "official-project",
+        "published_or_updated": "2.10.0 artifacts uploaded 2026-07-31; description contains older versions"
+      },
+      "origin_group": "MindSpore-release-documentation",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "Key dates; built distributions; installation; maintenance status",
+      "observation_ja": "2.10.0の配布物と7月31日のアップロードを確認しました。一方、説明の導入例は2.7.1、保守表の先頭は2.9で、対応環境の版整合は未確認です。",
+      "observation_en": "Lists 2.10.0 artifacts uploaded July 31. The installation example still uses 2.7.1 and the maintenance table starts with 2.9, leaving version-aligned support unconfirmed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS102",
+        "title": "MindSpore 2.9.0 installation FAQ",
+        "publisher": "MindSpore community",
+        "url": "https://www.mindspore.cn/docs/zh-CN/r2.9.0/faq/installation.html",
+        "source_class": "official-project",
+        "published_or_updated": "Versioned 2.9.0 FAQ; individual answer dates not established"
+      },
+      "origin_group": "MindSpore-release-documentation",
+      "checked_at": "2026-09-01T03:50:16+09:00",
+      "locator": "Compatibility; undefined symbols; multiple Ascend software packages",
+      "observation_ja": "2.7.2とCANN 8.5.0の対応理由など、過去版についての説明が残っています。2.10.0の完全な互換表の根拠にはしません。",
+      "observation_en": "Retains historical guidance, including why 2.7.2 pairs with CANN 8.5.0. It is not evidence for a complete 2.10.0 compatibility matrix.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT032",
+        "title": "Megatron-DeepSpeed",
+        "publisher": "DeepSpeed project",
+        "url": "https://github.com/deepspeedai/Megatron-DeepSpeed",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "deepspeed-project",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Latest News; Recent sync; original README warning",
+      "observation_ja": "READMEは2023年7月の同期と、旧Megatron例の一部がこのforkでは動かない可能性を明記。現在の全機能互換を意味しない。",
+      "observation_en": "README describes the July 2023 sync and warns that inherited examples may not work in this fork; this does not establish current feature parity.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT039",
+        "title": "llama.cpp",
+        "publisher": "ggml-org",
+        "url": "https://github.com/ggml-org/llama.cpp",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "ggml-org",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "README backends and inference",
+      "observation_ja": "CPU/GPUを含むC/C++推論の公開実装を確認。製品版間の性能順位は未測定。",
+      "observation_en": "Read the C/C++ inference implementation with CPU/GPU backends; no cross-product performance ranking was measured.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT040",
+        "title": "llama.cpp HTTP Server",
+        "publisher": "ggml-org",
+        "url": "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "ggml-org",
+      "checked_at": "2026-09-01T00:47:11+09:00",
+      "locator": "Server features and API descriptions",
+      "observation_ja": "継続バッチ、複数利用者、量子化、tool calling等を確認。API互換を全機能・認可の同等性とは扱わない。",
+      "observation_en": "Read continuous batching, multi-user serving, quantization and tool calling; API compatibility does not establish full feature or authorization equivalence.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "既存の根拠・英語の主張を維持し、日本語表現を調整。新規の測定や性能検証は行っていない。",
+    "既存の未確認事項は解消していない。単一のAIモデルによる暫定調査で、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Japanese wording revised while preserving evidence and English claims; no new measurements or performance validation.",
+    "Existing gaps remain open. This single-model research remains provisional with independent Consensus incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000038",
+      "bundle_sha256": "a541a77b75b3f86d4cd0886440f6883e018475143aa3a8701c2b9f5c96b019c6"
+    },
+    {
+      "update_id": "RUP-000075",
+      "bundle_sha256": "2c6fb088fefafe97ad7951bbe834a668ade57938511178a50e670bacfe4f6242"
+    },
+    {
+      "update_id": "RUP-000083",
+      "bundle_sha256": "26c781c4954a0e47d4034cea42672f0883887bba3354c415d9ce922e0824f51c"
+    },
+    {
+      "update_id": "RUP-000090",
+      "bundle_sha256": "d5c80a35c18b14c6e1bb7d6b2a1d15984f438c719b8bda42e3108ebd4590a2ef"
+    },
+    {
+      "update_id": "RUP-000098",
+      "bundle_sha256": "852c629fbfe7af92e93098d5bb3b768849ded467605abdc76639cc8cd25cb0e5"
+    }
+  ]
+}

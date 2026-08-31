@@ -1,0 +1,188 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000086",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-01T03:32:41+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "64030f6f83ce32526bfb0afaddfe856efa97e5a16067ef1e934c6f218ec6f2d6",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学基盤モデルの学習・適応、シミュレーション内のAI推論、科学エージェントを、科学的精度と全工程の資源量で比較します。DeePMDはv3.2.0のタグ付き資料まで確認し、バックエンドとモデル形式の差を追記しました。動作検証や将来性能の校正は未実施です。",
+  "summary_en": "Compare scientific-model training/adaptation, simulation-integrated inference and scientific agents at matching scientific quality and end-to-end resource boundaries. DeePMD v3.2.0 tagged documentation adds backend and model-format distinctions. Execution tests and future-performance calibration remain outstanding.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "4da787050f0ab9a0077a82fdc85ad60252d364ceb749a3f29beea978baf7d5cc",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U01",
+        "TDS-CD2-APP-12-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-12-U01",
+      "title_ja": "DeePMDの版・モデル形式・実行条件",
+      "title_en": "DeePMD versions, model formats and execution contracts",
+      "summary_ja": "機能名の対応だけでなく、保存したモデルを対象設備で実行できる条件を確認します。",
+      "summary_en": "Check whether a saved model can run on the intended system, not just whether a feature is listed.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-DEEPMD-MODEL-CONTRACT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "v3.2.0: バックエンドとモデル形式の区別",
+          "name_en": "v3.2.0: backend and model-format distinctions",
+          "timing_ja": "v3.2.0タグの資料",
+          "timing_en": "Documentation at the v3.2.0 tag",
+          "statement_ja": "v3.2.0は7種類のバックエンドを区別します。.pt2だけでは入力ABIを特定できず、メタデータ確認が必要です。JAXの.jax保存物は通常のdp test/DeepPotの入力ではなく、C++推論にはSavedModelとTensorFlow C++が必要です。学習用チェックポイントと配布用モデルを混同しません。",
+          "statement_en": "Version 3.2.0 distinguishes seven backends. A .pt2 suffix does not identify the input ABI; metadata matters. JAX .jax artifacts are not inputs to ordinary dp test/DeepPot; C++ inference needs SavedModel and TensorFlow C++. Training checkpoints and deployment models are distinct.",
+          "hpci_relevance_ja": "モデルを共通ストレージに置くだけでは異機種で実行できるとは限りません。",
+          "hpci_relevance_en": "Shared storage alone does not make models executable across heterogeneous systems.",
+          "adoption_conditions_ja": [
+            "モデル、バックエンド、依存ライブラリ、対象デバイスを固定して回帰試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin model, backend, dependencies and target device for regression tests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-DEEPMD-EXPORT-MIGRATION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDA090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TorchScriptからExportableへの移行方針",
+          "name_en": "Planned TorchScript-to-Exportable migration",
+          "timing_ja": "移行方針は記載、廃止時期は未公表",
+          "timing_en": "Migration stated; no retirement date specified",
+          "statement_ja": "DeePMDはPyTorch-TorchScriptを非推奨化しExportableに置き換える方針を示しています。提供終了の四半期や、既存モデルの無変更での移行は保証されていません。",
+          "statement_en": "DeePMD plans to deprecate PyTorch-TorchScript in favor of Exportable. Neither a retirement quarter nor unchanged migration of existing models is guaranteed.",
+          "hpci_relevance_ja": "長期利用するモデルの再エクスポートと品質確認を移行作業に含めます。",
+          "hpci_relevance_en": "Include re-export and quality checks in long-term model migration.",
+          "adoption_conditions_ja": [
+            "公開予定と実際のリリースを分け、日付未公表のまま追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Track the plan as undated until an actual release establishes timing."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-DEEPMD-MANUAL-SCOPE",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDA090",
+            "SRC-CDA091",
+            "SRC-CDA092"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "公開マニュアル間の版と適用範囲の差",
+          "name_en": "Version and scope differences across public manuals",
+          "timing_ja": "2026-09-01に資料を照合",
+          "timing_en": "Documentation cross-checked 2026-09-01",
+          "statement_ja": "取得したmaster版マニュアルの説明はv3.2.0タグと一致しません。またGPU制限の節はTensorFlowを対象とする表示があり、その数値を全バックエンドへ適用しません。資料での確認と実装の動作試験は別であり、今回コードの実行検証はしていません。",
+          "statement_en": "The retrieved rendered master manual differs from the v3.2.0 tag. Its GPU-limit section is marked for TensorFlow, so its values are not imposed on every backend. Documentation review is distinct from execution testing; no code was executed here.",
+          "hpci_relevance_ja": "古い資料の制限を理由に候補GPUを除外しないための注意点です。",
+          "hpci_relevance_en": "Avoid excluding candidate GPUs based on constraints from a different documentation version.",
+          "adoption_conditions_ja": [
+            "対応するタグ、記述子、入力条件を確認し、正確な版に対する未検証事項を残す。"
+          ],
+          "adoption_conditions_en": [
+            "Match tag, descriptor and inputs, and retain version-specific unverified cases."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA090",
+        "title": "DeePMD-kit v3.2.0 backend contract",
+        "publisher": "DeepModeling",
+        "url": "https://github.com/deepmodeling/deepmd-kit/blob/v3.2.0/doc/backend.md",
+        "source_class": "official-project",
+        "published_or_updated": "v3.2.0 tag inspected 2026-09-01"
+      },
+      "origin_group": "DeepModeling-DeePMD-kit",
+      "checked_at": "2026-09-01T03:32:16+09:00",
+      "locator": "Supported backends; PyTorch-Exportable; JAX",
+      "observation_ja": "タグ付き資料は7種類のバックエンドを区別し、同じ拡張子でも入力契約や用途が異なることを説明しています。",
+      "observation_en": "Tagged documentation distinguishes seven backend variants and warns that a shared suffix does not establish the same input contract or purpose.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA091",
+        "title": "DeePMD-kit rendered master backend manual",
+        "publisher": "DeepModeling",
+        "url": "https://docs.deepmodeling.com/projects/deepmd/en/master/backend.html",
+        "source_class": "official-project",
+        "published_or_updated": "Undated rendered master manual inspected 2026-09-01"
+      },
+      "origin_group": "DeepModeling-DeePMD-kit",
+      "checked_at": "2026-09-01T03:32:16+09:00",
+      "locator": "Section 1.1 introduction and backend list",
+      "observation_ja": "表示されたmaster版の説明はv3.2.0タグと一致せず、最新版の対応表の代用にはできません。",
+      "observation_en": "The retrieved rendered master description differs from the v3.2.0 tag and cannot substitute for its support contract.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA092",
+        "title": "DeePMD-kit GPU limitations with TensorFlow scope marker",
+        "publisher": "DeepModeling",
+        "url": "https://docs.deepmodeling.com/projects/deepmd/en/master/train/gpu-limitations.html",
+        "source_class": "official-project",
+        "published_or_updated": "Undated rendered manual inspected 2026-09-01"
+      },
+      "origin_group": "DeepModeling-DeePMD-kit",
+      "checked_at": "2026-09-01T03:32:16+09:00",
+      "locator": "Section 5.8 heading and enumerated limits",
+      "observation_ja": "GPU制限の節にはTensorFlowの対象表示があり、全バックエンド共通の制限と一般化しません。",
+      "observation_en": "The GPU-limit section carries a TensorFlow scope marker; its limits are not generalized to every backend.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "DeePMDのバックエンド別対応を対象材料・モデルで実行検証し、力・エネルギー・長時間安定性を確認する。",
+    "分野横断の需要比率、国内サービスの現行条件、科学エージェントの独立再現は未確認。",
+    "単一モデルの暫定調査であり、Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Test backend support on target materials/models, including forces, energy and long-run stability.",
+    "Cross-domain demand shares, current Japanese service conditions and independent scientific-agent replication remain unverified.",
+    "This single-model research remains provisional with incomplete Consensus."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000046",
+      "bundle_sha256": "da86e18230223690a3545d8dc05203eb17ab72eb78c396027b15ef8cea6f74d4"
+    }
+  ]
+}

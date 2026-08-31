@@ -1,0 +1,473 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000058",
+  "topic_id": "CROSS-06",
+  "created_at": "2026-09-01T02:01:13+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "4f81bb22b38fcc501f8eb80d035c0b659a9d443e2298514aaaf60f1e009c687a",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "調達は、価格の大小だけでなく、購入・借入・保守の範囲、実効性能、施設準備、検収、移行、運用責任をそろえて比較します。国内の価格台帳を維持し、海外の公開契約と共同整備事例を追加調査しました。一式総額から部品価格や学術割引を推定せず、段階導入の判断条件を整理します。",
+  "summary_en": "Compare procurement using matched purchase/lease/support scope, effective performance, facility readiness, acceptance, migration and accountability. Preserve the domestic price register and add overseas contract and joint-deployment research. Do not infer component prices or academic discounts from package totals; define gates for phased introduction.",
+  "units": [
+    {
+      "unit_id": "CROSS-06-U01",
+      "before_sha256": "b569db47856811c930da16161803d2ea2a0521241abe4cfb8b6e44e502700da4",
+      "evidence_section_ids": [
+        "TDS-PCD-CONTRACTS",
+        "TDS-PCD-SCOPE",
+        "TDS-PRP-PLANNING",
+        "TDS-CD1-CROSS-06-U01"
+      ]
+    },
+    {
+      "unit_id": "CROSS-06-U02",
+      "before_sha256": "a35d4cb7f91cde0d35649447ad53c89830f6471e434976f6f142612e467b5037",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-06-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-CROSS-06-U01",
+      "title_ja": "契約範囲・費用・受入条件の照合",
+      "title_en": "Matching contract scope, costs and acceptance criteria",
+      "summary_ja": "予算、契約、保守期間、構成案を同じものとして扱いません。",
+      "summary_en": "Distinguish budgets, contracts, maintenance periods and proposed configurations.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-MIMER-CONTRACT-SCOPE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO085",
+            "SRC-CDO086",
+            "SRC-CDO087"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Mimer: 契約公示と製品発表の照合",
+          "name_en": "Mimer: reconciling the award notice and product announcement",
+          "timing_ja": "2026年4月契約、5月官報掲載",
+          "timing_en": "Contract April 2026; notice published May",
+          "statement_ja": "Mimerには取得・設置・保守を含む契約公示と、100ノード400GPUの予定構成が公開されています。ただし官報は予定期間72か月、ベンダー発表は5年と記載し、期間の対応は未確認です。契約額をGPU数で割った値は、GPU購入単価を表しません。",
+          "statement_en": "Mimer has a public package award and a planned 100-node/400-GPU configuration. The notice lists an estimated 72-month duration while the vendor describes five years; that relationship remains unresolved. Dividing the contract by GPU count does not yield a GPU purchase price.",
+          "hpci_relevance_ja": "価格と数量が公開されても、比較可能な単価が得られるとは限らない例です。",
+          "hpci_relevance_en": "This illustrates why published prices and quantities may still be insufficient for comparable unit costs.",
+          "adoption_conditions_ja": [
+            "契約期間、保守開始、検収、税、ソフトウェア・研修の包含を照合する。",
+            "最終仕様書と実導入構成が一致するまで部品費の校正に使わない。"
+          ],
+          "adoption_conditions_en": [
+            "Match contract period, support start, acceptance, tax and software/training scope.",
+            "Do not calibrate component costs before matching final specifications to deployment."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-LUMIAI-CONTRACT-DEPLOYMENT",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO084"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LUMI-AI: 契約締結と将来のシステム配置",
+          "name_en": "LUMI-AI: signed procurement versus future deployment",
+          "timing_ja": "2026年8月31日発表、2027年下期配置予定",
+          "timing_en": "Announced August 31, 2026; deployment planned H2 2027",
+          "statement_ja": "CSCはBullとの契約締結と、MI430X・第6世代EPYCを使うLUMI-AIの2027年下期配置予定を公表しました。費用には取得・配送・設置・保守が含まれますが、税区分や個別部品価格、保守年数はこの発表だけでは確定できません。公表時期を機器の販売開始日とは扱いません。",
+          "statement_en": "CSC announced a Bull contract and H2-2027 deployment for LUMI-AI using MI430X and sixth-generation EPYC. The package includes acquisition, delivery, installation and maintenance, but this announcement does not establish tax treatment, component prices or maintenance years. Publication is not a product-sales start date.",
+          "hpci_relevance_ja": "今後のAI・HPC調達を検討する比較案件であり、そのまま国内の価格予測には使えません。",
+          "hpci_relevance_en": "This is a future AI/HPC procurement comparator, not a direct predictor of Japanese costs.",
+          "adoption_conditions_ja": [
+            "契約原文・数量・支払条件の確認後に価格台帳へ統合する。",
+            "2027年下期を根拠なくQ3またはQ4に狭めない。"
+          ],
+          "adoption_conditions_en": [
+            "Integrate into the price register after verifying contract text, quantities and payment terms.",
+            "Do not narrow H2 2027 to Q3 or Q4 without evidence."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-JUPITER-PROCUREMENT-VALUE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO088",
+            "SRC-CDO089"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUPITER: 代表ワークロードと費用の対応",
+          "name_en": "JUPITER: linking representative workloads to cost",
+          "timing_ja": "調達で利用した公開ベンチマーク、SC24",
+          "timing_en": "Public procurement benchmark suite, SC24",
+          "statement_ja": "JUPITERの調達は、実アプリケーションと合成テストを分け、システム寿命中に処理できる代表ワークロードとTCOを対応付けました。公開スイートは参照時間、実行条件、結果検証をそろえる出発点になります。合成FLOPSだけで異なる科学分野の価値を一つに集約しません。",
+          "statement_en": "JUPITER procurement separated application and synthetic tests and related lifetime reference-workload throughput to TCO. Its public suite provides a starting point for matching reference time, execution conditions and result validation. Synthetic FLOPS alone should not aggregate the value of different scientific fields.",
+          "hpci_relevance_ja": "HPCIの利用者構成に合う評価ケースを、調達の前に定義する必要があります。",
+          "hpci_relevance_en": "HPCI-representative evaluation cases need definition before procurement.",
+          "adoption_conditions_ja": [
+            "評価重みは人間の承認事項とし、海外の重みをそのまま流用しない。",
+            "ソース、入力、精度、計測区間、使用電力の範囲を固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Keep scoring weights subject to human approval rather than copying foreign weights.",
+            "Pin source, input, accuracy, timed region and energy-measurement boundaries."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SPECIFICATION-ACCESS-BOUNDARY",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-BLUE009",
+            "SRC-CDO085"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "公開公告と仕様書の取得可能性",
+          "name_en": "Public notices versus accessible specifications",
+          "timing_ja": "案件・文書版ごとに確認",
+          "timing_en": "Check per procurement and document version",
+          "statement_ja": "公開の募集ページや落札公示があっても、最終仕様・契約内訳まで公開されるとは限りません。富岳NEXTの建屋公募は複数の改訂文書を持ち、Mimerの官報も詳細条件を調達文書へ委ねています。未取得の仕様を、報道や推定構成で埋めない方針とします。",
+          "statement_en": "A public invitation or award does not guarantee access to final specifications or itemization. FugakuNEXT's building tender has multiple revisions; Mimer's notice delegates details to procurement documents. Unobtained specifications must not be replaced with reporting or inferred configurations.",
+          "hpci_relevance_ja": "比較の根拠となる文書の取得状況そのものを管理する必要があります。",
+          "hpci_relevance_en": "Document-access status is itself part of the comparison evidence.",
+          "adoption_conditions_ja": [
+            "認証・秘密保持・登録が必要な文書は取得せず、取得条件を記録する。",
+            "公告、訂正、仕様、落札、契約、実構成を案件IDで結ぶ。"
+          ],
+          "adoption_conditions_en": [
+            "Do not retrieve documents requiring authentication, confidentiality or registration; record the restriction.",
+            "Link invitations, corrections, specifications, awards, contracts and deployment by case ID."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-CROSS-06-U02",
+      "title_ja": "共同整備・先行機・施設引渡しの判断条件",
+      "title_en": "Gates for joint deployment, early systems and facility handover",
+      "summary_ja": "契約と利用開始の間に必要な移行・受入・責任分担を整理します。",
+      "summary_en": "Identify migration, acceptance and accountability between contract and user access.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-JCAHPC-JOINT-OPERATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO090"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JCAHPC: 共同導入と共同運営",
+          "name_en": "JCAHPC: shared deployment and operation",
+          "timing_ja": "Miyabi運用開始披露は2025年1月",
+          "timing_en": "Miyabi operation inaugurated January 2025",
+          "statement_ja": "Miyabiは筑波大学と東京大学が共同運営するJCAHPCに設置された国内事例です。共同整備では機器だけでなく、利用者のGPU移行支援も必要になります。この公開発表から具体的な費用分担、割引率、将来の更新責任まで推定することはできません。",
+          "statement_en": "Miyabi is a domestic example hosted by JCAHPC and jointly operated by Tsukuba and UTokyo. Shared deployment also requires support for users migrating to GPUs. This public announcement does not establish detailed cost shares, discounts or future renewal responsibilities.",
+          "hpci_relevance_ja": "複数機関が共同で計算資源を整備する際の実施形態を比較できます。",
+          "hpci_relevance_en": "This provides an institutional model for jointly developing compute resources.",
+          "adoption_conditions_ja": [
+            "所有、設置、運転費、配分、支援、更新判断の担当を別々に明記する。",
+            "共同化による値下げや稼働率向上は実測前に断定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Specify ownership, hosting, operating cost, allocations, support and renewal authority separately.",
+            "Do not assert savings or utilization gains without measurements."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MIMER-JOINT-ALLOCATION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO086"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Mimer: 資金分担と配分権の対応",
+          "name_en": "Mimer: linking co-funding to allocation authority",
+          "timing_ja": "2026年4月公表の導入計画",
+          "timing_en": "Deployment plan published April 2026",
+          "statement_ja": "NAISSはスウェーデン側とEuroHPCが半分ずつ費用を負担し、それぞれ半分の資源を配分すると説明しています。これは共同負担と利用枠を明示する例ですが、課題の優先度や空き枠融通、障害時の補償まで自動的に決めるものではありません。",
+          "statement_en": "NAISS describes equal Swedish/EuroHPC funding and half of the resources allocated by each side. This explicitly links co-funding to capacity shares but does not automatically resolve project priority, spare-capacity sharing or outage compensation.",
+          "hpci_relevance_ja": "HPCIの共同調達案でも、資金と配分権を対応付ける論点になります。",
+          "hpci_relevance_en": "HPCI joint-procurement options similarly need explicit funding/allocation relationships.",
+          "adoption_conditions_ja": [
+            "国内制度へ適用する際は、機関の財源・規程・利用区分を確認する。",
+            "海外の50対50をOpenFSの標準配分率にはしない。"
+          ],
+          "adoption_conditions_en": [
+            "Check institutional funding, rules and access classes before applying this domestically.",
+            "Do not turn the overseas 50/50 example into a default OpenFS allocation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CECH-EARLY-SYSTEM-VALIDATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO092"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Cech: 先行機で運用準備を検証",
+          "name_en": "Cech: validating operational readiness on an early system",
+          "timing_ja": "2026年3月の先行機導入報告",
+          "timing_en": "Early-system report, March 2026",
+          "statement_ja": "NERSCのCechは本機前に設置・統合・ソフトウェア・監視・既存データ接続を試す先行機です。記事時点では一般利用者への即時開放はありません。先行機の納入は、本機の検収完了や利用者向けサービス開始とは別の節目です。",
+          "statement_en": "NERSC's Cech tests installation, integration, software, monitoring and access to existing data before the full system. Immediate general-user access was unavailable at publication. Early-system delivery is distinct from full-system acceptance and production user service.",
+          "hpci_relevance_ja": "新規技術の初期障害を、既存サービス停止前に見つける導入方法です。",
+          "hpci_relevance_en": "This can expose integration problems before interrupting existing services.",
+          "adoption_conditions_ja": [
+            "先行機と本機の差を記録し、性能外挿の根拠を分ける。",
+            "機器、施設、ソフト、データ、支援を受入試験の対象に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Record pilot/production differences separately from performance-extrapolation evidence.",
+            "Include hardware, facilities, software, data and support in acceptance testing."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FACILITY-SYSTEM-SEPARATE-GATES",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-BLUE009",
+            "SRC-CDO091",
+            "SRC-CDO084"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "建屋と計算機の異なる整備周期",
+          "name_en": "Different renewal cycles for facilities and computers",
+          "timing_ja": "富岳NEXT建屋は2029年12月引渡し期限",
+          "timing_en": "FugakuNEXT building handover deadline: December 2029",
+          "statement_ja": "富岳NEXTの建屋公募は、優先交渉権者選定を2026年10月16日、基本協定を10月下旬、基本契約を12月下旬に予定しています。建屋引渡しは2029年12月期限です。CSCも建屋準備とLUMI-AI配置を別の時期として示し、施設は計算機より長く使う設計としています。",
+          "statement_en": "FugakuNEXT's building tender schedules preferred-bidder selection for October 16, 2026, an agreement in late October and the main contract in late December, with handover by December 2029. CSC likewise distinguishes facility readiness from LUMI-AI deployment and designs facilities for longer life than computers.",
+          "hpci_relevance_ja": "建屋完成、機器搬入、電源・冷却接続、検収、運用開始を別々に管理します。",
+          "hpci_relevance_en": "Track building completion, delivery, utility connection, acceptance and operation separately.",
+          "adoption_conditions_ja": [
+            "旧版の10月9日という日程を現行の10月16日と混在させない。",
+            "日程は予定として扱い、契約締結・引渡しの実績を追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not mix the older October 9 date with the current October 16 schedule.",
+            "Retain schedules as plans and track actual contract/handover evidence."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CROSS06-CURRENT",
+    "TDS-CROSS06-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-BLUE009",
+        "title": "Solicitation for the design, construction, operation, and maintenance of the new FugakuNEXT building",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://www.r-ccs.riken.jp/fugaku-next/fugaku-next-dbo/index.html",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "riken-fugakunext-dbo",
+      "checked_at": "2026-09-01T01:31:00+09:00",
+      "locator": "Current planned schedule, rows October 16 through March 2036",
+      "observation_ja": "優先交渉権者選定10月16日、基本協定10月下旬、基本契約12月下旬、引渡し2029年12月期限を確認。既存記述と相違。",
+      "observation_en": "Confirmed planned October 16 selection, late-October agreement, late-December contract and December 2029 handover deadline; differs from prior text.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO084",
+        "title": "Bull selected to deliver LUMI-AI supercomputer, powering next-generation AI workloads and beyond",
+        "publisher": "CSC",
+        "url": "https://csc.fi/en/media-release/bull-selected-to-deliver-lumi-ai-supercomputer-powering-next-generation-ai-workloads/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-31"
+      },
+      "origin_group": "csc-lumi-ai-contract",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Contract scope, ownership, financing, H2 2027 deployment and technology partners",
+      "observation_ja": "取得・配送・設置・保守を含む総額、50対50負担、2027年下期の配置予定を確認。税・保守期間・機器内訳は未記載。",
+      "observation_en": "Read package scope, equal co-funding and H2 2027 deployment; tax, maintenance period and component itemization are unstated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO085",
+        "title": "TED 311238-2026: MIMER contract award",
+        "publisher": "TED / EuroHPC Joint Undertaking",
+        "url": "https://ted.europa.eu/en/notice/311238-2026/pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-06"
+      },
+      "origin_group": "eurohpc-mimer-contract",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Pages 1-3, sections 2.1.3, 5.1.3 and 6.1.2",
+      "observation_ja": "契約締結4月13日、官報5月6日、予定期間72か月と契約額を確認。仕様書の内訳ではない。",
+      "observation_en": "Read April 13 conclusion, May 6 notice, estimated 72-month duration and award value; not an itemized specification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO086",
+        "title": "Bull to deliver AI-optimised supercomputer for Mimer AI Factory",
+        "publisher": "NAISS",
+        "url": "https://www.naiss.se/news/2026/04/bull-to-deliver-ai-optimised-supercomputer-for-mimer-ai-factory/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-21"
+      },
+      "origin_group": "naiss-mimer-procurement",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Funding/allocation split, configuration and proposed stack",
+      "observation_ja": "100ノード400GPUの予定構成、50対50の資金と配分権、年内設置予定を確認。稼働済みとしない。",
+      "observation_en": "Read planned 100 nodes/400 GPUs, equal funding and allocation control, and installation later in 2026; not confirmed production.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO087",
+        "title": "Bull announces a 30-million contract to power Mimer, Europe's Sweden-based AI Factory",
+        "publisher": "Bull",
+        "url": "https://www.bull.com/hubfs/Documents/Press%20Release%20PDFs/EN%20Press%20release%20PDFs/bull-en-press-release-30m-contract-mimer-ai-factory-sweden.pdf?hsLang=en",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-04-21"
+      },
+      "origin_group": "bull-mimer-contract",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Page 1: five-year contract and included software/support/training",
+      "observation_ja": "5年の記述と保守・支援・研修の包含を確認。官報の72か月との範囲差は未解消。",
+      "observation_en": "Read five-year description and bundled maintenance/support/training; its relationship to the notice's 72 months is unresolved.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO088",
+        "title": "JUPITER Benchmark Suite public repository",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://github.com/FZJ-JSC/jubench",
+        "source_class": "official-project",
+        "published_or_updated": "Public repository accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-benchmarks",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "README, benchmark list and pinned submodules",
+      "observation_ja": "公開のアプリ・合成ベンチマークとsubmodule構造を確認。個別プログラムの許諾を一括MITと仮定しない。",
+      "observation_en": "Read public application/synthetic benchmarks and submodule structure; do not assume the umbrella MIT license covers each program.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO089",
+        "title": "Application-Driven Exascale: The JUPITER Benchmark Suite",
+        "publisher": "Herten et al. / arXiv, SC24 work",
+        "url": "https://arxiv.org/html/2408.17211v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-08-30 preprint; SC24 publication linked by project"
+      },
+      "origin_group": "jsc-jupiter-benchmarks",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Sections II-A/B/C and III: procurement and reproducibility",
+      "observation_ja": "代表ワークロード当たりのTCO、参照時間・精度・検証条件、合成指標との役割分担を確認。評価重みはOpenFSへ移植しない。",
+      "observation_en": "Read workload-based TCO, reference time/accuracy/validation and synthetic-test roles; do not import scoring weights into OpenFS.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO090",
+        "title": "最先端共同HPC基盤施設の新スパコンMiyabi運用開始披露式典を開催",
+        "publisher": "The University of Tokyo",
+        "url": "https://www.u-tokyo.ac.jp/focus/ja/articles/z0310_00065.html",
+        "source_class": "official-project",
+        "published_or_updated": "2025-01-20"
+      },
+      "origin_group": "utokyo-jcahpc-miyabi",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "January 15 event, joint organization and user-transition support",
+      "observation_ja": "筑波・東京大学の共同運営と柏での設置を確認。費用分担や調達割引率は記載されていない。",
+      "observation_en": "Read joint Tsukuba/UTokyo operation and Kashiwa hosting; no cost-sharing amounts or procurement discount stated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO091",
+        "title": "Construction of the LUMI-AI data center in full swing",
+        "publisher": "CSC",
+        "url": "https://csc.fi/en/blog/construction-of-the-lumi-ai-data-center-in-full-swing/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-17"
+      },
+      "origin_group": "csc-lumi-ai-facility",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Production readiness, co-design and commissioning paragraphs",
+      "observation_ja": "春2027の建屋準備目標と数十年の施設寿命を確認。後の下期2027システム配置とは異なる節目。",
+      "observation_en": "Read spring-2027 facility-readiness target and decades-long facility life; distinct from later H2-2027 system deployment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO092",
+        "title": "Berkeley Lab Takes Major Step Toward Doudna with Delivery of Early Access System, Cech",
+        "publisher": "Lawrence Berkeley National Laboratory",
+        "url": "https://cs.lbl.gov/news-and-events/news/2026/berkeley-lab-takes-major-step-toward-doudna-with-delivery-of-early-access-system-cech/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-17"
+      },
+      "origin_group": "nersc-cech-early-access",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Testing Systems and Technologies, data migration, restricted early use",
+      "observation_ja": "先行機で設置・ソフト・監視・データ移行を検証し、直ちに一般利用できないことを確認。",
+      "observation_en": "Read early-system installation/software/monitoring/data-migration testing and lack of immediate general-user access.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-084",
+      "topic_ids": [
+        "CROSS-06"
+      ],
+      "priority": "P0",
+      "question_ja": "契約範囲・支払単位・保守期間・実構成を照合し、独立案件で費用モデルの誤差を検証できるか。",
+      "question_en": "Can scope, payment units, support periods and deployed configurations be matched and cost-model error tested on independent cases?",
+      "next_action_ja": "Mimerの期間差とLUMI-AIの契約内訳を確認し、国内台帳に対する比較可能性・除外理由を整理する。",
+      "next_action_en": "Resolve Mimer duration differences and LUMI-AI itemization; document comparability and exclusions against the domestic register.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "新規海外案件の価格は台帳へ未統合。期間・税・内包範囲を確認し、金額の正本を増やさず統合する。",
+    "共同調達の具体的な財源・契約責任・空き資源融通は別途制度調査が必要。",
+    "価格校正・実測性能・独立Consensusは未完了で、調達可能台数や総合順位は算出しない。"
+  ],
+  "remaining_work_en": [
+    "New overseas prices are not yet integrated into the register; verify duration, tax and scope before consolidating without duplicate numerical authorities.",
+    "Joint funding, contractual responsibility and spare-capacity sharing require further policy research.",
+    "Cost calibration, measured performance and independent Consensus remain incomplete; no affordable node counts or overall rankings are computed."
+  ]
+}

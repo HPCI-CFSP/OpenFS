@@ -1,0 +1,458 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000063",
+  "topic_id": "ARCH-07",
+  "created_at": "2026-09-01T02:18:33+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "供給リスクは設計、前工程、メモリ、後工程、装置・材料、保守の依存関係として扱います。国籍や投資総額だけでは代替可能性を判断できません。許認可・量産・顧客認定・契約納期を分け、特定センターへの供給可能量は未確認のまま残します。",
+  "summary_en": "Treat supply risk as dependencies across design, wafer fabrication, memory, packaging, equipment/materials and support. Nationality or investment totals alone do not establish substitutability. Separate licensing, production, customer qualification and contractual delivery; center-specific supply remains unverified.",
+  "units": [
+    {
+      "unit_id": "ARCH-07-U01",
+      "before_sha256": "7d44f2cff424acc154b917ae9dc4d751fc0b24f8b79cb98ba3a814297dbb12b7",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-07-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-ARCH-07-U01",
+      "title_ja": "工程別依存・供給契約・規制の評価",
+      "title_en": "Assessing process dependencies, supply contracts and controls",
+      "summary_ja": "統計、ベンダー見通し、法制度、調達条件を異なる種類の根拠として比較します。",
+      "summary_en": "Compare statistics, vendor outlooks, legal frameworks and procurement terms as distinct evidence classes.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-OECD-SUPPLY-SEGMENTS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDX001"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "依存関係の把握: 部材から組立・試験まで",
+          "name_en": "Mapping dependencies from inputs through assembly/testing",
+          "timing_ja": "2025年公表、主に過去の貿易・産業連関データ",
+          "timing_en": "Published 2025, using historical trade/input-output data",
+          "statement_ja": "OECDの分析は工程間の相互依存と地域集中を示し、原材料、ウェハ、装置、製造、後工程を分けています。過去の貿易統計は構造を知る手掛かりですが、現在の個別製品の供給残量や代替認定を示しません。",
+          "statement_en": "OECD analysis separates raw materials, wafers, equipment, fabrication and back-end processes to examine interdependencies and regional concentration. Historical trade data informs structural risks, not current product availability or qualification of substitutes.",
+          "hpci_relevance_ja": "異なるブランドの採用だけで供給分散できるとは限りません。",
+          "hpci_relevance_en": "Using different brands does not necessarily diversify underlying supply.",
+          "adoption_conditions_ja": [
+            "企業所在地、製造場所、使用工程、統計対象年を分ける。",
+            "国籍を技術性能や信頼性の代理変数にしない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate corporate location, manufacturing site, process and data year.",
+            "Do not use nationality as a proxy for performance or reliability."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TSMC-PACKAGING-BOTTLENECK",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDX002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TSMC: 前工程だけでは解消しない供給制約",
+          "name_en": "TSMC: supply constraints beyond wafer fabrication",
+          "timing_ja": "2026年7月16日の経営説明",
+          "timing_en": "Management discussion, July 16, 2026",
+          "statement_ja": "TSMCは後工程能力が顧客の成長を制限し、テスト装置にも制約があると説明しました。台湾・米国などでの投資計画はありますが、追加投資の時期は市況に依存します。これはベンダーの供給見通しで、OpenFS向け製品の確定納期ではありません。",
+          "statement_en": "TSMC reported packaging constraints on customer growth and limitations in testing capacity. Expansion is planned in Taiwan, the US and elsewhere, with additional investment timing dependent on market conditions. This vendor outlook is not a firm delivery date for an OpenFS candidate product.",
+          "hpci_relevance_ja": "CPU/GPU選定では後工程と検査の納期も確認します。",
+          "hpci_relevance_en": "CPU/GPU selection also needs packaging and testing lead-time checks.",
+          "adoption_conditions_ja": [
+            "投資発表、建屋完成、装置導入、顧客認定、出荷を分ける。",
+            "複数チップベンダーが同一ファウンドリを使う場合の共通依存を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate investment announcement, construction, equipment, qualification and shipments.",
+            "Check shared dependencies when multiple chip vendors use one foundry."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MICRON-SUPPLY-AGREEMENT-SCOPE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDX003"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Micron: 長期契約と市場全体の供給の違い",
+          "name_en": "Micron: long-term contracts versus market-wide supply",
+          "timing_ja": "2026年6月24日の説明",
+          "timing_en": "June 24, 2026 disclosure",
+          "statement_ja": "Micronは16件の長期供給契約を公表し、対象期間のDRAM量の約20%、NAND量の約3分の1に相当すると説明しています。これを全社・全市場の2030年までの販売完了とは解釈できません。個別のHPCI調達が同じ契約条件を利用できるかは未確認です。",
+          "statement_en": "Micron disclosed 16 long-term supply agreements representing roughly 20% of DRAM volume and one-third of NAND volume over their terms. This does not mean all company or market supply is sold through 2030. Availability of equivalent terms for HPCI procurements is unverified.",
+          "hpci_relevance_ja": "供給確保の契約がある顧客と、一般調達の条件を区別します。",
+          "hpci_relevance_en": "Distinguish customers with supply commitments from general procurement conditions.",
+          "adoption_conditions_ja": [
+            "対象製品・数量・期間と価格条件を切り分ける。",
+            "特定社の見通しを全ベンダーの需給予測に拡張しない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate product, quantity, term and pricing conditions.",
+            "Do not extend one supplier's outlook to every vendor."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HBM-DRAM-CAPACITY-RISK",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDX004"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBMと通常DRAM: 需要構成による供給変動",
+          "name_en": "HBM and conventional DRAM: demand-mix risk",
+          "timing_ja": "2026年6月のリスク開示",
+          "timing_en": "Risk disclosure, June 2026",
+          "statement_ja": "Micronの開示は、HBMの歩留まり・積層・クリーンルーム制約に加え、HBM需要が弱まり通常DRAMへ能力を戻した場合の過剰供給も挙げています。足元の不足を将来の恒久的な不足や価格上昇に置き換えないことが必要です。",
+          "statement_en": "Micron discloses HBM yield, stacking and cleanroom constraints, but also potential conventional-DRAM oversupply if HBM demand weakens and capacity shifts back. Present shortages do not establish permanent scarcity or inevitable price increases.",
+          "hpci_relevance_ja": "段階整備では不足と需要反転の両方を考慮します。",
+          "hpci_relevance_en": "Phased deployment should consider both scarcity and demand reversal.",
+          "adoption_conditions_ja": [
+            "不足・平準化・需要低下の感度分析を並べる。",
+            "歩留まりや製品別残量を未公開のまま数値補完しない。"
+          ],
+          "adoption_conditions_en": [
+            "Compare shortage, normalization and demand-decline sensitivities.",
+            "Do not invent unpublished yields or remaining product supply."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MEMORY-CAPACITY-PLANNED",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDX003"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "メモリ増産: ウェハ出力と製品供給の時間差",
+          "name_en": "Memory expansion: wafer output versus product availability",
+          "timing_ja": "2027年以降の予定",
+          "timing_en": "Plans from 2027 onward",
+          "statement_ja": "MicronはIdaho初期ウェハ出力と台湾Tongluoの出荷寄与を2027年半ば、SingaporeのHBM後工程寄与を2027年上期に予定しています。工程と節目が異なるため、同じ時点で認定済み製品を購入できるとは限りません。",
+          "statement_en": "Micron plans initial Idaho wafer output and Tongluo shipment contributions around mid-2027, with Singapore HBM packaging contributions in H1 2027. These are different process milestones, not simultaneous availability of qualified products for purchase.",
+          "hpci_relevance_ja": "メモリの調達可能時期は設備完成の後段まで追跡します。",
+          "hpci_relevance_en": "Track memory deliverability beyond facility completion.",
+          "adoption_conditions_ja": [
+            "年半ばを根拠なくQ2またはQ3へ固定しない。",
+            "ベンダー予定と実績を別の更新で管理する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not arbitrarily convert mid-year into Q2 or Q3.",
+            "Maintain plans and observed outcomes in separate updates."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-EXPORT-LICENSING-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDX005",
+            "SRC-CDX006"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "輸出管理: 品目・用途・相手先ごとの条件",
+          "name_en": "Export controls: item, use and recipient conditions",
+          "timing_ja": "2026年1月の変更発表と現行確認手順",
+          "timing_en": "January 2026 announcement and current checking framework",
+          "statement_ja": "BISはH200・MI325X等の中国向け輸出について、条件付きの個別審査への変更を発表しました。審査方針の変更は個別許可や出荷を意味しません。品目分類、仕向地、利用者、用途を確認し、特定取引の可否は法務・輸出管理担当者が判断する必要があります。",
+          "statement_en": "BIS announced conditional case-by-case review for H200/MI325X-class exports to China. A review-policy change is not an individual approval or shipment. Item classification, destination, user and use require checking; qualified legal/export-control staff must assess specific transactions.",
+          "hpci_relevance_ja": "海外連携や再移転を含む調達案の制約を早期に確認します。",
+          "hpci_relevance_en": "Identify constraints on procurement involving overseas collaboration or onward transfer early.",
+          "adoption_conditions_ja": [
+            "1月の発表だけで現在の全規則を網羅したとしない。",
+            "技術的互換性と許認可を別の採用条件にする。"
+          ],
+          "adoption_conditions_en": [
+            "Do not treat a January announcement as a complete statement of current rules.",
+            "Treat technical compatibility and authorization as separate adoption conditions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SUPPLY-RD-ECOSYSTEM",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDX008",
+            "SRC-CDX009"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "供給基盤の研究開発: 後工程・計測・人材",
+          "name_en": "Supply-base R&D: packaging, metrology and workforce",
+          "timing_ja": "進行中の国内外研究開発",
+          "timing_en": "Ongoing domestic and international R&D",
+          "statement_ja": "NEDOのポスト5G事業と米国CHIPS R&Dは、製造設備に加えて先端パッケージ、計測、設計基盤、人材などを対象にしています。支援採択やパイロットラインの存在だけでは、量産品質、納期、保守可能性は確認できません。",
+          "statement_en": "NEDO Post-5G and US CHIPS R&D cover enabling areas such as advanced packaging, metrology, design infrastructure and workforce alongside manufacturing. Awards and pilot lines alone do not verify volume quality, delivery or maintainability.",
+          "hpci_relevance_ja": "日本発技術の実用化はCROSS-003の共通基準と結び付けます。",
+          "hpci_relevance_en": "Connect Japanese-origin deployment to the shared criteria in CROSS-003.",
+          "adoption_conditions_ja": [
+            "研究支援、試作、顧客認定、継続供給を分ける。",
+            "補助額をHPCI機器価格の割引として利用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate R&D support, prototypes, customer qualification and sustained supply.",
+            "Do not use subsidy amounts as discounts on HPCI equipment."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SUPPLY-SUPPORT-CONTINUITY",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDX007",
+            "SRC-CDX001"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "保守継続: 部材とソフトウェアの依存を一緒に確認",
+          "name_en": "Support continuity: component and software dependencies",
+          "timing_ja": "OpenFSの調達評価提案",
+          "timing_en": "OpenFS procurement-evaluation proposal",
+          "statement_ja": "NISTは開発・統合・展開過程の可視性不足を供給網リスクとして扱います。OpenFSでは交換部品、ファームウェア、ドライバ、ビルド環境、ライセンス、保守終了時の移行先を一緒に確認することを提案します。調査した製品の継続供給を保証するものではありません。",
+          "statement_en": "NIST treats limited visibility into development, integration and deployment as supply-chain risk. OpenFS proposes checking spares, firmware, drivers, build environments, licenses and migration after support ends together. This does not guarantee continued supply of surveyed products.",
+          "hpci_relevance_ja": "安価な初期調達でも運用期間中に代替できないリスクを扱います。",
+          "hpci_relevance_en": "This addresses low-cost initial procurement that becomes difficult to replace during operation.",
+          "adoption_conditions_ja": [
+            "保守年限とセキュリティ修正年限を別々に確認する。",
+            "複数供給者に共通する依存をリスク台帳へ残す。"
+          ],
+          "adoption_conditions_en": [
+            "Check maintenance and security-update lifetimes separately.",
+            "Record dependencies shared by multiple suppliers."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDX001",
+        "title": "Mapping the semiconductor value chain: Working towards identifying dependencies and vulnerabilities",
+        "publisher": "OECD",
+        "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/mapping-the-semiconductor-value-chain_5ba52971/4154cdbf-en.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-06"
+      },
+      "origin_group": "oecd-semiconductor-value-chain",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Executive summary and sections 2-3; historical trade/ICIO data periods",
+      "observation_ja": "工程間の依存と統計の対象年を確認。2025年公表でも2026年の供給残量ではない。",
+      "observation_en": "Read interstage dependencies and historical data periods; 2025 publication is not 2026 remaining supply.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX002",
+        "title": "TSMC Q2 2026 Earnings Conference Transcript",
+        "publisher": "TSMC investor relations / LSEG transcript",
+        "url": "https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-08/3e494f0c14dd0890f897aa044415e21d93486cc4/TSMC%202Q26%20Transcript.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-16 conference"
+      },
+      "origin_group": "tsmc-q2-2026-capacity",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Pages 5, 7-8, 10 and 20: capacity plans and packaging/test constraints",
+      "observation_ja": "前後工程・テストの供給制約と投資計画を確認。追加投資の完成時期は市況次第で、確定納期とはしない。",
+      "observation_en": "Read wafer/packaging/test constraints and investment plans; market-dependent completion is not a firm delivery date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX003",
+        "title": "Micron Fiscal Q3 2026 Earnings Call Prepared Remarks",
+        "publisher": "Micron",
+        "url": "https://s25.q4cdn.com/621799436/files/doc_financials/2026/q3/Q3-FY26-Prepared-Remarks.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-24"
+      },
+      "origin_group": "micron-q3-2026-supply",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Pages 2-3 and 6: supply outlook, strategic agreements and fab/packaging plans",
+      "observation_ja": "16件の供給契約と数量範囲、工場・後工程の将来予定を確認。全市場が販売済みという証拠ではない。",
+      "observation_en": "Read 16 supply agreements and volume scope plus future fab/packaging plans; not evidence that the whole market is sold out.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX004",
+        "title": "Micron Form 10-Q Q3 2026",
+        "publisher": "Micron",
+        "url": "https://s25.q4cdn.com/621799436/files/doc_financials/2026/q3/0000723125-26-000015.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-25 filing"
+      },
+      "origin_group": "micron-q3-2026-supply",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Pages 41-42: HBM yield, cleanroom capacity and demand-mix risks",
+      "observation_ja": "HBMと通常DRAMの設備配分、歩留まり、需要減時の供給増リスクを確認。",
+      "observation_en": "Read HBM/conventional-DRAM capacity allocation, yield and oversupply risk if demand changes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX005",
+        "title": "Department of Commerce Revises License Review Policy for Semiconductors Exported to China",
+        "publisher": "BIS / U.S. Department of Commerce",
+        "url": "https://www.bis.gov/press-release/department-commerce-revises-license-review-policy-semiconductors-exported-china",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01-13"
+      },
+      "origin_group": "bis-advanced-compute-licensing",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Announcement of conditional case-by-case review and effective-date qualification",
+      "observation_ja": "H200・MI325X等の条件付き個別審査への変更発表を確認。個別許可・出荷の実績ではない。",
+      "observation_en": "Read announcement of conditional case-by-case review for H200/MI325X-class products, not individual approvals or shipments.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX006",
+        "title": "BIS About Licensing",
+        "publisher": "BIS / U.S. Department of Commerce",
+        "url": "https://www.bis.gov/licensing",
+        "source_class": "official-project",
+        "published_or_updated": "Current guidance accessed 2026-09-01"
+      },
+      "origin_group": "bis-licensing-guidance",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Subject-to-EAR, classification, destination, end-user/end-use and license exceptions",
+      "observation_ja": "品目・仕向地・用途・利用者を分けて確認する構成を読んだ。個別取引への法的判定はしない。",
+      "observation_en": "Read separate item, destination, end-use and end-user checks; no transaction-specific legal conclusion.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX007",
+        "title": "NIST SP 800-161 Rev.1 Update 1: Cybersecurity Supply Chain Risk Management Practices",
+        "publisher": "NIST",
+        "url": "https://csrc.nist.gov/pubs/sp/800/161/r1/upd1/final",
+        "source_class": "official-standard",
+        "published_or_updated": "2024-11-01"
+      },
+      "origin_group": "nist-cscrm-800161",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "Official abstract and scoping questionnaire description",
+      "observation_ja": "開発・統合・展開における可視性不足と組織横断のリスク管理を確認。本文全体の読了とはしない。",
+      "observation_en": "Read limited development/integration/deployment visibility and multilevel risk management; not a claim of reading the full publication.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX008",
+        "title": "NEDO Post-5G Information and Communication Systems Infrastructure Enhancement R&D Project",
+        "publisher": "NEDO",
+        "url": "https://www.nedo.go.jp/activities/ZZJP_100172.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-19 page update"
+      },
+      "origin_group": "nedo-post5g-development",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "R&D sections 2-4: wafer/packaging pilot lines, enabling technologies and workforce",
+      "observation_ja": "前後工程、計測・設計基盤、人材を含む支援対象を確認。採択やパイロットを量産実績と扱わない。",
+      "observation_en": "Read supported wafer/packaging, metrology/design and workforce development; awards/pilots are not volume-production evidence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDX009",
+        "title": "CHIPS Research & Development Programs",
+        "publisher": "NIST",
+        "url": "https://www.nist.gov/chips/research-development-programs",
+        "source_class": "official-project",
+        "published_or_updated": "Current program description accessed 2026-09-01"
+      },
+      "origin_group": "nist-chips-rd",
+      "checked_at": "2026-09-01T02:16:51+09:00",
+      "locator": "NSTC, advanced packaging, SMART USA and metrology program descriptions",
+      "observation_ja": "製造設備だけでなく後工程・計測・デジタルツイン・人材の研究支援を確認。成果量産の証拠ではない。",
+      "observation_en": "Read packaging, metrology, digital-twin and workforce R&D alongside manufacturing; not evidence of resulting volume production.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-089",
+      "topic_ids": [
+        "ARCH-07"
+      ],
+      "priority": "P0",
+      "question_ja": "候補製品の前後工程・材料・設計・保守の共通依存と、必要時点の契約可能量を確認できるか。",
+      "question_en": "Can shared fabrication, materials, design and support dependencies and contractible supply at the required date be verified?",
+      "next_action_ja": "公開資料で依存関係を記録し、未公開の歩留まり・価格・割当量は未確認とする。輸出管理は専門担当者の確認を要する。",
+      "next_action_en": "Record public dependencies and retain unpublished yields, prices and allocation volumes as unknown; export controls require qualified review.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "企業・製品別の製造拠点、HBM・基板・装置の依存網は未網羅。供給可能量と代替認定は未確認。",
+    "METI半導体支援ページとCISA資料は取得できず、Federal Register本文はアクセス確認画面で停止した。",
+    "単一モデルの暫定調査であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Product/vendor manufacturing, HBM, substrate and equipment dependencies are incomplete; available supply and qualified substitutes remain unverified.",
+    "METI semiconductor-support and CISA material could not be retrieved; Federal Register access stopped at a verification screen.",
+    "This single-model research remains provisional with independent Consensus incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SUPPLY-DEPENDENCY",
+        "label_ja": "共通依存",
+        "label_en": "Shared dependencies",
+        "question_ja": "異なる製品が同じ製造・材料・保守に依存していないか。",
+        "question_en": "Do different products depend on the same manufacturing, materials or support?"
+      },
+      {
+        "dimension_id": "DIM-SUPPLY-DELIVERY",
+        "label_ja": "納入可能性",
+        "label_en": "Deliverability",
+        "question_ja": "必要な数量・時期・品質が契約で確認できるか。",
+        "question_en": "Can required quantity, timing and quality be verified contractually?"
+      },
+      {
+        "dimension_id": "DIM-SUPPLY-EXIT",
+        "label_ja": "代替と継続",
+        "label_en": "Substitution and continuity",
+        "question_ja": "供給停止や保守終了時に移行できるか。",
+        "question_en": "Can the system migrate after supply disruption or support termination?"
+      }
+    ]
+  }
+}

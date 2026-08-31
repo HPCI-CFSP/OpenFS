@@ -1,0 +1,234 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000104",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-01T04:07:08+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "a0ff6b2bf78769b57f0fc2f7a2be684ebddb37f27e5814ef9f0dceb8e5a46692",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験設備連携を、取得・転送・解析・結果返却の全工程で比較します。SPring-8、European XFEL、ESRF、SSRFの事例から、装置近傍の低遅延処理、共用計算、長期保存の役割を整理しました。現行の処理支援と自律実験の研究構想を分け、データ削減による情報損失と再解析の条件も確認します。",
+  "summary_en": "Compare acquisition, transfer, analysis and feedback end to end. SPring-8, European XFEL, ESRF and SSRF illustrate roles for instrument-side low-latency processing, shared computing and long-term retention. Distinguish operational assistance from autonomous-experiment research, including information loss and reanalysis conditions after reduction.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "77586b8c66e28fe8d20b0ff48227e7dc98aaca3e6bbb6cedaab9879140f74522",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U01",
+        "TDS-CD2-APP-14-U01",
+        "TDS-CD3-APP-14-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-14-U01",
+      "title_ja": "欧州・中国の実験施設: 処理配置と自動化の範囲",
+      "title_en": "European and Chinese facilities: processing placement and automation scope",
+      "summary_ja": "入力量、返却期限、解析精度、保存範囲をそろえて比較します。",
+      "summary_en": "Compare matched input volume, feedback deadline, analysis quality and retention scope.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-XFEL-PREVIEW-FULL-STREAM",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA109",
+            "SRC-CDA110"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Karabo: プレビューと本解析の分離",
+          "name_en": "Karabo: separate preview and full analysis",
+          "timing_ja": "2025年11月の施設報告",
+          "timing_en": "November 2025 facility report",
+          "statement_ja": "European XFELは制御通信と高速データ転送を分け、代表画像によるプレビューと選択した範囲・速度の校正済みデータを提供します。秒程度の判断支援や実験間の調整の事例であり、全フレームの解析を一律の期限内に完了する保証ではありません。",
+          "statement_en": "European XFEL separates control traffic from high-rate data, with representative previews and calibrated streams at selected scope/rate. Seconds-scale feedback and run-to-run steering do not establish a universal deadline for analysing every frame.",
+          "hpci_relevance_ja": "低遅延の確認処理と高精度の解析を別々に設計します。",
+          "hpci_relevance_en": "Design low-latency monitoring separately from full analysis.",
+          "adoption_conditions_ja": [
+            "間引き、解析領域、校正条件と結果の時刻を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Record subsampling, analysis region, calibration and result timestamps."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-ESRF-NEAR-SOURCE-REDUCTION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA111"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ESRF: 発生源近傍のデータ削減",
+          "name_en": "ESRF: near-source data reduction",
+          "timing_ja": "2025年の運用報告",
+          "timing_en": "2025 operational reporting period",
+          "statement_ja": "年報はLIMA2を用いる検出器4台の設置と、近傍でのデータ削減・特徴抽出を報告しています。追加検出器の2026年導入は見通しです。大容量の単発実験を、全ビームラインの継続転送量に換算しません。",
+          "statement_en": "The annual report describes four LIMA2-controlled detectors and near-source reduction/feature extraction. Additional detectors in 2026 are prospective. A large individual experiment does not determine sustained traffic across all beamlines.",
+          "hpci_relevance_ja": "転送・保存費用の削減と再解析可能性を比較します。",
+          "hpci_relevance_en": "Compare transfer/storage savings against reanalysis capability.",
+          "adoption_conditions_ja": [
+            "削除するデータの科学的影響と保存方針を評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Assess scientific consequences of discarded data and retention policy."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SSRF-SUPERFACILITY-BOUNDARIES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA112"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SSRF: エッジと共用基盤の統合",
+          "name_en": "SSRF: integrated edge and shared infrastructure",
+          "timing_ja": "2026年6月の施設論文",
+          "timing_en": "June 2026 facility paper",
+          "statement_ja": "SSRFはエッジ側の処理、共用CPU/GPU、SciCat、統合認証を組み合わせた実験支援基盤を報告しています。施設固有の構成と運用実績であり、同規模のHPCIへの性能・安全性保証ではありません。公開コードの所在は示されていますが、今回は内容を取得できていません。",
+          "statement_en": "SSRF reports experiment support combining edge processing, shared CPU/GPU resources, SciCat and federated identity. Site-specific experience is not a performance/security guarantee for HPCI. A public code location is listed, but its contents were not retrieved here.",
+          "hpci_relevance_ja": "既存の装置・認証・データ管理を接続する工数が比較対象です。",
+          "hpci_relevance_en": "Integration effort for instruments, identity and data management matters.",
+          "adoption_conditions_ja": [
+            "導入構成と再現用成果物を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify deployed configuration and reproducibility artifacts."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SSRF-AUTONOMOUS-ASSISTANCE-STAGE",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA112",
+            "SRC-CDA109"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "実験支援と自律実験の到達段階",
+          "name_en": "Assisted versus autonomous experiments",
+          "timing_ja": "2025〜2026年の研究・開発説明",
+          "timing_en": "2025-2026 research/development descriptions",
+          "statement_ja": "SSRFのDeepSeek/Qwenを用いた支援と、European XFELの実験自動化は開発・研究の文脈です。対話支援、解析の自動実行、装置を閉ループ制御する自律実験を同一視しません。",
+          "statement_en": "SSRF's DeepSeek/Qwen assistance and European XFEL's experiment automation are described in development/research contexts. Conversational assistance, automatic analysis and autonomous closed-loop instrument control are distinct.",
+          "hpci_relevance_ja": "自動化の範囲に応じて責任と停止条件を定めます。",
+          "hpci_relevance_en": "Define responsibility and stopping conditions per automation scope.",
+          "adoption_conditions_ja": [
+            "誤操作時の停止、再解析、操作者の介入条件を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate safe stopping, reanalysis and operator intervention."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA109",
+        "title": "Real-time experiment steering at European XFEL within Karabo",
+        "publisher": "European XFEL / JACoW",
+        "url": "https://epaper.kek.jp/icalepcs2025/pdf/THPD048.pdf",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-11-25 proceedings issue; conference September 2025"
+      },
+      "origin_group": "european-xfel-karabo-icalepcs2025",
+      "checked_at": "2026-09-01T04:01:12+09:00",
+      "locator": "Five-page proceedings paper, architecture, real-time data processing, SCS/MID examples and conclusion; publication date cross-checked with JACoW DOI metadata",
+      "observation_ja": "低速の制御系と高速のデータ系を分離。プレビューは各パルス列の代表画像、全校正ストリームは選択した範囲・速度。秒程度の判断支援と実験間の調整を述べ、全フレーム・全施設での一律の期限保証ではない。自動実験は研究課題として区別。",
+      "observation_en": "Separates control and high-rate data paths. Preview uses a representative frame per train; full calibration has selected scope/rate. Describes seconds-scale feedback and run-to-run steering, not a universal full-frame deadline guarantee. Autonomous experiments remain research.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA110",
+        "title": "JACoW ICALEPCS 2025 THPD048 publication metadata",
+        "publisher": "JACoW Publishing",
+        "url": "https://proceedings.jacow.org/icalepcs2025/doi/jacow-icalepcs2025-thpd048/index.html",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-11-25"
+      },
+      "origin_group": "european-xfel-karabo-icalepcs2025",
+      "checked_at": "2026-09-01T04:01:12+09:00",
+      "locator": "Title, proceedings, conference dates, acceptance and issue dates",
+      "observation_ja": "会議は2025年9月20〜26日、刊行は11月25日。本文と同一研究の書誌情報であり、独立した性能検証ではない。",
+      "observation_en": "Conference September 20-26, 2025; issued November 25. Metadata describes the same study and is not independent performance verification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA111",
+        "title": "ESRF Highlights 2025: enabling technologies",
+        "publisher": "ESRF",
+        "url": "https://www.esrf.fr/files/live/sites/www/files/ExternalFiles/Communication/Highlights/2025/data/texts.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025 reporting period; exact publication date not confirmed"
+      },
+      "origin_group": "esrf-highlights-2025",
+      "checked_at": "2026-09-01T04:01:12+09:00",
+      "locator": "Printed pages 130-131 (PDF pages 132-133), LIMA2, DRAC, MATE and data volumes; not a claim to have read all 148 pages",
+      "observation_ja": "LIMA2を使う検出器4台の設置と発生源近傍の削減・特徴抽出を報告。2026年の追加検出器は見通し。2025年に100 TB超の実験50件、2日で最大600 TBの事例を報告するが、全実験の恒常的な入力量ではない。",
+      "observation_en": "Reports four LIMA2-controlled detectors with near-source reduction/feature extraction; additional 2026 detectors are prospective. Fifty 2025 experiments exceeded 100 TB and one two-day experiment reached 600 TB, not a sustained rate for every experiment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA112",
+        "title": "The Big Data Science Center at the Shanghai Synchrotron Radiation Facility: the architecture of the superfacility",
+        "publisher": "Shanghai Synchrotron Radiation Facility / IUCr Journal of Synchrotron Radiation",
+        "url": "https://journals.iucr.org/s/issues/2026/04/00/ye5077/",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2026-06-22 online; July 2026 issue"
+      },
+      "origin_group": "ssrf-bdsc-superfacility-2026",
+      "checked_at": "2026-09-01T04:01:12+09:00",
+      "locator": "Sections 2-4, Tables 1-2 and data availability; supplemental PDF and Figshare DOI retrieval failed",
+      "observation_ja": "エッジとCPU/GPU共用基盤、SciCat、OIDC/OAuth、実験申請から解析までの統合を報告。DeepSeek/Qwenによる支援は開発開始として説明。論文のコードDOIを確認したが内容は取得できず、性能・安全性・自律実験の再現検証はしていない。",
+      "observation_en": "Reports edge/shared CPU-GPU infrastructure, SciCat, OIDC/OAuth and proposal-to-analysis integration. DeepSeek/Qwen assistance is described as initiated development. The code DOI is listed but its content could not be retrieved; performance, security and autonomous experiments were not reproduced.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "施設ごとの期限達成率、欠損率、再解析の再現性を同一条件で比較する資料が不足。",
+    "SSRF補足資料・コードDOI、European XFELオンライン文書の再取得、LIMA2文書の公開アクセス状況を確認する。制限の迂回はしない。",
+    "単一のAIモデルによる暫定整理で、実機試験・独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Matched evidence for deadline attainment, loss and reproducible reanalysis is missing.",
+    "Revisit SSRF supplement/code and XFEL online documentation, and check public access to LIMA2 docs without bypassing restrictions.",
+    "Provisional single-model synthesis; hardware tests and independent Consensus remain incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000048",
+      "bundle_sha256": "5a0be205d634f6a6f122c6330cc9d078055104004f29616b10431b948ee2983e"
+    },
+    {
+      "update_id": "RUP-000094",
+      "bundle_sha256": "e27022f3478f41ba2d7d8fe36adbcca6e1850272354c8de2e0ec60299e378865"
+    }
+  ]
+}

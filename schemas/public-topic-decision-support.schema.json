@@ -305,7 +305,17 @@
           "publisher": {"type": "string", "minLength": 1},
           "url": {"type": "string", "format": "uri"},
           "source_class": {"enum": ["official-vendor", "official-standard", "official-project", "peer-reviewed", "research-artifact"]},
-          "published_or_updated": {"type": "string", "minLength": 1}
+          "published_or_updated": {"type": "string", "minLength": 1},
+          "correction": {
+            "type": "object",
+            "required": ["supersedes_source_id", "reason_ja", "reason_en"],
+            "properties": {
+              "supersedes_source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"},
+              "reason_ja": {"type": "string", "pattern": "\\S"},
+              "reason_en": {"type": "string", "pattern": "\\S"}
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       },
@@ -339,7 +349,7 @@
         "information_classification": {"const": "public"},
         "publication_approved": {"const": true},
         "publication_decision_id": {"type": "string", "minLength": 1},
-        "human_approval_directive_id": {"enum": ["DIR-900012", "DIR-900013", "DIR-900014", "DIR-900015", "DIR-900016", "DIR-900017", "DIR-900018"]}
+        "human_approval_directive_id": {"enum": ["DIR-900012", "DIR-900013", "DIR-900014", "DIR-900015", "DIR-900016", "DIR-900017", "DIR-900018", "DIR-900019"]}
       },
       "additionalProperties": false
     }

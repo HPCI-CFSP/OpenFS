@@ -1,0 +1,368 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000039",
+  "topic_id": "SSW-10",
+  "created_at": "2026-09-01T00:51:27+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "自動最適化を、HPCアプリケーションのブラックボックス探索、kernel単位の探索、コンパイラ変換の制御に分けます。GPTune、Kernel Tuner、Triton、MLIR、Optunaの一次資料から、探索費用、正しさ、再現性、電力測定の条件を整理しました。最適構成や性能向上率を実測したものではありません。",
+  "summary_en": "Automatic optimization is separated into black-box application search, kernel tuning and compiler-transformation control. Primary GPTune, Kernel Tuner, Triton, MLIR and Optuna sources establish search-cost, correctness, reproducibility and energy-measurement conditions. No optimal configuration or speedup has been measured.",
+  "units": [
+    {
+      "unit_id": "SSW-10-U01",
+      "before_sha256": "02d287ea4cec3bc280e18a3a05d6a1ba6278536483b60b1ca0792b02662b1649",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-10-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-10-U01",
+      "title_ja": "自動最適化の機構と検証境界",
+      "title_en": "Optimization mechanisms and validation boundaries",
+      "summary_ja": "高速な候補の発見と、正しい候補の採用を別の段階にします。",
+      "summary_en": "Separate discovering fast candidates from qualifying correct ones.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-GPTUNE-HPC-TRANSFER",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS059"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GPTune: 高価なHPC実行の探索履歴を再利用",
+          "name_en": "GPTune: reusing expensive HPC tuning history",
+          "timing_ja": "公開master実装、対象環境の検証は別途必要",
+          "timing_en": "Public master implementation; site qualification remains necessary",
+          "statement_ja": "GPTuneは問題・探索パラメータ・目的関数を分け、多課題・転移学習と履歴DBで高価な測定の再利用を支援します。ScaLAPACKやSuperLU_DISTの例があります。ただし機種、MPI、依存ソフトウェアが異なる履歴は、そのまま現在の最適値を保証しません。実行環境ごとの接続方法にも条件があります。",
+          "statement_en": "GPTune separates problem, parameter and objective spaces and reuses expensive evaluations through multitask/transfer learning and a history database, with ScaLAPACK and SuperLU_DIST examples. History from other machines or software stacks does not certify the current optimum, and execution integration is site-dependent.",
+          "hpci_relevance_ja": "全探索が難しい大規模並列アプリケーションの調整費用を抑える候補です。",
+          "hpci_relevance_en": "It is a candidate for reducing tuning costs where exhaustive large-scale runs are impractical.",
+          "adoption_conditions_ja": [
+            "探索予算、失敗した候補、転移元の構成を残す。",
+            "外部履歴を検証データと学習データへ無分別に重複使用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Retain evaluation budgets, failed candidates and source configurations.",
+            "Keep training history separate from independent validation."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-KERNELTUNER-CORRECTNESS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS060"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Kernel Tuner: 候補ごとの出力検証",
+          "name_en": "Kernel Tuner: candidate-level output checks",
+          "timing_ja": "1.5.0表記の検証資料",
+          "timing_en": "Verification documentation labeled 1.5.0",
+          "statement_ja": "Kernel Tunerはanswerを与えると、計測前に各候補の出力を参照結果と比較できます。独自verify関数も使えますが、参照結果と許容誤差は利用者が定義します。単一入力でのallclose合格だけでは、極端な入力、NaN、収束、保存則まで保証しません。",
+          "statement_en": "With answer supplied, Kernel Tuner compares each candidate with reference output before timing; custom verify callbacks are supported. Users define references and tolerances. An allclose pass on one input does not establish extreme-input behavior, NaNs, convergence or conservation.",
+          "hpci_relevance_ja": "自動探索で速いが不正確なkernelを採用しないための基本機構になります。",
+          "hpci_relevance_en": "It provides a basic mechanism for rejecting fast but incorrect kernels.",
+          "adoption_conditions_ja": [
+            "複数形状・境界条件・独立した高精度参照で再検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Revalidate with multiple shapes, edge cases and independent high-precision references."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TRITON-TUNING-SIDE-EFFECTS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS061"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Triton: 探索による反復実行と状態の初期化",
+          "name_en": "Triton: repeated tuning runs and state reset",
+          "timing_ja": "main API資料を確認",
+          "timing_en": "Main API documentation inspected",
+          "statement_ja": "Tritonのautotuneは指定したkeyに応じて候補構成を評価し、その間kernelを複数回実行します。加算など状態を変更するkernelでは、reset_to_zeroやrestore_value等を適切に用いないと測定前提が崩れます。自動探索はkernelの正しさを自動証明する機能ではありません。",
+          "statement_en": "Triton autotune evaluates candidate configurations for specified keys by running kernels repeatedly. Stateful updates may invalidate comparisons without suitable reset_to_zero or restore_value handling. Autotuning is not automatic proof of kernel correctness.",
+          "hpci_relevance_ja": "AI生成kernelを含むGPU最適化で、探索と通常実行の挙動差を確認します。",
+          "hpci_relevance_en": "Check differences between tuning and normal execution, including for AI-generated kernels.",
+          "adoption_conditions_ja": [
+            "コンパイル・探索時間を定常実行時間から区別する。",
+            "形状、dtype、GPU、compiler変更時の再探索条件を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate compilation/search overhead from steady-state runtime.",
+            "Record retuning conditions for shape, dtype, GPU and compiler changes."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MLIR-TRANSFORM-CONTRACT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS062"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLIR: 変換手順を明示する中間表現",
+          "name_en": "MLIR: explicit transformation programs",
+          "timing_ja": "公開Transform dialect資料",
+          "timing_en": "Public Transform dialect documentation",
+          "statement_ja": "Transform dialectはIRを変換する手順を別のIRとして表し、対象選択やtiling等を組み合わせます。前提条件やhandleの有効性を扱う仕組みはありますが、任意の変換の科学的妥当性を証明するものではありません。書換え後の失敗は、単なる候補不適合と区別する必要があります。",
+          "statement_en": "The Transform dialect represents transformation sequences as IR, composing targeting and transformations such as tiling. Preconditions and handle-validity mechanisms do not prove scientific validity of arbitrary rewrites. Failures after mutation must be distinguished from inapplicable candidates.",
+          "hpci_relevance_ja": "自動最適化で生成された変換列を、追跡・再実行可能な成果物にできます。",
+          "hpci_relevance_en": "Transformation sequences can become traceable, replayable optimization artifacts.",
+          "adoption_conditions_ja": [
+            "IR検証、差分試験、アプリケーション精度試験を併用する。"
+          ],
+          "adoption_conditions_en": [
+            "Combine IR verification, differential tests and application-level accuracy tests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-OPTUNA-CONSTRAINED-REPRODUCIBILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS063",
+            "SRC-CDS064"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Optuna: 汎用探索と並列実行の再現性",
+          "name_en": "Optuna: general search and parallel reproducibility",
+          "timing_ja": "PFN発の公開基盤、FAQは4.9.0表記",
+          "timing_en": "PFN-origin public framework; FAQ labeled 4.9.0",
+          "statement_ja": "Optunaは探索空間と目的関数をPythonで定義し、pruningや制約付き探索を組み合わせられます。ただしFAQは並列・分散探索の非決定性を明記しており、seed固定だけで同じ探索順序や結果になるとは限りません。HPCに使う場合も、目的関数の品質条件と実行環境の揺らぎを管理します。",
+          "statement_en": "Optuna defines search spaces and objectives in Python and supports pruning and constrained search. Its FAQ explicitly warns of nondeterminism in parallel/distributed optimization: fixing a seed does not ensure identical search order or outcomes. HPC use still requires quality constraints and control of execution variability.",
+          "hpci_relevance_ja": "日本発の汎用探索基盤を、性能・電力・品質を扱う調整に利用できるか検討します。",
+          "hpci_relevance_en": "Evaluate this Japanese-origin framework for performance, energy and quality tuning.",
+          "adoption_conditions_ja": [
+            "最良trialだけでなく失敗trialと探索順序を保存する。",
+            "探索用入力と独立検証用入力を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve failed trials and search order, not only the best trial.",
+            "Separate tuning inputs from independent validation inputs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TUNING-ENERGY-MEASUREMENT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS065"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "時間以外の目的関数と電力計測",
+          "name_en": "Beyond runtime: energy measurement",
+          "timing_ja": "Kernel Tuner observer資料",
+          "timing_en": "Kernel Tuner observer documentation",
+          "statement_ja": "Kernel TunerはNVMLやPMTを介した電力・エネルギー計測を扱い、短いkernelでは繰返し実行によってセンサーの低い測定頻度を補う方法を示しています。これは計測費用を増やし、GPUの計測値だけではノード全体の消費エネルギーになりません。クロック・電力上限の変更には運用上の権限も必要です。",
+          "statement_en": "Kernel Tuner supports NVML/PMT energy measurements and repeated execution to address sensor sampling limits for short kernels. This increases measurement cost; GPU-only readings are not node-wide energy. Clock/power-cap changes also require operational authority.",
+          "hpci_relevance_ja": "性能と電力の多目的探索を、計測範囲の揃った比較へつなげます。",
+          "hpci_relevance_en": "Use aligned measurement boundaries for performance-energy optimization.",
+          "adoption_conditions_ja": [
+            "GPU、CPU、ノード、施設の計測範囲と期間を分ける。",
+            "利用者が許可されていない電力制御を探索で実行しない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate GPU, CPU, node and facility measurement boundaries and windows.",
+            "Do not let tuning perform power controls outside user authorization."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS059",
+        "title": "GPTune public implementation and constraints",
+        "publisher": "GPTune project",
+        "url": "https://github.com/gptune/GPTune",
+        "source_class": "official-project",
+        "published_or_updated": "master README accessed 2026-09-01"
+      },
+      "origin_group": "gptune-lbl-berkeley",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Features; parameter spaces; constraints; site examples",
+      "observation_ja": "複数課題・転移学習、履歴DB、制約、MPI環境依存を確認。履歴の転用を無条件の性能保証とは扱わない。",
+      "observation_en": "Read multitask/transfer learning, history database, constraints and MPI/site dependencies; transferred history is not unconditional performance evidence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS060",
+        "title": "Kernel Tuner correctness verification",
+        "publisher": "Kernel Tuner project",
+        "url": "https://kerneltuner.github.io/kernel_tuner/stable/correctness.html",
+        "source_class": "official-project",
+        "published_or_updated": "page labeled 1.5.0 accessed 2026-09-01"
+      },
+      "origin_group": "kernel-tuner-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "answer and verify; pre-benchmark output checks",
+      "observation_ja": "answerを指定した場合の候補ごとの検証と独自verify関数を確認。検証は自動で常に有効とは限らない。",
+      "observation_en": "Read per-candidate checks when answer is supplied and custom verify support; verification is not unconditionally enabled.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS061",
+        "title": "Triton autotune API",
+        "publisher": "Triton project",
+        "url": "https://triton-lang.org/main/python-api/generated/triton.autotune.html",
+        "source_class": "official-project",
+        "published_or_updated": "main documentation accessed 2026-09-01"
+      },
+      "origin_group": "triton-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Repeated kernel execution warning; keys and state restoration",
+      "observation_ja": "候補評価で同じkernelを複数回実行することと、出力のreset/restoreが必要な場合を確認。",
+      "observation_en": "Read repeated kernel execution and cases requiring output reset/restoration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS062",
+        "title": "MLIR Transform dialect",
+        "publisher": "LLVM Project",
+        "url": "https://mlir.llvm.org/docs/Dialects/Transform/",
+        "source_class": "official-project",
+        "published_or_updated": "living documentation accessed 2026-09-01"
+      },
+      "origin_group": "llvm-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Overview; execution model; preconditions and handle invalidation",
+      "observation_ja": "変換列のIR表現、前提条件、変更後の回復不能失敗を確認。任意の最適化の意味的同値性の証明とはしない。",
+      "observation_en": "Read transformation IR, preconditions and irrecoverable post-mutation failures; this is not a proof of arbitrary optimization equivalence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS063",
+        "title": "Optuna FAQ: reproducibility and constraints",
+        "publisher": "Optuna project",
+        "url": "https://optuna.readthedocs.io/en/stable/faq.html",
+        "source_class": "official-project",
+        "published_or_updated": "documentation labeled 4.9.0 accessed 2026-09-01"
+      },
+      "origin_group": "pfn-optuna",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Reproducible optimization; exceptions; constrained optimization",
+      "observation_ja": "並列探索の非決定性、目的関数の再現性、失敗trialの保存を確認。",
+      "observation_en": "Read parallel-search nondeterminism, objective reproducibility and failed-trial handling.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS064",
+        "title": "Optuna project overview",
+        "publisher": "Preferred Networks / Optuna project",
+        "url": "https://optuna.org/",
+        "source_class": "official-project",
+        "published_or_updated": "public project page accessed 2026-09-01"
+      },
+      "origin_group": "pfn-optuna",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "Optimization features; project attribution",
+      "observation_ja": "PFNの公開プロジェクトとして、探索とpruning、可視化、公開論文への案内を確認。",
+      "observation_en": "Read PFN project attribution, search/pruning, visualization and links to its public paper.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS065",
+        "title": "Kernel Tuner measurement observers",
+        "publisher": "Kernel Tuner project",
+        "url": "https://kerneltuner.github.io/kernel_tuner/stable/observers.html",
+        "source_class": "official-project",
+        "published_or_updated": "page labeled 1.5.0 accessed 2026-09-01"
+      },
+      "origin_group": "kernel-tuner-project",
+      "checked_at": "2026-09-01T00:50:06+09:00",
+      "locator": "NVMLObserver, PMTObserver and continuous benchmarking",
+      "observation_ja": "NVML/PMTによる計測と、短いkernelに対する反復計測の必要、電力制御権限を確認。",
+      "observation_en": "Read NVML/PMT measurements, repeated measurement for short kernels and privileged power controls.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-065",
+      "topic_ids": [
+        "SSW-10"
+      ],
+      "priority": "P1",
+      "question_ja": "探索・コンパイル・再検証費用を含めた正味の性能・電力改善を、代表的なHPC入力で比較できるか。",
+      "question_en": "Can net performance/energy gains, including search, compilation and revalidation, be compared on representative HPC inputs?",
+      "next_action_ja": "同一CPU/GPU・入力・精度条件で、既定構成、手動調整、自動探索の公開比較を収集し、失敗候補、探索予算、独立検証結果を照合する。",
+      "next_action_en": "Collect matched default/manual/automatic comparisons with failed candidates, search budgets and independent validation.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "各基盤のlatest/masterと安定版の差、変換可能な言語・演算を追加比較する。",
+    "チューニング済み値の機種間転用は、再測定なしで有効としない。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Compare development/stable differences and supported source languages/operators.",
+    "Do not qualify transferred parameters without target-platform remeasurement.",
+    "Independent-model Consensus remains incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [
+      "platform-software"
+    ],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW10-COST",
+        "label_ja": "探索費用と回収",
+        "label_en": "Search cost and amortization",
+        "question_ja": "探索と再検証の費用を本番実行の節約で回収できるか。",
+        "question_en": "Can production savings repay search and revalidation costs?"
+      },
+      {
+        "dimension_id": "DIM-SSW10-QUALITY",
+        "label_ja": "正しさと可搬性",
+        "label_en": "Correctness and portability",
+        "question_ja": "未見の入力と異なる機種でも精度条件を満たすか。",
+        "question_en": "Are accuracy requirements met on unseen inputs and other platforms?"
+      },
+      {
+        "dimension_id": "DIM-SSW10-REPLAY",
+        "label_ja": "再現可能性",
+        "label_en": "Reproducibility",
+        "question_ja": "探索履歴、失敗、測定条件を追跡して再評価できるか。",
+        "question_en": "Can search history, failures and measurement conditions be re-evaluated?"
+      }
+    ]
+  }
+}

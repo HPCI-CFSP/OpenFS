@@ -1,0 +1,236 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000077",
+  "topic_id": "SSW-04",
+  "created_at": "2026-09-01T02:57:36+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "6bf9b60d8534c6344ea65d50a51c5dd620fee7c7efeee9faba0e852c215d2664",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "密行列、疎行列、FFTと精度制御を分け、分散実行、演算範囲、整数ABI、OpenMP実行時ライブラリまで確認します。ライブラリの機能対応だけでは、科学的妥当性や性能維持を保証できません。以下は公開文書とコードによる暫定比較です。",
+  "summary_en": "Dense algebra, sparse solvers, FFT and precision control are reviewed alongside distributed execution, routine coverage, integer ABIs and OpenMP runtimes. Feature availability alone does not guarantee scientific validity or retained performance. This is a provisional comparison of public documentation and code.",
+  "units": [
+    {
+      "unit_id": "SSW-04-U01",
+      "before_sha256": "1e792eee963f1edaf53fb2d0b74f867fb03bd847d84ca2ca33baece5da624ba1",
+      "evidence_section_ids": [
+        "TDS-SSW04-LIBRARIES",
+        "TDS-CD1-SSW-04-U01",
+        "TDS-CD2-SSW-04-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-04-U01",
+      "title_ja": "数値ライブラリの版・ABI・実行時条件",
+      "title_en": "Numerical-library versions, ABIs and runtime conditions",
+      "summary_ja": "同じAPI名でも、整数幅、コンパイラ、OpenMP/MPI構成によって利用条件が変わります。",
+      "summary_en": "Matching API names do not remove integer-width, compiler or OpenMP/MPI compatibility requirements.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-NVPL-RUNTIME-ABI",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS078",
+            "SRC-CDS079",
+            "SRC-CDS081"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVPL 26.5のCPU実行条件",
+          "name_en": "NVPL 26.5 CPU-runtime requirements",
+          "timing_ja": "2026-09-01に現行版表示を確認",
+          "timing_en": "Current-version listing checked 2026-09-01",
+          "statement_ja": "NVPLはCPU専用でCUDAに依存しません。BLAS/LAPACK系のLP64/ILP64とOpenMP実行時ライブラリを揃える必要があり、NVHPC環境によるlibgompの差し替わりにも注意が必要です。26.5以降の次版はglibc 2.28以上へ移る方針です。",
+          "statement_en": "NVPL is CPU-only and independent of CUDA. Match BLAS/LAPACK LP64/ILP64 interfaces and OpenMP runtimes, including NVHPC environments that can redirect libgomp. The version after 26.5 is planned to require glibc 2.28+.",
+          "hpci_relevance_ja": "Arm CPUへの移植時には、API互換性だけでなく実行時依存関係を固定します。",
+          "hpci_relevance_en": "Pin runtime dependencies, not only API compatibility, when migrating to Arm CPUs.",
+          "adoption_conditions_ja": [
+            "コンポーネント版、整数幅、OpenMP/MPIの組合せを記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Record component versions, integer width and OpenMP/MPI combinations."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AOCL-BUILD-SCOPE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS082",
+            "SRC-CDS083"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AOCL 5.3の実装・構成範囲",
+          "name_en": "AOCL 5.3 implementation and packaging scope",
+          "timing_ja": "2026-05-18公開",
+          "timing_en": "Released 2026-05-18",
+          "statement_ja": "AOCL-LAPACKはLAPACK 3.12.0互換を示し、AOCC/GCC別の配布物があります。Build-It-Yourselfで統合できるライブラリは限定され、全AOCL製品を一律に単一バイナリへ統合できるわけではありません。",
+          "statement_en": "AOCL-LAPACK states LAPACK 3.12.0 compatibility and supplies separate AOCC/GCC binaries. Build-It-Yourself supports a bounded library selection, not automatic consolidation of every AOCL product.",
+          "hpci_relevance_ja": "再配布・更新・他ライブラリとのシンボル衝突を含めて構成を選びます。",
+          "hpci_relevance_en": "Select configurations with redistribution, upgrades and symbol collisions in view.",
+          "adoption_conditions_ja": [
+            "必要なルーチンとビルド対象を固定し、科学的誤差条件で試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin required routines and build targets, then test against scientific error criteria."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-NVPL-SPARSE-CORRECTNESS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS080"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "疎行列形式ごとの正しさの確認",
+          "name_en": "Correctness checks by sparse-matrix format",
+          "timing_ja": "NVPL Sparse 0.6.0の修正情報",
+          "timing_en": "NVPL Sparse 0.6.0 fix notes",
+          "statement_ja": "SELL形式の三角解法とCSC形式の共役転置SpMVには誤答の修正履歴があります。APIが存在することと、対象形式・演算設定で正しく動作することを分けて確認します。",
+          "statement_en": "Fix history includes incorrect SELL triangular solves and CSC conjugate-transpose SpMV. API availability and correctness for the selected format/operation must be checked separately.",
+          "hpci_relevance_ja": "既存ライブラリを使う場合も、実入力での残差検証が必要です。",
+          "hpci_relevance_en": "Residual checks on real inputs remain necessary even with established libraries.",
+          "adoption_conditions_ja": [
+            "形式、転置条件、解析フェーズ、版を再現条件に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Include format, transpose mode, analysis phase and version in reproduction conditions."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS078",
+        "title": "NVIDIA Performance Libraries: current platform and runtime support",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nvpl/latest/introduction.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "NVPL 26.5; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "Current release; CPU/OS/Fortran ABI/OpenMP/MPI support",
+      "observation_ja": "CPU専用でCUDAに依存しない。OpenMP実行時ライブラリ混在への警告と、BLACSによるMPI接続を確認。",
+      "observation_en": "CPU-only with no CUDA dependency; read warnings about mixed OpenMP runtimes and BLACS-based MPI interfaces.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS079",
+        "title": "NVPL release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nvpl/latest/release_notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "NVPL 26.5; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "NVPL 26.5 OS compatibility notice",
+      "observation_ja": "26.5はglibc 2.26/Amazon Linux 2対応の最終版。次版はglibc 2.28以上とする方針で、次版の公開日は未記載。",
+      "observation_en": "26.5 is the final release for glibc 2.26/Amazon Linux 2; the next version targets glibc 2.28+, with no release date stated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS080",
+        "title": "NVPL Sparse component release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nvpl/latest/sparse/release_notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "component 0.6.0 notes; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "0.6.0 resolved issues; 0.5.0 new APIs",
+      "observation_ja": "SELL SpSVの境界外参照とCSC共役転置SpMVの誤答修正を確認。component版とNVPL全体の版を混同しない。",
+      "observation_en": "Read fixes for SELL SpSV bounds access and incorrect CSC conjugate-transpose SpMV; keep component and suite versions distinct.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS081",
+        "title": "NVPL LAPACK component release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nvpl/latest/lapack/release_notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "component 0.4.0 notes; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "0.4.0 API changes; 0.3.1 workspace fix",
+      "observation_ja": "32/64bit整数APIの併用とテスト行列生成を確認。整数ABIの一致を数値精度とは区別する。",
+      "observation_en": "Read coexisting 32/64-bit integer APIs and test-matrix generation; integer-ABI compatibility is separate from numerical precision.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS082",
+        "title": "AOCL-BLAS and AOCL-LAPACK 5.3",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/developer/aocl/dense.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-05-18; AOCL 5.3"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "AOCL 5.3 highlights; LAPACK compatibility; binary variants",
+      "observation_ja": "BLIS派生、LAPACK 3.12.0互換、AOCC/GCC別バイナリと試験改善を確認。任意の他社CPUでの同等性能は主張しない。",
+      "observation_en": "Read BLIS lineage, LAPACK 3.12.0 compatibility, AOCC/GCC binary variants and test improvements; no equal-performance claim across arbitrary CPUs.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS083",
+        "title": "AOCL Build-It-Yourself repository",
+        "publisher": "AMD",
+        "url": "https://github.com/amd/aocl",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T02:56:01+09:00",
+      "locator": "Supported library selection; submodules; tests and symbol renaming",
+      "observation_ja": "単一ライブラリ化の対象は限定される。submodulesに存在するだけで統合ビルド対応とはみなさない。ビルドは未実施。",
+      "observation_en": "Unified-library selection is bounded; presence in submodules alone does not prove unified-build support. No build was run.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "同じ入力・精度・資源条件で各実装を再現し、移植工数・性能・誤差を比較する必要があります。",
+    "独立Consensusと実機校正は未完了です。"
+  ],
+  "remaining_work_en": [
+    "Implementations still need reproduction at matched inputs, precision and resources to compare effort, performance and error.",
+    "Independent Consensus and hardware calibration remain incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000035",
+      "bundle_sha256": "6bb729ff6420d2889f9b1b632b64b2805f341cf84aea918c54c8fbd9c2ea9a7e"
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000082",
+  "topic_id": "CROSS-15",
+  "created_at": "2026-09-01T03:18:54+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "0172d9160b7b56655b3d35da965a537812eb651dada859bc8feede0e7d9d5f33",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "資源の共同負担と利用料金を区別し、配分単位、対象者、成果公開、保存容量、予約、失効を揃えて比較します。センターの現行規程を追加確認した結果、同じノード時間という表示でも換算条件が異なり、料金例や報告義務に未解決の不整合が残ります。購入費や学術割引率は推定していません。",
+  "summary_en": "Separate co-funding from user tariffs and compare allocation unit, eligibility, disclosure, storage, reservation and expiry consistently. Additional provider rules show different conversion conditions even behind node-hour labels, with unresolved tariff examples and reporting discrepancies. No purchase cost or academic discount was inferred.",
+  "units": [
+    {
+      "unit_id": "CROSS-15-U01",
+      "before_sha256": "2c1a43de4192f118066a00f362b9b556e4039dfc30bd03681cdfb3904058d5b3",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-15-U01",
+        "TDS-CD2-CROSS-15-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-CROSS-15-U01",
+      "title_ja": "料金単位・申請経路・失効条件の照合",
+      "title_en": "Reconciling tariff units, access routes and expiry",
+      "summary_ja": "料金の掛算が合うことと、当該利用者に適用できることを別々に確認します。",
+      "summary_en": "Check arithmetic consistency separately from applicability to a particular user.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-MIYABI-TARIFF-CATEGORY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDG008",
+            "SRC-CDG016"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Miyabiのトークンと利用区分",
+          "name_en": "Miyabi tokens and access categories",
+          "timing_ja": "2026年度の規程と現行HPCI一覧",
+          "timing_en": "FY2026 rules and current HPCI list",
+          "statement_ja": "センター規程は、ノード時間にMiyabi-Gでは1.0、Miyabi-Cでは0.8を乗じてトークンを消費すると説明しています。HPCI一覧の参考料金と、そこに記された成果非公開区分の適用は一致を確認できません。",
+          "statement_en": "Provider rules consume tokens at node-hour factors of 1.0 for Miyabi-G and 0.8 for Miyabi-C. The HPCI list's example fees were not reconciled with its stated nonpublic-results category.",
+          "hpci_relevance_ja": "共通クレジットや料金比較では、単位と適用区分の双方を固定する必要があります。",
+          "hpci_relevance_en": "Common-credit and tariff comparisons must fix both units and the applicable category.",
+          "adoption_conditions_ja": [
+            "予約分も消費対象で、全量使用や未使用分返金の保証はない。",
+            "参考金額を確定見積として利用せず、提供者の適用区分を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Reservations consume allocation; full use and refunds for unused allocation are not guaranteed.",
+            "Do not use illustrative amounts as confirmed quotes; verify the provider's applicable category."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-MIYABI-TOKEN-TRANSFER-ELIGIBILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDG017"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "システム間トークン移行の対象範囲",
+          "name_en": "Eligibility for inter-system token transfer",
+          "timing_ja": "2026-09-01確認の現行手順",
+          "timing_en": "Current procedure checked 2026-09-01",
+          "statement_ja": "MiyabiとWisteria間の移行は通常利用が対象で、HPCI、JHPCN、企業利用、固定ノード等は対象外とされています。移行元の利用期限を引き継ぎ、全グループ利用者のアカウントを作成するため、配分だけの交換ではありません。",
+          "statement_en": "Transfers between Miyabi and Wisteria target general use; HPCI, JHPCN, corporate and fixed-node routes are excluded. The original expiry is preserved and accounts are created for all group members, so transfer is more than allocation exchange.",
+          "hpci_relevance_ja": "HPCI全体の自由な資源交換が実装済みとは扱えません。",
+          "hpci_relevance_en": "This does not establish unrestricted resource exchange across HPCI.",
+          "adoption_conditions_ja": [
+            "アクセス権、データ移動、保存容量、期限を別に確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify access rights, data movement, storage and expiry separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-TSUBAME-BLOCK-AND-STORAGE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDG018"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TSUBAMEの購入単位と保存費用",
+          "name_en": "TSUBAME allocation blocks and storage charges",
+          "timing_ja": "2026-04-01の募集要領",
+          "timing_en": "April 1, 2026 call",
+          "statement_ja": "1口は400ポイントで400ノード時間相当です。成果公開は税込11万円、産業の成果非公開は44万円で、保存領域もポイントを消費します。年度末の未使用資源は失効し、審査免除でも配分調整は残ります。",
+          "statement_en": "One block is 400 points, equivalent to 400 node-hours. Tax-inclusive prices are JPY110,000 for public results and JPY440,000 for nonpublic industrial results; storage also consumes points. Unused resources expire at fiscal year-end, and review exemption does not remove allocation adjustment.",
+          "hpci_relevance_ja": "料金だけでなく、最低単位とデータ保存を含む利用計画が必要です。",
+          "hpci_relevance_en": "Plan for minimum blocks and data retention, not just a compute tariff.",
+          "adoption_conditions_ja": [
+            "共同利用の公募期限とHPCI枠の受付終了は同一ではない。"
+          ],
+          "adoption_conditions_en": [
+            "Joint-use deadlines and closure of an HPCI allocation route are distinct."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-HOKUSAI-TARIFF-UNRESOLVED",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDG008",
+            "SRC-CDG019"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HOKUSAIの参考金額の不一致",
+          "name_en": "Unreconciled HOKUSAI price illustration",
+          "timing_ja": "2026-09-01に確認した表示",
+          "timing_en": "Display checked 2026-09-01",
+          "statement_ja": "HPCI一覧の6.7円/NHと21,500NHを単純に乗じると144,050円ですが、同じ欄には100.3万円とあります。リンク先規約は料金を別規程に委ねており、この不一致を解消できません。どちらが正しいかは推定しません。",
+          "statement_en": "Multiplying the HPCI list's JPY6.7/NH by 21,500 NH gives JPY144,050, while the same cell lists JPY1,003,000. The linked policy delegates charges to separate rules and does not resolve the mismatch. Neither figure is assumed correct.",
+          "hpci_relevance_ja": "この表示をそのまま採用すると費用比較が大きく変わります。",
+          "hpci_relevance_en": "Using the display uncritically would materially change cost comparisons.",
+          "adoption_conditions_ja": [
+            "現行料金表と単位・対象区分を確認するまで、費用計算への入力を保留する。"
+          ],
+          "adoption_conditions_en": [
+            "Exclude it from cost calculations until current tariffs, units and categories are established."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-TSUKUBA-VNH-REPORTING",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDG020",
+            "SRC-CDG021"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Siriusの仮想ノード単位と報告条件",
+          "name_en": "Sirius virtual-node units and reporting conditions",
+          "timing_ja": "2026-07-23の公募PDFと現行Web本文",
+          "timing_en": "July 23, 2026 call PDF and current web text",
+          "statement_ja": "Siriusの仮想ノード時間は1 APUを1時間使う単位で、4 APUの物理ノード時間と異なります。また、Web本文は成果非公開でも報告を求める一方、PDFは外部発表がない場合の提出不要を記載しています。",
+          "statement_en": "A Sirius virtual-node hour is one APU for one hour, unlike a four-APU physical-node hour. The web text requires reporting even for nonpublic results, whereas the PDF states no submission is needed without external outputs.",
+          "hpci_relevance_ja": "資源量の4倍の取違えと、制度文書間の適用条件の混同を防ぎます。",
+          "hpci_relevance_en": "Avoid fourfold resource-unit errors and conflating applicability across policy documents.",
+          "adoption_conditions_ja": [
+            "報告書種別と利用経路ごとの義務を確認する。",
+            "ジョブ優先度が高くても、即時開始は保証されない。"
+          ],
+          "adoption_conditions_en": [
+            "Clarify report types and obligations for the chosen access route.",
+            "Higher priority does not guarantee immediate job start."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDG008",
+        "title": "HPCI特定研究有償課題の募集",
+        "publisher": "HPCI / RIST",
+        "url": "https://www.hpci-office.jp/using_hpci/proposal_submission_current/hpci_fee_specific",
+        "source_class": "official-project",
+        "published_or_updated": "Current call accessed 2026-09-01"
+      },
+      "origin_group": "rist-specific-paid-access",
+      "checked_at": "2026-09-01T02:14:04+09:00",
+      "locator": "Call overview and provider-specific availability/fee table",
+      "observation_ja": "提供上限、機関別の料金・契約、年度内利用と継続申請を確認。共通単価ではない。",
+      "observation_en": "Read capacity limits, provider-specific fees/contracts, fiscal-year limits and renewal; not a common unit tariff.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG016",
+        "title": "Miyabi FY2026 usage-charge schedule, Annex 3",
+        "publisher": "University of Tokyo Information Technology Center",
+        "url": "https://www.cc.u-tokyo.ac.jp/guide/files/hyou3.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "FY2026 schedule linked from rules effective 2026-04-01"
+      },
+      "origin_group": "UTokyo-Miyabi-access-terms",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Annex 3, pp.1-3: access categories, token factors and notes",
+      "observation_ja": "利用区分別の金額、Miyabi-Cの0.8係数、予約消費、使切り保証なしを確認。",
+      "observation_en": "Read category-specific fees, Miyabi-C factor 0.8, reservation charging and no guarantee of consuming the full allocation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG017",
+        "title": "University of Tokyo token transfer procedure",
+        "publisher": "University of Tokyo Information Technology Center",
+        "url": "https://www.cc.u-tokyo.ac.jp/guide/application/transfer_token.php",
+        "source_class": "official-project",
+        "published_or_updated": "Current procedure accessed 2026-09-01"
+      },
+      "origin_group": "UTokyo-Miyabi-access-terms",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Eligibility; application notes; transfer factors",
+      "observation_ja": "通常利用以外のHPCI等は移行対象外。利用期限の延長はなく、全グループ利用者のアカウントが作成される。",
+      "observation_en": "Non-general routes including HPCI are excluded; transfer does not extend expiry and creates accounts for all group members.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG018",
+        "title": "TSUBAME joint-use FY2026 call and tariff appendix",
+        "publisher": "Institute of Science Tokyo",
+        "url": "https://www.t4.cii.isct.ac.jp/tsubame-kyodo/cfp2026",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-01 FY2026 call"
+      },
+      "origin_group": "ScienceTokyo-TSUBAME-access",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Sections 1, 4 and appendix: resource unit, storage and taxes",
+      "observation_ja": "400ノード時間単位と税込料金、ストレージのポイント消費、年度失効を確認。審査免除でも配分調整がある。",
+      "observation_en": "Read 400-node-hour blocks, tax-inclusive fees, storage point consumption and fiscal expiry; review exemption still permits allocation adjustment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG019",
+        "title": "RIKEN supercomputer system usage policy",
+        "publisher": "RIKEN",
+        "url": "https://i.riken.jp/download/BW_usage_policy_jp2204.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2022-04-01 revision; linked from current HPCI call"
+      },
+      "origin_group": "RIKEN-HOKUSAI-access-terms",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Article 5: charges determined in separate rules",
+      "observation_ja": "利用負担金を別規程で定めると記載。HPCI表の6.7円/NHと金額例の不一致を解消する料金表はない。",
+      "observation_en": "Charges are delegated to separate rules; this document does not resolve the mismatch between HPCI's JPY6.7/NH and its example total.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG020",
+        "title": "Tsukuba CCS industrial-use call, July 23, 2026",
+        "publisher": "University of Tsukuba Center for Computational Sciences",
+        "url": "https://www.ccs.tsukuba.ac.jp/wp-content/uploads/sites/14/2026/07/industry-announce-20260723.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-23"
+      },
+      "origin_group": "Tsukuba-CCS-industrial-access",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Sections 5, 6, 13 and 15",
+      "observation_ja": "SiriusはAPU時間の仮想ノード単位。公表区分別料金、優先でも待機あり、翌年度繰越不可を確認。",
+      "observation_en": "Sirius uses virtual-node APU-hours. Read disclosure-dependent fees, possible waits despite priority and no fiscal-year carryover.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDG021",
+        "title": "Tsukuba CCS industrial-use overview and reporting instructions",
+        "publisher": "University of Tsukuba Center for Computational Sciences",
+        "url": "https://www.ccs.tsukuba.ac.jp/kyodoriyou/industry/",
+        "source_class": "official-project",
+        "published_or_updated": "Links July 23, 2026 guidelines; accessed 2026-09-01"
+      },
+      "origin_group": "Tsukuba-CCS-industrial-access",
+      "checked_at": "2026-09-01T03:17:43+09:00",
+      "locator": "Industrial-use results reporting; linked current PDF",
+      "observation_ja": "Web本文は成果非公開でも報告書が必要と説明するが、PDF第6項は外部発表がない場合の提出不要を説明しており、適用確認が必要。",
+      "observation_en": "Web instructions require reporting even for nonpublic results, whereas PDF section 6 waives submission without external outputs; applicability needs clarification.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-088: 金額・単位・利用区分の不一致と報告条件は未解決。機器購入費や学術割引率への換算は行わない。",
+    "同じ組織の一覧、PDF、Web説明を独立したConsensus根拠として数えない。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-088: fee/unit/category mismatches and reporting conditions remain unresolved. Do not convert tariffs into equipment costs or academic discounts.",
+    "Do not count the same organization's list, PDF and web explanation as independent Consensus origins."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000062",
+      "bundle_sha256": "063fd9a0e6f26ae5c91fe2fa9d5c4a8044a2a88465bd992fbfd69f6eb4a82f3c"
+    }
+  ]
+}

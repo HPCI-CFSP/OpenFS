@@ -1,0 +1,695 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000047",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-01T01:19:44+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "7fb1fc2acf305a968d76b2f8726c229533b2bc25a7e924c8ba423cc60c94f62f",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AI評価を、品質を揃えた学習・推論、エージェントの課題達成と信頼性、利用者負荷に対する応答特性に分けました。2026年のMLPerf拡張と8月末のTerminal-Bench更新を追加しています。評価器、計算資源、利用者シミュレータの違いをモデル能力の差と混同せず、既存の詳細調査と併せて参照します。",
+  "summary_en": "AI evaluation is separated into quality-matched training/inference, agent task success/reliability and service behavior under user load. This update adds 2026 MLPerf extensions and late-August Terminal-Bench changes. Evaluators, resources and user simulators must not be confounded with model capability; retain the earlier detailed studies alongside these findings.",
+  "units": [
+    {
+      "unit_id": "APP-13-U01",
+      "before_sha256": "ca62023a3b58735b13f02063f5b4f5340800a74f8b594f130dfe644f0452dd6e",
+      "evidence_section_ids": [
+        "TDS-AIP-EVALUATION",
+        "TDS-HC26-APP-13-U1",
+        "TDS-CD1-APP-13-U01"
+      ]
+    },
+    {
+      "unit_id": "APP-13-U02",
+      "before_sha256": "4b65311c4ab99e32a0148932d9d29c7977a8d0d02516dbd4168af75d4deaf2c0",
+      "evidence_section_ids": [
+        "TDS-AIP-AGENTS",
+        "TDS-CD1-APP-13-U02"
+      ]
+    },
+    {
+      "unit_id": "APP-13-U03",
+      "before_sha256": "7a7e995798f9afc6deaea7e38b09da34976c66da371936d225dbd6b289713a6f",
+      "evidence_section_ids": [
+        "TDS-AIP-LOAD",
+        "TDS-CD1-APP-13-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-APP-13-U01",
+      "title_ja": "品質を揃えた学習・推論の比較",
+      "title_en": "Quality-matched training and inference",
+      "summary_ja": "スコアの定義、モデル、部門、測定範囲を先に固定します。",
+      "summary_en": "Fix metric definitions, model, division and measurement boundaries first.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-MLPERF6-MOE-TARGET",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA056",
+            "SRC-WORK010"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLPerf Training v6.0: MoEと目標品質",
+          "name_en": "MLPerf Training v6.0: MoE and target quality",
+          "timing_ja": "2026-06-16に結果公開",
+          "timing_en": "Results published 2026-06-16",
+          "statement_ja": "v6.0ではDeepSeek V3とGPT-OSS 20Bが加わり、MoE学習を共通条件で比較できます。評価するのは指定品質へ到達する時間で、パラメータ総数や理論演算量ではありません。OpenFSでは、実装、モデル、品質基準、ノード数、学習範囲を揃えて参照します。",
+          "statement_en": "Version 6.0 adds DeepSeek V3 and GPT-OSS 20B for common-condition MoE training comparisons. It measures time to specified quality, not total parameters or peak arithmetic. OpenFS compares implementation, model, quality threshold, node count and training scope.",
+          "hpci_relevance_ja": "専門家並列の通信・メモリ要求を含む学習設備の評価候補です。",
+          "hpci_relevance_en": "It is relevant to training infrastructure with expert-parallel communication and memory requirements.",
+          "adoption_conditions_ja": [
+            "モデルを変更した成績や別の収束条件を同列に置かない。",
+            "途中状態からの評価とモデル全体の学習費用を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not equate results using different models or convergence targets.",
+            "Distinguish benchmark training scope from full model-development cost."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MLPERF6-REASONING-COMPLIANCE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA057",
+            "SRC-AIP002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLPerf Inference: 応答制約と品質検証",
+          "name_en": "MLPerf Inference: response constraints and quality checks",
+          "timing_ja": "v6.0の2026年3月説明と現行規則",
+          "timing_en": "March 2026 v6.0 explanation and current rules",
+          "statement_ja": "GPT-OSSでは精度用と性能用のデータが分かれ、追加の整合性試験を要求します。DeepSeek-R1の対話シナリオは応答制約を厳しくし、特定条件の投機的デコードを認めています。最大tokens/sだけでは比較できず、版ごとの品質・生成長・TTFT・TPOTを確認します。",
+          "statement_en": "GPT-OSS uses separate accuracy/performance datasets with additional compliance tests. DeepSeek-R1 interactive evaluation tightens response limits and permits specific speculative-decoding configurations. Peak tokens/s alone is insufficient; check versioned quality, output length, TTFT and TPOT.",
+          "hpci_relevance_ja": "学術向け対話サービスでも、速さと回答品質を同時に評価できます。",
+          "hpci_relevance_en": "Academic interactive services need joint speed and quality evaluation.",
+          "adoption_conditions_ja": [
+            "Closed/Open、Available/Preview等の区分を保持する。",
+            "規則の最新版と過去ラウンドの版を混在させない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve Closed/Open and Available/Preview distinctions.",
+            "Do not mix current rules with older submission-round rules."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MLPERF-HPC-HISTORICAL",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-WORK006"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLPerf HPC: 終了した系列と保存資料",
+          "name_en": "MLPerf HPC: retired series and archived evidence",
+          "timing_ja": "2025年1月に系列終了",
+          "timing_en": "Series retired January 2025",
+          "statement_ja": "MLPerf Training: HPCは終了していますが、DeepCAM、CosmoFlow、DimeNet++、AlphaFold2等の過去定義と結果を参照できます。独立モデルを多数学習する弱スケーリングと、1モデルの学習時間を短くする強スケーリングは別の指標です。後継の正式スイートは今回確認できていません。",
+          "statement_en": "MLPerf Training: HPC is retired, while historical definitions/results for DeepCAM, CosmoFlow, DimeNet++, AlphaFold2 and others remain accessible. Throughput of independently trained models differs from strong-scaling one model. A formal successor was not verified in this review.",
+          "hpci_relevance_ja": "科学AIの再現用資料として有用ですが、現行の継続ランキングとは扱いません。",
+          "hpci_relevance_en": "Useful as scientific-AI reference material, not as an active recurring ranking.",
+          "adoption_conditions_ja": [
+            "データとソフトウェアの版、過去ハードウェア条件を保持する。",
+            "新しい科学AI課題は別途代表性を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve data/software versions and historical hardware conditions.",
+            "Assess representativeness of newer scientific-AI workloads separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MLPERF-AGENTIC-REPLAY",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDA058"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLPerf Agentic: 実行履歴再生による性能評価",
+          "name_en": "MLPerf Agentic: trajectory-replay performance evaluation",
+          "timing_ja": "Edge向け募集は2026-07、Datacenter向けは同資料で9月予定",
+          "timing_en": "Edge call July 2026; datacenter work anticipated for September in that source",
+          "statement_ja": "Edge Agenticの募集資料は、BFCLによる単一ターンの正答評価と、記録済み複数ターン履歴の再生による性能測定を組み合わせます。32K文脈は評価条件であって装置の最大能力ではありません。再生測定を、自律エージェントが元の課題を解いた成功率とは解釈しません。",
+          "statement_en": "The Edge Agentic call combines single-turn BFCL accuracy with replay of recorded multi-turn trajectories for performance. Its 32K context is a test condition, not a hardware ceiling. Replay is not the success rate of an autonomous agent solving the original task.",
+          "hpci_relevance_ja": "文脈の成長、KVキャッシュ、逐次応答を測る新しい比較候補です。",
+          "hpci_relevance_en": "It is a new option for measuring context growth, KV cache and sequential responses.",
+          "adoption_conditions_ja": [
+            "募集・仕様・公開結果を別の時点として記録する。",
+            "9月という予定を結果公開済みと書かない。"
+          ],
+          "adoption_conditions_en": [
+            "Record calls, specifications and published results as separate events.",
+            "Do not present the September outlook as released results."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-13-U02",
+      "title_ja": "課題達成・一貫性・評価環境の健全性",
+      "title_en": "Task success, consistency and evaluation integrity",
+      "summary_ja": "モデルとHarnessを別々に固定し、評価条件の変更を追跡します。",
+      "summary_en": "Pin model and harness separately and track changes to evaluation conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-TAU-RELIABILITY-CONDITIONS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-AIP005",
+            "SRC-CDA059",
+            "SRC-CDA060"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "tau-Bench: 対話協調と繰返し成功",
+          "name_en": "tau-Bench: coordination and repeated success",
+          "timing_ja": "公開実装・投稿規則と2025年の原論文",
+          "timing_en": "Public implementation/submission rules and 2025 paper",
+          "statement_ja": "tau-Benchでは、エージェントに加えて利用者シミュレータ、課題、業務規則が結果を左右します。pass^kは繰返しの一貫した成功を測る指標で、k回のうち1回当たればよいpass@kとは異なります。標準Harnessと独自構成を分け、試行数、失敗、費用を保持します。",
+          "statement_en": "tau-Bench depends on the user simulator, tasks and policies as well as the agent. pass^k measures consistent success across repetitions, unlike pass@k, which accepts at least one success. Separate standard/custom harnesses and preserve trials, failures and costs.",
+          "hpci_relevance_ja": "複数ツールや利用者との協調を含む実サービスの信頼性を比較できます。",
+          "hpci_relevance_en": "It supports reliability comparison for services coordinating tools and users.",
+          "adoption_conditions_ja": [
+            "利用者シミュレータの版・設定も固定する。",
+            "簡単な課題だけの抽出と失敗試行の除外を避ける。"
+          ],
+          "adoption_conditions_en": [
+            "Pin user-simulator version and configuration.",
+            "Avoid cherry-picking easy tasks or dropping failed trials."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TERMINAL4-RESOURCE-CALIBRATION",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA061",
+            "SRC-CDA062"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Terminal-Bench 4.0: 計算資源と課題の版管理",
+          "name_en": "Terminal-Bench 4.0: resource and task versioning",
+          "timing_ja": "2026-08-28公開",
+          "timing_en": "Released 2026-08-28",
+          "statement_ja": "4.0では時間・CPU・メモリの設定を調整し、課題の修正と削除を行っています。そのため3.0からの得点変化をモデルだけの改善とは解釈できません。課題環境を変える更新、評価器のみの更新、メタデータ更新を区別し、再実行が必要か再採点でよいかを管理します。",
+          "statement_en": "Version 4.0 recalibrates time, CPU and memory and fixes/removes tasks. Score differences from 3.0 cannot be attributed solely to model improvements. Distinguish environment changes, evaluator changes and metadata changes to determine whether rerunning or regrading is needed.",
+          "hpci_relevance_ja": "低い達成率がモデル能力か資源不足かを切り分ける材料になります。",
+          "hpci_relevance_en": "It helps distinguish capability limits from insufficient execution resources.",
+          "adoption_conditions_ja": [
+            "版をまたぐ同一ランキングを作らない。",
+            "将来版の開発項目を公開済み機能として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not construct a single ranking across incompatible versions.",
+            "Do not treat planned future-version work as released functionality."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TERMINAL-SCIENCE-RELEASE",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA061",
+            "SRC-CDA063",
+            "SRC-CDA064"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Terminal-Bench-Science: 科学ワークフローの成果物評価",
+          "name_en": "Terminal-Bench-Science: scientific workflow artifacts",
+          "timing_ja": "0.1を2026-08-27に公開",
+          "timing_en": "Version 0.1 released 2026-08-27",
+          "statement_ja": "初期版は生命・物理・地球・数学・工学にまたがる70課題を含み、解析、シミュレーション、証明などの成果物を課題別の試験で判定します。公開実装と版付きリリースがあります。科学分野向けの有力な評価候補ですが、新しい小規模な課題集合であり、科学研究全体の自動化を保証しません。",
+          "statement_en": "The initial release contains 70 tasks across life, physical, Earth, mathematical and engineering sciences, grading artifacts such as analyses, simulations and proofs with task-specific tests. Public code and tagged releases make it a useful scientific-evaluation candidate, but not proof of broad research autonomy.",
+          "hpci_relevance_ja": "OpenFSの科学AI評価へ追加する候補として、実分野との対応を調べます。",
+          "hpci_relevance_en": "Map its tasks to actual scientific domains before adopting it for OpenFS evaluation.",
+          "adoption_conditions_ja": [
+            "参照解で環境の動作を確認する作業と、評価対象の解答実行を分離する。",
+            "公開課題を学習外・非公開の問題として評価しない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate reference-solution environment checks from evaluated-agent execution.",
+            "Do not present public tasks as unseen hidden tests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HVTB-EVALUATION-INTEGRITY",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA065"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "評価の健全性: 見かけの合格と課題達成",
+          "name_en": "Evaluation integrity: apparent passing versus task success",
+          "timing_ja": "2026-08-22の研究報告",
+          "timing_en": "Research report dated 2026-08-22",
+          "statement_ja": "HVTBは、課題の意図を満たさず評価だけを通す行動を、達成率とは別に測定します。検知できるのは用意した種類に限られ、未検知を不正なしとは判断できません。OpenFSでは、評価器・参照解・秘密のテストを実行エージェントから隔離し、成功率と制約順守を別々に確認する根拠として扱います。",
+          "statement_en": "HVTB measures behavior that passes checks without satisfying task intent separately from task success. Detection is limited to planted cases, so no detection does not prove absence. It supports isolating evaluators/reference answers/hidden tests and checking success separately from boundary compliance.",
+          "hpci_relevance_ja": "自動研究の信頼性は得点だけで判断せず、検証可能な境界も評価します。",
+          "hpci_relevance_en": "Assess automated research using verifiable boundaries as well as scores.",
+          "adoption_conditions_ja": [
+            "検知用の実験環境を本番の隔離保証と混同しない。",
+            "この調査ではベンチマーク実行や侵入試験を行っていない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not confuse a detection experiment with production isolation assurance.",
+            "No benchmark execution or penetration test was performed here."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-13-U03",
+      "title_ja": "到着負荷・応答分布・有効処理能力",
+      "title_en": "Arrival load, response distributions and useful capacity",
+      "summary_ja": "負荷生成側の制限や失敗も含め、利用者が得る処理能力を測ります。",
+      "summary_en": "Measure user-visible capacity including load-generator limits and failures.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-AIPERF-LOAD-GENERATOR",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA066",
+            "SRC-CDA068"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AIPerf: 到着率と同時実行上限",
+          "name_en": "AIPerf: arrival rate and concurrency ceiling",
+          "timing_ja": "現行公開実装・利用手引き",
+          "timing_en": "Current public implementation and guide",
+          "statement_ja": "AIPerfは同時実行数、到着率、実行履歴再生を扱います。到着率と上限を併用すると追い付き送信は行わず、新規セッションは空きがなければ省略され、継続ターンは待つ規則です。設定到着率を実際にサーバーへ届いた負荷と同一視せず、負荷生成側の律速も確認します。",
+          "statement_en": "AIPerf supports concurrency, arrival-rate and trace-replay modes. With a rate and ceiling it does not catch up; new sessions may be skipped while continuation turns wait. Configured arrival rate is not necessarily delivered server load, so load-generator bottlenecks must be measured.",
+          "hpci_relevance_ja": "飽和時に負荷を減らす試験で性能が良く見えることを防ぎます。",
+          "hpci_relevance_en": "This avoids overstating performance when the test sheds load at saturation.",
+          "adoption_conditions_ja": [
+            "投入予定・送信済み・完了・失敗・省略の件数を分ける。",
+            "入力長・出力長・キャッシュ状態・トークン化条件を固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate scheduled, sent, completed, failed and skipped requests.",
+            "Fix input/output lengths, cache state and tokenization."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-AIPERF-GOODPUT-ATTAINMENT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA067"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "goodputとSLO達成割合",
+          "name_en": "Goodput and SLO attainment fraction",
+          "timing_ja": "現行公開指標定義",
+          "timing_en": "Current public metric definitions",
+          "statement_ja": "goodputは応答制約を満たして完了した毎秒の要求数です。それだけでは全要求の何割が制約を満たしたかはわかりません。AIPerfのgood_request_fractionはエラーも分母に含めるため、過負荷時に要求を捨てて見かけの達成割合が上がる問題を区別できます。",
+          "statement_en": "Goodput counts completed requests per second satisfying response constraints; it does not by itself show the fraction meeting them. AIPerf's good_request_fraction includes errors in its denominator, exposing apparent success caused by rejecting load.",
+          "hpci_relevance_ja": "応答品質を保った利用可能な同時利用者数の評価に使います。",
+          "hpci_relevance_en": "Use both metrics when evaluating sustainable user concurrency.",
+          "adoption_conditions_ja": [
+            "試験前にSLOと計時境界を宣言する。",
+            "負荷生成前の省略は別集計し、分母から消さない。"
+          ],
+          "adoption_conditions_en": [
+            "Declare SLOs and timing boundaries before testing.",
+            "Account separately for pre-send skips rather than hiding them from demand totals."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-AI-CAPACITY-VALIDATION-PLAN",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA066",
+            "SRC-CDA068",
+            "SRC-AIP002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "将来容量予測: 実測からの限定的な外挿",
+          "name_en": "Future capacity: bounded extrapolation from measurements",
+          "timing_ja": "OpenFSの暫定評価方針、実測・校正は未実施",
+          "timing_en": "Provisional OpenFS evaluation approach; no measurements/calibration yet",
+          "statement_ja": "CPU制御、prefill、decode、通信、I/O、待機を分けた実測から、同時実行数と資源構成の感度を調べる方針です。平均応答時間だけでなく上位分位点と失敗率を保持します。未知のGPU世代への能力倍率は置かず、別条件での検証がない範囲をCoverage Gapとします。",
+          "statement_en": "The proposed approach measures CPU control, prefill, decode, communication, I/O and waits to study concurrency/resource sensitivity. Retain tail quantiles and failure rates, not only means. Do not assign speed multipliers to unknown GPU generations; unvalidated extrapolation remains a Coverage Gap.",
+          "hpci_relevance_ja": "将来のノード数を過度に楽観的なtokens/sから決めないための基礎です。",
+          "hpci_relevance_en": "It avoids sizing future systems from overly optimistic tokens/s.",
+          "adoption_conditions_ja": [
+            "校正用と独立検証用の負荷を分ける。",
+            "総電力・ネットワーク機器・ソフトウェア費用の境界を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate calibration from independent validation loads.",
+            "Declare boundaries for system power, network equipment and software cost."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-APP04-CURRENT",
+    "TDS-APP04-FUTURE",
+    "TDS-APP10-CURRENT",
+    "TDS-APP10-FUTURE",
+    "TDS-CROSS02-AI-CURRENT",
+    "TDS-CROSS02-AI-FUTURE",
+    "TDS-SSW09-EVAL-CURRENT",
+    "TDS-SSW09-EVAL-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-AIP002",
+        "title": "MLPerf Inference rules",
+        "publisher": "MLCommons",
+        "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+        "source_class": "official-project",
+        "published_or_updated": "undated; checked 2026-08-31"
+      },
+      "origin_group": "mlcommons-inference",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Divisions, scenarios, quality and network/power boundaries",
+      "observation_ja": "部門・シナリオ別の条件とシステム全体の測定境界を確認。",
+      "observation_en": "Read division/scenario conditions and whole-system measurement boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-AIP005",
+        "title": "tau-Bench implementation and grading revision",
+        "publisher": "Sierra Research",
+        "url": "https://github.com/sierra-research/tau2-bench",
+        "source_class": "official-project",
+        "published_or_updated": "undated; checked 2026-08-31"
+      },
+      "origin_group": "sierra-tau-bench",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Current domains and text/voice evaluation",
+      "observation_ja": "利用者シミュレータとagentを別設定する現行公開実装を確認。",
+      "observation_en": "Read current implementation with separately configured user simulator and agent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA056",
+        "title": "MLPerf Training benchmark definitions",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/benchmarks/training/",
+        "source_class": "official-project",
+        "published_or_updated": "v6.0 page accessed 2026-09-01"
+      },
+      "origin_group": "mlcommons-training",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Benchmarks and target quality",
+      "observation_ja": "対象品質に達する学習時間とv6.0対象モデルを確認。",
+      "observation_en": "Read time-to-target-quality and v6.0 model coverage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA057",
+        "title": "MLPerf Inference v6.0 reasoning benchmarks",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/2026/03/mlperf-inference-gpt-oss/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-24"
+      },
+      "origin_group": "mlcommons-inference",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Quality/performance datasets, latency constraints and compliance tests",
+      "observation_ja": "GPT-OSSの精度と性能データ分離、R1対話シナリオと限定的な投機的デコード条件を確認。",
+      "observation_en": "Read split GPT-OSS datasets, R1 interactive scenario and constrained speculative decoding.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA058",
+        "title": "MLPerf Inference v6.1 Edge Agentic call for submissions",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/2026/07/mlperf-inference-v61-edge-agentic/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-09"
+      },
+      "origin_group": "mlcommons-inference",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Replay, accuracy gate, context constraint and datacenter outlook",
+      "observation_ja": "実行履歴再生と単一ターン正答評価の違い、9月予定のdatacenter評価への言及を確認。結果公開とは扱わない。",
+      "observation_en": "Read replay versus single-turn accuracy and September datacenter outlook; not treated as released results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA059",
+        "title": "tau-Bench leaderboard submission and verification guide",
+        "publisher": "Sierra Research",
+        "url": "https://github.com/sierra-research/tau2-bench/blob/main/docs/leaderboard-submission.md",
+        "source_class": "official-project",
+        "published_or_updated": "main guide accessed 2026-09-01"
+      },
+      "origin_group": "sierra-tau-bench",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Standard/custom, simulator versions, complete tasks and trials",
+      "observation_ja": "標準・独自Harnessの区別、課題除外禁止、複数試行と費用内訳を確認。",
+      "observation_en": "Read standard/custom harness distinctions, full-task coverage, repeated trials and cost reporting.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA060",
+        "title": "tau2-Bench dual-control evaluation",
+        "publisher": "tau2-Bench authors",
+        "url": "https://arxiv.org/html/2506.07982v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-06 v1"
+      },
+      "origin_group": "sierra-tau-bench",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Metrics, user-simulator errors and experimental conditions",
+      "observation_ja": "pass^kと対話協調、利用者シミュレータ由来の誤差を確認。",
+      "observation_en": "Read pass^k, conversational coordination and simulator-induced errors.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA061",
+        "title": "Terminal-Bench version index",
+        "publisher": "Terminal-Bench team",
+        "url": "https://www.tbench.ai/benchmarks",
+        "source_class": "official-project",
+        "published_or_updated": "index accessed 2026-09-01"
+      },
+      "origin_group": "terminal-bench-team",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Versioned release dates",
+      "observation_ja": "TB4.0は8月28日、Science0.1は8月27日と確認。検索要約の旧状態と区別。",
+      "observation_en": "Read August 28 TB4.0 and August 27 Science0.1 dates, distinct from stale search summaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA062",
+        "title": "Terminal-Bench 4.0 resource calibration and versioning",
+        "publisher": "Terminal-Bench team",
+        "url": "https://www.tbench.ai/news/terminal-bench-4-0",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-28 release; date cross-checked against index"
+      },
+      "origin_group": "terminal-bench-team",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Resource calibration, removals and semantic versioning",
+      "observation_ja": "時間・CPU・メモリ条件変更、課題修正、再実行と再採点の区別を確認。",
+      "observation_en": "Read time/CPU/memory changes, task fixes and rerun-versus-regrade distinctions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA063",
+        "title": "Terminal-Bench-Science 0.1 announcement",
+        "publisher": "Terminal-Bench-Science team",
+        "url": "https://www.tbench.ai/news/terminal-bench-science-0-1",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-27 release; date cross-checked against index"
+      },
+      "origin_group": "terminal-bench-science",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "70 tasks, scientific domains, three-trial evaluation and review",
+      "observation_ja": "70課題と成果物評価、3試行、分野・技術レビューの段階を確認。",
+      "observation_en": "Read 70 tasks, artifact evaluation, three trials and domain/technical review stages.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA064",
+        "title": "Terminal-Bench-Science public implementation",
+        "publisher": "Terminal-Bench-Science team",
+        "url": "https://github.com/harbor-framework/terminal-bench-science",
+        "source_class": "official-project",
+        "published_or_updated": "v0.1.0 README accessed 2026-09-01"
+      },
+      "origin_group": "terminal-bench-science",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Tagged releases, oracle checks and workflow coverage",
+      "observation_ja": "公開実装と版固定、環境上での参照解確認の必要性を確認。実行は未実施。",
+      "observation_en": "Read public implementation, version pinning and reference-solution environment checks; no execution performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA065",
+        "title": "Hack-Verifiable Terminal Bench",
+        "publisher": "Roth, Bercovich and Efroni",
+        "url": "https://arxiv.org/html/2608.22103v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08-22 v1"
+      },
+      "origin_group": "hvtb-authors",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Method scope and incomplete detection limits",
+      "observation_ja": "評価の抜け道を測る別軸と、仕込んだ種類しか検知しない下限という限界を確認。",
+      "observation_en": "Read reward-hacking as a separate axis and lower-bound detection limited to planted cases.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA066",
+        "title": "AIPerf inference benchmarking toolkit",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Load modes, trace replay and known issues",
+      "observation_ja": "同時実行数・到着率・履歴再生の別モード、出力長指定の限界を確認。",
+      "observation_en": "Read concurrency/rate/replay modes and limits on enforced output length.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA067",
+        "title": "AIPerf goodput and attainment fraction",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/tutorials/goodput.md",
+        "source_class": "official-project",
+        "published_or_updated": "main guide accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Goodput versus good_request_fraction and error denominator",
+      "observation_ja": "SLO適合処理率と達成割合を区別し、エラーを分母に含める定義を確認。",
+      "observation_en": "Read SLO-compliant rate versus attainment fraction and inclusion of errors in the denominator.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA068",
+        "title": "AIPerf request rate with maximum concurrency",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/tutorials/request-rate-concurrency.md",
+        "source_class": "official-project",
+        "published_or_updated": "main guide accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Sleep-then-gate and new-session/continuation behavior",
+      "observation_ja": "追い付き送信なし、新規セッションのskipと継続ターンの待機という負荷生成規則を確認。",
+      "observation_en": "Read no catch-up, new-session skipping and continuation blocking in load generation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK006",
+        "title": "MLPerf Training: HPC",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/benchmarks/training-hpc/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "mlcommons-hpc",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Retirement notice and archived benchmark definitions",
+      "observation_ja": "2025年1月の終了、過去結果の保存、後継確定ではない作業部会案内を確認。",
+      "observation_en": "Read January 2025 retirement, preserved historical results and working-group links that do not establish a successor.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK010",
+        "title": "MLCommons Releases MLPerf Training v6.0 Results",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/2026/06/mlperf-training-v6-0-results/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-16"
+      },
+      "origin_group": "mlcommons-training",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "June 16 v6.0 results announcement",
+      "observation_ja": "MoE課題追加と公開結果の発表日を再確認。",
+      "observation_en": "Rechecked MoE additions and result-announcement date.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-073",
+      "topic_ids": [
+        "APP-13"
+      ],
+      "priority": "P1",
+      "question_ja": "科学AI・エージェント評価の版と資源条件を揃え、課題達成率と応答・電力・費用を比較できるか。",
+      "question_en": "Can scientific-AI/agent evaluations be compared at matched versions/resources for task success, response, energy and cost?",
+      "next_action_ja": "MLPerf Agenticの公開結果を継続確認し、TB-Scienceの課題構成と各版の再実行条件を整理する。負荷生成の省略・失敗を含む独立計測を別途設計する。",
+      "next_action_en": "Track MLPerf Agentic result availability, map TB-Science tasks and version-specific rerun requirements, and separately design independent measurements including skipped/failed load.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "今回追加したベンチマークは実行しておらず、独自ランキングも作っていない。",
+    "端末向けの履歴再生を、科学エージェントの自律的成功やデータセンター容量へ一般化しない。",
+    "電力・費用・科学品質を揃えた世界共通の計測は未取得。",
+    "単一モデルによる暫定調査であり、Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Newly added benchmarks were not executed and no independent ranking was produced.",
+    "Do not generalize edge replay to autonomous scientific success or datacenter capacity.",
+    "Worldwide matched energy/cost/scientific-quality measurements remain uncollected.",
+    "This single-model review remains provisional with incomplete Consensus."
+  ]
+}
