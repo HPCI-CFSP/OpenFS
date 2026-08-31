@@ -1,0 +1,422 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000020",
+  "topic_id": "ARCH-02",
+  "created_at": "2026-08-31T21:37:50+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "2ac6077d56228943693dfdd706a929ceb1e7695aa1887cb0583fb10d934a8f46",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "半導体プロセスの製造段階と、チップレット・先端接合の実用化条件を整理しました。製造技術の提供目標は完成システムの発売日と区別し、歩留まり・供給能力・費用の不足は未確認事項として残しています。単一モデルによる暫定結果です。",
+  "summary_en": "This provisional single-model review separates process manufacturing stages from chiplet and bonding readiness. Foundry targets are not finished-system release dates; missing yield, capacity and cost evidence remains explicit.",
+  "units": [
+    {
+      "unit_id": "ARCH-02-U01",
+      "before_sha256": "627fe7a3f4a0513f8b7f248dcba55dadbcded8762b6ed2d81f4ea2bfd401e22e",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-02-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-02-U02",
+      "before_sha256": "099f22c9546fb91cbb88d9396b013d8ba177fc9c102b92d269e92df51a4fc99c",
+      "evidence_section_ids": [
+        "TDS-ARCH02-INTEGRATION",
+        "TDS-ARCH03-3D",
+        "TDS-HC26-ARCH-02-U2",
+        "TDS-HW1-ARCH-02-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-02-U01",
+      "title_ja": "製造プロセスと供給段階",
+      "title_en": "Process technology and manufacturing readiness",
+      "summary_ja": "プロセスの名称だけで性能・費用を順位付けせず、試作、リスク生産、量産、顧客製品の供給を別々に確認します。",
+      "summary_en": "Node labels are not a performance or cost ranking. Track prototypes, risk production, volume manufacturing and customer-product supply separately.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-TSMC-PROCESS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-TSMC-SYMP26"
+          ],
+          "actor_ids": [
+            "ACT-TSMC"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TSMC: A14・N2U・A13・A12",
+          "name_en": "TSMC: A14, N2U, A13 and A12",
+          "timing_ja": "A14・N2Uは2028年、A13・A12は2029年の生産目標。四半期未公表。",
+          "timing_en": "Production targets: A14/N2U in 2028; A13/A12 in 2029. Quarters not disclosed.",
+          "statement_ja": "2026年の技術シンポジウムでTSMCが公表した製造計画です。A12には裏面給電を組み込みますが、この計画だけでは採用CPU・GPU、数量、価格を確定できません。",
+          "statement_en": "These are TSMC's 2026 symposium manufacturing plans. A12 adds backside power delivery; the plans do not identify qualified CPU/GPU products, quantities or prices.",
+          "hpci_relevance_ja": "調達候補の納入時期は、製造プロセスに加え、設計・実装・メモリ調達・製品認定の進捗で判断する必要があります。",
+          "hpci_relevance_en": "Delivery planning must also account for design, packaging, memory procurement and product qualification.",
+          "adoption_conditions_ja": [
+            "顧客製品ごとの認定・出荷根拠",
+            "供給能力と完成パッケージの費用"
+          ],
+          "adoption_conditions_en": [
+            "Product-specific qualification and shipment evidence",
+            "Capacity and finished-package costs"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-INTEL-PROCESS",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-INTEL-VLSI26"
+          ],
+          "actor_ids": [
+            "ACT-INTEL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Intel: 18Aと18A-Pの段階の違い",
+          "name_en": "Intel: distinct 18A and 18A-P stages",
+          "timing_ja": "18Aは2025年生産開始、18A-Pは2026年6月時点でリスク生産。",
+          "timing_en": "18A entered production in 2025; 18A-P was in risk production as of June 2026.",
+          "statement_ja": "Intelは18A-Pの設計規則互換性と性能・熱特性の改善を報告しています。リスク生産は工程を検証する段階であり、外部顧客向けの量産供給を保証しません。CFET等の同時発表は長期研究として区別します。",
+          "statement_en": "Intel reports design-rule compatibility and performance/thermal improvements for 18A-P. Risk production validates the process; it does not guarantee volume supply to external customers. Concurrent CFET results remain long-term research.",
+          "hpci_relevance_ja": "プロセス単体の改善率をそのままアプリケーション高速化率に置き換えず、製品・実測・供給条件を確認します。",
+          "hpci_relevance_en": "Do not turn process-level gains into application speedups; require product, measurement and supply evidence.",
+          "adoption_conditions_ja": [
+            "採用製品と量産認定",
+            "比較回路・電圧・温度・歩留まりの条件"
+          ],
+          "adoption_conditions_en": [
+            "Adopting products and volume qualification",
+            "Comparison circuit, voltage, temperature and yield conditions"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-SAMSUNG-PROCESS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-SAMSUNG-Q226"
+          ],
+          "actor_ids": [
+            "ACT-SAMSUNG"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Samsung: 2nmの製品分野別の進捗",
+          "name_en": "Samsung: application-specific 2nm progress",
+          "timing_ja": "2026年後半に第2世代2nmのモバイル製品増産を計画。HPC製品の納入時期は別途確認。",
+          "timing_en": "Second-generation 2nm mobile ramp planned for H2 2026; HPC delivery timing requires separate evidence.",
+          "statement_ja": "2026年Q2決算では2nm HPCの受注拡大と、モバイル向けの増産計画を別々に述べています。モバイル製品の製造実績から、大型HPCチップの歩留まりや供給開始を推定しません。",
+          "statement_en": "Q2 2026 results separately discuss 2nm HPC design wins and mobile ramp plans. Mobile manufacturing progress does not establish large HPC-die yield or availability.",
+          "hpci_relevance_ja": "ロジックとHBMベースダイの製造分担を確認し、同じ企業の技術でも認定と供給の対象製品を区別します。",
+          "hpci_relevance_en": "Check logic/HBM-base-die manufacturing roles and product-specific qualification and supply.",
+          "adoption_conditions_ja": [
+            "HPC製品の型番・出荷・パッケージ認定"
+          ],
+          "adoption_conditions_en": [
+            "HPC product identity, shipment and package qualification"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-RAPIDUS-PROCESS",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-RAPIDUS-FY26"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Rapidus: 試作・PDKと量産目標",
+          "name_en": "Rapidus: pilot/PDK progress and production target",
+          "timing_ja": "2026年度にPDK一般提供と工程検証を計画、量産開始は2027年目標。",
+          "timing_en": "Wider PDK release and process validation planned in FY2026; volume production targeted for 2027.",
+          "statement_ja": "公表済みの進捗は2nm GAA試作、先行顧客向けPDK、後工程の試作ラインです。2027年は目標であり、現時点で大規模システム向けの製品・供給数量が確定したとは扱いません。",
+          "statement_en": "Reported progress covers 2nm GAA prototypes, an early-customer PDK and a packaging pilot line. The 2027 target does not establish products or supply volumes for large systems.",
+          "hpci_relevance_ja": "国内の設計・製造候補として追跡し、実証から調達へ移る条件をPDK、設計IP、試験、歩留まり、長期供給で評価します。",
+          "hpci_relevance_en": "Track as a Japanese design/manufacturing option, assessing PDK/IP, testing, yield and long-term supply before procurement.",
+          "adoption_conditions_ja": [
+            "試作品と顧客製品の認定結果",
+            "暦年と年度の区別"
+          ],
+          "adoption_conditions_en": [
+            "Prototype and customer-product qualification",
+            "Distinguish calendar and fiscal years"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-02-U02",
+      "title_ja": "チップレット接続と先端実装の制約",
+      "title_en": "Chiplet links and integration constraints",
+      "summary_ja": "接続規格、ダイの配置、接合方式、垂直配線は異なる設計層です。微細化の実証と、熱・検査・量産・保守を満たした製品を分けます。",
+      "summary_en": "Link standards, die placement, bonding and vertical wiring are separate design layers. Fine-pitch demonstrations are not thermally qualified, testable and serviceable volume products.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-UCIE-LIFECYCLE",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-HW1-UCIE-SPECS"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UCIe: 帯域だけでなく管理・検査も対象",
+          "name_en": "UCIe: management and testing as well as bandwidth",
+          "timing_ja": "公開概要でUCIe 3.0まで確認。各機能の製品実装時期は別。",
+          "timing_en": "Public overview checked through UCIe 3.0; product implementation timing is separate.",
+          "statement_ja": "UCIe 2.0は3D実装と検査・管理・デバッグを拡張し、3.0は48/64 GT/sを規定します。管理機能には任意項目もあるため、同じ規格名だけでチップレットの相互運用を保証できません。",
+          "statement_en": "UCIe 2.0 extends 3D integration and test/management/debug support; 3.0 defines 48/64 GT/s. Optional management features mean a shared standard name does not guarantee interoperability.",
+          "hpci_relevance_ja": "パッケージ設計の比較では規格版・実装機能・熱停止・検査経路を確認します。完成システムの保守交換単位も別途必要です。",
+          "hpci_relevance_en": "Compare versions, implemented features, thermal shutdown and test paths; identify the finished system's service replacement unit separately.",
+          "adoption_conditions_ja": [
+            "適合試験と実際の組合せの検証",
+            "公開概要のみ確認。規格全文は未確認"
+          ],
+          "adoption_conditions_en": [
+            "Compliance tests and validation of the actual combination",
+            "Public overview only; complete specification not reviewed"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-BONDING-D2W",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-IMEC-D2W"
+          ],
+          "actor_ids": [
+            "ACT-IMEC"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "D2W: 良品ダイの選択と表面品質",
+          "name_en": "D2W: die selection and surface quality",
+          "timing_ja": "imecの2µm接合ピッチ実証は2024年。対象製品の量産時期ではない。",
+          "timing_en": "Imec's 2-micrometer bonding demonstration dates to 2024, not a target-product production date.",
+          "statement_ja": "D2Wは検査済みの良品ダイや異なる寸法のダイを選んで積層できます。一方、微細なハイブリッド接合では切断後の清浄度、平坦度、位置合わせが制約です。試験配線の電気的歩留まりを、完成チップの歩留まりと混同しません。",
+          "statement_en": "D2W can stack selected known-good and differently sized dies. Fine-pitch hybrid bonding depends on post-singulation cleanliness, planarity and alignment. Electrical test-chain yield is not finished-chip yield.",
+          "hpci_relevance_ja": "異種ダイ統合の有力な手段ですが、検査費用と熱・信頼性を含めたパッケージ全体で比較します。",
+          "hpci_relevance_en": "Assess heterogeneous integration at package level, including test costs, thermals and reliability.",
+          "adoption_conditions_ja": [
+            "良品ダイ判定の範囲と接合後検査",
+            "製品規模での熱・信頼性評価"
+          ],
+          "adoption_conditions_en": [
+            "Known-good-die test coverage and post-bond testing",
+            "Product-scale thermal and reliability qualification"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-BONDING-W2W",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-IMEC-W2W"
+          ],
+          "actor_ids": [
+            "ACT-IMEC"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "W2W: 200nm接合ピッチの研究実証",
+          "name_en": "W2W: a 200nm-pitch research demonstration",
+          "timing_ja": "2026年Q2に試験ウェハで実証。製品の供給日は未確認。",
+          "timing_en": "Demonstrated on test wafers in Q2 2026; product availability unverified.",
+          "statement_ja": "imec/EVGは配線を備えた試験ウェハで200nmピッチのハイブリッド接合を報告しました。ウェハ全体のダイが位置合わせ条件を満たしたことは、すべての完成製品が良品であるという意味ではありません。",
+          "statement_en": "Imec/EVG reported 200nm-pitch hybrid bonding on routed test wafers. Meeting alignment criteria across all wafer dies does not imply 100% finished-product yield.",
+          "hpci_relevance_ja": "高密度のロジック・メモリ積層候補として監視し、ダイ寸法の整合、複合歩留まり、放熱、交換範囲を検証します。",
+          "hpci_relevance_en": "Track dense logic/memory stacking while assessing die-size matching, compounded yield, cooling and replacement boundaries.",
+          "adoption_conditions_ja": [
+            "製品ダイでの検査・熱・信頼性データ"
+          ],
+          "adoption_conditions_en": [
+            "Testing, thermal and reliability data on product dies"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-PACKAGE-CO-SCALE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-TSMC-SYMP26"
+          ],
+          "actor_ids": [
+            "ACT-TSMC"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "パッケージ大型化と量産の前提条件",
+          "name_en": "Package scaling and production dependencies",
+          "timing_ja": "TSMCは14レチクル相当CoWoSを2028年、SoW-Xを2029年に予定。",
+          "timing_en": "TSMC targets 14-reticle-equivalent CoWoS in 2028 and SoW-X in 2029.",
+          "statement_ja": "ダイやHBMを多く搭載できる実装の計画は、供給可能な完成アクセラレータ数を直接示しません。OpenFSでは、実装面積の拡張をメモリ供給・基板・冷却・試験の整備と組み合わせて評価します。",
+          "statement_en": "Plans for packages carrying more dies/HBM do not directly establish accelerator supply volumes. OpenFS evaluates package expansion together with memory supply, substrates, cooling and testing.",
+          "hpci_relevance_ja": "システム更新では、計算チップだけでなくパッケージとメモリが納入の制約にならないか確認します。",
+          "hpci_relevance_en": "System refresh planning must check packaging and memory delivery constraints, not only compute silicon.",
+          "adoption_conditions_ja": [
+            "実際の顧客製品と製造能力"
+          ],
+          "adoption_conditions_en": [
+            "Actual customer products and manufacturing capacity"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-IMEC-D2W",
+        "title": "Imec demonstrates die-to-wafer hybrid bonding with a Cu interconnect pad pitch of 2 micrometers",
+        "publisher": "imec",
+        "url": "https://www.imec-int.com/en/press/imec-demonstrates-die-wafer-hybrid-bonding-cu-interconnect-pad-pitch-2mm",
+        "source_class": "official-project",
+        "published_or_updated": "2024-05-29"
+      },
+      "origin_group": "imec-ectc2024-d2w",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "Process demonstration; electrical yield; comparison with wafer-to-wafer bonding",
+      "observation_ja": "2µm接合ピッチの試験構造と、良品ダイ・異なる寸法のダイを選択できるD2Wの特徴を確認。試験構造の歩留まりを完成品歩留まりに転用しない。",
+      "observation_en": "Checked 2-micrometer test structures and selection of known-good, differently sized dies; test-structure yield is not finished-product yield.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-IMEC-W2W",
+        "title": "Imec and EV Group demonstrate wafer-to-wafer hybrid bonding with 200nm interconnect pitch and record high overlay accuracy",
+        "publisher": "imec and EV Group",
+        "url": "https://www.imec-int.com/en/press/imec-and-ev-group-demonstrate-wafer-wafer-hybrid-bonding-200nm-interconnect-pitch-and-record",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-28"
+      },
+      "origin_group": "imec-evg-ectc2026-w2w",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "200nm test vehicle and post-bond overlay; ECTC presentation reference",
+      "observation_ja": "配線を備えた試験ウェハでの200nm接合ピッチを確認。全ダイの位置合わせ精度の達成を製品の100%歩留まりとは解釈しない。",
+      "observation_en": "Checked 200nm bonding pitch on routed test wafers; all-die overlay compliance is not 100% finished-product yield.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-INTEL-VLSI26",
+        "title": "Intel Foundry Details Process Milestones and Future Innovation at VLSI Symposium",
+        "publisher": "Intel",
+        "url": "https://newsroom.intel.com/intel-foundry/intel-foundry-details-process-milestones-future-innovation-at-vlsi-symposium",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-16"
+      },
+      "origin_group": "intel-foundry-vlsi-2026",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "Intel 18A-P updates at VLSI; Additional updates; Future innovation",
+      "observation_ja": "18Aの2025年生産開始と18A-Pのリスク生産を区別。CFET、GaN/Si、Ru配線は研究報告で、製品発売時期とはしない。",
+      "observation_en": "Distinguished 2025 Intel 18A production from 18A-P risk production; CFET, GaN/Si and Ru interconnect results are research, not product launches.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-RAPIDUS-FY26",
+        "title": "NEDO Approves Rapidus FY2026 Plan and Budget for 2nm Semiconductor Projects",
+        "publisher": "Rapidus",
+        "url": "https://www.rapidus.inc/en/news_topics/information/nedo-approves-rapidus-fy2026-plan-and-budget-for-2nm-semiconductor-projects/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-04-11"
+      },
+      "origin_group": "rapidus-nedo-fy2026-plan",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "FY2025 pilot and pre-release PDK; FY2026 plan; CEO statement",
+      "observation_ja": "試作ラインと先行顧客向けPDK、2026年度のPDK一般提供計画、2027年量産目標を区別して確認。",
+      "observation_en": "Separated pilot/pre-release PDK progress, the FY2026 wider PDK release plan and the 2027 volume-production target.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SAMSUNG-Q226",
+        "title": "Samsung Electronics Announces Second Quarter 2026 Results",
+        "publisher": "Samsung",
+        "url": "https://news.samsung.com/global/samsung-electronics-announces-second-quarter-2026-results",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-30"
+      },
+      "origin_group": "samsung-q2-2026-results",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "DS To Maintain Growth Momentum While Advancing Technology Leadership",
+      "observation_ja": "2nm HPCの受注と2026年後半の第2世代2nmモバイル製品増産計画、HBM4売上拡大とHBM4E試供を区別。",
+      "observation_en": "Distinguished 2nm HPC design wins from H2 2026 second-generation 2nm mobile ramp plans, and HBM4 sales from HBM4E samples.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-TSMC-SYMP26",
+        "title": "TSMC Debuts A13 Technology at 2026 North America Technology Symposium",
+        "publisher": "TSMC",
+        "url": "https://pr.tsmc.com/english/news/3302",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-04-23; event dateline 2026-04-22"
+      },
+      "origin_group": "tsmc-technology-symposium-2026",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "Advanced Logic; TSMC 3DFabric Advanced Packaging and 3D Silicon Stacking",
+      "observation_ja": "A14/N2Uの2028年、A13/A12の2029年という製造目標と、CoWoS拡張計画を確認。顧客製品の発売日は示していない。",
+      "observation_en": "Checked 2028 A14/N2U and 2029 A13/A12 production targets and CoWoS expansion; these are not customer-product release dates.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-UCIE-SPECS",
+        "title": "UCIe Specifications: public overview of versions 1.0 to 3.0",
+        "publisher": "UCIe Consortium",
+        "url": "https://www.uciexpress.org/specifications",
+        "source_class": "official-standard",
+        "published_or_updated": "undated living summary; checked 2026-08-31"
+      },
+      "origin_group": "ucie-consortium-specification-summary",
+      "checked_at": "2026-08-31T21:35:46+09:00",
+      "locator": "UCIe 2.0 and UCIe 3.0 Specification sections",
+      "observation_ja": "3D・管理機能と48/64 GT/sの規格上の対応を確認。PDFへのリダイレクトは安全制御で拒否され、全文適合要件は未確認。",
+      "observation_en": "Checked overview support for 3D/manageability and 48/64 GT/s. A PDF redirect was safety-blocked; full conformance requirements remain unread.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-055",
+      "topic_ids": [
+        "ARCH-02"
+      ],
+      "priority": "P0",
+      "question_ja": "先端プロセス・接合の計画を、製品ごとの量産歩留まり、供給能力、認定、費用、保守期間へ結び付けられるか。",
+      "question_en": "Can process/bonding plans be linked to product-specific volume yield, capacity, qualification, cost and support windows?",
+      "next_action_ja": "顧客製品の仕様・出荷と適合試験を追跡する。非公開の歩留まり・単価は推定で埋めず、規格公開と製品供給を分ける。",
+      "next_action_en": "Track customer specifications, shipments and compliance tests. Do not invent nonpublic yield/prices or equate standard publication with product supply.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "顧客製品・製造能力・費用・信頼性の追加根拠",
+    "規格全文と独立した適合試験結果",
+    "独立モデルによるConsensus Gate"
+  ],
+  "remaining_work_en": [
+    "Additional product, capacity, cost and reliability evidence",
+    "Full specifications and independent compliance results",
+    "Independent-model Consensus Gate"
+  ]
+}

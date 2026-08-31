@@ -19,15 +19,15 @@ How should CPU, GPU, vector, and accelerator products be combined given workload
 - `ARCH-01-U01` **CPU・GPUと異種構成 / CPUs, GPUs, and heterogeneous nodes** (`partial`)
   - CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。
   - How should CPU, GPU, vector, and accelerator products be combined given workloads, power, cost, and software support?
-  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE, TDS-HC26-ARCH-01-U1
-- `ARCH-01-U02` **ノード内の構成 / Node organization** (`not-started`)
+  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE, TDS-HC26-ARCH-01-U1, TDS-HW1-ARCH-01-U01
+- `ARCH-01-U02` **ノード内の構成 / Node organization** (`partial`)
   - コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。
   - How should cores, caches, memory, I/O, and tightly or loosely coupled resources be organized?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-01-U02
 - `ARCH-01-U03` **エージェント処理向けCPU / CPUs for agentic workloads** (`partial`)
   - 直列処理と同時実行に対し、コア数、周波数、P/Eコア、SMT、電圧・周波数特性のトレードオフをどう評価するか。
   - How do core count, frequency, P/E cores, SMT, and voltage-frequency behavior trade off for serial work and concurrent agents?
-  - Evidence sections: TDS-ARCH14-CURRENT, TDS-ARCH14-FUTURE
+  - Evidence sections: TDS-HW1-ARCH-01-U03
 
 Related / 関連: ARCH-003, ARCH-004, ARCH-005, ARCH-009, SSW-001, APP-013
 
@@ -39,14 +39,14 @@ Semiconductor processes, chiplets, and advanced packaging. Canonical ID: `ARCH-0
 
 How do process technology, production capacity, yield, and cost constrain performance, power, and deployment? How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?
 
-- `ARCH-02-U01` **製造プロセスと供給 / Processes and production** (`not-started`)
+- `ARCH-02-U01` **製造プロセスと供給 / Processes and production** (`partial`)
   - プロセス、製造能力、歩留まりと費用が性能・電力・導入時期をどう制約するか。
   - How do process technology, production capacity, yield, and cost constrain performance, power, and deployment?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-02-U01, TDS-HW2-ARCH-02-U01
 - `ARCH-02-U02` **チップレットと接合 / Chiplets and bonding** (`partial`)
   - UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。
   - How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?
-  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D, TDS-HC26-ARCH-02-U2
+  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D, TDS-HC26-ARCH-02-U2, TDS-HW1-ARCH-02-U02
 
 Related / 関連: ARCH-003, ARCH-009, CROSS-001
 
@@ -61,15 +61,15 @@ How do DDR, LPDDR, HBM, and 3D-stacked DRAM compare in bandwidth, latency, capac
 - `ARCH-03-U01` **メモリ規格・方式 / Memory standards and technologies** (`partial`)
   - DDR・LPDDR・HBM・3D積層DRAM等を、帯域・遅延・容量・電力・費用・成熟度からどう比較するか。
   - How do DDR, LPDDR, HBM, and 3D-stacked DRAM compare in bandwidth, latency, capacity, power, cost, and maturity?
-  - Evidence sections: TDS-ARCH03-MAIN
+  - Evidence sections: TDS-HW2-ARCH-03-U01, TDS-HW3-ARCH-03-U01
 - `ARCH-03-U02` **モジュール・カスタム実装 / Modules and custom implementations** (`partial`)
   - SOCAMM等のモジュールとNVHBM等のカスタム実装を、それぞれ同じ技術階層の候補とどう比較するか。
   - How should modules such as SOCAMM and custom implementations such as NVHBM be compared with alternatives at the same technical layer?
-  - Evidence sections: TDS-ARCH03-MAIN, TDS-HC26-ARCH-03-U2
-- `ARCH-03-U03` **メモリ階層の構成 / Memory hierarchy composition** (`not-started`)
+  - Evidence sections: TDS-HW1-ARCH-03-U02
+- `ARCH-03-U03` **メモリ階層の構成 / Memory hierarchy composition** (`partial`)
   - アクセス特性に適したメモリ階層を、CXLによる増設・共有やPIMとの組合せも参照してどう構成するか。
   - How should memory hierarchies match access characteristics, including combinations with CXL expansion or sharing and PIM?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-03-U03, TDS-HW2-ARCH-03-U03
 
 Related / 関連: ARCH-002, ARCH-004, ARCH-009, APP-002, APP-013
 
@@ -84,15 +84,15 @@ How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantic
 - `ARCH-04-U01` **ノード内・Scale-up / Intra-node and scale-up** (`partial`)
   - PCIe、CXL、NVLink、UALink等の接続範囲、メモリ意味論、整合性、相互運用性をどう区別するか。
   - How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantics, coherence, and interoperability?
-  - Evidence sections: TDS-ARCH03-TIERING, TDS-ARCH03-FABRIC
+  - Evidence sections: TDS-ARCH03-TIERING, TDS-ARCH03-FABRIC, TDS-HW1-ARCH-04-U01
 - `ARCH-04-U02` **Scale-out・拠点間 / Scale-out and inter-site** (`partial`)
   - InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。
   - How do InfiniBand, Ethernet/RoCE, Ultra Ethernet, and Cornelis technologies compare in topology, congestion, latency, bandwidth, and power?
-  - Evidence sections: TDS-ARCH04-CURRENT, TDS-ARCH04-FUTURE, TDS-HC26-ARCH-04-U2
-- `ARCH-04-U03` **光接続 / Optical connectivity** (`not-started`)
+  - Evidence sections: TDS-ARCH04-CURRENT, TDS-HC26-ARCH-04-U2, TDS-HW1-ARCH-04-U02, TDS-HW2-ARCH-04-U02
+- `ARCH-04-U03` **光接続 / Optical connectivity** (`partial`)
   - CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。
   - How should electrical and optical links, including CPO, be selected based on reach, integration, power, serviceability, and standardization?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-04-U03
 
 Related / 関連: ARCH-003, ARCH-005, SSW-003, ARCH-012
 
@@ -107,11 +107,11 @@ How should homogeneous or heterogeneous systems, racks, and disaggregated comput
 - `ARCH-05-U01` **ラック・システム構成 / Rack and system organization** (`partial`)
   - 均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。
   - How should homogeneous or heterogeneous systems, racks, and disaggregated compute, memory, and storage be composed?
-  - Evidence sections: TDS-ARCH05-CURRENT, TDS-ARCH05-FUTURE, TDS-HC26-ARCH-05-U1
-- `ARCH-05-U02` **全体の適合性 / System-level suitability** (`not-started`)
+  - Evidence sections: TDS-HW1-ARCH-05-U01, TDS-HW3-ARCH-05-U01
+- `ARCH-05-U02` **全体の適合性 / System-level suitability** (`partial`)
   - ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。
   - How should nodes, networks, storage, and facility constraints be combined and checked for scalability and interoperability?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-05-U02
 
 Related / 関連: ARCH-001, ARCH-004, ARCH-012, OPS-001
 
@@ -126,15 +126,15 @@ How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compa
 - `ARCH-12-U01` **専用アクセラレータ / Specialized accelerators** (`partial`)
   - Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。
   - How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compare in architecture and application suitability?
-  - Evidence sections: TDS-ARCH12-CURRENT, TDS-ARCH12-FUTURE, TDS-ARCH02-DOMESTIC, TDS-HC26-ARCH-12-U1
+  - Evidence sections: TDS-ARCH02-DOMESTIC, TDS-HC26-ARCH-12-U1, TDS-HW1-ARCH-12-U01, TDS-HW2-ARCH-12-U01
 - `ARCH-12-U02` **PIM・データ近傍処理 / PIM and near-data processing** (`partial`)
   - PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。
   - How should PIM and near-memory processing be evaluated for compute placement, memory models, software support, and reduced data movement?
-  - Evidence sections: TDS-ARCH03-PIM, TDS-HC26-ARCH-12-U2
-- `ARCH-12-U03` **導入・供給条件 / Deployment and supply conditions** (`not-started`)
+  - Evidence sections: TDS-ARCH03-PIM, TDS-HC26-ARCH-12-U2, TDS-HW1-ARCH-12-U02, TDS-HW2-ARCH-12-U02
+- `ARCH-12-U03` **導入・供給条件 / Deployment and supply conditions** (`partial`)
   - 量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。
   - How do production readiness, scale-up/out, portability, maintenance, and supply continuity determine adoption conditions?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-HW1-ARCH-12-U03
 
 Related / 関連: ARCH-003, APP-016, SSW-001, CROSS-003
 
@@ -149,19 +149,19 @@ How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, 
 - `SSW-05-U01` **記憶デバイス / Storage devices** (`partial`)
   - SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。
   - How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost?
-  - Evidence sections: TDS-STP-DEVICES
+  - Evidence sections: TDS-HW1-SSW-05-U01
 - `SSW-05-U02` **接続・システム構成 / Connectivity and system organization** (`partial`)
   - NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。
   - How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined?
-  - Evidence sections: TDS-STP-CONNECT
+  - Evidence sections: TDS-HW1-SSW-05-U02
 - `SSW-05-U03` **保存方式・統合製品 / Storage software and integrated products** (`partial`)
   - 並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。
   - How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions?
-  - Evidence sections: TDS-STP2-PRODUCTS
+  - Evidence sections: TDS-HW1-SSW-05-U03
 - `SSW-05-U04` **データ管理と転送 / Data management and transfer** (`partial`)
   - 階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。
   - How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?
-  - Evidence sections: TDS-STP-DATA
+  - Evidence sections: TDS-HW1-SSW-05-U04
 
 Related / 関連: ARCH-004, ARCH-005, OPS-012, SSW-012
 

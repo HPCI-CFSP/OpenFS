@@ -9,6 +9,7 @@ from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
+from roadmap_timing import milestone_quarter_window
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -112,6 +113,8 @@ def build(
         for milestone in milestones:
             year = milestone["year"]
             quarter = quarter_number(milestone["quarter"])
+            window = milestone_quarter_window(milestone)
+            audit_quarter = as_of.year * 4 + current_quarter - 1
             basis = milestone["timing_basis"]
             if basis == "no-public-date":
                 roadmap_items.append(attention(
@@ -124,12 +127,7 @@ def build(
                     "Recheck official project, standards, and vendor announcements in the next loop.",
                 ))
             if basis in TARGET_BASES and year is not None:
-                target_passed = year < as_of.year or (
-                    year == as_of.year
-                    and milestone["timing_precision"] == "quarter"
-                    and quarter is not None
-                    and quarter < current_quarter
-                )
+                target_passed = window[1] < audit_quarter
                 if target_passed:
                     roadmap_items.append(attention(
                         roadmap["roadmap_id"], "milestone", milestone["milestone_id"], "high",
@@ -140,9 +138,7 @@ def build(
                         "Do not convert the target into an observed event; check official updates and revise its state.",
                     ))
             if basis in OBSERVED_BASES and year is not None:
-                event_in_future = year > as_of.year or (
-                    year == as_of.year and quarter is not None and quarter > current_quarter
-                )
+                event_in_future = window[0] > audit_quarter
                 if event_in_future:
                     roadmap_items.append(attention(
                         roadmap["roadmap_id"], "milestone", milestone["milestone_id"], "critical",

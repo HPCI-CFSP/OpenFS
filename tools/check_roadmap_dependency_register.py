@@ -19,11 +19,16 @@ def _duplicates(values: list[Any]) -> set[Any]:
 def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[str, Any]:
     errors: list[str] = []
     roadmap_ids = {item["roadmap_id"] for item in roadmaps}
-    source_owners = {
-        source["source_id"]: item["roadmap_id"]
-        for item in roadmaps
-        for source in item["sources"]
-    }
+    source_owners: dict[str, set[str]] = {}
+    source_urls: dict[str, set[str]] = {}
+    for item in roadmaps:
+        for source in item["sources"]:
+            source_id = source["source_id"]
+            source_owners.setdefault(source_id, set()).add(item["roadmap_id"])
+            source_urls.setdefault(source_id, set()).add(source["url"])
+    for source_id, urls in sorted(source_urls.items()):
+        if len(urls) != 1:
+            errors.append(f"{source_id}: shared source ID has conflicting URLs")
     source_ids = set(source_owners)
     milestone_owners = {
         milestone["milestone_id"]: item["roadmap_id"]
@@ -84,7 +89,6 @@ def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[s
             if unknown:
                 errors.append(f"{dependency_id}: unknown {label} {sorted(unknown)}")
         for label, refs, owners, allowed_owners in (
-            ("source_ids", dependency["source_ids"], source_owners, endpoint_roadmaps),
             (
                 "source_dependency_ids",
                 dependency["source_dependency_ids"],
@@ -107,6 +111,11 @@ def evaluate(register: dict[str, Any], roadmaps: list[dict[str, Any]]) -> dict[s
                 errors.append(
                     f"{dependency_id}: {label} belong to unrelated roadmaps {sorted(unrelated)}"
                 )
+        # A primary publication may legitimately support more than one roadmap.
+        unrelated_sources = [ref for ref in dependency["source_ids"]
+                             if ref in source_owners and not source_owners[ref] & endpoint_roadmaps]
+        if unrelated_sources:
+            errors.append(f"{dependency_id}: source_ids belong to unrelated roadmaps {sorted(unrelated_sources)}")
         edge_gap_refs.update(dependency["coverage_gap_refs"])
 
     indegree = {node: 0 for node in graph}

@@ -16,6 +16,7 @@ from check_procurement_costs import validate_register
 from check_public_planning_surfaces import validate_inventory_links
 from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
 from catalog_lineage import catalog_aliases, current_finding_topics
+from roadmap_timing import milestone_quarter_window
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -767,10 +768,10 @@ def collect_roadmaps(
                 )
 
         for lane in projected["lanes"]:
-            latest_dated_year = max([
-                latest_dated_year,
-                *(milestone["year"] for milestone in lane["milestones"] if milestone["year"] is not None),
-            ])
+            for milestone in lane["milestones"]:
+                window = milestone_quarter_window(milestone)
+                if window is not None:
+                    latest_dated_year = max(latest_dated_year, window[1] // 4)
         if extension_policy == "fixed" and latest_dated_year > configured_end_year:
             raise ValueError(f"{label} has dated evidence outside its fixed horizon")
         end_year = (
@@ -820,26 +821,16 @@ def collect_roadmaps(
                 if unknown_sources:
                     raise ValueError(f"milestone {milestone_id} references unknown sources: {sorted(unknown_sources)}")
                 year = milestone["year"]
-                quarter = milestone["quarter"]
-                half = milestone.get("half")
-                precision = milestone["timing_precision"]
+                window = milestone_quarter_window(milestone)
                 basis = milestone["timing_basis"]
                 maturity = milestone["maturity"]
                 if year is None:
-                    if quarter is not None or half is not None or precision != "undated" or basis != "no-public-date":
+                    if basis != "no-public-date":
                         raise ValueError(f"undated roadmap milestone {milestone_id} has inconsistent timing fields")
-                elif not start_year <= year <= end_year:
+                elif window[0] < start_year * 4 or window[1] >= (end_year + 1) * 4:
                     raise ValueError(f"roadmap milestone {milestone_id} is outside the horizon")
                 elif basis == "no-public-date" or maturity == "undated":
                     raise ValueError(f"dated roadmap milestone {milestone_id} is marked undated")
-                elif quarter is not None and precision != "quarter":
-                    raise ValueError(f"quarterly roadmap milestone {milestone_id} has inconsistent timing precision")
-                elif precision == "half-year" and (quarter is not None or half not in {"H1", "H2"}):
-                    raise ValueError(f"half-year roadmap milestone {milestone_id} has inconsistent timing fields")
-                elif precision != "half-year" and half is not None:
-                    raise ValueError(f"roadmap milestone {milestone_id} has an unexpected half-year value")
-                elif quarter is None and precision not in {"half-year", "year"}:
-                    raise ValueError(f"year-level roadmap milestone {milestone_id} has inconsistent timing precision")
                 if basis == "openfs-provisional-plan" and milestone["event_type"] not in {"hpci-evaluation", "hpci-adoption"}:
                     raise ValueError(f"OpenFS provisional milestone {milestone_id} is not an HPCI gate")
                 allowed_refs = dependency_ids | all_milestone_ids | set(portfolio_by_id)

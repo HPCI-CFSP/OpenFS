@@ -1,0 +1,793 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000024",
+  "topic_id": "SSW-05",
+  "created_at": "2026-08-31T22:02:07+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "714e0aacb73be6f005178d95fe77754cc2f09b4ef79ee3354158b5c87c34d3fa",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ストレージを媒体、接続・冗長化、統合製品、データ管理の4層で比較します。公称容量・最高速度ではなく、書込み条件、APIの意味、障害復旧、実際に利用可能な機能を判断の軸にします。",
+  "summary_en": "Compare storage across media, connectivity/redundancy, integrated products and data management. Use write conditions, API semantics, recovery and available features rather than capacity and peak speed alone.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U01",
+      "before_sha256": "f23ba23232ddfab78b4e1665d40515eabae7e9e816c5db47595bc53ef40752e3",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U02",
+      "before_sha256": "c0835c14775624994eeaa07ebc0f9cfaaf2471212ad3b723359026d2d83ee9ab",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U02"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U03",
+      "before_sha256": "cf8fe23360efb43e577a7f1cab2fffa755fbaf55ec1213fe50ca497832df876d",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U03"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "904115a7959920b6ed4e946b702464f825a189bcc22b50a4bfb494a15cd31120",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-SSW-05-U01",
+      "title_ja": "SSD・HDD・テープの適性",
+      "title_en": "SSD, HDD and tape suitability",
+      "summary_ja": "読み出し中心、書込み中心、長期保管では必要な媒体特性が異なります。ネイティブ容量、耐久性、利用可能な製品形態を揃えます。",
+      "summary_en": "Read-heavy, write-heavy and archival use require different media properties. Match native capacity, endurance and available product forms.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-LC9-WRITE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-STP002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "KIOXIA LC9: 大容量QLCと書込み粒度",
+          "name_en": "KIOXIA LC9: high-capacity QLC and write granularity",
+          "timing_ja": "2026年8月31日にE3.L製品仕様を確認。",
+          "timing_en": "E3.L specifications checked August 31, 2026.",
+          "statement_ja": "245.76TBのE3.L品は16KiBのIUを使い、耐久性は4KiB条件で0.075 DWPD、16KiB条件で0.3 DWPDです。読取り中心の大容量層と、頻繁に小さく書くチェックポイント層を同じ条件で評価できません。",
+          "statement_en": "The 245.76TB E3.L model uses a 16KiB IU, with endurance rated at 0.075 DWPD for 4KiB and 0.3 for 16KiB writes. Read-heavy capacity tiers and frequent small-write checkpoints require different evaluation.",
+          "hpci_relevance_ja": "実効容量、更新単位、書込み増幅、交換時間を確認します。PLPやdual-portがあってもシステム全体の保護を代替しません。",
+          "hpci_relevance_en": "Check usable capacity, update size, write amplification and replacement time; PLP/dual ports do not replace system-level protection.",
+          "adoption_conditions_ja": [
+            "フォームファクタ、温度、定常書込み、寿命条件"
+          ],
+          "adoption_conditions_en": [
+            "Form factor, temperature, steady-state writes and endurance conditions"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-9650-CONDITIONS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-SSD9650-BRIEF",
+            "SRC-MEM011"
+          ],
+          "actor_ids": [
+            "ACT-MICRON"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Micron 9650: 高帯域TLCと比較条件",
+          "name_en": "Micron 9650: high-bandwidth TLC and test conditions",
+          "timing_ja": "2026年2月版の仕様書と3月の量産発表を確認。",
+          "timing_en": "Checked February 2026 specifications and March production announcement.",
+          "statement_ja": "PCIe Gen6のTLC SSDで、PROとMAXは耐久性・容量が異なります。最高ランダム読取りはQD512、遅延はQD1の中央値であり、同一負荷で同時達成する値ではありません。",
+          "statement_en": "This PCIe Gen6 TLC SSD has PRO/MAX variants with different endurance and capacity. Peak random read uses QD512; latency is a QD1 median, not simultaneous results under one workload.",
+          "hpci_relevance_ja": "Gen6対応ホスト、冷却、共有上流帯域を含めて評価します。電力効率表の25W分母と別条件の動作電力を混ぜません。",
+          "hpci_relevance_en": "Include Gen6 host support, cooling and shared upstream bandwidth; do not mix the efficiency table's 25W denominator with operating-power figures under other conditions.",
+          "adoption_conditions_ja": [
+            "容量・PRO/MAX・転送サイズ・キュー深度・持続書込み"
+          ],
+          "adoption_conditions_en": [
+            "Capacity, PRO/MAX, transfer size, queue depth and sustained writes"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-MOZAIC-SUPPLY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-STP003"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Seagate Mozaic 4+: 大容量HDDの供給範囲",
+          "name_en": "Seagate Mozaic 4+: high-capacity HDD supply scope",
+          "timing_ja": "2026年3月に最大44TBの量産出荷を公表。",
+          "timing_en": "Volume shipments up to 44TB announced March 2026.",
+          "statement_ja": "HAMR世代のMozaic 4+は2社のハイパースケーラー向けに認定・出荷されています。一般供給の拡大は計画であり、学術向けの同時期納入や公開価格が確定したわけではありません。",
+          "statement_en": "HAMR-based Mozaic 4+ is qualified and shipping to two hyperscalers. Broader supply is planned; academic delivery dates and public prices are not established.",
+          "hpci_relevance_ja": "容量中心の層で、ドライブ数削減と再構築時間・故障時負荷の増加を合わせて評価します。",
+          "hpci_relevance_en": "For capacity tiers, assess fewer drives alongside rebuild time and degraded-operation load.",
+          "adoption_conditions_ja": [
+            "販売チャネル、保守、実効容量と再構築中のI/O"
+          ],
+          "adoption_conditions_en": [
+            "Sales channel, support, usable capacity and I/O during rebuild"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-LTO10-MIGRATION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-FUJIFILM-LTO10",
+            "SRC-HW1-LTO10-COMPAT"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LTO-10: 40TB媒体と旧世代からの移行",
+          "name_en": "LTO-10: 40TB media and migration from older generations",
+          "timing_ja": "Fujifilmは2026年1月の40TB品出荷開始を告知。",
+          "timing_en": "Fujifilm announced shipment start for 40TB media in January 2026.",
+          "statement_ja": "40TBは非圧縮、100TBは圧縮時の公称容量です。LTO-10ドライブは30TB/40TBのLTO-10媒体に対応しますが、LTO-9以前の媒体を読めません。",
+          "statement_en": "40TB is native capacity; 100TB assumes compression. LTO-10 drives support 30TB/40TB LTO-10 media but cannot read LTO-9 or older tapes.",
+          "hpci_relevance_ja": "長期保管では旧ドライブの併存、媒体移行、索引保管、読出し待ち時間まで設計します。",
+          "hpci_relevance_en": "Archive design must include old-drive coexistence, media migration, indexes and retrieval latency.",
+          "adoption_conditions_ja": [
+            "実データの圧縮率、ライブラリ認定、復元試験"
+          ],
+          "adoption_conditions_en": [
+            "Actual compression ratio, library qualification and restore tests"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-SSW-05-U02",
+      "title_ja": "接続・冗長化・障害範囲",
+      "title_en": "Connectivity, redundancy and failure domains",
+      "summary_ja": "媒体への接続、経路の冗長化、データの複製は別機能です。障害点を分け、切替中のI/Oと復旧後の整合性を確認します。",
+      "summary_en": "Media attachment, redundant paths and replicated data are separate capabilities. Identify failure domains and check I/O during failover and consistency after recovery.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-NVME24-LAYERS",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-STP006"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVMe 2.4: 仕様群と実装を区別",
+          "name_en": "NVMe 2.4: specifications versus implementation",
+          "timing_ja": "仕様群の更新は2026年8月4日。",
+          "timing_en": "Specification set updated August 4, 2026.",
+          "statement_ja": "Base、コマンドセット、PCIe/RDMA/TCP等のトランスポート、管理仕様に分かれます。NVMe 2.4という版だけで、全コマンドや管理機能の実装・認定を判断できません。",
+          "statement_en": "The set separates Base, command sets, PCIe/RDMA/TCP transports and management. A version label alone does not establish implementation or qualification of every feature.",
+          "hpci_relevance_ja": "ローカルSSDと共有ブロックストレージで、必要なコマンド、転送経路、認証・管理を特定します。",
+          "hpci_relevance_en": "Identify required commands, transport, authentication and management for local SSDs versus shared block storage.",
+          "adoption_conditions_ja": [
+            "仕様ごとの対応表とホスト・装置・ネットワークの組合せ"
+          ],
+          "adoption_conditions_en": [
+            "Per-spec capability matrix and host/device/network combinations"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-NVME-ANA",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-NVME-RHEL9"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVMeマルチパス: ANAとOS依存",
+          "name_en": "NVMe multipathing: ANA and OS dependence",
+          "timing_ja": "RHEL 9文書に基づく。全Linux版の共通設定ではない。",
+          "timing_en": "Based on RHEL 9 documentation, not a universal Linux configuration.",
+          "statement_ja": "RHEL 9はnative NVMe multipathingを推奨し、DM Multipathとの機能差を説明しています。ANAは優先的に使う経路を示しますが、データ複製やバックアップの機能ではありません。",
+          "statement_en": "RHEL 9 recommends native NVMe multipathing and documents differences from DM Multipath. ANA identifies preferred paths; it is not data replication or backup.",
+          "hpci_relevance_ja": "経路断、コントローラー再起動、タイムアウト、再接続時のアプリ動作を確認します。",
+          "hpci_relevance_en": "Test path loss, controller restart, timeout and application behavior during reconnection.",
+          "adoption_conditions_ja": [
+            "OS・ドライバー・ファームウェアを固定した切替試験"
+          ],
+          "adoption_conditions_en": [
+            "Failover tests with pinned OS, drivers and firmware"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-STORAGE-FAULT-DOMAINS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-BEEGFS81-ARCH",
+            "SRC-HW1-DAOS28-ARCH"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "分散冗長化: 複製先と管理経路も確認",
+          "name_en": "Distributed redundancy: verify replicas and control paths",
+          "timing_ja": "BeeGFS 8.1とDAOS 2.8の公開文書。",
+          "timing_en": "Public BeeGFS 8.1 and DAOS 2.8 documentation.",
+          "statement_ja": "BeeGFSはbuddy pairの配置とmanagement serviceの稼働が切替に関係します。DAOSはtargetを障害単位とし、複製・消去符号で保護します。冗長な要素が同じホスト・電源にあれば共通障害が残ります。",
+          "statement_en": "BeeGFS failover depends on buddy placement and a running management service. DAOS treats targets as fault units and protects data with replication/erasure coding. Shared hosts or power can still create common-mode failures.",
+          "hpci_relevance_ja": "正常時の容量効率に加え、再構築帯域、縮退中の性能、管理系障害を評価します。",
+          "hpci_relevance_en": "Assess rebuild bandwidth, degraded performance and control-plane failure as well as normal capacity efficiency.",
+          "adoption_conditions_ja": [
+            "媒体・サーバー・ラック・管理系の障害モデル"
+          ],
+          "adoption_conditions_en": [
+            "Media, server, rack and management failure models"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-SSW-05-U03",
+      "title_ja": "統合製品とAPIの意味を揃えた比較",
+      "title_en": "Integrated products compared at matching API semantics",
+      "summary_ja": "ファイル、オブジェクト、ブロック、検索・実行基盤を分けます。製品発表と機能ごとの一般提供・適合確認を混同しません。",
+      "summary_en": "Separate file, object, block and query/execution services. Do not confuse product announcements with feature-level availability and conformance.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-EXA-TENANT",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-STP014",
+            "SRC-STP016"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EXAScaler: ファイルI/Oとテナント管理",
+          "name_en": "EXAScaler: file I/O and tenant management",
+          "timing_ja": "追加機能は2026年3月発表、当時のGA目標は同年夏。",
+          "timing_en": "Added features announced March 2026, with a summer-2026 GA target.",
+          "statement_ja": "DDNはファイル性能中心の用途にEXAScalerを位置付け、テナント別KMIP鍵管理、クォータ、VLAN API等を発表しています。今回、追加機能すべてのGA達成を示す版付き資料は確認できていません。",
+          "statement_en": "DDN positions EXAScaler for file-performance-centered use and announced tenant KMIP, quotas and VLAN APIs. This review did not establish completion of all added features in versioned GA documentation.",
+          "hpci_relevance_ja": "既存並列ファイル処理の互換性と、テナント隔離・鍵障害・復旧を別々に検証します。",
+          "hpci_relevance_en": "Test parallel-file compatibility separately from tenant isolation, key-service failure and recovery.",
+          "adoption_conditions_ja": [
+            "対象版、保守範囲、機能別GA、同時負荷試験"
+          ],
+          "adoption_conditions_en": [
+            "Release, support scope, feature-level GA and concurrent-load tests"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-INFINIA-SEMANTICS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-STP014"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Infinia 2.4: オブジェクト中心とPOSIXクライアント",
+          "name_en": "Infinia 2.4: object-centered design and POSIX client",
+          "timing_ja": "2026年8月の機能説明を確認。",
+          "timing_en": "August 2026 feature description checked.",
+          "statement_ja": "DDNはS3に加えてネイティブPOSIXクライアントを説明し、オブジェクト中心の用途とファイル性能中心のEXAScalerを区別しています。POSIX対応という表記だけでは、共有書込み・ロック・障害時の意味を確定できません。",
+          "statement_en": "DDN describes native POSIX alongside S3, distinguishing object-centered use from EXAScaler's file focus. The POSIX label alone does not establish concurrent-write, locking or failure semantics.",
+          "hpci_relevance_ja": "AIデータレイク、KVキャッシュ、既存ファイル型アプリを別々に試験します。メーカーの倍率比較は採用係数にしません。",
+          "hpci_relevance_en": "Test AI data lakes, KV cache and existing file applications separately; vendor ratios are not adoption multipliers.",
+          "adoption_conditions_ja": [
+            "版別の適合範囲、冷キャッシュ、複数テナント、復旧"
+          ],
+          "adoption_conditions_en": [
+            "Versioned conformance, cold cache, multiple tenants and recovery"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-VAST55-BOUNDARY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-STP015"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "VAST AI OS 5.5: データ処理とモデルサービングの境界",
+          "name_en": "VAST AI OS 5.5: data processing versus model serving",
+          "timing_ja": "一般提供発表は2026年8月6日。",
+          "timing_en": "GA announced August 6, 2026.",
+          "statement_ja": "DataEngine用の管理KubernetesとNFSv4イベント起点の処理を拡充しています。一方、モデルサービングは外部Kubernetesに残るため、ストレージ導入だけで推論基盤全体が揃うわけではありません。",
+          "statement_en": "Managed Kubernetes for DataEngine and NFSv4-triggered processing expand, while model serving remains on external Kubernetes. Storage deployment therefore does not provide the entire inference stack.",
+          "hpci_relevance_ja": "DataStore、検索、前処理、推論の費用・計算資源・運用責任を分けて構成します。",
+          "hpci_relevance_en": "Separate cost, compute resources and operating responsibilities for DataStore, retrieval, preprocessing and inference.",
+          "adoption_conditions_ja": [
+            "対象サービスのライセンス、CNode負荷、外部GPU基盤"
+          ],
+          "adoption_conditions_en": [
+            "Service licensing, CNode load and external GPU infrastructure"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-DAOS-POSIX-BOUNDS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-DAOS28-FS",
+            "SRC-HW1-DAOS28-ARCH"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "DAOS 2.8: ネイティブAPIとPOSIX互換層",
+          "name_en": "DAOS 2.8: native API versus POSIX emulation",
+          "timing_ja": "v2.8文書の適合範囲。将来版へ一般化しない。",
+          "timing_en": "Scope documented for v2.8; not generalized to future releases.",
+          "statement_ja": "libdfs/DFuseを介してファイルアクセスできますが、hard link、flock、複数クライアントのO_APPENDやMAP_SHAREDには制約があります。ネイティブAPIとFUSE経路では、性能や権限の適用範囲も異なります。",
+          "statement_en": "Files can be accessed via libdfs/DFuse, but hard links, flock and multi-client O_APPEND/MAP_SHARED have limitations. Native APIs and FUSE also differ in performance and authorization scope.",
+          "hpci_relevance_ja": "既存アプリのI/O呼出しを棚卸しし、互換層での動作・計算結果の妥当性を確認してから性能を比較します。",
+          "hpci_relevance_en": "Inventory application I/O calls and validate behavior/results through the compatibility layer before comparing performance.",
+          "adoption_conditions_ja": [
+            "同時書込み、ロック、権限、メタデータ操作の適合試験"
+          ],
+          "adoption_conditions_en": [
+            "Conformance tests for concurrent writes, locks, permissions and metadata"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-SSW-05-U04",
+      "title_ja": "階層化・転送・チェックポイント復旧",
+      "title_en": "Tiering, transfers and checkpoint recovery",
+      "summary_ja": "データが書けた時点と、別ノードで安全に再利用できる時点を分けます。階層移動と同期、保護とバックアップも別に扱います。",
+      "summary_en": "Separate write completion from safe reuse by another node, tier movement from synchronization, and redundancy from backup.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-BEEGFS-TIER-RECOVERY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-BEEGFS81-ARCH",
+            "SRC-HW1-BEEGFS81-MIRROR"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ストレージプールと復旧手順",
+          "name_en": "Storage pools and recovery procedures",
+          "timing_ja": "BeeGFS 8.1の仕様・注意事項。",
+          "timing_en": "BeeGFS 8.1 capabilities and caveats.",
+          "statement_ja": "BeeGFSはSSD/HDD等をプールへ分け、ファイルごとに配置できます。プールがあること自体は自動階層移動を意味しません。ミラーの縮退・再同期には注意事項があり、バックアップも別途必要です。",
+          "statement_en": "BeeGFS supports SSD/HDD pools and per-file placement. Pools do not themselves imply automatic tier migration; degraded mirroring/resync has caveats and backups are separate.",
+          "hpci_relevance_ja": "キャッシュミス、退避、再同期による競合を含めて、データを利用可能にするまでの時間を評価します。",
+          "hpci_relevance_en": "Measure time until data is usable, including cache misses, eviction and resync contention.",
+          "adoption_conditions_ja": [
+            "データ配置方針、縮退時の書込み・fsync、復元試験"
+          ],
+          "adoption_conditions_en": [
+            "Placement policy, degraded writes/fsync and restore tests"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-GLOBUS-GATEWAYS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-STP010"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Globus: DTNだけでなくgateway・collectionも必要",
+          "name_en": "Globus: DTNs also need gateways and collections",
+          "timing_ja": "Globus Connect Server v5文書。",
+          "timing_en": "Globus Connect Server v5 documentation.",
+          "statement_ja": "複数DTNを1エンドポイントにできますが、データアクセスにはstorage gatewayとmapped collectionの設定が必要です。共有や一部コネクター等のpremium機能にはsubscription条件があります。",
+          "statement_en": "An endpoint can use multiple DTNs, but data access requires storage gateways and mapped collections. Premium capabilities such as sharing and certain connectors require a subscription.",
+          "hpci_relevance_ja": "転送帯域だけでなく認証、権限対応、再試行、サービス費用、運用責任を確認します。",
+          "hpci_relevance_en": "Check authentication, permission mapping, retries, service costs and ownership as well as transfer bandwidth.",
+          "adoption_conditions_ja": [
+            "利用APIと契約範囲、両サイトの実効帯域・障害回復"
+          ],
+          "adoption_conditions_en": [
+            "APIs/contract scope, both sites' throughput and recovery"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-S3-ATOMICITY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-STP011"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "S3: 強整合性と複数ファイル更新は別",
+          "name_en": "S3: strong consistency is not a multi-file transaction",
+          "timing_ja": "Amazon S3の公開仕様。別実装への保証ではない。",
+          "timing_en": "Amazon S3 documentation, not a guarantee for other implementations.",
+          "statement_ja": "Amazon S3は単一キーの原子的更新とread-after-write整合性を説明しますが、複数キーを一括更新するトランザクションとは異なります。S3互換製品に同じ意味があるかは個別確認が必要です。",
+          "statement_en": "Amazon S3 documents atomic single-key updates and read-after-write consistency, not multi-key transactions. Equivalent semantics must be verified for each S3-compatible product.",
+          "hpci_relevance_ja": "チェックポイントの複数ファイルを公開する際は、版付きmanifest等で完了を識別する設計を検討します。これはOpenFSの設計上の考察です。",
+          "hpci_relevance_en": "For multi-file checkpoints, OpenFS suggests considering versioned manifests to identify completion; this is a design interpretation.",
+          "adoption_conditions_ja": [
+            "同時更新、失敗時の部分更新、保持・削除方針"
+          ],
+          "adoption_conditions_en": [
+            "Concurrent updates, partial failures and retention/deletion policy"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-MLPERF-RECOVERY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-HW1-MLPERF-CHECKPOINT"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MLPerf Storage: 書込み速度と復旧時間",
+          "name_en": "MLPerf Storage: write throughput and recovery time",
+          "timing_ja": "公開checkpointing仕様を2026年8月31日に確認。",
+          "timing_en": "Public checkpointing specification checked August 31, 2026.",
+          "statement_ja": "共有ストレージのdefaultとノード局所のsubsetを分け、fsyncと読取り前のキャッシュ条件を規定しています。別ホストから読めるまでの再配置・追加処理時間も復旧時間へ含めます。",
+          "statement_en": "The specification separates shared default from node-local subset modes and defines fsync/cache conditions. Remapping or processing needed before another host can read is included in recovery time.",
+          "hpci_relevance_ja": "実GPU計算ではなくI/O負荷の模擬なので、ストレージの試験結果を学習全体の性能に置き換えません。",
+          "hpci_relevance_en": "This emulates I/O rather than GPU computation; storage results must not be substituted for full-training performance.",
+          "adoption_conditions_ja": [
+            "提出版・division・容量・クライアント数・実行記録"
+          ],
+          "adoption_conditions_en": [
+            "Submission version/division, capacity, clients and run records"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-STP-DEVICES",
+    "TDS-STP-CONNECT",
+    "TDS-STP-DATA",
+    "TDS-STP2-PRODUCTS"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-BEEGFS81-ARCH",
+        "title": "BeeGFS 8.1 Architecture",
+        "publisher": "ThinkParQ / BeeGFS",
+        "url": "https://doc.beegfs.io/8.1/architecture/overview.html",
+        "source_class": "official-project",
+        "published_or_updated": "version 8.1.0 documentation; checked 2026-08-31"
+      },
+      "origin_group": "beegfs81-docs",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Storage Pools and Mirroring",
+      "observation_ja": "プール別配置、選択的ミラー、切替時のmanagement service依存を確認。ミラーはバックアップの代わりではない。",
+      "observation_en": "Checked pool placement, selective mirroring and failover dependency on the management service; mirroring is not backup.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-BEEGFS81-MIRROR",
+        "title": "BeeGFS 8.1 Mirroring",
+        "publisher": "ThinkParQ / BeeGFS",
+        "url": "https://doc.beegfs.io/8.1/advanced_topics/mirroring.html",
+        "source_class": "official-project",
+        "published_or_updated": "version 8.1.0 documentation; checked 2026-08-31"
+      },
+      "origin_group": "beegfs81-docs",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Caveats of Storage Mirroring",
+      "observation_ja": "劣化中の再障害、状態変更の伝播、secondary fsync失敗後の切替リスクを確認。無条件の無損失切替とは表現しない。",
+      "observation_en": "Checked degraded-state failures, state propagation and failover after secondary fsync errors; do not claim unconditional lossless failover.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-DAOS28-ARCH",
+        "title": "DAOS v2.8 Architecture",
+        "publisher": "DAOS project",
+        "url": "https://docs.daos.io/v2.8/overview/architecture/",
+        "source_class": "official-project",
+        "published_or_updated": "version 2.8 documentation; checked 2026-08-31"
+      },
+      "origin_group": "daos28-docs",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "DAOS Features and DAOS System",
+      "observation_ja": "OFI、ユーザー空間I/O、複製/消去符号とtarget単位の障害モデルを確認。SCMを使う説明を全構成の必須条件としない。",
+      "observation_en": "Checked OFI, user-space I/O, replication/erasure coding and target fault units; the SCM description is not assumed mandatory for every configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-DAOS28-FS",
+        "title": "DAOS v2.8 File System",
+        "publisher": "DAOS project",
+        "url": "https://docs.daos.io/v2.8/user/filesystem/",
+        "source_class": "official-project",
+        "published_or_updated": "version 2.8 documentation; checked 2026-08-31"
+      },
+      "origin_group": "daos28-docs",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "libdfs, POSIX Compliance and DFuse",
+      "observation_ja": "hard link、flock、複数クライアントO_APPEND/MAP_SHARED等の制約を確認。FUSE経路とネイティブAPIの性能・権限制御の違いを区別。",
+      "observation_en": "Checked hard-link, flock and multi-client O_APPEND/MAP_SHARED limitations; distinguish FUSE from native APIs in performance and authorization.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-FUJIFILM-LTO10",
+        "title": "Fujifilm Launches LTO Ultrium 10 (40TB) Data Cartridge",
+        "publisher": "Fujifilm",
+        "url": "https://www.fujifilm.com/us/en/news/fujifilm-launches-lto-ultrium-10-data-cartridge",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-12-22"
+      },
+      "origin_group": "fujifilm-lto10-40tb-launch",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Product name, release date and capacity",
+      "observation_ja": "40TB非圧縮、100TB圧縮の区別と2026年1月出荷開始の告知。実データの圧縮率や実納入実績は未確認。",
+      "observation_en": "Distinguishes 40TB native from 100TB compressed and announces January 2026 shipment start; actual compression and individual deliveries unverified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-LTO10-COMPAT",
+        "title": "LTO Generation Compatibility Details",
+        "publisher": "LTO Program",
+        "url": "https://www.lto.org/lto-generation-compatibility/",
+        "source_class": "official-standard",
+        "published_or_updated": "undated compatibility page; checked 2026-08-31"
+      },
+      "origin_group": "lto-compatibility",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Generation-specific compatibility bullets",
+      "observation_ja": "LTO-10はLTO-10の30/40TB媒体に対応するが、LTO-9以前には後方互換でない。",
+      "observation_en": "LTO-10 supports 30/40TB LTO-10 media, but is not backward-compatible with LTO-9 or earlier.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MLPERF-CHECKPOINT",
+        "title": "MLPerf Storage: Checkpointing Workloads",
+        "publisher": "MLCommons",
+        "url": "https://github.com/mlcommons/storage/blob/main/checkpointing/README.md",
+        "source_class": "official-project",
+        "published_or_updated": "undated main-branch specification; checked 2026-08-31"
+      },
+      "origin_group": "mlcommons-storage-checkpoint",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Modes, fsync and Simultaneously Readable/Writable",
+      "observation_ja": "局所subset/共有default、fsync、別ホストで読み出せるまでの追加時間を確認。GPUそのものの性能試験ではなくI/O負荷の模擬。",
+      "observation_en": "Checked local subset/shared default, fsync and added time until another host can read; this emulates I/O, not GPU computation performance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-NVME-RHEL9",
+        "title": "RHEL 9: Configuring device mapper multipath",
+        "publisher": "Red Hat",
+        "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html-single/configuring_device_mapper_multipath/index",
+        "source_class": "official-vendor",
+        "published_or_updated": "RHEL 9 documentation; checked 2026-08-31"
+      },
+      "origin_group": "redhat-rhel9-nvme-multipath",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Chapter 4.1-4.2",
+      "observation_ja": "ANAとnative NVMe/DM Multipathの選択を確認。RHEL 9の推奨はnativeだが、機能差があり同時に重ねる説明ではない。",
+      "observation_en": "Checked ANA and native NVMe versus DM Multipath; RHEL 9 recommends native, but their feature sets differ and they are alternatives, not layered together.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SSD9650-BRIEF",
+        "title": "Micron 9650 SSD Product Brief, Rev. B",
+        "publisher": "Micron",
+        "url": "https://www.micron.com/content/dam/micron/global/public/products/storage/ssds/data-center/9650/9650-nvme-ssd-product-brief.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-02, Rev. B"
+      },
+      "origin_group": "micron-9650-revb",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Pages 2-3, Tables 2/4/5 and footnotes 9/13/14",
+      "observation_ja": "PRO/MAX別容量・耐久性、ランダム読み出しQD512と遅延QD1中央値を区別。効率の25W分母と動作電力表を混ぜない。",
+      "observation_en": "Distinguished PRO/MAX capacity/endurance, random-read QD512 and median latency at QD1; do not mix the 25W efficiency denominator with the operating-power table.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-MEM011",
+        "title": "Micron HBM4 and SOCAMM2 Production",
+        "publisher": "Micron",
+        "url": "https://investors.micron.com/news/press-release/2026/Micron-in-High-Volume-Production-of-HBM4-Designed-for-NVIDIA-Vera-Rubin-PCIe-Gen6-SSD-and-SOCAMM2-03-16-2026/default.aspx",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "micron-gtc2026-memory-storage-production",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "Production highlights and body; footnotes 1-6",
+      "observation_ja": "36GB HBM4の暦年Q1出荷、48GBの試供、192GB SOCAMM2量産を区別。効率の根拠は内部計算・試験で、独立実測ではない。",
+      "observation_en": "Distinguished calendar-Q1 36GB HBM4 shipments, 48GB samples and 192GB SOCAMM2 production; efficiency claims use internal calculations/tests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP002",
+        "title": "LC9 Series (E3.L)",
+        "publisher": "KIOXIA",
+        "url": "https://www.kioxia.com/en-jp/business/ssd/enterprise-ssd/lc9-e3l.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Undated product specifications; checked 2026-08-31"
+      },
+      "origin_group": "kioxia-lc9-specifications",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Specifications, IU size and DWPD footnotes",
+      "observation_ja": "245.76TB、16KiB IU、4KiB/16KiBで異なるDWPD、dual-portとPLPを確認。公称値でありシステム実測ではない。",
+      "observation_en": "Checked 245.76TB, 16KiB IU, workload-dependent DWPD, dual ports and PLP; these are ratings, not system measurements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP003",
+        "title": "Seagate delivers next-generation Mozaic 4+",
+        "publisher": "Seagate",
+        "url": "https://www.seagate.com/stories/articles/seagate-delivers-industrys-highest-capacity-hard-drives-with-next-generation-mozaic-4/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-03"
+      },
+      "origin_group": "seagate-mozaic4-launch",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Qualification and Availability sections",
+      "observation_ja": "44TBまでを2社のハイパースケーラーへ量産出荷。一般向け供給の拡大は計画で、学術向け納入を確認したわけではない。",
+      "observation_en": "Volume shipments up to 44TB concern two hyperscalers; broader availability is planned, not proof of academic deliveries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP006",
+        "title": "NVMe set of specifications",
+        "publisher": "NVM Express",
+        "url": "https://nvmexpress.org/specifications/",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-08-04 specification set; page checked 2026-08-31"
+      },
+      "origin_group": "nvme24-specifications",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Specification set overview",
+      "observation_ja": "2026年8月4日のNVMe 2.4仕様群を確認。Base・Command Set・Transport・管理は別文書で、旧NVMe-oF文書は履歴資料。",
+      "observation_en": "Checked the August 4, 2026 NVMe 2.4 set; Base, command sets, transports and management are separate documents, with old NVMe-oF retained historically.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP010",
+        "title": "Globus Connect Server v5 installation guide",
+        "publisher": "Globus",
+        "url": "https://docs.globus.org/globus-connect-server/v5/",
+        "source_class": "official-project",
+        "published_or_updated": "Living documentation; checked 2026-08-31"
+      },
+      "origin_group": "globus-gcs5-guide",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Concepts, managed endpoints and gateways",
+      "observation_ja": "複数DTN、gateway/collectionの必要性、premium機能のsubscription条件を確認。",
+      "observation_en": "Checked multiple DTNs, required gateways/collections and subscription requirements for premium features.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP011",
+        "title": "What is Amazon S3?",
+        "publisher": "Amazon Web Services",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Living documentation; checked 2026-08-31"
+      },
+      "origin_group": "aws-s3-consistency-docs",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "Amazon S3 data consistency model",
+      "observation_ja": "単一キーの原子的更新とread-after-write、キー間トランザクションとの違いを確認。他社S3互換実装には自動適用できない。",
+      "observation_en": "Checked atomic single-key updates and read-after-write versus cross-key transactions; these guarantees cannot automatically be assigned to other S3-compatible implementations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP014",
+        "title": "Infinia 2.4: production AI data platform",
+        "publisher": "DDN",
+        "url": "https://www.ddn.com/blog/infinia-2-4-launch-for-gpu-utilization-production-ai/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-17"
+      },
+      "origin_group": "ddn-infinia24-blog",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "What Infinia 2.4 Delivers and One Platform Two Engines",
+      "observation_ja": "ネイティブPOSIXとS3を記載するが、ファイルI/O中心の負荷にはEXAScalerを位置付ける。詳細な適合試験や機能別GAは未確認。",
+      "observation_en": "Describes native POSIX/S3 while positioning EXAScaler for file-I/O-centered workloads; detailed conformance and feature-specific GA remain unverified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP015",
+        "title": "VAST AI OS 5.5 is generally available",
+        "publisher": "VAST Data",
+        "url": "https://www.vastdata.com/blog/vast-ai-os-5-5-is-generally-available",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-06"
+      },
+      "origin_group": "vast-55-ga",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "DataEngine Advances and Available Now",
+      "observation_ja": "DataEngine向け管理KubernetesとNFSv4イベント、外部Kubernetesに残るモデルサービングを確認。",
+      "observation_en": "Checked managed Kubernetes for DataEngine, NFSv4 events and model serving that remains on external Kubernetes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-STP016",
+        "title": "DDN platform releases for AI factories",
+        "publisher": "DDN",
+        "url": "https://www.ddn.com/press-releases/ddn-accelerates-inference-and-lowers-cost-per-token-while-expanding-multi-tenant-training-for-ai-factories/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "ddn-202603-platform-announcement",
+      "checked_at": "2026-08-31T21:59:16+09:00",
+      "locator": "EXAScaler features and final availability paragraph",
+      "observation_ja": "テナント別KMIP・クォータ・VLAN APIと夏のGA目標を確認。目標達成の根拠とはしない。",
+      "observation_en": "Checked tenant KMIP, quotas, VLAN APIs and summer GA target; the target is not proof of completion.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-059",
+      "topic_ids": [
+        "SSW-05"
+      ],
+      "priority": "P0",
+      "question_ja": "機能・容量・耐久性・復旧条件を揃えたストレージの性能、総費用、移行可能性を比較できるか。",
+      "question_en": "Can storage performance, total cost and migration be compared at matched features, capacity, endurance and recovery conditions?",
+      "next_action_ja": "版付きGA資料、POSIX/S3適合、縮退・復旧試験、冷キャッシュ測定、学術向け供給・保守を収集する。Gfarm READMEの取得失敗と、EXAScaler/Infiniaの機能別提供範囲は未確認として残す。",
+      "next_action_en": "Collect versioned GA evidence, POSIX/S3 conformance, degraded/recovery tests, cold-cache measurements and academic supply/support. Retain failed Gfarm README retrieval and feature-specific EXAScaler/Infinia availability as gaps.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "版付きの製品機能・価格・保守と同一条件の測定",
+    "Gfarm、Storage Scale、Ceph、WEKA等との構成別比較",
+    "データ移行・障害復旧と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Versioned product features/prices/support and matched measurements",
+    "Configuration-specific comparisons with Gfarm, Storage Scale, Ceph and WEKA",
+    "Data migration/recovery and independent Consensus"
+  ]
+}

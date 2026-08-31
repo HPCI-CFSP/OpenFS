@@ -1,0 +1,160 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000028",
+  "topic_id": "ARCH-02",
+  "created_at": "2026-08-31T22:12:25+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "6e86dfe42f9b5fe8f504cadf6f2c72ec38b7ed659a6de8cfd6a00d0e0a142431",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "製造プロセス・供給とチップレット・接合について、研究試作、リスク生産、量産目標を区別します。追加調査ではCrocの公開設計フローと実シリコン報告を確認し、プロトタイピングの実用性とサーバー用量産技術を分けました。",
+  "summary_en": "Distinguish research prototypes, risk production and volume targets across processes/supply and chiplets/bonding. Follow-up checks Croc's public design flow and silicon reports, separating practical prototyping from server-volume technology.",
+  "units": [
+    {
+      "unit_id": "ARCH-02-U01",
+      "before_sha256": "28ae292d89e43909cbe506692bbdd3defbf4cc5704ce40c8d883d8ae31aeb6f0",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-02-U01",
+        "TDS-HW2-ARCH-02-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW2-ARCH-02-U01",
+      "title_ja": "公開設計フローによる試作と検証",
+      "title_en": "Prototyping and validation with open design flows",
+      "summary_ja": "公開PDK・RTL・実装フローがあることと、任意設計の製造適合・量産供給を区別します。",
+      "summary_en": "Public PDKs, RTL and flows do not establish manufacturability or volume supply for arbitrary designs.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-CROC-SILICON",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW2-CROC-FULL",
+            "SRC-HW2-CROC-REPO"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Croc: MCU級の公開RTL-to-GDSとシリコン実証",
+          "name_en": "Croc: open MCU-class RTL-to-GDS and silicon evidence",
+          "timing_ja": "2026年6月24日版の論文と公開リポジトリを確認。",
+          "timing_en": "June 24, 2026 paper and public repository checked.",
+          "statement_ja": "IHP 130nmの公開フローで学生設計5件を製造し、基準チップMLEMの動作を報告しています。リポジトリのRTL、ツール・PDK版を参照できますが、簡易DRCは製造前の最終検証ではありません。",
+          "statement_en": "The open IHP 130nm flow produced five student designs and reported baseline MLEM operation. RTL and tool/PDK versions are public, but minimal DRC is not tapeout signoff.",
+          "hpci_relevance_ja": "専用回路の試作・検証方法として有用ですが、HPCI計算ノードを置き換える性能・RAS・供給実績ではありません。",
+          "hpci_relevance_en": "Useful for custom-circuit prototyping and validation, not evidence of HPCI-node replacement performance, RAS or supply.",
+          "adoption_conditions_ja": [
+            "版固定、全DRC、タイミング、試験範囲と製造費用"
+          ],
+          "adoption_conditions_en": [
+            "Pinned versions, full DRC, timing, test coverage and fabrication cost"
+          ]
+        },
+        {
+          "item_id": "TDI-HW2-HYPERCROC-TARGETS",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW2-HYPERCROC"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HyperCroc: 外部メモリとDMAの設計目標",
+          "name_en": "HyperCroc: external-memory and DMA design targets",
+          "timing_ja": "2026年3月12日版。後続の製造・検証実績は未確認。",
+          "timing_en": "March 12, 2026 version; subsequent fabrication/validation not confirmed.",
+          "statement_ja": "HyperBusとDMAを追加し、アクセラレータのデータ移動を支援します。表中の100MHz・最大800MB/sはHyperCrocの設計目標で、同表のCroc実測値とは区別する必要があります。",
+          "statement_en": "HyperBus and DMA support accelerator data movement. The table's 100MHz/up-to-800MB/s values are HyperCroc design targets, distinct from measured Croc values.",
+          "hpci_relevance_ja": "RTL公開、テープアウト、実シリコン検証を別々の到達点として追跡します。",
+          "hpci_relevance_en": "Track RTL publication, tapeout and silicon validation as distinct milestones.",
+          "adoption_conditions_ja": [
+            "後続の版付き測定、外部メモリ込みの電力・性能"
+          ],
+          "adoption_conditions_en": [
+            "Subsequent versioned measurements, power/performance including external memory"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW2-CROC-FULL",
+        "title": "Croc: Training the Next Generation Chip Designers on Domain-Specific End-to-End Open Source Silicon",
+        "publisher": "Zelioli et al.",
+        "url": "https://arxiv.org/html/2606.25673v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-06-24"
+      },
+      "origin_group": "croc-authors-issuer",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Sections II-III, course results and MLEM measurements",
+      "observation_ja": "130nm公開設計フロー、33件中30件の製造可能レイアウトと5件製造、MLEMの82MHz/1.2V整数計算時52.3mWを報告。MCU級の実証でサーバー性能ではない。",
+      "observation_en": "Reports an open 130nm flow, 30 manufacturable layouts from 33 projects, five fabricated designs, and MLEM at 82MHz/1.2V, 52.3mW during integer computation. MCU-class evidence, not server performance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-CROC-REPO",
+        "title": "Croc public RTL-to-GDS flow and documentation",
+        "publisher": "PULP Platform",
+        "url": "https://github.com/pulp-platform/croc",
+        "source_class": "official-project",
+        "published_or_updated": "undated main branch; checked 2026-08-31"
+      },
+      "origin_group": "croc-authors-issuer",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Flow, tool/PDK versions, simulation and DRC notes",
+      "observation_ja": "RTL、ソフトウェア、PDK manifestとツール2025.12対応を確認。minimal DRCはtapeout signoffではない。ダウンロード、EDA実行、内部PDK参照は行わない。",
+      "observation_en": "Checked RTL/software, PDK manifest and tool release 2025.12 support. Minimal DRC is not tapeout signoff. No downloads, EDA execution or internal PDK access.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-HYPERCROC",
+        "title": "HyperCroc: Open-source RISC-V MCU with plug-in accelerators",
+        "publisher": "Sauter et al.",
+        "url": "https://arxiv.org/html/2603.12308v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "croc-authors-issuer",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Architecture, Table 1 and Conclusion",
+      "observation_ja": "DMA/HyperBus拡張を提案。表のCrocは実シリコン72MHz、HyperCroc 100MHz/800MB/sは設計目標。今後のテープアウト・検証目標を達成済みとしない。",
+      "observation_en": "Proposes DMA/HyperBus extensions. Table 1 separates measured Croc 72MHz from HyperCroc 100MHz/800MB/s design targets; planned tapeout/validation is not treated as completed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開試作フローの再現と後続シリコン検証",
+    "先端プロセス・接合の供給条件と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Reproduce public flows and verify subsequent silicon",
+    "Advanced-process/bonding supply conditions and independent Consensus"
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000020",
+      "bundle_sha256": "bd46f6ae530c8a8860dc249cd8c359e52bc9d58bf70b2d2f461184b0f9a674b8"
+    }
+  ]
+}

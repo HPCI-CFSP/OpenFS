@@ -1,0 +1,220 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000026",
+  "topic_id": "ARCH-03",
+  "created_at": "2026-08-31T22:12:05+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "75401366f1faf7dea36ae772a0b95bdba6c829d40b3fbb48c3a0cb264e6f79c2",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "DRAMの規格・モジュール・カスタム実装と、メモリ階層の容量・帯域・遅延・ソフトウェア条件を比較します。追加調査ではNANDベースのHBFをHBMとは区別し、仕様発表、サンプル目標、シミュレーション結果の適用範囲を整理しました。単一モデルによる暫定結果です。",
+  "summary_en": "Compare DRAM standards, modules/custom implementations and hierarchy capacity, bandwidth, latency and software conditions. Follow-up distinguishes NAND-based HBF from HBM and separates specification announcements, sample targets and simulation scope. Results remain provisional and single-model.",
+  "units": [
+    {
+      "unit_id": "ARCH-03-U01",
+      "before_sha256": "63f12a3631bc46e497fd7925d69357375153a4b1bbef68fd86939bcf8c6375d1",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-03-U01",
+        "TDS-HW2-ARCH-03-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-03-U03",
+      "before_sha256": "8e260df18689ac7b17768376c9aefd862dd6f304dd5997b4461a6f447b498cb7",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-03-U03",
+        "TDS-HW2-ARCH-03-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW2-ARCH-03-U01",
+      "title_ja": "HBF: 規格化と提供目標の追跡",
+      "title_en": "HBF: standardization and availability targets",
+      "summary_ja": "公開された仕様概要と規範文書の確認を区別します。旧サンプル目標を、期限が近づいたことだけで出荷実績にしません。",
+      "summary_en": "Separate public specification summaries from normative-document verification. A sample target does not become an observed shipment as its deadline approaches.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-HBF-SPEC",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW2-HBF-FMS",
+            "SRC-HW2-OCP-HBF-ACCESS"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBF: NANDを用いる帯域・容量拡張層",
+          "name_en": "HBF: a NAND-based bandwidth/capacity tier",
+          "timing_ja": "仕様概要は2026年8月4日公表。",
+          "timing_en": "Specification summary announced August 4, 2026.",
+          "statement_ja": "SK hynixとSandiskは8/16段、最大512GB、0.4-3.0TB/sの帯域等級、UCIe接続を発表しました。OCPはHBFをsemi-private workstreamに掲載しており、全文の適合条件まで確認したとはしません。",
+          "statement_en": "SK hynix/Sandisk announced 8/16-high stacks, up to 512GB, 0.4-3.0TB/s grades and UCIe. OCP lists a semi-private HBF workstream; full conformance requirements were not verified.",
+          "hpci_relevance_ja": "HBMの置換と決めず、HBM・DRAM・SSD間の補完層として、書込み・耐久性・制御ソフトを確認します。",
+          "hpci_relevance_en": "Evaluate a complementary tier between HBM/DRAM and SSDs, checking writes, endurance and control software rather than assuming HBM replacement.",
+          "adoption_conditions_ja": [
+            "公開の規範文書、実装適合、耐久性とアクセス条件"
+          ],
+          "adoption_conditions_en": [
+            "Public normative documents, conformance, endurance and access conditions"
+          ]
+        },
+        {
+          "item_id": "TDI-HW2-HBF-SAMPLE-TARGETS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW2-HBF-TIMING"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBFメモリと搭載装置のサンプルを区別",
+          "name_en": "Separate HBF memory samples from host-device samples",
+          "timing_ja": "メモリは2026年後半、推論装置は2027年早期が目標。",
+          "timing_en": "Targets: H2 2026 for memory, early 2027 for inference devices.",
+          "statement_ja": "Sandiskの2025年8月の計画です。『early 2027』をQ1へ狭めず、量産、一般販売、研究機関への納入時期は未確認として残します。",
+          "statement_en": "These are Sandisk's August 2025 plans. Do not narrow early 2027 to Q1; volume production, general sales and academic delivery remain unconfirmed.",
+          "hpci_relevance_ja": "採用候補システムのメモリ対応、実装、評価装置の時期を別々に追跡します。",
+          "hpci_relevance_en": "Track host support, packaging and evaluation-system timing separately.",
+          "adoption_conditions_ja": [
+            "旧目標に対する達成・延期の公式更新"
+          ],
+          "adoption_conditions_en": [
+            "Official confirmation of completion or delay against earlier targets"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW2-ARCH-03-U03",
+      "title_ja": "HBF性能値の評価範囲",
+      "title_en": "Scope of HBF performance claims",
+      "summary_ja": "カーネルモデルの結果を、実装済みシステムの実測と区別します。",
+      "summary_en": "Separate kernel-model results from measurements of implemented systems.",
+      "items": [
+        {
+          "item_id": "TDI-HW2-HBF-MODEL-BOUNDARY",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW2-HBF-FACTS"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HBMとの差2.2%: 限定条件の内部シミュレーション",
+          "name_en": "2.2% from HBM: a constrained internal simulation",
+          "timing_ja": "2025年7月版ファクトシート。",
+          "timing_en": "July 2025 fact sheet.",
+          "statement_ja": "Llama 3.1 405Bの8bit学習済み重みを読む処理を、1カーネルずつxPUモデルで評価し、HBM容量を無制限と仮定した結果です。HBFの遅延・ページ粒度の違いは残り、実機の学習・推論全体を示しません。",
+          "statement_en": "The model evaluates reading 8-bit pretrained Llama 3.1 405B weights one kernel at a time, assuming unlimited HBM capacity. Latency/page-size differences remain; this is not full training/inference on hardware.",
+          "hpci_relevance_ja": "転送、書込み、KVキャッシュ、キャッシュミス、同時要求を含めた評価が必要です。世代別の容量・帯域予測に未公表の年を付けません。",
+          "hpci_relevance_en": "Evaluate transfers, writes, KV cache, misses and concurrent requests. Do not attach undisclosed years to projected generation capacity/bandwidth.",
+          "adoption_conditions_ja": [
+            "実機・精度・入力長・書込み・電力境界を揃えた測定"
+          ],
+          "adoption_conditions_en": [
+            "Hardware measurements matching precision, input length, writes and power boundary"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW2-HBF-FACTS",
+        "title": "HBF Fact Sheet, July 2025",
+        "publisher": "Sandisk",
+        "url": "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/sandisk/collateral/company/Sandisk-HBF-Fact-Sheet.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-07"
+      },
+      "origin_group": "sandisk-hbf-modeling-202507",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Pages 2-3, performance text and footnotes 1-3",
+      "observation_ja": "2.2%差はLlama 3.1 405Bの8bit学習済み重みを読むカーネル単位の内部シミュレーションで、HBM容量を無制限と仮定。高遅延・大ページと将来世代予測も明記。",
+      "observation_en": "The 2.2% difference is internal kernel-by-kernel simulation of reading 8-bit pretrained Llama 3.1 405B weights with unlimited-capacity HBM. Higher latency, larger pages and projected generations are explicit.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-HBF-FMS",
+        "title": "SK hynix and Sandisk unveil first HBF specifications",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/hbf-at-fms-2026/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-04"
+      },
+      "origin_group": "skhynix-sandisk-hbf-consortium",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Capacity/bandwidth grades, UCIe and OCP disclosure paragraphs",
+      "observation_ja": "最大512GB、0.4-3.0TB/sの等級、UCIeを公表。公開仕様の告知であり、量産・全仕様本文の検証ではない。",
+      "observation_en": "Announces up to 512GB, 0.4-3.0TB/s grades and UCIe; an announcement, not volume delivery or full normative-spec verification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-HBF-TIMING",
+        "title": "Memory-Centric AI: High Bandwidth Flash",
+        "publisher": "Sandisk",
+        "url": "https://www.sandisk.com/company/newsroom/blogs/2025/memory-centric-ai",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-08-11"
+      },
+      "origin_group": "sandisk-hbf-roadmap-202508",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Looking forward",
+      "observation_ja": "メモリサンプルは暦年2026後半、搭載推論装置サンプルはearly 2027が目標。実績・量産日ではない。",
+      "observation_en": "Targets memory samples in calendar H2 2026 and inference-device samples in early 2027; neither is an observed shipment or volume date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW2-OCP-HBF-ACCESS",
+        "title": "Open Compute Project: Semi-Private Workstreams",
+        "publisher": "Open Compute Project",
+        "url": "https://www.opencompute.org/community/semi-private-workstreams",
+        "source_class": "official-standard",
+        "published_or_updated": "undated; checked 2026-08-31"
+      },
+      "origin_group": "ocp-workstream-access",
+      "checked_at": "2026-08-31T22:09:40+09:00",
+      "locator": "Scope: Storage / High Bandwidth Flash; participation conditions",
+      "observation_ja": "HBFをsemi-private workstreamとして掲載。公開の仕様発表と、作業中全文への無条件アクセスは区別し、参加申請や会員向け取得は行わない。",
+      "observation_en": "Lists HBF as a semi-private workstream. A public specification announcement is distinct from unrestricted access to working documents; no membership/request flow was used.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HBFの公開規範文書、サンプル実績、書込み・耐久性・実機性能",
+    "既存DRAM・CXL階層の供給条件と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "HBF public normative specification, actual samples, writes/endurance and hardware performance",
+    "Existing DRAM/CXL hierarchy supply conditions and independent Consensus"
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000021",
+      "bundle_sha256": "34abe8a90a27608adb53dd74236faf0db53e3a1960c3a92986237a0f46ed6d06"
+    }
+  ]
+}

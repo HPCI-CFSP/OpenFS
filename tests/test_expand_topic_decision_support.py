@@ -75,6 +75,16 @@ class TopicDecisionSupportGenerationTests(unittest.TestCase):
             timing_text({"year": 2027, "quarter": None}, "ja"),
         )
 
+    def test_cross_year_window_is_not_reduced_to_its_start_quarter(self):
+        item = {"milestone_id": "FY2026", "year": 2026, "quarter": "Q2",
+                "end_year": 2027, "end_quarter": "Q1", "timing_precision": "quarter-range",
+                "timing_basis": "vendor-target"}
+        lanes = [{"track_id": "TRACK-1", "milestones": [item]}]
+        self.assertEqual(item, next_milestone("TRACK-1", lanes, date(2026, 12, 31)))
+        self.assertIsNone(next_milestone("TRACK-1", lanes, date(2027, 4, 1)))
+        self.assertEqual("2026年Q2〜2027年Q1", timing_text(item, "ja"))
+        self.assertEqual("2026 Q2 - 2027 Q1", timing_text(item, "en"))
+
 
 if __name__ == "__main__":
     unittest.main()

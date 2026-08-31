@@ -192,7 +192,9 @@
         "year": {"type": ["integer", "null"], "minimum": 2020},
         "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
         "half": {"enum": ["H1", "H2", null]},
-        "timing_precision": {"enum": ["quarter", "half-year", "year", "undated"]},
+        "timing_precision": {"enum": ["quarter", "half-year", "year", "quarter-range", "undated"]},
+        "end_year": {"type": ["integer", "null"], "minimum": 2020},
+        "end_quarter": {"enum": ["Q1", "Q2", "Q3", "Q4", null]},
         "maturity": {"enum": ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"]},
         "event_type": {"enum": ["product", "standard", "research", "policy", "hpci-evaluation", "hpci-adoption"]},
         "timing_basis": {"enum": ["observed", "as-of-baseline", "standard-release", "vendor-target", "project-target", "policy-target", "openfs-provisional-plan", "no-public-date"]},
@@ -208,6 +210,31 @@
         }
       },
       "allOf": [
+        {
+          "if": {"properties": {"timing_precision": {"const": "quarter-range"}}, "required": ["timing_precision"]},
+          "then": {
+            "required": ["end_year", "end_quarter"],
+            "properties": {
+              "year": {"type": "integer"},
+              "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]},
+              "end_year": {"type": "integer"},
+              "end_quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]}
+            }
+          },
+          "else": {"properties": {"end_year": {"const": null}, "end_quarter": {"const": null}}}
+        },
+        {
+          "if": {"properties": {"timing_precision": {"const": "quarter"}}, "required": ["timing_precision"]},
+          "then": {"properties": {"year": {"type": "integer"}, "quarter": {"enum": ["Q1", "Q2", "Q3", "Q4"]}}}
+        },
+        {
+          "if": {"properties": {"timing_precision": {"const": "year"}}, "required": ["timing_precision"]},
+          "then": {"properties": {"year": {"type": "integer"}, "quarter": {"const": null}}}
+        },
+        {
+          "if": {"properties": {"timing_precision": {"const": "undated"}}, "required": ["timing_precision"]},
+          "then": {"properties": {"year": {"const": null}, "quarter": {"const": null}}}
+        },
         {
           "if": {
             "properties": {"timing_precision": {"const": "half-year"}},

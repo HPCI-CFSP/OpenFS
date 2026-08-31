@@ -5,6 +5,8 @@ import json
 import unittest
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 from tools.check_roadmap_dependency_register import evaluate
 
 
@@ -27,6 +29,22 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
 
     def evaluate(self, register=None):
         return evaluate(register or self.register, self.roadmaps)
+
+    def test_publication_schema_binds_each_authorized_directive_to_its_decision(self):
+        schema = load_json(ROOT / "schemas/roadmap-dependency-register.schema.json")
+        validator = Draft202012Validator(schema["properties"]["publication"])
+        publication = self.register["publication"]
+        validator.validate(publication)
+        for directive in ["DIR-900006", "DIR-900015"]:
+            old = {**publication, "human_approval_directive_id": directive,
+                   "publication_decision_id": "PUBDEC-20260826-003"}
+            validator.validate(old)
+            self.assertTrue(list(validator.iter_errors({**old,
+                "publication_decision_id": "PUBDEC-HARDWARE-RESEARCH-20260831"})))
+        self.assertTrue(list(validator.iter_errors({**publication,
+            "publication_decision_id": "PUBDEC-20260826-003"})))
+        self.assertTrue(list(validator.iter_errors({**publication,
+            "human_approval_directive_id": "DIR-900099"})))
 
     def test_current_register_is_structurally_ready_for_consensus(self):
         result = self.evaluate()
@@ -76,6 +94,24 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
         self.assertTrue(
             any("source_ids belong to unrelated roadmaps" in item for item in result["calculation_errors"])
         )
+
+    def test_shared_primary_source_retains_every_roadmap_owner(self):
+        memory = next(r for r in self.roadmaps if r["roadmap_id"] == "RM-HW-MEMORY")
+        unrelated = next(r for r in self.roadmaps if r["roadmap_id"] == "RM-HW-STORAGE")
+        source = next(s for s in memory["sources"] if s["source_id"] == "SRC-MEM008")
+        unrelated["sources"].append(copy.deepcopy(source))
+        for roadmaps in (self.roadmaps, list(reversed(self.roadmaps))):
+            self.assertEqual([], evaluate(self.register, roadmaps)["calculation_errors"])
+
+    def test_shared_source_cannot_silently_change_its_url(self):
+        memory = next(r for r in self.roadmaps if r["roadmap_id"] == "RM-HW-MEMORY")
+        unrelated = next(r for r in self.roadmaps if r["roadmap_id"] == "RM-HW-STORAGE")
+        source = copy.deepcopy(next(s for s in memory["sources"] if s["source_id"] == "SRC-MEM008"))
+        source["url"] = "https://example.org/different-publication"
+        unrelated["sources"].append(source)
+        result = self.evaluate()
+        self.assertFalse(result["candidate_ready_for_consensus"])
+        self.assertTrue(any("shared source ID has conflicting URLs" in e for e in result["calculation_errors"]))
 
     def test_missing_p0_gap_propagation_fails_closed(self):
         changed = copy.deepcopy(self.register)

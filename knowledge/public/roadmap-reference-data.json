@@ -942,6 +942,70 @@
         "TERM-HBM",
         "TERM-TSV"
       ]
+    },
+    {
+      "term_id": "TERM-HBF",
+      "label_ja": "HBF（高帯域フラッシュ）",
+      "label_en": "HBF (High Bandwidth Flash)",
+      "aliases": [
+        "High Bandwidth Flash",
+        "HBF"
+      ],
+      "category": "memory",
+      "short_definition_ja": "NANDを用い、読取り帯域と容量の両立を目指すメモリ階層の候補。",
+      "short_definition_en": "A NAND-based memory-tier candidate targeting high read bandwidth and capacity.",
+      "definition_ja": "DRAMベースのHBMとは異なり、NANDを高帯域で接続する構想です。大容量のモデル重みなどを置く補完層として検討されています。2026年8月の仕様概要公表と旧サンプル目標は、量産・一般販売・実機性能の確認ではありません。書込み、耐久性、遅延、ページ粒度、制御ソフトの確認が必要です。",
+      "definition_en": "Unlike DRAM-based HBM, HBF connects NAND at high bandwidth and is being explored as a complementary tier for data such as large model weights. The August 2026 specification summary and earlier sampling targets do not confirm volume production, general sales or hardware performance. Writes, endurance, latency, page size and control software require validation.",
+      "roadmap_ids": [
+        "RM-HW-MEMORY"
+      ],
+      "source_refs": [
+        {
+          "roadmap_id": "RM-HW-MEMORY",
+          "source_id": "SRC-HW2-HBF-FMS"
+        },
+        {
+          "roadmap_id": "RM-HW-MEMORY",
+          "source_id": "SRC-HW2-HBF-TIMING"
+        },
+        {
+          "roadmap_id": "RM-HW-MEMORY",
+          "source_id": "SRC-HW2-HBF-FACTS"
+        }
+      ],
+      "related_term_ids": [
+        "TERM-HBM",
+        "TERM-QLC-SSD",
+        "TERM-UCIE"
+      ]
+    },
+    {
+      "term_id": "TERM-ZAM",
+      "label_ja": "ZAM（Z-Angle Memory）",
+      "label_en": "ZAM (Z-Angle Memory)",
+      "aliases": [
+        "Z-Angle Memory",
+        "ZAM"
+      ],
+      "category": "memory",
+      "short_definition_ja": "SAIMEMORYとIntelが実用化を目指す次世代メモリ技術。",
+      "short_definition_en": "Next-generation memory technology being developed toward commercialization by SAIMEMORY and Intel.",
+      "definition_ja": "高容量・高帯域・低消費電力を目標とするメモリアーキテクチャと製造技術の研究開発です。2026年2月の発表では2027年度の試作、2029年度の実用化を目指します。日本の年度は翌年3月までを含みます。JEDEC規格、既存HBMの互換品、量産済み製品とは扱いません。",
+      "definition_en": "R&D on memory architecture and manufacturing targeting high capacity, bandwidth and low power. The February 2026 announcement targets FY2027 prototypes and FY2029 commercialization; these Japanese fiscal years extend through the following March. This does not establish a JEDEC standard, HBM-compatible replacement or volume product.",
+      "roadmap_ids": [
+        "RM-HW-MEMORY"
+      ],
+      "source_refs": [
+        {
+          "roadmap_id": "RM-HW-MEMORY",
+          "source_id": "SRC-HW1-ZAM"
+        }
+      ],
+      "related_term_ids": [
+        "TERM-HBM",
+        "TERM-D2W",
+        "TERM-W2W"
+      ]
     }
   ],
   "comparison_sets": [
@@ -1067,9 +1131,9 @@
     {
       "comparison_id": "CMP-MEMORY-HIERARCHY", "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
       "title_ja": "主記憶・高帯域メモリの比較", "title_en": "Main-memory and high-bandwidth-memory comparison",
-      "summary_ja": "DDR、LPDDR、HBM、SOCAMMを、同じ技術階層ではない点を明示しながら、HPCIノード設計に必要な軸で比較する。", "summary_en": "Compares DDR, LPDDR, HBM, and SOCAMM on HPCI node-design dimensions while making their differing abstraction levels explicit.",
+      "summary_ja": "DDR、LPDDR、HBM、SOCAMMと、開発段階のHBF・ZAMを、規格・モジュール・実装方式の違いと成熟度を明示して比較します。", "summary_en": "Compare DDR, LPDDR, HBM, SOCAMM and developing HBF/ZAM while distinguishing standards, modules, implementation approaches and maturity.",
       "decision_use_ja": "容量、帯域、電力、交換性、プラットフォーム依存を組み合わせ、単一指標ではなくノード構成を選ぶために使う。", "decision_use_en": "Use capacity, bandwidth, power, serviceability, and platform dependence together to select node configurations rather than ranking one metric.",
-      "caveat_ja": "定量値は世代・ベンダー・搭載構成で変わる。SOCAMMはLPDDR系デバイスを使うモジュール形態であり、他の3項目と完全な同階層比較ではない。", "caveat_en": "Quantitative values vary by generation, vendor, and configuration. SOCAMM is a module form using LPDDR-class devices and is not at exactly the same abstraction level as the other entries.",
+      "caveat_ja": "同じ抽象度・成熟度の技術ではなく、相互に置換可能とは限りません。定量値は世代と構成に依存し、HBF・ZAMの目標を実測性能や供給保証とは扱いません。", "caveat_en": "These technologies differ in abstraction level and maturity and are not necessarily interchangeable. Quantitative values depend on generation/configuration; HBF/ZAM targets are not measured performance or supply guarantees.",
       "columns": [
         {"column_id": "overview", "label_ja": "位置付け", "label_en": "Position"},
         {"column_id": "strengths", "label_ja": "主な利点", "label_en": "Strengths"},
@@ -1105,7 +1169,87 @@
           {"column_id": "limitations", "text_ja": "プラットフォーム依存、標準化、長期供給の確認が必要。", "text_en": "Platform dependence, standardization, and long-term supply need confirmation."},
           {"column_id": "serviceability", "text_ja": "直付けLPDDRより交換しやすいが、RDIMM同等性は実装確認が必要。", "text_en": "More serviceable than soldered LPDDR, but RDIMM-equivalent operations require validation."},
           {"column_id": "recommended-use", "text_ja": "大容量・低電力AIサーバ、ラック密度重視構成。", "text_en": "High-capacity, low-power AI servers and rack-density-oriented systems."}
-        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM013"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM014"}]}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM013"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM014"}]},
+        {
+          "term_id": "TERM-HBF",
+          "cells": [
+            {
+              "column_id": "overview",
+              "text_ja": "NANDベースの補完メモリ層。HBM規格ではない。",
+              "text_en": "A complementary NAND memory tier, not an HBM standard."
+            },
+            {
+              "column_id": "strengths",
+              "text_ja": "高い読取り帯域と容量密度を目指す。",
+              "text_en": "Targets high read bandwidth and capacity density."
+            },
+            {
+              "column_id": "limitations",
+              "text_ja": "実機の遅延、書込み・耐久性、制御ソフトは要検証。",
+              "text_en": "Hardware latency, writes/endurance and control software need validation."
+            },
+            {
+              "column_id": "serviceability",
+              "text_ja": "UCIe接続等を公表。交換単位と保守条件は未確認。",
+              "text_en": "Interfaces including UCIe announced; replacement/service conditions unverified."
+            },
+            {
+              "column_id": "recommended-use",
+              "text_ja": "読取り中心のモデル重み等の候補。学習全般への適合は未確認。",
+              "text_en": "Candidate for read-heavy model weights; suitability for general training is unverified."
+            }
+          ],
+          "source_refs": [
+            {
+              "roadmap_id": "RM-HW-MEMORY",
+              "source_id": "SRC-HW2-HBF-FMS"
+            },
+            {
+              "roadmap_id": "RM-HW-MEMORY",
+              "source_id": "SRC-HW2-HBF-TIMING"
+            },
+            {
+              "roadmap_id": "RM-HW-MEMORY",
+              "source_id": "SRC-HW2-HBF-FACTS"
+            }
+          ]
+        },
+        {
+          "term_id": "TERM-ZAM",
+          "cells": [
+            {
+              "column_id": "overview",
+              "text_ja": "次世代メモリアーキテクチャ・製造技術の研究開発。",
+              "text_en": "R&D on next-generation memory architecture/manufacturing."
+            },
+            {
+              "column_id": "strengths",
+              "text_ja": "容量、帯域、電力の改善が開発目標。",
+              "text_en": "Capacity, bandwidth and power improvements are development goals."
+            },
+            {
+              "column_id": "limitations",
+              "text_ja": "歩留まり、実機性能、互換性、量産能力は未確認。",
+              "text_en": "Yield, hardware performance, compatibility and volume capacity unverified."
+            },
+            {
+              "column_id": "serviceability",
+              "text_ja": "試作前の公表計画。交換・保守条件は未確定。",
+              "text_en": "Public pre-prototype plan; service/replacement conditions unconfirmed."
+            },
+            {
+              "column_id": "recommended-use",
+              "text_ja": "将来のAI・HPCメモリ候補。現行調達の確定部材にはしない。",
+              "text_en": "Future AI/HPC memory candidate, not a committed current-procurement component."
+            }
+          ],
+          "source_refs": [
+            {
+              "roadmap_id": "RM-HW-MEMORY",
+              "source_id": "SRC-HW1-ZAM"
+            }
+          ]
+        }
       ]
     },
     {
@@ -2108,7 +2252,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-20260830-001",
-    "human_approval_directive_id": "DIR-900015"
+    "publication_decision_id": "PUBDEC-HARDWARE-RESEARCH-20260831",
+    "human_approval_directive_id": "DIR-900018"
   }
 }

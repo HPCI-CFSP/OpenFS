@@ -83,6 +83,8 @@ def timing_label(milestone: dict[str, Any], language: str) -> str:
     if year is None:
         return "時期未公表" if language == "ja" else "undated"
     quarter = milestone["quarter"]
+    if milestone["timing_precision"] == "quarter-range":
+        return f"{year} {quarter} - {milestone['end_year']} {milestone['end_quarter']}"
     if milestone["timing_precision"] == "half-year":
         return f"{year} {milestone['half']}"
     return f"{year} {quarter}" if quarter else str(year)
@@ -246,11 +248,16 @@ def build_audit(root: Path) -> dict[str, Any]:
             "pending_independent_review": len(entries) + len(generation_band_entries),
             "source_supported_quarter": timing_counts["source_supported_quarter"],
             "source_supported_half_year": timing_counts["source_supported_half_year"],
+            "source_supported_quarter_range": timing_counts["source_supported_quarter_range"],
             "source_supported_year": timing_counts["source_supported_year"],
             "undated": timing_counts["undated"],
             "openfs_provisional_quarter": timing_counts["openfs_provisional_quarter"],
+            "openfs_provisional_half_year": timing_counts["openfs_provisional_half_year"],
+            "openfs_provisional_quarter_range": timing_counts["openfs_provisional_quarter_range"],
             "openfs_provisional_year": timing_counts["openfs_provisional_year"],
             "openfs_governance_quarter": timing_counts["openfs_governance_quarter"],
+            "openfs_governance_half_year": timing_counts["openfs_governance_half_year"],
+            "openfs_governance_quarter_range": timing_counts["openfs_governance_quarter_range"],
             "openfs_governance_year": timing_counts["openfs_governance_year"],
         },
         "entries": entries,

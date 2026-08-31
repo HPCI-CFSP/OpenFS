@@ -116,11 +116,16 @@ class RoadmapAssuranceTests(unittest.TestCase):
                 for key in (
                     "source_supported_quarter",
                     "source_supported_half_year",
+                    "source_supported_quarter_range",
                     "source_supported_year",
                     "undated",
                     "openfs_provisional_quarter",
+                    "openfs_provisional_half_year",
+                    "openfs_provisional_quarter_range",
                     "openfs_provisional_year",
                     "openfs_governance_quarter",
+                    "openfs_governance_half_year",
+                    "openfs_governance_quarter_range",
                     "openfs_governance_year",
                 )
             ),
@@ -130,6 +135,8 @@ class RoadmapAssuranceTests(unittest.TestCase):
         self.assertEqual(
             timing_summary["openfs_provisional"],
             timing_summary["openfs_provisional_quarter"]
+            + timing_summary["openfs_provisional_half_year"]
+            + timing_summary["openfs_provisional_quarter_range"]
             + timing_summary["openfs_provisional_year"],
         )
 

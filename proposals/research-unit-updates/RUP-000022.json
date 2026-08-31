@@ -1,0 +1,682 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000022",
+  "topic_id": "ARCH-04",
+  "created_at": "2026-08-31T21:50:04+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "cca95f1b987c700cba2e01451089d968f217b790d5792f741cc647f80fe54646",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "接続方式を、ノード内・スケールアップ、スケールアウト、光実装に分けて調査しました。規格の公開、対応製品、相互運用、アプリケーション性能を区別し、電力の測定範囲と保守条件を追加しています。単一モデルによる暫定結果です。",
+  "summary_en": "The investigation separates intra-node/scale-up links, scale-out fabrics and optical implementation. It distinguishes published specifications, products, interoperability and application performance, adding power boundaries and serviceability conditions. Results remain provisional and single-model.",
+  "units": [
+    {
+      "unit_id": "ARCH-04-U01",
+      "before_sha256": "d21b13e798b95aaed110059670078f23af27f2612e3cb064aac064098e1dec30",
+      "evidence_section_ids": [
+        "TDS-ARCH03-TIERING",
+        "TDS-ARCH03-FABRIC",
+        "TDS-HW1-ARCH-04-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-04-U02",
+      "before_sha256": "10e00b71c16bd0121d97cff43a5522e685757316c2a615a6ec775216aea822e1",
+      "evidence_section_ids": [
+        "TDS-ARCH04-CURRENT",
+        "TDS-HC26-ARCH-04-U2",
+        "TDS-HW1-ARCH-04-U02"
+      ]
+    },
+    {
+      "unit_id": "ARCH-04-U03",
+      "before_sha256": "8076f4bc8621a9ae8bc26fa76be88b4ae5a6e5c60919bdc6351ac2c259d10854",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-04-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-04-U01",
+      "title_ja": "接続の意味と対応製品の確認",
+      "title_en": "Connection semantics and product readiness",
+      "summary_ja": "物理層の転送速度、I/O、メモリへのアクセス、GPU間通信は同じ指標ではありません。最大帯域は方向と集計範囲を明示します。",
+      "summary_en": "PHY rate, I/O, memory access and GPU communication are different measures. State direction and aggregation scope for peak bandwidth.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-PCIE8-READINESS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-NET007"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PCIe: 仕様完成とシステム導入を分離",
+          "name_en": "PCIe: specification completion versus deployment",
+          "timing_ja": "PCIe 8.0 Draft 0.5は2026年5月公開、最終仕様は2028年目標。",
+          "timing_en": "PCIe 8.0 Draft 0.5 was announced in May 2026; final specification targets 2028.",
+          "statement_ja": "PCI-SIGの256GT/sとx16で1TB/sという値は、それぞれ転送レートと双方向合計帯域です。2028年の目標は仕様完成であり、CPU・スイッチ・周辺機器が揃う発売日ではありません。",
+          "statement_en": "PCI-SIG's 256GT/s and x16 1TB/s describe transfer rate and bidirectional aggregate bandwidth. The 2028 target is specification completion, not simultaneous availability of CPUs, switches and peripherals.",
+          "hpci_relevance_ja": "PCIe世代の数字から有効ペイロード帯域や導入四半期を推定せず、レーン数、配線、機器の認定を確認します。",
+          "hpci_relevance_en": "Do not infer payload throughput or a deployment quarter from the generation number; check lane count, channels and qualification.",
+          "adoption_conditions_ja": [
+            "対応ホスト・スイッチ・機器と配線認定"
+          ],
+          "adoption_conditions_en": [
+            "Qualified hosts, switches, endpoints and channels"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CXL4-SEMANTICS",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-HW1-CXL4-QA",
+            "SRC-HW1-CXL-LINUX"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXL 4.0: 帯域拡張とNUMA対応",
+          "name_en": "CXL 4.0: bandwidth expansion and NUMA readiness",
+          "timing_ja": "仕様は2025年11月公開。個別製品の導入時期は別途確認。",
+          "timing_en": "Specification released November 2025; product deployment dates need separate verification.",
+          "statement_ja": "CXL 4.0はPCIe 7.0を基盤とし、最大128GT/sとポート束ねを規定します。束ねた機器は列挙時に複数のエンドポイントとして見え、ドライバーが一つのアクセラレータとして管理する構成があります。容量の動的割当にはNUMAを考慮したソフトウェアが必要です。",
+          "statement_en": "CXL 4.0 uses PCIe 7.0, up to 128GT/s and bundled ports. Enumeration can expose multiple endpoints while a driver manages one accelerator. Dynamic capacity requires NUMA-aware software.",
+          "hpci_relevance_ja": "メモリ共有の意味、アクセス元、障害分離、OS・ドライバー対応を製品ごとに確かめます。規格は実アプリの遅延を保証しません。",
+          "hpci_relevance_en": "Verify sharing semantics, initiators, fault isolation and OS/driver support per product; a specification does not guarantee application latency.",
+          "adoption_conditions_ja": [
+            "導入構成でのページ配置・競合・故障試験"
+          ],
+          "adoption_conditions_en": [
+            "Placement, contention and failure tests on the deployment configuration"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-NVLINK-BW-BOUNDARY",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-TDS020",
+            "SRC-NET010"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVLink: GPU当たりの帯域とラック合計",
+          "name_en": "NVLink: per-GPU versus rack aggregate bandwidth",
+          "timing_ja": "NVLink 6のRubin向け仕様を確認。Vera Rubin出荷は2026年秋の予定。",
+          "timing_en": "NVLink 6 Rubin specifications checked; Vera Rubin shipments planned for fall 2026.",
+          "statement_ja": "NVLink 6の3.6TB/sはGPU当たりの双方向帯域、NVL72の約260TB/sは集計値です。これを任意の一対のGPUが同時に専有できる帯域や、実アプリの通信性能と読み替えません。メーカー表には暫定仕様との注記があります。",
+          "statement_en": "NVLink 6 lists 3.6TB/s bidirectional per GPU and about 260TB/s aggregated across NVL72. These are not bandwidth independently available to every concurrent GPU pair or measured application throughput. The table marks specifications as preliminary.",
+          "hpci_relevance_ja": "集合通信、障害時の縮退、トレイ交換、部分実装とライブラリ対応を検証します。任意の異種アクセラレータの互換性は別問題です。",
+          "hpci_relevance_en": "Test collectives, degraded operation, tray replacement, partial population and libraries; arbitrary heterogeneous compatibility is separate.",
+          "adoption_conditions_ja": [
+            "トポロジと同時通信パターンを固定"
+          ],
+          "adoption_conditions_en": [
+            "Pin topology and concurrent traffic pattern"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-UALINK-STACK",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-NET004"
+          ],
+          "actor_ids": [
+            "ACT-UALINK"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UALink: 管理・チップレットを含む実装条件",
+          "name_en": "UALink: management and chiplet implementation conditions",
+          "timing_ja": "4仕様を2026年4月7日に公開。製品の相互運用は別途確認。",
+          "timing_en": "Four specifications released April 7, 2026; product interoperability needs separate evidence.",
+          "statement_ja": "Common 2.0はネットワーク内演算、管理1.0は集中制御、Chiplet 1.0はUCIe 3.0との接続を扱います。規格の成立だけでは、対応アクセラレータ・スイッチ・管理ソフトウェアが一式揃ったとは言えません。",
+          "statement_en": "Common 2.0 adds in-network compute, Manageability 1.0 centralized control, and Chiplet 1.0 UCIe 3.0 integration. Ratification alone does not establish a complete compatible accelerator/switch/software stack.",
+          "hpci_relevance_ja": "採用する機能、管理API、集合通信、エラー回復を製品同士で検証します。NVLinkと直接互換とは扱いません。",
+          "hpci_relevance_en": "Validate selected features, management APIs, collectives and recovery between products; do not assume direct NVLink compatibility.",
+          "adoption_conditions_ja": [
+            "商用製品と組合せ試験結果"
+          ],
+          "adoption_conditions_en": [
+            "Commercial products and combination-specific test results"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CXL-COMPLIANCE-BOUNDARY",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-NET020"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "適合試験と性能保証の違い",
+          "name_en": "Compliance testing is not a performance guarantee",
+          "timing_ja": "導入する製品・版の確認が必要。",
+          "timing_en": "Deployment-specific products and versions require checking.",
+          "statement_ja": "CXLの適合プログラムは性能保証ではなく、完全な適合試験を行えない製品種別では相互運用実演を別扱いにしています。今回、個別製品一覧は本文として取得できなかったため、特定製品の認証済み判定には使いません。",
+          "statement_en": "CXL's program does not guarantee performance and distinguishes interoperability demonstrations where full testing is unavailable. Product entries were not retrieved, so no individual certification claim is made here.",
+          "hpci_relevance_ja": "標準準拠の表記と、実際に購入する構成での動作確認を分けます。",
+          "hpci_relevance_en": "Separate standards claims from validation of the purchased configuration.",
+          "adoption_conditions_ja": [
+            "認定の対象機能・版・組合せ"
+          ],
+          "adoption_conditions_en": [
+            "Tested features, versions and combinations"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-04-U02",
+      "title_ja": "通信ファブリックと輻輳・運用条件",
+      "title_en": "Fabrics, congestion and operating conditions",
+      "summary_ja": "最大リンク速度だけで順位付けせず、トラフィック、プロトコル、ソフトウェア、障害時の振る舞いを比較します。",
+      "summary_en": "Compare traffic, protocols, software and failure behavior rather than rank peak link speeds.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-ROCE-PFC-MODES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-ROCE-CUMULUS57"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "RoCE: ECN・PFCと損失許容モード",
+          "name_en": "RoCE: ECN, PFC and lossy operation",
+          "timing_ja": "Cumulus Linux 5.7の公開設定を確認。別の版は要確認。",
+          "timing_en": "Public Cumulus Linux 5.7 configuration checked; other versions require checking.",
+          "statement_ja": "同版の設定表では、losslessモードはECNとPFC、lossyモードはECNを使いPFCを使いません。したがって『RoCEには常にPFCが必須』という一律の説明は不適切です。損失回復や輻輳制御の実装によって性能条件が変わります。",
+          "statement_en": "The version's table uses ECN/PFC in lossless mode and ECN without PFC in lossy mode. A blanket statement that RoCE always requires PFC is therefore inappropriate; recovery and congestion implementations affect performance.",
+          "hpci_relevance_ja": "同時ジョブ、incast、再送、テールレイテンシ、休止伝播を測定し、NICとスイッチの設定を固定します。",
+          "hpci_relevance_en": "Measure concurrent jobs, incast, retransmission, tail latency and pause propagation with pinned NIC/switch settings.",
+          "adoption_conditions_ja": [
+            "負荷・バッファ・ファームウェアとOSの版"
+          ],
+          "adoption_conditions_en": [
+            "Traffic, buffers, firmware and OS versions"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-UE-PROFILE-COMPLIANCE",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-HW1-UE103-NOTES",
+            "SRC-HW1-UE-COMPLIANCE"
+          ],
+          "actor_ids": [
+            "ACT-UEC"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Ultra Ethernet: プロファイルと修正追従",
+          "name_en": "Ultra Ethernet: profiles and revision tracking",
+          "timing_ja": "UE 1.0.3は2026年7月16日公開。",
+          "timing_en": "UE 1.0.3 released July 16, 2026.",
+          "statement_ja": "1.0.3には200Gb/sレーンや再送・クレジット管理の技術修正が含まれます。自己適合宣言の手順はAI Base、AI Extended、HPCの必須・任意機能を区別します。会員であることや規格対応の予定だけでは、そのプロファイルの実装済みを証明しません。",
+          "statement_en": "Revision 1.0.3 includes technical corrections for 200Gb/s lanes, retransmission and credit handling. Self-attestation distinguishes mandatory/optional features in AI Base, AI Extended and HPC profiles. Membership or planned support does not prove implementation of a profile.",
+          "hpci_relevance_ja": "HPC向け機能とMPI・集合通信の対応、相互運用、既存RoCEとの共存を確認します。",
+          "hpci_relevance_en": "Check HPC-profile features, MPI/collectives, interoperability and coexistence with existing RoCE.",
+          "adoption_conditions_ja": [
+            "プロファイル別試験表と実装版"
+          ],
+          "adoption_conditions_en": [
+            "Profile-specific checklist and implementation version"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-CORNELIS-STACK-POWER",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-NET027",
+            "SRC-NET029"
+          ],
+          "actor_ids": [
+            "ACT-CORNELIS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Cornelis CN5000: NICとOPXを一体で評価",
+          "name_en": "Cornelis CN5000: evaluate NICs with OPX",
+          "timing_ja": "CN5000製品・OPXを確認。CN6000の一般提供は未確認。",
+          "timing_en": "CN5000/OPX product information checked; CN6000 general availability unverified.",
+          "statement_ja": "CN5000は400G・PCIe 5.0で、OPXはOFI/MPI系と管理・診断を提供します。NICの15W/19Wという代表値は光部品を除くため、光部品込みの他社値と直接比較しません。CN6000の詳細ページは取得できず、発表だけから納期を確定しません。",
+          "statement_en": "CN5000 uses 400G/PCIe 5.0; OPX lists OFI/MPI, management and diagnostics. Typical NIC figures of 15W/19W exclude optics and cannot be directly compared with optics-inclusive figures. CN6000 details were unavailable; its announcement establishes no delivery date.",
+          "hpci_relevance_ja": "既存MPIコードの互換性、GPUメモリ経路、トポロジ、障害診断、国内保守を確認します。",
+          "hpci_relevance_en": "Check MPI compatibility, GPU-memory paths, topology, fault diagnosis and Japanese support.",
+          "adoption_conditions_ja": [
+            "光部品を含む電力・同条件性能・対応版"
+          ],
+          "adoption_conditions_en": [
+            "Optics-inclusive power, matched performance and supported versions"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-IB-X800-TOPOLOGY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-X800-MANUAL"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "InfiniBand X800: ポート数と構成の違い",
+          "name_en": "InfiniBand X800: port counts and configurations",
+          "timing_ja": "2026年8月21日更新のハードウェア資料を確認。",
+          "timing_en": "Hardware documentation updated August 21, 2026 checked.",
+          "statement_ja": "Q3400/Q3401は144本の800Gb/sリンクを72個のOSFPケージに収容します。一方、Q3200は一筐体内の独立した2台のスイッチです。筐体数や公称合計帯域だけでは、経路・障害範囲・バイセクション帯域は同じになりません。",
+          "statement_en": "Q3400/Q3401 expose 144 800Gb/s links through 72 OSFP cages, while Q3200 contains two independent switches. Chassis count or summed bandwidth alone does not establish equal routes, fault domains or bisection bandwidth.",
+          "hpci_relevance_ja": "オーバーサブスクリプション、ジョブ配置、集合通信、障害時の帯域をトポロジ単位で比較します。",
+          "hpci_relevance_en": "Compare oversubscription, job placement, collectives and degraded bandwidth at topology level.",
+          "adoption_conditions_ja": [
+            "NIC・ケーブル・ポート割当と復旧試験"
+          ],
+          "adoption_conditions_en": [
+            "NICs, cables, port assignment and recovery tests"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-04-U03",
+      "title_ja": "光実装の電力・交換範囲・導入時期",
+      "title_en": "Optical power, replacement scope and timing",
+      "summary_ja": "CPOは光変換を近接実装する方式であり、通信プロトコルとは別の軸です。部品・装置・施設の電力を混同せず、故障時の交換手順を確認します。",
+      "summary_en": "CPO places optical conversion near compute/switch silicon; it is a separate axis from protocol. Distinguish component, system and facility power and verify replacement procedures.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-CPO-POWER-CONDITIONS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-X800-SPECS",
+            "SRC-NET010"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "プラガブルとCPO: 最大値・代表値を分離",
+          "name_en": "Pluggables versus CPO: separate maximum and typical power",
+          "timing_ja": "NVIDIAは2026年5月にSpectrum-X Photonics生産を公表。",
+          "timing_en": "NVIDIA announced Spectrum-X Photonics production in May 2026.",
+          "statement_ja": "X800資料では、OSFP型Q3400の2.9kWはパッシブ配線時の代表値、7kWはアクティブ配線時の最大値です。CPO型Q3450-LDの4.3kW最大値と比べる際は同条件ではないため、そのまま省電力率を算出しません。",
+          "statement_en": "X800 documentation lists Q3400 at 2.9kW typical with passive cables and 7kW maximum with active cables. These conditions differ from Q3450-LD CPO's 4.3kW maximum, so they do not yield a matched power-saving percentage.",
+          "hpci_relevance_ja": "ポート数・光到達距離・トラフィック・温度を揃え、レーザー、冷却、電源損失を含む範囲を明示します。",
+          "hpci_relevance_en": "Match ports, optical reach, traffic and temperature, stating inclusion of lasers, cooling and conversion losses.",
+          "adoption_conditions_ja": [
+            "同じ電力測定境界と代表運用負荷"
+          ],
+          "adoption_conditions_en": [
+            "Identical power boundary and representative operating load"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-PEC2-SERVICEABILITY",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-NTT-PEC2"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NTT PEC-2: CPOの保守とソケット化",
+          "name_en": "NTT PEC-2: CPO serviceability and sockets",
+          "timing_ja": "51.2Tb/s試作機の万博運用を報告。商用版は開発中。",
+          "timing_en": "51.2Tb/s prototype operation at Expo reported; commercial version under development.",
+          "statement_ja": "NTTは、基板へ実装された光部品の交換に装置停止・分解が必要という課題を説明し、ソケット型の実装を開発しています。試作実績は有用ですが、量産製品の故障率や停止せず交換できることを示すものではありません。",
+          "statement_en": "NTT explains that replacing soldered optical devices requires shutdown/disassembly and is developing socketed integration. Prototype operation is useful evidence, not a production failure-rate study or proof of hot replacement.",
+          "hpci_relevance_ja": "交換単位、予備品、清掃・検査、レーザーと光エンジンの交換可否を仕様書で確認します。",
+          "hpci_relevance_en": "Verify replacement units, spares, cleaning/inspection and separate laser/optical-engine serviceability in specifications.",
+          "adoption_conditions_ja": [
+            "現場交換手順と停止時間・保守契約"
+          ],
+          "adoption_conditions_en": [
+            "Field replacement procedure, downtime and support contract"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-PEC-TIMING-SCOPE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HW1-NTT-FY25RESULTS"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PEC-2・PEC-3: 商用化と試供の違い",
+          "name_en": "PEC-2/PEC-3: commercialization versus samples",
+          "timing_ja": "PEC-2商用化は2026年度、PEC-3商用サンプルは2028年の目標。",
+          "timing_en": "PEC-2 commercialization targets FY2026; PEC-3 commercial samples target 2028.",
+          "statement_ja": "NTTの2026年5月資料は、短距離接続のPEC-2と半導体パッケージ間を結ぶPEC-3を区別します。年度の計画を暦年の特定四半期へ狭めず、サンプル提供をシステム全体の一般提供としません。",
+          "statement_en": "NTT's May 2026 report distinguishes short-reach PEC-2 from inter-package PEC-3. Fiscal-year plans cannot be narrowed to an arbitrary calendar quarter, and samples are not general availability of complete systems.",
+          "hpci_relevance_ja": "APNの拠点間サービス、ラック内CPO、パッケージ間光I/Oを用途別に評価し、同一の導入工程と扱いません。",
+          "hpci_relevance_en": "Evaluate inter-site APN services, rack CPO and inter-package optical I/O by use case rather than assume one deployment schedule.",
+          "adoption_conditions_ja": [
+            "モジュール・スイッチ・システムそれぞれの認定と供給日"
+          ],
+          "adoption_conditions_en": [
+            "Module, switch and system qualification and supply dates"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH04-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-CXL-LINUX",
+        "title": "Linux kernel CXL documentation: configuration overview",
+        "publisher": "Linux kernel development community",
+        "url": "https://docs.kernel.org/driver-api/cxl/linux/overview.html",
+        "source_class": "official-project",
+        "published_or_updated": "undated living documentation; checked 2026-08-31"
+      },
+      "origin_group": "linux-cxl-configuration-overview",
+      "checked_at": "2026-08-31T21:40:00+09:00",
+      "locator": "Early boot through DAX and memory-hotplug configuration",
+      "observation_ja": "Type-3メモリをDAXまたは通常ページとして公開する経路を確認。導入OSの版・BIOS・デコーダ設定の確認が必要。",
+      "observation_en": "Checked Type-3 exposure as DAX or ordinary pages; deployment needs pinned OS, BIOS and decoder configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CXL4-QA",
+        "title": "Introducing the CXL 4.0 Specification: Webinar Q&A Recap",
+        "publisher": "CXL Consortium",
+        "url": "https://computeexpresslink.org/blog/introducing-the-cxl-4-0-specification-webinar-qa-recap-4386/",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-01-15"
+      },
+      "origin_group": "cxl4-webinar-qa",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Q1-Q4, Q6-Q10",
+      "observation_ja": "PCIe 7.0基盤、128GT/s、NUMA対応の必要性、束ねたポートの列挙とドライバーの違いを確認。性能は構成と負荷に依存。",
+      "observation_en": "Checked PCIe 7.0 basis, 128GT/s, NUMA requirements and enumeration/driver views of bundled ports; performance depends on configuration and traffic.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-NTT-FY25RESULTS",
+        "title": "NTT Financial Results for the Year Ended March 31, 2026",
+        "publisher": "NTT",
+        "url": "https://group.ntt/en/newsrelease/2026/05/08/pdf/260508ab.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-05-08"
+      },
+      "origin_group": "ntt-fy25-results",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "PDF pages 8 and 10: PEC-2 and PEC-3",
+      "observation_ja": "PEC-2商用化は2026年度、PEC-3商用サンプルは2028年の計画。APNサービス、短距離PEC-2、パッケージ間PEC-3を区別。",
+      "observation_en": "PEC-2 commercialization targets FY2026; PEC-3 commercial samples target calendar 2028. Distinguish APN services, short-reach PEC-2 and inter-package PEC-3.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-NTT-PEC2",
+        "title": "PEC-2を搭載した大容量・低消費電力な光電融合スイッチ",
+        "publisher": "NTT Device Innovation Center",
+        "url": "https://www.rd.ntt/research/JN202602_38182.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-02-05"
+      },
+      "origin_group": "ntt-pec2-technicalreport2026",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Prototype/Expo operation; commercialization and maintenance paragraphs",
+      "observation_ja": "51.2Tb/s試作運用、CPOの停止・分解を伴う交換、ソケット化の開発を確認。2026年の試供は計画で、実績ではない。",
+      "observation_en": "Checked 51.2Tb/s prototype operation, CPO replacement requiring shutdown/disassembly and socket development; 2026 samples are a plan, not an observed event.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-ROCE-CUMULUS57",
+        "title": "Cumulus Linux 5.7: RDMA over Converged Ethernet",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-57/Layer-1-and-Switch-Ports/Quality-of-Service/RDMA-over-Converged-Ethernet-RoCE/",
+        "source_class": "official-vendor",
+        "published_or_updated": "version 5.7 documentation; checked 2026-08-31"
+      },
+      "origin_group": "nvidia-cumulus57-roce",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Default RoCE Mode Configuration; lossy/lossless modes",
+      "observation_ja": "lossyはECNを使いPFCを使わず、losslessはECN/PFCを使う設定表を確認。冒頭の一般化より、版を固定した設定表を根拠とする。",
+      "observation_en": "The table uses ECN without PFC in lossy mode and ECN/PFC in lossless mode. Use the version-specific configuration table rather than the broad introductory wording.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-UE-COMPLIANCE",
+        "title": "Ultra Ethernet Compliance self-attestation Readme",
+        "publisher": "Ultra Ethernet Consortium",
+        "url": "https://ultraethernet.org/wp-content/uploads/sites/20/2025/06/Readme.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "undated document in June 2025 publication path"
+      },
+      "origin_group": "uec-compliance-self-attestation",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Page 1",
+      "observation_ja": "自己適合宣言用の試験表で、AI Base/Extended/HPCごとの必須・条件付き・任意項目を区別する。独立認証済み製品一覧ではない。",
+      "observation_en": "Self-attestation checklists distinguish mandatory, conditional and optional features for AI Base/Extended/HPC, not an independently certified product list.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-UE103-NOTES",
+        "title": "Ultra Ethernet Specification 1.0.3 Release Notes",
+        "publisher": "Ultra Ethernet Consortium",
+        "url": "https://ultraethernet.org/wp-content/uploads/sites/20/2026/07/UE-Specification-1.0.3-release-notes-.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-07-16"
+      },
+      "origin_group": "uec-103-release-notes",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Pages 1-2, technical versus editorial changes",
+      "observation_ja": "200Gb/sレーンや再送・クレジット競合の修正を確認。旧1.0.2の日付は履歴ページと一致しないため採用しない。",
+      "observation_en": "Checked 200Gb/s-lane and retransmission/credit-race corrections; the previous 1.0.2 date differs from the history page and is not reused.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-X800-MANUAL",
+        "title": "NVIDIA Q32xx/Q34xx XDR 800Gb/s InfiniBand Switch Systems: Introduction",
+        "publisher": "NVIDIA",
+        "url": "https://networking-docs.nvidia.com/xdrswitcheshw/introduction",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-21"
+      },
+      "origin_group": "nvidia-xdr-switch-manual",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Introduction; speed and switching; replacement parts",
+      "observation_ja": "Q3400/Q3401のOSFP構成とQ3450-LDのCPO/MPO構成を区別。144ポートは線速度でありアプリ実効性能ではない。",
+      "observation_en": "Distinguished Q3400/Q3401 OSFP from Q3450-LD CPO/MPO; 144-port line rates are not application throughput.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-X800-SPECS",
+        "title": "NVIDIA Q32xx/Q34xx XDR Switch Systems: Technical Specifications",
+        "publisher": "NVIDIA",
+        "url": "https://networking-docs.nvidia.com/xdrswitcheshw/specifications",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-21"
+      },
+      "origin_group": "nvidia-xdr-switch-manual",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Q3400-RA and Q3450-LD technical specification tables",
+      "observation_ja": "Q3400の2.9kWはパッシブ配線時の代表値、7kWはアクティブ配線時の最大。Q3450の4.3kW最大と直接の省電力比を計算しない。",
+      "observation_en": "Q3400 lists 2.9kW typical with passive cables and 7kW maximum with active cables; do not derive matched savings against Q3450's 4.3kW maximum.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET004",
+        "title": "UALink Consortium Publishes Four Specifications",
+        "publisher": "UALink Consortium",
+        "url": "https://ualinkconsortium.org/wp-content/uploads/2026/04/UALink-2.0-Specification-PR_FINAL.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-04"
+      },
+      "origin_group": "ualink-april2026-specifications",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Pages 1-2, four specifications and future interoperability programs",
+      "observation_ja": "Common 2.0、DL/PL 2.0、管理1.0、チップレット1.0の公開を確認。相互運用プログラムは当時の今後の計画。",
+      "observation_en": "Checked Common 2.0, DL/PL 2.0, Manageability 1.0 and Chiplet 1.0; interoperability programs were then future plans.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET007",
+        "title": "PCIe 8.0 Specification Draft 0.5 Now Available",
+        "publisher": "PCI-SIG",
+        "url": "https://pcisig.com/blog/pcier-80-specification-draft-05-now-available-track-2560-gts-transfer-speeds-2028",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-05-01"
+      },
+      "origin_group": "pcisig-pcie8-draft05",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Draft 0.5 status, 256 GT/s target and 2028 final specification",
+      "observation_ja": "2028年は仕様完成目標で、搭載製品発売ではない。x16で1TB/sは双方向合計。",
+      "observation_en": "2028 targets the final specification, not product availability; x16 1TB/s is bidirectional aggregate.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET010",
+        "title": "NVIDIA Vera Rubin Ramps Into Full Production to Power Agentic AI Factories Worldwide",
+        "publisher": "NVIDIA",
+        "url": "https://nvidianews.nvidia.com/news/vera-rubin-full-production-agentic-ai-factory",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-05-31"
+      },
+      "origin_group": "nvidia-vera-rubin-may2026",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Building the Fabric; Availability",
+      "observation_ja": "Spectrum-X Photonics生産と、Vera Rubinの秋の出荷予定を区別。5倍効率等はメーカー主張で同条件の独立実測ではない。",
+      "observation_en": "Distinguished Spectrum-X Photonics production from planned fall Vera Rubin shipments; efficiency multiples are vendor claims, not matched independent measurements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET020",
+        "title": "CXL Integrators List",
+        "publisher": "CXL Consortium",
+        "url": "https://computeexpresslink.org/integrators-list/",
+        "source_class": "official-standard",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "cxl-integrators-program",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Compliance Program description and asterisk qualification",
+      "observation_ja": "性能保証ではないことと、完全な適合試験ではなく相互運用実演の場合があることを確認。製品一覧自体は本文に抽出されなかった。",
+      "observation_en": "The program is not a performance guarantee; asterisked cases demonstrate interoperability without full testing. Product entries were not extracted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET027",
+        "title": "CN5000 Omni-Path SuperNICs",
+        "publisher": "Cornelis Networks",
+        "url": "https://www.cornelis.com/product/cornelis-cn5000-omni-path-adapters",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "cornelis-cn5000-product",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Product specifications, power footnotes and feature list",
+      "observation_ja": "400G・PCIe 5.0と、15W/19Wが光部品を除く代表値であることを確認。CN6000はヘッダー上の発表だけで詳細ページは取得できなかった。",
+      "observation_en": "Checked 400G/PCIe 5.0 and 15W/19W typical power excluding optics. CN6000 was visible only in the announcement header; its detail page was unavailable.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-NET029",
+        "title": "Cornelis OPX Software Suite",
+        "publisher": "Cornelis Networks",
+        "url": "https://www.cornelis.com/product/cornelis-opx",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "cornelis-opx-software",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "OPX stack and supported interfaces/libraries",
+      "observation_ja": "OFI、MPI系、管理・診断機能の掲載を確認。個別版、GPUメモリ経路、国内保守はこのページだけでは確定できない。",
+      "observation_en": "Checked OFI/MPI and management/diagnostic listings; exact versions, GPU-memory paths and Japanese support are not established by this page.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS020",
+        "title": "NVLink and NVLink Switch",
+        "publisher": "NVIDIA",
+        "url": "https://www.nvidia.com/en-us/data-center/nvlink/",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "nvidia-nvlink-product",
+      "checked_at": "2026-08-31T21:47:34+09:00",
+      "locator": "Sixth-generation features and Specifications table",
+      "observation_ja": "3.6TB/sはGPU当たり双方向帯域。仕様は暫定。トレイ交換と部分実装に言及するが、任意の異種機器の互換性を保証しない。",
+      "observation_en": "3.6TB/s is per-GPU bidirectional bandwidth and specifications are preliminary; tray replacement/partial population does not guarantee arbitrary heterogeneous interoperability.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-057",
+      "topic_ids": [
+        "ARCH-04"
+      ],
+      "priority": "P0",
+      "question_ja": "主要通信方式を同一トポロジ・負荷・電力範囲で比較し、相互運用と保守条件を確認できるか。",
+      "question_en": "Can major fabrics be compared under matched topology, traffic and power boundaries with interoperability and serviceability verified?",
+      "next_action_ja": "MPI/集合通信と輻輳・故障試験、対応ソフトウェア版、光部品込みの測定、CN6000・UALinkの一般提供を確認する。取得できなかったBroadcom本文、GTC大容量PDF、CN6000資料は今回の再確認済みにしない。",
+      "next_action_en": "Collect MPI/collective, congestion/failure tests, software versions, optics-inclusive measurements and CN6000/UALink availability. Do not mark unavailable Broadcom bodies, the oversized GTC PDF or CN6000 material as reverified in this run.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "相互運用・テールレイテンシ・電力の独立測定",
+    "公開予定と実際の納入時期・国内保守の照合",
+    "リンク先取得失敗と独立Consensus"
+  ],
+  "remaining_work_en": [
+    "Independent interoperability, tail-latency and power measurements",
+    "Reconcile announced targets with actual delivery and Japanese support",
+    "Unresolved retrieval failures and independent Consensus"
+  ]
+}

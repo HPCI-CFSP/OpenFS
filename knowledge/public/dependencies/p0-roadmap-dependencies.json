@@ -5,8 +5,8 @@
   "as_of": "2026-08-31",
   "title_ja": "P0ロードマップ間の依存関係一覧",
   "title_en": "P0 cross-roadmap dependency register",
-  "summary_ja": "公開ロードマップ間の依存関係を整理した暫定版です。ストレージの評価条件をワークロード、ネットワーク、計画案に接続し、意思決定に必要な根拠と未確認事項を示します。独立レビューは未完了です。",
-  "summary_en": "A provisional register of dependencies between published roadmaps, connecting storage evaluation to workloads, networking, and planning options. It identifies decision evidence and unresolved gaps; independent review is incomplete.",
+  "summary_ja": "公開ロードマップ間の依存関係を整理した暫定版です。メモリと実装の供給段階、通信の実効性能と保守、ストレージの復旧・移行条件を計算ノードと計画案に結び付け、採用前に確認する事項と遅延時の代替案を示します。独立レビューは未完了です。",
+  "summary_en": "A provisional register connecting memory/packaging supply stages, network performance and serviceability, and storage recovery/migration requirements to compute nodes and planning options. It identifies adoption checks and alternatives if readiness is delayed; independent review is incomplete.",
   "consensus_status": "incomplete",
   "dependencies": [
     {
@@ -49,15 +49,18 @@
       "basis": "evidence-backed",
       "statement_ja": "計算密度、パッケージ、HBM/SOCAMM/DDRの容量・帯域・供給時期は相互に制約する。",
       "statement_en": "Compute density and packaging co-evolve with HBM, SOCAMM, and DDR capacity, bandwidth, and supply timing.",
-      "decision_impact_ja": "アクセラレータ単体ではなく、メモリ容量、帯域、データ移動を含むノード構成で評価する。",
-      "decision_impact_en": "Evaluate node configurations including memory capacity, bandwidth, and data movement, not accelerators in isolation.",
-      "risk_if_late_ja": "メモリ供給または実効帯域が計算性能と導入時期を律速する。",
-      "risk_if_late_en": "Memory supply or sustained bandwidth may limit compute performance and deployment timing.",
+      "decision_impact_ja": "アクセラレータ、メモリ容量・帯域、実装、データ配置を一体で評価する。HBFのサンプル計画、ZAMの年度別試作・実用化目標、HBM後工程の新工場計画は、それぞれ異なる供給段階であり、認定済みノードの納期ではない。",
+      "decision_impact_en": "Evaluate accelerators, memory capacity/bandwidth, packaging and data placement together. HBF sampling plans, ZAM fiscal-year prototype/commercialization targets and a new HBM packaging plant are distinct supply stages, not delivery dates for qualified nodes.",
+      "risk_if_late_ja": "メモリ供給または実効帯域が導入を律速し得る。未認定の新方式を必須条件にせず、既存のDDR・LPDDR・HBMを使う構成と、容量不足時の処理分割・オフロードを代替案として残す。代替案の性能も実測が必要。",
+      "risk_if_late_en": "Memory supply or sustained bandwidth may constrain deployment. Retain configurations using established DDR, LPDDR or HBM and capacity-driven partitioning/offload as alternatives rather than making an unqualified new design mandatory. Alternative performance also requires measurement.",
       "source_ids": [
         "SRC-MEM008",
         "SRC-MEM011",
         "SRC-COMP001",
-        "SRC-COMP002"
+        "SRC-COMP002",
+        "SRC-HW2-HBF-TIMING",
+        "SRC-HW1-ZAM",
+        "SRC-HW1-SK-INDIANA"
       ],
       "source_dependency_ids": [
         "DEP-COMP-MEM-001",
@@ -81,15 +84,16 @@
       "basis": "evidence-backed",
       "statement_ja": "ラック規模計算能力はスケールアップ、スケールアウト、光ネットワークの帯域・遅延・成熟度と共進化する。",
       "statement_en": "Rack-scale compute co-evolves with scale-up, scale-out, and optical-network bandwidth, latency, and maturity.",
-      "decision_impact_ja": "GPU・CPUの台数と、ネットワークスイッチのポート数（radix）、配線、消費電力を同時に比較する。radixは、スイッチが備えるポート数を表す。",
-      "decision_impact_en": "Compare GPU and CPU counts together with switch radix, cabling, and power consumption.",
-      "risk_if_late_ja": "ネットワークの成熟が間に合わずラック全体の性能を引き出せない場合、構成変更が設計後半にずれ込む。",
-      "risk_if_late_en": "Immature networking may limit rack performance and force configuration changes late in the design process.",
+      "decision_impact_ja": "GPU・CPU数、スイッチのポート数（radix）、配線、光部品を含む電力範囲、交換単位を揃えて比較する。NICのサンプル提供や規格への対応表明だけでは、採用するスイッチ・ドライバ・集合通信ライブラリとの相互運用は確認できない。",
+      "decision_impact_en": "Match GPU/CPU counts, switch radix (port count), cabling, optics-inclusive power boundaries and replacement units. NIC sampling or claimed specification support does not establish interoperability with the selected switches, drivers and collective libraries.",
+      "risk_if_late_ja": "接続・保守条件が未確定なら設計変更が遅れる。CPOや新しい通信方式を必須にせず、認定済みのプラガブル構成・既存ファブリックも候補に残し、同一負荷で性能、電力、復旧時間を比較する。方式間の互換性や代替時の性能は仮定しない。",
+      "risk_if_late_en": "Unresolved connectivity or serviceability can force late design changes. Retain qualified pluggable configurations and existing fabrics alongside CPO or new transports, comparing performance, power and recovery under the same load. Do not assume cross-transport compatibility or unchanged performance.",
       "source_ids": [
         "SRC-NET005",
         "SRC-NET009",
         "SRC-NET010",
-        "SRC-COMP001"
+        "SRC-COMP001",
+        "SRC-HW2-THOR-ANNOUNCEMENT"
       ],
       "source_dependency_ids": [
         "DEP-COMP-NET-001",
@@ -467,13 +471,14 @@
       "basis": "openfs-assessment",
       "statement_ja": "データ読出し、チェックポイント、メタデータ負荷がストレージ評価条件を決める。",
       "statement_en": "Data reads, checkpoints, and metadata loads determine storage evaluation conditions.",
-      "decision_impact_ja": "GPU利用率だけでなく科学計算の入出力を含める。",
-      "decision_impact_en": "Include scientific I/O as well as GPU utilization.",
-      "risk_if_late_ja": "ピーク帯域に偏った比較になり、実際の混在負荷を見落とす。",
-      "risk_if_late_en": "Peak-bandwidth comparisons may miss mixed workloads.",
+      "decision_impact_ja": "GPU利用率だけでなく、科学計算の入出力、チェックポイントの永続化、コールドキャッシュからの復元を評価する。SSDの帯域と低遅延の仕様値で異なるキュー深度が使われている場合、両者を同時に達成できるとは扱わない。",
+      "decision_impact_en": "Evaluate scientific I/O, durable checkpoints and cold-cache restore as well as GPU utilization. If SSD bandwidth and low-latency specifications use different queue depths, do not treat them as simultaneously achievable.",
+      "risk_if_late_ja": "ピーク帯域だけの比較では、混在負荷、書込み耐久性、縮退時性能を見落とす。新製品の認定待ちには既存の接続世代・媒体も比較し、復旧目標を満たす容量と冗長性を確保する。",
+      "risk_if_late_en": "Peak-only comparisons can miss mixed workloads, write endurance and degraded performance. While new products await qualification, compare established interfaces/media and provision capacity and redundancy to meet recovery objectives.",
       "source_ids": [
         "SRC-STP012",
-        "SRC-STP013"
+        "SRC-STP013",
+        "SRC-HW1-SSD9650-BRIEF"
       ],
       "source_dependency_ids": [
         "DEP-WORK-STOR-001"
@@ -562,7 +567,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-20260826-003",
-    "human_approval_directive_id": "DIR-900015"
+    "publication_decision_id": "PUBDEC-HARDWARE-RESEARCH-20260831",
+    "human_approval_directive_id": "DIR-900018"
   }
 }

@@ -1,0 +1,770 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000023",
+  "topic_id": "ARCH-12",
+  "created_at": "2026-08-31T21:58:03+09:00",
+  "base_commit": "60691c3ae26e993ca57d6bb020b1571706ac7b65",
+  "before_profile_sha256": "da2393b694276434b633cee8cb04148c0eff3c74cca028a3e31ae6c58150860a",
+  "human_directive_id": "DIR-900018",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "特化型アクセラレータを、演算配置、利用可能な開発環境、実測の条件、供給段階で比較します。専用AI推論の結果を科学計算全体へ外挿せず、未確認の価格・保守・互換性を残します。",
+  "summary_en": "Compare specialized accelerators by compute placement, accessible tooling, measurement conditions and supply stage. Do not extrapolate dedicated AI-inference results to all scientific workloads; retain gaps in pricing, support and compatibility.",
+  "units": [
+    {
+      "unit_id": "ARCH-12-U01",
+      "before_sha256": "197c7d979fbd59d8a1cc8aa04a11a2c28ab1763efa15d2cacaab6a876704b008",
+      "evidence_section_ids": [
+        "TDS-ARCH02-DOMESTIC",
+        "TDS-HC26-ARCH-12-U1",
+        "TDS-HW1-ARCH-12-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-12-U02",
+      "before_sha256": "d6e79e4e16fa2b929af52a195400b79d12ba964e87895c4b85869fa36d3dfe60",
+      "evidence_section_ids": [
+        "TDS-ARCH03-PIM",
+        "TDS-HC26-ARCH-12-U2",
+        "TDS-HW1-ARCH-12-U02"
+      ]
+    },
+    {
+      "unit_id": "ARCH-12-U03",
+      "before_sha256": "21b1ef666e2a67c828e3118ea954e140b05913089197c8b5a897065630cb9eb8",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-12-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-ARCH-12-U01",
+      "title_ja": "演算構造と適用範囲",
+      "title_en": "Compute structures and application scope",
+      "summary_ja": "ウェハ規模、データフロー、SIMD、FPGA、カスタムASICは異なる選択肢です。ピーク演算性能だけでなく精度、データ常駐量、プログラムの制約を比較します。",
+      "summary_en": "Wafer-scale, dataflow, SIMD, FPGA and custom ASIC designs are different choices. Compare precision, resident data and programming constraints, not just peak arithmetic.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-CEREBRAS-CSL",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-CEREBRAS-EXAMPLES",
+            "SRC-HW1-ALCF-CSL"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Cerebras: ウェハ上の明示的な配置と通信",
+          "name_en": "Cerebras: explicit on-wafer placement and communication",
+          "timing_ja": "公開SDKとALCF運用文書を2026年8月31日に確認。",
+          "timing_en": "Public SDK and ALCF operating guidance checked August 31, 2026.",
+          "statement_ja": "CSLで演算要素の配置・通信を記述し、Pythonホストと接続します。公開サンプルはSDK版に合わせる必要があり、シミュレータで動くことと実機で性能が出ることは別です。",
+          "statement_en": "CSL describes processing-element placement and communication with a Python host. Public examples must match SDK versions; simulation success is not hardware-performance evidence.",
+          "hpci_relevance_ja": "局所通信・常駐データを活かせる負荷の候補です。ホストI/O、精度要件、移植工数を含めて評価します。",
+          "hpci_relevance_en": "A candidate for local communication and resident data; include host I/O, precision requirements and porting effort.",
+          "adoption_conditions_ja": [
+            "SDKタグ、実機モード、入力と誤差を固定"
+          ],
+          "adoption_conditions_en": [
+            "Pin SDK tag, hardware mode, inputs and error tolerance"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-MNCORE-CHOICE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-TDS001",
+            "SRC-HW1-MNCORE-REPO"
+          ],
+          "actor_ids": [
+            "ACT-PFN",
+            "ACT-KOBE"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MN-Core: SIMD構造と精度別の評価",
+          "name_en": "MN-Core: SIMD structure and precision-specific evaluation",
+          "timing_ja": "MN-Core 2の公開仕様とSDK 0.8の公開情報を確認。",
+          "timing_en": "Checked MN-Core 2 specifications and public SDK 0.8 information.",
+          "statement_ja": "MN-Core 2は階層的SIMD構造を持ち、FP64と低精度演算の仕様が分かれています。MLSDKに加えてHPCSDK/MNCLも公開されていますが、HPCSDKはalpha段階です。",
+          "statement_en": "MN-Core 2 uses hierarchical SIMD with separate FP64 and reduced-precision specifications. MLSDK and HPCSDK/MNCL are public, but HPCSDK is alpha-stage.",
+          "hpci_relevance_ja": "国内開発技術として、行列・規則的演算の適性を検証します。低精度のピーク値をFP64の性能として扱いません。",
+          "hpci_relevance_en": "Evaluate matrix/regular-compute suitability for this Japanese technology; do not present reduced-precision peaks as FP64 performance.",
+          "adoption_conditions_ja": [
+            "対象演算の対応、精度、コンパイラ版と実機実測"
+          ],
+          "adoption_conditions_en": [
+            "Operation support, precision, compiler version and hardware measurements"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-SN50-CHOICE",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-COMP017",
+            "SRC-HW1-SAMBA-DOCS"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SambaNova SN50: メモリ階層を用いる推論",
+          "name_en": "SambaNova SN50: inference using a memory hierarchy",
+          "timing_ja": "出荷開始は2026年後半の目標。",
+          "timing_en": "Shipment start targets H2 2026.",
+          "statement_ja": "SN50はSRAM・HBM・大容量メモリの階層とモデル切替を重視します。発表の対GPU性能・費用比はメーカー評価で、独立した同条件比較ではありません。",
+          "statement_en": "SN50 emphasizes SRAM/HBM/large-capacity memory tiers and model switching. Announced GPU-relative performance/cost ratios are vendor evaluations, not independent matched comparisons.",
+          "hpci_relevance_ja": "複数モデルを切り替える推論負荷で、コールド開始、長文脈、同時実行、品質を揃えて比較します。",
+          "hpci_relevance_en": "For multi-model inference, match cold starts, long context, concurrency and quality.",
+          "adoption_conditions_ja": [
+            "出荷実績、対応モデル、CloudとStackの機能差"
+          ],
+          "adoption_conditions_en": [
+            "Observed shipment, supported models and Cloud/Stack feature differences"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-VERSAL-MOP-STAGES",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-HC26-VERSAL"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Versal: 出荷中の製品とメモリ搭載派生品",
+          "name_en": "Versal: shipping products versus memory-on-package variants",
+          "timing_ja": "MoPは2026年末までの試供、2027年後半の量産目標。",
+          "timing_en": "MoP targets samples by end-2026 and production in H2 2027.",
+          "statement_ja": "標準のVersal Premium Gen 2とLPDDR5X搭載MoPは供給段階が異なります。パッケージ化による基板面積の改善を、そのまま計算性能の向上とは扱いません。",
+          "statement_en": "Standard Versal Premium Gen 2 and LPDDR5X MoP variants have different supply stages. Packaging-related board-area savings are not automatically compute-speed improvements.",
+          "hpci_relevance_ja": "ストリーム処理や独自データ経路の候補として、Vivado/Vitisによる開発と外部I/Oを含めて検証します。",
+          "hpci_relevance_en": "Evaluate streaming/custom datapaths with Vivado/Vitis development and external I/O included.",
+          "adoption_conditions_ja": [
+            "対象品種、ツール版、試供と量産の区別"
+          ],
+          "adoption_conditions_en": [
+            "Part number, tool version and sample/production distinction"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-JALAPENO-SCOPE",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HC26-JALAPENO",
+            "SRC-HC26-JALAPENO-RESULTS"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Jalapeño: 初期実測と一般提供の境界",
+          "name_en": "Jalapeño: early measurements versus general availability",
+          "timing_ja": "OpenAIは2026年末までの初期導入を目標。一般販売日は未確認。",
+          "timing_en": "OpenAI targets initial deployment by end-2026; merchant availability is unverified.",
+          "statement_ja": "OpenAI/Broadcomの専用推論チップです。公開結果は3モデルの固定長条件が中心で、定格電力により正規化しています。定格電力比を、設備全体で測った処理当たり電力量の比と読み替えません。",
+          "statement_en": "This OpenAI/Broadcom chip targets dedicated inference. Public results focus on three models and fixed lengths, normalized by power ratings, not metered facility energy per task.",
+          "hpci_relevance_ja": "専用ASICの可能性を追跡しつつ、学術向け調達可能性、任意コード、長文脈・エージェント負荷の結果は別途確認します。",
+          "hpci_relevance_en": "Track dedicated ASIC potential, but separately verify academic access, arbitrary code and long-context/agentic results.",
+          "adoption_conditions_ja": [
+            "精度・品質・入力長・並列度と測定境界を固定"
+          ],
+          "adoption_conditions_en": [
+            "Fix precision, quality, sequence length, concurrency and measurement boundaries"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-12-U02",
+      "title_ja": "PIMの演算配置と残るデータ移動",
+      "title_en": "PIM placement and remaining data movement",
+      "summary_ja": "メモリに演算を近づけても、入力配置、データ変換、結果集約は残ります。DRAM内、メモリ近傍、3D試作を区別します。",
+      "summary_en": "Moving compute near memory still leaves input placement, conversion and aggregation. Distinguish in-DRAM, near-memory and 3D prototypes.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-UPMEM-REPRO",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-HW1-UPMEM-DEMO",
+            "SRC-HW1-PRIM"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UPMEM・PrIM: ホスト処理を含む比較",
+          "name_en": "UPMEM/PrIM: comparisons including host work",
+          "timing_ja": "公開コードを確認。現行SDK配布・保守条件は未確認。",
+          "timing_en": "Public code checked; current SDK distribution/support terms unverified.",
+          "statement_ja": "PrIMにはCPU/GPU基準実装とDPU用コードがあります。DPU内部サイクルだけでなく、ホストからの転送、配置変換、集約を含む時間を比較する必要があります。",
+          "statement_en": "PrIM includes CPU/GPU baselines and DPU code. Compare host transfers, layout conversion and aggregation, not only DPU-internal cycles.",
+          "hpci_relevance_ja": "データ再利用が少ない処理でも、転送・変換コストが利益を相殺しないか検証できます。シミュレータの動作は実機性能の代わりにはなりません。",
+          "hpci_relevance_en": "Test whether transfer/conversion costs offset benefits even for low-reuse workloads; functional simulation cannot replace hardware measurements.",
+          "adoption_conditions_ja": [
+            "公開入力、ホストCPU、メモリチャネルとSDK版"
+          ],
+          "adoption_conditions_en": [
+            "Public inputs, host CPU, memory channels and SDK version"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-PIM-MMU-EVIDENCE",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW1-PIM-MMU"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PIM-MMU: 提案機構と実機観測を分離",
+          "name_en": "PIM-MMU: separate proposed mechanisms from hardware observations",
+          "timing_ja": "2024年の論文・v1に基づく研究候補。",
+          "timing_en": "Research candidate based on a 2024 version-1 paper.",
+          "statement_ja": "論文はUPMEM実機の転送問題を調べ、提案MMUを実測カーネルとRamulatorの組合せで評価しています。提案の改善率は、市販MMUを備えたシステムの実測値ではありません。",
+          "statement_en": "The paper characterizes transfers on real UPMEM and evaluates its proposed MMU using measured kernels plus Ramulator. Proposed gains are not measurements of a commercially deployed MMU system.",
+          "hpci_relevance_ja": "PIMへのデータ供給機構を調べる根拠になりますが、製品採用には実装・RAS・ソフトウェアの検証が必要です。",
+          "hpci_relevance_en": "Useful evidence for PIM data-supply mechanisms; adoption still needs implementation, RAS and software validation.",
+          "adoption_conditions_ja": [
+            "物理実験とシミュレーションの構成・結果を分離"
+          ],
+          "adoption_conditions_en": [
+            "Separate physical and simulated configurations/results"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-DMATRIX-GENERATIONS",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HC26-DMATRIX",
+            "SRC-HW1-DMATRIX-INFINITY"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "d-Matrix: Corsairと3D DRAM試作の違い",
+          "name_en": "d-Matrix: Corsair versus the 3D DRAM prototype",
+          "timing_ja": "2026年7月にCorsair量産を公表。Raptorの発売日は未確認。",
+          "timing_en": "Corsair production reported July 2026; Raptor launch timing unverified.",
+          "statement_ja": "Corsairのモデル移植・量産発表と、AlchipとのPavehawk 3D DRAM試験チップは別の開発段階です。将来のHBM比の投影値を現行Corsair製品の実測に転用しません。",
+          "statement_en": "Corsair model-port/production announcements and the Alchip Pavehawk 3D DRAM test chip represent different stages. Future HBM-relative projections are not current Corsair measurements.",
+          "hpci_relevance_ja": "演算配置の発展を追跡し、モデル全体の品質・遅延とソフトウェア対応を世代別に確認します。",
+          "hpci_relevance_en": "Track compute-placement evolution and verify full-model quality, latency and software support by generation.",
+          "adoption_conditions_ja": [
+            "対象チップ・ソフトウェア・量産品を対応付ける"
+          ],
+          "adoption_conditions_en": [
+            "Match chip, software and production product"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-PIM-CXL-SEPARATION",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-SK-FMS"
+          ],
+          "actor_ids": [
+            "ACT-SKHYNIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CXL接続と演算オフロードを分ける",
+          "name_en": "Separate CXL attachment from compute offload",
+          "timing_ja": "FMS 2026でCMM-Axなどを実演。",
+          "timing_en": "CMM-Ax and related demonstrations at FMS 2026.",
+          "statement_ja": "CXLは接続・アクセスの仕組みで、接続しただけでPIM演算が利用できるわけではありません。メモリ近傍の演算器と対応するソフトウェアが必要です。",
+          "statement_en": "CXL provides attachment/access mechanisms; attachment alone does not enable PIM. Near-memory compute requires an execution engine and corresponding software.",
+          "hpci_relevance_ja": "容量拡張と計算オフロードを別の比較軸にし、転送削減の効果を処理全体で測ります。",
+          "hpci_relevance_en": "Evaluate capacity expansion separately from offload, measuring movement benefits end to end.",
+          "adoption_conditions_ja": [
+            "演算API、データ所有・整合性、失敗時の回復"
+          ],
+          "adoption_conditions_en": [
+            "Compute APIs, data ownership/coherence and failure recovery"
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HW1-ARCH-12-U03",
+      "title_ja": "SDK・供給・評価結果の導入条件",
+      "title_en": "SDK, supply and evaluation requirements",
+      "summary_ja": "公開API、エミュレータ、実機アクセス、量産、長期保守は別々の到達点です。導入判断には各段階の根拠が必要です。",
+      "summary_en": "Public APIs, emulation, hardware access, production and long-term support are separate milestones; adoption needs evidence for each.",
+      "items": [
+        {
+          "item_id": "TDI-HW1-MNCORE-ACCESS",
+          "stage": "current",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-MNCORE-SDK",
+            "SRC-HW1-MNCORE-REPO"
+          ],
+          "actor_ids": [
+            "ACT-PFN"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MN-Core SDK: 試行経路とalphaの範囲",
+          "name_en": "MN-Core SDK: access paths and alpha scope",
+          "timing_ja": "SDK 0.8告知は2026年8月26日。HPCSDKはalpha。",
+          "timing_en": "SDK 0.8 announcement August 26, 2026; HPCSDK is alpha.",
+          "statement_ja": "公式リポジトリはエミュレータ、Devkit/MN-Server 2、PFCPの実行経路を記載しています。HPCSDKは現時点でMNCLを提供し、一般的なC/C++コードが無変更で動くと保証するものではありません。",
+          "statement_en": "The official repository documents emulator, Devkit/MN-Server 2 and PFCP paths. HPCSDK currently provides MNCL; this does not guarantee unchanged execution of arbitrary C/C++ code.",
+          "hpci_relevance_ja": "実機にアクセスする前に移植候補を絞れますが、実機価格・利用枠・保守条件は別途確認します。",
+          "hpci_relevance_en": "Portability can be explored before hardware access, but prices, allocations and support need separate confirmation.",
+          "adoption_conditions_ja": [
+            "0.8個別リリースの詳細、サポート演算、実機予約・契約"
+          ],
+          "adoption_conditions_en": [
+            "Detailed 0.8 release notes, supported operations and hardware access/contracts"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-GRAPHCORE-VERSION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-COMP020"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Graphcore: 互換性表と供給継続の区別",
+          "name_en": "Graphcore: compatibility versus ongoing supply",
+          "timing_ja": "確認したIPU-M文書は2.6.0。現在の販売条件は未確認。",
+          "timing_en": "Retrieved IPU-M documentation is version 2.6.0; current sales terms unverified.",
+          "statement_ja": "文書はBow-2000 2.2.x、Poplar 2.6.0、V-IPU 1.18.0の組合せを示します。URLにlatestとあっても最新製品の発売や将来保守を証明するわけではなく、IPU-M 1.xはこの版では非対応です。",
+          "statement_en": "Documentation identifies Bow-2000 2.2.x, Poplar 2.6.0 and V-IPU 1.18.0 combinations. A latest URL proves neither a new launch nor future support; IPU-M 1.x is unsupported by this release.",
+          "hpci_relevance_ja": "既存資産の評価と新規調達を分け、対応OS、更新手順、供給・保守期間を確認します。",
+          "hpci_relevance_en": "Separate evaluation of installed assets from new procurement; verify OS, upgrade path and supply/support periods.",
+          "adoption_conditions_ja": [
+            "メーカーの現行販売・保守条件と版を固定した実機試験"
+          ],
+          "adoption_conditions_en": [
+            "Current vendor sales/support terms and version-pinned hardware tests"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-SPECIAL-PERF-BOUNDARY",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-HW1-CSTENCIL"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "専用ハードウェアの倍率比較を読む条件",
+          "name_en": "Conditions for interpreting accelerator speedups",
+          "timing_ja": "CStencil v1の評価条件。新たな実機追試は未実施。",
+          "timing_en": "CStencil v1 evaluation conditions; no new hardware replication performed.",
+          "statement_ja": "CStencilのWSE評価は実機で一部を検証したシミュレーションを含み、初期化と転送を除外します。GPU側はTF32入力・FP32蓄積で、論文のA100 64GBという構成記述も再確認が必要です。",
+          "statement_en": "CStencil's WSE evaluation includes simulation validated on a subset of hardware tests and excludes initialization/transfers. The GPU uses TF32 inputs with FP32 accumulation; the paper's A100 64GB configuration also needs clarification.",
+          "hpci_relevance_ja": "大きな倍率を調達用の性能係数にせず、同精度・同予算・同電力・処理全体の比較を求めます。",
+          "hpci_relevance_en": "Do not use headline ratios as procurement multipliers; require matched precision, budget, power and end-to-end comparisons.",
+          "adoption_conditions_ja": [
+            "実機/予測、カーネル/全処理、精度と資源量を明示"
+          ],
+          "adoption_conditions_en": [
+            "Identify hardware/prediction, kernel/end-to-end, precision and resource scale"
+          ]
+        },
+        {
+          "item_id": "TDI-HW1-JALAPENO-INDEPENDENCE",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-HW1-JALAPENO-WITNESS",
+            "SRC-HW1-INFERENCEX-METHOD"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Jalapeño: 立会い報告と独立追試",
+          "name_en": "Jalapeño: witnessed tests versus independent replication",
+          "timing_ja": "2026年8月の公開結果を確認。",
+          "timing_en": "Public August 2026 results reviewed.",
+          "statement_ja": "SemiAnalysisはOpenAI施設での立会いを説明していますが、数値はOpenAI提供で、完全なInferenceXやAgentXの実行ではないと明記しています。同じ実験に基づく記事を独立した性能検証とは数えません。",
+          "statement_en": "SemiAnalysis describes witnessing OpenAI-lab runs but states that figures came from OpenAI and neither full InferenceX nor AgentX was run. Reports derived from this experiment are not independent performance verification.",
+          "hpci_relevance_ja": "固定長推論からエージェント負荷へ一般化する前に、長文脈、ツール待ち、品質、キャッシュ条件と実行記録を確認します。",
+          "hpci_relevance_en": "Before generalizing fixed-length inference to agents, check long context, tool waits, quality, caching and run records.",
+          "adoption_conditions_ja": [
+            "独立実行、版を固定したレシピ、品質と電力量"
+          ],
+          "adoption_conditions_en": [
+            "Independent runs, pinned recipes, quality and measured energy"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-ARCH12-CURRENT",
+    "TDS-ARCH12-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-COMP017",
+        "title": "Introducing the SN50 RDU: Purpose-Built for Agentic Inference",
+        "publisher": "SambaNova",
+        "url": "https://sambanova.ai/blog/introducing-the-sn50-rdu-purpose-built-for-agentic-inference",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-02-24"
+      },
+      "origin_group": "sambanova-sn50-launch",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Memory hierarchy, scale-out, average rack power and availability",
+      "observation_ja": "SN50は2026年後半の出荷目標。ラックの平均電力と最大設備容量、メーカー比較と独立実測を分ける。",
+      "observation_en": "SN50 targets H2 2026 shipment. Separate average rack power from facility maximum ratings and vendor comparisons from independent measurements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-COMP020",
+        "title": "IPU-Machine System Software Release Notes",
+        "publisher": "Graphcore",
+        "url": "https://docs.graphcore.ai/projects/ipum-release-notes/en/latest/overview.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "graphcore-ipum26-release",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Sections 2 and 4: software 2.6.0, supported hardware and qualified SDK/V-IPU",
+      "observation_ja": "Bow-2000 2.2.x、Poplar 2.6.0、V-IPU 1.18.0の対応を確認。latest URLでも本文の版は2.6.0であり、現在の販売・長期保守を証明しない。",
+      "observation_en": "Checked Bow-2000 2.2.x, Poplar 2.6.0 and V-IPU 1.18.0 compatibility. The latest URL serves version 2.6.0; this is not proof of current sales or long-term support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-DMATRIX",
+        "title": "d-Matrix and Alchip 3D DRAM collaboration",
+        "publisher": "d-Matrix",
+        "url": "https://www.d-matrix.ai/announcements/d-matrix-and-alchip-announce-collaboration-on-worlds-first-3d-dram-solution-to-supercharge-ai-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-11-18"
+      },
+      "origin_group": "dmatrix-alchip-pavehawk",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Pavehawk test chip and future Raptor platform",
+      "observation_ja": "3D DRAM試験チップをRaptorへつなぐ計画。発売年の裏付けにはならず、Corsairの量産と区別する。",
+      "observation_en": "A 3D DRAM test chip leads toward Raptor; it provides no launch year and must be distinguished from Corsair production.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-JALAPENO",
+        "title": "Jalapeno inference chip collaboration",
+        "publisher": "OpenAI",
+        "url": "https://openai.com/index/openai-broadcom-jalapeno-inference-chip/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-24"
+      },
+      "origin_group": "openai-jalapeno-development",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Development partnerships and first deployment timeline",
+      "observation_ja": "OpenAI設計、Broadcomとの開発、Celesticaのシステム協業と2026年末までの初期導入目標を確認。一般販売の告知ではない。",
+      "observation_en": "Checked OpenAI architecture, Broadcom development, Celestica systems collaboration and initial deployment by end-2026; this is not a merchant-sales announcement.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-JALAPENO-RESULTS",
+        "title": "Jalapeno first results",
+        "publisher": "OpenAI",
+        "url": "https://openai.com/index/jalapeno-first-results/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-25"
+      },
+      "origin_group": "openai-jalapeno-lab-202608",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Appendix: 8k/1k, STP, precision and normalized power",
+      "observation_ja": "3モデル、8k入力・1k出力とSTPの条件、定格電力での正規化を確認。測定した設備全体の電力量比較とは異なる。",
+      "observation_en": "Checked three models, 8k input/1k output, STP and normalization by power ratings, not metered facility-wide energy.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-VERSAL",
+        "title": "Versal Premium Gen 2 memory-on-package",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/blogs/2026/amd-packs-more-memory-capacity--performance-in-a-smalle.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-30 (page header; subsequently maintained page)"
+      },
+      "origin_group": "amd-versal-mop-launch",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Availability paragraphs and comparison footnotes",
+      "observation_ja": "標準Premium Gen 2の出荷、MoPの2026年末試供・2027年後半量産目標を区別。面積比較は比較対象と基板条件を限定する。",
+      "observation_en": "Distinguished shipping standard Premium Gen 2 from MoP samples by end-2026 and H2 2027 production targets; area comparisons have bounded board/baseline conditions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-ALCF-CSL",
+        "title": "Cerebras Software Language (CSL)",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/ai-testbed/cerebras/csl/",
+        "source_class": "official-project",
+        "published_or_updated": "undated guide with SDK 2.10 examples; checked 2026-08-31"
+      },
+      "origin_group": "alcf-cerebras-operations",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Simulator and appliance modes, sim=False and layout",
+      "observation_ja": "CSL配置・ルーティング、Pythonホスト、シミュレータと実機のモードを確認。appliance modeでもsim設定により実機を使わない場合がある。",
+      "observation_en": "Checked CSL placement/routing, Python host and simulator/hardware modes; appliance mode can still simulate depending on the sim setting.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CEREBRAS-EXAMPLES",
+        "title": "Cerebras SDK Examples",
+        "publisher": "Cerebras",
+        "url": "https://github.com/Cerebras/sdk-examples",
+        "source_class": "official-project",
+        "published_or_updated": "undated repository; checked 2026-08-31"
+      },
+      "origin_group": "cerebras-sdk-examples",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "SDK examples, version matching and license",
+      "observation_ja": "SDK版に合うタグの利用と後方互換性の制約を確認。公開サンプルのライセンスとSDK利用条件は別。",
+      "observation_en": "Checked release-tag matching and backward-compatibility limits; sample-code licensing is distinct from SDK terms.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-CSTENCIL",
+        "title": "Stencil Computations on Cerebras Wafer-Scale Engine",
+        "publisher": "Elia Belli and Daniele De Sensi / arXiv",
+        "url": "https://arxiv.org/html/2605.07954v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-05-08, version 1"
+      },
+      "origin_group": "belli-desensi-cstencil-v1",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Sections V and VI-A to VI-D",
+      "observation_ja": "WSEシミュレーションとStar2d-1r実機検証、転送・初期化を除くカーネル時間を確認。GPU側はTF32入力・FP32蓄積。A100 64GBの記述は構成再確認が必要。",
+      "observation_en": "Checked WSE simulation with Star2d-1r hardware validation and kernel-only timing excluding transfer/initialization. GPU inputs use TF32 with FP32 accumulation; the stated A100 64GB configuration needs clarification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-DMATRIX-INFINITY",
+        "title": "Advancing Full-Model AI Inference on Corsair with Infinity",
+        "publisher": "d-Matrix",
+        "url": "https://www.d-matrix.ai/advancing-full-model-ai-inference-on-corsair-with-infinity/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-22"
+      },
+      "origin_group": "dmatrix-corsair-infinity",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Production status and Qwen3 full-model port",
+      "observation_ja": "Corsair量産とQwen3のモデル全体の移植を公表。任意モデルの互換性、品質・電力の独立評価を示す資料ではない。",
+      "observation_en": "Reports Corsair production and a full Qwen3 port, not arbitrary-model compatibility or independent quality/energy validation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-INFERENCEX-METHOD",
+        "title": "About InferenceX",
+        "publisher": "SemiAnalysis / InferenceX",
+        "url": "https://inferencex.semianalysis.com/about",
+        "source_class": "official-project",
+        "published_or_updated": "undated methods page; checked 2026-08-31"
+      },
+      "origin_group": "semianalysis-inferencex-methods",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Fixed-sequence and agentic workloads; reproducibility",
+      "observation_ja": "固定長とエージェント型負荷、公開レシピと実行記録を区別する測定方法を確認。Jalapeñoの完全な実行記録を確認したわけではない。",
+      "observation_en": "Checked fixed-sequence versus agentic methodology and public recipes/run records; this does not verify complete Jalapeno run artifacts.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-JALAPENO-WITNESS",
+        "title": "OpenAI Jalapeno is Better Than NVIDIA at Inference. The CUDA Moat is Dead",
+        "publisher": "SemiAnalysis / InferenceX",
+        "url": "https://inferencex.semianalysis.com/blog/openai-jalapeno-better-than-nvidia",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08-25"
+      },
+      "origin_group": "openai-jalapeno-lab-202608",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Testing disclosures before headline results",
+      "observation_ja": "著者はOpenAI施設で立ち会ったが数値はOpenAI提供で、完全なInferenceXやAgentX試験ではない。独立追試とは数えない。",
+      "observation_en": "Authors witnessed OpenAI-lab runs, but figures came from OpenAI; neither full InferenceX nor AgentX was run. This is not independent replication.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MNCORE-REPO",
+        "title": "MN-Core Software Samples & Build Resources",
+        "publisher": "Preferred Networks",
+        "url": "https://github.com/pfnet/mncore",
+        "source_class": "official-project",
+        "published_or_updated": "undated README referencing SDK 0.8; checked 2026-08-31"
+      },
+      "origin_group": "pfn-mncore-sdk",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Try the SDK; Run Programs; repository contents",
+      "observation_ja": "MLSDK、alpha段階のHPCSDK/MNCL、エミュレータ・実機・PFCP経路を確認。コードの実行や実機性能測定はしていない。",
+      "observation_en": "Checked MLSDK, alpha HPCSDK/MNCL and emulator/hardware/PFCP paths; no code execution or hardware measurements performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-MNCORE-SDK",
+        "title": "MN-Core SDK Hub",
+        "publisher": "Preferred Networks",
+        "url": "https://dev.mn-core.com/",
+        "source_class": "official-vendor",
+        "published_or_updated": "SDK 0.8 announcement listed 2026-08-26"
+      },
+      "origin_group": "pfn-mncore-sdk",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Latest news and SDK overview",
+      "observation_ja": "8月26日のSDK 0.8告知を一覧で確認。個別リリースページ取得失敗を機能検証済みとしない。",
+      "observation_en": "The index lists SDK 0.8 on August 26. Failed retrieval of detailed release notes is not feature verification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-PIM-MMU",
+        "title": "PIM-MMU: A Memory Management Unit for Memory-Centric Processing-in-Memory Systems",
+        "publisher": "Dongjae Lee et al. / arXiv",
+        "url": "https://arxiv.org/html/2409.06204v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-09-10, version 1"
+      },
+      "origin_group": "kaist-pim-mmu-v1",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Sections III and V; Table I",
+      "observation_ja": "UPMEM実機の特性調査と、提案機構のRamulator・実測組合せ評価を区別。提案の速度向上は出荷済みMMU製品の実測ではない。",
+      "observation_en": "Distinguished real-UPMEM characterization from hybrid Ramulator/measured-kernel evaluation; proposed speedups are not measurements of a shipping MMU product.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-PRIM",
+        "title": "PrIM: Processing-in-Memory Benchmarks",
+        "publisher": "CMU SAFARI",
+        "url": "https://github.com/CMU-SAFARI/prim-benchmarks",
+        "source_class": "research-artifact",
+        "published_or_updated": "undated repository; checked 2026-08-31"
+      },
+      "origin_group": "cmu-safari-prim",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Benchmark suite and real hardware/simulator instructions",
+      "observation_ja": "16カーネルとCPU/GPU基準実装、転送試験を確認。SDK配布先の注意書きは供給・保守の確認課題として残し、ミラー取得はしない。",
+      "observation_en": "Checked 16 kernels, CPU/GPU baselines and transfer tests; SDK-distribution warnings remain a support gap, and no mirror is downloaded.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SAMBA-DOCS",
+        "title": "SambaNova Developer Guide",
+        "publisher": "SambaNova",
+        "url": "https://docs.sambanova.ai/docs/en/get-started/overview",
+        "source_class": "official-vendor",
+        "published_or_updated": "undated documentation; checked 2026-08-31"
+      },
+      "origin_group": "sambanova-developer-guide",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Guide scope and API/features links",
+      "observation_ja": "CloudとStackで機能差があるとの記載を確認。API互換性は任意のHPCカーネル移植性を証明しない。",
+      "observation_en": "The guide states feature differences between Cloud and Stack; API compatibility is not proof of arbitrary HPC-kernel portability.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-SK-FMS",
+        "title": "The Next-Generation Memory Architecture in the AI Era? SK hynix Charts the Direction at FMS 2026",
+        "publisher": "SK hynix",
+        "url": "https://news.skhynix.com/en/fms-2026/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-07"
+      },
+      "origin_group": "skhynix-fms2026-report",
+      "checked_at": "2026-08-31T21:39:01+09:00",
+      "locator": "HBF panel; NAND/eSSD roadmap; CXL-based demonstrations",
+      "observation_ja": "HBF、CXL/DRAM/SSD階層、CMM-Ax実演を確認。実演は一般提供ではなく、MICRO採択はメーカー記述のみ。",
+      "observation_en": "Checked HBF, CXL/DRAM/SSD tiering and CMM-Ax demonstrations; not general availability, and MICRO acceptance is issuer-reported only.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HW1-UPMEM-DEMO",
+        "title": "UPMEM DPU Demo",
+        "publisher": "UPMEM",
+        "url": "https://github.com/upmem/dpu_demo",
+        "source_class": "official-project",
+        "published_or_updated": "undated repository; checked 2026-08-31"
+      },
+      "origin_group": "upmem-dpu-demo",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "Checksum demo, host and DPU code",
+      "observation_ja": "ホスト・DPUコードとDPU内サイクル計測を確認。ホスト転送を含む全処理時間や現行SDK供給を保証しない。",
+      "observation_en": "Checked host/DPU code and DPU cycle measurements; these do not establish end-to-end time or current SDK supply.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS001",
+        "title": "MN-Core Series",
+        "publisher": "Preferred Networks",
+        "url": "https://projects.preferred.jp/mn-core/en/",
+        "source_class": "official-vendor",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "pfn-mncore-architecture",
+      "checked_at": "2026-08-31T21:58:03+09:00",
+      "locator": "MN-Core 2 architecture and specification table",
+      "observation_ja": "階層的SIMDとFP64/FP32/低精度別の仕様を確認。開発キット・クラウドの現状には新しいSDK公開情報を追加する。",
+      "observation_en": "Checked hierarchical SIMD and precision-specific specifications; newer SDK material is needed for current devkit/cloud access.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-058",
+      "topic_ids": [
+        "ARCH-12"
+      ],
+      "priority": "P0",
+      "question_ja": "特化型アクセラレータの実機アクセス、対応コード・精度、供給・保守、同条件の性能・電力量を確認できるか。",
+      "question_en": "Can specialized-accelerator access, supported code/precision, supply/support and matched performance/energy be verified?",
+      "next_action_ja": "公開SDKと実機評価を版で対応付け、初期化・転送を含む独立測定と販売条件を集める。取得できなかったUPMEM配布先、MN-Core 0.8詳細、CStencilの構成記述を未確認として追跡する。",
+      "next_action_en": "Match versioned SDKs to hardware evaluations and obtain independent measurements including initialization/transfers plus sales terms. Track unavailable UPMEM distribution, MN-Core 0.8 details and the CStencil configuration as unresolved.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "任意HPCコード・精度の対応と保守・供給契約",
+    "同入力・品質・資源量の独立した処理全体の実測",
+    "独立モデルによるConsensus"
+  ],
+  "remaining_work_en": [
+    "Arbitrary HPC-code/precision support and supply/maintenance contracts",
+    "Independent end-to-end measurements with matched inputs, quality and resource scale",
+    "Independent-model Consensus"
+  ]
+}

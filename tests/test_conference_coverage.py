@@ -33,9 +33,20 @@ class ConferenceCoverageTests(unittest.TestCase):
     def test_complete_program_does_not_claim_complete_research(self):
         load_and_validate(ROOT)
         self.assertEqual(48, len(self.payload["entries"]))
-        self.assertEqual(21, sum(e["coverage_state"] == "program-only" for e in self.payload["entries"]))
-        self.assertEqual(2, sum(e["coverage_state"] == "abstract-only" for e in self.payload["entries"]))
+        self.assertEqual(18, sum(e["coverage_state"] == "program-only" for e in self.payload["entries"]))
+        self.assertEqual(30, sum(e["coverage_state"] == "related-primary-checked" for e in self.payload["entries"]))
+        for entry in self.payload["entries"]:
+            self.assertNotEqual("conference-materials-checked", entry["coverage_state"])
         self.assertEqual("incomplete", self.payload["consensus_status"])
+
+    def test_followup_preserves_conference_and_related_announcement_boundaries(self):
+        by_id = {entry["entry_id"]: entry for entry in self.payload["entries"]}
+        for entry_id in ["HC26-T06", "HC26-C16", "HC26-C17", "HC26-P01", "HC26-P06"]:
+            self.assertEqual("related-primary-checked", by_id[entry_id]["coverage_state"])
+        announcements = self.payload["related_announcements"]
+        self.assertEqual(2, len(announcements))
+        self.assertEqual({"TDI-HW1-NVHBM-READINESS", "TDI-HW1-ZHBM-CONCEPT"},
+                         {item["technical_item_id"] for item in announcements})
 
     def test_dropped_entry_and_rewritten_denominator_fail(self):
         self.payload["entries"].pop()

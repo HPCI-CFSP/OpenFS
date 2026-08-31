@@ -10,6 +10,7 @@
 
   const copy = {
     ja: {
+      quarterRangePrecision: "四半期の範囲（年またぎを含む）",
       languageControl: "表示言語", publicStatus: "公開状態", siteNavigation: "サイト内ナビゲーション", breadcrumbs: "パンくずリスト", roadmapValidation: "ロードマップの検証状況", maturityLegend: "成熟度の凡例", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", licenseLabel: "ライセンス",
       navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       libraryKicker: "公開ロードマップ索引", libraryTitle: "ロードマップ一覧", libraryLead: "技術、ソフトウェア、アプリケーション、運用・制度、計画評価のロードマップを共通形式で確認できます。横断比較では、相互依存関係と判断時期を同じ時間軸で確認できます。",
@@ -32,6 +33,7 @@
       revisionKicker: "来歴", revisionTitle: "更新履歴と再現情報", artifactId: "成果物ID", sourceCommit: "生成元コミット", closeDialog: "詳細を閉じる", footerDescription: "HPCI-CFSP 公開調査ビュー"
     },
     en: {
+      quarterRangePrecision: "quarter range (including cross-year windows)",
       languageControl: "Display language", publicStatus: "Publication status", siteNavigation: "Site navigation", breadcrumbs: "Breadcrumbs", roadmapValidation: "Roadmap validation status", maturityLegend: "Maturity legend", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", licenseLabel: "License",
       navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       libraryKicker: "PUBLISHED ROADMAP INDEX", libraryTitle: "Roadmap library", libraryLead: "Review common-format roadmaps across technology, software, applications, operations, governance, and planning, then trace dependencies and decision timing.",
@@ -69,7 +71,7 @@
   };
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", published: "published", target: "target", concept: "concept", pilot: "pilot", "decision-gate": "decisionGate", deployment: "deployment", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "as-of-baseline": "asOfBaseline", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "project-target": "projectTarget", "policy-target": "policyTarget", "openfs-provisional-plan": "openfsPlan", "openfs-synthesis": "openfsSynthesis", "no-public-date": "noPublicDate"};
-  const timingPrecisionKeys = {quarter: "quarterPrecision", "half-year": "halfYearPrecision", year: "yearPrecision", undated: "undatedPrecision"};
+  const timingPrecisionKeys = {quarter: "quarterPrecision", "half-year": "halfYearPrecision", "quarter-range": "quarterRangePrecision", year: "yearPrecision", undated: "undatedPrecision"};
   const generationPhaseKeys = {standardization: "standardizationPhase", introduction: "introductionPhase", mainstream: "mainstreamPhase", transition: "transitionPhase", continuing: "continuingPhase"};
   const confidenceKeys = {high: "highConfidence", medium: "mediumConfidence", low: "lowConfidence"};
   const eventTypeKeys = {product: "productEvent", standard: "standardEvent", research: "researchEvent", policy: "policyEvent", "hpci-evaluation": "evaluationEvent", "hpci-adoption": "adoptionEvent"};
@@ -189,21 +191,27 @@
     }
     root.append(document.createTextNode(value.slice(cursor)));
   }
-  function milestoneGridRange(milestone) {
-    if (milestone.timing_precision === "quarter") { const start = Number(milestone.quarter.slice(1)); return [start, start + 1]; }
-    if (milestone.timing_precision === "half-year") return milestone.half === "H1" ? [1, 3] : [3, 5];
-    return [1, 5];
+  function milestoneGridRange(milestone, roadmap) {
+    const offset = (milestone.year - roadmap.horizon.start_year) * 4;
+    if (milestone.timing_precision === "quarter-range") {
+      return [offset + Number(milestone.quarter.slice(1)),
+        (milestone.end_year - roadmap.horizon.start_year) * 4 + Number(milestone.end_quarter.slice(1)) + 1];
+    }
+    if (milestone.timing_precision === "quarter") { const start = offset + Number(milestone.quarter.slice(1)); return [start, start + 1]; }
+    if (milestone.timing_precision === "half-year") return milestone.half === "H1" ? [offset + 1, offset + 3] : [offset + 3, offset + 5];
+    return [offset + 1, offset + 5];
   }
   function milestonePeriodLabel(milestone) {
     if (milestone.year === null) return tr("undatedColumn");
-    if (milestone.timing_precision === "quarter") return milestone.quarter;
-    if (milestone.timing_precision === "half-year") return milestone.half === "H1" ? "Q1-Q2" : "Q3-Q4";
-    return `Q1-Q4 · ${tr("quarterNotPublished")}`;
+    if (milestone.timing_precision === "quarter-range") return `${milestone.year} ${milestone.quarter} - ${milestone.end_year} ${milestone.end_quarter}`;
+    if (milestone.timing_precision === "quarter") return `${milestone.year} ${milestone.quarter}`;
+    if (milestone.timing_precision === "half-year") return `${milestone.year} ${milestone.half === "H1" ? "Q1-Q2" : "Q3-Q4"}`;
+    return `${milestone.year} Q1-Q4 · ${tr("quarterNotPublished")}`;
   }
-  function placeMilestones(milestones) {
+  function placeMilestones(milestones, roadmap) {
     const occupiedUntil = [];
-    return [...milestones].sort((left, right) => milestoneGridRange(left)[0] - milestoneGridRange(right)[0]).map((milestone) => {
-      const [start, end] = milestoneGridRange(milestone); let row = occupiedUntil.findIndex((value) => value <= start);
+    return [...milestones].sort((left, right) => milestoneGridRange(left, roadmap)[0] - milestoneGridRange(right, roadmap)[0]).map((milestone) => {
+      const [start, end] = milestoneGridRange(milestone, roadmap); let row = occupiedUntil.findIndex((value) => value <= start);
       if (row === -1) { row = occupiedUntil.length; occupiedUntil.push(end); } else occupiedUntil[row] = end;
       return {milestone, start, end, row: row + 1};
     });
@@ -261,7 +269,19 @@
     const head = document.createElement("thead"); const yearRow = document.createElement("tr"); const trackHead = document.createElement("th"); trackHead.className = "roadmap-tech-column"; trackHead.textContent = tr("trackColumn"); const ownerHead = document.createElement("th"); ownerHead.className = "roadmap-vendor-column"; ownerHead.textContent = tr("ownerColumn"); yearRow.append(trackHead, ownerHead); years.forEach((year) => { const cell = document.createElement("th"); cell.className = "roadmap-year-heading"; const label = document.createElement("strong"); label.textContent = year; const quarters = document.createElement("span"); quarters.className = "roadmap-quarter-scale"; ["Q1", "Q2", "Q3", "Q4"].forEach((quarter) => { const item = document.createElement("span"); item.textContent = quarter; quarters.append(item); }); cell.append(label, quarters); yearRow.append(cell); }); const undated = document.createElement("th"); undated.className = "roadmap-year-heading roadmap-undated-heading"; undated.textContent = tr("undatedColumn"); yearRow.append(undated); head.append(yearRow);
     const body = document.createElement("tbody"); tracks.forEach((track) => { const lanes = roadmap.lanes.filter((lane) => lane.track_id === track.track_id); const bands = track.generation_bands || []; if (bands.length > 0) { const row = document.createElement("tr"); row.className = "roadmap-generation-row"; row.append(roadmapTechnologyCell(roadmap, track, lanes.length + 1)); const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell roadmap-generation-owner"; const ownerName = document.createElement("strong"); ownerName.textContent = "OpenFS"; const scope = document.createElement("span"); scope.textContent = tr("generationOutlook"); owner.append(ownerName, scope); row.append(owner); const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-generation-cell"; const grid = document.createElement("div"); grid.className = "roadmap-generation-grid"; grid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`; grid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`); grid.style.setProperty("--year-width", `${100 / years.length}%`); placeGenerationBands(bands, roadmap).forEach(({band, start, end, row: gridRow}) => { const button = generationBandButton(band); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); grid.append(button); }); cell.append(grid); row.append(cell); const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell roadmap-generation-undated"; row.append(undatedCell); body.append(row); } lanes.forEach((lane, laneIndex) => { const row = document.createElement("tr"); if (laneIndex === 0 && bands.length === 0) row.append(roadmapTechnologyCell(roadmap, track, lanes.length));
       const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell"; const ownerName = document.createElement("strong"); ownerName.textContent = localized(lane, "owner"); const scope = document.createElement("span"); scope.textContent = localized(lane, "scope"); owner.append(ownerName, scope); row.append(owner);
-      years.forEach((year) => { const cell = document.createElement("td"); cell.className = "roadmap-year-cell"; const laneGrid = document.createElement("div"); laneGrid.className = "roadmap-year-lane"; placeMilestones(lane.milestones.filter((milestone) => milestone.year === year)).forEach(({milestone, start, end, row: gridRow}) => { const button = milestoneButton(milestone); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); laneGrid.append(button); }); cell.append(laneGrid); row.append(cell); }); const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell"; lane.milestones.filter((milestone) => milestone.year === null).forEach((milestone) => undatedCell.append(milestoneButton(milestone))); row.append(undatedCell); body.append(row); }); }); table.append(colgroup, head, body); root.append(table);
+      const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-milestone-cell";
+      const laneGrid = document.createElement("div"); laneGrid.className = "roadmap-milestone-grid";
+      laneGrid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`;
+      laneGrid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`);
+      laneGrid.style.setProperty("--year-width", `${100 / years.length}%`);
+      placeMilestones(lane.milestones.filter((milestone) => milestone.year !== null), roadmap).forEach(({milestone, start, end, row: gridRow}) => {
+        const button = milestoneButton(milestone); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); laneGrid.append(button);
+      });
+      cell.append(laneGrid); row.append(cell);
+      const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell";
+      lane.milestones.filter((milestone) => milestone.year === null).forEach((milestone) => undatedCell.append(milestoneButton(milestone)));
+      row.append(undatedCell); body.append(row);
+    }); }); table.append(colgroup, head, body); root.append(table);
   }
   function renderTrackDetails(roadmap) {
     const root = document.getElementById("roadmap-track-details"); root.replaceChildren(); roadmap.tracks.filter((track) => activeRoadmapGroup === "all" || track.group === activeRoadmapGroup).forEach((track) => { const details = document.createElement("details"); details.className = "memory-technology-note"; details.id = `track-${track.track_id}`; const toggle = document.createElement("summary"); const name = document.createElement("strong"); appendGlossaryText(name, localized(track, "name"), roadmap); const summary = document.createElement("span"); appendGlossaryText(summary, localized(track, "summary"), roadmap); toggle.append(name, summary); const body = document.createElement("div"); body.className = "memory-technology-note-body"; const stateTitle = document.createElement("h4"); stateTitle.textContent = tr("currentState"); const state = document.createElement("p"); appendGlossaryText(state, localized(track, "current_state"), roadmap); const implicationTitle = document.createElement("h4"); implicationTitle.textContent = tr("hpciImplications"); const implication = document.createElement("p"); appendGlossaryText(implication, localized(track, "hpci_implications"), roadmap); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list memory-source-list"; appendSourceList(sources, roadmap, track.source_ids); body.append(stateTitle, state, implicationTitle, implication, sourcesTitle, sources); details.append(toggle, body); root.append(details); });
@@ -429,7 +449,7 @@
         const events = document.createElement("div"); events.className = "inventory-detail-links"; events.append(title);
         system.lifecycle_events.forEach((event) => {
           const link = document.createElement("a");
-          const period = event.year === null ? tr("undatedColumn") : `${event.year} ${milestonePeriodLabel(event)}`;
+          const period = milestonePeriodLabel(event);
           link.textContent = `${period}: ${localized(event, "label")}`;
           link.href = `${rootPrefix}roadmaps/${event.roadmap_slug}/?lang=${language}&milestone=${event.milestone_id}`;
           events.append(link);
@@ -499,7 +519,7 @@
   function appendMetaItem(root, label, value) { const item = document.createElement("div"); const term = document.createElement("dt"); term.textContent = label; const description = document.createElement("dd"); description.textContent = value; item.append(term, description); root.append(item); }
   function renderRoadmapDialog() {
     if (activeRoadmapGenerationBandId) { renderRoadmapGenerationBandDialog(); return; }
-    if (!activeRoadmapMilestoneId) return; const match = findRoadmapMilestone(activeRoadmapMilestoneId); if (!match) return; const {roadmap, track, lane, milestone} = match; const period = milestone.year === null ? tr("undatedColumn") : `${milestone.year} ${milestonePeriodLabel(milestone)}`; setText("roadmap-dialog-id", milestone.milestone_id); setText("roadmap-dialog-title", localized(milestone, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${localized(lane, "owner")} / ${period}`);
+    if (!activeRoadmapMilestoneId) return; const match = findRoadmapMilestone(activeRoadmapMilestoneId); if (!match) return; const {roadmap, track, lane, milestone} = match; const period = milestonePeriodLabel(milestone); setText("roadmap-dialog-id", milestone.milestone_id); setText("roadmap-dialog-title", localized(milestone, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${localized(lane, "owner")} / ${period}`);
     const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-milestone-detail"; const status = document.createElement("span"); status.className = `summary-status maturity-${milestone.maturity}`; status.textContent = tr(maturityKeys[milestone.maturity]); const title = document.createElement("h3"); title.textContent = tr("milestoneDetail"); const detail = document.createElement("p"); appendGlossaryText(detail, localized(milestone, "detail"), roadmap); const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list"; appendMetaItem(meta, tr("trackColumn"), localized(track, "name")); appendMetaItem(meta, tr("ownerColumn"), `${localized(lane, "owner")} / ${localized(lane, "scope")}`); appendMetaItem(meta, tr("eventType"), tr(eventTypeKeys[milestone.event_type])); appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[milestone.timing_basis])); appendMetaItem(meta, tr("timingPrecision"), tr(timingPrecisionKeys[milestone.timing_precision])); appendMetaItem(meta, tr("timingWindow"), period); appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of); const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("timingWindowNote"); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, milestone.source_ids); section.append(status, title, detail, meta, timingNote, sourcesTitle, sources); root.append(section);
     root.prepend(window.OpenFSFeedback.link(feedbackContext(roadmap, "milestone", milestone.milestone_id, localized(milestone, "label"), [track.track_id, lane.lane_id])));
   }
@@ -536,7 +556,7 @@
   }
   function renderCompareTimeline(artifacts) {
     const root = document.getElementById("compare-timeline"); root.replaceChildren(); if (artifacts.length === 0) return; const startYear = Math.min(...artifacts.map((roadmap) => roadmap.horizon.start_year)); const endYear = Math.max(...artifacts.map((roadmap) => roadmap.horizon.end_year)); const years = []; for (let year = startYear; year <= endYear; year += 1) years.push(year); const table = document.createElement("table"); table.className = "comparison-table"; const head = document.createElement("thead"); const row = document.createElement("tr"); [tr("roadmapColumn"), ...years].forEach((label) => { const cell = document.createElement("th"); cell.textContent = label; row.append(cell); }); head.append(row); const body = document.createElement("tbody");
-    artifacts.forEach((roadmap) => { const item = document.createElement("tr"); const title = document.createElement("th"); title.scope = "row"; const link = document.createElement("a"); link.href = `../${roadmap.slug}/`; link.textContent = localized(roadmap, "title"); title.append(link); item.append(title); years.forEach((year) => { const cell = document.createElement("td"); roadmap.lanes.flatMap((lane) => lane.milestones.map((milestone) => ({lane, milestone}))).filter(({milestone}) => milestone.year === year && milestone.comparison_priority === "key").forEach(({lane, milestone}) => { const entry = document.createElement("span"); entry.className = `comparison-milestone maturity-${milestone.maturity}`; entry.textContent = `${milestonePeriodLabel(milestone)} · ${localized(milestone, "label")} (${localized(lane, "owner")})`; cell.append(entry); }); item.append(cell); }); body.append(item); }); table.append(head, body); root.append(table);
+    artifacts.forEach((roadmap) => { const item = document.createElement("tr"); const title = document.createElement("th"); title.scope = "row"; const link = document.createElement("a"); link.href = `../${roadmap.slug}/`; link.textContent = localized(roadmap, "title"); title.append(link); item.append(title); years.forEach((year) => { const cell = document.createElement("td"); roadmap.lanes.flatMap((lane) => lane.milestones.map((milestone) => ({lane, milestone}))).filter(({milestone}) => milestone.year !== null && milestone.year <= year && (milestone.end_year ?? milestone.year) >= year && milestone.comparison_priority === "key").forEach(({lane, milestone}) => { const entry = document.createElement("span"); entry.className = `comparison-milestone maturity-${milestone.maturity}`; entry.textContent = `${milestonePeriodLabel(milestone)} · ${localized(milestone, "label")} (${localized(lane, "owner")})`; cell.append(entry); }); item.append(cell); }); body.append(item); }); table.append(head, body); root.append(table);
   }
   function renderCompareDependencies(artifacts) {
     const root = document.getElementById("compare-dependencies"); root.replaceChildren(); const allowed = new Set(artifacts.map((item) => item.roadmap_id)); const dependencies = artifacts.flatMap((roadmap) => roadmap.dependencies).filter((item) => allowed.has(item.upstream_roadmap_id) && allowed.has(item.downstream_roadmap_id)); dependencies.forEach((dependency) => { const item = document.createElement("li"); const route = document.createElement("strong"); route.textContent = `${roadmapName(dependency.upstream_roadmap_id)} → ${roadmapName(dependency.downstream_roadmap_id)}`; const text = document.createElement("span"); text.textContent = `${tr(relationshipKeys[dependency.relationship])}: ${localized(dependency, "statement")}`; item.append(route, text); root.append(item); });

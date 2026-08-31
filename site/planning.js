@@ -175,8 +175,8 @@
     renderMetric(metrics, tr("timeoutError"), source.summary.timeout + source.summary.error - unaudited.length, `${source.summary.unique_url_status_counts.timeout + source.summary.unique_url_status_counts.error - unauditedUrls} ${tr("uniqueUrlsUnit")}`);
     if (unaudited.length) renderMetric(metrics, language === "ja" ? "HTTP未監査" : "HTTP not audited", unaudited.length, `${unauditedUrls} ${tr("uniqueUrlsUnit")}`);
     renderMetric(metrics, tr("milestoneCount"), evidence.summary.milestone_count, evidence.as_of);
-    renderMetric(metrics, tr("sourceQuarterPrecision"), evidence.summary.source_supported_quarter, `${evidence.summary.source_supported_half_year + evidence.summary.source_supported_year} ${tr("lowerPrecision")}`);
-    renderMetric(metrics, tr("provisionalQuarterPrecision"), evidence.summary.openfs_provisional_quarter, `${evidence.summary.openfs_provisional_year} ${tr("lowerPrecision")}`);
+    renderMetric(metrics, tr("sourceQuarterPrecision"), evidence.summary.source_supported_quarter, `${evidence.summary.source_supported_half_year + evidence.summary.source_supported_year + (evidence.summary.source_supported_quarter_range || 0)} ${tr("lowerPrecision")}`);
+    renderMetric(metrics, tr("provisionalQuarterPrecision"), evidence.summary.openfs_provisional_quarter, `${evidence.summary.openfs_provisional_year + (evidence.summary.openfs_provisional_half_year || 0) + (evidence.summary.openfs_provisional_quarter_range || 0)} ${tr("lowerPrecision")}`);
     renderMetric(metrics, tr("internalGovernanceEvent"), evidence.summary.openfs_governance_event, tr("internalGovernanceNote"));
     renderMetric(metrics, tr("coverageGap"), evidence.summary.coverage_gap, `${evidence.summary.openfs_provisional} ${tr("provisionalGate")}`);
     renderMetric(metrics, tr("freshnessAttention"), freshness.summary.high + freshness.summary.critical, `${freshness.summary.critical} ${tr("critical")} · ${freshness.summary.past_target_rechecks} ${tr("pastTargetRechecks")}`);
