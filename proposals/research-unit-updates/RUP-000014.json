@@ -1,0 +1,508 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000014",
+  "topic_id": "ARCH-12",
+  "created_at": "2026-08-31T15:35:33+09:00",
+  "base_commit": "fe9dcd82b6240dc23db798035da47097dd62b8cf",
+  "before_profile_sha256": "18c8b989dbc03617038892bbe6b968f34602c616d66f60be05f352a52fc103d1",
+  "human_directive_id": "DIR-900017",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ドメイン特化型ハードウェア技術について、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。 Hot Chips 2026の発表項目に関連する一次情報を追加しました。講演資料未公開の項目は会議台帳に未確認事項として記録しています。",
+  "summary_en": "Scope: Domain-specific hardware. The public evidence below remains provisional; some research units and questions are still uncovered. Primary evidence related to Hot Chips 2026 entries has been added. Unavailable presentation materials remain explicit gaps in the conference register.",
+  "units": [
+    {
+      "unit_id": "ARCH-12-U01",
+      "before_sha256": "823e9b3d17ed8fb5b182c9d3f215a56f87af147d7ca5c6a60ad1f3b5bb14d6d1",
+      "evidence_section_ids": [
+        "TDS-ARCH12-CURRENT",
+        "TDS-ARCH12-FUTURE",
+        "TDS-ARCH02-DOMESTIC",
+        "TDS-HC26-ARCH-12-U1"
+      ]
+    },
+    {
+      "unit_id": "ARCH-12-U02",
+      "before_sha256": "e69ed47a69cafe597b0c4e14ab36fdb25da73ad3b6e6ae27d83600f4fd560020",
+      "evidence_section_ids": [
+        "TDS-ARCH03-PIM",
+        "TDS-HC26-ARCH-12-U2"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HC26-ARCH-12-U1",
+      "title_ja": "Hot Chips 2026関連の公開情報",
+      "title_en": "Public evidence related to Hot Chips 2026",
+      "summary_ja": "会議の発表項目を起点に、公開一次情報で確認した内容です。関連する過去の発表を含み、講演スライド全体の検証ではありません。",
+      "summary_en": "Public primary evidence located from conference entries, including earlier related announcements. This is not verification of the complete presentation slides.",
+      "items": [
+        {
+          "item_id": "TDI-HC26-LPU",
+          "name_ja": "Groq 3 LPX",
+          "name_en": "Groq 3 LPX",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "NVIDIAはGroq 3 LPXの量産入りを発表しました。低遅延Decode向けの製品であり、Nebiusでの採用予定は量産とは別の出来事です。公表されたトークン速度を、そのまま科学計算性能やアプリケーション全体の高速化率には換算できません。",
+          "statement_en": "NVIDIA announced full production of Groq 3 LPX for low-latency decoding. Planned adoption by Nebius is a separate event. Published token rates do not directly establish scientific-computing performance or whole-application speedup.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-LPX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-JALAPENO",
+          "name_ja": "Jalapenoの開発・導入段階",
+          "name_en": "Jalapeno development and deployment status",
+          "stage": "near-term",
+          "maturity": "sampling",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "JalapenoはOpenAI、Broadcom、Celesticaが役割を分担して開発する推論用チップとシステムです。OpenAIは試作チップでの結果と2026年末までの社内導入目標を示しています。試作、社内導入、一般販売は同義ではありません。",
+          "statement_en": "OpenAI, Broadcom and Celestica have distinct roles in developing the Jalapeno inference chip and system. OpenAI reports results on sample silicon and targets internal deployment by end-2026. Sampling, internal deployment and general sale are different milestones.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-JALAPENO",
+            "SRC-HC26-JALAPENO-RESULTS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-MTIA",
+          "name_ja": "MTIA 300〜500",
+          "name_en": "MTIA 300 to 500",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "MetaはMTIA 300の実運用、400の検証から導入への移行、450の2027年早期、500の2027年という展開計画を示しています。用途は推薦・ランキングから生成AI推論へ拡大しますが、外部組織が購入できる製品の販売計画ではありません。",
+          "statement_en": "Meta describes MTIA 300 in production, 400 transitioning from validation to deployment, 450 in early 2027 and 500 in 2027. The scope expands from recommendation/ranking to generative-AI inference; this is not a product sales schedule for external buyers.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-META"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-MAIA",
+          "name_ja": "Maia 200",
+          "name_en": "Maia 200",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "MicrosoftはMaia 200の米国中部リージョンへの導入を公表しています。HBM3eと大容量SRAMを組み合わせる推論向け設計です。社内サービスでの導入状況と、SDKや外部利用の提供範囲は分けて確認します。",
+          "statement_en": "Microsoft reports Maia 200 deployment in its US Central region. The inference-focused design combines HBM3e and substantial SRAM. Internal service deployment must be distinguished from SDK availability and access for outside users.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-MAIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-TPU",
+          "name_ja": "TPU 8tと8i",
+          "name_en": "TPU 8t and 8i",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "Googleは学習向け8tと低遅延推論向け8iを分け、メモリと接続構成を用途別に設計しています。確認ページの「今年後半」という相対表現は、公開日を確定できないため年表の提供年へ変換していません。",
+          "statement_en": "Google separates training-oriented 8t from low-latency inference-oriented 8i, tailoring memory and connectivity to each. The checked page's relative 'later this year' wording is not converted into a release year because its publication date was not established.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-GOOGLE"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-SN50",
+          "name_ja": "SN50と階層メモリ",
+          "name_en": "SN50 and hierarchical memory",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "SambaNovaはSN50をデータフロー型RDUとして説明し、モデル切替やキャッシュを含むメモリ階層を重視しています。2026年後半の出荷はベンダー目標であり、今回の確認で出荷完了や各モデルの実効性能を検証したものではありません。",
+          "statement_en": "SambaNova describes SN50 as a dataflow RDU emphasizing hierarchical memory, model switching and caching. H2 2026 shipping is a vendor target; this review does not verify completed shipments or achieved performance for each model.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-SN50"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-EAGLE",
+          "name_ja": "Eagle-N",
+          "name_en": "Eagle-N",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "BOS SemiconductorsはEagle-Nの共有メモリNoC、専用データ移動処理、NPUの分割利用を説明しています。主対象は車載・ロボティクスです。科学用途への移植性や利用可能な開発環境、一般提供時期は追加調査事項です。",
+          "statement_en": "BOS Semiconductors describes Eagle-N's shared-memory NoC, dedicated data-movement processing and NPU partitioning for automotive and robotics workloads. Scientific-workload portability, accessible development tools and general availability need further research.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-BOS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-VERSAL",
+          "name_ja": "Versal Premium Gen 2のMoP構成",
+          "name_en": "Versal Premium Gen 2 memory-on-package variant",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "AMDのMoP構成はLPDDR5Xをパッケージ上へ搭載します。通常のPremium Gen 2の出荷と混同せず、MoPの2026年末までのサンプル、2027年後半の量産という目標を区別します。長期供給の主張も契約上の保証とは別です。",
+          "statement_en": "AMD's MoP variant places LPDDR5X on the package. Its end-2026 sampling and H2 2027 production targets are separate from standard Premium Gen 2 shipments. A stated longevity goal is also distinct from a contractual supply guarantee.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-VERSAL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-HC26-ARCH-12-U2",
+      "title_ja": "Hot Chips 2026関連の公開情報",
+      "title_en": "Public evidence related to Hot Chips 2026",
+      "summary_ja": "会議の発表項目を起点に、公開一次情報で確認した内容です。関連する過去の発表を含み、講演スライド全体の検証ではありません。",
+      "summary_en": "Public primary evidence located from conference entries, including earlier related announcements. This is not verification of the complete presentation slides.",
+      "items": [
+        {
+          "item_id": "TDI-HC26-PIM",
+          "name_ja": "LPDDR5X-PIMと3D DRAM内演算",
+          "name_en": "LPDDR5X-PIM and 3D in-memory computation",
+          "stage": "research",
+          "maturity": "prototype",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "SamsungのLPDDR5X-PIM展示とd-Matrix/AlchipのPavehawk試作は、演算をデータへ近づける異なる実装です。後者のRaptorでの商用化予定には確認した資料で年が示されていません。対応演算、精度、プログラミング方法と転送削減量を別々に評価します。",
+          "statement_en": "Samsung's LPDDR5X-PIM demonstration and d-Matrix/Alchip's Pavehawk test silicon implement different forms of near-data computation. The checked source gives no year for commercialization through Raptor. Evaluate supported operations, precision, programming and traffic reduction separately.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-SAMSUNG",
+            "SRC-HC26-DMATRIX"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-LPX",
+        "title": "Groq 3 LPX full production announcement",
+        "publisher": "NVIDIA",
+        "url": "https://nvidianews.nvidia.com/news/nvidia-groq-3-lpx-now-in-full-production-with-world-class-speed-for-agentic-ai",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-24"
+      },
+      "origin_group": "nvidia-issuer",
+      "locator": "Production announcement and planned Nebius deployment",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-GOOGLE",
+        "title": "Eighth-generation TPUs for the agentic era",
+        "publisher": "Google",
+        "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/eighth-generation-tpu-agentic-era/",
+        "source_class": "official-vendor",
+        "published_or_updated": "Publication date not established in checked page"
+      },
+      "origin_group": "google-issuer",
+      "locator": "TPU 8t/8i architecture and framework sections; relative availability wording is not resolved to a year",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-JALAPENO",
+        "title": "Jalapeno inference chip collaboration",
+        "publisher": "OpenAI",
+        "url": "https://openai.com/index/openai-broadcom-jalapeno-inference-chip/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-24"
+      },
+      "origin_group": "openai-issuer",
+      "locator": "Engineering samples; OpenAI, Broadcom and Celestica responsibilities",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-JALAPENO-RESULTS",
+        "title": "Jalapeno first results",
+        "publisher": "OpenAI",
+        "url": "https://openai.com/index/jalapeno-first-results/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-25"
+      },
+      "origin_group": "openai-issuer",
+      "locator": "InferenceX methodology, power normalization and internal deployment target",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-DMATRIX",
+        "title": "d-Matrix and Alchip 3D DRAM collaboration",
+        "publisher": "d-Matrix",
+        "url": "https://www.d-matrix.ai/announcements/d-matrix-and-alchip-announce-collaboration-on-worlds-first-3d-dram-solution-to-supercharge-ai-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-11-18"
+      },
+      "origin_group": "d-matrix-issuer",
+      "locator": "Pavehawk test silicon and planned Raptor commercialization; preceding the 2026 conference",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-SN50",
+        "title": "SN50 RDU introduction",
+        "publisher": "SambaNova",
+        "url": "https://sambanova.ai/blog/introducing-the-sn50-rdu-purpose-built-for-agentic-inference",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-02-24"
+      },
+      "origin_group": "sambanova-issuer",
+      "locator": "Dataflow, memory hierarchy and H2 2026 shipping target",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-SAMSUNG",
+        "title": "Samsung 3D memory vision at FMS 2026",
+        "publisher": "Samsung",
+        "url": "https://news.samsung.com/global/samsung-unveils-next-gen-3d-memory-vision-at-fms-2026-charting-the-future-of-ai-infrastructure",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-05"
+      },
+      "origin_group": "samsung-issuer",
+      "locator": "zHBM concept, HBM4/HBM4E and LPDDR5X-PIM; FMS announcement, not a Hot Chips slide",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-VERSAL",
+        "title": "Versal Premium Gen 2 memory-on-package",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/blogs/2026/amd-packs-more-memory-capacity--performance-in-a-smalle.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-30 (page header; subsequently maintained page)"
+      },
+      "origin_group": "amd-issuer",
+      "locator": "MoP variant sampling by end-2026 and H2 2027 production; distinct from standard Premium Gen 2",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-META",
+        "title": "Meta MTIA generations",
+        "publisher": "Meta",
+        "url": "https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-11"
+      },
+      "origin_group": "meta-issuer",
+      "locator": "MTIA 300/400/450/500 deployment states and software stack",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-MAIA",
+        "title": "Maia 200 inference accelerator",
+        "publisher": "Microsoft",
+        "url": "https://blogs.microsoft.com/blog/2026/01/26/maia-200-the-ai-accelerator-built-for-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-01-26"
+      },
+      "origin_group": "microsoft-issuer",
+      "locator": "US Central deployment, memory and preview SDK",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-BOS",
+        "title": "Eagle-N at Hot Chips 2026",
+        "publisher": "BOS Semiconductors",
+        "url": "https://www.bos-semi.com/post/bos-semiconductors-presents-chiplet-based-ai-accelerator-eagle-n-at-hot-chips-2026",
+        "source_class": "official-vendor",
+        "published_or_updated": "Absolute publication date not established"
+      },
+      "origin_group": "bos-semiconductors-issuer",
+      "locator": "Shared-memory NoC, data movement and NPU partitioning",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-049",
+      "topic_ids": [
+        "ARCH-12"
+      ],
+      "priority": "P1",
+      "question_ja": "Hot Chips 2026の講演・ポスター全文と、製品提供条件、独立した評価で確認できるか。",
+      "question_en": "Can full Hot Chips 2026 presentations/posters, product access conditions and independent measurements corroborate these observations?",
+      "next_action_ja": "一般公開後の講演資料を照合し、会議台帳の発表別未確認事項を更新する。認証・課金制限は回避しない。",
+      "next_action_en": "Check presentations after public release and update entry-level gaps without bypassing authentication or paywalls.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "全発表の技術的検証は未完了です。会議台帳のCoverage Gapを参照してください。",
+    "単一モデルの調査であり、Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Technical verification of all presentations is incomplete; see the conference register's Coverage Gaps.",
+    "This single-model research has not completed Consensus review."
+  ]
+}

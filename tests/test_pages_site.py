@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -663,7 +663,10 @@ class PagesSiteTests(unittest.TestCase):
                 - assurance["source_audit"]["summary"]["reachable"],
                 assurance["source_triage"]["summary"]["non_reachable_count"],
             )
-            self.assertEqual(0, assurance["source_triage"]["summary"]["unresolved"])
+            unresolved = [entry for entry in assurance["source_triage"]["entries"]
+                          if entry["review_outcome"] == "unresolved"]
+            self.assertEqual(len(unresolved), assurance["source_triage"]["summary"]["unresolved"])
+            self.assertTrue(all(entry["reviewed_at"] is None for entry in unresolved))
             center_profiles = assurance["center_profile_assurance"]
             self.assertEqual(15, center_profiles["summary"]["center_count"])
             self.assertEqual(0, center_profiles["summary"]["accepted_current_count"])

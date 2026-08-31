@@ -19,7 +19,7 @@ How should CPU, GPU, vector, and accelerator products be combined given workload
 - `ARCH-01-U01` **CPU・GPUと異種構成 / CPUs, GPUs, and heterogeneous nodes** (`partial`)
   - CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。
   - How should CPU, GPU, vector, and accelerator products be combined given workloads, power, cost, and software support?
-  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE
+  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE, TDS-HC26-ARCH-01-U1
 - `ARCH-01-U02` **ノード内の構成 / Node organization** (`not-started`)
   - コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。
   - How should cores, caches, memory, I/O, and tightly or loosely coupled resources be organized?
@@ -46,7 +46,7 @@ How do process technology, production capacity, yield, and cost constrain perfor
 - `ARCH-02-U02` **チップレットと接合 / Chiplets and bonding** (`partial`)
   - UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。
   - How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?
-  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D
+  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D, TDS-HC26-ARCH-02-U2
 
 Related / 関連: ARCH-003, ARCH-009, CROSS-001
 
@@ -65,7 +65,7 @@ How do DDR, LPDDR, HBM, and 3D-stacked DRAM compare in bandwidth, latency, capac
 - `ARCH-03-U02` **モジュール・カスタム実装 / Modules and custom implementations** (`partial`)
   - SOCAMM等のモジュールとNVHBM等のカスタム実装を、それぞれ同じ技術階層の候補とどう比較するか。
   - How should modules such as SOCAMM and custom implementations such as NVHBM be compared with alternatives at the same technical layer?
-  - Evidence sections: TDS-ARCH03-MAIN
+  - Evidence sections: TDS-ARCH03-MAIN, TDS-HC26-ARCH-03-U2
 - `ARCH-03-U03` **メモリ階層の構成 / Memory hierarchy composition** (`not-started`)
   - アクセス特性に適したメモリ階層を、CXLによる増設・共有やPIMとの組合せも参照してどう構成するか。
   - How should memory hierarchies match access characteristics, including combinations with CXL expansion or sharing and PIM?
@@ -88,7 +88,7 @@ How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantic
 - `ARCH-04-U02` **Scale-out・拠点間 / Scale-out and inter-site** (`partial`)
   - InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。
   - How do InfiniBand, Ethernet/RoCE, Ultra Ethernet, and Cornelis technologies compare in topology, congestion, latency, bandwidth, and power?
-  - Evidence sections: TDS-ARCH04-CURRENT, TDS-ARCH04-FUTURE
+  - Evidence sections: TDS-ARCH04-CURRENT, TDS-ARCH04-FUTURE, TDS-HC26-ARCH-04-U2
 - `ARCH-04-U03` **光接続 / Optical connectivity** (`not-started`)
   - CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。
   - How should electrical and optical links, including CPO, be selected based on reach, integration, power, serviceability, and standardization?
@@ -107,7 +107,7 @@ How should homogeneous or heterogeneous systems, racks, and disaggregated comput
 - `ARCH-05-U01` **ラック・システム構成 / Rack and system organization** (`partial`)
   - 均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。
   - How should homogeneous or heterogeneous systems, racks, and disaggregated compute, memory, and storage be composed?
-  - Evidence sections: TDS-ARCH05-CURRENT, TDS-ARCH05-FUTURE
+  - Evidence sections: TDS-ARCH05-CURRENT, TDS-ARCH05-FUTURE, TDS-HC26-ARCH-05-U1
 - `ARCH-05-U02` **全体の適合性 / System-level suitability** (`not-started`)
   - ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。
   - How should nodes, networks, storage, and facility constraints be combined and checked for scalability and interoperability?
@@ -126,11 +126,11 @@ How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compa
 - `ARCH-12-U01` **専用アクセラレータ / Specialized accelerators** (`partial`)
   - Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。
   - How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compare in architecture and application suitability?
-  - Evidence sections: TDS-ARCH12-CURRENT, TDS-ARCH12-FUTURE, TDS-ARCH02-DOMESTIC
+  - Evidence sections: TDS-ARCH12-CURRENT, TDS-ARCH12-FUTURE, TDS-ARCH02-DOMESTIC, TDS-HC26-ARCH-12-U1
 - `ARCH-12-U02` **PIM・データ近傍処理 / PIM and near-data processing** (`partial`)
   - PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。
   - How should PIM and near-memory processing be evaluated for compute placement, memory models, software support, and reduced data movement?
-  - Evidence sections: TDS-ARCH03-PIM
+  - Evidence sections: TDS-ARCH03-PIM, TDS-HC26-ARCH-12-U2
 - `ARCH-12-U03` **導入・供給条件 / Deployment and supply conditions** (`not-started`)
   - 量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。
   - How do production readiness, scale-up/out, portability, maintenance, and supply continuity determine adoption conditions?
@@ -182,7 +182,7 @@ Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and K
 - `SSW-01-U02` **言語・コンパイラ・SDK / Languages, compilers, and SDKs** (`partial`)
   - Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。
   - How should Fortran, C/C++, Python, compilers, SDKs such as ROCm and oneAPI, builds, and binary compatibility be sustained?
-  - Evidence sections: TDS-SSW02-TOOLCHAINS
+  - Evidence sections: TDS-SSW02-TOOLCHAINS, TDS-HC26-SSW-01-U2
 - `SSW-01-U03` **開発・解析ツール / Development and analysis tools** (`not-started`)
   - デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。
   - How should debuggers, profilers, tracing, and porting tools be compared for platform coverage and practical usability?
@@ -205,7 +205,7 @@ Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, a
 - `SSW-03-U01` **通信と集合通信 / Communication and collectives** (`partial`)
   - MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。
   - Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, accelerators, interoperability, performance, and missing capabilities.
-  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE
+  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE, TDS-HC26-SSW-03-U1
 
 Related / 関連: ARCH-004, SSW-001
 
@@ -277,7 +277,7 @@ Compare training and distributed-training frameworks for hardware support, paral
 - `SSW-09-U02` **推論サービング / Inference serving** (`partial`)
   - vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。
   - Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support.
-  - Evidence sections: TDS-SSW17-CURRENT, TDS-SSW17-FUTURE
+  - Evidence sections: TDS-SSW17-CURRENT, TDS-SSW17-FUTURE, TDS-HC26-SSW-09-U2
 - `SSW-09-U03` **エージェント実行 / Agent execution** (`not-started`)
   - 構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。
   - Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.
@@ -419,7 +419,7 @@ Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, IT
 - `APP-13-U01` **学習・推論評価 / Training and inference evaluation** (`partial`)
   - MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。
   - Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior.
-  - Evidence sections: TDS-AIP-EVALUATION
+  - Evidence sections: TDS-AIP-EVALUATION, TDS-HC26-APP-13-U1
 - `APP-13-U02` **エージェント・ハーネス評価 / Agent and harness evaluation** (`partial`)
   - モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。
   - Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions.

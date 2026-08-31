@@ -1,0 +1,241 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000009",
+  "topic_id": "ARCH-01",
+  "created_at": "2026-08-31T15:35:33+09:00",
+  "base_commit": "fe9dcd82b6240dc23db798035da47097dd62b8cf",
+  "before_profile_sha256": "98b9226ee4d6bc2ccf215c947f207269626c119f621782718ec9d6809abd0239",
+  "human_directive_id": "DIR-900017",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ノードアーキテクチャについて、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。 Hot Chips 2026の発表項目に関連する一次情報を追加しました。講演資料未公開の項目は会議台帳に未確認事項として記録しています。",
+  "summary_en": "Scope: Node architecture. The public evidence below remains provisional; some research units and questions are still uncovered. Primary evidence related to Hot Chips 2026 entries has been added. Unavailable presentation materials remain explicit gaps in the conference register.",
+  "units": [
+    {
+      "unit_id": "ARCH-01-U01",
+      "before_sha256": "42826ef05182e9a95a2e37658e31638d0ab93526659c5210cc7f722c45ec9a4e",
+      "evidence_section_ids": [
+        "TDS-ARCH01-CURRENT",
+        "TDS-ARCH01-FUTURE",
+        "TDS-HC26-ARCH-01-U1"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HC26-ARCH-01-U1",
+      "title_ja": "Hot Chips 2026関連の公開情報",
+      "title_en": "Public evidence related to Hot Chips 2026",
+      "summary_ja": "会議の発表項目を起点に、公開一次情報で確認した内容です。関連する過去の発表を含み、講演スライド全体の検証ではありません。",
+      "summary_en": "Public primary evidence located from conference entries, including earlier related announcements. This is not verification of the complete presentation slides.",
+      "items": [
+        {
+          "item_id": "TDI-HC26-INTEL",
+          "name_ja": "IntelのCPU・GPU構成",
+          "name_en": "Intel CPU and GPU architectures",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "IntelはDiamond Rapidsで18A-P、Foveros Direct 3D、UCIe-Sを示し、Crescent IslandではXe3Pと大容量LPDDR5Xを採用します。Wildcat LakeはPコアとEコアを組み合わせます。したがって、会議全体を「エージェント処理にはPコアのみ」と一般化できません。",
+          "statement_en": "Intel describes 18A-P, Foveros Direct 3D and UCIe-S for Diamond Rapids, and Xe3P with large-capacity LPDDR5X for Crescent Island. Wildcat Lake combines P and E cores. The conference therefore does not establish that agentic workloads universally require P-core-only designs.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-INTEL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-IBM",
+          "name_ja": "IBMの将来メインフレーム向け二重ISA",
+          "name_en": "IBM dual-ISA design for future mainframes",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "IBMは将来のZ/LinuxONE向けに、同じコアでIBMとArmの命令を実行する構想を説明しています。データ近傍のAI処理と既存業務の併存が目的であり、汎用HPCでの性能向上や製品提供時期を示したものではありません。",
+          "statement_en": "IBM describes a future Z/LinuxONE design executing IBM and Arm instructions on the same core. Its motivation is near-data AI alongside existing enterprise workloads, not demonstrated general-purpose HPC acceleration or a dated product release.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-IBM"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-ARM",
+          "name_ja": "Arm AGI CPUとOEMシステム",
+          "name_en": "Arm AGI CPU and OEM systems",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "Armは136個のNeoverse V3コア、12チャネルDDR5、PCIe 6を備えるAGI CPUとSupermicro製システムを説明しています。サンプルと量産の目標は機種ごとに異なります。CPUの仕様と、サーバーの調達可能時期を分けて評価します。",
+          "statement_en": "Arm describes an AGI CPU with 136 Neoverse V3 cores, 12 DDR5 channels and PCIe 6, alongside Supermicro systems. Sampling and production targets vary by system. CPU specifications and server procurement availability must be assessed separately.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-ARM"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-MONAKA",
+          "name_ja": "FUJITSU-MONAKA",
+          "name_en": "FUJITSU-MONAKA",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "Fujitsuの公開ページは2 nmプロセスと空冷運用を掲げ、2027年の提供を予定しています。HPC用途では、Arm向けコンパイラ・ライブラリと対象アプリケーションの検証を別途要します。年の目標だけから提供四半期は推定しません。",
+          "statement_en": "Fujitsu's public page describes a 2 nm design, air cooling and a planned 2027 release. HPC adoption still requires checking Arm compilers, libraries and target applications. A year-level target does not establish a release quarter.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-MONAKA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-INTEL",
+        "title": "Intel architectures for agentic AI at Hot Chips 2026",
+        "publisher": "Intel",
+        "url": "https://newsroom.intel.com/client-computing/intel-outlines-architectures-for-agentic-ai-at-hot-chips-2026",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-24"
+      },
+      "origin_group": "intel-issuer",
+      "locator": "Diamond Rapids, Crescent Island and Wildcat Lake sections",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-IBM",
+        "title": "Dual-architecture processor for future IBM mainframes",
+        "publisher": "IBM",
+        "url": "https://www.ibm.com/think/news/hot-chips-dual-architecture-processor-mainframe-ai",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-28"
+      },
+      "origin_group": "ibm-issuer",
+      "locator": "Dual IBM/Arm execution and enterprise AI discussion",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-MONAKA",
+        "title": "FUJITSU-MONAKA research overview",
+        "publisher": "Fujitsu",
+        "url": "https://global.fujitsu/en-global/technology/research/fujitsu-monaka",
+        "source_class": "official-vendor",
+        "published_or_updated": "Publication date not stated"
+      },
+      "origin_group": "fujitsu-issuer",
+      "locator": "2 nm, air cooling and planned 2027 release; current product page",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-ARM",
+        "title": "Arm AGI CPU systems from Supermicro",
+        "publisher": "Arm",
+        "url": "https://newsroom.arm.com/blog/arm-agi-cpu-supermicro-agentic-ai",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-10"
+      },
+      "origin_group": "arm-issuer",
+      "locator": "CPU features and per-system sampling/production schedule",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-044",
+      "topic_ids": [
+        "ARCH-01"
+      ],
+      "priority": "P1",
+      "question_ja": "Hot Chips 2026の講演・ポスター全文と、製品提供条件、独立した評価で確認できるか。",
+      "question_en": "Can full Hot Chips 2026 presentations/posters, product access conditions and independent measurements corroborate these observations?",
+      "next_action_ja": "一般公開後の講演資料を照合し、会議台帳の発表別未確認事項を更新する。認証・課金制限は回避しない。",
+      "next_action_en": "Check presentations after public release and update entry-level gaps without bypassing authentication or paywalls.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "全発表の技術的検証は未完了です。会議台帳のCoverage Gapを参照してください。",
+    "単一モデルの調査であり、Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Technical verification of all presentations is incomplete; see the conference register's Coverage Gaps.",
+    "This single-model research has not completed Consensus review."
+  ]
+}

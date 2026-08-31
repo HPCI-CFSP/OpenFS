@@ -1,0 +1,172 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000013",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-08-31T15:35:33+09:00",
+  "base_commit": "fe9dcd82b6240dc23db798035da47097dd62b8cf",
+  "before_profile_sha256": "26ceb035289247c094987a01c95bfd618a56665077c40ea6303501523efed13a",
+  "human_directive_id": "DIR-900017",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "システム構成について、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。 Hot Chips 2026の発表項目に関連する一次情報を追加しました。講演資料未公開の項目は会議台帳に未確認事項として記録しています。",
+  "summary_en": "Scope: System composition. The public evidence below remains provisional; some research units and questions are still uncovered. Primary evidence related to Hot Chips 2026 entries has been added. Unavailable presentation materials remain explicit gaps in the conference register.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "fffe062cb12b188fb47d24fb8eb00b3e9c7e203d3838ce5426729f775b79dad5",
+      "evidence_section_ids": [
+        "TDS-ARCH05-CURRENT",
+        "TDS-ARCH05-FUTURE",
+        "TDS-HC26-ARCH-05-U1"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HC26-ARCH-05-U1",
+      "title_ja": "Hot Chips 2026関連の公開情報",
+      "title_en": "Public evidence related to Hot Chips 2026",
+      "summary_ja": "会議の発表項目を起点に、公開一次情報で確認した内容です。関連する過去の発表を含み、講演スライド全体の検証ではありません。",
+      "summary_en": "Public primary evidence located from conference entries, including earlier related announcements. This is not verification of the complete presentation slides.",
+      "items": [
+        {
+          "item_id": "TDI-HC26-RACK",
+          "name_ja": "Vera Rubin NVL72とHelios",
+          "name_en": "Vera Rubin NVL72 and Helios",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "Vera Rubin NVL72は72基のRubin GPUと36基のVera CPUを組み合わせます。AMDのHeliosはMI455X、EPYC Venice、Pensando、ROCmを含む構成です。ラック単位の比較には、搭載数だけでなく冷却、受電、ネットワーク、対応精度とソフトウェアの条件を揃える必要があります。",
+          "statement_en": "Vera Rubin NVL72 combines 72 Rubin GPUs and 36 Vera CPUs. AMD Helios combines MI455X, EPYC Venice, Pensando and ROCm. Rack-level comparisons need matched cooling, power, network, precision and software conditions, not device counts alone.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-NVIDIA",
+            "SRC-HC26-HELIOS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-HC26-DISAGG",
+          "name_ja": "PrefillとDecodeを異種装置へ分離",
+          "name_en": "Disaggregating prefill and decode across devices",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "AMDとCerebrasはHelios側でPrefill、Cerebras側でDecodeを処理する構成を発表しました。2026年後半のCerebras Cloud提供は目標です。適用判断にはKVキャッシュ転送、負荷配分、待ち時間と障害復旧を含む一連の処理の測定が必要です。",
+          "statement_en": "AMD and Cerebras announced a design using Helios for prefill and Cerebras for decode, targeting Cerebras Cloud in H2 2026. Adoption requires end-to-end measurements including KV-cache transfer, load balancing, latency and recovery.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-DISAGG"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-NVIDIA",
+        "title": "NVIDIA at Hot Chips 2026",
+        "publisher": "NVIDIA",
+        "url": "https://www.nvidia.com/en-us/events/hot-chips-conference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "Publication date not stated"
+      },
+      "origin_group": "nvidia-issuer",
+      "locator": "Vera, Rubin NVL72 and conference schedule; not the presentation slides",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-HELIOS",
+        "title": "Microsoft Azure and AMD AI infrastructure",
+        "publisher": "AMD",
+        "url": "https://newsroom.amd.com/news/microsoft-azure-ai-infrastructure/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-20"
+      },
+      "origin_group": "amd-issuer",
+      "locator": "Helios composition and H2 2026 shipping target",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-DISAGG",
+        "title": "AMD and Cerebras disaggregated inference",
+        "publisher": "AMD",
+        "url": "https://newsroom.amd.com/news/aai-2026-cerebras-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-23"
+      },
+      "origin_group": "amd-issuer",
+      "locator": "Prefill/decode split and H2 2026 Cerebras Cloud target",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-048",
+      "topic_ids": [
+        "ARCH-05"
+      ],
+      "priority": "P1",
+      "question_ja": "Hot Chips 2026の講演・ポスター全文と、製品提供条件、独立した評価で確認できるか。",
+      "question_en": "Can full Hot Chips 2026 presentations/posters, product access conditions and independent measurements corroborate these observations?",
+      "next_action_ja": "一般公開後の講演資料を照合し、会議台帳の発表別未確認事項を更新する。認証・課金制限は回避しない。",
+      "next_action_en": "Check presentations after public release and update entry-level gaps without bypassing authentication or paywalls.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "全発表の技術的検証は未完了です。会議台帳のCoverage Gapを参照してください。",
+    "単一モデルの調査であり、Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Technical verification of all presentations is incomplete; see the conference register's Coverage Gaps.",
+    "This single-model research has not completed Consensus review."
+  ]
+}

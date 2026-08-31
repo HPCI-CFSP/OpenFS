@@ -41,6 +41,8 @@ def schema_registry(root: Path) -> tuple[dict[str, dict[str, Any]], Registry]:
 
 def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | None:
     ref = str(path.relative_to(root))
+    if ref.startswith("knowledge/public/conferences/"):
+        return "conference-coverage.schema.json"
     if ref.startswith("proposals/research-unit-updates/"):
         return "research-unit-update.schema.json"
     if ref == "config/budget-planning.json":

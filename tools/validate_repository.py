@@ -2036,6 +2036,14 @@ def run(root: Path = ROOT) -> list[str]:
     errors.extend(validate_required_files(root))
     errors.extend(validate_json_files(root))
     errors.extend(validate_jsonl_files(root))
+    if (root / "knowledge/public/conferences/HC2026.json").exists():
+        from check_conference_coverage import validate_coverage
+        try:
+            validate_coverage(load_json(root / "knowledge/public/conferences/HC2026.json"),
+                              load_json(root / "config/research-baseline.json"),
+                              load_json(root / "knowledge/public/topic-decision-support.json"))
+        except (ValueError, KeyError, TypeError) as exc:
+            errors.append(f"Conference coverage: {exc}")
     if (root / "knowledge/public/procurement-cost-register.json").exists():
         from check_procurement_costs import validate_register
         try:

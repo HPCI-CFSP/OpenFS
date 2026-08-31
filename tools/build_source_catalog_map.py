@@ -163,6 +163,19 @@ def build(root: Path) -> dict[str, Any]:
         )
 
     entries = []
+    conference_path = root / "knowledge/public/conferences/HC2026.json"
+    if conference_path.exists():
+        conference = read_json(conference_path)
+        conference_sources = {s["source_id"]: s for s in conference["sources"]}
+        for presentation in conference["entries"]:
+            for source_id in presentation["source_ids"]:
+                source = conference_sources[source_id]
+                entry = ensure_entry(source)
+                entry["source_classes"].add(f"conference-{source['role']}")
+                entry.setdefault("conference_entry_refs", set()).add(presentation["entry_id"])
+                for topic_id in [presentation["primary_topic_id"], *presentation["related_topic_ids"]]:
+                    entry["topic_links"].setdefault(topic_id, "conference-program-context")
+                entry["watch_ids"].update(_matching_watch_ids(source["url"], active_watches))
     for url in sorted(by_url):
         entry = by_url[url]
         entries.append(
@@ -186,6 +199,8 @@ def build(root: Path) -> dict[str, Any]:
                 "roadmap_ids": sorted(entry["roadmap_ids"]),
                 "track_ids": sorted(entry["track_ids"]),
                 "watch_ids": sorted(entry["watch_ids"]),
+                **({"conference_entry_refs": sorted(entry["conference_entry_refs"])}
+                   if entry.get("conference_entry_refs") else {}),
             }
         )
     return {
@@ -196,6 +211,7 @@ def build(root: Path) -> dict[str, Any]:
             str(DECISION_SUPPORT_PATH),
             str(WATCH_REGISTRY_PATH),
             str(ROADMAP_DIR),
+            "knowledge/public/conferences/HC2026.json",
         ],
         "unmapped_catalog_source_ids": sorted(
             source["source_id"]
