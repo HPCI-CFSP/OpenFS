@@ -1,0 +1,146 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000017",
+  "topic_id": "SSW-09",
+  "created_at": "2026-08-31T15:35:33+09:00",
+  "base_commit": "fe9dcd82b6240dc23db798035da47097dd62b8cf",
+  "before_profile_sha256": "982b70ca28631c29008a0dd8680d9fba750eeeb4f6196323d59f91f22d009e21",
+  "human_directive_id": "DIR-900017",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AI学習・推論・エージェント実行基盤について、既存の公開根拠を整理しています。以下は暫定的な調査結果であり、未調査の小項目や未確認事項を含みます。 Hot Chips 2026の発表項目に関連する一次情報を追加しました。講演資料未公開の項目は会議台帳に未確認事項として記録しています。",
+  "summary_en": "Scope: AI training, inference, and agent execution platforms. The public evidence below remains provisional; some research units and questions are still uncovered. Primary evidence related to Hot Chips 2026 entries has been added. Unavailable presentation materials remain explicit gaps in the conference register.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "805f2c9bc51276d91389534853f846536bb9bd4ca0e44e36a8617690b897f753",
+      "evidence_section_ids": [
+        "TDS-SSW17-CURRENT",
+        "TDS-SSW17-FUTURE",
+        "TDS-HC26-SSW-09-U2"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HC26-SSW-09-U2",
+      "title_ja": "Hot Chips 2026関連の公開情報",
+      "title_en": "Public evidence related to Hot Chips 2026",
+      "summary_ja": "会議の発表項目を起点に、公開一次情報で確認した内容です。関連する過去の発表を含み、講演スライド全体の検証ではありません。",
+      "summary_en": "Public primary evidence located from conference entries, including earlier related announcements. This is not verification of the complete presentation slides.",
+      "items": [
+        {
+          "item_id": "TDI-HC26-SDK",
+          "name_ja": "専用推論チップのソフトウェア対応",
+          "name_en": "Software support for dedicated inference chips",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026-08-31確認。発表日、試作、導入・出荷目標を区別し、確認できない時期は未確定とします。",
+          "timing_en": "Checked on 2026-08-31. Announcement, sampling and deployment/shipping targets are distinct; unverified timing remains unresolved.",
+          "statement_ja": "MaiaのSDKはプレビューとして公開され、MetaはPyTorch、vLLM、Triton系の連携を、GoogleはJAX、PyTorch、SGLang、vLLM等の対応を説明しています。対応という表現だけで演算子、量子化、分散実行、モデルごとの動作保証が揃うわけではありません。",
+          "statement_en": "Maia offers a preview SDK; Meta describes PyTorch, vLLM and Triton integration, while Google describes JAX, PyTorch, SGLang and vLLM support. A support statement alone does not establish complete operators, quantization, distributed execution or per-model validation.",
+          "hpci_relevance_ja": "整備計画への採用判断には、対象アプリケーションの性能、利用可能なソフトウェア、供給・運用条件の確認が必要です。これはOpenFSの暫定評価であり、採用を推奨する結論ではありません。",
+          "hpci_relevance_en": "Adoption requires target-application performance, available software and supply/operational conditions. This is an OpenFS provisional assessment, not an adoption recommendation.",
+          "adoption_conditions_ja": [
+            "同じ精度、負荷、システム境界で評価する。",
+            "ベンダーの主張と独立した検証を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate matched precision, workloads and system boundaries.",
+            "Distinguish issuer claims from independent verification."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HC26-MAIA",
+            "SRC-HC26-META",
+            "SRC-HC26-GOOGLE"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HC26-GOOGLE",
+        "title": "Eighth-generation TPUs for the agentic era",
+        "publisher": "Google",
+        "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/eighth-generation-tpu-agentic-era/",
+        "source_class": "official-vendor",
+        "published_or_updated": "Publication date not established in checked page"
+      },
+      "origin_group": "google-issuer",
+      "locator": "TPU 8t/8i architecture and framework sections; relative availability wording is not resolved to a year",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-META",
+        "title": "Meta MTIA generations",
+        "publisher": "Meta",
+        "url": "https://ai.meta.com/blog/meta-mtia-scale-ai-chips-for-billions/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-11"
+      },
+      "origin_group": "meta-issuer",
+      "locator": "MTIA 300/400/450/500 deployment states and software stack",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-HC26-MAIA",
+        "title": "Maia 200 inference accelerator",
+        "publisher": "Microsoft",
+        "url": "https://blogs.microsoft.com/blog/2026/01/26/maia-200-the-ai-accelerator-built-for-inference/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-01-26"
+      },
+      "origin_group": "microsoft-issuer",
+      "locator": "US Central deployment, memory and preview SDK",
+      "checked_at": "2026-08-31T15:35:33+09:00",
+      "observation_ja": "本文の該当箇所を確認しました。独立モデルによる検証や講演スライド全体の確認ではありません。",
+      "observation_en": "Checked the indicated primary-page text, not independently reviewed results or the complete conference slides.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-052",
+      "topic_ids": [
+        "SSW-09"
+      ],
+      "priority": "P1",
+      "question_ja": "Hot Chips 2026の講演・ポスター全文と、製品提供条件、独立した評価で確認できるか。",
+      "question_en": "Can full Hot Chips 2026 presentations/posters, product access conditions and independent measurements corroborate these observations?",
+      "next_action_ja": "一般公開後の講演資料を照合し、会議台帳の発表別未確認事項を更新する。認証・課金制限は回避しない。",
+      "next_action_en": "Check presentations after public release and update entry-level gaps without bypassing authentication or paywalls.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "全発表の技術的検証は未完了です。会議台帳のCoverage Gapを参照してください。",
+    "単一モデルの調査であり、Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Technical verification of all presentations is incomplete; see the conference register's Coverage Gaps.",
+    "This single-model research has not completed Consensus review."
+  ]
+}

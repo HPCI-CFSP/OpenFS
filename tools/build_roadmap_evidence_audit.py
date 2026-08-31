@@ -83,6 +83,8 @@ def timing_label(milestone: dict[str, Any], language: str) -> str:
     if year is None:
         return "時期未公表" if language == "ja" else "undated"
     quarter = milestone["quarter"]
+    if milestone["timing_precision"] == "half-year":
+        return f"{year} {milestone['half']}"
     return f"{year} {quarter}" if quarter else str(year)
 
 

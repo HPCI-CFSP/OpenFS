@@ -80,15 +80,22 @@ class SourceCatalogMapTests(unittest.TestCase):
         )
         self.assertEqual(expected, build(ROOT))
 
-    def test_every_mapping_reaches_a_catalog_topic_and_registered_evidence(self):
+    def test_every_mapping_reaches_a_catalog_topic_and_registered_evidence_or_program(self):
         result = build(ROOT)
+        conference = read_json(ROOT / "knowledge/public/conferences/HC2026.json")
+        presentations = {e["entry_id"]: e for e in conference["entries"]}
+        sources = {s["source_id"]: s for s in conference["sources"]}
         self.assertGreater(len(result["entries"]), 200)
         for entry in result["entries"]:
             with self.subTest(url=entry["canonical_url"]):
                 self.assertTrue(entry["topic_links"])
                 self.assertTrue(
-                    entry["roadmap_source_refs"] or entry["catalog_source_refs"]
+                    entry["roadmap_source_refs"] or entry["catalog_source_refs"] or entry.get("conference_entry_refs")
                 )
+                for ref in entry.get("conference_entry_refs", []):
+                    self.assertIn(ref, presentations)
+                    urls = {sources[s]["url"] for s in presentations[ref]["source_ids"]}
+                    self.assertIn(entry["canonical_url"], urls)
 
     def test_every_topic_decision_source_is_mapped_as_direct_evidence(self):
         decision_support = json.loads(

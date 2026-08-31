@@ -16,6 +16,7 @@
         "required": ["canonical_url", "title", "publisher", "source_classes", "roadmap_source_refs", "catalog_source_refs", "topic_links", "roadmap_ids", "track_ids", "watch_ids"],
         "properties": {
           "canonical_url": {"type": "string", "format": "uri"},
+          "conference_entry_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HC[0-9]{2}-(T|C|K|P)[0-9]{2}$"}},
           "title": {"type": "string", "minLength": 1},
           "publisher": {"type": "string", "minLength": 1},
           "source_classes": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
@@ -55,7 +56,7 @@
               "required": ["topic_id", "mapping_basis"],
               "properties": {
                 "topic_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
-                "mapping_basis": {"enum": ["direct-topic-evidence", "roadmap-family-context"]}
+                "mapping_basis": {"enum": ["direct-topic-evidence", "roadmap-family-context", "conference-program-context"]}
               },
               "additionalProperties": false
             }
@@ -65,6 +66,7 @@
           "watch_ids": {"type": "array", "items": {"type": "string", "pattern": "^WATCH-[A-Z0-9-]+$"}, "uniqueItems": true}
         },
         "anyOf": [
+          {"required": ["conference_entry_refs"]},
           {"properties": {"roadmap_source_refs": {"minItems": 1}}},
           {"properties": {"catalog_source_refs": {"minItems": 1}}}
         ],

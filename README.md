@@ -31,6 +31,8 @@ Research task
 
 <!-- i18n-section: status -->
 
+The [Hot Chips 2026 coverage register](https://hpci-cfsp.github.io/OpenFS/conferences/hot-chips-2026/) links all 48 program entries and participating organizations to catalog research. It distinguishes related primary evidence, abstract-only checks and program-only coverage; all results remain provisional. See the [conference research procedure](docs/operations/conference-research.md).
+
 ## Status
 
 This repository currently provides the Phase 0 design baseline, a replayable pilot of the end-to-end public-web research workflow, deterministic Consensus Gate logic, a controlled path for promoting AI-proposed research topics, the official inventory of FY2022-FY2025 FS reports, a deterministic generator for multiple system planning options, a review-gated path for promoting claims into canonical data, and a deployed bilingual GitHub Pages site.

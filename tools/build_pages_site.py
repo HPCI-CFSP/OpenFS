@@ -250,6 +250,15 @@ def collect_procurement_costs(root: Path, policy: dict[str, Any]) -> tuple[dict,
     return projected, config
 
 
+def collect_conference_coverage(root: Path, policy: dict[str, Any]) -> dict:
+    from check_conference_coverage import load_and_validate
+    payload = load_and_validate(root)
+    return public_projection(
+        payload, policy["conference_public_fields"], policy["required_publication_metadata"],
+        ["title_ja", "title_en", "scope_ja", "scope_en", "caveat_ja", "caveat_en"],
+        approved_publication_directives(root, policy), "conference coverage")
+
+
 def link_inventory_evidence(inventory: dict, register: dict, roadmaps: list[dict]) -> None:
     errors = validate_inventory_links(inventory, register, roadmaps)
     if errors:
@@ -1320,6 +1329,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema_version": "0.2.0",
         "catalog_as_of": baseline["derived_at"],
+        "conference_coverage": collect_conference_coverage(root, policy),
         "site": site_metadata,
         "baseline": {
             "baseline_id": baseline["baseline_id"],
@@ -1386,7 +1396,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js", "conferences.js"):
         shutil.copy2(source / filename, output / filename)
     copy_brand_assets(root, output)
     data_dir = output / "data"
@@ -1405,6 +1415,11 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         f"window.OPENFS_PUBLIC_DATA={serialized};\n", encoding="utf-8"
     )
     search_index = output / "search" / "index.html"
+    conference_index = output / "conferences" / "hot-chips-2026" / "index.html"
+    conference_index.parent.mkdir(parents=True)
+    conference_index.write_text(render_template(
+        source / "conference-detail.html",
+        {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version}), encoding="utf-8")
     search_index.parent.mkdir(parents=True)
     search_index.write_text(
         render_template(
