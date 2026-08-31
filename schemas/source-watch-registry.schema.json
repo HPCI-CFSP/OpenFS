@@ -32,7 +32,7 @@
           "watch_id": {"type": "string", "pattern": "^WATCH-[A-Z0-9-]+$"},
           "canonical_url": {"type": "string", "format": "uri"},
           "publisher": {"type": "string", "minLength": 1},
-          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official"]},
+          "source_class": {"enum": ["vendor-official", "standards-body", "government-official", "research-organization", "project-official", "independent-analysis"]},
           "watch_mode": {"enum": ["index", "release-feed", "resource-registry", "document-hub"]},
           "priority": {"enum": ["P0", "P1", "P2"]},
           "languages": {"type": "array", "items": {"enum": ["ja", "en"]}, "minItems": 1, "uniqueItems": true},
@@ -40,6 +40,17 @@
           "roadmap_ids": {"type": "array", "items": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
           "monitor_ids": {"type": "array", "items": {"type": "string", "pattern": "^MON-[A-Z0-9-]+$"}, "minItems": 1, "uniqueItems": true},
           "active": {"type": "boolean"},
+          "usage_policy": {
+            "type": "object",
+            "required": ["access", "evidence_role", "notes_ja", "notes_en"],
+            "properties": {
+              "access": {"const": "public-anonymous-only"},
+              "evidence_role": {"enum": ["discovery-lead", "roadmap-context"]},
+              "notes_ja": {"type": "string", "minLength": 1},
+              "notes_en": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          },
           "successor_watch_id": {"type": "string", "pattern": "^WATCH-[A-Z0-9-]+$"},
           "change_policy": {
             "type": "object",
@@ -52,6 +63,13 @@
             "additionalProperties": false
           }
         },
+        "allOf": [{
+          "if": {"properties": {"source_class": {"const": "independent-analysis"}}},
+          "then": {
+            "required": ["usage_policy"],
+            "properties": {"usage_policy": {"properties": {"evidence_role": {"const": "discovery-lead"}}}}
+          }
+        }],
         "additionalProperties": false
       }
     }
