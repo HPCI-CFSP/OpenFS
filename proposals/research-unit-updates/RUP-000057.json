@@ -1,0 +1,414 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000057",
+  "topic_id": "CROSS-05",
+  "created_at": "2026-09-01T01:58:12+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "量子・HPC連携を、遠隔の回路投入、古典・量子の反復処理、量子誤り訂正の低遅延制御に分けます。接続方式だけでなく、資源確保、校正情報、課金、権限、失敗時の復旧を比較します。古典側の性能や接続成功を、量子による優位性の実証と混同しません。",
+  "summary_en": "Separate remote circuit submission, iterative classical-quantum workflows and low-latency quantum-error-correction control. Compare reservations, calibration state, accounting, authority and recovery alongside connectivity. Classical performance or successful integration does not demonstrate quantum advantage.",
+  "units": [
+    {
+      "unit_id": "CROSS-05-U01",
+      "before_sha256": "94abe329aa400c903d3832078d0a81403f24e7eb0860cae8a03f2c14668023ba",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-05-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-CROSS-05-U01",
+      "title_ja": "量子資源との接続・配分・実時間制御",
+      "title_en": "Quantum-resource integration, allocation and real-time control",
+      "summary_ja": "稼働基盤、提供済みAPI、試行利用、研究試作を区別して比較します。",
+      "summary_en": "Compare operational systems, released APIs, pilot access and research prototypes separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-ROQUO-OPERATIONS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO076"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ROQUO: 国内の量子・古典連携基盤",
+          "name_en": "ROQUO: Japanese quantum-classical integration infrastructure",
+          "timing_ja": "2026年6月19日運用開始発表",
+          "timing_en": "Operation announced June 19, 2026",
+          "statement_ja": "理研は135台のGB200 NVL4からなるROQUOの運用開始を発表しました。SQC Interfaceはデータ転送とジョブ制御を接続し、富岳や神戸・和光の量子計算資源と連携します。公表HPL性能は古典側の全系測定であり、量子連携アプリケーションの高速化率ではありません。",
+          "statement_en": "RIKEN announced ROQUO operation with 135 GB200 NVL4 nodes. SQC Interface connects data transfer and job control with Fugaku and quantum resources in Kobe/Wako. Published HPL performance measures the complete classical system, not hybrid-application acceleration.",
+          "hpci_relevance_ja": "HPCIで量子連携を整備する際の国内実装例です。",
+          "hpci_relevance_en": "This is a domestic integration example relevant to HPCI planning.",
+          "adoption_conditions_ja": [
+            "利用資格、接続先、APIの公開範囲、資源配分を個別に確認する。",
+            "拠点間接続をマイクロ秒単位の量子制御と同一視しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify eligibility, endpoints, public API scope and allocations separately.",
+            "Do not equate intersite connectivity with microsecond quantum control."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-QPU-JOB-BATCH-SESSION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO077"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "IBM Quantum: ジョブ・バッチ・セッション",
+          "name_en": "IBM Quantum: jobs, batches and sessions",
+          "timing_ja": "2026年9月確認の公開文書",
+          "timing_en": "Public documentation checked September 2026",
+          "statement_ja": "独立ジョブ、まとめて実行するバッチ、反復処理向けセッションでは待ち行列と占有条件が異なります。セッションも初回は待ち行列を通り、非活動化後の再開では再度待つ場合があります。Open Planではセッションを利用できず、バッチは排他的な予約ではありません。",
+          "statement_en": "Jobs, batches and iterative sessions have different queueing and exclusivity rules. Sessions still queue initially and may queue again after inactivity. Open Plan does not support sessions, while batches do not provide exclusive reservations.",
+          "hpci_relevance_ja": "CPU/GPU側の確保時間とQPUの待機時間を合わせて設計する必要があります。",
+          "hpci_relevance_en": "Classical allocation windows must be aligned with QPU waiting times.",
+          "adoption_conditions_ja": [
+            "プラン、最大実行時間、非活動化条件を構成ごとに固定する。",
+            "ローカル試験の成功を実サービスのスケジューリング検証としない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin plan, maximum runtime and inactivity conditions per configuration.",
+            "Do not treat local testing as validation of service scheduling."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-QPU-USAGE-ACCOUNTING",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO078"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "量子サービスの待機・課金・部分失敗",
+          "name_en": "Quantum-service waiting, accounting and partial failure",
+          "timing_ja": "IBMの現行実行方式FAQ",
+          "timing_en": "Current IBM execution-mode FAQ",
+          "statement_ja": "セッションの利用量はQPUを確保した時間で、古典処理や対話待ちも含みます。一方、バッチでは量子ハードウェア時間を計上し、古典処理のコンパイル時間は除外します。バッチは校正や他の仕事と共存し、完了済みジョブの結果を保持できる点も一括ジョブと異なります。",
+          "statement_en": "Session usage includes time the QPU is committed, including classical processing and interactive idle time. Batch usage counts quantum-hardware time and excludes classical compilation. Batches may coexist with calibration/other work and retain completed-job results after partial failure, unlike a single combined job.",
+          "hpci_relevance_ja": "同じ回路数でも総費用・完了時間・再試行コストが異なります。",
+          "hpci_relevance_en": "Equal circuit counts can have different cost, completion time and retry overhead.",
+          "adoption_conditions_ja": [
+            "回路実行、古典処理、転送、待ち行列、専有中の待機を分離する。",
+            "料金額や利用資格は各契約の公開条件で追加確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate circuit execution, classical work, transfer, queueing and reserved idle time.",
+            "Check actual prices and eligibility against the relevant public terms."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CUDAQ-REALTIME-API",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO079",
+            "SRC-CDO080"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CUDA-Q: 実時間コールバックと通信方式",
+          "name_en": "CUDA-Q: real-time callbacks and transport",
+          "timing_ja": "cudaq-realtimeを0.14で2026年3月提供",
+          "timing_en": "cudaq-realtime released in 0.14, March 2026",
+          "statement_ja": "cudaq-realtimeはFPGAからGPU上の処理を呼び出すAPIを提供します。NVQLinkの参照構成はRoCEを使いますが、通信と処理呼び出しを分け、他の接続にも対応できる設計です。公開APIの存在は、任意のQPUや制御装置で動作確認済みという意味ではありません。",
+          "statement_en": "cudaq-realtime exposes FPGA-to-GPU callbacks. The NVQLink reference uses RoCE but separates transport from dispatch to support other connections. A released API does not establish validation with every QPU or controller.",
+          "hpci_relevance_ja": "遠隔ジョブ投入とは異なる、QPU近傍の古典計算資源を検討できます。",
+          "hpci_relevance_en": "This informs classical resources near QPUs, distinct from remote job submission.",
+          "adoption_conditions_ja": [
+            "制御装置、NIC、GPU、ドライバ、処理方式の対応を固定する。",
+            "誤り訂正の演算時間と通信時間を別々に測る。"
+          ],
+          "adoption_conditions_en": [
+            "Pin controller, NIC, GPU, driver and execution-mode compatibility.",
+            "Measure error-correction computation separately from transport."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NVQLINK-LATENCY-BOUNDARY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO079"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVQLink: 平均的な速さと最悪側の遅延",
+          "name_en": "NVQLink: typical versus tail latency",
+          "timing_ja": "2026年3月の構成別測定",
+          "timing_en": "Configuration-specific measurements, March 2026",
+          "statement_ja": "RTX 6000 Blackwell ProとConnectX-7のUnified方式は中央値3.76、最大4.28マイクロ秒でした。GB200 NVL4とBlueField-3の試験構成では同方式が6.53、7.56マイクロ秒です。これはFPGA-GPU-FPGAの往復であり、全QEC処理の締切保証ではありません。",
+          "statement_en": "Unified dispatch on RTX 6000 Blackwell Pro/ConnectX-7 measured 3.76 microseconds median and 4.28 maximum; experimental GB200 NVL4/BlueField-3 measured 6.53 and 7.56. These are FPGA-GPU-FPGA round trips, not deadline guarantees for complete QEC.",
+          "hpci_relevance_ja": "ピーク演算性能が高い構成ほど制御遅延も短いとは限りません。",
+          "hpci_relevance_en": "Higher peak compute does not necessarily imply lower control latency.",
+          "adoption_conditions_ja": [
+            "演算を含む最悪側の遅延、取りこぼし、連続運転を測定する。",
+            "旧測定の4マイクロ秒未満を全構成の保証値としない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure tail latency including computation, missed deadlines and sustained operation.",
+            "Do not generalize the older sub-four-microsecond result to every configuration."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-EUROHPC-QUANTUM-PILOT",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO081",
+            "SRC-CDO082"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EuroHPC: 量子計算機の試行利用",
+          "name_en": "EuroHPC: pilot quantum access",
+          "timing_ja": "2026年6月公募開始、8月から月次締切",
+          "timing_en": "Call opened June 2026; monthly cutoffs from August",
+          "statement_ja": "EuroHPCは超伝導、光、イオントラップの初期4システムを対象に試行公募を開始しました。QPU時間を申請し、3または6か月の課題で開発・評価します。締切後の利用開始目標と、個々のジョブが応答する時間は別です。対象者や資源は公募条件に従います。",
+          "statement_en": "EuroHPC opened pilot access to four initial superconducting, photonic and trapped-ion systems. Applicants request QPU hours for three- or six-month development/evaluation projects. The post-cutoff access target is distinct from individual job response time; eligibility and resources follow call terms.",
+          "hpci_relevance_ja": "異なる量子方式を同じ利用手続きで比較する制度の参考例です。",
+          "hpci_relevance_en": "This illustrates common access procedures for comparing quantum modalities.",
+          "adoption_conditions_ja": [
+            "利用枠、課題審査、対象機種を各回の公募で確認する。",
+            "試行利用の開始を一般商用提供や量子優位性の達成と扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Check allocations, review requirements and available systems at each cutoff.",
+            "Do not treat pilot access as general commercial availability or quantum advantage."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPC-VQPU-LIFECYCLE",
+          "stage": "research",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO083"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPC-vQPU: 校正状態と実行履歴の固定",
+          "name_en": "HPC-vQPU: pinning calibration and execution history",
+          "timing_ja": "2026年5月のプレプリント",
+          "timing_en": "May 2026 preprint",
+          "statement_ja": "Pawseyの試作は、GPUシミュレータをバッチ計算機から外向き通信で提供し、仕事の取得時に校正情報を固定します。50件の並行試験で重複完了はありませんでしたが、故障後の復旧は管理者の再投入を使います。論文自身も、任意障害下で物理的な二重実行を全て排除する保証とは区別しています。",
+          "statement_en": "The Pawsey prototype exports batch-scheduled GPU simulation via outbound coordination and binds calibration when work is claimed. Fifty concurrent tasks had no duplicate completions, but failure recovery used administrative requeue. The paper distinguishes this from eliminating all physical duplicate execution under arbitrary failures.",
+          "hpci_relevance_ja": "QPU実機とシミュレータを混同せず、再現性・権限・復旧を比較する材料です。",
+          "hpci_relevance_en": "This informs reproducibility, authority and recovery without conflating simulation with a physical QPU.",
+          "adoption_conditions_ja": [
+            "実行権の更新、遅延した結果、再試行を含む障害試験を追加する。",
+            "単一施設の試作評価を全HPCIへの適用実証としない。"
+          ],
+          "adoption_conditions_en": [
+            "Add fault tests covering ownership changes, delayed results and retries.",
+            "Do not extrapolate one-site prototype validation to all HPCI services."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO076",
+        "title": "量子・スパコンハイブリッド計算基盤ROQUOの運用開始",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/pr/news/2026/20260619_2/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-19"
+      },
+      "origin_group": "riken-roquo",
+      "checked_at": "2026-09-01T01:55:00+09:00",
+      "locator": "Announcement, configuration, SQC Interface and connection diagram descriptions",
+      "observation_ja": "GB200 NVL4の135ノード、SQC Interfaceと拠点間接続を確認。HPLの19.80 PFLOPSは古典計算機の全系値。",
+      "observation_en": "Read 135 GB200 NVL4 nodes, SQC Interface and intersite connections; 19.80 PFLOPS is whole-system classical HPL.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO077",
+        "title": "IBM Quantum execution modes",
+        "publisher": "IBM",
+        "url": "https://quantum.cloud.ibm.com/docs/en/guides/execution-modes",
+        "source_class": "official-vendor",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "ibm-quantum-runtime",
+      "checked_at": "2026-09-01T01:55:00+09:00",
+      "locator": "Job, batch, session, TTL and Open Plan restrictions",
+      "observation_ja": "初回待ち行列、セッション再開、バッチ非排他、プラン制約を確認。予約や期限保証と同一視しない。",
+      "observation_en": "Read initial queueing, session reactivation, nonexclusive batches and plan restrictions; not reservation or deadline guarantees.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO078",
+        "title": "IBM Quantum execution modes FAQs",
+        "publisher": "IBM",
+        "url": "https://quantum.cloud.ibm.com/docs/en/guides/execution-modes-faq",
+        "source_class": "official-vendor",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "ibm-quantum-runtime",
+      "checked_at": "2026-09-01T01:57:00+09:00",
+      "locator": "Sessions and Batch: usage, calibration, compilation, partial results",
+      "observation_ja": "セッションは専有中の待機・古典処理も計上、バッチは量子ハードウェア時間を計上する区別を確認。",
+      "observation_en": "Distinguished committed session time including idle/classical work from batch quantum-hardware usage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO079",
+        "title": "Introducing cudaq-realtime for programming the Logical QPU",
+        "publisher": "NVIDIA",
+        "url": "https://nvidia.github.io/cuda-quantum/blogs/blog/2026/03/16/launching-cudaq-realtime/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "nvidia-nvqlink",
+      "checked_at": "2026-09-01T01:56:00+09:00",
+      "locator": "Release statement; transport/dispatch modes; latency table and GB200 experimental qualifier",
+      "observation_ja": "CUDA-Q 0.14での提供と、転送・dispatch・QEC演算の区別を確認。構成別の中央値と最大値が異なる。",
+      "observation_en": "Verified CUDA-Q 0.14 availability and transport/dispatch/QEC distinctions; medians and maxima differ by configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO080",
+        "title": "NVIDIA NVQLink reference platform",
+        "publisher": "NVIDIA",
+        "url": "https://www.nvidia.com/en-gb/solutions/quantum-computing/nvqlink/",
+        "source_class": "official-vendor",
+        "published_or_updated": "Live product overview accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-nvqlink",
+      "checked_at": "2026-09-01T01:56:00+09:00",
+      "locator": "Overview, performance measurement boundary and integration model",
+      "observation_ja": "4マイクロ秒未満という表示の測定範囲はFPGA-GPU-FPGA。汎用の量子演算完了時間ではない。",
+      "observation_en": "The sub-four-microsecond headline measures FPGA-GPU-FPGA, not general quantum-task completion.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO081",
+        "title": "EuroHPC JU Opens Access to its Quantum Computers",
+        "publisher": "EuroHPC Joint Undertaking",
+        "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-opens-access-its-quantum-computers-2026-06-25_en",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-25"
+      },
+      "origin_group": "eurohpc-quantum-access",
+      "checked_at": "2026-09-01T01:57:00+09:00",
+      "locator": "First four systems, pilot purpose, monthly cutoffs",
+      "observation_ja": "試行公募開始、初回4システム、月次審査を確認。全世界への無条件利用や全機種一斉提供ではない。",
+      "observation_en": "Read pilot opening, four initial systems and monthly review; not unrestricted worldwide access or simultaneous availability of all technologies.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO082",
+        "title": "EuroHPC JU Call for proposals for Quantum Access Pilot Mode",
+        "publisher": "EuroHPC Joint Undertaking",
+        "url": "https://www.eurohpc-ju.europa.eu/eurohpc-ju-call-proposals-quantum-access-pilot-mode_en",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-25"
+      },
+      "origin_group": "eurohpc-quantum-access",
+      "checked_at": "2026-09-01T01:57:53+09:00",
+      "locator": "Call details: cutoffs, QPU hours, access interval, project duration",
+      "observation_ja": "QPU時間の申請、3または6か月の課題、締切後最大2週間という提供目標を確認。各ジョブの応答保証ではない。",
+      "observation_en": "Read QPU-hour requests, three/six-month projects and up-to-two-week post-cutoff access target; not per-job response guarantees.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO083",
+        "title": "HPC-vQPU: A Service-Export Architecture for Virtual QPUs on Batch-Scheduled HPC Systems",
+        "publisher": "Liu, Elahi and Varetto / arXiv",
+        "url": "https://arxiv.org/html/2605.28845v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-05-13"
+      },
+      "origin_group": "pawsey-hpc-vqpu",
+      "checked_at": "2026-09-01T01:57:53+09:00",
+      "locator": "Sections III-V, VI-D/E, VII-D and VIII limitations",
+      "observation_ja": "Pawseyでの試作、claim時の校正固定、手動再投入を確認。50件の試験成功は任意障害下の物理的な一回実行保証ではない。",
+      "observation_en": "Read Pawsey prototype, claim-time calibration binding and administrative requeue; 50 successful tasks do not guarantee physical exactly-once execution under arbitrary failures.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-083",
+      "topic_ids": [
+        "CROSS-05"
+      ],
+      "priority": "P1",
+      "question_ja": "量子・古典の資源配分、校正履歴、待機費用、障害回復を同一ワークフローで比較できるか。",
+      "question_en": "Can allocation, calibration history, idle costs and recovery be compared within one quantum-classical workflow?",
+      "next_action_ja": "公開APIと利用規程を対応付け、反復処理と実時間制御を分けた評価契約を作る。",
+      "next_action_en": "Map public APIs to access terms and define separate evaluation contracts for iterative workflows and real-time control.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "SQC Interfaceの公開API仕様、ROQUOの利用条件と連携処理の性能は追加確認が必要。",
+    "量子資源への接続・予約・実行や有料サービスの利用は行っていない。",
+    "公開一次情報による暫定整理であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "SQC Interface public API details, ROQUO eligibility and hybrid-workflow performance need further verification.",
+    "No quantum connection, reservation, execution or paid service was used.",
+    "This is provisional primary-source synthesis with independent Consensus incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-CROSS05-COUPLING",
+        "label_ja": "連携粒度と遅延",
+        "label_en": "Coupling granularity and latency",
+        "question_ja": "遠隔ジョブ、反復処理、実時間制御のどれを支えるか。",
+        "question_en": "Does the system support remote jobs, iterative workflows or real-time control?"
+      },
+      {
+        "dimension_id": "DIM-CROSS05-ALLOCATION",
+        "label_ja": "資源配分と利用費用",
+        "label_en": "Allocation and usage costs",
+        "question_ja": "古典・量子資源を必要時に確保し、待機費用を測定できるか。",
+        "question_en": "Can classical and quantum resources be secured when needed and idle costs measured?"
+      },
+      {
+        "dimension_id": "DIM-CROSS05-RECOVERY",
+        "label_ja": "再現性と復旧",
+        "label_en": "Reproducibility and recovery",
+        "question_ja": "校正・版・実行権限を固定し、部分失敗から復旧できるか。",
+        "question_en": "Can calibration, versions and execution authority be pinned through partial failure?"
+      }
+    ]
+  }
+}

@@ -1,12 +1,69 @@
+import copy
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from tools.check_public_planning_surfaces import EXPECTED_SCALES, validate
+from tools.check_public_planning_surfaces import (
+    EXPECTED_SCALES, validate, validate_source_corrections, validate_topic_decision_support,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class SourceCorrectionTests(unittest.TestCase):
+    def source(self, sid, previous=None):
+        value = {"source_id": sid}
+        if previous is not None:
+            value["correction"] = {"supersedes_source_id": previous,
+                                   "reason_ja": "書誌情報を訂正", "reason_en": "Correct metadata"}
+        return value
+
+    def test_append_only_linear_history(self):
+        sources = [self.source("SRC-OLD"), self.source("SRC-NEW", "SRC-OLD"),
+                   self.source("SRC-LATEST", "SRC-NEW")]
+        before = copy.deepcopy(sources)
+        self.assertEqual([], validate_source_corrections(sources))
+        self.assertEqual(before, sources)
+
+    def test_unknown_self_cycle_and_fork_rejected(self):
+        for sources, message in (
+            ([self.source("SRC-A", "SRC-MISSING")], "unknown source"),
+            ([self.source("SRC-A", "SRC-A")], "cannot correct itself"),
+            ([self.source("SRC-A", "SRC-B"), self.source("SRC-B", "SRC-A")], "cyclic"),
+            ([self.source("SRC-A"), self.source("SRC-B", "SRC-A"), self.source("SRC-C", "SRC-A")], "forks"),
+        ):
+            with self.subTest(message=message):
+                self.assertTrue(any(message in e for e in validate_source_corrections(sources)))
+
+    def test_bilingual_nonblank_reasons_required(self):
+        for value in (None, "", " \n "):
+            source = self.source("SRC-NEW", "SRC-OLD")
+            source["correction"]["reason_en"] = value
+            self.assertTrue(any("bilingual" in e for e in validate_source_corrections(
+                [self.source("SRC-OLD"), source])))
+
+    def test_historical_metadata_may_remain_but_active_uses_fail(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for ref in ("config/research-baseline.json", "knowledge/public/topic-decision-support.json"):
+                (root / ref).parent.mkdir(parents=True, exist_ok=True)
+                (root / ref).write_text((ROOT / ref).read_text())
+            path = root / "knowledge/public/topic-decision-support.json"
+            surface = json.loads(path.read_text())
+            old = {**surface["sources"][0], "source_id": "SRC-TEST-HISTORICAL"}
+            new = {**old, **self.source("SRC-TEST-CORRECTED", old["source_id"])}
+            surface["sources"].extend([old, new])
+            profile = next(p for p in surface["topic_profiles"] if p.get("archived_section_ids"))
+            historical = next(s for s in profile["sections"] if s["section_id"] in profile["archived_section_ids"])
+            historical["items"][0]["source_ids"].append(old["source_id"])
+            path.write_text(json.dumps(surface))
+            self.assertEqual([], validate_topic_decision_support(root))
+            active = next(s for s in profile["sections"] if s["section_id"] not in profile["archived_section_ids"])
+            active["items"][0]["source_ids"].append(old["source_id"])
+            path.write_text(json.dumps(surface))
+            self.assertTrue(any("superseded source metadata" in e for e in validate_topic_decision_support(root)))
 
 
 class PublicPlanningSurfaceTests(unittest.TestCase):

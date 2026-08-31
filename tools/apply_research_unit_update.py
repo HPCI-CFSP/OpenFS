@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from openfs_runtime import stable_digest
+from check_public_planning_surfaces import validate_source_corrections
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "config/research-baseline.json"
@@ -155,12 +156,38 @@ def project_authorized(bundle, baseline, surface, decision_id):
             raise ValueError("public source URL must use HTTPS")
         if datetime.fromisoformat(check["checked_at"]) > datetime.fromisoformat(bundle["created_at"]):
             raise ValueError("source check occurs after update creation")
+        if (source.get("correction")
+                and source["correction"]["supersedes_source_id"] not in sources):
+            raise ValueError("a source correction must name a pre-existing source")
+    combined_sources = [*sources.values(), *(c["source"] for sid, c in checks.items() if sid not in sources)]
+    if correction_errors := validate_source_corrections(combined_sources):
+        raise ValueError("; ".join(correction_errors))
+    superseded = {s["correction"]["supersedes_source_id"] for s in combined_sources if s.get("correction")}
     for section in bundle["sections"]:
         for item in section["items"]:
             if set(item["source_ids"]) - checks.keys():
                 raise ValueError("every new claim needs its own checked primary sources")
+            if set(item["source_ids"]) & superseded:
+                raise ValueError("new claims cannot use superseded source metadata")
             if set(item["actor_ids"]) - {a["actor_id"] for a in surface["actors"]}:
                 raise ValueError("unknown actor")
+    # Corrections must not leave old metadata in another live public claim.
+    retired = {t["topic_id"] for t in baseline["topics"] if t.get("retirement")}
+    for owner in surface["topic_profiles"]:
+        if owner["topic_id"] in retired:
+            continue
+        excluded = set(owner.get("archived_section_ids", []))
+        if owner["topic_id"] == bundle["topic_id"]:
+            excluded.update(bundle["archive_section_ids"])
+        for section in owner["sections"]:
+            if section["section_id"] not in excluded and any(
+                    set(item["source_ids"]) & superseded for item in section["items"]):
+                raise ValueError("active claims still use superseded source metadata")
+    active_entities = [*surface["actors"], *surface["platform_matrix"]["platforms"]]
+    active_entities.extend(e for c in surface["platform_matrix"]["capabilities"] for e in c["entries"])
+    active_entities.extend(e for m in surface["numerical_method_matrix"]["methods"] for e in m["implementations"])
+    if any(set(entity["source_ids"]) & superseded for entity in active_entities):
+        raise ValueError("active matrix or actor still uses superseded source metadata")
     gaps = {g["gap_id"]: g for g in surface["coverage_gaps"]}
     new_gaps = {g["gap_id"]: g for g in bundle["coverage_gaps"]}
     if len(new_gaps) != len(bundle["coverage_gaps"]) or new_gaps.keys() & gaps.keys():

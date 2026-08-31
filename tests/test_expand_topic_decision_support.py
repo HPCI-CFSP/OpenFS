@@ -3,10 +3,29 @@ from __future__ import annotations
 import unittest
 from datetime import date
 
-from tools.expand_topic_decision_support import latest_research_date, next_milestone, timing_text
+from tools.expand_topic_decision_support import import_source, latest_research_date, next_milestone, timing_text
 
 
 class TopicDecisionSupportGenerationTests(unittest.TestCase):
+    def test_first_party_research_does_not_imply_peer_review(self):
+        source = {"source_id": "SRC-TEST", "title": "Author research artifact",
+                  "publisher": "Research authors", "url": "https://example.org/research",
+                  "source_class": "academic-primary", "published_at": "2026-05-27"}
+        imported = import_source(source)
+        self.assertEqual("research-artifact", imported["source_class"])
+        self.assertEqual("2026-05-27", imported["published_or_updated"])
+        self.assertEqual("academic-primary", source["source_class"])
+
+    def test_source_import_does_not_invent_a_retrieval_date(self):
+        source = {"source_id": "SRC-TEST", "title": "Undated project page",
+                  "publisher": "Project", "url": "https://example.org/project",
+                  "source_class": "project-official"}
+        imported = import_source(source)
+        self.assertEqual("Publication/update date not provided", imported["published_or_updated"])
+        self.assertEqual("official-project", imported["source_class"])
+        source["updated_at"] = "2026-08-31"
+        self.assertEqual("2026-08-31", import_source(source)["published_or_updated"])
+
     def test_latest_roadmap_date_advances_the_generated_catalog(self):
         selected = latest_research_date(
             {"as_of": "2026-08-27"},

@@ -1,0 +1,430 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000060",
+  "topic_id": "CROSS-16",
+  "created_at": "2026-09-01T02:08:01+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "計算資源の配置は、電力・冷却・排熱利用に加え、データ発生源との距離、通信・転送装置、締切、災害時の共通障害を合わせて比較します。全国の低炭素電力だけで設置先を順位付けせず、実験に近い処理と広域で移動可能な処理を分けて検討します。",
+  "summary_en": "Compare resource placement using power, cooling, heat reuse, distance from data sources, networks/transfer systems, deadlines and common-mode disaster risks. Do not rank sites solely by low-carbon electricity; distinguish experiment-local processing from work that can move between regions.",
+  "units": [
+    {
+      "unit_id": "CROSS-16-U01",
+      "before_sha256": "4f0a747213a2ad6c2f596862304d39de330552b8fd5e938d4a41137520b7c1ee",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-CROSS-16-U01",
+      "title_ja": "電力・広域通信・実験処理の配置条件",
+      "title_en": "Placement conditions for power, wide-area networks and experimental processing",
+      "summary_ja": "稼働網、調達要求、実証、地域制度を異なる根拠として扱います。",
+      "summary_en": "Treat operational networks, procurement requirements, demonstrations and local policies as distinct evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-SINET6-REGIONAL-RESILIENCE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO100"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SINET6: 基幹網とセンター接続の分離",
+          "name_en": "SINET6: backbone versus center connectivity",
+          "timing_ja": "2024年11月版の公開構成",
+          "timing_en": "Published configuration, November 2024",
+          "statement_ja": "SINET6の資料は全国の400G基幹網と沖縄の例外、DC接続の冗長化を示しています。ただし基幹回線の帯域と、各センターのアクセス回線・転送装置・ストレージ性能は別です。掲載された耐障害構成を、現在の全センターで検証済みの復旧性能とは扱いません。",
+          "statement_en": "SINET6 documentation describes a 400G national backbone with an Okinawa exception and redundant DC connectivity. Backbone bandwidth differs from each center's access links, transfer hosts and storage performance. Published redundancy does not establish verified recovery performance at every current center.",
+          "hpci_relevance_ja": "HPCIの地域間連携にはセンター側の接続条件も必要です。",
+          "hpci_relevance_en": "HPCI intersite planning also requires center-side connectivity conditions.",
+          "adoption_conditions_ja": [
+            "回線終端、共有区間、冗長経路、実効転送を日付付きで確認する。",
+            "2024年の資料を2026年の全接続実績に更新して扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify dated endpoints, shared segments, redundant paths and effective transfer rates.",
+            "Do not relabel 2024 documentation as a complete 2026 deployment record."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SINET7-ROUTER-PLAN",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO101"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SINET7: 800GbE収容と論理分離の調達要求",
+          "name_en": "SINET7: procurement requirements for 800GbE and logical separation",
+          "timing_ja": "2026年8月資料招請、2028年1月以降導入予定",
+          "timing_en": "RFI August 2026; introduction planned from January 2028",
+          "statement_ja": "NIIは借入予定のSINET7ルータについて、1GbEから800GbE、IP/MPLS、VPN、QoS、論理的なバックボーンスライスを要求しています。これは資料招請の要求であり、落札構成や全センターへの800Gbps提供を示すものではありません。詳しい導入説明書は交付申請が必要で未取得です。",
+          "statement_en": "NII's leased SINET7-router RFI requests 1–800GbE interfaces, IP/MPLS, VPN, QoS and logical backbone slicing. These are information-request requirements, not an awarded configuration or 800Gbps service to every center. Detailed documents require an application and were not obtained.",
+          "hpci_relevance_ja": "2028年以降の更新案は全国網だけでなく端点側の整備も合わせます。",
+          "hpci_relevance_en": "Post-2028 plans need endpoint upgrades as well as backbone changes.",
+          "adoption_conditions_ja": [
+            "公告、仕様確定、落札、導入、サービス開始を別の節目にする。",
+            "要求帯域を実測値や予約可能帯域に置き換えない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate notice, final specification, award, installation and service start.",
+            "Do not substitute requested capacity for measured or reservable bandwidth."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-LCLS-NERSC-DEADLINE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO102",
+            "SRC-CDO103"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "実験施設と遠隔計算: 締切と転送ホストの競合",
+          "name_en": "Experiments and remote compute: deadlines and transfer-host contention",
+          "timing_ja": "ESnetの10G時代の運用事例",
+          "timing_en": "Historical ESnet operational case from the 10G era",
+          "statement_ja": "LCLSの実験は12時間のシフト間に解析結果を得るためNERSCと連携しましたが、競合する転送がホスト側の容量を減らしました。近接性の評価には距離や回線速度だけでなく、転送・保存・計算の同時確保が必要です。Science DMZは専用転送装置、定常計測、用途に応じた防御を組み合わせます。",
+          "statement_en": "An LCLS experiment used NERSC to return analysis between 12-hour shifts, but a competing transfer reduced host capacity. Placement therefore requires coordinated transfer, storage and compute, not distance or link rate alone. Science DMZ combines dedicated transfer systems, routine measurement and appropriate security.",
+          "hpci_relevance_ja": "遠隔計算が適する処理と、施設近傍に残す締切の厳しい処理を分けます。",
+          "hpci_relevance_en": "Distinguish remotely suitable work from strict-deadline processing kept near instruments.",
+          "adoption_conditions_ja": [
+            "測定開始から結果返却までのp95・p99と失敗率を測る。",
+            "過去の10G測定を現行網の性能予測へ直接使わない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure p95/p99 time and failures from acquisition through returned results.",
+            "Do not directly use historical 10G measurements to predict current networks."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-LUMIAI-HEAT-LOCATION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO104"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LUMI AI Factory: 排熱利用先を含めた配置",
+          "name_en": "LUMI AI Factory: placement with a heat-reuse destination",
+          "timing_ja": "2026年4月契約、2027年下期運用予定",
+          "timing_en": "Agreement April 2026; operation planned H2 2027",
+          "statement_ja": "CSCとLoisteは、LUMI AI Factoryの排熱をヒートポンプ経由で地域熱供給に使う契約を結びました。排熱利用には計算機の発熱だけでなく、受入側の設備と需要が必要です。契約締結は将来の熱量、収益、炭素削減量の達成を意味しません。",
+          "statement_en": "CSC and Loiste agreed to feed LUMI AI Factory excess heat into district heating through a heat-pump plant. Reuse requires receiving infrastructure and demand, not computer heat alone. A signed agreement does not establish future heat output, revenue or carbon savings.",
+          "hpci_relevance_ja": "国内候補地でも熱の受入先と季節別需要を調べる必要があります。",
+          "hpci_relevance_en": "Japanese candidate sites likewise require investigation of heat customers and seasonal demand.",
+          "adoption_conditions_ja": [
+            "熱の供給温度、回収設備、契約責任、利用量を別々に評価する。",
+            "フィンランドの地域熱需要を国内へそのまま移植しない。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate temperature, recovery equipment, contractual responsibility and utilized heat separately.",
+            "Do not transfer Finnish district-heating demand directly to Japan."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-WATTBIT-REGIONAL-PILOTS",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO105"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ワット・ビット連携: 地域間の処理移動を実証",
+          "name_en": "Watt-bit collaboration: demonstrating regional workload shifts",
+          "timing_ja": "2026年7月15日実証事業選定",
+          "timing_en": "Demonstration projects selected July 15, 2026",
+          "statement_ja": "総務省事業は、APNによる分散AI処理と、電力予測・価格・計算資源・災害情報に応じたワークロード移動を選定しました。九州・北海道などの複数事業者や大学が参加します。採択は有効性の実証結果ではなく、任意のHPCジョブを無停止で移動できるという意味でもありません。",
+          "statement_en": "MIC selected projects for APN-enabled distributed AI and workload shifts using power forecasts, prices, compute availability and disaster information. Consortia include businesses and universities across regions such as Kyushu and Hokkaido. Selection is not an effectiveness result or evidence that arbitrary HPC jobs migrate without interruption.",
+          "hpci_relevance_ja": "締切に余裕があるAI・バッチ処理を地域間で動かす候補になります。",
+          "hpci_relevance_en": "This may inform regional shifting of AI/batch work with flexible deadlines.",
+          "adoption_conditions_ja": [
+            "転送、再起動、キャッシュ、保存先、精度の損失を含めて効果を測る。",
+            "採択、実証完了、商用運用を別々に追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Include transfer, restart, cache, storage and accuracy costs in evaluation.",
+            "Track selection, demonstration completion and production separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TOKYO-DC-LOCAL-CRITERIA",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO106"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "地域制度: 設計値と運用実績を分けた評価",
+          "name_en": "Local policy: separate design estimates from operational results",
+          "timing_ja": "東京都の2026年7月募集",
+          "timing_en": "Tokyo call, July 2026",
+          "statement_ja": "東京都のDC認定制度は、省エネ・再エネだけでなく地域貢献とセキュリティを評価し、設計PUEと実測PUEの提出様式を分けています。原則として都内のDC事業者が対象です。これを全HPCI施設の必須条件や認定取得済みの証拠とは扱いません。",
+          "statement_en": "Tokyo's DC certification assesses community contribution and security alongside energy efficiency/renewables and separates design from measured PUE forms. It principally targets DC operators in Tokyo. It is not a universal HPCI requirement or evidence that a facility is certified.",
+          "hpci_relevance_ja": "地域選定では自治体制度と施設の適格性も確認します。",
+          "hpci_relevance_en": "Site selection should also check local policies and facility eligibility.",
+          "adoption_conditions_ja": [
+            "所在地、事業形態、実施要領の適用条件を個別に確認する。",
+            "設計PUEを運用実績として表示しない。"
+          ],
+          "adoption_conditions_en": [
+            "Check location, operating model and detailed eligibility individually.",
+            "Do not display design PUE as an operational measurement."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-REGIONAL-HAZARD-SCOPE",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDO107",
+            "SRC-CDO108"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "災害分散: ハザード地図の範囲と共通依存",
+          "name_en": "Disaster distribution: hazard-map scope and shared dependencies",
+          "timing_ja": "公開FAQと候補地ごとの追加評価",
+          "timing_en": "Public FAQs plus further site-specific assessment",
+          "statement_ja": "J-SHISの確率はモデル値であり、長期評価の値と異なる場合があります。また液状化の履歴地図は、液状化ハザード評価そのものではありません。地域が離れていることだけで冗長性を認めず、共通の送電・通信経路と運用要員への依存も調べることを提案します。",
+          "statement_en": "J-SHIS probabilities are modeled and may differ from long-term assessments; historical liquefaction maps are not liquefaction hazard assessments. OpenFS proposes examining shared power, communication routes and operational staffing rather than assuming geographic separation establishes redundancy.",
+          "hpci_relevance_ja": "拠点数だけでは計れない同時障害リスクを扱います。",
+          "hpci_relevance_en": "This addresses common-mode failure risks not captured by site count alone.",
+          "adoption_conditions_ja": [
+            "地震・洪水・津波・停電を、対象施設と復旧条件に対応付ける。",
+            "公開地図だけで個別建屋の安全性を判定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Relate earthquakes, floods, tsunamis and power loss to facilities and recovery conditions.",
+            "Do not determine individual-building safety from public maps alone."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO100",
+        "title": "SINET6 2024-2025 brochure",
+        "publisher": "National Institute of Informatics",
+        "url": "https://www.sinet.ad.jp/wp-content/uploads/2024/11/SINET6-2024_j.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2024-11"
+      },
+      "origin_group": "nii-sinet6-network",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Pages 1-2: backbone capacity, data centers and redundant connection diagram",
+      "observation_ja": "400G基幹網の沖縄例外とDC接続冗長化を確認。掲載構成は2024年版であり現行の全接続状況とは区別。",
+      "observation_en": "Read the Okinawa exception to the 400G backbone and redundant DC connections; distinguish the 2024 configuration from every current link.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO101",
+        "title": "SINET7 IP router request for information",
+        "publisher": "National Institute of Informatics",
+        "url": "https://www.nii.ac.jp/procure/upload/nii20260817.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-17"
+      },
+      "origin_group": "nii-sinet7-router-procurement",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Page 1, sections 1(3)-(5), 3 and 5",
+      "observation_ja": "借入・2028年1月以降の導入予定、800GbEまでの収容とQoS・スライス要求を確認。説明書は交付申請が必要で未取得。",
+      "observation_en": "Read lease procurement, introduction from January 2028, interfaces through 800GbE, QoS and slicing requirements; detailed documents require an application and were not obtained.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO102",
+        "title": "Multi-facility Workflow Case Study",
+        "publisher": "ESnet",
+        "url": "https://www.es.net/science-engagement/knowledge-base/case-studies/multi-facility-workflow-case-study/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated historical case study, accessed 2026-09-01"
+      },
+      "origin_group": "esnet-lcls-nersc-case",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Experiment description, 12-hour shifts, 10G circuit and transfer-host contention",
+      "observation_ja": "実験シフト間の準実時間処理と転送ホスト競合を確認。10G時代の実例で現在の性能値としない。",
+      "observation_en": "Read semi-real-time processing between experiment shifts and transfer-host contention; this 10G-era example is not a current performance value.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO103",
+        "title": "Science DMZ design pattern",
+        "publisher": "ESnet",
+        "url": "https://fasterdata.es.net/science-dmz/",
+        "source_class": "official-project",
+        "published_or_updated": "2022-04-27"
+      },
+      "origin_group": "esnet-science-dmz",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Key components: dedicated transfer systems, monitoring and tailored security",
+      "observation_ja": "専用DTN、定常計測、科学処理向けセキュリティを一体とする設計を確認。防御撤廃を意味しない。",
+      "observation_en": "Read dedicated DTNs, routine measurement and science-specific security as a combined design, not removal of protections.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO104",
+        "title": "CSC and Loiste advance utilisation of data center waste heat in Kajaani, Finland",
+        "publisher": "CSC",
+        "url": "https://csc.fi/en/news/csc-and-loiste-advance-utilisation-of-data-center-waste-heat-in-kajaani-finland/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-23"
+      },
+      "origin_group": "csc-loiste-heat-contract",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Signed agreement, heat-pump integration and H2 2027 operation plan",
+      "observation_ja": "契約締結と下期2027からの熱利用予定を確認。将来の供給熱量・費用効果は実績ではない。",
+      "observation_en": "Read signed agreement and planned heat reuse from H2 2027; future heat output and cost benefits are not measured outcomes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO105",
+        "title": "ワット・ビット連携関連実証の選定結果",
+        "publisher": "Mitsubishi Research Institute / MIC demonstration secretariat",
+        "url": "https://pubpjt.mri.co.jp/publicoffer/tnvmpp00000002y0-att/20260715_watt-bit-info_results.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-15"
+      },
+      "origin_group": "mic-watt-bit-demonstrations",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Pages 1-2: selected consortia, workloads and scope of demonstrations",
+      "observation_ja": "分散DC・APNと電力情報に基づくワークロード移動の採択を確認。性能成果や実運用展開の公表ではない。",
+      "observation_en": "Read selections for distributed-DC/APN and power-aware workload shifting; not a report of measured outcomes or production deployment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO106",
+        "title": "地域や環境に配慮したデータセンター認定制度の募集",
+        "publisher": "Mitsubishi Research Institute / Tokyo certification secretariat",
+        "url": "https://pubpjt.mri.co.jp/publicoffer/20260731.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-31"
+      },
+      "origin_group": "tokyo-dc-certification",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "Sections 1-2: eligible sites/operators and measured/design PUE submission forms",
+      "observation_ja": "都内のDC事業者を原則対象とする制度と、設計PUE・実測PUEを分ける様式を確認。HPCI全施設への適用は未確認。",
+      "observation_en": "Read Tokyo/DC-operator eligibility and separate design/measured PUE forms; applicability to all HPCI facilities is unverified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO107",
+        "title": "J-SHIS: 液状化のハザード情報を見ることはできますか",
+        "publisher": "National Research Institute for Earth Science and Disaster Resilience",
+        "url": "https://www.j-shis.bosai.go.jp/faq-liquefaction-hazard",
+        "source_class": "official-project",
+        "published_or_updated": "Undated FAQ accessed 2026-09-01"
+      },
+      "origin_group": "nied-jshis-hazard-scope",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "FAQ answer: historical liquefaction map versus hazard assessment",
+      "observation_ja": "J-SHISは液状化ハザード評価を行わず、履歴地図を提供するという範囲を確認。",
+      "observation_en": "Read that J-SHIS offers historical liquefaction locations, not a liquefaction hazard assessment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO108",
+        "title": "J-SHIS: 地震発生確率と長期評価の差",
+        "publisher": "National Research Institute for Earth Science and Disaster Resilience",
+        "url": "https://www.j-shis.bosai.go.jp/faq-prob-diff-with-lte",
+        "source_class": "official-project",
+        "published_or_updated": "Undated FAQ accessed 2026-09-01"
+      },
+      "origin_group": "nied-jshis-hazard-scope",
+      "checked_at": "2026-09-01T02:06:23+09:00",
+      "locator": "FAQ answer: modeled values may differ from long-term assessment",
+      "observation_ja": "表示値は長期評価をモデル化した値で、同一ではない場合があることを確認。",
+      "observation_en": "Read that displayed probabilities are modeled from long-term assessments and can differ from them.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-086",
+      "topic_ids": [
+        "CROSS-16"
+      ],
+      "priority": "P0",
+      "question_ja": "候補地域の受電時期、実験の処理期限、データ移動、炭素・費用、共通障害を同一条件で比較できるか。",
+      "question_en": "Can candidate regions be compared consistently on power availability, experiment deadlines, data movement, carbon/cost and common-mode failures?",
+      "next_action_ja": "公開の接続・施設・地域データを収集し、近接処理と広域バッチを分けて制約を整理する。",
+      "next_action_en": "Collect public connectivity, facility and regional data and separate local processing from wide-area batch constraints.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "系統の空き容量・接続工期・電力単価・地域別時系列排出係数は未取得で、配置順位は算出しない。",
+    "SINET7の詳細説明書と実証事業の性能結果は未取得。地域分散の効果は未実測。",
+    "公開一次資料の暫定整理で、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Spare grid capacity, connection lead times, tariffs and regional time-series emissions remain uncollected; no site ranking is calculated.",
+    "Detailed SINET7 documents and demonstration results remain uncollected; regional-distribution benefits are unmeasured.",
+    "This is provisional primary-source synthesis with independent Consensus incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-CROSS16-POWER",
+        "label_ja": "電源・施設の利用可能時期",
+        "label_en": "Power and facility availability",
+        "question_ja": "必要な時期に受電・冷却・設置を確保できるか。",
+        "question_en": "Can power, cooling and hosting be secured when required?"
+      },
+      {
+        "dimension_id": "DIM-CROSS16-DATA",
+        "label_ja": "データ経路と処理期限",
+        "label_en": "Data paths and processing deadlines",
+        "question_ja": "転送・待機・処理を合わせて実験や利用者の期限を満たすか。",
+        "question_en": "Do transfer, queueing and processing together meet experiment/user deadlines?"
+      },
+      {
+        "dimension_id": "DIM-CROSS16-RESILIENCE",
+        "label_ja": "地域分散と共通障害",
+        "label_en": "Regional distribution and common-mode failure",
+        "question_ja": "複数拠点の電源・回線・運用が同時に失われないか。",
+        "question_en": "Could sites lose power, connectivity or operational support simultaneously?"
+      }
+    ]
+  }
+}

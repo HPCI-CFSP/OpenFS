@@ -1,0 +1,542 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000045",
+  "topic_id": "ARCH-13",
+  "created_at": "2026-09-01T01:11:14+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "混合精度・近似計算は、ビット単位の再現性、数値誤差、収束、保存則、統計的な整合性を分けて評価します。分子動力学・気候モデル・線形ソルバーの公開例を整理し、FP64エミュレーションや誤差制御付き圧縮の効果をアプリケーション全体へ広げる際の条件を明確にしました。精度を変えた性能値を無条件には比較しません。",
+  "summary_en": "Mixed precision and approximate computing require separate checks of bitwise reproducibility, numerical error, convergence, conservation and statistical consistency. Public molecular-dynamics, climate and linear-solver examples clarify conditions for extending FP64 emulation and error-controlled compression to complete applications. Performance values at different accuracy are not directly interchangeable.",
+  "units": [
+    {
+      "unit_id": "ARCH-13-U01",
+      "before_sha256": "187aa3003af9c07a9c96921e79ed9eace7df92fe76bb59e95f9c4e3229bf9a2b",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-13-U01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-13-U02",
+      "before_sha256": "d14e32b1aca1dae4ad8feb524942b1c5a12b4393d39f44b8c99ef1be85bb0b3e",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-13-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-ARCH-13-U01",
+      "title_ja": "科学的妥当性を確かめる検証方法",
+      "title_en": "Validation of scientific reliability",
+      "summary_ja": "型名だけでなく、観測量・誤差・再現性の定義を固定します。",
+      "summary_en": "Fix observables, error metrics and reproducibility definitions, not just datatype names.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-MD-PRECISION-CONSERVATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA036",
+            "SRC-CDA037"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "分子動力学: 混合精度と長期保存則",
+          "name_en": "Molecular dynamics: mixed precision and long-term conservation",
+          "timing_ja": "GROMACS 2026.3資料とLAMMPS公開資料",
+          "timing_en": "GROMACS 2026.3 and public LAMMPS documentation",
+          "statement_ja": "GROMACSとLAMMPSには、座標や一部の演算を単精度、重要な累積を倍精度とする実装があります。ただし混合精度の内訳は製品ごとに異なります。GROMACSは基準振動解析や長期エネルギー保存で倍精度が必要な場合を挙げています。カオス的な軌道の差だけで失敗とせず、保存則・観測量・統計量を確認します。",
+          "statement_en": "GROMACS and LAMMPS combine single-precision state/arithmetic with double-precision critical accumulations, but their precision contracts differ. GROMACS identifies normal-mode analysis and long-term energy conservation as possible double-precision requirements. Chaotic trajectory divergence alone is not a failure criterion; conservation, observables and statistics need checking.",
+          "hpci_relevance_ja": "FP64演算能力の異なるGPUを、分野別の品質要件で比較できます。",
+          "hpci_relevance_en": "Compare GPUs with different FP64 capability against domain quality requirements.",
+          "adoption_conditions_ja": [
+            "計算期間、時間刻み、力場、系サイズを固定する。",
+            "座標・演算・累積・出力の精度を別々に記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Fix duration, timestep, force field and system size.",
+            "Record coordinate, arithmetic, accumulation and output precision separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CLIMATE-ENSEMBLE-VALIDATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA040"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "気候モデル: アンサンブルとの統計的一貫性",
+          "name_en": "Climate models: statistical ensemble consistency",
+          "timing_ja": "CESMからMPASへ拡張した2025年の査読論文",
+          "timing_en": "2025 peer-reviewed extension from CESM to MPAS",
+          "statement_ja": "Ensemble Consistency Testは新しい計算環境の出力を基準アンサンブルと比較します。ビット一致を求めない検証に使えますが、標本数、対象変数、主成分の選択で検出感度と偽陽性率が変わります。合格は設定した範囲での統計的一貫性であり、長期気候の全指標や新しい物理過程を保証しません。",
+          "statement_en": "Ensemble Consistency Tests compare outputs from a new environment with a reference ensemble without requiring bitwise equality. Sample size, variables and principal-component choices affect sensitivity and false positives. Passing establishes scoped statistical consistency, not every long-term climate metric or new physical process.",
+          "hpci_relevance_ja": "CPU/GPU移植やコンパイラ変更を、科学的な品質確認と一体で評価できます。",
+          "hpci_relevance_en": "Evaluate CPU/GPU ports and compiler changes together with scientific quality.",
+          "adoption_conditions_ja": [
+            "基準データと試験データを分離し、検出力を確認する。",
+            "短時間試験だけでは見えない長期ドリフトを追加検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate reference/test data and assess detection power.",
+            "Add long-term drift checks beyond short tests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NUMERICAL-INSTRUMENTATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA039",
+            "SRC-CDA045"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Verificarlo・FPBench: 誤差の診断と定義",
+          "name_en": "Verificarlo and FPBench: error diagnosis and definitions",
+          "timing_ja": "Verificarlo v2.5.1、FPBench 2.0資料",
+          "timing_en": "Verificarlo v2.5.1 and FPBench 2.0 documentation",
+          "statement_ja": "VerificarloはC/C++/Fortranを計装し、丸めや仮想精度の影響を調べる基盤です。比較・FMA・型変換は既定では計装されないため、解析対象を明示します。FPBenchのように前進・後退誤差、平均・最大誤差、保証付き解析・統計的推定を分けると、異なる評価結果の混同を防げます。",
+          "statement_en": "Verificarlo instruments C/C++/Fortran to examine rounding and virtual precision. Comparisons, FMA and casts are not instrumented by default, so coverage must be explicit. FPBench distinguishes forward/backward, mean/maximum error and sound analysis/statistical estimation, helping avoid incomparable results.",
+          "hpci_relevance_ja": "自動精度調整を行う前に、不安定な箇所と必要な検証範囲を特定します。",
+          "hpci_relevance_en": "Identify unstable regions and validation scope before automated precision tuning.",
+          "adoption_conditions_ja": [
+            "解析した演算、未計装ライブラリ、入力範囲を記録する。",
+            "標本実験を全入力に対する数学的保証としない。"
+          ],
+          "adoption_conditions_en": [
+            "Record instrumented operations, excluded libraries and input ranges.",
+            "Do not treat sampled experiments as mathematical guarantees for all inputs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-EXBLAS-REPRODUCIBILITY",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA042"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "再現可能な総和とBLAS",
+          "name_en": "Reproducible summation and BLAS",
+          "timing_ja": "ExBLAS v1.0の公開実装",
+          "timing_en": "Public ExBLAS v1.0 implementation",
+          "statement_ja": "ExBLASは並列分割や加算順序に依存しない結果を目指し、総和・内積等に専用の蓄積方式を使います。これは再現性を必要とする箇所の候補ですが、すべてのBLASや現行GPUで同じ保守・性能水準とは限りません。再現性の確保と、アプリケーションのモデル自体の正しさは別問題です。",
+          "statement_en": "ExBLAS uses specialized accumulation for sums, dot products and related routines to remove dependence on partitioning and addition order. It is a candidate for reproducibility-critical regions, not a guarantee of uniform coverage or performance across all BLAS/current GPUs. Reproducibility does not establish the correctness of the application model.",
+          "hpci_relevance_ja": "検証のために必要な再現性と、その計算費用を選択できます。",
+          "hpci_relevance_en": "Choose required reproducibility together with its computational cost.",
+          "adoption_conditions_ja": [
+            "必要なルーチン、機種、並列規模で動作と負荷を確認する。",
+            "高精度参照、許容誤差、ビット一致の目的を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Qualify required routines, devices and parallel scales.",
+            "Distinguish high-precision references, error tolerance and bitwise identity."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-ARCH-13-U02",
+      "title_ja": "同じ品質で比較する性能・エネルギー効果",
+      "title_en": "Performance and energy at matched quality",
+      "summary_ja": "高速な部分演算だけでなく、反復・再構成・圧縮の総費用を扱います。",
+      "summary_en": "Account for iterations, reconstruction and compression, not just fast inner operations.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-REFINEMENT-MATCHED-TOLERANCE",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA041",
+            "SRC-CDS025"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "反復改良: 収束を監視して精度を選ぶ",
+          "name_en": "Iterative refinement: convergence-guided precision",
+          "timing_ja": "多段反復改良の研究とGinkgo公開例",
+          "timing_en": "Multistage-refinement research and a public Ginkgo example",
+          "statement_ja": "低精度の内部解法と高精度の残差・更新を組み合わせる反復改良は、条件数や前処理によって収束性が変わります。停滞時に内部解法や精度を切り替える研究があります。高速化率を比較するときは、同じ停止条件までの反復数、再分解、フォールバックも含めます。",
+          "statement_en": "Refinement combining low-precision inner solves with higher-precision residuals/updates depends on conditioning and preconditioning. Research switches solvers or precision on stagnation. Speed comparisons must include iterations, refactorization and fallback to the same stopping criterion.",
+          "hpci_relevance_ja": "低精度演算のピーク性能から、求解時間を直接見積もる誤りを避けます。",
+          "hpci_relevance_en": "Avoid deriving time-to-solution directly from low-precision peak throughput.",
+          "adoption_conditions_ja": [
+            "残差だけでなく解の誤差と物理的な制約も評価する。",
+            "調整用と検証用の行列を分離する。"
+          ],
+          "adoption_conditions_en": [
+            "Assess solution error and physical constraints alongside residuals.",
+            "Separate tuning and validation matrices."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-OZAKI-FP8-EVIDENCE-LEVEL",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA043",
+            "SRC-TDS015",
+            "SRC-CDS027"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "FP64エミュレーション: 精度条件と作業量",
+          "name_en": "FP64 emulation: accuracy conditions and overhead",
+          "timing_ja": "2026年4月のOzaki-II FP8論文と公開実装",
+          "timing_en": "April 2026 Ozaki-II FP8 paper and public implementations",
+          "statement_ja": "Ozaki-IIのFP8化はINT8を単純に置き換える方式ではなく、剰余計算と再構成を工夫します。入力の切捨て、法の数、行列形状、作業メモリが精度と性能に影響します。GEMMul8やcuBLASの実装条件を参照し、FP64と同等の誤差を得ることとIEEE 754の全動作への互換性を区別します。",
+          "statement_en": "FP8 Ozaki-II is not a direct INT8 substitution; it adapts modular arithmetic and reconstruction. Input truncation, modulus count, matrix shape and workspace affect accuracy/performance. GEMMul8 and cuBLAS constraints must be checked, distinguishing FP64-like error from full IEEE 754 behavioral compatibility.",
+          "hpci_relevance_ja": "国内発の方式を候補に含めつつ、必要なFP64能力と移植範囲を検討できます。",
+          "hpci_relevance_en": "Include Japanese-developed methods while assessing required FP64 capability and porting scope.",
+          "adoption_conditions_ja": [
+            "入力分布、例外値、機種、実装版ごとに検証する。",
+            "分解・転送・再構成を含む時間とエネルギーを測る。"
+          ],
+          "adoption_conditions_en": [
+            "Validate input distributions, exceptional values, devices and implementation versions.",
+            "Measure time and energy including decomposition, movement and reconstruction."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TME-ANALYSIS-NOT-MEASUREMENT",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA044"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TMEモデル: アプリケーション全体への外挿",
+          "name_en": "TME model: extrapolation to whole applications",
+          "timing_ja": "2026-07-03 v3、解析と実装検証を分離",
+          "timing_en": "Version 3 dated 2026-07-03; analysis separated from implementation validation",
+          "statement_ja": "TMEの研究は、演算量増幅・帯域増幅・再構成費用を加えたモデルでFP8基盤の可能性を論じています。論文自身が実機での実装検証を後続課題とし、カーネル融合やレジスタ容量等を検証対象にしています。解析上の成立を全アプリケーションでの実測高速化へ読み替えません。",
+          "statement_en": "TME research models compute amplification, bandwidth amplification and reconstruction costs to argue for FP8-based scientific computing. The paper explicitly leaves hardware implementation validation to follow-on work, including fusion and register constraints. Analytical feasibility is not measured speedup across all applications.",
+          "hpci_relevance_ja": "将来アーキテクチャの仮説として利用し、調達判断には実証を要求します。",
+          "hpci_relevance_en": "Use it as an architectural hypothesis while requiring evidence for procurement.",
+          "adoption_conditions_ja": [
+            "モデルの係数と仮定を固定し、独立した実装測定で検証する。",
+            "疎行列、FFT、複合ソルバー、全アプリケーションで費用を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin model parameters/assumptions and validate against independent implementation measurements.",
+            "Check overhead in sparse kernels, FFTs, composite solvers and complete applications."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ZFP-ERROR-BUDGET",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA038"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "誤差制御付き圧縮: 容量削減と再利用",
+          "name_en": "Error-controlled compression: capacity and reuse",
+          "timing_ja": "zfp 1.0.1資料",
+          "timing_en": "zfp 1.0.1 documentation",
+          "statement_ja": "zfpでは固定レート、固定精度、絶対誤差を制御する方式、可逆圧縮が別モードです。固定レートで容量が予測できても、同じ精度を保証するとは限りません。許容誤差ゼロも可逆モードと同義ではありません。出力値の誤差境界から、派生量や再開後の保存則まで自動的に保証されるわけではありません。",
+          "statement_en": "zfp separates fixed-rate, fixed-precision, absolute-error-controlled and reversible modes. Predictable fixed-rate size does not imply equal accuracy; zero tolerance is not reversible mode. Bounds on reconstructed values do not automatically establish derived quantities or conservation after restarting.",
+          "hpci_relevance_ja": "ストレージ・通信削減を、再解析とチェックポイントの信頼性と合わせて判断します。",
+          "hpci_relevance_en": "Evaluate storage/communication savings together with reanalysis and checkpoint reliability.",
+          "adoption_conditions_ja": [
+            "圧縮・展開・転送の総時間とエネルギーを含める。",
+            "解析出力と再開用データに別の誤差条件を設定する。"
+          ],
+          "adoption_conditions_en": [
+            "Include compression, decompression and transfer time/energy.",
+            "Set separate error policies for analysis outputs and restart data."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA036",
+        "title": "GROMACS: Mixed or Double precision",
+        "publisher": "GROMACS development team",
+        "url": "https://manual.gromacs.org/documentation/current/reference-manual/definitions.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026.3 documentation inspected 2026-09-01"
+      },
+      "origin_group": "gromacs-project",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Mixed or Double precision",
+      "observation_ja": "状態ベクトルと重要な集計量の精度、軌道のカオス性、長期保存・基準振動での倍精度要求を確認。",
+      "observation_en": "Read state-vector versus critical-accumulator precision, chaotic trajectories and double-precision needs for conservation/normal modes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA037",
+        "title": "LAMMPS: GPU package precision build options",
+        "publisher": "LAMMPS developers",
+        "url": "https://docs.lammps.org/Build_extras.html",
+        "source_class": "official-project",
+        "published_or_updated": "Public build documentation inspected 2026-09-01"
+      },
+      "origin_group": "lammps-project",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Section 3.8.3 GPU package",
+      "observation_ja": "単精度・倍精度・混合精度を区別。混合精度では演算と座標は単精度、力・エネルギーの累積は倍精度。",
+      "observation_en": "Distinguishes single, double and mixed modes; mixed uses single-precision coordinates/arithmetic and double accumulation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA038",
+        "title": "zfp 1.0.1 compression modes",
+        "publisher": "zfp project",
+        "url": "https://zfp.readthedocs.io/en/release1.0.1/modes.html",
+        "source_class": "official-project",
+        "published_or_updated": "Release 1.0.1 documentation"
+      },
+      "origin_group": "llnl-zfp",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Fixed-rate, fixed-accuracy and reversible modes",
+      "observation_ja": "固定サイズと誤差保証を区別。ゼロ許容値は可逆モードと同じではなく、CUDAの可逆実装は未対応と記載。",
+      "observation_en": "Distinguishes bounded size and error control; zero tolerance is not reversible mode, whose CUDA implementation is documented as absent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA039",
+        "title": "Verificarlo floating-point precision and reproducibility tooling",
+        "publisher": "Verificarlo contributors",
+        "url": "https://github.com/verificarlo/verificarlo",
+        "source_class": "official-project",
+        "published_or_updated": "README v2.5.1 inspected 2026-09-01"
+      },
+      "origin_group": "verificarlo-project",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Usage; branch/FMA/cast instrumentation; backends",
+      "observation_ja": "C/C++/Fortran向け計装と精度探索を確認。比較・FMA・castは既定では計装されない。",
+      "observation_en": "Read C/C++/Fortran instrumentation and precision exploration; comparisons, FMA and casts are not instrumented by default.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA040",
+        "title": "The ensemble consistency test: from CESM to MPAS and beyond",
+        "publisher": "Geoscientific Model Development / authors",
+        "url": "https://gmd.copernicus.org/articles/18/2349/2025/index.html",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2025-04-22, GMD 18, 2349-2372"
+      },
+      "origin_group": "pycect-generalized-setup-2025",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Sections 2-3: reference ensemble, sensitivity, PCA and false positives",
+      "observation_ja": "基準アンサンブルとの統計的一貫性、PCAの標本数依存、偽陽性と検出感度の調整を確認。",
+      "observation_en": "Read reference-ensemble consistency, PCA sample-size effects and calibration of false positives versus sensitivity.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA041",
+        "title": "Multistage Mixed Precision Iterative Refinement",
+        "publisher": "Oktay and Carson / arXiv",
+        "url": "https://arxiv.org/abs/2107.06200",
+        "source_class": "research-artifact",
+        "published_or_updated": "2021-11-15, v2"
+      },
+      "origin_group": "oktay-carson-multistage-refinement",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Abstract and version metadata",
+      "observation_ja": "条件数に依存する収束条件と、停滞時に更新解法や精度を切り替える方法を確認。",
+      "observation_en": "Read conditioning-dependent convergence and switching update solvers/precision on stagnation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA042",
+        "title": "ExBLAS: accurate and reproducible BLAS",
+        "publisher": "ExBLAS contributors",
+        "url": "https://github.com/riakymch/exblas",
+        "source_class": "official-project",
+        "published_or_updated": "README v1.0 inspected 2026-09-01; not asserted latest hardware qualification"
+      },
+      "origin_group": "exblas-project",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "README overview, supported routines, requirements and tests",
+      "observation_ja": "並列加算順序に依存しない再現性、対象ルーチン、MPFRによる検証例を確認。現行GPUでの保守・性能保証は別途必要。",
+      "observation_en": "Read order-independent parallel reproducibility, routine scope and MPFR validation; current GPU support/performance needs separate qualification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA043",
+        "title": "Double-Precision Matrix Multiplication Emulation via Ozaki-II Scheme with FP8 Quantization",
+        "publisher": "Uchino, Ozaki and Imamura / arXiv",
+        "url": "https://arxiv.org/html/2603.10634v2",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-04-06, v2"
+      },
+      "origin_group": "uchino-ozaki-imamura-fp8-ozaki2",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Sections II-III, IV-C and V numerical results",
+      "observation_ja": "INT8からの単純置換ではないFP8方式、入力切捨て・法の数・作業メモリ、固定toolchainでの再現性を確認。",
+      "observation_en": "Read nontrivial FP8 adaptation, input truncation/moduli/workspace and reproducibility under a fixed toolchain.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA044",
+        "title": "FP8 is All You Need (Part 1): Tensor-Memory Equilibrium analysis",
+        "publisher": "Satoshi Matsuoka / arXiv",
+        "url": "https://arxiv.org/html/2606.06510v3",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-07-03, v3"
+      },
+      "origin_group": "matsuoka-tme-analysis-2026",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Sections 8.3, 9 and 10; analysis/implementation distinction",
+      "observation_ja": "TMEによる解析的予測、合成時の帯域増幅・実装検証・反証条件を確認。検索に出た旧版数値は採用しない。",
+      "observation_en": "Read analytical TME projections, composition bandwidth overhead, implementation validation and falsification conditions; older search-snippet numbers are not adopted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA045",
+        "title": "FPBench standard error measures 2.0",
+        "publisher": "FPBench community",
+        "url": "https://fptalks.org/spec/measures-2.0.html",
+        "source_class": "official-project",
+        "published_or_updated": "2.0 specification inspected 2026-09-01"
+      },
+      "origin_group": "fpbench-community",
+      "checked_at": "2026-09-01T01:09:23+09:00",
+      "locator": "Forward/backward, maximum/average and sound/statistical sections",
+      "observation_ja": "誤差指標と保証手法を区別する仕様を確認。末尾の改善指標数式には同じ項の減算があり、式は転記しない。",
+      "observation_en": "Read distinct error metrics and proof/sampling methods; the final improvement formula repeats an operand, so it is not transcribed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS025",
+        "title": "Ginkgo mixed-precision iterative-refinement example",
+        "publisher": "Ginkgo Project",
+        "url": "https://ginkgo-project.github.io/ginkgo-generated-documentation/doc/master/mixed_precision_ir.html",
+        "source_class": "official-project",
+        "published_or_updated": "1.8.0 example inspected 2026-09-01; historical documentation"
+      },
+      "origin_group": "ginkgo-project",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Introduction and inner/outer solver precision; residual and iteration checks",
+      "observation_ja": "FP32内側CGとFP64外側反復改良の公開例。実行例は全問題での収束保証ではない。",
+      "observation_en": "Public FP32 inner-CG/FP64 outer-refinement example; sample output does not guarantee general convergence.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS027",
+        "title": "cuBLAS 13.0 Update 2 floating-point emulation",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/cuda/archive/13.0.2/cublas/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "CUDA 13.0.2 archived documentation"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "1.5.2 dynamic/fixed mantissa; workspace and IEEE-754 limitation",
+      "observation_ja": "動的仮数長は必要時にFP64へ戻る。固定仮数長は同等精度を保証せず、IEEE-754互換ともしていない。",
+      "observation_en": "Dynamic mantissas can fall back to FP64; fixed mantissas do not guarantee equivalent accuracy or IEEE-754 compliance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-TDS015",
+        "title": "GEMMul8",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://github.com/RIKEN-RCCS/GEMMul8",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-08-26"
+      },
+      "origin_group": "riken-rccs",
+      "checked_at": "2026-09-01T00:38:53+09:00",
+      "locator": "Supported operations; Hopper FP8 caution; TRSM implementation",
+      "observation_ja": "BLAS Level-3系へ拡張。HopperのFP8は非対応で、TRSMは対角ブロックにネイティブBLASを用いる。",
+      "observation_en": "Extends to BLAS Level-3-style routines; Hopper FP8 is unsupported and TRSM retains native diagonal-block solves.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-071",
+      "topic_ids": [
+        "ARCH-13"
+      ],
+      "priority": "P0",
+      "question_ja": "候補CPU/GPUで、代表アプリケーションの科学的品質を維持した混合精度・エミュレーションの総性能・エネルギー効果を比較できるか。",
+      "question_en": "Can end-to-end mixed-precision/emulation performance and energy be compared on candidate CPUs/GPUs while preserving representative scientific quality?",
+      "next_action_ja": "分野別の独立検証入力、保存則・統計量、例外値、フォールバック、作業メモリ、ノード単位のエネルギーを含む公開実証を収集する。",
+      "next_action_en": "Collect public demonstrations with domain-specific holdouts, conservation/statistics, exceptional values, fallbacks, workspace and node-level energy.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "同じ品質基準で比較できる国内アプリケーションのエネルギー測定が不足。",
+    "量子化学・気候・分子動力学の許容誤差を一律に決めない。分野ごとの公開検証基準が必要。",
+    "既存の数値計算ライブラリ比較表とGEMMul8の現行機能の整合を後続で確認する。",
+    "新たな性能実測はなく、独立モデルによるConsensusも未完了。"
+  ],
+  "remaining_work_en": [
+    "Matched-quality energy evidence for Japanese scientific applications remains insufficient.",
+    "Do not impose one error tolerance across chemistry, climate and molecular dynamics; domain validation criteria are needed.",
+    "Reconcile the existing numerical-library matrix with current GEMMul8 capabilities in follow-up.",
+    "No new performance measurements were made; independent-model Consensus remains incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-ARCH13-ERROR",
+        "label_ja": "許容誤差",
+        "label_en": "Acceptable error",
+        "question_ja": "対象分野の観測量と科学的結論に適した精度条件を定められるか。",
+        "question_en": "Are accuracy requirements tied to domain observables and scientific conclusions?"
+      },
+      {
+        "dimension_id": "DIM-ARCH13-VALIDATION",
+        "label_ja": "独立検証",
+        "label_en": "Independent validation",
+        "question_ja": "精度選択に使わなかった入力・条件で検証できるか。",
+        "question_en": "Can validation use inputs and conditions excluded from precision selection?"
+      },
+      {
+        "dimension_id": "DIM-ARCH13-COST",
+        "label_ja": "同品質での効果",
+        "label_en": "Gains at matched quality",
+        "question_ja": "同じ品質を得るまでの時間・電力・メモリを比較できるか。",
+        "question_en": "Can time, energy and memory be compared to the same quality target?"
+      }
+    ]
+  }
+}

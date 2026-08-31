@@ -1,0 +1,399 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000068",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-01T02:32:54+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "cb5a6a7167d5293617aeb11aac37cd5f4acf036a5f9ae5ad44903c9c33cc310b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MPIの規格・実装、UCXの転送層、UCCとGPU集合通信を役割別に整理しました。GPU-aware、直接RDMA、通信オフロードは同義ではありません。版、操作、トポロジ、エラー復旧条件を揃えた比較が必要で、以下は単一のAIモデルによる暫定調査です。",
+  "summary_en": "This review distinguishes MPI standards/implementations, UCX transports, UCC and GPU collectives. GPU awareness, direct RDMA and communication offload are different capabilities. Comparisons require matched versions, operations, topology and recovery conditions; findings remain single-model provisional research.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "e6d414aa07463e7ae7be0c46ce43d4a7019b1a6672dfa26f7bd27cc296a18e56",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-03-U01",
+      "title_ja": "通信機能の対応範囲と実装段階",
+      "title_en": "Communication coverage and implementation maturity",
+      "summary_ja": "機能名だけの比較を避け、実際に使えるAPIと構成条件を確認します。",
+      "summary_en": "Compare usable APIs and configuration conditions rather than feature names alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-MPI5-MPICH5",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-PORT014",
+            "SRC-PORT026"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "MPI 5.0とMPICH 5.0",
+          "name_en": "MPI 5.0 and MPICH 5.0",
+          "timing_ja": "MPI 5.0承認: 2025-06-05。MPICH 5.0.0公開: 2026-02-04。",
+          "timing_en": "MPI 5.0 approved 2025-06-05; MPICH 5.0.0 released 2026-02-04.",
+          "statement_ja": "MPI Forumの規格承認とMPICHの実装公開には時差があります。MPICHは5.0.0で新MPI ABIを含むMPI 5.0対応を公表しました。ただし、異なるMPI実装、C/Fortran、ジョブ起動系、GPU転送経路を含む組合せの無検証な交換を保証するものではありません。",
+          "statement_en": "MPI ratification preceded implementation delivery. MPICH announced MPI 5.0 support, including the new ABI, in 5.0.0. This does not qualify arbitrary swaps across implementations, C/Fortran, launch systems and GPU paths without testing.",
+          "hpci_relevance_ja": "ABIの採用で減らせる再ビルドと、引き続き必要な統合試験を区別します。",
+          "hpci_relevance_en": "Separate rebuild savings from integration tests still required.",
+          "adoption_conditions_ja": [
+            "言語別ラッパーとABIビルド方法を確認する。",
+            "MPI-IO、通信進行、プロセス起動も試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Check language wrappers and ABI build modes.",
+            "Test MPI-IO, progress and process launch as well."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-OPENMPI6-UPCOMING",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDS013",
+            "SRC-CDS014"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Open MPI 6.0の開発項目",
+          "name_en": "Open MPI 6.0 development changes",
+          "timing_ja": "2026-09-01時点でUpcoming。正式公開日は未確認。",
+          "timing_en": "Listed as Upcoming on 2026-09-01; stable release date unverified.",
+          "statement_ja": "公式サイトは6.0をUpcoming、5.0をCurrentと表示しています。6.0開発版変更履歴にはC向けMPI標準ABI、GPU間転送機能、ROMIOからOMPIOへの移行等が記載されていますが、日付は未記入です。これらを現在の安定版の機能として計上しません。",
+          "statement_en": "The website labels 6.0 Upcoming and 5.0 Current. The development changelog lists the C standard ABI, GPU-transfer changes and ROMIO-to-OMPIO migration, but leaves the release date blank. These are not counted as stable-release capabilities.",
+          "hpci_relevance_ja": "将来の移行試験候補として追跡し、調達時の必須条件にする場合は製品版で再確認します。",
+          "hpci_relevance_en": "Track migration tests, then recheck released implementations before procurement requirements.",
+          "adoption_conditions_ja": [
+            "公開予定機能と現在の対応表を別に管理する。",
+            "I/Oヒントや既存チューニング設定の継続性を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Keep planned and current support separate.",
+            "Check continuity of I/O hints and tuning settings."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-UCX-GPU-PATHS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS015"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UCX: GPUバッファと直接転送の違い",
+          "name_en": "UCX: GPU buffers versus direct transfers",
+          "timing_ja": "公開FAQを2026-09-01確認",
+          "timing_en": "Public FAQ checked on 2026-09-01",
+          "statement_ja": "UCXのFAQはGPUメモリ対応をAPI別に示し、RMAとアトミック操作を部分対応としています。GPUバッファは直接RDMAだけでなくホスト経由で転送される場合もあります。直接転送にはドライバ等の条件があり、GPUとNICのNUMA配置によっても効率が変わります。",
+          "statement_en": "UCX documents GPU support by API, with RMA and atomics only partially supported. GPU buffers may use direct RDMA or host staging. Direct paths require suitable drivers and may be inefficient with unfavorable GPU/NIC NUMA placement.",
+          "hpci_relevance_ja": "GPU-awareという表記だけで通信帯域やCPU負荷を予測することを避けます。",
+          "hpci_relevance_en": "Do not infer bandwidth or CPU overhead from a GPU-aware label alone.",
+          "adoption_conditions_ja": [
+            "API、メッセージ長、実際に選択された転送方式を記録する。",
+            "版固定の対応表と実機トレースで確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Record API, message size and selected transport.",
+            "Confirm with version-specific support and hardware traces."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-UCC-COLLECTIVE-LAYER",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS016",
+            "SRC-CDS018"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "UCCとGPU集合通信の役割分担",
+          "name_en": "UCC and GPU-collective roles",
+          "timing_ja": "公開API・設計説明を2026-09-01確認",
+          "timing_en": "Public API/design descriptions checked 2026-09-01",
+          "statement_ja": "UCCは集合通信APIと実装層を提供し、非ブロッキングや繰返し通信、ハードウェア機能の利用を設計目標にしています。CUDA/HIP対応は構成依存です。NCCLはCUDAストリームと連携したGPU間通信に特化しており、どちらも名前だけでMPI全体の代替とは判断できません。",
+          "statement_en": "UCC provides a collective API/implementation with nonblocking, repetitive and hardware-assisted design goals; CUDA/HIP support depends on configuration. NCCL focuses on GPU communication integrated with CUDA streams. Neither label establishes a complete MPI replacement.",
+          "hpci_relevance_ja": "アプリケーションの通信操作とライブラリ選択を対応付けます。",
+          "hpci_relevance_en": "Map application communication operations to library choices.",
+          "adoption_conditions_ja": [
+            "バックエンドごとの演算・データ型・非ブロッキング対応を確認する。",
+            "ライブラリを重ねた場合の進行と資源使用を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Check operations, datatypes and nonblocking support per backend.",
+            "Measure progress and resource use when layers are combined."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-NCCL-FAILURE-ORDERING",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS017"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NCCLの起動順序と障害時の処理",
+          "name_en": "NCCL launch ordering and failure handling",
+          "timing_ja": "2.31.2文書の要件。機能追加版は個別確認。",
+          "timing_en": "Requirements in 2.31.2 documentation; introduction versions require separate checks.",
+          "statement_ja": "複数コミュニケータを使う場合も、デバイス間で整合した起動順序が必要です。非同期通信エラーは明示的な確認と中断処理を要し、復旧用APIがあるだけで学習状態や計算結果が自動復旧するわけではありません。通信の再構成とアプリケーションの再開を分けて設計します。",
+          "statement_en": "Multiple communicators still require consistent launch ordering across devices. Asynchronous errors need explicit checks and abort handling. Recovery APIs do not automatically restore training state or scientific results; communication reconstruction and application restart are separate concerns.",
+          "hpci_relevance_ja": "最大帯域だけでなく、停止検出と失敗後の再開時間を評価します。",
+          "hpci_relevance_en": "Evaluate failure detection and restart time alongside peak bandwidth.",
+          "adoption_conditions_ja": [
+            "非ブロッキング設定、タイムアウト、全ランクの協調処理を確認する。",
+            "実行状態を保存するチェックポイント方式を別途用意する。"
+          ],
+          "adoption_conditions_en": [
+            "Check nonblocking mode, timeouts and coordinated rank handling.",
+            "Provide a separate application-checkpoint strategy."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-RCCL-CONDITIONAL-OFFLOAD",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDS019",
+            "SRC-CDS020"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "RCCLの通信オフロードと適用条件",
+          "name_en": "RCCL communication offload and applicability",
+          "timing_ja": "移転先develop文書を確認。採用するリリース版への収録は要照合。",
+          "timing_en": "Successor develop documentation inspected; verify inclusion in the selected release.",
+          "statement_ja": "RCCLの開発はrocm-systemsへ移っています。開発版READMEにあるzero-CU集合通信は選択した操作と単一ノード等に限られ、GDA AllToAllにもGPU世代、ノード内GPU数、メッセージ長の条件があります。GPU演算資源を使わない通信を全操作・全構成へ一般化しません。",
+          "statement_en": "RCCL development moved to rocm-systems. Its development README restricts zero-CU collectives to selected operations and single-node conditions; GDA AllToAll also has GPU, GPUs-per-node and message-size constraints. Do not generalize compute-free communication to all operations or systems.",
+          "hpci_relevance_ja": "演算と通信の重なりを評価する際、適用可能な操作と経路を先に特定します。",
+          "hpci_relevance_en": "Identify eligible operations and paths before estimating compute/communication overlap.",
+          "adoption_conditions_ja": [
+            "開発ブランチと配布製品版を混同しない。",
+            "同じトポロジとメッセージ条件で比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not conflate development branches with packaged releases.",
+            "Compare matched topology and message conditions."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD1-SSW-03-U01"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS013",
+        "title": "Open MPI version 6.0 download/status page",
+        "publisher": "Open MPI Project",
+        "url": "https://www.open-mpi.org/software/ompi/v6.0/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-25"
+      },
+      "origin_group": "open-mpi-project",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Sidebar Upcoming 6.0 / Current 5.0; no release date shown",
+      "observation_ja": "6.0はUpcoming、5.0はCurrentと表示。6.0正式公開日は確認できない。",
+      "observation_en": "Lists 6.0 as Upcoming and 5.0 as Current; no stable 6.0 release date is established.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS014",
+        "title": "Open MPI main-branch v6.0 changelog",
+        "publisher": "Open MPI Project",
+        "url": "https://docs.open-mpi.org/en/main/release-notes/changelog/v6.0.x.html",
+        "source_class": "official-project",
+        "published_or_updated": "Development changelog; date placeholder at 2026-09-01 check"
+      },
+      "origin_group": "open-mpi-project",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "v6.0.0 Date placeholder; C MPI ABI; accelerator framework; OMPIO",
+      "observation_ja": "C MPI標準ABI、GPU転送、ROMIO廃止等を記載するが、日付は未記入。",
+      "observation_en": "Documents C standard ABI, GPU transfers and ROMIO removal, but the release date remains a placeholder.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS015",
+        "title": "UCX FAQ: GPU support and transport selection",
+        "publisher": "OpenUCX Project",
+        "url": "https://openucx.readthedocs.io/en/master/faq.html",
+        "source_class": "official-project",
+        "published_or_updated": "Master documentation accessed 2026-09-01"
+      },
+      "origin_group": "openucx-project",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Working with GPU; API support table; zero-copy and NUMA caveat",
+      "observation_ja": "GPU対応はAPIで異なり、GPUバッファを扱えても常に直接RDMAするわけではない。",
+      "observation_en": "GPU support varies by API; accepting GPU buffers does not imply direct RDMA on every transfer.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS016",
+        "title": "Unified Collective Communication official repository",
+        "publisher": "OpenUCX/UCC Project",
+        "url": "https://github.com/openucx/ucc",
+        "source_class": "official-project",
+        "published_or_updated": "Master README inspected 2026-09-01; revision not exposed"
+      },
+      "origin_group": "openucx-project",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Design goals and required packages",
+      "observation_ja": "集合通信APIとして非ブロッキング等を設計目標に掲げ、CUDA/HIP対応は任意構成。",
+      "observation_en": "Defines a collective API with nonblocking design goals and optional CUDA/HIP components.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS017",
+        "title": "NCCL communicator ordering and error handling",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/communicators.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2.31.2 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Multiple communicators; asynchronous errors; fault tolerance",
+      "observation_ja": "起動順序と非同期エラー確認が必要。コミュニケータ再作成だけでアプリ状態が自動復旧するわけではない。",
+      "observation_en": "Requires launch ordering and asynchronous-error handling; communicator recovery does not restore application state automatically.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS018",
+        "title": "NCCL overview",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2.31.2 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Scope, collective operations and stream integration",
+      "observation_ja": "GPU間通信に特化し、CUDAストリームと連携する。MPI全体を置き換える並列実行基盤ではない。",
+      "observation_en": "Focuses on GPU communication integrated with CUDA streams, not replacement of the entire MPI programming environment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS019",
+        "title": "RCCL repository retirement notice",
+        "publisher": "AMD ROCm",
+        "url": "https://github.com/ROCm/rccl",
+        "source_class": "official-project",
+        "published_or_updated": "Retirement notice inspected 2026-09-01"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "README Caution",
+      "observation_ja": "ROCm/rcclは廃止リポジトリで、ROCm/rocm-systemsを参照するよう案内。",
+      "observation_en": "ROCm/rccl is retired and directs readers to ROCm/rocm-systems.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS020",
+        "title": "RCCL in ROCm systems: current development README",
+        "publisher": "AMD ROCm",
+        "url": "https://github.com/ROCm/rocm-systems/tree/develop/projects/rccl",
+        "source_class": "official-project",
+        "published_or_updated": "Develop README inspected 2026-09-01; revision not exposed"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Introduction zero-CU collectives; rocSHMEM support runtime conditions",
+      "observation_ja": "zero-CUは選択した集合通信・単一ノード等の条件付き。GDA AllToAllにもGPU・ノード構成条件がある。",
+      "observation_en": "Zero-CU collectives and GDA AllToAll have operation, node-layout and GPU-specific conditions; this is development documentation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT014",
+        "title": "MPI 5.0 Documents",
+        "publisher": "MPI Forum",
+        "url": "https://www.mpi-forum.org/docs/",
+        "source_class": "official-standard",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "mpi-forum",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "MPI 5.0 approval date and authoritative-document notice",
+      "observation_ja": "MPI 5.0の承認日は2025年6月5日。HTMLではなく公式PDFが正本。",
+      "observation_en": "MPI 5.0 was approved on June 5, 2025; the official PDF is authoritative.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT026",
+        "title": "MPICH 5.0.0 Released",
+        "publisher": "MPICH Project",
+        "url": "https://www.mpich.org/2026/02/04/mpich-5-0-0-released/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-04"
+      },
+      "origin_group": "mpich-project",
+      "checked_at": "2026-09-01T00:32:08+09:00",
+      "locator": "Release announcement opening paragraph",
+      "observation_ja": "MPI 5.0と新ABIへの対応を含む最初の5.0系安定版と説明。",
+      "observation_en": "Describes the first stable 5.0-series release, including MPI 5.0 and new ABI support.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "C/FortranのMPI ABI相互運用性と各配布版の設定を確認する。",
+    "NCCL/RCCL/UCC/UCXを同じ通信パターン・規模で比較した公開測定を追加する。",
+    "旧URL移転、Open MPI 6の公開日、RCCLの製品版への収録を継続確認する。",
+    "単一のAIモデルの文書調査であり、Consensusと実機検証は未完了。"
+  ],
+  "remaining_work_en": [
+    "Verify C/Fortran MPI ABI interoperability and distribution-specific configuration.",
+    "Add public NCCL/RCCL/UCC/UCX measurements with matched patterns and scales.",
+    "Track repository migration, Open MPI 6 release timing and RCCL release inclusion.",
+    "This single-model document review has neither independent Consensus nor hardware validation."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000034",
+      "bundle_sha256": "37de0152bc50f2d066339c8f409f2746e8d0317e5622da36df459285be50e3d3"
+    }
+  ]
+}

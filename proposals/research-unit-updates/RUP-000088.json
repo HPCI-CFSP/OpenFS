@@ -1,0 +1,260 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000088",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-01T03:37:27+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "5c5520150c2c5da711317347f4b99a6865d4541a5eb0af7ea216474b85ddd5ab",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学シミュレーションの代表性、性能律速、継続比較を分け、計算・メモリ・通信・I/Oと精度条件をそろえて評価します。EEA1の再現性条件に加え、SQUIDのソフトウェア更新による改善例を調べました。公開性能比を新ハードウェアの予測や総電力量の削減率へ転用せず、校正不足を残しています。",
+  "summary_en": "Separate scientific representativeness, bottlenecks and continuous comparison under matched compute, memory, communication, I/O and accuracy conditions. SQUID software-tuning examples complement EEA1 reproducibility checks. Published ratios do not become new-hardware predictions or total-energy savings; missing calibration remains explicit.",
+  "units": [
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "66e337c9a7863a51caa5a2a0e00656717f4027dad41d5dfb2e85f66afce3f409",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02",
+        "TDS-CD2-APP-02-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-02-U02",
+      "title_ja": "同一設備でのソフトウェア改善と外挿の限界",
+      "title_en": "Software improvement on existing systems and extrapolation limits",
+      "summary_ja": "ハードウェア更新効果と、版・実装・配置変更の効果を分けて評価します。",
+      "summary_en": "Separate hardware gains from changes in versions, implementations and placement.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-SQUID-SOFTWARE-SPEEDUP",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA093"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SQUID: 既存GPUの活用方法による性能改善",
+          "name_en": "SQUID: improving use of existing GPUs",
+          "timing_ja": "2026-05-14 公開報告",
+          "timing_en": "Public report, 2026-05-14",
+          "statement_ja": "大阪大学は既存モジュール比で、GROMACSのSTMV 106万原子が2.3〜2.9倍、LAMMPSのin.eam 3200万原子が3.8〜5.7倍、Quantum ESPRESSOのGRIR443 443原子が1.3〜2.0倍と報告しています。更新版・GPU処理範囲・通信設定を変えた比較であり、CPU対GPUやGPU世代間の比較ではありません。",
+          "statement_en": "Osaka reports improvements over previous modules: 2.3-2.9x for GROMACS/STMV with 1.06 million atoms, 3.8-5.7x for LAMMPS/in.eam with 32 million, and 1.3-2.0x for Quantum ESPRESSO/GRIR443 with 443. Versions, offloaded work and communication changed; these are not CPU/GPU or GPU-generation comparisons.",
+          "hpci_relevance_ja": "更新予算の検討では、既存設備のソフトウェア整備で得られる改善も比較対象になります。",
+          "hpci_relevance_en": "Software modernization on existing systems belongs alongside replacement options.",
+          "adoption_conditions_ja": [
+            "原入力、旧新ビルド、並列数、計時区間、精度を対応付ける。",
+            "図の画素と全測定点の条件は今回未検証で、消費電力量の削減率も算出しない。"
+          ],
+          "adoption_conditions_en": [
+            "Match original inputs, old/new builds, parallel scale, timed region and accuracy.",
+            "Graph pixels and every point's conditions were not verified here; no energy-saving ratio is computed."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-GROMACS-OFFLOAD-TRADEOFF",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA096"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GROMACS: 常駐化とCPU・GPUの役割分担",
+          "name_en": "GROMACS: residency and CPU/GPU work allocation",
+          "timing_ja": "2025.4の版付き性能手引き",
+          "timing_en": "Versioned 2025.4 performance guide",
+          "statement_ja": "GPU常駐化は毎ステップのデータ転送を減らしますが、対応する計算方式とビルドが条件です。複数GPUのPMEにはFFTライブラリ等の条件があり、PMEや結合項をCPUへ戻す方が速い構成もあります。単一計算の最短時間と、多数計算の総スループットでは最適な配置が異なります。",
+          "statement_en": "GPU residency reduces per-step transfers but depends on supported algorithms and builds. Multi-GPU PME has FFT-library requirements, and CPU PME or bonded work can be faster in some configurations. Minimum latency for one simulation and aggregate throughput for many may favor different placements.",
+          "hpci_relevance_ja": "GPU台数やピーク演算性能だけではノード構成を選べない根拠になります。",
+          "hpci_relevance_en": "GPU count and peak arithmetic alone cannot select the node balance.",
+          "adoption_conditions_ja": [
+            "実際の実行ログで経路を確認し、自動CPUフォールバックを検出する。",
+            "AMD GPU全体と、特定のHIP/SYCL経路の対応を混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Inspect execution logs and detect automatic CPU fallback.",
+            "Distinguish AMD hardware from support in specific HIP/SYCL paths."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-LAMMPS-DATA-RESIDENCY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA095",
+            "SRC-CDA097"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LAMMPS: GPUとKOKKOSの異なるデータ移動",
+          "name_en": "LAMMPS: GPU and KOKKOS move data differently",
+          "timing_ja": "SQUID GPU版22Jul2025 Update 2、比較手引きupdate4",
+          "timing_en": "SQUID GPU build 22Jul2025 Update 2; comparison guide update4",
+          "statement_ja": "GPUパッケージは各ステップで原子データをホストと交換し、KOKKOSは対応処理をデバイス上に残そうとします。未対応の処理や出力はホスト転送を生じさせるため、原子数、相互作用、出力頻度、MPI配置をそろえる必要があります。公開手引きの版とセンター提供版も同一ではありません。",
+          "statement_en": "The GPU package exchanges atom data with the host each step; KOKKOS tries to retain supported work on the device. Unsupported operations or output can require host transfers, so atom count, interactions, output cadence and MPI placement must match. The public guide and center build are also different updates.",
+          "hpci_relevance_ja": "メモリ転送、通信、演算のどこが律速するかを実装別に比較します。",
+          "hpci_relevance_en": "Compare memory movement, communication and arithmetic bottlenecks per implementation.",
+          "adoption_conditions_ja": [
+            "KOKKOSが全入力で高速とせず、精度・対応style・MPIのGPU-aware条件を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not assume KOKKOS wins for every input; verify precision, styles and GPU-aware MPI."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-SQUID-EXAMPLE-NOT-MEASUREMENT",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDA093",
+            "SRC-CDA094",
+            "SRC-CDA095"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "実行例と性能測定条件を同一視しない",
+          "name_en": "Execution examples are not benchmark-condition records",
+          "timing_ja": "2026-09-01 文書照合",
+          "timing_en": "Documentation cross-check, 2026-09-01",
+          "statement_ja": "センター手引きには新GPUモジュールと古いCPU例が併存します。2ノード16GPUの実行例があっても、公開された性能比の全測定点がその条件とは断定しません。将来性能の校正には、各測定点の実行設定・時間・誤差を追加収集する必要があります。",
+          "statement_en": "Center guides contain newer GPU modules alongside older CPU examples. A two-node/16-GPU script does not prove that every reported ratio used that configuration. Future-performance calibration still needs each point's setup, runtime and error information.",
+          "hpci_relevance_ja": "異なる条件の数値を接続して、もっともらしい予測を作ることを防ぎます。",
+          "hpci_relevance_en": "This prevents forecasts assembled from mismatched measurements.",
+          "adoption_conditions_ja": [
+            "未取得の条件はCoverage Gapとして残し、推定GPU高速化率を作らない。"
+          ],
+          "adoption_conditions_en": [
+            "Retain missing conditions as a Coverage Gap rather than inventing GPU speedup factors."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA093",
+        "title": "SQUID GPU application performance improvements",
+        "publisher": "The University of Osaka D3 Center",
+        "url": "https://www.hpc.cmc.osaka-u.ac.jp/news/20260514-2/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-14"
+      },
+      "origin_group": "Osaka-SQUID-application-tuning",
+      "checked_at": "2026-09-01T03:36:17+09:00",
+      "locator": "GROMACS, LAMMPS, Quantum ESPRESSO text and module list; graph pixels not inspected",
+      "observation_ja": "既存モジュールとの比較としてSTMV 2.3〜2.9倍、in.eam 3.8〜5.7倍、GRIR443 1.3〜2.0倍を報告。新GPUの性能比ではありません。",
+      "observation_en": "Reports 2.3-2.9x for STMV, 3.8-5.7x for in.eam and 1.3-2.0x for GRIR443 against previous modules, not a new-GPU performance ratio.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA094",
+        "title": "SQUID GROMACS CPU and GPU job examples",
+        "publisher": "The University of Osaka D3 Center",
+        "url": "https://www.hpc.cmc.osaka-u.ac.jp/system/manual/squid-use/gromacs/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated instructions inspected 2026-09-01"
+      },
+      "origin_group": "Osaka-SQUID-application-tuning",
+      "checked_at": "2026-09-01T03:36:17+09:00",
+      "locator": "CPU and GPU examples; PME rank guidance",
+      "observation_ja": "CPU例は2021.2、GPU例は2025.4。GPU例の2ノード16GPUを、性能図の全測定点の条件とはみなしません。",
+      "observation_en": "CPU examples use 2021.2, GPU examples 2025.4. The two-node/16-GPU example does not establish conditions for every plotted performance point.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA095",
+        "title": "SQUID LAMMPS GPU and KOKKOS package instructions",
+        "publisher": "The University of Osaka D3 Center",
+        "url": "https://www.hpc.cmc.osaka-u.ac.jp/system/manual/squid-use/lammps/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated instructions; GPU package 22Jul2025 Update 2"
+      },
+      "origin_group": "Osaka-SQUID-application-tuning",
+      "checked_at": "2026-09-01T03:36:17+09:00",
+      "locator": "GPU usage and separate GPU/KOKKOS job examples",
+      "observation_ja": "両パッケージが利用可能だが、対応する相互作用・積分方式が条件。CPUとGPUの例には異なる版が残っています。",
+      "observation_en": "Both acceleration packages are available, conditional on interaction/integrator support; CPU and GPU examples retain different versions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA096",
+        "title": "GROMACS 2025.4 performance and GPU offload guidance",
+        "publisher": "GROMACS development team",
+        "url": "https://manual.gromacs.org/2025.4/user-guide/mdrun-performance.html",
+        "source_class": "official-project",
+        "published_or_updated": "2025.4 versioned documentation"
+      },
+      "origin_group": "GROMACS-performance-contract",
+      "checked_at": "2026-09-01T03:36:17+09:00",
+      "locator": "GPU-resident versus force-offload; PME limitations; GPU launch overhead",
+      "observation_ja": "GPU常駐、PME、FFTライブラリ、直接通信の条件を区別。最適なCPU/GPU配分は入力とスループット目的に依存します。",
+      "observation_en": "Distinguishes resident execution, PME/FFT-library constraints and direct communication; CPU/GPU balance depends on inputs and throughput objectives.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA097",
+        "title": "LAMMPS stable accelerator-package comparison",
+        "publisher": "LAMMPS developers",
+        "url": "https://docs.lammps.org/stable/Speed_compare.html",
+        "source_class": "official-project",
+        "published_or_updated": "Rendered stable: 22Jul2025 update4"
+      },
+      "origin_group": "LAMMPS-accelerator-contract",
+      "checked_at": "2026-09-01T03:36:17+09:00",
+      "locator": "GPU versus KOKKOS data movement and MPI-rank guidance",
+      "observation_ja": "GPUパッケージとKOKKOSはホスト・デバイス間の転送頻度と並列配置の効き方が異なります。",
+      "observation_en": "GPU and KOKKOS packages differ in host/device transfer frequency and the effects of rank placement.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "SQUIDの旧新入力・ビルド・各測定点のノード数と精度、時系列ログを確認する。",
+    "EEA1のソース・入力・基準時間の校正と、独立した検証点の確保は未完了。",
+    "単一モデルでの文献調査であり、実行試験やConsensusは行っていない。"
+  ],
+  "remaining_work_en": [
+    "Verify SQUID old/new inputs/builds, per-point node counts/accuracy and timing logs.",
+    "EEA1 source/input/baseline calibration and independent validation points remain incomplete.",
+    "This is single-model literature research, without execution tests or Consensus."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000042",
+      "bundle_sha256": "41213f9fad54ba2701499dd684d162544a648ab7d1db360731867e5e5cc03029"
+    },
+    {
+      "update_id": "RUP-000076",
+      "bundle_sha256": "0702e3790a8f3a41b517de5cf37bf290da9c3ad78653b0d818601043d7946d70"
+    },
+    {
+      "update_id": "RUP-000081",
+      "bundle_sha256": "edd732a5067c98b5c37fb4fac710a34af647db874c780e522e7dff2928d14be9"
+    }
+  ]
+}

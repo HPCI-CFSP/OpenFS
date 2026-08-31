@@ -1,0 +1,483 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000044",
+  "topic_id": "APP-11",
+  "created_at": "2026-09-01T01:08:15+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "量子・Ising応用は、量子化学の量子古典ハイブリッド計算、古典計算機で動く量子インスパイアード最適化、量子優位性の検証に分けて整理しました。国内の公開実装・実証も比較対象に含めます。量子ビット数や最大変数数だけで有用性を判断せず、解の品質と前後処理を含む資源量を揃えて評価します。",
+  "summary_en": "Quantum/Ising applications are separated into hybrid quantum chemistry, quantum-inspired optimization on classical computers and validation of quantum-advantage claims. Japanese public implementations and demonstrations are included. Utility requires matching solution quality and full workflow resources, not just qubit or maximum-variable counts.",
+  "units": [
+    {
+      "unit_id": "APP-11-U01",
+      "before_sha256": "9d8f53bccc77cb38af9d594e36a652c895769727490023ea45379504ca7abcd5",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-11-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-APP-11-U01",
+      "title_ja": "量子化学・組合せ最適化と古典手法の比較",
+      "title_en": "Quantum chemistry and optimization versus classical methods",
+      "summary_ja": "実証、製品提供、優位性の主張を別の証拠として扱います。",
+      "summary_en": "Treat demonstrations, product availability and advantage claims as different evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-QUANTUM-SBD-CLOSED-LOOP",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA024",
+            "SRC-CDA025"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SQD/SBD: 量子サンプリングと大規模対角化",
+          "name_en": "SQD/SBD: quantum sampling and large-scale diagonalization",
+          "timing_ja": "2025年の実証と公開SBD実装",
+          "timing_en": "2025 demonstration and public SBD implementation",
+          "statement_ja": "理研・IBMの研究は鉄硫黄クラスターについて、量子サンプリングと最大152,064ノードの富岳を閉ループで連携しました。一方、論文の外挿エネルギーには古典DMRG参照との差が残り、あらゆる古典手法への優位性を証明した実験ではありません。公開SBDはMPI分散に対応し、READMEにはv1.3.0でのGPU実装も記載されています。",
+          "statement_en": "RIKEN/IBM coupled quantum sampling with up to 152,064 Fugaku nodes for iron-sulfur clusters. Extrapolated energies still differ from classical DMRG references; this is not proof of superiority over every classical method. Public SBD supports MPI distribution, with a GPU implementation listed for v1.3.0.",
+          "hpci_relevance_ja": "量子装置の導入時にも古典側のメモリ・対角化能力と連携時間の設計が必要です。",
+          "hpci_relevance_en": "Quantum deployment still needs classical memory, diagonalization capacity and workflow coordination.",
+          "adoption_conditions_ja": [
+            "同じ活性空間、誤差、試行数でDMRG等と比較する。",
+            "HPCI固有の富岳全系実証を、必要な標準導入規模とは解釈しない。"
+          ],
+          "adoption_conditions_en": [
+            "Compare with DMRG and other methods at matching active space, error and repetitions.",
+            "Do not treat this HPCI-specific full-Fugaku experiment as a standard required deployment size."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-QURI-QSCI-RESOURCE-ASSUMPTIONS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA026"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "QURI SDK: アルゴリズム評価と資源推定",
+          "name_en": "QURI SDK: algorithm evaluation and resource estimation",
+          "timing_ja": "公開QSCI教材・評価基盤",
+          "timing_en": "Public QSCI tutorial and evaluation framework",
+          "statement_ja": "QunaSysのQURI SDKはQSCIのサンプリング、部分空間対角化、デバイス仮定を用いた資源推定を接続します。教材には雑音を含めない精度評価と、雑音・誤り訂正を仮定した評価が併存します。仮想デバイスでの推定値を、現行量子装置の実測値や将来製品の性能保証と混同しません。",
+          "statement_en": "QunaSys QURI SDK connects QSCI sampling, subspace diagonalization and device-based resource estimation. Its tutorial contains both noiseless accuracy studies and noise/error-correction assumptions. Virtual-device estimates are neither current hardware measurements nor future product guarantees.",
+          "hpci_relevance_ja": "国内の量子ソフトウェアを、必要な古典資源も含めて比較できます。",
+          "hpci_relevance_en": "It supports comparison of Japanese quantum software including classical-resource requirements.",
+          "adoption_conditions_ja": [
+            "雑音モデル、論理・物理量子ビット、ゲート時間を明示する。",
+            "小分子の例題を産業規模での優位性へ外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Declare noise models, logical/physical qubits and gate times.",
+            "Do not extrapolate small-molecule tutorials into industrial advantage."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-DA-QUBO-QUALITY-TIME",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDA027"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Digital Annealer: QUBO変換と総処理時間",
+          "name_en": "Digital Annealer: QUBO conversion and total time",
+          "timing_ja": "2024年4月版の公開利用手引き",
+          "timing_en": "Public guide, April 2024 edition",
+          "statement_ja": "富士通の公開手引きではQUBO係数を整数表現へ変換し、FujitsuDA3Solverで最大10万ビットを扱います。丸め・スケーリングが元の制約に与える影響を検証する必要があります。また、指定した求解時間に加えてCPU処理が発生するため、その時間だけを他方式の総処理時間と比較できません。",
+          "statement_en": "Fujitsu's guide describes integer conversion of QUBO coefficients and up to 100,000 bits with FujitsuDA3Solver. Rounding/scaling must be checked against original constraints. CPU work can add to the specified solve time, which therefore cannot be compared directly with another method's total runtime.",
+          "hpci_relevance_ja": "物流・割当等の最適化では、問題変換と実行条件まで含む比較が必要です。",
+          "hpci_relevance_en": "Logistics and allocation studies require comparison of formulation and execution conditions.",
+          "adoption_conditions_ja": [
+            "手引きの版と契約APIを固定し、現行提供条件は追加確認する。",
+            "可行性と目的関数を元の問題で再評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin guide/API versions and verify current service terms separately.",
+            "Reevaluate feasibility and objective values in the original problem."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SQBM22-CLASSICAL-GPU",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDA028"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SQBM+ 2.2: 古典GPU上の量子インスパイアード最適化",
+          "name_en": "SQBM+ 2.2: quantum-inspired optimization on classical GPUs",
+          "timing_ja": "2026-06-25にパートナー向け提供開始と発表",
+          "timing_en": "Partner availability announced for 2026-06-25",
+          "statement_ja": "東芝はSQBM+ 2.2で最大10億変数、複数要求に対するGPU割当、SchemaSBMを発表しました。これは量子プロセッサではなく古典計算機で動く方式です。公表された最大変数数には問題密度・必要メモリ・達成時間の詳細がないため、密結合問題を同じ規模で扱えるとは断定しません。",
+          "statement_en": "Toshiba announced up to one billion variables, multi-request GPU allocation and SchemaSBM in SQBM+ 2.2. It runs on classical computers, not QPUs. The release does not detail density, memory or achieved runtime at maximum scale, so equally large dense problems are not assumed feasible.",
+          "hpci_relevance_ja": "既存GPU設備を活用できる候補として量子装置と別に比較します。",
+          "hpci_relevance_en": "Compare it separately from QPUs as an option using existing GPUs.",
+          "adoption_conditions_ja": [
+            "疎密、係数幅、制約数、精度、GPU構成を一致させる。",
+            "近似解の品質と最適性の証明を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Match density, coefficient width, constraints, accuracy and GPU configuration.",
+            "Distinguish approximate quality from proof of optimality."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-DYNAMIC-ISING-DIRECTION",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA035"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "動的最適化: AIによる求解条件の選択",
+          "name_en": "Dynamic optimization: AI-selected solving conditions",
+          "timing_ja": "2026-06-17の研究発表、適用拡大日は未公表",
+          "timing_en": "Research announced 2026-06-17; wider deployment date unspecified",
+          "statement_ja": "東芝は変化する最大独立集合問題に対し、AIがSBMのパラメータや実行機を選ぶ方式を報告しています。無線通信の時間枠割当などを例にしていますが、研究事例の高速化は一般的な期限保証ではありません。継続的な最適化への応用候補として追跡します。",
+          "statement_en": "Toshiba reports AI selection of SBM parameters and machines for changing maximum-independent-set problems, including wireless timeslot allocation. Reported research speedups are not general deadline guarantees. This is a candidate for continuous optimization workflows.",
+          "hpci_relevance_ja": "実験設備や運用制御への応用では、最適化時間と安全な代替動作を同時に設計します。",
+          "hpci_relevance_en": "Instrument and operational applications need both solving-time limits and safe fallback behavior.",
+          "adoption_conditions_ja": [
+            "学習外の問題分布と最悪時の遅延を検証する。",
+            "設備への自動操作は別途安全評価と承認を要する。"
+          ],
+          "adoption_conditions_en": [
+            "Test out-of-distribution instances and worst-case delays.",
+            "Automated instrument actions require separate safety assessment and authorization."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-QOBLIB-FAIR-CONTROL",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA029",
+            "SRC-CDA030",
+            "SRC-CDA031"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "QOBLIB: 共通問題と公平な古典比較",
+          "name_en": "QOBLIB: shared instances and fair classical controls",
+          "timing_ja": "2025年v2論文と現行公開リポジトリ",
+          "timing_en": "2025 v2 paper and current public repository",
+          "statement_ja": "QOBLIBは最適化10問題群と参照結果を公開しています。各方式に適した定式化と同等の調整努力が必要で、全方式を不利なQUBO表現へ強制すべきではありません。論文の実行時間は待機を除くため、OpenFSではその値を保持しつつ、利用者の待ち時間を含む処理時間を別指標として求めます。",
+          "statement_en": "QOBLIB publishes ten optimization classes and reference results. Fair comparison requires method-appropriate formulations and equitable tuning, not forcing every solver into an unfavorable QUBO. Its runtime excludes idle queues; OpenFS should retain that definition and separately request user-facing elapsed time including queues.",
+          "hpci_relevance_ja": "同じ入力から解の品質、計算資源、再現性を比較する出発点になります。",
+          "hpci_relevance_en": "It provides a starting point for matched-input comparison of quality, resources and reproducibility.",
+          "adoption_conditions_ja": [
+            "乱数試行、可行解率、最良既知解と証明済み最適解を区別する。",
+            "前処理・後処理・量子実行・待機の計時範囲を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate repeated trials, feasibility rates, best-known and proven-optimal results.",
+            "Declare timing boundaries for preprocessing, postprocessing, quantum execution and queues."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-QUANTUM-ADVANTAGE-SCOPED",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA032",
+            "SRC-CDA033",
+            "SRC-CDA034"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "量子優位性: 対象範囲と反証可能性",
+          "name_en": "Quantum advantage: scope and falsifiability",
+          "timing_ja": "2026-07-28の論文と7月30日の発表",
+          "timing_en": "Paper dated 2026-07-28 and announcement on July 30",
+          "statement_ja": "IBM・Algorithmiqは特定の量子物質模型について優位性を主張し、真値を直接計算できない場合に雑音操作で結果を検証する枠組みを示しました。これは汎用的な優位性や調達適合性の確定ではありません。古典側もmonoprop等で進歩しており、問題・誤差・費用を固定した継続的な反証検討が必要です。",
+          "statement_en": "IBM/Algorithmiq claim advantage for a specific quantum-matter model using noise manipulation to validate otherwise inaccessible results. This establishes neither universal superiority nor procurement suitability. Classical methods such as monoprop continue to advance, requiring ongoing challenges at fixed problem, error and cost.",
+          "hpci_relevance_ja": "発表件数ではなく、独立に検証できる用途と誤差保証を採用条件にします。",
+          "hpci_relevance_en": "Adoption should depend on independently testable use cases and error bounds, not announcement counts.",
+          "adoption_conditions_ja": [
+            "同じ研究の論文と広報を独立した裏付けとして数えない。",
+            "monopropの打切り誤差と0.x互換性、MPI構成を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not count a paper and its press release as independent corroboration.",
+            "Declare monoprop truncation errors, 0.x compatibility and MPI configuration."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA024",
+        "title": "Closed-loop calculations of electronic structure on a quantum processor and a classical supercomputer at full scale",
+        "publisher": "Shirakawa et al. / arXiv",
+        "url": "https://arxiv.org/html/2511.00224v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-10-31, v1"
+      },
+      "origin_group": "riken-ibm-closed-loop-2511.00224",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Sections III-IV; Table I and discussion of DMRG reference energies",
+      "observation_ja": "閉ループ実証、富岳の資源配分、DMRG参照との差を確認。図の数値は新たに読取り・再計算していない。",
+      "observation_en": "Read the closed-loop demonstration, Fugaku allocation and differences from DMRG reference energies; no figure digitization or recomputation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA025",
+        "title": "Library for selected basis diagonalization",
+        "publisher": "RIKEN R-CCS / r-ccs-cms",
+        "url": "https://github.com/r-ccs-cms/sbd",
+        "source_class": "official-project",
+        "published_or_updated": "README inspected 2026-09-01; v1.3.0 listed"
+      },
+      "origin_group": "riken-sbd-project",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "README: Versions and Requirement",
+      "observation_ja": "MPI分散波動関数、OpenMP/BLAS/LAPACK、v1.3.0のGPU実装を確認。移植性能は未測定。",
+      "observation_en": "Read distributed wavefunctions, MPI/OpenMP/BLAS/LAPACK requirements and v1.3.0 GPU implementation; portability performance not measured.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA026",
+        "title": "Quantum Selected Configuration Interaction",
+        "publisher": "QunaSys / QURI SDK",
+        "url": "https://quri-sdk.qunasys.com/docs/howto/applying_algorithms/quantum_selected_configuration_interaction",
+        "source_class": "official-project",
+        "published_or_updated": "Documentation inspected 2026-09-01"
+      },
+      "origin_group": "qunasys-quri-sdk",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "QSCI, H_N and Resource estimation",
+      "observation_ja": "対角化とサンプリング、雑音なしの精度図とデバイス仮定付き資源評価の区別を確認。",
+      "observation_en": "Read diagonalization/sampling and the distinction between noiseless energy results and device-assumption resource estimates.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA027",
+        "title": "Fujitsu Computing as a Service Digital Annealer User's Guide",
+        "publisher": "Fujitsu",
+        "url": "https://portal.aispf.global.fujitsu.com/apidoc/da/jp/da-guide-en.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Eighth edition, April 2024"
+      },
+      "origin_group": "fujitsu-digital-annealer-guide",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Sections 3.1, 4.1 and 4.3; document history",
+      "observation_ja": "QUBO上限、係数の整数化、時間制限とCPU処理の区別を確認。資料中の認証例は保存・使用しない。",
+      "observation_en": "Read QUBO limits, coefficient rounding and solve-time versus CPU work; credential examples were neither saved nor used.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA028",
+        "title": "SQBM+ Version 2.2 supports up to one billion variables",
+        "publisher": "Toshiba",
+        "url": "https://www.global.toshiba/ww/news/digitalsolution/2026/06/news-20260625-01.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-25"
+      },
+      "origin_group": "toshiba-sqbm-2.2-release",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Release paragraphs and Key Features",
+      "observation_ja": "2026-06-25のパートナー向け提供、古典GPU実装、資源割当を確認。最大変数数に対する密度・メモリ・時間の条件は本文にない。",
+      "observation_en": "Confirmed partner availability on 2026-06-25, classical GPU implementation and allocation; density, memory and time conditions for maximum scale are absent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA029",
+        "title": "Towards Robust Benchmarking of Quantum Optimization Algorithms",
+        "publisher": "Bucher et al. / arXiv",
+        "url": "https://arxiv.org/abs/2405.07624",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-05-13"
+      },
+      "origin_group": "bucher-quantum-benchmark-guidelines",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Abstract and enumerated benchmarking guidelines",
+      "observation_ja": "各手法に適した定式化、実問題、総合指標、同等の調整努力という比較条件を確認。",
+      "observation_en": "Read requirements for method-appropriate formulations, real instances, holistic metrics and equitable tuning effort.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA030",
+        "title": "Quantum Optimization Benchmarking Library - The Intractable Decathlon",
+        "publisher": "Koch et al. / arXiv",
+        "url": "https://arxiv.org/html/2504.03832v2",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-08-28, v2"
+      },
+      "origin_group": "qoblib-decathlon-publication",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Sections 3.2-3.3 and benchmark classes",
+      "observation_ja": "実行時間から待機を除く定義、QPU時間の内訳、最適解証明と最良既知解の区別を確認。",
+      "observation_en": "Read runtime excluding idle queues, QPU timing components and proven-optimum versus best-known distinctions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA031",
+        "title": "QOBLIB benchmark suite",
+        "publisher": "ZIB-AOPT / QOBLIB contributors",
+        "url": "https://github.com/ZIB-AOPT/QOBLIB",
+        "source_class": "official-project",
+        "published_or_updated": "Repository inspected 2026-09-01"
+      },
+      "origin_group": "qoblib-decathlon-publication",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "README and instance directories; former ZIB GitLab points here",
+      "observation_ja": "旧GitLabから移転先を追跡し、10問題群の公開データへの入口を確認。",
+      "observation_en": "Followed the old ZIB GitLab migration notice to the current repository for ten problem classes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA032",
+        "title": "IBM and Algorithmiq demonstrate quantum advantage with a framework beyond classical verification",
+        "publisher": "IBM / Algorithmiq",
+        "url": "https://newsroom.ibm.com/2026-07-30-ibm-and-algorithmiq-demonstrate-quantum-advantage,-establishing-a-framework-for-trusted-quantum-computation-beyond-classical-verification",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-30"
+      },
+      "origin_group": "ibm-algorithmiq-observable-estimation-2026",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Studying Information Flow and Solving Quantum Computing's Trust Problem",
+      "observation_ja": "特定の物理模型についての優位性主張と、雑音操作による検証方針を確認。独立検証済みとはしていない。",
+      "observation_en": "Read the scoped advantage claim and noise-manipulation validation strategy; not treated as independently verified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA033",
+        "title": "Observable Estimation in the Absence of Classical Verification",
+        "publisher": "Barron et al. / arXiv",
+        "url": "https://arxiv.org/abs/2607.25998",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-07-28, v1"
+      },
+      "origin_group": "ibm-algorithmiq-observable-estimation-2026",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "Abstract and submission metadata",
+      "observation_ja": "真値不明時の観測量推定と、雑音モデルの検証へ帰着する前提を確認。",
+      "observation_en": "Read observable estimation without ground truth and reliance on validating the noise model.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA034",
+        "title": "monoprop: Majorana and Pauli propagation",
+        "publisher": "Algorithmiq",
+        "url": "https://github.com/algorithmiq/monoprop",
+        "source_class": "official-project",
+        "published_or_updated": "README inspected 2026-09-01; 0.x development warning"
+      },
+      "origin_group": "algorithmiq-monoprop",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "README overview, warning, installation and benchmarks",
+      "observation_ja": "演算子展開の打切り、MPI分散、配布wheelは単一プロセス、0.xの互換性注意を確認。",
+      "observation_en": "Read operator truncation, MPI distribution, single-process wheels and 0.x compatibility caveats.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA035",
+        "title": "Quantum-inspired optimization for dynamically changing environments",
+        "publisher": "Toshiba",
+        "url": "https://www.global.toshiba/ww/technology/corporate/rdc/rd/topics/26/2606-03.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-17"
+      },
+      "origin_group": "toshiba-dynamic-ising-2026",
+      "checked_at": "2026-09-01T01:08:05+09:00",
+      "locator": "TDMA scheduling and Future developments",
+      "observation_ja": "変化するMIS問題に応じたAIのパラメータ・実行機選択と、今後の適用拡大計画を確認。",
+      "observation_en": "Read AI selection of parameters/machines for changing MIS instances and future application plans.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-070",
+      "topic_ids": [
+        "APP-11"
+      ],
+      "priority": "P1",
+      "question_ja": "量子化学・最適化・計測で、国内外の最良古典法と同じ精度・総費用を満たす用途を特定できるか。",
+      "question_en": "Can chemistry, optimization and sensing use cases be identified against strong worldwide classical methods at matching accuracy and total cost?",
+      "next_action_ja": "公開入力、誤差境界、前後処理、待機、料金、独立再現を集める。計測応用とQUBO++の現行公開資料は未確認として追加調査する。",
+      "next_action_en": "Collect public inputs, error bounds, preprocessing/postprocessing, queues, charges and independent replications; sensing and current QUBO++ material remain unverified.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "量子計測、論理量子ビットを用いた大規模用途の資源見積り、QUBO++現行版の確認が残る。",
+    "SQBM+の最大規模での疎密・メモリ・精度・総時間は未確認。",
+    "公開資料を読んだ調査であり、量子・古典の再現実験は行っていない。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Quantum sensing, large-scale logical-qubit resource estimates and current QUBO++ verification remain open.",
+    "SQBM+ density, memory, quality and total runtime at maximum scale remain unverified.",
+    "This is a public-source review, not a quantum/classical replication experiment.",
+    "Independent-model Consensus remains incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-APP11-QUALITY",
+        "label_ja": "解の品質",
+        "label_en": "Solution quality",
+        "question_ja": "同じ精度・制約を満たす最良の古典手法と比較できるか。",
+        "question_en": "Can results be compared with strong classical methods at matching accuracy and constraints?"
+      },
+      {
+        "dimension_id": "DIM-APP11-TOTAL",
+        "label_ja": "総資源量",
+        "label_en": "Total resources",
+        "question_ja": "前後処理、試行、待機を分けて総処理時間と費用を説明できるか。",
+        "question_en": "Are preprocessing, postprocessing, repetitions and queues accounted for in time and cost?"
+      },
+      {
+        "dimension_id": "DIM-APP11-REPRODUCE",
+        "label_ja": "再現と反証",
+        "label_en": "Reproduction and falsification",
+        "question_ja": "公開入力と対照計算で優位性の主張を再検証できるか。",
+        "question_en": "Can advantage claims be retested with public inputs and classical controls?"
+      }
+    ]
+  }
+}

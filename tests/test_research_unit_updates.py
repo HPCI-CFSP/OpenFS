@@ -193,6 +193,64 @@ class ResearchUnitUpdateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source metadata changed"):
             self.apply()
 
+    def prepare_source_correction(self):
+        old = {**self.surface["sources"][0], "source_id": "SRC-TEST-PRIOR"}
+        old.pop("correction", None)
+        self.surface["sources"].append(old)
+        check = copy.deepcopy(self.bundle["source_checks"][0])
+        check["source"] = {**old, "source_id": "SRC-TEST-CORRECTED", "source_class": "research-artifact",
+                           "correction": {"supersedes_source_id": old["source_id"],
+                                          "reason_ja": "公開メタデータの分類を訂正。",
+                                          "reason_en": "Correct classification from public metadata."}}
+        self.bundle["source_checks"].append(check)
+        self.bundle["sections"][0]["items"][0]["source_ids"] = [check["source"]["source_id"]]
+        return old, check
+
+    def test_source_metadata_correction_is_append_only_and_idempotent(self):
+        old, check = self.prepare_source_correction()
+        before = copy.deepcopy(self.surface)
+        baseline, surface, changed = self.apply()
+        self.assertTrue(changed)
+        self.assertEqual(before, self.surface)
+        self.assertEqual(old, next(s for s in surface["sources"] if s["source_id"] == old["source_id"]))
+        self.assertIn(check["source"], surface["sources"])
+        self.assertFalse(project(ROOT, self.bundle, baseline, surface)[2])
+        verify_applied(self.bundle, baseline, surface)
+
+    def test_source_correction_cannot_name_an_unrecorded_predecessor(self):
+        old, _ = self.prepare_source_correction()
+        self.surface["sources"].remove(old)
+        with self.assertRaisesRegex(ValueError, "pre-existing source"):
+            self.apply()
+
+    def test_new_claims_must_use_corrected_metadata(self):
+        old, check = self.prepare_source_correction()
+        old_check = {**check, "source": old}
+        self.bundle["source_checks"].append(old_check)
+        self.bundle["sections"][0]["items"][0]["source_ids"].append(old["source_id"])
+        with self.assertRaisesRegex(ValueError, "new claims cannot use superseded"):
+            self.apply()
+
+    def test_correction_cannot_leave_active_claim_or_matrix_on_old_metadata(self):
+        old, _ = self.prepare_source_correction()
+        profile = next(p for p in self.surface["topic_profiles"] if p["topic_id"] != "SSW-05"
+                       and not next(t for t in self.baseline["topics"] if t["topic_id"] == p["topic_id"]).get("retirement"))
+        item = next(s for s in profile["sections"] if s["section_id"] not in profile.get("archived_section_ids", []))["items"][0]
+        item["source_ids"].append(old["source_id"])
+        with self.assertRaisesRegex(ValueError, "active claims still"):
+            self.apply()
+        item["source_ids"].remove(old["source_id"])
+        self.surface["platform_matrix"]["platforms"][0]["source_ids"].append(old["source_id"])
+        with self.assertRaisesRegex(ValueError, "active matrix or actor"):
+            self.apply()
+
+    def test_source_correction_reasons_must_be_nonblank_in_schema(self):
+        from jsonschema import ValidationError
+        _, check = self.prepare_source_correction()
+        check["source"]["correction"]["reason_en"] = " \n "
+        with self.assertRaises(ValidationError):
+            self.apply()
+
     def test_archiving_live_unit_evidence_rejected(self):
         profile = profile_for(self.surface, "SSW-05")
         self.bundle["archive_section_ids"] = [profile["sections"][0]["section_id"]]

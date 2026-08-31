@@ -1,0 +1,259 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000117",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-01T05:12:53+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "421ec12d3be81219ef3b9bae8e2c0eed919ee2469f640c01c7b320cdc2b0828b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学ワークフローを、タスク依存関係の実行、結果の再利用、ストリーミング連携、対話・AIによる制御に分けて比較します。Parsl、Nextflow、Pegasus、ADIOS2、Colmena、WHEELについて、再開の粒度とデータ・認証・運用条件を整理しました。一つの製品による全面的な統一や、実時間処理の期限保証を前提にはしません。",
+  "summary_en": "Compare scientific workflows across task dependencies, result reuse, streaming and interactive/AI steering. For Parsl, Nextflow, Pegasus, ADIOS2, Colmena and WHEEL, distinguish recovery granularity and data, identity and operational conditions. Do not assume comprehensive unification by one product or guaranteed real-time deadlines.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "04b875300f6b1f554a39cf93fcc53b90171643f88b2f7038536fcd86ff590b54",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01",
+        "TDS-CD2-SSW-16-U01",
+        "TDS-CD3-SSW-16-U01",
+        "TDS-CD4-SSW-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-SSW-16-U01",
+      "title_ja": "HPC向けAIエージェントの接続方式と運用条件",
+      "title_en": "HPC agent integration and operating conditions",
+      "summary_ja": "公開実装、サービス保証、モデルへのデータ送信、ジョブの終了を区別します。",
+      "summary_en": "Separate public implementations, service assurance, model data flow and job completion.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-HPC-AGENTIC-SDK-ADAPTERS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS114",
+            "SRC-CDS115"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPC-Agentic-SDKと機種別アダプタ",
+          "name_en": "HPC-Agentic-SDK and machine adapters",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "HPC-Agentic-SDKは最適化・ベンチマークのツールと機種別エージェントを公開しています。Hokusai-Agentは共通のhpc-agent-coreを使い、SSH経由でジョブ・ファイル操作を提供します。SDK内の富岳向け実装は非公式コミュニティ版であり、別に案内される公式fugaku-mcpと混同しません。",
+          "statement_en": "HPC-Agentic-SDK publishes optimization/benchmark tools and machine agents. Hokusai-Agent uses shared hpc-agent-core components for SSH job/file operations. The SDK's Fugaku adapter is an explicitly unofficial community port, distinct from the separately linked official fugaku-mcp.",
+          "hpci_relevance_ja": "共通APIの名称だけで同じ接続方式、サポート責任、機能範囲を仮定せず、機種ごとの実装を確認します。",
+          "hpci_relevance_en": "Check each machine adapter instead of assuming a common API label implies identical transport, support ownership or capabilities.",
+          "adoption_conditions_ja": [
+            "公開リポジトリの存在を、センターでの運用承認や稼働保証とは扱わない。",
+            "導入時には実装と依存関係の版を固定し、対応する管理者手順を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "A public repository does not establish center approval or service guarantees.",
+            "Pin implementation/dependency versions and confirm the applicable administrator procedures before deployment."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-FUGAKU-MCP-DATA-BOUNDARY",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS116",
+            "SRC-CDS118"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ローカルMCPとモデルへの送信は別",
+          "name_en": "Local MCP execution does not establish local inference",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "fugaku-mcpは富岳WebAPIをREST/X.509で利用するMCPアダプタです。FAQには、AIが読み取ったファイルやジョブ出力がクラウドモデルへ送られると説明されています。READMEにローカル実行の記述があっても、それだけでローカル推論や機密データの非送信を保証したとは判断できません。",
+          "statement_en": "fugaku-mcp adapts the Fugaku WebAPI through REST/X.509. Its FAQ says content read by the assistant, including files and job output, is sent to a cloud model. Local-execution wording in the README alone therefore does not establish local inference or non-disclosure of confidential data.",
+          "hpci_relevance_ja": "科学データの持出し条件は、MCPプロセスの配置と別に確認する必要があります。",
+          "hpci_relevance_en": "Scientific-data disclosure conditions require checks beyond the MCP process location.",
+          "adoption_conditions_ja": [
+            "モデル、送信内容、保存条件を環境ごとに確認する。",
+            "今回の調査では接続設定、認証情報の読取り、ジョブ実行をしていない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify the model, transmitted content and retention conditions for each environment.",
+            "This study did not configure access, read credentials or execute jobs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-FUGAKU-MCP-CONTROL-LIMITS",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDS117"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "操作制限とサーバ側の隔離",
+          "name_en": "Operation controls and server-side isolation",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "安全方針にはコマンド、パス、資源量、監査の設定がある一方、サーバ側の隔離は今後の課題と明記されています。クライアント側の操作制限だけで、共有サービスの安全性が検証されたとは扱いません。",
+          "statement_en": "The safety policy documents command, path, resource and audit settings, but explicitly leaves server-side isolation to future work. Client-side operation controls alone do not establish verified safety for a shared service.",
+          "hpci_relevance_ja": "個人での試用と多利用者サービスで必要な隔離・監査を分けて評価します。",
+          "hpci_relevance_en": "Evaluate isolation and auditing separately for individual trials and multi-user services.",
+          "adoption_conditions_ja": [
+            "サーバ側権限、監査、資源上限を別途検証する。",
+            "公開文書の確認であり、コード監査や侵入試験の結果ではない。"
+          ],
+          "adoption_conditions_en": [
+            "Separately validate server-side authorization, auditing and resource limits.",
+            "This is a documentation review, not a code audit or penetration test."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-FUGAKU-MCP-JOB-LIFECYCLE",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS118"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "待機終了とジョブ終了の違い",
+          "name_en": "Waiting timeout versus job completion",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "FAQでは、待機時間を超えたrun_jobはジョブIDを返し、その後に状態と結果を取得すると説明しています。待機の終了をジョブの中止と同一視できません。OpenFSでは、再試行前の状態確認と重複投入の防止を評価条件とします。",
+          "statement_en": "The FAQ says run_job returns a job ID after its wait times out, with status/results retrieved later. End of waiting is not cancellation. OpenFS proposes checking job state and preventing duplicate submissions before retrying.",
+          "hpci_relevance_ja": "長時間の実験・AIワークフローで、再開時の重複計算や結果の取り違えを防ぐ条件です。",
+          "hpci_relevance_en": "This addresses duplicate work and mismatched results when long-running experimental or AI workflows resume.",
+          "adoption_conditions_ja": [
+            "ジョブID、投入入力、結果、キャンセル確認を対応付ける。",
+            "既存ファイルの上書きを含め、再実行時の副作用を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Associate job IDs, submitted inputs, outputs and cancellation confirmation.",
+            "Check retry side effects, including overwriting existing files."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS114",
+        "title": "RIKEN-RCCS HPC-Agentic-SDK: plugin and facility-agent overview",
+        "publisher": "RIKEN-RCCS / HPC-Agentic-SDK contributors",
+        "url": "https://github.com/RIKEN-RCCS/HPC-Agentic-SDK",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01; release date not established"
+      },
+      "origin_group": "riken-rccs-agentic-sdk",
+      "checked_at": "2026-09-01T04:48:51+09:00",
+      "locator": "Optimization tools and facility agents; official/community Fugaku distinction",
+      "observation_ja": "HPC向けツールと機種別エージェントの公開一覧を確認。SDK内の富岳向け実装は非公式コミュニティ版と明記され、公式fugaku-mcpを別に案内する。",
+      "observation_en": "Read HPC tools and machine adapters. The SDK explicitly labels its Fugaku adapter an unofficial community port and separately points to official fugaku-mcp.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS115",
+        "title": "HOKUSAI BigWaterfall2 Agent: public implementation overview",
+        "publisher": "RIKEN-RCCS / Hokusai-Agent contributors",
+        "url": "https://github.com/RIKEN-RCCS/Hokusai-Agent",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01; release date not established"
+      },
+      "origin_group": "riken-rccs-agentic-sdk",
+      "checked_at": "2026-09-01T04:48:51+09:00",
+      "locator": "Overview, configuration and documentation-search fallback",
+      "observation_ja": "hpc-agent-core上の機種別実装、SSH経由のジョブ・ファイル操作、埋込み検索からBM25への切替を確認。資料上の機能であり動作検証はしていない。",
+      "observation_en": "Documents a machine adapter on hpc-agent-core, SSH job/file operations and embedding-search fallback to BM25. No execution verification was performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS116",
+        "title": "fugaku-mcp English README: WebAPI adapter",
+        "publisher": "RIKEN-RCCS / fugaku-mcp contributors",
+        "url": "https://github.com/RIKEN-RCCS/fugaku-mcp/blob/main/README.en.md",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01; release date not established"
+      },
+      "origin_group": "riken-rccs-fugaku-mcp",
+      "checked_at": "2026-09-01T04:48:51+09:00",
+      "locator": "Architecture and exposed tools",
+      "observation_ja": "REST/X.509でジョブ・ファイル操作を提供するローカルMCPアダプタを確認。推論の実行場所はREADMEだけで確定せずFAQのデータ送信説明と照合する。",
+      "observation_en": "Documents a local MCP adapter for REST/X.509 job/file tools. Inference placement is not inferred from the README alone; the FAQ explicitly describes data transmission.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS117",
+        "title": "fugaku-mcp safety policy (English)",
+        "publisher": "RIKEN-RCCS / fugaku-mcp contributors",
+        "url": "https://github.com/RIKEN-RCCS/fugaku-mcp/blob/main/docs/security.en.md",
+        "source_class": "official-project",
+        "published_or_updated": "main documentation accessed 2026-09-01; release date not established"
+      },
+      "origin_group": "riken-rccs-fugaku-mcp",
+      "checked_at": "2026-09-01T04:48:51+09:00",
+      "locator": "Configuration and documented isolation limitations",
+      "observation_ja": "コマンド、パス、資源量、監査の設定を確認。サーバ側の真の隔離は今後の課題と明記され、クライアント側制御の存在だけで安全性を保証しない。",
+      "observation_en": "Read configurable command, path, resource and audit controls. The document leaves server-side isolation to future work; client-side controls alone do not establish safety.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS118",
+        "title": "fugaku-mcp FAQ: data flow and job lifecycle (English)",
+        "publisher": "RIKEN-RCCS / fugaku-mcp contributors",
+        "url": "https://github.com/RIKEN-RCCS/fugaku-mcp/blob/main/docs/faq.en.md",
+        "source_class": "official-project",
+        "published_or_updated": "main documentation accessed 2026-09-01; release date not established"
+      },
+      "origin_group": "riken-rccs-fugaku-mcp",
+      "checked_at": "2026-09-01T04:48:51+09:00",
+      "locator": "Jobs, files, privacy and data flow",
+      "observation_ja": "読み取った内容がクラウドAIへ送られる説明、待機時間超過後のジョブID返却、ファイル上書きを確認。接続やジョブ実行はしていない。",
+      "observation_en": "Read cloud transmission of retrieved content, job-ID return after waiting times out and file overwrites; no connection or jobs were executed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開文書による暫定調査であり、独立Consensusや実機検証は未実施。"
+  ],
+  "remaining_work_en": [
+    "This is provisional public-document research; independent Consensus and hardware verification remain undone."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000040",
+      "bundle_sha256": "69cef4a37856ecaeb2b2ebf568e2349a0dabf8847f00fc104264f2b552dc45e9"
+    },
+    {
+      "update_id": "RUP-000073",
+      "bundle_sha256": "046606c6fa81785d4b8a7144a54e7def5aa06eade8e80cf0598035068e8e4a92"
+    },
+    {
+      "update_id": "RUP-000111",
+      "bundle_sha256": "21f537b01086fc074f8cac4da6d2dadf130c3fc840a655089444a00192388cdb"
+    }
+  ]
+}

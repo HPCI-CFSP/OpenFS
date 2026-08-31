@@ -26,6 +26,41 @@ def duplicate_values(values: list[str]) -> list[str]:
     return sorted({value for value in values if values.count(value) > 1})
 
 
+def validate_source_corrections(sources: list[dict[str, Any]]) -> list[str]:
+    """Keep metadata revisions traceable without deleting earlier source records."""
+    errors = []
+    source_ids = {source["source_id"] for source in sources}
+    predecessors = {}
+    successors = {}
+    for source in sources:
+        correction = source.get("correction")
+        if correction is None:
+            continue
+        sid = source["source_id"]
+        previous = correction.get("supersedes_source_id")
+        if previous not in source_ids:
+            errors.append(f"{sid} corrects an unknown source: {previous}")
+        if previous == sid:
+            errors.append(f"{sid} cannot correct itself")
+        if previous in successors:
+            errors.append(f"source correction forks at {previous}")
+        successors[previous] = sid
+        predecessors[sid] = previous
+        if any(not isinstance(correction.get(key), str) or not correction[key].strip()
+               for key in ("reason_ja", "reason_en")):
+            errors.append(f"{sid} lacks bilingual source correction reasons")
+    for start in predecessors:
+        seen = set()
+        current = start
+        while current in predecessors:
+            if current in seen:
+                errors.append(f"cyclic source correction involving {start}")
+                break
+            seen.add(current)
+            current = predecessors[current]
+    return errors
+
+
 def validate_topic_decision_support(root: Path) -> list[str]:
     """Validate cross-references and publication semantics not expressible in JSON Schema."""
     path = root / "knowledge/public/topic-decision-support.json"
@@ -44,6 +79,11 @@ def validate_topic_decision_support(root: Path) -> list[str]:
         if item["status"] == "partial" and item["topic_id"] not in retired_topic_ids
     }
     source_ids = {item["source_id"] for item in artifact["sources"]}
+    errors.extend(validate_source_corrections(artifact["sources"]))
+    superseded_source_ids = {
+        item["correction"]["supersedes_source_id"]
+        for item in artifact["sources"] if item.get("correction")
+    }
     region_ids = {item["region_id"] for item in artifact["regions"]}
     actor_ids = {item["actor_id"] for item in artifact["actors"]}
     gaps = {item["gap_id"]: item for item in artifact["coverage_gaps"]}
@@ -52,9 +92,11 @@ def validate_topic_decision_support(root: Path) -> list[str]:
         if duplicates := duplicate_values(values):
             errors.append(f"duplicate {label}: {duplicates}")
 
-    def check_sources(label: str, refs: list[str]) -> None:
+    def check_sources(label: str, refs: list[str], *, historical: bool = False) -> None:
         if unknown := set(refs) - source_ids:
             errors.append(f"{label} has unknown sources {sorted(unknown)}")
+        if not historical and (superseded := set(refs) & superseded_source_ids):
+            errors.append(f"{label} uses superseded source metadata {sorted(superseded)}")
 
     check_duplicates("topic decision source IDs", [item["source_id"] for item in artifact["sources"]])
     check_duplicates("topic decision region IDs", [item["region_id"] for item in artifact["regions"]])
@@ -91,7 +133,9 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                     errors.append(f"{item['item_id']} has unpaired adoption conditions")
                 if unknown := set(item["actor_ids"]) - actor_ids:
                     errors.append(f"{item['item_id']} has unknown actors {sorted(unknown)}")
-                check_sources(item["item_id"], item["source_ids"])
+                check_sources(item["item_id"], item["source_ids"], historical=(
+                    section["section_id"] in profile.get("archived_section_ids", [])
+                    or profile["topic_id"] in retired_topic_ids))
 
         stages = {
             item["stage"]

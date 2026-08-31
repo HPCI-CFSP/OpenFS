@@ -1,0 +1,179 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000076",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-01T02:49:40+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "e77ecd48c68ae207a86647578183c193a5a8cd090039f300ddc9f5c7b8030539",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学計算の評価では、標準ベンチマークと実アプリを組み合わせ、入力・精度・資源数・計測方法を揃えます。GENESISの公開評価も確認しましたが、粗視化モデルやGPU実装の結果をEEA1へ直接転用できません。新たな実機計測や校正済みの将来性能予測は行っていません。",
+  "summary_en": "Scientific evaluation combines standard benchmarks and real applications at matched inputs, accuracy, resources and measurement methods. Public GENESIS results were checked, but coarse-grained or GPU evaluations cannot be transferred directly to EEA1. No new hardware measurements or calibrated future-performance predictions were produced.",
+  "units": [
+    {
+      "unit_id": "APP-02-U03",
+      "before_sha256": "7788830534a68caedf55d7735e8dce21ee00034add88345028412e08fdf1430d",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-02-U03",
+        "TDS-CD2-APP-02-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-02-U03",
+      "title_ja": "GENESISの実測資料と外挿可能範囲",
+      "title_en": "GENESIS measurements and limits on extrapolation",
+      "summary_ja": "アプリ名が同じでも、計算モデル・実装・精度が異なれば別の校正対象です。",
+      "summary_en": "A shared application name does not make different models, implementations or precision settings interchangeable calibration cases.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-GENESIS-OPENACC-CALIBRATION",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA081"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "OpenACC版の粗視化MD評価",
+          "name_en": "OpenACC coarse-grained MD evaluation",
+          "timing_ja": "SCA/HPCAsia 2026のポスター",
+          "timing_en": "SCA/HPCAsia 2026 poster",
+          "statement_ja": "ATDYN/HPSモデルを単一GPUで評価し、CPUはXeonの32スレッド、精度確認はCPU倍精度とGPU単精度です。富岳やEEA1と同じ条件の比較ではありません。",
+          "statement_en": "The ATDYN/HPS study uses one GPU against 32 Xeon threads; its accuracy comparison uses CPU double precision and GPU single precision. These are not matched Fugaku or EEA1 conditions.",
+          "hpci_relevance_ja": "既存の75%という高速化可能割合を裏づける資料にはできません。",
+          "hpci_relevance_en": "It cannot substantiate the existing 75% accelerable-fraction assumption.",
+          "adoption_conditions_ja": [
+            "対象入力・版・精度を一致させ、全実行時間を再計測する。"
+          ],
+          "adoption_conditions_en": [
+            "Match inputs, revision and precision, then remeasure total runtime."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-GENESIS-CGDYN-CALIBRATION",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA082",
+            "SRC-CDA083",
+            "SRC-CDA084"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CGDYNの公開再現資料",
+          "name_en": "Public CGDYN reproducibility materials",
+          "timing_ja": "2024-04-20の論文と対応コード・入力",
+          "timing_en": "2024-04-20 paper and associated code/inputs",
+          "statement_ja": "不均一な粒子分布に対する動的負荷分散を評価し、富岳向けを含む入力・解析資料と2.1.0beta_cgdynのコードを公開しています。問題規模や分布によって比較結果が変わります。",
+          "statement_en": "The study evaluates dynamic load balancing for nonuniform particle distributions and links input/analysis materials, including Fugaku cases, plus 2.1.0beta_cgdyn code. Comparative results depend on size and particle distribution.",
+          "hpci_relevance_ja": "校正候補になりますが、再実行と独立検証が必要です。",
+          "hpci_relevance_en": "These are calibration candidates, not independently reproduced measurements.",
+          "adoption_conditions_ja": [
+            "コード・入力をハッシュで固定し、学習用と検証用の測定を分離する。",
+            "公開リポジトリ、論文、同じ研究室の説明は独立した3系統の根拠とは数えない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin code/input hashes and separate calibration from holdout measurements.",
+            "The repository, paper and same-laboratory descriptions are not three independent origins."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA081",
+        "title": "GPU Acceleration of Coarse-Grained Molecular Dynamics Simulations in GENESIS Using OpenACC",
+        "publisher": "Cheng Tan et al.; SCA/HPCAsia 2026",
+        "url": "https://www.sca-hpcasia2026.jp/data/poster/post118.pdf",
+        "source_class": "research-artifact",
+        "published_or_updated": "SCA/HPCAsia 2026; exact publication day unconfirmed"
+      },
+      "origin_group": "riken-sugita-genesis",
+      "checked_at": "2026-09-01T02:48:52+09:00",
+      "locator": "ATDYN/HPS target; build options; Tables 1 and 2; hardware list",
+      "observation_ja": "本文抽出で単一GPU・粗視化モデル・精度差を確認。図の画像取得は失敗し、プロット座標は読んでいない。富岳EEA1の高速化可能割合を示す資料とは扱わない。",
+      "observation_en": "Text extraction confirms single-GPU coarse-grained evaluation and differing precision. Screenshot retrieval failed; plot coordinates were not read. This is not evidence for a Fugaku EEA1 accelerable fraction.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA082",
+        "title": "GENESIS CGDYN: large-scale coarse-grained MD simulation with dynamic load balancing for heterogeneous biomolecular systems",
+        "publisher": "Jaewoon Jung, Cheng Tan and Yuji Sugita; Nature Communications",
+        "url": "https://www.nature.com/articles/s41467-024-47654-1",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2024-04-20; Nature Communications 15, 3370"
+      },
+      "origin_group": "riken-sugita-genesis",
+      "checked_at": "2026-09-01T02:48:52+09:00",
+      "locator": "Results: computational performance; Data availability; Code availability",
+      "observation_ja": "CGDYNの負荷分散、問題依存の比較結果、公開ベンチマーク資料を確認。約7TBの全軌跡データは公開取得したものではない。",
+      "observation_en": "Read CGDYN load balancing, workload-dependent comparisons and public benchmark materials. The approximately 7 TB of full trajectories were not publicly retrieved.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA083",
+        "title": "CGDYN benchmark and application data",
+        "publisher": "RIKEN Sugita Laboratory",
+        "url": "https://github.com/RikenSugitaLab/cgdyntest",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-09-01; repository snapshot not executed"
+      },
+      "origin_group": "riken-sugita-genesis",
+      "checked_at": "2026-09-01T02:48:52+09:00",
+      "locator": "README; fugaku_droplet_benchmark, dna_benchmark and analysis directories",
+      "observation_ja": "富岳向け液滴系などの入力・解析ディレクトリを確認。実行・データ取得・計測再現は行っていない。",
+      "observation_en": "Read input/analysis directories including the Fugaku droplet benchmark; no execution, dataset download or measurement reproduction was performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA084",
+        "title": "GENESIS 2.1.0 beta CGDYN source",
+        "publisher": "RIKEN R-CCS GENESIS project",
+        "url": "https://github.com/genesis-release-r-ccs/genesis-2.1.0beta_cgdyn",
+        "source_class": "official-project",
+        "published_or_updated": "2.1.0beta_cgdyn; accessed 2026-09-01"
+      },
+      "origin_group": "riken-sugita-genesis",
+      "checked_at": "2026-09-01T02:48:52+09:00",
+      "locator": "README version/build conditions; src/cgdyn",
+      "observation_ja": "論文のコード版を現行版と区別した。mixed精度の構成例があるが、ビルドは行っていない。",
+      "observation_en": "Distinguished the paper's code version from current releases. Mixed-precision build examples were read, not built.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-068: EEA1と同じ入力・精度・ノード規模の計測、および異機種での独立検証が未完了です。",
+    "既存の未校正what-if値と厳格な性能予測契約の整合は別途確認が必要です。本調査では既存の承認済み試算を更新していません。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-068: measurements at matched EEA1 input, precision and node scale, plus independent cross-system validation, remain incomplete.",
+    "Legacy uncalibrated what-if values require separate reconciliation with the strict forecast contract. This review does not modify the previously approved illustrative estimates."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000042",
+      "bundle_sha256": "41213f9fad54ba2701499dd684d162544a648ab7d1db360731867e5e5cc03029"
+    }
+  ]
+}

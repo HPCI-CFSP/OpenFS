@@ -2,27 +2,27 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20260831-001",
-  "as_of": "2026-08-31",
-  "generated_at": "2026-08-31T06:47:13Z",
+  "queue_id": "RGQ-20260901-001",
+  "as_of": "2026-09-01",
+  "generated_at": "2026-08-31T20:14:58Z",
   "method_ja": "公開ロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the published roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
     "roadmap_count": 7,
-    "gap_count": 47,
-    "p0": 20,
-    "p1": 20,
+    "gap_count": 51,
+    "p0": 21,
+    "p1": 23,
     "p2": 7,
-    "source_discovery": 46,
+    "source_discovery": 50,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 46,
+    "staged_monitor_disabled": 50,
     "awaiting_independent_review": 1,
-    "explicit_query_overrides": 22,
-    "generated_query_fallbacks": 24,
-    "p0_explicit_query_overrides": 19,
+    "explicit_query_overrides": 23,
+    "generated_query_fallbacks": 27,
+    "p0_explicit_query_overrides": 20,
     "p0_generated_query_fallbacks": 0
   },
   "assignments": [
@@ -1138,6 +1138,61 @@
       "queue_item_id": "RGQ-0020"
     },
     {
+      "gap_id": "GAP-BLUE-009",
+      "roadmap_id": "RM-X-BLUEPRINT",
+      "priority": "P0",
+      "workstream": "source-discovery",
+      "cadence": "weekly",
+      "assignment_ref": "MON-HPCI-CENTERS-001",
+      "task_id": "OFS-003",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "2027年度の大学GPU増強と共通化の実装条件。",
+      "scope_en": "Implementation conditions for FY2027 university GPU expansion and common services.",
+      "impact_ja": "提供予定だけでは、アプリケーション移植、機関間認可、データ転送、実利用可能量を確定できません。",
+      "impact_en": "Planned provision alone does not establish portability, interinstitution authorization, transfer or usable capacity.",
+      "next_action_ja": "調達確定値、実際の稼働通知、採用ソフトウェア、共通化の確定方針を追跡し、15機関の未確認部分を残したまま更新する。",
+      "next_action_en": "Track contracted configurations, actual launch notices, software and finalized common-service policy, retaining gaps across the 15 providers.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "HPCI 2027年度 大学 GPU 増強 本格運用 共通化 認証 認可 データ転送"
+        },
+        {
+          "language": "en",
+          "query": "Japan HPCI FY2027 university GPU expansion production service interoperability authentication data transfer"
+        }
+      ],
+      "required_source_classes": [
+        "center-primary",
+        "procurement-primary",
+        "official-primary"
+      ],
+      "query_plan_origin": "explicit-override",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 2,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-BLUE-009-C1",
+            "verification_method": "authority-confirmation",
+            "requirement_ja": "資源提供機関ごとに、契約済み構成、稼働通知、HPCIへ配分可能なGPU時間、保守・停止条件を公式資料で確認し、未確認機関を明示する。",
+            "requirement_en": "For each provider, confirm contracted configurations, launch notices, allocatable HPCI GPU hours and maintenance/outage conditions from official records, explicitly retaining unverified providers."
+          },
+          {
+            "criterion_id": "GAP-BLUE-009-C2",
+            "verification_method": "conformance-test",
+            "requirement_ja": "確定した共通化方針に対し、機関間の認証・認可、利用終了時の権限失効、データ転送、同一アプリの実行可否を複数機関で検証する。規格の公表だけを導入済みの証拠としない。",
+            "requirement_en": "Against finalized common-service policy, test interinstitution authentication/authorization, end-of-access revocation, data transfer and matched-application execution at multiple providers. Publication of a standard alone does not prove deployment."
+          }
+        ]
+      },
+      "closure_plan_origin": "explicit-override",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0021"
+    },
+    {
       "gap_id": "GAP-WORK-002",
       "roadmap_id": "RM-APP-WORKLOADS",
       "priority": "P1",
@@ -1187,7 +1242,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0021"
+      "queue_item_id": "RGQ-0022"
     },
     {
       "gap_id": "GAP-WORK-007",
@@ -1239,7 +1294,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0023"
     },
     {
       "gap_id": "GAP-WORK-008",
@@ -1255,16 +1310,16 @@
       "scope_en": "Pinned code, inputs, dependencies, and run procedures for rerunning all six EEA1 applications under consistent conditions",
       "impact_ja": "公開コードの有無だけでは、性能予測の校正値や候補機の測定値を再現可能に比較できない。E-WaveとFrontFlow/blueのEEA1コード本体は公式資料上で非公開である。",
       "impact_en": "Code availability alone does not make forecast calibration or candidate-system measurements reproducibly comparable. The official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.",
-      "next_action_ja": "公開済み4本はコミットと入力をBenchparkまたはBenchKitの実行定義へ固定し、非公開2本は公開可能なプロキシまたは再配布可能な評価パッケージを開発元と検討する。",
-      "next_action_en": "Pin commits and inputs for the four public codebases in Benchpark or BenchKit execution definitions, and work with the developers on a public proxy or redistributable evaluation package for the two unreleased codebases.",
+      "next_action_ja": "公開4本のコード・入力・ビルド・計測区間を固定し、SALMONの初期化/時間発展、SCALE-LETKFの予報/同化、GENESISのモデル差、LQCDの精度差を分離する。非公開2本は公開プロキシを検討する。SCALE-LETKFの最新取得失敗も未解決として残す。",
+      "next_action_en": "Pin code, input, build and timed stages for the four public applications; separate SALMON initialization/propagation, SCALE-LETKF forecast/assimilation, GENESIS model variants and LQCD precision. Consider public proxies for the two unreleased codes, and retain the failed current SCALE-LETKF retrieval as unresolved.",
       "query_seeds": [
         {
           "language": "ja",
-          "query": "EEA1の6アプリケーションを同一条件で再実行するための、版固定コード、入力、依存関係、実行手順 公開済み4本はコミットと入力をBenchparkまたはBenchKitの実行定義へ固定し、非公開2本は公開可能なプロキシまたは再配布可能な評価パッケージを開発元と検討する。 公式 一次情報"
+          "query": "EEA1の6アプリケーションを同一条件で再実行するための、版固定コード、入力、依存関係、実行手順 公開4本のコード・入力・ビルド・計測区間を固定し、SALMONの初期化/時間発展、SCALE-LETKFの予報/同化、GENESISのモデル差、LQCDの精度差を分離する。非公開2本は公開プロキシを検討する。SCALE-LETKFの最新取得失敗も未解決として残す。 公式 一次情報"
         },
         {
           "language": "en",
-          "query": "Pinned code, inputs, dependencies, and run procedures for rerunning all six EEA1 applications under consistent conditions Pin commits and inputs for the four public codebases in Benchpark or BenchKit execution definitions, and work with the developers on a public proxy or redistributable evaluation package for the two unreleased codebases. official primary source"
+          "query": "Pinned code, inputs, dependencies, and run procedures for rerunning all six EEA1 applications under consistent conditions Pin code, input, build and timed stages for the four public applications; separate SALMON initialization/propagation, SCALE-LETKF forecast/assimilation, GENESIS model variants and LQCD precision. Consider public proxies for the two unreleased codes, and retain the failed current SCALE-LETKF retrieval as unresolved. official primary source"
         }
       ],
       "required_source_classes": [
@@ -1291,7 +1346,59 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0024"
+    },
+    {
+      "gap_id": "GAP-WORK-016",
+      "roadmap_id": "RM-APP-WORKLOADS",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "新しいAI・実験連携評価の公開版、代表性と再現条件。",
+      "scope_en": "Released versions, representativeness and reproducibility of emerging AI/instrument evaluations.",
+      "impact_ja": "版の異なる得点や計画中の評価を混在させると、ハードウェア選定と科学的有用性の判断を誤る可能性があります。",
+      "impact_en": "Mixing incompatible scores or planned evaluations can distort hardware and scientific-utility decisions.",
+      "next_action_ja": "MLPerf Agenticの確定規則と結果、Terminal-Benchの版固定、科学課題の分野別被覆、SALMONの配布物とEEA1入力の対応を追跡する。",
+      "next_action_en": "Track finalized MLPerf Agentic rules/results, pinned Terminal-Bench versions, scientific-domain coverage and SALMON artifacts matched to EEA1 inputs.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "新しいAI・実験連携評価の公開版、代表性と再現条件。 MLPerf Agenticの確定規則と結果、Terminal-Benchの版固定、科学課題の分野別被覆、SALMONの配布物とEEA1入力の対応を追跡する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Released versions, representativeness and reproducibility of emerging AI/instrument evaluations. Track finalized MLPerf Agentic rules/results, pinned Terminal-Bench versions, scientific-domain coverage and SALMON artifacts matched to EEA1 inputs. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-WORK-016-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0025"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -1343,7 +1450,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -1395,7 +1502,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-COMP-006",
@@ -1447,7 +1554,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-COMP-008",
@@ -1499,7 +1606,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-COMP-009",
@@ -1558,7 +1665,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -1610,7 +1717,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1662,7 +1769,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-NET-006",
@@ -1718,7 +1825,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1772,7 +1879,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0034"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -1826,7 +1933,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-MEM006",
@@ -1880,7 +1987,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0036"
     },
     {
       "gap_id": "GAP-STOR-002",
@@ -1932,7 +2039,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0035"
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -1984,7 +2091,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0036"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -2036,7 +2143,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0037"
+      "queue_item_id": "RGQ-0039"
     },
     {
       "gap_id": "GAP-PORT-008",
@@ -2091,7 +2198,111 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0038"
+      "queue_item_id": "RGQ-0040"
+    },
+    {
+      "gap_id": "GAP-PORT-009",
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "実行基盤の保守期間と機能別受入条件",
+      "scope_en": "Runtime support lifetimes and feature-level qualification",
+      "impact_ja": "API公開から本番採用までの期間や、保守切れ前の移行余裕を確定できません。",
+      "impact_en": "Release-to-production lead time and migration headroom before support expiry remain uncertain.",
+      "next_action_ja": "Slurm 26系の表記を再照合し、Kubernetesのfeature gate、対応ランタイム、センター別の採用版と試験結果を確認する。",
+      "next_action_en": "Reconcile Slurm 26.x dates and verify Kubernetes gates, runtimes, site versions and qualification results.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "実行基盤の保守期間と機能別受入条件 Slurm 26系の表記を再照合し、Kubernetesのfeature gate、対応ランタイム、センター別の採用版と試験結果を確認する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Runtime support lifetimes and feature-level qualification Reconcile Slurm 26.x dates and verify Kubernetes gates, runtimes, site versions and qualification results. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-009-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0041"
+    },
+    {
+      "gap_id": "GAP-PORT-010",
+      "roadmap_id": "RM-SSW-PORTABILITY",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "共通配布と外部移植支援の継続条件",
+      "scope_en": "Continuity of shared distributions and external porting support",
+      "impact_ja": "外部支援の終了後の保守担当や、新backendの実配布状況を確定できません。",
+      "impact_en": "Post-engagement maintenance ownership and actual new-backend distribution remain uncertain.",
+      "next_action_ja": "EESSIの最新manifestとGPU試験、EPICUREの期間表記と2028年以降の支援を確認し、国内の担当・費用・引継ぎ計画と対比する。",
+      "next_action_en": "Check current EESSI manifests/GPU tests, EPICURE duration descriptions and post-2028 support against Japanese ownership, resource and handover plans.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "共通配布と外部移植支援の継続条件 EESSIの最新manifestとGPU試験、EPICUREの期間表記と2028年以降の支援を確認し、国内の担当・費用・引継ぎ計画と対比する。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Continuity of shared distributions and external porting support Check current EESSI manifests/GPU tests, EPICURE duration descriptions and post-2028 support against Japanese ownership, resource and handover plans. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PORT-010-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0042"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -2141,7 +2352,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0039"
+      "queue_item_id": "RGQ-0043"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -2191,7 +2402,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0040"
+      "queue_item_id": "RGQ-0044"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -2243,7 +2454,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0041"
+      "queue_item_id": "RGQ-0045"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -2295,7 +2506,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0042"
+      "queue_item_id": "RGQ-0046"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -2347,7 +2558,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0043"
+      "queue_item_id": "RGQ-0047"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -2401,7 +2612,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0044"
+      "queue_item_id": "RGQ-0048"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -2455,7 +2666,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0045"
+      "queue_item_id": "RGQ-0049"
     },
     {
       "gap_id": "GAP-STOR-003",
@@ -2507,7 +2718,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0046"
+      "queue_item_id": "RGQ-0050"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -2559,7 +2770,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0047"
+      "queue_item_id": "RGQ-0051"
     }
   ],
   "publication": {

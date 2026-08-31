@@ -1,0 +1,290 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000081",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-01T03:12:52+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "14930ae70824f49f99abc750aaef3e5d4932a22fb27523e4964eeecfbf78062a",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "科学計算の比較では、アプリ名だけでなく、計算手法、精度、入力、資源数、計測区間を揃えます。GENESIS、SALMON、SCALE-LETKF、LQCDの公開資料を照合し、EEA1への転用条件を具体化しました。実機での再現と校正済みの将来性能予測は未実施です。",
+  "summary_en": "Scientific comparisons must match method, precision, input, resources and measurement interval, not just application names. Public GENESIS, SALMON, SCALE-LETKF and LQCD materials clarify the conditions for reuse in EEA1. Hardware reproduction and calibrated future-performance prediction remain unperformed.",
+  "units": [
+    {
+      "unit_id": "APP-02-U03",
+      "before_sha256": "32d22454a0293f19de511f4f1747d544a27d83c394512a8d57172511420d69a0",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-02-U03",
+        "TDS-CD2-APP-02-U03",
+        "TDS-CD3-APP-02-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-02-U03",
+      "title_ja": "EEA1の実装差と計測範囲",
+      "title_en": "EEA1 implementation and measurement boundaries",
+      "summary_ja": "公開された測定・導入事例を、再現試験の候補として整理します。",
+      "summary_en": "Public measurements and deployment recipes are candidates for reproduction, not new OpenFS measurements.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-SALMON-DC-MEASUREMENT",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA085"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SALMONの手法変更と測定区間",
+          "name_en": "SALMON algorithm changes and timed stages",
+          "timing_ja": "2026-06-19のプレプリント",
+          "timing_en": "2026-06-19 preprint",
+          "statement_ja": "液体水4,134原子・富岳512ノードの事例では、初期状態準備をDFTの4.3時間からDC-DFTの約3分へ短縮し、時間発展は5.7時間と報告しています。これは初期化手法の比較であり、全処理やGPUの高速化率ではありません。最終対角化にはO(N^3)の処理が残ります。",
+          "statement_en": "For 4,134 water atoms on 512 Fugaku nodes, the authors report reducing ground-state preparation from 4.3 hours with DFT to about 3 minutes with DC-DFT; propagation takes 5.7 hours. This compares initialization methods, not end-to-end or GPU speedup. Final diagonalization retains an O(N^3) step.",
+          "hpci_relevance_ja": "ハードウェア外挿より先に、初期化、時間発展、精度回復処理を分けてモデル化する必要があります。",
+          "hpci_relevance_en": "Model initialization, propagation and accuracy refinement separately before hardware extrapolation.",
+          "adoption_conditions_ja": [
+            "高調波など精度に敏感な観測量では追加のDFT処理が必要になる場合がある。",
+            "配布コード、入力とEEA1の対応、および独立再現は未確認。"
+          ],
+          "adoption_conditions_en": [
+            "Accuracy-sensitive observables such as high harmonics may require additional DFT refinement.",
+            "Artifact/input correspondence with EEA1 and independent reproduction remain unverified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SALMON-GPU-RESTART-CONDITIONS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA086"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SALMON 2.2.2のGPU・再開条件",
+          "name_en": "SALMON 2.2.2 GPU and restart conditions",
+          "timing_ja": "2.2.2のマニュアルに限定",
+          "timing_en": "Bounded to the 2.2.2 manual",
+          "statement_ja": "GPU経路の試験範囲はNVHPCとNVIDIA GPUです。マニュアルはDFTをCPU、TDDFTをGPUで実行する構成を推奨しています。self checkpointからの再開ではMPIプロセス数と配置を維持する必要があります。",
+          "statement_en": "The documented GPU test scope is NVHPC with NVIDIA GPUs. The manual recommends CPU DFT and GPU TDDFT. Self-checkpoint restart requires unchanged MPI process count and assignment.",
+          "hpci_relevance_ja": "汎用的なGPU対応や、異なる資源数への再配置が可能だとは判断できません。",
+          "hpci_relevance_en": "This does not establish generic GPU support or restart on a different resource layout.",
+          "adoption_conditions_ja": [
+            "2.3や他のコンパイラへの適用は別に検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Qualify 2.3 and other compilers separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-SCALE-ASSIMILATION-BOUNDARY",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA087",
+            "SRC-CDA088"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SCALEとデータ同化の境界",
+          "name_en": "SCALE versus data assimilation",
+          "timing_ja": "2026-03-06の移植状況と9月1日に確認した配布情報",
+          "timing_en": "March 6, 2026 porting snapshot and distribution checked September 1",
+          "statement_ja": "SCALEの公開配布は5.5.5を掲載し、GPU関連の修正を含みます。一方、3月の富岳NEXT資料では、予報部分のGPU実装は最適化不足、同化部分は検討中とされています。SCALEの版からSCALE-LETKF全体の対応状況は決められません。",
+          "statement_en": "SCALE lists version 5.5.5 with GPU-related fixes. March FugakuNEXT material describes a simulation GPU implementation needing optimization and assimilation still under consideration. A SCALE version alone does not establish support for all of SCALE-LETKF.",
+          "hpci_relevance_ja": "予報、同化、データ入出力を分けて評価し、アンサンブル全体の所要時間を測る必要があります。",
+          "hpci_relevance_en": "Evaluate forecast, assimilation and I/O separately, and measure the complete ensemble workflow.",
+          "adoption_conditions_ja": [
+            "現行SCALE-LETKFリポジトリの再取得に失敗したため、最新コミットと9月時点の移植完了状況は未確認。"
+          ],
+          "adoption_conditions_en": [
+            "Current SCALE-LETKF repository retrieval failed, leaving its latest commit and September porting status unverified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-LQCD-PRECISION-COUNTERS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-WORK049"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LQCDの精度・配置・計数器",
+          "name_en": "LQCD precision, layout and counters",
+          "timing_ja": "公開READMEを2026-09-01に確認",
+          "timing_en": "Public README checked 2026-09-01",
+          "statement_ja": "汎用corelibは混合精度を使わず、富岳向け経路とは配列配置も異なります。開発元はログのFLOP数が正しく動作しない可能性を明記しています。",
+          "statement_en": "Generic corelib does not use mixed precision and differs in layout from the Fugaku-oriented path. The developer warns that logged FLOP counts may not work.",
+          "hpci_relevance_ja": "達成FLOP/sだけで比較せず、同じ格子・精度・収束条件での実行時間と物理的な検査を優先します。",
+          "hpci_relevance_en": "Prioritize runtime and physical checks at matched lattice, precision and convergence, not achieved FLOP/s alone.",
+          "adoption_conditions_ja": [
+            "alt_qxsの局所格子の割切り条件とH(diff)の検査を満たし、コード版を固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Satisfy alt_qxs local-lattice divisibility and H(diff) checks, and pin the revision."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-GENESIS-PROVIDER-RECIPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA089"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GENESISのセンター導入例",
+          "name_en": "A center GENESIS deployment recipe",
+          "timing_ja": "2.1.6.1の公開導入手順、掲載日未確認",
+          "timing_en": "Public 2.1.6.1 recipe; publication date unconfirmed",
+          "statement_ja": "自然科学研究機構の計算科学研究センターは、CUDA 13.1 Update 1、sm_80、単精度でのビルドと回帰試験を掲載しています。CUTOFFを使う試験には想定された中断があり、すべての条件で成功したとは述べていません。",
+          "statement_en": "NINS RCCS documents a CUDA 13.1 Update 1, sm_80, single-precision build and regression tests. CUTOFF tests have expected aborts; success is not claimed for every condition.",
+          "hpci_relevance_ja": "第三者センターの導入例として有用ですが、EEA1の性能再現や高速化可能割合の根拠ではありません。",
+          "hpci_relevance_en": "Useful as a deployment example from another center, not evidence for EEA1 performance or its accelerable fraction.",
+          "adoption_conditions_ja": [
+            "本調査ではビルドや試験を実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "This review did not build or execute these tests."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA085",
+        "title": "SALMON 2.3: Implementation of divide-and-conquer ground-state initialization for large-scale real-time TDDFT",
+        "publisher": "Shunsuke Yamada and Tomohito Otobe; arXiv",
+        "url": "https://arxiv.org/html/2606.21125v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-06-19; arXiv v1"
+      },
+      "origin_group": "QST-SALMON-DC-DFT",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "Sections 2.3, 3.1 and 3.3; textual conditions, not digitized figure values",
+      "observation_ja": "DC-DFTのSCF処理と最終対角化、初期化と時間発展を区別した。512ノードの液体水評価は将来GPU性能やEEA1の校正値ではない。",
+      "observation_en": "Separated DC-DFT SCF from final diagonalization and initialization from time propagation. The 512-node water case is not future-GPU or EEA1 calibration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA086",
+        "title": "SALMON 2.2.2 user manual",
+        "publisher": "SALMON developers",
+        "url": "https://salmon-tddft.jp/download/Manual_SALMON-v.2.2.2_simple_20250606.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "v2.2.2; file dated 2025-06-06"
+      },
+      "origin_group": "SALMON-release-documentation",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "Sections 2.6.5 (PDF p.19) and 4.2.5 (PDF p.117)",
+      "observation_ja": "GPU経路の検証範囲、DFTとTDDFTの最適化差、self checkpointでのプロセス数・配置固定を確認。",
+      "observation_en": "Read GPU qualification scope, DFT/TDDFT tuning differences and fixed process count/placement for self checkpoints.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA087",
+        "title": "SCALE download and release history",
+        "publisher": "RIKEN SCALE developers",
+        "url": "https://scale.riken.jp/download/",
+        "source_class": "official-project",
+        "published_or_updated": "latest listed 5.5.5, 2025-09-17; accessed 2026-09-01"
+      },
+      "origin_group": "RIKEN-SCALE-release",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "Latest version; 5.5.5 and 5.5.0 release history",
+      "observation_ja": "SCALE 5.5.5の配布とGPU関連修正を確認。SCALE-LETKF全体のGPU対応を示すものではない。",
+      "observation_en": "Read SCALE 5.5.5 distribution and GPU-related fixes; this does not establish GPU support for the entire SCALE-LETKF workflow.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA088",
+        "title": "FugakuNEXT development environment: application area",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://www.r-ccs.riken.jp/events/20260306-1/fugakunext-5.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-06 presentation"
+      },
+      "origin_group": "RIKEN-FugakuNEXT-application-area",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "Slides 7-8: applications for profiling and co-design",
+      "observation_ja": "3月時点でSCALE-LETKFの予報部分はGPU実装済みだが最適化不足、同化部分は検討中。9月の実装状態へ読み替えない。",
+      "observation_en": "At the March snapshot, SCALE-LETKF simulation had a GPU implementation needing optimization, while assimilation was under consideration. This is not a September status claim.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA089",
+        "title": "GENESIS 2.1.6.1 with GPU support",
+        "publisher": "NINS Research Center for Computational Science",
+        "url": "https://ccportal.ims.ac.jp/en/node/3961",
+        "source_class": "official-project",
+        "published_or_updated": "2.1.6.1 recipe; publication date unspecified; accessed 2026-09-01"
+      },
+      "origin_group": "NINS-RCCS-GENESIS-deployment",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "Build Environment; Build Procedure; Tests",
+      "observation_ja": "CUDA 13.1 Update 1、sm_80、単精度の導入例と回帰試験の例外を確認。性能値やEEA1入力は掲載されていない。コードは実行していない。",
+      "observation_en": "Read a CUDA 13.1 Update 1, sm_80, single-precision deployment recipe and regression-test exceptions, not performance or EEA1 inputs. No code was executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-WORK049",
+        "title": "LQCD-DWF-HMC source repository",
+        "publisher": "LQCD-DWF-HMC developers",
+        "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-08-27"
+      },
+      "origin_group": "LQCD-DWF-HMC-developers",
+      "checked_at": "2026-09-01T03:11:16+09:00",
+      "locator": "README variants, Makefile switches, execution samples and result checks",
+      "observation_ja": "corelibとalt_qxs/OpenACCの精度・配列配置の違い、ログのFLOP数に関する注意を確認。コミット一覧は取得失敗。",
+      "observation_en": "Read precision/layout differences between corelib and alt_qxs/OpenACC, plus the FLOP-count warning. Commit-history retrieval failed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-068 / GAP-WORK-008: 版固定のEEA1入力、ビルド、計測区間、独立再実行を揃える。",
+    "既存の未校正試算は今回の測定資料で検証されたものではありません。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-068 / GAP-WORK-008: obtain pinned EEA1 inputs, builds, timed stages and independent reruns.",
+    "The existing uncalibrated illustrations are not validated by these measurements."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000042",
+      "bundle_sha256": "41213f9fad54ba2701499dd684d162544a648ab7d1db360731867e5e5cc03029"
+    },
+    {
+      "update_id": "RUP-000076",
+      "bundle_sha256": "0702e3790a8f3a41b517de5cf37bf290da9c3ad78653b0d818601043d7946d70"
+    }
+  ]
+}

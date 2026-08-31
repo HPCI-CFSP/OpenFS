@@ -11,6 +11,11 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+if __package__:
+    from .estimate_system_cost import allocate_budget
+else:
+    from estimate_system_cost import allocate_budget
+
 
 REQUIRED_DOMAINS = {
     "compute",
@@ -196,7 +201,6 @@ def evaluate(
 ) -> dict[str, Any]:
     errors: list[str] = []
     scenarios = scenario_set["scenarios"]
-    from estimate_system_cost import allocate_budget
     budget_config = json.loads((repository_root / "config/budget-planning.json").read_text())
     budget_levels = budget_config["budget_ceilings_oku_jpy"]
     p0_gaps = _p0_gaps(roadmaps)

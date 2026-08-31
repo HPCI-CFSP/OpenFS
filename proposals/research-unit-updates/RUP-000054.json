@@ -1,0 +1,637 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000054",
+  "topic_id": "SSW-14",
+  "created_at": "2026-09-01T01:47:44+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "入口・管理・計算・ストレージの権限境界と、予防・検知・復旧の責任を明確にします。機密計算は特定の脅威から実行中データを保護する手段であり、アプリケーションの安全性、出力のプライバシー、可用性を一括保証しません。保護範囲、保守条件、性能損失を構成ごとに比較します。",
+  "summary_en": "Define authority boundaries across access, management, compute and storage, alongside prevention, detection and recovery responsibilities. Confidential computing protects data in use against specified threats, not application safety, output privacy or availability universally. Compare protection scope, maintenance requirements and performance costs per configuration.",
+  "units": [
+    {
+      "unit_id": "SSW-14-U01",
+      "before_sha256": "c695f8b20b1fa5b73a12a507fc5199694ad48cf68c09bed6c19f2ec067499a8c",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-14-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-14-U02",
+      "before_sha256": "fa8362d7ef47e59f61ba4b63503fe562e00a31ab555b4c865b985eed53f1695e",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-14-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-14-U01",
+      "title_ja": "HPCの境界防御・共同対応・更新管理",
+      "title_en": "HPC boundaries, coordinated response and lifecycle controls",
+      "summary_ja": "共有基盤の特性に応じた防御と保守を比較します。",
+      "summary_en": "Compare protection and maintenance tailored to shared infrastructure.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-HPC-SECURITY-ZONES",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO039",
+            "SRC-CDO040",
+            "SRC-CDO053"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPC向けの権限境界と管理策",
+          "name_en": "HPC authority boundaries and tailored controls",
+          "timing_ja": "NIST SP 800-234は2026年5月公開",
+          "timing_en": "NIST SP 800-234 published May 2026",
+          "statement_ja": "NISTは入口・管理・計算・ストレージの4領域を区別し、2026年のHPC Security Overlayで性能・運用に応じた管理策の調整を示しました。共有ファイルの重複スキャンを避ける設計、GPU再割当時の残存データ処理、長時間ジョブと更新期限の調整が対象です。閉域網にあることだけを信頼の根拠にはしません。",
+          "statement_en": "NIST distinguishes access, management, compute and storage zones. Its 2026 HPC Security Overlay tailors controls to performance and operational needs, including avoiding duplicate shared-file scans, clearing GPU data between users and coordinating patches with long jobs. Private-network placement alone is not a trust basis.",
+          "hpci_relevance_ja": "汎用ITの設定を一律適用せず、HPC特有の境界を検証する出発点です。",
+          "hpci_relevance_en": "This is a starting point for validating HPC boundaries rather than imposing uniform enterprise settings.",
+          "adoption_conditions_ja": [
+            "日本の各機関の規程に対応付け、NIST文書の参照を適合認証と呼ばない。",
+            "監視負荷と隔離効果を測定し、性能を理由に無条件で防御を外さない。"
+          ],
+          "adoption_conditions_en": [
+            "Map to each Japanese institution's policies; referencing NIST is not certification.",
+            "Measure monitoring cost and isolation effectiveness rather than removing controls unconditionally for performance."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-FEDERATED-INCIDENT-RESPONSIBILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO052",
+            "SRC-CDO037"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NII-SOCS・Sirtfi: 連携支援と機関の責任",
+          "name_en": "NII-SOCS and Sirtfi: coordination and institutional responsibility",
+          "timing_ja": "公開運用方針",
+          "timing_en": "Published operational policies",
+          "statement_ja": "NII-SOCSは機関間の分析・通知・対応を支援しますが、SOC代行や全攻撃の監視を保証するサービスではありません。参加機関自身のCSIRT等の体制が必要です。Sirtfiも連絡先・対応能力の連携枠組みであり、外部監査済みや一律の応答期限を意味しません。",
+          "statement_en": "NII-SOCS supports collaborative analysis, notification and response, not outsourced SOC operation or coverage of every attack. Participating institutions need their own response capability. Sirtfi likewise coordinates contacts and capabilities without implying external audit or a universal response deadline.",
+          "hpci_relevance_ja": "連合サービスを導入しても残る、センター側の人員・責任を明示します。",
+          "hpci_relevance_en": "This exposes site staffing and responsibilities that remain after federation.",
+          "adoption_conditions_ja": [
+            "通知受付、隔離判断、利用者連絡、復旧承認の責任者を定める。",
+            "公開調査には非公開の警報・個人ログを取り込まない。"
+          ],
+          "adoption_conditions_en": [
+            "Assign responsibility for alerts, containment, user communication and recovery approval.",
+            "Do not import private alerts or personal logs into public research."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TLS-LIFETIME-AUTOMATION",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO041"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "公開TLS証明書: 更新頻度増加への対応",
+          "name_en": "Public TLS certificates: more frequent renewal",
+          "timing_ja": "2026年3月15日200日、2027年3月15日100日、2029年3月15日47日",
+          "timing_en": "200 days from March 15, 2026; 100 from March 15, 2027; 47 from March 15, 2029",
+          "statement_ja": "TLS Baseline Requirements 2.2.9は新規発行する公開TLSサーバ証明書の最大有効期間を段階的に短縮します。2026年の200日に続き、2027年は100日、2029年は47日です。これは秘密鍵のローテーション間隔や内部CAの全証明書に対する一律要件ではなく、ドメイン検証情報の再利用期間とも別です。",
+          "statement_en": "TLS BR 2.2.9 progressively reduces maximum validity for newly issued publicly trusted TLS server certificates: 200 days in 2026, 100 in 2027 and 47 in 2029. These are not universal private-key rotation periods or rules for every internal-CA certificate, and differ from domain-validation reuse periods.",
+          "hpci_relevance_ja": "ポータルやAPIの停止を避けるため、発行・配布・再読込・監視まで自動化する必要があります。",
+          "hpci_relevance_en": "Portals/APIs need automated issuance, distribution, reload and monitoring to avoid outages.",
+          "adoption_conditions_ja": [
+            "対象証明書を棚卸しし、自動更新失敗と緊急失効の訓練を行う。",
+            "証明書の公開鍵と秘密鍵・更新用資格情報を区別して管理する。"
+          ],
+          "adoption_conditions_en": [
+            "Inventory affected certificates and test renewal failure and emergency revocation.",
+            "Manage public certificate material separately from private keys and renewal credentials."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-14-U02",
+      "title_ja": "機密計算の保護境界・性能・出力プライバシー",
+      "title_en": "Confidential-computing boundaries, performance and output privacy",
+      "summary_ja": "TEEの有無だけでなく、証拠検証と入出力を含めた構成を比較します。",
+      "summary_en": "Compare evidence verification and input/output paths, not merely TEE availability.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-CPU-TEE-AND-PATCHES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO042",
+            "SRC-CDO043",
+            "SRC-CDO044"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SEV-SNP・TDX: 機能名より構成と修正水準",
+          "name_en": "SEV-SNP and TDX: configuration and patch level",
+          "timing_ja": "現行仕様・2026年の保守情報",
+          "timing_en": "Current specifications and 2026 maintenance advisories",
+          "statement_ja": "SEV-SNPやTDXは機密VMの保護を支えるCPU機能ですが、OS・VMM・ファームウェア・証拠検証を組み合わせて使います。AMD-SB-3034のように製品別の修正とTCB確認が必要な事例があり、対応CPUの採用だけでは更新状態を保証できません。仕様上の移行対応と実サービスの移行可否も分けて確認します。",
+          "statement_en": "SEV-SNP and TDX support confidential VMs through CPU capabilities integrated with OS, VMM, firmware and attestation. Advisories such as AMD-SB-3034 require product-specific fixes and TCB checks; selecting a capable CPU does not establish patch status. Migration specifications also do not prove service-level migration support.",
+          "hpci_relevance_ja": "保護対象のデータに応じて、購入仕様に運用・検証要件を含める必要があります。",
+          "hpci_relevance_en": "Procurement needs operational and verification requirements matched to protected data.",
+          "adoption_conditions_ja": [
+            "CPU、BIOS、ファームウェア、VMMと認証基準値の組を固定する。",
+            "修正提供とOEMへの適用・サイトでの導入を別々に追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the CPU, BIOS, firmware, VMM and attestation reference-value set.",
+            "Track fix availability, OEM integration and site deployment separately."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GPU-CONFIDENTIAL-PATHS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO045"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GPU間通信とプロファイリングの保護範囲",
+          "name_en": "GPU communication and profiling boundaries",
+          "timing_ja": "Hopper/Blackwell文書v1.3",
+          "timing_en": "Hopper/Blackwell document v1.3",
+          "statement_ja": "NVIDIA文書ではHopperのProtected PCIe構成のNVLinkは非暗号化ですが、Blackwellの対応モードはNVLinkも暗号化します。CC-Onでは性能カウンタが制限され、開発用モードは条件が異なります。同じGPU群でもモード・接続・割当単位で保護境界を確認する必要があります。",
+          "statement_en": "NVIDIA documents unencrypted NVLink for Hopper Protected PCIe configurations, versus encrypted NVLink in the corresponding Blackwell mode. CC-On restricts performance counters, while development mode changes those conditions. Protection must be checked by mode, topology and assignment unit.",
+          "hpci_relevance_ja": "マルチGPU対応という一語では、通信保護と運用監視の両立を判断できません。",
+          "hpci_relevance_en": "Multi-GPU support alone does not establish both communication protection and observability.",
+          "adoption_conditions_ja": [
+            "本番の保護モードを維持した計測と、開発モードの分析を分離する。",
+            "文書にないGPU・スイッチ構成へ対応範囲を広げない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate measurements in production protection mode from development-mode analysis.",
+            "Do not extend support claims to undocumented GPU/switch configurations."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ATTESTATION-KEY-RELEASE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDO046",
+            "SRC-CDO047"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "アテステーションと鍵提供の責任分離",
+          "name_en": "Attestation and separation of key-release responsibility",
+          "timing_ja": "2026年6月の参照構成",
+          "timing_en": "June 2026 reference architecture",
+          "statement_ja": "参照構成はCPU・GPU、イメージ、起動設定等の証拠を検証し、一致した実行環境にだけ鍵を渡します。一方、悪意あるゲストコード、アプリが自ら記録する内容、鍵管理者の侵害やサービス停止は別の対策が必要です。通信先や保存先を制限する仕組みもTEEの外側を含めて設計します。",
+          "statement_en": "The reference design verifies CPU/GPU, image and launch evidence before releasing keys to an approved workload. Malicious guest code, application-generated logs, compromised key administrators and denial of service require separate controls. Egress and storage restrictions also need design beyond the TEE itself.",
+          "hpci_relevance_ja": "機密モデルと機密入力の所有者が異なる場合の信頼範囲を整理できます。",
+          "hpci_relevance_en": "This clarifies trust when confidential models and inputs have different owners.",
+          "adoption_conditions_ja": [
+            "照合失敗時は鍵を提供せず、監査ログに入力や秘密を含めない。",
+            "暗号化しても不要な外部送信が許されるわけではない。"
+          ],
+          "adoption_conditions_en": [
+            "Deny key release on verification failure and exclude payloads/secrets from audit logs.",
+            "Encryption does not authorize unnecessary external transmission."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-CONFIDENTIAL-B200-PERFORMANCE",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO049"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "B200性能報告: 条件付きの比較結果",
+          "name_en": "B200 performance report: conditional comparisons",
+          "timing_ja": "2026年8月27日のプレプリント",
+          "timing_en": "August 27, 2026 preprint",
+          "statement_ja": "単一の8-B200ホストを用いた報告は、調整済みMoE推論で約1.5-3.6%の低下を示す一方、学習の表には約11-24%の時間増加もあります。未修正フレームワークの結果はさらに異なります。起動、アテステーション、ノード間通信、安全性は検証対象外であり、一般的な低下率や安全性保証として採用しません。",
+          "statement_en": "A single eight-B200-host report shows roughly 1.5-3.6% tuned MoE inference loss, while its training table includes about 11-24% longer execution. Unpatched framework results differ further. Startup, attestation, cross-node communication and security are excluded; these are not universal overhead or security guarantees.",
+          "hpci_relevance_ja": "保護機能の費用をアプリと並列化方式ごとに測る必要性を示します。",
+          "hpci_relevance_en": "This motivates per-application and per-parallelism measurement of protection cost.",
+          "adoption_conditions_ja": [
+            "同一構成・反復測定・公開成果物による再検証が必要。",
+            "電力が増えないことと、処理完了までの消費エネルギーが増えないことを区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Independent checks need matched configurations, repetitions and public artifacts.",
+            "Unchanged power is not unchanged energy to completion."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-TEE-IO-SCALEOUT-CONDITIONS",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO042",
+            "SRC-CDO043",
+            "SRC-CDO045",
+            "SRC-CDO048"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "TEE-IOと複数ノードへの拡張条件",
+          "name_en": "TEE-IO and conditions for scaling across nodes",
+          "timing_ja": "構成ごとの提供・検証時期は未確定",
+          "timing_en": "Configuration-specific availability/validation dates unresolved",
+          "statement_ja": "TDISP/IDEを用いたI/O保護は転送経路改善の候補ですが、CPU、GPU、NIC、スイッチ、ファームウェアの対応を合わせる必要があります。NVIDIAのVM参照実装はscale-out運用に独自統合が必要としています。規格やCPU機能の存在だけで、機密MPIやGPUDirect RDMAの利用可能性を断定しません。",
+          "statement_en": "TDISP/IDE-based I/O protection may improve transfer paths but requires compatible CPUs, GPUs, NICs, switches and firmware. NVIDIA's VM reference needs custom scale-out integration. Standards or CPU features alone do not establish confidential MPI or GPUDirect RDMA availability.",
+          "hpci_relevance_ja": "大規模科学計算へ適用する際の導入判断条件です。",
+          "hpci_relevance_en": "These are adoption gates for large-scale scientific computing.",
+          "adoption_conditions_ja": [
+            "暗号化境界、集団通信、障害復旧、移行を同じ構成で実証する。",
+            "対応予定と利用可能な商用構成を分けて追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate encryption boundaries, collectives, recovery and migration on one matched stack.",
+            "Track planned support separately from available commercial configurations."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PRIVACY-OUTPUT-AND-AGGREGATION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO050",
+            "SRC-CDO051",
+            "SRC-CDO054"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "秘密集計・差分プライバシーと残る情報流出",
+          "name_en": "Secure aggregation, differential privacy and residual disclosure",
+          "timing_ja": "NIST最終版2025年、Flower公開実装",
+          "timing_en": "2025 NIST final guidance and public Flower implementation",
+          "statement_ja": "FlowerのSecAgg系は個別更新を隠して集計する実装ですが、集計結果やモデルからの情報推定を一律に防ぐものではありません。差分プライバシーは保護単位と累積損失を定めて別途評価します。秘密集計でも参加者離脱、復元しきい値、量子化誤差、待機時間に制約があります。",
+          "statement_en": "Flower SecAgg implementations hide individual updates during aggregation, not all inference from aggregates or models. Differential privacy separately needs a privacy unit and cumulative-loss accounting. Secure aggregation also has dropout, reconstruction-threshold, quantization and waiting-time tradeoffs.",
+          "hpci_relevance_ja": "データを移動しない方式と、公開される結果の保護を分けて比較します。",
+          "hpci_relevance_en": "Compare data locality separately from protection of released results.",
+          "adoption_conditions_ja": [
+            "漏えいし得る出力と攻撃者の権限を定義し、同一保証水準で精度・費用を比較する。",
+            "少数参加者や繰返し公開で保証が変わる条件を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Define exposed outputs and adversary authority; compare accuracy/cost at matched guarantees.",
+            "Check how small participant sets and repeated releases change guarantees."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO037",
+        "title": "Sirtfi Frequently Asked Questions",
+        "publisher": "REFEDS",
+        "url": "https://wiki.refeds.org/display/SIRTFI/FAQs",
+        "source_class": "official-standard",
+        "published_or_updated": "Public v2 FAQ accessed 2026-09-01"
+      },
+      "origin_group": "refeds-sirtfi",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Self-assessment, scope, OS1-6 and incident response",
+      "observation_ja": "自己評価で表明可能、身元保証ではないこと、対応期限は組織毎に定めることを確認。",
+      "observation_en": "Read self-assertion, distinction from identity assurance and organization-specific response times.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO039",
+        "title": "NIST SP 800-223: High-Performance Computing Security",
+        "publisher": "NIST",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-223.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2024-02"
+      },
+      "origin_group": "nist-hpc-security",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Sections 2-4; four zones, threats and architectural variants",
+      "observation_ja": "入口・管理・計算・ストレージの4領域と共有基盤特有の権限リスクを確認。概念ガイドであり合否チェックリストではない。",
+      "observation_en": "Read four zones and shared-infrastructure authority risks; this is a conceptual guide, not a certification checklist.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO040",
+        "title": "NIST SP 800-234: High-Performance Computing Security Overlay",
+        "publisher": "NIST",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-234.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-05"
+      },
+      "origin_group": "nist-hpc-security",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Introduction and sections 3.8-3.13",
+      "observation_ja": "HPC向け管理策の調整、重複スキャン抑制、GPU再割当時のデータ消去、長時間ジョブとパッチ時期の調整を確認。",
+      "observation_en": "Read HPC control tailoring, duplicate-scan avoidance, GPU data clearing between users and patching around long jobs.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO041",
+        "title": "CA/Browser Forum TLS Baseline Requirements 2.2.9",
+        "publisher": "CA/Browser Forum",
+        "url": "https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.9.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2.2.9 effective 2026-08-06"
+      },
+      "origin_group": "cabforum-tls",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Sections 1.2.1, 4.2.1 and 6.3.2",
+      "observation_ja": "TLS証明書有効期間の200/100/47日への短縮日と、検証情報再利用期間との違いを確認。",
+      "observation_en": "Verified 200/100/47-day certificate-lifetime transition dates, distinct from validation-data reuse limits.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO042",
+        "title": "AMD Secure Encrypted Virtualization developer documentation",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/developer/sev.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Live technical overview accessed 2026-09-01"
+      },
+      "origin_group": "amd-sev",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "SEV, ES, SNP, TIO distinctions and specifications",
+      "observation_ja": "VM境界、SNPの整合性保護、TIOのPCIe拡張を区別。CPU世代表の掲載を全OEM構成での利用保証としない。",
+      "observation_en": "Distinguished VM boundary, SNP integrity and TIO PCIe extension; a generation table is not universal OEM availability.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO043",
+        "title": "Intel Trust Domain Extensions documentation",
+        "publisher": "Intel",
+        "url": "https://www.intel.com/content/www/us/en/developer/tools/trust-domain-extensions/documentation.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026 base/migration specifications; accessed 2026-09-01"
+      },
+      "origin_group": "intel-tdx",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Module base/migration specifications and TDX Connect section",
+      "observation_ja": "基本・移行仕様とTDX ConnectのTEE-IO拡張を確認。仕様記載とサービス実装を区別。",
+      "observation_en": "Read base/migration specification listings and TDX Connect TEE-IO extension; distinguish specifications from deployed services.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO044",
+        "title": "AMD-SB-3034: SEV-SNP Routing Misconfiguration",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/resources/product-security/bulletin/amd-sb-3034.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-05-12 revision; initially 2026-04-14"
+      },
+      "origin_group": "amd-sev-security",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Affected products and mitigations table; revision history",
+      "observation_ja": "修正BIOS・PIおよびアテステーションTCB値が製品世代別であることを確認。攻撃手順は収集・実行していない。",
+      "observation_en": "Read generation-specific BIOS/PI fixes and attestation TCB values; collected and executed no attack procedure.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO045",
+        "title": "NVIDIA Secure AI with Blackwell and Hopper GPUs v1.3",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nvidia-secure-ai-with-blackwell-and-hopper-gpus-whitepaper.pdf",
+        "source_class": "official-vendor",
+        "published_or_updated": "2025-08-14"
+      },
+      "origin_group": "nvidia-confidential-computing",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Printed pp.8-9,13-14,18: transfer modes and profiling",
+      "observation_ja": "Hopper Protected PCIeではNVLink非暗号化、Blackwellの対応モードでは暗号化。TDISP/IDEの両端条件とCC-On計測制限を確認。",
+      "observation_en": "Read unencrypted NVLink in Hopper Protected PCIe versus encrypted Blackwell mode, end-to-end TDISP/IDE requirements and CC-On profiling limits.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO046",
+        "title": "NVIDIA confidential model deployment: Required Capabilities",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/enterprise-reference-architectures/deploying-proprietary-models-confidential-compute-self-hosted-vms/latest/required-capabilities.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-04"
+      },
+      "origin_group": "nvidia-confidential-computing",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Required evidence, nonce, key release and fail-closed conditions",
+      "observation_ja": "CPU/GPU・イメージ・構成の証拠照合後に鍵を渡し、不一致では拒否する参照構成を確認。",
+      "observation_en": "Read reference design releasing keys after CPU/GPU, image and configuration verification and rejecting mismatches.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO047",
+        "title": "NVIDIA confidential model deployment: Trust and Threat Model",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/enterprise-reference-architectures/deploying-proprietary-models-confidential-compute-self-hosted-vms/latest/trust-and-threat-model.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-04"
+      },
+      "origin_group": "nvidia-confidential-computing",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Responsibility matrix and excluded threats",
+      "observation_ja": "悪意あるゲスト、アプリの記録、鍵管理者侵害、可用性が別の対策対象であることを確認。",
+      "observation_en": "Read exclusions for malicious guests, application logging, compromised key authority and availability.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO048",
+        "title": "NVIDIA confidential model deployment: Limitations and Open Questions",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/enterprise-reference-architectures/deploying-proprietary-models-confidential-compute-self-hosted-vms/latest/limitations-and-open-questions.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-04"
+      },
+      "origin_group": "nvidia-confidential-computing",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "VM orchestration and scale-out limitations",
+      "observation_ja": "Canonical/Fortanix参照実装ではscale-out運用の独自統合が必要と記載。全Confidential Containers実装への制限とはしていない。",
+      "observation_en": "Read custom scale-out integration requirement for the Canonical/Fortanix VM reference, not a restriction on every Confidential Containers stack.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO049",
+        "title": "Benchmarking Confidential Computing Performance on NVIDIA Blackwell GPUs",
+        "publisher": "D. Khan, A. Asad, A. Grunseid / Confidential.ai",
+        "url": "https://arxiv.org/html/2608.26575v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08-27 arXiv v1; manuscript marked June 2026"
+      },
+      "origin_group": "confidential-ai-b200-measurement",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Sections 1.3,3,7.5,8-11; tables 20-22",
+      "observation_ja": "単一ホストの条件付き比較、起動・アテステーション・ノード間転送は未測定。本文の学習10-13%要約は表21のFP8 24%を含まないと確認。",
+      "observation_en": "Read single-host paired conditions and excluded startup, attestation and cross-node costs; 10-13% summary omits Table 21's 24% FP8 case.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO050",
+        "title": "NIST SP 800-226: Guidelines for Evaluating Differential Privacy Guarantees",
+        "publisher": "NIST",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-226.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2025-03"
+      },
+      "origin_group": "nist-differential-privacy",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Composition, privacy units and comparability hazards",
+      "observation_ja": "繰返し公開の合成、個人とイベントの保護単位、epsilonだけでは比較できない条件を確認。",
+      "observation_en": "Read composition across releases, user/event privacy units and why epsilon alone is insufficient for comparison.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO051",
+        "title": "Flower Secure Aggregation Protocols",
+        "publisher": "Flower Labs",
+        "url": "https://flower.ai/docs/framework/explanation-ref-secure-aggregation-protocols.html",
+        "source_class": "official-project",
+        "published_or_updated": "Main documentation accessed 2026-09-01"
+      },
+      "origin_group": "flower-secure-aggregation",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "SecAgg and SecAgg+ implementation and aggregate visibility",
+      "observation_ja": "個別更新を隠して集約結果を渡す方式と実装を確認。出力からの推論リスクの保証とは区別。",
+      "observation_en": "Read implementation hiding individual updates while releasing aggregates; distinguished output-inference privacy guarantees.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO052",
+        "title": "NII Security Operation Collaboration Services overview",
+        "publisher": "National Institute of Informatics",
+        "url": "https://www.nii.ac.jp/service/nii-socs/",
+        "source_class": "official-project",
+        "published_or_updated": "Live service overview accessed 2026-09-01"
+      },
+      "origin_group": "nii-socs",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Overview and participation prerequisites",
+      "observation_ja": "NII-SOCSはSOC代替ではなく、全攻撃を対象とせず各機関主体の対応を支援すると明記。",
+      "observation_en": "Read explicit statement that NII-SOCS is not a SOC replacement or all-attack coverage and supports institution-led response.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO053",
+        "title": "NIST SP 800-207: Zero Trust Architecture",
+        "publisher": "NIST",
+        "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+        "source_class": "official-standard",
+        "published_or_updated": "2020-08-11"
+      },
+      "origin_group": "nist-zero-trust",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Abstract and resource/session trust distinction",
+      "observation_ja": "ネットワークの場所や所有者だけで信頼せず、資源への認証認可を分離する原則を確認。",
+      "observation_en": "Read rejection of trust based solely on network location/ownership and separate authentication/authorization to resources.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO054",
+        "title": "Flower SecAggPlusWorkflow source documentation",
+        "publisher": "Flower Labs",
+        "url": "https://flower.ai/docs/framework/_modules/flwr/server/workflow/secure_aggregation/secaggplus_workflow.html",
+        "source_class": "official-project",
+        "published_or_updated": "Main source documentation accessed 2026-09-01"
+      },
+      "origin_group": "flower-secure-aggregation",
+      "checked_at": "2026-09-01T01:43:14+09:00",
+      "locator": "Parameters, thresholds, quantization, timeout and threshold checks",
+      "observation_ja": "復元しきい値と離脱耐性、量子化誤差、timeout=Noneの無期限待機を確認。実行はしていない。",
+      "observation_en": "Read reconstruction/dropout tradeoff, quantization and unbounded wait with timeout=None; did not execute.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-080",
+      "topic_ids": [
+        "SSW-14"
+      ],
+      "priority": "P0",
+      "question_ja": "候補のHPC・AI構成で保護境界と実アプリ性能、保守・復旧を同時に満たせるか。",
+      "question_en": "Can candidate HPC/AI configurations jointly satisfy protection boundaries, application performance, maintenance and recovery requirements?",
+      "next_action_ja": "脅威モデルと構成を固定し、公開の保護・性能資料を独立照合する。複数ノードと運用失敗時の未検証条件を試験計画にする。",
+      "next_action_en": "Pin threat models/configurations and independently cross-check protection and performance evidence. Turn unverified multi-node and operational-failure conditions into a test plan.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "機密MPI、GPU間・ノード間通信、チェックポイントの保護と性能は構成別に未検証。",
+    "公開の脆弱性情報を確認したが、実環境の診断や攻撃検証は実施していない。",
+    "単一モデルの暫定調査で、第三者認証・独立Consensusを意味しない。"
+  ],
+  "remaining_work_en": [
+    "Confidential MPI, inter-GPU/inter-node paths and checkpoint protection/performance remain configuration-specific gaps.",
+    "Public advisories were reviewed; no live diagnostics or attack tests were performed.",
+    "This provisional single-model review implies neither external certification nor independent Consensus."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW14-THREATS",
+        "label_ja": "保護対象と脅威",
+        "label_en": "Assets and threats",
+        "question_ja": "誰のどの権限からデータを保護し、何を対象外とするか。",
+        "question_en": "Against whose privileges is data protected, and what is excluded?"
+      },
+      {
+        "dimension_id": "DIM-SSW14-COST",
+        "label_ja": "性能と保守負担",
+        "label_en": "Performance and maintenance cost",
+        "question_ja": "監視、暗号化、更新、復旧が実処理と運用に与える影響は何か。",
+        "question_en": "How do monitoring, encryption, updates and recovery affect useful work and operation?"
+      },
+      {
+        "dimension_id": "DIM-SSW14-ACCOUNTABILITY",
+        "label_ja": "検証と責任分担",
+        "label_en": "Verification and accountability",
+        "question_ja": "証拠の検証、鍵管理、失効、事故対応を誰が担うか。",
+        "question_en": "Who verifies evidence and manages keys, revocation and incidents?"
+      }
+    ]
+  }
+}

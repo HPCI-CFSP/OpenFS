@@ -86,7 +86,8 @@ SOURCE_CLASS_MAP = {
     "government-official": "official-project",
     "project-official": "official-project",
     "research-organization": "research-artifact",
-    "academic-primary": "peer-reviewed",
+    # First-party research includes preprints; it does not establish peer review.
+    "academic-primary": "research-artifact",
     "openfs-governance": "research-artifact",
 }
 
@@ -304,7 +305,7 @@ def source_actor_ids(source_ids: list[str], source_index: dict[str, dict[str, An
 
 
 def import_source(source: dict[str, Any]) -> dict[str, str]:
-    date_value = source.get("published_at") or source.get("updated_at") or "accessed 2026-08-27"
+    date_value = source.get("published_at") or source.get("updated_at") or "Publication/update date not provided"
     return {
         "source_id": source["source_id"],
         "title": source["title"],

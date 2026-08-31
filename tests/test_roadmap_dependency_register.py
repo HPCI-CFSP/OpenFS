@@ -35,14 +35,20 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
         validator = Draft202012Validator(schema["properties"]["publication"])
         publication = self.register["publication"]
         validator.validate(publication)
-        for directive in ["DIR-900006", "DIR-900015"]:
-            old = {**publication, "human_approval_directive_id": directive,
-                   "publication_decision_id": "PUBDEC-20260826-003"}
-            validator.validate(old)
-            self.assertTrue(list(validator.iter_errors({**old,
-                "publication_decision_id": "PUBDEC-HARDWARE-RESEARCH-20260831"})))
-        self.assertTrue(list(validator.iter_errors({**publication,
-            "publication_decision_id": "PUBDEC-20260826-003"})))
+        decisions = {
+            "DIR-900006": "PUBDEC-20260826-003",
+            "DIR-900015": "PUBDEC-20260826-003",
+            "DIR-900018": "PUBDEC-HARDWARE-RESEARCH-20260831",
+            "DIR-900019": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901",
+        }
+        for directive, decision in decisions.items():
+            expected = {**publication, "human_approval_directive_id": directive,
+                        "publication_decision_id": decision}
+            validator.validate(expected)
+            for other in set(decisions.values()) - {decision}:
+                with self.subTest(directive=directive, wrong_decision=other):
+                    self.assertTrue(list(validator.iter_errors({**expected,
+                        "publication_decision_id": other})))
         self.assertTrue(list(validator.iter_errors({**publication,
             "human_approval_directive_id": "DIR-900099"})))
 

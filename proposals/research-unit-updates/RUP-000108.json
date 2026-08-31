@@ -1,0 +1,154 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000108",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T04:36:48+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "d97be6d447bb58617434a1011a2a2fee0ee4e8a4920805647f092c97fdbcb01d",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミング仕様、コンパイラ実装、センターの導入手順を区別し、版・対象機種・数値精度・実測性能・保守条件を比較します。Bishengの公開資料も含めた単一のAIモデルによる暫定調査であり、実機検証や独立Consensusは未完了です。",
+  "summary_en": "The provisional single-model review separates programming specifications, compiler implementations and center deployment instructions, comparing versions, targets, numerical behavior, measured performance and maintenance. It now includes public Bisheng documentation; execution testing and independent Consensus remain incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "603eaaad9a46781724436f0fa4c45fbc6822835e56a985c7bc04f58803e359a1",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02",
+        "TDS-CD2-SSW-01-U02",
+        "TDS-CD3-SSW-01-U02",
+        "TDS-CD4-SSW-01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-SSW-01-U02",
+      "title_ja": "インド発SYCL実装の公開・保守状況",
+      "title_en": "Publication and maintenance of an Indian SYCL implementation",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-PARAS-COMPILER-SCOPE",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS103",
+            "SRC-CDS104",
+            "SRC-CDS105"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ParaS: 公開先移転と実装ごとの対応範囲",
+          "name_en": "ParaS: repository migration and implementation scope",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "NSMが紹介するParaSはSYCL 2020を基にした実装です。旧C-DACレポジトリは保守終了を案内し、ParaS-Ecosystemへ移転しています。現行コンパイラのREADMEはCPUとNVIDIA GPUを対象とし、LLVM 21.1.0等の依存条件を示します。追加バックエンドの構想や別コンポーネントの対応を、コンパイラ全体の検証済み対応とは扱いません。",
+          "statement_en": "ParaS, presented by NSM as a SYCL 2020 implementation, has moved from the unmaintained C-DAC repository to ParaS-Ecosystem. The current compiler README targets CPUs and NVIDIA GPUs with dependencies including LLVM 21.1.0. Planned backends or support in another component do not establish validated compiler-wide support.",
+          "hpci_relevance_ja": "主要ベンダー以外の移植性候補として、公開コード・保守先・実行条件を比較できます。",
+          "hpci_relevance_en": "This adds a portability candidate beyond major vendors, with public code, maintainership and execution requirements to compare.",
+          "adoption_conditions_ja": [
+            "SYCL 2020への対応表と適合性試験結果を別途確認する。",
+            "Apache-2.0のコンパイラと、別ライセンスの関連ライブラリを区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify a SYCL 2020 feature matrix and conformance results separately.",
+            "Distinguish the Apache-2.0 compiler from separately licensed companion libraries."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS103",
+        "title": "NSM Open Source Initiatives",
+        "publisher": "National Supercomputing Mission / C-DAC",
+        "url": "https://nsmindia.in/rnd/open-source-initiatives/",
+        "source_class": "official-project",
+        "published_or_updated": "Undated public overview accessed 2026-09-01"
+      },
+      "origin_group": "cdac-nsm-software",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "ParaS, optimized OpenBLAS and ASTViz entries",
+      "observation_ja": "SYCL 2020、OpenBLAS 0.3.26を基にしたSVE最適化と0.3.29への反映という機関の説明を確認。上流コミットと再現測定は未確認。",
+      "observation_en": "Read the institution's SYCL 2020 description and its account of SVE work based on OpenBLAS 0.3.26 and incorporated into 0.3.29; upstream commits and reproduction remain unchecked.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS104",
+        "title": "ParaS old repository maintenance and migration notice",
+        "publisher": "C-DAC System Software Development Group",
+        "url": "https://github.com/CDAC-SSDG/ParaS-Compiler",
+        "source_class": "official-project",
+        "published_or_updated": "Undated migration notice accessed 2026-09-01"
+      },
+      "origin_group": "cdac-nsm-software",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "README maintenance notice and ParaS-Ecosystem link",
+      "observation_ja": "旧レポジトリが保守を終了し、公開先をParaS-Ecosystemへ案内していることを確認。移転日や保守保証は未確認。",
+      "observation_en": "Read the old repository's maintenance stop and link to ParaS-Ecosystem; migration date and support guarantees remain unverified.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS105",
+        "title": "ParaS Compiler current source and requirements",
+        "publisher": "ParaS Ecosystem contributors",
+        "url": "https://github.com/ParaS-Ecosystem/ParaS-Compiler",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "cdac-nsm-software",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Introduction, requirements, usage and repository license label",
+      "observation_ja": "現行READMEのCPU/NVIDIA GPU対応、LLVM 21.1.0等の依存条件とApache-2.0表示を確認。SYCL適合性試験や実行は未実施。",
+      "observation_en": "Read CPU/NVIDIA support, dependencies including LLVM 21.1.0 and Apache-2.0 labeling; no conformance tests or execution performed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "機能網羅性、Fugaku/FugakuNEXTでの実行、移植工数、性能維持は未検証。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "Feature coverage, execution on Fugaku/FugakuNEXT, migration effort and retained performance remain unverified.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000033",
+      "bundle_sha256": "080f801882833b90ca2d6981acbef738306ded05d57972415095f7b611e4714f"
+    },
+    {
+      "update_id": "RUP-000078",
+      "bundle_sha256": "41fab704a904e4be56b0a054cbf325268ab13edc252c55c2aabbba3669359470"
+    },
+    {
+      "update_id": "RUP-000079",
+      "bundle_sha256": "0f4b021d97a7731113faa99d46f8c79afc9b725342325a5804ee9cfaaf324541"
+    },
+    {
+      "update_id": "RUP-000097",
+      "bundle_sha256": "12fa6b02d64fadc48d9b78a4a66769ce2bef2eec0ab8286436ba1d6c0c13e421"
+    }
+  ]
+}

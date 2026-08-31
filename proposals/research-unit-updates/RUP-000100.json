@@ -1,0 +1,373 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000100",
+  "topic_id": "APP-05",
+  "created_at": "2026-09-01T04:06:55+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "d56f7340c9d43e7b01cb2e58d807c25ca61b34f3b389f300de62209c16308bcc",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIコーディングを、科学的な解法生成、並列化、GPUカーネル、リポジトリ全体の最適化、開発工数の五つに分けて調査しました。公開評価基盤は整いつつありますが、正しさを確認するテストの通過、性能改善、科学的妥当性、実務上の生産性は別々に検証する必要があります。単一の公開ランキングの順位で採用を決めません。",
+  "summary_en": "AI coding is examined across scientific solution generation, parallelization, GPU kernels, repository optimization and developer effort. Public evaluation infrastructure is expanding, but passing tests, improving performance, preserving scientific validity and increasing practical productivity require separate verification. Adoption should not follow one leaderboard rank.",
+  "units": [
+    {
+      "unit_id": "APP-05-U01",
+      "before_sha256": "451c8c8e4b32fc7fd79051ad7fe3a3d26972ca2d9015e363091121b6216fa4e5",
+      "evidence_section_ids": [
+        "TDS-APP05-CURRENT",
+        "TDS-APP05-FUTURE",
+        "TDS-CD2-APP-05-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-05-U01",
+      "title_ja": "生成・移植・検証",
+      "title_en": "Generation, porting, and validation",
+      "summary_ja": "AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。",
+      "summary_en": "Evaluate productivity and correctness of AI code generation, optimization, and porting using independent tests and reproducible tasks.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-SCICODE-SCIENTIFIC-CORRECTNESS",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA017"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SciCode: 科学的な解法と実装",
+          "name_en": "SciCode: scientific methods and implementation",
+          "timing_ja": "公開データセットと評価手法",
+          "timing_en": "Published dataset and evaluation method",
+          "statement_ja": "SciCodeは80の研究課題を338の小問題に分け、科学分野に即したテストや理論解との対応でコードを評価します。背景知識を与える条件と与えない条件を分けるため、科学的推論と実装支援の差を調べられます。既存のテストへの合格は未知の物理条件までの正しさを証明しません。",
+          "statement_en": "SciCode decomposes 80 research problems into 338 subproblems with domain-specific tests and theoretical references. With/without-background settings distinguish scientific reasoning from implementation assistance. Passing existing tests does not prove correctness for unseen physical regimes.",
+          "hpci_relevance_ja": "研究コードの生成を、一般的な業務コード修正と別に評価します。",
+          "hpci_relevance_en": "Evaluate research-code generation separately from general software repair.",
+          "adoption_conditions_ja": [
+            "背景情報・途中解・試行回数の条件を固定する。",
+            "新しい入力と分野固有の検証を別に用意する。"
+          ],
+          "adoption_conditions_en": [
+            "Fix background, intermediate solutions and attempt budget.",
+            "Add unseen inputs and domain-specific checks."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-PAREVAL-PORTING-COVERAGE",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA018"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ParEval: 並列コード生成の比較",
+          "name_en": "ParEval: parallel code generation",
+          "timing_ja": "公開された評価用プログラムとプロンプト",
+          "timing_en": "Public drivers and prompts",
+          "statement_ja": "ParEvalはMPI/OpenMPやCUDA/HIP/Kokkos等の並列コードを評価する公開基盤です。依存ライブラリがない方式はビルド時に評価対象から除外されるため、総合値には評価できた方式と欠測を併記する必要があります。小規模カーネルの成功を、大規模Fortran/MPIアプリケーション全体の移植成功率へ直接置き換えません。",
+          "statement_en": "ParEval provides public evaluation for MPI/OpenMP and CUDA/HIP/Kokkos parallel code. Missing dependencies can cause backends to be skipped, so aggregate results must expose tested coverage and missing cases. Kernel success is not a direct estimate of porting whole large Fortran/MPI applications.",
+          "hpci_relevance_ja": "対象CPU/GPUごとの移植支援の得意・不得意を調べます。",
+          "hpci_relevance_en": "Assess portability assistance separately for target CPU/GPU environments.",
+          "adoption_conditions_ja": [
+            "コンパイラ・実行時環境・GPUと評価対象から除外した件数を記録する。",
+            "通信の正しさ・データ競合・異なるプロセス数でも検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Record compiler/runtime/GPU and skipped counts.",
+            "Check communication correctness, races and different process counts."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-KERNELBENCH-CORRECT-FAST",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA015",
+            "SRC-CDA016"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "KernelBench: 正しさを満たした高速化",
+          "name_en": "KernelBench: speedup conditional on correctness",
+          "timing_ja": "v0.1系・main資料、検査ツールは試作中",
+          "timing_en": "v0.1/main material; checkers remain experimental",
+          "statement_ja": "KernelBenchのfast_pは、正しさの検査に合格し、指定の高速化率を上回る課題の割合です。PyTorch基準、GPU、演算精度、DSLに依存し、生成コードが評価の抜け穴を利用する振る舞いや計時の歪みも注意対象です。公式の静的検査ツールも実験段階であり、それだけを安全性・数値妥当性の証明にはできません。",
+          "statement_en": "KernelBench fast_p measures the fraction both correct and above a speedup threshold. It depends on the PyTorch baseline, GPU, precision and DSL, with risks of evaluation gaming and timing distortion. Experimental static checkers alone cannot establish safety or numerical validity.",
+          "hpci_relevance_ja": "性能向上だけでなく失敗・不正な近道を検出する採用条件を設けます。",
+          "hpci_relevance_en": "Require detection of failures and invalid shortcuts alongside speed improvements.",
+          "adoption_conditions_ja": [
+            "基準実装と演算精度を固定し、別入力で再検証する。",
+            "未信頼の生成コードは隔離し、秘匿情報や外部通信権限を与えない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin baseline/precision and validate on independent inputs.",
+            "Isolate untrusted generated code without secrets or external-network authority."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-SWEFFICIENCY-REPO-OPTIMIZATION",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA019"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "SWE-fficiency: リポジトリ単位の性能改善",
+          "name_en": "SWE-fficiency: repository-level optimization",
+          "timing_ja": "公開498課題",
+          "timing_en": "498 published tasks",
+          "statement_ja": "SWE-fficiencyは9種類のPythonライブラリを対象に、性能評価用ワークロードと変更箇所の正しさを確認するテストを分けて評価します。人間の参照パッチに対する高速化率の比も報告しますが、これは開発時間の削減率ではありません。性能と正しさの両方を満たす変更の評価例として利用できます。",
+          "statement_en": "SWE-fficiency evaluates nine Python libraries using separate performance workloads and correctness tests covering changed code. Speedup ratios relative to human reference patches are not reductions in development time. It is useful for assessing correctness-preserving optimization.",
+          "hpci_relevance_ja": "アプリ本体だけでなく、広く使われる科学ライブラリの改善も追跡します。",
+          "hpci_relevance_en": "Track improvements in widely used scientific libraries as well as applications.",
+          "adoption_conditions_ja": [
+            "参照パッチを見せる条件と実際の探索条件を混同しない。",
+            "全課題の失敗率・速度分布も併記する。"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish reference-informed conditions from realistic search.",
+            "Report failures and per-task speed distributions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-CODEPERF-REPLAY-LIMITS",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA020"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "機種差・集計規則による評価の変動",
+          "name_en": "Sensitivity to machines and aggregation",
+          "timing_ja": "2026-07-16 v2の研究報告",
+          "timing_en": "Research report v2, 2026-07-16",
+          "statement_ja": "公開研究はGSO、SWE-Perf、SWE-fficiencyの参照パッチを4種類のクラウド上の計算機構成で再実行し、微小な高速化の不安定さと集計規則による順位差を報告しています。厳格なすべての再実行で合格を求める判定にも限界があり、この結果を全ベンチマークや全モデルへ一般化せず、機種別の再検証を採用条件にします。",
+          "statement_en": "A public study replays GSO, SWE-Perf and SWE-fficiency reference patches on four cloud machine types, reporting fragile small gains and scoring-dependent rankings. Its strict all-replay criterion also has limits. Rather than generalizing to every benchmark/model, require machine-specific revalidation.",
+          "hpci_relevance_ja": "学術向け計算機での効果を公開クラウドの順位だけで決めません。",
+          "hpci_relevance_en": "Do not infer academic-system value solely from cloud rankings.",
+          "adoption_conditions_ja": [
+            "研究報告の結果でありOpenFSによる再現実験ではないと明示する。",
+            "中央値・裾・失敗・再測定の安定性を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Label these as study findings, not OpenFS replications.",
+            "Examine medians, tails, failures and replay stability."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AI-CODING-PRODUCTIVITY-EVIDENCE",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA021",
+            "SRC-CDA022",
+            "SRC-CDA023"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "実務上の生産性: 実験・自己申告・並行作業",
+          "name_en": "Practical productivity: trials, self-reports and concurrency",
+          "timing_ja": "2025年実験、2026年2月・5月更新",
+          "timing_en": "2025 trial and February/May 2026 updates",
+          "statement_ja": "METRの2025年実験は特定の熟練OSS開発者で作業時間増を観測しましたが、2026年更新は参加者・課題の選択と並行エージェントの時間計測に偏りを指摘しています。5月の調査は自己申告であり因果的な高速化測定ではありません。研究コードの移植工数は、レビュー・テスト・修正を含めて別に計測する必要があります。",
+          "statement_en": "METR's 2025 trial observed longer completion times in a specific experienced-OSS setting; its 2026 update highlights participant/task selection and concurrent-agent time-accounting biases. The May survey is self-reported, not a causal speed measurement. Research-code porting effort needs separate measurement including review, testing and rework.",
+          "hpci_relevance_ja": "AI導入による人員・期間・費用削減を、体感や古い単一実験で確定しません。",
+          "hpci_relevance_en": "Do not fix staffing, schedule or savings from impressions or one old experiment.",
+          "adoption_conditions_ja": [
+            "人の実作業時間、待ち時間、エージェント計算費、品質を分ける。",
+            "採用するモデル・ハーネス・時期で再評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate human effort, waiting, agent compute cost and quality.",
+            "Reevaluate for the chosen model, harness and period."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD1-APP-05-U01"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA015",
+        "title": "KernelBench evaluation toolkit",
+        "publisher": "Stanford Scaling Intelligence / KernelBench authors",
+        "url": "https://github.com/ScalingIntelligence/KernelBench",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "kernelbench-authors",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Task levels, fast_p, backend and precision notes",
+      "observation_ja": "正答かつ高速な割合と、GPU/DSL/精度の限定を確認。",
+      "observation_en": "Read correct-and-fast fractions and GPU/DSL/precision limits.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA016",
+        "title": "KernelBench evaluation caveats",
+        "publisher": "KernelBench authors",
+        "url": "https://github.com/ScalingIntelligence/KernelBench/blob/main/EVAL.md",
+        "source_class": "official-project",
+        "published_or_updated": "WIP guide accessed 2026-09-01"
+      },
+      "origin_group": "kernelbench-authors",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Independent verification; timing; experimental checkers",
+      "observation_ja": "結果の個別検証、計時方式、regex checkerの試作状態を確認。",
+      "observation_en": "Read independent-verification requirements, timing methods and experimental regex checkers.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA017",
+        "title": "SciCode scientific research coding benchmark",
+        "publisher": "SciCode authors",
+        "url": "https://scicode-bench.github.io/",
+        "source_class": "official-project",
+        "published_or_updated": "project overview accessed 2026-09-01"
+      },
+      "origin_group": "scicode-authors",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Problem construction, scientific tests and background variants",
+      "observation_ja": "80主問題・338小問題、科学的背景の有無を分けた評価を確認。",
+      "observation_en": "Read 80 main/338 subproblems and evaluation with/without scientific background.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA018",
+        "title": "ParEval parallel code evaluation benchmark",
+        "publisher": "Parallel Code Foundry / ParEval authors",
+        "url": "https://github.com/parallelcodefoundry/ParEval",
+        "source_class": "official-project",
+        "published_or_updated": "develop README accessed 2026-09-01"
+      },
+      "origin_group": "pareval-authors",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Drivers and prerequisites",
+      "observation_ja": "MPI/OpenMP、CUDA/HIP/Kokkosの評価構成と、依存不足時のskipを確認。",
+      "observation_en": "Read MPI/OpenMP and CUDA/HIP/Kokkos setup and skipping unavailable dependencies.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA019",
+        "title": "SWE-fficiency repository performance benchmark",
+        "publisher": "SWE-fficiency authors",
+        "url": "https://github.com/swefficiency/swefficiency",
+        "source_class": "official-project",
+        "published_or_updated": "README accessed 2026-09-01"
+      },
+      "origin_group": "swefficiency-authors",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "498 tasks; correctness workload separation; Speedup Ratio",
+      "observation_ja": "9 Python libraryの498課題、性能workloadと正答testの分離を確認。",
+      "observation_en": "Read 498 tasks from nine Python libraries and separate performance workloads/correctness tests.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA020",
+        "title": "Are performance-optimization benchmarks reliably measuring coding agents?",
+        "publisher": "Zhi Chen and coauthors",
+        "url": "https://arxiv.org/html/2607.01211v2",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-07-16 v2"
+      },
+      "origin_group": "chen-benchmark-reliability",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Cross-machine replay; discussion; threats to validity",
+      "observation_ja": "4機種での再実行と集計規則の影響、対象・厳格判定による限界を確認。独自再現は未実施。",
+      "observation_en": "Read four-machine replay, scoring effects and scope/conservative-rule limitations; no independent replication performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA021",
+        "title": "METR early-2025 developer productivity trial",
+        "publisher": "METR",
+        "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+        "source_class": "research-artifact",
+        "published_or_updated": "2025-07-10"
+      },
+      "origin_group": "metr-productivity",
+      "checked_at": "2026-09-01T01:01:43+09:00",
+      "locator": "Trial design, core result and non-generalization table",
+      "observation_ja": "16人246課題の限定条件と19%時間増を確認。現在全モデルへの一般化は不可。",
+      "observation_en": "Read 16-developer/246-task scope and 19% longer time; not generalizable to all current models.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA022",
+        "title": "METR productivity experiment redesign",
+        "publisher": "METR",
+        "url": "https://metr.org/blog/2026-02-24-uplift-update/",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-02-24"
+      },
+      "origin_group": "metr-productivity",
+      "checked_at": "2026-09-01T01:02:00+09:00",
+      "locator": "Selection effects and unreliable time accounting",
+      "observation_ja": "参加・課題選択と複数agent並行作業が推定を歪め、効果量は弱い根拠とする記述を確認。",
+      "observation_en": "Read selection/concurrent-agent timing biases and weak evidence for effect size.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA023",
+        "title": "METR early-2026 technical worker self-report survey",
+        "publisher": "METR",
+        "url": "https://metr.org/blog/2026-05-11-ai-usage-survey/",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-05-11"
+      },
+      "origin_group": "metr-productivity",
+      "checked_at": "2026-09-01T01:02:00+09:00",
+      "locator": "Summary, methodology and selection bias",
+      "observation_ja": "349人の自己申告、価値と速度の区別、便宜sample・低回答率の限界を確認。",
+      "observation_en": "Read 349 self-reports, value-versus-speed distinction and convenience/response-bias limits.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "既存の根拠・英語の主張を維持し、日本語表現を調整。新規の測定や性能検証は行っていない。",
+    "既存の未確認事項は解消していない。単一のAIモデルによる暫定調査で、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Japanese wording revised while preserving evidence and English claims; no new measurements or performance validation.",
+    "Existing gaps remain open. This single-model research remains provisional with independent Consensus incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000043",
+      "bundle_sha256": "92ec34e69772c457f0b2d5a6efe963a854078ef68f90df5498ef0917a46f12d7"
+    }
+  ]
+}

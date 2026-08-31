@@ -1,0 +1,106 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000079",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T03:02:25+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "8c01652c505e98daa1b810929fc3736331e2d62eb11aa4969c6a3364a583cd98",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミングモデルの仕様と各コンパイラの対応範囲を分け、版・対象機種・実行時ライブラリ・既知の不具合を確認します。GPU移植ではソース互換性だけでなく、数値精度、データ移動、実測性能、保守可能性を比較します。単一のAIモデルによる暫定結果です。",
+  "summary_en": "The review separates programming-model specifications from compiler coverage and checks versions, target platforms, runtimes and known defects. GPU migration requires comparisons of numerical behavior, data movement, measured performance and maintainability, not only source compatibility. Results remain provisional and were researched by one AI model.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U03",
+      "before_sha256": "fe5391d3ae0a3d82cd65b5e79654b3f1b8be95b0d57a3263952bac3f814182f2",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U03",
+        "TDS-CD2-SSW-01-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-01-U03",
+      "title_ja": "性能解析ツールの実行条件",
+      "title_en": "Profiler execution requirements",
+      "summary_ja": "CPU・GPU・OSごとの機能差を確認し、製品名だけで対応状況を判断しません。",
+      "summary_en": "Check functionality by CPU, GPU and OS rather than inferring coverage from product names.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-UPROF-53-OS-COVERAGE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS087"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AMD uProfのOS別機能と修正版",
+          "name_en": "AMD uProf OS coverage and patch build",
+          "timing_ja": "5.3は2026-06-17公開。確認時点の配布版は5.3.521です。",
+          "timing_en": "5.3 released 2026-06-17; the inspected download is build 5.3.521.",
+          "statement_ja": "CPUとMI系GPUの解析を提供しますが、MPI/OpenMPトレースやGPU解析はLinuxに限定されています。5.3.521はNFS上のセッションをGUIへ読み込めない問題を修正しています。",
+          "statement_en": "CPU and MI-GPU analysis are offered, but MPI/OpenMP tracing and GPU analysis are Linux-only. Build 5.3.521 fixes importing NFS-stored sessions into the GUI.",
+          "hpci_relevance_ja": "共有ファイルシステムと対象OSを含めて、センターの計測環境を検証します。",
+          "hpci_relevance_en": "Qualify center profiling environments with the shared filesystem and target OS.",
+          "adoption_conditions_ja": [
+            "機能対応表、CPU/GPU世代、権限、計測オーバーヘッドを確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check feature coverage, CPU/GPU generation, privileges and measurement overhead."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS087",
+        "title": "AMD uProf 5.3 product and feature matrix",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/developer/uprof.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "5.3 released 2026-06-17; build 5.3.521 listed at access"
+      },
+      "origin_group": "AMD-uProf-product",
+      "checked_at": "2026-09-01T03:01:26+09:00",
+      "locator": "What's New, downloads, Features by OS",
+      "observation_ja": "CPUとMI系GPUを扱いますが、GPU解析・MPI/OpenMPトレースはLinux向けです。5.3.521はNFS上のセッション読込を修正しています。",
+      "observation_en": "Covers CPUs and MI GPUs, but GPU analysis and MPI/OpenMP tracing are Linux features. Build 5.3.521 fixes NFS-session import.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "同じアプリケーションで計測範囲・オーバーヘッド・トレース欠損を比較する試験が必要です。",
+    "公開文書の確認であり実機試験ではありません。独立Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Matching-application tests of measurement scope, overhead and missing trace events are still needed.",
+    "This is a documentation review, not a hardware test; independent Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000033",
+      "bundle_sha256": "080f801882833b90ca2d6981acbef738306ded05d57972415095f7b611e4714f"
+    },
+    {
+      "update_id": "RUP-000078",
+      "bundle_sha256": "41fab704a904e4be56b0a054cbf325268ab13edc252c55c2aabbba3669359470"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000106",
+  "topic_id": "SSW-15",
+  "created_at": "2026-09-01T04:36:37+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "e711a9143d36c2ae2c2bbeb9370239b2c7b786b3ec5900fe1a8cced232f447cf",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "CPU・GPU・ノード・施設の計測範囲と時刻をそろえ、電力上限、消費電力量、処理時間を分けて比較します。制御ソフトの導入だけで省エネルギーを保証せず、共有資源への影響、冷却の応答、障害時の復帰までを運用条件として評価します。",
+  "summary_en": "Align timestamps and measurement boundaries across CPUs, GPUs, nodes and facilities, distinguishing power caps, energy and completion time. Management software alone does not guarantee savings: evaluate shared-resource effects, cooling response and recovery as operational conditions.",
+  "units": [
+    {
+      "unit_id": "SSW-15-U01",
+      "before_sha256": "b6c5f48bb09c957d8dd188e80fd98b6ec3db0d2ed52a88789873a68723d9dbaf",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-15-U01",
+        "TDS-CD2-SSW-15-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-15-U01",
+      "title_ja": "CPUとGPUが共有する電力枠",
+      "title_en": "Shared CPU/GPU power budgets",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-JUPITER-SHARED-POWER",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO113",
+            "SRC-CDO115"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUPITER: CPUとGPUの電力配分",
+          "name_en": "JUPITER: CPU/GPU power allocation",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "公開運用資料では、計算ノードのGH200モジュールを680Wに制限し、CPUの既定枠を100W、調整上限を300Wとしています。CPU枠を増やすとGPUが使える電力が減るため、CPU単体の高速化がジョブ全体の短縮につながるとは限りません。これはサイト固有の電力設定で、ノード全体の消費電力や節電率ではありません。",
+          "statement_en": "Public operations documents cap a compute-node GH200 module at 680W, with a 100W CPU default adjustable up to 300W. Increasing the CPU share reduces GPU headroom, so faster CPU processing need not shorten the whole job. These are site-specific settings, not whole-node consumption or a savings rate.",
+          "hpci_relevance_ja": "CPU制御が多いAI処理とGPU主体の科学計算では、適切な配分を個別に測定します。",
+          "hpci_relevance_en": "Measure suitable allocations separately for CPU-heavy AI control and GPU-heavy scientific computation.",
+          "adoption_conditions_ja": [
+            "資料が示す実験的なジョブ前後の設定・復元方式は、本番での安全性保証ではない。",
+            "入力、GPU設定、完了時間、モジュールと施設の電力量を揃えて比較する。"
+          ],
+          "adoption_conditions_en": [
+            "The documented exploratory job-boundary tuning/restoration mechanism is not production safety assurance.",
+            "Compare matched inputs, GPU settings, completion time, and module/facility energy."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO113",
+        "title": "JUPITER batch-system documentation",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/batchsystem.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation with August 2026 transition notice; accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-operations",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Introductory warnings, daemon integration and CPU Limiting Options",
+      "observation_ja": "早期利用期の注意書き、psid/psslurmの説明、680Wのモジュール電力枠とCPU既定100Wを確認。サイト固有の条件であり実測消費ではない。",
+      "observation_en": "Read early-access caveats, psid/psslurm integration and a 680W module budget with a 100W CPU default; site-specific limits, not measured consumption.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO115",
+        "title": "JUPITER build-up operation and runtime tuning",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/buildup.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live pre-production documentation accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-operations",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "PrEpS exploratory interface, CPU/GPU shared power cap and large-scale tuning",
+      "observation_ja": "ジョブ前後の設定・復元を行う実験的方式、CPUの最大300WとGPUが共有する680W枠を確認。全ノード電力や節電実績ではない。",
+      "observation_en": "Read exploratory job-boundary tuning/restoration and CPU limits up to 300W within the shared 680W budget; not whole-node power or observed savings.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各候補機のCPU/GPU電力連成、制御遅延、障害時復元は未検証。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "CPU/GPU power coupling, control latency and failure restoration remain unverified for candidate systems.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000055",
+      "bundle_sha256": "13318d26e46b06e1f593beaefd59b64edade5a7def8d25599e255ec938f07bc6"
+    }
+  ]
+}

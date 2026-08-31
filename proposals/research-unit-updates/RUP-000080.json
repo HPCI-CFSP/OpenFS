@@ -1,0 +1,167 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000080",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-01T03:02:26+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "a6d5e17fff8987107da651e3801f501808a29780a88f4a7050631ef3d02a005b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MPI、UCX/UCC、GPU集合通信を、通信範囲・プロセス起動・順序制約・障害時の振る舞いから比較します。SDK同梱版と単独公開版、既定有効の機能と任意設定の機能を区別し、性能は実構成での検証を要する暫定結果として扱います。",
+  "summary_en": "Compare MPI, UCX/UCC and GPU collectives by communication scope, process launch, ordering and failure behavior. Distinguish bundled from standalone versions and defaults from opt-in features; performance remains provisional pending tests on the actual configuration.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "abedae48f9625e4b760c0c742b2e339c65b29ec3031e060f948259561a552a16",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-SSW-03-U01",
+      "title_ja": "通信機能の版・有効化条件",
+      "title_en": "Communication versions and enablement conditions",
+      "summary_ja": "新機能の存在は、全GPUや全通信方式で利用できることを意味しません。",
+      "summary_en": "A new feature does not imply availability on every GPU or transport.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-NCCL-CFT-PAT-CONDITIONS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS088",
+            "SRC-CDS007"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NCCL単独版とHPC SDK同梱版",
+          "name_en": "Standalone versus HPC-SDK-bundled NCCL",
+          "timing_ja": "2.31.2の公開日は未確定。HPC SDK 26.5は2.29.3を同梱します。",
+          "timing_en": "The exact 2.31.2 release date is unconfirmed; HPC SDK 26.5 bundles 2.29.3.",
+          "statement_ja": "2.31.2のCFTはBlackwellとCUDA 13.3以降を条件とし、階層PATは既定で無効です。HPC SDKの導入だけでこれらの機能がそろうとは判断できません。",
+          "statement_en": "In 2.31.2, CFT requires Blackwell and CUDA 13.3 or later, while hierarchical PAT is disabled by default. Installing the HPC SDK alone does not establish availability of these features.",
+          "hpci_relevance_ja": "候補ノードのGPU世代、CUDA、通信ライブラリを組合せとして確認します。",
+          "hpci_relevance_en": "Validate GPU generation, CUDA and communication libraries as one candidate-node combination.",
+          "adoption_conditions_ja": [
+            "同梱版と単独版の混在時には互換性・再ビルド要否を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Check compatibility and rebuild requirements when mixing bundled and standalone versions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD3-RCCL-ROCFFT-TRANSPORT-SCOPE",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS089"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "RCCLとrocFFTの対応範囲",
+          "name_en": "RCCL and rocFFT transport scope",
+          "timing_ja": "ROCm Core SDK 10.0.0の公開資料（2026-08-26）",
+          "timing_en": "ROCm Core SDK 10.0.0 documentation dated 2026-08-26",
+          "statement_ja": "RCCLの対称メモリ機能とrocFFTの任意RCCL経路には構成上の条件があります。後者は単一ノード・単一プロセス内の複数GPU向けであり、分散MPI FFTへの一般的な対応とは区別します。",
+          "statement_en": "RCCL symmetric-memory features and the optional rocFFT RCCL path have configuration limits. The latter is single-node, single-process, multi-GPU, not general distributed-MPI FFT support.",
+          "hpci_relevance_ja": "メモリ登録、GPU配置、プロセス数、ノード数を固定して比較します。",
+          "hpci_relevance_en": "Fix memory registration, GPU placement, process count and node count in comparisons.",
+          "adoption_conditions_ja": [
+            "develop文書は変更されるため、配布版・GPU・OSとの対応を再確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Because develop documentation can change, recheck the released artifact, GPU and OS combination."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS007",
+        "title": "NVIDIA HPC SDK 26.5 release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/hpc-sdk/release-notes/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "26.5 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Deprecations and Changes; Release component table; Known limitations",
+      "observation_ja": "CUDA 11.x対応終了、旧プロファイラと同梱Open MPI 4削除を確認。版・CPU構成別のライブラリ確認が必要。",
+      "observation_en": "Confirms CUDA 11.x retirement and removal of legacy profilers and bundled Open MPI 4; component coverage is configuration-dependent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS088",
+        "title": "NCCL 2.31.2 release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/deeplearning/nccl/release-notes/rel_2-31-2.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2.31.2 release notes; exact release date not established"
+      },
+      "origin_group": "NVIDIA-NCCL-release",
+      "checked_at": "2026-09-01T03:01:26+09:00",
+      "locator": "Compatibility; Key Features and Enhancements",
+      "observation_ja": "CFTはBlackwellとCUDA 13.3以降、階層PATは既定無効です。SDK全体の版とは分けて記録します。",
+      "observation_en": "CFT requires Blackwell and CUDA 13.3 or later; hierarchical PAT is disabled by default. Track this separately from suite versions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS089",
+        "title": "ROCm Core SDK 10.0.0 component matrix and release notes (develop page)",
+        "publisher": "AMD",
+        "url": "https://rocm.docs.amd.com/en/develop/about/release-notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26; develop page inspected 2026-09-01"
+      },
+      "origin_group": "AMD-ROCm-10-release",
+      "checked_at": "2026-09-01T03:01:26+09:00",
+      "locator": "ROCm Core SDK components; rocFFT and RCCL changes; AI ecosystem support",
+      "observation_ja": "rocBLAS 5.6.0、rocSOLVER 3.36.0、RCCL 2.30.7などの構成版を掲載。rocFFTの任意RCCL経路は単一ノード・単一プロセス内の複数GPU向けです。",
+      "observation_en": "Lists components including rocBLAS 5.6.0, rocSOLVER 3.36.0 and RCCL 2.30.7. The optional rocFFT RCCL path is single-node, single-process, multi-GPU.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "同じ通信パターンでMPIとGPU集合通信の混在、エラー回復、複数ノード性能を測る必要があります。",
+    "公式文書のみを単一のAIモデルで確認しており、独立Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Mixed MPI/GPU collectives, error recovery and multi-node performance need tests under matching communication patterns.",
+    "Official documentation was checked by one AI model; independent Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000034",
+      "bundle_sha256": "37de0152bc50f2d066339c8f409f2746e8d0317e5622da36df459285be50e3d3"
+    },
+    {
+      "update_id": "RUP-000068",
+      "bundle_sha256": "0f1ac36da05fc75c3b3c94f5793e2b83fcc6ad76d5eefc0d5d913f4377949bcf"
+    }
+  ]
+}

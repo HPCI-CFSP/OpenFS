@@ -133,3 +133,37 @@ test("hardware follow-ups show each current item in its own bilingual catalog", 
   }
   assert.equal(itemCount, 87);
 });
+
+test("cross-domain follow-ups render all current claims under their owning catalogs", () => {
+  let topicCount = 0;
+  const canonical = JSON.parse(readFileSync(path.join(root, "knowledge/public/topic-decision-support.json"), "utf8"));
+  for (const profile of canonical.topic_profiles) {
+    const archived = new Set(profile.archived_section_ids || []);
+    const sections = profile.sections.filter((s) => /^TDS-CD\d+-/.test(s.section_id) && !archived.has(s.section_id));
+    if (!sections.length) continue;
+    topicCount++;
+    const published = data.topic_decision_support.topic_profiles.find((p) => p.topic_id === profile.topic_id);
+    assert.ok(published, profile.topic_id);
+    assert.ok(published.sections.every((s) => !archived.has(s.section_id)));
+    for (const language of ["ja", "en"]) {
+      const f = fixture(`?topic=${profile.topic_id}&lang=${language}`);
+      for (const section of sections) {
+        const visible = f.get(section.section_id);
+        assert.ok(visible, section.section_id);
+        const links = f.walk(visible).filter((el) => el.tagName === "a").map((el) => el.href);
+        for (const item of section.items) {
+          assert.ok(visible.textContent.includes(item[`statement_${language}`]), item.item_id);
+          assert.ok(visible.textContent.includes(item[`hpci_relevance_${language}`]), item.item_id);
+          for (const condition of item[`adoption_conditions_${language}`]) assert.ok(visible.textContent.includes(condition), item.item_id);
+          for (const id of item.source_ids) {
+            const evidence = canonical.sources.find((s) => s.source_id === id);
+            assert.ok(links.includes(evidence.url), `${item.item_id}: missing ${id}`);
+          }
+          assert.equal(item.consensus_status, "incomplete");
+        }
+      }
+      for (const id of archived) assert.equal(f.get(id), undefined);
+    }
+  }
+  assert.equal(topicCount, 33);
+});

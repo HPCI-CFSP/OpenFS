@@ -191,3 +191,35 @@ test("each dated event occupies its exact quarter width on a common grid", () =>
     }
   }
 });
+
+test("legacy what-if cells retain values while disclosing assumptions in both languages", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
+  const performance = data.application_performance_forecasts;
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const cells = f.walk(f.get("application-performance-table"))
+      .filter((el) => el.className?.includes("forecast-value-cell"));
+    assert.equal(cells.length, performance.forecasts.length);
+    assert.equal(cells.length, 36);
+    const number = (value) => new Intl.NumberFormat(language === "ja" ? "ja-JP" : "en-US", {
+      maximumFractionDigits: 3
+    }).format(value);
+    let index = 0;
+    for (const app of performance.applications) for (const scale of performance.standard_fugaku_node_scales) {
+      const forecast = performance.forecasts.find((item) => item.application_id === app.application_id && item.fugaku_nodes === scale);
+      if (!forecast) continue;
+      const cell = cells[index++];
+      assert.equal(cell.children[0].textContent, language === "ja" ? "未校正の試算" : "uncalibrated what-if");
+      assert.equal(cell.children[1].textContent, `${number(forecast.estimate.base)}×`);
+      assert.ok(cell.children[2].textContent.includes(`${number(forecast.estimate.lower)}–${number(forecast.estimate.upper)}×`));
+    }
+    const method = f.get("application-performance-method").textContent;
+    assert.ok(method.includes(language === "ja" ? "高速化可能と仮定した実行時間比率" : "Assumed accelerator-eligible runtime fraction"));
+    assert.ok(method.includes(language === "ja" ? "未校正の値" : "uncalibrated inputs"));
+    assert.ok(method.includes("75%"));
+    const policies = f.get("application-performance-policies").textContent;
+    assert.ok(policies.includes(language === "ja" ? "信頼区間ではない" : "not a confidence interval"));
+    assert.ok(policies.includes(language === "ja" ? "検証完了まで使用不可" : "not permitted until validation"));
+    assert.equal(f.get("application-performance-caveat").textContent, performance[`caveat_${language}`]);
+  }
+});

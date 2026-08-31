@@ -1,0 +1,434 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000048",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-01T01:25:51+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "7d0376a1e246718032596f83d3c126caf618569a32e9a5a58483a06318d27f57",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験設備連携は、データ取得・転送・解析・結果返却・次の操作を含む閉ループとして整理しました。放射光、電子顕微鏡、気象観測、自律実験室では求める処理期限と安全性が異なります。常時サービス、期間限定実証、将来の研究目標を分け、緊急計算に必要な利用権限と事前準備も扱います。",
+  "summary_en": "Instrument-linked computing is organized as a closed loop of acquisition, transfer, analysis, feedback and subsequent actions. Light sources, electron microscopy, weather observations and autonomous labs have different deadlines and safety requirements. Ongoing services, limited demonstrations and research targets are distinguished, including authorization and preparation for urgent computing.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "6dae27e980dbd864970f71c11e68f4ecfb2fe14211d9f84ed4776af29d8ce75f",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U01"
+      ]
+    },
+    {
+      "unit_id": "APP-14-U02",
+      "before_sha256": "ed30b673a3c3e1d5215f07818045c5e8a3de637380edc5ed2cfc3e24fa570d42",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-APP-14-U01",
+      "title_ja": "実験データと計算・制御の閉ループ",
+      "title_en": "Closed loops across experimental data, computing and control",
+      "summary_ja": "一つの計算カーネルだけでなく、設備側と計算側を結ぶ全工程を評価します。",
+      "summary_en": "Evaluate the complete instrument-to-compute workflow, not just one kernel.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-LCLS-EDS-PIPELINE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA069"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "LCLS: 取得からオンライン解析まで",
+          "name_en": "LCLS: acquisition through online analysis",
+          "timing_ja": "現行の公開サービス説明",
+          "timing_en": "Current public service description",
+          "statement_ja": "LCLS EDSは、取得、オンライン監視、解析、データ管理、自動処理を担い、LCLS-IIではオンラインデータ削減も扱います。高繰返し実験では、全データを後から中央計算機へ送るだけでなく、設備近傍の処理とHPCを組み合わせる構成が重要です。MHz時代という説明を、全装置の実測稼働率とは解釈しません。",
+          "statement_en": "LCLS EDS covers acquisition, monitoring, analysis, management and automated processing, with online reduction for LCLS-II. High-rate experiments motivate combining near-instrument processing with HPC rather than only transferring everything afterward. MHz-era context is not a measured operating rate for every instrument.",
+          "hpci_relevance_ja": "設備近傍の処理能力、転送、共有計算資源の分担を決める事例です。",
+          "hpci_relevance_en": "It informs allocation between near-instrument compute, transport and shared HPC.",
+          "adoption_conditions_ja": [
+            "取得率、削減後データ量、保存方針を装置別に確認する。",
+            "解析結果の誤りを実験制御へ伝えない安全条件を別に設ける。"
+          ],
+          "adoption_conditions_en": [
+            "Verify instrument-specific input rate, reduced volume and retention policy.",
+            "Define separate safeguards against propagating analysis errors into instrument control."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SFAPI-AUTOMATION-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA070"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Superfacility API: 設備と共有計算機の接続",
+          "name_en": "Superfacility API: connecting instruments and shared computing",
+          "timing_ja": "現行公開API説明",
+          "timing_en": "Current public API documentation",
+          "statement_ja": "NERSCのSuperfacility APIは、外部ワークフローからジョブ、ファイル、状態を扱う接点です。利用者が手動でログインする工程を減らせますが、APIの存在だけで計算資源の予約、開始期限、データ保存が保証されるわけではありません。権限と資源割当を組み合わせた設計が必要です。",
+          "statement_en": "NERSC's Superfacility API exposes jobs, files and status to external workflows. It reduces manual login steps, but the API alone guarantees neither reservations, start deadlines nor retention. Authorization and resource allocation must be designed together.",
+          "hpci_relevance_ja": "実験側の操作画面とHPC側の実行基盤を分離して接続できます。",
+          "hpci_relevance_en": "It separates instrument-facing interfaces from HPC execution infrastructure.",
+          "adoption_conditions_ja": [
+            "APIクライアントの権限・有効期間・障害処理を確認する。",
+            "本調査は公開文書の確認のみで、APIは実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "Check client privileges, lifetime and failure handling.",
+            "This review read public documentation and did not execute API requests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NCEM-STREAMING-FALLBACK",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA071"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "電子顕微鏡ストリーミング: I/O削減と代替経路",
+          "name_en": "Microscopy streaming: less I/O and fallback paths",
+          "timing_ja": "2024年の特定設備での研究報告",
+          "timing_en": "2024 study on a specific instrument",
+          "statement_ja": "NCEMからPerlmutterのメモリへ直接データを流す研究は、ファイル経由のI/Oを削減しています。一方、上流UDPの欠損は残り、計算ノードが使えない場合はディスク保存へ戻す設計です。転送・解析時間の改善を、データ無損失やジョブ待機を含む一般的な期限保証とは扱いません。",
+          "statement_en": "A NCEM-to-Perlmutter study reduces file I/O by streaming into compute memory. Upstream UDP loss remains, and unavailable compute triggers disk fallback. Better transfer/analysis timing is not a guarantee of losslessness or general deadlines including job queues.",
+          "hpci_relevance_ja": "低遅延化とデータ保全を同時に設計する必要性を示します。",
+          "hpci_relevance_en": "It illustrates the need to design latency and data preservation together.",
+          "adoption_conditions_ja": [
+            "取得、転送、待機、解析、保存の計時境界を分ける。",
+            "欠損率と科学的な品質を遅延と併記する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate acquisition, transfer, queue, analysis and retention timing.",
+            "Report loss and scientific quality alongside latency."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SELF-MAINTAINING-LAB-TARGET",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA072"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "自己保守型実験室: 状態監視と承認",
+          "name_en": "Self-maintaining laboratories: state monitoring and approval",
+          "timing_ja": "2027年度末のルームレベル実装を目標",
+          "timing_en": "Room-level implementation targeted for end of Japanese FY2027",
+          "statement_ja": "理研の研究構想は、実験操作だけでなく、在庫や装置状態の監視とエラー対応を自動化の対象に含めます。2027年度末の実装目標は研究計画であり、提供済みサービスではありません。研究者の意図と承認を保ちながら、状態管理・計算・ロボットを連携する負荷として追跡します。",
+          "statement_en": "RIKEN's concept extends automation from experiments to inventory, equipment state and error handling. The end-FY2027 implementation target is a research plan, not an available service. Track it as a workload linking state management, computing and robotics while retaining researcher intent and approval.",
+          "hpci_relevance_ja": "推論だけでなく、継続稼働と安全な復旧の要件が加わります。",
+          "hpci_relevance_en": "Requirements extend beyond inference to continuity and safe recovery.",
+          "adoption_conditions_ja": [
+            "年度末を暦年末と混同しない。",
+            "自動記録だけで誤りや研究不正がなくなるとは判断しない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not confuse fiscal-year end with calendar-year end.",
+            "Automated logs alone do not eliminate errors or misconduct."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-APP-14-U02",
+      "title_ja": "緊急計算の用途・権限・代表性",
+      "title_en": "Urgent-computing use cases, authority and representativeness",
+      "summary_ja": "時間制約の科学的な意味と、資源を動員する制度を併せて確認します。",
+      "summary_en": "Check the scientific meaning of deadlines and the mechanisms for mobilizing resources.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-FUGAKU-WEATHER-DEMONSTRATION",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA073"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "富岳の気象予測: 期間限定のリアルタイム実証",
+          "name_en": "Fugaku weather forecasting: a limited real-time demonstration",
+          "timing_ja": "2025-08-05から08-31の実証として発表",
+          "timing_en": "Announced demonstration for 2025-08-05 through 08-31",
+          "statement_ja": "万博関連の実証は、2台の気象レーダとSCALE-LETKFを使い、内側領域を500m格子で計算する計画でした。公開説明は実用予報の十分な精度や安定配信を保証していません。現在の常設サービスとは区別し、観測・圧縮配信・同化・予報の連携事例として扱います。",
+          "statement_en": "The Expo demonstration planned two weather radars and SCALE-LETKF with a 500m inner grid. Its public notice explicitly does not guarantee operational forecast accuracy or stable delivery. Treat it as an observation/compression/assimilation/forecast workflow example, not a current permanent service.",
+          "hpci_relevance_ja": "HPCI固有の事例として、計算速度以外の配信・精度条件を明確にします。",
+          "hpci_relevance_en": "This HPCI-specific case clarifies delivery and accuracy requirements beyond compute speed.",
+          "adoption_conditions_ja": [
+            "更新周期、予報先時間、計算所要時間を区別する。",
+            "過去の別実証の100m格子などと条件を混在させない。"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish refresh interval, forecast horizon and computation time.",
+            "Do not mix conditions such as 100m grids from other demonstrations."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-EFLOWS-UNCERTAINTY-URGENT",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA074"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "地震・津波: 不確実性を含む緊急ワークフロー",
+          "name_en": "Earthquakes and tsunamis: uncertainty-aware urgent workflows",
+          "timing_ja": "eFlows4HPCの公開成果",
+          "timing_en": "Published eFlows4HPC outputs",
+          "statement_ja": "UCIS4EQとProbabilistic Tsunami Forecastは、地震・津波の予測や影響評価をワークフローとして扱い、不確実性を更新する構成を示します。単一の最速計算ではなく、観測追加に伴う再評価と結果の信頼性を含めた用途です。成果紹介を現在の全地域向け常設サービスと読み替えません。",
+          "statement_en": "UCIS4EQ and Probabilistic Tsunami Forecast organize hazard assessment and uncertainty updates as workflows. The use case includes reevaluation as observations arrive, not merely the fastest single run. Project outputs should not be read as a permanent service covering every region.",
+          "hpci_relevance_ja": "期限内に返す結果の精度と、追加計算の価値を設計できます。",
+          "hpci_relevance_en": "It helps balance quality by the deadline against the value of further computation.",
+          "adoption_conditions_ja": [
+            "災害種別、地域、入力取得可能性を揃える。",
+            "緊急利用の制度と実行ソフトウェアを別に確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Match hazard type, geography and available inputs.",
+            "Verify urgent-access policy separately from workflow software."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-EUROHPC-EMERGENCY-AUTHORITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA075"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EuroHPC Emergency Access: 要請から資源割当まで",
+          "name_en": "EuroHPC Emergency Access: request to allocation",
+          "timing_ja": "2025年12月版アクセス方針",
+          "timing_en": "December 2025 access policy",
+          "statement_ja": "EuroHPCの緊急アクセスは、関係機関の要請、Executive Directorの判断、実行施設との資源確認を伴います。方針中の24時間は応答・指示の上限であり、全ての計算結果を24時間以内に返す保証ではありません。事前のアプリ準備と連絡・責任体制を整備計画の要件として扱います。",
+          "statement_en": "EuroHPC emergency access requires institutional requests, an Executive Director decision and resource coordination with hosting sites. Its 24-hour limit concerns response/instruction, not completion of all computation. Application readiness and accountable communication are planning requirements.",
+          "hpci_relevance_ja": "緊急計算は優先キューを追加するだけでは成立しません。",
+          "hpci_relevance_en": "Urgent computing requires more than adding a priority queue.",
+          "adoption_conditions_ja": [
+            "海外制度をHPCIへそのまま適用せず、国内の権限と手続を確認する。",
+            "確保済み資源と必要時に調整する資源を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not transplant overseas policy into HPCI without checking domestic authority and procedures.",
+            "Distinguish pre-reserved resources from resources coordinated on demand."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-URGENT-REPRESENTATIVE-MIX",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA069",
+            "SRC-CDA074",
+            "SRC-CDA076"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "代表負荷: 連続処理と突発処理を分ける",
+          "name_en": "Representative loads: continuous versus event-driven processing",
+          "timing_ja": "OpenFSの暫定評価方針",
+          "timing_en": "Provisional OpenFS evaluation approach",
+          "statement_ja": "継続的にデータが来る実験、短い対話的解析、災害時だけ急増する計算を別の負荷として比較する方針です。NERSCのRealtimeも特別申請を要し、一般のPremiumとは目的が異なります。各負荷の到着分布、期限、割込み可否、通常利用者への影響を集めて代表性を判断します。",
+          "statement_en": "The proposed evaluation separates continuous instruments, short interactive analysis and disaster-driven bursts. NERSC Realtime requires special requests and differs from Premium. Assess representativeness using arrival distributions, deadlines, preemptibility and impact on ordinary users.",
+          "hpci_relevance_ja": "ピークだけに合わせた過大整備と、平均だけに合わせた遅延超過を避けます。",
+          "hpci_relevance_en": "It avoids both peak-only overprovisioning and mean-only deadline misses.",
+          "adoption_conditions_ja": [
+            "全国の実需要分布は未取得であり、比率を仮定しない。",
+            "安全性を伴う実機操作は別の承認・検証の対象とする。"
+          ],
+          "adoption_conditions_en": [
+            "Nationwide demand distributions are uncollected; do not invent mixture weights.",
+            "Safety-relevant physical actions require separate approval and validation."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-APP06-CURRENT",
+    "TDS-APP06-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA069",
+        "title": "LCLS Experiment Data Systems",
+        "publisher": "SLAC / LCLS",
+        "url": "https://lcls.slac.stanford.edu/depts/data-systems",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "slac-lcls",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "EDS responsibilities and MHz-era integration",
+      "observation_ja": "取得・オンライン削減・監視・解析・管理・自動処理の役割を確認。",
+      "observation_en": "Read acquisition, online reduction, monitoring, analysis, management and automated processing roles.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA070",
+        "title": "The NERSC Superfacility API",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/services/sfapi/",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nersc-sfapi",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Service scope and automated workflows",
+      "observation_ja": "ジョブ、ファイル、状態照会を連携するAPIの公開説明を確認。API自体は実行していない。",
+      "observation_en": "Read public description of job/file/status integration; no API operations were executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA071",
+        "title": "Accelerating Time-to-Science by Streaming Detector Data Directly into Perlmutter Compute Nodes",
+        "publisher": "Welborn and coauthors",
+        "url": "https://arxiv.org/html/2403.14352v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-03-21 v1"
+      },
+      "origin_group": "ncem-nersc-streaming",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Sections 2-4; UDP loss, disk fallback and timing boundaries",
+      "observation_ja": "直接メモリ転送、上流の欠損、計算資源不在時のディスク保存、転送・処理時間と待機時間を確認。",
+      "observation_en": "Read direct-memory transfer, upstream loss, disk fallback and transfer/processing versus queue timing.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA072",
+        "title": "実験はAIとロボットに任せる「一億総研究者」時代へ",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/pr/closeup/2026/20260325_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-25"
+      },
+      "origin_group": "riken-self-maintaining-lab",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Self-maintainability and room-level FY2027 target",
+      "observation_ja": "自己保守、研究者の承認と2027年度末の実装目標を確認。達成済みとは記述しない。",
+      "observation_en": "Read self-maintenance, researcher approval and end-FY2027 implementation target, not completed delivery.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA073",
+        "title": "大阪・関西万博会場周辺のゲリラ豪雨予報",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/pr/news/2025/20250730_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2025-07-30"
+      },
+      "origin_group": "riken-nict-expo-weather",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Methods, August 5-31 demonstration and accuracy/stability disclaimer",
+      "observation_ja": "2台のレーダ、SCALE-LETKF、500m格子、期間限定実証と提供保証の限界を確認。",
+      "observation_en": "Read two radars, SCALE-LETKF, 500m grid, limited demonstration dates and service limitations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA074",
+        "title": "eFlows4HPC Key Exploitable Results",
+        "publisher": "eFlows4HPC",
+        "url": "https://eflows4hpc.eu/key-exploitable-results/",
+        "source_class": "official-project",
+        "published_or_updated": "Project results page accessed 2026-09-01"
+      },
+      "origin_group": "eflows4hpc",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "UCIS4EQ, probabilistic tsunami forecast and urgent-computing policy",
+      "observation_ja": "地震・津波の不確実性を扱うワークフロー成果と政策上の検討を確認。",
+      "observation_en": "Read seismic/tsunami uncertainty-aware workflow outputs and policy work.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA075",
+        "title": "EuroHPC Access Policy v2.0: Supercomputers and AI Factories",
+        "publisher": "EuroHPC Joint Undertaking",
+        "url": "https://www.eurohpc-ju.europa.eu/document/download/30614065-6dd6-4206-8065-fc97948e5e2c_en?filename=EuroHPC+JU+-+Access+Policy+v2.0+Final_0.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-12 (cover)"
+      },
+      "origin_group": "eurohpc-access-policy",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Section 5.3, printed pages 35-36",
+      "observation_ja": "緊急アクセスの要請・承認・資源確認、24時間以内の応答・指示を確認。計算完了期限ではない。",
+      "observation_en": "Read emergency request/approval/resource checks and 24-hour response/instruction, not a completion deadline.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA076",
+        "title": "NERSC Resource Usage Policies",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/policies/resource-usage/",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nersc-operations-policy",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Reservations, Premium and Realtime QOS",
+      "observation_ja": "Realtimeの特別申請、Premiumとの違い、予約未使用時間も課金する境界を確認。",
+      "observation_en": "Read special-request Realtime access, distinction from Premium and charging of unused reserved time.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-074",
+      "topic_ids": [
+        "APP-14"
+      ],
+      "priority": "P1",
+      "question_ja": "国内外の実験・緊急用途について、入力率、期限、許容欠損、権限、年間利用量を同じ形式で比較できるか。",
+      "question_en": "Can instrument and urgent workloads be compared for input rate, deadlines, tolerated loss, authority and annual demand?",
+      "next_action_ja": "期間限定実証と現在の運用を分け、公開運用記録、装置別要件、緊急起動手順、科学的品質の検証結果を追加収集する。",
+      "next_action_en": "Separate limited demonstrations from current operation and collect public logs, instrument requirements, urgent activation procedures and scientific-quality evaluations.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "設備別の現在の運用率と期限達成分布は未取得。",
+    "自律実験室は研究目標であり、常時無人運用の達成を確認していない。",
+    "単一モデルの暫定調査であり、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Current instrument-specific duty cycles and deadline-attainment distributions remain uncollected.",
+    "Autonomous-lab targets do not establish achieved continuous unattended operation.",
+    "This single-model review is provisional; independent Consensus is incomplete."
+  ]
+}

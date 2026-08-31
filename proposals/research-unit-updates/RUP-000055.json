@@ -1,0 +1,473 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000055",
+  "topic_id": "SSW-15",
+  "created_at": "2026-09-01T01:50:46+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "CPU・GPU・ノード・施設の計測範囲と時刻をそろえ、電力上限、消費電力量、処理時間を分けて比較します。制御ソフトの導入だけで省エネルギーを保証せず、共有資源への影響、冷却の応答、障害時の復帰までを運用条件として評価します。",
+  "summary_en": "Align timestamps and measurement boundaries across CPUs, GPUs, nodes and facilities, distinguishing power caps, energy and completion time. Management software alone does not guarantee savings: evaluate shared-resource effects, cooling response and recovery as operational conditions.",
+  "units": [
+    {
+      "unit_id": "SSW-15-U01",
+      "before_sha256": "f189d9cca551b303fb243f2a60681ffc385236d841f45b9f513dd057d68884b0",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-15-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-15-U01",
+      "title_ja": "計測境界・電力制御・冷却との連携",
+      "title_en": "Measurement boundaries, power control and cooling integration",
+      "summary_ja": "実測と推定、局所制御と設備全体の制約を分けて整理します。",
+      "summary_en": "Separate measurement from estimation and local controls from facility-wide constraints.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-POWER-ACCOUNTING-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO055",
+            "SRC-CDO056"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slurm電力計測: 共有ノードの按分に注意",
+          "name_en": "Slurm energy accounting: shared-node attribution",
+          "timing_ja": "現行公開文書",
+          "timing_en": "Current public documentation",
+          "statement_ja": "SlurmはBMC、RAPL等のプラグインから電力・電力量を収集しますが、ノード共有時のジョブ別値は実消費電力量を直接表しません。GPUの値もノード全体とは異なります。センサの合算範囲とBMCの更新周期を確認し、補間や按分は推定として扱います。",
+          "statement_en": "Slurm collects power/energy through plugins such as BMC and RAPL, but shared-node per-job values do not directly measure each job's consumption. GPU values also differ from whole-node energy. Check sensor aggregation and BMC refresh intervals; label interpolation and attribution as estimates.",
+          "hpci_relevance_ja": "センター間の電力効率比較や利用者への配賦を誤らないための前提です。",
+          "hpci_relevance_en": "This is prerequisite to fair cross-site efficiency comparisons and user allocation.",
+          "adoption_conditions_ja": [
+            "時刻同期、欠測、カウンタ周回、計測オーバーヘッドを記録する。",
+            "機器別の和と施設メーターを照合し、二重計上を防ぐ。"
+          ],
+          "adoption_conditions_en": [
+            "Record clock alignment, missing samples, counter wraparound and monitoring overhead.",
+            "Reconcile component totals with facility meters and avoid double counting."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-EAR-POLICY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO060"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EAR: ジョブ最適化と全体管理",
+          "name_en": "EAR: job optimization and global management",
+          "timing_ja": "公開READMEは7.0表記、公開日は未確認",
+          "timing_en": "Public README labels 7.0; release date unverified",
+          "statement_ja": "EARはMPI連携の実行時調整、ノードの計測、SQLデータベースへの記録、全体電力・エネルギー管理を組み合わせます。ジョブの性質に応じた制御を行う方式であり、任意のアプリに同じ削減率を期待するものではありません。",
+          "statement_en": "EAR combines MPI-integrated runtime tuning, node measurements, SQL accounting and global power/energy management. Control depends on job characteristics rather than promising one savings rate for all applications.",
+          "hpci_relevance_ja": "HPCジョブの性能維持と電力制約を連携させる実装候補です。",
+          "hpci_relevance_en": "This is a candidate implementation for coupling HPC performance with power constraints.",
+          "adoption_conditions_ja": [
+            "MPI、コンテナ、GPU、非MPI処理への対応を使用版ごとに確認する。",
+            "導入前後を同じ入力・精度・混雑条件で比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify MPI, containers, GPUs and non-MPI workloads for the selected version.",
+            "Compare before/after operation with matched inputs, correctness and load."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-GEOPM-SESSION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO058",
+            "SRC-CDO059"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GEOPM: 権限付きのジョブ単位制御",
+          "name_en": "GEOPM: authorized job-scoped control",
+          "timing_ja": "公開実装・運用文書",
+          "timing_en": "Public implementation and operational documentation",
+          "statement_ja": "GEOPMは管理者が許可したテレメトリと制御を利用者へ提供し、セッション終了時に設定を復元する仕組みです。探索の目的は実行時間、電力量などから選べますが、レジスタ操作やCPU/GPU周波数変更が共有資源へ及ぼす影響はサイト側で検証する必要があります。",
+          "statement_en": "GEOPM exposes administrator-authorized telemetry and controls with session-end restoration. Optimization can target runtime or energy, but sites must validate how register access and CPU/GPU frequency changes affect shared resources.",
+          "hpci_relevance_ja": "特権を一律に利用者へ渡さず、調整可能な範囲を限定できます。",
+          "hpci_relevance_en": "It enables bounded tuning without granting users unrestricted privileges.",
+          "adoption_conditions_ja": [
+            "ジョブ終了・強制終了・サービス障害時の復元を検証する。",
+            "電力制御の権限と観測できる他ジョブ情報を制限する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate restoration after normal completion, forced termination and service failure.",
+            "Restrict control authority and visibility into other jobs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-FUGAKU-INCENTIVES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "富岳: 省電力設定と優先実行の誘導",
+          "name_en": "Fugaku: power settings and priority incentives",
+          "timing_ja": "2026年3月資料に記載された運用",
+          "timing_en": "Operation described in March 2026 materials",
+          "statement_ja": "富岳の資料はBoost Eco、9,216ノード以下のジョブのリテンション設定、節電に応じた富岳ポイントを説明しています。ポイントは実行優先度のための仕組みで、割当ノード時間積の追加ではありません。性能への影響はアプリによって異なり、この制度はHPCI全体に共通するものではありません。",
+          "statement_en": "Fugaku materials describe Boost Eco, retention settings for jobs up to 9,216 nodes and energy-saving points. Points provide execution priority, not additional allocated node-hours. Performance effects vary by application, and the scheme is not universal across HPCI.",
+          "hpci_relevance_ja": "利用者の行動とシステム制御を組み合わせる国内運用例です。",
+          "hpci_relevance_en": "This Japanese operational example combines user incentives with system controls.",
+          "adoption_conditions_ja": [
+            "資料の再掲日と設定変更日を区別し、現行の対象条件を再確認する。",
+            "平均電力だけでなく、完了時間と総電力量を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish republication from change dates and recheck current eligibility.",
+            "Compare completion time and total energy, not average power alone."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-HIERARCHICAL-SCHEDULING",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO057"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slurm HRES: 階層ごとの電力枠",
+          "name_en": "Slurm HRES: hierarchical power budgets",
+          "timing_ja": "25.05導入、現行文書でもベータ",
+          "timing_en": "Introduced in 25.05; current docs still mark beta",
+          "statement_ja": "HRESのMode 3はノードからラック・上位階層へ資源量を集計し、各階層の設定上限で割当を制約します。一方、ベータ機能で、動的ノードは対象外、資源数変更には設定反映が必要です。スケジューラの帳簿上の枠と、過渡的な電力超過を防ぐ物理制御は別です。",
+          "statement_en": "HRES Mode 3 sums allocations from nodes through rack and higher layers against configured limits. It remains beta, lacks dynamic-node support and needs reconfiguration to change counts. Scheduler budgets are distinct from physical protection against transient power excursions.",
+          "hpci_relevance_ja": "高密度GPU導入時に、ノード台数だけでは表現できない制約を扱えます。",
+          "hpci_relevance_en": "It can express dense-GPU constraints that node counts alone miss.",
+          "adoption_conditions_ja": [
+            "制御遅延と余裕を含め、実測電力で上限遵守を検証する。",
+            "施設保護・BMC・スケジューラ間の責任を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Validate cap compliance using measured power, response delay and safety margin.",
+            "Separate facility protection, BMC and scheduler responsibilities."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-EXADIGIT-VALIDATION",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO062"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ExaDigiT: 多段階テレメトリで検証するモデル",
+          "name_en": "ExaDigiT: models validated with multilevel telemetry",
+          "timing_ja": "SC24のFrontier事例",
+          "timing_en": "SC24 Frontier case study",
+          "statement_ja": "ExaDigiTはジョブ・電力・冷却を結び、実テレメトリの再生でモデルを検証しています。ただし論文のPUE比較は一部の空調等を除き、仮想的な電源改修の削減値は実運用で達成した値ではありません。移植先では設備構成と時間分解能を合わせた再較正が必要です。",
+          "statement_en": "ExaDigiT connects jobs, power and cooling and validates models through telemetry replay. Its PUE comparison excludes some auxiliaries, and virtual power-system retrofit savings are not achieved operational results. New sites need recalibration for their equipment and time resolution.",
+          "hpci_relevance_ja": "施設変更や負荷変化を導入前に比較する研究基盤になります。",
+          "hpci_relevance_en": "It supports research into facility changes and workload effects before deployment.",
+          "adoption_conditions_ja": [
+            "較正期間と独立検証期間、機器・季節・負荷の適用範囲を分ける。",
+            "公開資料だけで再現できない入力は未取得と明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate calibration/validation periods and document equipment, season and load coverage.",
+            "Mark inputs unavailable for public reproduction as uncollected."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-COOLING-OPTIMIZATION-LIMITS",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO063"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "冷却最適化: 推定削減率と実証を分ける",
+          "name_en": "Cooling optimization: distinguish estimates from trials",
+          "timing_ja": "2026年3月プレプリント",
+          "timing_en": "March 2026 preprint",
+          "statement_ja": "2026年の研究は冷却電力量の27.8%削減をモデル上で示しますが、施設全体の削減率ではありません。過去データへの最適化であり、設備固有のファンモデル、急変時の検証、実機試験、コード・データ公開が未完了です。実設備へそのまま適用できる保証とは扱いません。",
+          "statement_en": "A 2026 study estimates 27.8% cooling-energy savings, not whole-facility savings. It optimizes retrospective data; site-specific fan modelling, transient validation, pilot trials and public code/data remain incomplete. It does not establish direct deployability on physical equipment.",
+          "hpci_relevance_ja": "大きな削減率が報告されても、採用には設備固有の検証が必要です。",
+          "hpci_relevance_en": "Large reported savings still require site-specific validation before adoption.",
+          "adoption_conditions_ja": [
+            "冷却・IT・配電の分母を分け、装置保護と制御権限を優先する。",
+            "異常時の固定設定への復帰を含めた試験計画を作る。"
+          ],
+          "adoption_conditions_en": [
+            "Separate cooling, IT and distribution denominators and preserve equipment protection/control authority.",
+            "Include fallback to safe fixed settings in the test plan."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-POWER-RIKEN-LRZ-COLLABORATION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO064"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "理研・LRZ: 冷却とジョブ管理の共同検討",
+          "name_en": "RIKEN/LRZ: joint cooling and scheduling studies",
+          "timing_ja": "2026年1月締結、2030年まで協力予定",
+          "timing_en": "Agreed January 2026; collaboration planned through 2030",
+          "statement_ja": "理研とLRZは温水冷却、熱回収、監視、エネルギーを考慮したジョブ管理の知見共有を進めるとしています。これは共同評価の機会ですが、完成した共通制御製品や削減率を公表したものではありません。",
+          "statement_en": "RIKEN and LRZ plan to share expertise on warm-water cooling, heat recovery, monitoring and energy-aware scheduling. This offers a joint evaluation path, not an announced finished common control product or guaranteed savings rate.",
+          "hpci_relevance_ja": "富岳NEXT等の設計で、異なる設備条件の経験を比較できます。",
+          "hpci_relevance_en": "Designs including FugakuNEXT can compare experience under different facility conditions.",
+          "adoption_conditions_ja": [
+            "公開成果を追跡し、非公開運用データを取得・公開しない。",
+            "共同研究予定と各施設の採用決定を区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Track public outputs without collecting or publishing private operational data.",
+            "Distinguish research plans from each site's adoption decisions."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO055",
+        "title": "Slurm energy accounting configuration",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/slurm.conf.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "schedmd-slurm",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "AcctGatherEnergyType",
+      "observation_ja": "ノード共有時のジョブ別電力量は実消費を反映しないという制約を確認。収集対象もプラグインで異なる。",
+      "observation_en": "Read the shared-node attribution limitation and plugin-specific measurement boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO056",
+        "title": "Slurm acct_gather.conf",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/acct_gather.conf.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "schedmd-slurm",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "IPMI sampling, sensor sums and InfluxDB compatibility",
+      "observation_ja": "BMCサンプリング、センサ合算、InfluxDB v1互換とトークン認証未対応を確認。設定変更は実施していない。",
+      "observation_en": "Read BMC sampling, sensor aggregation and InfluxDB v1 compatibility/token limitations; changed no operational settings.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO057",
+        "title": "Slurm Hierarchical Resource Scheduling",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/hres.html",
+        "source_class": "official-project",
+        "published_or_updated": "Introduced in 25.05; live documentation accessed 2026-09-01"
+      },
+      "origin_group": "schedmd-slurm",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Overview, Mode 3 and Limitations",
+      "observation_ja": "ベータ状態、階層ごとの資源集計、動的ノード非対応と設定変更制約を確認。物理的な瞬時電力制限の保証とは区別。",
+      "observation_en": "Read beta status, hierarchical accounting, lack of dynamic-node support and reconfiguration limits; not a guarantee of instantaneous electrical enforcement.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO058",
+        "title": "GEOPM Getting Started",
+        "publisher": "GEOPM project",
+        "url": "https://geopm.github.io/overview.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "geopm-project",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Session-scoped control, telemetry and optimization",
+      "observation_ja": "管理者が許可した操作のセッション内制御、終了時復元、目的関数別の探索を確認。",
+      "observation_en": "Read administrator-authorized session controls, restoration and objective-specific search.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO059",
+        "title": "GEOPM Security Guide",
+        "publisher": "GEOPM project",
+        "url": "https://geopm.github.io/security.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "geopm-project",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Protected Assets, access service and MSR/SST permissions",
+      "observation_ja": "特権的なレジスタ操作の権限境界を確認。管理サービスの導入自体を隔離保証とはしない。",
+      "observation_en": "Read privileged-register access boundaries; installing a management service alone does not establish isolation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO060",
+        "title": "Energy Aware Runtime README",
+        "publisher": "EAR project / BSC",
+        "url": "https://github.com/eas4dc/EAR/blob/master/README.md",
+        "source_class": "official-project",
+        "published_or_updated": "README labels version 7.0; accessed 2026-09-01"
+      },
+      "origin_group": "ear-bsc",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "EARL, EARD, EARDBD, EARGMD and license",
+      "observation_ja": "MPI連携の局所最適化、データベース記録、全体管理の構成を確認。README版表示をリリース日と解釈しない。",
+      "observation_en": "Read MPI-integrated optimization, database accounting and global management; README version text is not a release date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO061",
+        "title": "Important Notes for Using Fugaku, March 2026",
+        "publisher": "HPCI / RIST Helpdesk",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/helpdeskreport/helpdeskreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "hpci-access-guidance",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Pages 22-29; power modes, retention and Fugaku points",
+      "observation_ja": "Boost Eco、9216ノード以下のリテンション設定、富岳ポイントを確認。再掲資料の変更実施日と資料の日付を区別。",
+      "observation_en": "Read Boost Eco, retention for jobs up to 9216 nodes and Fugaku points; distinguished change dates from republication date.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO062",
+        "title": "A Digital Twin Framework for Liquid-cooled Supercomputers as Demonstrated at Exascale",
+        "publisher": "Brewer et al. / ORNL and collaborators",
+        "url": "https://arxiv.org/html/2410.05133v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-10-07 preprint; SC24 paper"
+      },
+      "origin_group": "exadigit-sc24",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Sections IV and V; Tables II-IV",
+      "observation_ja": "多段階テレメトリ検証と、空調等を除くPUE比較の範囲を確認。仮想改修の節電値を実績としない。",
+      "observation_en": "Read multilevel validation and PUE boundary excluding some auxiliaries; virtual retrofit savings are not observed savings.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO063",
+        "title": "Digital Twin-Based Cooling System Optimization for Data Center",
+        "publisher": "Jadhav and Liu / University of Michigan-Dearborn",
+        "url": "https://arxiv.org/html/2603.01198v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-03-01"
+      },
+      "origin_group": "jadhav-liu-cooling-2026",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Sections 4.2-4.5 and 7",
+      "observation_ja": "27.8%は冷却のみの後ろ向きモデル推定。設備固有ファンモデル、過渡検証、実機試験、公開コードは未完了。",
+      "observation_en": "27.8% concerns cooling-only retrospective modelling; site-specific fan models, transient validation, pilot testing and public code remain gaps.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO064",
+        "title": "RIKEN R-CCS and LRZ energy-efficiency collaboration",
+        "publisher": "RIKEN R-CCS",
+        "url": "https://www.r-ccs.riken.jp/outreach/topics/20260129-1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01-29"
+      },
+      "origin_group": "riken-lrz-energy-mou",
+      "checked_at": "2026-09-01T01:49:04+09:00",
+      "locator": "Collaboration topics and planned duration through 2030",
+      "observation_ja": "冷却・ジョブ管理・運用データの共有と2030年までの協力予定を確認。共同ツールの完成や削減率は未提示。",
+      "observation_en": "Read cooling, scheduling and operational-data collaboration planned through 2030; no completed joint tool or savings rate specified.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-081",
+      "topic_ids": [
+        "SSW-15"
+      ],
+      "priority": "P0",
+      "question_ja": "候補設備の電力枠を守りながら、実ワークロードの完了時間と施設全体電力量を改善できるか。",
+      "question_en": "Can candidate facilities meet power limits while improving workload completion time and whole-facility energy?",
+      "next_action_ja": "公開のセンサ仕様・制御遅延・実測比較を構成別に収集し、較正と独立検証を分けた評価計画を作成する。",
+      "next_action_en": "Collect configuration-specific public sensor specifications, control delays and measured comparisons; define separate calibration and independent-validation plans.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "共有ノードの配賦誤差、急変負荷、冷却応答、季節差は候補構成ごとに未検証。",
+    "制御ソフトや設備設定を変更する実験は行っていない。",
+    "単一モデルによる暫定調査で、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Shared-node attribution error, transient loads, cooling response and seasonality remain unverified per candidate configuration.",
+    "No control-software or facility-setting experiments were performed.",
+    "This is provisional single-model research with independent Consensus incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-SSW15-MEASUREMENT",
+        "label_ja": "計測範囲と精度",
+        "label_en": "Measurement boundaries and accuracy",
+        "question_ja": "表示値は実測か推定か、どの機器と時間を含むか。",
+        "question_en": "Is each value measured or estimated, and which devices and periods does it cover?"
+      },
+      {
+        "dimension_id": "DIM-SSW15-CONTROL",
+        "label_ja": "制御と安全な復帰",
+        "label_en": "Control and safe restoration",
+        "question_ja": "上限制御と応答遅延をどこで保証し、故障時にどう復帰するか。",
+        "question_en": "Where are caps and response delays enforced, and how does failure recovery work?"
+      },
+      {
+        "dimension_id": "DIM-SSW15-UTILITY",
+        "label_ja": "仕事量とエネルギー",
+        "label_en": "Useful work and energy",
+        "question_ja": "待ち時間・精度・可用性を保ちながら総電力量を減らせるか。",
+        "question_en": "Can total energy fall while preserving waiting-time, correctness and availability requirements?"
+      }
+    ]
+  }
+}

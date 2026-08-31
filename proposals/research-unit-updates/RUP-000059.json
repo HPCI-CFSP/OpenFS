@@ -1,0 +1,432 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000059",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-01T02:05:33+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "世代更新では、計算機の停止、データ保存の終了、IDの失効、ソフトウェア環境の移行を別々に管理します。公開の移行実例と転送・来歴仕様を参照し、コピーの成功だけでなく、所有権、完全性、再実行、切替後の復旧を確認する手順を整理します。",
+  "summary_en": "Manage compute shutdown, data-retention expiry, identity revocation and software migration as separate events. Use public migration examples and transfer/provenance specifications to check ownership, integrity, rerun capability and recovery after cutover, rather than copy success alone.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "3775be038d6daef8e213cebf02cffde044365a2c971f1d352f1edda2e14e2a92",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-CROSS-14-U01",
+      "title_ja": "計算停止からデータ・ワークフローの継続まで",
+      "title_en": "From compute shutdown to data and workflow continuity",
+      "summary_ja": "実例の制約と、移行完了を判断するための試験条件を整理します。",
+      "summary_en": "Separate observed constraints from proposed migration-acceptance tests.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-CSC-SHUTDOWN-RETENTION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO093",
+            "SRC-CDO094"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CSC: 計算停止と保存終了の別管理",
+          "name_en": "CSC: separate compute and storage retirement",
+          "timing_ja": "Puhti計算停止2026年7月31日、Mahtiは8月31日",
+          "timing_en": "Puhti compute shutdown July 31, 2026; Mahti August 31",
+          "statement_ja": "CSCは旧計算機の停止後もストレージとログインを10月15日12時EESTまで残す予定ですが、継続利用を保証していません。領域ごとの自動削除・割当があり、自動バックアップもありません。ログインできる期間を、保存保証や復旧保証と読み替えてはいけません。",
+          "statement_en": "CSC plans to retain old storage/login access until October 15 at 12:00 EEST after compute shutdown, without guaranteeing continued availability. Areas have different cleanup and quota policies and no automatic backup. Login availability is not a retention or recovery guarantee.",
+          "hpci_relevance_ja": "データ退避を計算機の稼働期限と別の工程として確保します。",
+          "hpci_relevance_en": "Reserve a data-migration phase distinct from compute availability.",
+          "adoption_conditions_ja": [
+            "保存終了、契約終了、自動消去を別々に記録する。",
+            "代替コピーの復旧試験前に旧データを削除しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record retention, contract and automatic-cleanup deadlines separately.",
+            "Do not delete old data before testing restoration from an alternative copy."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ROIHU-OWNERSHIP-QUOTA",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO095"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Roihu移行: 割当と所有権の再確認",
+          "name_en": "Roihu migration: recheck quotas and ownership",
+          "timing_ja": "2026年7月17日更新の移行手引き",
+          "timing_en": "Migration guide updated July 17, 2026",
+          "statement_ja": "Roihuでは旧システムの延長割当は自動継承されず、プロジェクトのサービス有効化が必要です。転送した利用者がファイル所有者になるため、共同研究者のデータを移すと権限調整も必要です。小さいファイルが多い場合は転送時間が増え、圧縮・梱包にも計算時間と一時容量が要ります。",
+          "statement_en": "Roihu does not automatically inherit extended quotas and requires project service activation. The transferring user becomes file owner, potentially requiring permission repair for collaborators' data. Many small files increase transfer time; compression/packing also consumes compute and temporary capacity.",
+          "hpci_relevance_ja": "容量だけでなくファイル数、共同利用権限、移行用の余裕を見積もります。",
+          "hpci_relevance_en": "Plan for file count, shared permissions and migration headroom as well as capacity.",
+          "adoption_conditions_ja": [
+            "代表データで所有者、ACL、割当、転送速度を確認する。",
+            "dry-runの成功を実書込み権限の確認としない。"
+          ],
+          "adoption_conditions_en": [
+            "Check ownership, ACLs, quotas and transfer rate on representative data.",
+            "Do not treat a successful dry run as verification of actual write permission."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-GLOBUS-CHECKSUM-DEFAULT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO096",
+            "SRC-CDO097"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Globus: APIとCLIの既定値の違い",
+          "name_en": "Globus: different API and CLI defaults",
+          "timing_ja": "2026年9月確認の公開仕様",
+          "timing_en": "Public specifications checked September 2026",
+          "statement_ja": "Globusの転送APIはチェックサム検証が既定で無効、CLIは既定で有効です。非同期タスクの完了や、エラーを飛ばす設定も確認が必要です。同じサービス名であっても、起動方法と設定が違えば検証範囲は一致しません。",
+          "statement_en": "Globus Transfer API disables checksum verification by default, while the CLI enables it. Asynchronous completion and skip-error options also need checking. The same service name does not imply the same verification coverage across invocation methods or configurations.",
+          "hpci_relevance_ja": "AIによる自動移行では、暗黙の既定値への依存を避けます。",
+          "hpci_relevance_en": "Automated migration should not rely on implicit defaults.",
+          "adoption_conditions_ja": [
+            "検証方式を明示し、タスク失敗・スキップ件数・全件照合を確認する。",
+            "リンクやディレクトリ属性が保存されると仮定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Set verification explicitly and inspect failures, skipped items and complete manifests.",
+            "Do not assume links or directory attributes are preserved."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-BAGIT-INTEGRITY-BOUNDARY",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO098"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "BagIt: ファイル集合の完全性と妥当性",
+          "name_en": "BagIt: file-set completeness and validity",
+          "timing_ja": "RFC 8493、2018年10月",
+          "timing_en": "RFC 8493, October 2018",
+          "statement_ja": "BagItは、必要なファイルがそろう完全性と、チェックサムが一致する妥当性を区別します。RFC 8493はInformational文書であり、ファイルの意味、利用権、アプリケーションの再現性までは保証しません。転送ツールの記録とは別に、退避対象のマニフェストを固定する用途に使えます。",
+          "statement_en": "BagIt distinguishes completeness of the required file set from checksum validity. RFC 8493 is Informational and does not guarantee semantics, usage rights or application reproducibility. It can provide a pinned migration manifest independently of transfer-tool logs.",
+          "hpci_relevance_ja": "転送された一部のファイルだけを検証して移行完了とする誤りを防ぎます。",
+          "hpci_relevance_en": "This prevents validating only transferred files and declaring the entire migration complete.",
+          "adoption_conditions_ja": [
+            "全対象を列挙し、除外理由と検証アルゴリズムを保存する。",
+            "復元・展開後の読み出しと代表アプリの試験も行う。"
+          ],
+          "adoption_conditions_en": [
+            "Enumerate the full scope and retain exclusions and verification algorithms.",
+            "Also test reading after restoration/unpacking and representative applications."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-WORKFLOW-RUN-PROVENANCE",
+          "stage": "current",
+          "maturity": "standardized",
+          "source_ids": [
+            "SRC-CDO099"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Workflow Run RO-Crate: 定義と実行履歴の分離",
+          "name_en": "Workflow Run RO-Crate: definitions versus execution history",
+          "timing_ja": "確認したプロファイルは0.5",
+          "timing_en": "Verified profile version: 0.5",
+          "statement_ja": "Workflow Run RO-Crateはワークフロー本体と、その実行を表すCreateAction、入力・出力、実行環境を関連付けます。処理手順が同じでも、エンジンや依存ソフトウェアが変われば結果は変わり得ます。来歴を記録できることと、新環境で自動再実行できることは別です。",
+          "statement_en": "Workflow Run RO-Crate links a workflow to CreateAction execution records, inputs, outputs and runtime environment. Unchanged workflow definitions may behave differently with changed engines or dependencies. Recording provenance does not establish automatic replay in a new environment.",
+          "hpci_relevance_ja": "データだけでなく、科学計算を再現する条件を引き継ぎます。",
+          "hpci_relevance_en": "Carry forward the conditions needed to reproduce scientific work, not data alone.",
+          "adoption_conditions_ja": [
+            "ソフトウェア版、入力、乱数、精度条件、実行ログを固定する。",
+            "規範版と古い記述例の版番号を混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin software versions, inputs, randomness, accuracy requirements and logs.",
+            "Distinguish the normative profile version from older examples."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-HPCI-REPLICA-CREDENTIAL",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO036"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "HPCI共用ストレージ: 複製と認証の継続",
+          "name_en": "HPCI shared storage: replica and credential continuity",
+          "timing_ja": "2026年の公開利用手引き",
+          "timing_en": "Public 2026 user guide",
+          "statement_ja": "HPCI共用ストレージでは複製が非同期で進み、完了確認とチェックサム確認が必要です。短寿命トークンと更新用資格情報の寿命も異なります。ファイルが見えることを必要な複製の完了とせず、計算機更新後にID・更新処理・保存先へ到達できるかも確認します。",
+          "statement_en": "HPCI shared-storage replication is asynchronous and requires completion and checksum checks. Short-lived tokens and renewal credentials have different lifetimes. File visibility does not establish replica completion; verify identity, renewal and storage reachability after compute refresh.",
+          "hpci_relevance_ja": "HPCI固有の認証・複製条件を、一般的な移行工程へ追加します。",
+          "hpci_relevance_en": "Add HPCI-specific identity and replication conditions to the general migration process.",
+          "adoption_conditions_ja": [
+            "複製、バックアップ、災害時の復旧を別々に確認する。",
+            "公開用の移行記録に資格情報や利用者情報を含めない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify replication, backup and disaster recovery separately.",
+            "Exclude credentials and user information from public migration records."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-MIGRATION-ACCEPTANCE-GATE",
+          "stage": "near-term",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDO092",
+            "SRC-CDO098",
+            "SRC-CDO099"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "移行完了の判定: データ・権限・再実行",
+          "name_en": "Migration acceptance: data, permissions and rerun tests",
+          "timing_ja": "OpenFSの次回評価で検証する提案",
+          "timing_en": "Proposed for a subsequent OpenFS evaluation",
+          "statement_ja": "OpenFSでは、旧環境を停止する前に、全件マニフェスト、権限、代表ワークフロー、復旧手順をそろえて判定することを提案します。Cechの先行機統合のように、本機切替前に既存データへの接続を試す方法が参考になります。これは採用済みの共通基準ではなく、検証すべき計画です。",
+          "statement_en": "OpenFS proposes checking complete manifests, permissions, representative workflows and recovery before retiring the old environment. Cech illustrates testing existing-data integration on an early system before final cutover. This is an evaluation proposal, not an adopted common standard.",
+          "hpci_relevance_ja": "機器の更新を、利用者が研究を再開できる状態へ結び付けます。",
+          "hpci_relevance_en": "Connect hardware replacement to users' ability to resume research.",
+          "adoption_conditions_ja": [
+            "停止許容時間、保持期間、合否条件と責任者を承認する。",
+            "実移行・復旧試験の結果が得られるまで達成済みとしない。"
+          ],
+          "adoption_conditions_en": [
+            "Approve downtime, retention, pass/fail criteria and accountable owners.",
+            "Do not mark the gate satisfied before actual migration and recovery tests."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO036",
+        "title": "HPCI共用ストレージ利用マニュアル HPCI-ST01-007",
+        "publisher": "HPCI / RIST",
+        "url": "https://www.hpci-office.jp/download_file/view/d8c3560c-af25-4749-b1b9-b7d3fee547a7/578",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-11"
+      },
+      "origin_group": "hpci-access-guidance",
+      "checked_at": "2026-09-01T01:40:12+09:00",
+      "locator": "Pages 1-4; token lifetimes, renewal, replication and checksums",
+      "observation_ja": "10分のアクセストークンと更新資格情報の有効期間、複製完了確認、チェックサムを確認。認証・コマンドは実行していない。",
+      "observation_en": "Read ten-minute access tokens versus renewal-credential lifetime, replication completion and checksum procedures; executed no authentication or commands.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO092",
+        "title": "Berkeley Lab Takes Major Step Toward Doudna with Delivery of Early Access System, Cech",
+        "publisher": "Lawrence Berkeley National Laboratory",
+        "url": "https://cs.lbl.gov/news-and-events/news/2026/berkeley-lab-takes-major-step-toward-doudna-with-delivery-of-early-access-system-cech/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-17"
+      },
+      "origin_group": "nersc-cech-early-access",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Testing Systems and Technologies, data migration, restricted early use",
+      "observation_ja": "先行機で設置・ソフト・監視・データ移行を検証し、直ちに一般利用できないことを確認。",
+      "observation_en": "Read early-system installation/software/monitoring/data-migration testing and lack of immediate general-user access.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO093",
+        "title": "CSC computing services overview",
+        "publisher": "CSC",
+        "url": "https://docs.csc.fi/computing/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "csc-roihu-migration",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Puhti and Mahti shutdown notice and Roihu introduction",
+      "observation_ja": "計算停止とストレージ・ログイン継続の期限を区別。本文はPuhti・Mahti計算停止を過去形で記載。",
+      "observation_en": "Distinguished compute shutdown from storage/login retention; the body describes Puhti/Mahti compute shutdown in the past tense.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO094",
+        "title": "CSC disk areas",
+        "publisher": "CSC",
+        "url": "https://docs.csc.fi/computing/disk/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "csc-roihu-migration",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Old Puhti/Mahti disk areas, quotas, cleanup and backup warning",
+      "observation_ja": "領域別の消去・割当方針と自動バックアップがないことを確認。旧計算機の説明を新計算機へ転用しない。",
+      "observation_en": "Read area-specific cleanup/quotas and lack of automatic backups; do not transfer old-system policies to the new system.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO095",
+        "title": "Moving data to Roihu",
+        "publisher": "CSC",
+        "url": "https://docs.csc.fi/support/tutorials/roihu-data/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-17"
+      },
+      "origin_group": "csc-roihu-migration",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Deadline, project enablement, file ownership, small files, quota and dry-run cautions",
+      "observation_ja": "延長割当は自動継承されず、転送者が所有者になる点を確認。8月以降の保存継続は保証されないとの注意も読む。",
+      "observation_en": "Read non-inherited extended quotas, transfer-user ownership and the warning that post-August storage availability is not guaranteed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO096",
+        "title": "Globus Transfer API task submission",
+        "publisher": "Globus",
+        "url": "https://docs.globus.org/api/transfer/task_submit/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "globus-transfer-api",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Transfer fields: verify_checksum, sync_level, skip_source_errors and submission_id",
+      "observation_ja": "APIのチェックサム検証の既定値はfalse。エラーを飛ばす設定と非同期タスクの追跡を確認。",
+      "observation_en": "API checksum verification defaults to false; read skip-error options and asynchronous task tracking.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO097",
+        "title": "Globus CLI transfer command",
+        "publisher": "Globus",
+        "url": "https://docs.globus.org/cli/reference/transfer/",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation accessed 2026-09-01"
+      },
+      "origin_group": "globus-transfer-api",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Checksum default and symbolic-link/directory metadata notes",
+      "observation_ja": "CLIはチェックサム検証が既定で有効。ディレクトリ時刻とシンボリックリンクの保持条件を確認。",
+      "observation_en": "CLI checksum verification is enabled by default; read directory-time and symbolic-link preservation limitations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO098",
+        "title": "RFC 8493: The BagIt File Packaging Format (V1.0)",
+        "publisher": "RFC Editor",
+        "url": "https://www.rfc-editor.org/rfc/rfc8493.html",
+        "source_class": "official-standard",
+        "published_or_updated": "2018-10; Informational RFC"
+      },
+      "origin_group": "bagit-rfc8493",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Sections 2.1, 3 and 4: completeness, validity and checksums",
+      "observation_ja": "完全性とチェックサム妥当性の違いを確認。Informational文書であり、データの意味や科学的再現性は保証しない。",
+      "observation_en": "Read completeness versus checksum validity; this Informational RFC does not guarantee data semantics or scientific reproducibility.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO099",
+        "title": "Workflow Run RO-Crate profile",
+        "publisher": "Research Object community",
+        "url": "https://www.researchobject.org/workflow-run-crate/profiles/workflow_run_crate/",
+        "source_class": "official-project",
+        "published_or_updated": "Profile 0.5 accessed 2026-09-01"
+      },
+      "origin_group": "workflow-run-ro-crate",
+      "checked_at": "2026-09-01T02:03:57+09:00",
+      "locator": "Version 0.5 profile: workflow, CreateAction, inputs, outputs and runtime environment",
+      "observation_ja": "定義したワークフローと実行履歴を分ける0.5プロファイルを確認。古い例の版番号を規範版と混同しない。",
+      "observation_en": "Read profile 0.5 separating workflow definitions from execution history; do not mistake stale example versions for the normative profile.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-085",
+      "topic_ids": [
+        "CROSS-14"
+      ],
+      "priority": "P0",
+      "question_ja": "HPCIの世代更新で、ID・全データ・利用権・代表ワークフローを許容停止時間内に継承できるか。",
+      "question_en": "Can HPCI refresh preserve identities, complete data, access rights and representative workflows within acceptable downtime?",
+      "next_action_ja": "国内の移行実績と保管・責任分担を確認し、ファイル数・容量・再実行・復旧の測定項目を定義する。",
+      "next_action_en": "Verify domestic migration outcomes, retention and responsibilities; define file-count, capacity, rerun and recovery measurements.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "国内各センターの移行期間・実効転送速度・ID失効条件は未照合。",
+    "公開の仕様と実例の調査のみで、データ転送・削除・資格情報操作は実施していない。",
+    "実測と独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Migration windows, effective transfer rates and identity-expiry rules across Japanese centers remain unmatched.",
+    "Only public specifications and examples were researched; no data transfer, deletion or credential operations were performed.",
+    "Measurements and independent Consensus remain incomplete."
+  ],
+  "initial_profile_metadata": {
+    "related_surface_ids": [],
+    "hpci_decision_dimensions": [
+      {
+        "dimension_id": "DIM-CROSS14-LIFETIME",
+        "label_ja": "サービス間の依存と期限",
+        "label_en": "Service dependencies and deadlines",
+        "question_ja": "計算・データ・IDのどれが先に終了するか。",
+        "question_en": "Which compute, data or identity service expires first?"
+      },
+      {
+        "dimension_id": "DIM-CROSS14-INTEGRITY",
+        "label_ja": "データと権限の継承",
+        "label_en": "Data and permission continuity",
+        "question_ja": "全ファイル・所有権・割当・利用権を確認できるか。",
+        "question_en": "Can all files, ownership, quotas and access rights be verified?"
+      },
+      {
+        "dimension_id": "DIM-CROSS14-RECOVERY",
+        "label_ja": "再実行と復旧",
+        "label_en": "Rerun capability and recovery",
+        "question_ja": "旧環境の終了後も代表処理を再実行し障害から復旧できるか。",
+        "question_en": "Can representative work be rerun and failures recovered after the old environment closes?"
+      }
+    ]
+  }
+}

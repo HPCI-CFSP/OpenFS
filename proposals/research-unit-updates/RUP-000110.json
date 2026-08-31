@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000110",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-01T04:36:59+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "c464e9d854b27dd72bc9365c67c08fc4505d96b42eff7ab29e58163c1e0277ba",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIフレームワークと推論実行系を、学習・推論機能、配布版、ベンダーの検証対象、対象機種、運用条件で比較します。MindSporeの配布情報も追加しましたが、公開版の存在を互換性や性能の実証とは扱いません。単一のAIモデルによる暫定結果で、独立Consensusは未完了です。",
+  "summary_en": "Compare AI frameworks and inference runtimes by training/inference functions, released versions, vendor qualification, target systems and operational conditions. Added MindSpore distribution evidence does not turn release availability into compatibility or performance proof. Results remain single-model, provisional and Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U01",
+      "before_sha256": "1e586bff496923d8a6427dcac9c16e1bd87de9dce2216bec81cebb361d6160d1",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U01",
+        "TDS-CD7-SSW-09-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD7-SSW-09-U01",
+      "title_ja": "外部バックエンドとCPUフォールバック",
+      "title_en": "Out-of-tree backends and CPU fallback",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD7-TORCH-PARAS-FALLBACK",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS107",
+            "SRC-CDS105"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Torch-ParaS: 動作可否とGPUでの実行割合",
+          "name_en": "Torch-ParaS: functionality versus GPU execution coverage",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "Torch-ParaSはPyTorch本体外のバックエンドとして公開され、CPUに加えてCUDAまたはHIP向けに別々のビルドを用います。未実装演算はCPUへ切り替えるため、モデルが実行できても全処理がGPU上で完結するとは限りません。READMEの対応記述を、分散学習・全演算・全精度での性能保証へ拡張しません。",
+          "statement_en": "Torch-ParaS is an out-of-tree PyTorch backend with separate CPU/CUDA or CPU/HIP builds. Unimplemented operators fall back to CPU, so running a model does not mean all processing stays on the GPU. README support statements do not establish distributed-training, full-operator or all-precision performance guarantees.",
+          "hpci_relevance_ja": "学習基盤の移植性を判断する際、演算網羅性とデータ移動を実測する必要があります。",
+          "hpci_relevance_en": "Portability assessment requires measuring operator coverage and data transfers.",
+          "adoption_conditions_ja": [
+            "GPUとCPU間の往復、未実装演算、精度誤差、勾配の正しさを記録する。",
+            "コンパイラ、バックエンド、PyTorch、CUDA/ROCmの版を一組として固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Record host/device transfers, missing operators, numerical error and gradient correctness.",
+            "Pin compiler, backend, PyTorch and CUDA/ROCm as one tested combination."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS105",
+        "title": "ParaS Compiler current source and requirements",
+        "publisher": "ParaS Ecosystem contributors",
+        "url": "https://github.com/ParaS-Ecosystem/ParaS-Compiler",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "cdac-nsm-software",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Introduction, requirements, usage and repository license label",
+      "observation_ja": "現行READMEのCPU/NVIDIA GPU対応、LLVM 21.1.0等の依存条件とApache-2.0表示を確認。SYCL適合性試験や実行は未実施。",
+      "observation_en": "Read CPU/NVIDIA support, dependencies including LLVM 21.1.0 and Apache-2.0 labeling; no conformance tests or execution performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS107",
+        "title": "Torch-ParaS out-of-tree PyTorch backend",
+        "publisher": "ParaS Ecosystem contributors",
+        "url": "https://github.com/ParaS-Ecosystem/Framework-Torch-ParaS",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "cdac-nsm-software",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Device mapping, one-vendor builds, implemented kernels and CPU fallback",
+      "observation_ja": "CUDA/HIPを別ビルドにする構成、未実装演算のCPUフォールバックを確認。INSTALL/TESTING文書は取得失敗、実測と分散学習は未検証。",
+      "observation_en": "Read separate CUDA/HIP builds and CPU fallback for unimplemented operators; INSTALL/TESTING retrieval failed and performance/distributed training remain unverified.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "詳細なINSTALL/TESTING文書の取得に失敗しており、対応版の組合せと実測性能は未検証。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "Detailed INSTALL/TESTING retrieval failed; supported version combinations and measured performance remain unverified.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000038",
+      "bundle_sha256": "a541a77b75b3f86d4cd0886440f6883e018475143aa3a8701c2b9f5c96b019c6"
+    },
+    {
+      "update_id": "RUP-000075",
+      "bundle_sha256": "2c6fb088fefafe97ad7951bbe834a668ade57938511178a50e670bacfe4f6242"
+    },
+    {
+      "update_id": "RUP-000083",
+      "bundle_sha256": "26c781c4954a0e47d4034cea42672f0883887bba3354c415d9ce922e0824f51c"
+    },
+    {
+      "update_id": "RUP-000090",
+      "bundle_sha256": "d5c80a35c18b14c6e1bb7d6b2a1d15984f438c719b8bda42e3108ebd4590a2ef"
+    },
+    {
+      "update_id": "RUP-000098",
+      "bundle_sha256": "852c629fbfe7af92e93098d5bb3b768849ded467605abdc76639cc8cd25cb0e5"
+    },
+    {
+      "update_id": "RUP-000102",
+      "bundle_sha256": "73a5da13457f07836a74d4847ea1ca0f9b2206fa75560e8424c8223b25817454"
+    }
+  ]
+}

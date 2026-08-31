@@ -138,6 +138,8 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "TERM-TAU-BENCH",
                 "TERM-PAPERBENCH",
                 "TERM-TUA-BENCH",
+                "TERM-TERMINAL-BENCH",
+                "TERM-TERMINAL-BENCH-SCIENCE",
             },
             agent_terms,
         )
@@ -324,6 +326,9 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-HOKKAIDO-GPU-2027Q2",
                 "MS-BLUE-OSAKA-END-2027Q2",
                 "MS-BLUE-HBW2-END-2029Q4",
+                "MS-BLUE-UTOKYO-AI4S-2027Q2",
+                "MS-BLUE-UTOKYO-AI4S-END-2033Q1",
+                "MS-BLUE-GENKAI-D-FY2027",
             },
             set(lifecycle_milestones),
         )

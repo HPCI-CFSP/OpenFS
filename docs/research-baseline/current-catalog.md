@@ -178,19 +178,19 @@ Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and K
 - `SSW-01-U01` **モデル・API・抽象化 / Models, APIs, and abstractions** (`partial`)
   - CUDA・HIP、OpenMP、SYCL、Kokkos等の記述方法と機能を、SDK全体との違いを明示して比較する。
   - Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and Kokkos, distinguishing them from complete SDKs.
-  - Evidence sections: TDS-SSW01-PORTABILITY
+  - Evidence sections: TDS-SSW01-PORTABILITY, TDS-CD1-SSW-01-U01
 - `SSW-01-U02` **言語・コンパイラ・SDK / Languages, compilers, and SDKs** (`partial`)
   - Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。
   - How should Fortran, C/C++, Python, compilers, SDKs such as ROCm and oneAPI, builds, and binary compatibility be sustained?
-  - Evidence sections: TDS-SSW02-TOOLCHAINS, TDS-HC26-SSW-01-U2
-- `SSW-01-U03` **開発・解析ツール / Development and analysis tools** (`not-started`)
+  - Evidence sections: TDS-SSW02-TOOLCHAINS, TDS-HC26-SSW-01-U2, TDS-CD1-SSW-01-U02, TDS-CD2-SSW-01-U02, TDS-CD3-SSW-01-U02, TDS-CD4-SSW-01-U02
+- `SSW-01-U03` **開発・解析ツール / Development and analysis tools** (`partial`)
   - デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。
   - How should debuggers, profilers, tracing, and porting tools be compared for platform coverage and practical usability?
-  - Evidence sections: none / 未収集
-- `SSW-01-U04` **移植と性能維持 / Porting and performance retention** (`not-started`)
+  - Evidence sections: TDS-CD1-SSW-01-U03, TDS-CD2-SSW-01-U03
+- `SSW-01-U04` **移植と性能維持 / Porting and performance retention** (`partial`)
   - コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。
   - How should code changes, porting effort, feature support, reproducibility, and cross-platform performance retention be measured under matching conditions?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-01-U04
 
 Related / 関連: SSW-003, SSW-004, SSW-008, SSW-010, ARCH-012
 
@@ -205,7 +205,7 @@ Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, a
 - `SSW-03-U01` **通信と集合通信 / Communication and collectives** (`partial`)
   - MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。
   - Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, accelerators, interoperability, performance, and missing capabilities.
-  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE, TDS-HC26-SSW-03-U1
+  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE, TDS-HC26-SSW-03-U1, TDS-CD2-SSW-03-U01, TDS-CD3-SSW-03-U01, TDS-CD4-SSW-03-U01
 
 Related / 関連: ARCH-004, SSW-001
 
@@ -220,11 +220,11 @@ Compare dense and sparse linear algebra, FFTs, randomized methods, and open-sour
 - `SSW-04-U01` **アルゴリズムと実装 / Algorithms and implementations** (`partial`)
   - 密・疎行列、FFT、乱択等の手法とOSS・商用実装を、対応CPU/GPU、分散対応と保守から比較する。
   - Compare dense and sparse linear algebra, FFTs, randomized methods, and open-source or commercial implementations for CPU/GPU support, distribution, and maintenance.
-  - Evidence sections: TDS-SSW04-LIBRARIES
+  - Evidence sections: TDS-SSW04-LIBRARIES, TDS-CD1-SSW-04-U01, TDS-CD2-SSW-04-U01, TDS-CD3-SSW-04-U01
 - `SSW-04-U02` **演算精度とエミュレーション / Precision and emulation** (`partial`)
   - 入力・演算・累積・出力精度を区別し、混合精度とOzaki方式等の高精度エミュレーションの実装対応を調査する。
   - Distinguish input, compute, accumulation, and output precision, and investigate implementations of mixed precision and high-precision emulation such as Ozaki schemes.
-  - Evidence sections: TDS-SSW04-ACCURACY
+  - Evidence sections: TDS-CD1-SSW-04-U02
 
 Related / 関連: APP-016, SSW-001, SSW-008
 
@@ -239,7 +239,7 @@ Compare schedulers, operating systems, containers, package distribution, and clo
 - `SSW-06-U01` **ジョブ・実行環境 / Jobs and execution environments** (`partial`)
   - スケジューラ、OS、コンテナ、パッケージ配布、クラウド連携をHPCとAIの共存条件から比較する。
   - Compare schedulers, operating systems, containers, package distribution, and cloud integration for coexisting HPC and AI workloads.
-  - Evidence sections: TDS-SSW06-CURRENT, TDS-SSW06-FUTURE
+  - Evidence sections: TDS-CD6-SSW-06-U01, TDS-CD7-SSW-06-U01
 
 Related / 関連: SSW-012, OPS-003, ARCH-012
 
@@ -254,11 +254,11 @@ Assess maintainers, funding, releases, support lifetimes, licenses, dependencies
 - `SSW-08-U01` **長期保守と依存リスク / Maintenance and dependency risks** (`partial`)
   - OSS・商用ソフトの保守者、資金、更新、サポート期限、ライセンス、依存関係と代替先を確認する。
   - Assess maintainers, funding, releases, support lifetimes, licenses, dependencies, and alternatives for open-source and commercial software.
-  - Evidence sections: TDS-SSW08-CURRENT, TDS-SSW08-FUTURE
-- `SSW-08-U02` **開発・維持体制 / Development and support models** (`not-started`)
+  - Evidence sections: TDS-CD1-SSW-08-U01, TDS-CD2-SSW-08-U01
+- `SSW-08-U02` **開発・維持体制 / Development and support models** (`partial`)
   - 上流開発への貢献、共同保守、商用支援、国内開発・採用・撤退の責任分担と投資条件をどう決めるか。
   - How should upstream contributions, shared maintenance, commercial support, domestic development, adoption, and retirement be funded and governed?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-08-U02, TDS-CD2-SSW-08-U02
 
 Related / 関連: SSW-001, SSW-004, SSW-009, GOV-002
 
@@ -273,45 +273,45 @@ Compare training and distributed-training frameworks for hardware support, paral
 - `SSW-09-U01` **学習フレームワーク / Training frameworks** (`partial`)
   - 学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。
   - Compare training and distributed-training frameworks for hardware support, parallelism, precision, and model and data management.
-  - Evidence sections: TDS-SSW09-CURRENT, TDS-SSW09-FUTURE
+  - Evidence sections: TDS-CD6-SSW-09-U01, TDS-CD7-SSW-09-U01
 - `SSW-09-U02` **推論サービング / Inference serving** (`partial`)
   - vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。
   - Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support.
-  - Evidence sections: TDS-SSW17-CURRENT, TDS-SSW17-FUTURE, TDS-HC26-SSW-09-U2
-- `SSW-09-U03` **エージェント実行 / Agent execution** (`not-started`)
+  - Evidence sections: TDS-HC26-SSW-09-U2, TDS-CD6-SSW-09-U02
+- `SSW-09-U03` **エージェント実行 / Agent execution** (`partial`)
   - 構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。
   - Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD6-SSW-09-U03
 
 Related / 関連: SSW-012, APP-012, APP-013, SSW-008
 
 ### SSW-010: 自動チューニングとコンパイラ支援最適化
 
-Autotuning and compiler-assisted optimization. Canonical ID: `SSW-10`. Status: `not-started`.
+Autotuning and compiler-assisted optimization. Canonical ID: `SSW-10`. Status: `partial`.
 
 コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。
 
 Investigate automatic code and parameter search, accelerator porting, runtime adaptation, and correctness validation.
 
-- `SSW-10-U01` **自動最適化機構 / Automatic optimization mechanisms** (`not-started`)
+- `SSW-10-U01` **自動最適化機構 / Automatic optimization mechanisms** (`partial`)
   - コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。
   - Investigate automatic code and parameter search, accelerator porting, runtime adaptation, and correctness validation.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-10-U01, TDS-CD2-SSW-10-U01
 
 Related / 関連: SSW-001, APP-005, APP-016
 
 ### SSW-012: 科学ワークフロー実行基盤
 
-Scientific workflow execution platforms. Canonical ID: `SSW-16`. Status: `not-started`.
+Scientific workflow execution platforms. Canonical ID: `SSW-16`. Status: `partial`.
 
 非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。
 
 Compare platforms that consistently orchestrate, resume, and audit batch, Kubernetes, interactive, experimental-stream, and agent workloads, including non-AI processing.
 
-- `SSW-16-U01` **実行制御と連携 / Orchestration and integration** (`not-started`)
+- `SSW-16-U01` **実行制御と連携 / Orchestration and integration** (`partial`)
   - 非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。
   - Compare platforms that consistently orchestrate, resume, and audit batch, Kubernetes, interactive, experimental-stream, and agent workloads, including non-AI processing.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-16-U01, TDS-CD2-SSW-16-U01, TDS-CD3-SSW-16-U01, TDS-CD4-SSW-16-U01
 
 Related / 関連: SSW-006, SSW-009, ARCH-012, APP-012, APP-014
 
@@ -328,11 +328,11 @@ How should priority domains, portfolio shares, and representativeness be defined
 - `APP-01-U01` **科学分野と代表性 / Scientific domains and representativeness** (`partial`)
   - 生命・医療、材料、気候・防災、ものづくり、基礎・社会科学の重点分野、構成比と代表性をどう定めるか。
   - How should priority domains, portfolio shares, and representativeness be defined across life and medical sciences, materials, climate and disaster science, engineering, and basic and social sciences?
-  - Evidence sections: TDS-APP01-CURRENT, TDS-APP01-FUTURE
-- `APP-01-U02` **将来の計算・データ要求 / Future compute and data needs** (`not-started`)
+  - Evidence sections: TDS-APP01-CURRENT, TDS-APP01-FUTURE, TDS-CD2-APP-01-U01
+- `APP-01-U02` **将来の計算・データ要求 / Future compute and data needs** (`partial`)
   - 問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。
   - How should problem size, required accuracy, compute and data volumes, interactivity, and AI or experimental coupling requirements be collected?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD3-APP-01-U02
 
 Related / 関連: APP-002, APP-012, APP-014
 
@@ -347,15 +347,15 @@ Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientif
 - `APP-02-U01` **代表アプリとベンチマーク / Representative applications and benchmarks** (`partial`)
   - HPL・HPCG・HPL-MxP・Graph500、実アプリ・Proxyを、科学分野の代表性と再現性から選定する。
   - Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientific representativeness and reproducibility.
-  - Evidence sections: TDS-APP02-CURRENT, TDS-APP02-FUTURE
+  - Evidence sections: TDS-APP02-CURRENT, TDS-APP02-FUTURE, TDS-CD1-APP-02-U01
 - `APP-02-U02` **性能律速と外挿 / Bottlenecks and extrapolation** (`partial`)
   - FLOPS/Byte、帯域・遅延・容量・通信・I/O、強・弱スケーリングから実行時間・並列効率をモデル化し、複数ノード規模で検証する。
   - Model runtime and parallel efficiency using FLOPS/Byte, bandwidth, latency, capacity, communication, I/O, and strong/weak scaling; validate at multiple node scales.
-  - Evidence sections: TDS-SSW07-CURRENT, TDS-SSW07-FUTURE
+  - Evidence sections: TDS-SSW07-CURRENT, TDS-SSW07-FUTURE, TDS-CD1-APP-02-U02, TDS-CD3-APP-02-U02
 - `APP-02-U03` **継続比較 / Continuous comparison** (`partial`)
   - 同じ問題・精度・資源条件で性能、電力、費用を反復測定し、校正と独立検証を分離する。
   - Repeat performance, power, and cost measurements at matching problem, precision, and resource conditions, separating calibration from independent validation.
-  - Evidence sections: TDS-CROSS02-CURRENT, TDS-CROSS02-FUTURE
+  - Evidence sections: TDS-CD1-APP-02-U03, TDS-CD2-APP-02-U03, TDS-CD3-APP-02-U03, TDS-CD4-APP-02-U03
 
 Related / 関連: APP-001, APP-013, APP-015, APP-016
 
@@ -370,22 +370,22 @@ Evaluate productivity and correctness of AI code generation, optimization, and p
 - `APP-05-U01` **生成・移植・検証 / Generation, porting, and validation** (`partial`)
   - AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。
   - Evaluate productivity and correctness of AI code generation, optimization, and porting using independent tests and reproducible tasks.
-  - Evidence sections: TDS-APP05-CURRENT, TDS-APP05-FUTURE
+  - Evidence sections: TDS-APP05-CURRENT, TDS-APP05-FUTURE, TDS-CD2-APP-05-U01
 
 Related / 関連: SSW-010, SSW-001, APP-013
 
 ### APP-010: 量子・Ising応用と古典計算基準
 
-Quantum and Ising applications with classical baselines. Canonical ID: `APP-11`. Status: `not-started`.
+Quantum and Ising applications with classical baselines. Canonical ID: `APP-11`. Status: `partial`.
 
 材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。
 
 Investigate materials, chemistry, optimization, and sensing applications against classical methods at matching input/output, accuracy, and resource conditions.
 
-- `APP-11-U01` **応用と古典比較 / Applications and classical comparison** (`not-started`)
+- `APP-11-U01` **応用と古典比較 / Applications and classical comparison** (`partial`)
   - 材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。
   - Investigate materials, chemistry, optimization, and sensing applications against classical methods at matching input/output, accuracy, and resource conditions.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-APP-11-U01, TDS-CD2-APP-11-U01
 
 Related / 関連: OPS-009, APP-002
 
@@ -400,11 +400,11 @@ Characterize model and data scales, quality targets, scientific representativene
 - `APP-12-U01` **学習・推論・AI for Science / Training, inference, and AI for Science** (`partial`)
   - 学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。
   - Characterize model and data scales, quality targets, scientific representativeness, and simulation or experiment coupling for training, fine-tuning, and inference.
-  - Evidence sections: TDS-APP03-CURRENT, TDS-APP03-FUTURE
-- `APP-12-U02` **科学AIエージェントの要求 / Scientific-agent requirements** (`not-started`)
+  - Evidence sections: TDS-CD1-APP-12-U01, TDS-CD2-APP-12-U01
+- `APP-12-U02` **科学AIエージェントの要求 / Scientific-agent requirements** (`partial`)
   - 直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。
   - Characterize serial orchestration, retrieval, tools, LLM inference, communication waits, concurrency, reliability, provenance, and safety requirements.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-APP-12-U02, TDS-CD2-APP-12-U02
 
 Related / 関連: APP-013, APP-001, APP-014, SSW-009, SSW-012
 
@@ -419,15 +419,15 @@ Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, IT
 - `APP-13-U01` **学習・推論評価 / Training and inference evaluation** (`partial`)
   - MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。
   - Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior.
-  - Evidence sections: TDS-AIP-EVALUATION, TDS-HC26-APP-13-U1
+  - Evidence sections: TDS-AIP-EVALUATION, TDS-HC26-APP-13-U1, TDS-CD2-APP-13-U01
 - `APP-13-U02` **エージェント・ハーネス評価 / Agent and harness evaluation** (`partial`)
   - モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。
   - Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions.
-  - Evidence sections: TDS-AIP-AGENTS
+  - Evidence sections: TDS-AIP-AGENTS, TDS-CD2-APP-13-U02, TDS-CD3-APP-13-U02
 - `APP-13-U03` **負荷モデルと継続測定 / Load models and repeated measurement** (`partial`)
   - Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。
   - Separate prefill/decode, arrival processes, batching, serial work, and concurrency, and independently validate predictions for changed resources.
-  - Evidence sections: TDS-AIP-LOAD
+  - Evidence sections: TDS-AIP-LOAD, TDS-CD4-APP-13-U03
 
 Related / 関連: APP-012, APP-002, APP-015, ARCH-001, SSW-009
 
@@ -442,49 +442,49 @@ Characterize experimental automation, digital twins, observation and experimenta
 - `APP-14-U01` **実験・閉ループ処理 / Experiments and closed-loop processing** (`partial`)
   - 実験自動化、デジタルツイン、観測・実験データ量、処理期限、人の承認と制御要件を整理する。
   - Characterize experimental automation, digital twins, observation and experimental data rates, deadlines, human approval, and control requirements.
-  - Evidence sections: TDS-APP06-CURRENT, TDS-APP06-FUTURE
-- `APP-14-U02` **緊急計算と代表性 / Urgent computing and representativeness** (`not-started`)
+  - Evidence sections: TDS-CD1-APP-14-U01, TDS-CD2-APP-14-U01, TDS-CD3-APP-14-U01
+- `APP-14-U02` **緊急計算と代表性 / Urgent computing and representativeness** (`partial`)
   - 防災等の緊急処理、予約、優先度、権限、データ経路と実験施設間の代表性をどう確保するか。
   - How should urgent workloads such as disaster response, reservations, priorities, authority, data paths, and facility representativeness be covered?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-APP-14-U02
 
 Related / 関連: APP-015, APP-001, APP-012, SSW-012, OPS-003
 
 ### APP-015: ベンチマーク・プロキシ・性能モデル（実験施設連携・リアルタイム処理）
 
-Benchmarks, proxies, and performance models: experimental facilities and real-time processing. Canonical ID: `APP-15`. Status: `not-started`.
+Benchmarks, proxies, and performance models: experimental facilities and real-time processing. Canonical ID: `APP-15`. Status: `partial`.
 
 端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。 予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。
 
 Measure end-to-end latency, deadline compliance, jitter, and throughput with fixed input streams and load conditions. Build evaluation workflows including reservation waits, transfers, failures, and recovery, and repeat model calibration and independent validation.
 
-- `APP-15-U01` **遅延・処理期限 / Latency and deadlines** (`not-started`)
+- `APP-15-U01` **遅延・処理期限 / Latency and deadlines** (`partial`)
   - 端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。
   - Measure end-to-end latency, deadline compliance, jitter, and throughput with fixed input streams and load conditions.
-  - Evidence sections: none / 未収集
-- `APP-15-U02` **継続性と再現評価 / Continuity and reproducible evaluation** (`not-started`)
+  - Evidence sections: TDS-CD2-APP-15-U01
+- `APP-15-U02` **継続性と再現評価 / Continuity and reproducible evaluation** (`partial`)
   - 予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。
   - Build evaluation workflows including reservation waits, transfers, failures, and recovery, and repeat model calibration and independent validation.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD2-APP-15-U02, TDS-CD3-APP-15-U02
 
 Related / 関連: APP-014, APP-002, APP-013, OPS-012
 
 ### APP-016: 混合精度・近似計算と数値的妥当性
 
-Mixed precision, approximate computing, and numerical validity. Canonical ID: `ARCH-13`. Status: `not-started`.
+Mixed precision, approximate computing, and numerical validity. Canonical ID: `ARCH-13`. Status: `partial`.
 
 精度、収束、保存則、再現性と科学的結論への影響から、混合精度・近似計算の許容条件をどう定めるか。 ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。
 
 How should acceptable mixed-precision and approximate-computing regimes be established from accuracy, convergence, conservation, reproducibility, and scientific conclusions? Using hardware and library support records, how should performance and energy gains be evaluated under matching error constraints?
 
-- `ARCH-13-U01` **科学的妥当性 / Scientific validity** (`not-started`)
+- `ARCH-13-U01` **科学的妥当性 / Scientific validity** (`partial`)
   - 精度、収束、保存則、再現性と科学的結論への影響から、混合精度・近似計算の許容条件をどう定めるか。
   - How should acceptable mixed-precision and approximate-computing regimes be established from accuracy, convergence, conservation, reproducibility, and scientific conclusions?
-  - Evidence sections: none / 未収集
-- `ARCH-13-U02` **性能・省電力との比較 / Performance and energy trade-offs** (`not-started`)
+  - Evidence sections: TDS-CD1-ARCH-13-U01
+- `ARCH-13-U02` **性能・省電力との比較 / Performance and energy trade-offs** (`partial`)
   - ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。
   - Using hardware and library support records, how should performance and energy gains be evaluated under matching error constraints?
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-ARCH-13-U02
 
 Related / 関連: SSW-004, APP-002, APP-013, ARCH-009
 
@@ -501,86 +501,86 @@ Investigate feasible facilities given power envelopes, cooling, capacity, buildi
 - `ARCH-06-U01` **設備設計と制約 / Facility design and constraints** (`partial`)
   - 電力枠、冷却方式、設備容量、建屋、運用費と環境制約から実現可能な設備を調査する。
   - Investigate feasible facilities given power envelopes, cooling, capacity, buildings, operating costs, and environmental constraints.
-  - Evidence sections: TDS-ARCH06-CURRENT, TDS-ARCH06-FUTURE
+  - Evidence sections: TDS-CD1-ARCH-06-U01
 
 Related / 関連: OPS-006, OPS-013, ARCH-005
 
 ### OPS-002: RAS・保守性・長期ライフサイクル
 
-RAS, serviceability, and long lifecycles. Canonical ID: `ARCH-10`. Status: `not-started`.
+RAS, serviceability, and long lifecycles. Canonical ID: `ARCH-10`. Status: `partial`.
 
 信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。
 
 Investigate reliability, availability, serviceability, resilience, support lifetimes, fault monitoring, and continuity during renewal.
 
-- `ARCH-10-U01` **安定運用と保守 / Reliable operation and maintenance** (`not-started`)
+- `ARCH-10-U01` **安定運用と保守 / Reliable operation and maintenance** (`partial`)
   - 信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。
   - Investigate reliability, availability, serviceability, resilience, support lifetimes, fault monitoring, and continuity during renewal.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD2-ARCH-10-U01
 
 Related / 関連: OPS-005, OPS-006, OPS-012
 
 ### OPS-003: 連合資源抽象化・メタスケジューリング・緊急計算
 
-Federated resource abstraction, meta-scheduling, and urgent computing. Canonical ID: `SSW-11`. Status: `not-started`.
+Federated resource abstraction, meta-scheduling, and urgent computing. Canonical ID: `SSW-11`. Status: `partial`.
 
 複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。
 
 Compare approaches to cross-center resource discovery, reservation, allocation, urgent computing, autonomy, and authority.
 
-- `SSW-11-U01` **連合配分と予約 / Federated allocation and reservation** (`not-started`)
+- `SSW-11-U01` **連合配分と予約 / Federated allocation and reservation** (`partial`)
   - 複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。
   - Compare approaches to cross-center resource discovery, reservation, allocation, urgent computing, autonomy, and authority.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD2-SSW-11-U01
 
 Related / 関連: SSW-006, APP-014, OPS-007
 
 ### OPS-004: 統合認証・認可・ポータル
 
-Federated identity, authorization, and portals. Canonical ID: `SSW-12`. Status: `not-started`.
+Federated identity, authorization, and portals. Canonical ID: `SSW-12`. Status: `partial`.
 
 学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。
 
 Investigate integration and separation of federated identity, SSO, groups, projects, authorization, and web portals.
 
-- `SSW-12-U01` **認証と利用窓口 / Identity and access** (`not-started`)
+- `SSW-12-U01` **認証と利用窓口 / Identity and access** (`partial`)
   - 学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。
   - Investigate integration and separation of federated identity, SSO, groups, projects, authorization, and web portals.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD2-SSW-12-U01
 
 Related / 関連: OPS-005, OPS-007
 
 ### OPS-005: セキュリティ・機密計算・プライバシー
 
-Security, confidential computing, and privacy. Canonical ID: `SSW-14`. Status: `not-started`.
+Security, confidential computing, and privacy. Canonical ID: `SSW-14`. Status: `partial`.
 
 ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。 機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。
 
 How should zero trust, MFA, encryption, supply-chain security, and incident response be implemented in federated operation? Compare confidential computing and privacy controls by threat model, performance impact, and operational constraints.
 
-- `SSW-14-U01` **予防・検知・対応 / Prevention, detection, and response** (`not-started`)
+- `SSW-14-U01` **予防・検知・対応 / Prevention, detection, and response** (`partial`)
   - ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。
   - How should zero trust, MFA, encryption, supply-chain security, and incident response be implemented in federated operation?
-  - Evidence sections: none / 未収集
-- `SSW-14-U02` **機密計算と性能影響 / Confidential computing and performance** (`not-started`)
+  - Evidence sections: TDS-CD1-SSW-14-U01
+- `SSW-14-U02` **機密計算と性能影響 / Confidential computing and performance** (`partial`)
   - 機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。
   - Compare confidential computing and privacy controls by threat model, performance impact, and operational constraints.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-14-U02
 
 Related / 関連: OPS-004, OPS-002, SSW-009
 
 ### OPS-006: 電力・冷却テレメトリと電力適応運用
 
-Power and cooling telemetry and power-adaptive operation. Canonical ID: `SSW-15`. Status: `not-started`.
+Power and cooling telemetry and power-adaptive operation. Canonical ID: `SSW-15`. Status: `partial`.
 
 ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。
 
 Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate power-constrained scheduling and service monitoring.
 
-- `SSW-15-U01` **計測と制御 / Measurement and control** (`not-started`)
+- `SSW-15-U01` **計測と制御 / Measurement and control** (`partial`)
   - ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。
   - Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate power-constrained scheduling and service monitoring.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-SSW-15-U01, TDS-CD2-SSW-15-U01
 
 Related / 関連: OPS-001, OPS-013, SSW-006
 
@@ -595,22 +595,22 @@ Use identity, allocation, transfer, network, and catalog technology records to d
 - `CROSS-03-U01` **全体の運用要件 / Integrated operating requirements** (`partial`)
   - ID、資源配分、転送、ネットワーク、カタログ等の個別技術を参照し、拠点群の一体運用と責任分担を設計する。
   - Use identity, allocation, transfer, network, and catalog technology records to design integrated multi-site operation and responsibilities.
-  - Evidence sections: TDS-CROSS03-CURRENT, TDS-CROSS03-FUTURE
+  - Evidence sections: TDS-CD1-CROSS-03-U01
 
 Related / 関連: OPS-003, OPS-004, OPS-005, OPS-012
 
 ### OPS-009: 量子・HPCハイブリッド運用
 
-Quantum-HPC hybrid operation. Canonical ID: `CROSS-05`. Status: `not-started`.
+Quantum-HPC hybrid operation. Canonical ID: `CROSS-05`. Status: `partial`.
 
 量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。
 
 Investigate quantum-resource interfaces, reservations, scheduling, data paths, operational authority, and maturity requirements.
 
-- `CROSS-05-U01` **ハイブリッド運用 / Hybrid operation** (`not-started`)
+- `CROSS-05-U01` **ハイブリッド運用 / Hybrid operation** (`partial`)
   - 量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。
   - Investigate quantum-resource interfaces, reservations, scheduling, data paths, operational authority, and maturity requirements.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-05-U01
 
 Related / 関連: APP-010, OPS-003
 
@@ -625,41 +625,41 @@ Use public budgets, contracts, and specifications to assess cost, deployment tim
 - `CROSS-06-U01` **調達条件と費用 / Procurement conditions and cost** (`partial`)
   - 公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。
   - Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty.
-  - Evidence sections: TDS-PCD-CONTRACTS, TDS-PCD-SCOPE, TDS-PRP-PLANNING
-- `CROSS-06-U02` **共同調達と段階整備 / Joint procurement and staged deployment** (`not-started`)
+  - Evidence sections: TDS-PCD-CONTRACTS, TDS-PCD-SCOPE, TDS-PRP-PLANNING, TDS-CD1-CROSS-06-U01, TDS-CD2-CROSS-06-U01
+- `CROSS-06-U02` **共同調達と段階整備 / Joint procurement and staged deployment** (`partial`)
   - 共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。
   - Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-06-U02
 
 Related / 関連: ARCH-005, CROSS-002, GOV-002
 
 ### OPS-012: データ連携・世代更新時のサービス継続
 
-Data federation and service continuity across system generations. Canonical ID: `CROSS-14`. Status: `not-started`.
+Data federation and service continuity across system generations. Canonical ID: `CROSS-14`. Status: `partial`.
 
 計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。
 
 Investigate continuity of data, identity, and workflows independently of compute refresh, including migration time, retention, and responsibilities.
 
-- `CROSS-14-U01` **移行と継続運用 / Migration and continuity** (`not-started`)
+- `CROSS-14-U01` **移行と継続運用 / Migration and continuity** (`partial`)
   - 計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。
   - Investigate continuity of data, identity, and workflows independently of compute refresh, including migration time, retention, and responsibilities.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-14-U01, TDS-CD2-CROSS-14-U01
 
 Related / 関連: ARCH-012, OPS-004, SSW-012, OPS-007
 
 ### OPS-013: 地域配置・電力・実験施設近接性
 
-Geographic placement, electricity, and proximity to experimental facilities. Canonical ID: `CROSS-16`. Status: `not-started`.
+Geographic placement, electricity, and proximity to experimental facilities. Canonical ID: `CROSS-16`. Status: `partial`.
 
 電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。
 
 Compare resource placement based on electricity, carbon, disaster resilience, data sources, and proximity to experimental facilities.
 
-- `CROSS-16-U01` **設置地域の選定 / Site selection** (`not-started`)
+- `CROSS-16-U01` **設置地域の選定 / Site selection** (`partial`)
   - 電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。
   - Compare resource placement based on electricity, carbon, disaster resilience, data sources, and proximity to experimental facilities.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-16-U01
 
 Related / 関連: OPS-001, OPS-006, APP-014
 
@@ -676,22 +676,22 @@ Investigate policy formation, decisions, implementation, and evaluation includin
 - `CROSS-10-U01` **制度と責任分担 / Policy and responsibilities** (`partial`)
   - HPCI計画推進委員会等の政策形成・意思決定・実施・評価、センター自治、運用委託と人材体制を調査する。
   - Investigate policy formation, decisions, implementation, and evaluation including the HPCI planning committee, center autonomy, operating arrangements, and staffing.
-  - Evidence sections: TDS-SSW09-POLICY-CURRENT, TDS-SSW09-POLICY-FUTURE
+  - Evidence sections: TDS-CD1-CROSS-10-U01, TDS-CD2-CROSS-10-U01
 
 Related / 関連: OPS-007, GOV-002, CROSS-002
 
 ### GOV-002: 資源所有・財源・利用料金モデル
 
-Resource ownership, funding, and charging models. Canonical ID: `CROSS-15`. Status: `not-started`.
+Resource ownership, funding, and charging models. Canonical ID: `CROSS-15`. Status: `partial`.
 
 HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。
 
 Compare HPCI and center resource ownership, joint investment, charging, and access models.
 
-- `CROSS-15-U01` **財源と利用制度 / Funding and access models** (`not-started`)
+- `CROSS-15-U01` **財源と利用制度 / Funding and access models** (`partial`)
   - HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。
   - Compare HPCI and center resource ownership, joint investment, charging, and access models.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-15-U01, TDS-CD2-CROSS-15-U01, TDS-CD3-CROSS-15-U01
 
 Related / 関連: OPS-010, GOV-001
 
@@ -699,16 +699,16 @@ Related / 関連: OPS-010, GOV-001
 
 ### CROSS-001: 経済安全保障・サプライチェーン
 
-Economic security and supply chains. Canonical ID: `ARCH-07`. Status: `not-started`.
+Economic security and supply chains. Canonical ID: `ARCH-07`. Status: `partial`.
 
 日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。
 
 Compare worldwide manufacturing capacity, vendor concentration, export controls, and supply and support continuity, including Japan, without treating nationality as technical merit.
 
-- `ARCH-07-U01` **世界の依存・供給リスク / Global dependency and supply risks** (`not-started`)
+- `ARCH-07-U01` **世界の依存・供給リスク / Global dependency and supply risks** (`partial`)
   - 日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。
   - Compare worldwide manufacturing capacity, vendor concentration, export controls, and supply and support continuity, including Japan, without treating nationality as technical merit.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-ARCH-07-U01
 
 Related / 関連: CROSS-003, ARCH-002, OPS-010
 
@@ -723,30 +723,30 @@ Maintain dated evidence on users, priority domains, current equipment, power, bu
 - `CROSS-08-U01` **センター基礎情報 / Center baseline information** (`partial`)
   - 利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。
   - Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies.
-  - Evidence sections: TDS-CBL-BASELINE, TDS-CBL-CHANGES-V2
+  - Evidence sections: TDS-CBL-BASELINE, TDS-CBL-CHANGES-V2, TDS-CD1-CROSS-08-U01
 - `CROSS-08-U02` **移行・採用条件 / Migration and adoption conditions** (`partial`)
   - 既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。
   - Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.
-  - Evidence sections: TDS-CBL-MIGRATION
+  - Evidence sections: TDS-CBL-MIGRATION, TDS-CD1-CROSS-08-U02, TDS-CD2-CROSS-08-U02
 
 Related / 関連: ARCH-005, OPS-010, OPS-012, OPS-013
 
 ### CROSS-003: 日本発技術の実用化・供給自立性・産業波及
 
-Deployment, supply autonomy, and industrial impact of technologies originating in Japan. Canonical ID: `CROSS-11`. Status: `not-started`.
+Deployment, supply autonomy, and industrial impact of technologies originating in Japan. Canonical ID: `CROSS-11`. Status: `partial`.
 
 ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。 国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。
 
 Use shared hardware, system software, application, and operations records to assess conditions for Japanese-origin technologies to progress through prototypes, demonstrations, production, maintenance, and industrial deployment. Evaluate against international alternatives under common criteria and examine procurement, standardization, integration, and supply autonomy.
 
-- `CROSS-11-U01` **技術分野横断の実用化 / Cross-domain deployment** (`not-started`)
+- `CROSS-11-U01` **技術分野横断の実用化 / Cross-domain deployment** (`partial`)
   - ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。
   - Use shared hardware, system software, application, and operations records to assess conditions for Japanese-origin technologies to progress through prototypes, demonstrations, production, maintenance, and industrial deployment.
-  - Evidence sections: none / 未収集
-- `CROSS-11-U02` **国際技術との併用 / Integration with international alternatives** (`not-started`)
+  - Evidence sections: TDS-CD1-CROSS-11-U01, TDS-CD2-CROSS-11-U01
+- `CROSS-11-U02` **国際技術との併用 / Integration with international alternatives** (`partial`)
   - 国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。
   - Evaluate against international alternatives under common criteria and examine procurement, standardization, integration, and supply autonomy.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CD1-CROSS-11-U02, TDS-CD2-CROSS-11-U02
 
 Related / 関連: ARCH-001, ARCH-002, ARCH-009, SSW-008, CROSS-001
 

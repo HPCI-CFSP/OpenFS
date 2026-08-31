@@ -1,0 +1,397 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000037",
+  "topic_id": "SSW-08",
+  "created_at": "2026-09-01T00:44:04+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "440a856282676d7fb10f4e2fea0e3af8ab982312769c597462961293a8e9ccb3",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ソフトウェアの保守継続性は、公開されているかだけでなく、修正対象の版、更新互換性、品質試験、担当組織、継続予算で評価します。PETSc、Slurm、E4S/PESOの一次資料を具体例として整理しました。契約条件や将来の資金継続を確認したものではなく、暫定調査です。",
+  "summary_en": "Software sustainability depends on maintained versions, upgrade compatibility, testing, ownership and continuing resources, not merely public availability. Primary PETSc, Slurm and E4S/PESO documents provide concrete examples. Contract terms and future funding continuity remain unverified; findings are provisional.",
+  "units": [
+    {
+      "unit_id": "SSW-08-U01",
+      "before_sha256": "a95118bc396c1ab03813eb648dcba8eedd3230d5e7a7878a829238c8535e100f",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-08-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-08-U02",
+      "before_sha256": "547d98323e12e4efbea21522367526789cbb885530868672296e0573200c5c8e",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-08-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-08-U01",
+      "title_ja": "保守期間・更新互換性・品質の確認",
+      "title_en": "Maintenance windows, upgrade compatibility and quality",
+      "summary_ja": "採用した版を何年間使えるかと、現行版へ追随できるかを分けて評価します。",
+      "summary_en": "Distinguish retaining a selected version from the ability to track maintained releases.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-PETSC-PATCH-LIFECYCLE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS039"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PETSc: 現行系列中心の修正方針",
+          "name_en": "PETSc: current-series patch policy",
+          "timing_ja": "半年ごとの新系列、現行系列への月次修正という公表方針",
+          "timing_en": "Published semiannual-series and monthly current-series patch policy",
+          "statement_ja": "PETScは新系列の公開後、旧系列への追加修正を停止すると説明しています。長期運用で古い版を固定する場合、修正の移植を誰が担うかが問題になります。また一般的なSemantic Versioningとは異なるため、版番号だけでAPI互換性を推定できません。",
+          "statement_en": "PETSc states that old series stop receiving patches after a new series is released. Long-lived pinned deployments therefore need an owner for backports. Its versioning differs from conventional Semantic Versioning, so version numbers alone do not establish API compatibility.",
+          "hpci_relevance_ja": "ハードウェアの保守年数とライブラリの修正期間を別々に調達・運用計画へ入れます。",
+          "hpci_relevance_en": "Plan hardware support and library maintenance windows separately.",
+          "adoption_conditions_ja": [
+            "現行版への移行試験と固定版への修正方針を決める。"
+          ],
+          "adoption_conditions_en": [
+            "Define upgrade tests and backport policy for pinned versions."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SLURM-UPGRADE-SUPPORT",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "source_ids": [
+            "SRC-CDS040"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Slurm: 更新範囲と終了時期の未確定点",
+          "name_en": "Slurm: upgrade windows and uncertain end dates",
+          "timing_ja": "2026-09-01の公開表に期間表記の不一致",
+          "timing_en": "Duration/date inconsistency in the public table inspected 2026-09-01",
+          "statement_ja": "Slurmは互換範囲内の段階的更新を求め、更新後に状態ファイルやDBだけを旧版へ戻すことをサポートしていません。一方、26.05/26.11のサポート表は終了年月と18か月という表記が一致しません。誤記か方針変更かを推測せず、終了時期は未確認とします。",
+          "statement_en": "Slurm requires compatible upgrade steps and does not support simply reverting migrated state/databases. Its 26.05/26.11 support table contains end dates inconsistent with the stated 18 months. The dates remain unverified rather than guessing whether this is a typo or policy change.",
+          "hpci_relevance_ja": "更新・復旧の作業枠と保守契約の確認を、利用可能年数の見積りへ含めます。",
+          "hpci_relevance_en": "Include upgrade/recovery windows and contract confirmation in service-life estimates.",
+          "adoption_conditions_ja": [
+            "バックアップからの復旧と更新後の記録喪失範囲を確認する。",
+            "サポート終了日は別の公式資料または契約で照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Check backup restoration and the loss window for post-backup records.",
+            "Corroborate support end dates with another official statement or contract."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-E4S-QUALITY-LEVELS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS042",
+            "SRC-CDS043",
+            "SRC-CDS045"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "E4S: 収録と品質保証範囲の違い",
+          "name_en": "E4S: inclusion versus assurance scope",
+          "timing_ja": "公開参加基準・方針v1を確認",
+          "timing_en": "Public membership criteria and policy v1 inspected",
+          "statement_ja": "E4Sはビルド、カタログ掲載、方針適合を段階として整理し、最小検証試験や持続可能な変更を求めます。ただし参加ページは全方針への完全適合がまだ必須ではないと明記しています。収録されているだけで全CPU/GPU、全精度、全アプリケーションの検証済みとはしません。",
+          "statement_en": "E4S distinguishes build, catalog and policy levels, with requirements such as minimum validation and sustainable changes. Its membership page explicitly says full policy satisfaction is not yet required. Inclusion does not qualify every CPU/GPU, precision or application.",
+          "hpci_relevance_ja": "共通配布を活用しながら、センター固有の回帰試験を残します。",
+          "hpci_relevance_en": "Use curated distributions while retaining site-specific regression tests.",
+          "adoption_conditions_ja": [
+            "実際の収録版、適用例外、試験した構成を確認する。",
+            "将来方針を現在の合格基準と混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Check included versions, exceptions and tested configurations.",
+            "Do not conflate future policies with current qualification criteria."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-08-U02",
+      "title_ja": "共同保守・開発参加・支援の責任分担",
+      "title_en": "Shared maintenance, contribution and support ownership",
+      "summary_ja": "導入時の一回限りの移植と、継続的な統合・品質管理を分けます。",
+      "summary_en": "Separate one-off porting from ongoing integration and quality work.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-E4S-CONTRIBUTION-OWNERS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS044"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "E4S参加後に残る製品側の責任",
+          "name_en": "Product responsibilities after joining E4S",
+          "timing_ja": "公開の継続責任を確認",
+          "timing_en": "Published ongoing responsibilities inspected",
+          "statement_ja": "E4S参加後も、製品側にはSpackレシピの維持、CI障害への対応、変更・廃止予定の通知等が求められます。共通基盤へ登録すれば保守が全て移管されるわけではありません。製品ごとのガバナンスを維持しつつ、統合試験を共同化する形です。",
+          "statement_en": "E4S membership retains product duties such as maintaining recipes, responding to CI failures and communicating changes/deprecations. Registration does not transfer all maintenance. Product governance remains separate while integration infrastructure is shared.",
+          "hpci_relevance_ja": "日本発ソフトウェアを国際的な配布基盤へ接続する際の担当・費用を明確化します。",
+          "hpci_relevance_en": "Clarify ownership and costs when integrating Japanese software into international distributions.",
+          "adoption_conditions_ja": [
+            "担当者不在時の引継ぎと障害対応期限を定める。",
+            "国内固有パッチを上流へ戻す経路を作る。"
+          ],
+          "adoption_conditions_en": [
+            "Define handover and incident-response expectations.",
+            "Provide an upstream path for local patches."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-PESO-ECOSYSTEM-INVESTMENT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS046",
+            "SRC-CDS047"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "PESO: 製品間統合への継続投資",
+          "name_en": "PESO: continuing investment in integration",
+          "timing_ja": "2025年活動報告、2026年1月公表",
+          "timing_en": "2025 activity report published January 2026",
+          "statement_ja": "PESOの報告は年400万米ドルの予算を示し、製品間の統合、品質、E4S/Spack支援等を役割としています。これは各製品チームの保守を置き換えるものではなく、HPCソフトウェア全体の開発費でもありません。共通部分に継続的な費用を割り当てる事例として参考になります。",
+          "statement_en": "PESO reports a USD 4 million annual budget for ecosystem integration, quality and E4S/Spack support. This neither replaces individual product stewardship nor represents the full cost of HPC software development. It illustrates explicitly funded shared maintenance.",
+          "hpci_relevance_ja": "システム購入費とは別に、共通ソフトウェアの統合・検証を継続支援する案を検討します。",
+          "hpci_relevance_en": "Consider sustained integration/testing support separately from system purchase costs.",
+          "adoption_conditions_ja": [
+            "米国事例の予算を日本の必要額へ単純換算しない。",
+            "製品保守・配布・サイト運用の費用境界を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Do not directly convert this US example into a Japanese funding requirement.",
+            "Separate product, distribution and site-operation cost boundaries."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-SLURM-UPSTREAM-ACCEPTANCE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS041"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "上流採用と保守契約の区別",
+          "name_en": "Upstream acceptance versus support contracts",
+          "timing_ja": "Slurmの公開貢献方針を確認",
+          "timing_en": "Published Slurm contribution policy inspected",
+          "statement_ja": "Slurmの新機能は開発ブランチ向けに審査され、安定版への修正取り込みも審査側の判断です。パッチを提出しただけでは採用時期や継続保守は確定しません。共同開発では、上流で未採用の場合のローカル保守と、商用支援に含まれる作業を別に定義します。",
+          "statement_en": "Slurm reviews new features for the development branch, with stable backports also discretionary. Submitting a patch establishes neither acceptance timing nor continuing maintenance. Joint development should define local maintenance if upstream rejects it, separately from commercial support scope.",
+          "hpci_relevance_ja": "独自要件の実装を調達成果物とする場合、納品後の更新追随責任を明確にします。",
+          "hpci_relevance_en": "Assign post-delivery upgrade responsibility for custom procurement requirements.",
+          "adoption_conditions_ja": [
+            "契約未確認の応答時間や支援範囲を推測しない。",
+            "ローカル変更量と再統合コストを追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not infer response times or service scope without contract evidence.",
+            "Track local divergence and reintegration costs."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-SSW08-CURRENT",
+    "TDS-SSW08-FUTURE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS039",
+        "title": "PETSc release and patch policy",
+        "publisher": "PETSc Project",
+        "url": "https://petsc.org/release/install/download/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-30; v3.25.4-22-gab79ce791859"
+      },
+      "origin_group": "petsc-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Release Schedule; patch policy; versioning semantics",
+      "observation_ja": "半年ごとの新系列と現行系列の月次修正を説明し、旧系列の修正停止を明記。",
+      "observation_en": "Describes semiannual new series, monthly current-series fixes and cessation of patches for old series.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS040",
+        "title": "Slurm upgrade and compatibility guide",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/upgrades.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Compatibility Window; Reverting an Upgrade; support table",
+      "observation_ja": "互換更新範囲と状態DB移行を説明。26.05/26.11の終了年月と18か月表記は算術的に一致しない。",
+      "observation_en": "Explains compatibility and state/database migration; 26.05/26.11 end dates conflict arithmetically with the stated 18 months.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS041",
+        "title": "Slurm developer contribution policy",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/contributor.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "Public policy inspected 2026-09-01"
+      },
+      "origin_group": "schedmd",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Target Releases and patch review",
+      "observation_ja": "機能追加はmaster向けで、修正の安定版取り込みも審査側の判断。提出すれば採用されるわけではない。",
+      "observation_en": "Features target master; stable backports remain reviewer decisions, not guaranteed acceptance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS042",
+        "title": "E4S membership levels",
+        "publisher": "E4S Project",
+        "url": "https://e4s.io/join/",
+        "source_class": "official-project",
+        "published_or_updated": "Public membership guide inspected 2026-09-01"
+      },
+      "origin_group": "e4s-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Levels 0/1/2 and incomplete full-policy process",
+      "observation_ja": "ビルド・カタログ・方針適合を段階で説明し、全方針適合は現時点で必須ではないと記載。",
+      "observation_en": "Separates build, catalog and policy levels, noting that full policy satisfaction is not yet required.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS043",
+        "title": "E4S Community Policies version 1",
+        "publisher": "E4S Project",
+        "url": "https://e4s.io/policies/",
+        "source_class": "official-project",
+        "published_or_updated": "Version 1 inspected 2026-09-01"
+      },
+      "origin_group": "e4s-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "P1-P9 versus FP/FLP future policies",
+      "observation_ja": "最小試験、公開リポジトリ、持続可能な変更等を定義。将来方針と現行基準を区別する。",
+      "observation_en": "Defines minimum tests, public repositories and sustainable changes, separately from future policies.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS044",
+        "title": "E4S Contribution Guide",
+        "publisher": "E4S Project",
+        "url": "https://e4s.io/contribution-guide/",
+        "source_class": "official-project",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "e4s-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Ongoing Responsibilities and product autonomy",
+      "observation_ja": "レシピ更新、CI障害対応、廃止予定通知など継続責任を示し、製品独自のガバナンスを維持。",
+      "observation_en": "Ongoing duties include recipes, CI failures and deprecation notices while product governance remains independent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS045",
+        "title": "E4S Development Process",
+        "publisher": "E4S Project",
+        "url": "https://e4s.io/development-process/",
+        "source_class": "official-project",
+        "published_or_updated": "Public guide inspected 2026-09-01"
+      },
+      "origin_group": "e4s-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Scheduled releases, between-release validation and Frank CI",
+      "observation_ja": "年2回の配布とその間の統合・継続試験を説明。収録製品ごとの試験結果は別途確認が必要。",
+      "observation_en": "Describes two annual distributions and ongoing integration/testing; product-specific results still need checking.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS046",
+        "title": "PESO Project Report 2025",
+        "publisher": "PESO Project",
+        "url": "https://pesoproject.org/files/2025PESOProjectReport.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01; covers through 2025-12"
+      },
+      "origin_group": "peso-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Executive Summary PDF p5; budget overview PDF p8; parsed text, screenshot unavailable",
+      "observation_ja": "年400万米ドルの統合・品質・製品支援予算を記載。製品チームの保守責任を置き換えないと説明。",
+      "observation_en": "Reports a USD 4 million annual integration/quality/product-support budget without replacing product-team stewardship.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS047",
+        "title": "PESO Project Thrusts",
+        "publisher": "PESO Project",
+        "url": "https://pesoproject.org/thrusts",
+        "source_class": "official-project",
+        "published_or_updated": "Public overview inspected 2026-09-01"
+      },
+      "origin_group": "peso-project",
+      "checked_at": "2026-09-01T00:42:38+09:00",
+      "locator": "Integration, community, impact, E4S and Spack roles",
+      "observation_ja": "ソフトウェア単体の開発に加え、統合・品質・コミュニティを支える役割を示す。",
+      "observation_en": "Identifies integration, quality and community roles beyond individual product development.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-TDS-063",
+      "topic_ids": [
+        "SSW-08"
+      ],
+      "priority": "P1",
+      "question_ja": "主要ソフトウェアの採用版について、修正期間・支援責任・費用・代替経路を確認できるか。",
+      "question_en": "Can maintained lifetimes, support ownership, costs and fallback paths be established for selected software versions?",
+      "next_action_ja": "Slurm 26.05/26.11の終了時期の表記不一致を照合し、PETSc等の固定版保守、E4Sの実試験範囲、国内の共同保守・商用支援条件を追加確認する。",
+      "next_action_en": "Resolve the Slurm 26.05/26.11 date inconsistency and verify pinned-version maintenance, actual E4S test scope, Japanese shared-maintenance arrangements and commercial support terms.",
+      "status": "open"
+    }
+  ],
+  "remaining_work_ja": [
+    "欧州・日本の共同保守体制と公開予算を追加調査する。",
+    "ライセンス・依存関係の変更が再配布へ与える影響は、製品と契約ごとに確認する。",
+    "組織や配布基盤への参加を将来の保守保証として扱わない。",
+    "独立モデルによるConsensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Investigate European and Japanese stewardship arrangements and public funding.",
+    "Check redistribution effects of license/dependency changes per product and contract.",
+    "Do not treat organizational membership as a guarantee of future maintenance.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

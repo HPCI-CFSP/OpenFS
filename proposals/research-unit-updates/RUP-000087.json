@@ -1,0 +1,229 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000087",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-01T03:34:36+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "e47bfe0e64ffb6f0c10a4ef53552ed54d5584ee5fe63847ae1fcbd15403f7609",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "データ連携では転送速度に加え、保存期限、認証、所有権、完全性、再実行と復旧を確認します。欧州の世代移行に加え、東北大学のS3・終了済みクラウドの実例と、大阪大学RED-ONIONの試験計画を比較しました。試験開始、通常運用、バックアップ保証を区別した暫定調査です。",
+  "summary_en": "Data continuity requires retention, identity, ownership, integrity, replay and recovery as well as transfer speed. Japanese AOBA S3/retired-cloud examples and Osaka's RED-ONION trial plan complement European migration evidence. Trial launch, production operation and backup guarantees remain distinct in this provisional review.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "edb308f14ae879972a707e56a4c533474fbc364675093559c338975f67a298b9",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-CROSS-14-U01",
+      "title_ja": "国内データ基盤の相互利用条件と移行期限",
+      "title_en": "Japanese data services: interoperability and migration deadlines",
+      "summary_ja": "同じデータを扱うAPIでも、同期・権限・保管の条件を省略できません。",
+      "summary_en": "APIs over shared data still have synchronization, permission and retention conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-AOBA-S3-TRIAL-RETENTION",
+          "stage": "current",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDO109"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AOBA-S S3: 期限付き試験と利用者の保存責任",
+          "name_en": "AOBA-S S3: bounded trial and user retention responsibility",
+          "timing_ja": "公表試験期間2024年4月〜2027年3月",
+          "timing_en": "Published trial period April 2024-March 2027",
+          "statement_ja": "AOBA-SのS3試験サービスはホーム領域とは別に提供されます。RAID60構成でもセンターはデータをバックアップせず、利用者が鍵とアクセス権を管理します。試験期間の終端は、延長承認や本運用への移行、データ削除日を確定するものではありません。",
+          "statement_en": "AOBA-S's S3 trial uses a separate area from home storage. The center does not back up its RAID60 data; users manage keys and permissions. The trial endpoint does not establish an extension, production transition or exact deletion date.",
+          "hpci_relevance_ja": "施設横断ワークフローの継続性に、API提供期間とバックアップ責任を含めます。",
+          "hpci_relevance_en": "Include API lifetime and backup ownership in cross-facility continuity planning.",
+          "adoption_conditions_ja": [
+            "2027年3月以降の条件と復旧先は未確認として残す。"
+          ],
+          "adoption_conditions_en": [
+            "Keep post-March-2027 terms and recovery destinations unverified."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AOBA-S3-POSIX-SYNC",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO110"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ファイルとS3の相互利用: 自動整合とは限らない",
+          "name_en": "Filesystem/S3 access does not imply automatic coherence",
+          "timing_ja": "2024-07-09 第2版の操作契約",
+          "timing_en": "Second-edition interface contract, 2024-07-09",
+          "statement_ja": "AOBA-Sの手引きは、ファイル側で作成・移動・削除した内容をS3から利用する前に同期操作を要求します。一般のS3クライアントで作成したバケットは、この相互利用経路の対象外です。S3対応という名称だけで既存アプリケーションと無変更で共有できるとは判断しません。",
+          "statement_en": "The AOBA-S manual requires synchronization after filesystem creation, moves or deletions before S3 access. Buckets made through ordinary S3 clients are outside this interoperable path. S3 compatibility alone does not establish unchanged sharing with existing applications.",
+          "hpci_relevance_ja": "実験データの受渡しで、古い一覧や欠けた入力を読むリスクを評価します。",
+          "hpci_relevance_en": "Assess stale listings and incomplete inputs in experimental-data handoffs.",
+          "adoption_conditions_ja": [
+            "同期完了、同時更新、権限、チェックサムの試験を対象版で行う。"
+          ],
+          "adoption_conditions_en": [
+            "Test synchronization completion, concurrent updates, permissions and checksums on the target version."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-AOBA-C-HISTORICAL-CUTOFF",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO111"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AOBA-Cの過去例: 管理者も到達できなくなる終了条件",
+          "name_en": "Historical AOBA-C case: retirement also removes administrator access",
+          "timing_ja": "2023年7月31日の終了に関する告知",
+          "timing_en": "Notice concerning the July 31, 2023 retirement",
+          "statement_ja": "AOBA-Cの終了告知は、運用終了後は利用者・管理者ともストレージへアクセスできず、センターによるコピーも行わないとしています。停止後に管理者が回収できるという前提を置かず、利用者による退避の完了を先に確認する必要がある実例です。現在のAOBA-Sの終了告知ではありません。",
+          "statement_en": "AOBA-C's notice removes both user and administrator storage access after retirement and excludes center-managed copying. It illustrates why migration must finish before access ends instead of assuming later administrator recovery. It is not an AOBA-S retirement notice.",
+          "hpci_relevance_ja": "クラウド契約とオンプレミス設備の停止条件を同一視しないための過去例です。",
+          "hpci_relevance_en": "This historical example cautions against assuming identical cloud and on-premises retirement conditions.",
+          "adoption_conditions_ja": [
+            "過去の告知を現行設備の保管方針へ流用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not reuse historical notice terms as current-system retention policy."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-RED-ONION-TRIAL-NOT-PRODUCTION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDO112"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "RED-ONION: 専用線による実験・計算基盤連携",
+          "name_en": "RED-ONION: dedicated-link integration of experiments and computing",
+          "timing_ja": "試験運用開始予定2026年10月、本格稼働時期未定",
+          "timing_en": "Trial planned October 2026; production date unsettled",
+          "statement_ja": "大阪大学・NECの本文は、100Gbps級専用線を用いるRED-ONIONの試験開始を2026年10月としています。1TBを約90秒で移送する値は既往検証に基づく見込みで、本試験の実測や全ワークロードの保証値ではありません。本格稼働、接続先、対象データは試験後に決定します。",
+          "statement_en": "Osaka/NEC schedule a RED-ONION trial over a 100-Gbps-class dedicated link for October 2026. About 90 seconds per TB is an expectation based on earlier validation, not this trial's measurement or an all-workload guarantee. Production timing, connections and data scope await trial outcomes.",
+          "hpci_relevance_ja": "実験設備と計算設備の結合を、転送・認証・保存・解析の全工程で検証する国内例です。",
+          "hpci_relevance_en": "This Japanese case supports end-to-end testing of transfer, identity, storage and analysis between experiments and compute.",
+          "adoption_conditions_ja": [
+            "SQUID・ONION後継計算機の導入決定とは解釈しない。",
+            "機微データの安全性は公開発表の主張とし、独立監査済みとは扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not interpret it as approval of a successor compute system for SQUID/ONION.",
+            "Treat sensitive-data security as an announcement claim, not independently audited assurance."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO109",
+        "title": "Tohoku AOBA-S S3 trial service and limitations",
+        "publisher": "Tohoku University Cyberscience Center",
+        "url": "https://www.ss.cc.tohoku.ac.jp/s3ds/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-15"
+      },
+      "origin_group": "Tohoku-AOBA-S3-service",
+      "checked_at": "2026-09-01T03:33:31+09:00",
+      "locator": "Service description; limitations",
+      "observation_ja": "試験運用は2024年4月〜2027年3月、ホームとは別領域。RAID60でもバックアップはなく、鍵とファイル権限は利用者が管理します。",
+      "observation_en": "Trial period April 2024-March 2027, separate from home storage; RAID60 does not provide a backup, and users manage keys and file access.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO110",
+        "title": "AOBA-S S3 service manual, second edition",
+        "publisher": "NEC / Tohoku University",
+        "url": "https://www.ss.cc.tohoku.ac.jp/sscc/wp-content/uploads/pdf/S3%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E5%88%A9%E7%94%A8%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB_%E7%AC%AC2%E7%89%88.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2024-07-09"
+      },
+      "origin_group": "Tohoku-AOBA-S3-service",
+      "checked_at": "2026-09-01T03:33:31+09:00",
+      "locator": "PDF pages 3, 6-8 (printed); sections 1, 3.1, 3.4",
+      "observation_ja": "ファイルシステム経由の変更にはS3側への同期操作が必要。一般のS3クライアントで作成したバケットは相互利用対象ではありません。",
+      "observation_en": "Filesystem-origin changes require synchronization for S3 access; buckets created through ordinary S3 clients are outside the interoperable path.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO111",
+        "title": "AOBA-C storage service shutdown notice",
+        "publisher": "Tohoku University Cyberscience Center",
+        "url": "https://www.ss.cc.tohoku.ac.jp/n20230424-1/",
+        "source_class": "official-project",
+        "published_or_updated": "2023-04-24"
+      },
+      "origin_group": "Tohoku-AOBA-C-retirement",
+      "checked_at": "2026-09-01T03:33:31+09:00",
+      "locator": "Opening notice on July 31, 2023 shutdown and copying responsibility",
+      "observation_ja": "2023年の終了告知では終了後は管理者もアクセス不可、センターによるコピー・バックアップなし。現在のAOBA全体の終了日ではありません。",
+      "observation_en": "The 2023 retirement notice says administrators also lose access and the center will not copy or back up data. It is not a current retirement date for all AOBA systems.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO112",
+        "title": "RED-ONION planned October 2026 trial and transfer scope",
+        "publisher": "The University of Osaka / NEC",
+        "url": "https://www.hpc.cmc.osaka-u.ac.jp/wp-content/uploads/2026/08/d3sanken-redonion-pressrelease20260821.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-21"
+      },
+      "origin_group": "Osaka-NEC-RED-ONION-announcement",
+      "checked_at": "2026-09-01T03:33:31+09:00",
+      "locator": "PDF pages 1 and 3: start date, 1 TB/90 s expectation, unresolved production scope",
+      "observation_ja": "本文では試験運用を2026年10月開始予定とし、本格稼働や接続先等は試験後に決定。1TB約90秒は既往検証に基づく見込みです。",
+      "observation_en": "The body schedules trial operation for October 2026, with production scope and connections determined after trials. About 90 seconds per TB is an expectation based on earlier validation.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "国内の実効転送速度、ファイル数依存、ACL継承、同期失敗時の復旧、試験終了後の条件を追加確認する。",
+    "RED-ONIONの2026年10月開始実績と本格運用範囲、SQUID終了後の接続計画を追跡する。",
+    "転送・削除・認証操作や実機実験は行っておらず、独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Verify domestic effective throughput, file-count effects, ACL continuity, recovery from synchronization failures and post-trial terms.",
+    "Track actual October trial launch, production scope and connections after SQUID retirement.",
+    "No transfer, deletion, credential operation or hardware experiment was performed; independent Consensus remains incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000059",
+      "bundle_sha256": "23fe973d5375f60a1ced5c10c7e546093259d7dfaecb164b866bf0ecb83162a1"
+    }
+  ]
+}

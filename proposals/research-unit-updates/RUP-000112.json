@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000112",
+  "topic_id": "CROSS-06",
+  "created_at": "2026-09-01T04:37:11+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "a379c1e370d75615c090d67df4060a33546cd04ef413bfa0afd851a8c6e34dd9",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "調達は、価格の大小だけでなく、購入・借入・保守の範囲、実効性能、施設準備、検収、移行、運用責任をそろえて比較します。国内の価格台帳を維持し、海外の公開契約と共同整備事例を追加調査しました。一式総額から部品価格や学術割引を推定せず、段階導入の判断条件を整理します。",
+  "summary_en": "Compare procurement using matched purchase/lease/support scope, effective performance, facility readiness, acceptance, migration and accountability. Preserve the domestic price register and add overseas contract and joint-deployment research. Do not infer component prices or academic discounts from package totals; define gates for phased introduction.",
+  "units": [
+    {
+      "unit_id": "CROSS-06-U01",
+      "before_sha256": "47c71ed267d168417f8b0e6bffdfa40ec4c3a163b9abdc704139449ad888783f",
+      "evidence_section_ids": [
+        "TDS-PCD-CONTRACTS",
+        "TDS-PCD-SCOPE",
+        "TDS-PRP-PLANNING",
+        "TDS-CD1-CROSS-06-U01",
+        "TDS-CD2-CROSS-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-CROSS-06-U01",
+      "title_ja": "参照仕事量と調達評価の対応",
+      "title_en": "Reference workloads in procurement evaluation",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-JUPITER-PROCUREMENT-COMPARISON-BASES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO089",
+            "SRC-CDO088"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUPITER: 同一ノード数以外の比較基準",
+          "name_en": "JUPITER: comparison bases beyond equal node counts",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "JUPITERの調達研究は、代表ジョブの基準時間を満たすために使うノード数を提案側が選べる方式と、大規模実行向けの別評価を説明しています。GPUメモリ容量に合わせた複数の入力規模も設けています。したがって、同じノード数だけで比較するのではなく、問題規模・完了時間・消費資源をそろえる基準を明示する必要があります。",
+          "statement_en": "JUPITER's procurement study lets proposals choose node counts to meet reference-job times and uses a separate large-scale evaluation with multiple memory-sized inputs. Comparisons therefore need explicit problem-size, completion-time and resource-use bases rather than equal node counts alone.",
+          "hpci_relevance_ja": "HPCIの性能予測を調達費用へ結び付ける際、候補機の大きさと科学的仕事量の違いを分離できます。",
+          "hpci_relevance_en": "This separates candidate-system size from scientific work when connecting HPCI performance forecasts to procurement costs.",
+          "adoption_conditions_ja": [
+            "基準機、入力、精度、許容時間、メモリ容量、エネルギー費用の範囲を記録する。",
+            "JUPITER固有の重みや大規模実行条件をOpenFSへ無断で移植しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record reference hardware, inputs, precision, time targets, memory and energy-cost boundaries.",
+            "Do not import JUPITER-specific weights or large-scale rules into OpenFS without authorization."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO088",
+        "title": "JUPITER Benchmark Suite public repository",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://github.com/FZJ-JSC/jubench",
+        "source_class": "official-project",
+        "published_or_updated": "Public repository accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-benchmarks",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "README, benchmark list and pinned submodules",
+      "observation_ja": "公開のアプリ・合成ベンチマークとsubmodule構造を確認。個別プログラムの許諾を一括MITと仮定しない。",
+      "observation_en": "Read public application/synthetic benchmarks and submodule structure; do not assume the umbrella MIT license covers each program.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO089",
+        "title": "Application-Driven Exascale: The JUPITER Benchmark Suite",
+        "publisher": "Herten et al. / arXiv, SC24 work",
+        "url": "https://arxiv.org/html/2408.17211v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2024-08-30 preprint; SC24 publication linked by project"
+      },
+      "origin_group": "jsc-jupiter-benchmarks",
+      "checked_at": "2026-09-01T01:59:32+09:00",
+      "locator": "Sections II-A/B/C and III: procurement and reproducibility",
+      "observation_ja": "代表ワークロード当たりのTCO、参照時間・精度・検証条件、合成指標との役割分担を確認。評価重みはOpenFSへ移植しない。",
+      "observation_en": "Read workload-based TCO, reference time/accuracy/validation and synthetic-test roles; do not import scoring weights into OpenFS.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "候補構成の同条件実測と、費用・稼働率を揃えた比較は未取得。評価の重みは設定していない。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "Matched measurements and cost/utilization comparisons remain uncollected; no evaluation weights were assigned.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000058",
+      "bundle_sha256": "4c57764fb2d05f97a831b5a326c2a1de1788d012b722802572972b4597ff0000"
+    }
+  ]
+}

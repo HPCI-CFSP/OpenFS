@@ -1,0 +1,204 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000099",
+  "topic_id": "APP-11",
+  "created_at": "2026-09-01T04:05:42+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "6ad2fb1d2b5614584deb753242ae8603519c5d22ba5e1787426dc9fc0b55ecd0",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "量子・Ising応用は、量子古典ハイブリッド計算、古典計算機上の量子インスパイアード最適化、優位性の検証を分けて調査します。QUBO++の現行資料も確認し、問題変換、解の品質、前後処理、実行基盤・利用条件を揃えた比較が必要と整理しました。単一のAIモデルによる暫定結果で、再現実験と独立Consensusは未完了です。",
+  "summary_en": "Separate quantum/classical hybrids, quantum-inspired optimization on classical computers and validation of advantage claims. Current QUBO++ documentation adds formulation, solution quality, preprocessing/postprocessing, execution and access conditions to matched comparisons. Results remain single-model and provisional without replication experiments or independent Consensus.",
+  "units": [
+    {
+      "unit_id": "APP-11-U01",
+      "before_sha256": "a88f6842c6ff55d4f113819d2971fda06a5002297c5dafa6761a59abed9d0e1e",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-11-U01",
+        "TDS-CD2-APP-11-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-APP-11-U01",
+      "title_ja": "QUBO++のモデル・実行経路・利用条件",
+      "title_en": "QUBO++ models, execution paths and access conditions",
+      "summary_ja": "利用可能なAPI、実機検証、最大規模、運用可能性を別々に確認します。",
+      "summary_en": "Check API availability, hardware validation, maximum scale and operational feasibility separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-QBPP-CPU-GPU-BOUNDARIES",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDA105",
+            "SRC-CDA107"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "QUBO++: CPU／GPUと係数表現",
+          "name_en": "QUBO++: CPU/GPU and coefficient representation",
+          "timing_ja": "2026.08.16リリース、8月24日更新の概要",
+          "timing_en": "2026.08.16 release; overview updated August 24",
+          "statement_ja": "QUBO++はC++／Pythonでモデルを作り、CPUやCUDA GPUで探索する基盤です。大きな整数係数は扱えますが、128bit超のGPU経路はCPUへ戻り、対応表のGPUも一部のみ実機検証と明記されています。変数の実装上限は、その規模を実用時間・メモリで解ける保証ではありません。",
+          "statement_en": "QUBO++ models problems in C++/Python and searches on CPUs or CUDA GPUs. Larger integer coefficients are supported, but above 128 bits the GPU path falls back to CPUs, and only some listed GPUs were hardware-verified. Implementation variable capacity does not guarantee practical runtime or memory at that scale.",
+          "hpci_relevance_ja": "変数数だけでなく、係数幅、密度、制約、解の品質と総処理時間を比較します。",
+          "hpci_relevance_en": "Compare coefficient width, density, constraints, quality and total runtime, not variable count alone.",
+          "adoption_conditions_ja": [
+            "実数係数の量子化と元の制約・目的関数の整合を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate real-coefficient quantization against original constraints/objectives."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-QBPP-EXTERNAL-SOLVER-CONFLICT",
+          "stage": "contested",
+          "maturity": "prototype",
+          "source_ids": [
+            "SRC-CDA105",
+            "SRC-CDA106"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "外部ソルバー連携の対応差と記述不一致",
+          "name_en": "External-solver differences and documentation conflict",
+          "timing_ja": "取得時の公開資料、実験的連携",
+          "timing_en": "Public documents at access; experimental integrations",
+          "statement_ja": "ホームは外部連携をOSSに限定すると記述しますが、個別ページはGurobi・CPLEX・Amplify・D-Waveも掲載しています。次数、反転リテラル、求解時間の指定、C++／Pythonの対応も異なるため、統一APIだけで全ソルバーが交換可能とは判断しません。",
+          "statement_en": "The homepage restricts external integrations to OSS, while the detailed page also lists Gurobi, CPLEX, Amplify and D-Wave. Polynomial degree, negated literals, time controls and C++/Python coverage vary, so a common API does not establish universal interchangeability.",
+          "hpci_relevance_ja": "比較時の問題変換とバックエンド差を追跡し、量子・古典の条件を揃えます。",
+          "hpci_relevance_en": "Track formulation/backend differences to match quantum and classical comparisons.",
+          "adoption_conditions_ja": [
+            "同じリリースのコード・対応表・利用条件で記述不一致を解消する。"
+          ],
+          "adoption_conditions_en": [
+            "Resolve the conflict against code, support tables and terms for the same release."
+          ]
+        },
+        {
+          "item_id": "TDI-CD2-QBPP-LICENSE-OFFLINE-LIMITS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDA108"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "閉域・コンテナ環境でのライセンス条件",
+          "name_en": "Licensing in isolated and container environments",
+          "timing_ja": "2026年8月6日更新の管理資料",
+          "timing_en": "Management documentation updated August 6, 2026",
+          "statement_ja": "node-lockedライセンスは一時的なコンテナ等に非対応で、floating方式はサーバーとのlease取得・更新を使います。キャッシュ期限と接続不能時の制限もあるため、閉域HPCで常時使えるとは仮定しません。公開文書の存在をソルバー本体のOSSライセンスとは扱いません。",
+          "statement_en": "Node-locked licenses exclude ephemeral containers, while floating licenses use server lease acquisition/renewal. Cache expiry and disconnected-mode limits prevent assuming unrestricted isolated-HPC use. Public documentation does not establish an OSS license for the solver itself.",
+          "hpci_relevance_ja": "求解性能に加え、計算ノードの通信方針と継続実行条件を確認します。",
+          "hpci_relevance_en": "Check compute-node network policy and continuity alongside solving performance.",
+          "adoption_conditions_ja": [
+            "契約条件、通信先、キャッシュ・leaseの有効期間、障害時動作を導入前に確認する。",
+            "今回、ライセンス取得・認証・ソルバー実行は行っていません。"
+          ],
+          "adoption_conditions_en": [
+            "Verify contract terms, endpoints, cache/lease lifetimes and failure behavior before deployment.",
+            "No license acquisition, authentication or solver execution was performed."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA105",
+        "title": "QUBO++ modeling and solver documentation",
+        "publisher": "Koji Nakano / Hiroshima University",
+        "url": "https://qubo-plus.github.io/en/",
+        "source_class": "official-project",
+        "published_or_updated": "Page last modified 2026-08-24"
+      },
+      "origin_group": "qubo-plus-documentation",
+      "checked_at": "2026-09-01T03:55:56+09:00",
+      "locator": "Modeling capabilities; built-in solvers; GPU verification note; optional backends",
+      "observation_ja": "QUBO/HUBO、整数・実係数、CPU/CUDAソルバーを説明。GPUは一部機種のみ実機確認、128bitを超える係数はCPU経路です。ホームの外部ソルバー方針は個別ページと一致しません。",
+      "observation_en": "Describes QUBO/HUBO, integer/real coefficients and CPU/CUDA solvers. Only some GPUs were hardware-verified; coefficients above 128 bits use CPU paths. The homepage's external-solver policy differs from its detailed page.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA106",
+        "title": "QUBO++ external QUBO/HUBO solver integrations",
+        "publisher": "Koji Nakano / Hiroshima University",
+        "url": "https://qubo-plus.github.io/en/python/QUBO_HUBO_SOLVERS",
+        "source_class": "official-project",
+        "published_or_updated": "Page retrieved 2026-09-01; integrations marked experimental"
+      },
+      "origin_group": "qubo-plus-documentation",
+      "checked_at": "2026-09-01T03:55:56+09:00",
+      "locator": "At a glance; Experimental notice; exact optimizers; solver-specific limits",
+      "observation_ja": "実験的な外部連携にはGurobi・CPLEX・Amplify・D-Wave等も記載されます。次数、反転リテラル、時間上限、認証、C++/Pythonの対応は一様ではありません。",
+      "observation_en": "The experimental integration page includes Gurobi, CPLEX, Amplify and D-Wave. Degree, negated literals, time budgets, authorization and C++/Python coverage vary.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA107",
+        "title": "QUBO++ 2026.08.16 release",
+        "publisher": "QUBO++ project",
+        "url": "https://github.com/qubo-plus/qbpp/releases/tag/2026.08.16",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-16"
+      },
+      "origin_group": "qubo-plus-documentation",
+      "checked_at": "2026-09-01T03:55:56+09:00",
+      "locator": "Release heading, date and performance-release description",
+      "observation_ja": "2026.08.16のタグと、einsum・非線形制約探索の改善を述べるリリース説明を確認。配布物の取得や性能測定はしていません。",
+      "observation_en": "Read the 2026.08.16 tag and notes on einsum/nonlinear-constraint search improvements. No artifact download or performance measurement was performed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA108",
+        "title": "QUBO++ license management and runtime connectivity",
+        "publisher": "Koji Nakano / Hiroshima University",
+        "url": "https://qubo-plus.github.io/en/LICENSE_MANAGEMENT.html",
+        "source_class": "official-project",
+        "published_or_updated": "Page last modified 2026-08-06"
+      },
+      "origin_group": "qubo-plus-documentation",
+      "checked_at": "2026-09-01T03:55:56+09:00",
+      "locator": "License types; node-locked versus floating; verification and network; floating leases",
+      "observation_ja": "node-lockedは一時コンテナに非対応、floatingはサーバーのlease取得・更新を使います。キャッシュ期限切れで接続不能なら制限モードになるため、永続的オフライン利用とは扱えません。鍵・ポータルは使用していません。",
+      "observation_en": "Node-locked licensing excludes ephemeral containers; floating licensing acquires/renews server leases. An expired offline cache can lead to limited mode, not assured indefinite offline use. No key or portal was used.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "QUBO++の文書間の不一致、対象版の実装、GPU実測、量子計測の用途を継続調査する。",
+    "公開入力で最良の古典法と同じ品質・総処理時間を比較する独立検証が必要です。"
+  ],
+  "remaining_work_en": [
+    "Continue investigating QUBO++ documentation conflicts, version-specific implementation, GPU measurements and quantum-sensing uses.",
+    "Independent comparisons with strong classical methods need public inputs and matched quality/total time."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000044",
+      "bundle_sha256": "06b53ef759010361e1169a6ff8b44df67ec9e4361a97d363f3d353561afeff44"
+    }
+  ]
+}

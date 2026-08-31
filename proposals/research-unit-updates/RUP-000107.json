@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000107",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-01T04:36:41+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "312bdc0327623fc89254169ab75e53083009a6ae9712fd3391004ab0cc902b7f",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCとAIの実行基盤を、Slurm・Kubernetes・コンテナ・パッケージ配布の責任境界で比較しました。公開版や機能の成熟度を実サイトでの採用と区別し、共通配布でもホスト側ドライバ、ネットワーク、更新後の回帰試験が残る点を追加しました。単一のAIモデルによる暫定結果です。",
+  "summary_en": "This provisional single-model comparison separates Slurm, Kubernetes, containers and package-distribution responsibilities. Releases and feature maturity are distinct from site adoption; shared distributions still depend on host drivers, networks and post-upgrade regression tests.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "25789cc6a0f680a58c94bb7b27e02d6ab85bd5905b6ddbad3230041210b1ee40",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD7-SSW-06-U01",
+      "title_ja": "実行基盤の更新とジョブ互換性",
+      "title_en": "Runtime upgrades and job compatibility",
+      "summary_ja": "実装・運用条件を追加確認した結果です。独立検証は未完了です。",
+      "summary_en": "Follow-up on implementation and operational conditions; independent validation remains incomplete.",
+      "items": [
+        {
+          "item_id": "TDI-CD7-JUPITER-SCHEDULER-TRANSITION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDO114",
+            "SRC-CDO113"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "JUPITER: Slurmバックエンド移行時の確認事項",
+          "name_en": "JUPITER: Slurm backend migration checks",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "8月20日の告知は、8月27日予定のバックエンド変更でPMIx設定に非互換が生じ、既存ジョブの保留や再投入が必要になると説明しています。設定変更はMPI起動だけでなく、CPUへの割当、GPUの可視性、ジョブ前後の処理にも関係します。告知の存在だけで移行完了や回帰試験の合格を判断しません。",
+          "statement_en": "An August 20 notice describes an August 27 backend migration with incompatible PMIx settings and held or resubmitted jobs. Such changes affect MPI launch, CPU affinity, GPU visibility and job-boundary hooks. The notice alone does not confirm completed migration or passing regression tests.",
+          "hpci_relevance_ja": "API名が同じでも更新前のジョブがそのまま動くとは限らず、移行費用と利用停止の見積りに関わります。",
+          "hpci_relevance_en": "An unchanged API name does not guarantee old-job compatibility; this affects migration effort and outage planning.",
+          "adoption_conditions_ja": [
+            "ジョブスクリプト、投入時環境、開始時環境、MPI/PMIx/プラグインの版を記録する。",
+            "実行完了だけでなく、配置・通信・結果の正しさを既知入力で確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Record job scripts, submission/start environments and MPI/PMIx/plugin versions.",
+            "Check placement, communication and correctness on known inputs, not completion alone."
+          ]
+        },
+        {
+          "item_id": "TDI-CD7-JUPITER-MPI-SILENT-ERROR",
+          "stage": "contested",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDO114"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "既知問題: 正常終了しても計算結果を検証",
+          "name_en": "Known issues: validate results despite normal termination",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "JSCの既知問題一覧には、NVHPC 24.9とOpenMPI 5.0.5でGPU上の非allocatable変数をMPI_Bcastした際、配列が転送されないまま正常終了し得る事例があります。旧構成の報告を全最新版の欠陥と一般化はできませんが、GPU-aware MPI対応という表示だけでは数値的な正しさを保証できません。",
+          "statement_en": "JSC documents a case with NVHPC 24.9 and OpenMPI 5.0.5 in which broadcasting a non-allocatable GPU array may terminate normally without transferring it. This historical configuration does not establish a defect in every current version, but GPU-aware MPI labeling alone cannot guarantee correctness.",
+          "hpci_relevance_ja": "ソフトウェア更新の採否に、既知問題の影響確認と数値回帰試験を含めます。",
+          "hpci_relevance_en": "Include known-issue applicability and numerical regression tests in upgrade decisions.",
+          "adoption_conditions_ja": [
+            "報告時の版と、利用するコンパイラ・MPI・ドライバの組合せを照合する。",
+            "対策例を未検証のまま本番へ適用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Match the reported versions against the chosen compiler/MPI/driver combination.",
+            "Do not apply an untested workaround directly to production."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO113",
+        "title": "JUPITER batch-system documentation",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/batchsystem.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live documentation with August 2026 transition notice; accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-operations",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Introductory warnings, daemon integration and CPU Limiting Options",
+      "observation_ja": "早期利用期の注意書き、psid/psslurmの説明、680Wのモジュール電力枠とCPU既定100Wを確認。サイト固有の条件であり実測消費ではない。",
+      "observation_en": "Read early-access caveats, psid/psslurm integration and a 680W module budget with a 100W CPU default; site-specific limits, not measured consumption.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDO114",
+        "title": "Known issues on JUPITER",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/known-issues.html",
+        "source_class": "official-project",
+        "published_or_updated": "Mixed dated notices including 2026-08-20; accessed 2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-operations",
+      "checked_at": "2026-09-01T04:16:18+09:00",
+      "locator": "Slurm backend change, debugger restrictions and NVHPC+MPI device broadcasts",
+      "observation_ja": "8月27日予定の移行による保留・環境変数・ピニングへの影響、機種と版に依存する既知問題を確認。移行完了や未影響を実証したものではない。",
+      "observation_en": "Read planned August 27 migration effects on held jobs, environment and pinning, plus version-specific known issues; this does not verify completed migration or absence of regressions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "現行JUPITERの移行完了日や一般提供状態は、この告知と注意書きだけでは確定できない。",
+    "実機試験は行っておらず、単一モデルによる暫定調査です。"
+  ],
+  "remaining_work_en": [
+    "These notices and caveats alone do not establish JUPITER's migration completion date or general-production state.",
+    "No hardware tests were run; this is provisional single-model research."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000036",
+      "bundle_sha256": "8352d8619732c8f85c3091b29aca145189d8c39657c6dec47d25bafd93a1cf9d"
+    },
+    {
+      "update_id": "RUP-000069",
+      "bundle_sha256": "dc63f3d044d7fdd82b80590f751c5c54fba1770d8ae5624826a8a7b0af829c23"
+    },
+    {
+      "update_id": "RUP-000074",
+      "bundle_sha256": "8bd2f22240269901067f9bf456e71ddb8b4774adef36779c2551b5cd1e55ada2"
+    },
+    {
+      "update_id": "RUP-000085",
+      "bundle_sha256": "960668a28c04c0fc7e9b321d84d61d281531a38a73985c70016cc5c6994aa880"
+    },
+    {
+      "update_id": "RUP-000089",
+      "bundle_sha256": "47eac791100d7995ddef48e23a346175391da5260e432f9da7b0f5127a2e59e6"
+    },
+    {
+      "update_id": "RUP-000101",
+      "bundle_sha256": "e1cc44dceba0b95b04bc9a0dc3565af2c519fa830911936c3b5a33a5af2034d1"
+    }
+  ]
+}

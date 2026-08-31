@@ -1,0 +1,159 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000089",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-01T03:43:16+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "caad2a7bbced5acac3359c1c67e8529731b3a32c23860f9c6ebde0d566930fa6",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCとAIの実行基盤を、Slurm・Kubernetes・コンテナ・パッケージ配布の責任境界で比較しました。公開版や機能の成熟度を実サイトでの採用と区別し、共通配布でもホスト側driver、ネットワーク、更新後の回帰試験が残る点を追加しました。単一のAIモデルによる暫定結果です。",
+  "summary_en": "This provisional single-model comparison separates Slurm, Kubernetes, containers and package-distribution responsibilities. Releases and feature maturity are distinct from site adoption; shared distributions still depend on host drivers, networks and post-upgrade regression tests.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "2a08f14e130df1b90bf74488e6a86b4625c408e19b9e291581a7f2a07b2fa28b",
+      "evidence_section_ids": [
+        "TDS-CD3-SSW-06-U01",
+        "TDS-CD5-SSW-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD5-SSW-06-U01",
+      "title_ja": "共通ソフトウェア配布とサイト固有の依存関係",
+      "title_en": "Shared distributions and site-specific dependencies",
+      "summary_ja": "配布版を揃えることと実行環境全体を揃えることは異なります。",
+      "summary_en": "Matching a distribution does not match the complete execution environment.",
+      "items": [
+        {
+          "item_id": "TDI-CD5-EESSI-HOST-DRIVER-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS093"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "EESSIのGPU実行・ビルド環境",
+          "name_en": "EESSI GPU execution and build environment",
+          "timing_ja": "2026-06-30付のページ、AMD節は2025年5月",
+          "timing_en": "Page dated 2026-06-30; AMD subsection dated May 2025",
+          "statement_ja": "NVIDIA driverはホスト側で用意してEESSIから参照させ、driver更新後は参照設定を更新します。配布されるCUDA/cuDNNのruntimeと、追加ビルド用にローカル配置するSDKも区別されています。古いAMD節だけでは2026年9月現在のROCm対応状況を確定できません。",
+          "statement_en": "NVIDIA drivers come from the host and their exposure must be refreshed after driver upgrades. Distributed CUDA/cuDNN runtimes are distinct from locally installed SDKs for new builds. The older AMD subsection alone cannot settle ROCm support as of September 2026.",
+          "hpci_relevance_ja": "センター間で同じpackageを使う場合も、driver・通信系と試験条件の差を管理します。",
+          "hpci_relevance_en": "Manage driver, communication and test differences even when sites share packages.",
+          "adoption_conditions_ja": [
+            "文書中の管理者コマンドを本調査では実行しない。",
+            "runtimeの利用成功だけでアプリ全体の性能可搬性を認定しない。"
+          ],
+          "adoption_conditions_en": [
+            "No administrative commands from the documentation were executed.",
+            "Successful runtime use does not establish application performance portability."
+          ]
+        },
+        {
+          "item_id": "TDI-CD5-EESSI-VERSION-DEFAULT-DISTINCTION",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS095"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "利用可能版と既定版の区別",
+          "name_en": "Available versus default stack version",
+          "timing_ja": "2025-10-28付の版一覧を確認",
+          "timing_en": "Version page dated 2025-10-28 inspected",
+          "statement_ja": "版一覧は2025.06を利用可能としつつ、既定版を2023.06と記載しています。版名の年月を一般公開日や既定切替日としてロードマップへ転記せず、利用時には版と実際のmanifestを固定します。",
+          "statement_en": "The version page lists 2025.06 as available while retaining 2023.06 as default. Do not use the version label as a release or default-switch date; pin the selected stack and actual manifest.",
+          "hpci_relevance_ja": "センターごとの既定環境の違いによる比較条件のずれを防ぎます。",
+          "hpci_relevance_en": "Avoid comparison drift caused by site defaults.",
+          "adoption_conditions_ja": [
+            "ページの記載と稼働サイトの設定を別々に確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify published descriptions separately from running-site configuration."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD4-SSW-06-U01"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS093",
+        "title": "EESSI GPU support and host-specific configuration",
+        "publisher": "EESSI",
+        "url": "https://www.eessi.io/docs/site_specific_config/gpu/",
+        "source_class": "official-project",
+        "published_or_updated": "Page footer 2026-06-30; AMD section explicitly dated May 2025"
+      },
+      "origin_group": "EESSI-software-support",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "NVIDIA runtime/compile support; AMD Current status subsection",
+      "observation_ja": "GPU driverはホスト側から公開する必要があります。AMD節の古い日付をページ全体の更新日で置き換えず、現在の配布状態は別に確認します。",
+      "observation_en": "GPU drivers must be exposed from the host. The older AMD subsection date is not replaced by the page footer; current distribution status needs a separate check.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS095",
+        "title": "EESSI stack versions and default selection",
+        "publisher": "EESSI",
+        "url": "https://www.eessi.io/docs/repositories/versions/",
+        "source_class": "official-project",
+        "published_or_updated": "Page footer 2025-10-28; inspected 2026-09-01"
+      },
+      "origin_group": "EESSI-software-support",
+      "checked_at": "2026-09-01T03:25:04+09:00",
+      "locator": "Current EESSI versions",
+      "observation_ja": "2025.06は利用可能と記載する一方、既定版は2023.06とし、将来の切替日を示していません。版名をリリース日や既定化日と読み替えません。",
+      "observation_en": "Lists 2025.06 as available but 2023.06 as the default without a dated future switch. Version labels do not establish release or default-switch dates.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "最新のmanifest、ネットワークdriver、MPI差替えとサイト試験結果を照合する。",
+    "ROCm統合の現状とSlurm 26系の保守表記は追加確認が必要。独立Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Reconcile current manifests, network drivers, MPI replacement and site test results.",
+    "ROCm integration and Slurm 26.x support descriptions need further checking; independent Consensus is incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000036",
+      "bundle_sha256": "8352d8619732c8f85c3091b29aca145189d8c39657c6dec47d25bafd93a1cf9d"
+    },
+    {
+      "update_id": "RUP-000069",
+      "bundle_sha256": "dc63f3d044d7fdd82b80590f751c5c54fba1770d8ae5624826a8a7b0af829c23"
+    },
+    {
+      "update_id": "RUP-000074",
+      "bundle_sha256": "8bd2f22240269901067f9bf456e71ddb8b4774adef36779c2551b5cd1e55ada2"
+    },
+    {
+      "update_id": "RUP-000085",
+      "bundle_sha256": "960668a28c04c0fc7e9b321d84d61d281531a38a73985c70016cc5c6994aa880"
+    }
+  ]
+}

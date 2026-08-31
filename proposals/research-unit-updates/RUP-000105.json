@@ -1,0 +1,226 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000105",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-01T04:13:20+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "568141db5e67d32c130d4fe7e039532c1404990b1d9aff48a8d6b15c0786b0ac",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIの学習・推論、エージェント、ハーネスを別々に評価し、課題・モデル・実行系・予算・採点条件を固定して比較します。推論サービスでは、応答制約に適合した処理率と適合割合を分け、送信前に省略した要求も別に集計します。書誌情報の確認や指標定義の整理は、実機再現や独立Consensusを意味しません。",
+  "summary_en": "Evaluate AI training/inference, agents and harnesses separately under pinned tasks, models, execution stacks, budgets and scoring conditions. For inference services, distinguish SLO-compliant rate from attainment fraction and account separately for requests skipped before transmission. Bibliographic checks and metric definitions do not establish reproduced execution or independent Consensus.",
+  "units": [
+    {
+      "unit_id": "APP-13-U03",
+      "before_sha256": "7aa0cc0adecb509e1db5225f9c8ffc9458195d9fdd5ab1f8dc8d78c36e34802e",
+      "evidence_section_ids": [
+        "TDS-AIP-LOAD",
+        "TDS-CD4-APP-13-U03"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-APP-13-U03",
+      "title_ja": "到着負荷・応答分布・有効処理能力",
+      "title_en": "Arrival load, response distributions and useful capacity",
+      "summary_ja": "負荷生成側の制限や失敗も含め、利用者が得る処理能力を測ります。",
+      "summary_en": "Measure user-visible capacity including load-generator limits and failures.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-AIPERF-LOAD-GENERATOR",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA066",
+            "SRC-CDA068"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "AIPerf: 到着率と同時実行上限",
+          "name_en": "AIPerf: arrival rate and concurrency ceiling",
+          "timing_ja": "現行公開実装・利用手引き",
+          "timing_en": "Current public implementation and guide",
+          "statement_ja": "AIPerfは同時実行数、到着率、実行履歴再生を扱います。到着率と上限を併用すると追い付き送信は行わず、新規セッションは空きがなければ省略され、継続ターンは待つ規則です。設定到着率を実際にサーバーへ届いた負荷と同一視せず、負荷生成側の律速も確認します。",
+          "statement_en": "AIPerf supports concurrency, arrival-rate and trace-replay modes. With a rate and ceiling it does not catch up; new sessions may be skipped while continuation turns wait. Configured arrival rate is not necessarily delivered server load, so load-generator bottlenecks must be measured.",
+          "hpci_relevance_ja": "飽和時に負荷を減らす試験で性能が良く見えることを防ぎます。",
+          "hpci_relevance_en": "This avoids overstating performance when the test sheds load at saturation.",
+          "adoption_conditions_ja": [
+            "投入予定・送信済み・完了・失敗・省略の件数を分ける。",
+            "入力長・出力長・キャッシュ状態・トークン化条件を固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate scheduled, sent, completed, failed and skipped requests.",
+            "Fix input/output lengths, cache state and tokenization."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-AIPERF-GOODPUT-ATTAINMENT",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA067",
+            "SRC-CDA068"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "goodputとSLO達成割合",
+          "name_en": "Goodput and SLO attainment fraction",
+          "timing_ja": "現行公開指標定義",
+          "timing_en": "Current public metric definitions",
+          "statement_ja": "goodputは応答制約を満たして完了した毎秒の要求数です。AIPerfのgood_request_fractionは、適合件数をrequest_countとerror_request_countの合計で割り、サーバー側のエラーも含めて達成割合を示します。ただし、この定義だけでは送信前に省略した要求まで分母に含むとは確認できません。設定した到着負荷全体に対する達成割合とは区別し、省略件数を別途照合します。",
+          "statement_en": "Goodput counts SLO-compliant completions per second. AIPerf's good_request_fraction divides compliant requests by request_count plus error_request_count, including server-side errors in attainment. This definition alone does not establish that pre-send skips enter the denominator. Distinguish it from attainment over the entire offered workload and reconcile skipped counts separately.",
+          "hpci_relevance_ja": "応答品質を保った利用可能な同時利用者数の評価に使います。",
+          "hpci_relevance_en": "Use both metrics when evaluating sustainable user concurrency.",
+          "adoption_conditions_ja": [
+            "試験前にSLOと計時境界を宣言する。",
+            "投入予定、送信済み、正常完了、エラー、省略の件数と計測時間を保存し、分母を明記する。"
+          ],
+          "adoption_conditions_en": [
+            "Declare SLOs and timing boundaries before testing.",
+            "Preserve scheduled, sent, successful, errored and skipped counts with measurement duration and state each denominator."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-AI-CAPACITY-VALIDATION-PLAN",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA066",
+            "SRC-CDA068",
+            "SRC-AIP002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "将来容量予測: 実測からの限定的な外挿",
+          "name_en": "Future capacity: bounded extrapolation from measurements",
+          "timing_ja": "OpenFSの暫定評価方針、実測・校正は未実施",
+          "timing_en": "Provisional OpenFS evaluation approach; no measurements/calibration yet",
+          "statement_ja": "CPU制御、prefill、decode、通信、I/O、待機を分けた実測から、同時実行数と資源構成の感度を調べる方針です。平均応答時間だけでなく上位分位点と失敗率を保持します。未知のGPU世代への能力倍率は置かず、別条件での検証がない範囲を未確認事項とします。",
+          "statement_en": "The proposed approach measures CPU control, prefill, decode, communication, I/O and waits to study concurrency/resource sensitivity. Retain tail quantiles and failure rates, not only means. Do not assign speed multipliers to unknown GPU generations; unvalidated extrapolation remains a Coverage Gap.",
+          "hpci_relevance_ja": "将来のノード数を過度に楽観的なtokens/sから決めないための基礎です。",
+          "hpci_relevance_en": "It avoids sizing future systems from overly optimistic tokens/s.",
+          "adoption_conditions_ja": [
+            "校正用と独立検証用の負荷を分ける。",
+            "総電力・ネットワーク機器・ソフトウェア費用の境界を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate calibration from independent validation loads.",
+            "Declare boundaries for system power, network equipment and software cost."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD2-APP-13-U03"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-AIP002",
+        "title": "MLPerf Inference rules",
+        "publisher": "MLCommons",
+        "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+        "source_class": "official-project",
+        "published_or_updated": "undated; checked 2026-08-31"
+      },
+      "origin_group": "mlcommons-inference",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Divisions, scenarios, quality and network/power boundaries",
+      "observation_ja": "部門・シナリオ別の条件とシステム全体の測定境界を確認。",
+      "observation_en": "Read division/scenario conditions and whole-system measurement boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA066",
+        "title": "AIPerf inference benchmarking toolkit",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T01:17:30+09:00",
+      "locator": "Load modes, trace replay and known issues",
+      "observation_ja": "同時実行数・到着率・履歴再生の別モード、出力長指定の限界を確認。",
+      "observation_en": "Read concurrency/rate/replay modes and limits on enforced output length.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA067",
+        "title": "AIPerf goodput and attainment fraction",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/tutorials/goodput.md",
+        "source_class": "official-project",
+        "published_or_updated": "main guide accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T04:13:11+09:00",
+      "locator": "Goodput versus good_request_fraction and error denominator",
+      "observation_ja": "good_request_fractionの式とエラーを含む分母を再確認。送信前の省略を含むかは定義だけでは確認できない。",
+      "observation_en": "Rechecked the good_request_fraction formula and error-inclusive denominator; the definition alone does not establish inclusion of pre-send skips.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA068",
+        "title": "AIPerf request rate with maximum concurrency",
+        "publisher": "NVIDIA / AIPerf contributors",
+        "url": "https://github.com/ai-dynamo/aiperf/blob/main/docs/tutorials/request-rate-concurrency.md",
+        "source_class": "official-project",
+        "published_or_updated": "main guide accessed 2026-09-01"
+      },
+      "origin_group": "nvidia-aiperf",
+      "checked_at": "2026-09-01T04:13:11+09:00",
+      "locator": "Sleep-then-gate and new-session/continuation behavior",
+      "observation_ja": "追い付き送信なし、新規セッションのskipと継続ターンの待機という負荷生成規則を確認。",
+      "observation_en": "Read no catch-up, new-session skipping and continuation blocking in load generation.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "使用するAIPerfのコミットを固定したコード検査と負荷試験は未実施。送信前の省略件数が各出力指標へどう反映されるかは要検証。",
+    "今回追加したベンチマークは実行しておらず、独自ランキングも作っていない。",
+    "端末向けの履歴再生を、科学エージェントの自律的成功やデータセンター容量へ一般化しない。",
+    "電力・費用・科学品質を揃えた世界共通の計測は未取得。",
+    "単一のAIモデルによる暫定調査であり、Consensusは未完了。"
+  ],
+  "remaining_work_en": [
+    "Commit-pinned AIPerf code inspection and load testing remain undone; verify how pre-send skips enter each exported metric.",
+    "Newly added benchmarks were not executed and no independent ranking was produced.",
+    "Do not generalize edge replay to autonomous scientific success or datacenter capacity.",
+    "Worldwide matched energy/cost/scientific-quality measurements remain uncollected.",
+    "This single-model review remains provisional with incomplete Consensus."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000047",
+      "bundle_sha256": "ffd52e88c068f5c0f25b1468d00bacb9b87b1cee278768aab8ef6427f2b8aaf6"
+    },
+    {
+      "update_id": "RUP-000070",
+      "bundle_sha256": "25f3029c3f49566fe5af9eaac39493af17bf346ce390c5a65724125edff7352d"
+    },
+    {
+      "update_id": "RUP-000096",
+      "bundle_sha256": "00fbf64910f45b61a61b6a36237887a9a9bd667b0aba9bd70db4318651a2e936"
+    }
+  ]
+}

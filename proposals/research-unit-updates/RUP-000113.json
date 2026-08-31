@@ -1,0 +1,219 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000113",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-01T04:37:15+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "c1dd4f0ce71bdadc33811e3ccf4e032aeaf67f03000baf7be30a731f9206696d",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MPI、UCX/UCC、GPU集合通信を、通信範囲・プロセス起動・順序制約・障害時の振る舞いから比較します。SDK同梱版と単独公開版、既定有効の機能と任意設定の機能を区別し、性能は実構成での検証を要する暫定結果として扱います。",
+  "summary_en": "Compare MPI, UCX/UCC and GPU collectives by communication scope, process launch, ordering and failure behavior. Distinguish bundled from standalone versions and defaults from opt-in features; performance remains provisional pending tests on the actual configuration.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "b4200c817ae144a93958b25d60762d06d13f0bbb59629fad448dfaa09327bbe2",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-SSW-03-U01",
+      "title_ja": "GPU通信のAPI別対応と順序保証",
+      "title_en": "GPU communication: API coverage and ordering guarantees",
+      "summary_ja": "転送層、集合通信、仕様提案の対応範囲を分けます。",
+      "summary_en": "Separate transport, collective and proposed-specification coverage.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-OPENMPI-CUDA-API-BOUNDARIES",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS110"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "CUDA-aware MPI: 対応はAPIと転送経路ごとに確認",
+          "name_en": "CUDA-aware MPI: check each API and transport path",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "Open MPI 5.0.xの資料では、内部経路とUCX経路でGPU対応APIが異なります。UCX経路の一覧は片側通信と非ブロッキングリダクションを非対応に挙げています。文書に旧記述の更新TODOも残るため、これを全実装の永久的な制約とは扱わず、採用する版・通信部品・APIの組合せを確認します。",
+          "statement_en": "Open MPI 5.0.x documentation lists different GPU-aware APIs for internal and UCX paths. The UCX list excludes one-sided operations and nonblocking reductions. Legacy-text TODOs remain, so this is not a permanent restriction across all implementations: verify the chosen version, components and APIs.",
+          "hpci_relevance_ja": "通信と計算の重畳を前提とする性能モデルでは、必要APIが本当に使えるかを先に確認します。",
+          "hpci_relevance_en": "Performance models relying on communication/computation overlap must first establish required API availability.",
+          "adoption_conditions_ja": [
+            "GPUバッファ、ホスト経由の転送、GPUからの通信起動は別の機能として評価する。",
+            "公式文書、変更履歴、アプリで使うAPIの回帰試験を照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Treat GPU-buffer support, host staging and GPU-initiated communication as distinct capabilities.",
+            "Reconcile official documentation, release history and regression tests for the application's APIs."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-OPENMPI-ROCM-LAYERED-CHECKS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS111",
+            "SRC-CDS112"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ROCm-aware MPI: 機能問合せだけでは集合通信を保証しない",
+          "name_en": "ROCm-aware MPI: a support query does not establish collectives",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "Open MPI 5.0.xのROCm資料はUCXを正式対応の転送層とし、UCC集合通信には別のビルド・有効化条件を示します。MPIX_Query_rocm_supportは初期化後に利用するOpen MPI固有の問合せで、MPI標準や全演算の保証ではありません。Fortran用の専用バインディングも用意されていません。",
+          "statement_en": "The Open MPI 5.0.x ROCm guide identifies UCX as the formally supported transport and gives separate build/enablement requirements for UCC collectives. MPIX_Query_rocm_support is an Open MPI-specific post-initialization query, not standard MPI or an all-operation guarantee; it has no dedicated Fortran binding.",
+          "hpci_relevance_ja": "MPI、UCX、UCC、ROCmを一組の運用構成として検証する必要があります。",
+          "hpci_relevance_en": "Validate MPI, UCX, UCC and ROCm as one operational combination.",
+          "adoption_conditions_ja": [
+            "問合せが成功しても、GPU直接転送、非ブロッキング処理、期待性能を別に確かめる。",
+            "言語別の呼出し方法と選択された通信部品を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "A successful query still requires separate checks of direct GPU transfer, nonblocking behavior and expected performance.",
+            "Record language bindings and selected communication components."
+          ]
+        },
+        {
+          "item_id": "TDI-CD4-GPU-OPENSHMEM-AUXILIARY-PROPOSAL",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS113"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GPU向けOpenSHMEM: 可搬な意味規則の提案",
+          "name_en": "GPU-aware OpenSHMEM: proposed portable semantics",
+          "timing_ja": "2026年9月1日に確認した公開資料",
+          "timing_en": "Public documentation read September 1, 2026",
+          "statement_ja": "2026年7月の論文は、GPUメモリの確保、通信の順序・完了、機能問合せを共通化し、GPUからの通信起動などを追加段階へ分ける仕様案を示します。ホストの介在なしに常駐GPUカーネルの通信が進む保証は対象外です。採択済み規格、全ベンダーの実装対応、性能向上の実測を示す資料ではありません。",
+          "statement_en": "The July 2026 paper proposes common GPU-memory allocation, ordering/completion and capability queries, with GPU-initiated communication in additional tiers. Host-independent progress for persistent GPU kernels is outside scope. This is not evidence of a ratified standard, support by all vendors or measured speedup.",
+          "hpci_relevance_ja": "不規則通信やGPU常駐処理の可搬性候補として追跡します。",
+          "hpci_relevance_en": "Track this as a portability candidate for irregular communication and GPU-resident workloads.",
+          "adoption_conditions_ja": [
+            "論文が参照する仕様案の公開先は今回404となったため、正式な仕様本文の取得と適合試験を保留する。",
+            "標準化時期と各実装の対応時期は未確定として残す。"
+          ],
+          "adoption_conditions_en": [
+            "The referenced draft returned 404; obtaining its authoritative text and conformance tests remains pending.",
+            "Keep standardization and implementation dates undetermined."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS110",
+        "title": "Open MPI 5.0.x CUDA-aware paths and API limitations",
+        "publisher": "Open MPI Project",
+        "url": "https://docs.open-mpi.org/en/v5.0.x/tuning-apps/networking/cuda.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live 5.0.x documentation accessed 2026-09-01"
+      },
+      "origin_group": "open-mpi-project",
+      "checked_at": "2026-09-01T04:28:59+09:00",
+      "locator": "Sections 11.2.6.11-15; internal versus UCX paths and unsupported APIs",
+      "observation_ja": "内部経路とUCX経路で対応表が異なり、UCXの片側通信・非ブロッキングリダクションに制限が記載されている。文書には旧記述の改訂TODOもあり、版と構成を固定した実機確認が必要。",
+      "observation_en": "The internal and UCX paths have different API lists, with UCX limitations on one-sided operations and nonblocking reductions. Legacy-text TODOs remain; exact builds and configurations need validation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS111",
+        "title": "Open MPI 5.0.x ROCm transport and collective configuration",
+        "publisher": "Open MPI Project",
+        "url": "https://docs.open-mpi.org/en/v5.0.x/tuning-apps/networking/rocm.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live 5.0.x documentation accessed 2026-09-01"
+      },
+      "origin_group": "open-mpi-project",
+      "checked_at": "2026-09-01T04:28:59+09:00",
+      "locator": "Sections 11.2.7.1-5; UCX formal support and separately configured UCC collectives",
+      "observation_ja": "ROCm向けに正式対応と記載された転送層はUCX。UCCの集合通信には追加のビルド・有効化条件がある。実機試験は行っていない。",
+      "observation_en": "UCX is the formally supported ROCm transport in these documents; UCC collectives require additional build and enablement conditions. No hardware tests were run.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS112",
+        "title": "MPIX_Query_rocm_support extension contract",
+        "publisher": "Open MPI Project",
+        "url": "https://docs.open-mpi.org/en/v5.0.x/man-openmpi/man3/MPIX_Query_rocm_support.3.html",
+        "source_class": "official-project",
+        "published_or_updated": "Live 5.0.x manual accessed 2026-09-01"
+      },
+      "origin_group": "open-mpi-project",
+      "checked_at": "2026-09-01T04:28:59+09:00",
+      "locator": "Syntax and description of the Open MPI-specific extension",
+      "observation_ja": "MPI初期化後にROCm対応を問合せるOpen MPI拡張で、MPI標準ではなくFortranバインディングもない。全API・直接転送・性能の保証とは書かれていない。",
+      "observation_en": "This post-initialization Open MPI extension is not standard MPI and has no Fortran binding; its support query is not an all-API, direct-transfer or performance guarantee.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS113",
+        "title": "Toward a Unified GPU-Aware OpenSHMEM Specification, arXiv:2607.08006v1",
+        "publisher": "Ravi et al. / arXiv",
+        "url": "https://arxiv.org/html/2607.08006v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-07-09 (v1; abstract metadata also inspected)"
+      },
+      "origin_group": "gpu-openshmem-auxiliary-proposal",
+      "checked_at": "2026-09-01T04:28:59+09:00",
+      "locator": "Sections 6-10, non-goals and reference to the auxiliary draft",
+      "observation_ja": "GPUメモリ、順序、完了、機能問合せを段階化する提案。常駐カーネルのホスト非介在での進行保証は対象外。規格採択や性能測定の根拠ではなく、リンク先仕様案は404で取得できなかった。",
+      "observation_en": "A tiered proposal for GPU memory, ordering, completion and capability queries, excluding host-independent progress guarantees for persistent kernels. It does not establish ratification or benchmark results; the linked draft returned 404.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "版を固定したGPU-aware MPIのAPI別実機試験、OpenSHMEM仕様案と適合性の確認が未実施。",
+    "単一モデルの公開資料調査であり、独立Consensusや本番構成の動作確認ではない。"
+  ],
+  "remaining_work_en": [
+    "Commit/version-pinned GPU-aware MPI API tests and OpenSHMEM draft/conformance checks remain undone.",
+    "This is single-model public-document research, not independent Consensus or production validation."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000034",
+      "bundle_sha256": "37de0152bc50f2d066339c8f409f2746e8d0317e5622da36df459285be50e3d3"
+    },
+    {
+      "update_id": "RUP-000068",
+      "bundle_sha256": "0f1ac36da05fc75c3b3c94f5793e2b83fcc6ad76d5eefc0d5d913f4377949bcf"
+    },
+    {
+      "update_id": "RUP-000080",
+      "bundle_sha256": "abb68d33f659cb0e28ad638645df3735fce75967a0d2b9121e80cb23aa9ad2c5"
+    }
+  ]
+}

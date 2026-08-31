@@ -1,0 +1,598 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000033",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T00:31:24+09:00",
+  "base_commit": "c87edcce5d1203587f5ef484c3c5669fd085565a",
+  "before_profile_sha256": "e78a0bc91687741e3deaf583b4f6616295a3b0bebd8492c3e592e156d468373a",
+  "human_directive_id": "DIR-900019",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミングモデル、ツールチェーン、解析ツール、移植評価を分けて調査しました。規格の公開と実装対応、機能の利用可否と実アプリケーションの性能は同一ではありません。2026年9月1日に確認した公開一次情報に基づく暫定結果です。",
+  "summary_en": "This review separates programming models, toolchains, analysis tools and porting evaluation. Publication of a standard is not implementation support, and feature availability is not application performance. These provisional findings use public primary sources checked on September 1, 2026.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U01",
+      "before_sha256": "596eca20f97dd9469cb15ad8445fe662dd376bec13a3133b77482f8c408fc16d",
+      "evidence_section_ids": [
+        "TDS-SSW01-PORTABILITY",
+        "TDS-CD1-SSW-01-U01"
+      ]
+    },
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "69244bffe454db1ce97e96dc32516a39575d1bb81dee97d52f753d405d3d9401",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02"
+      ]
+    },
+    {
+      "unit_id": "SSW-01-U03",
+      "before_sha256": "4d463f88bf79fd393c45d7a109c5b50b10d1da0dcbc07f83c7f0e1a5997d7c01",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U03"
+      ]
+    },
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "47a396cf47f6eb59c3cf41f80d217749f95a200f02f8871ed8574a3e18b587d7",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U04"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD1-SSW-01-U01",
+      "title_ja": "規格と可搬性レイヤーの対応範囲",
+      "title_en": "Standards and portability-layer coverage",
+      "summary_ja": "言語、API、抽象化ライブラリ、SDKを区別し、必要な機能がどの組合せで使えるかを評価します。",
+      "summary_en": "Distinguish languages, APIs, abstraction libraries and SDKs, then qualify the combinations needed by applications.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-OPENMP-RELEASE-VS-IMPLEMENTATION",
+          "stage": "near-term",
+          "maturity": "announced",
+          "source_ids": [
+            "SRC-CDS001",
+            "SRC-PORT001",
+            "SRC-CDS002"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "OpenMP 6.0と6.1草案",
+          "name_en": "OpenMP 6.0 and the 6.1 draft",
+          "timing_ja": "6.0は2024年11月公開。6.1は2026年11月公開予定。",
+          "timing_en": "6.0 released in November 2024; 6.1 targeted for November 2026.",
+          "statement_ja": "OpenMP 6.0は正式規格ですが、6.1のTR15は公開コメント用草案です。LLVMの開発版対応表でも、C/C++とFortran、機能ごとに実装済み・部分対応・未実装が分かれます。6.1の予定時期をコンパイラの利用可能時期と読み替えることはできません。",
+          "statement_en": "OpenMP 6.0 is released; 6.1 TR15 remains a public-comment draft. LLVM's development table distinguishes implemented, partial and missing features by language. The planned standard release does not establish compiler availability.",
+          "hpci_relevance_ja": "採用条件は規格番号ではなく、対象コードが必要とする機能と製品版の組合せで指定します。",
+          "hpci_relevance_en": "Specify required features and released compiler combinations, not just a standard version.",
+          "adoption_conditions_ja": [
+            "LLVM 24.0.0gitの表は安定版の保証ではない。",
+            "対象言語とGPUへのオフロード機能を個別に検証する。"
+          ],
+          "adoption_conditions_en": [
+            "LLVM 24.0.0git documentation is not stable-release qualification.",
+            "Validate language and GPU-offload features individually."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-KOKKOS5-TOOLCHAIN-FLOOR",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS003",
+            "SRC-CDS004"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Kokkos 5とツールチェーン要件",
+          "name_en": "Kokkos 5 and toolchain requirements",
+          "timing_ja": "2026-09-01確認時の5.x要件",
+          "timing_en": "5.x requirements checked on 2026-09-01",
+          "statement_ja": "KokkosはC++による可搬性レイヤーであり、CUDAやROCmそのものの代替SDKではありません。5系の導入ではC++20に加え、NVCC 12.2、ROCm 6.2、IntelLLVM SYCL 2024.2.1等のバックエンド別最小要件を確認します。最小版以上でも、未試験の組合せに問題がないとは限りません。",
+          "statement_en": "Kokkos is a C++ portability layer, not a replacement SDK for CUDA or ROCm. Version 5 requires C++20 and backend-specific minima such as NVCC 12.2, ROCm 6.2 or IntelLLVM SYCL 2024.2.1. Meeting a minimum does not qualify every untested combination.",
+          "hpci_relevance_ja": "既存コードとセンター標準環境を同時に更新できるかが移行の判断点です。",
+          "hpci_relevance_en": "Migration depends on updating application code and center-supported environments together.",
+          "adoption_conditions_ja": [
+            "Kokkos、バックエンド、コンパイラ、標準ライブラリを版固定する。",
+            "性能可搬性は代表カーネルと実アプリケーションで別に評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin Kokkos, backend, compiler and standard-library versions.",
+            "Evaluate kernel and whole-application portability separately."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-01-U02",
+      "title_ja": "製品版ツールチェーンと互換性の変化",
+      "title_en": "Released toolchains and compatibility changes",
+      "summary_ja": "CPU/GPUの対応表だけでなく、ABI、ライブラリ収録範囲、廃止機能を移行計画に含めます。",
+      "summary_en": "Migration planning includes ABI changes, component packaging and retirements as well as CPU/GPU support.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-GCC16-ABI-OFFLOAD",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS005"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "GCC 16: C++20 ABIとGPU対応",
+          "name_en": "GCC 16: C++20 ABI and GPU support",
+          "timing_ja": "GCC 16系列の変更点。GPU対応の一部は実験段階。",
+          "timing_en": "GCC 16 series; some GPU support remains experimental.",
+          "statement_ja": "GCC 16では従来の実験的C++20実装からABIが変わる構成要素があり、旧版バイナリとの互換性を仮定できません。MI300向けGCN対応は実験的と明記されています。汎用GPU対象にはROCm 6.4以降とLLVM 20以降のアセンブラ・リンカ等の条件があります。",
+          "statement_en": "GCC 16 changes ABI for some previously experimental C++20 components. Its MI300 GCN support is explicitly experimental; generic GPU targets require ROCm 6.4 or later and LLVM 20 or later assembler/linker components.",
+          "hpci_relevance_ja": "再ビルド範囲と試験対象を見積もり、コンパイラ更新を無条件の性能向上と扱わないことが重要です。",
+          "hpci_relevance_en": "Budget rebuild and testing effort; a compiler upgrade is not an unconditional performance improvement.",
+          "adoption_conditions_ja": [
+            "共有ライブラリとプラグインのABIを確認する。",
+            "実験的GPU対応は本番環境での検証済み対応と区別する。"
+          ],
+          "adoption_conditions_en": [
+            "Check shared-library and plugin ABI boundaries.",
+            "Separate experimental GPU support from production qualification."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-NVHPC26-MIGRATION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS007"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "NVIDIA HPC SDKの依存関係更新",
+          "name_en": "NVIDIA HPC SDK dependency migration",
+          "timing_ja": "26.5リリースノートを確認",
+          "timing_en": "26.5 release notes inspected",
+          "statement_ja": "HPC SDKでは26.1以降CUDA 11.xのサポートが終了し、25.9でnvprof/nvvpと同梱Open MPI 4が削除されています。旧ジョブスクリプトや解析手順の継続には、HPC-X MPI、Nsight系ツール、CUDA選択方法への移行確認が必要です。",
+          "statement_en": "HPC SDK retired CUDA 11.x support from 26.1 and removed nvprof/nvvp and bundled Open MPI 4 in 25.9. Existing job and profiling workflows need migration checks for HPC-X MPI, Nsight tools and CUDA selection.",
+          "hpci_relevance_ja": "GPU世代の更新と、解析・通信・ビルド環境の更新費用を一体で評価します。",
+          "hpci_relevance_en": "Assess GPU refresh together with profiling, communication and build-environment migration costs.",
+          "adoption_conditions_ja": [
+            "対象CPU、CUDA、ライブラリの収録版を確認する。",
+            "旧コンテナが新環境でそのまま動くとは仮定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Check the components supplied for the selected CPU/CUDA configuration.",
+            "Do not assume old containers work unchanged."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ROCM-THEROCK-MIGRATION",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS009"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ROCmのTheRock配布体系への移行",
+          "name_en": "ROCm migration to TheRock-based distribution",
+          "timing_ja": "7.14から製品版移行、確認時の現行製品版は10.0.0",
+          "timing_en": "Production transition began with 7.14; the guide identifies 10.0.0 as current",
+          "statement_ja": "ROCmの移行ガイドは、インストール先とパッケージ名の変更、Core SDK・Extras等への再編を説明しています。ROCm SMIはAMD SMIへ置き換えられ、旧Bandwidth TestにはTransferBench/RVSが案内されています。旧7.2系の依存設定をそのまま移すのではなく、必要な構成要素を再確認します。",
+          "statement_en": "The transition guide changes installation paths, package names and Core SDK/Extras packaging. AMD SMI replaces ROCm SMI; TransferBench/RVS replace the retired bandwidth tool. Legacy 7.2 dependency recipes need component-by-component review.",
+          "hpci_relevance_ja": "センターのモジュール、コンテナ、監視・診断手順への影響を調達時に見積もります。",
+          "hpci_relevance_en": "Estimate effects on environment modules, containers and monitoring/diagnostic procedures.",
+          "adoption_conditions_ja": [
+            "SDK全体と個々の構成要素の成熟度を分けて確認する。",
+            "採用GPUとOSを公式対応表で照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Assess SDK and component maturity separately.",
+            "Match the selected GPU and OS to official support matrices."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-INTEL2026-SYCL-NUMERICS",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS006"
+          ],
+          "actor_ids": [
+            "ACT-INTEL"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "oneAPI 2026: SYCL拡張と数値挙動",
+          "name_en": "oneAPI 2026: SYCL extensions and numerical behavior",
+          "timing_ja": "2026.1: 7月7日、2026.1.1: 7月29日公開",
+          "timing_en": "2026.1 released July 7; 2026.1.1 July 29",
+          "statement_ja": "DPC++/C++ 2026.1はSYCL Graph等を拡張する一方、デバイス側コンパイルで非正規化数をゼロへ丸める既定動作を変更しています。拡張APIの利用可否だけでなく、ドライバ、GPU、数値回帰試験を含めて更新を判定する必要があります。",
+          "statement_en": "DPC++/C++ 2026.1 expands SYCL Graph features and changes default device-side denormal flushing behavior. Upgrade qualification must include drivers, GPUs and numerical regression tests, not only extension availability.",
+          "hpci_relevance_ja": "同一ソースでもコンパイラの既定値変更が計算結果や性能へ影響し得ます。",
+          "hpci_relevance_en": "Compiler-default changes may affect results or performance without source changes.",
+          "adoption_conditions_ja": [
+            "SYCL標準機能とベンダー拡張を区別する。",
+            "浮動小数点オプションとドライバ版を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate standard SYCL features from vendor extensions.",
+            "Record floating-point options and driver versions."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-01-U03",
+      "title_ja": "計測の範囲とオーバーヘッド",
+      "title_en": "Measurement scope and overhead",
+      "summary_ja": "計測機能が存在することと、無侵襲に実行時間を測れることを区別します。",
+      "summary_en": "Availability of profiling features does not imply non-intrusive timing.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-NSIGHT-REPLAY-BOUNDARY",
+          "stage": "current",
+          "maturity": "commercial",
+          "source_ids": [
+            "SRC-CDS010"
+          ],
+          "actor_ids": [
+            "ACT-NVIDIA"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "Nsight Computeの再実行と計時境界",
+          "name_en": "Nsight Compute replay and timing boundaries",
+          "timing_ja": "公開Profiling Guideを2026-09-01確認",
+          "timing_en": "Public profiling guide checked on 2026-09-01",
+          "statement_ja": "Nsight Computeは収集カウンタ数に応じてカーネルを再実行し、メモリを退避・復元する場合があります。計測中のホスト側タイマーにはこの負荷が含まれるため、その値を通常実行のアプリケーション時間として使えません。詳細カウンタ取得と無計測時の実行時間測定を分けます。",
+          "statement_en": "Nsight Compute may replay kernels and save/restore memory to collect metrics. Host timers during profiling include this work and cannot represent ordinary application runtime. Detailed counter collection and unprofiled timing must be separate runs.",
+          "hpci_relevance_ja": "性能モデルの入力に計測ツールの負荷を混ぜることを防ぎます。",
+          "hpci_relevance_en": "Keep profiling overhead out of performance-model inputs.",
+          "adoption_conditions_ja": [
+            "計測範囲、カウンタ、再実行方式を記録する。",
+            "並行実行とキャッシュ状態の変化を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Record scope, counters and replay mode.",
+            "Check changes to concurrency and cache state."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-ROCPROFV3-TRACING",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS008"
+          ],
+          "actor_ids": [
+            "ACT-AMD"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "ROCprofiler-SDKの通信・I/O・OpenMP解析",
+          "name_en": "ROCprofiler-SDK communication, I/O and OpenMP tracing",
+          "timing_ja": "ROCm Core SDK 10.0.0、2026-08-26公開",
+          "timing_en": "ROCm Core SDK 10.0.0 released 2026-08-26",
+          "statement_ja": "10.0.0ではrocprofv3からOMPT、rocSHMEM、hipFileを扱うトレース機能が拡張されています。計算、通信、ストレージI/Oを対応付けて律速を調べる材料になりますが、機種別の既知不具合や実験的機能を含むため、全環境で同じ計測が可能とはみなしません。",
+          "statement_en": "Version 10.0.0 expands rocprofv3 tracing for OMPT, rocSHMEM and hipFile. These can connect compute, communication and storage activity, but device-specific issues and experimental paths prevent assuming uniform coverage.",
+          "hpci_relevance_ja": "カーネル単体だけでは見えない待ち時間とデータ移動を調べる候補です。",
+          "hpci_relevance_en": "A candidate for investigating waiting and data movement beyond individual kernels.",
+          "adoption_conditions_ja": [
+            "対象GPU、SDK、出力形式、収集負荷を確認する。",
+            "本調査ではツールを実行していない。"
+          ],
+          "adoption_conditions_en": [
+            "Check GPU, SDK, output format and collection overhead.",
+            "The tools were not executed in this review."
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "TDS-CD1-SSW-01-U04",
+      "title_ja": "移植評価を再現可能にする試験群",
+      "title_en": "Reproducible porting assessment",
+      "summary_ja": "機能の正しさ、限定カーネルの性能、アプリケーション全体の移植費用を別の指標で評価します。",
+      "summary_en": "Use separate measures for feature correctness, kernel performance and whole-application porting cost.",
+      "items": [
+        {
+          "item_id": "TDI-CD1-OPENMP-VV-FEATURE-TESTS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS011"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "OpenMP V&Vによる機能単位の確認",
+          "name_en": "Feature-level checks with OpenMP V&V",
+          "timing_ja": "旧SOLLVE_VV後継の公開リポジトリを確認",
+          "timing_en": "Public successor to SOLLVE_VV inspected",
+          "statement_ja": "OpenMP V&Vは旧SOLLVE_VVを継承する公開テスト群です。コンパイラが対象機能を正しく処理するかを確かめる入口になります。ただし、試験合格は実アプリケーションの性能、数値品質、全機能への適合を一括して保証するものではありません。",
+          "statement_en": "OpenMP V&V succeeds SOLLVE_VV and provides public feature tests. It is an entry point for checking compiler behavior, not a blanket guarantee of application performance, numerical quality or complete conformance.",
+          "hpci_relevance_ja": "機能不足とアプリケーション側の移植課題を切り分けます。",
+          "hpci_relevance_en": "Separate missing compiler features from application-porting issues.",
+          "adoption_conditions_ja": [
+            "テスト版、コンパイラ、GPUと失敗した機能を保存する。",
+            "本調査は文書確認のみで、試験合格を報告するものではない。"
+          ],
+          "adoption_conditions_en": [
+            "Record test revision, compiler, GPU and failing features.",
+            "This is document review, not a report of passing tests."
+          ]
+        },
+        {
+          "item_id": "TDI-CD1-BABELSTREAM-PORTABILITY-SCOPE",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS012"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "BabelStreamで比較できる範囲",
+          "name_en": "What BabelStream can compare",
+          "timing_ja": "公開実装と結果へのリンクを2026-09-01確認",
+          "timing_en": "Public implementations and results links checked 2026-09-01",
+          "statement_ja": "BabelStreamはCUDA、HIP、SYCL、OpenMP、Kokkos等でデバイス大域メモリの到達帯域を比較できます。PCIe転送時間は含まれないため、この結果だけでCPU-GPU間転送やアプリケーション全体の優劣を評価できません。移植時には問題サイズと型、コンパイラ設定を合わせます。",
+          "statement_en": "BabelStream compares attainable device-memory bandwidth using CUDA, HIP, SYCL, OpenMP, Kokkos and other models. It excludes PCIe transfer time, so it cannot alone rank host-device transfer or whole applications. Match array sizes, types and compiler settings.",
+          "hpci_relevance_ja": "共通カーネルでの診断結果と、代表アプリケーションの実行時間・工数を組み合わせます。",
+          "hpci_relevance_en": "Combine kernel diagnostics with representative application time and engineering effort.",
+          "adoption_conditions_ja": [
+            "キャッシュより大きいデータ等、測定条件を明示する。",
+            "本調査でベンチマークを実行した結果ではない。"
+          ],
+          "adoption_conditions_en": [
+            "Disclose conditions such as data sizes relative to caches.",
+            "No benchmark was executed for this review."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS001",
+        "title": "OpenMP specifications and technical reports",
+        "publisher": "OpenMP ARB",
+        "url": "https://www.openmp.org/specifications/",
+        "source_class": "official-standard",
+        "published_or_updated": "OpenMP 6.0 November 2024; TR15 July 2026"
+      },
+      "origin_group": "openmp-arb",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "OpenMP 6.0 specifications; OpenMP 6.1 public comment draft",
+      "observation_ja": "6.0の正式仕様と6.1の公開コメント用草案が別に掲示されている。",
+      "observation_en": "The released 6.0 specification and the 6.1 public-comment draft are listed separately.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS002",
+        "title": "Clang OpenMP support (24.0.0git development documentation)",
+        "publisher": "LLVM Project",
+        "url": "https://clang.llvm.org/docs/OpenMPSupport.html",
+        "source_class": "official-project",
+        "published_or_updated": "24.0.0git development page; accessed 2026-09-01"
+      },
+      "origin_group": "llvm-project",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "OpenMP 6.0 / 6.1 implementation tables and OMPT support",
+      "observation_ja": "機能・言語ごとに実装段階が異なる。開発版の表を安定版の対応保証として扱わない。",
+      "observation_en": "Feature and language status differ; the development table is not a stable-release support guarantee.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS003",
+        "title": "Kokkos compiler requirements",
+        "publisher": "Kokkos Project",
+        "url": "https://kokkos.org/kokkos-core-wiki/get-started/requirements.html",
+        "source_class": "official-project",
+        "published_or_updated": "Kokkos 5.x requirements; accessed 2026-09-01"
+      },
+      "origin_group": "kokkos-project",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Kokkos 5.x compiler minimum-version table and testing caveat",
+      "observation_ja": "NVCC 12.2、ROCm 6.2、IntelLLVM SYCL 2024.2.1等を最小要件として記載。未試験版には問題が残り得る。",
+      "observation_en": "Lists minima including NVCC 12.2, ROCm 6.2 and IntelLLVM SYCL 2024.2.1; untested versions may have issues.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS004",
+        "title": "Kokkos quick start",
+        "publisher": "Kokkos Project",
+        "url": "https://kokkos.org/kokkos-core-wiki/get-started/quick-start.html",
+        "source_class": "official-project",
+        "published_or_updated": "Kokkos 5 quick start; accessed 2026-09-01"
+      },
+      "origin_group": "kokkos-project",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Prerequisites and version-selection example",
+      "observation_ja": "C++20対応コンパイラを前提とする。サンプルの版指定は全環境での動作保証ではない。",
+      "observation_en": "Requires a C++20-capable compiler; the example version pin is not qualification for every environment.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS005",
+        "title": "GCC 16 release-series changes",
+        "publisher": "GNU GCC Project",
+        "url": "https://gcc.gnu.org/gcc-16/changes.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-07"
+      },
+      "origin_group": "gcc-project",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "libstdc++ C++20 ABI changes; AMD GPU (GCN); OpenMP changes",
+      "observation_ja": "C++20構成要素のABI変更、MI300向け実験的対応、汎用GPU対象のROCm/LLVM依存を確認。",
+      "observation_en": "Identifies C++20 ABI changes, experimental MI300 support and ROCm/LLVM dependencies for generic GPU targets.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS006",
+        "title": "Intel oneAPI DPC++/C++ Compiler 2026 release notes",
+        "publisher": "Intel",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/release-notes/oneapi-dpcpp/2026.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-11; 2026.1.1 released 2026-07-29"
+      },
+      "origin_group": "intel",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Release history; 2026.1 features; system requirements",
+      "observation_ja": "2026.1.1の公開日と、2026.1でのSYCL Graph拡張・デバイス側非正規化数処理変更を確認。",
+      "observation_en": "Confirms the 2026.1.1 release date and 2026.1 SYCL Graph extensions and device-denormal behavior changes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS007",
+        "title": "NVIDIA HPC SDK 26.5 release notes",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/hpc-sdk/release-notes/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "26.5 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Deprecations and Changes; Release component table; Known limitations",
+      "observation_ja": "CUDA 11.x対応終了、旧プロファイラと同梱Open MPI 4削除を確認。版・CPU構成別のライブラリ確認が必要。",
+      "observation_en": "Confirms CUDA 11.x retirement and removal of legacy profilers and bundled Open MPI 4; component coverage is configuration-dependent.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS008",
+        "title": "ROCm Core SDK 10.0.0 release notes",
+        "publisher": "AMD",
+        "url": "https://rocm.docs.amd.com/en/docs-10.0.0/about/release-notes.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Release date; ROCprofiler-SDK tracing domains; known issues",
+      "observation_ja": "8月26日版でOMPT・rocSHMEM・hipFileのトレース拡張を確認。機種別の既知不具合を併記している。",
+      "observation_en": "The August 26 release expands OMPT, rocSHMEM and hipFile tracing and lists device-specific known issues.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS009",
+        "title": "Transition guide from legacy ROCm release stream",
+        "publisher": "AMD",
+        "url": "https://rocmdocs.amd.com/en/latest/about/transition-guide-TheRock.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "ROCm 10.0.0 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "amd",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Major changes; deprecated/removed components; package relocations",
+      "observation_ja": "7.14でTheRockの製品版移行を開始。インストール先、パッケージ名、収録範囲と代替ツールが変わる。",
+      "observation_en": "The production transition began with 7.14; installation paths, package names, component packaging and replacements change.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS010",
+        "title": "NVIDIA Nsight Compute profiling guide",
+        "publisher": "NVIDIA",
+        "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "13.3 documentation; accessed 2026-09-01"
+      },
+      "origin_group": "nvidia",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Replay; Overhead; measurement serialization",
+      "observation_ja": "カウンタ収集は再実行やメモリ退避を伴い得る。ツール動作中のホスト計時を通常実行時間と混同しない。",
+      "observation_en": "Collection can require replay and memory save/restore; profiled host timing is not ordinary execution time.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS011",
+        "title": "OpenMP Validation and Verification official repository",
+        "publisher": "OpenMP Validation and Verification Project",
+        "url": "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV",
+        "source_class": "official-project",
+        "published_or_updated": "Repository README inspected 2026-09-01; revision not exposed by managed view"
+      },
+      "origin_group": "openmp-vv-project",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "README Welcome; tests directory",
+      "observation_ja": "旧SOLLVE_VVを継承する公開テスト群とS4PSTによる支援を確認。試験は実行していない。",
+      "observation_en": "Confirms the public successor to SOLLVE_VV and S4PST support; no tests were executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS012",
+        "title": "BabelStream official repository",
+        "publisher": "University of Bristol HPC Group",
+        "url": "https://github.com/UoB-HPC/BabelStream",
+        "source_class": "official-project",
+        "published_or_updated": "Repository README inspected 2026-09-01; revision not exposed by managed view"
+      },
+      "origin_group": "uob-hpc",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "Benchmark scope; programming models; results",
+      "observation_ja": "複数モデルでデバイス大域メモリ帯域を測定。PCIe転送時間は含まない。",
+      "observation_en": "Measures device-global-memory bandwidth across programming models, excluding PCIe transfer time.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-PORT001",
+        "title": "OpenMP 6.1 Public Comment Draft",
+        "publisher": "OpenMP ARB",
+        "url": "https://www.openmp.org/home-news/public-comment-draft-6-1/",
+        "source_class": "official-standard",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "openmp-arb",
+      "checked_at": "2026-09-01T00:29:19+09:00",
+      "locator": "July 9, 2026 announcement; expected release shortly before SC26 in November",
+      "observation_ja": "TR15は最終プレビューで、正式版は2026年11月のSC26直前を予定。",
+      "observation_en": "TR15 is the final preview; the full release is expected shortly before SC26 in November 2026.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Fujitsu/A64FX・MONAKA向けの製品版ツールチェーンとLLVM Flangの機能差を追加確認する。",
+    "同一アプリケーションで移植差分、工数、数値試験、性能を比較する公開結果を収集する。",
+    "独立モデルによるConsensusと実機評価は未完了。"
+  ],
+  "remaining_work_en": [
+    "Further check released Fujitsu/A64FX/MONAKA toolchains and LLVM Flang feature differences.",
+    "Collect matched application studies reporting source changes, effort, numerical tests and performance.",
+    "Independent-model Consensus and hardware validation remain incomplete."
+  ]
+}
