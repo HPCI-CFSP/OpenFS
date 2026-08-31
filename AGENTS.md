@@ -115,6 +115,12 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 - Keep machine-generated indexes separate from human-authored records.
 - Do not resolve merge conflicts by discarding another agent's or a human's changes.
 - Submit canonical changes as reviewable pull requests with the source Decision IDs and validation results.
+- Write every new pull-request description and comment in English first, followed
+  by Japanese, with equivalent facts, limitations, IDs and validation results.
+  Use `# English` and `# 日本語` blocks. Do not submit the untouched template,
+  silently omit caveats from either language, or mark an unperformed check complete.
+  Follow `docs/operations/pull-request-descriptions.md` and validate the actual
+  body/comment before posting. A format pass is not a translation-quality review.
 
 ## Repository organization
 

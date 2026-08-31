@@ -25,10 +25,28 @@
       "case_id": {"type": "string", "pattern": "^PROC-[A-Z0-9-]+$"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "buyer": {"$ref": "#/$defs/text"}, "supplier": {"type": ["string", "null"]}, "contract_kind": {"enum": ["purchase", "lease", "construction", "service", "unknown"]}, "contract_date": {"$ref": "#/$defs/nullableDate"}, "award_date": {"$ref": "#/$defs/nullableDate"}, "amount": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/amount"}]},
       "documents": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "source_id", "access_status"], "properties": {"kind": {"enum": ["tender", "draft-specification", "final-specification", "correction", "award", "contract-result", "deployed-configuration"]}, "source_id": {"$ref": "#/$defs/text"}, "access_status": {"enum": ["public-read", "not-obtained", "expired", "registration-required", "confidentiality-required"]}}}},
       "contract_window": {"type": "object", "additionalProperties": false, "required": ["start", "end", "basis", "source_refs"], "properties": {"start": {"type": "string", "format": "date"}, "end": {"type": "string", "format": "date"}, "basis": {"enum": ["tender-period", "contract-period"]}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}},
+      "reported_period_total": {"allOf": [{"$ref": "#/$defs/amount"}, {"properties": {"kind": {"const": "contract"}, "payment_basis": {"const": "total"}, "period_months": {"type": "integer", "minimum": 1}}}]},
+      "contract_date_source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]},
+      "linked_system_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}},
+      "storage_capacity_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/capacityObservation"}},
       "configuration_observation": {"type": "object", "additionalProperties": false, "required": ["status", "summary_ja", "summary_en", "match_caveat_ja", "match_caveat_en", "source_refs"], "properties": {"status": {"enum": ["planned", "operating"]}, "summary_ja": {"$ref": "#/$defs/text"}, "summary_en": {"$ref": "#/$defs/text"}, "match_caveat_ja": {"$ref": "#/$defs/text"}, "match_caveat_en": {"$ref": "#/$defs/text"}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}},
       "configuration_match": {"enum": ["unconfirmed", "confirmed"]}, "component_category": {"enum": ["system-package", "compute-cpu", "compute-accelerator", "interconnect", "storage", "facility", "software", "maintenance"]},
       "itemized_costs": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["line_id", "basis", "value_jpy", "tax_basis", "source_refs"], "properties": {"line_id": {"$ref": "#/$defs/text"}, "basis": {"const": "observed"}, "value_jpy": {"type": "number", "minimum": 0}, "tax_basis": {"enum": ["including-tax", "excluding-tax"]}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}}},
       "related_case_ids": {"$ref": "#/$defs/refs"}, "aggregation_status": {"enum": ["not-cleared", "shared-scope-unresolved"]}, "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"}, "gap_ids": {"$ref": "#/$defs/refs"}
-    }}
+    }},
+    "capacityObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observation_id", "value", "unit", "capacity_basis", "configuration_status", "scope_ja", "scope_en", "caveat_ja", "caveat_en", "source_refs"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^CAP-[A-Z0-9-]+$"},
+        "value": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"enum": ["TB", "PB", "TiB", "PiB"]},
+        "capacity_basis": {"enum": ["physical", "effective", "allocation", "unspecified"]},
+        "configuration_status": {"enum": ["planned", "operating"]},
+        "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"},
+        "caveat_ja": {"$ref": "#/$defs/text"}, "caveat_en": {"$ref": "#/$defs/text"},
+        "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}
+      }
+    }
   }
 }

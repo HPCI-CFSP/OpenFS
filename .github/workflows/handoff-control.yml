@@ -36,9 +36,14 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Install pinned contract validators
+        run: |
+          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
       - name: Validate control plane
         run: |
           python3 tools/validate_repository.py
+          python3 tools/validate_workflows.py
+          python3 tools/validate_json_schemas.py
           python3 -m unittest discover -s tests -v
       - name: Check for an open Handoff control PR
         id: existing
@@ -90,6 +95,7 @@ jobs:
           CONTROL_BRANCH: ${{ steps.commit.outputs.branch }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          trap 'git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"' EXIT
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin "HEAD:${CONTROL_BRANCH}"
       - name: Create control pull request
@@ -99,4 +105,5 @@ jobs:
         run: |
           python3 tools/publish_control_pr.py \
             --head "${{ steps.commit.outputs.branch }}" \
+            --base-commit "$GITHUB_SHA" \
             --summary _automation/handoff-control.json

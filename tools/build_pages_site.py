@@ -13,6 +13,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 from check_procurement_costs import validate_register
+from check_public_planning_surfaces import validate_inventory_links
 from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
 from catalog_lineage import catalog_aliases, current_finding_topics
 
@@ -247,6 +248,35 @@ def collect_procurement_costs(root: Path, policy: dict[str, Any]) -> tuple[dict,
         case["breakdown"] = contract_breakdown(case)
         case["lease_period_total"] = lease_period_total(case)
     return projected, config
+
+
+def link_inventory_evidence(inventory: dict, register: dict, roadmaps: list[dict]) -> None:
+    errors = validate_inventory_links(inventory, register, roadmaps)
+    if errors:
+        raise ValueError("; ".join(errors))
+    systems = {system["system_id"]: system for system in inventory["systems"]}
+    inventory_roadmap = next((roadmap for roadmap in roadmaps if roadmap["roadmap_id"] == "RM-X-BLUEPRINT"), None)
+    if any(case.get("linked_system_ids") for case in register["cases"]) and not inventory_roadmap:
+        raise ValueError("linked inventory needs its published roadmap page")
+    milestones = {(roadmap["roadmap_id"], milestone["milestone_id"]): {
+                      **milestone, "roadmap_id": roadmap["roadmap_id"],
+                      "roadmap_slug": roadmap["slug"], "track_id": lane["track_id"]}
+                  for roadmap in roadmaps for lane in roadmap["lanes"]
+                  for milestone in lane["milestones"]}
+    for system in systems.values():
+        system["lifecycle_events"] = [
+            milestones[(ref["roadmap_id"], ref["milestone_id"])]
+            for ref in system.get("lifecycle_milestone_refs", [])]
+        system["procurement_links"] = []
+    for case in register["cases"]:
+        case["linked_systems"] = []
+        for system_id in case.get("linked_system_ids", []):
+            system = systems[system_id]
+            case["linked_systems"].append({
+                **{key: system[key] for key in ("system_id", "name_ja", "name_en")},
+                "inventory_path": f"roadmaps/{inventory_roadmap['slug']}/",
+            })
+            system["procurement_links"].append({key: case[key] for key in ("case_id", "title_ja", "title_en")})
 
 
 def collect_reports(root: Path, policy: dict[str, Any]) -> list[dict[str, Any]]:
@@ -1259,6 +1289,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "hpci_system_inventory_required_bilingual_fields",
         "HPCI system inventory",
     )
+    link_inventory_evidence(hpci_system_inventory, procurement_register, roadmap_artifacts)
     application_performance_forecasts = collect_public_supplement(
         root,
         policy,

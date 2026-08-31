@@ -69,6 +69,103 @@ class ResearchUnitUpdateTests(unittest.TestCase):
         self.assertEqual([p for p in self.surface["topic_profiles"] if p["topic_id"] != "SSW-05"],
                          [p for p in s["topic_profiles"] if p["topic_id"] != "SSW-05"])
 
+    def prepare_initial_profile(self):
+        profile = profile_for(self.surface, "SSW-05")
+        self.bundle["initial_profile_metadata"] = {key: copy.deepcopy(profile[key])
+            for key in ("hpci_decision_dimensions", "related_surface_ids")}
+        self.surface["topic_profiles"].remove(profile)
+        topic = next(t for t in self.baseline["topics"] if t["topic_id"] == "SSW-05")
+        topic["status"] = "not-started"
+        for unit in topic["research_units"]:
+            unit.update(status="not-started", evidence_section_ids=[])
+            unit.pop("latest_update_id", None)
+            unit.pop("last_researched_at", None)
+        self.bundle["before_profile_sha256"] = stable_digest(None)
+        self.bundle["units"][0]["before_sha256"] = stable_digest(topic["research_units"][0])
+
+    def test_correction_can_retain_existing_gaps_without_manufacturing_a_duplicate(self):
+        self.bundle["coverage_gaps"] = []
+        _, surface, _ = self.apply()
+        self.assertEqual(self.surface["coverage_gaps"], surface["coverage_gaps"])
+        self.assertEqual(profile_for(self.surface, "SSW-05")["coverage_gap_ids"],
+                         profile_for(surface, "SSW-05")["coverage_gap_ids"])
+
+    def test_initial_provisional_profile_must_identify_an_open_gap(self):
+        self.prepare_initial_profile()
+        self.bundle["coverage_gaps"] = []
+        with self.assertRaisesRegex(ValueError, "open Coverage Gap"):
+            self.apply()
+
+    def test_retained_gaps_cannot_be_missing_or_belong_only_to_another_topic(self):
+        profile = profile_for(self.surface, "SSW-05")
+        foreign = next(g for g in self.surface["coverage_gaps"] if "SSW-05" not in g["topic_ids"])
+        for gap_id in ("GAP-TDS-MISSING", foreign["gap_id"]):
+            with self.subTest(gap_id=gap_id):
+                profile["coverage_gap_ids"] = [gap_id]
+                self.bundle["before_profile_sha256"] = stable_digest(profile)
+                before = copy.deepcopy((self.baseline, self.surface))
+                with self.assertRaisesRegex(ValueError, "must exist and cover"):
+                    self.apply()
+                self.assertEqual(before, (self.baseline, self.surface))
+
+    def test_correction_cannot_rely_only_on_closed_gaps(self):
+        self.bundle["coverage_gaps"] = []
+        retained = set(profile_for(self.surface, "SSW-05")["coverage_gap_ids"])
+        for gap in self.surface["coverage_gaps"]:
+            if gap["gap_id"] in retained:
+                gap["status"] = "closed"
+        with self.assertRaisesRegex(ValueError, "open Coverage Gap"):
+            self.apply()
+
+    def test_initial_profile_is_explicit_provisional_and_replayable(self):
+        self.prepare_initial_profile()
+        before = copy.deepcopy(self.surface)
+        baseline, surface, changed = self.apply()
+        self.assertTrue(changed)
+        self.assertEqual(before, self.surface)
+        self.assertIsNone(profile_for(before, "SSW-05"))
+        profile = profile_for(surface, "SSW-05")
+        self.assertEqual(self.bundle["sections"], profile["sections"])
+        self.assertEqual("incomplete", profile["research_updates"][0]["consensus_status"])
+        topic = next(t for t in baseline["topics"] if t["topic_id"] == "SSW-05")
+        self.assertEqual("partial", topic["research_units"][0]["status"])
+        self.assertEqual("not-started", topic["research_units"][1]["status"])
+        self.assertFalse(project(ROOT, self.bundle, baseline, surface)[2])
+        verify_applied(self.bundle, baseline, surface)
+
+    def test_missing_profile_cannot_be_initialized_implicitly(self):
+        self.prepare_initial_profile()
+        self.bundle.pop("initial_profile_metadata")
+        with self.assertRaisesRegex(ValueError, "explicit initial metadata"):
+            self.apply()
+
+    def test_initial_profile_cannot_discard_prior_unit_evidence(self):
+        self.prepare_initial_profile()
+        topic = next(t for t in self.baseline["topics"] if t["topic_id"] == "SSW-05")
+        topic["research_units"][1]["evidence_section_ids"] = ["TDS-OLD-EVIDENCE"]
+        with self.assertRaisesRegex(ValueError, "discard existing"):
+            self.apply()
+
+    def test_initial_profile_cannot_replace_concurrent_work(self):
+        self.prepare_initial_profile()
+        self.surface["topic_profiles"].append({"topic_id": "SSW-05", "sections": []})
+        with self.assertRaisesRegex(ValueError, "stale profile"):
+            self.apply()
+
+    def test_initial_metadata_is_audited(self):
+        self.prepare_initial_profile()
+        baseline, surface, _ = self.apply()
+        profile_for(surface, "SSW-05")["hpci_decision_dimensions"][0]["question_en"] = "Changed"
+        with self.assertRaisesRegex(ValueError, "initial profile metadata"):
+            verify_applied(self.bundle, baseline, surface)
+
+    def test_publication_uses_the_authorizing_directives_decision(self):
+        self.bundle["update_id"] = "RUP-000005"
+        self.bundle["human_directive_id"] = "DIR-900016"
+        _, surface, _ = self.apply()
+        self.assertEqual("PUBDEC-PROCUREMENT-RECONCILIATION-001",
+                         surface["publication"]["publication_decision_id"])
+
     def test_concurrent_profile_edit_rejected(self):
         profile_for(self.surface, "SSW-05")["summary_en"] += " changed"
         with self.assertRaisesRegex(ValueError, "stale profile"):

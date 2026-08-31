@@ -86,6 +86,7 @@ jobs:
           PROMOTION_BRANCH: ${{ steps.commit.outputs.branch }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          trap 'git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"' EXIT
           git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push origin "HEAD:${PROMOTION_BRANCH}"
       - name: Create promotion pull request
@@ -95,4 +96,5 @@ jobs:
         run: |
           python3 tools/publish_promotion_pr.py \
             --head "${{ steps.commit.outputs.branch }}" \
+            --base-commit "$GITHUB_SHA" \
             --summary _automation/claim-promotions.json

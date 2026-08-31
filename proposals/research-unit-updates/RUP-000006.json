@@ -1,0 +1,89 @@
+{
+  "schema_version": "0.1.0", "update_id": "RUP-000006", "topic_id": "CROSS-08",
+  "created_at": "2026-08-31T13:08:20+09:00",
+  "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+  "before_profile_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "initial_profile_metadata": {
+    "hpci_decision_dimensions": [
+      {"dimension_id": "DIM-CENTER-SUPPLY", "label_ja": "利用可能資源", "label_en": "Available resources", "question_ja": "設置済みの規模とHPCIへの提供枠を区別できるか。", "question_en": "Are installed capacity and the HPCI allocation envelope distinguished?"},
+      {"dimension_id": "DIM-CENTER-TIMING", "label_ja": "運用と契約の時期", "label_en": "Operational and contractual timing", "question_ja": "契約、稼働開始、利用公募、増設を別々の根拠で確認できるか。", "question_en": "Do separate sources support contract dates, commissioning, allocation windows and expansion?"},
+      {"dimension_id": "DIM-CENTER-CONSTRAINTS", "label_ja": "導入上の制約", "label_en": "Deployment constraints", "question_ja": "電力、冷却、予算、利用実績、移行支援の不足を明示しているか。", "question_en": "Are gaps in power, cooling, budgets, utilization and migration support explicit?"}
+    ],
+    "related_surface_ids": []
+  },
+  "human_directive_id": "DIR-900016", "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "名古屋大学と筑波大学の公表構成、稼働・提供時期、増設計画を照合した限定的な初回調査です。仕様と日程は台帳・ロードマップを参照し、全国のセンター調査が完了したとは扱いません。利用実績、施設制約、移行・採用条件は引き続き未調査です。",
+  "summary_en": "This bounded first update reconciles Nagoya and Tsukuba system configurations, operational/allocation dates and expansion plans. Specifications and dates are linked through the inventory and roadmap; this is not complete nationwide center coverage. Utilization, facility constraints, and migration/adoption conditions remain unresearched.",
+  "units": [{"unit_id": "CROSS-08-U01", "before_sha256": "711e492ae6ca6aa82feee7178e426f74df7459d96dd66c2c4fb2e24ad30cf097", "evidence_section_ids": ["TDS-CBL-BASELINE", "TDS-CBL-CHANGES"]}],
+  "sections": [
+    {
+      "section_id": "TDS-CBL-BASELINE", "title_ja": "稼働構成と提供枠", "title_en": "Operating configurations and allocation envelopes",
+      "summary_ja": "APU、ノード、全システム、課題への提供量を区別します。", "summary_en": "Distinguish APU, node, whole-system and project-allocation quantities.",
+      "items": [{
+        "item_id": "TDI-CBL-SIRIUS", "name_ja": "Siriusの比較基準", "name_en": "Sirius comparison baseline",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026-08-31確認。詳細日程は対応ロードマップを参照。", "timing_en": "Checked on 2026-08-31; detailed dates are in the linked roadmap.",
+        "statement_ja": "大学とHPCIの資料を照合し、SiriusのAPUあたりのメモリをノードあたりと誤読しないよう台帳を修正しました。HPCIの仮想ノード時間はAPU単位で、物理ノード時間とは換算が必要です。また、全体のファイルシステム容量とHPCIへの提供ストレージは別の値です。",
+        "statement_en": "University and HPCI sources were reconciled to correct the inventory's confusion between per-APU and per-node memory. HPCI virtual-node hours are APU-based and require conversion to physical-node hours. Whole-filesystem capacity and storage offered through HPCI are also different quantities.",
+        "hpci_relevance_ja": "設置台数だけで全国の供給量を評価せず、利用可能枠と実利用量を分けて比較します。", "hpci_relevance_en": "Installed node counts alone do not measure national supply; compare allocation envelopes separately from actual use.",
+        "adoption_conditions_ja": ["ノード、APU、仮想ノード時間の単位を併記する。", "公称性能をアプリケーション実効性能へ置き換えない。"],
+        "adoption_conditions_en": ["State the units for nodes, APUs and virtual-node hours.", "Do not substitute nominal peak figures for delivered application performance."],
+        "actor_ids": [], "source_ids": ["SRC-CBL001", "SRC-CBL002"], "confidence": "low", "consensus_status": "incomplete"
+      }]
+    },
+    {
+      "section_id": "TDS-CBL-CHANGES", "title_ja": "導入・増設計画と未確認事項", "title_en": "Introduction and expansion plans and remaining gaps",
+      "summary_ja": "計画中の設備は稼働台数へ加えず、契約期間を廃止予定へ読み替えません。", "summary_en": "Do not add planned equipment to operating counts or reinterpret contract windows as retirement plans.",
+      "items": [
+        {
+          "item_id": "TDI-CBL-NAGOYA-INTRODUCTION", "name_ja": "不老・弐の導入予定", "name_en": "Planned Furo-ni introduction",
+          "stage": "near-term", "maturity": "announced", "timing_ja": "公表された稼働目標は対応ロードマップを参照。", "timing_en": "See the linked roadmap for the published operational target.",
+          "statement_ja": "名古屋大学はCPUとGPUの二つのサブシステムを導入予定です。大容量メモリノードの例外と、共有ストレージの容量定義を区別して記録します。導入計画、HPCI提供期間、借入期間はそれぞれ別の根拠で確認します。",
+          "statement_en": "Nagoya plans CPU and GPU subsystems. Records distinguish large-memory-node exceptions and shared-storage capacity definitions. Introduction plans, HPCI availability and the lease window are checked against their respective sources.",
+          "hpci_relevance_ja": "既存計算資源との重複期間や移行可能量は、別途の利用実績と移行条件の調査が必要です。", "hpci_relevance_en": "Overlap with existing resources and migration capacity need separate utilization and transition evidence.",
+          "adoption_conditions_ja": ["稼働開始後の公式確認を追跡する。", "借入終了をサービス終了とみなさない。"], "adoption_conditions_en": ["Track official confirmation after commissioning.", "Do not treat lease expiry as service retirement."],
+          "actor_ids": [], "source_ids": ["SRC-CBL003"], "confidence": "low", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CBL-SIRIUS-EXPANSION", "name_ja": "Siriusの増設計画", "name_en": "Sirius expansion plan",
+          "stage": "near-term", "maturity": "announced", "timing_ja": "納入・運用開始時期は未公表。", "timing_en": "Delivery and operational start dates are not public.",
+          "statement_ja": "大学はAI for Science向け事業による増設計画を公表しています。増設は現在の稼働構成と分け、時期未公表のロードマップ項目として記録します。公表予定の存在だけでは、増設完了や既存契約との価格対応を確認したことにはなりません。",
+          "statement_en": "The university has announced expansion under an AI for Science program. It is kept separate from the operating configuration and recorded as an undated roadmap item. An announced plan does not establish completed deployment or cost coverage by the existing contract.",
+          "hpci_relevance_ja": "増設による全国供給の変化を見積もるには、運用開始日とHPCIへの実際の提供枠を確認する必要があります。", "hpci_relevance_en": "Estimating the national supply impact requires confirmed operational dates and the actual HPCI allocation envelope.",
+          "adoption_conditions_ja": ["納入・運用開始、追加費用、提供条件を追跡する。"], "adoption_conditions_en": ["Track delivery, operational start, additional costs and allocation conditions."],
+          "actor_ids": [], "source_ids": ["SRC-CBL004"], "confidence": "low", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CBL001", "title": "FY2026 HPCI Sirius resource information", "publisher": "HPCI / University of Tsukuba", "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/ccs_tsukuba_2026-4", "source_class": "official-project", "published_or_updated": "FY2026; page update date not stated"},
+      "origin_group": "tsukuba-sirius-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "Resource and system tables, footnote 1",
+      "observation_ja": "提供期間は2026年4月から。1物理ノード時間は4仮想ノード時間。全体5.2 PBと提供枠1.5 PBを区別。", "observation_en": "Availability starts in April 2026; one physical-node hour equals four virtual-node hours. Distinguish the 5.2 PB filesystem from the 1.5 PB allocation.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CBL002", "title": "Unified-memory supercomputer introduction announcement", "publisher": "University of Tsukuba CCS", "url": "https://www.ccs.tsukuba.ac.jp/release250612/", "source_class": "official-project", "published_or_updated": "2025-06-12"},
+      "origin_group": "tsukuba-sirius-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "Overview: memory per node and per APU",
+      "observation_ja": "1ノードはMI300A 4基、メモリ512 GiB。128 GiBはAPUあたり。", "observation_en": "Four MI300A APUs and 512 GiB per node; 128 GiB is per APU.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CBL003", "title": "Furo-ni public system configuration", "publisher": "Nagoya University", "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html", "source_class": "official-project", "published_or_updated": "Page update date not stated"},
+      "origin_group": "nagoya-furo-ni-configuration", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "Type I, Type II and shared storage configuration",
+      "observation_ja": "Type I 256ノード、Type II 54ノード。大容量メモリノード3台と共有ストレージ実効容量を区別。", "observation_en": "Type I has 256 nodes and Type II has 54; distinguish the three large-memory nodes and effective shared-storage capacity.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CBL004", "title": "Sirius expansion selected under the AI for Science program", "publisher": "University of Tsukuba CCS", "url": "https://www.ccs.tsukuba.ac.jp/news260608/", "source_class": "official-project", "published_or_updated": "Page publication day not stated; no date inferred from URL"},
+      "origin_group": "tsukuba-sirius-expansion-2026", "checked_at": "2026-08-31T13:05:58+09:00", "locator": "Main text, full operation and expansion paragraph",
+      "observation_ja": "4月からの本格運用と9ノード増設計画を記載。増設の納入・運用開始日は記載されていない。", "observation_en": "Describes full operation from April and a nine-node expansion plan, without expansion delivery or commissioning dates.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [{
+    "gap_id": "GAP-TDS-042", "topic_ids": ["CROSS-08"], "priority": "P0",
+    "question_ja": "今回の2機関だけでは全国の現況・更新計画を網羅できず、利用実績、電力・施設、移行条件も未確認です。", "question_en": "The two institutions do not establish nationwide coverage; utilization, power/facility constraints and migration conditions remain unverified.",
+    "next_action_ja": "他機関の基礎情報を同じ単位で調査し、増設・停止時期と利用実績を確認する。移行条件は別の調査単位で扱う。", "next_action_en": "Research other providers in comparable units and verify expansion/shutdown dates and utilization. Address migration conditions in the separate research unit.", "status": "open"
+  }],
+  "remaining_work_ja": ["両機関の利用実績、電力・施設制約と増設日程を確認する。", "他のHPCI基盤センターは今回未調査。", "移行・採用条件の調査単位と独立Consensusは未実施。"],
+  "remaining_work_en": ["Verify utilization, power/facility constraints and expansion timing for both institutions.", "Other HPCI centers were not researched in this update.", "The migration/adoption unit and independent Consensus remain unperformed."]
+}

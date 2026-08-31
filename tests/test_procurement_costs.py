@@ -84,6 +84,105 @@ class ProcurementCostTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             normalize_amount(case["amount"])
 
+    def test_reported_contract_total_requires_checked_contract_evidence(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        self.assertEqual(855360000, case["reported_period_total"]["value_jpy"])
+        self.assertEqual("2025-06-12", case["contract_date"])
+        validate_register(self.register, self.config)
+        for refs in ([], ["PCS-TSUKUBA-AWARD-2025"], ["UNKNOWN"]):
+            changed = copy.deepcopy(self.register)
+            item = next(c for c in changed["cases"] if c["case_id"] == case["case_id"])
+            item["reported_period_total"]["source_refs"] = refs
+            with self.subTest(refs=refs), self.assertRaises(ValueError):
+                validate_register(changed, self.config)
+        source = next(s for s in self.register["sources"] if s["source_id"] == "PCS-TSUKUBA-CONTRACT-2025Q1")
+        source["retrieval_status"] = "not-retrieved"
+        with self.assertRaises(ValueError):
+            validate_register(self.register, self.config)
+
+    def test_reported_total_cannot_silently_disagree_with_monthly_arithmetic(self):
+        for field, value in (("value_jpy", 855360001), ("period_months", 60),
+                             ("period_months", None), ("period_months", True),
+                             ("tax_basis", "excluding-tax"), ("tax_rate", 0.08),
+                             ("payment_basis", "monthly")):
+            changed = copy.deepcopy(self.register)
+            case = next(c for c in changed["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+            case["reported_period_total"][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                validate_register(changed, self.config)
+
+    def test_reported_total_schema_requires_a_known_period(self):
+        schemas, registry = schema_registry(ROOT)
+        validator = Draft202012Validator(schemas["procurement-cost-register.schema.json"], registry=registry)
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        case["reported_period_total"]["period_months"] = None
+        self.assertTrue(list(validator.iter_errors(self.register)))
+
+    def test_known_month_count_checks_do_not_depend_on_calendar_dates(self):
+        case_id = "PROC-TSUKUBA-UNIFIED-MEMORY-2025"
+        case = next(c for c in self.register["cases"] if c["case_id"] == case_id)
+        del case["contract_window"]
+        validate_register(self.register, self.config)
+        for field, value in (("value_jpy", 855360001), ("period_months", 60),
+                             ("tax_basis", "excluding-tax")):
+            changed = copy.deepcopy(self.register)
+            item = next(c for c in changed["cases"] if c["case_id"] == case_id)
+            item["reported_period_total"][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                validate_register(changed, self.config)
+
+    def test_reported_total_can_stand_alone_without_inferred_billing(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        del case["contract_window"]
+        case["amount"] = None
+        validate_register(self.register, self.config)
+        self.assertIsNone(lease_period_total(case))
+        self.assertEqual(855360000, case["reported_period_total"]["value_jpy"])
+
+    def test_capacity_ids_are_unique_across_procurements(self):
+        source_case = next(c for c in self.register["cases"] if c.get("storage_capacity_observations"))
+        other_case = next(c for c in self.register["cases"] if c["case_id"] != source_case["case_id"])
+        other_case["storage_capacity_observations"] = [copy.deepcopy(source_case["storage_capacity_observations"][0])]
+        with self.assertRaisesRegex(ValueError, "duplicate observation_id"):
+            validate_register(self.register, self.config)
+
+    def test_contract_date_cannot_be_inferred_from_an_award(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        case["contract_date_source_refs"] = ["PCS-TSUKUBA-AWARD-2025"]
+        with self.assertRaises(ValueError):
+            validate_register(self.register, self.config)
+
+    def test_omitting_contract_date_references_cannot_bypass_provenance(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
+        case["contract_date"] = case["award_date"]
+        with self.assertRaisesRegex(ValueError, "contract date"):
+            validate_register(self.register, self.config)
+
+    def test_legacy_contract_date_requires_checked_contract_amount_source(self):
+        validate_register(self.register, self.config)
+        case = self.register["cases"][0]
+        self.assertEqual("contract", case["amount"]["kind"])
+        self.assertNotIn("contract_date_source_refs", case)
+        case["documents"] = [d for d in case["documents"] if d["kind"] != "contract-result"]
+        with self.assertRaisesRegex(ValueError, "contract date"):
+            validate_register(self.register, self.config)
+
+    def test_storage_capacity_observations_keep_scope_and_basis(self):
+        nagoya = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
+        observations = nagoya["storage_capacity_observations"]
+        self.assertEqual({(45, "unspecified"), (48.4, "physical"), (37.44, "effective"), (48, "unspecified")},
+                         {(o["value"], o["capacity_basis"]) for o in observations})
+        self.assertTrue(all(o["configuration_status"] == "planned" for o in observations))
+        for refs in ([], ["UNKNOWN"]):
+            changed = copy.deepcopy(self.register)
+            case = next(c for c in changed["cases"] if c["case_id"] == nagoya["case_id"])
+            case["storage_capacity_observations"][0]["source_refs"] = refs
+            with self.subTest(refs=refs), self.assertRaises(ValueError):
+                validate_register(changed, self.config)
+        observations.append(copy.deepcopy(observations[0]))
+        with self.assertRaises(ValueError):
+            validate_register(self.register, self.config)
+
     def test_matching_and_amount_need_checked_public_evidence(self):
         self.register["cases"][0]["configuration_match"] = "confirmed"
         with self.assertRaises(ValueError):

@@ -167,11 +167,38 @@ def validate_topic_decision_support(root: Path) -> list[str]:
     return errors
 
 
+def validate_inventory_links(inventory: dict, register: dict, roadmaps: list[dict]) -> list[str]:
+    """Keep lifecycle dates in roadmaps and procurement amounts in the register."""
+    errors = []
+    systems = {system["system_id"] for system in inventory["systems"]}
+    milestones = {(roadmap["roadmap_id"], milestone["milestone_id"])
+                  for roadmap in roadmaps for lane in roadmap["lanes"]
+                  for milestone in lane["milestones"]}
+    for case in register["cases"]:
+        if unknown := set(case.get("linked_system_ids", [])) - systems:
+            errors.append(f"{case['case_id']} links unknown HPCI systems: {sorted(unknown)}")
+    for system in inventory["systems"]:
+        if note := system.get("performance_note"):
+            source_ids = {source["source_id"] for source in inventory["sources"]}
+            if not note.get("source_ids") or set(note["source_ids"]) - source_ids:
+                errors.append(f"{system['system_id']} performance note needs registered sources")
+            if not note.get("note_ja", "").strip() or not note.get("note_en", "").strip():
+                errors.append(f"{system['system_id']} performance note needs both languages")
+        for ref in system.get("lifecycle_milestone_refs", []):
+            if (ref["roadmap_id"], ref["milestone_id"]) not in milestones:
+                errors.append(f"{system['system_id']} links unknown lifecycle milestone: {ref}")
+    return errors
+
+
 def validate(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     center_registry = load_json(root / "config/hpci-center-registry.json")
     inventory = load_json(root / "knowledge/public/hpci-system-inventory.json")
     forecasts = load_json(root / "knowledge/public/application-performance-forecasts.json")
+    register_path = root / "knowledge/public/procurement-cost-register.json"
+    if register_path.exists():
+        roadmaps = [load_json(path) for path in sorted((root / "knowledge/public/roadmaps").glob("*.json"))]
+        errors.extend(validate_inventory_links(inventory, load_json(register_path), roadmaps))
 
     center_ids = {center["center_id"] for center in center_registry["centers"]}
     inventory_source_ids = {source["source_id"] for source in inventory["sources"]}

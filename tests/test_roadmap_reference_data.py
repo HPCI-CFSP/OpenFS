@@ -317,7 +317,10 @@ class RoadmapReferenceDataTests(unittest.TestCase):
         self.assertEqual(
             {
                 "MS-BLUE-TSUKUBA-SIRIUS-2026Q1",
+                "MS-BLUE-TSUKUBA-SIRIUS-FULL-2026Q2",
+                "MS-BLUE-TSUKUBA-SIRIUS-EXPANSION-UNDATED",
                 "MS-BLUE-NAGOYA-FLOW2-2026Q4",
+                "MS-BLUE-NAGOYA-FURO-END-2026Q1",
                 "MS-BLUE-HOKKAIDO-GPU-2027Q2",
                 "MS-BLUE-OSAKA-END-2027Q2",
                 "MS-BLUE-HBW2-END-2029Q4",

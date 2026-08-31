@@ -625,7 +625,7 @@ Use public budgets, contracts, and specifications to assess cost, deployment tim
 - `CROSS-06-U01` **調達条件と費用 / Procurement conditions and cost** (`partial`)
   - 公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。
   - Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty.
-  - Evidence sections: TDS-PRP-EVIDENCE, TDS-PRP-PLANNING
+  - Evidence sections: TDS-PCD-CONTRACTS, TDS-PCD-SCOPE, TDS-PRP-PLANNING
 - `CROSS-06-U02` **共同調達と段階整備 / Joint procurement and staged deployment** (`not-started`)
   - 共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。
   - Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.
@@ -714,20 +714,20 @@ Related / 関連: CROSS-003, ARCH-002, OPS-010
 
 ### CROSS-002: HPCI基盤センター現況・更新計画・制約
 
-HPCI center status, refresh plans, and constraints. Canonical ID: `CROSS-08`. Status: `not-started`.
+HPCI center status, refresh plans, and constraints. Canonical ID: `CROSS-08`. Status: `partial`.
 
 利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。 既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。
 
 Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies. Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.
 
-- `CROSS-08-U01` **センター基礎情報 / Center baseline information** (`not-started`)
+- `CROSS-08-U01` **センター基礎情報 / Center baseline information** (`partial`)
   - 利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。
   - Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies.
-  - Evidence sections: none / 未収集
-- `CROSS-08-U02` **移行・採用条件 / Migration and adoption conditions** (`not-started`)
+  - Evidence sections: TDS-CBL-BASELINE, TDS-CBL-CHANGES-V2
+- `CROSS-08-U02` **移行・採用条件 / Migration and adoption conditions** (`partial`)
   - 既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。
   - Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.
-  - Evidence sections: none / 未収集
+  - Evidence sections: TDS-CBL-MIGRATION
 
 Related / 関連: ARCH-005, OPS-010, OPS-012, OPS-013
 

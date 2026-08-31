@@ -7766,8 +7766,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "公開調達の価格・支払期間・構成資料を照合し、予算別計画へ使える情報と未確認事項を区別します。費用の小項目を更新しましたが、共同調達・段階整備の研究小項目は未着手です。",
-      "summary_en": "Public procurement prices, billing periods, and configuration documents are matched to distinguish usable planning evidence from unknowns. The cost unit is updated; the joint-procurement and staged-deployment unit remains unstarted.",
+      "summary_ja": "筑波大学の契約予定総額を一次資料で確認し、名古屋大学の容量表記を物理・実効・定義未記載に分けました。価格台帳を数値の正本とし、最終仕様書、部品価格、保守・施設費の包含は未確認のままです。共同調達・段階整備の調査単位は未着手です。",
+      "summary_en": "Primary evidence now confirms Tsukuba's planned contract total; Nagoya capacity statements are separated into physical, effective and unspecified bases. The cost register remains authoritative for numbers. Final specifications, component prices and maintenance/facility inclusions remain unverified; the joint-procurement and staged-deployment unit is unstarted.",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -8094,6 +8094,80 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-PCD-CONTRACTS",
+          "title_ja": "契約公表額の確認状況",
+          "title_en": "Verification of published contract amounts",
+          "summary_ja": "公表された予定総額と、支払実績・機器価格を区別します。",
+          "summary_en": "Distinguish disclosed planned totals from payments made and hardware prices.",
+          "items": [
+            {
+              "item_id": "TDI-PCD-TSUKUBA-TOTAL",
+              "name_ja": "筑波大学の月額・予定総額",
+              "name_en": "Tsukuba monthly amount and planned total",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2025年度第1四半期契約公表を2026-08-31に確認",
+              "timing_en": "FY2025 Q1 contract disclosure checked on 2026-08-31",
+              "statement_ja": "大学の契約公表で、借入案件の契約日、月額に対応する単価、72か月分の予定総額を確認しました。数値と出典は公開調達台帳に集約します。予定総額は支払完了額でも機器購入価格でもなく、これだけでノード単価や学術割引率を求めることはできません。",
+              "statement_en": "The university's contract disclosure identifies the lease contract date, unit amount corresponding to the monthly payment, and planned total for 72 months. Numbers and sources are centralized in the public procurement register. The planned total is neither payments made nor a hardware purchase price and cannot by itself identify node prices or academic discounts.",
+              "hpci_relevance_ja": "整備案の費用比較では、契約期間、税、保守・設置費の範囲を揃えてから比較します。",
+              "hpci_relevance_en": "Cost comparisons between planning options require aligned contract periods, tax treatment and maintenance/installation scope.",
+              "adoption_conditions_ja": [
+                "最終仕様書と契約範囲を照合する。",
+                "後日の増設費を既存契約へ加算しない。"
+              ],
+              "adoption_conditions_en": [
+                "Match final specifications to contract scope.",
+                "Do not add later expansion costs to the existing contract."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PCD001"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-PCD-SCOPE",
+          "title_ja": "容量・仕様と価格の対応",
+          "title_en": "Matching capacity and specifications to prices",
+          "summary_ja": "同じPB表記でも対象や定義が異なるため、根拠ごとに保持します。",
+          "summary_en": "Values expressed in PB can describe different scopes and definitions; retain each with its evidence.",
+          "items": [
+            {
+              "item_id": "TDI-PCD-NAGOYA-CAPACITY",
+              "name_ja": "不老・弐の容量表記の照合",
+              "name_en": "Reconciling Furo-ni capacity statements",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "2026-08-31時点の公開資料",
+              "timing_en": "Public documents checked on 2026-08-31",
+              "statement_ja": "導入発表には物理容量、現行構成ページには実効容量が明記されています。一方、発表の見出しとHPCI資源ページには定義が明記されていない総容量があります。台帳では資料ごとの値・対象・定義を分け、単なる数値差を構成変更や誤記と断定しません。",
+              "statement_en": "The introduction announcement explicitly gives physical capacity, while the current configuration page gives effective capacity. The announcement headline and HPCI resource page also contain totals without an explicit capacity basis. The register separates values, scope and definitions by source rather than treating a numerical difference as proof of a revision or error.",
+              "hpci_relevance_ja": "ストレージ費用や移行容量の比較では、物理容量、利用可能容量、課題への提供枠を足し合わせません。",
+              "hpci_relevance_en": "Storage-cost and migration-capacity comparisons must not add physical capacity, usable capacity and project-allocation envelopes.",
+              "adoption_conditions_ja": [
+                "仕様改訂と容量定義の対応を確認する。",
+                "最終仕様・支払単位が未確認の間は円／PBや円／GPUを算出しない。"
+              ],
+              "adoption_conditions_en": [
+                "Check specification revisions and capacity definitions.",
+                "Do not compute JPY/PB or JPY/GPU while final scope and payment basis remain unresolved."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-PCD002",
+                "SRC-PCD003",
+                "SRC-PCD004"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -8122,11 +8196,13 @@
       "related_surface_ids": [],
       "coverage_gap_ids": [
         "GAP-TDS-028",
-        "GAP-TDS-039"
+        "GAP-TDS-039",
+        "GAP-TDS-041"
       ],
       "archived_section_ids": [
         "TDS-CROSS06-CURRENT",
-        "TDS-CROSS06-FUTURE"
+        "TDS-CROSS06-FUTURE",
+        "TDS-PRP-EVIDENCE"
       ],
       "research_updates": [
         {
@@ -8137,6 +8213,16 @@
             "CROSS-06-U01"
           ],
           "created_at": "2026-08-31T00:54:29+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000005",
+          "bundle_sha256": "fc1dd9924d4d2f7defbb52db333e43aa9e797cbc8b965971d5af7fb418cf2f0b",
+          "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-08-31T13:06:00+09:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -8424,6 +8510,272 @@
         "GAP-TDS-033"
       ],
       "related_surface_ids": []
+    },
+    {
+      "topic_id": "CROSS-08",
+      "summary_ja": "名古屋大学と筑波大学の構成・導入計画、および旧「不老」から「不老・弐」への移行条件を限定的に調査しました。Sirius増設時期は、確認した資料に記載がないため未確認とし、公表情報が存在しないとは断定しません。全国の網羅性、利用実績、施設制約、移行費用、移植・支援実績は引き続き未確認です。",
+      "summary_en": "This bounded research covers Nagoya and Tsukuba configurations and deployment plans, plus transition conditions from Furo to Furo-II. Sirius expansion timing remains unverified because the checked sources do not specify it; this does not establish that no public timing information exists. Nationwide coverage, utilization, facility constraints, migration costs and porting/support outcomes remain unverified.",
+      "sections": [
+        {
+          "section_id": "TDS-CBL-BASELINE",
+          "title_ja": "稼働構成と提供枠",
+          "title_en": "Operating configurations and allocation envelopes",
+          "summary_ja": "APU、ノード、全システム、課題への提供量を区別します。",
+          "summary_en": "Distinguish APU, node, whole-system and project-allocation quantities.",
+          "items": [
+            {
+              "item_id": "TDI-CBL-SIRIUS",
+              "name_ja": "Siriusの比較基準",
+              "name_en": "Sirius comparison baseline",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "2026-08-31確認。詳細日程は対応ロードマップを参照。",
+              "timing_en": "Checked on 2026-08-31; detailed dates are in the linked roadmap.",
+              "statement_ja": "大学とHPCIの資料を照合し、SiriusのAPUあたりのメモリをノードあたりと誤読しないよう台帳を修正しました。HPCIの仮想ノード時間はAPU単位で、物理ノード時間とは換算が必要です。また、全体のファイルシステム容量とHPCIへの提供ストレージは別の値です。",
+              "statement_en": "University and HPCI sources were reconciled to correct the inventory's confusion between per-APU and per-node memory. HPCI virtual-node hours are APU-based and require conversion to physical-node hours. Whole-filesystem capacity and storage offered through HPCI are also different quantities.",
+              "hpci_relevance_ja": "設置台数だけで全国の供給量を評価せず、利用可能枠と実利用量を分けて比較します。",
+              "hpci_relevance_en": "Installed node counts alone do not measure national supply; compare allocation envelopes separately from actual use.",
+              "adoption_conditions_ja": [
+                "ノード、APU、仮想ノード時間の単位を併記する。",
+                "公称性能をアプリケーション実効性能へ置き換えない。"
+              ],
+              "adoption_conditions_en": [
+                "State the units for nodes, APUs and virtual-node hours.",
+                "Do not substitute nominal peak figures for delivered application performance."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL001",
+                "SRC-CBL002"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-CBL-CHANGES",
+          "title_ja": "導入・増設計画と未確認事項",
+          "title_en": "Introduction and expansion plans and remaining gaps",
+          "summary_ja": "計画中の設備は稼働台数へ加えず、契約期間を廃止予定へ読み替えません。",
+          "summary_en": "Do not add planned equipment to operating counts or reinterpret contract windows as retirement plans.",
+          "items": [
+            {
+              "item_id": "TDI-CBL-NAGOYA-INTRODUCTION",
+              "name_ja": "不老・弐の導入予定",
+              "name_en": "Planned Furo-ni introduction",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "公表された稼働目標は対応ロードマップを参照。",
+              "timing_en": "See the linked roadmap for the published operational target.",
+              "statement_ja": "名古屋大学はCPUとGPUの二つのサブシステムを導入予定です。大容量メモリノードの例外と、共有ストレージの容量定義を区別して記録します。導入計画、HPCI提供期間、借入期間はそれぞれ別の根拠で確認します。",
+              "statement_en": "Nagoya plans CPU and GPU subsystems. Records distinguish large-memory-node exceptions and shared-storage capacity definitions. Introduction plans, HPCI availability and the lease window are checked against their respective sources.",
+              "hpci_relevance_ja": "既存計算資源との重複期間や移行可能量は、別途の利用実績と移行条件の調査が必要です。",
+              "hpci_relevance_en": "Overlap with existing resources and migration capacity need separate utilization and transition evidence.",
+              "adoption_conditions_ja": [
+                "稼働開始後の公式確認を追跡する。",
+                "借入終了をサービス終了とみなさない。"
+              ],
+              "adoption_conditions_en": [
+                "Track official confirmation after commissioning.",
+                "Do not treat lease expiry as service retirement."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL003"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CBL-SIRIUS-EXPANSION",
+              "name_ja": "Siriusの増設計画",
+              "name_en": "Sirius expansion plan",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "納入・運用開始時期は未公表。",
+              "timing_en": "Delivery and operational start dates are not public.",
+              "statement_ja": "大学はAI for Science向け事業による増設計画を公表しています。増設は現在の稼働構成と分け、時期未公表のロードマップ項目として記録します。公表予定の存在だけでは、増設完了や既存契約との価格対応を確認したことにはなりません。",
+              "statement_en": "The university has announced expansion under an AI for Science program. It is kept separate from the operating configuration and recorded as an undated roadmap item. An announced plan does not establish completed deployment or cost coverage by the existing contract.",
+              "hpci_relevance_ja": "増設による全国供給の変化を見積もるには、運用開始日とHPCIへの実際の提供枠を確認する必要があります。",
+              "hpci_relevance_en": "Estimating the national supply impact requires confirmed operational dates and the actual HPCI allocation envelope.",
+              "adoption_conditions_ja": [
+                "納入・運用開始、追加費用、提供条件を追跡する。"
+              ],
+              "adoption_conditions_en": [
+                "Track delivery, operational start, additional costs and allocation conditions."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL004"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-CBL-MIGRATION",
+          "title_ja": "更新時のサービス継続とデータ移行",
+          "title_en": "Service continuity and data migration during refresh",
+          "summary_ja": "機器の更新日程と、利用者が計算・データへアクセスできる条件を分けて確認します。",
+          "summary_en": "Check system refresh dates separately from users' access to compute resources and data.",
+          "items": [
+            {
+              "item_id": "TDI-CBL-NAGOYA-MIGRATION",
+              "name_ja": "不老の運用終了と移行責任",
+              "name_en": "Furo retirement and migration responsibilities",
+              "stage": "current",
+              "maturity": "announced",
+              "timing_ja": "2026年の更新事例。終了実績と後継機の予定はロードマップを参照。",
+              "timing_en": "A 2026 refresh case; see the roadmap for the observed retirement and successor target.",
+              "statement_ja": "大学の終了通知と事前のデータ移行案内を照合しました。/homeのセンター移行は継続仮申請などの条件があり、それ以外のデータは利用者が退避・再転送する方式でした。機器の契約期間だけでは、移行中の計算資源、データへのアクセス、利用者負担を表せません。これは過去の案内を分析したもので、現在利用できる移行サービスの案内ではありません。",
+              "statement_en": "The university's retirement notice was checked against its advance data-migration guidance. Center-managed /home migration required conditions such as provisional renewal; users handled export and re-upload of other data. Equipment contract periods alone do not describe transitional compute capacity, data access or user workload. This analyzes historical guidance, not a currently available migration service.",
+              "hpci_relevance_ja": "更新計画では、代替計算資源、データ移行責任、退避期限、移植支援を別々に確認する必要があります。全国の供給量への影響は実利用量がないため未算定です。",
+              "hpci_relevance_en": "Refresh planning needs separate checks for alternative compute capacity, migration responsibility, export deadlines and porting support. National capacity impact is not estimated without utilization evidence.",
+              "adoption_conditions_ja": [
+                "過去の案内と現在受付中のサービスを区別する。",
+                "契約額に移行支援費用が含まれるかは別途確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Distinguish historical guidance from services currently accepting requests.",
+                "Verify separately whether contract amounts include migration support."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL005",
+                "SRC-CBL006"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        },
+        {
+          "section_id": "TDS-CBL-CHANGES-V2",
+          "title_ja": "導入・増設計画と未確認事項",
+          "title_en": "Introduction and expansion plans and remaining gaps",
+          "summary_ja": "計画中の設備は稼働台数へ加えず、確認できない日程は未確認として残します。",
+          "summary_en": "Keep planned equipment outside operating counts and leave unverified dates unresolved.",
+          "items": [
+            {
+              "item_id": "TDI-CBL-NAGOYA-INTRODUCTION-V2",
+              "name_ja": "不老・弐の導入予定",
+              "name_en": "Planned Furo-ni introduction",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "公表された稼働目標は対応ロードマップを参照。",
+              "timing_en": "See the linked roadmap for the published operational target.",
+              "statement_ja": "名古屋大学はCPUとGPUの二つのサブシステムを導入予定です。大容量メモリノードの例外と、共有ストレージの容量定義を区別して記録します。導入計画、HPCI提供期間、借入期間は、それぞれの資料と照合します。旧システムの停止と移行条件は、このカタログ内の移行調査を参照します。",
+              "statement_en": "Nagoya plans CPU and GPU subsystems. Records distinguish large-memory-node exceptions and shared-storage capacity definitions. Introduction plans, HPCI availability and the lease window are matched to their respective sources. See this catalog's migration research for the previous system's retirement and transition conditions.",
+              "hpci_relevance_ja": "更新期に利用できる計算資源と移行量を定量化するには、利用実績と移行実績が別途必要です。",
+              "hpci_relevance_en": "Quantifying compute capacity and migration volumes during refresh requires separate utilization and migration records.",
+              "adoption_conditions_ja": [
+                "稼働開始後の公式確認を追跡する。",
+                "借入終了をサービス終了とみなさない。"
+              ],
+              "adoption_conditions_en": [
+                "Track official confirmation after commissioning.",
+                "Do not treat lease expiry as service retirement."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL003"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CBL-SIRIUS-EXPANSION-V2",
+              "name_ja": "Siriusの増設計画",
+              "name_en": "Sirius expansion plan",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "増設の納入・運用開始時期は、今回確認した資料では未確認。",
+              "timing_en": "Expansion delivery and operational start dates are unverified in the sources checked here.",
+              "statement_ja": "大学はAI for Science向け事業による増設計画を公表しています。確認した採択記事には増設の納入日・運用開始日の記載がないため、現在の稼働構成と分け、日程未確認のロードマップ項目として記録します。計画の公表だけで増設完了や既存契約との価格対応を確認したことにはなりません。",
+              "statement_en": "The university has announced expansion under an AI for Science program. The checked selection announcement does not give expansion delivery or operational start dates, so the plan is separated from the operating configuration and recorded as an undated roadmap item. An announced plan does not establish completed deployment or cost coverage by the existing contract.",
+              "hpci_relevance_ja": "増設による全国供給の変化を見積もるには、運用開始日とHPCIへの実際の提供枠を確認する必要があります。",
+              "hpci_relevance_en": "Estimating the national supply impact requires confirmed operational dates and the actual HPCI allocation envelope.",
+              "adoption_conditions_ja": [
+                "納入・運用開始、追加費用、提供条件を追跡する。"
+              ],
+              "adoption_conditions_en": [
+                "Track delivery, operational start, additional costs and allocation conditions."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CBL004"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "coverage_gap_ids": [
+        "GAP-TDS-042",
+        "GAP-TDS-043"
+      ],
+      "hpci_decision_dimensions": [
+        {
+          "dimension_id": "DIM-CENTER-SUPPLY",
+          "label_ja": "利用可能資源",
+          "label_en": "Available resources",
+          "question_ja": "設置済みの規模とHPCIへの提供枠を区別できるか。",
+          "question_en": "Are installed capacity and the HPCI allocation envelope distinguished?"
+        },
+        {
+          "dimension_id": "DIM-CENTER-TIMING",
+          "label_ja": "運用と契約の時期",
+          "label_en": "Operational and contractual timing",
+          "question_ja": "契約、稼働開始、利用公募、増設を別々の根拠で確認できるか。",
+          "question_en": "Do separate sources support contract dates, commissioning, allocation windows and expansion?"
+        },
+        {
+          "dimension_id": "DIM-CENTER-CONSTRAINTS",
+          "label_ja": "導入上の制約",
+          "label_en": "Deployment constraints",
+          "question_ja": "電力、冷却、予算、利用実績、移行支援の不足を明示しているか。",
+          "question_en": "Are gaps in power, cooling, budgets, utilization and migration support explicit?"
+        }
+      ],
+      "related_surface_ids": [],
+      "archived_section_ids": [
+        "TDS-CBL-CHANGES"
+      ],
+      "research_updates": [
+        {
+          "update_id": "RUP-000006",
+          "bundle_sha256": "6e8ab649585cb17cc616b3cf54d959e4999c52777d8801dd594f5006604dea4c",
+          "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+          "unit_ids": [
+            "CROSS-08-U01"
+          ],
+          "created_at": "2026-08-31T13:08:20+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000007",
+          "bundle_sha256": "669179538ec0e8934ed83ccc33f2fd159213b19c3f5b78a82ea9ed5f70d80eab",
+          "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+          "unit_ids": [
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-08-31T13:33:21+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000008",
+          "bundle_sha256": "0881a338e4aca1ad0e576a57f59d1b0a7066cb0ff9a6a2e7a7ed6d90a4066515",
+          "base_commit": "013280dfd305d3600468b3d10c929ca322331c8b",
+          "unit_ids": [
+            "CROSS-08-U01"
+          ],
+          "created_at": "2026-08-31T13:48:10+09:00",
+          "consensus_status": "incomplete"
+        }
+      ]
     }
   ],
   "platform_matrix": {
@@ -11501,6 +11853,86 @@
       "url": "https://www.ddn.com/press-releases/ddn-accelerates-inference-and-lowers-cost-per-token-while-expanding-multi-tenant-training-for-ai-factories/",
       "source_class": "official-vendor",
       "published_or_updated": "2026-03-16"
+    },
+    {
+      "source_id": "SRC-PCD001",
+      "title": "FY2025 Q1 government procurement contracts, row 1",
+      "publisher": "University of Tsukuba",
+      "url": "https://zaimuhp2.sec.tsukuba.ac.jp/edit-ad/wp-content/data/fy2025-1q-seifu.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "FY2025 Q1; publication day not stated"
+    },
+    {
+      "source_id": "SRC-PCD002",
+      "title": "Furo-ni public system configuration",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html",
+      "source_class": "official-project",
+      "published_or_updated": "Page date not stated"
+    },
+    {
+      "source_id": "SRC-PCD003",
+      "title": "Furo-ni introduction announcement",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "2026-01-21"
+    },
+    {
+      "source_id": "SRC-PCD004",
+      "title": "FY2026 HPCI Furo-II Type II resource information",
+      "publisher": "HPCI / Nagoya University",
+      "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/itc_nagoya-u_2026-6",
+      "source_class": "official-project",
+      "published_or_updated": "FY2026; page update date not stated"
+    },
+    {
+      "source_id": "SRC-CBL001",
+      "title": "FY2026 HPCI Sirius resource information",
+      "publisher": "HPCI / University of Tsukuba",
+      "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/ccs_tsukuba_2026-4",
+      "source_class": "official-project",
+      "published_or_updated": "FY2026; page update date not stated"
+    },
+    {
+      "source_id": "SRC-CBL002",
+      "title": "Unified-memory supercomputer introduction announcement",
+      "publisher": "University of Tsukuba CCS",
+      "url": "https://www.ccs.tsukuba.ac.jp/release250612/",
+      "source_class": "official-project",
+      "published_or_updated": "2025-06-12"
+    },
+    {
+      "source_id": "SRC-CBL003",
+      "title": "Furo-ni public system configuration",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/flow2-system.html",
+      "source_class": "official-project",
+      "published_or_updated": "Page update date not stated"
+    },
+    {
+      "source_id": "SRC-CBL004",
+      "title": "Sirius expansion selected under the AI for Science program",
+      "publisher": "University of Tsukuba CCS",
+      "url": "https://www.ccs.tsukuba.ac.jp/news260608/",
+      "source_class": "official-project",
+      "published_or_updated": "Page publication day not stated; no date inferred from URL"
+    },
+    {
+      "source_id": "SRC-CBL005",
+      "title": "End of the previous Furo service",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/information/sc/2026-03-31-end.html",
+      "source_class": "official-project",
+      "published_or_updated": "2026-03-31"
+    },
+    {
+      "source_id": "SRC-CBL006",
+      "title": "Advance data-migration notice for the Furo transition",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/information/sc/2026-01-19-data.html",
+      "source_class": "official-project",
+      "published_or_updated": "2026-01-19"
     }
   ],
   "coverage_gaps": [
@@ -12018,6 +12450,42 @@
       "next_action_ja": "対象版の公開仕様と再現可能な適合試験を収集し、未確認機能を分ける。",
       "next_action_en": "Collect versioned public specifications and reproducible conformance tests, separating unverified capabilities.",
       "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-041",
+      "topic_ids": [
+        "CROSS-06"
+      ],
+      "priority": "P0",
+      "question_ja": "契約予定総額を確認できても、部品価格、保守・施設費の包含、増設との境界は未確定です。",
+      "question_en": "A confirmed planned contract total does not resolve component prices, maintenance/facility inclusions or expansion boundaries.",
+      "next_action_ja": "調達台帳の未確認事項を追跡し、公開可能な最終仕様書と契約内訳を照合する。",
+      "next_action_en": "Follow the procurement register's gaps and match publicly usable final specifications and itemization.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-042",
+      "topic_ids": [
+        "CROSS-08"
+      ],
+      "priority": "P0",
+      "question_ja": "今回の2機関だけでは全国の現況・更新計画を網羅できず、利用実績、電力・施設、移行条件も未確認です。",
+      "question_en": "The two institutions do not establish nationwide coverage; utilization, power/facility constraints and migration conditions remain unverified.",
+      "next_action_ja": "他機関の基礎情報を同じ単位で調査し、増設・停止時期と利用実績を確認する。移行条件は別の調査単位で扱う。",
+      "next_action_en": "Research other providers in comparable units and verify expansion/shutdown dates and utilization. Address migration conditions in the separate research unit.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-043",
+      "topic_ids": [
+        "CROSS-08"
+      ],
+      "priority": "P1",
+      "question_ja": "移行案内だけでは、実際のデータ移行量、利用者負担、アプリケーション移植・支援実績を比較できません。",
+      "question_en": "Migration guidance does not establish actual transfer volumes, user workload or application-porting and support outcomes.",
+      "next_action_ja": "公開される運用報告から移行量・支援実績を確認し、調達費用との包含関係を照合する。",
+      "next_action_en": "Check public operational reports for migration volumes and support outcomes, then reconcile any inclusion in procurement costs.",
+      "status": "open"
     }
   ],
   "caveat_ja": "本データセットは、公開情報から単一のAIモデルが作成した暫定的な統合結果です。独立したAIモデルによる合意判定は完了していません。地域分類は技術的な優劣を示しません。また、設計、開発、製造、標準化の役割を単一の国籍に帰属させません。対応表の空欄や「未確認」は、非対応を意味しません。HPCIの正式な採用判断には利用できません。",
@@ -12025,7 +12493,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PROVISIONAL-UNIT-UPDATES-001",
-    "human_approval_directive_id": "DIR-900015"
+    "publication_decision_id": "PUBDEC-PROCUREMENT-RECONCILIATION-001",
+    "human_approval_directive_id": "DIR-900016"
   }
 }

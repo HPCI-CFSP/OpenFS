@@ -22,7 +22,10 @@ def read(root, ref):
 
 
 def profile_for(surface, topic_id):
-    return next(p for p in surface["topic_profiles"] if p["topic_id"] == topic_id)
+    matches = [p for p in surface["topic_profiles"] if p["topic_id"] == topic_id]
+    if len(matches) > 1:
+        raise ValueError("duplicate input profile")
+    return matches[0] if matches else None
 
 
 def validate_contract(root, bundle):
@@ -68,8 +71,8 @@ def verify_pinned_input(root, bundle):
 def project(root, bundle, baseline, surface):
     """Pure projection; all conflicts are checked before returning new documents."""
     validate_contract(root, bundle)
-    verify_authorization(root, bundle)
-    return project_authorized(bundle, baseline, surface)
+    decision_id = verify_authorization(root, bundle)
+    return project_authorized(bundle, baseline, surface, decision_id)
 
 
 def verify_authorization(root, bundle):
@@ -79,14 +82,29 @@ def verify_authorization(root, bundle):
             or bundle["update_id"] not in directive.get("publication_targets", [])
             or "TOPIC-DECISION-SUPPORT-001" not in directive.get("publication_targets", [])):
         raise ValueError("update lacks explicit human publication authorization")
+    decisions = directive.get("result_decision_ids", [])
+    if len(decisions) != 1:
+        raise ValueError("publication Directive must identify one publication decision")
+    return decisions[0]
 
 
-def project_authorized(bundle, baseline, surface):
+def project_authorized(bundle, baseline, surface, decision_id):
     bundle = copy.deepcopy(bundle)
     topic = next(t for t in baseline["topics"] if t["topic_id"] == bundle["topic_id"])
     if topic["status"] not in {"not-started", "partial"}:
         raise ValueError("retired or reviewed Topics cannot use provisional updates")
     profile = profile_for(surface, bundle["topic_id"])
+    creating = profile is None
+    if creating:
+        if topic["status"] != "not-started" or not bundle.get("initial_profile_metadata"):
+            raise ValueError("a missing profile requires explicit initial metadata for an unstarted Topic")
+        if any(u["status"] != "not-started" or u["evidence_section_ids"] for u in topic["research_units"]):
+            raise ValueError("new profile cannot discard existing unit evidence")
+        if bundle["before_profile_sha256"] != stable_digest(None):
+            raise ValueError("new profile input must pin the absence of a profile")
+        profile = {"topic_id": bundle["topic_id"], "summary_ja": bundle["summary_ja"],
+                   "summary_en": bundle["summary_en"], "sections": [], "coverage_gap_ids": [],
+                   **copy.deepcopy(bundle["initial_profile_metadata"])}
     digest = stable_digest(bundle)
     prior = next((u for u in profile.get("research_updates", [])
                   if u["update_id"] == bundle["update_id"]), None)
@@ -95,8 +113,10 @@ def project_authorized(bundle, baseline, surface):
             raise ValueError("an applied update is immutable; create a new update")
         verify_applied(bundle, baseline, surface)
         return baseline, surface, False
-    if stable_digest(profile) != bundle["before_profile_sha256"]:
+    if not creating and stable_digest(profile) != bundle["before_profile_sha256"]:
         raise ValueError("stale profile: rebase and review the new input")
+    if not creating and bundle.get("initial_profile_metadata"):
+        raise ValueError("initial metadata cannot replace an existing profile")
     units = {u["unit_id"]: u for u in topic["research_units"]}
     assignments = {u["unit_id"]: u for u in bundle["units"]}
     if len(assignments) != len(bundle["units"]) or set(assignments) - units.keys():
@@ -147,9 +167,17 @@ def project_authorized(bundle, baseline, surface):
         raise ValueError("Coverage Gaps must be append-only")
     if any(bundle["topic_id"] not in g["topic_ids"] for g in new_gaps.values()):
         raise ValueError("gap does not cover selected Topic")
+    if any(gid not in gaps or bundle["topic_id"] not in gaps[gid]["topic_ids"]
+           for gid in profile["coverage_gap_ids"]):
+        raise ValueError("retained Coverage Gaps must exist and cover the selected Topic")
+    retained_gaps = [gaps[gid] for gid in profile["coverage_gap_ids"]]
+    if not any(g["status"] == "open" for g in [*retained_gaps, *new_gaps.values()]):
+        raise ValueError("a provisional update must retain or add an open Coverage Gap")
 
     baseline, surface = copy.deepcopy(baseline), copy.deepcopy(surface)
     topic = next(t for t in baseline["topics"] if t["topic_id"] == bundle["topic_id"])
+    if creating:
+        surface["topic_profiles"].append(profile)
     profile = profile_for(surface, bundle["topic_id"])
     for unit in topic["research_units"]:
         if unit["unit_id"] in assignments:
@@ -168,12 +196,17 @@ def project_authorized(bundle, baseline, surface):
     surface["coverage_gaps"].extend(bundle["coverage_gaps"])
     surface["as_of"] = max(surface["as_of"], bundle["created_at"][:10])
     surface["publication"].update(human_approval_directive_id=bundle["human_directive_id"],
-                                 publication_decision_id="PUBDEC-PROVISIONAL-UNIT-UPDATES-001")
+                                 publication_decision_id=decision_id)
     return baseline, surface, True
 
 
 def verify_applied(bundle, baseline, surface):
     profile = profile_for(surface, bundle["topic_id"])
+    if profile is None:
+        raise ValueError("applied profile is missing")
+    for key, value in bundle.get("initial_profile_metadata", {}).items():
+        if profile[key] != value:
+            raise ValueError("initial profile metadata differs from immutable update")
     receipt = next(u for u in profile["research_updates"] if u["update_id"] == bundle["update_id"])
     expected = {"update_id": bundle["update_id"], "bundle_sha256": stable_digest(bundle),
                 "base_commit": bundle["base_commit"],

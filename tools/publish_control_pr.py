@@ -9,7 +9,11 @@ import os
 import re
 import urllib.parse
 import urllib.request
+from pathlib import Path
 from typing import Any
+
+from automation_pr_description import prepare_body
+from check_pull_request_description import validate_pull_request
 
 
 REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
@@ -56,6 +60,7 @@ def create(
     head: str,
     base: str,
     summary: dict[str, Any],
+    prepared_description: tuple[str, str] | None = None,
 ) -> dict[str, Any]:
     existing = find_open(repository, token, base=base)
     if existing:
@@ -64,27 +69,18 @@ def create(
             "number": existing["number"],
             "url": existing["html_url"],
         }
-    runs = ", ".join(f"`{item}`" for item in summary["affected_run_ids"]) or "none"
-    body = "\n".join(
-        [
-            "<!-- openfs-handoff-control -->",
-            "",
-            "Trusted control-plane update prepared from merged, digest-verified Handoffs.",
-            "",
-            f"- Accepted Handoffs: `{len(summary['accepted_handoff_refs'])}`",
-            f"- Affected Runs: {runs}",
-            "",
-            "This pull request updates Queue/Run control state and may add deterministic "
-            "follow-up Work Items. It does not promote or publish research findings.",
-        ]
-    )
+    if prepared_description is None:
+        raise ValueError("a validated bilingual PR description is required")
+    title, body = prepared_description
+    if errors := validate_pull_request({"title": title, "body": body}):
+        raise ValueError("; ".join(errors))
     pull = _request(
         repository,
         token,
         "POST",
         "/pulls",
         {
-            "title": "Accept merged OpenFS agent handoffs",
+            "title": title,
             "head": head,
             "base": base,
             "body": body,
@@ -100,6 +96,7 @@ def main() -> int:
     parser.add_argument("--base", default="main")
     parser.add_argument("--head")
     parser.add_argument("--summary")
+    parser.add_argument("--base-commit", default=os.environ.get("GITHUB_SHA"))
     parser.add_argument("--check-only", action="store_true")
     args = parser.parse_args()
     if not args.repository or not REPOSITORY.fullmatch(args.repository):
@@ -122,6 +119,8 @@ def main() -> int:
     if not args.head or not args.summary:
         raise ValueError("--head and --summary are required when creating a PR")
     summary = json.loads(open(args.summary, encoding="utf-8").read())
+    description = prepare_body(Path(__file__).resolve().parents[1], "control", summary,
+                               args.base_commit or "", args.head)
     print(
         json.dumps(
             create(
@@ -130,6 +129,7 @@ def main() -> int:
                 head=args.head,
                 base=args.base,
                 summary=summary,
+                prepared_description=description,
             )
         )
     )

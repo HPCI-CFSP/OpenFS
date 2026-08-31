@@ -1,14 +1,16 @@
 const assert = require("node:assert/strict");
-const {readFileSync} = require("node:fs");
+const {readFileSync, existsSync} = require("node:fs");
 const {test} = require("node:test");
 const vm = require("node:vm");
 const path = require("node:path");
 const rootPath = path.join(__dirname, "..");
 const read = (file) => JSON.parse(readFileSync(path.join(rootPath, file), "utf8"));
 const code = readFileSync(path.join(rootPath, "site/budget-planning.js"), "utf8");
+const publicSeed = {window: {}};
+if (process.env.OPENFS_TEST_PUBLIC_DATA) vm.runInNewContext(readFileSync(process.env.OPENFS_TEST_PUBLIC_DATA, "utf8"), publicSeed);
 
 // Offline event tests; these do not claim browser layout coverage.
-function fixture(query = "") {
+function fixture(query = "", route = "scenarios/") {
   const walk = (element) => typeof element === "string" ? [] : [element, ...element.children.flatMap(walk)];
   class Element {
     constructor(tag) {
@@ -30,9 +32,12 @@ function fixture(query = "") {
   }
   const register = read("knowledge/public/procurement-cost-register.json");
   for (const item of register.cases) item.breakdown = {unallocated_jpy: item.amount ? item.amount.value_jpy : null};
-  const data = {budget_planning: read("config/budget-planning.json"), procurement_register: register};
+  const systems = read("knowledge/public/hpci-system-inventory.json").systems;
+  const blueprint = read("knowledge/public/roadmaps/reference-blueprint-centers.json");
+  for (const item of register.cases) item.linked_systems = (item.linked_system_ids || []).map((id) => ({...systems.find((s) => s.system_id === id), inventory_path: `roadmaps/${blueprint.slug}/`}));
+  const data = publicSeed.window.OPENFS_PUBLIC_DATA ? structuredClone(publicSeed.window.OPENFS_PUBLIC_DATA) : {budget_planning: read("config/budget-planning.json"), procurement_register: register};
   const window = {OPENFS_PUBLIC_DATA: data};
-  const location = new URL(`https://hpci-cfsp.github.io/OpenFS/scenarios/${query}`);
+  const location = new URL(`https://hpci-cfsp.github.io/OpenFS/${route}${query}`);
   const history = {replaceState(_state, _title, url) { location.href = String(url); }};
   vm.runInNewContext(code, {window, location, history, URL, URLSearchParams,
     document: {createElement: (tag) => new Element(tag)}});
@@ -100,7 +105,25 @@ test("public register displays all cases with access restrictions and no raw HTM
   assert.equal(f.root.querySelectorAll("details").length, f.data.procurement_register.cases.length);
   assert.equal(f.root.querySelectorAll("summary")[0].textContent, "<script>not markup</script>");
   assert.ok(f.walk(f.root).some((e) => e.textContent?.includes("Confidentiality required; not obtained")));
-  assert.ok(f.root.querySelectorAll("a").every((a) => a.href.startsWith("https://") && a.rel === "noopener noreferrer"));
+  assert.ok(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("https://")).every((a) => a.rel === "noopener noreferrer"));
+  assert.equal(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("../roadmaps/")).length, 3);
+});
+
+test("reported total, differently defined capacities, and system links remain distinguishable", () => {
+  for (const language of ["ja", "en"]) {
+    const f = fixture(`#procurement-PROC-TSUKUBA-UNIFIED-MEMORY-2025`);
+    f.api.renderRegister(f.root, language);
+    const details = f.root.querySelectorAll("details");
+    assert.equal(details.filter((d) => d.open).length, 1);
+    assert.equal(details.find((d) => d.open).id, "procurement-PROC-TSUKUBA-UNIFIED-MEMORY-2025");
+    const tables = f.root.querySelectorAll("table");
+    assert.equal(tables.length, 2);
+    assert.ok(f.walk(f.root).some((e) => e.textContent === (language === "ja" ? "実効容量" : "Effective")));
+    assert.ok(f.walk(f.root).some((e) => e.textContent?.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure")));
+    const systemLinks = f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"));
+    assert.equal(systemLinks.length, 3);
+    assert.ok(systemLinks.every((a) => a.href.includes(`?lang=${language}#HPCI-SYS-`)));
+  }
 });
 
 test("lease period and award date remain distinct from commissioning and purchase cost", () => {
@@ -116,5 +139,23 @@ test("lease period and award date remain distinct from commissioning and purchas
     assert.ok(text.includes(caseData.award_date));
     assert.ok(text.includes(language === "ja" ? "購入価格・TCOではありません" : "Not purchase price or TCO"));
     assert.ok(text.includes(language === "ja" ? "月額" : "Monthly"));
+  }
+});
+
+test("inventory links resolve to built pages from portfolio and every nested plan", {skip: !process.env.OPENFS_TEST_PUBLIC_DATA}, () => {
+  const site = path.dirname(path.dirname(process.env.OPENFS_TEST_PUBLIC_DATA));
+  const routes = ["scenarios/", ...publicSeed.window.OPENFS_PUBLIC_DATA.scenarios.map((s) => s.path)];
+  for (const route of routes) for (const language of ["ja", "en"]) {
+    const page = readFileSync(path.join(site, route, "index.html"), "utf8");
+    const prefix = page.match(/data-root-prefix="([^"]*)"/)[1];
+    const f = fixture(`?lang=${language}`, route);
+    f.api.renderRegister(f.root, language, prefix);
+    for (const link of f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"))) {
+      const url = new URL(link.href, f.location);
+      assert.equal(url.searchParams.get("lang"), language);
+      assert.ok(url.pathname.startsWith("/OpenFS/roadmaps/"));
+      assert.ok(existsSync(path.join(site, url.pathname.slice("/OpenFS/".length), "index.html")), url.href);
+      assert.ok(f.data.hpci_system_inventory.systems.some((s) => `#${s.system_id}` === url.hash));
+    }
   }
 });

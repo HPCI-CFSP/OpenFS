@@ -93,7 +93,11 @@
     try { const value = window.localStorage.getItem("openfs-language"); if (value === "ja" || value === "en") return value; } catch (_error) {}
     return "ja";
   }
-  function rememberLanguage(value) { try { window.localStorage.setItem("openfs-language", value); } catch (_error) {} }
+  function rememberLanguage(value) {
+    try { window.localStorage.setItem("openfs-language", value); } catch (_error) {}
+    const url = new URL(window.location.href); url.searchParams.set("lang", value);
+    window.history.replaceState(null, "", url);
+  }
   function tr(key) { return copy[language][key] || key; }
   function localized(item, field) { return item?.[`${field}_${language}`] || item?.[field] || ""; }
   function categoryLabel(categoryId) { const category = data.catalog_taxonomy.categories.find((item) => item.category_id === categoryId); return category ? category[`title_${language}`] : categoryId; }
@@ -385,7 +389,56 @@
     setText("hpci-inventory-scope", localized(inventory, "scope")); setText("hpci-inventory-semantics", localized(inventory, "availability_semantics")); setText("hpci-inventory-caveat", localized(inventory, "caveat"));
     const meta = document.getElementById("hpci-inventory-meta"); meta.replaceChildren(); appendSupplementMeta(meta, tr("baselineDate"), inventory.as_of); appendSupplementMeta(meta, tr("systemsCount"), `${inventory.systems.length} ${tr("entriesUnit")}`); appendSupplementMeta(meta, tr("consensusStatus"), statusLabel(inventory.consensus_status)); appendSupplementMeta(meta, tr("sourceCommit"), `${formatJst(inventory.updated_at)} · ${inventory.source_commit.slice(0, 7)}`, inventory.source_commit_url);
     const table = document.createElement("table"); table.className = "supplement-table hpci-inventory-table"; const head = document.createElement("thead"); const headRow = document.createElement("tr"); [tr("systemName"), tr("architectureClass"), tr("nodeCount"), tr("processorConfig"), tr("nodeMemory"), tr("interconnect"), tr("nominalPeak"), tr("callAvailability")].forEach((label) => { const cell = document.createElement("th"); cell.textContent = label; headRow.append(cell); }); head.append(headRow); const body = document.createElement("tbody");
-    inventory.systems.forEach((system) => { const row = document.createElement("tr"); const systemCell = document.createElement("th"); systemCell.scope = "row"; const name = document.createElement("strong"); name.textContent = localized(system, "name"); const provider = document.createElement("span"); provider.textContent = localized(system, "provider"); systemCell.append(name, provider); const architecture = document.createElement("td"); architecture.textContent = system.architecture_class; const nodes = document.createElement("td"); nodes.textContent = formatPublicNumber(system.specifications.node_count); const configuration = document.createElement("td"); configuration.textContent = [system.specifications.processor, system.specifications.accelerator].filter(Boolean).join(" / ") || tr("notPublished"); const memory = document.createElement("td"); memory.textContent = system.specifications.node_memory || tr("notPublished"); const interconnect = document.createElement("td"); interconnect.textContent = system.specifications.interconnect || tr("notPublished"); const peak = document.createElement("td"); peak.textContent = system.specifications.system_peak_pf === null ? tr("notPublished") : `${formatPublicNumber(system.specifications.system_peak_pf)} PF`; const availability = document.createElement("td"); const window = document.createElement("span"); window.className = `availability-window evidence-${system.evidence_status}`; window.textContent = availabilityLabel(system.availability_windows); availability.append(window); row.append(systemCell, architecture, nodes, configuration, memory, interconnect, peak, availability); body.append(row); });
+    inventory.systems.forEach((system) => {
+      const row = document.createElement("tr"); row.id = system.system_id;
+      const systemCell = document.createElement("th"); systemCell.scope = "row";
+      const name = document.createElement("strong"); name.textContent = localized(system, "name");
+      const provider = document.createElement("span"); provider.textContent = localized(system, "provider"); systemCell.append(name, provider);
+      if (system.checked_on) { const checked = document.createElement("small"); checked.textContent = `${language === "ja" ? "確認日" : "Checked"}: ${system.checked_on}`; systemCell.append(checked); }
+      const links = document.createElement("div"); links.className = "inventory-detail-links";
+      (system.procurement_links || []).forEach((item) => {
+        const link = document.createElement("a"); link.textContent = language === "ja" ? "調達額・仕様照合" : "Procurement and specification matching";
+        link.href = `${rootPrefix}scenarios/?lang=${language}#procurement-${item.case_id}`; links.append(link);
+      });
+      systemCell.append(links);
+      const architecture = document.createElement("td"); architecture.textContent = system.architecture_class;
+      const nodes = document.createElement("td"); nodes.textContent = formatPublicNumber(system.specifications.node_count);
+      const configuration = document.createElement("td"); configuration.textContent = [system.specifications.processor, system.specifications.accelerator].filter(Boolean).join(" / ") || tr("notPublished");
+      const memory = document.createElement("td"); memory.textContent = system.specifications.node_memory || tr("notPublished");
+      const interconnect = document.createElement("td"); interconnect.textContent = system.specifications.interconnect || tr("notPublished");
+      const peak = document.createElement("td"); peak.textContent = system.specifications.system_peak_pf === null ? tr("notPublished") : `${formatPublicNumber(system.specifications.system_peak_pf)} PF`;
+      let performanceRow = null;
+      if (system.performance_note) {
+        performanceRow = document.createElement("tr"); performanceRow.className = "inventory-performance-note";
+        performanceRow.id = `${system.system_id}-performance`;
+        const cell = document.createElement("td"); cell.colSpan = 8;
+        const details = document.createElement("details"); const summary = document.createElement("summary");
+        summary.textContent = `${localized(system, "name")}: ${language === "ja" ? "性能値の定義" : "Peak-performance definitions"}`;
+        const note = document.createElement("p"); note.textContent = localized(system.performance_note, "note");
+        details.append(summary, note);
+        system.performance_note.source_ids.forEach((sourceId) => {
+          const source = inventory.sources.find((item) => item.source_id === sourceId);
+          const link = document.createElement("a"); link.href = source.url; link.textContent = source.title;
+          link.target = "_blank"; link.rel = "noopener noreferrer"; details.append(link);
+        });
+        cell.append(details); performanceRow.append(cell);
+      }
+      const availability = document.createElement("td"); const window = document.createElement("span"); window.className = `availability-window evidence-${system.evidence_status}`; window.textContent = availabilityLabel(system.availability_windows); availability.append(window);
+      if (system.lifecycle_events?.length) {
+        const title = document.createElement("strong"); title.textContent = language === "ja" ? "運用・増設の記録" : "Operation and expansion events";
+        const events = document.createElement("div"); events.className = "inventory-detail-links"; events.append(title);
+        system.lifecycle_events.forEach((event) => {
+          const link = document.createElement("a");
+          const period = event.year === null ? tr("undatedColumn") : `${event.year} ${milestonePeriodLabel(event)}`;
+          link.textContent = `${period}: ${localized(event, "label")}`;
+          link.href = `${rootPrefix}roadmaps/${event.roadmap_slug}/?lang=${language}&milestone=${event.milestone_id}`;
+          events.append(link);
+        });
+        availability.append(events);
+      }
+      row.append(systemCell, architecture, nodes, configuration, memory, interconnect, peak, availability); body.append(row);
+      if (performanceRow) body.append(performanceRow);
+    });
     table.append(head, body); const root = document.getElementById("hpci-inventory-table"); root.replaceChildren(table); appendSupplementSources(document.getElementById("hpci-inventory-sources"), inventory); appendSupplementGaps(document.getElementById("hpci-inventory-gaps"), inventory);
   }
   function renderApplicationPerformance(roadmap) {
@@ -454,8 +507,18 @@
     const match = findRoadmapGenerationBand(activeRoadmapGenerationBandId); if (!match) return; const {roadmap, track, band} = match; const period = generationBandPeriodLabel(band); setText("roadmap-dialog-id", band.generation_band_id); setText("roadmap-dialog-title", localized(band, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${tr("generationOutlook")} / ${period}`); const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-milestone-detail roadmap-generation-detail"; const status = document.createElement("span"); status.className = "summary-status"; status.textContent = statusLabel(band.consensus_status); const title = document.createElement("h3"); title.textContent = tr("generationBandDetail"); const detail = document.createElement("p"); appendGlossaryText(detail, localized(band, "detail"), roadmap); const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list"; appendMetaItem(meta, tr("trackColumn"), localized(track, "name")); appendMetaItem(meta, tr("generationPhase"), tr(generationPhaseKeys[band.phase])); appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[band.timing_basis])); appendMetaItem(meta, tr("confidence"), tr(confidenceKeys[band.confidence])); appendMetaItem(meta, tr("timingWindow"), period); appendMetaItem(meta, tr("consensusStatus"), statusLabel(band.consensus_status)); appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of); const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("generationWindowNote"); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, band.source_ids); section.append(status, title, detail, meta, timingNote, sourcesTitle, sources); root.append(section);
     root.prepend(window.OpenFSFeedback.link(feedbackContext(roadmap, "generation", band.generation_band_id, localized(band, "label"), [track.track_id])));
   }
-  function openRoadmapMilestone(milestoneId) { activeRoadmapGenerationBandId = null; activeRoadmapMilestoneId = milestoneId; renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal(); }
-  function openRoadmapGenerationBand(generationBandId) { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = generationBandId; renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal(); }
+  function openRoadmapMilestone(milestoneId) {
+    if (!findRoadmapMilestone(milestoneId)) return;
+    activeRoadmapGenerationBandId = null; activeRoadmapMilestoneId = milestoneId;
+    const url = new URL(window.location.href); url.searchParams.set("milestone", milestoneId); url.searchParams.delete("generation"); window.history.replaceState(null, "", url);
+    renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
+  }
+  function openRoadmapGenerationBand(generationBandId) {
+    if (!findRoadmapGenerationBand(generationBandId)) return;
+    activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = generationBandId;
+    const url = new URL(window.location.href); url.searchParams.set("generation", generationBandId); url.searchParams.delete("milestone"); window.history.replaceState(null, "", url);
+    renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
+  }
   function appendReferenceSourceList(root, sourceRefs) {
     sourceRefs.forEach((sourceRef) => { const roadmap = data.roadmap_artifacts.find((item) => item.roadmap_id === sourceRef.roadmap_id); const source = roadmap?.sources.find((item) => item.source_id === sourceRef.source_id); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); publisher.textContent = `${roadmapName(sourceRef.roadmap_id)} · ${source.publisher} · ${sourceRef.source_id}`; item.append(link, publisher); root.append(item); });
   }
@@ -483,21 +546,26 @@
   function render() { applyStaticCopy(); if (page === "roadmap-index") { renderRoadmapCategoryFilter(); renderRoadmapIndex(); } if (page === "roadmap-detail") { renderRoadmapDetail(); renderRoadmapDialog(); renderRoadmapTermDialog(); } if (page === "roadmap-compare") renderComparison(); }
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(language); render(); }));
   document.getElementById("roadmap-search")?.addEventListener("input", renderRoadmapIndex);
-  const dialog = document.getElementById("roadmap-dialog"); document.getElementById("roadmap-dialog-close")?.addEventListener("click", () => dialog.close()); dialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); dialog?.addEventListener("close", () => { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; });
+  const dialog = document.getElementById("roadmap-dialog"); document.getElementById("roadmap-dialog-close")?.addEventListener("click", () => dialog.close()); dialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); dialog?.addEventListener("close", () => { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; const url = new URL(window.location.href); url.searchParams.delete("milestone"); url.searchParams.delete("generation"); window.history.replaceState(null, "", url); });
   const termDialog = document.getElementById("roadmap-term-dialog"); document.getElementById("roadmap-term-dialog-close")?.addEventListener("click", () => termDialog.close()); termDialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); termDialog?.addEventListener("close", () => { activeTermId = null; const url = new URL(window.location.href); url.searchParams.delete("term"); window.history.replaceState(null, "", url); });
   render();
   if (page === "roadmap-detail") {
     const params = new URLSearchParams(window.location.search);
     const termId = params.get("term");
-    if (termId && termMap().has(termId)) openRoadmapTerm(termId);
+    const validTerm = termId && termMap().has(termId);
+    if (validTerm) openRoadmapTerm(termId);
     const trackId = params.get("track");
     const track = trackId ? document.getElementById(`track-${trackId}`) : null;
     if (track) { track.open = true; track.scrollIntoView({block: "start"}); }
     const comparison = document.getElementById(`comparison-${params.get("comparison")}`);
     if (comparison) comparison.scrollIntoView({block: "start"});
     const milestoneId = params.get("milestone");
-    if (milestoneId && findRoadmapMilestone(milestoneId)) openRoadmapMilestone(milestoneId);
+    if (!validTerm && milestoneId && findRoadmapMilestone(milestoneId)) openRoadmapMilestone(milestoneId);
     const generationId = params.get("generation");
-    if (!milestoneId && generationId && findRoadmapGenerationBand(generationId)) openRoadmapGenerationBand(generationId);
+    if (!validTerm && !activeRoadmapMilestoneId && generationId && findRoadmapGenerationBand(generationId)) openRoadmapGenerationBand(generationId);
+    const systemId = window.location.hash.slice(1);
+    if (data.hpci_system_inventory?.systems.some((system) => system.system_id === systemId)) {
+      document.getElementById(systemId)?.scrollIntoView({block: "start"});
+    }
   }
 })();
