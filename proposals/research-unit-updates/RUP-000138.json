@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000138",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T01:17:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000131",
+      "bundle_sha256": "56c0cc39d11f1d38d93405774490f6d2f794f8b8e87393b9fda1809487fbbc73"
+    }
+  ],
+  "before_profile_sha256": "9dd26d4ae2d7b9232e753a3b96597d3e25a896d19fee83e8efb4395fd2dd98b8",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "全国の大学・高専・研究法人等を対象とした文部科学省の2026年暫定アンケートから、整備計画、財政支援時の追加可能量、土地・建屋・電源等の自己申告容量を追加しました。回答は設備契約や施設調査ではなく、集計内の母数にも不整合があるため、全国の確定設備容量へ外挿しません。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds provisional 2026 MEXT survey evidence from universities, colleges of technology, and research organizations on planned systems, potential additions with funding, and self-reported land, building, and power capacity. Responses are neither equipment contracts nor facility audits, and denominators are inconsistent within the material, so they are not extrapolated into confirmed national capacity. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U01",
+      "before_sha256": "c5d068d56f080410ab8b156eca1fd7bbacd4d16d06d72b4993d6205e1c43ec6c",
+      "evidence_section_ids": ["TDS-CBL-BASELINE", "TDS-CBL-CHANGES-V2", "TDS-CD1-CROSS-08-U01", "TDS-CD10-CROSS-08-U01", "TDS-CD11-CROSS-08-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-CROSS-08-U01",
+      "title_ja": "全国アンケートによる整備意向と施設余地の暫定集計",
+      "title_en": "Provisional national survey of acquisition intent and facility headroom",
+      "summary_ja": "回答、計画、財政支援時の可能量、施設余地を異なる確度の情報として扱います。",
+      "summary_en": "Treat responses, plans, funding-dependent potential, and facility headroom as evidence at different assurance levels.",
+      "items": [
+        {
+          "item_id": "TDI-CD11-MEXT-CENTER-PLAN-SURVEY",
+          "name_ja": "536回答に基づく整備計画と1,011 GPUの暫定集計",
+          "name_en": "Provisional acquisition plans and 1,011 GPUs across 536 responses",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年5月18日～6月22日調査、6月30日暫定版",
+          "timing_en": "Surveyed May 18-June 22, 2026; provisional material dated June 30",
+          "statement_ja": "文部科学省は933機関へ調査を送り、536機関から回答を得たと報告しています。同一機関の異なる部署は別回答として数えます。整備計画ありは38回答で、回答から抽出した整備予定GPUは計1,011でした。一方、後続図の区分は38、44、462で計544となり、冒頭の回答数536と一致しません。したがって回答割合や1機関当たりGPUへ再計算しません。",
+          "statement_en": "MEXT reports sending the survey to 933 organizations and receiving responses from 536, with different departments in the same organization counted separately. Thirty-eight responses report acquisition plans, totaling 1,011 planned GPUs extracted from responses. However, a later chart partitions responses into 38, 44, and 462, totaling 544 rather than 536. Shares and GPUs per organization are therefore not recomputed.",
+          "hpci_relevance_ja": "全国集計は整備意向の規模感を示しますが、センター別の確定計画、契約、電力、利用者需要を置き換えません。",
+          "hpci_relevance_en": "The survey indicates acquisition intent but does not replace site-level final plans, contracts, power, and user demand.",
+          "adoption_conditions_ja": [
+            "回答単位・母数・重複・無回答を文部科学省の確定集計で照合する。",
+            "1,011 GPUについて機種、精度、導入年、共用割合、予算確保を確認する。",
+            "回答を機関別の調達公示・契約・供用開始へ対応付ける。"
+          ],
+          "adoption_conditions_en": [
+            "Reconcile response unit, denominator, duplication, and nonresponse in final MEXT analysis.",
+            "Verify model, precision, year, shared-use share, and funding for the 1,011 GPUs.",
+            "Map responses to site-level tenders, contracts, and service launches."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS133"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-MEXT-FUNDING-FACILITY-HEADROOM",
+          "name_ja": "財政支援時約3,350 GPUと自己申告施設余地約30,200 GPU",
+          "name_en": "About 3,350 funding-dependent GPUs and 30,200 self-reported facility-capacity GPUs",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の暫定集計",
+          "timing_en": "Provisional analysis dated June 30, 2026",
+          "statement_ja": "暫定資料は、財政支援があれば追加可能と回答されたGPU数を約3,350と集計しています。また土地・建屋・電源等の余地から今後整備可能とする回答を約30,200 GPUと集計しますが、「1,000 GPU以上」を2,000 GPUと仮置きした値です。157回答は機関内状況を把握しておらず、259回答はいずれの規模も整備できないとしています。自己申告容量は受電・冷却・工期・運用費を検証した実装可能量ではありません。",
+          "statement_en": "The provisional material aggregates about 3,350 GPUs that respondents say could be added with financial support. It also reports about 30,200 GPUs of potential land, building, and power capacity, but assumes 2,000 GPUs for every '1,000 or more' response. Another 157 responses do not know internal conditions and 259 say no listed scale can be accommodated. Self-reported capacity is not implementation-ready capacity validated for power delivery, cooling, schedule, or operating cost.",
+          "hpci_relevance_ja": "資金だけで導入可能量を決めず、候補拠点ごとに受電時期、冷却、床、ネットワーク、人員、継続費用を段階審査します。",
+          "hpci_relevance_en": "Do not derive deployable capacity from funding alone; stage-gate power-delivery dates, cooling, floor space, network, staffing, and recurring cost per candidate site.",
+          "adoption_conditions_ja": [
+            "GPU数を消費電力・冷却負荷へ換算する際は候補機種とシステム全体を固定する。",
+            "施設余地を系統接続、受変電、UPS、CDU、騒音、防火、工期の現地調査で確認する。",
+            "設備投資と少なくとも保守期間中の運用費・人員を同時に確保する。"
+          ],
+          "adoption_conditions_en": [
+            "Fix candidate models and whole-system scope before converting GPU counts into power or cooling load.",
+            "Audit grid connection, substations, UPS, CDUs, noise, fire protection, and construction schedule at each site.",
+            "Fund capital work together with operating cost and staff for at least the support term."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS133"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS133",
+        "title": "AI for Scienceを支える共用計算資源に関する整備計画等のアンケート調査について",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/content/20260630-mxt_jyohoka01-000050674_04-1-5.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-hpci-planning-committee-69-center-survey",
+      "checked_at": "2026-09-02T01:14:00+09:00",
+      "locator": "Survey purpose and provisional results, pages 2-6",
+      "observation_ja": "送付・回答数、整備計画、予定GPU数、財政支援時の追加可能量、自己申告の施設余地、仮置き、母数不整合を確認しました。自己申告を確定計画・施設容量として扱いません。",
+      "observation_en": "Verified invitations and responses, plans, planned GPUs, funding-dependent additions, self-reported facility headroom, assumptions, and denominator inconsistency. Self-reports are not treated as final plans or audited capacity.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-042とGAP-TDS-090は未解決です。確定集計、機関別計画、契約、電力・冷却監査、専任人員、提供枠、利用実績が必要です。",
+    "GAP-TDS-043に関わる全国のセンター別移行計画は当該集計から確認できません。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-042 and GAP-TDS-090 remain open; final analysis, site plans, contracts, facility audits, dedicated staff, allocations, and use are required.",
+    "The aggregate does not establish site-specific migration plans relevant to GAP-TDS-043.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

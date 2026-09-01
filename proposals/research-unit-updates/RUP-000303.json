@@ -1,0 +1,194 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000303",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-02T07:47:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000156",
+      "bundle_sha256": "ec32a1c889c02ea5fc0b6124db725dc231688e338aa97c4251843c900717ccbf"
+    },
+    {
+      "update_id": "RUP-000255",
+      "bundle_sha256": "d7ec94807c6be2ac5518f8ebaba6e4c1239badfafd7d52f780386f6993a7792d"
+    },
+    {
+      "update_id": "RUP-000296",
+      "bundle_sha256": "c09869a38de5d11eecb8ba21fc3e1e8e3ed53ac239167951ee02f3bb174f5c4f"
+    }
+  ],
+  "before_profile_sha256": "89cae1cf11e9ef03f658a28fba97a58c461e1f28f18d2582ae59805b7ba0113c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年6月に始まったSPring-8 data flow serviceとGakuNin RDMの試験連携を追加しました。利用者権限に基づき施設保存dataを全国RDM環境から直接扱える一方、正式運用、性能、保存、障害、support、J-PARC・NanoTerasu拡張は未確定です。GakuNin RDM 223機関に対し解析機能は146機関で、導入数とHPC連携能力を区別します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds the June 2026 pilot linking the SPring-8 data-flow service with GakuNin RDM. Authorized users can access facility-resident data through the national RDM environment, while production service, performance, retention, failure handling, support, and expansion to J-PARC or NanoTerasu remain unverified. GakuNin RDM reports 223 adopting institutions versus 146 for its analysis function, so adoption count is separated from HPC-integration capability. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "1ce3144c7181c1d7d4b8a554cbf3366a09b0685696638e8d651c35f43cd98d9d",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01",
+        "TDS-CD3-CROSS-14-U01",
+        "TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA",
+        "TDS-CD16-CROSS-14-HPDF-DATA-SERVICE",
+        "TDS-CD17-CROSS-14-SPRING8-GAKUNIN-RDM"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD17-CROSS-14-SPRING8-GAKUNIN-RDM",
+      "title_ja": "SPring-8実験データとGakuNin RDMの連携試験",
+      "title_en": "Pilot integration of SPring-8 experimental data with GakuNin RDM",
+      "summary_ja": "大型施設dataを全国研究data管理基盤から権限付きで扱う実装と、正式運用までの不足を分けます。",
+      "summary_en": "Separate the implemented authorization path from the remaining work before production federation of facility data and national research-data management.",
+      "items": [
+        {
+          "item_id": "TDI-CD110-SPRING8-GAKUNIN-PILOT",
+          "name_ja": "SPring-8 data flow serviceとGakuNin RDMの試験連携",
+          "name_en": "Pilot linking SPring-8 data-flow services and GakuNin RDM",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年6月試験運用開始",
+          "timing_en": "Pilot operation began in June 2026",
+          "statement_ja": "SPring-8 data centerのdata flow serviceとGakuNin RDMの試験連携により、SPring-8で生成・保存された実験dataを、利用者ごとのaccess権限に基づきGakuNin RDMから直接閲覧・利用できるようになりました。従来は認証・accessの問題で一体利用できなかった経路を実装したものです。試験運用であり、正式運用日、対象beamline、data量・転送性能、保存期間、障害時挙動、support水準は公表されていません。",
+          "statement_en": "A pilot link between the SPring-8 Data Center data-flow service and GakuNin RDM lets authorized users directly view and use experimental data generated and stored at SPring-8 from the GakuNin RDM environment. It implements a path previously blocked by authentication and access issues. This remains a pilot; the public release does not establish a production date, covered beamlines, data volume or transfer performance, retention, failure behavior, or support levels.",
+          "hpci_relevance_ja": "実験dataを中央へ無条件複製するのではなく、facility側保存と全国project環境を権限付きで結ぶHPCI data serviceの参照実装になります。",
+          "hpci_relevance_en": "This is a domestic reference for linking facility-resident data with national project environments under authorization rather than assuming unconditional central copying.",
+          "adoption_conditions_ja": [
+            "facility ID、project ID、user属性、embargo、共同研究者権限の対応を公開仕様化する。",
+            "metadata、checksum、provenance、解析履歴、data更新・削除をend-to-endで検証する。",
+            "帯域、P95 access時間、失敗・再試行、support時間、費用を試験運用で測る。"
+          ],
+          "adoption_conditions_en": [
+            "Specify mappings among facility identity, project identity, user attributes, embargoes, and collaborator rights.",
+            "Validate metadata, checksums, provenance, analysis history, updates, and deletion end to end.",
+            "Measure bandwidth, P95 access time, failures, retries, support effort, and cost during the pilot."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS397"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD110-GAKUNIN-ADOPTION-ANALYSIS",
+          "name_ja": "GakuNin RDMの導入規模と解析機能の差",
+          "name_en": "GakuNin RDM adoption versus analysis-function availability",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月時点",
+          "timing_en": "As of June 2026",
+          "statement_ja": "NIIは2026年6月時点で、GakuNin RDMを223機関、data解析機能を146機関が導入したと報告しています。管理基盤の採用数と外部計算資源を用いる解析機能の採用数には差があり、PI向け教材では自環境とNII解析機能の接続を扱います。導入機関数はactive project数、data量、外部HPC接続の成功数、利用品質を示しません。",
+          "statement_en": "NII reports that 223 institutions had adopted GakuNin RDM and 146 had adopted its data-analysis function as of June 2026. Adoption of the management platform therefore exceeds adoption of the analysis function that can connect external computing environments, and NII's PI materials address linking institutional environments with that function. Institution counts do not establish active projects, data volumes, successful external-HPC connections, or service quality.",
+          "hpci_relevance_ja": "HPCIとの連携可能性はRDM導入数だけで見ず、解析機能、identity、network、storage connector、利用支援の実装率で評価すべきです。",
+          "hpci_relevance_en": "HPCI integration should be evaluated through deployed analysis functions, identity, networking, storage connectors, and support rather than RDM institution counts alone.",
+          "adoption_conditions_ja": [
+            "HPCI接続可能機関、connector種、同時利用数、data量を別集計する。",
+            "training受講を実運用能力と同一視せず、再現可能な接続試験を行う。",
+            "小規模解析とlarge-scale HPC offloadを異なるservice levelで定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Count HPCI-capable institutions, connector types, concurrent users, and data volumes separately.",
+            "Do not equate course completion with operational capability; perform reproducible connection tests.",
+            "Define separate service levels for small analysis and large-scale HPC offload."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS398"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD110-SPRING8-FEDERATION-EXPANSION",
+          "name_ja": "J-PARC・NanoTerasuへの拡張は将来計画",
+          "name_en": "J-PARC and NanoTerasu expansion remains a future plan",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "時期未公表",
+          "timing_en": "No public date",
+          "statement_ja": "参加組織は試験利用者のfeedbackから機能を改善して正式運用を目指し、J-PARC、NanoTerasu等への連携拡大を視野に入れています。これは対象候補の表明であり、共通interface、予算、担当組織、導入日、data policyの合意を示しません。各施設は測定data、利用制度、embargo、安全管理が異なるため、SPring-8接続をそのまま複製できるとは限りません。",
+          "statement_en": "The participating organizations plan to improve the pilot from user feedback, move toward production operation, and consider expansion to facilities such as J-PARC and NanoTerasu. This identifies candidate scope but does not establish common interfaces, funding, ownership, deployment dates, or agreed data policies. Facility differences in measurements, access rules, embargoes, and safety mean the SPring-8 connection may not transfer unchanged.",
+          "hpci_relevance_ja": "施設ごとのconnectorを増やす前に、共通control planeと施設固有adapterの責任・適合試験を定義する必要があります。",
+          "hpci_relevance_en": "Before adding facility connectors, HPCI should define responsibilities and conformance tests for a common control plane and facility-specific adapters.",
+          "adoption_conditions_ja": [
+            "共通metadata・identity・policy APIと施設固有extensionを分離する。",
+            "各施設のdata生成率、保存、embargo、安全・契約要件を比較する。",
+            "正式運用・追加施設を日付付きの別milestoneで追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate common metadata, identity, and policy APIs from facility-specific extensions.",
+            "Compare data rates, retention, embargo, safety, and contractual requirements per facility.",
+            "Track production launch and each added facility as dated separate milestones."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS397"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS397",
+        "title": "SPring-8 experimental data integrated with GakuNin RDM",
+        "publisher": "RIKEN / NII / JASRI / J-PARC Center / Tohoku University / CROSS",
+        "url": "https://www.riken.jp/pr/news/2026/20260615_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-15"
+      },
+      "origin_group": "spring8-gakunin-rdm-pilot",
+      "checked_at": "2026-09-02T05:39:00+09:00",
+      "locator": "Pilot start, access model, background, intended production, and possible facility expansion",
+      "observation_ja": "試験開始、権限付き直接利用、正式運用・他施設展開の計画と未確定境界を確認しました。",
+      "observation_en": "Verified pilot launch, authorized direct use, planned production and expansion, and remaining boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS398",
+        "title": "Online learning materials to support research data analysis with GakuNin RDM",
+        "publisher": "National Institute of Informatics",
+        "url": "https://www.nii.ac.jp/en/news/2026/0730.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-30"
+      },
+      "origin_group": "gakunin-rdm-adoption-analysis-2026",
+      "checked_at": "2026-09-02T05:39:00+09:00",
+      "locator": "June 2026 adoption counts and training for external analysis-environment integration",
+      "observation_ja": "RDM 223機関、解析機能146機関と、PI向け外部環境接続教材を確認しました。",
+      "observation_en": "Verified 223 RDM institutions, 146 analysis-function institutions, and PI materials on external-environment integration.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "正式運用日、対象beamline、data量、性能、保存、障害、support、費用、HPCI接続は未確認です。",
+    "J-PARC・NanoTerasuへの拡張は構想段階で、共通仕様や日程を確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Production date, covered beamlines, volumes, performance, retention, failures, support, cost, and HPCI connectivity remain unverified.",
+    "Expansion to J-PARC and NanoTerasu remains planned, with no verified common specification or schedule.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000147",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T02:10:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [{"update_id": "RUP-000141", "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"}],
+  "before_profile_sha256": "85cdd41435e928f5a77e3a6f96ae6dc63b7d261aafe14c5969be0ea130255329",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "東京大学mdx-MaaSと九州大学玄界-Dの公開資料から、Kubernetes型の推論サービス、Slurm上のPersistent Job、OpenAI互換API、LiteLLM・vLLM、ローカル・商用モデル併用、Agent-as-a-Serviceの実装案を追加しました。稼働中の構成と将来構想を分けます。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds implementation patterns from public University of Tokyo mdx-MaaS and Kyushu Genkai-D materials: Kubernetes inference services, persistent Slurm jobs, OpenAI-compatible APIs, LiteLLM and vLLM, combined local and commercial models, and Agent-as-a-Service. Operating components and future concepts are separated. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {"unit_id": "SSW-09-U02", "before_sha256": "c61340527d9b030640a54e566257d6a044600cc2bdd1733563489afb974b87d0", "evidence_section_ids": ["TDS-HC26-SSW-09-U2", "TDS-CD6-SSW-09-U02", "TDS-CD11-SSW-09-U02-U03", "TDS-CD12-SSW-09-U02-U03"]},
+    {"unit_id": "SSW-09-U03", "before_sha256": "71e1db53b55952bb835e9152db4627a94a92d9fb210ecf442f05a5e39d3a19d9", "evidence_section_ids": ["TDS-CD6-SSW-09-U03", "TDS-CD11-SSW-09-U02-U03", "TDS-CD12-SSW-09-U02-U03"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD12-SSW-09-U02-U03",
+      "title_ja": "HPCIセンターにおける推論サービス・エージェント実行案",
+      "title_en": "Inference-service and agent-execution patterns at HPCI centers",
+      "summary_ja": "対話API、バッチ、常駐ジョブ、利用者固有モデル、外部モデルを異なる資源・安全モデルとして比較します。",
+      "summary_en": "Compare interactive APIs, batch, persistent jobs, user-specific models, and external models as distinct resource and safety models.",
+      "items": [
+        {
+          "item_id": "TDI-CD12-MDX-MAAS-PERSISTENT-JOBS",
+          "name_ja": "mdx-MaaSのKubernetes実装とSlurm Persistent Jobへの展開案",
+          "name_en": "mdx-MaaS Kubernetes implementation and proposed Slurm persistent-job deployment",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "timing_ja": "2026年6月30日の運用説明と将来構想",
+          "timing_en": "Operating description and future concept presented June 30, 2026",
+          "statement_ja": "東京大学資料はmdx-MaaSをOpen WebUI、学認、OpenAI互換API、KubernetesとKnativeの自動スケールで提供する推論サービスとして説明します。将来の融合基盤では、上位機能を再利用しつつ、Slurm等のキュー上にvLLMまたはllama.cppをPersistent Jobとして常駐させ、AaaSを重ねる案です。mdx上の説明を、そのまま将来基盤での稼働実績とは扱いません。",
+          "statement_en": "The University of Tokyo describes mdx-MaaS as an inference service using Open WebUI, GakuNin authentication, an OpenAI-compatible API, and Kubernetes/Knative autoscaling. For the future integrated platform, it proposes reusing upper layers while running vLLM or llama.cpp as persistent jobs on a Slurm-class queue and adding Agent-as-a-Service. The mdx description is not treated as evidence that the future platform is operating.",
+          "hpci_relevance_ja": "Kubernetesで実績のあるAPI層を再利用しつつ、HPCキューの会計・優先制御と常駐推論を結ぶ設計を比較できます。",
+          "hpci_relevance_en": "This enables comparison of reusing an established Kubernetes API layer while integrating persistent inference with HPC queue accounting and priority control.",
+          "adoption_conditions_ja": ["mdx-MaaSの提供版、同時利用、待ち時間、稼働率、GPU利用率、履歴保持を実測する。", "Persistent Jobの起動・縮退・更新・障害復旧・会計を通常バッチと比較する。", "AaaSのツール権限、モデル版、外部通信、利用者隔離を試験する。"],
+          "adoption_conditions_en": ["Measure mdx-MaaS versions, concurrency, latency, availability, GPU utilization, and history retention.", "Compare persistent-job startup, scale-down, updates, recovery, and accounting with ordinary batch.", "Test AaaS tool authority, model versions, external communication, and tenant isolation."],
+          "actor_ids": [], "source_ids": ["SRC-CDS138"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-GENKAI-D-LLM-STACK",
+          "name_ja": "玄界-Dのローカル・商用モデル併用スタック案",
+          "name_en": "Proposed Genkai-D stack combining local and commercial models",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年6月30日時点の構成検討",
+          "timing_en": "Architecture under consideration as of June 30, 2026",
+          "statement_ja": "九州大学案は、Open WebUIをフロントエンド、LiteLLM Proxyを利用量追跡・ガードレール・経路制御、Apptainer上のvLLMを推論エンジン、Slurm専用GPUキューをスケジューラとし、需要の多いオープンウェイトモデルを常時提供、利用者固有モデルをバッチで動かします。商用クラウドモデルも同じOpenAI互換APIから併用する構想です。ソフトウェアは調達時に更新予定で、実装済みの本番構成ではありません。",
+          "statement_en": "Kyushu's proposal uses Open WebUI as frontend, LiteLLM Proxy for usage tracking, guardrails, and routing, vLLM in Apptainer for inference, and a dedicated Slurm GPU queue. Popular open-weight models would run as persistent services while user-specific models run in batch, with commercial cloud models accessible through the same OpenAI-compatible API. The software is expected to change by procurement and is not a completed production deployment.",
+          "hpci_relevance_ja": "共通APIで利便性を上げる一方、ローカル・外部経路、課金ログ、研究データ境界、モデル更新、障害責任を利用者から見える形で分離する必要があります。",
+          "hpci_relevance_en": "A shared API improves usability but must expose clear separation of local and external routes, accounting logs, research-data boundaries, model updates, and failure responsibility.",
+          "adoption_conditions_ja": ["各リクエストのモデル・提供先・データ送信先を利用者と監査ログへ明示する。", "LiteLLM、Open WebUI、vLLM、Slurm、Apptainerの版と脆弱性対応を固定する。", "間接プロンプトインジェクション、KVキャッシュ・GPUメモリ・集約ログからの漏えいを試験する。"],
+          "adoption_conditions_en": ["Expose model, provider, and data destination for every request to users and audit logs.", "Pin versions and vulnerability response for LiteLLM, Open WebUI, vLLM, Slurm, and Apptainer.", "Test indirect prompt injection and leakage through KV cache, GPU memory, and aggregated logs."],
+          "actor_ids": [], "source_ids": ["SRC-CDS139"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS138", "title": "AI for Scienceに不可欠な計算資源の戦略的増強: 東京大学情報基盤センター", "publisher": "東京大学情報基盤センター / 文部科学省", "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-3-1.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"}, "origin_group": "mext-ai-resource-utokyo-hpci69", "checked_at": "2026-09-02T01:20:00+09:00", "locator": "Pages 8-9: mdx-MaaS and proposed persistent inference and AaaS", "observation_ja": "mdx-MaaSの構成と将来融合基盤への再利用案、Persistent Job、推論ランタイム、AaaSを確認しました。現行と将来を分けました。", "observation_en": "Verified mdx-MaaS components and their proposed reuse in the future platform, including persistent jobs, inference runtimes, and AaaS. Current and future states are separated.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS139", "title": "AI4S計算資源 玄界-D（仮称）整備計画", "publisher": "九州大学情報基盤研究開発センター / 文部科学省", "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-3-2-1.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"}, "origin_group": "mext-ai-resource-kyushu-hpci69", "checked_at": "2026-09-02T01:22:00+09:00", "locator": "Pages 7-12: serving stack, cross-site use, access rules, Slurm/Kubernetes models, and security", "observation_ja": "Open WebUI、LiteLLM、vLLM、Apptainer、Slurmの案、ローカル・商用モデル併用、クロスサイトとセキュリティ課題を確認しました。構想を稼働実績とは扱いません。", "observation_en": "Verified the proposed Open WebUI, LiteLLM, vLLM, Apptainer, and Slurm stack, combined local and commercial models, cross-site operation, and security gaps. The concept is not treated as operating evidence.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-018、GAP-TDS-033、GAP-TDS-052、GAP-TDS-064は未解決です。現行サービスのSLO・版・性能・安全性と計画システムでの再現が必要です。", "Slurm Persistent Job、Kubernetes、静的分割を同じ負荷と会計条件で比較する公開実証が必要です。", "独立モデルによる本文確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-018, GAP-TDS-033, GAP-TDS-052, and GAP-TDS-064 remain open; current-service SLOs, versions, performance, safety, and reproduction on planned systems are required.", "Public pilots comparing Slurm persistent jobs, Kubernetes, and static partitions under matched workloads and accounting are required.", "Independent-model source review and Consensus remain incomplete."]
+}

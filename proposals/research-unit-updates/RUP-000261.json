@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000261",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-02T07:40:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000136",
+      "bundle_sha256": "dc9e4942f311bff0ccc530173163f9104ae2eccd58c7fd4ef9f252bfdf702138"
+    },
+    {
+      "update_id": "RUP-000175",
+      "bundle_sha256": "752d722e96b79ffb5a0223fdc6e91732657c97fae41a8bf318a27ab19079fab1"
+    }
+  ],
+  "before_profile_sha256": "dc2db2ceb3a7199217d3e6eac79f37ecf90e45eb90c581e5ffb8335dcd0345ca",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳ローカルアカウントは外為法に基づき利用者ごとに審査され、第三者利用や複数利用者による同一SSH公開鍵の登録は不正共有として利用停止の対象になります。クライアント証明書とパスフレーズの再発行では、登録メール、課題参加、実施期間、本人返信を確認します。共有IDを避けるだけでなく、鍵の一意性、本人性、輸出管理、再発行を一体で設計する必要があります。Consensusは未完了です。",
+  "summary_en": "Fugaku local accounts are screened per user under Japan's Foreign Exchange and Foreign Trade Act. Third-party use and registration of the same SSH public key by multiple users are treated as unauthorized sharing and can suspend access. Reissue of client certificates and passphrases verifies the registered email, project participation, active period, and a reply from the requester. Identity design must combine unique keys, person binding, export-control screening, and recovery rather than merely prohibiting shared IDs. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-12-U01",
+      "before_sha256": "56921cd8bcdda54072ceded85ee8101ebaa705e39a8c24f79f2e626461228a14",
+      "evidence_section_ids": [
+        "TDS-CD2-SSW-12-U01",
+        "TDS-CD10-SSW-12-U01",
+        "TDS-CD14-SSW-12-HPCI-IDENTITY",
+        "TDS-CD15-SSW-12-FUGAKU-IDENTITY-CONTROLS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD15-SSW-12-FUGAKU-IDENTITY-CONTROLS",
+      "title_ja": "利用者単位の審査・鍵一意性・証明書再発行",
+      "title_en": "Per-user screening, unique keys, and certificate recovery",
+      "summary_ja": "本人性、法令審査、認証器、回復手続きを一つのIDライフサイクルとして扱います。",
+      "summary_en": "Treat identity, legal screening, authenticators, and recovery as one identity lifecycle.",
+      "items": [
+        {
+          "item_id": "TDI-CD68-FUGAKU-ACCOUNT-BOUNDARY",
+          "name_ja": "同一SSH公開鍵を含むアカウント共有の禁止",
+          "name_en": "Account-sharing prohibition including duplicate SSH keys",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日時点",
+          "timing_en": "As of March 12, 2026",
+          "statement_ja": "富岳はローカルアカウント発行時に利用者ごとの外為法審査を行い、第三者利用は法令違反となる場合があると説明しています。複数利用者間で同一SSH公開鍵を登録することも不正共有とみなし、アカウント利用停止の対象としています。公開資料は検知方法、誤検知、不服申立て、例外手続きを示しません。",
+          "statement_en": "Fugaku performs per-user screening under the Foreign Exchange and Foreign Trade Act and warns that third-party use may violate the law. It also treats registration of the same SSH public key by multiple users as unauthorized sharing subject to suspension. The public material does not describe detection, false positives, appeal, or exception procedures.",
+          "hpci_relevance_ja": "HPCI横断IDでは、個人、所属、課題、資格、鍵・証明書を分離して関連付け、鍵再利用や代理実行を監査可能にする必要があります。",
+          "hpci_relevance_en": "Federated HPCI identity should link person, affiliation, project, eligibility, keys, and certificates as distinct objects, making key reuse and delegated execution auditable.",
+          "adoption_conditions_ja": [
+            "鍵指紋の重複検査と誤検知時の確認手順を定義する。",
+            "サービスアカウント、ワークフロー代理、AIエージェントの委任を個人鍵共有で代替しない。",
+            "審査根拠、停止、復旧、異議申立ての来歴を保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Define duplicate-key checks and false-positive verification.",
+            "Do not substitute personal-key sharing for service accounts, workflow delegation, or AI-agent authorization.",
+            "Preserve provenance for screening, suspension, restoration, and appeal."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD68-FUGAKU-CERTIFICATE-RECOVERY",
+          "name_ja": "証明書・パスフレーズの本人確認付き再発行",
+          "name_en": "Identity-checked certificate and passphrase recovery",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日時点",
+          "timing_en": "As of March 12, 2026",
+          "statement_ja": "再発行申請では登録メールアドレスを使い、FAAS等での課題参加と実施期間を確認し、申請後メールへの本人返信で処理を進めます。既存パスフレーズがある場合は証明書のみ、ない場合は両方を再発行できます。旧来のオンラインストレージ通知には取得期限1か月があり、FAAS利用者はFAASから取得します。",
+          "statement_en": "Recovery uses the registered email, verifies project participation and active duration through FAAS or equivalent procedures, and advances only after the requester replies to the post-application email. A client certificate alone can be reissued when the existing passphrase is retained; otherwise both are reissued. Legacy online-storage delivery had a one-month retrieval deadline, while FAAS users retrieve through FAAS.",
+          "hpci_relevance_ja": "失効・再発行を含む回復経路は認証の一部であり、ユーザー支援工数、復旧時間、誤発行防止を整備評価へ含める必要があります。",
+          "hpci_relevance_en": "Revocation and recovery are part of authentication; support effort, recovery time, and mis-issuance prevention belong in system evaluation.",
+          "adoption_conditions_ja": [
+            "申請、本人確認、失効、新証明書発行、旧認証器停止を監査可能にする。",
+            "メール返信だけに依存せず、リスクに応じた追加認証を用意する。",
+            "平均復旧時間、未取得率、再申請率を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Make request, identity verification, revocation, new issuance, and old-authenticator shutdown auditable.",
+            "Provide risk-based additional verification rather than relying only on email replies.",
+            "Measure mean recovery time, non-retrieval, and repeat requests."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO061",
+        "title": "Important Notes for Using Fugaku, March 2026",
+        "publisher": "HPCI / RIST Helpdesk",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/helpdeskreport/helpdeskreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-helpdesk",
+      "checked_at": "2026-09-02T05:20:00+09:00",
+      "locator": "Pages 3-6: per-user legal screening, duplicate SSH keys, passphrase handling, and certificate recovery",
+      "observation_ja": "利用者単位の法令審査、同一SSH公開鍵の扱い、パスフレーズ取得、証明書再発行手続きを確認しました。",
+      "observation_en": "Verified per-user legal screening, duplicate SSH-key treatment, passphrase retrieval, and certificate-recovery procedures.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "重複鍵の検知方式、誤検知、停止件数、復旧時間、例外・異議申立ては公開されていません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Duplicate-key detection, false positives, suspension counts, recovery time, exceptions, and appeals are not public.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

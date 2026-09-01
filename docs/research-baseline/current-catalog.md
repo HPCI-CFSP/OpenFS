@@ -19,15 +19,15 @@ How should CPU, GPU, vector, and accelerator products be combined given workload
 - `ARCH-01-U01` **CPU・GPUと異種構成 / CPUs, GPUs, and heterogeneous nodes** (`partial`)
   - CPU・GPU・ベクトル・アクセラレータの製品動向と組合せを、対象負荷、電力、費用、ソフトウェア対応からどう選ぶか。
   - How should CPU, GPU, vector, and accelerator products be combined given workloads, power, cost, and software support?
-  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE, TDS-HC26-ARCH-01-U1, TDS-HW1-ARCH-01-U01
+  - Evidence sections: TDS-ARCH01-CURRENT, TDS-ARCH01-FUTURE, TDS-HC26-ARCH-01-U1, TDS-HW1-ARCH-01-U01, TDS-CD15-ARCH-01-LINESHINE
 - `ARCH-01-U02` **ノード内の構成 / Node organization** (`partial`)
   - コア、キャッシュ、メモリ、I/Oと密結合・疎結合の境界をどう構成するか。
   - How should cores, caches, memory, I/O, and tightly or loosely coupled resources be organized?
-  - Evidence sections: TDS-HW1-ARCH-01-U02
+  - Evidence sections: TDS-HW1-ARCH-01-U02, TDS-CD15-ARCH-01-LINESHINE
 - `ARCH-01-U03` **エージェント処理向けCPU / CPUs for agentic workloads** (`partial`)
   - 直列処理と同時実行に対し、コア数、周波数、P/Eコア、SMT、電圧・周波数特性のトレードオフをどう評価するか。
   - How do core count, frequency, P/E cores, SMT, and voltage-frequency behavior trade off for serial work and concurrent agents?
-  - Evidence sections: TDS-HW1-ARCH-01-U03
+  - Evidence sections: TDS-HW1-ARCH-01-U03, TDS-CD16-ARCH-01-AGENTIC-SYSTEM-TRACE, TDS-CD33-ARCH-01-AGENTIC-CPU-TRADEOFFS
 
 Related / 関連: ARCH-003, ARCH-004, ARCH-005, ARCH-009, SSW-001, APP-013
 
@@ -42,11 +42,11 @@ How do process technology, production capacity, yield, and cost constrain perfor
 - `ARCH-02-U01` **製造プロセスと供給 / Processes and production** (`partial`)
   - プロセス、製造能力、歩留まりと費用が性能・電力・導入時期をどう制約するか。
   - How do process technology, production capacity, yield, and cost constrain performance, power, and deployment?
-  - Evidence sections: TDS-HW1-ARCH-02-U01, TDS-HW2-ARCH-02-U01
+  - Evidence sections: TDS-HW1-ARCH-02-U01, TDS-HW2-ARCH-02-U01, TDS-CD42-ARCH-02-BEYOND2NM-GATE-STACK, TDS-CD59-ARCH-02-QUANTUM-ISOTOPE-SUPPLY
 - `ARCH-02-U02` **チップレットと接合 / Chiplets and bonding** (`partial`)
   - UCIe、2.5D/3D実装、TSV、Die-to-Wafer、Wafer-to-Wafer、ハイブリッド接合を、実装密度・熱・歩留まりでどう比較するか。
   - How do UCIe, 2.5D/3D integration, TSVs, die-to-wafer, wafer-to-wafer, and hybrid bonding compare in density, thermal behavior, and yield?
-  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D, TDS-HC26-ARCH-02-U2, TDS-HW1-ARCH-02-U02
+  - Evidence sections: TDS-ARCH02-INTEGRATION, TDS-ARCH03-3D, TDS-HC26-ARCH-02-U2, TDS-HW1-ARCH-02-U02, TDS-CD39-ARCH-02-SAMSUNG-BONDED-3D-MEMORY
 
 Related / 関連: ARCH-003, ARCH-009, CROSS-001
 
@@ -84,15 +84,15 @@ How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantic
 - `ARCH-04-U01` **ノード内・Scale-up / Intra-node and scale-up** (`partial`)
   - PCIe、CXL、NVLink、UALink等の接続範囲、メモリ意味論、整合性、相互運用性をどう区別するか。
   - How do PCIe, CXL, NVLink, and UALink differ in connection scope, memory semantics, coherence, and interoperability?
-  - Evidence sections: TDS-ARCH03-TIERING, TDS-ARCH03-FABRIC, TDS-HW1-ARCH-04-U01
+  - Evidence sections: TDS-ARCH03-TIERING, TDS-ARCH03-FABRIC, TDS-HW1-ARCH-04-U01, TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS, TDS-CD29-ARCH-04-2026-AI-FABRICS
 - `ARCH-04-U02` **Scale-out・拠点間 / Scale-out and inter-site** (`partial`)
   - InfiniBand、Ethernet/RoCE、Ultra Ethernet、Cornelis等を、トポロジ、輻輳、遅延、帯域、電力でどう比較するか。
   - How do InfiniBand, Ethernet/RoCE, Ultra Ethernet, and Cornelis technologies compare in topology, congestion, latency, bandwidth, and power?
-  - Evidence sections: TDS-ARCH04-CURRENT, TDS-HC26-ARCH-04-U2, TDS-HW1-ARCH-04-U02, TDS-HW2-ARCH-04-U02
+  - Evidence sections: TDS-ARCH04-CURRENT, TDS-HC26-ARCH-04-U2, TDS-HW1-ARCH-04-U02, TDS-HW2-ARCH-04-U02, TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS, TDS-CD29-ARCH-04-2026-AI-FABRICS
 - `ARCH-04-U03` **光接続 / Optical connectivity** (`partial`)
   - CPO等の電気・光接続を、到達距離、実装、消費電力、保守性と標準化からどう選ぶか。
   - How should electrical and optical links, including CPO, be selected based on reach, integration, power, serviceability, and standardization?
-  - Evidence sections: TDS-HW1-ARCH-04-U03
+  - Evidence sections: TDS-HW1-ARCH-04-U03, TDS-CD58-ARCH-04-NICT-FIELD-OPTICAL
 
 Related / 関連: ARCH-003, ARCH-005, SSW-003, ARCH-012
 
@@ -107,11 +107,11 @@ How should homogeneous or heterogeneous systems, racks, and disaggregated comput
 - `ARCH-05-U01` **ラック・システム構成 / Rack and system organization** (`partial`)
   - 均質・異種システム、ラック構成、計算・メモリ・ストレージの資源分離と組合せをどう設計するか。
   - How should homogeneous or heterogeneous systems, racks, and disaggregated compute, memory, and storage be composed?
-  - Evidence sections: TDS-HW1-ARCH-05-U01, TDS-HW3-ARCH-05-U01
+  - Evidence sections: TDS-HW1-ARCH-05-U01, TDS-HW3-ARCH-05-U01, TDS-CD10-ARCH-05-U01, TDS-CD11-ARCH-05-U01, TDS-CD12-ARCH-05-U01-U02, TDS-CD13-ARCH-05-U01-U02, TDS-CD14-ARCH-05-U01-U02, TDS-CD3-ARCH-05-VERA-RUBIN-PUBLIC-SYSTEMS, TDS-CD4-ARCH-05-RIKYU-OPERATION, TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE, TDS-CD31-ARCH-05-AWS-ALLOCATABLE-AI-SCALE, TDS-CD49-ARCH-05-OLCF-LUX-CURRENT-SPEC, TDS-CD56-ARCH-05-JUPITER-EARLY-ACCESS-BOUNDARY
 - `ARCH-05-U02` **全体の適合性 / System-level suitability** (`partial`)
   - ノード、ネットワーク、ストレージ、施設条件を組み合わせ、拡張性と相互運用性をどう確認するか。
   - How should nodes, networks, storage, and facility constraints be combined and checked for scalability and interoperability?
-  - Evidence sections: TDS-HW1-ARCH-05-U02
+  - Evidence sections: TDS-HW1-ARCH-05-U02, TDS-CD10-ARCH-05-U01, TDS-CD11-ARCH-05-U01, TDS-CD12-ARCH-05-U01-U02, TDS-CD13-ARCH-05-U01-U02, TDS-CD14-ARCH-05-U01-U02, TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE, TDS-CD31-ARCH-05-AWS-ALLOCATABLE-AI-SCALE
 
 Related / 関連: ARCH-001, ARCH-004, ARCH-012, OPS-001
 
@@ -126,7 +126,7 @@ How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compa
 - `ARCH-12-U01` **専用アクセラレータ / Specialized accelerators** (`partial`)
   - Cerebras、SambaNova、Graphcore、MN-Core、FPGA、カスタムAIチップ等の構成と適用範囲をどう比較するか。
   - How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compare in architecture and application suitability?
-  - Evidence sections: TDS-ARCH02-DOMESTIC, TDS-HC26-ARCH-12-U1, TDS-HW1-ARCH-12-U01, TDS-HW2-ARCH-12-U01
+  - Evidence sections: TDS-ARCH02-DOMESTIC, TDS-HC26-ARCH-12-U1, TDS-HW1-ARCH-12-U01, TDS-HW2-ARCH-12-U01, TDS-CD43-ARCH-12-SILICON-PHOTONIC-LEARNING, TDS-CD47-ARCH-12-MAGNETIC-MEMRISTOR, TDS-CD62-ARCH-12-ALCF-CS3-OPERATIONS
 - `ARCH-12-U02` **PIM・データ近傍処理 / PIM and near-data processing** (`partial`)
   - PIM・ニアメモリ処理の演算配置、メモリモデル、対応ソフトウェア、データ移動削減効果をどう評価するか。
   - How should PIM and near-memory processing be evaluated for compute placement, memory models, software support, and reduced data movement?
@@ -134,7 +134,7 @@ How do Cerebras, SambaNova, Graphcore, MN-Core, FPGAs, and custom AI chips compa
 - `ARCH-12-U03` **導入・供給条件 / Deployment and supply conditions** (`partial`)
   - 量産性、スケールアップ・アウト、移植性、保守と供給継続性から導入条件をどう判断するか。
   - How do production readiness, scale-up/out, portability, maintenance, and supply continuity determine adoption conditions?
-  - Evidence sections: TDS-HW1-ARCH-12-U03
+  - Evidence sections: TDS-HW1-ARCH-12-U03, TDS-CD62-ARCH-12-ALCF-CS3-OPERATIONS
 
 Related / 関連: ARCH-003, APP-016, SSW-001, CROSS-003
 
@@ -149,19 +149,19 @@ How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, 
 - `SSW-05-U01` **記憶デバイス / Storage devices** (`partial`)
   - SSD・HDD・テープ等を、容量、帯域、遅延、耐久性、電力、費用でどう比較するか。
   - How do SSDs, HDDs, and tape compare in capacity, bandwidth, latency, endurance, power, and cost?
-  - Evidence sections: TDS-HW1-SSW-05-U01
+  - Evidence sections: TDS-HW1-SSW-05-U01, TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER, TDS-CD40-SSW-05-PCIE6-SSD-ZNANDO
 - `SSW-05-U02` **接続・システム構成 / Connectivity and system organization** (`partial`)
   - NVMe・NVMe-oF、コントローラ、冗長化、分散構成をどう組み合わせるか。
   - How should NVMe, NVMe-oF, controllers, redundancy, and distributed configurations be combined?
-  - Evidence sections: TDS-HW1-SSW-05-U02
+  - Evidence sections: TDS-HW1-SSW-05-U02, TDS-CD2-SSW-05-U02-U03-U04, TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE, TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE, TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER, TDS-CD40-SSW-05-PCIE6-SSD-ZNANDO, TDS-CD75-SSW-05-HPCI-STORAGE-SERVICE-COMPONENTS
 - `SSW-05-U03` **保存方式・統合製品 / Storage software and integrated products** (`partial`)
   - 並列ファイルシステム、オブジェクトストレージ、EXAScaler、Infinia、VAST等を、同じ階層・条件でどう比較するか。
   - How should parallel filesystems, object storage, EXAScaler, Infinia, VAST, and alternatives be compared at matching layers and conditions?
-  - Evidence sections: TDS-HW1-SSW-05-U03
+  - Evidence sections: TDS-HW1-SSW-05-U03, TDS-CD2-SSW-05-U02-U03-U04, TDS-CD3-SSW-05-U03-U04, TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE, TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE, TDS-HW1-SSW-05-DAOS-28-MDONSSD, TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE, TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE
 - `SSW-05-U04` **データ管理と転送 / Data management and transfer** (`partial`)
   - 階層化、メタデータ、キャッシュ、アーカイブ、DTN・Globus・S3等を、I/O性能とデータライフサイクルからどう評価するか。
   - How should tiering, metadata, caching, archives, DTNs, Globus, and S3 be evaluated for I/O performance and data lifecycle requirements?
-  - Evidence sections: TDS-HW1-SSW-05-U04
+  - Evidence sections: TDS-HW1-SSW-05-U04, TDS-CD2-SSW-05-U02-U03-U04, TDS-CD3-SSW-05-U03-U04, TDS-CD4-SSW-05-AI-READY-DATA, TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE, TDS-CD24-SSW-05-MLPERF-STORAGE-3, TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS, TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE, TDS-CD49-SSW-05-HPCI-DUAL-SITE-STORAGE, TDS-CD42-SSW-05-FUGAKU-METADATA-FAILURES, TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE, TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE, TDS-CD75-SSW-05-HPCI-STORAGE-SERVICE-COMPONENTS
 
 Related / 関連: ARCH-004, ARCH-005, OPS-012, SSW-012
 
@@ -178,19 +178,19 @@ Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and K
 - `SSW-01-U01` **モデル・API・抽象化 / Models, APIs, and abstractions** (`partial`)
   - CUDA・HIP、OpenMP、SYCL、Kokkos等の記述方法と機能を、SDK全体との違いを明示して比較する。
   - Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and Kokkos, distinguishing them from complete SDKs.
-  - Evidence sections: TDS-SSW01-PORTABILITY, TDS-CD1-SSW-01-U01
+  - Evidence sections: TDS-SSW01-PORTABILITY, TDS-CD1-SSW-01-U01, TDS-CD14-SSW-01-PORTABILITY, TDS-CD20-SSW-01-OPENMP-STANDARDS
 - `SSW-01-U02` **言語・コンパイラ・SDK / Languages, compilers, and SDKs** (`partial`)
   - Fortran・C/C++・Python等、コンパイラ、ROCm・oneAPI等のSDK、ビルド・バイナリ互換性をどう維持するか。
   - How should Fortran, C/C++, Python, compilers, SDKs such as ROCm and oneAPI, builds, and binary compatibility be sustained?
-  - Evidence sections: TDS-SSW02-TOOLCHAINS, TDS-HC26-SSW-01-U2, TDS-CD1-SSW-01-U02, TDS-CD2-SSW-01-U02, TDS-CD3-SSW-01-U02, TDS-CD4-SSW-01-U02
+  - Evidence sections: TDS-SSW02-TOOLCHAINS, TDS-HC26-SSW-01-U2, TDS-CD1-SSW-01-U02, TDS-CD2-SSW-01-U02, TDS-CD3-SSW-01-U02, TDS-CD4-SSW-01-U02, TDS-CD11-SSW-01-U02, TDS-CD14-SSW-01-PORTABILITY, TDS-CD20-SSW-01-OPENMP-STANDARDS, TDS-CD52-SSW-01-HPCI-COMPILERS, TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS
 - `SSW-01-U03` **開発・解析ツール / Development and analysis tools** (`partial`)
   - デバッガ、プロファイラ、トレース、移植支援を、対象機種と実用性からどう比較するか。
   - How should debuggers, profilers, tracing, and porting tools be compared for platform coverage and practical usability?
-  - Evidence sections: TDS-CD1-SSW-01-U03, TDS-CD2-SSW-01-U03
+  - Evidence sections: TDS-CD1-SSW-01-U03, TDS-CD2-SSW-01-U03, TDS-CD53-SSW-01-HPCI-ANALYZERS
 - `SSW-01-U04` **移植と性能維持 / Porting and performance retention** (`partial`)
   - コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。
   - How should code changes, porting effort, feature support, reproducibility, and cross-platform performance retention be measured under matching conditions?
-  - Evidence sections: TDS-CD1-SSW-01-U04, TDS-CD6-SSW-01-U04, TDS-CD8-SSW-01-U04, TDS-CD9-SSW-01-U04
+  - Evidence sections: TDS-CD1-SSW-01-U04, TDS-CD6-SSW-01-U04, TDS-CD8-SSW-01-U04, TDS-CD9-SSW-01-U04, TDS-CD10-SSW-01-U04, TDS-CD14-SSW-01-PORTABILITY, TDS-CD18-SSW-01-SOLOMON-STDEXEC, TDS-CD18-SSW-01-KOKKOS-52-MIGRATION
 
 Related / 関連: SSW-003, SSW-004, SSW-008, SSW-010, ARCH-012
 
@@ -205,7 +205,7 @@ Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, a
 - `SSW-03-U01` **通信と集合通信 / Communication and collectives** (`partial`)
   - MPI・UCX・UCC・集合通信ライブラリの階層ネットワーク・アクセラレータ対応、相互運用性、性能、未対応機能を調査する。
   - Investigate MPI, UCX, UCC, and collective libraries for hierarchical networks, accelerators, interoperability, performance, and missing capabilities.
-  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE, TDS-HC26-SSW-03-U1, TDS-CD2-SSW-03-U01, TDS-CD3-SSW-03-U01, TDS-CD4-SSW-03-U01
+  - Evidence sections: TDS-SSW03-CURRENT, TDS-SSW03-FUTURE, TDS-HC26-SSW-03-U1, TDS-CD2-SSW-03-U01, TDS-CD3-SSW-03-U01, TDS-CD4-SSW-03-U01, TDS-CD20-SSW-03-MPI5-ABI, TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS, TDS-CD50-SSW-03-HPCI-COMMUNICATION-SOFTWARE, TDS-CD52-SSW-03-H3-OPEN-BDEC-2025, TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION, TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE
 
 Related / 関連: ARCH-004, SSW-001
 
@@ -220,7 +220,7 @@ Compare dense and sparse linear algebra, FFTs, randomized methods, and open-sour
 - `SSW-04-U01` **アルゴリズムと実装 / Algorithms and implementations** (`partial`)
   - 密・疎行列、FFT、乱択等の手法とOSS・商用実装を、対応CPU/GPU、分散対応と保守から比較する。
   - Compare dense and sparse linear algebra, FFTs, randomized methods, and open-source or commercial implementations for CPU/GPU support, distribution, and maintenance.
-  - Evidence sections: TDS-SSW04-LIBRARIES, TDS-CD1-SSW-04-U01, TDS-CD2-SSW-04-U01, TDS-CD3-SSW-04-U01
+  - Evidence sections: TDS-SSW04-LIBRARIES, TDS-CD1-SSW-04-U01, TDS-CD2-SSW-04-U01, TDS-CD3-SSW-04-U01, TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES, TDS-CD52-SSW-04-CHASE-BSE-GPU, TDS-CD20-SSW-04-KOKKOS-KERNELS-52
 - `SSW-04-U02` **演算精度とエミュレーション / Precision and emulation** (`partial`)
   - 入力・演算・累積・出力精度を区別し、混合精度とOzaki方式等の高精度エミュレーションの実装対応を調査する。
   - Distinguish input, compute, accumulation, and output precision, and investigate implementations of mixed precision and high-precision emulation such as Ozaki schemes.
@@ -239,7 +239,7 @@ Compare schedulers, operating systems, containers, package distribution, and clo
 - `SSW-06-U01` **ジョブ・実行環境 / Jobs and execution environments** (`partial`)
   - スケジューラ、OS、コンテナ、パッケージ配布、クラウド連携をHPCとAIの共存条件から比較する。
   - Compare schedulers, operating systems, containers, package distribution, and cloud integration for coexisting HPC and AI workloads.
-  - Evidence sections: TDS-CD6-SSW-06-U01, TDS-CD7-SSW-06-U01
+  - Evidence sections: TDS-CD6-SSW-06-U01, TDS-CD7-SSW-06-U01, TDS-CD8-SSW-06-U01, TDS-CD14-SSW-06-HPCI-EXECUTION, TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS, TDS-CD22-SSW-06-SCHEDULERS-2026, TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS, TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL, TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS, TDS-CD14-SSW-06-SPACK-12-REPRODUCIBILITY, TDS-CD26-SSW-06-RIKYU-SLURM-MIGRATION, TDS-CD37-SSW-06-FLUX-LIVE-OPERATIONS
 
 Related / 関連: SSW-012, OPS-003, ARCH-012
 
@@ -254,11 +254,11 @@ Assess maintainers, funding, releases, support lifetimes, licenses, dependencies
 - `SSW-08-U01` **長期保守と依存リスク / Maintenance and dependency risks** (`partial`)
   - OSS・商用ソフトの保守者、資金、更新、サポート期限、ライセンス、依存関係と代替先を確認する。
   - Assess maintainers, funding, releases, support lifetimes, licenses, dependencies, and alternatives for open-source and commercial software.
-  - Evidence sections: TDS-CD1-SSW-08-U01, TDS-CD2-SSW-08-U01
+  - Evidence sections: TDS-CD1-SSW-08-U01, TDS-CD2-SSW-08-U01, TDS-CD12-SSW-08-U01-U02, TDS-CD13-SSW-08-U01-U02, TDS-CD14-SSW-08-SUSTAINABILITY, TDS-CD19-SSW-08-HPCI-APPLICATION-CONTINUITY, TDS-CD20-SSW-08-FUGAKU-COMMERCIAL-SOFTWARE, TDS-CD68-SSW-08-OPENFOAM-MAINTENANCE, TDS-CD70-SSW-08-FUGAKU-PYTORCH-LIFECYCLE
 - `SSW-08-U02` **開発・維持体制 / Development and support models** (`partial`)
   - 上流開発への貢献、共同保守、商用支援、国内開発・採用・撤退の責任分担と投資条件をどう決めるか。
   - How should upstream contributions, shared maintenance, commercial support, domestic development, adoption, and retirement be funded and governed?
-  - Evidence sections: TDS-CD1-SSW-08-U02, TDS-CD2-SSW-08-U02
+  - Evidence sections: TDS-CD1-SSW-08-U02, TDS-CD2-SSW-08-U02, TDS-CD12-SSW-08-U01-U02, TDS-CD13-SSW-08-U01-U02, TDS-CD14-SSW-08-SUSTAINABILITY, TDS-CD68-SSW-08-OPENFOAM-MAINTENANCE, TDS-CD70-SSW-08-FUGAKU-PYTORCH-LIFECYCLE
 
 Related / 関連: SSW-001, SSW-004, SSW-009, GOV-002
 
@@ -273,15 +273,15 @@ Compare training and distributed-training frameworks for hardware support, paral
 - `SSW-09-U01` **学習フレームワーク / Training frameworks** (`partial`)
   - 学習・分散学習フレームワークの対応機種、並列化、精度、モデル・データ管理を比較する。
   - Compare training and distributed-training frameworks for hardware support, parallelism, precision, and model and data management.
-  - Evidence sections: TDS-CD6-SSW-09-U01, TDS-CD7-SSW-09-U01
+  - Evidence sections: TDS-CD6-SSW-09-U01, TDS-CD7-SSW-09-U01, TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS
 - `SSW-09-U02` **推論サービング / Inference serving** (`partial`)
   - vLLM、llama.cpp、SGLang、TensorRT-LLM等の量子化、KVキャッシュ、バッチ、投機的・分散推論、対応モデルを比較する。
   - Compare vLLM, llama.cpp, SGLang, TensorRT-LLM, and alternatives for quantization, KV caches, batching, speculative and distributed inference, and model support.
-  - Evidence sections: TDS-HC26-SSW-09-U2, TDS-CD6-SSW-09-U02
+  - Evidence sections: TDS-HC26-SSW-09-U2, TDS-CD6-SSW-09-U02, TDS-CD11-SSW-09-U02-U03, TDS-CD12-SSW-09-U02-U03, TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE, TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE, TDS-CD55-SSW-09-ALCF-FIRST-GATEWAY
 - `SSW-09-U03` **エージェント実行 / Agent execution** (`partial`)
   - 構造化出力、ツール呼出し、隔離、監視、障害回復と保守を、科学AIエージェントの要件から比較する。
   - Compare structured output, tool calls, isolation, monitoring, recovery, and maintenance against scientific-agent requirements.
-  - Evidence sections: TDS-CD6-SSW-09-U03
+  - Evidence sections: TDS-CD6-SSW-09-U03, TDS-CD11-SSW-09-U02-U03, TDS-CD12-SSW-09-U02-U03, TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE, TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE, TDS-CD48-SSW-09-ALCF-AGENT-OPERATIONS, TDS-CD55-SSW-09-ALCF-FIRST-GATEWAY
 
 Related / 関連: SSW-012, APP-012, APP-013, SSW-008
 
@@ -296,7 +296,7 @@ Investigate automatic code and parameter search, accelerator porting, runtime ad
 - `SSW-10-U01` **自動最適化機構 / Automatic optimization mechanisms** (`partial`)
   - コード・パラメータ探索、アクセラレータ移植、実行時適応を自動化する範囲と、正しさの検証方法を調査する。
   - Investigate automatic code and parameter search, accelerator porting, runtime adaptation, and correctness validation.
-  - Evidence sections: TDS-CD1-SSW-10-U01, TDS-CD2-SSW-10-U01
+  - Evidence sections: TDS-CD1-SSW-10-U01, TDS-CD2-SSW-10-U01, TDS-CD8-SSW-10-TOPOLOGY-AUTOTUNING
 
 Related / 関連: SSW-001, APP-005, APP-016
 
@@ -311,7 +311,7 @@ Compare platforms that consistently orchestrate, resume, and audit batch, Kubern
 - `SSW-16-U01` **実行制御と連携 / Orchestration and integration** (`partial`)
   - 非AI処理も含むバッチ、Kubernetes、対話処理、実験ストリーム、AIエージェントを一貫して制御・再開・監査する基盤を比較する。
   - Compare platforms that consistently orchestrate, resume, and audit batch, Kubernetes, interactive, experimental-stream, and agent workloads, including non-AI processing.
-  - Evidence sections: TDS-CD1-SSW-16-U01, TDS-CD2-SSW-16-U01, TDS-CD3-SSW-16-U01, TDS-CD4-SSW-16-U01
+  - Evidence sections: TDS-CD1-SSW-16-U01, TDS-CD2-SSW-16-U01, TDS-CD3-SSW-16-U01, TDS-CD4-SSW-16-U01, TDS-CD13-SSW-16-U01, TDS-CD14-SSW-16-QCSC-OBSERVABILITY
 
 Related / 関連: SSW-006, SSW-009, ARCH-012, APP-012, APP-014
 
@@ -328,11 +328,11 @@ How should priority domains, portfolio shares, and representativeness be defined
 - `APP-01-U01` **科学分野と代表性 / Scientific domains and representativeness** (`partial`)
   - 生命・医療、材料、気候・防災、ものづくり、基礎・社会科学の重点分野、構成比と代表性をどう定めるか。
   - How should priority domains, portfolio shares, and representativeness be defined across life and medical sciences, materials, climate and disaster science, engineering, and basic and social sciences?
-  - Evidence sections: TDS-APP01-CURRENT, TDS-APP01-FUTURE, TDS-CD2-APP-01-U01
+  - Evidence sections: TDS-APP01-CURRENT, TDS-APP01-FUTURE, TDS-CD2-APP-01-U01, TDS-CD10-APP-01-U01, TDS-CD12-APP-01-U01-U02, TDS-CD15-APP-01-U01-U02, TDS-CD16-APP-01-FY2026B-DEMAND, TDS-CD17-APP-01-FY2026A-HPCI-DEMAND, TDS-CD18-APP-01-FY2026A-FUGAKU-AWARDS, TDS-CD19-APP-01-INDUSTRIAL-APPLICATION-ASSETS, TDS-CD38-APP-01-UTOKYO-AI-SCIENCE-DEMAND, TDS-CD55-APP-01-HPCI-USER-NEEDS, TDS-CD64-APP-01-FUGAKU-INDUSTRIAL-SOFTWARE
 - `APP-01-U02` **将来の計算・データ要求 / Future compute and data needs** (`partial`)
   - 問題規模、必要精度、計算・データ量、対話性とAI・実験連携の要求をどう収集するか。
   - How should problem size, required accuracy, compute and data volumes, interactivity, and AI or experimental coupling requirements be collected?
-  - Evidence sections: TDS-CD3-APP-01-U02
+  - Evidence sections: TDS-CD3-APP-01-U02, TDS-CD10-APP-01-U01, TDS-CD12-APP-01-U01-U02, TDS-CD15-APP-01-U01-U02, TDS-CD16-APP-01-FY2026B-DEMAND, TDS-CD17-APP-01-FY2026A-HPCI-DEMAND, TDS-CD18-APP-01-FY2026A-FUGAKU-AWARDS, TDS-CD56-APP-01-HETEROGENEOUS-COUPLED-WORKLOADS
 
 Related / 関連: APP-002, APP-012, APP-014
 
@@ -347,15 +347,15 @@ Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientif
 - `APP-02-U01` **代表アプリとベンチマーク / Representative applications and benchmarks** (`partial`)
   - HPL・HPCG・HPL-MxP・Graph500、実アプリ・Proxyを、科学分野の代表性と再現性から選定する。
   - Select HPL, HPCG, HPL-MxP, Graph500, real applications, and proxies for scientific representativeness and reproducibility.
-  - Evidence sections: TDS-APP02-CURRENT, TDS-APP02-FUTURE, TDS-CD1-APP-02-U01
+  - Evidence sections: TDS-APP02-CURRENT, TDS-APP02-FUTURE, TDS-CD1-APP-02-U01, TDS-CD5-APP-02-U01-U03, TDS-CD47-APP-02-GREEN500-INTERPRETATION, TDS-CD65-APP-02-MD-PORTABILITY-2026, TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY, TDS-CD67-APP-02-OPENFOAM-GPU-2026
 - `APP-02-U02` **性能律速と外挿 / Bottlenecks and extrapolation** (`partial`)
   - FLOPS/Byte、帯域・遅延・容量・通信・I/O、強・弱スケーリングから実行時間・並列効率をモデル化し、複数ノード規模で検証する。
   - Model runtime and parallel efficiency using FLOPS/Byte, bandwidth, latency, capacity, communication, I/O, and strong/weak scaling; validate at multiple node scales.
-  - Evidence sections: TDS-SSW07-CURRENT, TDS-SSW07-FUTURE, TDS-CD1-APP-02-U02, TDS-CD3-APP-02-U02
+  - Evidence sections: TDS-SSW07-CURRENT, TDS-SSW07-FUTURE, TDS-CD1-APP-02-U02, TDS-CD3-APP-02-U02, TDS-CD4-APP-02-SP-MIROC-CPU-GPU, TDS-CD50-APP-02-DISCOVERY-CAAR-READINESS, TDS-CD65-APP-02-MD-PORTABILITY-2026, TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY, TDS-CD67-APP-02-OPENFOAM-GPU-2026, TDS-CD73-APP-02-RIKEN-MEASUREMENT-MODELING-CONTRACTS
 - `APP-02-U03` **継続比較 / Continuous comparison** (`partial`)
   - 同じ問題・精度・資源条件で性能、電力、費用を反復測定し、校正と独立検証を分離する。
   - Repeat performance, power, and cost measurements at matching problem, precision, and resource conditions, separating calibration from independent validation.
-  - Evidence sections: TDS-CD1-APP-02-U03, TDS-CD2-APP-02-U03, TDS-CD3-APP-02-U03, TDS-CD4-APP-02-U03
+  - Evidence sections: TDS-CD1-APP-02-U03, TDS-CD2-APP-02-U03, TDS-CD3-APP-02-U03, TDS-CD4-APP-02-U03, TDS-CD5-APP-02-U01-U03, TDS-CD34-APP-02-GENKAI-WHOLE-SYSTEM-MEASUREMENT, TDS-CD50-APP-02-DISCOVERY-CAAR-READINESS, TDS-CD73-APP-02-RIKEN-MEASUREMENT-MODELING-CONTRACTS
 
 Related / 関連: APP-001, APP-013, APP-015, APP-016
 
@@ -370,7 +370,7 @@ Evaluate productivity and correctness of AI code generation, optimization, and p
 - `APP-05-U01` **生成・移植・検証 / Generation, porting, and validation** (`partial`)
   - AIによるコード生成・最適化・移植の生産性と正しさを、独立テストと再現可能な課題で評価する。
   - Evaluate productivity and correctness of AI code generation, optimization, and porting using independent tests and reproducible tasks.
-  - Evidence sections: TDS-APP05-CURRENT, TDS-APP05-FUTURE, TDS-CD2-APP-05-U01
+  - Evidence sections: TDS-APP05-CURRENT, TDS-APP05-FUTURE, TDS-CD2-APP-05-U01, TDS-CD25-APP-05-CODING-EVAL-QUALITY, TDS-CD3-APP-05-HPC-OPTIMIZATION-AGENT-EVALS
 
 Related / 関連: SSW-010, SSW-001, APP-013
 
@@ -385,7 +385,7 @@ Investigate materials, chemistry, optimization, and sensing applications against
 - `APP-11-U01` **応用と古典比較 / Applications and classical comparison** (`partial`)
   - 材料・化学、最適化、計測等で、入出力・精度・資源条件を揃えた古典手法との比較と有効性を調査する。
   - Investigate materials, chemistry, optimization, and sensing applications against classical methods at matching input/output, accuracy, and resource conditions.
-  - Evidence sections: TDS-CD1-APP-11-U01, TDS-CD2-APP-11-U01
+  - Evidence sections: TDS-CD1-APP-11-U01, TDS-CD2-APP-11-U01, TDS-CD3-APP-11-QSCI-HYBRID-BENCHMARK, TDS-CD4-APP-11-2026-HYBRID-QUANTUM-EVIDENCE
 
 Related / 関連: OPS-009, APP-002
 
@@ -400,11 +400,11 @@ Characterize model and data scales, quality targets, scientific representativene
 - `APP-12-U01` **学習・推論・AI for Science / Training, inference, and AI for Science** (`partial`)
   - 学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。
   - Characterize model and data scales, quality targets, scientific representativeness, and simulation or experiment coupling for training, fine-tuning, and inference.
-  - Evidence sections: TDS-CD1-APP-12-U01, TDS-CD2-APP-12-U01
+  - Evidence sections: TDS-CD1-APP-12-U01, TDS-CD2-APP-12-U01, TDS-CD10-APP-12-U01, TDS-CD11-APP-12-U01, TDS-CD12-APP-12-U01-U02, TDS-CD13-APP-12-FY2026B-AI-DEMAND, TDS-CD14-APP-12-NICAM-AI-COUPLING, TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO, TDS-CD60-APP-12-APEX-CFD-AGENT, TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE, TDS-CD79-APP-12-DOMAIN-AIFS-WORKLOAD-SHAPES, TDS-CD80-APP-12-ECMWF-AIFS-OPERATIONS
 - `APP-12-U02` **科学AIエージェントの要求 / Scientific-agent requirements** (`partial`)
   - 直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。
   - Characterize serial orchestration, retrieval, tools, LLM inference, communication waits, concurrency, reliability, provenance, and safety requirements.
-  - Evidence sections: TDS-CD1-APP-12-U02, TDS-CD2-APP-12-U02
+  - Evidence sections: TDS-CD1-APP-12-U02, TDS-CD2-APP-12-U02, TDS-CD12-APP-12-U01-U02, TDS-CD15-APP-12-JAPAN-SCIENTIST-AI-JAM, TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO, TDS-CD60-APP-12-APEX-CFD-AGENT
 
 Related / 関連: APP-013, APP-001, APP-014, SSW-009, SSW-012
 
@@ -419,15 +419,15 @@ Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, IT
 - `APP-13-U01` **学習・推論評価 / Training and inference evaluation** (`partial`)
   - MLPerf等を参照し、品質を揃えた学習時間、TTFT、ITL、p95/p99、スループットとメモリ・通信・I/O特性を測る。
   - Use benchmarks such as MLPerf to measure quality-matched training time, TTFT, ITL, p95/p99 latency, throughput, and memory, communication, and I/O behavior.
-  - Evidence sections: TDS-AIP-EVALUATION, TDS-HC26-APP-13-U1, TDS-CD2-APP-13-U01
+  - Evidence sections: TDS-AIP-EVALUATION, TDS-HC26-APP-13-U1, TDS-CD2-APP-13-U01, TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE, TDS-CD23-APP-13-MLPERF-6, TDS-CD36-APP-13-MLCOMMONS-SCIENCE-MATURITY, TDS-CD37-APP-13-DDP-HOROVOD, TDS-CD46-APP-13-AIST-AI-CHIP-TESTBED, TDS-CD57-APP-13-LLM-INFERENCE-BENCH
 - `APP-13-U02` **エージェント・ハーネス評価 / Agent and harness evaluation** (`partial`)
   - モデルとハーネスを区別し、タスク成功率、完了時間、tasks/J、cost/task、agents/nodeを、同じ課題・予算・隔離条件で比較する。
   - Distinguish models from harnesses and compare task success, completion time, tasks/J, cost/task, and agents/node under matching tasks, budgets, and isolation conditions.
-  - Evidence sections: TDS-AIP-AGENTS, TDS-CD2-APP-13-U02, TDS-CD3-APP-13-U02
+  - Evidence sections: TDS-AIP-AGENTS, TDS-CD2-APP-13-U02, TDS-CD3-APP-13-U02, TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE, TDS-CD20-APP-13-AGENTIC-MATURITY, TDS-CD26-APP-13-GENEBENCH-PRO, TDS-CD27-APP-13-SCIENTIFIC-AGENT-BENCHMARKS-2026, TDS-CD28-APP-13-SGI-ASTABENCH-CONTRACTS
 - `APP-13-U03` **負荷モデルと継続測定 / Load models and repeated measurement** (`partial`)
   - Prefill/Decode、到着過程、バッチ、直列区間と同時実行を分離し、資源変更時の予測を独立検証する。
   - Separate prefill/decode, arrival processes, batching, serial work, and concurrency, and independently validate predictions for changed resources.
-  - Evidence sections: TDS-AIP-LOAD, TDS-CD4-APP-13-U03
+  - Evidence sections: TDS-AIP-LOAD, TDS-CD4-APP-13-U03, TDS-CD28-APP-13-SGI-ASTABENCH-CONTRACTS, TDS-CD57-APP-13-LLM-INFERENCE-BENCH
 
 Related / 関連: APP-012, APP-002, APP-015, ARCH-001, SSW-009
 
@@ -442,7 +442,7 @@ Characterize experimental automation, digital twins, observation and experimenta
 - `APP-14-U01` **実験・閉ループ処理 / Experiments and closed-loop processing** (`partial`)
   - 実験自動化、デジタルツイン、観測・実験データ量、処理期限、人の承認と制御要件を整理する。
   - Characterize experimental automation, digital twins, observation and experimental data rates, deadlines, human approval, and control requirements.
-  - Evidence sections: TDS-CD1-APP-14-U01, TDS-CD2-APP-14-U01, TDS-CD3-APP-14-U01
+  - Evidence sections: TDS-CD1-APP-14-U01, TDS-CD2-APP-14-U01, TDS-CD3-APP-14-U01, TDS-CD10-APP-14-U01, TDS-CD11-APP-14-JPARC-MLF, TDS-CD12-APP-14-ILIS, TDS-CD13-APP-14-INSTRUMENT-STANDARDS, TDS-CD27-APP-14-EXPERIMENT-SLOS, TDS-CD40-APP-14-NANOTERASU-AOBA, TDS-CD53-APP-14-ORNL-AUTONOMOUS-EXPERIMENT
 - `APP-14-U02` **緊急計算と代表性 / Urgent computing and representativeness** (`partial`)
   - 防災等の緊急処理、予約、優先度、権限、データ経路と実験施設間の代表性をどう確保するか。
   - How should urgent workloads such as disaster response, reservations, priorities, authority, data paths, and facility representativeness be covered?
@@ -461,7 +461,7 @@ Measure end-to-end latency, deadline compliance, jitter, and throughput with fix
 - `APP-15-U01` **遅延・処理期限 / Latency and deadlines** (`partial`)
   - 端から端までの遅延、期限内完了率、ジッタ、処理量を、入力ストリームと負荷条件を固定して測定する。
   - Measure end-to-end latency, deadline compliance, jitter, and throughput with fixed input streams and load conditions.
-  - Evidence sections: TDS-CD2-APP-15-U01
+  - Evidence sections: TDS-CD2-APP-15-U01, TDS-CD7-APP-15-GPU-RESIDENT-INSITU, TDS-CD9-APP-15-SPRING8-OPERATED-PIPELINE, TDS-CD38-APP-15-APS-SYNAPSI-EXPERIMENT-TIME
 - `APP-15-U02` **継続性と再現評価 / Continuity and reproducible evaluation** (`partial`)
   - 予約待ち、転送、障害・復旧を含む評価用ワークフローを作り、モデル校正と独立検証を反復する。
   - Build evaluation workflows including reservation waits, transfers, failures, and recovery, and repeat model calibration and independent validation.
@@ -484,7 +484,7 @@ How should acceptable mixed-precision and approximate-computing regimes be estab
 - `ARCH-13-U02` **性能・省電力との比較 / Performance and energy trade-offs** (`partial`)
   - ハードウェアの演算対応やライブラリ実装を参照し、誤差条件を揃えた性能・エネルギー効果をどう評価するか。
   - Using hardware and library support records, how should performance and energy gains be evaluated under matching error constraints?
-  - Evidence sections: TDS-CD1-ARCH-13-U02
+  - Evidence sections: TDS-CD1-ARCH-13-U02, TDS-CD16-ARCH-13-HPG-MXP-EVIDENCE, TDS-CD17-ARCH-13-LSMS-EMULATION
 
 Related / 関連: SSW-004, APP-002, APP-013, ARCH-009
 
@@ -501,7 +501,7 @@ Investigate feasible facilities given power envelopes, cooling, capacity, buildi
 - `ARCH-06-U01` **設備設計と制約 / Facility design and constraints** (`partial`)
   - 電力枠、冷却方式、設備容量、建屋、運用費と環境制約から実現可能な設備を調査する。
   - Investigate feasible facilities given power envelopes, cooling, capacity, buildings, operating costs, and environmental constraints.
-  - Evidence sections: TDS-CD1-ARCH-06-U01
+  - Evidence sections: TDS-CD1-ARCH-06-U01, TDS-CD2-ARCH-06-U01, TDS-CD3-ARCH-06-PUE-REGULATION, TDS-CD4-ARCH-06-HIGH-DENSITY-GRID-DYNAMICS, TDS-CD34-ARCH-06-800VDC-POWER-PATHS, TDS-CD45-ARCH-06-AIFS-FACILITY-CONTRACTS, TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025
 
 Related / 関連: OPS-006, OPS-013, ARCH-005
 
@@ -516,7 +516,7 @@ Investigate reliability, availability, serviceability, resilience, support lifet
 - `ARCH-10-U01` **安定運用と保守 / Reliable operation and maintenance** (`partial`)
   - 信頼性、可用性、保守性、耐障害性、サポート期間、障害監視と更新時の継続性を調査する。
   - Investigate reliability, availability, serviceability, resilience, support lifetimes, fault monitoring, and continuity during renewal.
-  - Evidence sections: TDS-CD2-ARCH-10-U01
+  - Evidence sections: TDS-CD2-ARCH-10-U01, TDS-CD3-ARCH-10-U01, TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS, TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES, TDS-CD43-ARCH-10-SQUID-CONTROL-PLANE-RAS, TDS-CD46-ARCH-10-TSUKUBA-SERVICE-BOUNDARY, TDS-CD8-ARCH-10-FUGAKU-OPERATIONAL-FAILURES, TDS-CD71-ARCH-10-FUGAKU-MAINTENANCE-2025
 
 Related / 関連: OPS-005, OPS-006, OPS-012
 
@@ -531,7 +531,7 @@ Compare approaches to cross-center resource discovery, reservation, allocation, 
 - `SSW-11-U01` **連合配分と予約 / Federated allocation and reservation** (`partial`)
   - 複数センターの資源表示・予約・配分、緊急計算、自治と権限分担を実現する方式を比較する。
   - Compare approaches to cross-center resource discovery, reservation, allocation, urgent computing, autonomy, and authority.
-  - Evidence sections: TDS-CD2-SSW-11-U01
+  - Evidence sections: TDS-CD2-SSW-11-U01, TDS-CD10-SSW-11-U01, TDS-CD10-SSW-11-EUROHPC-FEDERATION-SCALE
 
 Related / 関連: SSW-006, APP-014, OPS-007
 
@@ -546,7 +546,7 @@ Investigate integration and separation of federated identity, SSO, groups, proje
 - `SSW-12-U01` **認証と利用窓口 / Identity and access** (`partial`)
   - 学認、SSO、グループ・プロジェクト管理、認可とWebポータルの分離・連携を調査する。
   - Investigate integration and separation of federated identity, SSO, groups, projects, authorization, and web portals.
-  - Evidence sections: TDS-CD2-SSW-12-U01
+  - Evidence sections: TDS-CD2-SSW-12-U01, TDS-CD10-SSW-12-U01, TDS-CD14-SSW-12-HPCI-IDENTITY, TDS-CD15-SSW-12-FUGAKU-IDENTITY-CONTROLS, TDS-CD19-SSW-12-HPCI-CONTROL-PLANE-SCALE, TDS-CD25-SSW-12-OPENONDEMAND-42
 
 Related / 関連: OPS-005, OPS-007
 
@@ -561,11 +561,11 @@ How should zero trust, MFA, encryption, supply-chain security, and incident resp
 - `SSW-14-U01` **予防・検知・対応 / Prevention, detection, and response** (`partial`)
   - ゼロトラスト、MFA、暗号化、供給網セキュリティ、インシデント対応を連合運用でどう実現するか。
   - How should zero trust, MFA, encryption, supply-chain security, and incident response be implemented in federated operation?
-  - Evidence sections: TDS-CD1-SSW-14-U01
+  - Evidence sections: TDS-CD1-SSW-14-U01, TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY, TDS-CD3-SSW-14-STORAGE-SECURITY
 - `SSW-14-U02` **機密計算と性能影響 / Confidential computing and performance** (`partial`)
   - 機密計算とプライバシー保護を、脅威モデル、性能影響、運用制約から比較する。
   - Compare confidential computing and privacy controls by threat model, performance impact, and operational constraints.
-  - Evidence sections: TDS-CD1-SSW-14-U02
+  - Evidence sections: TDS-CD1-SSW-14-U02, TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY
 
 Related / 関連: OPS-004, OPS-002, SSW-009
 
@@ -580,7 +580,7 @@ Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate
 - `SSW-15-U01` **計測と制御 / Measurement and control** (`partial`)
   - ジョブ、GPU、電力、冷却水、地域電源を結び、電力制約型スケジューリングとサービス監視を評価する。
   - Connect job, GPU, power, coolant, and regional electricity telemetry to evaluate power-constrained scheduling and service monitoring.
-  - Evidence sections: TDS-CD1-SSW-15-U01, TDS-CD2-SSW-15-U01
+  - Evidence sections: TDS-CD1-SSW-15-U01, TDS-CD2-SSW-15-U01, TDS-CD3-SSW-15-FUGAKU-POWER-INCENTIVE, TDS-CD15-SSW-15-NERSC-SMART-FACILITY, TDS-CD16-SSW-15-POWER-MANAGEMENT-EVIDENCE
 
 Related / 関連: OPS-001, OPS-013, SSW-006
 
@@ -595,7 +595,7 @@ Use identity, allocation, transfer, network, and catalog technology records to d
 - `CROSS-03-U01` **全体の運用要件 / Integrated operating requirements** (`partial`)
   - ID、資源配分、転送、ネットワーク、カタログ等の個別技術を参照し、拠点群の一体運用と責任分担を設計する。
   - Use identity, allocation, transfer, network, and catalog technology records to design integrated multi-site operation and responsibilities.
-  - Evidence sections: TDS-CD1-CROSS-03-U01
+  - Evidence sections: TDS-CD1-CROSS-03-U01, TDS-CD10-CROSS-03-U01, TDS-CD19-CROSS-03-SUPPORT-CAPACITY, TDS-CD29-CROSS-03-AI-USER-OPERATIONS, TDS-CD30-CROSS-03-SUPPORT-OUTCOMES, TDS-CD56-CROSS-03-HPCI-USER-SUPPORT, TDS-CD57-CROSS-03-HPCI-INFORMATION-PATHS, TDS-CD31-CROSS-03-HPCI-SUPPORT-SCALE, TDS-CD32-CROSS-03-AMSC-OPERATIONS
 
 Related / 関連: OPS-003, OPS-004, OPS-005, OPS-012
 
@@ -610,7 +610,7 @@ Investigate quantum-resource interfaces, reservations, scheduling, data paths, o
 - `CROSS-05-U01` **ハイブリッド運用 / Hybrid operation** (`partial`)
   - 量子資源との接続、予約・スケジューリング、データ経路、運用権限と成熟度条件を調査する。
   - Investigate quantum-resource interfaces, reservations, scheduling, data paths, operational authority, and maturity requirements.
-  - Evidence sections: TDS-CD1-CROSS-05-U01
+  - Evidence sections: TDS-CD1-CROSS-05-U01, TDS-CD2-CROSS-05-MIYABI-IBM-QUANTUM, TDS-CD8-CROSS-05-QC-HPC-SERVICE-BOUNDARY, TDS-CD8-CROSS-05-EUROHPC-QUANTUM-MATURITY, TDS-CD9-CROSS-05-ROQUO-HYBRID-OPERATIONS, TDS-CD32-CROSS-05-QUERA-LIBRA-HYBRID-OPERATIONS, TDS-CD44-CROSS-05-MOQUREN-PHOTONIC-QC, TDS-CD51-CROSS-05-ORNL-PATHFINDER-QHPC
 
 Related / 関連: APP-010, OPS-003
 
@@ -625,11 +625,11 @@ Use public budgets, contracts, and specifications to assess cost, deployment tim
 - `CROSS-06-U01` **調達条件と費用 / Procurement conditions and cost** (`partial`)
   - 公開予算・契約・仕様書から費用、導入時期、成熟度、保守、可逆性、不確実性を整理する。
   - Use public budgets, contracts, and specifications to assess cost, deployment timing, maturity, support, reversibility, and uncertainty.
-  - Evidence sections: TDS-PCD-CONTRACTS, TDS-PCD-SCOPE, TDS-PRP-PLANNING, TDS-CD1-CROSS-06-U01, TDS-CD2-CROSS-06-U01
+  - Evidence sections: TDS-PCD-CONTRACTS, TDS-PCD-SCOPE, TDS-PRP-PLANNING, TDS-CD1-CROSS-06-U01, TDS-CD2-CROSS-06-U01, TDS-CD10-CROSS-06-U01, TDS-CD14-CROSS-06-U01, TDS-CD15-CROSS-06-PROCUREMENT-PROCEDURE, TDS-CD16-CROSS-06-MIYABI-CONTRACT, TDS-CD17-CROSS-06-SIRIUS-CONTRACT, TDS-CD18-CROSS-06-TSUBAME4-CONTRACT, TDS-CD19-CROSS-06-ABCI3-COST-ACCESS, TDS-CD20-CROSS-06-EUROHPC-EXASCALE-CONTRACTS, TDS-CD21-CROSS-06-MIMER-LUMIAI-SCOPE, TDS-CD69-CROSS-06-RIKEN-AIFS-PRECURSOR-PROCUREMENT, TDS-CD72-CROSS-06-FUGAKUNEXT-DESIGN-CONTRACTS, TDS-CD78-CROSS-06-RIKYU-ROQUO-PACKAGE-COSTS
 - `CROSS-06-U02` **共同調達と段階整備 / Joint procurement and staged deployment** (`partial`)
   - 共同調達・投資、段階更新の単位と時期、計画案の比較基準を整理し、生成手順と結果は計画基盤へ渡す。
   - Define units and timing for joint procurement, investment, staged renewal, and plan comparison; pass generation procedures and results to the planning framework.
-  - Evidence sections: TDS-CD1-CROSS-06-U02
+  - Evidence sections: TDS-CD1-CROSS-06-U02, TDS-CD10-CROSS-06-U01, TDS-CD11-CROSS-06-U02, TDS-CD13-CROSS-06-U02
 
 Related / 関連: ARCH-005, CROSS-002, GOV-002
 
@@ -644,7 +644,7 @@ Investigate continuity of data, identity, and workflows independently of compute
 - `CROSS-14-U01` **移行と継続運用 / Migration and continuity** (`partial`)
   - 計算機更新と独立したデータ・ID・ワークフローの継続、移行時間、保持方針、責任分担を調査する。
   - Investigate continuity of data, identity, and workflows independently of compute refresh, including migration time, retention, and responsibilities.
-  - Evidence sections: TDS-CD1-CROSS-14-U01, TDS-CD2-CROSS-14-U01
+  - Evidence sections: TDS-CD1-CROSS-14-U01, TDS-CD2-CROSS-14-U01, TDS-CD3-CROSS-14-U01, TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA, TDS-CD16-CROSS-14-HPDF-DATA-SERVICE, TDS-CD17-CROSS-14-SPRING8-GAKUNIN-RDM, TDS-CD18-CROSS-14-SPRING8II-SHUTDOWN, TDS-CD19-CROSS-14-JUPITER-EARLY-ACCESS-JOBS
 
 Related / 関連: ARCH-012, OPS-004, SSW-012, OPS-007
 
@@ -659,7 +659,7 @@ Compare resource placement based on electricity, carbon, disaster resilience, da
 - `CROSS-16-U01` **設置地域の選定 / Site selection** (`partial`)
   - 電力・炭素、災害分散、データ発生源、実験施設との距離から資源配置を比較する。
   - Compare resource placement based on electricity, carbon, disaster resilience, data sources, and proximity to experimental facilities.
-  - Evidence sections: TDS-CD1-CROSS-16-U01
+  - Evidence sections: TDS-CD1-CROSS-16-U01, TDS-CD2-CROSS-16-U01, TDS-CD3-CROSS-16-POWER-CONNECTION, TDS-CD36-CROSS-16-APN-REMOTE-GPU-PLACEMENT
 
 Related / 関連: OPS-001, OPS-006, APP-014
 
@@ -676,7 +676,7 @@ Investigate policy formation, decisions, implementation, and evaluation includin
 - `CROSS-10-U01` **制度と責任分担 / Policy and responsibilities** (`partial`)
   - HPCI計画推進委員会等の政策形成・意思決定・実施・評価、センター自治、運用委託と人材体制を調査する。
   - Investigate policy formation, decisions, implementation, and evaluation including the HPCI planning committee, center autonomy, operating arrangements, and staffing.
-  - Evidence sections: TDS-CD1-CROSS-10-U01, TDS-CD2-CROSS-10-U01
+  - Evidence sections: TDS-CD1-CROSS-10-U01, TDS-CD2-CROSS-10-U01, TDS-CD10-CROSS-10-U01, TDS-CD15-CROSS-10-U01, TDS-CD16-CROSS-10-COMMON-SERVICES, TDS-CD20-CROSS-10-OUTCOME-KPIS, TDS-CD28-CROSS-10-HPCI69-DECISIONS, TDS-CD19-CROSS-10-HPCI-DEMAND-ALLOCATION, TDS-CD41-CROSS-10-FY2026-RESOURCE-POLICY, TDS-CD76-CROSS-10-FUGAKU-STRATEGIC-ALLOCATION-2026
 
 Related / 関連: OPS-007, GOV-002, CROSS-002
 
@@ -691,7 +691,7 @@ Compare HPCI and center resource ownership, joint investment, charging, and acce
 - `CROSS-15-U01` **財源と利用制度 / Funding and access models** (`partial`)
   - HPCI・センターの資源所有、共同投資、利用料金と利用制度を比較する。
   - Compare HPCI and center resource ownership, joint investment, charging, and access models.
-  - Evidence sections: TDS-CD1-CROSS-15-U01, TDS-CD2-CROSS-15-U01, TDS-CD3-CROSS-15-U01
+  - Evidence sections: TDS-CD1-CROSS-15-U01, TDS-CD2-CROSS-15-U01, TDS-CD3-CROSS-15-U01, TDS-CD12-CROSS-15-U01, TDS-CD14-CROSS-15-U01, TDS-CD15-CROSS-15-U01, TDS-CD16-CROSS-15-U01, TDS-CD17-CROSS-15-U01, TDS-CD18-CROSS-15-U01, TDS-CD19-CROSS-15-ABCI3-TARIFF, TDS-CD20-CROSS-15-ABCI3-FY26-CAPACITY, TDS-CD45-CROSS-15-TSUKUBA-ACCESS-PRICE, TDS-CD57-CROSS-15-INDUSTRIAL-ACCESS, TDS-CD58-CROSS-15-HPCI-OUTCOME-POLICY, TDS-CD19-CROSS-15-INDUSTRIAL-ACCESS-POINTS, TDS-CD20-CROSS-15-RIKYU-EARLY-ACCESS, TDS-CD61-CROSS-15-FUGAKU-AGILE-ACCESS-2026
 
 Related / 関連: OPS-010, GOV-001
 
@@ -708,7 +708,7 @@ Compare worldwide manufacturing capacity, vendor concentration, export controls,
 - `ARCH-07-U01` **世界の依存・供給リスク / Global dependency and supply risks** (`partial`)
   - 日本を含む世界の製造能力、企業集中、輸出管理、供給・保守継続を、国籍を性能評価と混同せず比較する。
   - Compare worldwide manufacturing capacity, vendor concentration, export controls, and supply and support continuity, including Japan, without treating nationality as technical merit.
-  - Evidence sections: TDS-CD1-ARCH-07-U01
+  - Evidence sections: TDS-CD1-ARCH-07-U01, TDS-CD2-ARCH-07-SUPPLIER-DUE-DILIGENCE
 
 Related / 関連: CROSS-003, ARCH-002, OPS-010
 
@@ -723,11 +723,11 @@ Maintain dated evidence on users, priority domains, current equipment, power, bu
 - `CROSS-08-U01` **センター基礎情報 / Center baseline information** (`partial`)
   - 利用者、重点分野、現行設備、電力、建屋、予算、更新時期、運用方針を日付付き根拠で管理する。
   - Maintain dated evidence on users, priority domains, current equipment, power, buildings, budgets, refresh timing, and operating policies.
-  - Evidence sections: TDS-CBL-BASELINE, TDS-CBL-CHANGES-V2, TDS-CD1-CROSS-08-U01
+  - Evidence sections: TDS-CBL-BASELINE, TDS-CBL-CHANGES-V2, TDS-CD1-CROSS-08-U01, TDS-CD10-CROSS-08-U01, TDS-CD11-CROSS-08-U01, TDS-CD12-CROSS-08-U01-U02, TDS-CD13-CROSS-08-U01, TDS-CD19-CROSS-08-FY2026-RESOURCE-PORTFOLIO, TDS-CD31-CROSS-08-CENTER-FACILITY-BASELINES, TDS-CD37-CROSS-08-UTOKYO-UTILIZATION, TDS-CD39-CROSS-08-AOBA-OPERATIONS, TDS-CD42-CROSS-08-SQUID-USE-LIFECYCLE, TDS-CD44-CROSS-08-TSUKUBA-PORTFOLIO, TDS-CD48-CROSS-08-HPCI-FY2026-OFFERED-CAPACITY, TDS-CD20-CROSS-08-HPCI-REQUEST-CAPS, TDS-CD63-CROSS-08-ISM-SHARED-MEMORY
 - `CROSS-08-U02` **移行・採用条件 / Migration and adoption conditions** (`partial`)
   - 既存アプリ・運用環境の移行、利用者支援・教育・人材・利用障壁を候補構成の適合性評価へ反映する。
   - Account for application and operations migration, user support, education, staffing, and access barriers when evaluating candidate configurations.
-  - Evidence sections: TDS-CBL-MIGRATION, TDS-CD1-CROSS-08-U02, TDS-CD2-CROSS-08-U02
+  - Evidence sections: TDS-CBL-MIGRATION, TDS-CD1-CROSS-08-U02, TDS-CD2-CROSS-08-U02, TDS-CD10-CROSS-08-U01, TDS-CD12-CROSS-08-U01-U02, TDS-CD33-CROSS-08-GENKAI-MIGRATION, TDS-CD63-CROSS-08-ISM-SHARED-MEMORY
 
 Related / 関連: ARCH-005, OPS-010, OPS-012, OPS-013
 
@@ -742,7 +742,7 @@ Use shared hardware, system software, application, and operations records to ass
 - `CROSS-11-U01` **技術分野横断の実用化 / Cross-domain deployment** (`partial`)
   - ハードウェア、システムソフト、アプリ、運用技術の共通記録を参照し、日本発技術の試作・実証・量産・保守・産業展開の条件を整理する。
   - Use shared hardware, system software, application, and operations records to assess conditions for Japanese-origin technologies to progress through prototypes, demonstrations, production, maintenance, and industrial deployment.
-  - Evidence sections: TDS-CD1-CROSS-11-U01, TDS-CD2-CROSS-11-U01
+  - Evidence sections: TDS-CD1-CROSS-11-U01, TDS-CD2-CROSS-11-U01, TDS-CD3-CROSS-11-PRODUCT-ACCESS
 - `CROSS-11-U02` **国際技術との併用 / Integration with international alternatives** (`partial`)
   - 国際的な代替候補と同じ基準で評価し、調達、標準化、連携と供給自立性への取り組みを検討する。
   - Evaluate against international alternatives under common criteria and examine procurement, standardization, integration, and supply autonomy.

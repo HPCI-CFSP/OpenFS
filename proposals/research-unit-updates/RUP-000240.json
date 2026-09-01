@@ -1,0 +1,143 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000240",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:36:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000167",
+      "bundle_sha256": "e5112b0eca00e67e8a66b57563b417aad91ccbe9c434a92e78e835d46a7029ff"
+    },
+    {
+      "update_id": "RUP-000203",
+      "bundle_sha256": "9a2417891b87ccaf73731ca2ed7d1b6a27fdf2673d8a32cd4294aa93a7c69fff"
+    },
+    {
+      "update_id": "RUP-000229",
+      "bundle_sha256": "b5094cdaef2fdd249d311870eeeaf44b30621bd35a939691ea8dc7bf5ca6ea0b"
+    },
+    {
+      "update_id": "RUP-000237",
+      "bundle_sha256": "8e1e11bda9f88bfb418242002f7b8807b3b18a37bd2b7e20297784912a0e2ebc"
+    }
+  ],
+  "before_profile_sha256": "8f7acbbfe6e97966475e0cfda71b0c62707c6eb5af002469f081962fb65a5cbe",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "筑波大学の公開利用条件から、performance以外のservice境界を追加しました。高優先度jobでも即時開始は保証されず、定期保守、利用者softwareの限定的支援、利用者によるbackup、障害解析時のsource code開示可能性が明記されています。次期整備ではSLA、data保護、機密source取扱いを明文化する必要があります。Consensusは未完了です。",
+  "summary_en": "Public Tsukuba access terms add service boundaries beyond performance. High-priority jobs are not guaranteed immediate start, and the terms specify scheduled maintenance, limited support for user software, user-managed backup, and possible source-code disclosure for incident analysis. Future planning should explicitly define SLA, data protection, and confidential-source handling. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "26bd18bdb1a38fea6ce8c0df6a3e1b2d8202f3e7c3f7a15dacd64a85f5bae80f",
+      "evidence_section_ids": [
+        "TDS-CD2-ARCH-10-U01",
+        "TDS-CD3-ARCH-10-U01",
+        "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS",
+        "TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES",
+        "TDS-CD43-ARCH-10-SQUID-CONTROL-PLANE-RAS",
+        "TDS-CD46-ARCH-10-TSUKUBA-SERVICE-BOUNDARY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD46-ARCH-10-TSUKUBA-SERVICE-BOUNDARY",
+      "title_ja": "筑波大学利用制度に明示されたservice境界と利用者責任",
+      "title_en": "Service boundaries and user responsibilities in Tsukuba access terms",
+      "summary_ja": "保守、queue、software支援、backup、障害解析時のsource開示をRAS・利用者保護の要件として扱います。",
+      "summary_en": "Treat maintenance, queueing, software support, backup, and incident source disclosure as RAS and user-protection requirements.",
+      "items": [
+        {
+          "item_id": "TDI-CD46-TSUKUBA-SERVICE-BOUNDARY",
+          "name_ja": "高優先度でも即時実行・software支援・data保全は保証されない",
+          "name_en": "High priority does not guarantee immediate execution, software support, or data preservation",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度利用条件",
+          "timing_en": "FY2025 access conditions",
+          "statement_ja": "一般・産業利用は高優先度でも必要nodeが空くまで待機し、毎月末頃の保守中は利用できません。利用者所有softwareのinstall支援は原則提供せず、事故によるprogram・dataの破損や消失に備えたbackupは利用者責任です。障害原因追究等で必要な場合、目的を限定してsource codeの開示を求めることがあります。これらはperformance以外の採用条件です。",
+          "statement_en": "General and industrial jobs may wait for sufficient nodes despite high priority, and monthly maintenance suspends use. Installation support for user-owned software is generally not provided; users are responsible for backups against accidental program or data loss. The center may request source-code disclosure, limited to purposes such as incident diagnosis. These are adoption conditions beyond performance.",
+          "hpci_relevance_ja": "連合基盤のSLAはuptimeだけでなくqueue保証、保守通知、software支援、backup責任、機密sourceの障害解析手順を明文化すべきです。",
+          "hpci_relevance_en": "Federated SLAs should specify queue assurances, maintenance notice, software support, backup responsibility, and incident procedures for confidential source, not uptime alone.",
+          "adoption_conditions_ja": [
+            "service class別の待ち時間SLOと保守通知期限を定義する。",
+            "center backupと利用者backupの責任分界を明示する。",
+            "機密source開示時の承認、最小権限、保管、削除、監査手順を定める。",
+            "利用者softwareのporting支援範囲を契約前に提示する。"
+          ],
+          "adoption_conditions_en": [
+            "Define wait-time SLOs and maintenance-notice periods by service class.",
+            "State the boundary between center and user backup responsibilities.",
+            "Define approval, least privilege, retention, deletion, and audit procedures for confidential source disclosure.",
+            "Publish the scope of user-software porting support before access agreements."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS325",
+            "SRC-CDS326"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS325",
+        "title": "2025年度 産業利用の公募",
+        "publisher": "筑波大学計算科学研究センター",
+        "url": "https://www.ccs.tsukuba.ac.jp/wp-content/uploads/sites/14/2025/09/industry-announce.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-09-01"
+      },
+      "origin_group": "tsukuba-industrial-use-fy2025",
+      "checked_at": "2026-09-02T04:06:00+09:00",
+      "locator": "queueing, maintenance, software support, backup, and source-code disclosure terms",
+      "observation_ja": "高優先度jobの待機、定期保守、software支援範囲、backup責任、障害解析時のsource code開示条件を確認しました。",
+      "observation_en": "Verified high-priority queueing, scheduled maintenance, software-support scope, backup responsibility, and source-disclosure terms for incident analysis.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS326",
+        "title": "2025年度 一般利用の公募",
+        "publisher": "筑波大学計算科学研究センター",
+        "url": "https://www.ccs.tsukuba.ac.jp/wp-content/uploads/sites/14/2025/03/gen-announce.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-03-06"
+      },
+      "origin_group": "tsukuba-general-use-fy2025",
+      "checked_at": "2026-09-02T04:07:00+09:00",
+      "locator": "general-use queueing, maintenance, software support, and backup conditions",
+      "observation_ja": "一般利用におけるjob待機、定期保守、software支援範囲、backup責任を確認しました。",
+      "observation_en": "Verified job queueing, scheduled maintenance, software-support scope, and backup responsibility for general use.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "保守・障害による年間downtime、data loss件数、support response timeは未確認です。",
+    "source code開示の実運用手順と監査実績は未確認です。",
+    "独立model Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Annual maintenance and incident downtime, data-loss events, and support response times remain unverified.",
+    "Operational and audit evidence for source-code disclosure remains unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

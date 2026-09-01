@@ -1,0 +1,219 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000343",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-02T07:54:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000210",
+      "bundle_sha256": "f15addd3693585f725953fb389f7396a71f83d486158b414e6875069f1b23ce1"
+    },
+    {
+      "update_id": "RUP-000211",
+      "bundle_sha256": "7dec8991ee83d030b07477ff7ae8307c97909c6ad719bf6b8ed505998b997677"
+    },
+    {
+      "update_id": "RUP-000217",
+      "bundle_sha256": "616a0ef9f5ecd4cb24486968d618c93623f1bdeab8f28bcf22e35706e3fad423"
+    },
+    {
+      "update_id": "RUP-000220",
+      "bundle_sha256": "136b6e2474588413dcfd97f44a407d3c8b6ff4b6e5a7b7e48784812eef969d42"
+    },
+    {
+      "update_id": "RUP-000230",
+      "bundle_sha256": "cd6fe39d3766d425c6060465fc5ea9220e9b36c7fae786ecb807c84837f8a362"
+    },
+    {
+      "update_id": "RUP-000269",
+      "bundle_sha256": "a6b01f21d00495bc8913e561e8a7329038dcab2f830c856c01f526655797451a"
+    },
+    {
+      "update_id": "RUP-000283",
+      "bundle_sha256": "6a23b24a6d69111697ff956a0d25896f1ffcc48ba81f8c81f1f7e21a55f4c093"
+    },
+    {
+      "update_id": "RUP-000314",
+      "bundle_sha256": "b69da89fd391260b4cd8b794f811f153c290adbfe10c5e1f5398a0b1947b7ee0"
+    },
+    {
+      "update_id": "RUP-000332",
+      "bundle_sha256": "db97c3b6d942effaba2a64637c4c1d135f066541244dc22d298824b512882435"
+    }
+  ],
+  "before_profile_sha256": "8e69c7a682c0e9e0455d52c96de08475b2dc7b46777e51b5fc13130b207114da",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ALCF LLM-Inference-Benchについて、8 accelerator class、5 serving framework、8 modelの公開code・dashboardを追加しました。framework非対称性、quality、tail latency、energy、cost、version不足から重要度は中とし、MLPerfの代替とは扱いません。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For ALCF LLM-Inference-Bench, this update adds public code and a dashboard spanning eight accelerator classes, five serving frameworks, and eight models. Because of asymmetric framework coverage and gaps in quality, tail latency, energy, cost, and versioning, it is assigned medium priority and is not treated as a replacement for MLPerf. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-13-U01",
+      "before_sha256": "eb03b61bba546ecf6135c3595ef3fa6e23288c041278c45d16b45868f400a8ca",
+      "evidence_section_ids": [
+        "TDS-AIP-EVALUATION",
+        "TDS-HC26-APP-13-U1",
+        "TDS-CD2-APP-13-U01",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE",
+        "TDS-CD23-APP-13-MLPERF-6",
+        "TDS-CD36-APP-13-MLCOMMONS-SCIENCE-MATURITY",
+        "TDS-CD37-APP-13-DDP-HOROVOD",
+        "TDS-CD46-APP-13-AIST-AI-CHIP-TESTBED",
+        "TDS-CD57-APP-13-LLM-INFERENCE-BENCH"
+      ]
+    },
+    {
+      "unit_id": "APP-13-U03",
+      "before_sha256": "5c9f820ed2adf82bcf354c496030d3c8f91c09c91ad8359de8f81614b0e4cfae",
+      "evidence_section_ids": [
+        "TDS-AIP-LOAD",
+        "TDS-CD4-APP-13-U03",
+        "TDS-CD28-APP-13-SGI-ASTABENCH-CONTRACTS",
+        "TDS-CD57-APP-13-LLM-INFERENCE-BENCH"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD57-APP-13-LLM-INFERENCE-BENCH",
+      "title_ja": "LLM-Inference-Benchの異種accelerator比較と不足指標",
+      "title_en": "Cross-accelerator comparison and missing metrics in LLM-Inference-Bench",
+      "summary_ja": "公開codeと結果matrixを評価資産として採用しつつ、framework差、model品質、tail latency、energy、versionを補完します。",
+      "summary_en": "Use the public code and result matrix as an evaluation asset while filling gaps in framework parity, model quality, tail latency, energy, and versioning.",
+      "items": [
+        {
+          "item_id": "TDI-CD176-LLM-INFERENCE-BENCH-MATRIX",
+          "name_ja": "8 accelerator class・5 serving framework・8 modelの公開matrix",
+          "name_en": "Public matrix spanning eight accelerator classes, five serving frameworks, and eight models",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2024年arXiv v1、2026年9月2日時点で公開repositoryを確認",
+          "timing_en": "2024 arXiv v1; public repository checked September 2, 2026",
+          "statement_ja": "ArgonneのLLM-Inference-Benchは、NVIDIA A100/H100/GH200、AMD MI250/MI300X、Intel Max1550、Habana Gaudi2、SambaNova SN40Lと、vLLM、llama.cpp、TensorRT-LLM、DeepSpeed-MII、SambaFlowの実行script・plot・dashboardを公開しています。LLaMA 2/3、Mistral/Mixtral、Qwen2の7B級と70B級を、batch sizeとinput/output length別に比較できます。異種acceleratorの初期screeningには有用ですが、全hardwareで同一frameworkが動くわけではなく、framework最適化差とhardware差が交絡します。",
+          "statement_en": "Argonne's LLM-Inference-Bench publishes scripts, plots, and a dashboard covering NVIDIA A100, H100, and GH200; AMD MI250 and MI300X; Intel Max1550; Habana Gaudi2; and SambaNova SN40L with vLLM, llama.cpp, TensorRT-LLM, DeepSpeed-MII, and SambaFlow. It compares 7B- and 70B-class LLaMA 2 and 3, Mistral and Mixtral, and Qwen2 models by batch size and input and output lengths. It is useful for initial cross-accelerator screening, but the same framework does not run on every platform, so framework optimization and hardware effects are confounded.",
+          "hpci_relevance_ja": "HPCI候補機の推論評価をNVIDIAだけに限定せず、同一model・precision・prompt形状で比較する出発点にできます。",
+          "hpci_relevance_en": "It can seed HPCI inference comparisons beyond NVIDIA under matched models, precision, and prompt shapes.",
+          "adoption_conditions_ja": [
+            "model weight、tokenizer、precision、framework commit、driver、compiler、kernel、batchとlengthを固定する。",
+            "可能なplatformでは同一framework比較と各vendor最良framework比較を別々に示す。",
+            "single deviceとmulti-deviceを分け、topology、tensor/pipeline/expert parallel条件を保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin model weights, tokenizers, precision, framework commits, drivers, compilers, kernels, batches, and lengths.",
+            "Where possible, report same-framework comparisons separately from each vendor's best framework.",
+            "Separate single- and multi-device results and preserve topology and tensor, pipeline, and expert parallel settings."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS468",
+            "SRC-CDS469"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD177-LLM-INFERENCE-BENCH-COVERAGE-GAPS",
+          "name_ja": "重要度「中」：再現可能codeはあるがservice品質・energyを要補完",
+          "name_en": "Medium priority: reproducible code exists, but service quality and energy need coverage",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "継続benchmark候補として評価",
+          "timing_en": "Assessed as a continuous-benchmark candidate",
+          "statement_ja": "repositoryとdashboardが公開され、複数hardwareで結果があるため、codeだけの小規模提案より優先度は高い一方、発表はarXiv v1です。公開概要はthroughput、batch、input/output lengthを中心とし、model品質、TTFT/ITLのp50/p95/p99、arrival process、request failure、cold start、energy、費用、license、長期回帰を共通条件で保証しません。したがってOpenFSでは重要度「中」の入力とし、MLPerf等を置換しません。",
+          "statement_en": "Because the repository and dashboard are public and include results across multiple hardware classes, it has higher priority than a code-only small proposal, but the publication remains arXiv v1. Public material centers on throughput, batch size, and input and output length and does not guarantee matched model quality, p50/p95/p99 TTFT and ITL, arrival processes, request failures, cold starts, energy, cost, licensing, or longitudinal regression. OpenFS therefore treats it as a medium-priority input rather than a replacement for MLPerf or other controlled suites.",
+          "hpci_relevance_ja": "継続測定ではこのmatrixへservice-level指標と科学task品質を足し、候補機変更後も同じcommitと結果schemaで追跡する必要があります。",
+          "hpci_relevance_en": "Continuous HPCI measurement should extend this matrix with service-level metrics and scientific-task quality and preserve commits and result schemas across candidate-system changes.",
+          "adoption_conditions_ja": [
+            "throughputとTTFT/ITL分布、failure、cold/warm、energy、costを同じrunで記録する。",
+            "task qualityまたは同一生成token条件を設け、速度だけでmodel変更を正当化しない。",
+            "quarterごとに固定anchorと現行versionの両方を測り、regressionと進歩を分離する。"
+          ],
+          "adoption_conditions_en": [
+            "Record throughput, TTFT and ITL distributions, failures, cold and warm states, energy, and cost in the same run.",
+            "Use task quality or matched generated-token conditions so model changes are not justified by speed alone.",
+            "Measure both a fixed anchor and current versions each quarter to separate regression from progress."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS468",
+            "SRC-CDS469",
+            "SRC-CDS470"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS468",
+        "title": "LLM-Inference-Bench",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://github.com/argonne-lcf/LLM-Inference-Bench",
+        "source_class": "research-artifact",
+        "published_or_updated": "Living repository checked 2026-09-02"
+      },
+      "origin_group": "alcf-llm-inference-bench-artifact",
+      "checked_at": "2026-09-02T07:10:00+09:00",
+      "locator": "README hardware/framework matrix, model list, scripts, dashboard, and BSD license",
+      "observation_ja": "8 hardware class、5 framework、8 model、公開script・dashboardと比較非対称性を確認しました。",
+      "observation_en": "Verified eight hardware classes, five frameworks, eight models, public scripts and dashboard, and asymmetric framework coverage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS469",
+        "title": "LLM-Inference-Bench: Inference Benchmarking of Large Language Models on AI Accelerators",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2411.00136",
+        "source_class": "research-artifact",
+        "published_or_updated": "Submitted 2024-10-31"
+      },
+      "origin_group": "llm-inference-bench-paper",
+      "checked_at": "2026-09-02T07:11:00+09:00",
+      "locator": "Abstract, submission history, hardware and model scope, and publication status",
+      "observation_ja": "異種hardware・framework・model比較の目的と、arXiv v1であるpublication境界を確認しました。",
+      "observation_en": "Verified the cross-hardware, framework, and model scope and the publication boundary of arXiv v1.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS470",
+        "title": "Large Language Model Inference Optimizations",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/sites/default/files/2024-11/AI-Inference-Optimizations.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2024-10-30 workshop material"
+      },
+      "origin_group": "alcf-llm-inference-benchmark-metrics",
+      "checked_at": "2026-09-02T07:12:00+09:00",
+      "locator": "Inference metrics, optimization taxonomy, framework comparison, and benchmark dashboard",
+      "observation_ja": "TTFT、output-token間隔、throughput、framework機能差とbenchmark dashboardへの対応を確認しました。",
+      "observation_en": "Verified TTFT, inter-output-token time, throughput, framework differences, and the benchmark dashboard linkage.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "現行framework/modelへの更新、共通quality、p95/p99、failure、energy、cost、multi-device比較を追加する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Current frameworks and models, matched quality, p95 and p99, failures, energy, cost, and multi-device comparisons require follow-up.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

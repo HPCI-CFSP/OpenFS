@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000193",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:29:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"},
+    {"update_id": "RUP-000169", "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"},
+    {"update_id": "RUP-000180", "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"}
+  ],
+  "before_profile_sha256": "43be6902af9c4a00b25c306c63ac60dde59fb598f31efbb2bb145a50a5a2e43e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の2025年8月末のデータ領域は、公開された4ボリュームの使用率が79.9～87.9%で、1年以上保持されたデータが31,519 TiBでした。400 TB以上の追加領域を使う課題には、長期未使用データの削除、外部ストレージまたはHPCI共用ストレージへの移行が求められています。容量増設だけでなく、保存期間別在庫、移行帯域、外部保管、費用・責任、再利用価値を管理する必要があります。Consensusは未完了です。",
+  "summary_en": "At the end of August 2025, four published Fugaku data volumes were 79.9% to 87.9% used, and 31,519 TiB had been retained for more than one year. Projects using at least 400 TB of additional space were asked to delete long-unused data or migrate it to external storage or HPCI shared storage. Planning therefore requires age-based inventory, migration bandwidth, external retention, cost and responsibility, and reuse value rather than capacity expansion alone. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "SSW-05-U03", "before_sha256": "cab9168d9fcebb196e9b51aecd3d2b82cd70f5a66b299a92d4bfde6fe946f1d8", "evidence_section_ids": ["TDS-HW1-SSW-05-U03", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04", "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE"]},
+    {"unit_id": "SSW-05-U04", "before_sha256": "2c59ed7944593dd235790a593bf18f5bf077606010062fb076cf1561b92ae286", "evidence_section_ids": ["TDS-HW1-SSW-05-U04", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04", "TDS-CD4-SSW-05-AI-READY-DATA", "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+      "title_ja": "富岳の実績は長期データ在庫を含む容量管理の必要性を示す",
+      "title_en": "Fugaku operations show the need for capacity management including long-lived data",
+      "summary_ja": "使用率と保存期間を対応付け、削除・移行・保持の判断をシステム要件にします。",
+      "summary_en": "Relate utilization to retention age and make delete, migrate, and retain decisions part of system requirements.",
+      "items": [
+        {
+          "item_id": "TDI-CD5-FUGAKU-STORAGE-PRESSURE",
+          "name_ja": "使用率79.9～87.9%・1年以上のデータ31,519 TiB",
+          "name_en": "79.9-87.9% utilization and 31,519 TiB older than one year",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年8月末", "timing_en": "End of August 2025",
+          "statement_ja": "富岳の公開資料はvolume0003～0006の使用率を87.9%、83.2%、84.9%、79.9%とし、1年以上保持されたデータを31,519 TiBとします。前月比は4,856 TiB増でした。単一時点の使用率だけでは増加率や削除可能量を確定できませんが、長期在庫が容量制約の主要因であることを示します。",
+          "statement_en": "Fugaku material reports utilization of 87.9%, 83.2%, 84.9%, and 79.9% for volumes 0003 through 0006, with 31,519 TiB retained for over one year, up 4,856 TiB from the prior month. A single snapshot does not establish a sustained growth rate or deletable volume, but it shows that long-lived inventory materially affects capacity.",
+          "hpci_relevance_ja": "次世代ストレージは、ピーク入出力性能と総容量に加え、保存期間別占有量、増加速度、再利用頻度、移行期限を追跡すべきです。",
+          "hpci_relevance_en": "Next-generation storage should track age distribution, growth, reuse frequency, and migration deadlines in addition to peak I/O and capacity.",
+          "adoption_conditions_ja": ["月次の保存期間別容量、生成・削除・移行量を収集する。", "課題・データ種別ごとに再利用価値と保存義務を分類する。", "容量警戒水準と自動通知・移行手順を定義する。"],
+          "adoption_conditions_en": ["Collect monthly age-bucketed capacity and creation, deletion, and migration volume.", "Classify reuse value and retention obligations by project and data type.", "Define capacity thresholds and automated notification and migration procedures."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD5-FUGAKU-EXTERNAL-MIGRATION",
+          "name_ja": "400 TB超課題に外部・HPCI共用ストレージへの移行を要請",
+          "name_en": "Projects above 400 TB asked to migrate to external or HPCI shared storage",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年9月利用者説明", "timing_en": "September 2025 user briefing",
+          "statement_ja": "400 TB以上の追加領域を利用する課題には、長期未使用データをアーカイブとみなし、削除または課題側外部ストレージ、HPCI共用ストレージへ移行するよう案内しています。大量保有と判断された課題には削除要請を行います。移行先の容量、帯域、費用、整合性確認、責任分担は資料から確定しません。",
+          "statement_en": "Projects using at least 400 TB of additional space are instructed to treat long-unused data as archival and delete it or migrate it to project-provided external storage or HPCI shared storage. Projects judged to hold large archival volumes may receive deletion requests. Destination capacity, bandwidth, cost, integrity verification, and responsibility are not established by the briefing.",
+          "hpci_relevance_ja": "計算機更新時だけでなく定常運用中にも、センター間データ移動と保存先を提供する世代横断サービスが必要です。",
+          "hpci_relevance_en": "Cross-generation services for inter-center data movement and retention are needed during steady operation, not only at system refresh.",
+          "adoption_conditions_ja": ["移行先の保証容量、転送帯域、チェックサム、権限、費用を定義する。", "削除承認、法令・研究公正上の保存義務、再取得可能性を確認する。", "計算終了後のデータ所有者と長期費用負担者を定める。"],
+          "adoption_conditions_en": ["Define guaranteed destination capacity, transfer bandwidth, checksums, authorization, and cost.", "Verify deletion approval, legal and research-integrity retention duties, and reproducibility.", "Assign data ownership and long-term cost after compute use ends."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS242", "title": "富岳の運用状況報告（2025年9月）", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202509.pdf", "source_class": "official-project", "published_or_updated": "2025-09-11"},
+      "origin_group": "fugaku-storage-operation", "checked_at": "2026-09-02T03:19:00+09:00",
+      "locator": "データ領域の利用状況、2025年8月末、400 TB以上、1年以上31,519 TiB",
+      "observation_ja": "ボリューム別使用率、長期保持量、前月差、400 TB超課題への削除・移行要請を確認しました。",
+      "observation_en": "Verified per-volume utilization, long-retained volume, monthly change, and delete-or-migrate guidance for projects above 400 TB.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["全ボリュームの総容量、月次増減系列、課題別占有、削除可能量、移行実績、転送帯域と費用は未確認です。", "31,519 TiBの保存義務、再利用頻度、価値、重複率は不明です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Total capacity across all volumes, monthly time series, project occupancy, deletable volume, migration outcomes, transfer bandwidth, and cost remain unverified.", "Retention duties, reuse frequency, value, and duplication rate for 31,519 TiB are unknown.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

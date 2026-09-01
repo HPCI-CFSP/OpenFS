@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000169",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:15:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [{"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"}],
+  "before_profile_sha256": "fb9f2fd61e918fbe6467eee4a314177b397bfe6eb8f8234b6e18a60117a363a8",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "令和8年度HPCI共用ストレージは、論理総容量90 PBを東西拠点間で自動二重化し、Gfarm 2.8でファイルスペースとして提供します。新規申請上限は制度により10 TBまたは500 TB、開始後の増量は最大1.5 PB、成果創出課題は最大10 PBです。共有型随時募集は無償・最長1年・年4回審査で、年度をまたげます。容量と複製は公表されていますが、帯域、復旧時間、整合性、障害時書込、実効ユーザ容量は未確認です。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "FY2026 HPCI Shared Storage provides 90 PB of logical file space through Gfarm 2.8 with automatic duplication between east and west sites. New-application ceilings are 10 TB or 500 TB depending on access route, with staged growth to 1.5 PB and up to 10 PB for designated outcome-creation projects. The free shared-use rolling call lasts up to one year, may cross fiscal years, and is reviewed four times per year. Capacity and replication are published, but bandwidth, recovery time, consistency, degraded writes, and usable user capacity remain unverified. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {"unit_id": "SSW-05-U03", "before_sha256": "c87e0594869555d8ae79fca0a97b147b47d83417402a86ee31881a73ea93a950", "evidence_section_ids": ["TDS-HW1-SSW-05-U03", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04"]},
+    {"unit_id": "SSW-05-U04", "before_sha256": "bd10e4d2d23ec48578f0b14e265f2ed2c99439a8615cc4595e444ed850f2ddbc", "evidence_section_ids": ["TDS-HW1-SSW-05-U04", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04"]}
+  ],
+  "sections": [{
+    "section_id": "TDS-CD3-SSW-05-U03-U04",
+    "title_ja": "HPCI共用ストレージの容量・複製・割当・継続条件",
+    "title_en": "Capacity, replication, allocation, and continuity of HPCI Shared Storage",
+    "summary_ja": "物理構成、論理使用量、複製、申請上限、増量、年度継続、成果公開を別々に整理します。",
+    "summary_en": "Separate physical arrangement, logical use, replication, application ceiling, expansion, fiscal-year continuity, and disclosure.",
+    "items": [
+      {
+        "item_id": "TDI-CD3-HPCI-STORAGE-90PB-GFARM",
+        "name_ja": "論理90 PB・東西自動二重化・Gfarm 2.8",
+        "name_en": "Ninety logical PB with east-west duplication and Gfarm 2.8",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年4月～2027年3月", "timing_en": "April 2026 through March 2027",
+        "statement_ja": "HPCI共用ストレージは論理総容量90.0 PBを提供し、各ファイルの複製を東西拠点へ1個ずつ自動配置します。利用単位はTB、ファイルシステムはGfarm 2.8で、ファイルスペースは複製分を含まない論理使用量です。『東西拠点ともに容量90 PB』というサービス記述は、論理総容量を180 PBへ加算できることを意味しません。",
+        "statement_en": "HPCI Shared Storage provides 90.0 PB of logical capacity and automatically places one replica of each file at each east and west site. The unit is TB and the file system is Gfarm 2.8; file space is logical usage excluding replicas. The service statement that each site provides 90 PB does not permit adding the logical total to 180 PB.",
+        "hpci_relevance_ja": "全国データ基盤の容量は、複製前論理容量、物理容量、障害時容量、予約・クオータ、メタデータ、転送性能を分離して設計する必要があります。",
+        "hpci_relevance_en": "National data capacity must separate pre-replication logical space, physical space, degraded capacity, reservation and quota, metadata, and transfer performance.",
+        "adoption_conditions_ja": ["物理容量、論理容量、複製係数、障害時読書き、整合性を公開する。", "ファイル数・サイズ分布・同時クライアント別に帯域とメタデータ性能を測る。", "片拠点・回線・メタデータ障害からの復旧時間とデータ損失目標を検証する。"],
+        "adoption_conditions_en": ["Publish physical and logical capacity, replication factor, degraded reads/writes, and consistency.", "Measure bandwidth and metadata performance by file distribution and client concurrency.", "Validate recovery time and data-loss objectives for site, link, and metadata failures."],
+        "actor_ids": [], "source_ids": ["SRC-CDS178"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD3-HPCI-STORAGE-QUOTA-LADDER",
+        "name_ja": "10 TB・500 TB・1.5 PB・10 PBの段階割当",
+        "name_en": "Staged allocations of 10 TB, 500 TB, 1.5 PB, and 10 PB",
+        "stage": "current", "maturity": "deployed", "timing_ja": "令和8年度提供条件", "timing_en": "FY2026 offer conditions",
+        "statement_ja": "新規申請上限は、定期募集と共有型随時募集が500 TB、富岳機動的・試行、HPCI産業試行等が10 TBです。利用開始後、定期・HPCI・共有型課題は利用実績に応じて最大1.5 PB、成果創出課題は最大10 PBへ増量可能です。定期募集課題と富岳機動的課題には要求の有無にかかわらず500 GBが割り当てられます。上限は予約容量や実消費を示しません。",
+        "statement_en": "New-application ceilings are 500 TB for regular and shared-use calls and 10 TB for Fugaku agile or trial and HPCI industrial-trial routes. After use begins, regular, HPCI, and shared-use projects may grow to 1.5 PB based on use, while outcome-creation projects may grow to 10 PB. Regular projects and Fugaku agile projects receive 500 GB regardless of request. Ceilings do not establish reservation or consumption.",
+        "hpci_relevance_ja": "段階割当は需要の過大申告を抑えられますが、増量審査時間が実験期限や長期ワークフローを妨げないよう、実績指標とSLOが必要です。",
+        "hpci_relevance_en": "Staged allocation can reduce over-requesting, but usage metrics and SLOs are needed so expansion review does not block experimental deadlines or long workflows.",
+        "adoption_conditions_ja": ["申請、初期割当、増量、ピーク、平均、未使用、削除を課題別に追跡する。", "増量申請の所要時間、却下理由、期限影響を公開可能な形で集計する。", "容量だけでなくファイル数、帯域、保持期間、複製負荷を割当に含める。"],
+        "adoption_conditions_en": ["Track requested, initial, expanded, peak, average, unused, and deleted space by project.", "Aggregate expansion time, rejection reasons, and deadline effects in publishable form.", "Include file count, bandwidth, retention, and replication load as well as capacity."],
+        "actor_ids": [], "source_ids": ["SRC-CDS178"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD3-HPCI-STORAGE-ROLLING-CALL",
+        "name_ja": "年度をまたげる共有型随時募集と成果公開",
+        "name_en": "Shared-use rolling call spanning fiscal years with disclosure",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年4月1日版", "timing_en": "Version dated April 1, 2026",
+        "statement_ja": "共有型利用研究課題は無償、随時受付、年4回審査、最長1年で、年度をまたいで利用できます。終了後60日以内の公開利用報告書と、査読論文・特許等による成果公開が必要です。年度をまたげることは自動更新や複数年保証ではなく、計算資源の有償・特定研究経路とは公開条件も異なります。",
+        "statement_en": "Shared-use projects are free, accepted continuously, reviewed four times per year, and may run for up to one year across fiscal years. A public use report is due within 60 days and peer-reviewed publication, patent, or equivalent disclosure is required. Crossing a fiscal year is not automatic renewal or multi-year assurance, and disclosure differs from paid or special-research compute routes.",
+        "hpci_relevance_ja": "長期データは計算課題と異なる年度境界を持つため、課題終了、成果公開、保持、継続申請、後継ストレージ移行を一つのライフサイクルとして設計する必要があります。",
+        "hpci_relevance_en": "Long-lived data has different fiscal boundaries from compute; project end, disclosure, retention, continuation, and successor migration must form one lifecycle.",
+        "adoption_conditions_ja": ["計算課題と保存課題のID・期間・成果条件を対応付ける。", "終了後の読取猶予、転送、削除、継続審査、後継移行を規程化する。", "公開要件と機密・個人データの受入れ条件を別に確認する。"],
+        "adoption_conditions_en": ["Relate identifiers, periods, and disclosure rules for compute and storage projects.", "Define read grace, transfer, deletion, continuation review, and successor migration after project end.", "Evaluate disclosure requirements separately from acceptance of confidential or personal data."],
+        "actor_ids": [], "source_ids": ["SRC-CDS179"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS178", "title": "HPCI共用ストレージ（令和8年度）", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/hpci_2026_st-1", "source_class": "official-project", "published_or_updated": "2026年度"},
+      "origin_group": "hpci-shared-storage-2026", "checked_at": "2026-09-02T07:12:00+09:00", "locator": "提供量、申請上限、段階増量、利用形態、Gfarm、複製、サービス品質", "observation_ja": "論理90 PB、東西各1複製、Gfarm 2.8、10 TB/500 TB初期上限、1.5 PB/10 PB増量上限を確認しました。性能・復旧は確認できません。", "observation_en": "Verified 90 logical PB, one replica at each site, Gfarm 2.8, 10-TB/500-TB initial ceilings, and 1.5-PB/10-PB expansion ceilings. Performance and recovery were not established.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS179", "title": "HPCI共用ストレージ（共有型）利用研究課題の随時募集", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/using_hpci/proposal_submission_current/shared_storage", "source_class": "official-project", "published_or_updated": "2026-04-01"},
+      "origin_group": "hpci-shared-storage-2026", "checked_at": "2026-09-02T07:13:00+09:00", "locator": "募集時期、年4回審査、期間、料金、報告書、成果公開", "observation_ja": "無償、随時受付・年4回審査、年度をまたぐ最長1年、報告書・成果公開要件を確認しました。", "observation_en": "Verified free rolling access, quarterly review, up to one year across fiscal years, and report and disclosure requirements.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-014、GAP-TDS-035、GAP-TDS-040、GAP-TDS-059、GAP-TDS-085は未解決です。帯域、メタデータ、復旧、整合性、費用、世代移行を同条件で実測する必要があります。", "90 PBの物理容量、実効ユーザ容量、片拠点障害時容量、実利用率、増量所要時間は未確認です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-014, GAP-TDS-035, GAP-TDS-040, GAP-TDS-059, and GAP-TDS-085 remain open; bandwidth, metadata, recovery, consistency, cost, and generation migration need comparable measurement.", "Physical and usable capacity, degraded-mode capacity, observed use, and expansion time for the 90-PB service remain unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

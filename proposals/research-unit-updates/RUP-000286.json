@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000286",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:44:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000161",
+      "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"
+    },
+    {
+      "update_id": "RUP-000169",
+      "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"
+    },
+    {
+      "update_id": "RUP-000180",
+      "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"
+    },
+    {
+      "update_id": "RUP-000193",
+      "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"
+    },
+    {
+      "update_id": "RUP-000218",
+      "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"
+    },
+    {
+      "update_id": "RUP-000226",
+      "bundle_sha256": "524f3070c566043a03e935d7cb0f7457b88f608bc3f59ce233d8744edc7b3901"
+    },
+    {
+      "update_id": "RUP-000235",
+      "bundle_sha256": "18dab33bb3335028cc91b5987c86440b44ea8d25c71707ce8fceb1d78ec96def"
+    },
+    {
+      "update_id": "RUP-000243",
+      "bundle_sha256": "16e821133449bf831a75e2f2f0d8200cf5a5f8c633fee0435a46a11803fa2826"
+    },
+    {
+      "update_id": "RUP-000253",
+      "bundle_sha256": "234dc300f5272564d872e4e224e614cae1ee986094e9953f5ec32a16203d9544"
+    }
+  ],
+  "before_profile_sha256": "c2e59e57525c38de16137464e69247c9ac3ad88409ebfce9af95c1eb762dddf0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "DAOS 2.8.0は2026年8月12日に公開され、Intel Optaneを使わないserverでMetadata-on-SSD Phase 2 allocator v2を新規poolのproduction defaultにしました。ただしdefaultはmemory-to-metadata比100%でmetadata evictionを使わず、100%未満はtechnology previewです。既存Phase 1 poolは自動変換されず、新poolへdata copyが必要です。対応architectureはx86_64で、UCXはNVIDIA InfiniBand/RoCE上のucx+dc_xを推奨します。HPCIでは製品名ではなくmigration、memory ratio、fabric、CPU architectureを受入条件にする必要があります。Consensusは未完了です。",
+  "summary_en": "DAOS 2.8.0, released August 12, 2026, makes the Metadata-on-SSD Phase 2 allocator v2 the production default for newly created pools on servers without Intel Optane. The default uses a 100% memory-to-metadata ratio without metadata eviction; ratios below 100% remain a technology preview. Existing Phase 1 pools are not converted automatically and require copying data into a new pool. The supported architecture is x86_64, and ucx+dc_x is recommended for UCX on NVIDIA InfiniBand and RoCE. HPCI acceptance conditions must cover migration, memory ratio, fabric, and CPU architecture rather than the DAOS name alone. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U03",
+      "before_sha256": "c83ae3d0096207128e107d01d9264b7674d9024a17133c2d622cb6186772252d",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U03",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-HW1-SSW-05-DAOS-28-MDONSSD"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-HW1-SSW-05-DAOS-28-MDONSSD",
+      "title_ja": "DAOS 2.8 Metadata-on-SSDのproduction範囲",
+      "title_en": "Production boundary of DAOS 2.8 Metadata-on-SSD",
+      "summary_ja": "default化、eviction、既存pool移行、architecture・fabric supportを分けます。",
+      "summary_en": "Separate default status, eviction, existing-pool migration, and architecture and fabric support.",
+      "items": [
+        {
+          "item_id": "TDI-CD93-DAOS-28-MDONSSD-V2",
+          "name_ja": "allocator v2は新規poolのdefault、既存poolはcopy移行",
+          "name_en": "Allocator v2 is the default for new pools; existing pools require copy migration",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "DAOS 2.8.0、2026年8月12日",
+          "timing_en": "DAOS 2.8.0, August 12, 2026",
+          "statement_ja": "DAOS 2.8のMetadata-on-SSD Phase 2 bucket-memory allocator v2は新規poolでproduction readyかつdefaultです。defaultの--mem-ratio 100%ではmetadata evictionを有効にせず、25%等の小さい比率はtechnology previewです。Phase 1 poolはopenしてもallocatorを維持し、v2へ移すには利用者が新poolを作りdataをcopyする必要があります。check-and-repairもMetadata-on-SSDに対応しますが、framework自体はTechnology Previewです。",
+          "statement_en": "The DAOS 2.8 Metadata-on-SSD Phase 2 bucket-memory allocator v2 is production ready and the default for new pools. The default --mem-ratio 100% does not enable metadata eviction; lower ratios such as 25% are a technology preview. Phase 1 pools retain their allocator when opened and require user-managed data copies into new pools to move to v2. Check-and-repair supports Metadata-on-SSD, but the framework itself remains a Technology Preview.",
+          "hpci_relevance_ja": "Optane非依存は有力ですが、metadata evictionやrepairまでproductionと誤認せず、移行時間・追加容量・rollbackを計画へ含める必要があります。",
+          "hpci_relevance_en": "Optane independence is promising, but metadata eviction and repair must not be mistaken for production features; migration time, temporary capacity, and rollback belong in the plan.",
+          "adoption_conditions_ja": [
+            "Phase 1/2、100%/preview比率、CR有無を別構成で試験する。",
+            "移行時の追加容量、copy時間、停止時間、checksum、rollbackを測る。",
+            "metadata working setとDRAM消費を実workloadで計測する。"
+          ],
+          "adoption_conditions_en": [
+            "Test Phase 1 versus 2, 100% versus preview ratios, and CR-enabled configurations separately.",
+            "Measure temporary capacity, copy and outage time, checksums, and rollback during migration.",
+            "Measure metadata working sets and DRAM consumption on real workloads."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS361"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD93-DAOS-28-PLATFORM",
+          "name_ja": "x86_64、OS、libfabric・UCX providerのsupport境界",
+          "name_en": "x86_64, operating-system, and libfabric and UCX provider boundaries",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "DAOS 2.8 support matrix",
+          "timing_en": "DAOS 2.8 support matrix",
+          "statement_ja": "2.8.0の公式supportはx86_64、SLES 15 SP6/SP7、openSUSE Leap 15.6、EL 9.6/9.7です。libfabricはtcp、rxm、verbs、Slingshot向けcxi、UCXはNVIDIA InfiniBand/RoCEでucx+dc_xを推奨します。Arm等はこのsupport matrixに含まれません。既存pool・client・MPI/HDF5/PyTorch等の組合せは別途version整合が必要です。",
+          "statement_en": "Official 2.8.0 support covers x86_64, SLES 15 SP6/SP7, openSUSE Leap 15.6, and EL 9.6/9.7. libfabric providers include tcp, rxm, verbs, and cxi for Slingshot; ucx+dc_x is recommended for UCX on NVIDIA InfiniBand and RoCE. Arm is not in this support matrix. Existing pools and combinations with clients, MPI, HDF5, PyTorch, and other layers require separate version matching.",
+          "hpci_relevance_ja": "異種architectureを含むHPCIでは、serverとclientを分離し、未対応CPU上のclient互換性やgateway構成を実証しなければなりません。",
+          "hpci_relevance_en": "A heterogeneous HPCI must distinguish servers from clients and demonstrate client compatibility or gateway designs for unsupported CPU architectures.",
+          "adoption_conditions_ja": [
+            "server/client architecture、OS、provider、firmware、DAOS版をmatrix化する。",
+            "InfiniBand、RoCE、Slingshotで同一workloadの性能・障害を比較する。",
+            "Arm client、POSIX層、MPI-IO、HDF5、AI frameworkのsupportを個別確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Matrix server and client architecture, operating system, provider, firmware, and DAOS version.",
+            "Compare matched workloads and failures across InfiniBand, RoCE, and Slingshot.",
+            "Verify Arm clients, POSIX layers, MPI-IO, HDF5, and AI-framework support separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS361"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS361",
+        "title": "DAOS Version 2.8 Release Notes",
+        "publisher": "DAOS Project",
+        "url": "https://docs.daos.io/staging/v2.8/release/release_notes/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-12"
+      },
+      "origin_group": "daos-28-release-notes",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Release date, supported platform/fabrics, MD-on-SSD v2, migration and CR status",
+      "observation_ja": "DAOS 2.8のplatform support、allocator default、preview範囲、移行条件を確認しました。",
+      "observation_en": "Verified DAOS 2.8 platform support, allocator default, preview boundary, and migration conditions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCI workloadでのMetadata-on-SSD性能、Phase 1移行費用、Arm client互換、fabric別障害試験は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Metadata-on-SSD performance, Phase 1 migration cost, Arm-client compatibility, and fabric-specific fault tests remain unmeasured for HPCI workloads.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

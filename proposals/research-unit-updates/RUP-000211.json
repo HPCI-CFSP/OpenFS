@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000211",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-02T07:32:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000210", "bundle_sha256": "f15addd3693585f725953fb389f7396a71f83d486158b414e6875069f1b23ce1"}
+  ],
+  "before_profile_sha256": "0d630b0c3325f553098c60f28eadbd1753072d8f76a8cdd9779c302b1a32a33c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MLCommonsのAILuminate Agentic Product Maturity Ladder v0.1は、エージェントをCapable、Bounded、Confidential、Controlled、Robust、Secure、Reliableの順に評価します。研究ベンチマークでタスクを実行できても、実運用に必要な範囲制限、機密保持、ユーザー制御、例外対応、攻撃耐性、一貫性を満たすとは限りません。OpenFSでは調査速度やタスク成功率に加え、この7観点と権限・情報境界を正式採用条件へ加える必要があります。枠組みはv0.1であり、Consensusは未完了です。",
+  "summary_en": "MLCommons' AILuminate Agentic Product Maturity Ladder v0.1 evaluates agents in sequence as Capable, Bounded, Confidential, Controlled, Robust, Secure, and Reliable. Success on a research task does not establish the scope confinement, confidentiality, user control, exception handling, attack resistance, and consistency required for deployment. OpenFS should therefore add these seven dimensions plus permission and information-boundary checks to task success and research throughput before formal adoption. The framework is v0.1 and Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-13-U02",
+      "before_sha256": "7bbc279a434815f52d5c6d5db7fb2b015f9f6a92f061959f58e70dfff3c0480e",
+      "evidence_section_ids": [
+        "TDS-AIP-AGENTS",
+        "TDS-CD2-APP-13-U02",
+        "TDS-CD3-APP-13-U02",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE",
+        "TDS-CD20-APP-13-AGENTIC-MATURITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD20-APP-13-AGENTIC-MATURITY",
+      "title_ja": "エージェントの能力と実運用信頼性を分離する",
+      "title_en": "Separate agent capability from deployment reliability",
+      "summary_ja": "タスク成功後に範囲制限・機密保持・制御・堅牢性・安全性・一貫性を段階的に検証します。",
+      "summary_en": "After task capability, progressively evaluate boundedness, confidentiality, control, robustness, security, and reliability.",
+      "items": [
+        {
+          "item_id": "TDI-CD20-MLCOMMONS-AGENTIC-MATURITY-LADDER",
+          "name_ja": "Agentic Maturity Ladderは7観点を順序付きで評価",
+          "name_en": "The Agentic Maturity Ladder evaluates seven ordered dimensions",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "v0.1、2026年9月確認",
+          "timing_en": "v0.1, checked September 2026",
+          "statement_ja": "MLCommonsは、レベル1 Capable（通常条件で正しく実行）、レベル2 Bounded（支援対象外へ逸脱しない）、レベル3a Confidential（機密を保護）、3b Controlled（ユーザーの指示に従う）、3c Robust（異常条件へ適切に対応）、レベル4 Secure（攻撃に耐える）、レベル5 Reliable（一貫して有用）の成熟度ラダーを提示しています。後段の評価へ投資する前に前段能力を確認する考え方です。公式ページ自身が、現在の多くの研究ベンチマークには実運用判断に必要な設計、網羅性、継続性の問題があるとしています。表示例の数値は説明用であり、OpenFSや特定モデルの評価結果ではありません。",
+          "statement_en": "MLCommons defines Level 1 Capable, correct under usual circumstances; Level 2 Bounded, staying within supported tasks; Level 3a Confidential; Level 3b Controlled by the user; Level 3c Robust under unusual circumstances; Level 4 Secure against attack; and Level 5 Reliable, consistently helpful. The approach checks earlier capability before investing in later-stage evaluation. The official page says many current research benchmarks have design, coverage, and longevity limitations for deployment decisions. Displayed example values are illustrative and are not results for OpenFS or any specific model.",
+          "hpci_relevance_ja": "科学AIエージェントをHPCI運用・研究支援へ導入する際は、タスク成功率だけでなく、対象外操作、NDA・個人情報、ユーザー承認、障害時挙動、プロンプト注入、再実行時ばらつきを独立した採用ゲートにする必要があります。",
+          "hpci_relevance_en": "When deploying scientific-AI agents in HPCI operations or research support, out-of-scope actions, NDA and personal data, user authorization, failure behavior, prompt injection, and rerun variance should become separate adoption gates rather than being hidden behind task success.",
+          "adoption_conditions_ja": [
+            "OpenFS固有タスクで正答・根拠適合・完了率を測り、モデルとハーネスの構成を固定する。",
+            "許可外パス、外部送信、秘密情報、破壊的操作を含む境界試験を独立実施する。",
+            "通常、欠損情報、矛盾情報、悪意ある外部文書、ツール障害の各条件で反復評価する。",
+            "モデル変更、Skill変更、権限変更、データ更新ごとに別SUTとして再評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure correctness, evidence fitness, and completion on OpenFS-specific tasks with fixed model and harness configurations.",
+            "Independently test unauthorized paths, external transmission, secrets, and destructive actions.",
+            "Repeat evaluation under normal, missing-data, contradictory-data, malicious-document, and tool-failure conditions.",
+            "Treat every model, Skill, permission, or data change as a new system under test."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS279"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS279",
+        "title": "AILuminate Agentic Product Maturity Ladder",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/ailuminate/agentic/",
+        "source_class": "official-project",
+        "published_or_updated": "v0.1"
+      },
+      "origin_group": "mlcommons-agentic-maturity",
+      "checked_at": "2026-09-02T03:24:00+09:00",
+      "locator": "maturity goals, seven principles, readiness levels, interpretation and current-state sections",
+      "observation_ja": "7観点と段階順序、前段合格後に後段評価へ進む考え方、研究ベンチマークの実運用上の制約を確認しました。",
+      "observation_en": "Verified the seven ordered dimensions, gated progression to later evaluation, and deployment limitations of research benchmarks.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "OpenFS固有タスクに対応したテストセット、合格閾値、攻撃シナリオ、反復回数は未定義です。",
+    "MLCommonsの枠組みはv0.1で、各HPCI利用場面に対する完成済み標準ではありません。",
+    "単一モデル・単一エージェントによる今回の調査自体は、この成熟度ラダーによる独立評価を受けていません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "OpenFS-specific test sets, pass thresholds, attack scenarios, and repeat counts remain undefined.",
+    "The MLCommons framework is v0.1 and is not a completed standard for each HPCI use case.",
+    "This single-model, single-agent research run has not itself undergone independent evaluation under the ladder.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

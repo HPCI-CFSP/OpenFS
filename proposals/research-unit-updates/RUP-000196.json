@@ -1,0 +1,84 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000196",
+  "topic_id": "SSW-14",
+  "created_at": "2026-09-02T07:29:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "36c10eda38aa4b0ad5fd8b011d513e46e293a084cdc326d66d408dd91b1647a0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPC・AI基盤のセキュリティ基準として、NIST SP 800-223、SP 800-234、SP 800-239初期草案を追加しました。SP 800-223はHPC参照アーキテクチャと脅威分析、2026年5月最終版のSP 800-234はSP 800-53の60統制をHPC向けに調整したOverlayです。2026年7月のSP 800-239はAIデータセンターと従来HPCの差分を扱いますが、意見募集期限が2026年9月25日の初期草案です。最終基準と草案を分け、性能影響は実測する必要があります。Consensusは未完了です。",
+  "summary_en": "NIST SP 800-223, SP 800-234, and the initial draft SP 800-239 were added as security references for HPC and AI infrastructure. SP 800-223 provides an HPC reference architecture and threat analysis; final SP 800-234, issued in May 2026, tailors 60 SP 800-53 controls for HPC. SP 800-239, released in July 2026, analyzes differences between AI data centers and traditional HPC but remains an initial draft with comments due September 25, 2026. Final guidance is separated from draft material, and performance impact still requires measurement. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "SSW-14-U01", "before_sha256": "35a9ed68146f7c7c6b6669b04eb5f00244c310a5c95c1d3cbf1ce20d0c0e0281", "evidence_section_ids": ["TDS-CD1-SSW-14-U01", "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY"]},
+    {"unit_id": "SSW-14-U02", "before_sha256": "4b856cb740511bc3f205b9af5509fc24e49d74e027cfb312e2227fb6ca331ae7", "evidence_section_ids": ["TDS-CD1-SSW-14-U02", "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY",
+      "title_ja": "HPC参照アーキテクチャからAIデータセンター差分まで段階的に適用する",
+      "title_en": "Apply guidance progressively from HPC reference architecture to AI data-center deltas",
+      "summary_ja": "脅威モデル、最終統制Overlay、策定中のAI差分を成熟度別に使い分けます。",
+      "summary_en": "Use the threat model, final control overlay, and evolving AI-specific analysis according to maturity.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-NIST-SP800-223",
+          "name_ja": "SP 800-223のHPC参照アーキテクチャと脅威分析",
+          "name_en": "SP 800-223 HPC reference architecture and threat analysis",
+          "stage": "current", "maturity": "standardized",
+          "timing_ja": "2024年2月最終版", "timing_en": "Final in February 2024",
+          "statement_ja": "SP 800-223は、HPCの共通構成をゾーン型参照アーキテクチャと共通語彙で整理し、脅威、現行のセキュリティ態勢、課題、推奨事項を示します。HPCの大規模性、性能要件、多様なハードウェア・ソフトウェア、共有資源、用途ごとに異なる要件を前提とします。",
+          "statement_en": "SP 800-223 uses a zone-based reference architecture and common lexicon for HPC components, threats, security posture, challenges, and recommendations. It explicitly accounts for scale, performance requirements, diverse hardware and software, shared resources, and mission-specific requirements.",
+          "hpci_relevance_ja": "HPCI各センターのネットワーク、管理、ログイン、計算、ストレージ、外部連携を共通ゾーンで記述し、差分を比較できます。",
+          "hpci_relevance_en": "HPCI centers can describe network, management, login, compute, storage, and external integration using common zones and compare differences.",
+          "adoption_conditions_ja": ["HPCIの実構成を参照ゾーンへ対応付ける。", "センター固有の脅威、データ分類、運用責任を追加する。", "実装済み・代替・未対応の統制を台帳化する。"],
+          "adoption_conditions_en": ["Map actual HPCI configurations to reference zones.", "Add center-specific threats, data classes, and operating responsibility.", "Inventory implemented, compensating, and missing controls."],
+          "actor_ids": [], "source_ids": ["SRC-CDS243"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-NIST-SP800-234",
+          "name_ja": "SP 800-234最終版のHPC向け60統制Overlay",
+          "name_en": "Final SP 800-234 overlay tailoring 60 controls for HPC",
+          "stage": "current", "maturity": "standardized",
+          "timing_ja": "2026年5月4日最終版", "timing_en": "Final May 4, 2026",
+          "statement_ja": "SP 800-234はSP 800-53BのModerateベースラインを基に、SP 800-53の60統制へHPC固有の補足ガイダンスまたは議論を加えます。性能を基本要件とするHPCで採用しやすい実務的・性能配慮型のOverlayですが、各組織の任務とリスクに応じた追加調整を前提とします。",
+          "statement_en": "SP 800-234 builds on the SP 800-53B moderate baseline and adds HPC-specific guidance or discussion to 60 SP 800-53 controls. It is intended as practical, performance-conscious guidance for systems where performance is fundamental, while allowing further mission- and risk-specific tailoring.",
+          "hpci_relevance_ja": "調達仕様に個別製品名だけでなく、HPC向け統制、実装証拠、代替統制、性能予算を要求できます。",
+          "hpci_relevance_en": "Procurement can require HPC-tailored controls, implementation evidence, compensating controls, and performance budgets rather than product names alone.",
+          "adoption_conditions_ja": ["60統制をHPCIの責任分担と調達項目へ割り当てる。", "認証、暗号化、監視、隔離、更新の性能影響を代表負荷で測定する。", "継続監査と例外承認・失効手順を定義する。"],
+          "adoption_conditions_en": ["Assign the 60 controls to HPCI responsibilities and procurement items.", "Measure performance effects of identity, encryption, monitoring, isolation, and updates on representative workloads.", "Define continuous assessment and exception approval and expiry."],
+          "actor_ids": [], "source_ids": ["SRC-CDS244"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-NIST-SP800-239-DRAFT",
+          "name_ja": "SP 800-239初期草案のAIデータセンター差分分析",
+          "name_en": "Initial draft SP 800-239 analyzes AI data-center differences",
+          "stage": "research", "maturity": "research",
+          "timing_ja": "2026年7月27日初期草案、9月25日意見期限", "timing_en": "Initial draft July 27, 2026; comments due September 25",
+          "statement_ja": "SP 800-239初期草案は、モデル学習・推論・応用向けAI基盤を従来HPCと比較し、アーキテクチャ、ハードウェア、ソフトウェアスタック、ワークフロー、ストレージの差から脅威と対策候補を整理します。現時点では初期草案であり、最終基準やHPCI採用方針ではありません。",
+          "statement_en": "The initial draft SP 800-239 compares AI infrastructure for training, inference, and applications with traditional HPC, identifying threats and possible solutions across architecture, hardware, software stacks, workflows, and storage. It remains an initial draft, not a final standard or HPCI policy.",
+          "hpci_relevance_ja": "常駐推論、モデル重み、学習データ、エージェント、外部APIなど、HPC Overlayだけでは不足する差分を監視できます。",
+          "hpci_relevance_en": "It can track deltas involving persistent inference, model weights, training data, agents, and external APIs beyond the HPC overlay.",
+          "adoption_conditions_ja": ["最終版まで変更履歴を追跡する。", "草案の脅威をHPCIの実利用モデルへ対応付ける。", "草案だけを根拠に調達必須要件を固定しない。"],
+          "adoption_conditions_en": ["Track changes through final publication.", "Map draft threats to actual HPCI service models.", "Do not freeze mandatory procurement requirements from the draft alone."],
+          "actor_ids": [], "source_ids": ["SRC-CDS245"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS243", "title": "NIST SP 800-223: High-Performance Computing Security", "publisher": "National Institute of Standards and Technology", "url": "https://csrc.nist.gov/pubs/sp/800/223/final", "source_class": "official-standard", "published_or_updated": "2024-02"}, "origin_group": "nist-hpc-security-guidance", "checked_at": "2026-09-02T03:36:00+09:00", "locator": "final publication, reference architecture, threat analysis, security posture", "observation_ja": "最終版の位置付け、参照アーキテクチャ、脅威分析、適用範囲を確認しました。", "observation_en": "Verified final status, reference architecture, threat analysis, and scope.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS244", "title": "NIST SP 800-234: High-Performance Computing Security Overlay", "publisher": "National Institute of Standards and Technology", "url": "https://csrc.nist.gov/pubs/sp/800/234/final", "source_class": "official-standard", "published_or_updated": "2026-05-04"}, "origin_group": "nist-hpc-security-overlay", "checked_at": "2026-09-02T03:37:00+09:00", "locator": "final publication, SP 800-53B moderate baseline, 60 controls", "observation_ja": "最終版、Moderate基準、60統制、性能配慮型Overlayの位置付けを確認しました。", "observation_en": "Verified final status, moderate baseline, 60 tailored controls, and performance-conscious purpose.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS245", "title": "NIST SP 800-239 Initial Public Draft: AI Data Center Security Analysis", "publisher": "National Institute of Standards and Technology", "url": "https://csrc.nist.gov/pubs/sp/800/239/ipd", "source_class": "official-standard", "published_or_updated": "2026-07-27"}, "origin_group": "nist-ai-datacenter-security-draft", "checked_at": "2026-09-02T03:38:00+09:00", "locator": "initial public draft, AI-HPC differences, comments due September 25 2026", "observation_ja": "初期草案の状態、対象差分、意見募集期限を確認しました。", "observation_en": "Verified initial-draft status, analyzed deltas, and comment deadline.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["SP 800-234の60統制とHPCI各組織・調達仕様の対応表、実装証拠、性能影響は未作成です。", "SP 800-239は草案であり、最終内容と採用時期は未確定です。", "日本の法令・政府統一基準・研究データ分類との対応と独立Consensusは未完了です。"],
+  "remaining_work_en": ["A mapping of SP 800-234's 60 controls to HPCI organizations and procurements, implementation evidence, and performance impact is not yet available.", "SP 800-239 remains a draft; final content and adoption timing are uncertain.", "Mapping to Japanese law, government baselines, and research-data classes and independent Consensus remain incomplete."]
+}

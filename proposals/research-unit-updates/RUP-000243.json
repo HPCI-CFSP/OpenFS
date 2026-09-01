@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000243",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:37:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000161",
+      "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"
+    },
+    {
+      "update_id": "RUP-000169",
+      "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"
+    },
+    {
+      "update_id": "RUP-000180",
+      "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"
+    },
+    {
+      "update_id": "RUP-000193",
+      "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"
+    },
+    {
+      "update_id": "RUP-000218",
+      "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"
+    },
+    {
+      "update_id": "RUP-000226",
+      "bundle_sha256": "524f3070c566043a03e935d7cb0f7457b88f608bc3f59ce233d8744edc7b3901"
+    },
+    {
+      "update_id": "RUP-000235",
+      "bundle_sha256": "18dab33bb3335028cc91b5987c86440b44ea8d25c71707ce8fceb1d78ec96def"
+    }
+  ],
+  "before_profile_sha256": "16cf72ef318dd9e13ffa463ee778e168d315aefbd68dd3b0c736c6a8f1068fc2",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI公式の2026年度情報から、東西拠点間二重化・総容量90.0 PBのHPCI共用storageを追加しました。公表値は容量と二重化を示しますが、usable容量、同期方式、RPO/RTO、整合性、transfer性能、災害切替は別途確認が必要です。次期整備ではこれらをservice classとして定義します。Consensusは未完了です。",
+  "summary_en": "Official FY2026 HPCI information adds shared storage totaling 90.0 PB with east-west duplication. The public figure establishes capacity and duplication but not usable capacity, synchronization, RPO/RTO, integrity, transfer performance, or disaster failover. Future planning should define these as service classes. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "443d36e3542939a5b7e7ab119f8e458498c76b630dfcce0c7cf7238f376d68fa",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD4-SSW-05-AI-READY-DATA",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD24-SSW-05-MLPERF-STORAGE-3",
+        "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-CD49-SSW-05-HPCI-DUAL-SITE-STORAGE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD49-SSW-05-HPCI-DUAL-SITE-STORAGE",
+      "title_ja": "HPCI共用ストレージの東西二重化90 PB",
+      "title_en": "HPCI 90-PB dual-site shared storage",
+      "summary_ja": "容量と二重化の公表値を、data durability・availability・transfer性能の未確認事項と分けます。",
+      "summary_en": "Separate published capacity and replication from unverified durability, availability, and transfer performance.",
+      "items": [
+        {
+          "item_id": "TDI-CD49-HPCI-90PB-DUAL-SITE",
+          "name_ja": "HPCI共用ストレージは東西拠点間二重化で総容量90.0 PB",
+          "name_en": "HPCI shared storage totals 90.0 PB with east-west duplication",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年度提供情報",
+          "timing_en": "FY2026 resource information",
+          "statement_ja": "HPCI公式一覧は、東京大学情報基盤センターを東拠点、R-CCSを西拠点とするHPCI共用storageを、東西拠点間二重化・総容量90.0 PBとして掲載しています。ただし「二重化」だけでは同期方式、usable capacity、RPO/RTO、checksum、削除伝播、広域transfer帯域、災害時切替を判断できません。",
+          "statement_en": "The official HPCI list describes shared storage at the University of Tokyo east site and R-CCS west site as 90.0 PB total with east-west duplication. Duplication alone does not establish synchronization mode, usable capacity, RPO/RTO, checksums, deletion propagation, wide-area transfer bandwidth, or disaster failover.",
+          "hpci_relevance_ja": "次期data基盤では容量だけでなく、保護水準、復旧時間、compute近接cache、project間共有、退避・削除policyをservice classとして定義すべきです。",
+          "hpci_relevance_en": "Future data infrastructure should define protection level, recovery time, compute-proximate cache, cross-project sharing, retention, and deletion policies as service classes, not capacity alone.",
+          "adoption_conditions_ja": [
+            "logical/physical/usable容量と複製倍率を分けて公開する。",
+            "RPO、RTO、整合性check、災害切替試験を定期測定する。",
+            "各compute資源との実効transfer帯域とsmall-file性能を測る。",
+            "研究dataの保存期間、削除、公開、機密区分をpolicy化する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish logical, physical, and usable capacity separately from replication factor.",
+            "Periodically measure RPO, RTO, integrity checking, and disaster failover.",
+            "Measure effective transfer bandwidth and small-file performance to each compute resource.",
+            "Define retention, deletion, publication, and confidentiality policies for research data."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS329"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS329",
+        "title": "令和8年度課題募集におけるハードウェア・ソフトウェア資源一覧",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "hpci-fy2026-resource-list",
+      "checked_at": "2026-09-02T04:19:00+09:00",
+      "locator": "HPCI shared storage table",
+      "observation_ja": "東京大学東拠点・R-CCS西拠点間で二重化された総容量90.0 PBのHPCI共用storageを確認しました。",
+      "observation_en": "Verified HPCI shared storage totaling 90.0 PB and duplicated between the University of Tokyo east site and R-CCS west site.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "複製倍率、usable容量、同期方式、RPO/RTO、障害・災害切替実績は未確認です。",
+    "各compute資源からの実効bandwidth、metadata、small-file性能は未確認です。",
+    "独立model Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Replication factor, usable capacity, synchronization, RPO/RTO, and incident or disaster failover evidence remain unverified.",
+    "Effective bandwidth, metadata, and small-file performance from each compute resource remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000132",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T00:16:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "f22d5c8a082801c675c2c33cd1c60ce0070a8d4ddbbd1f06b37151b1a4856494",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "筑波大学のHPC-AIシステム資料提供招請から、CPU・GPUが30 TB以上のメモリへコヒーレントにアクセスする構成、GPU当たり800 Gbps以上のフルバイセクション網、GPU当たり3.8 TB以上のNVMe、1 PB以上・2000億i-node以上の並列ファイルシステムを追加しました。これらは基本要求要件であり、確定製品や実効性能ではありません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds a Tsukuba HPC-AI requirement for coherent CPU/GPU access to at least 30 TB of memory, a full-bisection network with at least 800 Gbps per GPU, at least 3.8 TB of NVMe per GPU, and a parallel file system with at least 1 PB and 200 billion inodes. These are basic procurement requirements, not a finalized product or delivered performance. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "91a3cdeae313ea652d30b849f05cd6120c197fc1ad1b3076ba29d6b115b0ce10",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U01", "TDS-HW3-ARCH-05-U01", "TDS-CD10-ARCH-05-U01"]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "7088a9495d6a2ad5cf25bb8c548a519ef8ea8f47f12ed3a82859f0a9068a9580",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U02", "TDS-CD10-ARCH-05-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-ARCH-05-U01",
+      "title_ja": "調達要求に現れたコヒーレントHPC-AIシステム構成",
+      "title_en": "A coherent HPC-AI system organization expressed in procurement requirements",
+      "summary_ja": "演算器、共有メモリ、ノード内NVMe、全二分割帯域網、並列ファイルシステム、施設を一つの構成として評価します。",
+      "summary_en": "Evaluate accelerators, shared memory, node-local NVMe, full-bisection fabric, parallel storage, and facilities as one system.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-TSUKUBA-COHERENT-SYSTEM",
+          "name_ja": "CPU・GPUコヒーレントメモリとGPU当たり800 Gbpsの構成要求",
+          "name_en": "Coherent CPU/GPU memory and 800 Gbps-per-GPU fabric requirements",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年3月16日の基本要求要件",
+          "timing_en": "Basic requirements published March 16, 2026",
+          "statement_ja": "筑波大学の要求要件は、均質な計算ノード群で、CPUとGPUが30 TB以上・570 TB/s以上のメモリへキャッシュコヒーレントにアクセスし、GPU当たり3.8 TB以上・8 GB/s以上のNVMe SSDを備える構成を求めます。ノード間はフルバイセクション帯域を持ち、GPU当たり800 Gbps以上です。数値は要求下限であり、採用製品、同時達成条件、実効値は未確定です。",
+          "statement_en": "Tsukuba's requirements call for homogeneous compute nodes in which CPUs and GPUs coherently access at least 30 TB of memory with at least 570 TB/s aggregate bandwidth, and each GPU has at least 3.8 TB of NVMe with at least 8 GB/s peak bandwidth. The interconnect requires full bisection and at least 800 Gbps per GPU. These are minimum requirements; the selected product, simultaneous-achievement conditions, and delivered values are not established.",
+          "hpci_relevance_ja": "アクセラレータ台数ではなく、コヒーレント容量、ノード内データ供給、ネットワーク収容比を一体で評価する国内の調達例です。",
+          "hpci_relevance_en": "This domestic procurement example evaluates coherent capacity, node-local data supply, and network provisioning together rather than accelerator count alone.",
+          "adoption_conditions_ja": [
+            "30 TBと570 TB/sの集計範囲、同時アクセス時の実効値、NUMA特性を確認する。",
+            "GPU当たり800 Gbpsの方向、プロトコル、競合時帯域、集合通信性能を確認する。",
+            "NVMeの耐久性、共有方法、障害時再構築、チェックポイント時間を測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify aggregation boundaries for 30 TB and 570 TB/s, concurrent delivered values, and NUMA behavior.",
+            "Verify link direction, protocol, contention bandwidth, and collective performance for 800 Gbps per GPU.",
+            "Measure NVMe endurance, sharing, failure reconstruction, and checkpoint time."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS130"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-TSUKUBA-FILESYSTEM-FACILITY",
+          "name_ja": "2000億i-node・無停止交換・電力監視を含む全体要件",
+          "name_en": "System requirements spanning 200 billion inodes, online replacement, and power monitoring",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年3月16日の基本要求要件",
+          "timing_en": "Basic requirements published March 16, 2026",
+          "statement_ja": "並列ファイルシステムには利用可能容量1 PB以上、i-node数2000億以上、単一装置故障時の運用継続と交換、監視が要求されています。施設面では連続稼働時の電源・冷却・設置と、計算・ストレージ・ログイン系の電力監視が必要です。実効演算性能とI/O性能は別途示すベンチマークで評価するとされ、詳細は公開本文にありません。",
+          "statement_en": "The parallel file system requires at least 1 PB usable capacity, at least 200 billion inodes, continued operation and device replacement after a single-device failure, and monitoring. Facility requirements cover power, cooling, installation for continuous operation, and power monitoring for compute, storage, and login systems. Delivered compute and I/O performance will be evaluated by benchmarks described separately and not present in the public notice.",
+          "hpci_relevance_ja": "大量小ファイル、AIデータ、チェックポイント、施設電力、保守を同じ受入試験に含める必要性を示します。",
+          "hpci_relevance_en": "This shows the need to include small-file scale, AI data, checkpoints, facility power, and maintenance in one acceptance program.",
+          "adoption_conditions_ja": [
+            "2000億i-nodeの作成・検索・削除・障害復旧を代表ワークロードで測定する。",
+            "単一故障時に性能、メタデータ整合性、利用者影響を確認する。",
+            "ベンチマーク仕様、測定境界、定常電力、冷却条件、保守時性能を公開可能な範囲で保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure creation, lookup, deletion, and recovery at inode scale using representative workloads.",
+            "Verify performance, metadata integrity, and user impact during a single-device failure.",
+            "Preserve publishable benchmark definitions, boundaries, steady-state power, cooling conditions, and maintenance-mode performance."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS130"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS130",
+        "title": "HPC-AIスーパーコンピュータシステム 一式－資料提供招請に関する公表",
+        "publisher": "国立大学法人筑波大学（政府公共調達データベース掲載）",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/385153/2026031600450001.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "tsukuba-hpc-ai-procurement-2026",
+      "checked_at": "2026-09-02T00:09:00+09:00",
+      "locator": "Requirements A-G in item 1(6)",
+      "observation_ja": "コヒーレントメモリ、ノード内NVMe、フルバイセクション網、並列ファイルシステム、故障交換、電力監視、別途ベンチマーク評価を確認しました。要求下限を実効値として扱いません。",
+      "observation_en": "Verified coherent memory, node-local NVMe, full-bisection networking, parallel storage, failure replacement, power monitoring, and separate benchmark evaluation. Minimum requirements are not treated as delivered values.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-011、GAP-TDS-048、GAP-TDS-060は未解決です。確定構成、調達額、実効性能、施設余力、保守条件、ベンチマーク仕様が必要です。",
+    "コヒーレントメモリとネットワーク帯域の集計範囲・同時達成条件を導入説明書で確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-011, GAP-TDS-048, and GAP-TDS-060 remain open; the final configuration, price, delivered performance, facility headroom, maintenance terms, and benchmark specification are required.",
+    "The aggregation scope and simultaneous-achievement conditions for coherent memory and network bandwidth require the implementation specification.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

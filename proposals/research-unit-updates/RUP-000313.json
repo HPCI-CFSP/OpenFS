@@ -1,0 +1,159 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000313",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-02T07:49:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000156",
+      "bundle_sha256": "ec32a1c889c02ea5fc0b6124db725dc231688e338aa97c4251843c900717ccbf"
+    },
+    {
+      "update_id": "RUP-000255",
+      "bundle_sha256": "d7ec94807c6be2ac5518f8ebaba6e4c1239badfafd7d52f780386f6993a7792d"
+    },
+    {
+      "update_id": "RUP-000296",
+      "bundle_sha256": "c09869a38de5d11eecb8ba21fc3e1e8e3ed53ac239167951ee02f3bb174f5c4f"
+    },
+    {
+      "update_id": "RUP-000303",
+      "bundle_sha256": "f6819226fca1c6028076987bd238704a6f399c080d35f3142444d4ab6056136d"
+    },
+    {
+      "update_id": "RUP-000308",
+      "bundle_sha256": "07fa4b55c521d20e69b719214347b25207d24ad661aa51a37471b2ce117cdc27"
+    }
+  ],
+  "before_profile_sha256": "eef2df01bf0ceaf537a0df1f6b42c09e7e50801e48ac61981dad85d5aa5e4f40",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "JUPITER Early AccessでSlurm backend変更により8月27日前の投入済みjobがholdされ、手動継続または再投入とpinning確認を要する事例を追加しました。段階導入の継続対象をidentity、data、scriptだけでなくqueued job、reservation、dependency、affinityへ広げます。documentation同期遅れも正式仕様と分離します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "A JUPITER Early Access Slurm backend change held jobs submitted before August 27 and required manual continuation or resubmission with possible pinning impact. Staged-deployment continuity now extends beyond identity, data, and scripts to queued jobs, reservations, dependencies, and affinity. Documentation lag is also separated from production specifications. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "c8597d76e1f0bfa7d34d188a5652c0be4e6fbfd452083cf3ac56dfc7239476f4",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01",
+        "TDS-CD3-CROSS-14-U01",
+        "TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA",
+        "TDS-CD16-CROSS-14-HPDF-DATA-SERVICE",
+        "TDS-CD17-CROSS-14-SPRING8-GAKUNIN-RDM",
+        "TDS-CD18-CROSS-14-SPRING8II-SHUTDOWN",
+        "TDS-CD19-CROSS-14-JUPITER-EARLY-ACCESS-JOBS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD19-CROSS-14-JUPITER-EARLY-ACCESS-JOBS",
+      "title_ja": "JUPITER Early Accessのbackend変更と投入済みjob継続",
+      "title_en": "JUPITER early-access backend change and continuity of submitted jobs",
+      "summary_ja": "段階導入中のscheduler変更でqueued jobとpinningが移行対象になる実例を整理します。",
+      "summary_en": "Document a staged-deployment case where queued jobs and pinning become migration objects after a scheduler change.",
+      "items": [
+        {
+          "item_id": "TDI-CD120-JUPITER-SLURM-BACKEND-TRANSITION",
+          "name_ja": "backend変更で8月27日前の全投入jobをholdし手動継続または再投入",
+          "name_en": "Backend change holds all jobs submitted before August 27 for manual continuation or resubmission",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年8月27日を境界とするEarly Access変更",
+          "timing_en": "Early-access transition around August 27, 2026",
+          "statement_ja": "JUPITER User DocumentationはproductionではなくEarly Accessで詳細が変更中と警告し、Slurm backend変更により2026年8月27日前に投入された全jobをholdし、利用者が手動で継続または再投入する必要があり、pinningにも影響し得ると記載しています。原因、対象job数、失敗率、復旧時間は取得できた頁にありません。",
+          "statement_en": "JUPITER user documentation warns that the system is in Early Access rather than production and details may change. A Slurm backend change requires all jobs submitted before August 27, 2026 to be held and manually continued or resubmitted, and pinning may also be affected. The reviewed page does not provide the cause, job count, failure rate, or recovery duration.",
+          "hpci_relevance_ja": "段階整備ではaccount・data・scriptに加え、pending/running job、reservation、dependency、affinity、利用量帰属をmigration inventoryへ入れる必要があります。",
+          "hpci_relevance_en": "Staged deployment should include pending and running jobs, reservations, dependencies, affinity, and usage attribution in the migration inventory alongside accounts, data, and scripts.",
+          "adoption_conditions_ja": [
+            "scheduler変更前にqueued/running job、dependency、reservation、pinningをsnapshotする。",
+            "自動変換・hold・cancel・resubmitのpolicy、通知、責任、費用補償を定義する。",
+            "代表jobで結果、binding、性能、利用量帰属を移行前後に比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Snapshot queued and running jobs, dependencies, reservations, and pinning before scheduler changes.",
+            "Define automatic conversion, hold, cancel, resubmit, notice, responsibility, and charging remediation.",
+            "Compare result, binding, performance, and usage attribution before and after migration on representative jobs."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS409"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD120-JUPITER-EARLY-ACCESS-DOC-MATURITY",
+          "name_ja": "Early Accessではdocumentation自体の同期遅れを運用riskとして明示",
+          "name_en": "Early access explicitly treats documentation lag as an operational risk",
+          "stage": "current",
+          "maturity": "uncertain",
+          "timing_ja": "2026年9月確認",
+          "timing_en": "Verified September 2026",
+          "statement_ja": "JSCはEarly Access中に多くの詳細が変わり、documentationが現状と同期しない、または不完全な場合があると明記しています。これは全記載が不正確という意味ではなく、production受入前は機械取得した設定、実行時問い合わせ、変更履歴、support確認を組み合わせる必要があることを示します。",
+          "statement_en": "JSC explicitly states that many details change during Early Access and documentation may become out of sync or incomplete. This does not mean every statement is inaccurate; it shows that pre-production acceptance should combine machine-retrieved configuration, runtime queries, change history, and support confirmation.",
+          "hpci_relevance_ja": "OpenFSでも公表文書の取得日だけでなく、system stage、runtime確認、変更履歴、失効日を保存し、早期アクセス情報を正式仕様に昇格させない運用が必要です。",
+          "hpci_relevance_en": "OpenFS should preserve system stage, runtime verification, change history, and expiry along with retrieval date, without promoting early-access documentation to final specifications.",
+          "adoption_conditions_ja": [
+            "static documentationとruntime command/APIの差を定期検査する。",
+            "変更通知、effective date、rollback、known issue、解消確認を一つの台帳で追跡する。",
+            "production昇格時にEarly Access claimを再検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Continuously compare static documentation with runtime commands and APIs.",
+            "Track notices, effective dates, rollback, known issues, and resolution in one register.",
+            "Revalidate early-access claims at production promotion."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS409"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS409",
+        "title": "JUPITER user documentation: Access",
+        "publisher": "Juelich Supercomputing Centre",
+        "url": "https://apps.fz-juelich.de/jsc/hps/jupiter/access.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "jsc-jupiter-early-access-transition",
+      "checked_at": "2026-09-02T05:40:00+09:00",
+      "locator": "Early-access warning, August 27 Slurm backend transition, job holds and manual continuation or resubmission, and pinning caveat",
+      "observation_ja": "Early Accessの変更性、backend変更、job hold・再投入、pinning影響を確認しました。",
+      "observation_en": "Verified early-access mutability, backend change, job holds and resubmission, and possible pinning impact.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "変更原因、対象job数、復旧時間、結果・課金影響、known issue解消は未確認です。",
+    "production移行後の最終scheduler・pinning・互換性は再確認が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Cause, affected job count, recovery time, result and charging impact, and known-issue resolution remain unverified.",
+    "Final scheduler, pinning, and compatibility require reverification after production transition.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

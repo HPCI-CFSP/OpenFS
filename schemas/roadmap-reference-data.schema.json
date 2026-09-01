@@ -37,13 +37,25 @@
       "items": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"}
     },
     "sourceRef": {
-      "type": "object",
-      "required": ["roadmap_id", "source_id"],
-      "properties": {
-        "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
-        "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
-      },
-      "additionalProperties": false
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["roadmap_id", "source_id"],
+          "properties": {
+            "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+            "source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["catalog_source_id"],
+          "properties": {
+            "catalog_source_id": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+          },
+          "additionalProperties": false
+        }
+      ]
     },
     "term": {
       "type": "object",
@@ -61,7 +73,7 @@
           "items": {"type": "string", "minLength": 2}
         },
         "category": {
-          "enum": ["compute", "memory", "packaging", "interconnect", "software", "benchmark", "storage"]
+          "enum": ["compute", "memory", "packaging", "interconnect", "software", "benchmark", "storage", "planning"]
         },
         "short_definition_ja": {"type": "string", "minLength": 1},
         "short_definition_en": {"type": "string", "minLength": 1},

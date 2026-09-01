@@ -1,0 +1,201 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000351",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:55:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000171",
+      "bundle_sha256": "e5a5524263e3bb6dc60ead5ef98e98283473cfff12954dcbab25a8a7c9ef7c06"
+    },
+    {
+      "update_id": "RUP-000228",
+      "bundle_sha256": "082cfc450fc4c20ad2608d05198465819e922f7f9ec478ff63672dc120a600df"
+    },
+    {
+      "update_id": "RUP-000241",
+      "bundle_sha256": "f89da10f63a1d832cb56bf587392eaae7250ec866e4e650860af1ab91b77b3ce"
+    },
+    {
+      "update_id": "RUP-000268",
+      "bundle_sha256": "76c919e73905190fbe657d7417ddbc2651786e08ce4d55cbd8f1ce58a7313e2b"
+    },
+    {
+      "update_id": "RUP-000336",
+      "bundle_sha256": "85034326c1696ad415e57a2e423c0b3d0165c0ecd0243b31e33885526527288c"
+    }
+  ],
+  "before_profile_sha256": "28120926576437675ce18c1c640e86ca6978e44d60beca50c1871b97546e9dac",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳産業利用上位のLAMMPSとGROMACSについて、2026年公式文書からCUDA、HIP、SYCL、OpenCL、Kokkos、GPU-aware MPI、精度、validation状態を追加しました。複数backend対応を同一の成熟度・正しさ・性能とは扱いません。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For LAMMPS and GROMACS, both prominent in Fugaku industrial use, this update adds 2026 official evidence on CUDA, HIP, SYCL, OpenCL, Kokkos, GPU-aware MPI, precision, and validation status. Multi-backend support is not treated as equal maturity, correctness, or performance. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-02-U01",
+      "before_sha256": "ba925ba52995aee4a2fb6cd9f6c51825409befff48a093f6f5602e9271356d6e",
+      "evidence_section_ids": [
+        "TDS-APP02-CURRENT",
+        "TDS-APP02-FUTURE",
+        "TDS-CD1-APP-02-U01",
+        "TDS-CD5-APP-02-U01-U03",
+        "TDS-CD47-APP-02-GREEN500-INTERPRETATION",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026"
+      ]
+    },
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "bf742a7eb1d88b0e46a58dd211c2207c4cac8bae2482ef83074b45e8f7b6368a",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02",
+        "TDS-CD3-APP-02-U02",
+        "TDS-CD4-APP-02-SP-MIROC-CPU-GPU",
+        "TDS-CD50-APP-02-DISCOVERY-CAAR-READINESS",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD65-APP-02-MD-PORTABILITY-2026",
+      "title_ja": "産業利用上位の分子動力学codeにおけるaccelerator可搬性",
+      "title_en": "Accelerator portability in molecular-dynamics codes prominent in industrial use",
+      "summary_ja": "LAMMPSとGROMACSの2026年公式文書から、backend、build分離、精度、通信、validationの境界を比較します。",
+      "summary_en": "Compare backend, build separation, precision, communication, and validation boundaries in 2026 LAMMPS and GROMACS documentation.",
+      "items": [
+        {
+          "item_id": "TDI-CD192-LAMMPS-ACCELERATOR-PATHS",
+          "name_ja": "LAMMPSは複数accelerator経路を持つがbuildと精度を固定する必要",
+          "name_en": "LAMMPS offers multiple accelerator paths but requires explicit build and precision choices",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年7月版公式文書",
+          "timing_en": "Official documentation updated July 2026",
+          "statement_ja": "LAMMPSのGPU packageはCUDA、HIP、OpenCLを、KOKKOS packageはOpenMP、CUDA、HIP、SYCLを構成できます。KokkosのpresetにはNVIDIA CUDA、AMD HIP、Intel/NVIDIA SYCLがあり、A64FX、Grace、x86 CPUのarchitecture設定もあります。ただしKokkosではCUDA、HIP、SYCLの複数GPU設定を単一実行fileへ同時に組み込めず、backend別buildが必要です。GPU/Kokkosのprecisionはdouble、mixed、singleから選択でき、公式文書は低精度時にenergy conservation等の結果確認を求めています。backend名の列挙だけでは、全pair style、long-range solver、FFT、communication、精度の同等性を保証しません。",
+          "statement_en": "The LAMMPS GPU package can target CUDA, HIP, or OpenCL, while the KOKKOS package can use OpenMP, CUDA, HIP, or SYCL. Kokkos presets cover NVIDIA CUDA, AMD HIP, and Intel or NVIDIA SYCL, and architecture settings include A64FX, Grace, and x86 CPUs. However, CUDA, HIP, and SYCL GPU settings cannot coexist in one Kokkos executable, so separate backend builds are required. GPU and Kokkos precision can be double, mixed, or single, and the documentation requires checking outcomes such as energy conservation when using reduced precision. Listing backends does not establish equivalent coverage for every pair style, long-range solver, FFT, communication path, or precision mode.",
+          "hpci_relevance_ja": "利用件数1位のLAMMPSを異種HPCI資源で維持するには、実行fileの配布だけでなくbackend別build、input互換性、精度、package coverageを管理する必要があります。",
+          "hpci_relevance_en": "Maintaining LAMMPS, the most frequently reported industrial package, across heterogeneous HPCI resources requires backend-specific builds, input compatibility, precision, and package coverage, not merely distributing an executable.",
+          "adoption_conditions_ja": [
+            "HPCIで使われるpair style、kspace、fix、package、precisionの頻度を収集する。",
+            "同一inputと科学的判定基準でCPU、CUDA、HIP、SYCL buildを比較する。",
+            "compiler、Kokkos、MPI、FFT、driver版とbuild recipeを固定して継続試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Collect actual HPCI use of pair styles, kspace methods, fixes, packages, and precision modes.",
+            "Compare CPU, CUDA, HIP, and SYCL builds on identical inputs and scientific acceptance criteria.",
+            "Pin compiler, Kokkos, MPI, FFT, driver versions, and build recipes for continuous testing."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS485"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD193-GROMACS-2026-GPU-BACKENDS",
+          "name_ja": "GROMACS 2026のCUDA・SYCL・HIP経路とvalidation差",
+          "name_en": "CUDA, SYCL, and HIP paths in GROMACS 2026 have different validation status",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "GROMACS 2026.3公式文書",
+          "timing_en": "GROMACS 2026.3 official documentation",
+          "statement_ja": "GROMACS 2026.3はNVIDIA GPUにCUDA、AMD GPUにAdaptiveCppを用いるSYCL、Intel GPUにoneAPI DPC++のSYCLを推奨し、OpenCLをdeprecatedとしています。HIPはGROMACS 2025で主なnon-bonded kernelから導入され、2026ではfull offload supportと説明されます。一方、validation pageはAMD向けHIP backend、non-AMD/non-Intel向けSYCL、HIPでのmulti-GPU PME等をexperimentalまたはvalidation pendingに分類します。GPU-aware MPIはbackendとMPI実装に依存し、自動検出を強制する場合はcorrectness確認が必要です。したがって機能実装、推奨backend、検証状態、scale-out通信は別々に評価する必要があります。",
+          "statement_en": "GROMACS 2026.3 recommends CUDA for NVIDIA GPUs, SYCL through AdaptiveCpp for AMD GPUs, and SYCL through oneAPI DPC++ for Intel GPUs, while OpenCL is deprecated. HIP entered GROMACS 2025 for major non-bonded kernels and is described as providing full offload in 2026. However, the validation page classifies the AMD HIP backend, SYCL on non-AMD/non-Intel targets, and multi-GPU PME over HIP among experimental or validation-pending features. GPU-aware MPI depends on both backend and MPI implementation, and forcing detection requires correctness checks. Feature implementation, recommended backend, validation status, and scale-out communication therefore require separate assessment.",
+          "hpci_relevance_ja": "GROMACSの広いGPU対応は異種資源採用を支えますが、同じsourceからbuildできることを同じ成熟度・性能・正しさとは扱えません。",
+          "hpci_relevance_en": "Broad GROMACS GPU coverage supports heterogeneous-resource options, but building from one source tree does not imply equal maturity, performance, or correctness.",
+          "adoption_conditions_ja": [
+            "代表inputでforce、energy、trajectory、restartをbackend間で比較する。",
+            "single GPU、single node multi-GPU、multi-node PMEを別々に測る。",
+            "validation pending機能をproduction moduleのdefaultにする前に回帰試験とfailure policyを定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare forces, energy, trajectories, and restart behavior across backends on representative inputs.",
+            "Measure single GPU, single-node multi-GPU, and multi-node PME separately.",
+            "Define regression tests and failure policy before making validation-pending features defaults in production modules."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS486",
+            "SRC-CDS487"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS485",
+        "title": "LAMMPS documentation: Packages with extra build options",
+        "publisher": "LAMMPS project",
+        "url": "https://docs.lammps.org/latest/Build_extras.html",
+        "source_class": "official-project",
+        "published_or_updated": "Changed through 2026-07-04; checked 2026-09-02"
+      },
+      "origin_group": "lammps-2026-accelerator-build-options",
+      "checked_at": "2026-09-02T06:38:00+09:00",
+      "locator": "GPU package, KOKKOS package, architecture, backend, FFT, and precision settings",
+      "observation_ja": "CUDA/HIP/OpenCLのGPU package、OpenMP/CUDA/HIP/SYCLのKokkos構成、backend別build、精度選択を確認しました。",
+      "observation_en": "Verified GPU-package CUDA, HIP, and OpenCL paths; Kokkos OpenMP, CUDA, HIP, and SYCL configuration; backend-specific builds; and precision choices.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS486",
+        "title": "GROMACS 2026.3 Installation Guide",
+        "publisher": "GROMACS project",
+        "url": "https://manual.gromacs.org/documentation/current/install-guide/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "GROMACS 2026.3; checked 2026-09-02"
+      },
+      "origin_group": "gromacs-2026-gpu-installation",
+      "checked_at": "2026-09-02T06:39:00+09:00",
+      "locator": "GPU support, CUDA, OpenCL, SYCL, HIP, GPU-aware MPI, and FFT sections",
+      "observation_ja": "vendor別推奨backend、HIP full offload表記、GPU-aware MPIとFFTの条件を確認しました。",
+      "observation_en": "Verified vendor-specific recommended backends, the HIP full-offload statement, and GPU-aware MPI and FFT conditions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS487",
+        "title": "GROMACS 2026.3 Validation",
+        "publisher": "GROMACS project",
+        "url": "https://manual.gromacs.org/current/user-guide/validation.html",
+        "source_class": "official-project",
+        "published_or_updated": "GROMACS 2026.3; checked 2026-09-02"
+      },
+      "origin_group": "gromacs-2026-validation-status",
+      "checked_at": "2026-09-02T06:40:00+09:00",
+      "locator": "Experimental features and validation-pending features",
+      "observation_ja": "HIP、SYCL、multi-GPU PME等のexperimentalまたはvalidation pending分類を確認しました。",
+      "observation_en": "Verified experimental or validation-pending classifications for HIP, SYCL, multi-GPU PME, and related features.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCI実機でのbuild、入力別coverage、correctness、performance、移植・保守工数は未測定です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "HPCI builds, input-specific coverage, correctness, performance, porting effort, and maintenance effort remain unmeasured.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

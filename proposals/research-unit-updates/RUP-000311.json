@@ -1,0 +1,174 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000311",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:48:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    },
+    {
+      "update_id": "RUP-000251",
+      "bundle_sha256": "82b9ed067447fa7ca02f2ce08961f53d76d60cef40d81a7eee06a84f2f4052d9"
+    },
+    {
+      "update_id": "RUP-000259",
+      "bundle_sha256": "09537c26563e7ec4e061464a44d6773f5d993803e79d62e9e3114a81f6b9d044"
+    },
+    {
+      "update_id": "RUP-000275",
+      "bundle_sha256": "0f46b1721bfcf6baf5b0058311cd963fcb9d72c1f1d0ebce8e976da04459720a"
+    },
+    {
+      "update_id": "RUP-000284",
+      "bundle_sha256": "a1d5d13cc8b17741b5594474c95240f1577adc4ed17b8718e0e990d859b21f4a"
+    }
+  ],
+  "before_profile_sha256": "80cbe336ced699ec3cdef80432fa5c2ad6e4049b446818c42b5354817817f059",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "RIKYUのSlurm運用について、batch・対話jobの課題別accountingと、Phase 1 job scriptが環境差により自動互換でない移行事例を追加しました。scheduler製品名だけで継続性を判断せず、課題ID伝播、環境差分、shadow run、移行期限を受入条件にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "RIKYU's Slurm operation adds project-attributed batch and interactive jobs and a migration case where Phase 1 job scripts are not automatically compatible because the environment changed. Scheduler product identity alone does not establish continuity; project-ID propagation, environment diffs, shadow runs, and migration deadlines become acceptance conditions. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "ea0f7306410312767be07e3668c6ffcf8bce02aba6d657c1d452e51ea82ade57",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+        "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL",
+        "TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS",
+        "TDS-CD14-SSW-06-SPACK-12-REPRODUCIBILITY",
+        "TDS-CD26-SSW-06-RIKYU-SLURM-MIGRATION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD26-SSW-06-RIKYU-SLURM-MIGRATION",
+      "title_ja": "理究（RIKYU）の課題別実行とPhase移行",
+      "title_en": "RIKYU project-attributed execution and phase migration",
+      "summary_ja": "batch・対話job、課題別課金、Phase間のscript非互換を運用移行条件として整理します。",
+      "summary_en": "Treat batch and interactive jobs, project-attributed charging, and cross-phase script incompatibility as operational migration conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD118-RIKYU-PROJECT-ATTRIBUTED-JOBS",
+          "name_ja": "batch・対話jobとも課題を明示して利用量を帰属",
+          "name_en": "Attribute both batch and interactive jobs to an explicit project",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月の早期アクセスPhase 2",
+          "timing_en": "Early Access Phase 2 in September 2026",
+          "statement_ja": "RIKYUはSlurmでbatchとinteractive jobを提供し、複数課題に所属する利用者は`--account`で課金対象課題を指定します。`sbatch`、`salloc`、`srun`の基本経路が公開されています。課題帰属は費用集計に有効ですが、quota、priority、fair-share、予約、preemption、account誤指定時の訂正はGuideから確認できません。",
+          "statement_en": "RIKYU provides Slurm batch and interactive jobs; users belonging to multiple projects select the charged project with `--account`. The guide documents basic `sbatch`, `salloc`, and `srun` paths. Project attribution supports cost accounting, but quotas, priority, fair share, reservations, preemption, and correction of misattributed jobs are not documented in the reviewed page.",
+          "hpci_relevance_ja": "連合資源では同じ研究課題IDをcompute、storage、API、workflowへ一貫して伝播し、費用と成果を追跡できる必要があります。",
+          "hpci_relevance_en": "Federated resources need consistent research-project identity across compute, storage, APIs, and workflows to track cost and outcomes.",
+          "adoption_conditions_ja": [
+            "課題ID伝播、quota、priority、fair-share、予約、訂正手順を確認する。",
+            "batch・interactive・API・storageの利用明細を同一課題へ集約する。",
+            "誤課金・跨課題data利用の検知と監査を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify project-ID propagation, quotas, priority, fair share, reservations, and corrections.",
+            "Aggregate batch, interactive, API, and storage usage under one project.",
+            "Test detection and audit of mischarging and cross-project data access."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS407"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD118-RIKYU-PHASE1-SCRIPT-INCOMPATIBILITY",
+          "name_ja": "Phase 1 job scriptは環境差のため作り直しを推奨",
+          "name_en": "Phase 1 job scripts should be rebuilt because the environment changed",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "Phase 1からPhase 2への移行",
+          "timing_en": "Migration from Phase 1 to Phase 2",
+          "statement_ja": "GuideはPhase 1のjob scriptについて環境変数などが現環境と異なり、継続使用で意図しない動作の可能性があるため新規作成を推奨しています。Slurmというscheduler名が同じでも、site policyとenvironment contractが変わればjob artifactは自動互換ではありません。変更一覧、互換check、変換tool、失敗件数は今回の頁にありません。",
+          "statement_en": "The guide warns that Phase 1 job scripts use environment variables and other settings different from the current environment and recommends recreating them to avoid unintended behavior. A shared Slurm scheduler name does not make job artifacts automatically compatible when site policy and environment contracts change. The reviewed page does not provide a change list, compatibility checker, conversion tool, or failure count.",
+          "hpci_relevance_ja": "世代更新ではapplication binaryだけでなく、job script、module、container、path、account、resource指定を移行対象としてinventory化すべきです。",
+          "hpci_relevance_en": "Generation transitions should inventory job scripts, modules, containers, paths, accounts, and resource requests alongside application binaries.",
+          "adoption_conditions_ja": [
+            "旧新environment差分とmachine-readable compatibility checkを提供する。",
+            "代表jobをshadow runし、結果・性能・費用差を比較する。",
+            "deprecated設定、移行期限、support、rollbackをversion化する。"
+          ],
+          "adoption_conditions_en": [
+            "Provide old-new environment diffs and machine-readable compatibility checks.",
+            "Shadow-run representative jobs and compare results, performance, and cost.",
+            "Version deprecated settings, migration deadlines, support, and rollback."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS407"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS407",
+        "title": "RIKYU User Guide: Using Slurm",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://docs.r-ccs.riken.jp/rikyu/ja/slurm/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "riken-rikyu-slurm-guide",
+      "checked_at": "2026-09-02T05:33:00+09:00",
+      "locator": "Phase 1 script warning, batch and interactive commands, and project account selection",
+      "observation_ja": "Phase移行の非互換注意、batch・interactive経路、課題別account指定を確認しました。",
+      "observation_en": "Verified the cross-phase incompatibility warning, batch and interactive paths, and project account selection.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "quota、priority、fair-share、予約、preemption、job統計、互換差分は未確認です。",
+    "Phase 1 script移行の成功率、支援工数、結果差は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Quotas, priority, fair share, reservations, preemption, job statistics, and compatibility diffs remain unverified.",
+    "Migration success, support effort, and result differences for Phase 1 scripts remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

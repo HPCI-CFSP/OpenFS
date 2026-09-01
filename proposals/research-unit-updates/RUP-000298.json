@@ -1,0 +1,202 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000298",
+  "topic_id": "ARCH-13",
+  "created_at": "2026-09-02T07:46:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000297",
+      "bundle_sha256": "2af46b55c6952022a82f468dc8a11383b7bdc7c11be3d93edda8c7e1083e8b43"
+    }
+  ],
+  "before_profile_sha256": "dee7b98a32cab97c25127173412ab66a33727fc7635cb4f4b966d3eb04d1c82b",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "LSMSのINT8ベースFP64エミュレーションを追加調査しました。GB200 NVL4・FeNi3・2 SCF反復では高精度modeの対象行列反転が平均約1.7倍と報告されましたが、31 bit modeはSCF収束に失敗しました。GEMMul8の再利用にはmatrix不変性等の契約があり、SCILIB-Accelも現時点ではNVIDIA・coherent memory中心です。投稿中preprintであり、Consensusは未完了です。",
+  "summary_en": "This update examines INT8-based FP64 emulation in LSMS. On GB200 NVL4 with FeNi3 and two SCF iterations, high-precision modes report about 1.7x for the targeted matrix inversion, while the 31-bit mode fails SCF convergence. GEMMul8 reuse has matrix-immutability and configuration contracts, and SCILIB-Accel currently centers on NVIDIA coherent-memory systems. The paper is a submitted preprint, and Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-13-U02",
+      "before_sha256": "58dba9b8d4e2a12e1f8be090ff270ef3d85a60559b952ca90a13fa801f1a1b2f",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-13-U02",
+        "TDS-CD16-ARCH-13-HPG-MXP-EVIDENCE",
+        "TDS-CD17-ARCH-13-LSMS-EMULATION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD17-ARCH-13-LSMS-EMULATION",
+      "title_ja": "実applicationでのINT8ベースFP64エミュレーション",
+      "title_en": "INT8-based FP64 emulation in a scientific application",
+      "summary_ja": "LSMSの物理量、収束、演算誤差、対象kernel性能を分け、低精度matrix engineをFP64計算へ用いる条件を整理します。",
+      "summary_en": "Separate physical observables, convergence, arithmetic error, and target-kernel performance in using low-precision matrix engines for FP64 computation.",
+      "items": [
+        {
+          "item_id": "TDI-CD105-LSMS-INT8-FP64-EMULATION",
+          "name_ja": "LSMS：GB200上でINT8からFP64 GEMMを再構成",
+          "name_en": "LSMS: reconstructing FP64 GEMM from INT8 on GB200",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "2026年3月の投稿中preprintと公開実装",
+          "timing_en": "March 2026 submitted preprint and public implementations",
+          "statement_ja": "2026年3月の投稿中preprintは、MuSTのLSMSをSCILIB-AccelでGPUへ自動offloadし、GEMMul8またはCUDA 13のOzaki方式でFP64 GEMMをINT8系matrix engineから再構成しています。FeNi3、GB200 NVL4、33,750×33,750の倍精度complex matrix、2 SCF反復において、高精度GEMMul8 modeの対象行列反転はnative FP64比で平均約1.7倍と報告されています。これはapplication全体、複数node、energy、他材料への速度倍率ではありません。",
+          "statement_en": "A March 2026 submitted preprint automatically offloads MuST LSMS through SCILIB-Accel and reconstructs FP64 GEMM on INT8-class matrix engines using GEMMul8 or CUDA 13 Ozaki methods. For FeNi3 on a GB200 NVL4 node, a 33,750-by-33,750 double-complex matrix, and two SCF iterations, it reports about 1.7x for the targeted matrix inversion in high-precision GEMMul8 modes over native FP64. This is not a whole-application, multi-node, energy, or cross-material speedup.",
+          "hpci_relevance_ja": "AI向け低精度比率が高いGPUを科学計算へ使う候補ですが、procurement評価では対象kernel比率とend-to-end速度を分離できます。",
+          "hpci_relevance_en": "This is a candidate path for scientific use of AI-oriented GPUs, but procurement evaluation should separate target-kernel share from end-to-end speedup.",
+          "adoption_conditions_ja": [
+            "複数材料、matrix size、SCF回数、node数でend-to-end時間とenergyを測る。",
+            "native FP64、algorithmic mixed precision、Ozaki-I、Ozaki-IIを同一条件で比較する。",
+            "offload、data placement、emulationの寄与を個別に測る。"
+          ],
+          "adoption_conditions_en": [
+            "Measure end-to-end time and energy across materials, matrix sizes, SCF counts, and node counts.",
+            "Compare native FP64, algorithmic mixed precision, Ozaki-I, and Ozaki-II under matched conditions.",
+            "Measure the separate contributions of offload, data placement, and emulation."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS385",
+            "SRC-CDS386",
+            "SRC-CDS387"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD105-LSMS-PRECISION-FAILURE-BOUNDARY",
+          "name_ja": "LSMS：物理量の一致とSCF収束は別条件",
+          "name_en": "LSMS: matched observables and SCF convergence are distinct conditions",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "2026年3月の投稿中preprintと公開実装",
+          "timing_en": "March 2026 submitted preprint and public implementations",
+          "statement_ja": "同preprintでは31 bit/10 moduli modeでGreen関数の最大相対誤差が約10^-2となり、total energyがFP64表示値に近くてもSCF収束に失敗しました。55 bit/16 moduliではGreen関数誤差が約10^-10、より高精度modeはelectron densityの10^-6自己無撞着条件を満たし、energy、磁気moment、電荷がFP64 baselineと一致したと報告します。LSMSのcontour integrationとDFT変分性による誤差抑制は、任意のapplicationへ一般化できません。",
+          "statement_en": "In the same preprint, the 31-bit or 10-moduli mode reaches about 10^-2 maximum relative error in the Green function and fails SCF convergence even though the displayed total energy remains close to FP64. The 55-bit or 16-moduli mode reaches about 10^-10 Green-function error; higher-precision modes satisfy the 10^-6 electron-density self-consistency condition and match FP64 energy, magnetic moments, and charges. Error suppression from LSMS contour integration and DFT variational behavior cannot be generalized to arbitrary applications.",
+          "hpci_relevance_ja": "科学的合否は最終scalar値だけでなく、収束、内部量、感度、再現性を組み合わせる必要がある実例です。",
+          "hpci_relevance_en": "This demonstrates that scientific acceptance needs convergence, internal quantities, sensitivity, and reproducibility in addition to final scalar outputs.",
+          "adoption_conditions_ja": [
+            "domain expertが物理量・収束・誤差許容値を事前定義する。",
+            "失敗modeを除外せず、速度と失敗確率を同時に報告する。",
+            "入力perturbation、compiler、GPU、実行順序に対する感度を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Have domain experts predefine physical quantities, convergence, and error tolerances.",
+            "Retain failed modes and report speed together with failure probability.",
+            "Check sensitivity to input perturbations, compilers, GPUs, and execution order."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS385"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD105-EMULATION-WORKSPACE-REUSE-CONTRACT",
+          "name_ja": "GEMMul8・SCILIB-Accel：再利用条件とplatform制約",
+          "name_en": "GEMMul8 and SCILIB-Accel: reuse contracts and platform constraints",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "2026年3月の投稿中preprintと公開実装",
+          "timing_en": "March 2026 submitted preprint and public implementations",
+          "statement_ja": "GEMMul8は前処理済みINT8/FP8表現をworkspaceに保持して再利用できますが、matrix内容、形状、operation、moduli数、fast mode、backendが不変である必要があり、内容変更をlibrary自身は検査しません。SCILIB-Accelは現時点でNVIDIA GPUのみをsupportし、S2/S3 data movementはGrace-Hopperのcoherent memoryを前提とします。source変更不要という特徴は、platform非依存や無条件の正しさを意味しません。",
+          "statement_en": "GEMMul8 can retain preprocessed INT8 or FP8 representations in workspace for reuse, but matrix contents, shape, operation, modulus count, fast mode, and backend must remain unchanged; the library does not validate matrix contents. SCILIB-Accel currently supports NVIDIA GPUs only, and its S2/S3 data-movement modes assume Grace-Hopper coherent memory. No-source-change integration does not imply platform independence or unconditional correctness.",
+          "hpci_relevance_ja": "導入時はbinary interceptionの容易さだけでなく、memory model、workspace、変更検知、thread/process安全性、fallbackを評価します。",
+          "hpci_relevance_en": "Adoption should assess memory model, workspace, mutation detection, thread/process safety, and fallback rather than binary interception alone.",
+          "adoption_conditions_ja": [
+            "matrix変更を検知できないskip modeをdefault採用しない。",
+            "workspace容量とout-of-memory時のfallbackを測る。",
+            "CUDA/ROCm、coherent/discrete GPU、MPI rank共有で同じ機能を仮定しない。"
+          ],
+          "adoption_conditions_en": [
+            "Do not enable skip modes that cannot detect matrix mutation by default.",
+            "Measure workspace capacity and fallback under out-of-memory conditions.",
+            "Do not assume parity across CUDA/ROCm, coherent/discrete GPUs, or shared MPI ranks."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS386",
+            "SRC-CDS387"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS385",
+        "title": "A Precision Emulation Approach to the GPU Acceleration of Ab Initio Electronic Structure Calculations",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/pdf/2603.29975",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-03-31"
+      },
+      "origin_group": "lsms-fp64-emulation-preprint",
+      "checked_at": "2026-09-02T05:28:00+09:00",
+      "locator": "Pages 3-5: setup, Green-function error, SCF convergence, physical observables, performance, and preprint status",
+      "observation_ja": "GB200 NVL4、FeNi3、matrix size、2 SCF、約1.7倍、誤差と収束失敗、投稿中状態を確認しました。",
+      "observation_en": "Verified GB200 NVL4, FeNi3, matrix size, two SCF iterations, about 1.7x, error and convergence failure, and submitted-manuscript status.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS386",
+        "title": "GEMMul8",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://github.com/RIKEN-RCCS/GEMMul8",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "gemmul8-runtime-contract",
+      "checked_at": "2026-09-02T05:28:00+09:00",
+      "locator": "README: preprocessing reuse, workspace, skip conditions, hook coverage, and cautions",
+      "observation_ja": "再利用の不変条件、内容非検査、workspace、hook対象外を確認しました。",
+      "observation_en": "Verified reuse invariants, lack of content checking, workspace requirements, and hook exclusions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS387",
+        "title": "SCILIB-Accel",
+        "publisher": "SCILIB-Accel developers",
+        "url": "https://github.com/nicejunjie/scilib-accel",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "scilib-accel-platform-boundary",
+      "checked_at": "2026-09-02T05:28:00+09:00",
+      "locator": "README: supported BLAS, NVIDIA-only status, coherent-memory modes, known issues, and reported tests",
+      "observation_ja": "level-3 BLAS、NVIDIA-only、Grace-Hopper data movement、既知のMPI制約を確認しました。",
+      "observation_en": "Verified level-3 BLAS coverage, NVIDIA-only status, Grace-Hopper data movement, and known MPI constraints.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "peer review後の最終論文、artifact、全application時間、energy、複数node再現を確認できていません。",
+    "HPCI代表applicationでのoperator別precision選択と失敗率を測る必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The final peer-reviewed paper, artifact, whole-application time, energy, and multi-node reproduction have not been verified.",
+    "Operator-specific precision choices and failure rates need measurement in representative HPCI applications.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

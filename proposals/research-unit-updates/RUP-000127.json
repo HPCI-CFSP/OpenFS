@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000127",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T00:11:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "98b1eb3efc588bef78dad561dca596b620c28cfa7bc8925e61527464eb4d0e32",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCIコンソーシアムの2026年提言から、GPU移行の現状、利用者が求める支援、2026～2029年度の移行推進期、2030年のGPU対応目標を追加しました。目標値は提言であり、採択済み政策や実績ではありません。性能可搬性の評価では、GPUで動作することと、科学的妥当性、単一ソース保守、移植工数、性能維持を分けます。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds GPU migration status, requested support, the proposed FY2026-FY2029 migration period, and a proposed 2030 GPU-readiness target from the HPCI Consortium's 2026 proposal. These targets are proposals, not adopted policy or observed results. Portability evaluation separates successful GPU execution from scientific validity, single-source maintenance, engineering effort, and retained performance. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "2496630f4fdea16a1f57d71343bf5833fa68557d3a25ea05bf3b79286aac873d",
+      "evidence_section_ids": ["TDS-CD1-SSW-01-U04", "TDS-CD6-SSW-01-U04", "TDS-CD8-SSW-01-U04", "TDS-CD9-SSW-01-U04", "TDS-CD10-SSW-01-U04"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-SSW-01-U04",
+      "title_ja": "HPCI利用者調査に基づくGPU移行支援の要件",
+      "title_en": "GPU migration-support requirements from an HPCI user survey",
+      "summary_ja": "GPU対応率、障壁、支援要望、提言されたKPIを、実装・性能・保守の検証条件へ変換します。",
+      "summary_en": "Translate reported GPU readiness, barriers, requested support, and proposed KPIs into implementation, performance, and maintenance validation conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-GPU-MIGRATION-READINESS",
+          "name_ja": "GPU対応状況と移行障壁",
+          "name_en": "GPU readiness and migration barriers",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2025年10月調査、2026年6月15日提言",
+          "timing_en": "October 2025 survey; June 15, 2026 proposal",
+          "statement_ja": "提言の回答集計では、GPU上で動作31%、一部GPU化22%、検討中34%、予定なし・未定14%でした。障壁はGPU知識不足41%、大規模・複雑コード27%、データ転送21%、MPI+GPU通信制御20%、性能向上が限定的18%、開発・デバッグ環境16%です。これらは同一コードの実測結果ではなく、回答者の自己申告です。",
+          "statement_en": "The proposal reports 31% with code running on GPUs, 22% partially ported, 34% considering porting, and 14% with no plan or undecided. Reported barriers include insufficient GPU knowledge at 41%, large or complex code at 27%, data transfer at 21%, MPI-plus-GPU control at 20%, limited speedup at 18%, and development or debugging environments at 16%. These are self-reported responses, not matched measurements of the same codes.",
+          "hpci_relevance_ja": "全コードを一律にGPU化せず、コード診断でCPU継続、部分GPU化、全面GPU化を選び、転送・通信・正解判定を含む移行計画を作る根拠になります。",
+          "hpci_relevance_en": "This supports code diagnostics that choose among continued CPU execution, partial GPU acceleration, and full GPU porting, with data movement, communication, and correctness included in migration plans.",
+          "adoption_conditions_ja": [
+            "主要アプリケーションごとにGPU対応の定義、対象版、入力、正解条件を固定する。",
+            "未対応理由をホスト処理、転送、通信、ライブラリ、開発体制へ分解する。",
+            "移植工数、変更量、保守期間、実効性能、システム電力量を測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the meaning of GPU support, version, input, and correctness for each major application.",
+            "Decompose barriers into host work, transfer, communication, libraries, and development capacity.",
+            "Measure effort, code change, maintenance duration, delivered performance, and system energy."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS127"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-GPU-MIGRATION-PROPOSAL-KPI",
+          "name_ja": "2026～2029年度の移行推進期とGPU対応KPI案",
+          "name_en": "Proposed FY2026-FY2029 migration period and GPU-readiness KPI",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "提言は2030年までに主要アプリケーション80%以上をGPU対応とする例を提示",
+          "timing_en": "Proposal example targets at least 80% GPU readiness among major applications by 2030",
+          "statement_ja": "提言は2026～2029年度を移行推進期とし、主要な科学技術計算アプリケーションの80%以上を2030年までに全面または部分GPU対応とするKPI例を示します。2028年50%、2029年70%という中間例もあります。一方、本文内には100%を示す別表記も検索結果にあり、対象集合と版を固定した正式KPIとしては未確定です。",
+          "statement_en": "The proposal describes FY2026-FY2029 as a migration period and gives an example KPI of at least 80% full or partial GPU readiness among major scientific applications by 2030, with illustrative intermediate values of 50% in 2028 and 70% in 2029. A separate indexed version exposes a 100% formulation, so the target population and document version are not yet a fixed official KPI.",
+          "hpci_relevance_ja": "整備計画ではGPU台数だけでなく、対象アプリケーション集合、移植完了の判定、テストベッド、相談件数、成功・失敗事例を年度別の導入条件として管理します。",
+          "hpci_relevance_en": "System planning should track the target application set, completion criteria, testbeds, consultations, and success and failure cases by year, rather than only GPU counts.",
+          "adoption_conditions_ja": [
+            "主要アプリケーションの母集団とGPU対応の合格基準を人が承認する。",
+            "実行成功だけでなく正解、性能維持、保守可能性をKPIへ含める。",
+            "提言値を政策決定や予算確保済みの目標として表示しない。"
+          ],
+          "adoption_conditions_en": [
+            "Obtain human approval for the major-application population and GPU-readiness pass criteria.",
+            "Include correctness, retained performance, and maintainability rather than execution alone.",
+            "Do not present proposal values as adopted policy or funded commitments."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS127"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS127",
+        "title": "次世代計算基盤を見据えたソフトウェア環境整備とそれを担う人材の育成に関する提言",
+        "publisher": "一般社団法人HPCIコンソーシアム",
+        "url": "https://www.hpci-c.jp/news/file/20260615_teigen.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-15"
+      },
+      "origin_group": "hpci-consortium-2026-proposal",
+      "checked_at": "2026-09-02T00:05:00+09:00",
+      "locator": "Sections 2.3, 4.3 and 7.3; pages 9-10, 24-25 and 48-49",
+      "observation_ja": "GPU対応状況、障壁、支援要望、移行推進期とKPI例を確認しました。自己申告と実測を区別し、提言値を政策決定として扱いません。",
+      "observation_en": "Read GPU readiness, barriers, requested support, the proposed migration period, and KPI examples. Self-reports are separated from measurements, and proposal values are not treated as policy decisions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-005は未解決です。主要アプリケーション母集団と対応判定を定義し、版固定の移植工数・正解・性能・保守性を測定する必要があります。",
+    "80%と100%の表記差について、正式版・対象集合・承認主体を確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-005 remains open. Define the major-application population and readiness criteria, then measure version-pinned effort, correctness, performance, and maintainability.",
+    "The 80% versus 100% wording requires confirmation of the controlling version, population, and approving authority.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

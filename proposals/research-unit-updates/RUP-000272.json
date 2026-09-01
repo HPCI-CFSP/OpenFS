@@ -1,0 +1,117 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000272",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-02T07:42:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000136",
+      "bundle_sha256": "dc9e4942f311bff0ccc530173163f9104ae2eccd58c7fd4ef9f252bfdf702138"
+    },
+    {
+      "update_id": "RUP-000175",
+      "bundle_sha256": "752d722e96b79ffb5a0223fdc6e91732657c97fae41a8bf318a27ab19079fab1"
+    },
+    {
+      "update_id": "RUP-000261",
+      "bundle_sha256": "085b812c2e0573dfca65582deed98c5fa88efdbe429f653a7002d201cd5ebe25"
+    }
+  ],
+  "before_profile_sha256": "4967414dba90bde3017fd230f3bbed64e0e56fade48fb8323bd208bd00e4a50c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省の2026年自己点検報告は、HPCI申請支援システムが月3万件超のアクセスを受け、2026年1月末時点で約4,800課題、延べ約32,600人・実人数約7,900人の採択参加者を管理しているとしています。FY2022から2026年1月までに共通窓口システムは累計11,600件超、CMSは2,063課題を扱いました。次期運営では利用者UIだけでなく、申請、審査、アカウント、問合せ、成果報告をつなぐ制御面の容量・可用性・監査性を設計対象にする必要があります。Consensusは未完了です。",
+  "summary_en": "MEXT's 2026 self-review states that the HPCI application-support system receives more than 30,000 accesses per month and, as of the end of January 2026, manages about 4,800 projects and roughly 32,600 cumulative or 7,900 unique selected participants. From FY2022 through January 2026, the common-desk system handled more than 11,600 cumulative tickets and the CMS handled 2,063 projects. Successor operations should treat the control plane linking applications, review, accounts, inquiries, and outcome reporting as a capacity, availability, and auditability requirement. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-12-U01",
+      "before_sha256": "9734b93b2e4202c56aec19aed9d41c6fa0862b9bf9648d29d73195972060a8ee",
+      "evidence_section_ids": [
+        "TDS-CD2-SSW-12-U01",
+        "TDS-CD10-SSW-12-U01",
+        "TDS-CD14-SSW-12-HPCI-IDENTITY",
+        "TDS-CD15-SSW-12-FUGAKU-IDENTITY-CONTROLS",
+        "TDS-CD19-SSW-12-HPCI-CONTROL-PLANE-SCALE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD19-SSW-12-HPCI-CONTROL-PLANE-SCALE",
+      "title_ja": "HPCI共通運用基盤の処理規模",
+      "title_en": "Processing scale of the HPCI common operations platform",
+      "summary_ja": "計算資源に加えて、申請・課題・利用者・問合せを扱う制御面を容量計画します。",
+      "summary_en": "Capacity-plan the control plane for applications, projects, users, and inquiries as well as compute resources.",
+      "items": [
+        {
+          "item_id": "TDI-CD79-HPCI-OPERATIONS-SYSTEM-SCALE",
+          "name_ja": "申請・利用者・問合せ管理の実績規模",
+          "name_en": "Observed scale of application, user, and inquiry management",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年2月時点",
+          "timing_en": "As of February 2026",
+          "statement_ja": "HPCI申請支援システムは月3万件超のアクセスを受け、2026年1月31日時点で約4,800課題、採択課題参加者を延べ約32,600人、実人数約7,900人管理しています。FY2022から2026年1月までに、共通窓口システムの累計問合せは11,600件超、CMS登録は2,063課題でした。月例の開発打合せは少なくとも月1回実施されています。公開資料は同時利用、応答時間、可用性、障害復旧、データ連携遅延を示しません。",
+          "statement_en": "The HPCI application-support system receives over 30,000 accesses per month and, as of January 31, 2026, manages about 4,800 projects and roughly 32,600 cumulative or 7,900 unique selected participants. From FY2022 through January 2026, the common-desk system recorded more than 11,600 cumulative inquiries and the CMS registered 2,063 projects. Development meetings occur at least monthly. The report omits concurrency, latency, availability, recovery, and integration delay.",
+          "hpci_relevance_ja": "次期HPCIでは計算性能と同様に、申請繁忙期、随時募集、複数資源配分、成果報告を支える運用システムのSLOと災害復旧を要求仕様に含める必要があります。",
+          "hpci_relevance_en": "Successor HPCI requirements should include SLOs and disaster recovery for application peaks, rolling calls, multi-resource allocation, and outcome reporting, alongside compute performance.",
+          "adoption_conditions_ja": [
+            "アクセス、処理件数、同時利用、応答時間、エラー率を別々に測る。",
+            "課題・参加者の延べ数と実人数を混同しない。",
+            "申請から採択、アカウント発行、利用、成果公開までの監査証跡を保持する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure accesses, transactions, concurrency, latency, and error rate separately.",
+            "Do not mix cumulative project participation with unique people.",
+            "Retain audit trails from application through award, account issuance, use, and outcome publication."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS345"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS345",
+        "title": "HPCIの運営 自己点検結果報告書",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/content/20260305-mxt-jyohoka01-000047988_093.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-05"
+      },
+      "origin_group": "mext-hpci-operation-self-review-2026",
+      "checked_at": "2026-09-02T04:36:00+09:00",
+      "locator": "Pages 17-19 and 27-28: monthly access volume, projects and participants managed, common-desk tickets, CMS projects, and development coordination",
+      "observation_ja": "HPCIの申請・課題・参加者・問合せを扱う運用基盤の実績規模を確認しました。",
+      "observation_en": "Verified the observed scale of the platform handling HPCI applications, projects, participants, and inquiries.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "同時利用数、応答時間、可用性、復旧時間、運用費、人員、システム間整合性は未公開です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Concurrency, latency, availability, recovery time, operating cost, staffing, and cross-system consistency are unpublished.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

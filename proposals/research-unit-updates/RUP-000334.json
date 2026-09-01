@@ -1,0 +1,218 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000334",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T07:52:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000141",
+      "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"
+    },
+    {
+      "update_id": "RUP-000147",
+      "bundle_sha256": "50d35e45f17c5bfcfb01122d8bc6da805e7e431028e4c604ffbc4c62c077acd3"
+    },
+    {
+      "update_id": "RUP-000247",
+      "bundle_sha256": "687a30d7341cef8788c95b506a5bbc5e65b6906c1f7a15019b0699897ad29e71"
+    },
+    {
+      "update_id": "RUP-000306",
+      "bundle_sha256": "458b92e96d4213f453f57538a0352ec6140e8b894157b4194d82595c5b515bf3"
+    },
+    {
+      "update_id": "RUP-000312",
+      "bundle_sha256": "b2991a7f02d8eb843d400d4983aa6d68e8fbd4dfca700479ea5598b917be4b92"
+    }
+  ],
+  "before_profile_sha256": "e75244bbda4426e52f8771ba9b9a413d6e2084827735630914a0f70fb8e81ecf",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ALCFのAskALCF、AI運用ガイド、agent workflow examplesから、支援ticketの実機再現と人間レビュー付き文書改善loop、compute nodeへのagent配置、process・接続失敗上限、remote・同一job・PBS MCPの実行patternを追加しました。exampleやevent説明をproduction保証とは扱いません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "From AskALCF, ALCF AI guidance, and public agent-workflow examples, this update adds real-system reproduction and human-reviewed documentation loops, compute-node agent placement, process and connection-failure limits, and remote, same-job, and PBS-MCP execution patterns. Examples and event descriptions are not treated as production guarantees. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "654c465c128c6802abdd49c68f35b7f1af28e43c6e5f432917aba89606b9d833",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U03",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+        "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE",
+        "TDS-CD48-SSW-09-ALCF-AGENT-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD48-SSW-09-ALCF-AGENT-OPERATIONS",
+      "title_ja": "HPC施設におけるAIエージェント支援と実行制約",
+      "title_en": "AI-agent support and execution constraints at an HPC facility",
+      "summary_ja": "問い合わせから文書改善までの閉ループと、共有login node・外部接続・scheduler操作の安全境界を同時に設計します。",
+      "summary_en": "Design a closed support-to-documentation loop together with safety boundaries for shared login nodes, external connectivity, and scheduler operations.",
+      "items": [
+        {
+          "item_id": "TDI-CD157-ASKALCF-SUPPORT-LOOP",
+          "name_ja": "AskALCFの実機再現・人間レビュー付き文書改善ループ",
+          "name_en": "AskALCF reproduction and human-reviewed documentation loop",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年8月26日のALCF webinarで公開",
+          "timing_en": "Presented in an ALCF webinar on August 26, 2026",
+          "statement_ja": "AskALCFは、ALCF、OLCF、NERSC、LLNL、PBS、Slurm、CUDA、oneAPI、SYCL、HIP-ROCmの文書とsupport知識を共有knowledge baseとしてchatbotとcoding agentへ提供します。難しい問い合わせやticketを分類し、実システム上で問題を再現し、knowledge baseと照合して文書gapを検出し、人間レビュー対象のPRを生成するpipelineが説明されています。ただし、公開event頁だけではmodel、検索評価、誤回答率、実行権限、sandbox、成功率、本番導入範囲は確認できません。",
+          "statement_en": "AskALCF exposes facility documentation from ALCF, OLCF, NERSC, and LLNL together with PBS, Slurm, CUDA, oneAPI, SYCL, HIP-ROCm, and accumulated support knowledge to chatbots and coding agents. It describes a pipeline that triages difficult questions and tickets, reproduces issues on real systems, detects documentation gaps against the knowledge base, and generates pull requests for human review. The public event page does not establish the model, retrieval evaluation, error rate, execution permissions, sandbox, success rate, or production deployment scope.",
+          "hpci_relevance_ja": "HPCIの複数centerに散在する文書とsupport回答を循環利用する参考構成です。自動回答よりも、再現可能な診断とレビュー付き文書改善を成果指標に含められます。",
+          "hpci_relevance_en": "This is a reference pattern for reusing documentation and support resolutions across HPCI centers. Metrics can emphasize reproducible diagnosis and reviewed documentation improvements, not only automated answers.",
+          "adoption_conditions_ja": [
+            "ticketの個人情報・機密情報を除去し、公開文書、内部knowledge、実機credentialを別の境界で管理する。",
+            "正解率だけでなく、引用適合率、再現成功率、誤操作率、PR採択率、再発率、human review時間を測る。",
+            "実機再現はread-only診断から始め、job submit、file変更、network接続をtool単位で許可する。"
+          ],
+          "adoption_conditions_en": [
+            "Remove personal and restricted ticket content and separate public documentation, internal knowledge, and machine credentials.",
+            "Measure citation support, reproduction success, unsafe-action rate, PR acceptance, recurrence, and human-review time in addition to answer accuracy.",
+            "Start reproduction with read-only diagnostics and authorize job submission, file mutation, and network access per tool."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS447"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD158-ALCF-AGENT-PLACEMENT-GUARDRAILS",
+          "name_ja": "共有login nodeを避ける配置と失敗上限",
+          "name_en": "Placement and failure limits that protect shared login nodes",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日に確認したALCF運用ガイド",
+          "timing_en": "ALCF operating guidance checked September 2, 2026",
+          "statement_ja": "ALCFはAI module、extension、pluginが多数のthreadを生成し得るため、agentの重い処理を共有login nodeではなくcompute nodeで実行するよう案内しています。login nodeには利用者ごとの変更不能なtask上限があり、超過すると新規process・threadが拒否されます。また、別systemへ接続するagent loopは事前に接続確認しないと、失敗反復によりlogin nodeからのSSHがblockされ得ると警告しています。agent利用は許可されていますが、setupや実行にsupportを提供しない方針です。",
+          "statement_en": "ALCF advises running process- and thread-heavy agent activity on compute nodes rather than shared login nodes because AI modules, extensions, and plugins can spawn many threads. Login nodes enforce a non-increasable per-user task limit; exceeding it rejects new processes and threads. It also warns that agent loops connecting to other systems can cause SSH from a login node to be blocked if connectivity is not tested before repetition. Agents are allowed, but the facility does not support their setup or operation.",
+          "hpci_relevance_ja": "HPCIでagentを許可する場合、従来のlogin node利用規程だけでなく、process、thread、接続試行、job、GPU時間、token、tool callのbudgetとkill switchが必要です。",
+          "hpci_relevance_en": "Allowing agents on HPCI requires budgets and kill switches for processes, threads, connection attempts, jobs, GPU hours, tokens, and tool calls in addition to traditional login-node policies.",
+          "adoption_conditions_ja": [
+            "agent controllerを専用service nodeまたは予約したcompute nodeへ配置し、login nodeは軽量なsubmit・status照会に限定する。",
+            "process/thread、retry、SSH/API失敗、job数、walltime、GPU時間、費用のhard limitを設定する。",
+            "失敗loopを検知して停止し、credential失効・network隔離・job取消を行える運用者経路を用意する。"
+          ],
+          "adoption_conditions_en": [
+            "Place agent controllers on dedicated service nodes or allocated compute nodes and limit login nodes to lightweight submission and status queries.",
+            "Set hard limits for processes/threads, retries, SSH/API failures, jobs, wall time, GPU hours, and cost.",
+            "Detect and stop failure loops with operator paths for credential revocation, network isolation, and job cancellation."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS448"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD159-ALCF-AGENTIC-WORKFLOW-PATTERNS",
+          "name_ja": "remote・同一job・PBS MCPの三つのagent実行パターン",
+          "name_en": "Remote, same-job, and PBS-MCP agent execution patterns",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年9月2日に確認した公開example repository",
+          "timing_en": "Public example repository checked September 2, 2026",
+          "statement_ja": "ALCFの公開exampleは、(1) Cruxまたは利用者端末のLangGraphからSophiaのLLMを参照しGlobus ComputeでAurora simulationを起動するremote型、(2) agent・local vLLM・simulationを同じbatch job内で動かす型、(3) login nodeのagentがSophiaを使いstdioのPBS MCPでqueue照会・script生成・submit・poll・output読取を行う型を分けています。repositoryのexample公開は、施設のsecurity承認、production SLA、科学的正しさ、全障害回復を保証しません。",
+          "statement_en": "ALCF's public examples distinguish (1) a remote pattern where LangGraph on Crux or a user machine queries an LLM on Sophia and launches Aurora simulations through Globus Compute, (2) a same-batch-job pattern containing the agent, local vLLM, and simulation, and (3) a login-node agent using Sophia plus a stdio PBS MCP server for queue queries, script generation, submission, polling, and output reading. Public examples do not establish facility security approval, production SLAs, scientific correctness, or complete failure recovery.",
+          "hpci_relevance_ja": "モデル、agent、scheduler tool、simulationを同じ場所に置く必要はありません。HPCIではdata機密性、latency、credential、queue policyに応じて実行patternを明示的に選択できます。",
+          "hpci_relevance_en": "Models, agents, scheduler tools, and simulations need not share one location. HPCI can select an explicit execution pattern based on data sensitivity, latency, credentials, and queue policy.",
+          "adoption_conditions_ja": [
+            "各patternでmodel endpoint、controller、MCP、scheduler、data、credentialのtrust boundaryを図示する。",
+            "同じtaskで成功率、待ち時間、data移動、失敗復旧、operator介入、費用を比較する。",
+            "scheduler toolは引数schema、queue allowlist、resource上限、確認、監査logを強制する。"
+          ],
+          "adoption_conditions_en": [
+            "Diagram trust boundaries for model endpoints, controllers, MCP, schedulers, data, and credentials in each pattern.",
+            "Compare success, wait time, data movement, recovery, operator intervention, and cost on the same task.",
+            "Enforce argument schemas, queue allowlists, resource ceilings, confirmation, and audit logs for scheduler tools."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS449"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS447",
+        "title": "AskALCF: An Intelligent HPC User Support System in the Age of AI",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/events/askalcf-intelligent-hpc-user-support-system-age-ai",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "alcf-askalcf-2026",
+      "checked_at": "2026-09-02T06:14:00+09:00",
+      "locator": "Lines 120-125: shared knowledge base, ticket triage, real-system reproduction, documentation-gap detection and human-reviewed pull requests",
+      "observation_ja": "支援loopの構成を確認し、model、評価値、権限、production範囲は未記載と区別しました。",
+      "observation_en": "Verified the support-loop design while separating unspecified models, metrics, permissions, and production scope.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS448",
+        "title": "AI Guidance",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/support/ai-guidance/",
+        "source_class": "official-project",
+        "published_or_updated": "Living guidance checked 2026-09-02"
+      },
+      "origin_group": "alcf-ai-agent-operating-guidance",
+      "checked_at": "2026-09-02T06:15:00+09:00",
+      "locator": "Lines 547-565: support boundary, compute-node placement, pids limits and failed remote-connection loops",
+      "observation_ja": "agent利用時の配置、task上限、失敗loopとsupport責任境界を確認しました。",
+      "observation_en": "Verified agent placement, task limits, failure-loop risks, and the support responsibility boundary.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS449",
+        "title": "ALCF Agentic Workflows",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://github.com/argonne-lcf/alcf-agentics-workflow",
+        "source_class": "official-project",
+        "published_or_updated": "Public repository checked 2026-09-02; revision not pinned"
+      },
+      "origin_group": "alcf-agentic-workflow-examples",
+      "checked_at": "2026-09-02T06:16:00+09:00",
+      "locator": "README: remote Globus-to-Aurora, same-batch local vLLM, PBS MCP and MACE MCP examples",
+      "observation_ja": "複数system、同一job、PBS MCPのexample構成と前提条件を確認しました。コードは実行していません。",
+      "observation_en": "Verified multi-system, same-job, and PBS-MCP example patterns and prerequisites; no code was executed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "AskALCFのarchitecture、model、evaluation dataset、権限、production利用実績は追加確認が必要です。",
+    "ALCF examplesのcommit pin、security review、再現実行、failure injectionは未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "AskALCF architecture, models, evaluation datasets, permissions, and production records require follow-up.",
+    "Commit pinning, security review, reproduction, and failure injection for the ALCF examples were not performed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

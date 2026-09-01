@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000226",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:34:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"},
+    {"update_id": "RUP-000169", "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"},
+    {"update_id": "RUP-000180", "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"},
+    {"update_id": "RUP-000193", "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"},
+    {"update_id": "RUP-000218", "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"}
+  ],
+  "before_profile_sha256": "db56d42b90f8d333b8d745fa7e46e413de0bb416342470b612466daf1160a639",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MLPerf Storage 3.0の公開結果から、試験追加だけでなく提出規模と電力効率の分布を追加しました。19組織が提出し、11組織が初参加、S3利用は全提出のおよそ6分の1でした。オンプレミス提出ではcheckpoint writeの電力効率が中央値14 GB/s/W・最大201、UNet3D readが中央値34 GB/s/W・最大277と公表されています。最大値だけで製品を選ばず、負荷、アクセス方式、可用性区分、測定境界を固定して分布を比較する必要があります。Consensusは未完了です。",
+  "summary_en": "This update extends MLPerf Storage 3.0 coverage from test additions to submission scale and the distribution of power efficiency. Nineteen organizations submitted, including eleven first-time submitters, and approximately one-sixth of submissions used S3. For on-premises submissions, MLCommons reports median and maximum efficiencies of 14 and 201 GB/s/W for checkpoint writes and 34 and 277 GB/s/W for UNet3D reads. Procurement should not select products from maxima alone; it should compare distributions with workload, access layer, availability division, and measurement boundary fixed. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "3481151545117e43e769f875ed84645bb8525a700c750912171708c066c345cd",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD4-SSW-05-AI-READY-DATA",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD24-SSW-05-MLPERF-STORAGE-3",
+        "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS",
+      "title_ja": "MLPerf Storage 3.0の提出規模と電力効率分布",
+      "title_en": "MLPerf Storage 3.0 submission scale and power-efficiency distribution",
+      "summary_ja": "提出参加の広がりと負荷別の電力効率分布を、最大値だけでなく中央値と条件付きで読みます。",
+      "summary_en": "Read participation breadth and workload-specific power-efficiency distributions with medians and conditions, not maxima alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD32-MLPERF-STORAGE-PARTICIPATION",
+          "name_ja": "19組織が提出、11組織が初参加、S3は約6分の1",
+          "name_en": "Nineteen submitters, eleven first-time participants, and about one-sixth using S3",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年9月1日公表",
+          "timing_en": "Published September 1, 2026",
+          "statement_ja": "MLCommonsはStorage 3.0へ19組織が提出し、うち11組織が初参加だったと公表しています。クラウドとオンプレミス、システムとデバイスの提供者を含み、S3アクセスを用いた提出は全体のおよそ6分の1でした。参加数の増加は比較基盤の拡大を示しますが、同一試験への独立提出数、各製品の一般提供、HPCIでの調達可能性を自動的には示しません。",
+          "statement_en": "MLCommons reports 19 organizations in Storage 3.0, including eleven first-time submitters. Participants span cloud and on-premises providers and system and device developers; approximately one-sixth of submissions used S3. Broader participation expands the comparison base but does not establish the number of independent submissions for each test, general availability of every product, or HPCI procurement access.",
+          "hpci_relevance_ja": "HPCIのAIデータ基盤比較では、POSIXとS3の双方について同一試験へ複数の独立提出がある構成を優先し、非公開・preview構成を分ける必要があります。",
+          "hpci_relevance_en": "HPCI AI-data-platform comparisons should prefer configurations with multiple independent submissions to identical POSIX and S3 tests and separate preview or unavailable configurations.",
+          "adoption_conditions_ja": [
+            "試験ごとに提出数、独立組織数、available区分、S3・POSIXを集計する。",
+            "クラウド料金、転送費、オンプレミス保守費を性能値から分けて比較する。",
+            "HPCIの科学I/OとAIデータの構成比を用いて試験重みを決める。"
+          ],
+          "adoption_conditions_en": [
+            "Aggregate submissions, independent organizations, availability division, and S3 or POSIX per test.",
+            "Compare cloud charges, transfer cost, and on-premises support separately from performance.",
+            "Weight tests using the observed HPCI mix of scientific I/O and AI data."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS294"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD32-MLPERF-STORAGE-POWER-DISTRIBUTION",
+          "name_ja": "負荷別電力効率は中央値と最大値が大きく離れる",
+          "name_en": "Workload-specific power efficiency shows wide median-to-maximum gaps",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年9月1日公表",
+          "timing_en": "Published September 1, 2026",
+          "statement_ja": "MLCommonsはオンプレミス提出について、checkpoint writeが中央値14 GB/s/W・最大201、UNet3D readが中央値34 GB/s/W・最大277と報告しています。最大値は中央値の約14倍および約8倍であり、負荷と構成による差が大きいことを示します。ただし、これは提出集合の要約で、同一容量・耐久性・冗長性・復旧条件で全製品を独立測定した順位ではありません。GB/s/Wからジョブ完了までの総エネルギーや施設電力を直接導けません。",
+          "statement_en": "For on-premises submissions, MLCommons reports checkpoint-write efficiency at a median 14 GB/s/W and maximum 201, and UNet3D-read efficiency at a median 34 GB/s/W and maximum 277. The maxima are about fourteen and eight times the medians, indicating large workload and configuration effects. These are summaries of submitted results, not an independently measured ranking at identical capacity, endurance, redundancy, and recovery conditions. GB/s/W does not directly establish total job energy or facility power.",
+          "hpci_relevance_ja": "次期ストレージ調達では最大帯域だけでなく、代表負荷のGB/s/W、ジョブ当たりエネルギー、復旧時の電力と性能を測定条件付きで要求すべきです。",
+          "hpci_relevance_en": "Successor storage procurement should require conditioned measurements of GB/s/W, energy per completed workload, and recovery power and performance, not peak bandwidth alone.",
+          "adoption_conditions_ja": [
+            "クライアント、dataset、アクセス方式、ストレージ容量、保護方式、電力測定境界を固定する。",
+            "中央値、分位点、最大値、提出数を併記し、単一の最良値で比較しない。",
+            "checkpoint後の復元時間、整合性確認、障害時エネルギーも同じ評価へ含める。"
+          ],
+          "adoption_conditions_en": [
+            "Fix clients, dataset, access layer, storage capacity, protection, and power-measurement boundary.",
+            "Report medians, quantiles, maxima, and submission counts rather than a single best value.",
+            "Include restore time, integrity checking, and failure-period energy after checkpointing."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS294"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS294",
+        "title": "MLPerf Storage v3.0 Benchmark Results",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/2026/09/mlperf-storage-v3-0-results/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "mlcommons-storage-3-results",
+      "checked_at": "2026-09-02T03:52:00+09:00",
+      "locator": "11 new organizations; power-efficiency summary; S3 submission share",
+      "observation_ja": "19組織、11初参加、S3約6分の1、checkpoint writeとUNet3D readの電力効率中央値・最大値を確認しました。",
+      "observation_en": "Verified 19 organizations, eleven first-time participants, roughly one-sixth S3, and median and maximum power efficiency for checkpoint write and UNet3D read.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "試験別の全提出データを、容量、保護、可用性区分、価格へ対応付ける作業は未完了です。",
+    "科学I/OとAI I/Oが混在するHPCI条件での独立再現は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Mapping all per-test submissions to capacity, protection, availability division, and price remains incomplete.",
+    "Independent reproduction under mixed scientific and AI I/O conditions relevant to HPCI has not been performed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

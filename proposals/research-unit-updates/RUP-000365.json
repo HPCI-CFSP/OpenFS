@@ -1,0 +1,201 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000365",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-02T07:57:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000128",
+      "bundle_sha256": "36e47372ce4143420d379c19ead8fb2386f0fb672af37264a4e6ba465a0eaaf0"
+    },
+    {
+      "update_id": "RUP-000137",
+      "bundle_sha256": "adf058f1b098bf63801372e01cf4253ac80cd3ae818d45882cbf2b2ae50430b2"
+    },
+    {
+      "update_id": "RUP-000143",
+      "bundle_sha256": "dfd090a4404da1fd7384db21de3d4f54516b9e58483feb7d35a042d7ab64a39e"
+    },
+    {
+      "update_id": "RUP-000192",
+      "bundle_sha256": "762261e7e828242b6930fbb2ac62822514a680a1e820b99c48ab371b932b09d0"
+    },
+    {
+      "update_id": "RUP-000262",
+      "bundle_sha256": "f3b1fbefd191228e22743bf846d5d7b408e76e67d70204504e451dbba86a07a5"
+    },
+    {
+      "update_id": "RUP-000304",
+      "bundle_sha256": "c1c4b904b1c393f2e9bbf96ab95dde88c6e941b2d5c0d77b8a585af7979edf15"
+    },
+    {
+      "update_id": "RUP-000340",
+      "bundle_sha256": "83d8bdda24488e902ae244fe4499c9de53aec451af079e6a4077f22cf68745ac"
+    },
+    {
+      "update_id": "RUP-000346",
+      "bundle_sha256": "b403e40bc4369f474adc09d72326169adc47a2e3a3bc182915dc360e5ede1a2c"
+    },
+    {
+      "update_id": "RUP-000363",
+      "bundle_sha256": "c044a1de9b6f75db0531c4c0c71bf49545a693611d9448d3858623897b23dd51"
+    }
+  ],
+  "before_profile_sha256": "ada172705edf15b41f7ef5a106d76dcef81aedff9c7aab2b4ba368f16320f715",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "生命科学、材料、気象・環境のAIワークロードはmodel構造、data形状、反復方法が異なり、accelerator台数だけでは需要比較できないことを追加しました。個別数値は原典照合前のため確定扱いしません。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update records that AI workloads in life science, materials, and weather or environmental science differ in model structure, data shape, and iteration and cannot be compared by accelerator counts alone. Individual figures remain unconfirmed pending original-source checks. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "9d544dd471fd4246e13dc00cdfdfef2aa262a1adc18b115cdb3c0a95798918c6",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U01",
+        "TDS-CD2-APP-12-U01",
+        "TDS-CD10-APP-12-U01",
+        "TDS-CD11-APP-12-U01",
+        "TDS-CD12-APP-12-U01-U02",
+        "TDS-CD13-APP-12-FY2026B-AI-DEMAND",
+        "TDS-CD14-APP-12-NICAM-AI-COUPLING",
+        "TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO",
+        "TDS-CD60-APP-12-APEX-CFD-AGENT",
+        "TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE",
+        "TDS-CD79-APP-12-DOMAIN-AIFS-WORKLOAD-SHAPES"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD79-APP-12-DOMAIN-AIFS-WORKLOAD-SHAPES",
+      "title_ja": "科学分野別AIワークロードの構造差",
+      "title_en": "Structural differences among domain AI workloads",
+      "summary_ja": "生命科学、材料、気象・環境ではmodel構造、data形状、反復方法が異なるため、同じaccelerator台数だけでは需要を比較できません。",
+      "summary_en": "Life science, materials, and weather or environmental workloads differ in model structure, data shape, and iteration, so accelerator counts alone cannot compare demand.",
+      "items": [
+        {
+          "item_id": "TDI-CD219-LIFE-SCIENCE-LONG-SEQUENCE-DEMAND",
+          "name_ja": "生命科学: 長系列・multimodal学習",
+          "name_en": "Life science: long-sequence and multimodal training",
+          "statement_ja": "文部科学省委託調査は、protein、genome、single-cellを扱う基盤modelを整理し、Transformer系の長系列処理、配列・構造・機能のmultimodal化、大規模data学習を主要な特徴として示しています。この整理からは、演算量だけでなく、sequence長に伴うmemory容量、checkpoint、data前処理、access制御を個別に評価する必要があります。報告書に転載された各modelのparameter数・data量・性能値は原論文で未照合のため、確定値としては扱いません。",
+          "statement_en": "A MEXT-commissioned study groups foundation models for proteins, genomes, and single cells and identifies long-sequence Transformer processing, multimodal sequence-structure-function learning, and large-data training as recurring characteristics. Planning therefore needs separate measures for memory capacity as sequence length grows, checkpoints, data preparation, and access control in addition to arithmetic throughput. Model parameters, data volumes, and performance figures reproduced in the report have not yet been reconciled with original papers and are not treated as confirmed values.",
+          "hpci_relevance_ja": "生命科学向け資源はGPUピーク性能だけで選ばず、長sequence時の実効memory、checkpoint帯域、機微dataの配置と共有を同一評価に含めます。",
+          "hpci_relevance_en": "Life-science resources should be assessed using effective memory for long sequences, checkpoint bandwidth, and placement and sharing of sensitive data, not GPU peak performance alone.",
+          "adoption_conditions_ja": [
+            "代表modelの原論文・code・datasetでmemoryとI/Oを再計測する。",
+            "公開dataと制限dataを分離したend-to-end workflowを評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Re-measure memory and I/O using original papers, code, and datasets for representative models.",
+            "Evaluate end-to-end workflows with public and restricted data separated."
+          ],
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年4月時点の委託調査による分野比較",
+          "timing_en": "Cross-domain comparison in a commissioned study as of April 2026",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS505"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD220-MATERIALS-EQUIVARIANT-ITERATION-DEMAND",
+          "name_ja": "材料: 等変GNNとsimulation・実験の反復",
+          "name_en": "Materials: equivariant GNNs and simulation-experiment iteration",
+          "statement_ja": "同調査は、材料分野では原子・結晶の幾何学と対称性を扱う等変GNN、生成model、DFT検証、能動学習、robot実験を組み合わせる流れを整理しています。model parameter数がLLMより小さくても、候補生成からsimulation・実験・再学習までの多数の不均一jobとdata来歴が支配要因になり得ます。個別modelの精度や高速化率は原典未照合です。",
+          "statement_en": "The study characterizes materials workflows as combinations of equivariant GNNs that encode atomic or crystalline geometry and symmetry, generative models, DFT validation, active learning, and robotic experiments. Even when parameter counts are smaller than those of LLMs, many heterogeneous jobs and provenance across generation, simulation, experiment, and retraining can dominate. Individual model accuracy and speedup claims have not yet been verified against original sources.",
+          "hpci_relevance_ja": "材料系では大規模単一jobだけでなく、短時間job群、CPU-GPU併用、workflow再開、data来歴、実験装置との待ち時間を評価します。",
+          "hpci_relevance_en": "Materials planning should evaluate ensembles of short jobs, CPU-GPU coupling, workflow restart, provenance, and instrument waits as well as large single jobs.",
+          "adoption_conditions_ja": [
+            "代表workflowでjob粒度、queue待ち、DFT検証比率、data再利用を測る。",
+            "予測精度だけでなく外挿領域の失敗検知と再現性を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure job granularity, queue delay, DFT-validation share, and data reuse in representative workflows.",
+            "Verify out-of-domain failure detection and reproducibility, not predictive accuracy alone."
+          ],
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年4月時点の委託調査による分野比較",
+          "timing_en": "Cross-domain comparison in a commissioned study as of April 2026",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS505"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD221-WEATHER-ENSEMBLE-DATA-DEMAND",
+          "name_ja": "気象・環境: 多変量grid・graphとensemble推論",
+          "name_en": "Weather and environment: multivariate grids, graphs, and ensemble inference",
+          "statement_ja": "同調査は、気象・環境分野にVision Transformer、GNN、Fourier系model、物理simulationとのhybrid modelが併存し、全球・地域data、複数高度、時系列、ensemble推論を扱うと整理しています。単発推論が高速でも、入力更新、ensemble数、予報頻度、downscaling、保存・配信を含む運用時の総需要は別に測る必要があります。個別modelの予報精度・速度は原典未照合です。",
+          "statement_en": "The study finds that weather and environmental workloads span Vision Transformers, GNNs, Fourier-based models, and hybrids with physical simulation, while handling global and regional data, vertical levels, time series, and ensemble inference. Fast single inference does not establish operational demand; input refresh, ensemble size, forecast cadence, downscaling, storage, and distribution must be measured separately. Forecast accuracy and speed claims for individual models have not yet been checked against original sources.",
+          "hpci_relevance_ja": "気象系の評価はmodel学習だけでなく、期限付きensemble推論、観測data取込み、数値予報との結合、結果配信までのend-to-end latencyを含めます。",
+          "hpci_relevance_en": "Weather evaluation should include deadline-bound ensembles, observation ingestion, coupling to numerical prediction, and end-to-end dissemination latency as well as training.",
+          "adoption_conditions_ja": [
+            "同一予報領域・解像度・ensemble数・品質でAIと数値予報を比較する。",
+            "data取込みから配信までのdeadline達成率と障害時fallbackを測る。"
+          ],
+          "adoption_conditions_en": [
+            "Compare AI and numerical prediction at matching domain, resolution, ensemble size, and quality.",
+            "Measure deadline attainment from ingestion to dissemination and fallback during failures."
+          ],
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年4月時点の委託調査による分野比較",
+          "timing_en": "Cross-domain comparison in a commissioned study as of April 2026",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS505"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS505",
+        "title": "AI for Scienceの実現に向けた計算基盤等の動向調査",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/content/20260427-mxt-jyohoka01-000041971_R701.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-27"
+      },
+      "origin_group": "mext-aifs-compute-trends-2030-estimate",
+      "checked_at": "2026-09-02T06:55:00+09:00",
+      "locator": "Sections 3.2-3.4 and 4.3; Tables 3.7-3.17 and 4.2-4.4",
+      "observation_ja": "生命科学、材料、気象・環境のmodel構造、data、workflowの差と分野横断比較を確認しました。",
+      "observation_en": "Verified the study's cross-domain comparison of model structures, data, and workflows in life science, materials, and weather or environmental science.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "個別modelの原論文、公式repository、datasetでparameter数、data量、精度、速度、licenseを照合する必要があります。",
+    "分野別の代表workflowでmemory、I/O、通信、queue待ち、end-to-end時間を実測する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Parameters, data volumes, accuracy, speed, and licences must be reconciled against original papers, official repositories, and datasets for each model.",
+    "Representative domain workflows require measurements of memory, I/O, communication, queue delay, and end-to-end time.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

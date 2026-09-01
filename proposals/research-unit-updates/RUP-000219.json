@@ -1,0 +1,150 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000219",
+  "topic_id": "APP-05",
+  "created_at": "2026-09-02T07:33:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "2b0864fb05b61fb85f36162429a35f9ff60467ea203a54bc60c15fc030e6f83e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AIコーディングを、科学的な解法生成、並列化、GPUカーネル、リポジトリ全体の最適化、開発工数に加え、評価課題自体の品質まで含めて調査しました。NVIDIA ComputeEvalはCUDAコードを非公開テストで実行し、任意で基準実装とのGPU実行時間も比較します。一方、2026年のSWE-Bench Pro監査は公開731課題の約30%に破損の可能性を示し、通過率だけでは能力を判断できないことを明らかにしました。HPCI向け評価では、正しさ、科学的妥当性、全体性能、移植工数、課題品質を別々に検証する必要があります。Consensusは未完了です。",
+  "summary_en": "AI coding is evaluated across scientific solution generation, parallelization, GPU kernels, repository-scale optimization, development effort, and now benchmark quality itself. NVIDIA ComputeEval executes CUDA code against held-out tests and can compare GPU execution time with a reference solution. A 2026 audit of the 731-task SWE-Bench Pro public split, however, estimated that roughly 30% of tasks may be broken, showing that pass rates alone are not reliable capability measures. HPCI evaluation should separately validate correctness, scientific validity, end-to-end performance, migration effort, and task quality. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-05-U01",
+      "before_sha256": "e416788f14e02283f2dcccc5717b37426236d2ea0596bb5051d5033aba97eed8",
+      "evidence_section_ids": [
+        "TDS-APP05-CURRENT",
+        "TDS-APP05-FUTURE",
+        "TDS-CD2-APP-05-U01",
+        "TDS-CD25-APP-05-CODING-EVAL-QUALITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD25-APP-05-CODING-EVAL-QUALITY",
+      "title_ja": "GPUコード生成の実行評価とベンチマーク品質",
+      "title_en": "Execution-based GPU code evaluation and benchmark quality",
+      "summary_ja": "コード生成能力と、評価課題・テストが正しい能力信号を出すかを分けて確認します。",
+      "summary_en": "Separate code-generation capability from whether benchmark tasks and tests produce a valid capability signal.",
+      "items": [
+        {
+          "item_id": "TDI-CD25-NVIDIA-COMPUTEEVAL",
+          "name_ja": "ComputeEvalはCUDAの正しさと性能を実行して評価",
+          "name_en": "ComputeEval executes CUDA correctness and performance evaluations",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年9月2日時点で公開開発中",
+          "timing_en": "Publicly under active development as of September 2, 2026",
+          "statement_ja": "NVIDIA ComputeEvalは、CUDA kernel、runtime API、Thrust/CUB/libcu++、cuBLAS、cuSPARSE/cuSOLVER/cuFFT/cuRAND、cuDNN等の手作業課題を提供します。モデルには仕様・必要なcontext・build条件を見せ、テストと参照解を隠したまま生成させ、コンパイル後の終了コードで正しさを判定します。任意の性能試験では基準解とのGPU実行時間を比較できます。課題集合は頻繁に更新されるため、版・GPU architecture・CUDA版を固定しないスコア比較は再現できません。",
+          "statement_en": "NVIDIA ComputeEval provides handcrafted tasks spanning CUDA kernels and runtime APIs, Thrust/CUB/libcu++, cuBLAS, cuSPARSE/cuSOLVER/cuFFT/cuRAND, and cuDNN. Models receive specifications, required context, and build conditions while tests and reference solutions are withheld; compiled code is graded by test exit status. Optional performance tests compare GPU execution time with a baseline solution. Because the task set evolves frequently, scores are not reproducible unless the release, GPU architecture, and CUDA version are pinned.",
+          "hpci_relevance_ja": "GPU移植支援AIを評価する際、構文生成ではなく数値的正しさと実行性能を確認できる候補です。ただしCUDA以外のSYCL、HIP、OpenMP offload等は別評価が必要です。",
+          "hpci_relevance_en": "It is a candidate for evaluating AI-assisted GPU migration through numerical correctness and execution performance rather than syntax generation, but SYCL, HIP, OpenMP offload, and other targets need separate coverage.",
+          "adoption_conditions_ja": [
+            "データセットのcommit、CUDA toolkit、GPU型、driver、compiler flagを固定する。",
+            "正答率と性能比を分け、コンパイル失敗・不正解・遅い正解を別に記録する。",
+            "HPCI主要kernel、MPI通信、複数GPU、CPU-GPU転送を追加した非公開評価を作る。",
+            "モデルがテスト・参照解へアクセスできない隔離を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the dataset commit, CUDA toolkit, GPU model, driver, and compiler flags.",
+            "Separate correctness from performance and record compile failures, wrong answers, and slow correct answers separately.",
+            "Create held-out HPCI evaluations covering major kernels, MPI communication, multi-GPU execution, and CPU-GPU transfer.",
+            "Verify isolation that prevents model access to tests and reference solutions."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS295"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD25-SWEBENCH-PRO-AUDIT",
+          "name_ja": "SWE-Bench Pro監査は評価課題の約30%に破損の可能性を指摘",
+          "name_en": "A SWE-Bench Pro audit estimates that roughly 30% of tasks may be broken",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年7月8日公開",
+          "timing_en": "Published July 8, 2026",
+          "statement_ja": "OpenAIの監査はSWE-Bench Pro公開731課題を対象に、agent支援監査で200件（27.4%）、経験者5人による人手評価で249件（34.1%）を破損と判定しました。主因は過度に厳しいテスト、要件不足、低いテスト網羅性、誤誘導するpromptです。評価主体自身による調査であり別組織の独立検証ではありませんが、ベンチマークの課題品質がモデル差より大きな誤差要因になり得ることを示します。",
+          "statement_en": "OpenAI audited the 731-task SWE-Bench Pro public split and labeled 200 tasks (27.4%) broken through an agent-assisted review and 249 (34.1%) through reviews by five experienced engineers. Main causes were overly strict tests, underspecified requirements, low test coverage, and misleading prompts. This is a study by an evaluation participant rather than independent validation by another organization, but it shows that task quality can create errors larger than model differences.",
+          "hpci_relevance_ja": "科学コード移植ベンチマークでは、課題作成者と評価者を分け、仕様・テスト・科学的判定の監査をConsensus Gateへ組み込む必要があります。",
+          "hpci_relevance_en": "Scientific-code migration benchmarks should separate task authors from evaluators and include audits of specifications, tests, and scientific judgments in the Consensus Gate.",
+          "adoption_conditions_ja": [
+            "課題仕様、非公開テスト、参照修正、失敗traceを複数評価者が監査する。",
+            "破損・曖昧・汚染の疑いがある課題を除外した感度分析を示す。",
+            "モデル・ハーネス・計算予算に加え、ベンチマーク版と有効課題集合を記録する。",
+            "評価提供者の自己評価値だけで採用判断を行わない。"
+          ],
+          "adoption_conditions_en": [
+            "Have multiple reviewers audit task specifications, hidden tests, reference patches, and failure traces.",
+            "Report sensitivity analyses excluding tasks suspected of being broken, ambiguous, or contaminated.",
+            "Record benchmark version and valid-task set in addition to model, harness, and compute budget.",
+            "Do not base adoption solely on self-reported results from an evaluation provider."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS296"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS295",
+        "title": "ComputeEval",
+        "publisher": "NVIDIA",
+        "url": "https://github.com/NVIDIA/compute-eval",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "nvidia-computeeval",
+      "checked_at": "2026-09-02T03:53:00+09:00",
+      "locator": "README benchmark structure, problem groups, and evaluation rules",
+      "observation_ja": "対象CUDA領域、非公開テストと参照解の分離、コンパイル・実行判定、任意の性能比較を確認しました。",
+      "observation_en": "Verified CUDA domains, separation of held-out tests and reference solutions, compile-and-run grading, and optional performance comparison.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS296",
+        "title": "Separating signal from noise in coding evaluations",
+        "publisher": "OpenAI",
+        "url": "https://openai.com/index/separating-signal-from-noise-coding-evaluations/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-08"
+      },
+      "origin_group": "swebench-pro-audit",
+      "checked_at": "2026-09-02T03:54:00+09:00",
+      "locator": "methodology, audit results, failure modes, and discussion",
+      "observation_ja": "731課題に対するagent支援・人手監査の件数、四つの主要な破損類型、自己調査であるという来歴を確認しました。",
+      "observation_en": "Verified agent-assisted and human audit counts for 731 tasks, four principal failure categories, and the study's provenance as a provider-conducted audit.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "ComputeEvalを国内GPU候補、HIP/SYCL/OpenMP offload、MPIを含む科学コードへ拡張した公開比較は未確認です。",
+    "HPCI向け課題の作成者・監査者・独立実行者を分ける評価体制は未設計です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "No public extension of ComputeEval to domestic accelerators, HIP/SYCL/OpenMP offload, MPI, and scientific code has been verified.",
+    "An HPCI evaluation organization separating task authors, auditors, and independent runners remains undesigned.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

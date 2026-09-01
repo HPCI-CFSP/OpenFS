@@ -1,0 +1,199 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000299",
+  "topic_id": "ARCH-01",
+  "created_at": "2026-09-02T07:46:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000176",
+      "bundle_sha256": "b6cb0e441958cb788df5e48633593c3d25b681ffdbeacf29e8d2679cb23ae04d"
+    }
+  ],
+  "before_profile_sha256": "59fc7b90db2a0ddf1974a3f381ad5af87067162ac445f5dfcca144c4cce332a8",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "agentic workloadのCPU設計を、2026年8月AgentSysBenchの10 application・production traceとvendor方針から追加調査しました。非LLM処理、最大28 GB/session、task latency最大32倍、idle state、重複searchが確認され、高周波数だけでなくcore density、memory、placement、cacheを役割別に評価する必要があります。vendor数値は独立比較ではなく、Consensusは未完了です。",
+  "summary_en": "This update examines agentic CPU design using the August 2026 AgentSysBench ten-application and production-trace study plus vendor design positions. Non-LLM work, up to 28 GB per session, 32x task-latency differences, idle state, and repeated searches require role-specific evaluation of frequency, core density, memory, placement, and caching. Vendor figures are not independent comparisons, and Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-01-U03",
+      "before_sha256": "ede1e09afe01599d4487c6e74eb7a4174b47db837b620d18c2bad1e722c01a86",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-01-U03",
+        "TDS-CD16-ARCH-01-AGENTIC-SYSTEM-TRACE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD16-ARCH-01-AGENTIC-SYSTEM-TRACE",
+      "title_ja": "エージェント処理の実行graph・state・CPU設計",
+      "title_en": "Execution graphs, state, and CPU design for agentic workloads",
+      "summary_ja": "直列critical path、fan-out、tool、memory、network、idle stateを分け、周波数対core数を一つのproxyで決めません。",
+      "summary_en": "Separate serial critical paths, fan-out, tools, memory, network, and idle state rather than choosing frequency versus core count from one proxy.",
+      "items": [
+        {
+          "item_id": "TDI-CD106-AGENTSYS-CROSS-STACK-HETEROGENEITY",
+          "name_ja": "AgentSysBench：10 applicationで律速箇所が移動",
+          "name_en": "AgentSysBench: bottlenecks shift across ten applications",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年8月時点のpreprint・vendor公開情報",
+          "timing_en": "Preprint and vendor information as of August 2026",
+          "statement_ja": "2026年8月のAgentSysBench preprintは10種のagentic applicationを同一計測系で扱い、controlled実験4,641 request・64,924 LLM call・118,274 tool callと、1日178,799 production sessionを分析しています。10 application中5件で非LLM componentがlatencyを支配または共同支配し、sandbox working setはsession当たり最大28 GB、component task latencyは最大32倍異なると報告します。これは全agentや全施設を統計的に代表する標本ではありません。",
+          "statement_en": "The August 2026 AgentSysBench preprint instruments ten agentic applications, analyzing 4,641 controlled requests, 64,924 LLM calls, 118,274 tool calls, and 178,799 production sessions from one day. Non-LLM components dominate or co-dominate latency in five of ten applications, sandbox working sets peak at 28 GB per session, and component task latency differs by up to 32x. The sample is not statistically representative of every agent or facility.",
+          "hpci_relevance_ja": "CPU評価をcompiler等のsingle-thread proxyだけにせず、LLM、retrieval、sandbox、network、stateを含むend-to-end traceで行う根拠になります。",
+          "hpci_relevance_en": "This supports evaluating CPUs with end-to-end traces spanning LLMs, retrieval, sandboxes, networks, and state rather than compiler-like single-thread proxies alone.",
+          "adoption_conditions_ja": [
+            "科学agentのrequest、tool、model、orchestration分布を固定して再測定する。",
+            "P50/P95/P99、completed task、CPU/GPU/DRAM/network、energyを同時記録する。",
+            "外部API待ちとlocal CPU executionを別のclockで集計する。"
+          ],
+          "adoption_conditions_en": [
+            "Remeasure with fixed distributions of scientific-agent requests, tools, models, and orchestration.",
+            "Record P50/P95/P99, completed tasks, CPU/GPU/DRAM/network use, and energy together.",
+            "Account for external-API waits separately from local CPU execution."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HW1-AGENTSYS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD106-AGENTSYS-IDLE-STATE-CACHE",
+          "name_ja": "AgentSysBench：idle stateと重複外部call",
+          "name_en": "AgentSysBench: idle state and repeated external calls",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年8月時点のpreprint・vendor公開情報",
+          "timing_en": "Preprint and vendor information as of August 2026",
+          "statement_ja": "production traceでは、sessionが数分から数時間idleのままstateを保持します。また373,678 search queryではunique queryの27%が再出現して全callの67.3%を占め、4,389 web fetchではdistinct URLの24%が再出現してfetchの64%を占めました。設計探索はstate offloadでmemoryを4.6分の1、tool-result cacheで重複searchを35.2%減らしaggregate search latencyを19.3%減らしたと報告します。単一traceとprototype上の改善値であり、HPCI productionの保証値ではありません。",
+          "statement_en": "Production traces show sessions retaining state while idle for minutes to hours. Among 373,678 search queries, recurring queries comprise 27% of unique queries but 67.3% of calls; among 4,389 web fetches, recurring URLs comprise 24% of distinct URLs but 64% of invocations. Design explorations report 4.6x lower memory from state offload, 35.2% fewer redundant searches from tool-result caching, and 19.3% lower aggregate search latency. These are prototype results from specific traces, not HPCI production guarantees.",
+          "hpci_relevance_ja": "HPCIのagent serviceではcore数だけでなく、resume可能なstate tier、cache policy、data更新・権限・privacyを設計対象に含めます。",
+          "hpci_relevance_en": "HPCI agent services should design resumable state tiers, cache policies, data freshness, permissions, and privacy in addition to core counts.",
+          "adoption_conditions_ja": [
+            "cache keyへ利用者、権限、source更新時刻、機密区分を含める。",
+            "idle stateのeviction、復元latency、失敗時の再実行を測る。",
+            "cache hitによる古い研究情報の再利用を検出する。"
+          ],
+          "adoption_conditions_en": [
+            "Include user, authorization, source update time, and sensitivity in cache keys.",
+            "Measure idle-state eviction, restore latency, and rerun behavior after failure.",
+            "Detect reuse of stale research information through cache hits."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-HW1-AGENTSYS"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD106-AGENT-CPU-DESIGN-POINTS",
+          "name_ja": "agentic CPU：高per-thread性能とcore densityは役割依存",
+          "name_en": "Agentic CPUs: per-thread performance and core density depend on role",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年8月時点のpreprint・vendor公開情報",
+          "timing_en": "Preprint and vendor information as of August 2026",
+          "statement_ja": "NVIDIAは163,594 sessionのtelemetryで97%超のtrajectoryがuniqueだったとし、長い直列pathと短いfan-outを根拠にper-thread性能と並行性の両立を主張します。ただしVeraの最大1.5倍は内部測定・推定SPEC CPU 2026で、比較対象AMD Veniceの個別値も内部推定です。AMDはagent sandboxにはcore/thread density、AI host nodeには高周波数・per-core性能、general-purpose nodeには幅広い処理能力と役割を分けています。両社資料は、同一agentic workload、電力、価格、memory、softwareでの独立比較ではありません。",
+          "statement_en": "NVIDIA cites telemetry from 163,594 sessions in which more than 97% of trajectories were unique, arguing for both per-thread performance on long serial paths and concurrency during short fan-out bursts. However, its up-to-1.5x Vera figure uses internal and estimated SPEC CPU 2026 results, including internally estimated per-workload AMD Venice values. AMD assigns different roles: core/thread density for agent sandboxes, high frequency and per-core performance for AI host nodes, and broad capability for general-purpose nodes. Neither vendor document is an independent comparison on matched agentic workloads, power, price, memory, and software.",
+          "hpci_relevance_ja": "HPCIは一種類のCPUをagentic向けと決めず、orchestrator、sandbox、retrieval、hostの各役割を同じworkflowで比較できます。",
+          "hpci_relevance_en": "HPCI should compare orchestrator, sandbox, retrieval, and host roles within the same workflow rather than labeling one CPU type as universally agentic.",
+          "adoption_conditions_ja": [
+            "同一socketでfrequency、active core、SMT、memory channel、power capをsweepする。",
+            "同一電力・rack・価格・memory容量でcompleted sessionを比較する。",
+            "benchmark proxyと実agent traceの相関を公開する。"
+          ],
+          "adoption_conditions_en": [
+            "Sweep frequency, active cores, SMT, memory channels, and power caps on the same socket.",
+            "Compare completed sessions at matched power, rack, price, and memory capacity.",
+            "Publish correlations between benchmark proxies and real agent traces."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS388",
+            "SRC-CDS389"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-HW1-AGENTSYS",
+        "title": "From LLM Inference to Agentic Workloads: Characterization and Implications for Serving Systems, arXiv:2608.15127v1",
+        "publisher": "AgentSysBench study authors",
+        "url": "https://arxiv.org/html/2608.15127v1",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08; version 1"
+      },
+      "origin_group": "agentsysbench-august2026-reread",
+      "checked_at": "2026-09-02T05:42:00+09:00",
+      "locator": "Pages 1-4: applications, controlled and production counts, resource findings, redundancy, and design explorations",
+      "observation_ja": "10 application、request/call/session数、28 GB、32倍、idle state、重複call、設計探索を確認しました。",
+      "observation_en": "Verified ten applications, request/call/session counts, 28 GB, 32x, idle state, repeated calls, and design explorations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS388",
+        "title": "Solving Agentic AI Fleet Challenges with NVIDIA Vera CPU",
+        "publisher": "NVIDIA",
+        "url": "https://developer.nvidia.com/blog/solving-agentic-ai-fleet-challenges-with-nvidia-vera-cpu/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-24"
+      },
+      "origin_group": "nvidia-vera-agentic-cpu",
+      "checked_at": "2026-09-02T05:42:00+09:00",
+      "locator": "Telemetry, trajectory shape, per-thread/concurrency argument, and estimated SPEC disclosure",
+      "observation_ja": "163,594 session、97%超unique、直列pathとfan-out、内部・推定SPECという境界を確認しました。",
+      "observation_en": "Verified 163,594 sessions, more than 97% unique trajectories, serial paths and fan-out, and the internal/estimated SPEC boundary.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS389",
+        "title": "AMD EPYC Server CPUs for Agentic AI",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/products/processors/server/epyc/ai/agentic-ai.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "amd-epyc-agentic-roles",
+      "checked_at": "2026-09-02T05:42:00+09:00",
+      "locator": "Agent sandbox, AI host-node, and general-purpose CPU role descriptions",
+      "observation_ja": "sandboxのcore density、hostの高周波数、general-purposeという役割分担を確認しました。",
+      "observation_en": "Verified role separation among core-dense sandboxes, high-frequency host nodes, and general-purpose CPUs.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "AgentSysBench codeは論文中で将来公開とされ、完全なartifactを確認できていません。",
+    "同一agent workflowでのfrequency・core・SMT・memory・power sweepが必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The AgentSysBench paper says code will be released, and a complete artifact has not been verified.",
+    "Matched frequency, core, SMT, memory, and power sweeps on the same agent workflow remain necessary.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000263",
+  "topic_id": "APP-11",
+  "created_at": "2026-09-02T07:40:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "4abd72447499dbc2662ee43570eebf292f265af5ad608f7c7750b7cb23e8d927",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "JHPCN FY2025報告は、CUDA-Qで量子回路をシミュレートするGPUと、古典最適化・EigenExa対角化を行うCPUをh3-Open-BDEC/WaitIOで結合したQSCIプロトタイプを報告しています。H8では総サンプル数を固定したままVQE並列数を1から20へ増やし、発見配置数を961から2,182へ増加させ、エネルギーを厳密値へ近づけました。ただし実量子プロセッサではなく量子シミュレータであり、量子優位性や実QPU待ち時間を示しません。Consensusは未完了です。",
+  "summary_en": "The FY2025 JHPCN report describes a QSCI prototype coupling CUDA-Q GPU quantum-circuit simulation with CPU classical optimization and EigenExa diagonalization through h3-Open-BDEC and WaitIO. For H8, increasing parallel VQE instances from one to twenty at fixed total sample count raised discovered configurations from 961 to 2,182 and moved the energy toward the exact value. This used quantum simulation rather than a physical quantum processor and does not demonstrate quantum advantage or actual QPU queue behavior. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-11-U01",
+      "before_sha256": "567403d946c2bf85e89e22ba6fd2d11efb85aa1f5e65ed5c3a2f35f27010f409",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-11-U01",
+        "TDS-CD2-APP-11-U01",
+        "TDS-CD3-APP-11-QSCI-HYBRID-BENCHMARK"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-11-QSCI-HYBRID-BENCHMARK",
+      "title_ja": "QSCIのCPU・GPUハイブリッド実装と古典基準",
+      "title_en": "CPU-GPU hybrid QSCI implementation and classical reference",
+      "summary_ja": "解精度、サンプル、並列度、量子シミュレーション費用を分けて比較します。",
+      "summary_en": "Compare solution accuracy, samples, parallelism, and quantum-simulation cost separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD70-QSCI-PARALLEL-VQE",
+          "name_ja": "固定サンプル数でのVQE多初期値並列化",
+          "name_en": "Parallel multi-start VQE at fixed sample count",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "FY2025実績を2026年最終報告",
+          "timing_en": "FY2025 results in a 2026 final report",
+          "statement_ja": "Wisteria/BDEC-01とMiyabi上のQSCIプロトタイプは、GPUでCUDA-Q量子シミュレーション、CPUで古典最適化とEigenExa大規模部分空間対角化を行います。H4、H8、H12を評価し、量子状態シミュレーションが主費用、通信と対角化のオーバーヘッドは報告条件で管理可能とされました。H8でVQE並列数を1から20へ増やすと、固定サンプル数で発見配置が961から2,182へ増え、部分空間は2.3倍超となり、基底エネルギーが厳密値へ近づきました。",
+          "statement_en": "The QSCI prototype on Wisteria/BDEC-01 and Miyabi uses CUDA-Q quantum simulation on GPUs and classical optimization plus large-subspace EigenExa diagonalization on CPUs. H4, H8, and H12 were evaluated; quantum-state simulation dominated cost, while communication and diagonalization overheads were manageable under the reported conditions. For H8, increasing VQE parallelism from one to twenty at fixed sample count raised discovered configurations from 961 to 2,182, expanded the subspace by more than 2.3 times, and moved the ground-state energy toward the exact value.",
+          "hpci_relevance_ja": "量子/HPC候補は、物理QPUとシミュレータを明示し、同じ精度・総サンプル・費用・待ち時間で古典手法と比較する必要があります。",
+          "hpci_relevance_en": "Quantum-HPC candidates should identify physical QPU versus simulator and compare with classical methods at matched accuracy, total samples, cost, and queue time.",
+          "adoption_conditions_ja": [
+            "分子、基底、ハミルトニアン、回路、初期値、総サンプル、厳密基準を固定する。",
+            "VQE並列化によるGPU時間と壁時計時間の変化を公開する。",
+            "シミュレータ結果を実QPUの速度・誤差・可用性へ外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin molecule, basis, Hamiltonian, circuit, initial values, total samples, and exact reference.",
+            "Publish GPU-time and wall-time changes from VQE parallelism.",
+            "Do not extrapolate simulator results to physical-QPU speed, error, or availability."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS340",
+        "title": "Final Report for JHPCN Joint Research of FY 2025: Innovative Computational Science by Integration of Simulation/Data/Learning on Heterogeneous Supercomputers",
+        "publisher": "Joint Usage/Research Center for Interdisciplinary Large-scale Information Infrastructures (JHPCN)",
+        "url": "https://jhpcn-kyoten.itc.u-tokyo.ac.jp/download/final/jh250027.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "jhpcn-fy2025-sdl-final-report",
+      "checked_at": "2026-09-02T05:33:00+09:00",
+      "locator": "Pages 6-8: QSCI architecture, H4/H8/H12 benchmark, dominant cost, and H8 parallel-VQE result",
+      "observation_ja": "QSCIのCPU/GPU分担、対象分子、費用律速、H8の並列VQE結果を確認しました。",
+      "observation_en": "Verified QSCI CPU/GPU roles, molecules, cost bottleneck, and the H8 parallel-VQE result.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開報告本文には実行時間、GPU/CPU数、転送量、消費電力、費用、実QPU結果がありません。",
+    "最良古典QSCI/FCI/DMRGとの同条件比較は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The public report text lacks runtime, GPU/CPU count, transfer volume, energy, cost, and physical-QPU results.",
+    "Matched comparison with the best classical QSCI, FCI, or DMRG methods is unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

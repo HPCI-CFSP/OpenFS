@@ -1,0 +1,208 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000307",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-02T07:48:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000279",
+      "bundle_sha256": "c7e0acded50da09a7f946350cefa8e24f756300e0ad1f1fd2b66ab0a770f66d8"
+    },
+    {
+      "update_id": "RUP-000293",
+      "bundle_sha256": "c85ae3053c1fdedc4a0eca442e69579b63c77586397ea2d34993847fec9e6c19"
+    }
+  ],
+  "before_profile_sha256": "66a3ee9f86543380e95de5eaf0da962a7702f2421f47b4fd11885edbdb51eb90",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "SPring-8 QEGSのstream処理を、試作から実ユーザー実験での運用実証へ更新しました。27 GB/sを1週間処理し19 PBを約2.2 TBへ削減、保存2～3分、初期解析6分、詳細解析はさらに約7分というend-to-end値を追加し、SPring-8-IIのEB級将来想定とは分離しました。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "SPring-8 QEGS streaming is updated from a prototype description to operation in a real user experiment. New end-to-end observations cover one week at 27 GB/s, reduction from 19 PB to about 2.2 TB, storage in 2-3 minutes, initial analysis in six minutes, and detailed analysis about seven minutes later, separated from SPring-8-II exabyte projections. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-15-U01",
+      "before_sha256": "a9ed6d92f8fd40436515f4a246409d98e421da6aabcae5ede2572410a734d605",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U01",
+        "TDS-CD7-APP-15-GPU-RESIDENT-INSITU",
+        "TDS-CD9-APP-15-SPRING8-OPERATED-PIPELINE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD9-APP-15-SPRING8-OPERATED-PIPELINE",
+      "title_ja": "SPring-8の実運用stream処理と将来設計上限",
+      "title_en": "Operated SPring-8 streaming pipeline and future design envelope",
+      "summary_ja": "QEGSの実運用値とSPring-8-IIの将来想定を分離し、発生、圧縮、保存、初期解析、詳細解析の期限をend-to-endで評価します。",
+      "summary_en": "Separate operated QEGS measurements from the SPring-8-II design envelope and evaluate generation, reduction, storage, initial analysis, and detailed analysis end to end.",
+      "items": [
+        {
+          "item_id": "TDI-CD114-CITIUS-QEGS-OPERATED-PIPELINE",
+          "name_ja": "27 GB/sを1週間運用し19 PBから約2.2 TBへ可逆圧縮",
+          "name_en": "One-week operation reducing 27 GB/s and 19 PB to about 2.2 TB losslessly",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月論文・4月公式発表、SPring-8ユーザー実験で運用",
+          "timing_en": "March 2026 paper and April announcement; operated in an SPring-8 user experiment",
+          "statement_ja": "84万画素CITIUS detectorを17.4 kHzで動作させるQEGS実験は27 GB/s、1週間約19 PBを生成します。FPGAで背景補正、threshold、画像統合を行ってから可逆圧縮し、実際の1週間の実験で約19 PBを約2.2 TBへ平均約8,600分の1に削減しました。公式発表は実ユーザー実験での運用開始を明記しており、従来のprototype表現を運用実証へ更新できます。ただし圧縮率はQEGSの信号特性と前処理に依存し、他測定へ一般化できません。",
+          "statement_en": "A QEGS experiment operates an 840-kilopixel CITIUS detector at 17.4 kHz, generating 27 GB/s and about 19 PB in a week. FPGA background correction, thresholding, and image integration precede lossless compression; an actual one-week experiment reduced about 19 PB to about 2.2 TB, averaging roughly 8,600:1. The official release states operation in a real user experiment, advancing the earlier prototype description to an operational demonstration. The ratio depends on QEGS signal characteristics and preprocessing and cannot be generalized to other measurements.",
+          "hpci_relevance_ja": "実験連携型HPCIではraw rateだけでstorageを積算せず、科学的妥当性を検収したedge処理、圧縮、buffer、再解析用dataを測定modeごとに設計できます。",
+          "hpci_relevance_en": "Experiment-linked HPCI can design accepted edge processing, compression, buffering, and retained reanalysis data per measurement mode instead of sizing storage from raw rate alone.",
+          "adoption_conditions_ja": [
+            "測定mode別にraw・処理後rate、圧縮率分布、FPGA資源・電力、bufferを測る。",
+            "弱信号・異常event・calibrationを含むholdoutで科学量と見逃しを検証する。",
+            "algorithm、bitstream、threshold、calibration、復元softwareをversion化する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure raw and processed rates, ratio distributions, FPGA resources and power, and buffers per mode.",
+            "Validate scientific quantities and missed events on holdouts including weak signals, anomalies, and calibration.",
+            "Version algorithms, bitstreams, thresholds, calibration, and decompression software."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS370",
+            "SRC-CDS371",
+            "SRC-CDS402"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD114-SPRING8-END-TO-END-DEADLINES",
+          "name_ja": "保存2～3分、初期解析6分、詳細解析はさらに約7分",
+          "name_en": "Storage in 2-3 minutes, initial analysis in 6, and detailed analysis about 7 minutes later",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "QEGS実運用で公表",
+          "timing_en": "Published from operated QEGS use",
+          "statement_ja": "圧縮dataは施設内data centerへ自動転送され、取得から2～3分以内に保存されます。HPC並列解析とOpen OnDemand上の専用applicationにより、初期解析は取得開始から約6分以内、詳細解析はその約7分後に得られ、実験中の条件最適化に使われました。これらは平均・上位分位・失敗率を伴うSLOではなく、特定workflowの公表所要時間です。",
+          "statement_en": "Reduced data are automatically transferred to the on-site data center and stored within 2-3 minutes of acquisition. HPC parallel analysis and QEGS applications on Open OnDemand produced initial results within about six minutes from acquisition start and detailed results about seven minutes later, supporting in-experiment optimization. These are published elapsed times for one workflow, not SLOs with distributions, tail percentiles, or failure rates.",
+          "hpci_relevance_ja": "検出器から判断までを一つの平均値にせず、edge、圧縮、転送、queue、解析、可視化、人間判断のdeadline budgetへ分解する基準事例になります。",
+          "hpci_relevance_en": "This provides a reference for decomposing detector-to-decision latency into edge, reduction, transfer, queue, analysis, visualization, and human-decision budgets rather than one mean.",
+          "adoption_conditions_ja": [
+            "各段階のtimestamp、P50/P95/P99、欠損、再試行、backpressureを保存する。",
+            "HPC混雑、network障害、FPGA停止、data center縮退時のdeadline達成率を測る。",
+            "解析結果が測定条件へ反映されるまでの人間・装置制御時間を含める。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve stage timestamps, P50/P95/P99, loss, retries, and backpressure.",
+            "Measure deadline attainment under HPC contention, network failure, FPGA outage, and data-center degradation.",
+            "Include human and instrument-control time until analysis changes measurement settings."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS402"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD114-SPRING8II-DESIGN-ENVELOPE",
+          "name_ja": "SPring-8-IIのEB級想定と最大CITIUS構成は容量設計上限",
+          "name_en": "SPring-8-II exabyte projection and maximum CITIUS configuration are design envelopes",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "SPring-8-II将来想定、実稼働量は未確認",
+          "timing_en": "SPring-8-II projection; actual production remains unverified",
+          "statement_ja": "SPring-8-IIではEB級dataが見込まれ、2025年活動報告は最大CITIUS構成を2,020万画素、10 Tbps、年間6 EBと見積もっています。半導体向けX線ptychographyも1日約30 PBが見込まれます。これらは将来設計上限・見積りであり、同時稼働率、年間beamtime、保存率、実測容量ではありません。",
+          "statement_en": "SPring-8-II is projected to generate exabyte-scale data; a 2025 activity report estimates the maximum CITIUS configuration at 20.2 million pixels, 10 Tbps, and 6 EB per year. Semiconductor X-ray ptychography is projected at about 30 PB per day. These are future design envelopes, not measured duty cycle, annual beamtime, retention ratio, or delivered capacity.",
+          "hpci_relevance_ja": "整備容量は最大rateを全期間掛けず、beamline別duty cycle、圧縮可否、再解析、保持期間、WAN出口をscenario化する必要があります。",
+          "hpci_relevance_en": "Capacity planning must scenario-model beamline duty cycle, reducibility, reanalysis, retention, and WAN egress instead of multiplying peak rate by all time.",
+          "adoption_conditions_ja": [
+            "beamline・detector・mode別のrate、稼働時間、圧縮、保存階層を積み上げる。",
+            "最大、通常、障害時catch-upの3 scenarioでcompute・network・storageを算定する。",
+            "rawを捨てる判断は再現性、将来algorithm、規程と一体で審査する。"
+          ],
+          "adoption_conditions_en": [
+            "Aggregate rate, operating hours, reduction, and storage tier by beamline, detector, and mode.",
+            "Size compute, network, and storage for maximum, normal, and post-failure catch-up scenarios.",
+            "Review raw-data deletion together with reproducibility, future algorithms, and policy."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS371",
+            "SRC-CDS402"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD8-APP-15-SPRING8-STREAM-REDUCTION"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS370",
+        "title": "Real-time compression of scientific data with over 8,000-time reduction opens a new paradigm",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/en/news_pubs/research_news/pr/2026/20260403_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-12"
+      },
+      "origin_group": "riken-citius-fpga-compression",
+      "checked_at": "2026-09-02T05:29:00+09:00",
+      "locator": "Input rate, daily volume, compression ratio, stability, FPGA, and scientific-information claim",
+      "observation_ja": "216 Gbps、2.3 PB/日、8,000倍超、安定動作、FPGA実装、X線強度保持の説明を再確認しました。",
+      "observation_en": "Reverified 216 Gbps, 2.3 PB per day, compression above 8,000, stable operation, FPGA implementation, and X-ray-intensity preservation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS371",
+        "title": "SPring-8データ基盤の現状：利用系グループ活動報告",
+        "publisher": "SPring-8/SACLA/NanoTerasu利用者情報",
+        "url": "https://user.spring8.or.jp/sp8info/?p=44222",
+        "source_class": "official-project",
+        "published_or_updated": "2025"
+      },
+      "origin_group": "spring8-data-infrastructure-report",
+      "checked_at": "2026-09-02T05:29:00+09:00",
+      "locator": "CITIUS design envelope, campus network, cluster, services, and BL35XU example",
+      "observation_ja": "最大CITIUSの画素・rate・年間量、100 Gbps基幹network、clusterとdata serviceを再確認しました。",
+      "observation_en": "Reverified maximum CITIUS pixels, rate, annual volume, 100 Gbps backbone, cluster, and data services.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS402",
+        "title": "Real-time compression technology developed for high-volume synchrotron-radiation experimental data",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/press/2026/20260403_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-03"
+      },
+      "origin_group": "riken-spring8-qegs-operated-pipeline",
+      "checked_at": "2026-09-02T05:29:00+09:00",
+      "locator": "Lines 44-85: operated user experiment, 27 GB/s, 19 PB to 2.2 TB, transfer and analysis latencies, Open OnDemand, and future projections",
+      "observation_ja": "実験での運用、data量・圧縮率、保存・解析所要時間、操作環境と将来想定を確認しました。",
+      "observation_en": "Verified operation in an experiment, data volume and reduction, storage and analysis times, user environment, and future projections.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "latency分布、failure率、FPGA・HPC資源・電力、混雑時挙動、科学量の独立検証は未確認です。",
+    "他beamline・detector・測定modeでの圧縮率とend-to-end期限は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Latency distributions, failures, FPGA and HPC resources and energy, contention behavior, and independent scientific validation remain unverified.",
+    "Reduction ratios and end-to-end deadlines for other beamlines, detectors, and modes remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

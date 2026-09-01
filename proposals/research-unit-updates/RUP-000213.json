@@ -1,0 +1,106 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000213",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T07:32:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000127", "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"},
+    {"update_id": "RUP-000159", "bundle_sha256": "bcb20b7c511099e4e2cf9e1f31e6b3312c80af5ec23b9d3c0dcdf24005e72e04"},
+    {"update_id": "RUP-000172", "bundle_sha256": "004b69a8c614fca240bc12542b1183dcea00e1c60e9a557e41939a1bdcfb0263"}
+  ],
+  "before_profile_sha256": "9f965ba530fad9b387e0f021719169b15d8b951ace4ab5dd6cb487938b542cb4",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "OpenMP 6.0は2024年11月の現行公式仕様で、GCC 14とIntel 2025コンパイラには一部6.0機能が実装されています。2026年7月時点の6.1はTechnical Report 15の公開コメント草案で、正式仕様ではありません。次期HPCIでは仕様番号だけで可搬性を判断せず、CPU・GPUごとのコンパイラ機能、正しさ、性能、デバッグ・性能解析をテストする必要があります。6.1のPython対応は検討開始段階であり、Consensusも未完了です。",
+  "summary_en": "OpenMP 6.0, released in November 2024, is the current official specification; GCC 14 and Intel 2025 compilers implement selected 6.0 features. As of July 2026, 6.1 is Technical Report 15, a public-comment draft rather than a final specification. A successor HPCI should not infer portability from a version number alone and must test compiler features, correctness, performance, debugging, and profiling on each CPU and GPU. Python support is at subcommittee stage, and Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U01",
+      "before_sha256": "78846c134eb022bf458572b8f4891f08ac0ad953e2585ce99a9cb409c383b867",
+      "evidence_section_ids": ["TDS-SSW01-PORTABILITY", "TDS-CD1-SSW-01-U01", "TDS-CD14-SSW-01-PORTABILITY", "TDS-CD20-SSW-01-OPENMP-STANDARDS"]
+    },
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "7a84370e4db415862356831f8c1d7fc4168c886f55ab98d8dde100c883042e34",
+      "evidence_section_ids": ["TDS-SSW02-TOOLCHAINS", "TDS-HC26-SSW-01-U2", "TDS-CD1-SSW-01-U02", "TDS-CD2-SSW-01-U02", "TDS-CD3-SSW-01-U02", "TDS-CD4-SSW-01-U02", "TDS-CD11-SSW-01-U02", "TDS-CD14-SSW-01-PORTABILITY", "TDS-CD20-SSW-01-OPENMP-STANDARDS"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD20-SSW-01-OPENMP-STANDARDS",
+      "title_ja": "OpenMP仕様と実装成熟度を分離する",
+      "title_en": "Separate OpenMP specification status from implementation maturity",
+      "summary_ja": "正式仕様、草案、コンパイラ機能、実アプリ性能を別々に追跡します。",
+      "summary_en": "Track final specifications, drafts, compiler features, and application performance separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD20-OPENMP-6-CURRENT-IMPLEMENTATION",
+          "name_ja": "OpenMP 6.0は正式仕様、実装は機能ごとに進展",
+          "name_en": "OpenMP 6.0 is final while implementation progresses feature by feature",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "仕様2024年11月、実装状況2025年2月公表",
+          "timing_en": "Specification November 2024; implementation status published February 2025",
+          "statement_ja": "OpenMP ARBは6.0を現行公式仕様として公開しています。ARBの実装状況記事では、GCC 14がデバイスUIDと初期interop機能、Intel ifx/oneAPI 2025.0がgroupprivate、dispatch interop、device_type、target向けmemset等の一部機能を実装したと説明しています。6.0準拠を名乗るコンパイラが全機能・全言語・全デバイスで同じ成熟度にあることを意味しません。",
+          "statement_en": "The OpenMP ARB publishes 6.0 as the current official specification. Its implementation-status article describes selected support: GCC 14 includes device UID and initial interoperability features, while Intel ifx and oneAPI 2025.0 implement portions such as groupprivate, dispatch interop, device_type, and target memset. A compiler associated with 6.0 is not thereby equally mature across every feature, language, and device.",
+          "hpci_relevance_ja": "候補CPU・GPUの比較では、OpenMPオフロードの機能表と、主要アプリの正しさ・性能・ツール連携をコンパイラ版ごとに測る必要があります。",
+          "hpci_relevance_en": "Candidate CPU and GPU evaluation needs a per-compiler feature matrix plus correctness, performance, and tooling tests on major applications.",
+          "adoption_conditions_ja": ["必要ディレクティブ・節・ランタイム・OMPT/OMPD機能をアプリ別に定義する。", "CPU/GPU、C/C++/Fortran、コンパイラ版ごとに適合・回帰試験を行う。", "CUDA/HIP/SYCLとのinteropは実際のツールチェーン構成で検証する。"],
+          "adoption_conditions_en": ["Define required directives, clauses, runtime, and OMPT/OMPD features per application.", "Run conformance and regression tests by CPU/GPU, language, and compiler version.", "Validate CUDA, HIP, and SYCL interoperability in the actual toolchain configuration."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS281", "SRC-CDS282"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD20-OPENMP-61-DRAFT",
+          "name_ja": "OpenMP 6.1は公開コメント草案、正式化は2026年11月予定",
+          "name_en": "OpenMP 6.1 is a public-comment draft with finalization planned for November 2026",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "TR15 2026年7月、正式仕様は2026年11月予定",
+          "timing_en": "TR15 July 2026; final specification planned November 2026",
+          "statement_ja": "2026年7月のTechnical Report 15は6.1の最終公開コメント草案です。先行TR14ではloop flatten/fuse、動的寿命データ、scaled simdlen、デバイス選択、Fortran改善等が示され、正式仕様は2026年11月予定です。OpenMP ARBは2026年にPython Language Subcommitteeも設置しましたが、Pythonは現時点の正式対応言語ではありません。",
+          "statement_en": "Technical Report 15, released in July 2026, is the final public-comment draft for 6.1. The preceding TR14 preview describes loop flatten and fuse controls, dynamic-lifetime data, scaled simdlen, device selection, and Fortran improvements, with final specification planned for November 2026. The OpenMP ARB also formed a Python Language Subcommittee in 2026, but Python is not yet a final supported language.",
+          "hpci_relevance_ja": "調達仕様へ6.1機能を要求する場合は、正式化と複数実装での提供時期を分け、将来対応項目として扱う必要があります。",
+          "hpci_relevance_en": "Any 6.1 procurement requirement should separate specification finalization from multi-vendor implementation availability and treat it as a future capability.",
+          "adoption_conditions_ja": ["最終6.1仕様公開後に草案との差分を再確認する。", "少なくとも二つの主要コンパイラで必要機能が実装されるまで必須条件にしない。", "Python対応を将来計画と明記し、現行の利用可能性と混同しない。"],
+          "adoption_conditions_en": ["Recheck changes from the draft after final 6.1 publication.", "Do not make a feature mandatory before required support exists in at least two major compilers.", "Label Python support as a future plan rather than current availability."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS281", "SRC-CDS283"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS281", "title": "OpenMP Specifications", "publisher": "OpenMP Architecture Review Board", "url": "https://www.openmp.org/specifications/", "source_class": "official-standard", "published_or_updated": "2026-07"},
+      "origin_group": "openmp-standard-and-implementation", "checked_at": "2026-09-02T03:30:00+09:00", "locator": "OpenMP 6.0 current specification and TR15 6.1 public-comment draft", "observation_ja": "6.0の公式仕様日、6.1 TR15の草案状態と公開月を確認しました。", "observation_en": "Verified the official 6.0 specification date and the draft status and release month of 6.1 TR15.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS282", "title": "Status of OpenMP API 6.0 Implementations", "publisher": "OpenMP Architecture Review Board", "url": "https://www.openmp.org/articles/openmp-6/", "source_class": "official-standard", "published_or_updated": "2025-02-25"},
+      "origin_group": "openmp-standard-and-implementation", "checked_at": "2026-09-02T03:31:00+09:00", "locator": "GCC 14 and Intel 2025.0 implementation sections", "observation_ja": "GCCとIntelの初期6.0実装機能が部分的であることを確認しました。", "observation_en": "Verified the feature-level scope of initial GCC and Intel 6.0 implementations.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS283", "title": "OpenMP ARB Releases Technical Report 14", "publisher": "OpenMP Architecture Review Board", "url": "https://www.openmp.org/press-release/openmp-arb-releases-tr14/", "source_class": "official-standard", "published_or_updated": "2025-11-13"},
+      "origin_group": "openmp-standard-and-implementation", "checked_at": "2026-09-02T03:32:00+09:00", "locator": "6.1 preview features and November 2026 release plan", "observation_ja": "6.1候補機能と2026年11月の正式化計画を確認しました。", "observation_en": "Verified candidate 6.1 features and the November 2026 finalization plan.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GCC、LLVM/Clang、Intel、AMD、NVIDIA、富士通のOpenMP 6.0機能行列と実アプリ試験は未完了です。", "6.1は草案であり、正式仕様・実装・HPCI導入時期は未確定です。", "独立モデルによるConsensusは未完了です。"],
+  "remaining_work_en": ["A feature matrix and application tests for GCC, LLVM/Clang, Intel, AMD, NVIDIA, and Fujitsu OpenMP 6.0 remain incomplete.", "OpenMP 6.1 is a draft; final specification, implementation, and HPCI availability are uncertain.", "Independent-model Consensus remains incomplete."]
+}

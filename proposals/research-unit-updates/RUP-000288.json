@@ -1,0 +1,137 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000288",
+  "topic_id": "SSW-15",
+  "created_at": "2026-09-02T07:44:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000195",
+      "bundle_sha256": "4c16418c454b0d4cb2fa1e8a4572643d73feb1e1f82f04bbd228d26f80a1ddeb"
+    }
+  ],
+  "before_profile_sha256": "282a384398e00ef2d8f9aa8f7402936dfefd730460aedb027998c69fc826deb1",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "NERSCはFY2024-2032戦略で、全nodeのLDMS・GPU DCGMをjobへ対応付ける監視基盤を足場に、10年以内のself-driving smart facilityを目標としています。目標には、data center異常の自動検出・是正、複数job・異種hardware・center・Integrated Research Infrastructureをまたぐ動的電力管理、topology等のjob parameter提案が含まれます。3～5年ではwater・power再利用計画、包括的energy-efficiency metric、NERSC-11の電力設備最小化を掲げます。現行機能と将来目標を分けてHPCIの運用要件へ反映します。Consensusは未完了です。",
+  "summary_en": "The NERSC FY2024-2032 strategy uses an LDMS and GPU-DCGM monitoring foundation that links all-node telemetry to jobs and targets a self-driving smart facility within ten years. Goals include automatic detection and correction of data-center issues, dynamic power management across jobs, heterogeneous hardware, the wider center and Integrated Research Infrastructure, and suggestions for job parameters such as topology. Three-to-five-year goals include water or power reuse plans, comprehensive energy-efficiency metrics, and minimizing electrical equipment and distribution for NERSC-11. Current capabilities and future goals are separated for HPCI operational requirements. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-15-U01",
+      "before_sha256": "5c56f393c67c19a7c89627c55ee7a7c665a195e73cc9ebf6eafcbb1e5f610c7d",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-15-U01",
+        "TDS-CD2-SSW-15-U01",
+        "TDS-CD3-SSW-15-FUGAKU-POWER-INCENTIVE",
+        "TDS-CD15-SSW-15-NERSC-SMART-FACILITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD15-SSW-15-NERSC-SMART-FACILITY",
+      "title_ja": "NERSCの監視基盤とself-driving facility目標",
+      "title_en": "NERSC monitoring foundation and self-driving-facility target",
+      "summary_ja": "計測済み、助言、閉loop制御、自動是正を異なる自動化段階として扱います。",
+      "summary_en": "Treat measured telemetry, recommendations, closed-loop control, and automatic correction as distinct automation stages.",
+      "items": [
+        {
+          "item_id": "TDI-CD95-NERSC-LDMS-FOUNDATION",
+          "name_ja": "LDMS・DCGMによる全node・job対応監視",
+          "name_en": "All-node job-correlated monitoring with LDMS and DCGM",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "現行監視基盤として記述",
+          "timing_en": "Described as an existing monitoring foundation",
+          "statement_ja": "NERSCはOMNIの監視基盤でcenter、system、job dataを集中保存し、schemaを揃える経験を蓄積しています。LDMS APIは全nodeからNVIDIA DCGMを含む詳細dataを取得し、GPU・CPU使用率、memory leak等を利用jobへ対応付けて可視化します。公開戦略は監視基盤の存在を示しますが、coverage、sample間隔、retention、operator response time、誤検知率は示しません。",
+          "statement_en": "NERSC's OMNI monitoring foundation centrally stores center, system, and job data and aligns changing sources under consistent schemas. The LDMS API collects detailed data from all nodes, including NVIDIA DCGM, and correlates GPU and CPU use and memory-leak indicators with user jobs. The strategy establishes the monitoring foundation but does not disclose coverage, sampling intervals, retention, operator response time, or false-positive rates.",
+          "hpci_relevance_ja": "HPCIではcenterごとに異なるtelemetryを共通schemaへ対応付け、job、電力、性能、failureを同じ時刻基準で解析する必要があります。",
+          "hpci_relevance_en": "HPCI should map site-specific telemetry into a common schema and analyze jobs, power, performance, and failures on a shared time basis.",
+          "adoption_conditions_ja": [
+            "metric名、単位、sampling、clock、欠損、retention、access権を定義する。",
+            "CPU/GPU/network/storage/facility電力をjobへ帰属できるか検証する。",
+            "検知精度とoperator対応時間をincidentで測る。"
+          ],
+          "adoption_conditions_en": [
+            "Define metric names, units, sampling, clocks, missing values, retention, and access rights.",
+            "Verify attribution of CPU, GPU, network, storage, and facility power to jobs.",
+            "Measure detection accuracy and operator response time on incidents."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS364"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD95-NERSC-SELF-DRIVING-TARGET",
+          "name_ja": "異常是正・動的電力管理・job parameter提案は10年目標",
+          "name_en": "Issue correction, dynamic power control, and job suggestions are ten-year goals",
+          "stage": "current",
+          "maturity": "announced",
+          "timing_ja": "3～5年および10年以内の戦略目標",
+          "timing_en": "Strategic targets for three to five years and within ten years",
+          "statement_ja": "10年以内のvisionは、多くのdata center問題の自動検出・是正、複数jobとhardware特性を考慮したcenter・IRI横断のdynamic power management、topologyを含む最適job parameterの識別・提案です。3～5年目標にはwater/power再利用計画、包括的energy-efficiency metric、NERSC-11の電力設備・配電最小化があります。戦略目標であり、production稼働の証拠ではありません。",
+          "statement_en": "The ten-year vision includes automatic detection and correction of most data-center issues, dynamic power management across jobs, hardware characteristics, the center and IRI, and identification and suggestion of optimal job parameters including topology. Three-to-five-year goals include water or power reuse planning, comprehensive energy-efficiency metrics, and reduced electrical equipment and distribution for NERSC-11. These are strategic goals, not evidence of production operation.",
+          "hpci_relevance_ja": "HPCIでは自動化levelと人間override、性能・公平性・科学結果・設備安全のconstraintを明示して段階導入すべきです。",
+          "hpci_relevance_en": "HPCI should stage adoption with explicit automation levels, human override, and constraints for performance, fairness, scientific results, and facility safety.",
+          "adoption_conditions_ja": [
+            "observe、recommend、approve、control、correctのautomation levelを分ける。",
+            "power cap時の性能、公平性、deadline、結果の妥当性を評価する。",
+            "誤制御、sensor欠損、network断、model drift時の安全側動作を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate observe, recommend, approve, control, and correct automation levels.",
+            "Evaluate performance, fairness, deadlines, and result validity under power caps.",
+            "Test safe behavior under bad control, missing sensors, network loss, and model drift."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS364"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS364",
+        "title": "NERSC Strategic Plan FY2024-2032",
+        "publisher": "National Energy Research Scientific Computing Center",
+        "url": "https://www.nersc.gov/assets/Annual-Reports/2024-2034-NERSC-10-yr-Strategic-Plan-v2.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025"
+      },
+      "origin_group": "nersc-strategic-plan-smart-facility",
+      "checked_at": "2026-09-02T05:47:00+09:00",
+      "locator": "Section 5.2: LDMS/DCGM foundation, 3-5-year sustainability goals, and ten-year smart-facility vision",
+      "observation_ja": "現行telemetry基盤と、将来の自動検出・是正、動的電力管理、job助言の段階を確認しました。",
+      "observation_en": "Verified the current telemetry foundation and future stages for automatic detection and correction, dynamic power management, and job guidance.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開戦略だけではautomation機能の実装率、metric品質、制御結果、費用、securityを確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The public strategy does not establish implementation coverage, metric quality, control outcomes, cost, or security of the automation functions.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000235",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:36:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"},
+    {"update_id": "RUP-000169", "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"},
+    {"update_id": "RUP-000180", "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"},
+    {"update_id": "RUP-000193", "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"},
+    {"update_id": "RUP-000218", "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"},
+    {"update_id": "RUP-000226", "bundle_sha256": "524f3070c566043a03e935d7cb0f7457b88f608bc3f59ce233d8744edc7b3901"}
+  ],
+  "before_profile_sha256": "274676abe5ba30829c42de31fcffbd6173525a8deb0b8cc547d5ed965a94f075",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "AOBA-Sの実運用から、HPC storageをPOSIX file system、S3 access、Web共有の複合serviceとして追加しました。Lustre/DDN ES400NVX2はRAID6で、2025年4月に実効容量を4.5 PBから5.6 PBへ拡張しました。2024年4月からS3DSを試験運用し、2024年12月からNextcloudを運用しています。これらは同じstorage基盤へ複数accessを与える構成例ですが、S3とPOSIXの整合性、performance isolation、backup、復旧時間、外部共有の運用費は未確認です。Consensusは未完了です。",
+  "summary_en": "AOBA-S operating evidence adds HPC storage as a composite service spanning a POSIX file system, S3 access, and Web sharing. Its Lustre/DDN ES400NVX2 storage uses RAID6 and increased effective capacity from 4.5 PB to 5.6 PB in April 2025. S3DS entered trial operation in April 2024 and Nextcloud service began in December 2024. This is an operational example of multiple access paths over a shared storage base, but S3/POSIX consistency, performance isolation, backup, recovery time, and the operating cost of external sharing remain unverified. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "SSW-05-U02", "before_sha256": "c0c5152adb33a56450e1a02c0d4c660f60c86defbaa83661f80eccfd91b208ff", "evidence_section_ids": ["TDS-HW1-SSW-05-U02", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE"]},
+    {"unit_id": "SSW-05-U03", "before_sha256": "7c30291e758f51750a598d16c59d6f3e4e490376c338c783169de78fc6e56d4f", "evidence_section_ids": ["TDS-HW1-SSW-05-U03", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04", "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE", "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE"]},
+    {"unit_id": "SSW-05-U04", "before_sha256": "dab4da673e7d552e7babeb6a8fc98fdbbe1e4b6834f713967cb2e90a4dba68e7", "evidence_section_ids": ["TDS-HW1-SSW-05-U04", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04", "TDS-CD4-SSW-05-AI-READY-DATA", "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE", "TDS-CD24-SSW-05-MLPERF-STORAGE-3", "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS", "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+      "title_ja": "AOBAのLustre・S3・Nextcloud複合storage service",
+      "title_en": "AOBA composite Lustre, S3, and Nextcloud storage service",
+      "summary_ja": "容量、保護、access protocol、共有serviceを別の評価軸として扱います。",
+      "summary_en": "Treat capacity, protection, access protocol, and sharing service as separate evaluation dimensions.",
+      "items": [
+        {
+          "item_id": "TDI-CD41-AOBA-LUSTRE-CAPACITY",
+          "name_ja": "Lustre/RAID6の実効容量を4.5 PBから5.6 PBへ拡張",
+          "name_en": "Lustre/RAID6 effective capacity expanded from 4.5 PB to 5.6 PB",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年4月拡張",
+          "timing_en": "Expanded in April 2025",
+          "statement_ja": "AOBA-S専用home領域はDDN ES400NVX2とLustreを採用し、RAID6構成で実効容量を2025年4月に4.5 PBから5.6 PBへ増強しました。system図にはAOBA-A/B用ScaTeFS 2 PBも別に示されます。RAID6はdisk障害保護の一要素であり、backup、災害復旧、snapshot、削除復元、service継続を意味しません。",
+          "statement_en": "The AOBA-S home area uses DDN ES400NVX2 and Lustre with RAID6, increasing effective capacity from 4.5 PB to 5.6 PB in April 2025. The architecture also shows a separate 2-PB ScaTeFS system for AOBA-A/B. RAID6 is one disk-failure protection mechanism; it does not establish backup, disaster recovery, snapshots, deleted-file recovery, or service continuity.",
+          "hpci_relevance_ja": "HPCIのstorage台帳ではusable capacityとともに、filesystem、failure domain、backup、復旧目標、対象systemを分けて記録する必要があります。",
+          "hpci_relevance_en": "The HPCI storage inventory should record usable capacity separately from filesystem, failure domain, backup, recovery objectives, and served systems.",
+          "adoption_conditions_ja": ["raw・usable・allocated・used capacityを区別する。", "disk、controller、rack、site別の障害領域と復旧手順を確認する。", "容量増設時のrebuild、停止、data移動、performance影響を測定する。"],
+          "adoption_conditions_en": ["Separate raw, usable, allocated, and used capacity.", "Verify failure domains and recovery procedures for disks, controllers, racks, and sites.", "Measure rebuild, outage, data movement, and performance effects during expansion."],
+          "actor_ids": [], "source_ids": ["SRC-CDS317"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD41-AOBA-S3-NEXTCLOUD",
+          "name_ja": "POSIXにS3試験serviceとNextcloud共有を重ねる",
+          "name_en": "S3 trial service and Nextcloud sharing layer over POSIX-oriented storage",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "S3DSは2024年4月試験開始、Nextcloudは2024年12月運用開始",
+          "timing_en": "S3DS trial began April 2024; Nextcloud service began December 2024",
+          "statement_ja": "AOBA-Sはstorageの一部へDDN S3 Data Service APIを提供し、S3を試験運用しています。NextcloudによるWeb storageは2024年12月から運用され、NanoTerasuを含む外部研究者とのaccess-controlled共有に使われます。これは複数access pathの実運用例ですが、同一object/fileの整合性、namespace対応、quota、performance isolation、versioning、ransomware復旧、service別costは示されません。",
+          "statement_en": "AOBA-S exposes DDN S3 Data Service APIs to part of its storage in trial operation. Nextcloud Web storage has operated since December 2024 and supports access-controlled sharing with external researchers including NanoTerasu collaborators. This is an operational multi-access example, but it does not document consistency for the same object/file, namespace mapping, quotas, performance isolation, versioning, ransomware recovery, or cost by service.",
+          "hpci_relevance_ja": "次期data基盤ではPOSIX、S3、Web共有を単一容量として数えず、protocol別SLO、security、互換性、運用費を比較する必要があります。",
+          "hpci_relevance_en": "A successor data platform should not count POSIX, S3, and Web sharing as one undifferentiated capacity pool; compare protocol-specific SLOs, security, compatibility, and operations cost.",
+          "adoption_conditions_ja": ["同一dataをPOSIX/S3/Webで更新する場合の整合性規則を定義する。", "tenant・project間の帯域、metadata、quota、権限分離を試験する。", "versioning、immutable copy、backup、失効、監査をservice別に確認する。", "試験serviceから本番へ移す基準と終了時のdata移行を定める。"],
+          "adoption_conditions_en": ["Define consistency rules when the same data is updated through POSIX, S3, and Web paths.", "Test bandwidth, metadata, quota, and authorization isolation across tenants and projects.", "Verify versioning, immutable copies, backup, revocation, and audit per service.", "Define trial-to-production gates and data migration if a trial ends."],
+          "actor_ids": [], "source_ids": ["SRC-CDS317"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS317", "title": "スーパーコンピュータAOBAサブシステムAOBA-Sにおける運用実績と利用者支援、およびNanoTerasuとの連携について", "publisher": "東北大学サイバーサイエンスセンター", "url": "https://www.ss.cc.tohoku.ac.jp/sscc/refer/pdf_data/v59-1/v59-1_p28-32.pdf", "source_class": "official-project", "published_or_updated": "2026-01-01"},
+      "origin_group": "tohoku-aoba-s-operation-report-2026", "checked_at": "2026-09-02T03:53:00+09:00", "locator": "pp. 28-29 and 31: Lustre/DDN/RAID6 capacity, S3DS, Nextcloud, and external sharing", "observation_ja": "Lustre、DDN ES400NVX2、RAID6、4.5 PBから5.6 PBへの増強、S3DS試験運用、Nextcloud運用と外部共有を確認しました。", "observation_en": "Verified Lustre, DDN ES400NVX2, RAID6, expansion from 4.5 PB to 5.6 PB, S3DS trial operation, Nextcloud operation, and external sharing.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["POSIX/S3/Web共有間の整合性、isolation、versioning、復旧試験は未確認です。", "容量層別performance、利用量、保守費、backup、災害復旧は未確認です。", "独立modelによるConsensusは未完了です。"],
+  "remaining_work_en": ["Consistency, isolation, versioning, and recovery tests across POSIX, S3, and Web sharing remain unverified.", "Performance, use, support cost, backup, and disaster recovery by capacity tier remain unverified.", "Independent-model Consensus remains incomplete."]
+}

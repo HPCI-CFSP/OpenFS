@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000293",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-02T07:45:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000279",
+      "bundle_sha256": "c7e0acded50da09a7f946350cefa8e24f756300e0ad1f1fd2b66ab0a770f66d8"
+    }
+  ],
+  "before_profile_sha256": "dc16c26dd8215b0a937ac8268dc0e5d9fc04cad0498513c0cebc25b0c768b545",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "SPring-8の実験data処理について、最大構成の設計上限と実証済みrateを分離しました。最大CITIUS構成は10 Tbps・年間6 EBと見積もられる一方、2026年の実証は216 Gbps・2.3 PB/日相当の連続streamをFPGAで8,000分の1以下へ圧縮し、定量解析用のX線強度情報を保持したものです。HPCIではraw rateだけで容量を決めず、edge処理の遅延・電力・科学的妥当性・再解析可能性を同時に検収します。Consensusは未完了です。",
+  "summary_en": "This update separates the design envelope from demonstrated data rates for SPring-8 processing. The largest CITIUS configuration is estimated at 10 Tbps and 6 EB per year, whereas the 2026 demonstration processed a continuous 216 Gbps stream, equivalent to 2.3 PB per day, with an FPGA reduction to less than one eight-thousandth while preserving X-ray intensity for quantitative analysis. HPCI should accept edge-processing latency, power, scientific validity, and reanalysis capability together rather than sizing capacity from raw rate alone. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-15-U01",
+      "before_sha256": "20530acae094a4bd546308e1ed4137d3bab7cbd83e437559b0295138f32b0447",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U01",
+        "TDS-CD7-APP-15-GPU-RESIDENT-INSITU",
+        "TDS-CD8-APP-15-SPRING8-STREAM-REDUCTION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD8-APP-15-SPRING8-STREAM-REDUCTION",
+      "title_ja": "SPring-8の発生量想定とstream圧縮実証",
+      "title_en": "Projected SPring-8 data generation and demonstrated stream reduction",
+      "summary_ja": "最大検出器の将来想定、実証済み入力rate、圧縮率、科学情報保持を別指標として評価します。",
+      "summary_en": "Evaluate projected maximum detector output, demonstrated input rate, compression ratio, and preservation of scientific information as separate metrics.",
+      "items": [
+        {
+          "item_id": "TDI-CD100-CITIUS-DESIGN-ENVELOPE",
+          "name_ja": "CITIUS最大構成：10 Tbps・年間6 EBの設計上限",
+          "name_en": "Maximum CITIUS configuration: 10 Tbps and 6 EB per year as a design envelope",
+          "stage": "current",
+          "maturity": "announced",
+          "timing_ja": "2025年活動報告の最大構成想定",
+          "timing_en": "Maximum-configuration projection in a 2025 activity report",
+          "statement_ja": "2025年のSPring-8活動報告は、最大CITIUS構成を2,020万画素、10 Tbps、年間6 EBと見積もっています。構内基幹networkは100 Gbpsであり、全raw dataをそのまま転送・保存する構成ではrateが2桁不足します。これは最大構成の見積りであり、年間の実生成量や同時稼働率の実測値ではありません。",
+          "statement_en": "A 2025 SPring-8 activity report estimates the largest CITIUS configuration at 20.2 million pixels, 10 Tbps, and 6 EB per year. With a 100 Gbps campus backbone, a design that transfers and retains all raw data is short by two orders of magnitude in rate. These are maximum-configuration estimates, not measured annual production or duty cycle.",
+          "hpci_relevance_ja": "HPCI連携ではWAN帯域を発生rateへ合わせるだけでなく、edge判定、losslessまたは誤差制御圧縮、局所buffer、選別、metadata、再解析用保存を測定方式ごとに設計する必要があります。",
+          "hpci_relevance_en": "HPCI integration needs per-measurement designs for edge decisions, lossless or error-bounded compression, local buffering, selection, metadata, and retained data for reanalysis rather than merely matching WAN capacity to source rate.",
+          "adoption_conditions_ja": [
+            "平均・peak rate、burst長、duty cycle、年間beamtimeから実容量を算定する。",
+            "raw、圧縮、特徴量、画像、metadataの保持期間と再解析要件を分ける。",
+            "圧縮・選別の科学的妥当性をmeasurement modeごとに定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Calculate actual capacity from average and peak rates, burst duration, duty cycle, and annual beamtime.",
+            "Separate retention and reanalysis requirements for raw data, compressed data, features, images, and metadata.",
+            "Define scientific-validity criteria for compression and selection by measurement mode."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS371"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD100-CITIUS-FPGA-DEMONSTRATION",
+          "name_ja": "216 Gbps連続streamを8,000分の1以下へ圧縮",
+          "name_en": "Compressing a continuous 216 Gbps stream to less than one eight-thousandth",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年6月公表の実証",
+          "timing_en": "Demonstration announced in June 2026",
+          "statement_ja": "理研は、84万画素・17.4 kframe/sのCITIUS detectorから216 Gbps（2.3 PB/日相当）の連続streamを受け、FPGAで8,000倍超の圧縮率を保って安定動作したと報告しました。定量解析に必要なX線強度情報を保持したとします。これは10 Tbps最大構成での実証ではなく、他の測定方式・detector・科学量に同じ圧縮率を適用できる証拠でもありません。",
+          "statement_en": "RIKEN reports stable FPGA processing of a continuous 216 Gbps stream, equivalent to 2.3 PB per day, from an 840-kilopixel CITIUS detector operating at 17.4 kframes/s, while maintaining a compression ratio above 8,000 and preserving X-ray intensity information required for quantitative analysis. This is not a 10 Tbps maximum-configuration demonstration and does not establish the same ratio for other measurement modes, detectors, or scientific quantities.",
+          "hpci_relevance_ja": "転送・storageを発生rateだけで過大整備せず、検出器近傍の処理を含むend-to-end構成を比較できます。ただし、圧縮後の科学的結論と再解析可能性を性能と同じ重みで検収します。",
+          "hpci_relevance_en": "HPCI can compare end-to-end designs including near-detector processing instead of sizing transfer and storage from raw source rate alone. Scientific conclusions and reanalysis capability after reduction must be accepted alongside performance.",
+          "adoption_conditions_ja": [
+            "raw入力rate、圧縮後rate、遅延、FPGA台数・電力、failure時bufferを公開条件で測る。",
+            "既知peak、弱信号、異常eventを含むholdout dataで科学量の誤差と見逃しを検証する。",
+            "algorithm・bitstream・parameter・calibrationをversion化し、rawを保持しない場合の再現条件を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Measure raw and reduced rates, latency, FPGA count and power, and failure buffering under disclosed conditions.",
+            "Validate scientific-variable error and missed events on held-out data including known peaks, weak signals, and anomalies.",
+            "Version algorithms, bitstreams, parameters, and calibration, and define reproducibility when raw data is not retained."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS370",
+            "SRC-CDS371"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS370",
+        "title": "Real-time compression of scientific data with over 8,000-time reduction opens a new paradigm",
+        "publisher": "RIKEN",
+        "url": "https://www.riken.jp/en/news_pubs/research_news/pr/2026/20260403_1/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-12"
+      },
+      "origin_group": "riken-citius-fpga-compression",
+      "checked_at": "2026-09-02T05:17:00+09:00",
+      "locator": "Lines 26-33 and reference: input rate, daily volume, compression ratio, stability, FPGA, and scientific-information claim",
+      "observation_ja": "216 Gbps、2.3 PB/日、8,000倍超、安定動作、FPGA実装、X線強度保持の説明を確認しました。",
+      "observation_en": "Verified 216 Gbps, 2.3 PB per day, compression above 8,000, stable operation, FPGA implementation, and the X-ray-intensity preservation claim.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS371",
+        "title": "SPring-8データ基盤の現状：利用系グループ活動報告",
+        "publisher": "SPring-8/SACLA/NanoTerasu利用者情報",
+        "url": "https://user.spring8.or.jp/sp8info/?p=44222",
+        "source_class": "official-project",
+        "published_or_updated": "2025"
+      },
+      "origin_group": "spring8-data-infrastructure-report",
+      "checked_at": "2026-09-02T05:17:00+09:00",
+      "locator": "Sections 2-3: CITIUS design envelope, campus network, cluster, services, and BL35XU example",
+      "observation_ja": "最大CITIUSの画素・rate・年間量、100 Gbps基幹network、clusterとdata service、BL35XUの実運用構成を確認しました。",
+      "observation_en": "Verified maximum CITIUS pixels, rate, annual volume, 100 Gbps backbone, cluster and data services, and the BL35XU operating configuration.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "10 Tbps最大構成の実稼働率、end-to-end遅延、圧縮器の電力・台数、誤差・異常event検出率は未確認です。",
+    "他のdetector・測定方式で8,000倍超を再現できるとは判断していません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Duty cycle at the 10 Tbps envelope, end-to-end latency, compressor power and count, error, and anomaly-detection rate remain unverified.",
+    "Compression above 8,000 is not assumed to reproduce across other detectors or measurement modes.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000275",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:42:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    },
+    {
+      "update_id": "RUP-000251",
+      "bundle_sha256": "82b9ed067447fa7ca02f2ce08961f53d76d60cef40d81a7eee06a84f2f4052d9"
+    },
+    {
+      "update_id": "RUP-000259",
+      "bundle_sha256": "09537c26563e7ec4e061464a44d6773f5d993803e79d62e9e3114a81f6b9d044"
+    }
+  ],
+  "before_profile_sha256": "f2db84b67d886bc00037357c5c5395a0ed2160d21d95c75d8f3a82d2de82c89b",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学はMiyabi-Gの一部キューでGH200を4つのMIGインスタンスに分割し、各インスタンスへ24 GBのGPUメモリ、18 CPUコア、25 GiBのCPUメモリを割り当てています。3区画は32 SM、1区画は26 SMですが、利用者は26 SM区画を避けて投入できません。バッチ枠は1、2、4インスタンスを要求でき、トークン係数は1インスタンス当たり0.25です。細粒度資源はデバッグ・教育・小規模処理に有効ですが、均質な性能単位ではありません。Consensusは未完了です。",
+  "summary_en": "The University of Tokyo partitions GH200 GPUs into four MIG instances in selected Miyabi-G queues. Each instance receives 24 GB of GPU memory, 18 CPU cores, and 25 GiB of CPU memory. Three partitions have 32 SMs and one has 26 SMs, and users cannot request avoidance of the 26-SM partition. Batch queues can request one, two, or four instances and charge a token coefficient of 0.25 per instance. Fine-grained resources can support debugging, teaching, and small workloads, but are not homogeneous performance units. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "0cfc85cc5737ed2943f8918382ed1bd144e74b31d9ad18483408430b8f0ff14d",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+        "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL",
+        "TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS",
+      "title_ja": "Miyabi-Gの分割GPUキュー",
+      "title_en": "Partitioned-GPU queues on Miyabi-G",
+      "summary_ja": "MIG区画の資源差、キュー制限、会計を明示して細粒度利用を評価します。",
+      "summary_en": "Evaluate fine-grained use with explicit MIG resource asymmetry, queue limits, and accounting.",
+      "items": [
+        {
+          "item_id": "TDI-CD82-MIYABI-G-MIG",
+          "name_ja": "GH200四分割と0.25トークン係数",
+          "name_en": "Four-way GH200 partitioning and 0.25 token coefficient",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日閲覧時点",
+          "timing_en": "Accessed September 2, 2026",
+          "statement_ja": "Miyabi-GのMIGキューはGH200を4分割します。MIG#0～2は32 SM・24 GB、MIG#3は26 SM・24 GBで、いずれもCPU 18コア・25 GiBを伴います。MIG#3を避ける投入オプションはありません。interact-migは2時間・無償、debug-migは30分、short-migは8時間、regular-migは48時間で、バッチは1、2、4インスタンスを要求できます。トークンは経過時間×要求インスタンス数×0.25です。分割数と性能は必ずしも比例しません。",
+          "statement_en": "Miyabi-G divides a GH200 into four MIG instances. MIG#0-2 provide 32 SMs and 24 GB, while MIG#3 provides 26 SMs and 24 GB; each also gets 18 CPU cores and 25 GiB. No submission option avoids MIG#3. interact-mig is free with a two-hour limit; debug-mig, short-mig, and regular-mig have 30-minute, eight-hour, and 48-hour limits, and batch jobs request one, two, or four instances. Tokens equal elapsed time times requested instances times 0.25. Partition count need not scale linearly with performance.",
+          "hpci_relevance_ja": "HPCIのGPU細分化では、会計効率だけでなく、区画差、メモリ、CPU割当、通信、分離、待ち時間、全GPUとの性能比を公表する必要があります。",
+          "hpci_relevance_en": "HPCI fractional-GPU services should publish partition asymmetry, memory, CPU allocation, communication, isolation, waits, and performance versus a full GPU, not only accounting efficiency.",
+          "adoption_conditions_ja": [
+            "MIG#0～3別の実行時間とばらつきを測る。",
+            "全GPU、MIG 1/2/4区画でスループット、待ち時間、費用を比較する。",
+            "GPUメモリ分離とCPU・I/O・ネットワーク共有の境界を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure runtime and variation separately for MIG#0 through MIG#3.",
+            "Compare throughput, waits, and cost for full GPU and one, two, and four MIG instances.",
+            "Test GPU-memory isolation and shared CPU, I/O, and network boundaries."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS346"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS346",
+        "title": "MIGについて",
+        "publisher": "東京大学情報基盤センター スーパーコンピューティング部門",
+        "url": "https://www.cc.u-tokyo.ac.jp/supercomputer/miyabi/service/mig.php",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "utokyo-miyabi-mig-service",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "Lines 15-58: four MIG instances, asymmetric SM counts, CPU and memory allocation, queue limits, and token formula",
+      "observation_ja": "Miyabi-GのMIG分割、区画差、キュー制限、会計式を確認しました。",
+      "observation_en": "Verified Miyabi-G MIG partitioning, partition asymmetry, queue limits, and accounting formula.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "区画別性能、待ち時間、同時利用干渉、分離試験、全GPU比の実効費用は公開されていません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Per-partition performance, waits, interference, isolation tests, and effective cost versus a full GPU are unpublished.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

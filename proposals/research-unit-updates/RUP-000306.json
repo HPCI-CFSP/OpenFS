@@ -1,0 +1,187 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000306",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T07:47:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000141",
+      "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"
+    },
+    {
+      "update_id": "RUP-000147",
+      "bundle_sha256": "50d35e45f17c5bfcfb01122d8bc6da805e7e431028e4c604ffbc4c62c077acd3"
+    },
+    {
+      "update_id": "RUP-000247",
+      "bundle_sha256": "687a30d7341cef8788c95b506a5bbc5e65b6906c1f7a15019b0699897ad29e71"
+    }
+  ],
+  "before_profile_sha256": "3a599ca2ef500078adb10e811772cb47065255a3eed87f0245167f7b5c567d67",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "RIKYUの生成AIserviceについて、OpenAI互換API、課題単位のAPI keyと利用量計上、可変model一覧、要求上限、Phase 2限定の無料条件を追加しました。API互換性をservice全体の同一性とみなさず、再現性、quota、監査、data境界、SLO、費用を受入条件にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "RIKYU's generative-AI service adds an OpenAI-compatible API, project-scoped keys and usage accounting, a mutable model inventory, request limits, and free access limited to Phase 2. API compatibility is not treated as full service equivalence; reproducibility, quotas, audit, data boundaries, SLOs, and cost become acceptance conditions. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "c43e0a5896fbdcfc2c3150af155bf3416a454fd2e84dab4132d7cce7b74f6e81",
+      "evidence_section_ids": [
+        "TDS-HC26-SSW-09-U2",
+        "TDS-CD6-SSW-09-U02",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE"
+      ]
+    },
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "c0e0a3d400a32909c14b8e9f6b6e26bbd8c611bc60112608555522eb37634899",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U03",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+      "title_ja": "理究（RIKYU）の生成AI API提供条件",
+      "title_en": "RIKYU generative-AI API service contract",
+      "summary_ja": "OpenAI互換という入口だけでなく、model可変性、課題別accounting、認証、要求上限、期間限定料金をservice contractとして整理します。",
+      "summary_en": "Treat model mutability, project accounting, authentication, request limits, and time-limited pricing as the service contract, not only the OpenAI-compatible entry point.",
+      "items": [
+        {
+          "item_id": "TDI-CD113-RIKYU-OPENAI-COMPATIBLE-API",
+          "name_ja": "OpenAI互換APIと課題単位のkey・利用量計上",
+          "name_en": "OpenAI-compatible API with project-scoped keys and usage accounting",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月確認、早期アクセスPhase 2",
+          "timing_en": "Verified September 2026 during Early Access Phase 2",
+          "statement_ja": "理究は`/v1`配下のOpenAI互換APIを提供し、portalで課題IDを選んで課題ごとに1個のAPI keyを発行します。利用量は発行元の課題へ計上され、keyは一度だけ表示され、漏洩時は失効・再発行します。互換性は接続方法を簡略化しますが、tool schema、streaming、reasoning field、error、rate limit、retry、audit、data retentionまでOpenAIのserviceと同一であることを意味しません。",
+          "statement_en": "RIKYU exposes an OpenAI-compatible API under `/v1`; users select a project ID in the portal and issue one API key per project, with usage charged to that project. A key is shown once and must be revoked and reissued after suspected exposure. Compatibility simplifies connection, but does not establish identical tool schemas, streaming, reasoning fields, errors, rate limits, retries, audit, or data retention to OpenAI's service.",
+          "hpci_relevance_ja": "連合AI serviceでは共通client APIに加え、課題・quota・監査・key rotation・data境界を跨ぐ統一contractが必要です。",
+          "hpci_relevance_en": "Federated AI services need a common contract spanning projects, quotas, audit, key rotation, and data boundaries in addition to a shared client API.",
+          "adoption_conditions_ja": [
+            "互換対象endpoint、request/response schema、stream、tool calling、error codeを版付きで試験する。",
+            "課題別quota、rate limit、同時実行、利用明細、監査log、key失効伝播を受入試験する。",
+            "入力・出力・prompt・tool結果の保存、学習利用、削除、越境を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Version and test compatible endpoints, schemas, streaming, tool calling, and error codes.",
+            "Acceptance-test project quotas, rate limits, concurrency, usage records, audit logs, and key-revocation propagation.",
+            "Specify retention, training use, deletion, and transfer of inputs, outputs, prompts, and tool results."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS401"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD113-RIKYU-MODEL-CATALOG-LIMITS",
+          "name_ja": "model一覧は可変、実行時一覧と要求上限を記録",
+          "name_en": "Model catalog is mutable; preserve runtime inventory and request limits",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月確認",
+          "timing_en": "Verified September 2026",
+          "statement_ja": "Guideは5 modelを掲載し、各modelがreasoningとFunction Callingに対応するとしますが、modelは追加・変更され、`/v1/models`を最新一覧としています。service上のcontext上限はmodel本来の上限と異なる場合があります。既定最大出力32,768 token、body 32 MB、timeout 600秒という上限もあります。したがって再現評価は表示名だけでなく、取得日時のmodel一覧、正確なmodel ID、service設定、request limitを保存する必要があります。",
+          "statement_en": "The guide lists five models and says each supports reasoning and function calling, while warning that models can be added or changed and identifying `/v1/models` as the current inventory. Service context limits may differ from native model limits. The service also publishes a default maximum output of 32,768 tokens, a 32 MB request body, and a 600-second timeout. Reproducible evaluation must therefore preserve the dated model inventory, exact model ID, service settings, and request limits, not only a display name.",
+          "hpci_relevance_ja": "科学agentの再現性と調達比較にはmodel artifactだけでなく、serving版・上限・更新・廃止・fallbackを含む運用履歴が必要です。",
+          "hpci_relevance_en": "Scientific-agent reproducibility and procurement comparisons require operational history for serving versions, limits, updates, retirement, and fallback, not only model artifacts.",
+          "adoption_conditions_ja": [
+            "各runでmodel endpoint、ID、model card digest、service version、limit、時刻を保存する。",
+            "model追加・廃止の通知期間、pinning、互換性、fallback、再現runを定義する。",
+            "context長やparameter数をaccuracy、latency、throughput、energyの代理指標にしない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve endpoint, model ID, model-card digest, service version, limits, and time for every run.",
+            "Define notice periods, pinning, compatibility, fallback, and reruns for model additions and retirements.",
+            "Do not use context length or parameter count as proxies for accuracy, latency, throughput, or energy."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS401"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD113-RIKYU-GENAI-EA2-PRICE-BOUNDARY",
+          "name_ja": "生成AI APIはPhase 2中無料、Slurm料金とは別",
+          "name_en": "Generative-AI API is free during Phase 2 and separate from Slurm charges",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "早期アクセスPhase 2期間限定",
+          "timing_en": "Limited to Early Access Phase 2",
+          "statement_ja": "生成AIserviceはPhase 2中無料で、300円/GPU時はSlurm計算jobだけに適用されます。API利用量はportalで確認できます。無料は原価ゼロや正式運用後も無料を意味せず、API workloadとbatch jobを同じGPU時単価で比較することもできません。",
+          "statement_en": "The generative-AI service is free during Phase 2, while the JPY 300 per GPU-hour charge applies only to Slurm compute jobs. API usage is visible in the portal. Free early access does not mean zero cost or future free service, and API workloads cannot be compared with batch jobs using one GPU-hour tariff.",
+          "hpci_relevance_ja": "共用推論serviceの費用モデルはtoken、request、予約容量、QoS、model size、cache、電力を分離して設計する必要があります。",
+          "hpci_relevance_en": "Shared inference cost models must distinguish tokens, requests, reserved capacity, QoS, model size, cache, and energy.",
+          "adoption_conditions_ja": [
+            "API側の入力・出力token、request、cache、占有時間、失敗、待ち時間を測る。",
+            "正式料金、budget cap、quota、過負荷時のpriorityとSLOを確認する。",
+            "batch実行との同一課題・品質・時間・費用比較を行う。"
+          ],
+          "adoption_conditions_en": [
+            "Measure API input and output tokens, requests, cache, occupied time, failures, and waits.",
+            "Verify final pricing, budget caps, quotas, overload priority, and SLOs.",
+            "Compare API and batch execution at matched task, quality, time, and cost."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS401"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS401",
+        "title": "RIKYU User Guide: Generative AI service",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://docs.r-ccs.riken.jp/rikyu/ja/genai/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "riken-rikyu-genai-user-guide",
+      "checked_at": "2026-09-02T05:25:00+09:00",
+      "locator": "API contract, model table and mutability note, key lifecycle, request limits, and Phase 2 pricing",
+      "observation_ja": "OpenAI互換API、model、課題別key、要求上限、Phase 2料金境界を確認しました。",
+      "observation_en": "Verified the OpenAI-compatible API, models, project-scoped keys, request limits, and Phase 2 charging boundary.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "rate limit、同時実行、SLO、audit log、data retention、障害・復旧、正式料金は未確認です。",
+    "掲載modelの更新履歴、serving実装・版、benchmark、利用統計は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Rate limits, concurrency, SLOs, audit logs, data retention, incidents, recovery, and final pricing remain unverified.",
+    "Model-change history, serving implementation and version, benchmarks, and usage statistics remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

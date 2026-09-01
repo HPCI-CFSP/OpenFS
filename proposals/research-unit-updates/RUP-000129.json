@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000129",
+  "topic_id": "CROSS-03",
+  "created_at": "2026-09-02T00:13:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "69519865a8994779699a1ba720df01df9655ff93d3429c93fc783dfcb7fee233",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省の公開議事録から、全国14のHPCI資源提供機関を対象とするワンストップ利用、資源プール化、共通バウチャー、課金、リソースブローカー、メタスケジューラの段階案を追加しました。既存のシングルサインオンと、資源選択・権限・費用を含む統合運用を区別します。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds publicly discussed MEXT directions for one-stop use across 14 HPCI providers, resource pooling, common vouchers, charging, resource brokers, and metaschedulers. It distinguishes existing single sign-on from integrated operations covering resource selection, entitlements, and cost. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-03-U01",
+      "before_sha256": "fbfd97198e8e9375f26c7fd49ec616b7013594165b74820575cf737e08fc2f6d",
+      "evidence_section_ids": ["TDS-CD1-CROSS-03-U01", "TDS-CD10-CROSS-03-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-CROSS-03-U01",
+      "title_ja": "全国資源プールとワンストップ利用の段階案",
+      "title_en": "Phased directions for a national resource pool and one-stop access",
+      "summary_ja": "既存の認証連携から、資源発見、割当、課金、実行、障害説明までを一つの運用契約として整理します。",
+      "summary_en": "Treat discovery, allocation, charging, execution, and incident communication as an operating contract that extends beyond existing identity federation.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-HPCI-RESOURCE-POOL",
+          "name_ja": "14機関をまたぐ資源プールとワンストップ利用",
+          "name_en": "Resource pooling and one-stop use across 14 providers",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月16日時点の検討",
+          "timing_en": "Under discussion as of June 16, 2026",
+          "statement_ja": "議事録は、HPCIを富岳を含む全国14の資源提供機関とSINETから成る分散基盤と説明し、今後は共用計算資源をワンストップで利用し、複数機関の資源を一つの大きな資源プールのように扱う方向を示しています。将来像は計算機の所在や機種を細かく意識せず必要な資源を選べることですが、全国統一の資源ブローカーが稼働済みとは記載されていません。",
+          "statement_en": "The minutes describe HPCI as a distributed platform of 14 providers, including Fugaku, connected by SINET, and discuss one-stop use and treating multi-institution resources as a common pool. The long-term direction is to select appropriate resources without detailed awareness of location or machine type, but the minutes do not establish that a nationwide resource broker is already operational.",
+          "hpci_relevance_ja": "整備計画では計算機の総量だけでなく、機種記述、可用枠、データ所在、ソフトウェア、所要時間、利用資格を機械的に照合できる共通資源記述が必要です。",
+          "hpci_relevance_en": "System planning requires a common machine-readable resource description that matches architecture, availability, data location, software, turnaround, and eligibility, rather than aggregate compute quantity alone.",
+          "adoption_conditions_ja": [
+            "14機関で共通化する資源属性、更新責任、更新遅延の許容値を定める。",
+            "ブローカーの選定根拠と、利用者が機種を指定する例外経路を残す。",
+            "障害時の再配置、費用変更、データ再転送を含む実運用試験を行う。"
+          ],
+          "adoption_conditions_en": [
+            "Define common resource attributes, update ownership, and tolerated update delay across providers.",
+            "Expose broker selection reasons and retain an exception path for explicit machine selection.",
+            "Test failover, price changes, and data retransfers under operational conditions."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-HPCI-PHASED-BROKERING",
+          "name_ja": "共通バウチャー・課金・資源仲介の段階実装案",
+          "name_en": "Phased implementation of vouchers, charging, and resource brokering",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "資料中の2025年・2027年・2029年フェーズ案",
+          "timing_en": "Discussion material uses 2025, 2027, and 2029 phases",
+          "statement_ja": "議事録は2025年、2027年、2029年の段階案として、共通バウチャー、課金、リソースブローカー、メタスケジューラを挙げています。また、学認IDを起点にサービス権限を付与し、複数資源の実使用に応じて負担金を流す方向も議論しています。後払い型の制度設計は明確に未確定とされています。",
+          "statement_en": "The minutes identify common vouchers, charging, resource brokers, and metaschedulers in a 2025, 2027, and 2029 phased concept. They also discuss using GakuNin identity as an entitlement origin and allocating charges according to actual use across resources. The usage-based charging design is explicitly not finalized.",
+          "hpci_relevance_ja": "段階整備では、技術実装と制度決定を別のマイルストーンにし、認証、割当、利用記録、請求、異議申立てを端から端まで検証します。",
+          "hpci_relevance_en": "A phased program should separate technical implementation from policy approval and validate authentication, allocation, metering, billing, and dispute handling end to end.",
+          "adoption_conditions_ja": [
+            "各フェーズの正式決定文書、実施主体、予算、対象機関を確認する。",
+            "同一課題が複数機関を利用した際の配分・請求・監査ルールを定める。",
+            "利用権の付与・変更・取消しが各サービスへ反映される時間を測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify formal decisions, implementing bodies, budgets, and participating providers for each phase.",
+            "Define allocation, billing, and audit rules when one project uses multiple providers.",
+            "Measure propagation time for entitlement grants, changes, and revocations across services."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS128",
+        "title": "AI for Scienceを支える研究データの管理・利活用と流通の在り方ワーキンググループ（第6回）議事録",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu29/006/gijiroku/mext_00007.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-16"
+      },
+      "origin_group": "mext-ai-for-science-data-wg-2026",
+      "checked_at": "2026-09-02T00:08:00+09:00",
+      "locator": "Minutes, discussion corresponding to material 2, pages 1-10; lines 89-108",
+      "observation_ja": "全国14機関、ワンストップ利用、資源プール、2025・2027・2029年の段階案、学認ID、利用負担金の議論を確認しました。構想を稼働実績として扱いません。",
+      "observation_en": "Verified discussion of 14 providers, one-stop use, a resource pool, 2025/2027/2029 phases, GakuNin identity, and usage charges. Concepts are not treated as operational results.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-027とGAP-TDS-082は未解決です。正式なサービス定義、責任分担、障害試験、権限取消し、資源選択精度の実績が必要です。",
+    "2025・2027・2029年の段階案について、実装済み項目と延期・変更項目を後続資料で確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-027 and GAP-TDS-082 remain open; formal service definitions, responsibility, failure tests, entitlement revocation, and resource-selection results are required.",
+    "Later evidence must distinguish implemented, delayed, and changed elements of the 2025/2027/2029 phase concept.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

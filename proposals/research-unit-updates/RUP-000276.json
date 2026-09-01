@@ -1,0 +1,177 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000276",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T07:42:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000127",
+      "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"
+    },
+    {
+      "update_id": "RUP-000159",
+      "bundle_sha256": "bcb20b7c511099e4e2cf9e1f31e6b3312c80af5ec23b9d3c0dcdf24005e72e04"
+    },
+    {
+      "update_id": "RUP-000172",
+      "bundle_sha256": "004b69a8c614fca240bc12542b1183dcea00e1c60e9a557e41939a1bdcfb0263"
+    },
+    {
+      "update_id": "RUP-000213",
+      "bundle_sha256": "65ae3fc5a9bd161bc7e471b7c2daa9d56c6010e58c5e757df6f72cc2639ed7ca"
+    },
+    {
+      "update_id": "RUP-000246",
+      "bundle_sha256": "88bf048ae90b8275c4185bb15b7701c7054259454a67b1d1487926957759a015"
+    },
+    {
+      "update_id": "RUP-000254",
+      "bundle_sha256": "e2cc7bfe5ba980f536272957f7bd8a002d457d321760e5056c2b306926811ec1"
+    }
+  ],
+  "before_profile_sha256": "502570710b69a3c4b40e2f4554d0b060ef3f02aa813f34cb165b1cec5ecddc84",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学は、OpenACCとOpenMP targetをプリプロセッサマクロで切り替えるSolomonと、C++非同期実行モデルstdexecによるGPU実装を公開しています。Solomonの重力N体ベンチマークはNVIDIA H100/GH200、AMD MI210、Intel Max 1100で専用CUDA/HIP/SYCL実装の60～80%とされます。16 GPUのLBMでは非同期stdexecがCUDAの71.6%、stdparの105.4%、同期stdexecの119.7%でした。異種GPUへの単一ソースと通信隠蔽の可能性を示しますが、アプリ全体の移植工数・正解性・保守費を証明しません。Consensusは未完了です。",
+  "summary_en": "The University of Tokyo reports Solomon, a preprocessor-macro layer switching between OpenACC and OpenMP target, and GPU implementations using the C++ asynchronous execution model stdexec. A gravitational N-body benchmark with Solomon reached 60-80% of dedicated CUDA, HIP, or SYCL implementations on NVIDIA H100/GH200, AMD MI210, and Intel Max 1100. For LBM on 16 GPUs, asynchronous stdexec reached 71.6% of CUDA, 105.4% of stdpar, and 119.7% of synchronous stdexec. These results show potential for single-source heterogeneous GPU support and communication hiding but do not establish application-wide porting effort, correctness, or maintenance cost. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "e4b6083eac5ae23d20221476b36277f51e125d4c849d995a045aea948037e2c0",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U04",
+        "TDS-CD6-SSW-01-U04",
+        "TDS-CD8-SSW-01-U04",
+        "TDS-CD9-SSW-01-U04",
+        "TDS-CD10-SSW-01-U04",
+        "TDS-CD14-SSW-01-PORTABILITY",
+        "TDS-CD18-SSW-01-SOLOMON-STDEXEC"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD18-SSW-01-SOLOMON-STDEXEC",
+      "title_ja": "異種GPU指示文統合とC++非同期実行",
+      "title_en": "Cross-vendor GPU directives and asynchronous C++ execution",
+      "summary_ja": "専用実装比と移植・保守・正解性を別の評価軸にします。",
+      "summary_en": "Keep dedicated-implementation performance separate from porting, maintenance, and correctness.",
+      "items": [
+        {
+          "item_id": "TDI-CD83-SOLOMON-OFFLOAD-MACROS",
+          "name_ja": "SolomonによるOpenACC・OpenMP target切替",
+          "name_en": "Solomon switching between OpenACC and OpenMP target",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2024年論文、2026年9月2日公開情報確認",
+          "timing_en": "2024 paper; public information checked September 2, 2026",
+          "statement_ja": "Solomonはヘッダのみのマクロ層で、同じC/C++ソースからOpenACC、OpenMP target、CPU OpenMPフォールバックを生成します。公開リポジトリはMIT License、N体・拡散サンプル、非同期・同期マクロを含みます。東京大学の重力N体ベンチマーク紹介ではH100 SXM、GH200、MI210、Intel Max 1100上で各専用CUDA/HIP/SYCL実装の60～80%です。単一カーネルの相対値であり、全機能対応や全アプリ性能ではありません。",
+          "statement_en": "Solomon is a header-only macro layer generating OpenACC, OpenMP target, or CPU OpenMP fallback from the same C/C++ source. Its public MIT-licensed repository includes N-body and diffusion samples plus asynchronous and synchronization macros. The University of Tokyo's gravitational N-body case reports 60-80% of dedicated CUDA, HIP, or SYCL implementations on H100 SXM, GH200, MI210, and Intel Max 1100. This is a relative value for one kernel, not complete feature or application performance.",
+          "hpci_relevance_ja": "日本発の性能可搬性候補として、既存指示文コードの変更量を抑えられる可能性がありますが、HPCI代表アプリでコンパイラ差と非対応句を検証する必要があります。",
+          "hpci_relevance_en": "As a Japan-origin portability candidate, Solomon may reduce changes to directive-based code, but compiler differences and unsupported clauses require validation on representative HPCI applications.",
+          "adoption_conditions_ja": [
+            "コミット、コンパイラ、フラグ、入力、正解条件、専用実装を固定する。",
+            "非対応・無視・自動変換される句を機能試験する。",
+            "移植行数、工数、ビルド失敗、長期保守、性能を別々に測る。"
+          ],
+          "adoption_conditions_en": [
+            "Pin commit, compiler, flags, input, correctness criteria, and dedicated implementation.",
+            "Test unsupported, ignored, and automatically translated clauses.",
+            "Measure changed lines, effort, build failures, maintenance, and performance separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS347",
+            "SRC-CDS348"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD83-STDEXEC-ASYNC-LBM",
+          "name_ja": "16 GPUでの非同期stdexec LBM",
+          "name_en": "Asynchronous stdexec LBM on 16 GPUs",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "ICCS 2025研究、2026年9月2日公開情報確認",
+          "timing_en": "ICCS 2025 work; public information checked September 2, 2026",
+          "statement_ja": "格子ボルツマン法の複数GPU実装は、高優先度の境界カーネルを先行し、MPI通信と低優先度の本体カーネルを重ねます。16 GPUで非同期stdexecはCUDA実装の約71.6%、stdparの105.4%、同期stdexecの119.7%と報告されています。CUDAには届かず、比較対象によって優劣が変わります。入力、絶対時間、通信率、正解差、反復は公開要約にありません。",
+          "statement_en": "A multi-GPU lattice-Boltzmann implementation launches high-priority boundary kernels first and overlaps MPI communication with lower-priority main kernels. At 16 GPUs, asynchronous stdexec reportedly achieved about 71.6% of CUDA, 105.4% of stdpar, and 119.7% of synchronous stdexec. It remains below CUDA and the ranking depends on the baseline. The public summary omits input, absolute time, communication fraction, correctness differences, and repetitions.",
+          "hpci_relevance_ja": "標準C++に近い実装の価値は、最高性能比だけでなく、通信隠蔽、コンパイラ対応、ソース維持、複数GPU世代での性能保持により評価すべきです。",
+          "hpci_relevance_en": "The value of standard-C++-oriented implementations should be assessed through communication hiding, compiler support, source maintenance, and retained performance across GPU generations, not peak ratio alone.",
+          "adoption_conditions_ja": [
+            "同一入力・GPU数・MPI配置でCUDA、stdpar、OpenACC、同期・非同期stdexecを比較する。",
+            "絶対時間、通信待ち、カーネル重複、エネルギー、正解を保存する。",
+            "16 GPUの比率を他規模・他アプリへ外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Compare CUDA, stdpar, OpenACC, and synchronous and asynchronous stdexec with matched input, GPU count, and MPI placement.",
+            "Preserve absolute time, communication waits, kernel overlap, energy, and correctness.",
+            "Do not extrapolate 16-GPU ratios to other scales or applications."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS347"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS347",
+        "title": "研究事例紹介",
+        "publisher": "東京大学情報基盤センター スーパーコンピューティング部門",
+        "url": "https://www.cc.u-tokyo.ac.jp/outline/researches.php",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "utokyo-supercomputing-research-cases",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "Lines 38-41 and 70-75: Solomon cross-vendor result and asynchronous stdexec LBM result",
+      "observation_ja": "Solomonの3社GPU比較と16 GPU非同期stdexecの相対性能を確認しました。",
+      "observation_en": "Verified Solomon's three-vendor GPU comparison and the relative 16-GPU asynchronous-stdexec result.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS348",
+        "title": "Solomon: Simple Off-LOading Macros Orchestrating multiple Notations",
+        "publisher": "Yohei Miki / GitHub",
+        "url": "https://github.com/ymiki-repo/solomon",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "solomon-public-repository",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "README: OpenACC/OpenMP target switching, CPU fallback, asynchronous API, samples, and MIT License",
+      "observation_ja": "Solomonの公開実装、API、サンプル、ライセンスを確認しました。",
+      "observation_en": "Verified Solomon's public implementation, API, samples, and license.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "完全なベンチマーク条件、絶対時間、正解比較、移植工数、複数アプリ・複数版での保守実績は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Complete benchmark conditions, absolute time, correctness comparisons, porting effort, and multi-application multi-version maintenance remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

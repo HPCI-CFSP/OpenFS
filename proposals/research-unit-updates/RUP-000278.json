@@ -1,0 +1,127 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000278",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T07:43:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000214",
+      "bundle_sha256": "3810a6d11030f55cd88da75a9fc4a4bcf62395be3fb995bb52274abdef97ef7d"
+    },
+    {
+      "update_id": "RUP-000215",
+      "bundle_sha256": "c6c9bea5d507b8256df1eea7f1c0982b4e57587e317b584907dcbbd2178ff276"
+    },
+    {
+      "update_id": "RUP-000244",
+      "bundle_sha256": "cbbeb0572b028c7d6c554c768fe0d193424c68dc4b80bd45bfb785205493ef75"
+    },
+    {
+      "update_id": "RUP-000265",
+      "bundle_sha256": "83fac5a46155e92e3a97c3e5390a2beabef85c4f3520afde2a58122a806e6485"
+    }
+  ],
+  "before_profile_sha256": "ccbbfb49b13b0d426ddfdf5a6c20a3422e308d4ea4eda3607f128d3c9526cfb9",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学はWaitIO-Routerについて、センター内のInfiniBand、RoCE、FX1000、Tofu/uTofuでユーザレベルRDMAゼロコピーを使い、センター間ではRDMA系WaitIOをマルチストリームWaitIO-Socketへ変換する構成を説明しています。WaitIO-VerbsとWaitIO-Tofuは実装完了、ルーティング機構は開発中です。暗号化と高遅延対策を設計に含みますが、センター間の帯域・遅延、鍵管理、障害回復、複数利用者分離は未公表です。Consensusは未完了です。",
+  "summary_en": "The University of Tokyo describes WaitIO-Router as using user-level RDMA zero-copy over InfiniBand, RoCE, FX1000, and Tofu/uTofu within centers, while converting RDMA-based WaitIO to multistream WaitIO-Socket between centers. WaitIO-Verbs and WaitIO-Tofu are implemented, while the routing mechanism remains under development. Encryption and high-latency mitigation are design goals, but inter-center bandwidth and latency, key management, recovery, and multi-user isolation are unpublished. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "6f4f359d39d6629cbb1dfeb66f8cc144f43333d5420eab7994871a9946af8e33",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01",
+        "TDS-CD20-SSW-03-MPI5-ABI",
+        "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS",
+        "TDS-CD50-SSW-03-HPCI-COMMUNICATION-SOFTWARE",
+        "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025",
+        "TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION",
+      "title_ja": "WaitIO-Routerの実装済み範囲と未完了部分",
+      "title_en": "Implemented and incomplete scope of WaitIO-Router",
+      "summary_ja": "プロトコル対応、実装完了、センター間実証を別段階として記録します。",
+      "summary_en": "Record protocol support, implementation completion, and inter-center demonstration as separate stages.",
+      "items": [
+        {
+          "item_id": "TDI-CD85-WAITIO-ROUTER-PROTOCOLS",
+          "name_ja": "WaitIO-Verbs・Tofu完了とRouter開発中",
+          "name_en": "WaitIO-Verbs and Tofu complete; Router under development",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2027年までのセンター間連携目標、2026年9月2日閲覧",
+          "timing_en": "Inter-center goal by 2027; accessed September 2, 2026",
+          "statement_ja": "WaitIO-Routerはセンター内でInfiniBand、RoCE、FX1000、富岳Tofu/uTofuのユーザレベルRDMAゼロコピーを対象とし、センター間ではRDMA通信をマルチストリームWaitIO-Socketへ変換して高遅延の影響を抑える設計です。公開ページはWaitIO-VerbsとWaitIO-Tofuの実装完了、ルーティング機構の開発中を明記します。暗号化機能も掲げますが、方式・鍵管理・性能は示しません。",
+          "statement_en": "WaitIO-Router targets user-level RDMA zero-copy over InfiniBand, RoCE, FX1000, and Fugaku Tofu/uTofu within centers, and converts RDMA traffic to multistream WaitIO-Socket between centers to mitigate wide-area latency. The page explicitly says WaitIO-Verbs and WaitIO-Tofu are implemented and the routing mechanism is still under development. Encryption is a stated feature, but method, key management, and performance are not provided.",
+          "hpci_relevance_ja": "複数センターを一体運用する場合、APIの存在だけでなく、ネットワーク境界ごとの性能、認証、暗号、再試行、会計、障害分離を受入試験に含める必要があります。",
+          "hpci_relevance_en": "Federated operations require acceptance tests for performance, identity, encryption, retries, accounting, and fault isolation at each network boundary, not only an API implementation.",
+          "adoption_conditions_ja": [
+            "Verbs、Tofu、Socket、Routerの版と完成状態を分ける。",
+            "同一データ量でセンター内・間の帯域、遅延、CPU負荷、再送を測る。",
+            "鍵配布、認可、ログ、回線断、片系停止、再開を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate versions and completion status for Verbs, Tofu, Socket, and Router.",
+            "Measure intra- and inter-center bandwidth, latency, CPU load, and retransmission at matched volume.",
+            "Test key distribution, authorization, logs, link loss, partial outage, and restart."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS347"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS347",
+        "title": "研究事例紹介",
+        "publisher": "東京大学情報基盤センター スーパーコンピューティング部門",
+        "url": "https://www.cc.u-tokyo.ac.jp/outline/researches.php",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "utokyo-supercomputing-research-cases",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "Lines 117-125: WaitIO-Router topology, protocols, encryption, completed Verbs/Tofu implementations, and routing development",
+      "observation_ja": "WaitIO-Routerの対象ネットワークと実装・開発状態を確認しました。",
+      "observation_en": "Verified WaitIO-Router target networks and implementation status.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開センター間試験の帯域・遅延・障害回復・セキュリティ・同時利用結果は確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Published inter-center tests for bandwidth, latency, recovery, security, and concurrency were not found.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

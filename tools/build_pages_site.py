@@ -870,6 +870,7 @@ def collect_roadmap_reference_data(
     policy: dict[str, Any],
     roadmaps: list[dict[str, Any]],
     include_commit_metadata: bool = True,
+    catalog_sources: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Project and validate the single public glossary/comparison source."""
     relative_path = policy["included_public_roadmap_reference_data"]
@@ -889,10 +890,23 @@ def collect_roadmap_reference_data(
         roadmap_id: {source["source_id"] for source in roadmap["sources"]}
         for roadmap_id, roadmap in roadmap_by_id.items()
     }
+    if catalog_sources is None:
+        catalog_path = root / policy["included_public_topic_decision_support"]
+        catalog_sources = load_json(catalog_path).get("sources", []) if catalog_path.is_file() else []
+    catalog_source_ids = {source["source_id"] for source in catalog_sources}
 
     def validate_source_refs(source_refs: list[dict[str, str]], label: str) -> None:
         seen: set[tuple[str, str]] = set()
         for source_ref in source_refs:
+            if "catalog_source_id" in source_ref:
+                source_id = source_ref["catalog_source_id"]
+                key = ("catalog", source_id)
+                if key in seen:
+                    raise ValueError(f"{label} has a duplicate source reference: {key}")
+                seen.add(key)
+                if source_id not in catalog_source_ids:
+                    raise ValueError(f"{label} references unknown catalog source: {source_id}")
+                continue
             roadmap_id = source_ref["roadmap_id"]
             source_id = source_ref["source_id"]
             key = (roadmap_id, source_id)
@@ -1279,7 +1293,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
             if topic_id in topic_ref_by_id
         ]
     roadmap_reference_data = collect_roadmap_reference_data(
-        root, policy, roadmap_artifacts
+        root, policy, roadmap_artifacts, catalog_sources=topic_decision_support["sources"]
     )
     hpci_system_inventory = collect_public_supplement(
         root,

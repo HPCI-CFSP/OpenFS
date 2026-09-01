@@ -1,0 +1,121 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000329",
+  "topic_id": "ARCH-12",
+  "created_at": "2026-09-02T07:51:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "383b4c107812b5c63681f865724963631499ed30c45d8b4f58edcc0f962488a6",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "シリコンフォトニクス回路によるオンチップ学習と非線形分類を追加しました。Iris精度、回路遅延、回路電力を小規模実験の範囲に限定し、I/Oや光源を含むシステム評価、大規模モデル、量産性を未解決とします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds on-chip learning and nonlinear classification using a silicon photonic circuit. Iris accuracy, circuit latency, and circuit power are confined to the small experimental boundary; system evaluation including I/O and lasers, large models, and manufacturability remain unresolved. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-12-U01",
+      "before_sha256": "04aa5e7be80c78c89b7fb38cc0f8b7aa994de799d2ebcc04f30e4ef03e55949e",
+      "evidence_section_ids": [
+        "TDS-ARCH02-DOMESTIC",
+        "TDS-HC26-ARCH-12-U1",
+        "TDS-HW1-ARCH-12-U01",
+        "TDS-HW2-ARCH-12-U01",
+        "TDS-CD43-ARCH-12-SILICON-PHOTONIC-LEARNING"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD43-ARCH-12-SILICON-PHOTONIC-LEARNING",
+      "title_ja": "シリコンフォトニクスによるオンチップ学習",
+      "title_en": "On-chip learning with silicon photonics",
+      "summary_ja": "小規模分類実験の精度・遅延・電力と、データセンター規模へ拡張する際の未解決境界を分けます。",
+      "summary_en": "Separate measured accuracy, latency, and power in a small classification experiment from unresolved scaling boundaries for data-center use.",
+      "items": [
+        {
+          "item_id": "TDI-CD152-AIST-PHOTONIC-ONCHIP-TRAINING",
+          "name_ja": "バクテリア採餌型オンチップ学習・非線形分類",
+          "name_en": "Bacterial-foraging on-chip training and nonlinear classification",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "2022年論文、2026年8月再整理",
+          "timing_en": "2022 paper; AIST summary updated August 2026",
+          "statement_ja": "産総研のシリコン光集積回路は、外部で事前学習した重みを単に書き込む方式ではなく、チップ上で動作条件を探索する学習と非線形写像を実証しました。Iris分類で最大約98.3%、信号伝搬は数十ps、回路は1 W未満クラスと報告されています。ただし、Irisと論理課題は小規模であり、I/O、ADC/DAC、レーザー、温度制御、ホスト前後処理を含むシステム電力・学習時間・大規模モデル精度は示しません。",
+          "statement_en": "AIST's silicon photonic circuit demonstrated on-chip operating-point search and nonlinear mapping rather than merely loading weights pretrained on an external computer. It reported up to about 98.3% on Iris classification, signal propagation of tens of picoseconds, and a sub-watt-class circuit. However, Iris and logic tasks are small; these figures do not establish system power, training time, or large-model accuracy including I/O, ADC/DAC, lasers, thermal control, and host preprocessing/postprocessing.",
+          "hpci_relevance_ja": "低遅延分類や実験設備の前段処理候補ですが、汎用AIアクセラレータの代替ではなく、対象演算を限定したco-processorとして評価するのが妥当です。",
+          "hpci_relevance_en": "It may suit low-latency classification or experimental front-end processing, but should be evaluated as a workload-specific coprocessor rather than a replacement for general AI accelerators.",
+          "adoption_conditions_ja": [
+            "光源、I/O変換、温調、制御CPUを含むwall-powerとend-to-end latencyを測る。",
+            "データ次元、クラス数、モデル規模を拡大し、再現性と精度劣化を測る。",
+            "温度・製造ばらつき、再校正頻度、SDK・設計tool、量産歩留まりを確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure wall power and end-to-end latency including lasers, I/O conversion, thermal control, and control CPUs.",
+            "Scale data dimension, classes, and model size while measuring reproducibility and accuracy loss.",
+            "Verify thermal and manufacturing variation, recalibration frequency, SDK/design tools, and production yield."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS441",
+            "SRC-CDS442"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS441",
+        "title": "シリコンフォトニクス回路でのバクテリア採餌を模倣した学習によるプロジェクション機能を備えた非線形分類",
+        "publisher": "産業技術総合研究所",
+        "url": "https://www.aist.go.jp/aist_j/magazine/20260805_2.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-05"
+      },
+      "origin_group": "aist-silicon-photonic-onchip-learning",
+      "checked_at": "2026-09-02T06:04:00+09:00",
+      "locator": "Results and outlook: Iris accuracy, tens-of-picoseconds propagation, sub-watt-class circuit, variation and scaling gaps",
+      "observation_ja": "測定値と、I/O統合・温度・製造ばらつき・設計toolなどの課題を確認しました。",
+      "observation_en": "Verified measured values and open issues for I/O integration, temperature, manufacturing variation, and design tooling.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS442",
+        "title": "On-chip bacterial foraging training in silicon photonic circuits for projection-enabled nonlinear classification",
+        "publisher": "Nature Communications",
+        "url": "https://doi.org/10.1038/s41467-022-30906-3",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2022-06-02"
+      },
+      "origin_group": "nature-aist-silicon-photonic-onchip-learning",
+      "checked_at": "2026-09-02T06:04:30+09:00",
+      "locator": "Peer-reviewed article identified by AIST; DOI and publication record",
+      "observation_ja": "産総研記事が示す査読論文のDOIと発表記録を確認しました。",
+      "observation_en": "Verified the DOI and publication record for the peer-reviewed paper cited by AIST.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "論文本文のenergy-per-operation算定境界と複数chip再現性を追加確認する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The paper's energy-per-operation boundary and multi-chip reproducibility require follow-up.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

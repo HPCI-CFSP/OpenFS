@@ -1,0 +1,187 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000215",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T07:32:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000214",
+      "bundle_sha256": "3810a6d11030f55cd88da75a9fc4a4bcf62395be3fb995bb52274abdef97ef7d"
+    }
+  ],
+  "before_profile_sha256": "c90054c4daf7e1d5e496b3087721b75e38be292a26a4cadf943e1d1a33a17546",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MPI 5.0の標準ABIについて、規格と実装の到達段階を分けて確認しました。MPICH 5.0.0はMPI 5.0と新しい標準ABIへの対応を公表しましたが、公式メーリングリストでは2026年4月時点でFortran用mpifort_abiラッパーが未実装と説明されています。一方、Open MPI 5.0.10はOpen MPI 4系との実装内ABI互換性を持つものの、規格対応はMPI 3.1完全対応・MPI 4.0部分対応です。HPCIではC/Fortran、MPI実装、コンパイラ、通信網を組み合わせた適合性と性能の検証が必要です。Consensusは未完了です。",
+  "summary_en": "This update separates the MPI 5.0 standard ABI from implementation maturity. MPICH 5.0.0 announced support for MPI 5.0 and the new standard ABI, but the official mailing list stated in April 2026 that the Fortran mpifort_abi wrapper was not yet implemented. Open MPI 5.0.10, meanwhile, provides implementation-family ABI compatibility with Open MPI 4.x, while its standards conformance remains full MPI 3.1 plus partial MPI 4.0. HPCI therefore needs compatibility and performance tests across C and Fortran, MPI implementations, compilers, and network stacks. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "3e3e5bc9589cac2ac620d054bc44e4d4e52abce2c8e103ff53334cf16bd0b42c",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01",
+        "TDS-CD20-SSW-03-MPI5-ABI",
+        "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS",
+      "title_ja": "MPI 5.0 ABIの実装状況と移行上の差",
+      "title_en": "MPI 5.0 ABI implementation status and migration differences",
+      "summary_ja": "規格準拠、言語別ABI、同一実装系列内の互換性を別の評価項目として扱います。",
+      "summary_en": "Treat standards conformance, language-specific ABI support, and compatibility within an implementation family as separate evaluation items.",
+      "items": [
+        {
+          "item_id": "TDI-CD21-MPICH5-ABI-SCOPE",
+          "name_ja": "MPICH 5.0.0はMPI 5.0を実装したがFortran標準ABIは未完了",
+          "name_en": "MPICH 5.0.0 implements MPI 5.0, but the Fortran standard ABI remained incomplete",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "5.0.0公開は2026年2月4日、Fortran制約の説明は2026年4月1日",
+          "timing_en": "5.0.0 released February 4, 2026; Fortran limitation described April 1, 2026",
+          "statement_ja": "MPICHは5.0.0をMPI 5.0標準と新しいMPI ABI仕様に完全対応する最初の安定版として公表しました。ただし公式メーリングリストでは、C用mpicc_abiとlibmpi_abiが存在する一方、Fortran用mpifort_abiラッパーは未実装で、次期メジャー版に向けて追跡すると説明しています。したがって『標準ABI対応』を全言語・全リンク形態へ一括して適用できるとは判断できません。",
+          "statement_en": "MPICH announced 5.0.0 as its first stable release with support for MPI 5.0, including the new MPI ABI specification. The official mailing list later clarified that while mpicc_abi and libmpi_abi were present, the Fortran mpifort_abi wrapper was not implemented and would be tracked for a future major release. Standard-ABI support therefore cannot be assumed to cover every language and linking form uniformly.",
+          "hpci_relevance_ja": "C、Fortran、Python連携、静的・動的リンクを分け、採用候補版で実行可否と結果の正しさを確認する必要があります。",
+          "hpci_relevance_en": "HPCI should separate C, Fortran, Python integration, and static versus dynamic linking, then validate execution and correctness on each candidate release.",
+          "adoption_conditions_ja": [
+            "採用候補版のmpicc_abi、mpifort_abi、共有ライブラリ、パッケージ設定を実機で確認する。",
+            "主要なFortran/MPIアプリケーションとPython拡張を含む回帰試験を実施する。",
+            "リリース概要と実際に提供される言語別ラッパーの差を調達要件へ記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Inspect mpicc_abi, mpifort_abi, shared libraries, and package configuration on each candidate release.",
+            "Run regression tests that include major Fortran/MPI applications and Python extensions.",
+            "Record differences between release-level claims and delivered language-specific wrappers in procurement requirements."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS285", "SRC-CDS286"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD21-OPENMPI5-CONFORMANCE",
+          "name_ja": "Open MPI 5.0系の実装内ABI互換性はMPI 5.0標準ABIと同義ではない",
+          "name_en": "Open MPI 5.0 family ABI compatibility is not the same as the MPI 5.0 standard ABI",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "Open MPI 5.0.10は2026年2月23日公開",
+          "timing_en": "Open MPI 5.0.10 released February 23, 2026",
+          "statement_ja": "Open MPI 5.0系はCのMPIバインディングについて4.0/4.1系とのABI互換性を説明していますが、これはOpen MPI実装系列内の互換性です。同系列の公式文書は、5.0系をMPI 3.1完全対応・MPI 4.0部分対応としています。Fortranではコンパイラ環境やAPI変更により再ビルドが必要になる場合があります。MPI 5.0標準ABIへの対応状況とは分けて管理する必要があります。",
+          "statement_en": "Open MPI 5.0.x documents C-binding ABI compatibility with its 4.0 and 4.1 series, but this is compatibility within the Open MPI implementation family. The same official documentation describes 5.0.x as fully conforming to MPI 3.1 with partial MPI 4.0 support. Fortran applications may require rebuilding because of compiler environments or API changes. This status must be tracked separately from support for the MPI 5.0 standard ABI.",
+          "hpci_relevance_ja": "センター間でOpen MPIの版だけが異なる場合と、別MPI実装へ移行する場合を分け、再ビルド要否と性能を評価します。",
+          "hpci_relevance_en": "Evaluate rebuild requirements and performance separately for migrations within Open MPI and migrations to a different MPI implementation.",
+          "adoption_conditions_ja": [
+            "MPI規格準拠版、実装系列内ABI、MPI 5.0標準ABIの三つを別欄で管理する。",
+            "Fortranコンパイラとバインディングの組合せを固定して移行試験を行う。",
+            "実行可能性に加え、集合通信・GPU通信・起動性能を同一条件で測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Track MPI-standard conformance, implementation-family ABI, and the MPI 5.0 standard ABI in separate fields.",
+            "Fix the Fortran compiler and binding combination when conducting migration tests.",
+            "Measure collectives, GPU communication, and launch performance in addition to executability."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS287", "SRC-CDS288"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS285",
+        "title": "MPICH 5.0.0 Released",
+        "publisher": "MPICH",
+        "url": "https://www.mpich.org/2026/02/04/mpich-5-0-0-released/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-04"
+      },
+      "origin_group": "mpich5-release",
+      "checked_at": "2026-09-02T03:24:00+09:00",
+      "locator": "release announcement and change summary",
+      "observation_ja": "MPICH 5.0.0の安定版公開、MPI 5.0および新標準ABI対応の公表内容を確認しました。",
+      "observation_en": "Verified the MPICH 5.0.0 stable release and its announced support for MPI 5.0 and the new standard ABI.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS286",
+        "title": "MPI ABI in mpich 5.0*",
+        "publisher": "MPICH discuss mailing list",
+        "url": "https://lists.mpich.org/pipermail/discuss/2026-April/006798.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-01"
+      },
+      "origin_group": "mpich5-fortran-abi",
+      "checked_at": "2026-09-02T03:25:00+09:00",
+      "locator": "MPICH maintainer response on mpifort_abi",
+      "observation_ja": "mpicc_abi/libmpi_abiと対照的にmpifort_abiが未実装であるという保守者の回答を確認しました。",
+      "observation_en": "Verified the maintainer response that mpifort_abi was not implemented, in contrast to mpicc_abi and libmpi_abi.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS287",
+        "title": "Open MPI Version 5.0 current stable release downloads",
+        "publisher": "Open MPI",
+        "url": "https://www.open-mpi.org/software/ompi/v5.0/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-23"
+      },
+      "origin_group": "openmpi5-release",
+      "checked_at": "2026-09-02T03:26:00+09:00",
+      "locator": "current stable release table",
+      "observation_ja": "Open MPI 5.0.10の公開日と5.0系の現行安定版表示を確認しました。",
+      "observation_en": "Verified the Open MPI 5.0.10 release date and current stable-release listing for the 5.0 series.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS288",
+        "title": "Open MPI 5.0.x MPI functionality and ABI compatibility",
+        "publisher": "Open MPI",
+        "url": "https://docs.open-mpi.org/en/v5.0.x/release-notes/mpi.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-23"
+      },
+      "origin_group": "openmpi5-conformance",
+      "checked_at": "2026-09-02T03:27:00+09:00",
+      "locator": "MPI standard conformance and version compatibility documentation",
+      "observation_ja": "MPI 3.1完全対応、MPI 4.0部分対応であること、およびOpen MPI系列内ABI互換性の範囲を確認しました。",
+      "observation_en": "Verified full MPI 3.1 and partial MPI 4.0 conformance and the scope of ABI compatibility within the Open MPI family.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Intel MPI、HPE Cray MPICH、富士通MPI等のMPI 5.0標準ABI対応は未確認です。",
+    "HPCIの主要C/Fortranアプリケーションを用いた実装間移行試験は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "MPI 5.0 standard-ABI support in Intel MPI, HPE Cray MPICH, Fujitsu MPI, and others remains unverified.",
+    "Cross-implementation migration tests with major HPCI C and Fortran applications have not been run.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

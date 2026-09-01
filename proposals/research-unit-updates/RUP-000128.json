@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000128",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-02T00:12:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "98f2812720a29ebec3a1a3f6043b2689c367cca3ef2b3e247c3dca5f649ab8bb",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省の公開議事録から、AI for Scienceの負荷を、従来のバッチ学習・推論だけでなく、API、対話処理、実験装置連携、研究ログを監視する常駐型ループまで含めて整理しました。これらは検討会で示された方向性であり、全国サービスとして実装済みではありません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update uses public MEXT minutes to extend AI-for-Science workload coverage beyond batch training and inference to APIs, interactive use, instrument coupling, and persistent loops that monitor research logs. These are directions discussed by the working group, not nationwide services already in operation. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "a7516afd7f23887d4268a6bd73d6e8b1ce1c223da23bd7a97f87aefb21b19e55",
+      "evidence_section_ids": ["TDS-CD1-APP-12-U01", "TDS-CD2-APP-12-U01", "TDS-CD10-APP-12-U01"]
+    },
+    {
+      "unit_id": "APP-12-U02",
+      "before_sha256": "3841bff640f2695004a115b5cb0baf52ffa8cd5e43a87fbb0fe6bb541babbb74",
+      "evidence_section_ids": ["TDS-CD1-APP-12-U02", "TDS-CD2-APP-12-U02", "TDS-CD10-APP-12-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-APP-12-U01",
+      "title_ja": "常駐型AI for Scienceワークロードの公開要件",
+      "title_en": "Public requirements for persistent AI-for-Science workloads",
+      "summary_ja": "バッチ計算、対話処理、API、実験連携、常駐型エージェントを異なる運用特性として評価します。",
+      "summary_en": "Evaluate batch jobs, interactive processing, APIs, instrument coupling, and persistent agents as distinct operating profiles.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-AIFS-PERSISTENT-WORKLOAD",
+          "name_ja": "24時間継続するAIサービスと常駐型研究ループ",
+          "name_en": "Continuous AI services and persistent research loops",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月16日の検討会で提示",
+          "timing_en": "Presented in the June 16, 2026 working-group discussion",
+          "statement_ja": "文部科学省の議事録では、API、リモートデスクトップ、Webブラウザ、対話処理、実験装置連携に加え、研究ログを監視して次の実験を提案する常駐型AI研究ループが議論されています。AIサービスには365日24時間の継続運転、インターネット接続、プロジェクト別環境、セキュリティ、冗長性が必要とされています。これは要求像であり、全国共通サービスの実装実績ではありません。",
+          "statement_en": "MEXT minutes discuss APIs, remote desktops, browsers, interactive processing, instrument coupling, and persistent AI research loops that monitor research logs and propose subsequent experiments. The discussion identifies continuous 24-by-7 operation, internet connectivity, per-project environments, security, and redundancy as requirements for AI services. This is a target operating model, not evidence of a nationwide deployed service.",
+          "hpci_relevance_ja": "整備計画では、長時間バッチ用GPUだけでなく、常駐推論枠、短時間対話枠、外部接続境界、サービス冗長化、実験装置との応答時間を別々に容量設計する必要があります。",
+          "hpci_relevance_en": "System plans should size persistent inference, short interactive queues, external connectivity boundaries, service redundancy, and instrument response latency separately from long batch GPU capacity.",
+          "adoption_conditions_ja": [
+            "代表ワークフローごとに到着率、同時実行数、応答時間、稼働率、データ量を測定する。",
+            "外部接続が必要な処理と閉域・機密処理を分離する。",
+            "24時間運転のSLO、障害復旧、モデル更新、監査ログの責任主体を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Measure arrival rate, concurrency, response latency, availability, and data volume for representative workflows.",
+            "Separate workloads requiring external connectivity from isolated or confidential processing.",
+            "Assign responsibility for 24-by-7 SLOs, recovery, model updates, and audit logs."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-AIFS-ENDTOEND-LOOP",
+          "name_ja": "計算資源だけでは完結しないAI駆動型研究ループ",
+          "name_en": "AI-driven research loops that extend beyond compute",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月16日の検討会で提示",
+          "timing_en": "Presented in the June 16, 2026 working-group discussion",
+          "statement_ja": "議事録は、AI駆動型研究をデータ準備、モデル学習、候補探索、データ更新の反復として説明し、高速ストレージ、電子実験ノート、データベース、シミュレーションノード、ローカルAI、クラウドAIの連携を必要条件として挙げています。GPUの演算性能だけでは、この処理全体の能力を表せません。",
+          "statement_en": "The minutes describe AI-driven research as an iterative sequence of data preparation, model training, candidate exploration, and data updates, requiring links among high-speed storage, electronic laboratory notebooks, databases, simulation nodes, local AI, and cloud AI. GPU arithmetic performance alone does not characterize this end-to-end capability.",
+          "hpci_relevance_ja": "候補システムは、学習性能に加え、データ到着から科学的に検証された結果までの総所要時間、転送量、待ち時間、失敗からの再開を評価します。",
+          "hpci_relevance_en": "Candidate systems should be evaluated by end-to-end time from data arrival to scientifically validated results, transfer volume, queue delay, and restart after failure, in addition to training performance.",
+          "adoption_conditions_ja": [
+            "公開可能な代表ワークフローと入力データを固定する。",
+            "前処理、転送、待機、学習・推論、検証、保存を同じ計測境界に含める。",
+            "ローカルAIと商用クラウドAIの機能、費用、データ境界を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin publishable representative workflows and input data.",
+            "Use a common measurement boundary covering preprocessing, transfer, queues, training or inference, validation, and persistence.",
+            "Compare capabilities, cost, and data boundaries for local and commercial-cloud AI."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS128",
+        "title": "AI for Scienceを支える研究データの管理・利活用と流通の在り方ワーキンググループ（第6回）議事録",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu29/006/gijiroku/mext_00007.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-16"
+      },
+      "origin_group": "mext-ai-for-science-data-wg-2026",
+      "checked_at": "2026-09-02T00:08:00+09:00",
+      "locator": "Minutes, discussion corresponding to material 2, pages 7-14; paragraphs on lines 104-111",
+      "observation_ja": "API・対話利用・実験連携、24時間AIサービス、常駐型研究ループ、高速ストレージ等との連携要件を確認しました。検討中の方向性を実装済みサービスとして扱いません。",
+      "observation_en": "Verified discussion of API, interactive and instrument-linked use, continuous AI services, persistent research loops, and integration with high-speed storage and related systems. Discussed directions are not treated as deployed services.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-021とGAP-TDS-072は未解決です。代表ワークフローの実測到着率、同時実行数、総所要時間、科学的品質が必要です。",
+    "検討会で示された要求のうち、正式に実装・予算化された範囲を後続資料で確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-021 and GAP-TDS-072 remain open; measured arrival rates, concurrency, end-to-end time, and scientific quality are required for representative workflows.",
+    "Later documents must establish which discussed requirements are formally implemented and funded.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

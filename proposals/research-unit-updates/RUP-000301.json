@@ -1,0 +1,204 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000301",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-02T07:47:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000163",
+      "bundle_sha256": "5d976b146e66d9ae9796826001062d3c25a1ef929bc7bc81cd8a1b1ba7f60f38"
+    },
+    {
+      "update_id": "RUP-000184",
+      "bundle_sha256": "07d975d805bafd008216ab72d8a0d006507dc3b3571108529a69235a4ee66943"
+    }
+  ],
+  "before_profile_sha256": "dbb3990a9f35eb294b5eb5e1ffcbee3c9b119846838bcd08b8ad718fadd65d2a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年のOCPとDOE資料から、高密度ML列の電力密度・列長・CDU/UPS配置、cold-plate液冷の受入parameter、同期AI負荷の電力振動計測を追加しました。特定TPU構成の設計値は全HPCI systemの要件へ一般化せず、PMUだけでは高周波振動を見落とし得るためpoint-on-waveとの併用を検討します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "2026 OCP and DOE material adds planning evidence for dense ML-row power, row length and CDU or UPS placement, acceptance parameters for cold-plate cooling, and measurement of synchronized AI-load oscillations. Configuration-specific TPU values are not generalized to every HPCI system, and point-on-wave monitoring is considered alongside PMUs because phasor filtering can miss high-frequency dynamics. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "7233a4e8893da31fea3d12540745a79f482c0086e379230c0fe7d6606898a5bc",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-06-U01",
+        "TDS-CD2-ARCH-06-U01",
+        "TDS-CD3-ARCH-06-PUE-REGULATION",
+        "TDS-CD4-ARCH-06-HIGH-DENSITY-GRID-DYNAMICS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-ARCH-06-HIGH-DENSITY-GRID-DYNAMICS",
+      "title_ja": "高密度ML設備の空間・液冷・電力変動要件",
+      "title_en": "Space, liquid-cooling, and power-dynamics requirements for dense ML facilities",
+      "summary_ja": "定常MW値だけでなく、列長、CDU境界、冷却補機、電力振動の計測を施設要件へ加えます。",
+      "summary_en": "Extend facility requirements beyond steady-state megawatts to row geometry, CDU boundaries, cooling auxiliaries, and measurement of power oscillations.",
+      "items": [
+        {
+          "item_id": "TDI-CD108-OCP-ML-ROW-DENSITY-2027-2028",
+          "name_ja": "OCP：2027・2028 ML列の電力密度と空間計画",
+          "name_en": "OCP: 2027 and 2028 ML-row power density and space planning",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "timing_ja": "2027・2028設計参照",
+          "timing_en": "2027 and 2028 design references",
+          "statement_ja": "OCPの2026年2月仕様は、特定の将来TPU構成を前提に、2027年の推奨設計値をCDU/UPS列内11.62 kW/ft、列外13.75 kW/ft、2028年を同26.6 kW/ft、29.1 kW/ftとします。2028年は列当たり最低2.4 MWと約96 ftの列長を結び付け、network列を別data hallへ置く場合もML列から100 m以内とします。これはTPU pod・network row・aisle条件を置いた設計指針であり、全GPU/HPC systemの必須密度ではありません。",
+          "statement_en": "The February 2026 OCP specification provides configuration-specific planning references for future TPU deployments: recommended design values of 11.62 kW/ft with CDU or UPS in-row and 13.75 kW/ft with them outside the row for 2027, rising to 26.6 and 29.1 kW/ft for 2028. For 2028 it links at least 2.4 MW per row to an approximately 96-foot row and places network rows in another data hall only when within 100 m of the ML rows. These values assume TPU pods, network rows, and aisle conditions; they are not universal density requirements for every GPU or HPC system.",
+          "hpci_relevance_ja": "次期HPCI施設はrack kWだけでなく、row MW、列長、CDU/UPS位置、network距離、保守動線を候補node構成ごとに同時検証する必要があります。",
+          "hpci_relevance_en": "Successor HPCI facilities should validate row megawatts, row length, CDU and UPS placement, network distance, and service paths for each candidate node design rather than specifying rack kilowatts alone.",
+          "adoption_conditions_ja": [
+            "候補rackの実寸・重量・cable・pipe・air fractionでlayoutを再計算する。",
+            "network latency・optics長・保守交換時間を100 m条件と合わせて測る。",
+            "将来密度を全列へ一律適用せず、導入比率と段階増設を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Recompute layouts using candidate rack dimensions, weight, cables, piping, and residual air-cooling fraction.",
+            "Measure network latency, optical reach, and service time against the 100 m condition.",
+            "State deployment fractions and phased expansion rather than imposing future density on every row."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS393"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD108-OCP-COLD-PLATE-ACCEPTANCE",
+          "name_ja": "OCP：cold-plate液冷の受入parameter",
+          "name_en": "OCP: acceptance parameters for cold-plate liquid cooling",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年時点の公開仕様",
+          "timing_en": "Public specification as of 2026",
+          "statement_ja": "OCPのcold-plate loop要件は、液冷能力を最大kWだけで表さず、満載rack重量、冷却液、single/two phase、hand/blind-mate connector、供給・戻り温度、flow・pressure、in-rack/in-row/facility CDU、4°C approach時の最大能力、CDU電力、fan/pump電力等を一組で記録します。facility waterとtechnology cooling systemの境界や冷却液組成が異なれば、同じ公称冷却能力でも互換性・電力・保守条件は異なります。",
+          "statement_en": "The OCP cold-plate-loop requirements do not describe liquid-cooling capacity with maximum kilowatts alone. They record loaded rack weight, coolant, single- versus two-phase operation, hand- or blind-mate connectors, supply and return temperature, flow and pressure, in-rack, in-row or facility CDUs, maximum capacity at a 4-degree-C approach, CDU power, and total fan or pump power. Different facility-water and technology-cooling-system boundaries or coolant compositions change compatibility, power, and maintenance even at the same nominal capacity.",
+          "hpci_relevance_ja": "HPCIの調達仕様でserverとfacilityの責任境界をmachine-readable parameter表にし、vendor横断の比較と更新時の再利用可否を判定できます。",
+          "hpci_relevance_en": "A machine-readable server-to-facility boundary table in HPCI procurement can support cross-vendor comparisons and determine whether cooling infrastructure remains reusable across refreshes.",
+          "adoption_conditions_ja": [
+            "normal・peak・single-fault時の温度、圧力、流量、補機電力を受入測定する。",
+            "漏液、汚染、filter、corrosion、quick connector寿命と交換手順を確認する。",
+            "server、rack integrator、facility、保守会社の責任境界を契約化する。"
+          ],
+          "adoption_conditions_en": [
+            "Acceptance-test temperature, pressure, flow, and auxiliary power at normal, peak, and single-fault conditions.",
+            "Verify leak, contamination, filtration, corrosion, connector-life, and replacement procedures.",
+            "Contractually assign responsibilities among server, rack integrator, facility, and maintenance provider."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS394"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD108-AI-LOAD-OSCILLATION-MONITORING",
+          "name_ja": "AI同期負荷：PMUとpoint-on-waveの併用",
+          "name_en": "Synchronized AI loads: combining PMU and point-on-wave monitoring",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "DOE/NASPI 2026年5月報告",
+          "timing_en": "DOE/NASPI report, May 2026",
+          "statement_ja": "DOE Office of Electricityは、数千chipが同期するAI training負荷が反復的な電力振動を生じ、近隣発電設備へ影響し得ると説明します。phasor measurement unitは低周波振動に有効ですが、phasor推定filterにより高周波成分を欠落・誤表現し得ます。point-on-waveは全周波数waveformを保持する一方、通信・保存量が増えるため、報告はPMUとpoint-on-waveのhybrid監視を推奨します。これは一般的な影響可能性と計測要件であり、特定HPCI siteの障害実績ではありません。",
+          "statement_en": "The DOE Office of Electricity explains that synchronized AI training across thousands of chips can create repetitive load oscillations that may affect nearby generation equipment. Phasor measurement units are effective at low frequencies, but phasor-estimation filtering can miss or misrepresent higher-frequency components. Point-on-wave monitoring preserves the full waveform but increases communication and storage, so the report recommends hybrid PMU and point-on-wave monitoring. This establishes a measurement concern, not an incident record for any HPCI site.",
+          "hpci_relevance_ja": "電力会社との接続協議と施設受入試験に、平均・peak MWだけでなく周波数別のload変動、scheduler phase、checkpoint、collectiveとの相関を加える必要があります。",
+          "hpci_relevance_en": "Grid-connection studies and facility acceptance should include load variation by frequency and correlations with scheduler phases, checkpoints, and collectives in addition to average and peak megawatts.",
+          "adoption_conditions_ja": [
+            "候補systemのtraining・HPC・idle遷移をrack/PDU/受電点で同期計測する。",
+            "PMU reporting rateとfilter特性を示し、必要帯域だけpoint-on-waveを保存する。",
+            "電力振動対策がjob性能、利用率、結果再現性へ与える影響を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Synchronously measure training, HPC, and idle transitions at rack, PDU, and grid-connection points.",
+            "Document PMU reporting and filtering, retaining point-on-wave data only at required bands.",
+            "Measure how oscillation mitigation affects job performance, utilization, and reproducibility."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS395"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS393",
+        "title": "Open Data Center Specification Version 0.5.0: Next-Generation ML Infrastructure Design Principles",
+        "publisher": "Open Compute Project",
+        "url": "https://www.opencompute.org/documents/open-data-center-spec-version-0-5-0-pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-02-25"
+      },
+      "origin_group": "ocp-ml-facility-design-2026",
+      "checked_at": "2026-09-02T05:25:00+09:00",
+      "locator": "Page 22: 2027/2028 TPU blended and recommended row density, minimum row power, row length, and network-row distance",
+      "observation_ja": "将来TPU構成を前提とする列密度、2.4 MW、約96 ft、100 m条件を確認し、一般要件とは扱いません。",
+      "observation_en": "Verified configuration-specific row densities, 2.4 MW, approximately 96 feet, and 100 m conditions without treating them as universal requirements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS394",
+        "title": "Cold Plate Cooling Loop Requirements Revision 2.0",
+        "publisher": "Open Compute Project",
+        "url": "https://www.opencompute.org/documents/cold-plate-cooling-loop-requirements-rev-2-pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2026; revision 2.0 inspected 2026-09-02"
+      },
+      "origin_group": "ocp-cold-plate-loop-requirements",
+      "checked_at": "2026-09-02T05:25:00+09:00",
+      "locator": "Cooling-loop requirements table: rack, coolant, connector, temperature, CDU, capacity, and auxiliary power",
+      "observation_ja": "液冷の互換性・能力・補機電力・責任境界を表すparameterを確認しました。",
+      "observation_en": "Verified parameters for liquid-cooling compatibility, capacity, auxiliary power, and interface boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS395",
+        "title": "Monitoring Oscillations from Large Data Centers",
+        "publisher": "U.S. Department of Energy Office of Electricity",
+        "url": "https://www.energy.gov/oe/articles/monitoring-oscillations-large-data-centers",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05-28"
+      },
+      "origin_group": "doe-naspi-data-center-oscillations",
+      "checked_at": "2026-09-02T05:25:00+09:00",
+      "locator": "Measurement needs and findings: synchronized oscillations, PMU filtering, point-on-wave data, and hybrid monitoring",
+      "observation_ja": "同期AI負荷、PMUの高周波制約、point-on-waveのdata量、hybrid監視の結論を確認しました。",
+      "observation_en": "Verified synchronized AI loads, PMU high-frequency limits, point-on-wave data volume, and the hybrid-monitoring conclusion.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "候補HPCI node/rackの実寸、配管、補機、動的負荷による施設モデルと受入測定は未実施です。",
+    "OCPのTPU構成値をGPU・CPU・wafer-scale systemへ適用するには個別再計算が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Facility models and acceptance measurements using candidate HPCI node dimensions, piping, auxiliaries, and dynamic loads remain unperformed.",
+    "Applying OCP TPU-specific values to GPU, CPU, or wafer-scale systems requires configuration-specific recalculation.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

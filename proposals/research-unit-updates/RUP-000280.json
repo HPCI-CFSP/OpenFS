@@ -1,0 +1,102 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000280",
+  "topic_id": "SSW-10",
+  "created_at": "2026-09-02T07:43:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "bfb4985018e41fa8f0ecce43b81e225db702212642dcd57dcb64dd1355baa693",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学はOpenTunerを用い、ネットワークトポロジ、マッピング、MPI設定を探索する自動性能調整をSimGrid 3.26で評価し、少数試行で最大2.29倍の高速化と準最適解を得たと紹介しています。これはシミュレータ上の特定探索であり、実機、現在のSimGrid、複数アプリ、探索費用、結果の再利用性を確認したものではありません。HPCIでは候補機ごとの測定予算と妥当性制約を含む自動調整プロトコルが必要です。Consensusは未完了です。",
+  "summary_en": "The University of Tokyo describes an OpenTuner method exploring network topology, mapping, and MPI settings in SimGrid 3.26, reporting up to 2.29x speedup and a near-optimal solution after only a few trials. This is a particular simulator-based search, not validation on production hardware, current SimGrid, multiple applications, search cost, or transferability. HPCI needs an autotuning protocol with a measurement budget and validity constraints for each candidate system. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-10-U01",
+      "before_sha256": "0c6030a35838227421515b98127c25be49c232c315e34b49849f66ac01220b5d",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-10-U01",
+        "TDS-CD2-SSW-10-U01",
+        "TDS-CD8-SSW-10-TOPOLOGY-AUTOTUNING"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD8-SSW-10-TOPOLOGY-AUTOTUNING",
+      "title_ja": "通信トポロジ・マッピング・MPI設定の自動探索",
+      "title_en": "Automated search of communication topology, mapping, and MPI settings",
+      "summary_ja": "シミュレータ上の最大値と実機で再現した改善を分離します。",
+      "summary_en": "Separate simulator maxima from improvements reproduced on hardware.",
+      "items": [
+        {
+          "item_id": "TDI-CD87-OPENTUNER-SIMGRID",
+          "name_ja": "OpenTuner・SimGrid 3.26で最大2.29倍",
+          "name_en": "Up to 2.29x with OpenTuner and SimGrid 3.26",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "SimGrid 3.26を用いた公開研究紹介",
+          "timing_en": "Public research description using SimGrid 3.26",
+          "statement_ja": "公開紹介ではOpenTunerがネットワークトポロジ、マッピングアルゴリズム、MPI実装設定の探索空間を調整し、SimGrid 3.26評価で少数試行から最大2.29倍の高速化と準最適性能を得たとされます。基準設定、アプリ、規模、試行数、絶対時間、探索時間、実機再現は示されません。『最大』は代表値ではありません。",
+          "statement_en": "The public description says OpenTuner searches network topology, mapping algorithms, and MPI implementation settings, obtaining up to 2.29x speedup and near-optimal performance after a few trials in SimGrid 3.26. Baseline setting, application, scale, trial count, absolute runtime, search time, and hardware reproduction are omitted. A maximum is not a representative result.",
+          "hpci_relevance_ja": "自動チューニングを導入する場合、最良実行だけでなく探索に消費した計算資源、再現性、正解性、別入力・障害後の頑健性を含めて費用対効果を判断します。",
+          "hpci_relevance_en": "Autotuning adoption should account for search resources, reproducibility, correctness, and robustness across inputs and after failures, not only the best run.",
+          "adoption_conditions_ja": [
+            "基準、探索空間、目的関数、停止条件、乱数、全試行を保存する。",
+            "シミュレータ上の候補を実機で独立再測定する。",
+            "探索費を償却できる反復回数と入力変化への頑健性を評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve baseline, search space, objective, stopping rule, random seed, and all trials.",
+            "Remeasure simulator-selected candidates independently on hardware.",
+            "Evaluate runs required to amortize search and robustness to input changes."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS347"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS347",
+        "title": "研究事例紹介",
+        "publisher": "東京大学情報基盤センター スーパーコンピューティング部門",
+        "url": "https://www.cc.u-tokyo.ac.jp/outline/researches.php",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "utokyo-supercomputing-research-cases",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "Lines 100-103: OpenTuner search dimensions, SimGrid 3.26 evaluation, and maximum 2.29x claim",
+      "observation_ja": "自動チューニングの探索対象、評価環境、最大値表現を確認しました。",
+      "observation_en": "Verified autotuning search dimensions, evaluation environment, and maximum-value wording.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "基準、アプリ、規模、全試行、探索費、実機再現、正解確認は公開要約から確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Baseline, application, scale, all trials, search cost, hardware reproduction, and correctness are unavailable from the public summary.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

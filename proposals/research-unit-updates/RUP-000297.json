@@ -1,0 +1,197 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000297",
+  "topic_id": "ARCH-13",
+  "created_at": "2026-09-02T07:46:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "7643c299bda839ed7acd578d4ff2016ddeb170a5fbc846728d3a3e65e1fd7d91",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "疎行列系mixed precisionを測るHPG-MxPについて、Frontier全9,408ノードで約1.6倍というSC25結果、残差9桁低下と反復回数penalty、1,800秒・memory 4分の1以上というrun条件を追加しました。HPL-MxP、HPCG、HPG-MxPは異なる能力を測るため、precisionの異なる値を単一rankingへ統合しません。Consensusは未完了です。",
+  "summary_en": "This update adds SC25 HPG-MxP evidence: about 1.6x on all 9,408 Frontier nodes, a nine-order residual reduction with iteration-count penalty, and run conditions of 1,800 seconds and at least one quarter of device memory. HPL-MxP, HPCG, and HPG-MxP measure different capabilities, so values with different precision definitions are not collapsed into one ranking. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-13-U02",
+      "before_sha256": "5c72d4922c52173531e631fa720f9d5972341fd8d9c7fc8c7d87c700544c367a",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-13-U02",
+        "TDS-CD16-ARCH-13-HPG-MXP-EVIDENCE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD16-ARCH-13-HPG-MXP-EVIDENCE",
+      "title_ja": "疎行列系混合精度の品質条件付き実効性能",
+      "title_en": "Quality-conditioned effective performance for sparse mixed precision",
+      "summary_ja": "HPG-MxPの精度条件、全系scale、指標境界を分け、混合精度のpeak値を科学計算性能へ直接換算しません。",
+      "summary_en": "Separate HPG-MxP accuracy conditions, full-system scale, and metric boundaries rather than converting mixed-precision peaks directly into scientific performance.",
+      "items": [
+        {
+          "item_id": "TDI-CD104-HPG-MXP-FRONTIER-SCALE",
+          "name_ja": "HPG-MxP：Frontier 9,408ノードで約1.6倍",
+          "name_en": "HPG-MxP: about 1.6x on 9,408 Frontier nodes",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "SC25公開結果",
+          "timing_en": "SC25 published result",
+          "statement_ja": "SC25論文は、double-single混合精度GMRES-IRの最適化実装をFrontier全9,408ノードまで実行し、倍精度GMRESに対して約1.6倍を報告しています。複数scaleと複数architectureで同傾向を確認した一方、問題はPoisson型の人工行列であり、実applicationのcondition number、pseudospectrum、preconditioner、communication patternに同じ倍率を保証しません。",
+          "statement_en": "The SC25 paper reports an optimized double-single mixed-precision GMRES-IR implementation on all 9,408 Frontier nodes, achieving about 1.6x over double-precision GMRES. It observes similar behavior at multiple scales and on more than one architecture, but the problem uses a synthetic Poisson-like matrix and does not guarantee the same speedup for application-specific condition numbers, pseudospectra, preconditioners, or communication patterns.",
+          "hpci_relevance_ja": "HPCI候補機ではHPL-MxPだけでなく、memory-boundな疎行列solverの混合精度効果を全系まで測る比較軸になります。",
+          "hpci_relevance_en": "For HPCI candidates, this adds a full-system measure of mixed-precision effects on memory-bound sparse solvers beyond HPL-MxP.",
+          "adoption_conditions_ja": [
+            "代表applicationのmatrixまたはmatrix-free operatorで収束と時間を再測定する。",
+            "全系結果と1、4、32、128、1,024ノード結果を分けてscale lossを示す。",
+            "algorithm改善、kernel最適化、precision効果をablationで分離する。"
+          ],
+          "adoption_conditions_en": [
+            "Remeasure convergence and time with matrices or matrix-free operators from representative applications.",
+            "Separate full-system results from 1, 4, 32, 128, and 1,024 nodes to expose scaling loss.",
+            "Use ablations to separate algorithmic changes, kernel optimization, and precision effects."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS382",
+            "SRC-CDS383"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD104-HPG-MXP-ACCURACY-CONTRACT",
+          "name_ja": "HPG-MxP：収束回数penaltyを含む精度契約",
+          "name_en": "HPG-MxP: an accuracy contract with convergence penalty",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "SC25公開結果",
+          "timing_en": "SC25 published result",
+          "statement_ja": "HPG-MxPは倍精度GMRESと混合精度GMRES-IRを同じ初期値から残差norm 9桁低下まで実行し、混合精度の反復回数が増えた場合にratingを低下させます。official runは原則1,800秒以上、問題配列はdevice main memoryの少なくとも4分の1を占めることを求めます。ただしvalidationはsolutionの収束特性を確認するもので、任意のPDE、保存則、統計量、長期時間積分の科学的妥当性を保証しません。",
+          "statement_en": "HPG-MxP runs double-precision GMRES and mixed-precision GMRES-IR from the same initial guess until the residual norm drops by nine orders of magnitude, penalizing the rating when mixed precision requires more iterations. Official runs normally last at least 1,800 seconds, and problem arrays must occupy at least one quarter of device main memory. This validates solver convergence characteristics, not scientific validity for arbitrary PDEs, conservation laws, statistics, or long-time integration.",
+          "hpci_relevance_ja": "調達評価で低精度性能を比較する際、速度だけでなく同一の品質条件と不合格基準を指標へ組み込む具体例です。",
+          "hpci_relevance_en": "This is a concrete model for including matched quality and rejection conditions when comparing low-precision performance in procurement.",
+          "adoption_conditions_ja": [
+            "residual以外にapplication固有の物理量、保存則、不確かさを合否条件へ加える。",
+            "validation問題と本測定問題の規模差を記録する。",
+            "失敗runと精度条件を満たさない高速runも公開集計する。"
+          ],
+          "adoption_conditions_en": [
+            "Add application-specific physical quantities, conservation laws, and uncertainty to residual-based acceptance.",
+            "Record the size difference between validation and measured problems.",
+            "Publish failed runs and fast runs that miss quality conditions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS382",
+            "SRC-CDS383"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD104-HPL-HPCG-HPG-MXP-BOUNDARIES",
+          "name_ja": "HPL-MxP・HPCG・HPG-MxPは異なる能力を測る",
+          "name_en": "HPL-MxP, HPCG, and HPG-MxP measure different capabilities",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "SC25公開結果",
+          "timing_en": "SC25 published result",
+          "statement_ja": "HPL-MxPは低精度LUとFP64 iterative refinementでdense線形系をFP64相当精度へ解き、2025年6月以後のlistでは16 bit未満を認めません。HPCGはFP64の疎行列・multigrid・communicationを対象とし、HPG-MxPはGMRES-IRでprecision選択を許します。したがって3指標は、低精度dense peak、FP64 sparse performance、品質条件付きmixed sparse performanceという異なる境界を持ち、単一rankingへ統合できません。",
+          "statement_en": "HPL-MxP uses low-precision LU plus FP64 iterative refinement to solve a dense linear system to FP64-equivalent accuracy, and results submitted after June 2025 cannot use formats below 16 bits. HPCG targets FP64 sparse matrix, multigrid, and communication, while HPG-MxP permits precision choices within GMRES-IR. The three therefore bound different capabilities: low-precision dense throughput, FP64 sparse performance, and quality-conditioned mixed sparse performance, and should not be collapsed into one ranking.",
+          "hpci_relevance_ja": "HPCIの候補比較表は各benchmarkの問題、precision、精度条件、memory footprint、通信、run規則を併記する必要があります。",
+          "hpci_relevance_en": "HPCI candidate comparisons should state each benchmark's problem, precision, quality condition, memory footprint, communication, and run rules.",
+          "adoption_conditions_ja": [
+            "各benchmarkの公開source、version、rule、結果fileを固定する。",
+            "GFLOP/sやEFLOP/sのprecisionが異なる値を足し合わせない。",
+            "application portfolioとの対応範囲と非対応範囲を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the public source, version, rules, and result files for each benchmark.",
+            "Do not add GFLOP/s or EFLOP/s values from different precision definitions.",
+            "State which parts of the application portfolio each benchmark does and does not represent."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS382",
+            "SRC-CDS383",
+            "SRC-CDS384"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS382",
+        "title": "HPG-MxP",
+        "publisher": "National Center for Computational Sciences, Oak Ridge National Laboratory",
+        "url": "https://github.com/at-aaims/HPG-MxP",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpg-mxp-artifact",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "README: benchmark purpose, convergence requirement, rating, run duration, memory rule, and build requirements",
+      "observation_ja": "公開code、精度条件、rating、30分、memory 4分の1以上というrun規則を確認しました。",
+      "observation_en": "Verified public code, quality conditions, rating, 30-minute run, and quarter-memory rule.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS383",
+        "title": "Scaling the memory wall using mixed-precision - HPG-MxP on an exascale machine",
+        "publisher": "ACM/IEEE SC25",
+        "url": "https://doi.org/10.1145/3712285.3759877",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2025-11"
+      },
+      "origin_group": "hpg-mxp-sc25",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Benchmark method, Frontier results, conclusion, and artifact appendix",
+      "observation_ja": "9,408ノード、約1.6倍、validation、metric境界、人工matrix、公開artifactを確認しました。",
+      "observation_en": "Verified 9,408 nodes, about 1.6x, validation, metric boundaries, synthetic matrix, and public artifacts.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS384",
+        "title": "HPL-MxP Benchmark Rules",
+        "publisher": "HPL-MxP Benchmark",
+        "url": "https://hpl-mxp.org/rules.md",
+        "source_class": "official-project",
+        "published_or_updated": "2025-06"
+      },
+      "origin_group": "hpl-mxp-rules",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Accuracy method and post-June-2025 minimum-precision rule",
+      "observation_ja": "dense solveのFP64相当精度条件と、2025年6月以後の16 bit未満禁止を確認しました。",
+      "observation_en": "Verified FP64-equivalent accuracy for the dense solve and the post-June-2025 prohibition on sub-16-bit formats.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCI代表applicationの実matrix・operatorで同じ速度向上が得られるか未確認です。",
+    "HPL-MxP、HPCG、HPG-MxPを同一候補機・同一運用条件で測る必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The same speedup has not been verified on matrices or operators from representative HPCI applications.",
+    "HPL-MxP, HPCG, and HPG-MxP need measurement on the same candidate systems under matched operating conditions.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

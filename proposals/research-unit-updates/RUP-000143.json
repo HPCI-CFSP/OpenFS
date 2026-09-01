@@ -1,0 +1,149 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000143",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-02T01:45:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000128", "bundle_sha256": "36e47372ce4143420d379c19ead8fb2386f0fb672af37264a4e6ba465a0eaaf0"},
+    {"update_id": "RUP-000137", "bundle_sha256": "adf058f1b098bf63801372e01cf4253ac80cd3ae818d45882cbf2b2ae50430b2"}
+  ],
+  "before_profile_sha256": "96fd24de1ab5394e9dd4b35a68310dcf6ccc47f363cab990a06c38de911cc078",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "高分子材料と医療・創薬の採択資料から、科学AIエージェントが必要とする計算・実験・文献・データベース・モデルの循環を追加しました。自律化という名称だけでなく、データ量、異種資源、来歴、安全性、失敗復旧を評価対象にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds compute-experiment-literature-database-model loops for scientific AI agents from adopted polymer and healthcare projects. Evaluation covers data volume, heterogeneous resources, provenance, safety, and failure recovery rather than the label of autonomy alone. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "430ca2aa45cbb3914e7463e75c91b02ed9e2224117ae7d3bdc1187b4ae4d54e2",
+      "evidence_section_ids": ["TDS-CD1-APP-12-U01", "TDS-CD2-APP-12-U01", "TDS-CD10-APP-12-U01", "TDS-CD11-APP-12-U01", "TDS-CD12-APP-12-U01-U02"]
+    },
+    {
+      "unit_id": "APP-12-U02",
+      "before_sha256": "8e1193dd5c1669120585213698be6b56d88170e0444f200c89c17d43bfd9cccf",
+      "evidence_section_ids": ["TDS-CD1-APP-12-U02", "TDS-CD2-APP-12-U02", "TDS-CD12-APP-12-U01-U02"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD12-APP-12-U01-U02",
+      "title_ja": "材料・医療で具体化する科学AIエージェントの実行形態",
+      "title_en": "Execution patterns for scientific AI agents in materials and healthcare",
+      "summary_ja": "エージェントをチャット機能ではなく、データ生成、計算投入、実験指示、検証、来歴記録を伴う長時間ワークフローとして評価します。",
+      "summary_en": "Evaluate agents as long-running workflows for data generation, compute submission, experimental control, validation, and provenance, not as chat features.",
+      "items": [
+        {
+          "item_id": "TDI-CD12-POLYMER-AUTONOMOUS-LOOP",
+          "name_ja": "高分子材料の計算・実験・文献マルチエージェント循環",
+          "name_en": "Multi-agent loop across polymer simulation, experiments, and literature",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の採択資料",
+          "timing_en": "Adopted-project material published June 30, 2026",
+          "statement_ja": "統計数理研究所は、仮説生成、研究計画、情報収集、予測、シミュレーション、実験指示・最適化・実行、報告をマルチエージェントで接続する構想を示します。入力には論文、科学知識、ラボノート、計算データ、年間最大約10万件を目標とする実験データが含まれます。エージェントの正解率、無人継続時間、失敗率、実験装置制御の安全性は公開資料から確認できません。",
+          "statement_en": "The Institute of Statistical Mathematics describes multi-agent orchestration spanning hypothesis generation, research planning, information retrieval, prediction, simulation, experiment instruction, optimization and execution, and reporting. Inputs include papers, scientific knowledge, lab notebooks, simulation data, and experimental data targeted at up to roughly 100,000 records per year. Agent accuracy, unattended duration, failure rates, and safety of instrument control are not established by the public material.",
+          "hpci_relevance_ja": "大量の短時間ジョブ、長時間のオーケストレーション、実験装置との非同期接続を分けて資源割当し、各操作に入力、モデル版、出力、承認、再試行を記録する必要があります。",
+          "hpci_relevance_en": "Allocate many short jobs, long-running orchestration, and asynchronous instrument connections separately, while recording input, model version, output, approval, and retry for each action.",
+          "adoption_conditions_ja": [
+            "エージェントごとの権限、許可されたツール、実験条件の上限、停止条件を定義する。",
+            "人手介入率、無効提案率、失敗復旧時間、科学者が確認する時間を測定する。",
+            "外部文献を命令ではなく未信頼データとして処理し、引用と来歴を保持する。"
+          ],
+          "adoption_conditions_en": [
+            "Define per-agent authority, permitted tools, experimental limits, and stop conditions.",
+            "Measure human-intervention rate, invalid proposals, recovery time, and scientist review time.",
+            "Treat external literature as untrusted data rather than instructions and retain citations and provenance."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS136"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-HEALTHCARE-AGENTIC-DXPF",
+          "name_ja": "医療・創薬のDB・計算・モデル統合エージェント",
+          "name_en": "Healthcare and drug-discovery agent integrating databases, compute, and models",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年4月7日付資料、6月30日公開",
+          "timing_en": "Material dated April 7 and published June 30, 2026",
+          "statement_ja": "京都大学のAgentic DXPF構想は、データベース、CPU・GPU計算、AIモデルを結び、ノーコードでワークフローを設計・実行するものです。オミクス・分子ネットワーク、創薬パイプライン、心疾患データベース、マルチスケール心臓シミュレータを対象に含みます。ノーコード化は科学的妥当性、個人情報保護、医療判断の責任を自動的に保証しません。",
+          "statement_en": "Kyoto University's Agentic DXPF concept links databases, CPU/GPU compute, and AI models for no-code workflow design and execution. Its scope includes omics and molecular networks, drug pipelines, heart-disease databases, and a multiscale heart simulator. No-code operation does not itself ensure scientific validity, privacy, or accountability for medical decisions.",
+          "hpci_relevance_ja": "一般公開データと制限データを分離し、計算資源への代理投入、モデル版管理、説明可能な結果、担当研究者の承認をワークフロー制御面へ組み込みます。",
+          "hpci_relevance_en": "Separate public and restricted data and integrate delegated job submission, model versioning, interpretable outputs, and responsible-researcher approval into workflow control.",
+          "adoption_conditions_ja": [
+            "医療・個人データへアクセスするエージェントと公開情報のみのエージェントを分離する。",
+            "ノーコード定義を版管理し、入力から成果物まで再現可能な監査記録を生成する。",
+            "誤ったツール呼出し、権限昇格、プロンプトインジェクション、モデル停止を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate agents accessing medical or personal data from public-information-only agents.",
+            "Version no-code definitions and produce reproducible audit trails from input to artifact.",
+            "Test erroneous tool calls, privilege escalation, prompt injection, and model outages."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS137"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS136",
+        "title": "次世代計算科学グランドリーチプログラム 区分A採択課題: 高分子材料科学を変革する次世代AI計算基盤",
+        "publisher": "統計数理研究所 / 文部科学省",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_02-3.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-grand-reach-ism-polymer",
+      "checked_at": "2026-09-02T00:36:00+09:00",
+      "locator": "Pages 2-3: simulation/experiment/literature data and multi-agent orchestration",
+      "observation_ja": "高分子材料の計算、実験、文献、基盤モデル、マルチエージェントの循環を確認しました。自律性の性能・安全実績は記載されていません。",
+      "observation_en": "Verified the planned loop across polymer simulation, experiments, literature, foundation models, and multi-agent orchestration. Evidence of agent performance and safety is not provided.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS137",
+        "title": "次世代計算科学グランドリーチプログラム 区分A採択課題: シミュレーション・AI融合による次世代スパコン医療・創薬HPC基盤の構築",
+        "publisher": "京都大学 / 文部科学省",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_02-4.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-grand-reach-kyoto-healthcare",
+      "checked_at": "2026-09-02T00:37:00+09:00",
+      "locator": "Pages 2-3: Agentic DXPF, CPU-GPU loop, healthcare and drug-discovery themes",
+      "observation_ja": "DB・計算・モデルを結ぶノーコードAIエージェントと対象ワークフローを確認しました。安全性、精度、実行規模は公開資料から未確定です。",
+      "observation_en": "Verified the no-code AI-agent concept linking databases, compute, and models and its target workflows. Safety, accuracy, and execution scale remain unresolved in the public material.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-021とGAP-TDS-072は未解決です。代表ワークフロー、エージェント評価指標、実測資源量、科学的成功率、安全性が必要です。",
+    "長時間エージェントと実験装置接続の障害復旧、費用、責任分担、監査の公開実績が必要です。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-021 and GAP-TDS-072 remain open; representative workflows, agent metrics, observed resource use, scientific success, and safety evidence are required.",
+    "Public evidence is required for recovery, cost, responsibility, and audit in long-running agents and instrument coupling.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

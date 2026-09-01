@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000214",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T07:32:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "a852e27eb9e2144cfaa6fd0974dff5d39da72a73d92da4daa8345544320450e0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MPI 5.0は2025年6月5日にMPI Forumで承認され、最大の追加は標準Application Binary Interfaceです。標準ABIは、既存実装固有ABIと並存しつつ、あるMPI実装向けにコンパイルしたアプリケーションを別実装で動かす用途や第三者言語の連携を支援します。ただし、規格化だけでは各MPI・通信網・コンパイラ・ライブラリでの利用可能性や性能を保証しません。次期HPCIではABI対応と通信性能を別に検証する必要があり、Consensusは未完了です。",
+  "summary_en": "MPI 5.0 was approved by the MPI Forum on June 5, 2025, with a standard Application Binary Interface as its largest addition. The standard ABI coexists with implementation-specific ABIs and is intended to support applications compiled for one MPI implementation running with another, as well as third-party language integration. Standardization alone does not guarantee availability or performance across MPI libraries, networks, compilers, and dependent libraries. A successor HPCI should validate ABI support separately from communication performance. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "33821556458f8b27e7e38adc93169b5f3102c948d1047344597c3c5ea9ccb34e",
+      "evidence_section_ids": ["TDS-SSW03-CURRENT", "TDS-SSW03-FUTURE", "TDS-HC26-SSW-03-U1", "TDS-CD2-SSW-03-U01", "TDS-CD3-SSW-03-U01", "TDS-CD4-SSW-03-U01", "TDS-CD20-SSW-03-MPI5-ABI"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD20-SSW-03-MPI5-ABI",
+      "title_ja": "MPI 5.0標準ABIと実装移行",
+      "title_en": "MPI 5.0 standard ABI and implementation migration",
+      "summary_ja": "バイナリ互換性と、通信機能・性能の互換性を分けて検証します。",
+      "summary_en": "Validate binary compatibility separately from communication feature and performance compatibility.",
+      "items": [
+        {
+          "item_id": "TDI-CD20-MPI5-STANDARD-ABI",
+          "name_ja": "MPI 5.0は異なるMPI実装間を支援する標準ABIを導入",
+          "name_en": "MPI 5.0 introduces a standard ABI to support interoperability across MPI implementations",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2025年6月5日承認",
+          "timing_en": "Approved June 5, 2025",
+          "statement_ja": "MPI ForumはMPI 5.0を2025年6月5日に承認しました。公式規格は標準ABIを最大の変更とし、不透明ハンドルのメモリ配置、整数定数、C APIのバイナリ記号等を定義します。既存の実装固有ABIを置換せず並存し、別MPI実装でコンパイル済みアプリを動かす用途や、直接C API呼出しではない第三者言語連携を支援します。ABI互換は、同一の通信性能、ネットワーク最適化、全MPI 5.0機能、GPU-aware通信、障害処理まで保証するものではありません。",
+          "statement_en": "The MPI Forum approved MPI 5.0 on June 5, 2025. The official standard describes the standard ABI as its largest change, defining opaque-handle layouts, integer constants, binary symbols for the C API, and related details. It coexists with rather than replaces existing implementation ABIs and supports use cases such as running an application compiled against one MPI implementation with another and integrating third-party languages through binary symbols. ABI compatibility does not guarantee equal communication performance, network optimization, complete MPI 5.0 features, GPU-aware communication, or failure handling.",
+          "hpci_relevance_ja": "センター更新時にMPI実装を変更する場合、再ビルド負担を減らせる可能性がありますが、主要アプリ・数値ライブラリ・Python等の依存物と通信性能を実機で検証する必要があります。",
+          "hpci_relevance_en": "The ABI may reduce rebuild burden when centers change MPI implementations, but major applications, numerical libraries, Python dependencies, and communication performance still require on-system validation.",
+          "adoption_conditions_ja": [
+            "候補MPI実装ごとに標準ABIの提供版、制約、既存ABIとの切替方法を確認する。",
+            "主要アプリと共有ライブラリを再リンクせず実行できるか、正しさを含めて試験する。",
+            "集合通信、RMA、partitioned communication、GPU-aware通信、起動、障害時挙動を別途測定する。",
+            "ABI対応をMPI実装の一本化や性能同等性の根拠として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify standard-ABI versions, limitations, and switching mechanisms for each candidate MPI implementation.",
+            "Test whether major applications and shared libraries run correctly without relinking.",
+            "Separately measure collectives, RMA, partitioned communication, GPU-aware communication, launch, and failure behavior.",
+            "Do not treat ABI support as evidence for a single MPI implementation or equivalent performance."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS284"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS284",
+        "title": "MPI: A Message-Passing Interface Standard Version 5.0",
+        "publisher": "MPI Forum",
+        "url": "https://www.mpi-forum.org/docs/mpi-5.0/mpi50-report.pdf",
+        "source_class": "official-standard",
+        "published_or_updated": "2025-06-05"
+      },
+      "origin_group": "mpi5-standard-abi",
+      "checked_at": "2026-09-02T03:33:00+09:00",
+      "locator": "version history and Chapter 21 standard ABI introduction",
+      "observation_ja": "承認日、標準ABIの目的、既存ABIとの並存、C APIと第三者言語への適用範囲を確認しました。",
+      "observation_en": "Verified the approval date, purpose of the standard ABI, coexistence with existing ABIs, and scope for the C API and third-party languages.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Open MPI、MPICH、Intel MPI、HPE Cray MPICH、富士通MPI等の標準ABI対応版と制約は未比較です。",
+    "HPCI主要アプリと通信ライブラリを用いたABI移行試験・性能測定は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Standard-ABI versions and limitations across Open MPI, MPICH, Intel MPI, HPE Cray MPICH, Fujitsu MPI, and others have not been compared.",
+    "ABI migration and performance tests with major HPCI applications and communication libraries have not been run.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

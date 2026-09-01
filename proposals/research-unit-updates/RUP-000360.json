@@ -1,0 +1,181 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000360",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-02T07:56:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000163",
+      "bundle_sha256": "5d976b146e66d9ae9796826001062d3c25a1ef929bc7bc81cd8a1b1ba7f60f38"
+    },
+    {
+      "update_id": "RUP-000184",
+      "bundle_sha256": "07d975d805bafd008216ab72d8a0d006507dc3b3571108529a69235a4ee66943"
+    },
+    {
+      "update_id": "RUP-000301",
+      "bundle_sha256": "8eda3afc27cb1ce13c313dfe183902ec40ef78d8ceaa24fdc32c444e0a9d9d25"
+    },
+    {
+      "update_id": "RUP-000320",
+      "bundle_sha256": "f0ef04a9e1b178109c65dfc971cbdbe1dc3925af874a49b4597292ba826b0b36"
+    },
+    {
+      "update_id": "RUP-000331",
+      "bundle_sha256": "0f213c35682162ac7ad9f86cf15dff3bdadd77c4aab29921509459fb689508a8"
+    }
+  ],
+  "before_profile_sha256": "c8f25cc3b5f139d4df5588224dadebb3f6b53c9e8b14d1c44b4036f41edca271",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "R-CCSの電気・都市ガス調達予定総額と神戸西エリアの建物運転・監視・保守契約を追加しました。区域、期間、予定総額、実績額を区別し、富岳単体費、単価、PUE、実使用量は推定しません。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds planned electricity and city-gas procurement totals for R-CCS and a Kobe west-area building operation, monitoring, and maintenance contract. It distinguishes area, period, planned total, and actual cost and does not infer Fugaku-only cost, unit prices, PUE, or consumption. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "146dd17067ba9be908b185d56e203db7f799b15c7d0e3bc6cd361f28ac428b33",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-06-U01",
+        "TDS-CD2-ARCH-06-U01",
+        "TDS-CD3-ARCH-06-PUE-REGULATION",
+        "TDS-CD4-ARCH-06-HIGH-DENSITY-GRID-DYNAMICS",
+        "TDS-CD34-ARCH-06-800VDC-POWER-PATHS",
+        "TDS-CD45-ARCH-06-AIFS-FACILITY-CONTRACTS",
+        "TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025",
+      "title_ja": "計算機施設のutility・建物運転費の公開調達実例",
+      "title_en": "Published utility and building-operation procurements for a computing facility",
+      "summary_ja": "区域・期間・契約種別の異なる電気、ガス、建物運転を分離し、実使用費や計算機単体費には換算しません。",
+      "summary_en": "Keep electricity, gas, and building operations separate by area, period, and contract type without converting planned totals into actual use or machine-only cost.",
+      "items": [
+        {
+          "item_id": "TDI-CD209-RCCS-ELECTRICITY-FY2025",
+          "name_ja": "R-CCSで使用する電気の2025年度調達予定総額",
+          "name_en": "Planned fiscal-2025 electricity procurement total for R-CCS",
+          "timing_ja": "2025年4月1日～2026年3月31日",
+          "timing_en": "April 1, 2025 through March 31, 2026",
+          "statement_ja": "理化学研究所は、計算科学研究センターで使用する電気一式を関西電力と契約し、税込調達予定総額を28億7,776万1,640円と公表しました。これは予定総額であり、実支払額、使用電力量、契約電力、電力単価、富岳単体の電気代、PUEは示しません。",
+          "statement_en": "RIKEN contracted Kansai Electric Power for electricity used by R-CCS and published a tax-inclusive planned procurement total of JPY 2,877,761,640. This is a planned total, not actual payment, energy consumption, contracted demand, unit electricity price, Fugaku-only electricity cost, or PUE.",
+          "hpci_relevance_ja": "次期HPCIのTCOでは実機電力だけでなく、facility境界、基本料金・従量料金、再エネ・燃料調整、稼働率を年度別に記録する必要があります。",
+          "hpci_relevance_en": "Successor-HPCI TCO needs annual records of facility boundaries, demand and usage charges, renewable and fuel adjustments, and utilization, not machine power alone.",
+          "adoption_conditions_ja": [
+            "契約電力、kWh、料金式、facility境界、実績支払額を取得する。",
+            "IT電力とfacility全体電力を時系列で分離しPUEを実測する。"
+          ],
+          "adoption_conditions_en": [
+            "Obtain contracted demand, kWh, tariff formula, facility boundary, and actual payments.",
+            "Separate IT and whole-facility power over time and measure PUE."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS502"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD210-RCCS-GAS-2025-2027",
+          "name_ja": "R-CCSで使用する都市ガスの2年間調達予定総額",
+          "name_en": "Two-year planned city-gas procurement total for R-CCS",
+          "timing_ja": "2025年8月1日～2027年7月31日",
+          "timing_en": "August 1, 2025 through July 31, 2027",
+          "statement_ja": "理化学研究所は、2025～2026年度にR-CCSで使用する都市ガス一式を大阪ガスと契約し、税込調達予定総額を32億9,533万7,760円と公表しました。同資料には神戸地区東西エリア向けの別gas契約もあるため、区域、用途、供給期間を確認せず合算できません。使用量、単価、冷熱・発電用途、実支払額は公表結果だけでは分かりません。",
+          "statement_en": "RIKEN contracted Osaka Gas for city gas used by R-CCS in fiscal 2025-2026 and published a tax-inclusive planned procurement total of JPY 3,295,337,760 for August 2025 through July 2027. The same disclosure contains another gas contract for the east and west Kobe areas, so values cannot be added without reconciling area, use, and supply period. The award record does not disclose consumption, unit price, cooling or generation use, or actual payment.",
+          "hpci_relevance_ja": "電力だけでなくgasを用いる熱源・発電・冷却設備の費用と炭素排出を、計算機構成案のfacility条件として確認する必要があります。",
+          "hpci_relevance_en": "Facility requirements for system options must account for cost and carbon from gas-fired cooling, heat, or generation as well as electricity.",
+          "adoption_conditions_ja": [
+            "供給区域、用途、m3、単価式、熱源・発電設備、排出係数を確認する。",
+            "電気契約との二重計上を避け、energy flowをfacility diagramで表す。"
+          ],
+          "adoption_conditions_en": [
+            "Verify service area, use, cubic meters, tariff formula, thermal or generation equipment, and emission factor.",
+            "Avoid double counting with electricity and express energy flows in a facility diagram."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS502"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD211-KOBE-BUILDING-OPERATIONS",
+          "name_ja": "神戸西エリア建築設備の3年間運転・監視・日常保守",
+          "name_en": "Three-year building operation, monitoring, and routine maintenance for the Kobe west area",
+          "timing_ja": "2025年4月1日～2028年3月31日",
+          "timing_en": "April 1, 2025 through March 31, 2028",
+          "statement_ja": "理化学研究所は、神戸地区西エリア等の建築物の運転・監視・日常点検・保守一式を、TC神鋼不動産サービスと3年間、税込2億7,937万8,000円で契約しました。対象は計算機運用員だけでなく建築設備業務であり、supercomputerの保守契約とは別費目です。人員数、SLA、対象設備、緊急対応は契約結果だけでは分かりません。",
+          "statement_en": "RIKEN awarded TC Shinko Real Estate Service a three-year JPY 279,378,000 tax-inclusive contract for operation, monitoring, routine inspection, and maintenance of buildings in the Kobe west area and related facilities. This is building-facility work, not the supercomputer maintenance contract. Staffing, SLAs, covered equipment, and emergency response are not disclosed in the award record.",
+          "hpci_relevance_ja": "システム整備計画にはcompute保守と別に、24時間facility監視、受変電、冷却、消防、法定点検、緊急対応の人員・契約を含める必要があります。",
+          "hpci_relevance_en": "System plans must budget 24-hour facility monitoring, power distribution, cooling, fire protection, statutory inspections, and emergency staffing separately from compute maintenance.",
+          "adoption_conditions_ja": [
+            "対象設備、人員、service時間、SLA、法定点検、緊急対応を仕様書で確認する。",
+            "compute保守、facility保守、警備・清掃の責任境界を定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify covered equipment, staffing, service hours, SLAs, statutory inspections, and emergency response from specifications.",
+            "Define boundaries among compute maintenance, facility maintenance, security, and cleaning."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS502"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS502",
+        "title": "競争入札の結果の公表（物品役務等）2025年4月～2025年11月度分",
+        "publisher": "国立研究開発法人理化学研究所",
+        "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251",
+        "source_class": "official-project",
+        "published_or_updated": "Covers contracts from April through November 2025"
+      },
+      "origin_group": "riken-rccs-utility-building-operations-2025",
+      "checked_at": "2026-09-02T06:48:00+09:00",
+      "locator": "Pages 8 and 11: R-CCS electricity, R-CCS city gas, and Kobe west-area building operations",
+      "observation_ja": "対象、相手方、期間、契約方法、税込予定総額または契約額を確認しました。",
+      "observation_en": "Verified scope, supplier, period, procurement method, and tax-inclusive planned total or contract value.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "utility使用量・単価・実績支払額、facility境界、用途、PUE、建物運転の人員・SLAは未確認です。",
+    "区域と期間が異なる契約を合算していません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Utility consumption, unit rates, actual payments, facility boundaries, use, PUE, and building-operation staffing and SLAs remain unverified.",
+    "Contracts with different areas and periods are not added together.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

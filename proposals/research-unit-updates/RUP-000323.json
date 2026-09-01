@@ -1,0 +1,195 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000323",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:50:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    },
+    {
+      "update_id": "RUP-000251",
+      "bundle_sha256": "82b9ed067447fa7ca02f2ce08961f53d76d60cef40d81a7eee06a84f2f4052d9"
+    },
+    {
+      "update_id": "RUP-000259",
+      "bundle_sha256": "09537c26563e7ec4e061464a44d6773f5d993803e79d62e9e3114a81f6b9d044"
+    },
+    {
+      "update_id": "RUP-000275",
+      "bundle_sha256": "0f46b1721bfcf6baf5b0058311cd963fcb9d72c1f1d0ebce8e976da04459720a"
+    },
+    {
+      "update_id": "RUP-000284",
+      "bundle_sha256": "a1d5d13cc8b17741b5594474c95240f1577adc4ed17b8718e0e990d859b21f4a"
+    },
+    {
+      "update_id": "RUP-000311",
+      "bundle_sha256": "56c31c6f95924548a6923cb805ded6a105a527ef6d248fda0846435b19d13dc4"
+    }
+  ],
+  "before_profile_sha256": "41319e4cc0cfb84f0ea3cf2c347c943120db21192e64dcd1db80010bc2e11e4a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Flux 0.88.0とAccounting 0.60.0から、実行中ジョブを伴う再読込、queue設定の動的反映、fair-share事前評価、database backupを追加しました。無停止更新を断定せず、job state、権限、会計復元、実到着履歴による再現試験をHPCIの受入条件にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds Flux 0.88.0 and Accounting 0.60.0 capabilities for reloads around running jobs, live queue configuration, fair-share previews, and database backups. It does not claim seamless upgrades; HPCI qualification should test job state, privileges, accounting restoration, and replay against real arrival histories. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "10e80ff1bbe4e9824517336c655ccba365ff67b8e5ec7d7f96f4a3358c850745",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+        "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL",
+        "TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS",
+        "TDS-CD14-SSW-06-SPACK-12-REPRODUCIBILITY",
+        "TDS-CD26-SSW-06-RIKYU-SLURM-MIGRATION",
+        "TDS-CD37-SSW-06-FLUX-LIVE-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD37-SSW-06-FLUX-LIVE-OPERATIONS",
+      "title_ja": "Fluxの無停止設定更新とfair-share移行検証",
+      "title_en": "Live Flux reconfiguration and fair-share migration validation",
+      "summary_ja": "2026年8月版で追加された実行中ジョブを伴う再読込と会計事前評価を、長時間ジョブ運用の受入条件として整理します。",
+      "summary_en": "Treat August 2026 live-reload and accounting-preview features as qualification inputs for long-running-job operations.",
+      "items": [
+        {
+          "item_id": "TDI-CD138-FLUX-088-LIVE-RELOAD",
+          "name_ja": "Flux 0.88.0の実行中ジョブを伴う再読込",
+          "name_en": "Flux 0.88.0 reloads with running jobs",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "2026年8月5日公開",
+          "timing_en": "Released August 5, 2026",
+          "statement_ja": "flux-core 0.88.0は、job-execを実行中ジョブがある状態で再読込する機能と、再読込時にqueue設定変更をjob-managerへ反映する機能を追加しました。さらにbackground processへのattach、private modeを迂回できるadmin role、offline garbage collection後にもjob private namespace checkpointを残す修正を含みます。これらは計画停止を減らす材料ですが、scheduler全体の無停止更新、実行中ジョブの完全な状態移行、障害時rollbackを保証するものではありません。",
+          "statement_en": "flux-core 0.88.0 adds job-exec reloads while jobs are running and applies queue-configuration changes to the job manager on reload. It also adds attachment to background processes and an admin role that can bypass private-mode permissions, and fixes preservation of job-private-namespace checkpoints across offline garbage collection. These capabilities may reduce planned downtime, but they do not establish seamless upgrade of the entire scheduler, complete migration of running-job state, or failure-safe rollback.",
+          "hpci_relevance_ja": "長時間科学計算を運用しながら設定・実行層を変更する際、停止時間だけでなく、job state、namespace、権限、監査記録を確認する受入試験が必要になります。",
+          "hpci_relevance_en": "Changing configuration or execution layers around long scientific jobs requires qualification of job state, namespaces, privileges, and audit records in addition to downtime measurement.",
+          "adoption_conditions_ja": [
+            "長時間MPI・GPUジョブを実行したまま再読込し、標準出力、終了状態、会計、checkpointを照合する。",
+            "queue変更前後のpending/running job、priority、reservation、dependencyを比較する。",
+            "admin roleの付与、利用、失効を監査し、private modeを迂回できる操作を最小化する。"
+          ],
+          "adoption_conditions_en": [
+            "Reload around long-running MPI and GPU jobs and verify output, exit status, accounting, and checkpoints.",
+            "Compare pending and running jobs, priorities, reservations, and dependencies before and after queue changes.",
+            "Audit grant, use, and revocation of the admin role and minimize operations that bypass private mode."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS431"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD139-FLUX-ACCOUNTING-060-FAIRSHARE",
+          "name_ja": "Flux Accounting 0.60.0のfair-share事前評価",
+          "name_en": "Flux Accounting 0.60.0 fair-share preview",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "2026年8月4日公開",
+          "timing_en": "Released August 4, 2026",
+          "statement_ja": "flux-accounting 0.60.0はfair-share emulatorとdatabase export時のfair-share emulationを追加し、未知のqueueをjob検証で拒否するかを切り替えられるようにしました。database更新前のbackup作成とlog強化も含みます。これにより配分方針変更の影響を事前計算できますが、emulator結果が本番の到着過程、backfill、reservation、障害を再現するとは限りません。また未知queueを許可する設定は移行を容易にする一方、誤設定を見逃す可能性があります。",
+          "statement_en": "flux-accounting 0.60.0 adds a fair-share emulator and fair-share emulation during database export, plus a switch controlling whether job validation rejects unknown queues. It also backs up the original database before updates and expands update logging. This allows allocation-policy effects to be previewed, but emulator output does not necessarily reproduce production arrivals, backfill, reservations, or failures. Allowing unknown queues may ease migration while also permitting configuration mistakes to escape rejection.",
+          "hpci_relevance_ja": "センター横断の配分制度や料金体系を変更する前に、分野・機関・課題別の待ち時間と配分率への影響を再現可能に比較する基盤になります。",
+          "hpci_relevance_en": "The emulator can support reproducible comparisons of effects on waiting time and allocations by discipline, institution, and project before changing cross-center allocation or charging policies.",
+          "adoption_conditions_ja": [
+            "匿名化した実到着履歴で旧・新fair-share方針を再生し、待ち時間、starvation、利用率を比較する。",
+            "database backupからの復元、schema移行、二重計上、更新中断を試験する。",
+            "未知queueは本番では原則拒否し、移行期間の例外と監査期限を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Replay anonymized production arrivals under old and new fair-share policies and compare wait time, starvation, and utilization.",
+            "Test database restoration, schema migration, duplicate charging, and interrupted updates.",
+            "Reject unknown queues by default in production and time-bound any migration exception with an audit trail."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS432"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS431",
+        "title": "flux-core version 0.88.0 release notes",
+        "publisher": "Flux Framework Project",
+        "url": "https://flux-framework.org/release/2026/08/05/flux-core-0.88.0.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-05"
+      },
+      "origin_group": "flux-core-088-official-release",
+      "checked_at": "2026-09-02T05:56:00+09:00",
+      "locator": "New Features and Fixes: running-job reload, queue configuration reload, background attach, admin role, and namespace checkpoint fix",
+      "observation_ja": "実行中ジョブを伴う再読込、queue設定反映、admin role、checkpoint修正を確認しました。",
+      "observation_en": "Verified reloads around running jobs, queue-configuration application, the admin role, and the checkpoint fix.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS432",
+        "title": "flux-accounting version 0.60.0 release notes",
+        "publisher": "Flux Framework Project",
+        "url": "https://flux-framework.org/release/2026/08/04/flux-accounting-0.60.0.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-04"
+      },
+      "origin_group": "flux-accounting-060-official-release",
+      "checked_at": "2026-09-02T05:57:00+09:00",
+      "locator": "Features and Fixes: unknown-queue validation, fair-share emulator, database backup, and update logging",
+      "observation_ja": "fair-share emulator、未知queueの検証切替、database backupとlog強化を確認しました。",
+      "observation_en": "Verified the fair-share emulator, unknown-queue validation switch, database backup, and expanded logging.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCI規模の長時間MPI・GPUジョブを維持した再読込とrollbackは未検証です。",
+    "実到着履歴によるfair-share変更前後の待ち時間・配分影響は未測定です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Reload and rollback around HPCI-scale long-running MPI and GPU jobs remain untested.",
+    "Wait-time and allocation effects of fair-share changes have not been measured against real arrival histories.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}
