@@ -588,7 +588,9 @@ class PagesSiteTests(unittest.TestCase):
                 [1, 4, 32, 128, 1024, 10000],
                 result["application_performance_forecasts"]["standard_fugaku_node_scales"],
             )
-            self.assertEqual(36, len(result["application_performance_forecasts"]["forecasts"]))
+            self.assertEqual(0, len(result["application_performance_forecasts"]["forecasts"]))
+            self.assertEqual(0, len(result["application_performance_forecasts"]["validated_model_cards"]))
+            self.assertEqual(36, len(result["application_performance_forecasts"]["illustrations"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
             self.assertEqual(8, len(result["application_performance_forecasts"]["baseline_observations"]))
             self.assertEqual(6, len(result["application_performance_forecasts"]["assumptions"]))

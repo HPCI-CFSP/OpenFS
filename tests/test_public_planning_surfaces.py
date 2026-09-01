@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tests.test_performance_model_card import valid_card
 from tools.check_public_planning_surfaces import (
     EXPECTED_SCALES, validate, validate_source_corrections, validate_topic_decision_support,
 )
@@ -136,7 +137,81 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                     "forecast_id": "FORECAST-TEST-001",
                     "forecast_class": "validated",
                     "application_id": "APP-EEA1-GENESIS",
-                    "candidate_system_id": "CANDIDATE-TEST",
+                    "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+                    "fugaku_nodes": 4,
+                    "scaling_mode": "strong-scaling",
+                    "comparison_basis": "same-node-count",
+                    "metric_id": "time-to-solution",
+                    "estimate": {"lower": 1.0, "base": 2.0, "upper": 3.0, "unit": "s"},
+                    "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+                    "assumption_ids": ["ASM-PERF-GENESIS"],
+                    "basis_source_ids": ["SRC-PERF001"],
+                    "calibration_dataset_ids": ["DATA-SHARED"],
+                    "validation_dataset_ids": ["DATA-SHARED"],
+                    "confidence": "medium",
+                    "consensus_status": "accepted",
+                    "procurement_eligible": False,
+                }
+            ]
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            self.assertTrue(
+                any("reuses calibration data" in error for error in validate(root))
+            )
+            self.assertTrue(
+                any(
+                    "not validated and Consensus-accepted" in error
+                    for error in validate(root)
+                )
+            )
+
+    def test_legacy_illustrations_are_complete_and_formal_forecasts_are_empty(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual([], payload["forecasts"])
+        self.assertEqual([], payload["validated_model_cards"])
+        self.assertEqual(36, len(payload["illustrations"]))
+        self.assertEqual(
+            36,
+            len({item["legacy_forecast_id"] for item in payload["illustrations"]}),
+        )
+        self.assertTrue(
+            all(
+                item["legacy_forecast_id"].replace("FORECAST-", "ILLUSTRATION-", 1)
+                == item["illustration_id"]
+                for item in payload["illustrations"]
+            )
+        )
+
+    def test_accepts_forecast_backed_by_accepted_validated_model_card(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "config").mkdir()
+            (root / "knowledge/public").mkdir(parents=True)
+            for relative in (
+                "config/hpci-center-registry.json",
+                "knowledge/public/hpci-system-inventory.json",
+                "knowledge/public/application-performance-forecasts.json",
+            ):
+                source = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+                (root / relative).write_text(
+                    json.dumps(source, ensure_ascii=False), encoding="utf-8"
+                )
+            path = root / "knowledge/public/application-performance-forecasts.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            card = valid_card()
+            card["status"] = "accepted"
+            card["consensus_status"] = "accepted"
+            payload["validated_model_cards"] = [card]
+            payload["forecasts"] = [
+                {
+                    "forecast_id": "FORECAST-VALIDATED-TEST-001",
+                    "forecast_class": "validated",
+                    "application_id": "APP-EEA1-GENESIS",
+                    "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
                     "fugaku_nodes": 4,
                     "scaling_mode": "strong-scaling",
                     "comparison_basis": "same-node-count",
@@ -145,17 +220,15 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                     "model_card_id": "PMCARD-TEST-001",
                     "assumption_ids": ["ASM-PERF-GENESIS"],
                     "basis_source_ids": ["SRC-PERF001"],
-                    "calibration_dataset_ids": ["DATA-SHARED"],
-                    "validation_dataset_ids": ["DATA-SHARED"],
-                    "confidence": "low",
-                    "consensus_status": "incomplete",
+                    "calibration_dataset_ids": ["DATA-CAL"],
+                    "validation_dataset_ids": ["DATA-VAL-A"],
+                    "confidence": "medium",
+                    "consensus_status": "accepted",
                     "procurement_eligible": False,
                 }
             ]
             path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-            self.assertTrue(
-                any("reuses calibration data" in error for error in validate(root))
-            )
+            self.assertEqual([], validate(root))
 
     def test_rejects_unknown_code_availability_source(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -1,27 +1,52 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.4.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
   "as_of": "2026-09-01",
   "research_status": "provisional",
   "consensus_status": "incomplete",
-  "title_ja": "EEA1アプリケーション性能予測",
-  "title_en": "Provisional EEA1 application performance forecasts",
+  "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
+  "title_en": "EEA1 application performance evidence and reference calculations",
   "summary_ja": "1、4、32、128、1,024、約10,000ノードを比較するための既存のwhat-if試算を掲載しています。数値は、公開資料の設計検討用仮定とOpenFSが設定した未校正の係数から算出したもので、同じ入力・規模の実測から推定した性能ではありません。別掲の富岳の実測値は参考情報であり、この試算の校正には使っていません。",
   "summary_en": "This retains existing what-if calculations at 1, 4, 32, 128, 1,024 and about 10,000 nodes. Values use public design-exploration assumptions and uncalibrated coefficients chosen by OpenFS, not performance inferred from matched input/scale measurements. The separately listed Fugaku measurements are contextual evidence, not calibration data for these calculations.",
-  "standard_fugaku_node_scales": [1, 4, 32, 128, 1024, 10000],
-  "scaling_modes": ["strong-scaling", "weak-scaling", "throughput-ensemble"],
-  "comparison_bases": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"],
+  "standard_fugaku_node_scales": [
+    1,
+    4,
+    32,
+    128,
+    1024,
+    10000
+  ],
+  "scaling_modes": [
+    "strong-scaling",
+    "weak-scaling",
+    "throughput-ensemble"
+  ],
+  "comparison_bases": [
+    "same-node-count",
+    "same-cpu-or-accelerator-count",
+    "same-memory-capacity",
+    "same-power",
+    "same-procurement-cost"
+  ],
   "metric_policy": {
-    "primary_metric_ids": ["time-to-solution", "parallel-efficiency", "throughput", "energy-to-solution", "domain-rate", "relative-speedup"],
-    "secondary_metric_ids": ["achieved-flops"],
+    "primary_metric_ids": [
+      "time-to-solution",
+      "parallel-efficiency",
+      "throughput",
+      "energy-to-solution",
+      "domain-rate",
+      "relative-speedup"
+    ],
+    "secondary_metric_ids": [
+      "achieved-flops"
+    ],
     "flops_policy_ja": "達成FLOP/sは演算数の定義が版・入力・アルゴリズム間で安定し、実行時間から再現計算できる場合だけ補助指標として掲載する。",
     "flops_policy_en": "Publish achieved FLOP/s only as a secondary metric when operation counts are stable across the stated version, input, and algorithm and can be reproduced from time-to-solution."
   },
   "model_contract": {
     "model_card_pattern": "PMCARD-*",
     "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
-    "forecast_class": "analytical-provisional",
     "equation_ja": "ノード内速度比 S_local = 1 / ((1 - f_accel) + f_accel / min(R_compute, R_memory))。f_accelはアクセラレータへ移行可能と仮定する実行時間の比率で、R_compute = 260.4、R_memory = 195.3とする。",
     "equation_en": "Node-local speedup S_local = 1 / ((1 - f_accel) + f_accel / min(R_compute, R_memory)), where f_accel is the assumed accelerator-eligible runtime fraction, R_compute=260.4, and R_memory=195.3.",
     "scale_equation_ja": "各規模の試算値はS(N) = S_local × r_app(N)です。r_app(N)はOpenFSが置いた規模別の係数で、実測した並列効率や、通信トレースから定量的に同定した値ではありません。",
@@ -33,195 +58,2144 @@
     "required_uncertainty": "lower-base-upper",
     "calibration_validation_split": true,
     "procurement_use": "prohibited-until-validated",
-    "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"]
+    "source_ids": [
+      "SRC-PERF001",
+      "SRC-PERF004",
+      "SRC-PERF005"
+    ],
+    "output_class": "legacy-what-if-illustration"
   },
+  "validated_model_cards": [],
   "sources": [
-    {"source_id": "SRC-PERF001", "title": "『富岳』の次世代となる新たなフラッグシップシステムにおける基本設計技術報告書 第1.1版", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_ja.pdf", "published_at": "2026-05-29", "source_class": "research-organization"},
-    {"source_id": "SRC-PERF002", "title": "RIKEN-RCCS Benchpark", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchpark", "source_class": "project-official"},
-    {"source_id": "SRC-PERF003", "title": "RIKEN-RCCS BenchKit", "publisher": "RIKEN-RCCS", "url": "https://github.com/RIKEN-RCCS/benchkit", "source_class": "project-official"},
-    {"source_id": "SRC-PERF004", "title": "HPCIシステム利用研究課題 利用報告書 hp230330", "publisher": "HPCI", "url": "https://www.hpci-office.jp/output/hp230330/outcome.pdf", "source_class": "government-official"},
-    {"source_id": "SRC-PERF005", "title": "スーパーコンピュータ「富岳」のシステム構成", "publisher": "理化学研究所 計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/system/index.html", "source_class": "research-organization"},
-    {"source_id": "SRC-PERF006", "title": "GENESIS", "publisher": "GENESIS developers / RIKEN", "url": "https://mdgenesis.org/", "source_class": "project-official"},
-    {"source_id": "SRC-PERF007", "title": "SALMON", "publisher": "SALMON developers", "url": "https://github.com/SALMON-TDDFT/SALMON", "source_class": "project-official"},
-    {"source_id": "SRC-PERF008", "title": "SCALE-RM: scale_letkf.F90", "publisher": "SCALE developers / RIKEN", "url": "https://scale.riken.jp/archives/5.5.0/d3/d43/scale__letkf_8F90.html", "source_class": "project-official"},
-    {"source_id": "SRC-PERF009", "title": "LQCD-DWF-HMC", "publisher": "LQCD-DWF-HMC developers", "url": "https://github.com/i-kanamori/LQCD-DWF-HMC", "source_class": "project-official"},
-    {"source_id": "SRC-PERF010", "title": "GENESIS source repository", "publisher": "GENESIS developers / RIKEN R-CCS", "url": "https://github.com/genesis-release-r-ccs/genesis", "source_class": "project-official"},
-    {"source_id": "SRC-PERF011", "title": "FugakuNEXT ISC2026 Poster and Handout", "publisher": "RIKEN R-CCS", "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf", "source_class": "research-organization"},
-    {"source_id": "SRC-PERF012", "title": "FrontFlow/blue", "publisher": "HPCI", "url": "https://www.hpci-office.jp/en/for_users/appli_software/appli_frontflowblue", "source_class": "government-official"},
-    {"source_id": "SRC-PERF013", "title": "E-wave FEM project information", "publisher": "JAMSTEC", "url": "https://www.jamstec.go.jp/fugaku-earthq/en/information_2021.html", "source_class": "research-organization"},
-    {"source_id": "SRC-PERF014", "title": "SCALE-LETKF source repository", "publisher": "SCALE-LETKF developers / RIKEN", "url": "https://github.com/scale-letkf-riken/scale-letkf", "source_class": "project-official"},
-    {"source_id": "SRC-PERF015", "title": "SALMON version 2 source repository", "publisher": "SALMON developers", "url": "https://github.com/SALMON-TDDFT/SALMON2", "source_class": "project-official"}
+    {
+      "source_id": "SRC-PERF001",
+      "title": "『富岳』の次世代となる新たなフラッグシップシステムにおける基本設計技術報告書 第1.1版",
+      "publisher": "理化学研究所 計算科学研究センター",
+      "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext_basicdesign-technicalreport_ja.pdf",
+      "published_at": "2026-05-29",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF002",
+      "title": "RIKEN-RCCS Benchpark",
+      "publisher": "RIKEN-RCCS",
+      "url": "https://github.com/RIKEN-RCCS/benchpark",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF003",
+      "title": "RIKEN-RCCS BenchKit",
+      "publisher": "RIKEN-RCCS",
+      "url": "https://github.com/RIKEN-RCCS/benchkit",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF004",
+      "title": "HPCIシステム利用研究課題 利用報告書 hp230330",
+      "publisher": "HPCI",
+      "url": "https://www.hpci-office.jp/output/hp230330/outcome.pdf",
+      "source_class": "government-official"
+    },
+    {
+      "source_id": "SRC-PERF005",
+      "title": "スーパーコンピュータ「富岳」のシステム構成",
+      "publisher": "理化学研究所 計算科学研究センター",
+      "url": "https://www.r-ccs.riken.jp/fugaku/system/index.html",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF006",
+      "title": "GENESIS",
+      "publisher": "GENESIS developers / RIKEN",
+      "url": "https://mdgenesis.org/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF007",
+      "title": "SALMON",
+      "publisher": "SALMON developers",
+      "url": "https://github.com/SALMON-TDDFT/SALMON",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF008",
+      "title": "SCALE-RM: scale_letkf.F90",
+      "publisher": "SCALE developers / RIKEN",
+      "url": "https://scale.riken.jp/archives/5.5.0/d3/d43/scale__letkf_8F90.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF009",
+      "title": "LQCD-DWF-HMC",
+      "publisher": "LQCD-DWF-HMC developers",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF010",
+      "title": "GENESIS source repository",
+      "publisher": "GENESIS developers / RIKEN R-CCS",
+      "url": "https://github.com/genesis-release-r-ccs/genesis",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF011",
+      "title": "FugakuNEXT ISC2026 Poster and Handout",
+      "publisher": "RIKEN R-CCS",
+      "url": "https://www.r-ccs.riken.jp/en/fugaku-next/fugakunext_isc2026_handout.pdf",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF012",
+      "title": "FrontFlow/blue",
+      "publisher": "HPCI",
+      "url": "https://www.hpci-office.jp/en/for_users/appli_software/appli_frontflowblue",
+      "source_class": "government-official"
+    },
+    {
+      "source_id": "SRC-PERF013",
+      "title": "E-wave FEM project information",
+      "publisher": "JAMSTEC",
+      "url": "https://www.jamstec.go.jp/fugaku-earthq/en/information_2021.html",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF014",
+      "title": "SCALE-LETKF source repository",
+      "publisher": "SCALE-LETKF developers / RIKEN",
+      "url": "https://github.com/scale-letkf-riken/scale-letkf",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF015",
+      "title": "SALMON version 2 source repository",
+      "publisher": "SALMON developers",
+      "url": "https://github.com/SALMON-TDDFT/SALMON2",
+      "source_class": "project-official"
+    }
   ],
   "candidate_systems": [
     {
-      "candidate_system_id": "FUGAKU-A64FX-BASELINE", "name_ja": "富岳A64FXノード", "name_en": "Fugaku A64FX node", "role": "baseline", "evidence_status": "observed-public-specification",
-      "description_ja": "通常モードの富岳1ノード。倍精度理論ピーク3.072 TFLOPS、HBM2帯域1.024 TB/sを基準にする。", "description_en": "One Fugaku node in normal mode, using 3.072 TFLOPS FP64 theoretical peak and 1.024 TB/s HBM2 bandwidth as the baseline.",
+      "candidate_system_id": "FUGAKU-A64FX-BASELINE",
+      "name_ja": "富岳A64FXノード",
+      "name_en": "Fugaku A64FX node",
+      "role": "baseline",
+      "evidence_status": "observed-public-specification",
+      "description_ja": "通常モードの富岳1ノード。倍精度理論ピーク3.072 TFLOPS、HBM2帯域1.024 TB/sを基準にする。",
+      "description_en": "One Fugaku node in normal mode, using 3.072 TFLOPS FP64 theoretical peak and 1.024 TB/s HBM2 bandwidth as the baseline.",
       "metrics": [
-        {"metric_id": "node-fp64-peak", "value": 3.072, "unit": "TFLOPS", "basis_ja": "R-CCS公開仕様の通常モード。", "basis_en": "R-CCS public specification in normal mode."},
-        {"metric_id": "node-memory-bandwidth", "value": 1.024, "unit": "TB/s", "basis_ja": "R-CCS公開仕様のHBM2帯域。", "basis_en": "R-CCS public HBM2 bandwidth specification."}
+        {
+          "metric_id": "node-fp64-peak",
+          "value": 3.072,
+          "unit": "TFLOPS",
+          "basis_ja": "R-CCS公開仕様の通常モード。",
+          "basis_en": "R-CCS public specification in normal mode."
+        },
+        {
+          "metric_id": "node-memory-bandwidth",
+          "value": 1.024,
+          "unit": "TB/s",
+          "basis_ja": "R-CCS公開仕様のHBM2帯域。",
+          "basis_en": "R-CCS public HBM2 bandwidth specification."
+        }
       ],
-      "source_ids": ["SRC-PERF005"]
+      "source_ids": [
+        "SRC-PERF005"
+      ]
     },
     {
-      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "name_ja": "公開資料に基づく次期システムの設計仮定（1ノード）", "name_en": "Next-system node based on public design assumptions", "role": "candidate-proxy", "evidence_status": "public-design-assumption",
-      "description_ja": "基本設計報告書のアプリケーション開発者向け質問票にある、1ノード当たり4基のGPU、GPU当たり約200 TFLOPSのFP64性能と50 TB/sのメモリ帯域という仮定を合算した、設計検討用の参考構成である。採用製品の仕様ではない。", "description_en": "A design-exploration proxy aggregating the application-developer questionnaire assumptions of four GPUs per node, about 200 TFLOPS of FP64 performance per GPU, and 50 TB/s of memory bandwidth per GPU. It is not a selected product specification.",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "name_ja": "公開資料に基づく次期システムの設計仮定（1ノード）",
+      "name_en": "Next-system node based on public design assumptions",
+      "role": "candidate-proxy",
+      "evidence_status": "public-design-assumption",
+      "description_ja": "基本設計報告書のアプリケーション開発者向け質問票にある、1ノード当たり4基のGPU、GPU当たり約200 TFLOPSのFP64性能と50 TB/sのメモリ帯域という仮定を合算した、設計検討用の参考構成である。採用製品の仕様ではない。",
+      "description_en": "A design-exploration proxy aggregating the application-developer questionnaire assumptions of four GPUs per node, about 200 TFLOPS of FP64 performance per GPU, and 50 TB/s of memory bandwidth per GPU. It is not a selected product specification.",
       "metrics": [
-        {"metric_id": "node-fp64-peak", "value": 800, "unit": "TFLOPS", "basis_ja": "GPU当たり200 TFLOPS × 1ノード当たり4基。", "basis_en": "200 TFLOPS per GPU × four GPUs per node."},
-        {"metric_id": "node-memory-bandwidth", "value": 200, "unit": "TB/s", "basis_ja": "GPU当たり50 TB/s × 1ノード当たり4基。", "basis_en": "50 TB/s per GPU × four GPUs per node."}
+        {
+          "metric_id": "node-fp64-peak",
+          "value": 800,
+          "unit": "TFLOPS",
+          "basis_ja": "GPU当たり200 TFLOPS × 1ノード当たり4基。",
+          "basis_en": "200 TFLOPS per GPU × four GPUs per node."
+        },
+        {
+          "metric_id": "node-memory-bandwidth",
+          "value": 200,
+          "unit": "TB/s",
+          "basis_ja": "GPU当たり50 TB/s × 1ノード当たり4基。",
+          "basis_en": "50 TB/s per GPU × four GPUs per node."
+        }
       ],
-      "source_ids": ["SRC-PERF001"]
+      "source_ids": [
+        "SRC-PERF001"
+      ]
     }
   ],
   "baseline_observations": [
-    {"observation_id": "OBS-PERF-GENESIS-FUGAKUBENCH", "application_id": "APP-EEA1-GENESIS", "fugaku_nodes": 2, "workload": "FugakuBench for FS", "status": "measured", "value": 36.185, "unit": "s", "note_ja": "提供入力の最小構成が2ノードのため2ノードで測定。", "note_en": "Measured on two nodes because the smallest provided input required two nodes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-SALMON-R12", "application_id": "APP-EEA1-SALMON", "fugaku_nodes": 1, "workload": "r12", "status": "measured", "value": 19.26479988, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-SALMON-R24", "application_id": "APP-EEA1-SALMON", "fugaku_nodes": 1, "workload": "r24", "status": "measured", "value": 98.26328931, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-SALMON-R32", "application_id": "APP-EEA1-SALMON", "fugaku_nodes": 1, "workload": "r32", "status": "measured", "value": 192.1569185, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-SCALE-LETKF", "application_id": "APP-EEA1-SCALE-LETKF", "fugaku_nodes": 1, "workload": "LETKF", "status": "unavailable", "value": null, "unit": null, "note_ja": "初期条件ファイルが提供されず、公開実測値は得られなかった。", "note_en": "No public measurement was obtained because the initial-condition file was unavailable.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-FFB-CAVITY", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "fugaku_nodes": 1, "workload": "cavity flow", "status": "measured", "value": 31.05, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-LQCD-KERNEL", "application_id": "APP-EEA1-LQCD-DWF-HMC", "fugaku_nodes": 1, "workload": "kernel", "status": "measured", "value": 16.106756, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]},
-    {"observation_id": "OBS-PERF-LQCD-PROXY", "application_id": "APP-EEA1-LQCD-DWF-HMC", "fugaku_nodes": 1, "workload": "proxy", "status": "measured", "value": 0.33, "unit": "s", "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。", "note_en": "One Fugaku node with four MPI processes.", "source_ids": ["SRC-PERF004"]}
+    {
+      "observation_id": "OBS-PERF-GENESIS-FUGAKUBENCH",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 2,
+      "workload": "FugakuBench for FS",
+      "status": "measured",
+      "value": 36.185,
+      "unit": "s",
+      "note_ja": "提供入力の最小構成が2ノードのため2ノードで測定。",
+      "note_en": "Measured on two nodes because the smallest provided input required two nodes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-R12",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 1,
+      "workload": "r12",
+      "status": "measured",
+      "value": 19.26479988,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-R24",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 1,
+      "workload": "r24",
+      "status": "measured",
+      "value": 98.26328931,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-R32",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 1,
+      "workload": "r32",
+      "status": "measured",
+      "value": 192.1569185,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SCALE-LETKF",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "fugaku_nodes": 1,
+      "workload": "LETKF",
+      "status": "unavailable",
+      "value": null,
+      "unit": null,
+      "note_ja": "初期条件ファイルが提供されず、公開実測値は得られなかった。",
+      "note_en": "No public measurement was obtained because the initial-condition file was unavailable.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-FFB-CAVITY",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "fugaku_nodes": 1,
+      "workload": "cavity flow",
+      "status": "measured",
+      "value": 31.05,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-LQCD-KERNEL",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "fugaku_nodes": 1,
+      "workload": "kernel",
+      "status": "measured",
+      "value": 16.106756,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-LQCD-PROXY",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "fugaku_nodes": 1,
+      "workload": "proxy",
+      "status": "measured",
+      "value": 0.33,
+      "unit": "s",
+      "note_ja": "4 MPIプロセスを用いた富岳1ノード測定。",
+      "note_en": "One Fugaku node with four MPI processes.",
+      "source_ids": [
+        "SRC-PERF004"
+      ]
+    }
   ],
   "assumptions": [
-    {"assumption_id": "ASM-PERF-GENESIS", "application_id": "APP-EEA1-GENESIS", "accelerator_eligible_fraction": 0.75, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.96}, {"fugaku_nodes": 32, "factor": 0.88}, {"fugaku_nodes": 128, "factor": 0.78}, {"fugaku_nodes": 1024, "factor": 0.6}, {"fugaku_nodes": 10000, "factor": 0.4}], "basis_ja": "f_accel = 0.75と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.75 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001", "SRC-PERF006"]},
-    {"assumption_id": "ASM-PERF-SALMON", "application_id": "APP-EEA1-SALMON", "accelerator_eligible_fraction": 0.85, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.98}, {"fugaku_nodes": 32, "factor": 0.92}, {"fugaku_nodes": 128, "factor": 0.84}, {"fugaku_nodes": 1024, "factor": 0.68}, {"fugaku_nodes": 10000, "factor": 0.5}], "basis_ja": "f_accel = 0.85と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.85 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001", "SRC-PERF007"]},
-    {"assumption_id": "ASM-PERF-SCALE", "application_id": "APP-EEA1-SCALE-LETKF", "accelerator_eligible_fraction": 0.7, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.98}, {"fugaku_nodes": 32, "factor": 0.95}, {"fugaku_nodes": 128, "factor": 0.9}, {"fugaku_nodes": 1024, "factor": 0.82}, {"fugaku_nodes": 10000, "factor": 0.7}], "basis_ja": "f_accel = 0.7と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.7 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001", "SRC-PERF008"]},
-    {"assumption_id": "ASM-PERF-EWAVE", "application_id": "APP-EEA1-E-WAVE", "accelerator_eligible_fraction": 0.8, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.96}, {"fugaku_nodes": 32, "factor": 0.85}, {"fugaku_nodes": 128, "factor": 0.72}, {"fugaku_nodes": 1024, "factor": 0.5}, {"fugaku_nodes": 10000, "factor": 0.3}], "basis_ja": "f_accel = 0.8と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.8 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001"]},
-    {"assumption_id": "ASM-PERF-FFB", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "accelerator_eligible_fraction": 0.8, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.97}, {"fugaku_nodes": 32, "factor": 0.9}, {"fugaku_nodes": 128, "factor": 0.8}, {"fugaku_nodes": 1024, "factor": 0.65}, {"fugaku_nodes": 10000, "factor": 0.45}], "basis_ja": "f_accel = 0.8と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.8 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001", "SRC-PERF004"]},
-    {"assumption_id": "ASM-PERF-LQCD", "application_id": "APP-EEA1-LQCD-DWF-HMC", "accelerator_eligible_fraction": 0.9, "scale_retention": [{"fugaku_nodes": 1, "factor": 1.0}, {"fugaku_nodes": 4, "factor": 0.9}, {"fugaku_nodes": 32, "factor": 0.72}, {"fugaku_nodes": 128, "factor": 0.52}, {"fugaku_nodes": 1024, "factor": 0.3}, {"fugaku_nodes": 10000, "factor": 0.15}], "basis_ja": "f_accel = 0.9と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。", "basis_en": "f_accel = 0.9 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.", "source_ids": ["SRC-PERF001", "SRC-PERF009"]}
+    {
+      "assumption_id": "ASM-PERF-GENESIS",
+      "application_id": "APP-EEA1-GENESIS",
+      "accelerator_eligible_fraction": 0.75,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.96
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.88
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.78
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.6
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.4
+        }
+      ],
+      "basis_ja": "f_accel = 0.75と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.75 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF006"
+      ]
+    },
+    {
+      "assumption_id": "ASM-PERF-SALMON",
+      "application_id": "APP-EEA1-SALMON",
+      "accelerator_eligible_fraction": 0.85,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.98
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.92
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.84
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.68
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.5
+        }
+      ],
+      "basis_ja": "f_accel = 0.85と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.85 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF007"
+      ]
+    },
+    {
+      "assumption_id": "ASM-PERF-SCALE",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "accelerator_eligible_fraction": 0.7,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.98
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.95
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.9
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.82
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.7
+        }
+      ],
+      "basis_ja": "f_accel = 0.7と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.7 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF008"
+      ]
+    },
+    {
+      "assumption_id": "ASM-PERF-EWAVE",
+      "application_id": "APP-EEA1-E-WAVE",
+      "accelerator_eligible_fraction": 0.8,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.96
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.85
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.72
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.5
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.3
+        }
+      ],
+      "basis_ja": "f_accel = 0.8と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.8 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001"
+      ]
+    },
+    {
+      "assumption_id": "ASM-PERF-FFB",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "accelerator_eligible_fraction": 0.8,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.97
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.9
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.8
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.65
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.45
+        }
+      ],
+      "basis_ja": "f_accel = 0.8と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.8 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004"
+      ]
+    },
+    {
+      "assumption_id": "ASM-PERF-LQCD",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "accelerator_eligible_fraction": 0.9,
+      "scale_retention": [
+        {
+          "fugaku_nodes": 1,
+          "factor": 1.0
+        },
+        {
+          "fugaku_nodes": 4,
+          "factor": 0.9
+        },
+        {
+          "fugaku_nodes": 32,
+          "factor": 0.72
+        },
+        {
+          "fugaku_nodes": 128,
+          "factor": 0.52
+        },
+        {
+          "fugaku_nodes": 1024,
+          "factor": 0.3
+        },
+        {
+          "fugaku_nodes": 10000,
+          "factor": 0.15
+        }
+      ],
+      "basis_ja": "f_accel = 0.9と規模別の保持係数は、以前のOpenFS試算で設定した未校正の値です。以下の情報源は計算特性を検討する参考資料であり、この割合・係数を実測した根拠ではありません。版・入力・精度・計測区間を固定した測定と、独立した検証が必要です。",
+      "basis_en": "f_accel = 0.9 and the scale-retention coefficients are uncalibrated inputs retained from the earlier OpenFS illustration. The cited sources inform workload characteristics but do not measure these fractions or coefficients. Version-, input-, precision- and timing-boundary-specific measurements and independent validation are required.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF009"
+      ]
+    }
   ],
   "applications": [
     {
-      "application_id": "APP-EEA1-GENESIS", "name": "GENESIS", "domain_ja": "生命科学・分子動力学", "domain_en": "Life science and molecular dynamics", "eea_group": "EEA1", "compute_characteristic_ids": [3], "scaling_modes": ["strong-scaling", "weak-scaling", "throughput-ensemble"], "primary_metric_ja": "同一入力の実行時間", "primary_metric_en": "Time-to-solution for the same input", "domain_metric_ja": "シミュレーション速度（ns/day）", "domain_metric_en": "Simulated ns/day",
-      "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準入力と公開実測時間が未登録。", "reason_en": "The standard input and public measured runtime are not registered."},
-        {"fugaku_nodes": 4, "status": "measurement-available", "reason_ja": "基本設計報告書は4ノードのMPI通信トレース取得を記載するが、公開実行時間は未登録。", "reason_en": "The basic-design report records a four-node MPI trace, but no public runtime is registered."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "通信・負荷不均衡を含む公開実測が必要。", "reason_en": "A public measurement including communication and imbalance is required."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "適用可能な問題規模と並列効率の確認が必要。", "reason_en": "Applicable problem size and parallel efficiency must be established."}
+      "application_id": "APP-EEA1-GENESIS",
+      "name": "GENESIS",
+      "domain_ja": "生命科学・分子動力学",
+      "domain_en": "Life science and molecular dynamics",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        3
       ],
-      "observed_scale_hints": [{"nodes": 4, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "MPI通信パターンをScore-Pで取得したもので、実行時間の予測値ではない。", "note_en": "MPI communication was traced with Score-P; this is not a runtime forecast."}],
-      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF006", "SRC-PERF010"], "note_ja": "公式Webサイトと開発元の公開GitHubリポジトリを確認した。予測の再現には、EEA1で使用した版と入力の固定が別途必要である。", "note_en": "The official website and the developers' public GitHub repository were confirmed. Reproducing the forecast still requires the EEA1 version and input to be pinned."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF006", "SRC-PERF010"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
+      "scaling_modes": [
+        "strong-scaling",
+        "weak-scaling",
+        "throughput-ensemble"
+      ],
+      "primary_metric_ja": "同一入力の実行時間",
+      "primary_metric_en": "Time-to-solution for the same input",
+      "domain_metric_ja": "シミュレーション速度（ns/day）",
+      "domain_metric_en": "Simulated ns/day",
+      "scale_readiness": [
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "標準入力と公開実測時間が未登録。",
+          "reason_en": "The standard input and public measured runtime are not registered."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "measurement-available",
+          "reason_ja": "基本設計報告書は4ノードのMPI通信トレース取得を記載するが、公開実行時間は未登録。",
+          "reason_en": "The basic-design report records a four-node MPI trace, but no public runtime is registered."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "同一入力の公開実測が必要。",
+          "reason_en": "A public same-input measurement is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "同一入力の公開実測が必要。",
+          "reason_en": "A public same-input measurement is required."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "通信・負荷不均衡を含む公開実測が必要。",
+          "reason_en": "A public measurement including communication and imbalance is required."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "適用可能な問題規模と並列効率の確認が必要。",
+          "reason_en": "Applicable problem size and parallel efficiency must be established."
+        }
+      ],
+      "observed_scale_hints": [
+        {
+          "nodes": 4,
+          "observation_type": "communication-trace",
+          "source_ids": [
+            "SRC-PERF001"
+          ],
+          "note_ja": "MPI通信パターンをScore-Pで取得したもので、実行時間の予測値ではない。",
+          "note_en": "MPI communication was traced with Score-P; this is not a runtime forecast."
+        }
+      ],
+      "code_availability": {
+        "status": "public-source-confirmed",
+        "source_ids": [
+          "SRC-PERF006",
+          "SRC-PERF010"
+        ],
+        "note_ja": "公式Webサイトと開発元の公開GitHubリポジトリを確認した。予測の再現には、EEA1で使用した版と入力の固定が別途必要である。",
+        "note_en": "The official website and the developers' public GitHub repository were confirmed. Reproducing the forecast still requires the EEA1 version and input to be pinned."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF006",
+        "SRC-PERF010"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-005"
+      ]
     },
     {
-      "application_id": "APP-EEA1-SALMON", "name": "SALMON", "domain_ja": "新物質・エネルギー・TDDFT", "domain_en": "Materials, energy, and TDDFT", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一物理条件の実行時間", "primary_metric_en": "Time-to-solution for the same physical conditions", "domain_metric_ja": "電子時間発展ステップ数/秒", "domain_metric_en": "Electronic time-evolution steps/s",
-      "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準スーパーセル入力がこの実行規模に適合するかは確認できていない。", "reason_en": "The applicability of a standard supercell input at this execution scale has not been confirmed."},
-        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力の公開実測が必要。", "reason_en": "A public same-input measurement is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "48ノード通信トレースはあるが、128ノードの実行時間は未登録。", "reason_en": "A 48-node communication trace exists, but no 128-node runtime is registered."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "帯域と通信の外挿検証が必要。", "reason_en": "Bandwidth and communication extrapolation must be validated."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題サイズを拡大した入力と並列効率の確認が必要。", "reason_en": "A larger problem instance and evidence of parallel efficiency are required."}
+      "application_id": "APP-EEA1-SALMON",
+      "name": "SALMON",
+      "domain_ja": "新物質・エネルギー・TDDFT",
+      "domain_en": "Materials, energy, and TDDFT",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        5
       ],
-      "observed_scale_hints": [{"nodes": 48, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレースであり、標準規模である128ノードの実測値を代替するものではない。", "note_en": "Communication was traced with SST/DUMPI; the trace does not replace a measured result at the standard scale of 128 nodes."}],
-      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF015", "SRC-PERF007"], "note_ja": "2系の公開開発リポジトリはSALMON2であり、旧版のSALMONとは区別する。EEA1で使用した版、入力、ビルド条件は未固定で、配布物・タグとの同一性も未検証である。公開コードの確認は性能試算の校正を意味しない。", "note_en": "The public version-2 development repository is SALMON2, distinct from legacy SALMON. The EEA1 revision, input and build conditions are unpinned; correspondence with the distribution artifact and tag is unverified. Public code availability does not calibrate the performance illustration."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF007", "SRC-PERF015"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
+      "scaling_modes": [
+        "strong-scaling",
+        "weak-scaling"
+      ],
+      "primary_metric_ja": "同一物理条件の実行時間",
+      "primary_metric_en": "Time-to-solution for the same physical conditions",
+      "domain_metric_ja": "電子時間発展ステップ数/秒",
+      "domain_metric_en": "Electronic time-evolution steps/s",
+      "scale_readiness": [
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "標準スーパーセル入力がこの実行規模に適合するかは確認できていない。",
+          "reason_en": "The applicability of a standard supercell input at this execution scale has not been confirmed."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "calibration-required",
+          "reason_ja": "同一入力の公開実測が必要。",
+          "reason_en": "A public same-input measurement is required."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "同一入力の公開実測が必要。",
+          "reason_en": "A public same-input measurement is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "48ノード通信トレースはあるが、128ノードの実行時間は未登録。",
+          "reason_en": "A 48-node communication trace exists, but no 128-node runtime is registered."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "帯域と通信の外挿検証が必要。",
+          "reason_en": "Bandwidth and communication extrapolation must be validated."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "問題サイズを拡大した入力と並列効率の確認が必要。",
+          "reason_en": "A larger problem instance and evidence of parallel efficiency are required."
+        }
+      ],
+      "observed_scale_hints": [
+        {
+          "nodes": 48,
+          "observation_type": "communication-trace",
+          "source_ids": [
+            "SRC-PERF001"
+          ],
+          "note_ja": "SST/DUMPIによる通信トレースであり、標準規模である128ノードの実測値を代替するものではない。",
+          "note_en": "Communication was traced with SST/DUMPI; the trace does not replace a measured result at the standard scale of 128 nodes."
+        }
+      ],
+      "code_availability": {
+        "status": "public-source-confirmed",
+        "source_ids": [
+          "SRC-PERF015",
+          "SRC-PERF007"
+        ],
+        "note_ja": "2系の公開開発リポジトリはSALMON2であり、旧版のSALMONとは区別する。EEA1で使用した版、入力、ビルド条件は未固定で、配布物・タグとの同一性も未検証である。公開コードの確認は性能試算の校正を意味しない。",
+        "note_en": "The public version-2 development repository is SALMON2, distinct from legacy SALMON. The EEA1 revision, input and build conditions are unpinned; correspondence with the distribution artifact and tag is unverified. Public code availability does not calibrate the performance illustration."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF007",
+        "SRC-PERF015"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-005"
+      ]
     },
     {
-      "application_id": "APP-EEA1-SCALE-LETKF", "name": "SCALE-LETKF", "domain_ja": "気象・気候・データ同化", "domain_en": "Weather, climate, and data assimilation", "eea_group": "EEA1", "compute_characteristic_ids": [1, 4, 5], "scaling_modes": ["weak-scaling", "throughput-ensemble"], "primary_metric_ja": "同一予報・同化期間の実行時間", "primary_metric_en": "Time-to-solution for the same forecast and assimilation window", "domain_metric_ja": "予報日数/日およびアンサンブルメンバー数/日", "domain_metric_en": "Forecast days/day and ensemble members/day",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "name": "SCALE-LETKF",
+      "domain_ja": "気象・気候・データ同化",
+      "domain_en": "Weather, climate, and data assimilation",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        1,
+        4,
+        5
+      ],
+      "scaling_modes": [
+        "weak-scaling",
+        "throughput-ensemble"
+      ],
+      "primary_metric_ja": "同一予報・同化期間の実行時間",
+      "primary_metric_en": "Time-to-solution for the same forecast and assimilation window",
+      "domain_metric_ja": "予報日数/日およびアンサンブルメンバー数/日",
+      "domain_metric_en": "Forecast days/day and ensemble members/day",
       "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "SCALEとLETKFを含む最小標準入力が未登録。", "reason_en": "A minimum standard input spanning SCALE and LETKF is not registered."},
-        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "同化アンサンブル条件を固定した公開実測が必要。", "reason_en": "A public measurement with fixed assimilation-ensemble conditions is required."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "同一入力または明示した弱スケーリング入力が必要。", "reason_en": "A same-input or explicitly weak-scaled input is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "計算・通信・I/O内訳の公開実測が必要。", "reason_en": "A public compute, communication, and I/O breakdown is required."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "アンサンブル並列と空間並列を分離した測定が必要。", "reason_en": "Measurements must separate ensemble and spatial parallelism."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "実運用可能な大規模入力とI/O制約の確認が必要。", "reason_en": "An operationally realistic large input and I/O constraints must be established."}
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "SCALEとLETKFを含む最小標準入力が未登録。",
+          "reason_en": "A minimum standard input spanning SCALE and LETKF is not registered."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "calibration-required",
+          "reason_ja": "同化アンサンブル条件を固定した公開実測が必要。",
+          "reason_en": "A public measurement with fixed assimilation-ensemble conditions is required."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "同一入力または明示した弱スケーリング入力が必要。",
+          "reason_en": "A same-input or explicitly weak-scaled input is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "計算・通信・I/O内訳の公開実測が必要。",
+          "reason_en": "A public compute, communication, and I/O breakdown is required."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "アンサンブル並列と空間並列を分離した測定が必要。",
+          "reason_en": "Measurements must separate ensemble and spatial parallelism."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "実運用可能な大規模入力とI/O制約の確認が必要。",
+          "reason_en": "An operationally realistic large input and I/O constraints must be established."
+        }
       ],
       "observed_scale_hints": [],
-      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF008", "SRC-PERF014"], "note_ja": "SCALE-RMの公開ソース文書とSCALE-LETKFの公開GitHubリポジトリを確認した。完全なEEA1入力と初期条件は未登録である。", "note_en": "Public SCALE-RM source documentation and the SCALE-LETKF GitHub repository were confirmed. A complete EEA1 input and initial conditions are not registered."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF008", "SRC-PERF014"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-002", "GAP-PERF-005"]
+      "code_availability": {
+        "status": "public-source-confirmed",
+        "source_ids": [
+          "SRC-PERF008",
+          "SRC-PERF014"
+        ],
+        "note_ja": "SCALE-RMの公開ソース文書とSCALE-LETKFの公開GitHubリポジトリを確認した。完全なEEA1入力と初期条件は未登録である。",
+        "note_en": "Public SCALE-RM source documentation and the SCALE-LETKF GitHub repository were confirmed. A complete EEA1 input and initial conditions are not registered."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF008",
+        "SRC-PERF014"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-002",
+        "GAP-PERF-005"
+      ]
     },
     {
-      "application_id": "APP-EEA1-E-WAVE", "name": "E-Wave", "domain_ja": "地震・津波防災", "domain_en": "Earthquake and tsunami disaster science", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一波動伝播問題の実行時間", "primary_metric_en": "Time-to-solution for the same wave-propagation problem", "domain_metric_ja": "時間ステップ数/秒", "domain_metric_en": "Time steps/s",
+      "application_id": "APP-EEA1-E-WAVE",
+      "name": "E-Wave",
+      "domain_ja": "地震・津波防災",
+      "domain_en": "Earthquake and tsunami disaster science",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        6
+      ],
+      "scaling_modes": [
+        "strong-scaling",
+        "weak-scaling"
+      ],
+      "primary_metric_ja": "同一波動伝播問題の実行時間",
+      "primary_metric_en": "Time-to-solution for the same wave-propagation problem",
+      "domain_metric_ja": "時間ステップ数/秒",
+      "domain_metric_en": "Time steps/s",
       "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "公開可能な標準メッシュと実測が未登録。", "reason_en": "No publishable standard mesh and measurement are registered."},
-        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "疎行列演算とAllreduceの実行時間の内訳が必要。", "reason_en": "A runtime breakdown for sparse-matrix operations and Allreduce is required."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "低遅延通信を含む検証が必要。", "reason_en": "Validation including low-latency communication is required."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "問題規模、反復数、収束条件を固定した検証が必要。", "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."}
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "公開可能な標準メッシュと実測が未登録。",
+          "reason_en": "No publishable standard mesh and measurement are registered."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "疎行列演算とAllreduceの実行時間の内訳が必要。",
+          "reason_en": "A runtime breakdown for sparse-matrix operations and Allreduce is required."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "低遅延通信を含む検証が必要。",
+          "reason_en": "Validation including low-latency communication is required."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "問題規模、反復数、収束条件を固定した検証が必要。",
+          "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."
+        }
       ],
       "observed_scale_hints": [],
-      "code_availability": {"status": "unreleased-in-eea1-reference", "source_ids": ["SRC-PERF011", "SRC-PERF013"], "note_ja": "JAMSTECの公式ページでE-wave FEMの利用は確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。公開コードへのリンクは確認できていない。", "note_en": "JAMSTEC's official page confirms use of E-wave FEM, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased. No public code link was confirmed."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF011", "SRC-PERF013"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
+      "code_availability": {
+        "status": "unreleased-in-eea1-reference",
+        "source_ids": [
+          "SRC-PERF011",
+          "SRC-PERF013"
+        ],
+        "note_ja": "JAMSTECの公式ページでE-wave FEMの利用は確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。公開コードへのリンクは確認できていない。",
+        "note_en": "JAMSTEC's official page confirms use of E-wave FEM, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased. No public code link was confirmed."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF011",
+        "SRC-PERF013"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-005"
+      ]
     },
     {
-      "application_id": "APP-EEA1-FRONTFLOW-BLUE", "name": "FrontFlow/blue", "domain_ja": "ものづくり・非構造格子CFD", "domain_en": "Manufacturing and unstructured-grid CFD", "eea_group": "EEA1", "compute_characteristic_ids": [6], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一流体解析の実行時間", "primary_metric_en": "Time-to-solution for the same CFD case", "domain_metric_ja": "時間ステップ数/秒", "domain_metric_en": "Time steps/s",
-      "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準メッシュと公開実行時間が未登録。", "reason_en": "A standard mesh and public runtime are not registered."},
-        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "間接メモリアクセスと通信の内訳が必要。", "reason_en": "Indirect-memory and communication breakdowns are required."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "768ノード通信トレースはあるが、1,024ノードの実行時間は未登録。", "reason_en": "A 768-node communication trace exists, but no 1,024-node runtime is registered."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "大規模メッシュと並列効率の公開検証が必要。", "reason_en": "Public validation for a large mesh and parallel efficiency is required."}
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "name": "FrontFlow/blue",
+      "domain_ja": "ものづくり・非構造格子CFD",
+      "domain_en": "Manufacturing and unstructured-grid CFD",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        6
       ],
-      "observed_scale_hints": [{"nodes": 768, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレース。1,024ノードの標準実測とは区別する。", "note_en": "Communication was traced with SST/DUMPI and remains distinct from a 1,024-node standard measurement."}],
-      "code_availability": {"status": "unreleased-in-eea1-reference", "source_ids": ["SRC-PERF011", "SRC-PERF012"], "note_ja": "HPCIの公式ページでアプリケーションの概要と利用可能施設を確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。", "note_en": "The HPCI official page documents the application and available facilities, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF011", "SRC-PERF012"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
+      "scaling_modes": [
+        "strong-scaling",
+        "weak-scaling"
+      ],
+      "primary_metric_ja": "同一流体解析の実行時間",
+      "primary_metric_en": "Time-to-solution for the same CFD case",
+      "domain_metric_ja": "時間ステップ数/秒",
+      "domain_metric_en": "Time steps/s",
+      "scale_readiness": [
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "標準メッシュと公開実行時間が未登録。",
+          "reason_en": "A standard mesh and public runtime are not registered."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "間接メモリアクセスと通信の内訳が必要。",
+          "reason_en": "Indirect-memory and communication breakdowns are required."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "768ノード通信トレースはあるが、1,024ノードの実行時間は未登録。",
+          "reason_en": "A 768-node communication trace exists, but no 1,024-node runtime is registered."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "大規模メッシュと並列効率の公開検証が必要。",
+          "reason_en": "Public validation for a large mesh and parallel efficiency is required."
+        }
+      ],
+      "observed_scale_hints": [
+        {
+          "nodes": 768,
+          "observation_type": "communication-trace",
+          "source_ids": [
+            "SRC-PERF001"
+          ],
+          "note_ja": "SST/DUMPIによる通信トレース。1,024ノードの標準実測とは区別する。",
+          "note_en": "Communication was traced with SST/DUMPI and remains distinct from a 1,024-node standard measurement."
+        }
+      ],
+      "code_availability": {
+        "status": "unreleased-in-eea1-reference",
+        "source_ids": [
+          "SRC-PERF011",
+          "SRC-PERF012"
+        ],
+        "note_ja": "HPCIの公式ページでアプリケーションの概要と利用可能施設を確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。",
+        "note_en": "The HPCI official page documents the application and available facilities, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF011",
+        "SRC-PERF012"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-005"
+      ]
     },
     {
-      "application_id": "APP-EEA1-LQCD-DWF-HMC", "name": "LQCD-DWF-HMC", "domain_ja": "基礎科学・格子QCD", "domain_en": "Fundamental science and lattice QCD", "eea_group": "EEA1", "compute_characteristic_ids": [5], "scaling_modes": ["strong-scaling", "weak-scaling"], "primary_metric_ja": "同一格子・収束条件の実行時間", "primary_metric_en": "Time-to-solution for the same lattice and convergence conditions", "domain_metric_ja": "HMCトラジェクトリ数/日", "domain_metric_en": "HMC trajectories/day",
-      "scale_readiness": [
-        {"fugaku_nodes": 1, "status": "calibration-required", "reason_ja": "標準格子が1ノードに適合するか未確認。", "reason_en": "It is unconfirmed whether the standard lattice fits one node."},
-        {"fugaku_nodes": 4, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 32, "status": "calibration-required", "reason_ja": "公開実測が必要。", "reason_en": "A public measurement is required."},
-        {"fugaku_nodes": 128, "status": "calibration-required", "reason_ja": "混合精度と収束条件を固定した実測が必要。", "reason_en": "A measurement with fixed mixed-precision and convergence conditions is required."},
-        {"fugaku_nodes": 1024, "status": "calibration-required", "reason_ja": "1,024ノード標準入力の公開実測が必要。", "reason_en": "A public standard-input measurement at 1,024 nodes is required."},
-        {"fugaku_nodes": 10000, "status": "calibration-required", "reason_ja": "2,048ノード通信トレースからの外挿だけでは不足。", "reason_en": "Extrapolation from the 2,048-node communication trace alone is insufficient."}
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "name": "LQCD-DWF-HMC",
+      "domain_ja": "基礎科学・格子QCD",
+      "domain_en": "Fundamental science and lattice QCD",
+      "eea_group": "EEA1",
+      "compute_characteristic_ids": [
+        5
       ],
-      "observed_scale_hints": [{"nodes": 2048, "observation_type": "communication-trace", "source_ids": ["SRC-PERF001"], "note_ja": "SST/DUMPIによる通信トレースであり、実行時間、格子条件、収束条件を揃えた予測校正値ではない。", "note_en": "Communication was traced with SST/DUMPI; it is not a forecast calibration value with runtime, lattice, and convergence conditions fixed."}],
-      "code_availability": {"status": "public-source-confirmed", "source_ids": ["SRC-PERF009"], "note_ja": "EEA1名と一致する公開GitHubリポジトリを確認した。富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例を含むが、標準入力と測定条件の固定は未完了である。", "note_en": "A public GitHub repository matching the EEA1 name was confirmed. It includes Fugaku, general-CPU, and OpenACC GPU build examples, but standard inputs and measurement conditions are not yet pinned."},
-      "source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF009"], "coverage_gap_refs": ["GAP-WORK-003", "GAP-PERF-001", "GAP-PERF-005"]
+      "scaling_modes": [
+        "strong-scaling",
+        "weak-scaling"
+      ],
+      "primary_metric_ja": "同一格子・収束条件の実行時間",
+      "primary_metric_en": "Time-to-solution for the same lattice and convergence conditions",
+      "domain_metric_ja": "HMCトラジェクトリ数/日",
+      "domain_metric_en": "HMC trajectories/day",
+      "scale_readiness": [
+        {
+          "fugaku_nodes": 1,
+          "status": "calibration-required",
+          "reason_ja": "標準格子が1ノードに適合するか未確認。",
+          "reason_en": "It is unconfirmed whether the standard lattice fits one node."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "calibration-required",
+          "reason_ja": "公開実測が必要。",
+          "reason_en": "A public measurement is required."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "calibration-required",
+          "reason_ja": "混合精度と収束条件を固定した実測が必要。",
+          "reason_en": "A measurement with fixed mixed-precision and convergence conditions is required."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "calibration-required",
+          "reason_ja": "1,024ノード標準入力の公開実測が必要。",
+          "reason_en": "A public standard-input measurement at 1,024 nodes is required."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "calibration-required",
+          "reason_ja": "2,048ノード通信トレースからの外挿だけでは不足。",
+          "reason_en": "Extrapolation from the 2,048-node communication trace alone is insufficient."
+        }
+      ],
+      "observed_scale_hints": [
+        {
+          "nodes": 2048,
+          "observation_type": "communication-trace",
+          "source_ids": [
+            "SRC-PERF001"
+          ],
+          "note_ja": "SST/DUMPIによる通信トレースであり、実行時間、格子条件、収束条件を揃えた予測校正値ではない。",
+          "note_en": "Communication was traced with SST/DUMPI; it is not a forecast calibration value with runtime, lattice, and convergence conditions fixed."
+        }
+      ],
+      "code_availability": {
+        "status": "public-source-confirmed",
+        "source_ids": [
+          "SRC-PERF009"
+        ],
+        "note_ja": "EEA1名と一致する公開GitHubリポジトリを確認した。富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例を含むが、標準入力と測定条件の固定は未完了である。",
+        "note_en": "A public GitHub repository matching the EEA1 name was confirmed. It includes Fugaku, general-CPU, and OpenACC GPU build examples, but standard inputs and measurement conditions are not yet pinned."
+      },
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF009"
+      ],
+      "coverage_gap_refs": [
+        "GAP-WORK-003",
+        "GAP-PERF-001",
+        "GAP-PERF-005"
+      ]
     }
   ],
-  "forecasts": [
-    {"forecast_id": "FORECAST-GENESIS-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.0, "base": 3.9, "upper": 5.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-GENESIS-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.9, "base": 3.8, "upper": 5.7, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-GENESIS-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.7, "base": 3.5, "upper": 5.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-GENESIS-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.5, "base": 3.1, "upper": 4.6, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-GENESIS-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.2, "base": 2.4, "upper": 3.5, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-GENESIS-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-GENESIS", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 0.8, "base": 1.6, "upper": 2.4, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-GENESIS"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF006"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 3.2, "base": 6.5, "upper": 9.7, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 3.2, "base": 6.3, "upper": 9.5, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 3.0, "base": 6.0, "upper": 8.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.7, "base": 5.4, "upper": 8.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.2, "base": 4.4, "upper": 6.6, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SALMON-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SALMON", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.6, "base": 3.2, "upper": 4.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SALMON"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF007"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.6, "base": 3.3, "upper": 4.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.6, "base": 3.2, "upper": 4.8, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.6, "base": 3.1, "upper": 4.7, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.5, "base": 3.0, "upper": 4.4, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.4, "base": 2.7, "upper": 4.1, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-SCALE-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-SCALE-LETKF", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "weak-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.2, "base": 2.3, "upper": 3.5, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-SCALE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005", "SRC-PERF008"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.4, "base": 4.9, "upper": 7.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.4, "base": 4.7, "upper": 7.1, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.1, "base": 4.2, "upper": 6.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.8, "base": 3.5, "upper": 5.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.2, "base": 2.4, "upper": 3.7, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-EWAVE-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-E-WAVE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 0.7, "base": 1.5, "upper": 2.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-EWAVE"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.4, "base": 4.9, "upper": 7.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.4, "base": 4.8, "upper": 7.1, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.2, "base": 4.4, "upper": 6.6, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.0, "base": 3.9, "upper": 5.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.6, "base": 3.2, "upper": 4.8, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-FFB-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-FRONTFLOW-BLUE", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.1, "base": 2.2, "upper": 3.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-FFB"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-1", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 4.8, "base": 9.6, "upper": 14.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-4", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 4, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 4.3, "base": 8.6, "upper": 12.9, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-32", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 32, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 3.4, "base": 6.9, "upper": 10.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-128", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 128, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 2.5, "base": 5.0, "upper": 7.5, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-1024", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 1024, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 1.4, "base": 2.9, "upper": 4.3, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false},
-    {"forecast_id": "FORECAST-LQCD-10000", "forecast_class": "analytical-provisional", "application_id": "APP-EEA1-LQCD-DWF-HMC", "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY", "fugaku_nodes": 10000, "scaling_mode": "strong-scaling", "comparison_basis": "same-node-count", "metric_id": "relative-speedup", "estimate": {"lower": 0.7, "base": 1.4, "upper": 2.2, "unit": "x-vs-fugaku-same-node-count"}, "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001", "assumption_ids": ["ASM-PERF-LQCD"], "basis_source_ids": ["SRC-PERF001", "SRC-PERF004", "SRC-PERF005", "SRC-PERF009"], "calibration_dataset_ids": [], "validation_dataset_ids": [], "confidence": "low", "consensus_status": "incomplete", "procurement_eligible": false}
-  ],
+  "forecasts": [],
   "coverage_gaps": [
-    {"gap_id": "GAP-PERF-001", "priority": "P0", "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力", "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales", "impact_ja": "公開実測が一部の小規模入力に限られ、暫定予測の校正と予測誤差の検証を行えない。", "impact_en": "Public measurements cover only selected small inputs, preventing calibration and error validation of the provisional forecasts.", "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。", "next_action_en": "Register publishable inputs in Benchpark/BenchKit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.", "status": "open"},
-    {"gap_id": "GAP-PERF-002", "priority": "P0", "scope_ja": "計算・メモリ・通信・I/Oと、計算・通信のオーバーラップを扱うモデルの公開係数、校正データ、独立検証誤差", "scope_en": "Published coefficients, calibration data, and independent-validation errors for models of compute, memory, communication, I/O, and compute-communication overlap", "impact_ja": "公開した分析式は再計算できるが、アプリケーション別の仮定と予測区間を実測で反証できず、調達判断には利用できない。", "impact_en": "The published analytical equation is reproducible, but application assumptions and forecast intervals cannot yet be falsified against measurements and cannot support procurement.", "next_action_ja": "PMCARDスキーマでモデル版と適用範囲を登録し、校正用データと独立検証用データを分離する。", "next_action_en": "Register model versions and applicability with PMCARD, and keep calibration datasets separate from independent-validation datasets.", "status": "open"},
-    {"gap_id": "GAP-PERF-003", "priority": "P1", "scope_ja": "同一ノード数、同一アクセラレータ数、同一メモリ容量、同一消費電力、同一費用で比較するための候補構成対応表", "scope_en": "Candidate-configuration mappings for comparisons at equal node count, accelerator count, memory capacity, power, or cost", "impact_ja": "ノード当たりの性能、容量、消費電力が異なるため、同一ノード数だけでは候補間の比較条件がそろわない。", "impact_en": "Because per-node performance, capacity, and power differ, equal-node-count comparisons do not provide equivalent conditions.", "next_action_ja": "HPCIシステム台帳と候補製品仕様を接続し、各比較基準の構成と欠測を明示する。", "next_action_en": "Connect the HPCI inventory with candidate specifications and expose configurations and missing data for each comparison basis.", "status": "open"},
-    {"gap_id": "GAP-PERF-004", "priority": "P1", "scope_ja": "標準規模を適用できないアプリケーションまたは入力に対する明示的な「適用外」の判定", "scope_en": "Explicit not-applicable decisions where an application or input cannot use a standard scale", "impact_ja": "実行不能な規模を予測対象に含めるおそれがある。", "impact_en": "Infeasible scales may be included in forecasts.", "next_action_ja": "アプリケーション責任者がメモリ容量、分割可能性、科学的妥当性を確認し、理由を付けて「適用外」へ変更する。", "next_action_en": "Application owners should confirm memory fit, decomposition, and scientific validity, then mark unsupported scales as not applicable and record the reasons.", "status": "open"},
-    {"gap_id": "GAP-PERF-005", "priority": "P1", "scope_ja": "EEA1の6アプリケーションについて、版を固定した公開コード、入力、ビルド条件、実行手順を対応付けた再現性台帳", "scope_en": "A reproducibility register mapping versioned public code, inputs, build conditions, and run procedures for all six EEA1 applications", "impact_ja": "公開コードが確認できるアプリケーションでも、EEA1評価に用いた版と入力を一意に再実行できない。E-WaveとFrontFlow/blueは、2026年の公式資料でコード本体が非公開とされている。", "impact_en": "Even where public code is available, the exact EEA1 version and input cannot be rerun unambiguously. The 2026 official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.", "next_action_ja": "公開されている4本はコミット、入力、依存関係、実行コマンドを固定する。非公開の2本は、公開可能なプロキシまたは再配布可能な評価パッケージの提供可否を開発元へ確認する。", "next_action_en": "Pin commits, inputs, dependencies, and commands for the four public codebases. For the two unreleased codebases, ask the developers whether a public proxy or redistributable evaluation package can be provided.", "status": "open"}
+    {
+      "gap_id": "GAP-PERF-001",
+      "priority": "P0",
+      "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力",
+      "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales",
+      "impact_ja": "公開実測が一部の小規模入力に限られ、暫定予測の校正と予測誤差の検証を行えない。",
+      "impact_en": "Public measurements cover only selected small inputs, preventing calibration and error validation of the provisional forecasts.",
+      "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。",
+      "next_action_en": "Register publishable inputs in Benchpark/BenchKit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-PERF-002",
+      "priority": "P0",
+      "scope_ja": "計算・メモリ・通信・I/Oと、計算・通信のオーバーラップを扱うモデルの公開係数、校正データ、独立検証誤差",
+      "scope_en": "Published coefficients, calibration data, and independent-validation errors for models of compute, memory, communication, I/O, and compute-communication overlap",
+      "impact_ja": "公開した分析式は再計算できるが、アプリケーション別の仮定と予測区間を実測で反証できず、調達判断には利用できない。",
+      "impact_en": "The published analytical equation is reproducible, but application assumptions and forecast intervals cannot yet be falsified against measurements and cannot support procurement.",
+      "next_action_ja": "PMCARDスキーマでモデル版と適用範囲を登録し、校正用データと独立検証用データを分離する。",
+      "next_action_en": "Register model versions and applicability with PMCARD, and keep calibration datasets separate from independent-validation datasets.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-PERF-003",
+      "priority": "P1",
+      "scope_ja": "同一ノード数、同一アクセラレータ数、同一メモリ容量、同一消費電力、同一費用で比較するための候補構成対応表",
+      "scope_en": "Candidate-configuration mappings for comparisons at equal node count, accelerator count, memory capacity, power, or cost",
+      "impact_ja": "ノード当たりの性能、容量、消費電力が異なるため、同一ノード数だけでは候補間の比較条件がそろわない。",
+      "impact_en": "Because per-node performance, capacity, and power differ, equal-node-count comparisons do not provide equivalent conditions.",
+      "next_action_ja": "HPCIシステム台帳と候補製品仕様を接続し、各比較基準の構成と欠測を明示する。",
+      "next_action_en": "Connect the HPCI inventory with candidate specifications and expose configurations and missing data for each comparison basis.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-PERF-004",
+      "priority": "P1",
+      "scope_ja": "標準規模を適用できないアプリケーションまたは入力に対する明示的な「適用外」の判定",
+      "scope_en": "Explicit not-applicable decisions where an application or input cannot use a standard scale",
+      "impact_ja": "実行不能な規模を予測対象に含めるおそれがある。",
+      "impact_en": "Infeasible scales may be included in forecasts.",
+      "next_action_ja": "アプリケーション責任者がメモリ容量、分割可能性、科学的妥当性を確認し、理由を付けて「適用外」へ変更する。",
+      "next_action_en": "Application owners should confirm memory fit, decomposition, and scientific validity, then mark unsupported scales as not applicable and record the reasons.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-PERF-005",
+      "priority": "P1",
+      "scope_ja": "EEA1の6アプリケーションについて、版を固定した公開コード、入力、ビルド条件、実行手順を対応付けた再現性台帳",
+      "scope_en": "A reproducibility register mapping versioned public code, inputs, build conditions, and run procedures for all six EEA1 applications",
+      "impact_ja": "公開コードが確認できるアプリケーションでも、EEA1評価に用いた版と入力を一意に再実行できない。E-WaveとFrontFlow/blueは、2026年の公式資料でコード本体が非公開とされている。",
+      "impact_en": "Even where public code is available, the exact EEA1 version and input cannot be rerun unambiguously. The 2026 official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.",
+      "next_action_ja": "公開されている4本はコミット、入力、依存関係、実行コマンドを固定する。非公開の2本は、公開可能なプロキシまたは再配布可能な評価パッケージの提供可否を開発元へ確認する。",
+      "next_action_en": "Pin commits, inputs, dependencies, and commands for the four public codebases. For the two unreleased codebases, ask the developers whether a public proxy or redistributable evaluation package can be provided.",
+      "status": "open"
+    }
   ],
   "caveat_ja": "36件の数値と計算式は従来の試算を保持しています。今回の公開資料調査で校正された予測ではありません。独立Consensus、候補機での測定、予測誤差の検証は未完了です。試算範囲を信頼区間や性能保証と解釈せず、調達評価には使用しないでください。",
   "caveat_en": "The 36 numerical results and equation are retained from the earlier illustration; this research has not calibrated them into predictions. Independent Consensus, candidate-system measurements and error validation remain incomplete. Do not interpret the illustrative range as a confidence interval or performance guarantee, or use it for procurement.",
-  "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901", "human_approval_directive_id": "DIR-900019"}
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-RESUME-20260901-001",
+    "human_approval_directive_id": "DIR-900020"
+  },
+  "illustrations": [
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-1",
+      "legacy_forecast_id": "FORECAST-GENESIS-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.0,
+        "base": 3.9,
+        "upper": 5.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-4",
+      "legacy_forecast_id": "FORECAST-GENESIS-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.9,
+        "base": 3.8,
+        "upper": 5.7,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-32",
+      "legacy_forecast_id": "FORECAST-GENESIS-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.7,
+        "base": 3.5,
+        "upper": 5.2,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-128",
+      "legacy_forecast_id": "FORECAST-GENESIS-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.5,
+        "base": 3.1,
+        "upper": 4.6,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-1024",
+      "legacy_forecast_id": "FORECAST-GENESIS-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.2,
+        "base": 2.4,
+        "upper": 3.5,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-GENESIS-10000",
+      "legacy_forecast_id": "FORECAST-GENESIS-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-GENESIS",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 0.8,
+        "base": 1.6,
+        "upper": 2.4,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-GENESIS"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF006"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-1",
+      "legacy_forecast_id": "FORECAST-SALMON-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 3.2,
+        "base": 6.5,
+        "upper": 9.7,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-4",
+      "legacy_forecast_id": "FORECAST-SALMON-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 3.2,
+        "base": 6.3,
+        "upper": 9.5,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-32",
+      "legacy_forecast_id": "FORECAST-SALMON-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 3.0,
+        "base": 6.0,
+        "upper": 8.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-128",
+      "legacy_forecast_id": "FORECAST-SALMON-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.7,
+        "base": 5.4,
+        "upper": 8.2,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-1024",
+      "legacy_forecast_id": "FORECAST-SALMON-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.2,
+        "base": 4.4,
+        "upper": 6.6,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SALMON-10000",
+      "legacy_forecast_id": "FORECAST-SALMON-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SALMON",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.6,
+        "base": 3.2,
+        "upper": 4.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SALMON"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF007"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-1",
+      "legacy_forecast_id": "FORECAST-SCALE-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.6,
+        "base": 3.3,
+        "upper": 4.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-4",
+      "legacy_forecast_id": "FORECAST-SCALE-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.6,
+        "base": 3.2,
+        "upper": 4.8,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-32",
+      "legacy_forecast_id": "FORECAST-SCALE-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.6,
+        "base": 3.1,
+        "upper": 4.7,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-128",
+      "legacy_forecast_id": "FORECAST-SCALE-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.5,
+        "base": 3.0,
+        "upper": 4.4,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-1024",
+      "legacy_forecast_id": "FORECAST-SCALE-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.4,
+        "base": 2.7,
+        "upper": 4.1,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-SCALE-10000",
+      "legacy_forecast_id": "FORECAST-SCALE-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "weak-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.2,
+        "base": 2.3,
+        "upper": 3.5,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-SCALE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005",
+        "SRC-PERF008"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-1",
+      "legacy_forecast_id": "FORECAST-EWAVE-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.4,
+        "base": 4.9,
+        "upper": 7.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-4",
+      "legacy_forecast_id": "FORECAST-EWAVE-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.4,
+        "base": 4.7,
+        "upper": 7.1,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-32",
+      "legacy_forecast_id": "FORECAST-EWAVE-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.1,
+        "base": 4.2,
+        "upper": 6.2,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-128",
+      "legacy_forecast_id": "FORECAST-EWAVE-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.8,
+        "base": 3.5,
+        "upper": 5.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-1024",
+      "legacy_forecast_id": "FORECAST-EWAVE-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.2,
+        "base": 2.4,
+        "upper": 3.7,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-EWAVE-10000",
+      "legacy_forecast_id": "FORECAST-EWAVE-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-E-WAVE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 0.7,
+        "base": 1.5,
+        "upper": 2.2,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-EWAVE"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-1",
+      "legacy_forecast_id": "FORECAST-FFB-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.4,
+        "base": 4.9,
+        "upper": 7.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-4",
+      "legacy_forecast_id": "FORECAST-FFB-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.4,
+        "base": 4.8,
+        "upper": 7.1,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-32",
+      "legacy_forecast_id": "FORECAST-FFB-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.2,
+        "base": 4.4,
+        "upper": 6.6,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-128",
+      "legacy_forecast_id": "FORECAST-FFB-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.0,
+        "base": 3.9,
+        "upper": 5.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-1024",
+      "legacy_forecast_id": "FORECAST-FFB-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.6,
+        "base": 3.2,
+        "upper": 4.8,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-FFB-10000",
+      "legacy_forecast_id": "FORECAST-FFB-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.1,
+        "base": 2.2,
+        "upper": 3.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-FFB"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-1",
+      "legacy_forecast_id": "FORECAST-LQCD-1",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 4.8,
+        "base": 9.6,
+        "upper": 14.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-4",
+      "legacy_forecast_id": "FORECAST-LQCD-4",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 4,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 4.3,
+        "base": 8.6,
+        "upper": 12.9,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-32",
+      "legacy_forecast_id": "FORECAST-LQCD-32",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 32,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 3.4,
+        "base": 6.9,
+        "upper": 10.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-128",
+      "legacy_forecast_id": "FORECAST-LQCD-128",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 128,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 2.5,
+        "base": 5.0,
+        "upper": 7.5,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-1024",
+      "legacy_forecast_id": "FORECAST-LQCD-1024",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 1024,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 1.4,
+        "base": 2.9,
+        "upper": 4.3,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "illustration_id": "ILLUSTRATION-LQCD-10000",
+      "legacy_forecast_id": "FORECAST-LQCD-10000",
+      "illustration_class": "legacy-what-if",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "candidate_system_id": "FUGAKUNEXT-PUBLIC-DESIGN-PROXY",
+      "fugaku_nodes": 10000,
+      "scaling_mode": "strong-scaling",
+      "comparison_basis": "same-node-count",
+      "metric_id": "relative-speedup",
+      "estimate": {
+        "lower": 0.7,
+        "base": 1.4,
+        "upper": 2.2,
+        "unit": "x-vs-fugaku-same-node-count"
+      },
+      "model_card_id": "PMCARD-OPENFS-ANALYTICAL-001",
+      "assumption_ids": [
+        "ASM-PERF-LQCD"
+      ],
+      "basis_source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF005",
+        "SRC-PERF009"
+      ],
+      "confidence": "low",
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    }
+  ]
 }

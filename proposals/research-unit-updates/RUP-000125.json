@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000125",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T17:13:06+09:00",
+  "base_commit": "ebc88b9f1f9a59dc901f1dde490d795f24c27002",
+  "before_profile_sha256": "04e4a259fa646fa9ac0fa7ec3b09b90b64a0ad8cd313c18d5ec1b694ab951775",
+  "human_directive_id": "DIR-900020",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "NICAM雲微物理のKokkos移植論文が示す実装リポジトリと、比較元となるNICAM-DCカーネルの公開経路を区別しました。元のカーネルリポジトリは確認できましたが、Kokkos実装は管理Webから取得できず、論文で使った入力やコミットとの同一性も未確認です。単一のAIモデルによる暫定調査であり、実行再現と独立Consensusは未完了です。",
+  "summary_en": "This update separates the Kokkos implementation repository cited by the NICAM microphysics paper from the public NICAM-DC kernel used as its reference lineage. The original kernel repository was readable, but the Kokkos repository remained unavailable through managed Web and its commit/input identity with the paper is unverified. This is provisional single-model research; execution reproduction and independent Consensus remain incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "4d84f0f1a2f6d79da82c0aba3d0c8203ec4cdbcc430efc47b8f184234b303235",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U04",
+        "TDS-CD6-SSW-01-U04",
+        "TDS-CD8-SSW-01-U04",
+        "TDS-CD9-SSW-01-U04"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD9-SSW-01-U04",
+      "title_ja": "NICAM雲微物理移植のコード来歴と再現条件",
+      "title_en": "Code lineage and reproduction conditions for the NICAM microphysics port",
+      "summary_ja": "論文、元のカーネル、Kokkos移植を別の成果物として追跡します。",
+      "summary_en": "Track the paper, original kernel and Kokkos port as distinct artifacts.",
+      "items": [
+        {
+          "item_id": "TDI-CD9-NICAM-KOKKOS-CODE-LINEAGE",
+          "stage": "research",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS120",
+            "SRC-CDS126"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "元カーネルとKokkos移植の成果物分離",
+          "name_en": "Artifact separation between the reference kernel and Kokkos port",
+          "timing_ja": "2026年9月1日に公開経路を再確認",
+          "timing_en": "Public routes rechecked on September 1, 2026",
+          "statement_ja": "論文は、評価対象をNICAM-DCカーネルパッケージから抽出した雲微物理の単体実行コードと説明し、Kokkos実装として `Masahiro-Ren/nicam_kokkos_microphysics` を示しています。比較元の `hisashiyashiro/nicam_dckernel_2016` は公開され、v0.1.0、2016年4月26日、BSD-2-Clauseで、`physicskernel_microphysics`を含むことを確認しました。一方、Kokkos実装は管理Webでcache missとなり、コミット、入力、ビルド条件は確認できませんでした。元リポジトリが読めることは、論文のFortran基準コードや提供されたベンチマークデータとの完全な同一性を示しません。",
+          "statement_en": "The paper describes its target as a standalone microphysics executable extracted from the NICAM-DC kernel package and cites `Masahiro-Ren/nicam_kokkos_microphysics` for the Kokkos implementation. The reference `hisashiyashiro/nicam_dckernel_2016` repository is public and identifies version 0.1.0, April 26, 2016, a BSD-2-Clause licence and a `physicskernel_microphysics` directory. The Kokkos repository returned a managed-Web cache miss, so its commit, inputs and build conditions remain unverified. Read access to the reference repository does not establish exact identity with the paper's Fortran baseline or the benchmark data supplied to the study.",
+          "hpci_relevance_ja": "移植評価を再現する際に、公開されている元コードと論文で実際に使った基準コードを混同せず、両実装のコミットと入力を固定できます。",
+          "hpci_relevance_en": "A reproduction can avoid conflating the public reference code with the paper's exact baseline and can pin commits and inputs for both implementations.",
+          "adoption_conditions_ja": [
+            "元カーネルとKokkos移植のコミット、入力データ、コンパイラ、Kokkos版、ビルド設定を別々に記録する。",
+            "論文と同じ正解判定、16641×96入力、1 CMG基準、計測区間を確認してから性能比を再計算する。",
+            "コードを取得・実行していない現状を、再現済みまたは保守可能という判定に置き換えない。"
+          ],
+          "adoption_conditions_en": [
+            "Record reference-kernel and Kokkos-port commits, inputs, compilers, Kokkos version and build settings separately.",
+            "Confirm the paper's correctness checks, 16641-by-96 input, one-CMG baseline and timed region before recomputing ratios.",
+            "Do not turn the current absence of code retrieval or execution into a reproduced or maintainable status."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS120",
+        "title": "Porting NICAM Microphysics to Kokkos: A Case Study in Performance Portability for Atmospheric Models",
+        "publisher": "Ren et al. / Information Processing Society of Japan",
+        "url": "https://www.jstage.jst.go.jp/article/ipsjjip/34/0/34_503/_pdf/-char/ja",
+        "source_class": "peer-reviewed",
+        "published_or_updated": "2026-06-15; JIP34 pp.503-513"
+      },
+      "origin_group": "nagoya-nicam-kokkos-port",
+      "checked_at": "2026-09-01T17:13:06+09:00",
+      "locator": "Sections 2, 4, 5 and 7; acknowledgments; references 8 and 12",
+      "observation_ja": "対象が単体の雲微物理コードであること、元コードとKokkos実装の参照先、提供された基準コード・入力、評価条件を再確認しました。Kokkosリポジトリの内容を読んだとは扱いません。",
+      "observation_en": "Rechecked the standalone microphysics scope, reference and Kokkos repository citations, supplied baseline code/data, and evaluation conditions. This does not claim that the Kokkos repository contents were read.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS126",
+        "title": "NICAM-DC kernel package",
+        "publisher": "Hisashi Yashiro / NICAM developers",
+        "url": "https://github.com/hisashiyashiro/nicam_dckernel_2016",
+        "source_class": "official-project",
+        "published_or_updated": "Version 0.1.0 dated 2016-04-26; repository inspected 2026-09-01"
+      },
+      "origin_group": "nicam-dckernel-public-reference",
+      "checked_at": "2026-09-01T17:13:06+09:00",
+      "locator": "README version/date/licence and repository tree containing physicskernel_microphysics",
+      "observation_ja": "公開されたNICAM-DCカーネルの版、日付、BSD-2-Clauseライセンス、雲微物理ディレクトリを確認しました。論文の基準コードや提供入力との同一性は推定していません。",
+      "observation_en": "Read the public NICAM-DC kernel version, date, BSD-2-Clause licence and microphysics directory. Exact identity with the paper's baseline code or supplied inputs was not inferred.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-050は未解決です。Kokkos実装と論文で使った入力を取得し、成果物のダイジェストを固定した再現が必要です。",
+    "元コード、Kokkos実装、論文の測定結果の対応を確認するまで、公開元コードの存在を再現可能性の証明に使いません。",
+    "実機での実行、移植工数の測定、独立したAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-050 remains open. The Kokkos implementation and paper inputs must be obtained and reproduced with pinned artifact digests.",
+    "Do not use the existence of the public reference code as proof of reproducibility until its relationship to the Kokkos port and measured paper artifacts is verified.",
+    "Hardware execution, porting-effort measurement and independent-model Consensus remain incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000123",
+      "bundle_sha256": "1ef456dc879be0d4d7d0ad3b861427e3246a47840aedc1d2c951a03ef1d956c1"
+    },
+    {
+      "update_id": "RUP-000124",
+      "bundle_sha256": "8326f64add5d07b52873528d771aca5f99923cb1d7419683690de753ba338cbe"
+    }
+  ]
+}

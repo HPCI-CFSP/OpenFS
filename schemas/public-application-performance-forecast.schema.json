@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.2.0"},
+    "schema_version": {"const": "0.4.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -31,11 +31,11 @@
     },
     "model_contract": {
       "type": "object",
-      "required": ["model_card_pattern", "model_card_id", "forecast_class", "equation_ja", "equation_en", "scale_equation_ja", "scale_equation_en", "interval_method_ja", "interval_method_en", "limitations_ja", "limitations_en", "required_uncertainty", "calibration_validation_split", "procurement_use", "source_ids"],
+      "required": ["model_card_pattern", "model_card_id", "output_class", "equation_ja", "equation_en", "scale_equation_ja", "scale_equation_en", "interval_method_ja", "interval_method_en", "limitations_ja", "limitations_en", "required_uncertainty", "calibration_validation_split", "procurement_use", "source_ids"],
       "properties": {
         "model_card_pattern": {"const": "PMCARD-*"},
         "model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
-        "forecast_class": {"const": "analytical-provisional"},
+        "output_class": {"const": "legacy-what-if-illustration"},
         "equation_ja": {"type": "string", "minLength": 1},
         "equation_en": {"type": "string", "minLength": 1},
         "scale_equation_ja": {"type": "string", "minLength": 1},
@@ -51,11 +51,28 @@
       },
       "additionalProperties": false
     },
+    "validated_model_cards": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "allOf": [
+          {"$ref": "performance-model-card.schema.json"},
+          {
+            "type": "object",
+            "properties": {
+              "status": {"const": "accepted"},
+              "consensus_status": {"const": "accepted"}
+            }
+          }
+        ]
+      }
+    },
     "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
     "candidate_systems": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/candidateSystem"}},
     "baseline_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselineObservation"}},
     "assumptions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assumption"}},
     "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
+    "illustrations": {"type": "array", "items": {"$ref": "#/$defs/illustration"}},
     "forecasts": {"type": "array", "items": {"$ref": "#/$defs/forecast"}},
     "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
     "caveat_ja": {"type": "string", "minLength": 1},
@@ -212,12 +229,13 @@
       },
       "additionalProperties": false
     },
-    "forecast": {
+    "illustration": {
       "type": "object",
-      "required": ["forecast_id", "forecast_class", "application_id", "candidate_system_id", "fugaku_nodes", "scaling_mode", "comparison_basis", "metric_id", "estimate", "model_card_id", "assumption_ids", "basis_source_ids", "calibration_dataset_ids", "validation_dataset_ids", "confidence", "consensus_status", "procurement_eligible"],
+      "required": ["illustration_id", "legacy_forecast_id", "illustration_class", "application_id", "candidate_system_id", "fugaku_nodes", "scaling_mode", "comparison_basis", "metric_id", "estimate", "model_card_id", "assumption_ids", "basis_source_ids", "confidence", "consensus_status", "procurement_eligible"],
       "properties": {
-        "forecast_id": {"type": "string", "pattern": "^FORECAST-[A-Z0-9-]+$"},
-        "forecast_class": {"enum": ["analytical-provisional", "validated"]},
+        "illustration_id": {"type": "string", "pattern": "^ILLUSTRATION-[A-Z0-9-]+$"},
+        "legacy_forecast_id": {"type": "string", "pattern": "^FORECAST-[A-Z0-9-]+$"},
+        "illustration_class": {"const": "legacy-what-if"},
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
         "candidate_system_id": {"type": "string", "minLength": 1},
         "fugaku_nodes": {"type": "integer", "minimum": 1},
@@ -228,35 +246,34 @@
         "model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
         "assumption_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^ASM-PERF-[A-Z0-9-]+$"}},
         "basis_source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
-        "calibration_dataset_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "validation_dataset_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "confidence": {"enum": ["low", "medium", "high"]},
-        "consensus_status": {"enum": ["incomplete", "accepted"]},
+        "confidence": {"const": "low"},
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "forecast": {
+      "type": "object",
+      "required": ["forecast_id", "forecast_class", "application_id", "candidate_system_id", "fugaku_nodes", "scaling_mode", "comparison_basis", "metric_id", "estimate", "model_card_id", "assumption_ids", "basis_source_ids", "calibration_dataset_ids", "validation_dataset_ids", "confidence", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "forecast_id": {"type": "string", "pattern": "^FORECAST-[A-Z0-9-]+$"},
+        "forecast_class": {"const": "validated"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "candidate_system_id": {"type": "string", "minLength": 1},
+        "fugaku_nodes": {"type": "integer", "minimum": 1},
+        "scaling_mode": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]},
+        "comparison_basis": {"enum": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"]},
+        "metric_id": {"enum": ["time-to-solution", "parallel-efficiency", "throughput", "energy-to-solution", "domain-rate", "relative-speedup", "achieved-flops"]},
+        "estimate": {"$ref": "#/$defs/estimate"},
+        "model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
+        "assumption_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^ASM-PERF-[A-Z0-9-]+$"}},
+        "basis_source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "calibration_dataset_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "validation_dataset_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "confidence": {"enum": ["medium", "high"]},
+        "consensus_status": {"const": "accepted"},
         "procurement_eligible": {"type": "boolean"}
       },
-      "allOf": [
-        {
-          "if": {"properties": {"forecast_class": {"const": "analytical-provisional"}}, "required": ["forecast_class"]},
-          "then": {
-            "properties": {
-              "confidence": {"const": "low"},
-              "consensus_status": {"const": "incomplete"},
-              "procurement_eligible": {"const": false},
-              "calibration_dataset_ids": {"maxItems": 0},
-              "validation_dataset_ids": {"maxItems": 0}
-            }
-          }
-        },
-        {
-          "if": {"properties": {"forecast_class": {"const": "validated"}}, "required": ["forecast_class"]},
-          "then": {
-            "properties": {
-              "calibration_dataset_ids": {"minItems": 1},
-              "validation_dataset_ids": {"minItems": 1}
-            }
-          }
-        }
-      ],
       "additionalProperties": false
     },
     "gap": {
