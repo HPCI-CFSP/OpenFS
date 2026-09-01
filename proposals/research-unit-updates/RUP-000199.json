@@ -1,0 +1,105 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000199",
+  "topic_id": "SSW-14",
+  "created_at": "2026-09-02T07:30:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000196", "bundle_sha256": "55dc40629addd700a9bf93adc644d2e4c9f0999a8178bde8e895b95fdc19f3ad"}
+  ],
+  "before_profile_sha256": "9dc9b434b7356c1de4031c034813c42fb396f3cee9aa2b41ae9c224c7ec5a02f",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCIの共有ストレージ、バックアップ、世代移行、媒体再利用に関係するNISTの最新公開文書を確認しました。SP 800-209 Rev.1は2026年7月公開の初期草案で、ストレージ固有の脅威、基盤侵害、バックアップ等の二次データ資産、七つの統制群を扱います。SP 800-88 Rev.2は2025年9月の最終版で、媒体消去を個別手順ではなく組織的なプログラムとして管理し、ベンダー実装の信頼性と検証を重視します。草案と最終版を区別し、調達・移行・撤去の要件へ段階的に適用します。Consensusは未完了です。",
+  "summary_en": "The latest NIST publications relevant to HPCI shared storage, backup, generational migration, and media reuse were reviewed. SP 800-209 Rev. 1 is an initial public draft from July 2026 covering storage-specific threats, platform compromise, secondary data assets such as backups, and seven control families. SP 800-88 Rev. 2 is a September 2025 final publication that treats sanitization as an organizational program and emphasizes trust and validation of vendor implementations. Draft and final status are separated for phased use in procurement, migration, and retirement requirements. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-14-U01",
+      "before_sha256": "237183cfc6e7d4bdbf95ae913babe7862866a3774e8a33784c37f250b55b14b8",
+      "evidence_section_ids": ["TDS-CD1-SSW-14-U01", "TDS-CD2-SSW-14-NIST-HPC-AI-SECURITY", "TDS-CD3-SSW-14-STORAGE-SECURITY"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-SSW-14-STORAGE-SECURITY",
+      "title_ja": "共有ストレージを保護・復旧・消去までのライフサイクルで管理する",
+      "title_en": "Manage shared storage across protection, recovery, and sanitization",
+      "summary_ja": "計算ノードだけでなく、一次データ、複製、バックアップ、鍵、媒体の再利用・廃棄までを一つの保護境界として扱います。",
+      "summary_en": "Treat primary data, replicas, backups, keys, and media reuse or disposal as one lifecycle protection boundary rather than protecting compute nodes alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-NIST-SP800-209R1-DRAFT",
+          "name_ja": "SP 800-209 Rev.1初期草案：ストレージ基盤固有の脅威と統制",
+          "name_en": "SP 800-209 Rev. 1 initial draft: storage-specific threats and controls",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年7月22日初期草案公開、同年9月8日意見募集締切",
+          "timing_en": "Initial draft published July 22, 2026; comments due September 8, 2026",
+          "statement_ja": "NISTは、ソフトウェアによる抽象化がストレージ管理の複雑性と設定誤りを増やすとして、SP 800-209 Rev.1初期草案を公開しました。改訂では、ストレージを支える基盤の侵害、バックアップ等の二次データ資産と生成過程の侵害を追加し、推奨事項を七つの統制群へ再編しています。現時点では意見募集段階であり、最終版の要件として扱いません。",
+          "statement_en": "NIST published the initial draft of SP 800-209 Rev. 1, noting that software abstraction increases storage-management complexity and configuration-error risk. The revision adds platform-security compromise and compromise of secondary data assets and their generation processes, including backups, and reorganizes recommendations into seven control families. It remains a public draft and is not treated as a final requirement.",
+          "hpci_relevance_ja": "HPCI共用ストレージでは、ファイル、オブジェクト、複製、バックアップ、管理面、転送経路を横断した脅威モデルと復旧試験が必要です。",
+          "hpci_relevance_en": "HPCI shared storage requires threat modeling and recovery tests spanning file and object services, replicas, backups, management planes, and transfer paths.",
+          "adoption_conditions_ja": ["最終版で変更された統制と適用範囲を再確認する。", "管理面、データ面、バックアップ、鍵管理の責任者を分けて記録する。", "バックアップの分離だけでなく、生成過程と復元結果を試験する。"],
+          "adoption_conditions_en": ["Recheck controls and scope after final publication.", "Record separate owners for management plane, data plane, backups, and keys.", "Test backup generation and restored results, not isolation alone."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS253"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-NIST-SP800-88R2-FINAL",
+          "name_ja": "SP 800-88 Rev.2最終版：媒体消去を組織的な管理プログラムにする",
+          "name_en": "SP 800-88 Rev. 2 final: make media sanitization an organizational program",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2025年9月26日最終版公開",
+          "timing_en": "Final publication September 26, 2025",
+          "statement_ja": "SP 800-88 Rev.2は、媒体ごとの作業手順中心から、情報の機密性に応じた組織的な消去プログラムへ重点を移しました。暗号学的消去以外の具体的手法はIEEE 2883、NSA仕様または組織承認規格の利用へ置き換え、clear/purgeに用いるベンダー実装の信頼確立と、消去結果の検証を求めます。",
+          "statement_en": "SP 800-88 Rev. 2 shifts from media-by-media operational instructions to an organizational sanitization program based on information sensitivity. Except for cryptographic erase, detailed techniques are replaced by references to IEEE 2883, NSA specifications, or organizationally approved standards. It emphasizes establishing trust in vendor implementations used for clear or purge and validating sanitization outcomes.",
+          "hpci_relevance_ja": "大規模SSD、HDD、テープ、交換部品、レンタル・借入機器では、撤去時だけでなく調達時に消去機能、鍵、証跡、故障媒体の扱いを契約する必要があります。",
+          "hpci_relevance_en": "For large SSD, HDD, tape, replacement parts, and leased equipment, sanitization capability, keys, evidence, and failed-media handling must be contracted at procurement rather than deferred to retirement.",
+          "adoption_conditions_ja": ["媒体種別・機密区分ごとのclear、purge、destroy方針を定める。", "暗号鍵の所有、外部管理、zeroization、故障時手順を確認する。", "ベンダー証明だけでなくサンプル検証、記録保存、監査を実施する。"],
+          "adoption_conditions_en": ["Define clear, purge, and destroy policy by media type and sensitivity.", "Verify key ownership, external key management, zeroization, and failure procedures.", "Use sampling validation, retained records, and audit rather than vendor attestation alone."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS254"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS253", "title": "SP 800-209 Rev. 1, Security Guidelines for Storage Infrastructure", "publisher": "NIST", "url": "https://csrc.nist.gov/pubs/sp/800/209/r1/ipd", "source_class": "official-standard", "published_or_updated": "2026-07-22"},
+      "origin_group": "nist-storage-security-draft",
+      "checked_at": "2026-09-02T03:12:00+09:00",
+      "locator": "Initial public draft status, changes to threats, secondary data assets, and seven control families",
+      "observation_ja": "初期草案の状態、改訂点、意見募集期限を確認しました。",
+      "observation_en": "Verified initial-draft status, major revision areas, and comment deadline.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS254", "title": "SP 800-88 Rev. 2, Guidelines for Media Sanitization", "publisher": "NIST", "url": "https://csrc.nist.gov/pubs/sp/800/88/r2/final", "source_class": "official-standard", "published_or_updated": "2025-09-26"},
+      "origin_group": "nist-media-sanitization-final",
+      "checked_at": "2026-09-02T03:13:00+09:00",
+      "locator": "Final status, program focus, vendor trust, standards references, and cryptographic erase changes",
+      "observation_ja": "最終版であることと、消去プログラム、検証、ベンダー実装、暗号学的消去に関する改訂点を確認しました。",
+      "observation_en": "Verified final status and revisions covering sanitization programs, validation, vendor implementations, and cryptographic erase.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["SP 800-209 Rev.1は草案であり、最終版の内容と公開時期は未確定です。", "HPCI各機関の既存ストレージ、バックアップ、消去契約に対する差分評価と復旧・消去試験結果は未確認です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["SP 800-209 Rev. 1 is a draft; final content and publication timing are unknown.", "Gap assessment against existing HPCI storage, backup, and sanitization contracts and recovery or sanitization test results remains unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

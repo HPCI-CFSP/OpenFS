@@ -1,0 +1,142 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000159",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T05:30:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000127",
+      "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"
+    }
+  ],
+  "before_profile_sha256": "717c0d6cfc95a0fa218e743ec49f13b211fee2c7397091cefed71d1951adc35b",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学『不老・弐』の公開ソフトウェア対応表から、CPU系Type IではIntel oneAPIとAMD Zen Software Studio、GPU系Type IIではNVIDIA HPC SDK、CUDA Toolkit、nvidia-container-toolkitを提供予定で、OpenMPIとSingularityは両系統に共通することを確認しました。主要科学アプリケーションの多くは両系統対応と掲載される一方、VASPはType Iのみ、RELION・cryoSPARC・AlphaFold・ColabFold・Parabricks・cuQuantum・CUDA-QはType IIのみです。掲載は版、動作確認、性能、ライセンスの継続を証明しないため、利用開始後の再現試験を必要条件として残します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Nagoya University's published Flow II software matrix plans Intel oneAPI and AMD Zen Software Studio for the CPU-oriented Type I partition and NVIDIA HPC SDK, CUDA Toolkit, and nvidia-container-toolkit for GPU-oriented Type II, with OpenMPI and Singularity common to both. Many scientific applications are listed for both partitions, while VASP is Type-I-only and RELION, cryoSPARC, AlphaFold, ColabFold, Parabricks, cuQuantum, and CUDA-Q are Type-II-only. Listing does not establish version, functional validation, performance, or continuing license availability, so post-launch reproducibility tests remain required. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "846f8f3206756ea74713ec9193386204b7720757271923f12f7f257c89621e60",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02",
+        "TDS-CD2-SSW-01-U02",
+        "TDS-CD3-SSW-01-U02",
+        "TDS-CD4-SSW-01-U02",
+        "TDS-CD11-SSW-01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-SSW-01-U02",
+      "title_ja": "『不老・弐』のパーティション別ソフトウェア対応",
+      "title_en": "Partition-specific software support on Flow II",
+      "summary_ja": "SDK、MPI、コンテナ、数値ライブラリ、科学アプリケーションの公表対応を、実証済み性能と区別します。",
+      "summary_en": "Separate published SDK, MPI, container, numerical-library, and application support from validated performance.",
+      "items": [
+        {
+          "item_id": "TDI-CD11-FLOW2-TOOLCHAIN-MATRIX",
+          "name_ja": "CPU・GPUパーティションで分かれるSDKと共通実行環境",
+          "name_en": "Partition-specific SDKs and common execution environments",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点の公開表",
+          "timing_en": "Planned start October 1, 2026; public matrix as of September 2",
+          "statement_ja": "公開表は、Type IにIntel oneAPI Base/HPC ToolkitとAMD Zen Software Studio、Type IIにNVIDIA HPC SDK、CUDA Toolkit、nvidia-container-toolkitを掲載します。Rocky Linux 9、OpenMPI、Singularity、GCC/GFortran、Python、Julia等は両系統に掲載されます。Linaro DDTはType Iとフロントエンドだけです。製品名の掲載から、版、全機能、ABI互換性、GPU-aware MPI、デバッガの実効対応を推定しません。",
+          "statement_en": "The matrix lists Intel oneAPI Base/HPC Toolkit and AMD Zen Software Studio on Type I, and NVIDIA HPC SDK, CUDA Toolkit, and nvidia-container-toolkit on Type II. Rocky Linux 9, OpenMPI, Singularity, GCC/GFortran, Python, Julia, and related tools are listed on both. Linaro DDT is listed only on Type I and the front end. Product names do not establish versions, complete feature support, ABI compatibility, GPU-aware MPI, or effective debugger behavior.",
+          "hpci_relevance_ja": "HPCIの共通環境は名称の共通性だけでなく、版、コンテナ、MPI、GPU直接通信、デバッグ、ビルド再現性をセンター間で比較する必要があります。",
+          "hpci_relevance_en": "A common HPCI environment requires center-by-center comparison of versions, containers, MPI, direct GPU communication, debugging, and reproducible builds rather than matching product names alone.",
+          "adoption_conditions_ja": [
+            "OS、コンパイラ、SDK、MPI、コンテナの正確な版とサポート期限を機械可読に公開する。",
+            "CPU/GPU間とセンター間で同一ソース・コンテナをビルドし、正解・性能・失敗を記録する。",
+            "GPU-aware MPI、集合通信、デバッガ、プロファイラ、ジョブスケジューラ統合を実機確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish exact OS, compiler, SDK, MPI, and container versions and support dates in machine-readable form.",
+            "Build the same source and containers across CPU/GPU partitions and centers and record correctness, performance, and failures.",
+            "Validate GPU-aware MPI, collectives, debugger, profiler, and scheduler integration on the deployed system."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-FLOW2-APPLICATION-MATRIX",
+          "name_ja": "科学アプリケーションのType I/II対応差",
+          "name_en": "Type-I/II differences in scientific-application availability",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点の公開表",
+          "timing_en": "Planned start October 1, 2026; public matrix as of September 2",
+          "statement_ja": "OpenFOAM、FrontISTR、Quantum ESPRESSO、CP2K、GROMACS、LAMMPS、NAMD、GENESIS等はType I/IIの両方に掲載されます。VASPはType Iだけ、RELION、cryoSPARC、AlphaFold、ColabFold、Parabricks、DeePMD-kit、cuQuantum、CUDA-QはType IIだけです。『利用可能』は対象入力の正しさ、GPU高速化、分散スケール、企業利用のライセンス、旧系からの再現性を保証しません。",
+          "statement_en": "OpenFOAM, FrontISTR, Quantum ESPRESSO, CP2K, GROMACS, LAMMPS, NAMD, GENESIS, and others are listed for both Type I and II. VASP is listed only for Type I, while RELION, cryoSPARC, AlphaFold, ColabFold, Parabricks, DeePMD-kit, cuQuantum, and CUDA-Q are Type-II-only. 'Available' does not guarantee correctness for target inputs, GPU acceleration, distributed scaling, enterprise licensing, or reproducibility from the old system.",
+          "hpci_relevance_ja": "利用者需要はアプリケーション名をCPU/GPU台数へ直接変換せず、版・入力・精度・ライセンス・実行規模ごとの実証済み経路へ対応付ける必要があります。",
+          "hpci_relevance_en": "Application names should not be converted directly into CPU/GPU capacity; demand must map to validated paths by version, input, precision, license, and scale.",
+          "adoption_conditions_ja": [
+            "主要アプリごとに版、ビルド設定、入力、正解条件、CPU/GPU経路、最大実証規模を公開する。",
+            "旧系と新系の出力差、性能、移植工数、ライセンス費用、保守責任を測る。",
+            "企業利用可否をOSS・商用・持込みライセンスごとに確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish version, build configuration, input, correctness criteria, CPU/GPU path, and largest validated scale for each major application.",
+            "Measure output differences, performance, migration effort, license cost, and maintenance responsibility across generations.",
+            "Verify enterprise eligibility for OSS, commercial, and bring-your-own-license applications separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS163",
+        "title": "スーパーコンピュータシステム『不老・弐』",
+        "publisher": "名古屋大学 情報連携推進本部",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（導入中）"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T05:20:00+09:00",
+      "locator": "利用可能なソフトウェア：プログラム開発、ライブラリ、解析、可視化のType I/II/フロントエンド対応表",
+      "observation_ja": "OS、SDK、MPI、コンテナ、数値ライブラリ、AIフレームワーク、科学アプリケーションのパーティション別掲載を確認しました。版・動作実績・性能は掲載されていません。",
+      "observation_en": "Verified partition-specific listings for OS, SDKs, MPI, containers, numerical libraries, AI frameworks, and scientific applications. Versions, functional results, and performance are not published in the matrix.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-005、GAP-TDS-006、GAP-TDS-050は未解決です。正確な版、GPU-aware MPI、コンパイラ機能、実アプリの正解・性能・移植工数が必要です。",
+    "10月1日の利用開始後に、掲載ソフトウェアの導入・ライセンス・実行・サポート実績を確認します。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-005, GAP-TDS-006, and GAP-TDS-050 remain open; exact versions, GPU-aware MPI, compiler features, and application correctness, performance, and migration effort are needed.",
+    "Installation, licensing, execution, and support outcomes for listed software require verification after the October 1 service start.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

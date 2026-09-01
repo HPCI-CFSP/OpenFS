@@ -1,0 +1,88 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000171",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:25:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "d8185c4515c949bcd5b1b0bf6d1e1ace8139752f9ca65ba3bf8c0e95d398b3a0",
+  "human_directive_id": "DIR-900021", "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "HPCI公式性能ページとGROMACS、LAMMPS、Quantum ESPRESSO資料を確認しました。GROMACS 2025.0は混合コンパイラ、2.2 GHz、スレッド固定が性能条件で、大規模入力は非公開です。LAMMPSは2020版を2021年に評価し、公開ベンチマークを使いますが科学妥当性確認は短い100ステップです。Quantum ESPRESSO 6.7は5入力をGitHubで公開しています。現在のHPCI異機種を同じ版・入力で比較する資料ではないため、性能順位へ使いません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The HPCI application-performance portal and its GROMACS, LAMMPS, and Quantum ESPRESSO reports were reviewed. GROMACS 2025.0 depends on mixed compilers, fixed 2.2-GHz frequency, and thread binding, while its large input is not public. The LAMMPS report evaluates a 2020 release in 2021 using public benchmarks, but scientific reasonableness is checked with a short 100-step run. Quantum ESPRESSO 6.7 publishes five inputs on GitHub. These are not matched-version, matched-input comparisons across current HPCI systems and are not used to rank performance. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {"unit_id": "APP-02-U01", "before_sha256": "caffe33005129201da9d3317a73ff450e36866035b1dad4a12bef5fdbeea82fd", "evidence_section_ids": ["TDS-APP02-CURRENT", "TDS-APP02-FUTURE", "TDS-CD1-APP-02-U01", "TDS-CD5-APP-02-U01-U03"]},
+    {"unit_id": "APP-02-U03", "before_sha256": "91abc3c9cecce711b9c799c5df3bc20848799e6904fca5311d6d8e28372a6254", "evidence_section_ids": ["TDS-CD1-APP-02-U03", "TDS-CD2-APP-02-U03", "TDS-CD3-APP-02-U03", "TDS-CD4-APP-02-U03", "TDS-CD5-APP-02-U01-U03"]}
+  ],
+  "sections": [{
+    "section_id": "TDS-CD5-APP-02-U01-U03",
+    "title_ja": "HPCI公開アプリ性能資料の再現可能性と更新差",
+    "title_en": "Reproducibility and update differences in HPCI application-performance reports",
+    "summary_ja": "アプリケーション版、入力公開、コンパイラ、周波数、並列配置、科学妥当性を性能グラフから分離します。",
+    "summary_en": "Separate application version, input availability, compilers, frequency, placement, and scientific validity from performance plots.",
+    "items": [
+      {
+        "item_id": "TDI-CD5-HPCI-APPLICATION-PERFORMANCE-PORTAL-SCOPE",
+        "name_ja": "富岳5アプリに限定された公式性能情報",
+        "name_en": "Official performance information limited to five Fugaku applications",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年9月2日確認", "timing_en": "Checked September 2, 2026",
+        "statement_ja": "HPCIの性能情報ページは富岳についてGROMACS、LAMMPS、Quantum ESPRESSO、FDS、OpenFOAMの資料と総合資料を掲載し、入力サンプルによる特定条件の実行時間で、条件が違えば同じ性能にならないと明記しています。令和8年度HPCI全資源について同じ入力・版・精度で測定した横断表ではありません。",
+        "statement_en": "The HPCI performance portal publishes Fugaku reports for GROMACS, LAMMPS, Quantum ESPRESSO, FDS, and OpenFOAM plus a general report, explicitly warning that sample-input elapsed times under particular conditions do not reproduce when compilation or execution conditions differ. It is not a matched-input, version, and precision matrix across all FY2026 HPCI resources.",
+        "hpci_relevance_ja": "整備判断には、公開例を入口にしつつ、現行・候補資源を同じハーネスで継続再測定する全国ベンチマーク基盤が必要です。",
+        "hpci_relevance_en": "Planning needs a national harness that continuously remeasures current and candidate resources under matched conditions, using public examples as seeds.",
+        "adoption_conditions_ja": ["対象アプリ、版、入力、精度、成功条件、ライセンス、ソースURLを機械可読化する。", "全資源で測れない理由を未対応・移植中・ライセンス・容量不足等に分類する。", "結果へハードウェア、コンパイラ、ライブラリ、環境、ジョブ、コミットを固定する。"],
+        "adoption_conditions_en": ["Make application, version, input, precision, success, license, and source URL machine-readable.", "Classify missing systems by unsupported, porting, license, capacity, or other reason.", "Pin hardware, compiler, libraries, environment, job, and commit to each result."],
+        "actor_ids": [], "source_ids": ["SRC-CDS181"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD5-GROMACS-2025-FUGAKU-REPRODUCIBILITY",
+        "name_ja": "GROMACS 2025.0：混合コンパイラと非公開大規模入力",
+        "name_en": "GROMACS 2025.0: mixed compilers and a nonpublic large input",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2025年3月21日資料", "timing_en": "Report dated March 21, 2025",
+        "statement_ja": "富岳のGROMACS 2025.0資料は、Fujitsuコンパイラの制約により非結合・FFTカーネルをArmコンパイラで別ビルドし、4ノード・96 MPI・各2 OpenMPスレッド、2.2 GHz、スレッド固定の実行例を示します。小規模poly-ch2は公式ベンチマークから取得可能ですが、大規模to200ns2は論文由来でデータセット非公開です。一部構成はメモリ不足で完走しません。",
+        "statement_en": "The Fugaku GROMACS 2025.0 report separately builds nonbonded and FFT kernels with Arm compilers because of Fujitsu-compiler limitations and gives a four-node, 96-MPI, two-OpenMP-thread, 2.2-GHz, bound-thread example. The small poly-ch2 input is available from the official benchmark suite, while the large to200ns2 dataset is not public. Some configurations fail from out-of-memory conditions.",
+        "hpci_relevance_ja": "同じアプリ名でも、入力公開、カーネル別コンパイラ、周波数、MPI/OpenMP配置、メモリ成立性を固定しなければ候補資源を比較できません。",
+        "hpci_relevance_en": "The same application name is not comparable without fixed input availability, per-kernel compilers, frequency, MPI/OpenMP placement, and memory feasibility.",
+        "adoption_conditions_ja": ["公開可能な小・中・大入力を版付きで用意し、非公開入力は代表性と再現性を分ける。", "コンパイラ混在と外部カーネルのソース・フラグ・バイナリ来歴を保存する。", "完走不能、メモリ不足、科学的妥当性未達を性能欠測と区別する。"],
+        "adoption_conditions_en": ["Provide versioned public small, medium, and large inputs and separate representativeness from reproducibility for nonpublic inputs.", "Preserve source, flags, binary provenance, and mixed-compiler external kernels.", "Distinguish noncompletion, out-of-memory, and scientific-invalidity from missing performance."],
+        "actor_ids": [], "source_ids": ["SRC-CDS182"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD5-LAMMPS-2021-VERSION-VALIDITY",
+        "name_ja": "LAMMPS：公開入力と短い科学妥当性確認",
+        "name_en": "LAMMPS: public inputs and short scientific-validity checks",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2021年7月資料、LAMMPS stable_29Oct2020", "timing_en": "July 2021 report using LAMMPS stable_29Oct2020",
+        "statement_ja": "LAMMPS資料は開発者公開のLJ、CHAIN、EAM、CHUTE、RHODO入力を使い、1ノードから384ノードの条件を示します。科学的に妥当かの確認は5ベンチマークを他機種と比較する100ステップの短い実行です。性能資料の版はstable_29Oct2020であり、現在のLAMMPS、コンパイラ、ライブラリ、候補GPUの動作を証明しません。",
+        "statement_en": "The LAMMPS report uses public developer inputs for LJ, CHAIN, EAM, CHUTE, and RHODO and includes conditions from one to 384 nodes. Scientific reasonableness is checked by comparing a short 100-step run on five benchmarks with other machines. Its stable_29Oct2020 release does not establish current LAMMPS, compiler, library, or candidate-GPU behavior.",
+        "hpci_relevance_ja": "旧資料は基準入力として有用ですが、版更新に伴う数値差・性能差を検証し、短い妥当性確認と本番時間スケールを分ける必要があります。",
+        "hpci_relevance_en": "The old report is useful as a seed input, but numerical and performance changes across versions and short validity checks versus production timescales must be separated.",
+        "adoption_conditions_ja": ["旧版結果を保持したまま現行LTS・安定版を再実行する。", "100ステップ確認に加え、保存量・エネルギー・統計量を本番長で比較する。", "CPU、GPU、Kokkos等の実装差を入力・精度固定で評価する。"],
+        "adoption_conditions_en": ["Retain historical results and rerun current stable or LTS versions.", "Add production-length comparisons of conserved quantities, energy, and statistics to 100-step checks.", "Compare CPU, GPU, Kokkos, and other implementations at fixed input and precision."],
+        "actor_ids": [], "source_ids": ["SRC-CDS183"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD5-QE67-PUBLIC-INPUTS",
+        "name_ja": "Quantum ESPRESSO 6.7：GitHub公開の5入力",
+        "name_en": "Quantum ESPRESSO 6.7: five public GitHub inputs",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2021年7月資料", "timing_en": "July 2021 report",
+        "statement_ja": "Quantum ESPRESSO 6.7資料はtest_1、AUSURF112、PSIWAT、GRIR443、CNT10POR8の入力をQEF/benchmarksのGitHubへリンクし、コンパイラ、ライブラリ、2ノード実行スクリプト例を示します。入力公開は再現性を高めますが、擬ポテンシャル、収束条件、出力比較、実行ログ、現行版と複数機種の結果がそろわなければ科学・性能の横断比較には不足します。",
+        "statement_en": "The Quantum ESPRESSO 6.7 report links test_1, AUSURF112, PSIWAT, GRIR443, and CNT10POR8 inputs in the QEF/benchmarks GitHub repository and records compilers, libraries, and a two-node job example. Public inputs improve reproducibility, but pseudopotentials, convergence, output comparison, logs, current versions, and multi-system results are still needed for scientific and performance comparison.",
+        "hpci_relevance_ja": "公開入力と実行スクリプトを全国ハーネスへ取り込み、版更新・異機種移植時に性能と解を同時検証する候補にできます。",
+        "hpci_relevance_en": "Public inputs and scripts can seed a national harness that validates results and performance together across version and architecture changes.",
+        "adoption_conditions_ja": ["入力、擬ポテンシャル、版、ビルド、実行、出力許容差を固定する。", "小規模だけでなくメモリ・通信・I/Oを含む中大規模入力を公開する。", "複数資源の結果を同じハーネス・コミット・品質判定で取得する。"],
+        "adoption_conditions_en": ["Pin inputs, pseudopotentials, version, build, run, and output tolerances.", "Publish medium and large cases with memory, communication, and I/O as well as small cases.", "Run multiple resources under the same harness, commit, and quality gate."],
+        "actor_ids": [], "source_ids": ["SRC-CDS184"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS181", "title": "アプリケーションソフトウェアの性能情報", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/appli_info", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-application-performance", "checked_at": "2026-09-02T07:21:00+09:00", "locator": "掲載アプリケーションと条件差への注意", "observation_ja": "富岳の5アプリと総合資料、条件差への警告を確認しました。HPCI全資源横断表ではありません。", "observation_en": "Verified five Fugaku application reports, a general report, and the warning about condition differences. This is not an HPCI-wide matrix.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS182", "title": "GROMACS 2025.0 on Fugaku (A64FX)", "publisher": "RIST", "url": "https://www.hpci-office.jp/documents/appli_software/Fugaku_Gromacs_performance.pdf", "source_class": "official-project", "published_or_updated": "2025-03-21"}, "origin_group": "hpci-application-performance", "checked_at": "2026-09-02T07:22:00+09:00", "locator": "Version, compilers, Spack, job script, input provenance, tuning, OOM", "observation_ja": "混合コンパイラ、4ノード例、2.2 GHz、公開・非公開入力、OOMを確認しました。", "observation_en": "Verified mixed compilers, a four-node example, 2.2 GHz, public and nonpublic inputs, and OOM cases.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS183", "title": "LAMMPS stable_29Oct2020 at Fugaku (A64FX)", "publisher": "RIST", "url": "https://www.hpci-office.jp/documents/appli_software/Fugaku_LAMMPS_performance.pdf", "source_class": "official-project", "published_or_updated": "2021-07-02"}, "origin_group": "hpci-application-performance", "checked_at": "2026-09-02T07:23:00+09:00", "locator": "Version, public benchmark inputs, 1-384 nodes, 100-step scientific check", "observation_ja": "公開入力、版、規模、科学妥当性確認の範囲を確認しました。", "observation_en": "Verified public inputs, version, scale, and the scope of scientific-validity checks.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS184", "title": "A Performance Benchmark of the supercomputer Fugaku: Quantum ESPRESSO PWscf Ver.6.7", "publisher": "RIST", "url": "https://www.hpci-office.jp/documents/appli_software/Fugaku_QE_performance.pdf", "source_class": "official-project", "published_or_updated": "2021-07-12"}, "origin_group": "hpci-application-performance", "checked_at": "2026-09-02T07:24:00+09:00", "locator": "Version, compiler and libraries, public benchmark URLs, example job", "observation_ja": "QE 6.7、コンパイラ・ライブラリ、5つのGitHub入力、実行例を確認しました。", "observation_en": "Verified QE 6.7, compiler and libraries, five GitHub inputs, and an example job.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-020、GAP-TDS-026、GAP-TDS-068は未解決です。公開入力・固定版・同じ品質判定で現行HPCI複数機種を実測する必要があります。", "FDS・OpenFOAM資料と2021年資料の現行版再現、非公開GROMACS大規模入力の代替、原始ログは未確認です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-020, GAP-TDS-026, and GAP-TDS-068 remain open; current HPCI systems need measurements with public inputs, fixed versions, and matched quality gates.", "Current reproduction of FDS, OpenFOAM, and 2021 reports, a public replacement for the large GROMACS case, and raw logs remain unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

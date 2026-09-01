@@ -1,0 +1,186 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000259",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:40:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    },
+    {
+      "update_id": "RUP-000251",
+      "bundle_sha256": "82b9ed067447fa7ca02f2ce08961f53d76d60cef40d81a7eee06a84f2f4052d9"
+    }
+  ],
+  "before_profile_sha256": "39b96687a2d96d9549265280335d33a900eef3bc570f04fe11f2141fae0864f4",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳のジョブ運用には、課題単位の受付上限、空き資源を無償利用する低優先度枠、Fugaku Pointに基づく優先実行枠があります。通常ジョブは課題当たり1,000件、stepサブジョブは5万件、bulkサブジョブは2,000件が受付上限です。spot枠は通常ジョブに資源を譲り、4時間後は後続需要により強制終了され得ます。一方、f-pt枠は付与資源量まで通常枠より優先されます。これらは制御系容量、余剰資源活用、優先権を分離した運用事例ですが、処理能力や研究成果への効果は未測定です。Consensusは未完了です。",
+  "summary_en": "Fugaku job operations combine per-project acceptance limits, free low-priority use of idle resources, and priority execution based on Fugaku Points. Limits are 1,000 ordinary jobs, 50,000 step subjobs, and 2,000 bulk subjobs per project. Spot jobs yield to ordinary jobs and can be terminated after four hours when later jobs need their nodes, while the f-pt group runs ahead of ordinary groups up to the granted resource amount. These mechanisms separate control-plane capacity, idle-resource use, and priority rights, but their throughput and research-outcome effects are unmeasured. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "47b7c57664fb1a008a8d516da367206aded525ee143dffc70b7b249142ee125e",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+        "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL",
+      "title_ja": "富岳の投入上限・低優先度・優先実行の分離",
+      "title_en": "Fugaku separation of submission limits, low priority, and priority execution",
+      "summary_ja": "受付容量、余剰資源利用、優先権を別の制御として評価します。",
+      "summary_en": "Evaluate admission capacity, idle-resource use, and priority rights as separate controls.",
+      "items": [
+        {
+          "item_id": "TDI-CD66-FUGAKU-ACCEPTANCE-LIMITS",
+          "name_ja": "課題単位のジョブ受付上限",
+          "name_en": "Per-project job-acceptance limits",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日時点",
+          "timing_en": "As of March 12, 2026",
+          "statement_ja": "2026年3月時点の富岳は、課題単位で通常ジョブ1,000件、stepサブジョブ5万件、bulkサブジョブ2,000件の受付上限を設定しています。これは同時実行数ではなく、受付済みジョブ数の制御です。公開資料は上限到達頻度、拒否率、投入遅延、メタデータ処理性能を示しません。",
+          "statement_en": "As of March 2026, Fugaku limits each project to 1,000 ordinary accepted jobs, 50,000 step subjobs, and 2,000 bulk subjobs. These are accepted-job limits, not concurrency limits. The public material does not report how often limits are reached, rejection rates, submission latency, or metadata-processing throughput.",
+          "hpci_relevance_ja": "次期システムの評価では、計算ノード性能とは別に、通常・step・bulk・ワークフロー型投入の受付率と制御系性能を測る必要があります。",
+          "hpci_relevance_en": "Successor-system evaluation should measure admission and control-plane performance for ordinary, step, bulk, and workflow submissions separately from compute-node performance.",
+          "adoption_conditions_ja": [
+            "課題別の受付数、拒否、再投入、投入遅延の分布を測る。",
+            "上限値を同時実行能力と解釈しない。",
+            "AIエージェントが多数ジョブを生成する場合の流量制御を設計する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure accepted counts, rejections, retries, and submission-latency distributions by project.",
+            "Do not interpret acceptance limits as concurrency capacity.",
+            "Design flow control for AI agents that generate many jobs."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD66-FUGAKU-SPOT-JOBS",
+          "name_ja": "中断可能な無償spot枠",
+          "name_en": "Free interruptible spot groups",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "通年運用、実行時間規則は2024年11月28日以降",
+          "timing_en": "Year-round; runtime rule since November 28, 2024",
+          "statement_ja": "有償課題を除く利用者は、空きノードでrate=0%のspot-large、spot-small、spot-int、spot-middleを利用できます。通常優先度ジョブがあれば投入時期に関係なく待機します。2024年11月28日以降の基本実行上限は4時間で、後続ジョブが資源を要求しなければ最大12時間、spot-intは6時間まで継続できますが、4時間経過後は後続需要により強制終了され得ます。",
+          "statement_en": "Users outside fee-based projects can run rate=0% spot-large, spot-small, spot-int, and spot-middle jobs on idle nodes. They wait behind normal-priority jobs regardless of submission time. Since November 28, 2024, the basic time limit is four hours; jobs may continue to 12 hours, or six hours for spot-int, when later jobs do not require the nodes, but may be forcibly terminated after four hours when demand appears.",
+          "hpci_relevance_ja": "余剰資源を研究へ還元できますが、再開可能性、チェックポイント間隔、強制終了時の会計を含む中断耐性が適用条件になります。",
+          "hpci_relevance_en": "Idle capacity can be returned to research, but restartability, checkpoint interval, and accounting on forced termination are adoption conditions.",
+          "adoption_conditions_ja": [
+            "強制終了率、有効計算時間、再実行量、成果量を通常枠と比較する。",
+            "中断不能なワークロードを無償という理由だけでspotへ移さない。",
+            "チェックポイント・再開インターフェースを標準化する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare forced-termination rate, useful compute time, rerun work, and outputs with ordinary groups.",
+            "Do not move non-interruptible workloads to spot solely because it is free.",
+            "Standardize checkpoint and restart interfaces."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD66-FUGAKU-POINT-PRIORITY",
+          "name_ja": "省電力実績に基づくf-pt優先実行",
+          "name_en": "f-pt priority execution from energy savings",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度運用、2025年10月10日にf-pt既定割当を変更",
+          "timing_en": "FY2025 operation; default f-pt allocation changed October 10, 2025",
+          "statement_ja": "Fugaku Pointは、実行ジョブの標準電力と実消費電力の差から算出され、付与された優先利用計算資源量までf-ptリソースグループで通常のsmall・large等より優先して実行できます。未使用の優先利用資源は次年度へ持ち越されません。資料は制度と算式を示しますが、省電力行動の追加性、待ち時間短縮量、科学成果への効果は示しません。",
+          "statement_en": "Fugaku Points are calculated from the difference between standard and actual job energy. Up to the granted priority-resource amount, jobs in the f-pt group run ahead of ordinary groups such as small and large. Unused priority resources do not carry into the next fiscal year. The material describes the mechanism and formula, but not additional energy savings, queue-time reduction, or effects on scientific output.",
+          "hpci_relevance_ja": "電力制約下の資源配分では、省電力行動への誘因と優先権の公平性を、実測電力・待ち時間・成果量で同時に検証する必要があります。",
+          "hpci_relevance_en": "Under power constraints, incentives for energy-saving behavior and fairness of priority rights should be assessed jointly through measured energy, queue time, and research output.",
+          "adoption_conditions_ja": [
+            "基準電力の設定方法と更新履歴を保存する。",
+            "ポイント獲得前後の電力と待ち時間を比較する。",
+            "優先枠が通常利用者へ与える影響を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve the method and revision history for standard energy.",
+            "Compare energy and queue time before and after point acquisition.",
+            "Measure effects of priority groups on ordinary users."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO061",
+        "title": "Important Notes for Using Fugaku, March 2026",
+        "publisher": "HPCI / RIST Helpdesk",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/helpdeskreport/helpdeskreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-helpdesk",
+      "checked_at": "2026-09-02T05:16:00+09:00",
+      "locator": "Pages 111-118 and 132-135: acceptance limits, spot groups, and Fugaku Point priority execution",
+      "observation_ja": "課題単位の受付上限、spot枠の優先度・強制終了条件、f-pt枠の算式と優先実行条件を確認しました。",
+      "observation_en": "Verified per-project acceptance limits, spot priority and termination conditions, and the formula and priority conditions for f-pt.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "上限到達頻度、spot強制終了率、f-ptによる待ち時間短縮・省電力の追加効果は公開されていません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Limit-hit frequency, spot termination rate, and incremental queue-time and energy effects of f-pt are not public.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

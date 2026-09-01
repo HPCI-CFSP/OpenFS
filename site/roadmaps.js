@@ -62,8 +62,8 @@
     en: {hardware: "Hardware", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
   };
   const categoryLabels = {
-    ja: {benchmark: "ベンチマーク", compute: "計算", interconnect: "インターコネクト", memory: "メモリ", packaging: "実装技術", software: "ソフトウェア", storage: "ストレージ"},
-    en: {benchmark: "Benchmark", compute: "Compute", interconnect: "Interconnect", memory: "Memory", packaging: "Packaging", software: "Software", storage: "Storage"}
+    ja: {benchmark: "ベンチマーク", compute: "計算", interconnect: "インターコネクト", memory: "メモリ", packaging: "実装技術", software: "ソフトウェア", storage: "ストレージ", planning: "計画・調達"},
+    en: {benchmark: "Benchmark", compute: "Compute", interconnect: "Interconnect", memory: "Memory", packaging: "Packaging", software: "Software", storage: "Storage", planning: "Planning and procurement"}
   };
   const sourceClassLabels = {
     ja: {"academic-primary": "学術一次資料", "government-official": "政府・公的機関", "project-official": "プロジェクト公式", "research-organization": "研究機関公開資料"},
@@ -342,9 +342,9 @@
           sourceLinks.className = "comparison-row-sources";
           sourceLinks.setAttribute("aria-label", tr("directSources"));
           row.source_refs.forEach((reference) => {
-            const source = artifacts
-              .get(reference.roadmap_id)
-              ?.sources.find((entry) => entry.source_id === reference.source_id);
+            const source = reference.catalog_source_id
+              ? data.topic_decision_support.sources.find((entry) => entry.source_id === reference.catalog_source_id)
+              : artifacts.get(reference.roadmap_id)?.sources.find((entry) => entry.source_id === reference.source_id);
             if (!source) return;
             const link = document.createElement("a");
             link.href = source.url;
@@ -540,7 +540,7 @@
     renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
   }
   function appendReferenceSourceList(root, sourceRefs) {
-    sourceRefs.forEach((sourceRef) => { const roadmap = data.roadmap_artifacts.find((item) => item.roadmap_id === sourceRef.roadmap_id); const source = roadmap?.sources.find((item) => item.source_id === sourceRef.source_id); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); publisher.textContent = `${roadmapName(sourceRef.roadmap_id)} · ${source.publisher} · ${sourceRef.source_id}`; item.append(link, publisher); root.append(item); });
+    sourceRefs.forEach((sourceRef) => { const roadmap = data.roadmap_artifacts.find((item) => item.roadmap_id === sourceRef.roadmap_id); const source = sourceRef.catalog_source_id ? data.topic_decision_support.sources.find((item) => item.source_id === sourceRef.catalog_source_id) : roadmap?.sources.find((item) => item.source_id === sourceRef.source_id); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); const sourceId = sourceRef.catalog_source_id || sourceRef.source_id; publisher.textContent = roadmap ? `${roadmapName(sourceRef.roadmap_id)} · ${source.publisher} · ${sourceId}` : `${source.publisher} · ${sourceId}`; item.append(link, publisher); root.append(item); });
   }
   function renderRoadmapTermDialog() {
     if (!activeTermId) return; const term = termMap().get(activeTermId); if (!term) return; setText("roadmap-term-dialog-id", term.term_id); setText("roadmap-term-dialog-title", localized(term, "label")); setText("roadmap-term-dialog-meta", `${categoryLabels[language][term.category] || term.category} · ${referenceData().as_of}`); const root = document.getElementById("roadmap-term-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-term-detail"; const title = document.createElement("h3"); title.textContent = tr("termDefinition"); const definition = document.createElement("p"); definition.textContent = localized(term, "definition"); const relatedTitle = document.createElement("h4"); relatedTitle.textContent = tr("relatedTerms"); const related = document.createElement("div"); related.className = "roadmap-related-terms"; term.related_term_ids.forEach((termId) => { const relatedTerm = termMap().get(termId); if (!relatedTerm) return; const button = document.createElement("button"); button.type = "button"; button.className = "related-term-link"; button.textContent = localized(relatedTerm, "label"); button.addEventListener("click", () => { activeTermId = termId; renderRoadmapTermDialog(); }); related.append(button); }); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("referenceSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendReferenceSourceList(sources, term.source_refs); section.append(title, definition, relatedTitle, related, sourcesTitle, sources); root.append(section);

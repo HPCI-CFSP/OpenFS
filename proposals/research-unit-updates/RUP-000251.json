@@ -1,0 +1,154 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000251",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:38:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    }
+  ],
+  "before_profile_sha256": "bde74bcc8cf6073bfda35edc6e88fd26b2321efaf1adc4135581eb8e55118cd5",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年3月の富岳運用報告から、2025年度は前年度より実行ジョブ数が増える一方、投入ノード時間積は同程度で、小規模ジョブが増えたとの運用者の推定を追加しました。2025年度下半期の平均待ち時間は1～384ノードで数時間～1日、385ノード以上で数日～1週間でした。1,000ノード以上で生じた待ち時間増大は、2025年9月11日のリソースグループ設定変更後に短縮しました。平均値と運用者評価であり、分布や全ジョブの保証値ではありません。Consensusは未完了です。",
+  "summary_en": "The March 2026 Fugaku operations report states that FY2025 executed-job counts increased while submitted node-hours remained near the prior-year level, leading the operator to infer a shift toward more small jobs. In the second half of FY2025, average waits were several hours to one day for 1-384 nodes and several days to about one week for 385 or more nodes. A wait-time increase for jobs above 1,000 nodes was reduced after a resource-group configuration change on September 11, 2025. These are averages and operator interpretation, not distributions or guarantees for every job. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "50d5af10bead1849d944199565141ae57d6b521c63bc77cfc20216690b3827cd",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+      "title_ja": "富岳のジョブ構成変化と待ち時間の運用改善",
+      "title_en": "Fugaku workload-mix change and operational queue improvement",
+      "summary_ja": "ジョブ数、ノード時間積、規模別待ち時間、設定変更を分けて記録します。",
+      "summary_en": "Separate job count, node-hours, scale-specific queue time, and configuration interventions.",
+      "items": [
+        {
+          "item_id": "TDI-CD58-FUGAKU-SMALL-JOB-SHIFT",
+          "name_ja": "ジョブ数増加とノード時間積横ばいを分離",
+          "name_en": "Separate rising job count from stable node-hours",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年4月～2026年2月の運用実績",
+          "timing_en": "Operations from April 2025 through February 2026",
+          "statement_ja": "2025年4月～2026年2月は、前年度より実行ジョブ数が増加傾向でしたが、投入ノード時間積は前年度と同程度でした。運用報告は、多数の小規模ジョブを一度に投入する傾向が強まったと推定しています。グラフの数値表、ジョブ長分布、課題別内訳は本文から取得できないため、小規模ジョブ需要の定量的な比率までは確定しません。",
+          "statement_en": "From April 2025 through February 2026, executed-job counts trended upward while submitted node-hours remained near the prior-year level. The operations report infers stronger submission of many small jobs. The text does not provide the plotted numerical table, runtime distribution, or project-level breakdown, so the quantitative share of small-job demand is not established.",
+          "hpci_relevance_ja": "次期システムでは大規模一括実行だけでなく、多数の短時間ジョブの投入、起動、会計、メタデータ処理能力も受入試験に含める必要があります。",
+          "hpci_relevance_en": "A successor system should test submission, launch, accounting, and metadata capacity for many short jobs in addition to large monolithic runs.",
+          "adoption_conditions_ja": [
+            "ジョブ数、実行時間、ノード数、再試行、課題種別の分布を保存する。",
+            "ノード時間積が同じでも制御系負荷が異なることを容量設計へ反映する。",
+            "運用者の推定を測定済み因果関係として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve distributions of job count, runtime, node count, retries, and project type.",
+            "Reflect control-plane load differences even when aggregate node-hours are unchanged.",
+            "Do not treat the operator's inference as a measured causal relationship."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD58-FUGAKU-WAIT-BY-SCALE",
+          "name_ja": "規模別待ち時間と設定変更の効果",
+          "name_en": "Scale-specific waits and the effect of a configuration change",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度下半期、設定変更は2025年9月11日",
+          "timing_en": "Second half of FY2025; configuration changed September 11, 2025",
+          "statement_ja": "2025年度下半期の平均待ち時間は1～384ノードで数時間～1日、385ノード以上で数日～約1週間でした。2025年7～9月頃には1,000ノード以上の待ち時間が増大し、リソースグループ設定を含む変更を9月11日に実施した後、短縮し、下半期には同様の事象が再発していないと報告されています。平均値の分母、分位点、投入取消し、優先枠の混在は公開本文から確定しません。",
+          "statement_en": "In the second half of FY2025, average waits were several hours to one day for 1-384 nodes and several days to about one week for 385 or more nodes. Waits for jobs above 1,000 nodes increased around July-September 2025; after changes including resource-group configuration on September 11, the report says waits fell and the issue did not recur later in the fiscal year. The public text does not establish denominators, quantiles, cancellations, or mixing with priority queues.",
+          "hpci_relevance_ja": "待ち時間をハードウェア容量だけで決めず、キュー分割、優先度、トポロジ割当、専用実行期間を含む運用設計の指標として扱う必要があります。",
+          "hpci_relevance_en": "Queue time should be treated as an operational-design measure involving partitioning, priority, topology allocation, and dedicated windows rather than hardware capacity alone.",
+          "adoption_conditions_ja": [
+            "平均だけでなくp50、p95、最大、取消しをノード規模別に公開する。",
+            "設定変更前後で同じジョブ集合を比較する。",
+            "優先枠、低優先度、専用期間を別系列にする。"
+          ],
+          "adoption_conditions_en": [
+            "Publish p50, p95, maximum, and cancellation rates by node scale, not only averages.",
+            "Compare a common job population before and after configuration changes.",
+            "Separate priority, low-priority, and dedicated execution windows."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS337",
+        "title": "富岳運用状況報告 2026年3月",
+        "publisher": "理化学研究所 計算科学研究センター",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-operations",
+      "checked_at": "2026-09-02T04:47:00+09:00",
+      "locator": "Pages 5-7: executed-job trend, average waiting time by node scale, and the September 11 resource-group change",
+      "observation_ja": "ジョブ数とノード時間積の傾向、規模別平均待ち時間、設定変更後の改善を確認しました。",
+      "observation_en": "Verified job-count and node-hour trends, average queue time by scale, and improvement after the configuration change.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "ジョブ別の待ち時間分布、優先度、取消し、失敗、実行時間は公開グラフ本文から取得できません。",
+    "設定変更の構成差と因果効果は独立に再現されていません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Per-job queue distributions, priorities, cancellations, failures, and runtimes are unavailable from the public chart text.",
+    "The configuration difference and its causal effect have not been independently reproduced.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

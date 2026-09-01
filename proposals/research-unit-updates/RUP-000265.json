@@ -1,0 +1,122 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000265",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T07:41:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000214",
+      "bundle_sha256": "3810a6d11030f55cd88da75a9fc4a4bcf62395be3fb995bb52274abdef97ef7d"
+    },
+    {
+      "update_id": "RUP-000215",
+      "bundle_sha256": "c6c9bea5d507b8256df1eea7f1c0982b4e57587e317b584907dcbbd2178ff276"
+    },
+    {
+      "update_id": "RUP-000244",
+      "bundle_sha256": "cbbeb0572b028c7d6c554c768fe0d193424c68dc4b80bd45bfb785205493ef75"
+    }
+  ],
+  "before_profile_sha256": "424e322dacb730d04a4e4f3783e884b445af6188f39cc2a7fd03d3c12b40aeca",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "h3-Open-BDECはFY2025に、スーパーコンピュータ間通信のWaitIO-Router、高性能ワークロード向けWaitIO/MPI-Hybrid、Julia連携のWaitIO4Juliaを追加し、Miyabi-G/C上でORNL IRISランタイムとの動的タスクスケジューリング統合に着手しました。機能追加は確認できますが、拠点間帯域・遅延、障害回復、セキュリティ、アプリ性能、IRIS統合完了は未確認です。Consensusは未完了です。",
+  "summary_en": "During FY2025, h3-Open-BDEC added WaitIO-Router for cross-supercomputer communication, WaitIO/MPI-Hybrid for high-performance workloads, and WaitIO4Julia, and began integration with ORNL's IRIS runtime for dynamic task scheduling across Miyabi-G and Miyabi-C. The feature work is documented, but cross-site bandwidth and latency, recovery, security, application performance, and completion of IRIS integration are unverified. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "2e4e9f34b2a598ac1e51ebb147e582dff2909dab3f8325cc50ee76ecb61cb25f",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01",
+        "TDS-CD20-SSW-03-MPI5-ABI",
+        "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS",
+        "TDS-CD50-SSW-03-HPCI-COMMUNICATION-SOFTWARE",
+        "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025",
+      "title_ja": "h3-Open-BDECの拠点間通信・言語・ランタイム拡張",
+      "title_en": "h3-Open-BDEC extensions for cross-site communication, languages, and runtimes",
+      "summary_ja": "実装済み拡張と着手段階のランタイム統合を区別します。",
+      "summary_en": "Distinguish implemented extensions from runtime integration that has only begun.",
+      "items": [
+        {
+          "item_id": "TDI-CD72-H3-OPEN-BDEC-EXTENSIONS",
+          "name_ja": "WaitIO-Router・MPI-Hybrid・WaitIO4Julia",
+          "name_en": "WaitIO-Router, MPI-Hybrid, and WaitIO4Julia",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "FY2025実績を2026年最終報告",
+          "timing_en": "FY2025 results in a 2026 final report",
+          "statement_ja": "FY2025報告は、異種通信ライブラリWaitIOとマルチフィジックスカプラUTIL/MPの強化として、スーパーコンピュータ間通信のWaitIO-Router、高性能ワークロード向けWaitIO/MPI-Hybrid、Julia連携のWaitIO4Juliaを挙げています。さらにMiyabi-G/CでIRISとの統合に着手しました。名称と開発状態は確認できますが、公開本文にはAPI、対応トポロジ、暗号化、再送、性能、実運用規模がありません。",
+          "statement_en": "The FY2025 report lists WaitIO-Router for cross-supercomputer communication, WaitIO/MPI-Hybrid for high-performance workloads, and WaitIO4Julia as enhancements to the WaitIO heterogeneous communication library and UTIL/MP multiphysics coupler. It also says IRIS integration began on Miyabi-G and Miyabi-C. Names and development status are documented, but the public text lacks APIs, supported topology, encryption, retry behavior, performance, and production scale.",
+          "hpci_relevance_ja": "連合計算の採用判断には、MPI内部通信と拠点間ワークフロー通信を分け、データ契約・認証・障害・再現性まで含めた実証が必要です。",
+          "hpci_relevance_en": "Federated-computing adoption should separate intra-MPI traffic from cross-site workflow communication and validate data contracts, identity, failures, and reproducibility.",
+          "adoption_conditions_ja": [
+            "版、API、メッセージ量、同期方式、経路、距離、暗号化を固定する。",
+            "帯域、遅延、CPU負荷、再送、障害復旧、結果整合性を測る。",
+            "IRIS統合への着手を完成・供用と扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin versions, APIs, message volume, synchronization, route, distance, and encryption.",
+            "Measure bandwidth, latency, CPU load, retries, recovery, and result consistency.",
+            "Do not treat the start of IRIS integration as completion or service availability."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS340",
+        "title": "Final Report for JHPCN Joint Research of FY 2025: Innovative Computational Science by Integration of Simulation/Data/Learning on Heterogeneous Supercomputers",
+        "publisher": "Joint Usage/Research Center for Interdisciplinary Large-scale Information Infrastructures (JHPCN)",
+        "url": "https://jhpcn-kyoten.itc.u-tokyo.ac.jp/download/final/jh250027.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "jhpcn-fy2025-sdl-final-report",
+      "checked_at": "2026-09-02T05:37:00+09:00",
+      "locator": "Page 8: WaitIO-Router, WaitIO/MPI-Hybrid, WaitIO4Julia, and initial IRIS integration",
+      "observation_ja": "3つのWaitIO拡張とIRIS統合への着手を確認しました。",
+      "observation_en": "Verified three WaitIO extensions and the start of IRIS integration.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開本文にはコード版、リポジトリ位置、API、通信測定、障害試験、セキュリティ設計がありません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The public text lacks code version, repository location, APIs, communication measurements, failure tests, and security design.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

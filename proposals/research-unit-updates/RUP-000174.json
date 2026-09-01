@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000174",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T06:00:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [{"update_id": "RUP-000160", "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"}],
+  "before_profile_sha256": "9367f7786750df3be6f52aea4161fddade780f567eee92490a1010bab16ea4bc",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "富岳、Miyabi、TSUBAME4、玄界、ABCIの公式資料から、現行HPCIでPJM系、PBS系、Altair Grid Engine系が併存すること、資源指定と対話実行の契約が施設ごとに異なることを整理しました。Open OnDemandは操作の入口を共通化できますが、キュー、CPU/GPU/MIGの粒度、最大時間、予約、課金、ジョブ依存関係までは統一しません。整備計画では、ポータル共通化と実行記述の可搬化を別要件とし、標準的な中間表現とサイト別変換・検証を必要とします。単一モデルによる暫定調査で、独立Consensusは未完了です。",
+  "summary_en": "Official documentation for Fugaku, Miyabi, TSUBAME4, Genkai, and ABCI shows the coexistence of PJM-family, PBS-family, and Altair Grid Engine resource management, with site-specific resource and interactive-execution contracts. Open OnDemand can provide a common entry point but does not unify queues, CPU/GPU/MIG granularity, wall-time limits, reservations, charging, or job dependencies. Planning should therefore separate portal commonality from portable execution descriptions and require a standard intermediate form with site adapters and validation. This is provisional single-model research with independent Consensus incomplete.",
+  "units": [{"unit_id": "SSW-06-U01", "before_sha256": "82cad46a251709364fc65445332309fbfa33356af539ff30f7bca11a224dc7ff", "evidence_section_ids": ["TDS-CD6-SSW-06-U01", "TDS-CD7-SSW-06-U01", "TDS-CD8-SSW-06-U01", "TDS-CD14-SSW-06-HPCI-EXECUTION"]}],
+  "sections": [{
+    "section_id": "TDS-CD14-SSW-06-HPCI-EXECUTION",
+    "title_ja": "現行HPCIにおけるジョブ実行方式と資源契約の差",
+    "title_en": "Differences in job execution and resource contracts across current HPCI systems",
+    "summary_ja": "コマンド名ではなく、資源、時間、依存、予約、対話、課金を含む実行契約を比較します。",
+    "summary_en": "Compare execution contracts covering resources, time, dependencies, reservations, interactive access, and charging rather than command names alone.",
+    "items": [
+      {
+        "item_id": "TDI-CD14-HPCI-SCHEDULER-DIALECTS",
+        "name_ja": "PJM・PBS・Altair Grid Engineが併存する実行環境",
+        "name_en": "Coexisting PJM, PBS, and Altair Grid Engine environments",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年9月2日確認", "timing_en": "Checked September 2, 2026",
+        "statement_ja": "富岳はpjsub・pjstat等を用い、通常、ステップ、バルク、会話型、ワークフロー、マスタ・ワーカ型ジョブを公開しています。MiyabiはPBS記法でMiyabi-G/C/MIG別キューを提供します。TSUBAME4とABCIはAltair Grid Engineを採用し、qsub・qstatを使います。玄界のOpen OnDemandはpjstat/pjstat2相当の情報を表示します。同じqsub系でもキュー、資源指定、グループ、実行時間、予約の意味は施設固有です。",
+        "statement_en": "Fugaku exposes pjsub and pjstat with normal, step, bulk, interactive, workflow, and master-worker jobs. Miyabi uses PBS syntax with separate Miyabi-G, Miyabi-C, and MIG queues. TSUBAME4 and ABCI use Altair Grid Engine with qsub and qstat. Genkai's Open OnDemand displays information corresponding to pjstat/pjstat2. Even qsub-based systems retain site-specific queue, resource, group, wall-time, and reservation semantics.",
+        "hpci_relevance_ja": "利用者向け共通記述は、ノード/GPU、メモリ、経過時間、依存、予約、対話、課金単位を明示し、PJM/PBS/AGEへ変換後に意味を検証します。",
+        "hpci_relevance_en": "A common user description should explicitly encode nodes/GPUs, memory, wall time, dependencies, reservations, interactivity, and accounting units, then validate semantics after translation to PJM, PBS, or AGE.",
+        "adoption_conditions_ja": ["サイト別のキューと資源制約を機械可読で取得する。", "変換後スクリプトと割当資源を利用者へ表示する。", "未対応の機能は黙って省略せず実行前に失敗させる。"],
+        "adoption_conditions_en": ["Obtain site queue and resource constraints in machine-readable form.", "Show translated scripts and allocated resources to users.", "Fail before execution for unsupported semantics rather than silently dropping them."],
+        "actor_ids": [], "source_ids": ["SRC-CDS193", "SRC-CDS194", "SRC-CDS195", "SRC-CDS196", "SRC-CDS197"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-HPCI-RESOURCE-GRANULARITY",
+        "name_ja": "GPU・MIG・CPU共有粒度と最大実行時間の差",
+        "name_en": "Different GPU, MIG, CPU-sharing granularity and wall-time limits",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2024年11月から2026年8月の公開仕様", "timing_en": "Published specifications from November 2024 through August 2026",
+        "statement_ja": "Miyabi-Gは通常GPUノード、1 MIGインスタンス、対話キューを分け、公開資料では通常48時間、MIG通常48時間、対話2時間等の制限を示します。TSUBAME4は4 GPU/192 CPUコアからCPU 4コアまでの論理資源タイプ、1/2 GPUのMIG相当粒度、最大24時間、予約を提供します。ABCIはノード種別と複数CUDA版を持ち、玄界はOpen OnDemand上のJupyter等もジョブとしてポイントを消費します。",
+        "statement_en": "Miyabi-G separates full GPU nodes, one-MIG-instance use, and interactive queues, with published limits including 48 hours for regular and MIG jobs and two hours for interactive jobs. TSUBAME4 provides logical resource types ranging from four GPUs and 192 CPU cores down to four CPU cores, half-GPU granularity, a 24-hour maximum, and reservations. ABCI has multiple node classes and CUDA versions, while Genkai's Jupyter and similar Open OnDemand sessions consume points as jobs.",
+        "hpci_relevance_ja": "GPU時間やノード時間だけでなく、割当粒度、共有率、メモリ、最大時間、予約、対話開始待ちを記録し、実アプリの費用と完了時間を比較します。",
+        "hpci_relevance_en": "Record allocation granularity, sharing ratio, memory, wall-time maximum, reservations, and interactive start delay in addition to GPU-hours or node-hours, then compare application cost and time to completion.",
+        "adoption_conditions_ja": ["MIG構成、性能隔離、GPUメモリ、対応ライブラリを確認する。", "待ち時間と実行時間を分けて測定する。", "共有対話キューを連続計算用能力として数えない。"],
+        "adoption_conditions_en": ["Confirm MIG profiles, performance isolation, GPU memory, and library support.", "Measure queue delay separately from execution time.", "Do not count shared interactive queues as sustained-compute capacity."],
+        "actor_ids": [], "source_ids": ["SRC-CDS194", "SRC-CDS195", "SRC-CDS196", "SRC-CDS197"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-OOD-PORTAL-NOT-SCHEDULER-STANDARD",
+        "name_ja": "Open OnDemandは入口を共通化するが実行契約は残る",
+        "name_en": "Open OnDemand unifies entry points, not execution contracts",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年4月から9月確認", "timing_en": "Checked April through September 2026",
+        "statement_ja": "Miyabiと玄界はOpen OnDemandからファイル、シェル、ジョブ、Jupyter/デスクトップ等を提供し、富岳もOpen OnDemandガイドを公開しています。ただし玄界ではJupyter終了までポイントが消費され、MiyabiではPBSキュー、TSUBAME4ではAGE資源タイプという下位契約が残ります。画面が似ていても、割当・課金・終了処理は同一ではありません。",
+        "statement_en": "Miyabi and Genkai expose files, shells, jobs, and Jupyter or desktop applications through Open OnDemand, and Fugaku publishes an Open OnDemand guide. Yet Genkai charges points until Jupyter terminates, Miyabi retains PBS queues, and TSUBAME4 retains AGE resource types. Similar interfaces do not make allocation, charging, or termination behavior identical.",
+        "hpci_relevance_ja": "共通ポータルには、投入先、資源、課金見積り、最大時間、データ送信先、終了条件を実行前に表示する責務を持たせます。",
+        "hpci_relevance_en": "A common portal should show destination, resources, estimated charging, wall-time maximum, data destination, and termination conditions before execution.",
+        "adoption_conditions_ja": ["ポータルとCLIで同じ実行定義を共有する。", "セッション切断とジョブ終了を区別して表示する。", "監査ログに元定義、変換結果、投入先、資源、課金を残す。"],
+        "adoption_conditions_en": ["Share one execution definition across portal and CLI.", "Distinguish session disconnect from job termination.", "Audit the source definition, translation, destination, resources, and accounting."],
+        "actor_ids": [], "source_ids": ["SRC-CDS193", "SRC-CDS194", "SRC-CDS196"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS193", "title": "富岳 利用手引書 利用およびジョブ実行編 1.53版", "publisher": "理化学研究所計算科学研究センター", "url": "https://riken-rccs.github.io/fugaku-doc/docs/user-guide/sys-use/user-guide-use-1.53/build/ja/index.html", "source_class": "official-project", "published_or_updated": "2026-08-06"}, "origin_group": "fugaku-job-guide", "checked_at": "2026-09-02T02:38:00+09:00", "locator": "ジョブ種別、PJM操作、資源指定、電力、ストレージ、移行", "observation_ja": "通常、ステップ、バルク、会話、ワークフロー、マスタ・ワーカ型、PJMコマンド、電力制御等の公開範囲を確認しました。", "observation_en": "Verified documented normal, step, bulk, interactive, workflow, master-worker, PJM, and power-control capabilities.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS194", "title": "Miyabi運用に関するお知らせ", "publisher": "東京大学情報基盤センター・JCAHPC", "url": "https://www.cc.u-tokyo.ac.jp/public/VOL26/No6/04_202411miyabi-ope.pdf", "source_class": "official-project", "published_or_updated": "2024-11"}, "origin_group": "miyabi-operations", "checked_at": "2026-09-02T02:40:00+09:00", "locator": "Pages 4-5: PBS queues, node/GPU/MIG granularity, wall times, Open OnDemand", "observation_ja": "Miyabi-G/C/MIGのPBSキュー、資源粒度、時間制限、対話、トークン係数、Open OnDemandを確認しました。", "observation_en": "Verified PBS queues, resource granularity, wall times, interactivity, token factors, and Open OnDemand for Miyabi-G/C/MIG.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS195", "title": "TSUBAME4.0利用の手引き：ジョブスケジューリングシステム", "publisher": "東京科学大学情報基盤センター", "url": "https://www.t4.cii.isct.ac.jp/docs/handbook.ja/jobs/", "source_class": "official-project", "published_or_updated": "2026-08時点"}, "origin_group": "tsubame4-job-guide", "checked_at": "2026-09-02T02:42:00+09:00", "locator": "AGE、キュー、資源タイプ、最大時間、予約、対話", "observation_ja": "Altair Grid Engine、qsub/qstat、論理資源タイプ、共有対話キュー、24時間上限、予約を確認しました。", "observation_en": "Verified Altair Grid Engine, qsub/qstat, logical resource types, shared interactive queues, the 24-hour maximum, and reservations.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS196", "title": "玄界 Open OnDemand", "publisher": "九州大学情報基盤研究開発センター", "url": "https://www.cc.kyushu-u.ac.jp/scp/system/genkai/software/Open_OnDemand/", "source_class": "official-project", "published_or_updated": "2026-04"}, "origin_group": "genkai-ood", "checked_at": "2026-09-02T02:43:00+09:00", "locator": "認証、ファイル、ジョブ、シェル、Jupyter、ポイント消費", "observation_ja": "2要素認証、pjstat相当表示、ジョブ投入、対話アプリ、終了までのポイント消費を確認しました。", "observation_en": "Verified two-factor authentication, pjstat-equivalent status, job submission, interactive applications, and point consumption until termination.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS197", "title": "ABCIシステムの概要", "publisher": "産業技術総合研究所", "url": "https://docs.abci.ai/ja/system-overview/", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "abci-system-overview", "checked_at": "2026-09-02T02:44:00+09:00", "locator": "ソフトウェア：Altair Grid Engine、OS、CUDA、ノード種別", "observation_ja": "Altair Grid Engine 8.6.19、ノード種別別OS、複数CUDA版を確認しました。", "observation_en": "Verified Altair Grid Engine 8.6.19, node-class OS differences, and multiple CUDA versions.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-015、GAP-TDS-036、GAP-TDS-062は未解決です。各センターの機械可読キュー仕様、待ち時間、失敗率、予約実績、利用率、課金を継続取得する必要があります。", "共通実行記述から各スケジューラへの変換は提案段階で、実アプリによる意味保存試験は未実施です。", "独立したAIモデルによる本文確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-015, GAP-TDS-036, and GAP-TDS-062 remain open. Machine-readable queue definitions, delay, failure rate, reservation outcomes, utilization, and accounting need continuing collection across centers.", "Translation from a common execution description remains a proposal and has not been validated for semantic preservation with real applications.", "Independent-model source review and Consensus remain incomplete."]
+}

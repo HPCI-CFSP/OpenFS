@@ -1,0 +1,126 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000182",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T07:27:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000133", "bundle_sha256": "b559fd03c2cb1b8d18f47441c5673fb9619cfb32c4588591f8bfc0c358064d40"},
+    {"update_id": "RUP-000178", "bundle_sha256": "239584dade60ea7b9d058c3f9e563e2bfb8fc14365009d2be6cba810ec5b3f10"},
+    {"update_id": "RUP-000181", "bundle_sha256": "f08e5dfe9017c051e76c416e1f22a4d0ebb5104f984bcb84686860b16b14e261"}
+  ],
+  "before_profile_sha256": "0b09e75c0ac4453fd877b42962e459b65db5370458cba62cbebd83acc2b7157f",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験設備連携で混同しやすいMaiMLとLADSの役割を、公式資料から整理しました。MaiMLはJIS K 0200:2024として制定された分析データ・メタデータのXML共通形式で、AIST SolutionsはAlcheMiaでの先行実装を公表しています。LADSは2024年1月に1.0.1が公開された、装置非依存のOPC UA情報モデルで、監視・制御、プログラム・結果、資産・保守を扱います。両者は代替ではなく、データ表現と装置サービスの補完関係です。導入製品数、適合性、性能、安全性は未確認で、Consensusは未完了です。",
+  "summary_en": "Official material clarifies the distinct roles of MaiML and LADS in instrument integration. MaiML is the XML common format for analytical data and metadata standardized as JIS K 0200:2024, with AIST Solutions reporting an early implementation in AlcheMia. LADS 1.0.1, released in January 2024, is a device-agnostic OPC UA information model covering monitoring and control, program and result management, assets, and maintenance. They are complementary data-format and device-service layers rather than alternatives. Product adoption, conformance, performance, and safety remain unverified, and Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "794b1c0262e953248d6eedf946ed7212c3eeee3b452451cd395424bac7d0b749",
+      "evidence_section_ids": ["TDS-CD1-APP-14-U01", "TDS-CD2-APP-14-U01", "TDS-CD3-APP-14-U01", "TDS-CD10-APP-14-U01", "TDS-CD11-APP-14-JPARC-MLF", "TDS-CD12-APP-14-ILIS", "TDS-CD13-APP-14-INSTRUMENT-STANDARDS"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD13-APP-14-INSTRUMENT-STANDARDS",
+      "title_ja": "実験設備連携におけるデータ形式と装置制御標準",
+      "title_en": "Data-format and device-control standards for instrument integration",
+      "summary_ja": "MaiMLとLADSの対象範囲、成熟度、補完関係を分け、調達仕様で確認すべき事項を整理します。",
+      "summary_en": "Separate the scope, maturity, and complementary roles of MaiML and LADS and identify procurement checks.",
+      "items": [
+        {
+          "item_id": "TDI-CD13-MAIML-DATA-FORMAT",
+          "name_ja": "MaiML：分析データとメタデータの共通形式",
+          "name_en": "MaiML: common analytical-data and metadata format",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "JIS K 0200:2024、2026年に普及・実装協定",
+          "timing_en": "JIS K 0200:2024; implementation partnership announced in 2026",
+          "statement_ja": "AIST Solutionsの公式発表によると、MaiMLはメーカーごとに異なる分析データ形式を共通化するためのXML形式で、JIS K 0200:2024として制定されています。同社はJAIMAとの2026年協定に基づき、データプラットフォームAlcheMiaへの先行実装と、MOF開発でのデータレイク利用を公表しています。この事例は実装経験を示しますが、全装置・全分析手法への対応や市場普及率は示しません。",
+          "statement_en": "AIST Solutions states that MaiML is an XML format for harmonizing vendor-specific analytical-data formats and has been standardized as JIS K 0200:2024. Under a 2026 agreement with JAIMA, the company reports early implementation in its AlcheMia data platform and use of a MaiML data lake for metal-organic-framework research. This establishes implementation experience, not support for every instrument or analytical method or broad market adoption.",
+          "hpci_relevance_ja": "実験データをHPCIで再利用するには、測定値だけでなく試料、測定条件、履歴、参照関係を機械可読で受け渡す形式が必要です。",
+          "hpci_relevance_en": "Reuse of experimental data on HPCI requires a machine-readable transfer format for samples, conditions, history, and references as well as measured values.",
+          "adoption_conditions_ja": ["対象装置・分析手法ごとの出力完全性と変換損失を検証する。", "スキーマ版、拡張語彙、単位、識別子、電子署名の運用を固定する。", "元データとMaiML変換後データの双方を保存し来歴を追跡する。"],
+          "adoption_conditions_en": ["Validate export completeness and conversion loss for each instrument and analytical method.", "Govern schema versions, extension vocabularies, units, identifiers, and signatures.", "Retain both source and converted MaiML data with traceable provenance."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS219"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-LADS-DEVICE-SERVICE",
+          "name_ja": "LADS：分析・実験装置の装置非依存サービスモデル",
+          "name_en": "LADS: device-agnostic service model for laboratory instruments",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "Version 1.0.1を2024年1月18日公開",
+          "timing_en": "Version 1.0.1 released on January 18, 2024",
+          "statement_ja": "OPC FoundationのLADSは、分析・実験装置向けのメーカー非依存OPC UA情報モデルです。仕様はHardware ViewとFunctional Viewを持ち、監視・制御、通知、プログラム・結果管理、資産管理、保守を対象とします。1.0.1の公開は仕様成熟の根拠ですが、iLIS参加装置が同版に適合し、安全な遠隔制御を実現済みであることまでは証明しません。",
+          "statement_en": "OPC Foundation LADS is a manufacturer-independent OPC UA information model for analytical and laboratory instruments. It includes hardware and functional views and covers monitoring and control, notification, program and result management, asset management, and maintenance. Release 1.0.1 demonstrates specification maturity, but does not establish that iLIS instruments conform to that version or already provide safe remote control.",
+          "hpci_relevance_ja": "HPCIとの連携では、装置状態、予約、実行指示、結果、エラー、保守を計算ワークフローから扱う制御APIの候補になります。",
+          "hpci_relevance_en": "For HPCI integration, LADS is a candidate control interface for instrument state, reservations, execution commands, results, errors, and maintenance within compute workflows.",
+          "adoption_conditions_ja": ["必須・任意機能と装置別実装範囲を調べ、適合性試験を行う。", "認証、暗号化、ネットワーク分離、コマンド権限、安全停止を別途設計する。", "遅延、再接続、重複実行、部分結果、装置停止時の動作を試験する。"],
+          "adoption_conditions_en": ["Map mandatory and optional functions to each device implementation and run conformance tests.", "Design authentication, encryption, segmentation, command authority, and safety stops separately.", "Test latency, reconnect, duplicate execution, partial results, and device-outage behavior."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS220"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-MAIML-LADS-COMPLEMENT",
+          "name_ja": "MaiMLとLADSはデータ面と制御面を補完する",
+          "name_en": "MaiML and LADS complement data and control layers",
+          "stage": "current",
+          "maturity": "announced",
+          "timing_ja": "2026年時点の統合設計課題",
+          "timing_en": "Integration design issue as of 2026",
+          "statement_ja": "MaiMLは保存・交換する分析データと付随情報を、LADSは稼働中の装置機能とサービスを主に扱います。したがって一方を採れば他方が不要になる関係ではありません。サンプルID、用語・オントロジー、実行ID、時刻、ソフトウェア版、アクセス権を両層で対応付ける追加設計が必要です。",
+          "statement_en": "MaiML primarily represents analytical data and contextual information for storage and exchange, while LADS primarily represents operating device functions and services. Adopting one therefore does not remove the need for the other. Additional design must align sample identifiers, terminology and ontologies, run identifiers, time, software versions, and access rights across both layers.",
+          "hpci_relevance_ja": "調達仕様では「標準対応」だけでなく、データ、制御、意味、認証、来歴の各層について規格名・版・試験方法を指定する必要があります。",
+          "hpci_relevance_en": "Procurement should specify standards, versions, and tests separately for data, control, semantics, identity, and provenance rather than asking only for generic standards support.",
+          "adoption_conditions_ja": ["同一実験を両標準で追跡するエンドツーエンド実証を行う。", "ベンダー混在時の相互運用と拡張項目の扱いを確認する。", "規格更新時の後方互換性と移行手順を契約に含める。"],
+          "adoption_conditions_en": ["Run an end-to-end demonstration tracing one experiment across both standards.", "Verify interoperability and extensions in a multi-vendor environment.", "Include backward compatibility and migration procedures for standard updates in contracts."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS219", "SRC-CDS220"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS219", "title": "一般社団法人日本分析機器工業会と連携協定を締結 ～デジタルプラットフォームでデータ駆動型R&Dを実現へ～", "publisher": "AIST Solutions", "url": "https://www.aist-solutions.co.jp/news/page000476/", "source_class": "official-project", "published_or_updated": "2026-02-06"},
+      "origin_group": "maiml-standard-and-implementation",
+      "checked_at": "2026-09-02T02:30:00+09:00",
+      "locator": "MaiML、JIS K 0200:2024、AlcheMia先行実装、MOF研究利用",
+      "observation_ja": "MaiMLの標準化状況、データ形式としての役割、AIST Solutionsによる実装事例を確認しました。",
+      "observation_en": "Verified MaiML's standardization status, role as a data format, and reported AIST Solutions implementation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS220", "title": "Laboratory and Analytical Device Standard", "publisher": "OPC Foundation", "url": "https://profiles.opcfoundation.org/document/37", "source_class": "official-standard", "published_or_updated": "2024-01-18"},
+      "origin_group": "opc-ua-lads-standard",
+      "checked_at": "2026-09-02T02:31:00+09:00",
+      "locator": "LADS 1.0.1 release, device-agnostic information model, hardware and functional views",
+      "observation_ja": "LADS 1.0.1の公開日、装置非依存情報モデル、対象機能を確認しました。",
+      "observation_en": "Verified the LADS 1.0.1 release, device-agnostic information model, and covered functions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-024とGAP-TDS-074は未解決です。MaiMLとLADSの対応製品一覧、実装範囲、適合性試験、性能、安全性を確認する必要があります。", "MaiML、LADS、装置固有形式を横断するサンプルID・語彙・来歴の参照実装は未検証です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-024 and GAP-TDS-074 remain open. Product support, implementation scope, conformance, performance, and safety for MaiML and LADS require verification.", "A reference implementation aligning sample identifiers, vocabularies, and provenance across MaiML, LADS, and device-native formats remains unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

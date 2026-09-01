@@ -1,0 +1,159 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000322",
+  "topic_id": "CROSS-16",
+  "created_at": "2026-09-02T07:50:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000164",
+      "bundle_sha256": "c5cb37ea84473f5c8f922f8be9b67b8aebd1f2b69909d9ed8f477a15d03e078b"
+    },
+    {
+      "update_id": "RUP-000183",
+      "bundle_sha256": "04dfd882cc73ca8ed33b51ccccf3b1d5e17154d766e1654cfbe206a4ed25b681"
+    }
+  ],
+  "before_profile_sha256": "13b47e60f75d3ff7e46f402d3cd47c115f5d600b19414d22aca0fb0f01ef0c64",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年の国内実証として、5G core・INC Edge・APN・遠隔GPUの統合制御と、千葉の現場から石狩の再エネdata centerへGPU処理を集約する構成を追加しました。HPCIでは低latency現場と低carbon計算拠点を分離する候補として、絶対latency、system全体のenergy、SLA、費用を未確認事項に残します。Consensusは未完了です。",
+  "summary_en": "This update adds two 2026 Japanese trials: integrated control across 5G core, INC Edge, APN, and remote GPUs, and centralized GPU processing from a Chiba field site at a renewable-powered Ishikari data center. For HPCI, these are candidates for separating low-latency field sites from low-carbon compute sites, while absolute latency, whole-system energy, SLA, and cost remain unresolved. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-16-U01",
+      "before_sha256": "fe93cea016c3dc8f885cf7753fea63f0d74ff0236f9edf72a793ef023c1854ae",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-16-U01",
+        "TDS-CD2-CROSS-16-U01",
+        "TDS-CD3-CROSS-16-POWER-CONNECTION",
+        "TDS-CD36-CROSS-16-APN-REMOTE-GPU-PLACEMENT"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD36-CROSS-16-APN-REMOTE-GPU-PLACEMENT",
+      "title_ja": "APNによる実験現場・edgeと遠隔GPU拠点の配置分離",
+      "title_en": "Separating experiment or edge sites from remote GPU locations using APN",
+      "summary_ja": "2026年の国内実証から、低latency現場と再エネ計算拠点を分離する条件と不足情報を整理します。",
+      "summary_en": "Use 2026 Japanese trials to identify conditions and missing evidence for separating low-latency field sites from renewable-powered compute locations.",
+      "items": [
+        {
+          "item_id": "TDI-CD136-INC-EDGE-REMOTE-GPU-CONTROL",
+          "name_ja": "5G core・INC Edge・APN・遠隔GPUの統合制御",
+          "name_en": "Integrated control across 5G core, INC Edge, APN, and remote GPUs",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年3月の実証",
+          "timing_en": "Demonstrated in March 2026",
+          "statement_ja": "NTT DOCOMOとNTTは、commercial 5G core上のINC Edgeが前処理とAI実行を分け、IOWN APN経由の遠隔GPUへ処理を配置する映像解析を実証しました。通信とAI解析を合わせたend-to-end latencyが、ISO/TS 15066に基づく一定条件下の近接協働robot要件内だったとしています。これはnetworkがcompute placementとpriorityを制御する構成の実証ですが、距離、絶対latency、jitter、GPU構成、同時stream数、精度、障害時挙動、費用は公表されていません。科学実験の制御loopやHPCI workloadへ直接一般化しません。",
+          "statement_en": "NTT DOCOMO and NTT demonstrated video analytics in which INC Edge on a commercial 5G core split preprocessing from AI execution and placed processing on remote GPUs over IOWN APN. They report that combined communication and AI-analysis end-to-end latency met a nearby collaborative-robot requirement under specified ISO/TS 15066 assumptions. The trial demonstrates network control of compute placement and priority, but does not publish distance, absolute latency, jitter, GPU configuration, stream concurrency, accuracy, failure behavior, or cost. It is not generalized directly to scientific-instrument control loops or HPCI workloads.",
+          "hpci_relevance_ja": "放射光、望遠鏡、観測、robot実験等でedge前処理とcenter GPUを分ける場合、network・compute・applicationを一つのdeadline contractとして評価する設計例になります。",
+          "hpci_relevance_en": "The architecture is a design example for evaluating network, compute, and application as one deadline contract when edge preprocessing and center GPUs are separated for beamlines, telescopes, observations, or robotic experiments.",
+          "adoption_conditions_ja": [
+            "対象実験ごとにdeadline、jitter、loss、accuracy、safe fallbackを定義する。",
+            "距離、hop、帯域、GPU queue、前処理率、同時streamを変えた測定を公開する。",
+            "networkまたはGPU障害時のlocal degraded modeと再試行を実証する。"
+          ],
+          "adoption_conditions_en": [
+            "Define deadlines, jitter, loss, accuracy, and safe fallback for each experiment.",
+            "Publish measurements varying distance, hops, bandwidth, GPU queues, preprocessing ratios, and concurrent streams.",
+            "Demonstrate local degraded modes and retries after network or GPU failure."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS429"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD137-APN-RENEWABLE-REMOTE-GPU-ISHIKARI",
+          "name_ja": "千葉の現場と石狩の再エネGPU拠点を結ぶEco-Central Computing",
+          "name_en": "Eco-Central Computing between a Chiba field site and renewable-powered GPUs in Ishikari",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年3月にtechnical verification完了",
+          "timing_en": "Technical verification completed in March 2026",
+          "statement_ja": "NTTとKCCSは、千葉県流山市のwarehouseと、北海道石狩市で24時間100%再生可能energyを用いるZED IshikariをAPNで接続し、遠隔GPUによる映像解析とrobot制御を実証しました。collision予測から回避指令送信まで1秒未満と報告し、APNは実運用向け常設networkとして使われました。ただし、IT処理を遠隔化したことによるwarehouse側電力削減と、network・data centerを含むsystem全体のenergy/CO2削減は同じではありません。距離別traffic、GPU台数、PUE、再エネadditionality、送電・network電力、費用、SLAは公表されていません。",
+          "statement_en": "NTT and KCCS connected a warehouse in Nagareyama, Chiba, to ZED Ishikari, which operates continuously on 100% renewable energy in Ishikari, Hokkaido, and demonstrated remote-GPU video analytics and robot control. They report less than one second from collision prediction to transmission of an avoidance command, using APN as permanent operational network infrastructure. Reducing IT power at the warehouse is not the same as reducing whole-system energy or carbon including the network and data center. Traffic by distance, GPU count, PUE, renewable additionality, transmission and network energy, cost, and SLA are not published.",
+          "hpci_relevance_ja": "HPCIの地域配置では、低carbon電源のあるcenterへ計算を集約する案を、現場latency、data主権、network energy、災害相関、費用まで含めて比較できます。",
+          "hpci_relevance_en": "For HPCI regional placement, concentrating compute at centers with low-carbon power can be compared with field latency, data sovereignty, network energy, correlated disaster risk, and cost included.",
+          "adoption_conditions_ja": [
+            "送信元・network・GPU・storageを含むenergyとcarbonを共通境界で測定する。",
+            "再エネ証書、時間一致、additionality、停電時backupを確認する。",
+            "HPCI規模のdata量、長時間job、checkpoint、災害時経路、SLA、料金でpilotを行う。"
+          ],
+          "adoption_conditions_en": [
+            "Measure energy and carbon across source, network, GPU, and storage under one boundary.",
+            "Verify renewable certificates, temporal matching, additionality, and outage backup.",
+            "Pilot HPCI-scale data, long jobs, checkpoints, disaster routing, SLA, and pricing."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS430"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS429",
+        "title": "DOCOMO and NTT Successfully Demonstrate Low-Latency AI Video Analytics Using In-Network Computing with Remote GPU Resources",
+        "publisher": "NTT DOCOMO and NTT",
+        "url": "https://group.ntt/en/newsrelease/2026/03/02/260302a.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-02"
+      },
+      "origin_group": "ntt-inc-edge-apn-remote-gpu-official",
+      "checked_at": "2026-09-02T06:01:00+09:00",
+      "locator": "Lines 302-349: architecture, processing split, priority control, end-to-end requirement, roles, and ISO/TS 15066 condition",
+      "observation_ja": "構成、処理分割、latency評価の条件と未公開数値を確認しました。",
+      "observation_en": "Verified the architecture, processing split, latency condition, and unpublished numeric detail.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS430",
+        "title": "NTT and KCCS Demonstrate First-of-its-Kind Eco-Central Computing for Logistics Warehouses",
+        "publisher": "NTT and KYOCERA Communication Systems",
+        "url": "https://group.ntt/en/newsrelease/2026/03/23/260323a.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-23"
+      },
+      "origin_group": "ntt-kccs-eco-central-computing-official",
+      "checked_at": "2026-09-02T06:02:00+09:00",
+      "locator": "Lines 302-364: site pair, renewable claim, permanent APN, remote analytics and robot control, sub-second step, and caveats",
+      "observation_ja": "拠点、再エネ条件、常設APN、1秒未満の処理範囲、未公開system境界を確認しました。",
+      "observation_en": "Verified sites, renewable condition, permanent APN, the sub-second process boundary, and undisclosed system boundaries.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "二実証の絶対latency、jitter、GPU、traffic、failure、費用、SLAは未公表です。",
+    "HPCI science workflowによるnetwork・compute・storage・energyのend-to-end測定は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Absolute latency, jitter, GPUs, traffic, failures, cost, and SLA are not public for the two trials.",
+    "End-to-end network, compute, storage, and energy measurements with HPCI scientific workflows have not been performed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

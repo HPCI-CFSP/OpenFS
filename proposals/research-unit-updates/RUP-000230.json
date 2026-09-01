@@ -1,0 +1,196 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000230",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-02T07:35:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000210", "bundle_sha256": "f15addd3693585f725953fb389f7396a71f83d486158b414e6875069f1b23ce1"},
+    {"update_id": "RUP-000211", "bundle_sha256": "7dec8991ee83d030b07477ff7ae8307c97909c6ad719bf6b8ed505998b997677"},
+    {"update_id": "RUP-000217", "bundle_sha256": "616a0ef9f5ecd4cb24486968d618c93623f1bdeab8f28bcf22e35706e3fad423"},
+    {"update_id": "RUP-000220", "bundle_sha256": "136b6e2474588413dcfd97f44a407d3c8b6ff4b6e5a7b7e48784812eef969d42"}
+  ],
+  "before_profile_sha256": "2135cb37d54f7f817a49b772287bb74f90e3e0fbc9972b4e9074e9f7418d0a76",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MLCommons Scienceの現行実装を、科学AI benchmarkの候補一覧、実行code、提出規則、公開結果の4段階に分けて追加しました。新しいcatalogはYAMLのbenchmark metadata、FAIR score、評価、検証・公開toolを一元管理します。実行系はCloudmask、Earthquake、STEMDL、UNOを掲げ、rolling submissionにversion、commit、hyperparameter、data取得、反復結果、科学的結果の記録を要求します。一方、公開結果repositoryのmain表示にはbenchmark別結果が確認できず、複数system比較の成熟度は未確認です。Consensusは未完了です。",
+  "summary_en": "This update separates current MLCommons Science artifacts into four maturity layers: a scientific-AI benchmark catalog, executable code, submission rules, and public results. The new catalog centralizes YAML benchmark metadata, FAIR scores, ratings, and validation/publication tooling. The execution framework lists Cloudmask, Earthquake, STEMDL, and UNO and requires rolling submissions to record versions, commits, hyperparameters, data retrieval, repeated results, and scientific outcomes. However, the public results repository's visible main branch does not show per-benchmark result directories, so maturity for multi-system comparison remains unverified. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-13-U01",
+      "before_sha256": "996e5030704a84f20e09a0d0a0ade351a3179411dc48e14163b9b1e04a08815e",
+      "evidence_section_ids": [
+        "TDS-AIP-EVALUATION",
+        "TDS-HC26-APP-13-U1",
+        "TDS-CD2-APP-13-U01",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE",
+        "TDS-CD23-APP-13-MLPERF-6",
+        "TDS-CD36-APP-13-MLCOMMONS-SCIENCE-MATURITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD36-APP-13-MLCOMMONS-SCIENCE-MATURITY",
+      "title_ja": "MLCommons Scienceのcatalog・code・提出・結果の成熟度",
+      "title_en": "Maturity of MLCommons Science catalog, code, submissions, and results",
+      "summary_ja": "benchmark名の収録から、再現可能な複数system結果までを段階別に確認します。",
+      "summary_en": "Assess maturity from catalog inclusion through reproducible multi-system results.",
+      "items": [
+        {
+          "item_id": "TDI-CD36-MLCOMMONS-SCIENCE-CATALOG",
+          "name_ja": "科学AI benchmarkをYAML ontologyとFAIR評価で一元管理",
+          "name_en": "Central scientific-AI benchmark catalog with YAML ontology and FAIR ratings",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日に現行repositoryを確認",
+          "timing_en": "Current repository checked September 2, 2026",
+          "statement_ja": "MLCommons Science Working Groupのbenchmark collectionは、benchmark定義をYAMLで版管理し、citation、FAIR score、ratingを保持します。schema、検証script、Markdown・LaTeX・MkDocs生成、CSV・JSON出力を備え、表示物を手編集せずsourceから生成します。これは候補発見とmetadata品質に有用ですが、catalog収録だけではcode実行可能性、dataset取得、科学的妥当性、性能結果の独立再現を保証しません。",
+          "statement_en": "The MLCommons Science Working Group benchmark collection versions benchmark definitions in YAML with citations, FAIR scores, and ratings. It provides schemas, validation scripts, Markdown, LaTeX and MkDocs generation, and CSV/JSON output, generating views from source rather than hand editing. This supports discovery and metadata quality, but catalog inclusion alone does not establish executable code, dataset access, scientific validity, or independent performance reproduction.",
+          "hpci_relevance_ja": "OpenFSのbenchmark catalogでも、名称だけでなくcode、data、metric、reference result、license、再現性の成熟度を構造化して管理できます。",
+          "hpci_relevance_en": "OpenFS can similarly structure code, data, metrics, reference results, licenses, and reproducibility maturity rather than listing names alone.",
+          "adoption_conditions_ja": [
+            "HPCI候補をcatalog ontologyへ対応付け、欠損値をunknownとして保持する。",
+            "FAIR評価とHPCI代表性・計算費用・scale適合性を別軸にする。",
+            "生成viewと一次YAMLのcommitを結果ごとに保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Map HPCI candidates into the catalog ontology and retain missing values as unknown.",
+            "Separate FAIR rating from HPCI representativeness, compute cost, and scale suitability.",
+            "Preserve source-YAML commits alongside generated views for each result."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS312"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD36-MLCOMMONS-SCIENCE-ROLLING-SUBMISSION",
+          "name_ja": "4 codeのrolling submissionはversion・data・反復結果を要求",
+          "name_en": "Rolling submissions for four codes require versions, data, and repeated results",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年9月2日に現行規則を確認",
+          "timing_en": "Current rules checked September 2, 2026",
+          "statement_ja": "MLCommons Scienceの提出規則はCloudmask、Earthquake、STEMDL、UNOを対象とし、rolling submissionとworking group reviewを採用します。organization、application、system、experiment単位でscript、反復result、config.yaml、code version・Git commit、hyperparameter、data endpointと取得command、科学的結果を保存する設計です。仕組みはHPCIの継続評価に適合しますが、4 codeで科学分野全体を代表することや、すべての提出が独立再現済みであることは示しません。",
+          "statement_en": "MLCommons Science submission rules cover Cloudmask, Earthquake, STEMDL, and UNO through rolling submissions and working-group review. Per organization, application, system, and experiment, the design stores scripts, repeated results, config.yaml, code version and Git commit, hyperparameters, data endpoints and retrieval commands, and scientific outcomes. This model fits continuous HPCI evaluation but does not establish that four codes represent all science or that every submission is independently reproduced.",
+          "hpci_relevance_ja": "HPCI向けには同じ来歴形式を使い、科学simulation、科学AI、実験連携を追加したrolling benchmarkを運用できます。",
+          "hpci_relevance_en": "HPCI can reuse this provenance pattern for rolling benchmarks extended to scientific simulation, scientific AI, and facility-coupled workflows.",
+          "adoption_conditions_ja": [
+            "HPCI重点分野と各センター利用量に対する4 codeの被覆率を評価する。",
+            "submission reviewと独立再実行を別状態として記録する。",
+            "data license、取得時間、storage容量、前処理を計算結果とともに固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Assess four-code coverage against HPCI priority domains and center usage.",
+            "Record submission review and independent rerun as separate states.",
+            "Pin data license, retrieval time, storage volume, and preprocessing with results."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS313"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD36-MLCOMMONS-SCIENCE-PUBLIC-RESULT-GAP",
+          "name_ja": "公開results repositoryにbenchmark別結果を確認できない",
+          "name_en": "Per-benchmark results are not visible in the public results repository",
+          "stage": "current",
+          "maturity": "uncertain",
+          "timing_ja": "2026年9月2日のmain branch表示",
+          "timing_en": "Visible main branch on September 2, 2026",
+          "statement_ja": "`mlcommons/science_results`はScience benchmark 1.0 results用の公開repositoryですが、確認時のmain表示は`.github`とCONTRIBUTING・LICENSEのみで、Cloudmask等のorganization/application/system/experiment結果directoryを確認できませんでした。別branch、未表示履歴、review中の非公開repositoryに結果が存在する可能性は残るため、結果が存在しないとは断定しません。公開比較集合が読めるまでは成熟度を未確認とします。",
+          "statement_en": "`mlcommons/science_results` is the public Science benchmark 1.0 results repository, but its visible main branch at the time of review showed only `.github`, CONTRIBUTING, and LICENSE, with no visible organization/application/system/experiment result directories for Cloudmask or the other codes. Results may exist on another branch, in history not exposed by the page, or in the private review repository, so this does not prove nonexistence. Multi-system public-result maturity remains unverified until the comparison set is readable.",
+          "hpci_relevance_ja": "HPCIで正式採用するbenchmarkには、仕様とcodeだけでなく、複数機関・複数systemの公開resultと独立再現状態を要求すべきです。",
+          "hpci_relevance_en": "Formal HPCI benchmarks should require public multi-institution, multi-system results and independent-reproduction status in addition to specifications and code.",
+          "adoption_conditions_ja": [
+            "公開resultsのbranch、tag、release、review状態を継続監視する。",
+            "最低2機関・2systemの同条件結果が得られるまで順位付けへ使わない。",
+            "結果repositoryが空の場合も、未確認状態としてcatalogに表示する。"
+          ],
+          "adoption_conditions_en": [
+            "Monitor branches, tags, releases, and review state of public results.",
+            "Do not rank systems until matched results from at least two institutions and two systems exist.",
+            "Display an unverified state in the catalog when the result repository is empty."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS314"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS312",
+        "title": "MLCommons Science Working Group AI Benchmark Collection",
+        "publisher": "MLCommons Science Working Group",
+        "url": "https://github.com/mlcommons-science/benchmark",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "mlcommons-science-benchmark-collection",
+      "checked_at": "2026-09-02T04:24:00+09:00",
+      "locator": "README: ontology sources, schema, ratings, validation and publication tooling",
+      "observation_ja": "YAML定義、FAIR score・rating、schema、検証と複数形式生成を確認しました。",
+      "observation_en": "Verified YAML definitions, FAIR scores and ratings, schemas, validation, and multi-format generation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS313",
+        "title": "MLCommons Science Working Group Benchmark Submission Rules",
+        "publisher": "MLCommons Science Working Group",
+        "url": "https://github.com/mlcommons/science/blob/main/submit.adoc",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "mlcommons-science-submission-rules",
+      "checked_at": "2026-09-02T04:25:00+09:00",
+      "locator": "rolling submission process, repository layout, configuration and log requirements",
+      "observation_ja": "4 code、rolling review、version・commit・data取得・反復結果・科学的結果の要求を確認しました。",
+      "observation_en": "Verified four codes, rolling review, and version, commit, data retrieval, repeated-result, and scientific-result requirements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS314",
+        "title": "MLCommons Science Benchmark 1.0 Results Repository",
+        "publisher": "MLCommons",
+        "url": "https://github.com/mlcommons/science_results",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "mlcommons-science-public-results",
+      "checked_at": "2026-09-02T04:26:00+09:00",
+      "locator": "visible main-branch file listing",
+      "observation_ja": "公開main表示にbenchmark別result directoryがないことを確認しました。別branchや非公開review中の結果は否定していません。",
+      "observation_en": "Verified that the visible public main branch did not show per-benchmark result directories; other branches or private review results are not ruled out.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "catalog項目数、各項目のFAIR評価分布、HPCI重点分野被覆率の定量集計は未実施です。",
+    "4 codeの公開result、独立再現、system別性能・電力・費用比較は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Quantitative counts, FAIR-rating distributions, and HPCI priority-domain coverage have not yet been computed.",
+    "Public results, independent reproduction, and system-level performance, power, and cost comparisons for the four codes remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

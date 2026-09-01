@@ -497,6 +497,14 @@ class PagesSiteTests(unittest.TestCase):
         self.assertIn("data.application_performance_forecasts.applications", search)
         self.assertIn("data.hpci_system_inventory.systems", search)
 
+        catalog = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="term-dialog"', catalog)
+        self.assertIn('id="term-dialog-content"', catalog)
+        catalog_script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")
+        self.assertIn("function appendGlossaryText", catalog_script)
+        self.assertIn("function renderTopicComparisons", catalog_script)
+        self.assertIn("function renderCatalogTermDialog", catalog_script)
+
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
         self.assertIn("function milestoneGridRange", script)
@@ -1410,7 +1418,12 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('?topic=', search_script)
             self.assertIn('?track=', search_script)
             self.assertIn('?term=', search_script)
-            self.assertIn('new URLSearchParams(window.location.search).get("topic")', (output / "app.js").read_text(encoding="utf-8"))
+            app_script = (output / "app.js").read_text(encoding="utf-8")
+            self.assertIn(
+                "new URLSearchParams(window.location.search)", app_script
+            )
+            self.assertIn('initialParams.get("topic")', app_script)
+            self.assertIn('initialParams.get("term")', app_script)
             roadmap_script = (output / "roadmaps.js").read_text(encoding="utf-8")
             self.assertIn('params.get("track")', roadmap_script)
             self.assertIn('params.get("term")', roadmap_script)

@@ -1,0 +1,246 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000294",
+  "topic_id": "APP-05",
+  "created_at": "2026-09-02T07:45:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000219",
+      "bundle_sha256": "7615f038d4ede214eb11716792cb7ce6ddc39b796315e4181f15fef047a8d5fb"
+    }
+  ],
+  "before_profile_sha256": "7ef1d29420da3fd549321764e4ed5ba736cfa76ca279ffc17190f33a8f063c32",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCコード最適化agentの2026年評価基盤を追加しました。HPCAgent-Benchは数値参照からC/C++/Fortran/CUDA等、PMPP HardはBlackwell上の69課題と隔離実行、Atrex-Benchは実運用trace由来の30 operatorをAMD/NVIDIA共通条件で扱います。KernelPro研究は、raw profiler counterを渡すだけではno-feedbackより幾何平均speedupが低く、意味付けしたfeedbackが重要と報告しています。kernel評価をapplication全体の移植工数や科学的妥当性へ直接外挿しません。Consensusは未完了です。",
+  "summary_en": "This update adds 2026 evaluation infrastructure for HPC code-optimization agents. HPCAgent-Bench spans C, C++, Fortran, CUDA, and other implementations from numerical references; PMPP Hard provides 69 Blackwell-oriented tasks in isolated execution; Atrex-Bench evaluates 30 production-trace operators across AMD and NVIDIA under shared conditions. KernelPro reports lower geometric-mean speedup from raw profiler counters than from no feedback, highlighting the value of interpreted feedback. Kernel results are not extrapolated directly to whole-application porting effort or scientific validity. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-05-U01",
+      "before_sha256": "26576584dcf454812d79a8be19a3edfabff0d9d9a5148566576817ccc535ff9c",
+      "evidence_section_ids": [
+        "TDS-APP05-CURRENT",
+        "TDS-APP05-FUTURE",
+        "TDS-CD2-APP-05-U01",
+        "TDS-CD25-APP-05-CODING-EVAL-QUALITY",
+        "TDS-CD3-APP-05-HPC-OPTIMIZATION-AGENT-EVALS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-APP-05-HPC-OPTIMIZATION-AGENT-EVALS",
+      "title_ja": "HPCコード最適化agentの比較対象と測定境界",
+      "title_en": "Benchmark scope and measurement boundaries for HPC code-optimization agents",
+      "summary_ja": "数値kernel、GPU実装、実運用trace、複数vendor、性能counterの使い方を分け、HPCIアプリ全体の移植へ直接外挿しません。",
+      "summary_en": "Separate numerical kernels, GPU implementations, production traces, multi-vendor support, and use of performance counters, without extrapolating directly to whole-application HPCI porting.",
+      "items": [
+        {
+          "item_id": "TDI-CD101-HPCAGENT-BENCH",
+          "name_ja": "HPCAgent-Bench：数値参照から複数言語・backendへ",
+          "name_en": "HPCAgent-Bench: from numerical references to multiple languages and backends",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年9月2日時点の公開artifact",
+          "timing_en": "Public artifact as of September 2, 2026",
+          "statement_ja": "HPCAgent-Benchは各kernelをNumPy参照で定義し、agent、autotuner、人間が生成したC、C++、Fortran、CUDA等の実装を、数値的正しさを満たした上でbaselineに対するspeedupで評価します。loop-level reasoningはvectorization、wavefront、anti-dependency、prefix-scan等の個別最適化を分離します。小kernelの成功は、MPI通信、I/O、build、長時間安定性を含むapplication全体の移植成功を意味しません。",
+          "statement_en": "HPCAgent-Bench defines each kernel with a NumPy reference and evaluates C, C++, Fortran, CUDA, and other implementations produced by an agent, autotuner, or human by speedup over a baseline subject to numerical correctness. Its loop-level track isolates optimizations such as vectorization, wavefronts, anti-dependencies, and prefix scans. Success on small kernels does not establish porting of a complete application including MPI, I/O, builds, and long-duration stability.",
+          "hpci_relevance_ja": "HPCIのAI移植支援を、言語・backend別のkernel能力とapplication統合能力に分けて評価できます。",
+          "hpci_relevance_en": "HPCI can evaluate AI porting assistance separately for language/backend kernel capability and whole-application integration.",
+          "adoption_conditions_ja": [
+            "input、tolerance、compiler flag、baseline、thread・GPU設定を固定する。",
+            "未対応backendとbuild failureをscore分母から除外せず表示する。",
+            "Fortran/MPI applicationの変更量、review工数、回帰testを別に測る。"
+          ],
+          "adoption_conditions_en": [
+            "Pin inputs, tolerances, compiler flags, baselines, threads, and GPU settings.",
+            "Expose unsupported backends and build failures rather than excluding them from the denominator.",
+            "Measure code changes, review effort, and regression testing separately for Fortran/MPI applications."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS372"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD101-PMPP-HARD",
+          "name_ja": "PMPP Hard：Blackwell上の69 GPU課題と隔離実行",
+          "name_en": "PMPP Hard: 69 GPU tasks and isolated execution on Blackwell",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年9月2日時点の公開artifact",
+          "timing_en": "Public artifact as of September 2, 2026",
+          "statement_ja": "PMPP Hardの公開設定はCUDA 60件、Triton 8件、CUTLASS 1件の計69課題で、sm_120を主対象、sm_100も対応し、RTX PRO 6000、RTX 5090、B200で検証されています。5回のinterleaved pair、matching output digest、median student/reference比1.25以下をgateとし、隔離GPU sandboxで実行します。異なるGPU architectureのscoreは直接比較できないと明記されています。",
+          "statement_en": "PMPP Hard publishes 69 tasks: 60 CUDA, eight Triton, and one CUTLASS task. It targets sm_120 with sm_100 support and has been validated on RTX PRO 6000, RTX 5090, and B200 GPUs. Its gate uses five interleaved pairs, matching output digests, and a median student/reference ratio no greater than 1.25 in isolated GPU sandboxes. It explicitly warns against direct score comparison across GPU architectures.",
+          "hpci_relevance_ja": "生成codeを隔離し、correctnessとpaired timingを組み合わせる最低要件の参考になります。",
+          "hpci_relevance_en": "It provides a reference for minimum requirements combining untrusted-code isolation, correctness, and paired timing.",
+          "adoption_conditions_ja": [
+            "HPCI対象GPUごとにimage、driver、clock、toolchainを固定する。",
+            "digest一致だけでなく浮動小数点誤差、race、非決定性をtestする。",
+            "sandbox escape、外部通信、secret、resource exhaustionをsecurity testへ含める。"
+          ],
+          "adoption_conditions_en": [
+            "Pin images, drivers, clocks, and toolchains for each HPCI target GPU.",
+            "Test floating-point error, races, and nondeterminism beyond digest matching.",
+            "Include sandbox escape, network access, secrets, and resource exhaustion in security testing."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS373"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD101-ATREX-MULTIVENDOR",
+          "name_ja": "Atrex-Bench：実運用trace由来operatorをAMD・NVIDIAで共通評価",
+          "name_en": "Atrex-Bench: production-trace operators evaluated across AMD and NVIDIA",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年9月2日時点の公開artifact",
+          "timing_en": "Public artifact as of September 2, 2026",
+          "statement_ja": "Atrex-BenchはvLLM、SGLang、AITER、rtp-llm等の実運用traceを基にした30 operatorを、Triton、Gluon、FlyDSL、CuteDSLで評価し、同じreferenceとevaluatorをAMD ROCmとNVIDIA CUDAで動かします。compile、数値correctness、rooflineに対するspeed-of-light効率を分け、agentからprovenanceとroofline値を隠すclean workspaceを用意します。対象は主にAI inference operatorであり、科学simulator全体の可搬性ではありません。",
+          "statement_en": "Atrex-Bench evaluates 30 operators drawn mostly from production traces including vLLM, SGLang, AITER, and rtp-llm across Triton, Gluon, FlyDSL, and CuteDSL. The same references and evaluator run on AMD ROCm and NVIDIA CUDA. It separates compilation, numerical correctness, and speed-of-light efficiency against a roofline and provides a cleaned workspace that hides provenance and roofline values from the agent. The scope is primarily AI inference operators, not portability of complete scientific simulators.",
+          "hpci_relevance_ja": "同一taskをNVIDIAとAMDで比較し、agent/modelの能力とbackend・DSL成熟度を分離する枠組みに使えます。",
+          "hpci_relevance_en": "It can support matched NVIDIA-versus-AMD tasks while separating agent/model capability from backend and DSL maturity.",
+          "adoption_conditions_ja": [
+            "両vendorで同じ演算、shape、dtype、quality、warm-up、測定回数を使う。",
+            "SOL効率のroofline式、bandwidth、peak、precision条件を公開する。",
+            "vendorごとの未対応DSL・operatorをcoverageとして併記する。"
+          ],
+          "adoption_conditions_en": [
+            "Use identical operations, shapes, dtypes, quality, warm-up, and repetitions across vendors.",
+            "Publish the roofline equation, bandwidth, peak, and precision behind SOL efficiency.",
+            "Report unsupported DSLs and operators per vendor as coverage."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS374"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD101-KERNELPRO-SEMANTIC-FEEDBACK",
+          "name_ja": "KernelPro：raw counterより意味付けしたprofile feedback",
+          "name_en": "KernelPro: interpreted profiling feedback instead of raw counters",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年9月2日時点の公開artifact",
+          "timing_en": "Public artifact as of September 2, 2026",
+          "statement_ja": "2026年6月のKernelPro preprintは、42件のKernelBench ablationで、no-feedbackが32/42 solved・3.35倍幾何平均、raw ncu counterが36/42・1.77倍、意味付けしたmicro-profilingを使うfull pipelineが42/42・4.00倍と報告しています。raw metricを多く与えるだけでは、counterを誤って最適化する可能性があるという結果です。実験は主にA100、特定model・seed・探索budgetに依存し、codeは論文公開時にrelease予定と記載され、確認時点では完全再現できません。",
+          "statement_en": "A June 2026 KernelPro preprint reports a 42-task KernelBench ablation: no feedback solved 32 of 42 with 3.35x geometric-mean speedup, raw ncu counters solved 36 of 42 with 1.77x, and the full interpreted micro-profiling pipeline solved 42 of 42 with 4.00x. The finding is that supplying many raw metrics can cause optimization of counters that do not improve wall time. Experiments mainly use A100 GPUs and a specific model, seeds, and search budget; the paper says code will be released upon publication, so complete reproduction was unavailable at inspection time.",
+          "hpci_relevance_ja": "HPCIの最適化agentにはprofiler accessだけでなく、roofline、数値要件、既知library、bottleneck分類を構造化したSkillと、誤誘導を検出するablationが必要です。",
+          "hpci_relevance_en": "HPCI optimization agents need structured skills for roofline reasoning, numerical requirements, known libraries, and bottleneck classification, plus ablations detecting misleading feedback, not just profiler access.",
+          "adoption_conditions_ja": [
+            "code・prompt・model・temperature・seed・iteration budget公開後に再現する。",
+            "unsolvedを1倍とする集計、capping、best-of-seedsを含むscore規則を固定する。",
+            "speedとenergyを同じcorrectness・precisionで測り、instruction置換による精度差を検査する。"
+          ],
+          "adoption_conditions_en": [
+            "Reproduce after code, prompts, model, temperature, seeds, and iteration budgets are available.",
+            "Pin scoring rules including unsolved-as-1x, capping, and best-of-seeds.",
+            "Measure speed and energy at matched correctness and precision and test precision changes from instruction substitutions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS375"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS372",
+        "title": "HPCAgent-Bench",
+        "publisher": "Scalable Parallel Computing Laboratory",
+        "url": "https://github.com/spcl/HPCAgent-Bench",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-02"
+      },
+      "origin_group": "hpcagent-bench",
+      "checked_at": "2026-09-02T05:27:00+09:00",
+      "locator": "README overview and track table",
+      "observation_ja": "NumPy参照、複数言語・backend、correctness付きspeedup、loop-level trackを確認しました。",
+      "observation_en": "Verified NumPy references, multiple languages and backends, correctness-conditioned speedup, and the loop-level track.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS373",
+        "title": "PMPP Hard",
+        "publisher": "PMPP Hard project",
+        "url": "https://github.com/SinatrasC/pmpp-hard",
+        "source_class": "official-project",
+        "published_or_updated": "main README accessed 2026-09-02"
+      },
+      "origin_group": "pmpp-hard",
+      "checked_at": "2026-09-02T05:27:00+09:00",
+      "locator": "README benchmark card",
+      "observation_ja": "69課題、GPU・toolchain、paired測定、performance gate、隔離実行を確認しました。",
+      "observation_en": "Verified 69 tasks, GPUs and toolchain, paired measurements, performance gate, and isolated execution.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS374",
+        "title": "Atrex-Bench",
+        "publisher": "Alibaba",
+        "url": "https://github.com/alibaba/atrex-bench",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07"
+      },
+      "origin_group": "atrex-bench",
+      "checked_at": "2026-09-02T05:27:00+09:00",
+      "locator": "README features and environment",
+      "observation_ja": "30 operator、実運用trace、4 DSL、AMD/NVIDIA、3段階評価、clean workspaceを確認しました。",
+      "observation_en": "Verified 30 operators, production traces, four DSLs, AMD/NVIDIA support, three-stage evaluation, and the clean workspace.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS375",
+        "title": "Optimizing CUDA like a Human: Micro-Profiling Tools as Expert Surrogates for LLM-Based GPU Kernel Optimization",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2606.26453",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-06-24"
+      },
+      "origin_group": "kernelpro-preprint",
+      "checked_at": "2026-09-02T05:27:00+09:00",
+      "locator": "Sections 5.3 and 5.5: ablations, measurement configuration, energy result, and release limitation",
+      "observation_ja": "42課題ablation、raw counterの結果、full pipeline、energy preliminary study、code公開予定を確認しました。",
+      "observation_en": "Verified the 42-task ablation, raw-counter result, full pipeline, preliminary energy study, and planned code release.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各benchmarkをHPCI機上で再実行し、Fortran/MPI application全体の移植へ拡張する作業は未実施です。",
+    "KernelProはpreprintであり、公開codeによる独立再現は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The benchmarks have not been rerun on HPCI systems or extended to whole Fortran/MPI applications.",
+    "KernelPro is a preprint, and independent reproduction from released code remains unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

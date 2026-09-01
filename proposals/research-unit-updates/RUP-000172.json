@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000172",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T05:45:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000127", "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"},
+    {"update_id": "RUP-000159", "bundle_sha256": "bcb20b7c511099e4e2cf9e1f31e6b3312c80af5ec23b9d3c0dcdf24005e72e04"}
+  ],
+  "before_profile_sha256": "8ec84d044492faddeb3d3ec0dd8ecbb6418b88b00bab0ecfe7a95dca668d0d13",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI公式のソフトウェア検索と、Miyabi、玄界、富岳の公開ソフトウェア情報を比較しました。HPCIは各資源でインストール済み、または動作確認済みのソフトウェアを横断検索できますが、同じ名称が表示されても版、ビルド条件、入力、正解、性能が同等であるとは限りません。GH200、Xeon、A64FXではコンパイラ、MPI、数値・GPUライブラリが分かれるため、整備計画ではアプリケーション名の有無に加え、再現可能な移植試験を必要条件とします。単一モデルによる暫定調査で、独立Consensusは未完了です。",
+  "summary_en": "This update compares the official HPCI software search with public software information for Miyabi, Genkai, and Fugaku. HPCI supports cross-resource discovery of software installed or confirmed to run, but a matching name does not establish equivalent versions, builds, inputs, correctness, or performance. Compiler, MPI, numerical-library, and GPU-library stacks differ across GH200, Xeon, and A64FX systems, so planning must require reproducible porting tests in addition to application-name availability. This is provisional single-model research with independent Consensus incomplete.",
+  "units": [
+    {"unit_id": "SSW-01-U01", "before_sha256": "03847a2f85df41af950311ef6ac86fed897aab1c292f236861ba6ada3387bcec", "evidence_section_ids": ["TDS-SSW01-PORTABILITY", "TDS-CD1-SSW-01-U01", "TDS-CD14-SSW-01-PORTABILITY"]},
+    {"unit_id": "SSW-01-U02", "before_sha256": "7ba3c8feb0322d080162d85ff7260ad24c85c4b81f55b1e5c37ba7deed83aad7", "evidence_section_ids": ["TDS-SSW02-TOOLCHAINS", "TDS-HC26-SSW-01-U2", "TDS-CD1-SSW-01-U02", "TDS-CD2-SSW-01-U02", "TDS-CD3-SSW-01-U02", "TDS-CD4-SSW-01-U02", "TDS-CD11-SSW-01-U02", "TDS-CD14-SSW-01-PORTABILITY"]},
+    {"unit_id": "SSW-01-U04", "before_sha256": "e674ab0bdbbb09917374ca4a6b60864b78db262cc048b55e9c789107dd4cae15", "evidence_section_ids": ["TDS-CD1-SSW-01-U04", "TDS-CD6-SSW-01-U04", "TDS-CD8-SSW-01-U04", "TDS-CD9-SSW-01-U04", "TDS-CD10-SSW-01-U04", "TDS-CD14-SSW-01-PORTABILITY"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD14-SSW-01-PORTABILITY",
+      "title_ja": "HPCI実装状況から見たソフトウェア可搬性の判定条件",
+      "title_en": "Portability decision conditions from current HPCI deployments",
+      "summary_ja": "横断検索、提供スタック、版、利用条件を分け、掲載の有無と再現可能な移植実績を混同しません。",
+      "summary_en": "Separate cross-resource discovery, provided stacks, versions, and access conditions without conflating listing with reproducible porting evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD14-HPCI-SOFTWARE-DISCOVERY-LIMIT",
+          "name_ja": "HPCIソフトウェア検索が示す範囲",
+          "name_en": "Scope of the HPCI software search",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2026年9月2日確認", "timing_en": "Checked September 2, 2026",
+          "statement_ja": "HPCI公式ページは、各共用計算資源にインストール済み、またはその資源で動作確認できたアプリケーションを横断検索できると説明しています。資源提供機関別の詳細ページも集約されています。一方、検索結果の一致だけでは、版、コンパイラ、MPI、数値ライブラリ、入力、正解条件、性能、ライセンス条件の同一性は確認できません。",
+          "statement_en": "The official HPCI page describes a cross-resource search for applications installed on, or confirmed to run on, each shared computing resource, and aggregates provider-specific detail pages. A matching search result alone does not establish identical versions, compilers, MPI, numerical libraries, inputs, correctness criteria, performance, or license conditions.",
+          "hpci_relevance_ja": "検索結果を移植候補の発見に使い、整備判断には版とビルド定義、代表入力、正解、性能、変更量を別途記録します。",
+          "hpci_relevance_en": "Use search results to discover migration candidates, while recording versions, build definitions, representative inputs, correctness, performance, and code changes separately for planning decisions.",
+          "adoption_conditions_ja": ["検索結果の取得日と対象資源を保存する。", "掲載を性能可搬性またはサポート保証の証拠として扱わない。", "同一入力による候補環境間の再現試験を行う。"],
+          "adoption_conditions_en": ["Record retrieval date and target resource for search results.", "Do not treat listing as proof of performance portability or support guarantees.", "Run reproducible cross-platform tests with matching inputs."],
+          "actor_ids": [], "source_ids": ["SRC-CDS185", "SRC-CDS186"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD14-MIYABI-BIFURCATED-STACK",
+          "name_ja": "Miyabi-G/Cで分かれるコンパイラ・通信・ライブラリ",
+          "name_en": "Compiler, communication, and library split across Miyabi-G/C",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年1月運用開始、2026年9月2日確認", "timing_en": "Operating since January 2025; checked September 2, 2026",
+          "statement_ja": "MiyabiはRocky Linux 9を共通OSとしますが、GH200のMiyabi-GはGNU、NVIDIA HPC SDK、CUDA Toolkit、Open MPI/HPC-X、cuBLAS・cuFFT・cuDNN・NCCL等を提供し、Xeon MaxのMiyabi-CはIntelコンパイラとIntel MPIを提供します。アプリケーション一覧は共通表示ですが、CPU/GPU両系で同一版・同一機能・同一性能が提供されることまでは示していません。",
+          "statement_en": "Miyabi uses Rocky Linux 9 as a common OS, but GH200-based Miyabi-G provides GNU, the NVIDIA HPC SDK, CUDA Toolkit, Open MPI/HPC-X, and libraries such as cuBLAS, cuFFT, cuDNN, and NCCL, while Xeon Max-based Miyabi-C provides Intel compilers and Intel MPI. The application list is shown jointly, but it does not establish identical versions, features, or performance on both CPU and GPU partitions.",
+          "hpci_relevance_ja": "単一施設内でもハードウェア別のビルド・実行経路が必要です。共通OSだけを移植容易性の指標にせず、CPU版とGPU版の差分を試験します。",
+          "hpci_relevance_en": "Even one facility needs hardware-specific build and execution paths. A common OS is insufficient as a portability metric; CPU and GPU variants require explicit comparison.",
+          "adoption_conditions_ja": ["各アプリケーションの対応ノード群と版を確認する。", "CPU版とGPU版の入力互換性、数値差、性能、保守工数を測る。", "HPC-X/Open MPIとIntel MPIの相互運用を仮定しない。"],
+          "adoption_conditions_en": ["Confirm the supported partition and version for each application.", "Measure input compatibility, numerical differences, performance, and maintenance effort across CPU and GPU variants.", "Do not assume interoperability between HPC-X/Open MPI and Intel MPI."],
+          "actor_ids": [], "source_ids": ["SRC-CDS187"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD14-GENKAI-MODULE-VERSION-BASELINE",
+          "name_ja": "玄界のmodule管理と公開版・利用条件",
+          "name_en": "Genkai module management, published versions, and access conditions",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2026年2月3日更新", "timing_en": "Updated February 3, 2026",
+          "statement_ja": "玄界はmoduleで環境を切り替え、公開デフォルトとしてIntel oneAPI 2023.2、GNU 8.5.0、NVIDIA HPC SDK 23.9、CUDA 12.2.2、Intel MPI 2021.12、FFTW 3.3.10等を示します。NAGは研究用途、VASPはライセンス保持者、MolproとAMBERは学術機関に限定されます。ページに版が空欄のソフトウェアもあり、一覧だけでは再現可能な環境定義になりません。",
+          "statement_en": "Genkai switches environments with modules and publishes defaults including Intel oneAPI 2023.2, GNU 8.5.0, NVIDIA HPC SDK 23.9, CUDA 12.2.2, Intel MPI 2021.12, and FFTW 3.3.10. NAG is research-only, VASP requires a license, and Molpro and AMBER are restricted to academic institutions. Some listed software lacks a published version, so the list alone is not a reproducible environment definition.",
+          "hpci_relevance_ja": "調達仕様には名称だけでなく、複数版保持、更新周期、ライセンス対象、module定義の書き出し、旧環境の再現期間を含めます。",
+          "hpci_relevance_en": "Procurement requirements should cover retained versions, update cadence, license eligibility, exportable module definitions, and the period during which previous environments remain reproducible, not merely software names.",
+          "adoption_conditions_ja": ["使用時のmodule一覧と実体版を保存する。", "空欄の版とGPU対応範囲をセンターへ確認する。", "ライセンス費用と利用資格を計算資源費から分ける。"],
+          "adoption_conditions_en": ["Capture loaded modules and resolved versions at execution time.", "Confirm blank versions and GPU support with the center.", "Separate license cost and eligibility from compute-resource cost."],
+          "actor_ids": [], "source_ids": ["SRC-CDS188"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD14-FUGAKU-SPACK-SUPPORTED-STACK",
+          "name_ja": "富岳のSpack配布と整備ソフトウェア",
+          "name_en": "Fugaku Spack distribution and maintained software",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年10月から2026年8月更新", "timing_en": "Updates from October 2025 through August 2026",
+          "statement_ja": "富岳はSpackでOSSを提供し、R-CCS開発・移植、R-CCS/RIST整備、商用の各ソフトウェアを別に公開しています。整備ソフトウェアにはQuantum ESPRESSO 7.3.1/7.4.1、LAMMPSの複数版、GROMACS 2023.5～2025.3、OpenFOAM 2412/12等があり、使い方と整備担当を示します。この仕組みは版と担当を可視化しますが、他アーキテクチャ用Spackレシピの同一性能や、将来システムでのバイナリ互換を保証しません。",
+          "statement_en": "Fugaku provides OSS through Spack and separately publishes R-CCS-developed or ported software, R-CCS/RIST-maintained software, and commercial software. Maintained entries include Quantum ESPRESSO 7.3.1/7.4.1, multiple LAMMPS versions, GROMACS 2023.5 through 2025.3, and OpenFOAM 2412/12, with usage and maintainer information. This exposes versions and responsibility but does not guarantee equal performance from recipes on other architectures or binary compatibility with future systems.",
+          "hpci_relevance_ja": "次世代環境でも、レシピ、パッチ、コンパイラ、依存関係、検証入力、担当組織を一体で移行対象にします。",
+          "hpci_relevance_en": "Treat recipes, patches, compilers, dependencies, validation inputs, and responsible organizations as one migration object for the next environment.",
+          "adoption_conditions_ja": ["Spackレシピだけでなくパッチとビルドログを保全する。", "主要アプリの複数版を新旧システムで並行検証する。", "整備担当と上流開発者の保守責任を明示する。"],
+          "adoption_conditions_en": ["Preserve patches and build logs in addition to Spack recipes.", "Validate multiple major-application versions in parallel on old and new systems.", "Clarify maintenance responsibility between platform maintainers and upstream developers."],
+          "actor_ids": [], "source_ids": ["SRC-CDS189", "SRC-CDS190"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS185", "title": "計算機・ソフトウェア（ソフトウェア検索）", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/using_hpci/hardware_software", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-software-search", "checked_at": "2026-09-02T02:05:00+09:00", "locator": "ソフトウェア検索の対象説明", "observation_ja": "インストール済みまたは動作確認済みソフトウェアを検索できる範囲を確認しました。横断性能や同一版の保証は記載されていません。", "observation_en": "Verified that the search covers installed or confirmed-to-run software. It does not claim cross-resource performance or identical versions.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS186", "title": "HPCI資源提供機関ソフトウェア関連情報", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/about_hpci/what_is_hpci/hpci_system_provider/hpci_software_info", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-provider-software-links", "checked_at": "2026-09-02T02:06:00+09:00", "locator": "資源提供機関別ソフトウェア関連情報一覧", "observation_ja": "富岳、各大学、ABCI等の公式ソフトウェア情報への集約リンクを確認しました。", "observation_en": "Verified aggregated links to official software information for Fugaku, university centers, ABCI, and other providers.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS187", "title": "Miyabiスーパーコンピュータシステムの紹介", "publisher": "東京大学情報基盤センター・JCAHPC", "url": "https://www.cc.u-tokyo.ac.jp/supercomputer/miyabi/system.php", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "jcahpc-miyabi-system", "checked_at": "2026-09-02T02:08:00+09:00", "locator": "ソフトウェア構成表", "observation_ja": "Miyabi-G/CのOS、コンパイラ、MPI、ライブラリ、アプリケーション、コンテナを確認し、ハードウェア別スタックを分離して読みました。", "observation_en": "Verified OS, compilers, MPI, libraries, applications, and containers for Miyabi-G/C, separating hardware-specific stacks.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS188", "title": "玄界ソフトウェア", "publisher": "九州大学情報基盤研究開発センター", "url": "https://www.cc.kyushu-u.ac.jp/scp/system/genkai/software/", "source_class": "official-project", "published_or_updated": "2026-02-03"}, "origin_group": "kyushu-genkai-software", "checked_at": "2026-09-02T02:09:00+09:00", "locator": "プログラム開発、MPI、数値計算ライブラリ、計算化学", "observation_ja": "module、公開デフォルト版、空欄の版、研究・学術・ライセンス保持者限定条件を確認しました。", "observation_en": "Verified module use, published defaults, blank versions, and research-, academic-, or license-holder restrictions.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS189", "title": "富岳 利用者向けマニュアル：利用可能なソフトウェア", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/user-manuals/", "source_class": "official-project", "published_or_updated": "2026-08-26"}, "origin_group": "fugaku-software-index", "checked_at": "2026-09-02T02:11:00+09:00", "locator": "OSS、R-CCS、整備、商用ソフトウェア", "observation_ja": "Spack OSSと、開発・移植、整備、商用の区分および更新日を確認しました。", "observation_en": "Verified Spack OSS and the developed/ported, maintained, and commercial categories and update dates.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS190", "title": "富岳 整備ソフトウェア", "publisher": "理化学研究所計算科学研究センター・高度情報科学技術研究機構", "url": "https://riken-rccs.github.io/fugaku-doc/docs/software/oss-master/supported_sw/ja/build/html/supported_sw.html", "source_class": "official-project", "published_or_updated": "2026-08-26"}, "origin_group": "fugaku-maintained-software", "checked_at": "2026-09-02T02:12:00+09:00", "locator": "整備ソフトウェアの版、担当、使い方", "observation_ja": "主要科学アプリの版、Spack利用方法、整備担当を確認しました。掲載を他システムでの性能保証とは扱いません。", "observation_en": "Verified versions, Spack usage, and maintainers for major scientific applications. Listing is not treated as a performance guarantee on other systems.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-024とGAP-TDS-054は未解決です。HPCI検索結果を機械取得し、主要アプリごとの資源、版、ビルド、入力、性能、サポートを同一基準で測る必要があります。", "Miyabiの共通アプリ一覧が各ノード群のどこで、どの版・機能で提供されるかは、個別マニュアルまたは実機で確認が必要です。", "独立したAIモデルによる本文確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-024 and GAP-TDS-054 remain open. HPCI search results need machine-readable capture and consistent measurements of resources, versions, builds, inputs, performance, and support for major applications.", "The partition, version, and feature coverage of Miyabi's joint application list require per-application documentation or system access.", "Independent-model source review and Consensus remain incomplete."]
+}

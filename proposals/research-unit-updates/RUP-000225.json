@@ -1,0 +1,216 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000225",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T07:34:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000131", "bundle_sha256": "56c0cc39d11f1d38d93405774490f6d2f794f8b8e87393b9fda1809487fbbc73"},
+    {"update_id": "RUP-000138", "bundle_sha256": "6d403dd4a362d262a64e228d22c402aabb0fe0d534f269c12f95fce07ee4f570"},
+    {"update_id": "RUP-000146", "bundle_sha256": "747f2f1da34d90bba17ce1575f7244d615618dd743afe580b4c7bdd6aa17ff19"},
+    {"update_id": "RUP-000166", "bundle_sha256": "df3c3107248f37f16e1bc4dbe3a92a20d76f8e0fc3186fe84b4af5c76dd89751"},
+    {"update_id": "RUP-000209", "bundle_sha256": "1b985f00d65b3a060ee5154f030e3f94391b962b6a8a8db187443fb3a0795978"}
+  ],
+  "before_profile_sha256": "cafcc9712ffe328328a42a0672a95996c26dc62d854268afed1ff0d17d93f2b3",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI基盤センターの現況について、北海道大学Grand Chariot 2、京都大学Camphor3を含む4系統、東京科学大学TSUBAME4.0の公式仕様を追加しました。CPU中心、CPU・GPU混成、複数特性のサブシステムという異なる設計を、ノード、メモリ、ネットワーク、ストレージ、冷却、導入経緯に分けて比較します。TSUBAME4.0はCPU・GPUの直接水冷と200 kW級冷却ユニットを公開しています。京都大学では半導体不足によるサービス開始遅延が生じており、次期整備では設備仕様だけでなく供給遅延と段階導入も計画条件に含める必要があります。Consensusは未完了です。",
+  "summary_en": "This update adds official specifications for Hokkaido University's Grand Chariot 2, Kyoto University's four-system portfolio including Camphor3, and Institute of Science Tokyo's TSUBAME4.0. It compares CPU-oriented, CPU/GPU, and multi-subsystem designs across nodes, memory, network, storage, cooling, and introduction history. TSUBAME4.0 publicly documents direct liquid cooling for CPUs and GPUs and 200-kW cooling units. Kyoto experienced a service-start delay associated with the semiconductor shortage, showing that successor planning must include supply delay and staged introduction in addition to facility specifications. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U01",
+      "before_sha256": "fcfad57af0f342d43c292d5bc67dfd9f8a54b5a14f1bd09216bf7b2a95f3e007",
+      "evidence_section_ids": [
+        "TDS-CBL-BASELINE",
+        "TDS-CBL-CHANGES-V2",
+        "TDS-CD1-CROSS-08-U01",
+        "TDS-CD10-CROSS-08-U01",
+        "TDS-CD11-CROSS-08-U01",
+        "TDS-CD12-CROSS-08-U01-U02",
+        "TDS-CD13-CROSS-08-U01",
+        "TDS-CD19-CROSS-08-FY2026-RESOURCE-PORTFOLIO",
+        "TDS-CD31-CROSS-08-CENTER-FACILITY-BASELINES"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD31-CROSS-08-CENTER-FACILITY-BASELINES",
+      "title_ja": "センター別の計算・ストレージ・冷却・導入条件",
+      "title_en": "Center-specific compute, storage, cooling, and introduction conditions",
+      "summary_ja": "ピーク性能だけでなく、構成の多様性、データ基盤、冷却方式、供給遅延をセンタープロファイルへ記録します。",
+      "summary_en": "Record architectural diversity, data infrastructure, cooling, and supply delays in center profiles rather than peak performance alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD31-HOKKAIDO-GRAND-CHARIOT2",
+          "name_ja": "北海道大学Grand Chariot 2: CPU 480ノード、GPU 24ノード、13 PBオールフラッシュ",
+          "name_en": "Hokkaido Grand Chariot 2: 480 CPU nodes, 24 GPU nodes, and 13 PB all-flash storage",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年7月本格稼働、2026年9月2日に現行仕様を確認",
+          "timing_en": "Full operation from July 2025; current specifications checked September 2, 2026",
+          "statement_ja": "北海道大学の公式仕様は、Grand Chariot 2を480 CPUノードと24 GPUノードで構成し、CPUノードはXeon 6548Y+を2基、GPUノードは同CPU 2基とH100を4基搭載するとしています。ノード間接続はInfiniBand NDRで、全体ストレージは13 PBのオールフラッシュです。CPU中心の大量ノードと小規模なGPU群を同一センターで組み合わせた構成であり、GPUピーク性能だけではCPU供給量、共有I/O、利用配分を表せません。",
+          "statement_en": "Hokkaido University's official specification describes Grand Chariot 2 as 480 CPU nodes and 24 GPU nodes. CPU nodes use two Xeon 6548Y+ processors, while GPU nodes combine two of those CPUs with four H100 GPUs. Nodes use InfiniBand NDR, and the system has 13 PB of all-flash storage. This combines a large CPU partition with a smaller GPU partition, so GPU peak performance alone cannot describe CPU supply, shared I/O, or allocation policy.",
+          "hpci_relevance_ja": "次期HPCIの構成比較では、CPU・GPUノード数だけでなく、共有ストレージへの同時負荷と利用枠別の供給量を測る必要があります。",
+          "hpci_relevance_en": "Successor comparisons should measure concurrent shared-storage load and supply by access route in addition to CPU and GPU node counts.",
+          "adoption_conditions_ja": [
+            "CPU・GPU混在時のストレージ帯域、メタデータ性能、待ち時間を公開測定する。",
+            "設置総数、HPCI提供量、センター共同利用、有償利用の割当を区別する。",
+            "オールフラッシュの耐久性、交換、復旧、長期保守費を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish storage bandwidth, metadata performance, and queueing under concurrent CPU and GPU use.",
+            "Separate installed capacity from HPCI, center-shared, and paid allocations.",
+            "Verify all-flash endurance, replacement, recovery, and long-term support cost."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS303"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD31-KYOTO-CAMPHOR3-PORTFOLIO",
+          "name_ja": "京都大学: HBM搭載Camphor3を含む4系統と供給遅延の実例",
+          "name_en": "Kyoto: four subsystems including HBM-equipped Camphor3 and a supply-delay case",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2023年稼働開始、2026年9月2日に現行案内を確認",
+          "timing_en": "Operation began in 2023; current information checked September 2, 2026",
+          "statement_ja": "京都大学は、演算性能重視のCamphor3、汎用のLaurel3、大容量メモリのCinnamon、GPU搭載Gardeniaとストレージを提供しています。Camphor3はXeon CPU Max 9480を2基とHBM2eを搭載する1,120ノードをInfiniBand NDRで接続します。導入時には世界的な半導体不足により、当初目標の2022年10月からサービス開始が遅延しました。現行構成の多様性と、調達時の供給制約は別々の計画変数です。",
+          "statement_en": "Kyoto University provides performance-oriented Camphor3, general-purpose Laurel3, large-memory Cinnamon, GPU-equipped Gardenia, and storage. Camphor3 connects 1,120 dual-Xeon CPU Max 9480 nodes with HBM2e over InfiniBand NDR. During introduction, the global semiconductor shortage delayed service beyond the original October 2022 target. Current architectural diversity and procurement-time supply constraints are distinct planning variables.",
+          "hpci_relevance_ja": "単一ノード型へ集約せず、広帯域メモリ、汎用、大容量メモリ、GPUの需要を分け、供給遅延時の代替資源を全国で確保する設計が必要です。",
+          "hpci_relevance_en": "Planning should separate demand for high-bandwidth memory, general-purpose, large-memory, and GPU resources and identify national substitutes during supply delays.",
+          "adoption_conditions_ja": [
+            "4系統の実利用、待ち時間、アプリケーション適合性を共通指標で比較する。",
+            "部材ごとの納期、段階受入、縮退期間、他センターへの退避を調達計画へ含める。",
+            "HBM搭載CPUの容量・帯域上限とDDR系ノードへの移植条件を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare observed use, queues, and application suitability across the four systems with common metrics.",
+            "Include component lead time, staged acceptance, reduced-capacity periods, and diversion to other centers in procurement plans.",
+            "Verify HBM-capacity and bandwidth limits and portability to DDR-based nodes."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS304", "SRC-CDS306"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD31-TSUBAME4-COOLING",
+          "name_ja": "TSUBAME4.0: CPU・GPU直接水冷と200 kW級冷却ユニット",
+          "name_en": "TSUBAME4.0: direct CPU/GPU liquid cooling and 200-kW cooling units",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年4月運用開始、2026年9月2日に公式仕様を確認",
+          "timing_en": "Operation began April 2024; official specification checked September 2, 2026",
+          "statement_ja": "東京科学大学の公式仕様は、TSUBAME4.0をH100を4基とEPYC 9654を2基搭載する240ノード、44 PB超のHDD層と327 TBのSSD層で構成するとしています。CPUとGPUは約20℃の冷却水で直接水冷し、その他の部品は背面ドア熱交換器を介する水冷・空冷併用です。資料は200 kW/台の冷却ユニットを示します。これは冷却ユニット能力であり、システム全体の実測IT電力、施設電力、PUE、年間水使用量を示す値ではありません。",
+          "statement_en": "Institute of Science Tokyo's official specification describes TSUBAME4.0 as 240 nodes, each with four H100 GPUs and two EPYC 9654 CPUs, plus more than 44 PB of HDD and 327 TB of SSD. CPUs and GPUs use direct liquid cooling with approximately 20-degree-C water; other components use hybrid liquid/air cooling through rear-door heat exchangers. The document shows 200-kW cooling units. This is unit cooling capacity, not measured whole-system IT power, facility power, PUE, or annual water use.",
+          "hpci_relevance_ja": "高密度GPU構成では、ラック単位のIT電力と冷却能力を対応付け、既存建屋に収容できるノード数を性能だけでなく設備から逆算する必要があります。",
+          "hpci_relevance_en": "Dense GPU planning must map rack IT power to cooling capacity and derive deployable node count from facility constraints as well as performance.",
+          "adoption_conditions_ja": [
+            "ラック別IT電力、冷却水温度・流量、熱除去量、PUE、WUEを年次実測する。",
+            "冷却ユニット停止時の縮退運転、冗長度、保守交換手順を確認する。",
+            "HDD・SSD・計算ノードを含む総電力とジョブ当たりエネルギーを分けて測る。"
+          ],
+          "adoption_conditions_en": [
+            "Measure annual per-rack IT power, water temperature and flow, heat removal, PUE, and WUE.",
+            "Verify degraded operation, redundancy, and maintenance replacement when a cooling unit fails.",
+            "Separate total energy including HDD, SSD, and compute from energy per completed job."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS305"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS303",
+        "title": "スーパーコンピュータシステム概要",
+        "publisher": "北海道大学情報基盤センター",
+        "url": "https://www.hucc.hokudai.ac.jp/supercomputer/sc-overview/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hokkaido-grand-chariot2-current-specification",
+      "checked_at": "2026-09-02T03:42:00+09:00",
+      "locator": "Grand Chariot 2のCPU・GPUノード群、ネットワーク、ストレージ仕様",
+      "observation_ja": "480 CPUノード、24 GPUノード、InfiniBand NDR、13 PBオールフラッシュという現行構成を確認しました。",
+      "observation_en": "Verified the current 480-CPU-node, 24-GPU-node, InfiniBand NDR, and 13-PB all-flash configuration.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS304",
+        "title": "スーパーコンピュータシステムサービス / 次期スーパーコンピュータシステムについて",
+        "publisher": "京都大学学術情報メディアセンター・情報環境機構",
+        "url": "https://www.iimc.kyoto-u.ac.jp/ja/services/comp/supercomputer",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "kyoto-supercomputer-current-portfolio",
+      "checked_at": "2026-09-02T03:44:00+09:00",
+      "locator": "Camphor3、Laurel3、Cinnamon、Gardeniaとストレージからなる現行構成",
+      "observation_ja": "4系統とストレージからなる現行構成を確認しました。",
+      "observation_en": "Verified the current four-system plus storage portfolio.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS306",
+        "title": "次期スーパーコンピュータシステムについて",
+        "publisher": "京都大学情報環境機構",
+        "url": "https://www.iimc.kyoto-u.ac.jp/ja/news/information/220608057294",
+        "source_class": "official-project",
+        "published_or_updated": "2022-06-08"
+      },
+      "origin_group": "kyoto-supercomputer-introduction-delay",
+      "checked_at": "2026-09-02T03:44:30+09:00",
+      "locator": "2022年10月のサービス開始目標と半導体不足による遅延説明",
+      "observation_ja": "当初のサービス開始目標と、世界的な半導体不足に伴う遅延の公式説明を確認しました。",
+      "observation_en": "Verified the original service-start target and the official explanation of delay associated with the global semiconductor shortage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS305",
+        "title": "TSUBAME4.0 Hardware Software Specifications",
+        "publisher": "東京科学大学情報基盤センター",
+        "url": "https://www.gsic.titech.ac.jp/sites/default/files/spec40j.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2024-04-01"
+      },
+      "origin_group": "science-tokyo-tsubame4-official-specification",
+      "checked_at": "2026-09-02T03:45:00+09:00",
+      "locator": "システム概要、ストレージ、冷却方式",
+      "observation_ja": "240ノード、HDD・SSD層、約20℃のCPU・GPU直接水冷、背面ドア熱交換、200 kW/台の冷却ユニットを確認しました。",
+      "observation_en": "Verified 240 nodes, HDD and SSD tiers, approximately 20-degree-C direct CPU/GPU liquid cooling, rear-door heat exchange, and 200-kW cooling units.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "15資源提供機関すべての電力、冷却、予算、停止条件はまだ揃っていません。",
+    "各センターの実測電力、PUE、WUE、設備冗長度、ストレージ復旧性能は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Power, cooling, budget, and outage constraints are not yet complete for all 15 providers.",
+    "Measured power, PUE, WUE, facility redundancy, and storage recovery performance remain unverified for these centers.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

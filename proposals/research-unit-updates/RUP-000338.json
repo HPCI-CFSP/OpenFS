@@ -1,0 +1,177 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000338",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T07:53:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000214",
+      "bundle_sha256": "3810a6d11030f55cd88da75a9fc4a4bcf62395be3fb995bb52274abdef97ef7d"
+    },
+    {
+      "update_id": "RUP-000215",
+      "bundle_sha256": "c6c9bea5d507b8256df1eea7f1c0982b4e57587e317b584907dcbbd2178ff276"
+    },
+    {
+      "update_id": "RUP-000244",
+      "bundle_sha256": "cbbeb0572b028c7d6c554c768fe0d193424c68dc4b80bd45bfb785205493ef75"
+    },
+    {
+      "update_id": "RUP-000265",
+      "bundle_sha256": "83fac5a46155e92e3a97c3e5390a2beabef85c4f3520afde2a58122a806e6485"
+    },
+    {
+      "update_id": "RUP-000278",
+      "bundle_sha256": "f7c61e0b04c737b5ea7139f476947e67af5c85c58f1462046506ebe4656dad39"
+    }
+  ],
+  "before_profile_sha256": "514d8028b65341cf21f133b4abf33bc852771e8d5e0f492b794140bef44b3723",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Auroraについて、MPI reductionの不正値、OpenMP GPU kernelの解放済みmemory参照、公開reproducer、最大2,112 nodeのnext-eval queueによるmajor imageの段階展開を追加しました。解決版や合格基準は未確認です。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For Aurora, this update adds incorrect MPI reduction values, freed-memory access by an OpenMP GPU kernel, public reproducers, and staged rollout of a major image through a next-eval queue of up to 2,112 nodes. Fixed releases and acceptance criteria remain unverified. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "97a9684f41454d2274dda9b87e4b3b286f479fcf5c9b69d3d02bd08b21bb2203",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01",
+        "TDS-CD20-SSW-03-MPI5-ABI",
+        "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS",
+        "TDS-CD50-SSW-03-HPCI-COMMUNICATION-SOFTWARE",
+        "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025",
+        "TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION",
+        "TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE",
+      "title_ja": "Auroraの数値正当性bugと段階的software更新",
+      "title_en": "Numerical-correctness bugs and staged software updates on Aurora",
+      "summary_ja": "通信・compiler stackの受入判定を、job完走だけでなく公開reproducer、数値oracle、影響版、修正、rollbackまで含むgateとして設計します。",
+      "summary_en": "Design acceptance of communication and compiler stacks around public reproducers, numerical oracles, affected versions, fixes, and rollback rather than successful job completion alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD166-AURORA-MPI-OPENMP-WRONG-RESULT",
+          "name_ja": "MPI collective不正値とOpenMP GPU解放済みmemory参照",
+          "name_en": "Incorrect MPI collective results and stale-memory access by an OpenMP GPU kernel",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年7月30日登録、8月初旬時点で公開追跡中",
+          "timing_en": "Opened July 30, 2026 and publicly tracked in early August",
+          "statement_ja": "ALCFの公開Aurora bug trackerは、MPICH 5.0で`MPI_REAL`と`MPI_SUM`を使う`MPI_Reduce`が不正値を返す問題（ID 154）と、Fortran派生型component再割当後にOpenMP GPU kernelが解放済みmemoryを読む問題（ID 155）を掲載し、reproducer pathとupstream/vendor issueを紐付けています。いずれもjobが単に停止するだけでなく誤結果やstale dataを生む可能性があるため、schedulerの終了codeやhardware healthだけでは検出できません。公開表では最終更新時点で明確な解決版は示されていません。",
+          "statement_en": "The public ALCF Aurora bug tracker lists an MPICH 5.0 issue in which `MPI_Reduce` with `MPI_REAL` and `MPI_SUM` produces incorrect values (ID 154) and an issue in which an OpenMP GPU kernel can read freed memory after reallocation of a Fortran derived-type component (ID 155), with reproducer paths and upstream or vendor issue links. Because these may produce wrong or stale results rather than only terminate jobs, scheduler exit codes and hardware health checks are insufficient. The public table did not identify a resolved release at its latest recorded update.",
+          "hpci_relevance_ja": "HPCIのsoftware acceptanceには、代表applicationだけでなくdatatype、collective、memory lifetime、mixed-language等の小型correctness testを組み込み、影響jobの特定と再計算判断まで運用化する必要があります。",
+          "hpci_relevance_en": "HPCI software acceptance should include compact correctness tests for datatypes, collectives, memory lifetimes, mixed-language paths, and related behavior, together with procedures to identify affected jobs and decide on reruns.",
+          "adoption_conditions_ja": [
+            "reproducer、期待値、tolerance、affected/fixed version、compiler option、scaleをversion管理する。",
+            "誤結果bugはincidentとして利用者へ通知し、影響job、成果物、再計算要否を追跡する。",
+            "vendor ticketだけでなく公開可能な最小reproducerとupstream issueを保つ。"
+          ],
+          "adoption_conditions_en": [
+            "Version reproducers, expected values, tolerances, affected and fixed releases, compiler options, and scale.",
+            "Treat wrong-result bugs as incidents and track affected jobs, outputs, notifications, and rerun decisions.",
+            "Preserve publishable minimal reproducers and upstream issues in addition to vendor tickets."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS456"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD167-AURORA-NEXT-EVAL-2112",
+          "name_ja": "最大2,112 nodeのnext-eval queueによる段階展開",
+          "name_en": "Staged rollout through a next-eval queue of up to 2,112 nodes",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年8月31日から2026年9月のmajor update評価",
+          "timing_en": "Major-update evaluation beginning August 31, 2026 and continuing into September",
+          "statement_ja": "ALCFはSLES 15 SP7、Slingshot Host Software 14.0.1、Intel Agama 1146.78、oneAPI 2026.1.0等を含むmajor imageを、全userが利用できる最大2,112 nodeの一時`next-eval` queueと専用UANで先行評価しています。公式頁は通常より問題発生可能性が高い更新としてtestを求めています。先行queueは大規模互換性確認の仕組みですが、公開頁だけでは合格基準、test coverage、結果、rollback条件、production切替日を確認できません。",
+          "statement_en": "ALCF is evaluating a major image containing SLES 15 SP7, Slingshot Host Software 14.0.1, Intel Agama 1146.78, oneAPI 2026.1.0, and other changes through a temporary `next-eval` queue of up to 2,112 nodes open to all users, plus dedicated user access nodes. The official page calls it an update with a higher-than-normal chance of issues and requests testing. The queue enables large-scale compatibility testing, but the public page does not establish pass criteria, coverage, results, rollback conditions, or the production cutover date.",
+          "hpci_relevance_ja": "HPCIでもlogin/build環境と大規模compute partitionを同一candidate imageで先行提供し、各centerの代表codeを通してから本番化する方式が有効です。",
+          "hpci_relevance_en": "HPCI can similarly expose login and build environments plus a large compute partition on the same candidate image and require representative codes from each center before production rollout.",
+          "adoption_conditions_ja": [
+            "candidate image、test matrix、scale、owner、合格条件、未解決bugを公開可能な台帳にする。",
+            "production imageとのperformance・correctness・failure rate差を同一workloadで比較する。",
+            "切替、rollback、既存binary・container・checkpoint互換性を事前に定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Maintain a publishable register of candidate images, test matrices, scales, owners, pass criteria, and unresolved bugs.",
+            "Compare performance, correctness, and failure rates against the production image with identical workloads.",
+            "Define cutover, rollback, and compatibility for existing binaries, containers, and checkpoints in advance."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS457"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS456",
+        "title": "AuroraBugTracking: bugs.md",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://github.com/argonne-lcf/AuroraBugTracking/blob/main/bugs.md",
+        "source_class": "official-project",
+        "published_or_updated": "Living tracker checked 2026-09-02"
+      },
+      "origin_group": "alcf-aurora-public-bug-tracker",
+      "checked_at": "2026-09-02T06:35:00+09:00",
+      "locator": "Open issues 154 and 155, reproducer paths, upstream/vendor references, and update status",
+      "observation_ja": "MPI reductionの不正値とOpenMP GPUのstale memory参照について、公開reproducerと未解決状態を確認しました。",
+      "observation_en": "Verified public reproducers and unresolved status for incorrect MPI reduction values and stale-memory access by an OpenMP GPU kernel.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS457",
+        "title": "Aurora System Updates",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/aurora/system-updates/",
+        "source_class": "official-project",
+        "published_or_updated": "Living documentation checked 2026-09-02"
+      },
+      "origin_group": "alcf-aurora-staged-system-updates",
+      "checked_at": "2026-09-02T06:36:00+09:00",
+      "locator": "2026-08-31 next-eval queue, 2,112-node limit, UANs, and software image contents",
+      "observation_ja": "major software imageを最大2,112 nodeと専用UANで先行評価する構成と、公開されていない判定情報を確認しました。",
+      "observation_en": "Verified staged testing of a major software image on up to 2,112 nodes and dedicated UANs, plus the absence of public acceptance details.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "影響version、修正版、affected job、再計算、next-evalの合否と本番切替を追跡する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Affected and fixed versions, impacted jobs, rerun decisions, next-eval results, and production cutover require follow-up.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

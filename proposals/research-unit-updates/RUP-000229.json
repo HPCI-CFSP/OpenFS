@@ -1,0 +1,149 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000229",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:35:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000167", "bundle_sha256": "e5112b0eca00e67e8a66b57563b417aad91ccbe9c434a92e78e835d46a7029ff"},
+    {"update_id": "RUP-000203", "bundle_sha256": "9a2417891b87ccaf73731ca2ed7d1b6a27fdf2673d8a32cd4294aa93a7c69fff"}
+  ],
+  "before_profile_sha256": "2f4650a01629f739f0672c178bca7f83e040995ec593475e6861f2faa52f00fa",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "九州大学玄界の初年度運用報告と試験運用条件をRAS調査へ追加しました。2025年6月時点の公式説明は、大規模な全系停止はなかった一方、試験運用中の上流停電と2025年4月のキャンパスネットワーク障害を記録しています。試験運用では保守に伴う停止やjob取消を認め、旧ITOデータには移行期限がありました。次期HPCIの可用性評価は計算機本体だけでなく、上流電源、キャンパスnetwork、ストレージ、通知、job再実行、移行期限まで含める必要があります。Consensusは未完了です。",
+  "summary_en": "This update adds first-year operational reporting and trial-operation conditions for Kyushu University's Genkai to RAS research. The official June 2025 presentation reported no large-scale event such as a full-system outage, while recording an upstream power outage during trial operation and a campus-network incident in April 2025. Trial conditions allowed maintenance shutdowns and job cancellation, and previous ITO data had a migration deadline. Successor HPCI availability evaluation must include upstream power, campus networking, storage, notification, job rerun, and migration deadlines rather than the compute system alone. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "d1c0c8ffc43c7306016bddd060315c80d4022e0c90116b137467791d59862473",
+      "evidence_section_ids": [
+        "TDS-CD2-ARCH-10-U01",
+        "TDS-CD3-ARCH-10-U01",
+        "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS",
+        "TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES",
+      "title_ja": "玄界初年度にみる外部依存と運用段階別RAS",
+      "title_en": "External dependencies and phase-specific RAS in Genkai's first year",
+      "summary_ja": "本体障害、上流設備、学内network、試験運用の許容停止を分離します。",
+      "summary_en": "Separate compute-system faults, upstream facilities, campus networking, and trial-phase allowed outages.",
+      "items": [
+        {
+          "item_id": "TDI-CD35-GENKAI-FIRST-YEAR-EXTERNAL-INCIDENTS",
+          "name_ja": "全系大規模障害なしでも上流停電・学内network障害は発生",
+          "name_en": "No major full-system event, but upstream power and campus-network incidents occurred",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年6月11日の利用者向け報告",
+          "timing_en": "User report dated June 11, 2025",
+          "statement_ja": "九州大学の利用者向け資料は、玄界の試験運用開始から約1年の時点で、全系停止のような大規模troubleはなかったとする一方、試験運用中に上流の停電で停止し、2025年4月にはキャンパスnetwork障害があったと記録しています。報告は障害の存在と区分を示しますが、停止時間、影響job数、データ影響、復旧時間、再発防止策の完全なincident logではありません。",
+          "statement_en": "A Kyushu user presentation around one year after Genkai trial operation began reports no large-scale problem such as a full-system outage, while recording a stop caused by an upstream power outage during trial operation and a campus-network incident in April 2025. It establishes incident categories but is not a complete incident log with downtime, affected jobs, data impact, recovery time, or corrective actions.",
+          "hpci_relevance_ja": "可用性要件を、計算機、電力、冷却、キャンパスnetwork、対外回線、認証、ストレージのend-to-end service chainで定義する必要があります。",
+          "hpci_relevance_en": "Availability requirements should cover the end-to-end chain of compute, power, cooling, campus network, external connectivity, identity, and storage.",
+          "adoption_conditions_ja": [
+            "障害domainごとに停止時間、影響利用者・job・data、復旧時間を記録する。",
+            "上流停電とnetwork障害を計算機vendorのRAS値から分けて評価する。",
+            "複数センター間の代替実行・data accessが外部障害時に機能するか訓練する。"
+          ],
+          "adoption_conditions_en": [
+            "Record downtime, affected users, jobs and data, and recovery time by failure domain.",
+            "Evaluate upstream power and network incidents separately from compute-vendor RAS values.",
+            "Exercise cross-center alternative execution and data access under external failures."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS310"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD35-GENKAI-TRIAL-OPERATION-RAS",
+          "name_ja": "試験運用の停止許容条件と本運用SLAを分ける",
+          "name_en": "Separate trial-operation outage allowances from production SLA",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "試験運用は2024年7月10日から9月末、本運用は同年10月予定",
+          "timing_en": "Trial from July 10 through September 2024; production planned for October 2024",
+          "statement_ja": "玄界の試験運用告知は、作業上の理由により無予告で停止またはjob取消となる場合があること、本運用には別申請が必要なこと、旧ITOの必要dataを2024年8月末までに移行し、9月以降に削除することを説明しました。これは試験段階の受入条件であり、現在の本運用でも無予告停止が許容されることを意味しません。運用段階ごとにSLA、通知、補償、data保持を分ける必要があります。",
+          "statement_en": "Genkai's trial announcement allowed unannounced shutdown or job cancellation for operational work, required a separate application for production use, and instructed users to migrate required ITO data by the end of August 2024 before deletion after September. These were trial-phase conditions and do not establish that unannounced production outages are currently acceptable. SLA, notice, compensation, and retention should be defined by lifecycle phase.",
+          "hpci_relevance_ja": "受入試験、試験共同利用、本運用、縮退運用、廃止移行について、利用者へ約束するservice levelとdata責任を別表にすべきです。",
+          "hpci_relevance_en": "Acceptance, trial access, production, degraded operation, and retirement should each have explicit service levels and data responsibilities.",
+          "adoption_conditions_ja": [
+            "運用段階ごとに通知期限、job取消、再配分、data保持、問い合わせ対応を定義する。",
+            "trial中の障害・取消を本運用前の受入判定へ反映する。",
+            "移行deadline前に転送完了とchecksum検証を確認し、削除承認を記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Define notice, job cancellation, reallocation, retention, and support by operating phase.",
+            "Feed trial failures and cancellations into production acceptance decisions.",
+            "Verify completed transfer and checksums before migration deadlines and record deletion approval."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS311"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS310",
+        "title": "本題の前に：現在の状況（玄界利用者向け報告）",
+        "publisher": "九州大学情報基盤研究開発センター",
+        "url": "https://www.cc.kyushu-u.ac.jp/scp/doc/users/forum/forum20250611/genkai.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-06-11"
+      },
+      "origin_group": "kyushu-genkai-first-year-operations",
+      "checked_at": "2026-09-02T04:16:00+09:00",
+      "locator": "試験運用開始から約1年の状況、停電・network障害",
+      "observation_ja": "大規模な全系障害なしという説明と、上流停電・キャンパスnetwork障害の記録を確認しました。",
+      "observation_en": "Verified the no-major-full-system-event statement and records of upstream power and campus-network incidents.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS311",
+        "title": "新スーパーコンピュータ玄界の試験運用の開始について",
+        "publisher": "九州大学情報基盤研究開発センター",
+        "url": "https://www.cc.kyushu-u.ac.jp/scp/notice/news/2024/562/",
+        "source_class": "official-project",
+        "published_or_updated": "2024-05-16"
+      },
+      "origin_group": "kyushu-genkai-trial-operation",
+      "checked_at": "2026-09-02T04:17:00+09:00",
+      "locator": "試用期間、停止・job取消、本運用申請、旧ITO data移行",
+      "observation_ja": "試験運用の停止許容、本運用の別申請、data移行期限と削除予定を確認しました。",
+      "observation_en": "Verified trial outage allowances, separate production application, and data-migration and deletion timing.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "玄界の月次可用性、停止時間、影響job、復旧時間、再発防止策の公開時系列は未確認です。",
+    "HPCI各センターで障害分類とservice levelを比較できる共通公開形式は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "A public time series of Genkai monthly availability, downtime, affected jobs, recovery time, and corrective actions remains unverified.",
+    "A common public format for comparing incident classes and service levels across HPCI centers remains unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

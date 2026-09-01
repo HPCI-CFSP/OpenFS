@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000233",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T07:35:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000131", "bundle_sha256": "56c0cc39d11f1d38d93405774490f6d2f794f8b8e87393b9fda1809487fbbc73"},
+    {"update_id": "RUP-000138", "bundle_sha256": "6d403dd4a362d262a64e228d22c402aabb0fe0d534f269c12f95fce07ee4f570"},
+    {"update_id": "RUP-000146", "bundle_sha256": "747f2f1da34d90bba17ce1575f7244d615618dd743afe580b4c7bdd6aa17ff19"},
+    {"update_id": "RUP-000166", "bundle_sha256": "df3c3107248f37f16e1bc4dbe3a92a20d76f8e0fc3186fe84b4af5c76dd89751"},
+    {"update_id": "RUP-000209", "bundle_sha256": "1b985f00d65b3a060ee5154f030e3f94391b962b6a8a8db187443fb3a0795978"},
+    {"update_id": "RUP-000225", "bundle_sha256": "492eb4ca656db9a3f02dbf6abf29679a1ab63e7c0e5ee1d371a5f0307740fbad"},
+    {"update_id": "RUP-000227", "bundle_sha256": "89035b0e340854cf8855336cc667fe00774fe8dd437e3bcb2dc808a87080ba19"},
+    {"update_id": "RUP-000231", "bundle_sha256": "28eb0d2e4ee0b879e4aeb5a9ae1cacb477c759f08192f4dd4a354d581d355137"}
+  ],
+  "before_profile_sha256": "17f6fc30ae402d7078210ec0de02e1c80e5d8a9eb01449e02caa429fa8ec8f3a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東北大学AOBA-Sの2024年9月から2025年8月の運用実績を追加しました。短時間jobは約5.0万件から約5.4万件へ増え、2～16 VEが中心です。多くの月で稼働VE利用率は約90%、2024年12月から2025年2月は90%超、年度末保守の2025年3月は約80%でした。利用相談ではlogin・申請に加え、AOBA-Sのcode移植・compile、AOBA-BのOpenFOAM・VASPが多く、資源増強と利用支援を別々に計画できません。Consensusは未完了です。",
+  "summary_en": "This update adds AOBA-S operating evidence from September 2024 through August 2025. Jobs under 24 hours increased from about 50,000 to about 54,000, dominated by jobs using 2-16 vector engines. Active-VE utilization was around 90% in many months, exceeded 90% from December 2024 through February 2025, and fell to about 80% during March year-end maintenance. User support covered login and applications as well as AOBA-S code porting and compilation and OpenFOAM/VASP on AOBA-B, so capacity expansion and user support cannot be planned independently. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U01",
+      "before_sha256": "9bdfe21b62bd444b9adde835d9d3267900c975f56263e2899be5b042e8046fe9",
+      "evidence_section_ids": [
+        "TDS-CBL-BASELINE",
+        "TDS-CBL-CHANGES-V2",
+        "TDS-CD1-CROSS-08-U01",
+        "TDS-CD10-CROSS-08-U01",
+        "TDS-CD11-CROSS-08-U01",
+        "TDS-CD12-CROSS-08-U01-U02",
+        "TDS-CD13-CROSS-08-U01",
+        "TDS-CD19-CROSS-08-FY2026-RESOURCE-PORTFOLIO",
+        "TDS-CD31-CROSS-08-CENTER-FACILITY-BASELINES",
+        "TDS-CD37-CROSS-08-UTOKYO-UTILIZATION",
+        "TDS-CD39-CROSS-08-AOBA-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD39-CROSS-08-AOBA-OPERATIONS",
+      "title_ja": "東北大学AOBA-Sのjob規模・利用率・支援需要",
+      "title_en": "Tohoku AOBA-S job scale, utilization, and support demand",
+      "summary_ja": "計算資源の量だけでなく、job分布、保守影響、移植支援を同時に扱います。",
+      "summary_en": "Treat job distribution, maintenance effects, and migration support together with compute capacity.",
+      "items": [
+        {
+          "item_id": "TDI-CD39-AOBA-JOB-DISTRIBUTION",
+          "name_ja": "短時間・小中規模が中心だが大規模・長時間需要も残る",
+          "name_en": "Short, small-to-medium jobs dominate while large, long jobs remain",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2023年8月～2024年8月と2024年9月～2025年8月を比較",
+          "timing_en": "Comparison of August 2023-August 2024 and September 2024-August 2025",
+          "statement_ja": "AOBA-Sの24時間未満jobは約5.0万件から約5.4万件へ増加し、両年度とも2～16 VEのjobが最多でした。144時間以上の長時間区分では、2024年度に17～256 VEのjobが2～16 VEを上回る方向へ変化しています。共有利用のdefault経過時間は72時間ですが、一jobは最大720時間まで実行できます。件数は需要の多様性を示しますが、VE-hour、待ち時間、科学分野、完了・失敗率を示しません。",
+          "statement_en": "AOBA-S jobs under 24 hours increased from about 50,000 to about 54,000, with 2-16-VE jobs the largest group in both periods. In duration classes above 144 hours, 17-256-VE jobs overtook 2-16-VE jobs in FY2024. Shared use defaults to a 72-hour elapsed limit, while a job may run up to 720 hours. Counts show diverse demand but not VE-hours, queue time, scientific field, or completion and failure rates.",
+          "hpci_relevance_ja": "system規模だけでなく、小中規模jobのthroughput、長時間checkpoint、全系予約を別service classとして設計する必要があります。",
+          "hpci_relevance_en": "Planning should define throughput for small and medium jobs, long-job checkpointing, and full-system reservations as distinct service classes, not only total system scale.",
+          "adoption_conditions_ja": ["job件数をVE-hour・待ち時間・終了状態・分野と結合する。", "長時間jobのcheckpoint間隔と再開損失を測定する。", "通常queueと大規模専有枠の容量・優先度を分ける。"],
+          "adoption_conditions_en": ["Join job counts to VE-hours, queue time, terminal state, and field.", "Measure checkpoint intervals and restart loss for long jobs.", "Separate capacity and priority for normal queues and large exclusive windows."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS317"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD39-AOBA-UTILIZATION-MAINTENANCE",
+          "name_ja": "約90%のVE利用率と保守月の低下を同じ分母で記録",
+          "name_en": "Record roughly 90% VE utilization and maintenance-month decline under one denominator",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年9月～2025年8月",
+          "timing_en": "September 2024-August 2025",
+          "statement_ja": "稼働VE利用率は、service提供可能だった総VE時間に対する実利用VE時間の比率です。多くの月で約90%、2024年12月から2025年2月は90%超、年度末保守があった2025年3月は約80%でした。保守を分母から除外した利用率か、提供可能時間に保守影響がどう入るかは本文だけでは完全に再現できません。高利用率は増強候補ですが、queue遅延や容量不足を単独では証明しません。",
+          "statement_en": "Active-VE utilization is defined as used VE-hours divided by total VE-hours available for service. It was around 90% in many months, above 90% from December 2024 through February 2025, and about 80% in March during year-end maintenance. The article does not fully expose whether maintenance is excluded from the denominator or how available time is reconstructed. High utilization supports investigating expansion but does not alone prove queue delay or shortage.",
+          "hpci_relevance_ja": "全国比較では、scheduled maintenance、fault、reservationを分母定義とともに保存し、平均利用率・peak wait・未充足需要を組み合わせる必要があります。",
+          "hpci_relevance_en": "National comparison should preserve scheduled maintenance, faults, and reservations with denominator definitions and combine mean utilization, peak wait, and unmet demand.",
+          "adoption_conditions_ja": ["総提供可能時間と除外時間を月次公開する。", "利用率とqueue待ち時間をjob規模別に対応付ける。", "保守・障害・予約による容量変化を別系列で保持する。"],
+          "adoption_conditions_en": ["Publish total available and excluded time monthly.", "Associate utilization with queue time by job scale.", "Preserve capacity changes from maintenance, faults, and reservations as separate series."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS317"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD39-AOBA-SUPPORT-DEMAND",
+          "name_ja": "code移植・compile・application相談が運用資源を要求",
+          "name_en": "Code-porting, compilation, and application questions consume operating capacity",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年9月～2025年8月",
+          "timing_en": "September 2024-August 2025",
+          "statement_ja": "相談窓口は情報系職員とtechnical assistantが主に対応し、必要に応じvendor支援を使います。login・申請の相談はほぼ毎月あり、新年度の2025年5～6月に増えました。AOBA-Sではcode移植・compile、AOBA-BではOpenFOAM・VASPに関する相談が多いと報告されています。公開図から正確な総件数や解決時間は読み取れません。",
+          "statement_en": "Information-technology staff and technical assistants handle the support desk, requesting vendor help where needed. Login and application questions appear almost every month and increased in May-June 2025. AOBA-S questions often concern code porting and compilation, while AOBA-B has many OpenFOAM and VASP questions. Exact totals and resolution time cannot be read reliably from the published figure.",
+          "hpci_relevance_ja": "異種architectureの導入費には、compiler・library整備、commercial application、migration相談、vendor escalationの継続人件費を含める必要があります。",
+          "hpci_relevance_en": "Heterogeneous-architecture costs should include recurring labor for compilers and libraries, commercial applications, migration consultation, and vendor escalation.",
+          "adoption_conditions_ja": ["相談分類、初動・解決時間、再発率、担当主体を記録する。", "architecture別に移植工数と支援後の性能を測定する。", "vendor契約とセンター内技能の責任分界を明文化する。"],
+          "adoption_conditions_en": ["Record category, initial and resolution time, recurrence, and responsible party for support cases.", "Measure migration labor and post-support performance by architecture.", "Document the boundary between vendor contracts and in-house skills."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS317"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS317",
+        "title": "スーパーコンピュータAOBAサブシステムAOBA-Sにおける運用実績と利用者支援、およびNanoTerasuとの連携について",
+        "publisher": "東北大学サイバーサイエンスセンター",
+        "url": "https://www.ss.cc.tohoku.ac.jp/sscc/refer/pdf_data/v59-1/v59-1_p28-32.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01-01"
+      },
+      "origin_group": "tohoku-aoba-s-operation-report-2026",
+      "checked_at": "2026-09-02T03:50:00+09:00",
+      "locator": "pp. 28-31: system configuration, job counts, VE utilization, and support cases",
+      "observation_ja": "AOBA-S構成、2023/2024年度のjob規模・時間分布、2024年9月～2025年8月の稼働VE利用率、相談内容と支援主体を確認しました。",
+      "observation_en": "Verified AOBA-S configuration, FY2023/FY2024 job size and duration distributions, active-VE utilization from September 2024 through August 2025, and support categories and responsible parties.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["job別VE-hour、queue待ち、失敗率、科学分野は未確認です。", "保守時間を含む利用率分母と相談件数・解決時間の原dataは未確認です。", "全国共通定義による比較と独立モデルConsensusは未完了です。"],
+  "remaining_work_en": ["Per-job VE-hours, queue time, failure rate, and scientific field remain unverified.", "Raw utilization denominators including maintenance and support-case counts and resolution times remain unverified.", "Comparison under common national definitions and independent-model Consensus remain incomplete."]
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000156",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-02T04:15:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "7214444735b667c45fe5fafd475f40a89afae1493b7e8f26f28ea8a74c0ade4e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学の『不老』から『不老・弐』への移行資料から、2026年3月31日正午の旧系停止後、10月1日の新系開始予定まで計算サービスを利用できないことを確認しました。センターが移行するのは継続仮申請者の/home（1 TB上限）だけで内容は保証されず、その他のデータは利用者責任です。HPCI・JHPCN等の登録番号は引き継がれず、一部商用アプリケーションも終了します。世代更新では装置の受入日だけでなく、データ、ID、ソフトウェア、ジョブ、保管サービスの連続性を個別に計画する必要があります。10月1日は予定であり、稼働実績ではありません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Nagoya University's transition from Flow to Flow II shows that compute service is unavailable after the old system stops at noon on March 31, 2026 until the planned new-service start on October 1. The center migrates only /home, with a 1 TB quota, for users making provisional continuation requests, without guaranteeing content; other data remain the user's responsibility. HPCI, JHPCN, and related registration numbers are not inherited, and several commercial applications end. Generation refresh therefore needs separate continuity plans for data, identity, software, jobs, and archival services, not only an equipment acceptance date. October 1 is a plan, not operational evidence. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "12edd18b1bb3566202e2d411f418c0eac12d7934f235f596dcc8663b8c0943ce",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01",
+        "TDS-CD3-CROSS-14-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-CROSS-14-U01",
+      "title_ja": "名古屋大学『不老』世代更新における継続性の実例",
+      "title_en": "Continuity evidence from Nagoya University's Flow refresh",
+      "summary_ja": "計算停止、データ移行、保管、登録番号、アプリケーションを別々の継続対象として整理します。",
+      "summary_en": "Treat compute outage, data movement, storage, registration identifiers, and applications as distinct continuity objects.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-FLOW-DATA-RESPONSIBILITY",
+          "name_ja": "ホーム領域と大容量データで異なる移行責任",
+          "name_en": "Different migration responsibility for home and large data areas",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年1月通知、3月31日正午に旧系停止",
+          "timing_en": "Notice issued January 2026; old service stopped at noon March 31",
+          "statement_ja": "継続仮申請をした利用者の/homeは1 TB上限でセンターが新系へ移行しますが、データ内容は保証されません。/data等のその他領域は、利用者が旧系停止前にダウンロードし、新系へアップロードする必要があります。4月1日以降は旧ログインノードへアクセスできず、センターも移行対応を行わないと通知されています。",
+          "statement_en": "For users making provisional continuation requests, the center migrates /home up to its 1 TB quota but does not guarantee data content. Users must download data in other areas such as /data before shutdown and later upload it to the new system. The notice states that the old login node is inaccessible from April 1 and that the center cannot perform migration after that point.",
+          "hpci_relevance_ja": "HPCIの世代更新では、容量だけでなくファイル数、整合性、転送時間、回線、再送、責任、検証方法を含む移行予算が必要です。『センター移行』も完全性保証とは限りません。",
+          "hpci_relevance_en": "HPCI refresh planning needs migration budgets covering file count, integrity, transfer time, links, retries, responsibility, and validation as well as capacity. Center-managed migration does not necessarily guarantee integrity.",
+          "adoption_conditions_ja": [
+            "領域ごとに移行主体、容量・ファイル数、完全性検証、期限、失敗時の復旧を契約する。",
+            "利用者移行に必要な転送時間を実測し、旧系停止前に重複稼働期間を確保する。",
+            "バックアップ、移行コピー、アーカイブを区別し、保証対象を明記する。"
+          ],
+          "adoption_conditions_en": [
+            "Contract migration owner, capacity and file count, integrity validation, deadline, and failure recovery for each storage area.",
+            "Measure user-transfer time and provide an overlap window before old-system shutdown.",
+            "Separate backup, migration copy, and archive and state what is guaranteed."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS160"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FLOW-SERVICE-GAP",
+          "name_ja": "旧系停止から新系開始までの計算・保管サービス空白",
+          "name_en": "Compute and storage service gap between system generations",
+          "stage": "current",
+          "maturity": "announced",
+          "timing_ja": "旧系停止2026年3月31日、新系・コールドストレージ再開予定10月1日",
+          "timing_en": "Old system stopped March 31, 2026; new system and cold storage planned for October 1",
+          "statement_ja": "『不老』は2026年3月31日正午に停止し、『不老・弐』は10月1日にサービス開始予定です。その間はスーパーコンピュータを利用できません。停止時点で実行中のジョブは強制終了され、終了までに完了しない実行時間のジョブは投入できません。コールドストレージも3月31日に一時終了し、既存利用者向けの継続は10月1日予定です。",
+          "statement_en": "Flow stopped at noon on March 31, 2026, while Flow II is planned to start service on October 1. Supercomputing service is unavailable in between. Running jobs were to be terminated at shutdown, and jobs whose requested elapsed time extended past shutdown could not be submitted. Cold storage also stopped on March 31, with continuation for existing users planned for October 1.",
+          "hpci_relevance_ja": "約半年の空白は、年間配分、学生の修了、実験日程、継続課題、データ保持へ影響します。全国資源へ退避できるかを含め、利用者単位の事業継続計画が必要です。",
+          "hpci_relevance_en": "An approximately six-month gap affects annual allocations, student completion, experimental schedules, continuing projects, and data retention. User-level continuity plans should include possible relocation to national resources.",
+          "adoption_conditions_ja": [
+            "更新前後の重複運用、代替HPCI資源、配分移管、ライセンス、支援窓口を計画する。",
+            "長時間ジョブの投入停止日、実行中断、再実行費用を課題ごとに通知・記録する。",
+            "10月1日の予定を、受入試験完了、一般利用開始、安定運用の実績へ更新する。"
+          ],
+          "adoption_conditions_en": [
+            "Plan overlapping operation, alternate HPCI resources, allocation transfer, licenses, and support contacts.",
+            "Notify and record last submission dates, interrupted execution, and rerun cost by project.",
+            "Update the October 1 plan separately with acceptance completion, general access, and stable-operation evidence."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS161"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FLOW-IDENTITY-SOFTWARE-CONTINUITY",
+          "name_ja": "登録番号と商用ソフトウェアの非継承",
+          "name_en": "Non-continuity of registration identifiers and commercial software",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年2月19日通知、3月31日終了",
+          "timing_en": "Notice issued February 19, 2026; services ended March 31",
+          "statement_ja": "2026年度に採択済みでも、HPCI、JHPCN、名大HPCの旧登録番号は新系へ引き継がれず、新番号が別途配布される予定です。Altair simulation、FieldView、LS-DYNA、Pointwiseのセンター提供は旧系とともに終了し、新系では利用者によるライセンス持込みを調整中とされました。利用権とアプリケーション環境は、計算機の更新だけでは自動継承されません。",
+          "statement_en": "Even for projects selected for FY2026, existing HPCI, JHPCN, and Nagoya HPC registration numbers are not inherited and new numbers were planned for separate issue. Center-provided Altair simulation, FieldView, LS-DYNA, and Pointwise ended with the old system; user-provided licenses for the new system were still under coordination. Access rights and application environments therefore do not carry over automatically with hardware refresh.",
+          "hpci_relevance_ja": "整備計画には、ID・課題番号の対応表、監査履歴、ライセンス費用、代替OSS、入力形式、再現試験、利用者通知を含める必要があります。",
+          "hpci_relevance_en": "System planning should include identifier mapping, audit history, license costs, OSS alternatives, input formats, reproduction tests, and user communication.",
+          "adoption_conditions_ja": [
+            "旧IDと新ID、課題、配分、ファイル所有者、監査記録を一貫して対応付ける。",
+            "廃止ソフトウェアごとに持込み可否、費用、代替実装、結果互換性を確認する。",
+            "『調整中』を提供可能として扱わず、契約・導入・動作確認を別々に追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Maintain consistent mapping among old and new identifiers, projects, allocations, file ownership, and audit records.",
+            "For each retired application, verify bring-your-own licensing, cost, alternatives, and result compatibility.",
+            "Do not treat 'under coordination' as available; track contract, installation, and functional validation separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS161"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS160",
+        "title": "スーパーコンピュータ『不老』次期システム導入に伴うデータ移行について",
+        "publisher": "名古屋大学 情報連携推進本部",
+        "url": "https://icts.nagoya-u.ac.jp/ja/information/sc/2026-01-19-data.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01-19"
+      },
+      "origin_group": "nagoya-flow-refresh-2026",
+      "checked_at": "2026-09-02T04:04:00+09:00",
+      "locator": "本文：停止日時、/home 1 TBのセンター移行、その他領域の利用者移行、停止後の非対応",
+      "observation_ja": "旧系停止、継続仮申請、/homeの1 TB上限と無保証、その他領域の利用者責任、停止後のアクセス不可を確認しました。",
+      "observation_en": "Verified shutdown, provisional continuation, the 1 TB /home limit without integrity guarantee, user responsibility for other areas, and no access after shutdown.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS161",
+        "title": "名古屋大学情報基盤センター 共同利用システム速報 No.223",
+        "publisher": "名古屋大学情報基盤センター",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/sokuho/pdf/sokuho223.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-19"
+      },
+      "origin_group": "nagoya-flow-refresh-2026",
+      "checked_at": "2026-09-02T04:08:00+09:00",
+      "locator": "Pages 1-2: service gap, job termination, cold storage, application retirement, registration-number transition",
+      "observation_ja": "3月31日停止、10月1日開始予定、期間中の計算不可、実行中ジョブ、コールドストレージ、登録番号、一部アプリケーションの非継承を確認しました。",
+      "observation_en": "Verified the March 31 stop, planned October 1 start, no compute service in between, treatment of jobs and cold storage, and non-continuity of identifiers and several applications.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-085は未解決です。移行対象容量・ファイル数、転送実績、完全性、利用者負担、代替資源、障害、10月1日の実際の開始状況を確認する必要があります。",
+    "新登録番号と旧課題・配分・ファイル所有権の対応、商用ソフトウェアの持込み契約と代替策は未確認です。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-085 remains open; migrated capacity and file counts, transfer outcomes, integrity, user effort, alternate resources, failures, and actual October 1 service status require verification.",
+    "Mapping new identifiers to old projects, allocations, and file ownership and the licensing or alternatives for commercial software remain unverified.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

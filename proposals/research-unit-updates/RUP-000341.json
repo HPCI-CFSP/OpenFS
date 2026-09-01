@@ -1,0 +1,206 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000341",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T07:53:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000141",
+      "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"
+    },
+    {
+      "update_id": "RUP-000147",
+      "bundle_sha256": "50d35e45f17c5bfcfb01122d8bc6da805e7e431028e4c604ffbc4c62c077acd3"
+    },
+    {
+      "update_id": "RUP-000247",
+      "bundle_sha256": "687a30d7341cef8788c95b506a5bbc5e65b6906c1f7a15019b0699897ad29e71"
+    },
+    {
+      "update_id": "RUP-000306",
+      "bundle_sha256": "458b92e96d4213f453f57538a0352ec6140e8b894157b4194d82595c5b515bf3"
+    },
+    {
+      "update_id": "RUP-000312",
+      "bundle_sha256": "b2991a7f02d8eb843d400d4983aa6d68e8fbd4dfca700479ea5598b917be4b92"
+    },
+    {
+      "update_id": "RUP-000334",
+      "bundle_sha256": "8e8b906bbd88e22995c5408c6c60da07d0bb0689be345800900dbdc818108ba9"
+    }
+  ],
+  "before_profile_sha256": "81bf727322e5ff7236370c26c4a2b63754ac7c25fac7d760a431d7a192f9d2cd",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ALCF FIRSTのGlobus Auth/Compute、Django gateway、vLLM backend、直接・連合routingと、本番Inference Endpointsのmodel状態、最大15万request batch、data path、Metisの機能制約を追加しました。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds ALCF FIRST's Globus Auth and Compute, Django gateway, vLLM backends, direct and federated routing, plus production Inference Endpoint model states, batches of up to 150,000 requests, data paths, and Metis capability limits. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "3e6906f439f9bae6cc756722d36d3f65cbe9bb91444083550b148fc76c38e234",
+      "evidence_section_ids": [
+        "TDS-HC26-SSW-09-U2",
+        "TDS-CD6-SSW-09-U02",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+        "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE",
+        "TDS-CD55-SSW-09-ALCF-FIRST-GATEWAY"
+      ]
+    },
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "4c8d1fa329d5e900c5b313a9c9ad62bbb90c0cd7299bf7b1e9d3c90ef7423919",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U03",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+        "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE",
+        "TDS-CD48-SSW-09-ALCF-AGENT-OPERATIONS",
+        "TDS-CD55-SSW-09-ALCF-FIRST-GATEWAY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD55-SSW-09-ALCF-FIRST-GATEWAY",
+      "title_ja": "ALCF FIRSTの連合推論gatewayとservice境界",
+      "title_en": "Federated inference gateway and service boundaries in ALCF FIRST",
+      "summary_ja": "API互換性だけでなく、identity、endpoint routing、cold start、batch、model機能差、allocation、data pathを共通serviceの設計対象にします。",
+      "summary_en": "Treat identity, endpoint routing, cold starts, batching, model feature differences, allocations, and data paths as shared-service concerns rather than relying on API compatibility alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD172-FIRST-FEDERATED-INFERENCE-GATEWAY",
+          "name_ja": "Globus認証・remote endpoint・vLLMを分離したFIRST",
+          "name_en": "FIRST separates Globus identity, remote endpoints, and vLLM backends",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "SC25論文と現行公開repositoryを確認",
+          "timing_en": "Verified in the SC25 paper and current public repository",
+          "statement_ja": "FIRSTはDjango REST/NinjaのInference Gatewayでrequest認可とroutingを行い、Globus Authでidentity、Globus Compute EndpointでHPC clusterまたはlocal machine上のremote実行、endpoint近傍のvLLM等でmodel servingを担当します。OpenAI互換APIから特定backendを直接選ぶ経路と、連合poolから選ぶ経路を備え、hot node維持、auto-scaling、interactiveとbatchを対象とします。Apache-2.0の公開repository、deployment手順、monitoring、load-test toolがありますが、公開資料だけではmulti-center SLA、公平性、失敗時のexactly-once性、課金、model/data residency保証は確認できません。",
+          "statement_en": "FIRST uses a Django REST/Ninja Inference Gateway for request authorization and routing, Globus Auth for identity, Globus Compute Endpoints for remote execution on HPC clusters or local machines, and model servers such as vLLM colocated with endpoints. Its OpenAI-compatible API can route directly to a named backend or select from a federated pool, targeting hot-node retention, autoscaling, and interactive and batch modes. The Apache-2.0 repository includes deployment instructions, monitoring, and load-testing tools, but public material does not establish a multi-center SLA, fairness, exactly-once failure behavior, charging, or guaranteed model and data residency.",
+          "hpci_relevance_ja": "HPCIの共通推論serviceでは、portalだけを統合するのではなく、identityとallocationを保ったまま各centerのbackendへroutingできるcontrol plane候補です。",
+          "hpci_relevance_en": "For an HPCI inference service, this is a candidate control-plane pattern that routes to center-specific backends while preserving identity and allocations rather than only unifying a portal.",
+          "adoption_conditions_ja": [
+            "user/project identity、scope、endpoint、model、data path、request IDをend-to-endで監査する。",
+            "queue、cold start、retry、duplicate、timeout、cancel、partial streamのsemanticsを定義する。",
+            "center別capacity、policy、cost、model license、data residencyをrouting制約へ組み込む。"
+          ],
+          "adoption_conditions_en": [
+            "Audit user and project identity, scopes, endpoints, models, data paths, and request IDs end to end.",
+            "Define queue, cold-start, retry, duplicate, timeout, cancellation, and partial-stream semantics.",
+            "Encode center capacity, policy, cost, model licensing, and data residency as routing constraints."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS462"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD173-ALCF-INFERENCE-STATE-BATCH-LIMITS",
+          "name_ja": "model状態、最大15万request batch、cluster別機能差の公開",
+          "name_en": "Published model states, batches of up to 150,000 requests, and cluster-specific limits",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点の現行user guide",
+          "timing_en": "Current user guide checked September 2, 2026",
+          "statement_ja": "ALCF Inference Endpointsはmodelを`Live`、`Starting`、`Queued`、`Offline`として表示し、ANL/ALCF credentialをGlobusで認証します。batch serviceは1 file最大150,000 requestで、active ALCF allocationと`/eagle/argonne_tpc`またはworld-readable pathを必要とします。Metisでは現時点でbatchとtool callingが未対応でchat completionsのみです。したがって同じOpenAI互換APIでも、待時間、data配置、tool利用、batch可否はbackendごとに異なります。",
+          "statement_en": "ALCF Inference Endpoints expose model states as `Live`, `Starting`, `Queued`, and `Offline` and authenticate ANL or ALCF credentials through Globus. The batch service accepts up to 150,000 requests per file and requires an active ALCF allocation plus data under `/eagle/argonne_tpc` or a world-readable path. Metis currently lacks batch processing and tool calling and exposes chat completions only. Thus, even behind an OpenAI-compatible API, latency, data placement, tool use, and batch support vary by backend.",
+          "hpci_relevance_ja": "HPCI共通APIは互換と表示するだけでなく、model/backendごとのcapability、queue state、data公開範囲、allocation消費をmachine-readableに公開する必要があります。",
+          "hpci_relevance_en": "An HPCI common API should expose model and backend capabilities, queue state, data visibility, and allocation consumption in machine-readable form rather than only claiming compatibility.",
+          "adoption_conditions_ja": [
+            "chat、responses、streaming、batch、embedding、vision、tool call、structured outputの対応matrixを公開する。",
+            "private dataをworld-readable pathへ置かずにbatch処理できるproject-scoped data pathを設計する。",
+            "time-to-first-token、time-to-load、queue、throughput、failure、allocation消費を別指標で測る。"
+          ],
+          "adoption_conditions_en": [
+            "Publish a capability matrix for chat, responses, streaming, batch, embeddings, vision, tool calls, and structured output.",
+            "Design project-scoped batch data paths that do not require private data to become world-readable.",
+            "Measure time to first token, load time, queue delay, throughput, failures, and allocation consumption separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS463",
+            "SRC-CDS464"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS462",
+        "title": "FIRST: Federated Inference Resource Scheduling Toolkit",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://github.com/argonne-lcf/FIRST",
+        "source_class": "research-artifact",
+        "published_or_updated": "Living repository checked 2026-09-02"
+      },
+      "origin_group": "alcf-first-gateway",
+      "checked_at": "2026-09-02T06:55:00+09:00",
+      "locator": "README architecture, API, Globus Auth and Compute, vLLM backend, routing, autoscaling, hot nodes, batch and interactive modes, and license",
+      "observation_ja": "公開gateway architecture、連合routing、backend分離、運用toolと未記載のSLA境界を確認しました。",
+      "observation_en": "Verified the public gateway architecture, federated routing, backend separation, operational tools, and the absence of stated SLA boundaries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS463",
+        "title": "ALCF Inference Endpoints",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/services/inference-endpoints/",
+        "source_class": "official-project",
+        "published_or_updated": "Living user guide checked 2026-09-02"
+      },
+      "origin_group": "alcf-inference-endpoints-user-guide",
+      "checked_at": "2026-09-02T06:56:00+09:00",
+      "locator": "Model states, authentication, agent configuration, backend model lists, Metis limitations, batch processing and storage requirements",
+      "observation_ja": "model状態、agent設定、cluster別機能差、15万request batch、allocationとdata path条件を確認しました。",
+      "observation_en": "Verified model states, agent setup, cluster-specific capability differences, 150,000-request batches, allocations, and data-path requirements.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS464",
+        "title": "AI Inference",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/ai-inference",
+        "source_class": "official-project",
+        "published_or_updated": "Living service page checked 2026-09-02"
+      },
+      "origin_group": "alcf-inference-service-current-systems",
+      "checked_at": "2026-09-02T06:57:00+09:00",
+      "locator": "Current models, Sophia and Metis, planned Minerva and Tara, API and web access, and eligibility",
+      "observation_ja": "現行serviceのmodel class、稼働system、追加予定system、Globus認証、DOE他研究所へのrequest-based accessを確認しました。",
+      "observation_en": "Verified model classes, current and planned systems, Globus authentication, and request-based access for other DOE laboratories.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "multi-center SLA、公平性、failure semantics、課金、private batch data path、model別性能を追跡する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Multi-center SLAs, fairness, failure semantics, charging, private batch data paths, and per-model performance require follow-up.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

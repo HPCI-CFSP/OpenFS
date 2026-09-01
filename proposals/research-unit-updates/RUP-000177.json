@@ -1,0 +1,143 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000177",
+  "topic_id": "CROSS-10",
+  "created_at": "2026-09-02T06:15:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000130", "bundle_sha256": "b348864aa9574c8b9ef8f71a497bb1eb9c3e718a5b24a4e8b7984e2e66c50fd8"},
+    {"update_id": "RUP-000154", "bundle_sha256": "a1647e41603cdb2bc393a953ab28c20537b12ff0a5d99efc26c9dff460fc8ad3"}
+  ],
+  "before_profile_sha256": "a6036afef36f4e96061a6d3e2b65173b7872a7769641701f99bccfa9e12021aa",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省の2026年6月資料から、次世代HPCIの共通要件を認証・認可、環境隔離、コンテナ、Web/API、常駐サービス、データ・実験装置連携、資源ブローカ、利用実績、課金、セキュリティ、利用者支援に分解しました。別の公式議事録では2025・2027・2029年の段階実装、学認ID起点の権限付与、後払い型負担金が構想として説明されています。いずれも方針案・議論段階を含み、全国稼働済みとは扱いません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "June 2026 MEXT material decomposes future-HPCI common requirements into authentication and authorization, isolation, containers, web/API access, persistent services, data and instrument integration, resource brokering, usage accounting, charging, security, and user support. Separate official minutes describe staged implementation around 2025, 2027, and 2029, GakuNin-ID-based authorization, and usage-based settlement as concepts. These include draft and discussion-stage material and are not treated as nationwide production services. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-10-U01",
+      "before_sha256": "415c769416b8a99f50f7534d5db8217aabee6e0a74d5d96a572bcb45b9db09c4",
+      "evidence_section_ids": ["TDS-CD1-CROSS-10-U01", "TDS-CD2-CROSS-10-U01", "TDS-CD10-CROSS-10-U01", "TDS-CD15-CROSS-10-U01", "TDS-CD16-CROSS-10-COMMON-SERVICES"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD16-CROSS-10-COMMON-SERVICES",
+      "title_ja": "次世代HPCI共通機能の実装段階と運営責任",
+      "title_en": "Implementation stages and operational responsibility for future-HPCI common services",
+      "summary_ja": "共通化の対象機能、段階実装、サービス運用責任を分け、構想を稼働実績と誤認しない評価軸を示します。",
+      "summary_en": "Separate common-service scope, staged implementation, and service accountability so that concepts are not mistaken for operational evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD16-HPCI-COMMON-REQUIREMENT-SET",
+          "name_ja": "次世代HPCI参加機関に検討される共通要件",
+          "name_en": "Proposed common requirements for future-HPCI providers",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年6月30日の方針案",
+          "timing_en": "Draft dated June 30, 2026",
+          "statement_ja": "文科省方針案は、学認等による認証連携、認可・利用者管理、プロジェクト単位のアクセス権と隔離、コンテナ、Web UI、API・AIエージェント、常駐サービス、データ・モデル・実験装置・共用ストレージ連携、資源ブローカ・メタスケジューラ、利用実績、課金・ポイント、ログ・脆弱性対応、利用者支援を共通要件候補として列挙しています。これは要求候補の集合であり、実装仕様、適合試験、責任主体、費用分担は確定していません。",
+          "statement_en": "The MEXT draft lists federated authentication such as GakuNin, authorization and user management, project access and isolation, containers, web UI, APIs and AI agents, persistent services, data/model/instrument/shared-storage integration, resource brokers and metaschedulers, usage accounting, charging and credits, logging and vulnerability handling, and user support as candidate common requirements. It is a requirement set, not a finalized implementation specification, conformance test, ownership model, or funding allocation.",
+          "hpci_relevance_ja": "各システムの仕様書に共通要件への対応レベルとAPI・運用SLOを記載し、装置性能とサービス機能を同時に受入判定します。",
+          "hpci_relevance_en": "State conformance levels, APIs, and operational SLOs in each system specification and accept service capabilities alongside machine performance.",
+          "adoption_conditions_ja": ["各要件を必須・選択・拠点固有に分類する。", "API、データ形式、認証属性、ログ項目、失敗時の責任を仕様化する。", "機能試験、セキュリティ試験、障害・復旧試験を受入条件にする。"],
+          "adoption_conditions_en": ["Classify each requirement as mandatory, optional, or provider-specific.", "Specify APIs, data formats, identity attributes, log fields, and failure ownership.", "Make functional, security, failure, and recovery tests acceptance criteria."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS207", "SRC-CDS208"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD16-HPCI-PHASED-COMMON-SERVICES",
+          "name_ja": "2025・2027・2029年を節目とする段階実装構想",
+          "name_en": "Staged implementation concept using 2025, 2027, and 2029 milestones",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "公式議事録で説明された段階案。個別四半期は未公表",
+          "timing_en": "Stages described in official minutes; quarters not published",
+          "statement_ja": "研究データWGの議事録は、HPCI側の参考資料に2025・2027・2029年のフェーズ1～3があり、共通バウチャー、課金、資源ブローカ、メタスケジューラ等を段階的に実装する構想と説明しています。ただし、各段階の完了判定、全国提供範囲、遅延・変更、運用KPIを確定する文書ではありません。",
+          "statement_en": "Official research-data working-group minutes state that HPCI reference material uses phases around 2025, 2027, and 2029 for staged common vouchers, charging, resource brokering, metascheduling, and related functions. The minutes do not establish completion criteria, nationwide scope, delays or revisions, or operational KPIs for each stage.",
+          "hpci_relevance_ja": "ロードマップでは年度ラベルだけでなく、方針確定、試作、拠点間試行、一般提供、運用評価を別のゲートとして追跡します。",
+          "hpci_relevance_en": "Track policy adoption, prototype, multi-provider pilot, general availability, and operational evaluation as separate gates rather than using year labels alone.",
+          "adoption_conditions_ja": ["各段階の対象機能・参加拠点・利用者範囲を公開する。", "稼働率、配分時間、課金誤差、認証失敗、問い合わせ件数を測定する。", "期限を過ぎた節目は後続の決定・稼働資料で達成状況を確認する。"],
+          "adoption_conditions_en": ["Publish functions, providers, and user populations for each stage.", "Measure availability, allocation latency, billing error, authentication failure, and support volume.", "Verify milestones after their dates using later decisions and operational records."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS209"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD16-HPCI-PERSISTENT-SERVICE-ACCOUNTABILITY",
+          "name_ja": "常時稼働サービスと物理設置場所を分ける運営責任",
+          "name_en": "Operational responsibility for persistent services independent of physical location",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "timing_ja": "2026年6月30日の方針案・議事要旨",
+          "timing_en": "June 30, 2026 draft and minutes",
+          "statement_ja": "方針案は推論・対話・エージェントを常時・長期稼働するサービスとして想定し、物理設置場所とサービス設計・運用責任・利用者支援を分け得るとします。委員会でも、IaaS、共通ポイント、推論サービスは従来と異なる運用技能と支援が必要との意見が示されました。これは採択済みの組織・予算配分ではありません。",
+          "statement_en": "The draft anticipates persistent inference, interactive, and agent services and allows physical placement to differ from service design, operational responsibility, and user support. Committee discussion also identified IaaS, common credits, and inference services as requiring new operational skills and support. This is not an adopted organization or funding allocation.",
+          "hpci_relevance_ja": "整備計画ではGPU台数だけでなく、サービス所有者、当直、更新、監視、事故対応、モデル・依存ソフトの保守費を継続費として計上します。",
+          "hpci_relevance_en": "Budget recurring service ownership, on-call coverage, upgrades, monitoring, incident response, and model and dependency maintenance in addition to GPU quantities.",
+          "adoption_conditions_ja": ["サービスごとに実施責任、最終決定、費用負担、障害連絡を定める。", "バッチ停止時間と常時サービスSLOを分離する。", "大学教員・研究者の兼務を無償の運用能力として仮定しない。"],
+          "adoption_conditions_en": ["Define delivery, decision authority, funding, and incident contact for every service.", "Separate batch-maintenance windows from persistent-service SLOs.", "Do not treat academic staff and researchers as free operational capacity."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS208", "SRC-CDS210"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS207", "title": "HPCI計画推進委員会（第69回）配付資料", "publisher": "文部科学省", "url": "https://www.mext.go.jp/b_menu/shingi/chousa/shinkou/020/shiryo/1421321_00043.html", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-hpci-committee-69-materials",
+      "checked_at": "2026-09-02T02:28:00+09:00",
+      "locator": "資料4-1-1～4-1-5、4-2、4-3、4-4",
+      "observation_ja": "次世代HPCI、制度共通化、需要調査、特定研究有償課題、各大学の増強資料が同一会合で審議されたことを確認しました。",
+      "observation_en": "Verified that future HPCI, common policy, demand, paid access, and provider expansion were considered in one meeting.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS208", "title": "AI for Science時代に対応したHPCI全体での戦略的な整備や制度の共通化に向けた方針（案）", "publisher": "文部科学省研究振興局計算科学技術推進室", "url": "https://www.mext.go.jp/content/20260630-mxt_jyohoka01-000050674_04-1-3.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-hpci-common-policy-draft",
+      "checked_at": "2026-09-02T02:30:00+09:00",
+      "locator": "背景、課題、基本的方向性、共通要件、整備モデル、運営責任",
+      "observation_ja": "サービス指向利用、共通要件、五つの整備モデル、物理設置とサービス責任の分離を確認しました。",
+      "observation_en": "Verified service-oriented use, common requirements, five delivery models, and separation of physical location from service accountability.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS209", "title": "AI for Scienceを支える研究データの管理・利活用と流通の在り方ワーキンググループ（第6回）議事録", "publisher": "文部科学省", "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu29/006/gijiroku/mext_00007.html", "source_class": "official-project", "published_or_updated": "2026"},
+      "origin_group": "mext-ai-science-data-wg-6",
+      "checked_at": "2026-09-02T02:32:00+09:00",
+      "locator": "HPCI説明：フェーズ1～3、学認ID、共通バウチャー、利用実績精算、常時AIサービス",
+      "observation_ja": "段階実装構想と、認証・課金・サービス運用の検討内容を確認しました。",
+      "observation_en": "Verified the staged implementation concept and discussion of identity, charging, and service operations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS210", "title": "HPCI計画推進委員会（第69回）議事要旨", "publisher": "文部科学省", "url": "https://www.mext.go.jp/b_menu/shingi/chousa/shinkou/020/gijiroku/1417971_00032.htm", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-hpci-committee-69-minutes",
+      "checked_at": "2026-09-02T02:34:00+09:00",
+      "locator": "共通化方針案、運用体制・技能、SPReAD需要、大学連合MOU",
+      "observation_ja": "方針案は今後確定予定であること、常時サービスに新しい運用体制・技能が必要との議論を確認しました。",
+      "observation_en": "Verified that the policy remained a draft and that discussion identified new operating structures and skills for persistent services.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-087は未解決です。方針の正式決定、共通要件の適合仕様、参加拠点、実施主体、継続予算、全国稼働実績を追跡する必要があります。", "2025・2027・2029年の段階ごとの完了基準、達成状況、改訂工程は公開資料だけでは確定できません。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-087 remains open. Final policy, conformance specifications, participating providers, accountable bodies, recurring funding, and nationwide operational evidence must be tracked.", "Public material does not establish per-stage completion criteria, achievement, or revised schedules for the 2025, 2027, and 2029 phases.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

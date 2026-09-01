@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000216",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:32:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000160", "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"},
+    {"update_id": "RUP-000174", "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"},
+    {"update_id": "RUP-000194", "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"}
+  ],
+  "before_profile_sha256": "5c66e9bf17bb452665d2646e2305c99bb83d902e7a0b0b5c7551b42e43097d25",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "資源管理・実行環境について、HPCIの現行運用差に加えて2026年のSlurmとKubernetesの更新を確認しました。Slurm 26.05は非同期ジョブステップ、実行中のメモリ解放、GPU割当メトリクス、REST API拡張を追加し、三世代前までの直接更新経路を示します。Kubernetes 1.37ではgang schedulingがBetaへ進み、分散AI/HPCジョブの一括配置を標準機能として扱える範囲が広がりました。ただし、両者の成熟度、会計、ネットワーク配置、障害復旧、運用責任は同等ではなく、HPCIでの併用構成は実証が必要です。Consensusは未完了です。",
+  "summary_en": "For resource management and execution environments, this update adds 2026 Slurm and Kubernetes developments to the existing HPCI operating-model comparison. Slurm 26.05 adds asynchronous job steps, runtime memory release, GPU-allocation metrics, and REST API extensions, with a direct upgrade path from three prior major releases. Kubernetes 1.37 advances gang scheduling to Beta, expanding native all-or-nothing placement for distributed AI and HPC jobs. Their maturity, accounting, topology handling, failure recovery, and operational responsibilities are not equivalent, so a combined HPCI deployment requires validation. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "0a9e82fa94879a0de3b497edb94f9886e87ec0154e1bca35ad241101cf4f0801",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD22-SSW-06-SCHEDULERS-2026",
+      "title_ja": "2026年のSlurmとKubernetesにおけるHPC・AI実行機能",
+      "title_en": "HPC and AI execution features in Slurm and Kubernetes in 2026",
+      "summary_ja": "大規模バッチ管理とクラウドネイティブな分散AI配置の機能・成熟度を分けて比較します。",
+      "summary_en": "Compare feature scope and maturity separately for large-scale batch management and cloud-native distributed-AI placement.",
+      "items": [
+        {
+          "item_id": "TDI-CD22-SLURM-2605",
+          "name_ja": "Slurm 26.05はジョブステップ・メモリ・GPU可観測性を拡張",
+          "name_en": "Slurm 26.05 expands job-step, memory, and GPU observability controls",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年5月系列、サポート終了予定は2028年11月",
+          "timing_en": "May 2026 series; revised end of support November 2028",
+          "statement_ja": "Slurm 26.05は、将来のジョブステップをキューへ入れるsrun --async、実行中ジョブからのメモリ解放とcgroup上限更新、OpenMetricsでのGPU割当統計、パーティション設定等を扱うREST APIを追加しました。25.11、25.05、24.11からの直接更新を支援しますが、API v0.0.42は26.11で削除予定であり、更新時にはRESTクライアントと実行中ジョブを含む互換性確認が必要です。",
+          "statement_en": "Slurm 26.05 adds srun --async for queued future job steps, runtime memory release with cgroup-limit updates, GPU-allocation statistics in OpenMetrics, and REST endpoints for partition and configuration management. It supports direct upgrades from 25.11, 25.05, and 24.11, while REST API v0.0.42 is scheduled for removal in 26.11. Upgrade validation therefore needs to include REST clients and running jobs.",
+          "hpci_relevance_ja": "科学ワークフローの細粒度ステップ、GPU利用率の説明、メモリ過大要求の削減に使える可能性がありますが、既存会計・ポータル・監視との結合試験が必要です。",
+          "hpci_relevance_en": "These features may help fine-grained scientific workflow steps, GPU-utilization reporting, and reduction of over-requested memory, but integration with existing accounting, portals, and monitoring requires testing.",
+          "adoption_conditions_ja": [
+            "現行版からの更新経路、実行中ジョブ、状態ファイル、会計DBの復旧手順を検証する。",
+            "REST APIと監視クライアントの版を固定し、削除予定APIへの依存を検出する。",
+            "メモリ縮小がアプリケーションのOOMリスクと充填率へ与える影響を実測する。"
+          ],
+          "adoption_conditions_en": [
+            "Validate the upgrade path, running jobs, state files, and accounting-database recovery procedures.",
+            "Pin REST API and monitoring-client versions and detect dependencies on APIs scheduled for removal.",
+            "Measure how memory resizing affects application out-of-memory risk and cluster utilization."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS289", "SRC-CDS290"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD22-K8S-137-GANG",
+          "name_ja": "Kubernetes 1.37でgang schedulingがBetaへ移行",
+          "name_en": "Gang scheduling reaches Beta in Kubernetes 1.37",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年8月26日公開",
+          "timing_en": "Released August 26, 2026",
+          "statement_ja": "Kubernetes 1.37は、必要なPod群を一括して配置するgang schedulingをBetaへ進めました。Workload/PodGroupに加えてbatch/v1 Jobのspec.schedulingからポリシー、トポロジ制約、disruption、resource claimを指定でき、workload-aware preemptionとPodGroup queueingも加わりました。複雑な階層型負荷向けCompositePodGroupはAlphaであり、Slurm相当の会計・予約・大規模MPI運用が一括して成熟したことを意味しません。",
+          "statement_en": "Kubernetes 1.37 advances gang scheduling to Beta, enabling all-or-nothing placement of required Pod groups. In addition to Workload and PodGroup, batch/v1 Jobs can use spec.scheduling for policies, topology constraints, disruption behavior, and resource claims; workload-aware preemption and PodGroup queueing are also included. CompositePodGroup for hierarchical workloads remains Alpha, and this does not mean Slurm-equivalent accounting, reservations, and large-scale MPI operations have matured together.",
+          "hpci_relevance_ja": "分散AI学習や推論サービスでは有力ですが、HPCバッチとの共用時は資源予約、ネットワーク局所性、会計、障害復旧を共通負荷で比較する必要があります。",
+          "hpci_relevance_en": "This is relevant to distributed AI training and inference services, but shared operation with HPC batch workloads requires common-load tests of reservations, network locality, accounting, and recovery.",
+          "adoption_conditions_ja": [
+            "BetaとAlphaの機能境界および採用Kubernetes版を固定する。",
+            "同一GPUクラスタでSlurm、Kubernetes、併用構成の起動遅延と干渉を比較する。",
+            "ジョブ失敗、Pod再作成、ノード保守、課金記録の整合性を障害試験で確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin the adopted Kubernetes release and distinguish Beta from Alpha feature boundaries.",
+            "Compare launch latency and interference for Slurm, Kubernetes, and combined operation on the same GPU cluster.",
+            "Use failure tests to verify consistency across job failure, Pod recreation, node maintenance, and billing records."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS291"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS289",
+        "title": "Release Notes for Slurm 26.05",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/release_notes.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05"
+      },
+      "origin_group": "slurm-2605-release",
+      "checked_at": "2026-09-02T03:36:00+09:00",
+      "locator": "Highlights, upgrading, REST API changes, and deprecations",
+      "observation_ja": "非同期ジョブステップ、メモリ動的縮小、GPU割当メトリクス、REST API更新と直接更新元を確認しました。",
+      "observation_en": "Verified asynchronous job steps, dynamic memory resizing, GPU-allocation metrics, REST API changes, and supported direct-upgrade sources.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS290",
+        "title": "Slurm Upgrade Guide",
+        "publisher": "SchedMD",
+        "url": "https://slurm.schedmd.com/upgrades.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-05"
+      },
+      "origin_group": "slurm-upgrade-lifecycle",
+      "checked_at": "2026-09-02T03:37:00+09:00",
+      "locator": "release support and compatibility-window table",
+      "observation_ja": "26.05の更新互換範囲、改訂サポート終了時期、非互換更新時の実行ジョブ・会計への影響を確認しました。",
+      "observation_en": "Verified the 26.05 upgrade compatibility window, revised end of support, and effects of incompatible upgrades on running jobs and accounting.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS291",
+        "title": "Kubernetes v1.37: Garhwal",
+        "publisher": "Kubernetes",
+        "url": "https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "kubernetes-137-scheduling",
+      "checked_at": "2026-09-02T03:38:00+09:00",
+      "locator": "gang scheduling Beta and workload-aware scheduling sections",
+      "observation_ja": "gang schedulingのBeta移行、Job APIの追加指定、preemption・queueing、およびCompositePodGroupがAlphaであることを確認しました。",
+      "observation_en": "Verified gang scheduling's Beta graduation, Job API scheduling fields, preemption and queueing, and the Alpha status of CompositePodGroup.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCIの同一GPU構成でSlurm、Kubernetes、併用構成を比較した公開実測は未確認です。",
+    "Slurm 26.05の各センター採用状況とKubernetes 1.37機能の本番運用実績は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "No public same-GPU HPCI comparison of Slurm, Kubernetes, and combined operation has been verified.",
+    "Center adoption of Slurm 26.05 and production experience with Kubernetes 1.37 scheduling features remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

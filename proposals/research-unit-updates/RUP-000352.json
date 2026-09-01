@@ -1,0 +1,207 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000352",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:55:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000171",
+      "bundle_sha256": "e5a5524263e3bb6dc60ead5ef98e98283473cfff12954dcbab25a8a7c9ef7c06"
+    },
+    {
+      "update_id": "RUP-000228",
+      "bundle_sha256": "082cfc450fc4c20ad2608d05198465819e922f7f9ec478ff63672dc120a600df"
+    },
+    {
+      "update_id": "RUP-000241",
+      "bundle_sha256": "f89da10f63a1d832cb56bf587392eaae7250ec866e4e650860af1ab91b77b3ce"
+    },
+    {
+      "update_id": "RUP-000268",
+      "bundle_sha256": "76c919e73905190fbe657d7417ddbc2651786e08ce4d55cbd8f1ce58a7313e2b"
+    },
+    {
+      "update_id": "RUP-000336",
+      "bundle_sha256": "85034326c1696ad415e57a2e423c0b3d0165c0ecd0243b31e33885526527288c"
+    },
+    {
+      "update_id": "RUP-000351",
+      "bundle_sha256": "2c9e3e80c339a75baa85f1944f726c5b8700984360ec72734c364a50ec1853ae"
+    }
+  ],
+  "before_profile_sha256": "8a7ca51e20daf66cefdee9f809f9edffb59773bfb15188a8c400b0e690458c35",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳産業利用上位のQuantum ESPRESSOとVASPについて、NVIDIA CUDA/OpenACC、VASP 6.6.0のAMD・Intel OpenMP offload、未移植機能のCPU fallback、MPI・compiler条件を追加しました。起動可否と実際のoffload coverageを区別します。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For Quantum ESPRESSO and VASP, both prominent in Fugaku industrial use, this update adds NVIDIA CUDA and OpenACC paths, VASP 6.6.0 AMD and Intel OpenMP offload, CPU fallback for unported features, and MPI and compiler conditions. Executability is kept separate from actual offload coverage. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-02-U01",
+      "before_sha256": "51134cc469dad69bb98487316829f3a429d14f30288925e4daf2bf380002fccd",
+      "evidence_section_ids": [
+        "TDS-APP02-CURRENT",
+        "TDS-APP02-FUTURE",
+        "TDS-CD1-APP-02-U01",
+        "TDS-CD5-APP-02-U01-U03",
+        "TDS-CD47-APP-02-GREEN500-INTERPRETATION",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026",
+        "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY"
+      ]
+    },
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "2271475c90077b78e61d9f780204946be2b78937d0720d71873804cdcc142cdd",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02",
+        "TDS-CD3-APP-02-U02",
+        "TDS-CD4-APP-02-SP-MIROC-CPU-GPU",
+        "TDS-CD50-APP-02-DISCOVERY-CAAR-READINESS",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026",
+        "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY",
+      "title_ja": "産業利用上位の電子状態計算codeにおけるGPU対応境界",
+      "title_en": "GPU-support boundaries in electronic-structure codes prominent in industrial use",
+      "summary_ja": "Quantum ESPRESSOとVASPについて、vendor別backend、未移植機能、通信・compiler依存、license継続を比較します。",
+      "summary_en": "Compare vendor backends, unported features, communication and compiler dependencies, and license continuity for Quantum ESPRESSO and VASP.",
+      "items": [
+        {
+          "item_id": "TDI-CD194-QE-NVIDIA-GPU-PATH",
+          "name_ja": "Quantum ESPRESSOのmain配布に統合されたNVIDIA GPU経路",
+          "name_en": "NVIDIA GPU path integrated into the main Quantum ESPRESSO distribution",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点の公式repository文書",
+          "timing_en": "Official repository documentation checked September 2, 2026",
+          "statement_ja": "Quantum ESPRESSOのmain repositoryはGPU版を含み、NVIDIA HPC SDKのnvfortran 21.7以降、CUDA toolkit path・runtime版・compute capabilityを指定して構築します。OpenACCは常時必要で、CUDA-aware MPIを明示的に有効化しなければ既定は無効です。公式文書はcurrent GPU versionがparallel/serial testを通過するとしますが、全program、全functional、全input、multi-node規模、他vendor GPUの同等coverageを示すものではありません。旧q-e-gpu repositoryはmain distributionと別に残るため、build手順では対象repositoryとcommitを固定する必要があります。",
+          "statement_en": "The main Quantum ESPRESSO repository includes its GPU-accelerated version and builds it with NVIDIA HPC SDK nvfortran 21.7 or newer plus explicit CUDA toolkit path, runtime version, and compute capability. OpenACC is always required, while CUDA-aware MPI must be explicitly enabled and is off by default. The documentation states that the current GPU version passes serial and parallel tests, but this does not establish equivalent coverage across every program, functional, input, multi-node scale, or non-NVIDIA GPU. Because the older q-e-gpu repository remains separately visible, build records must pin the repository and commit used.",
+          "hpci_relevance_ja": "Quantum ESPRESSOの利用実績を維持するには、NVIDIA経路の有無だけでなく、program別coverageと他GPU候補への移行経路を確認する必要があります。",
+          "hpci_relevance_en": "Maintaining Quantum ESPRESSO use requires program-specific coverage and migration paths to other GPU candidates, not merely confirming an NVIDIA path.",
+          "adoption_conditions_ja": [
+            "利用program、functional、pseudopotential、FFT、diagonalization、scaleを固定した回帰試験を行う。",
+            "CUDA-aware MPI有無でcorrectness、通信、host staging、scaleを測る。",
+            "AMD・Intel GPU候補では公式support、外部分岐、CPU fallbackを分けて確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Run regression tests with pinned programs, functionals, pseudopotentials, FFT, diagonalization, and scale.",
+            "Measure correctness, communication, host staging, and scaling with and without CUDA-aware MPI.",
+            "For AMD and Intel candidates, separate official support, external branches, and CPU fallback."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS488",
+            "SRC-CDS489"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD195-VASP-VENDOR-GPU-PORTS",
+          "name_ja": "VASPはNVIDIA推奨経路とAMD・Intel実験経路を分離",
+          "name_en": "VASP separates its recommended NVIDIA path from experimental AMD and Intel paths",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "VASP 6.6.0世代の公式文書",
+          "timing_en": "Official documentation for the VASP 6.6.0 generation",
+          "statement_ja": "VASPはNVIDIA GPU向けOpenACC portを推奨し、旧CUDA-C portを6.3.0で削除しました。6.6.0ではAMD・Intel datacenter GPU向けOpenMP offload portを実験提供し、AMD MI210/MI250X/MI300AとIntel Max 1100/1150での試験を公表しています。NVIDIA版でもRPA、GW、ACFDTは未移植で、AMD/Intel版ではlinear responseやBSE等も未移植です。未移植機能はGPU buildでもhost CPUで実行されます。1 GPU当たり1 MPI rank、NCORE=1、GPU-aware MPI、NCCL/RCCL等の条件があり、VASPが起動することだけではGPU利用率やscale-out性能を示しません。",
+          "statement_en": "VASP recommends its OpenACC port for NVIDIA GPUs and removed the former CUDA-C port in version 6.3.0. Version 6.6.0 introduces an experimental OpenMP-offload port for AMD and Intel data-center GPUs, with tests listed for AMD MI210, MI250X, and MI300A and Intel Max 1100 and 1150. Even the NVIDIA path leaves RPA, GW, and ACFDT unported, while the AMD and Intel paths also omit features such as linear response and BSE. Unported features execute on the host CPU even in a GPU build. Conditions include one MPI rank per GPU, NCORE=1, GPU-aware MPI, and NCCL or RCCL choices, so successful launch does not establish GPU utilization or scale-out performance.",
+          "hpci_relevance_ja": "商用VASPの継続性はlicenseだけでなく、利用機能が候補GPUでoffloadされるか、CPU fallbackが実用性能を保つかに依存します。",
+          "hpci_relevance_en": "Continuity for commercial VASP depends not only on licensing but on whether used features offload on candidate GPUs and whether CPU fallback remains practical.",
+          "adoption_conditions_ja": [
+            "HPCI利用者のINCAR feature、functional、problem sizeとlicense形態を匿名集計する。",
+            "NVIDIA、AMD、Intel候補でoffload率、CPU時間、通信、memory、結果差を測る。",
+            "compiler・MPI・collective library版とVASP support範囲を調達前に契約上確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Aggregate HPCI users' INCAR features, functionals, problem sizes, and license forms without exposing sensitive inputs.",
+            "Measure offload fraction, CPU time, communication, memory, and result differences on NVIDIA, AMD, and Intel candidates.",
+            "Contractually verify supported compiler, MPI, collective-library versions, and VASP coverage before procurement."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS490"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS488",
+        "title": "Quantum ESPRESSO GPU README",
+        "publisher": "Quantum ESPRESSO Foundation",
+        "url": "https://gitlab.com/QEF/q-e/-/blob/089dc4e7cfe0f2f6fdbec2fc07857fca4e31c76e/README_GPU.md",
+        "source_class": "official-project",
+        "published_or_updated": "Repository documentation; last listed update 2024-06-13"
+      },
+      "origin_group": "qe-main-gpu-readme",
+      "checked_at": "2026-09-02T06:42:00+09:00",
+      "locator": "Installation and execution requirements",
+      "observation_ja": "nvfortran、CUDA/OpenACC、compute capability、CUDA-aware MPI、test状態を確認しました。",
+      "observation_en": "Verified nvfortran, CUDA and OpenACC, compute capability, CUDA-aware MPI, and documented test status.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS489",
+        "title": "Quantum ESPRESSO Developer User Guide",
+        "publisher": "Quantum ESPRESSO Foundation",
+        "url": "https://gitlab.com/QEF/q-e/blob/develop/Doc/user_guide.tex",
+        "source_class": "official-project",
+        "published_or_updated": "Develop branch checked 2026-09-02"
+      },
+      "origin_group": "qe-current-user-guide-source",
+      "checked_at": "2026-09-02T06:43:00+09:00",
+      "locator": "GPU configure options and GPU communication guidance",
+      "observation_ja": "CUDA path、runtime、compute capabilityとNVLink/InfiniBand RDMAの記述を確認しました。",
+      "observation_en": "Verified CUDA path, runtime and compute-capability options and NVLink or InfiniBand RDMA guidance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS490",
+        "title": "GPU ports of VASP",
+        "publisher": "VASP Software GmbH",
+        "url": "https://vasp.at/wiki/GPU_ports_of_VASP",
+        "source_class": "official-project",
+        "published_or_updated": "Official wiki checked 2026-09-02"
+      },
+      "origin_group": "vasp-6-6-gpu-port-status",
+      "checked_at": "2026-09-02T06:44:00+09:00",
+      "locator": "NVIDIA OpenACC, AMD/Intel OpenMP offload, requirements, tested hardware, and limitations",
+      "observation_ja": "NVIDIA推奨port、AMD/Intel実験port、tested hardware、未移植機能、1 rank/GPU等を確認しました。",
+      "observation_en": "Verified the recommended NVIDIA port, experimental AMD and Intel ports, tested hardware, unported features, and one-rank-per-GPU guidance.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "利用feature別offload率、HPCI候補機でのcorrectness・performance・license条件は未測定です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Feature-specific offload, correctness, performance, and license conditions on HPCI candidates remain unmeasured.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

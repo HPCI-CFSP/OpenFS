@@ -1,0 +1,151 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000245",
+  "topic_id": "SSW-04",
+  "created_at": "2026-09-02T07:37:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "d4affd58ee8bbb90d2ee5b719afe8ed003deb4059646f0a7ca9e1f989b1663ce",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI公式software databaseの数値計算分類を資源横断で集計しました。available flagを持つ登録先はFFTW 14資源、PETSc 12資源で比較的広く、SuperLU/ScaLAPACK/LAPACK等も複数資源にあります。一方、Intel MKL、AMD Optimizing CPU Libraries、富士通SSL II、NEC Numeric Library Collection等のarchitecture固有実装も併存します。API互換性、architecture最適化、version、混合精度、GPU backendを別軸で評価します。Consensusは未完了です。",
+  "summary_en": "The HPCI official numerical-software category was aggregated across resources. Registrations carrying the available flag span 14 resources for FFTW and 12 for PETSc, with SuperLU, ScaLAPACK, LAPACK, and others also covering multiple resources. Architecture-specific implementations coexist, including Intel MKL, AMD Optimizing CPU Libraries, Fujitsu SSL II, and NEC Numeric Library Collection. API compatibility, architecture optimization, version, mixed precision, and GPU backends should be evaluated separately. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-04-U01",
+      "before_sha256": "c5481245101d8bdcd681b94a89a1746f7a32ff1d2ca47d2ba4ef4ce8e5a26a25",
+      "evidence_section_ids": [
+        "TDS-SSW04-LIBRARIES",
+        "TDS-CD1-SSW-04-U01",
+        "TDS-CD2-SSW-04-U01",
+        "TDS-CD3-SSW-04-U01",
+        "TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES",
+      "title_ja": "HPCI資源に登録された数値計算libraryの共通性と分岐",
+      "title_en": "Commonality and divergence of numerical libraries registered across HPCI",
+      "summary_ja": "広く登録されたOSSとarchitecture固有最適化libraryを、移植性と性能の両面で評価します。",
+      "summary_en": "Evaluate broadly registered OSS and architecture-specific optimized libraries for both portability and performance.",
+      "items": [
+        {
+          "item_id": "TDI-CD51-FFTW-PETSC-CROSS-RESOURCE",
+          "name_ja": "FFTWとPETScは複数architectureに跨る共通候補",
+          "name_en": "FFTW and PETSc are cross-architecture common candidates",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日取得",
+          "timing_en": "Retrieved September 2, 2026",
+          "statement_ja": "official databaseでavailable flagを持つ登録先を集計すると、FFTWは14資源、PETScは12資源、SuperLU_DIST、ScaLAPACK、LAPACKは各8資源でした。FFTWとPETScは富岳、x86 CPU、NVIDIA GPUを含む複数node型に登録され、source-levelの共通基盤候補です。ただし登録は同一version、同一backend、同一performanceを意味しません。",
+          "statement_en": "Counting registrations with the available flag in the official database gives 14 resources for FFTW, 12 for PETSc, and eight each for SuperLU_DIST, ScaLAPACK, and LAPACK. FFTW and PETSc span Fugaku, x86 CPUs, and NVIDIA-GPU node types, making them candidates for a common source-level layer. Registration does not imply identical version, backend, or performance.",
+          "hpci_relevance_ja": "共通library setを定め、各architectureのoptimized backendへ置換しても数値結果とAPIを維持できるかを検証すべきです。",
+          "hpci_relevance_en": "A common library set should be defined and tested for API and numerical-result stability when substituting architecture-optimized backends.",
+          "adoption_conditions_ja": [
+            "version、build option、MPI/GPU backendを資源別に記録する。",
+            "共通test problemで正確性、performance、scalingを測る。",
+            "software module/Spack recipeと再現可能なcontainer定義を保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Record versions, build options, and MPI/GPU backends per resource.",
+            "Measure correctness, performance, and scaling on common test problems.",
+            "Preserve software modules or Spack recipes and reproducible container definitions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS332"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD51-VENDOR-NUMERICAL-LIBRARIES",
+          "name_ja": "vendor最適化libraryは性能経路を分岐させる",
+          "name_en": "Vendor-optimized libraries create distinct performance paths",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日取得",
+          "timing_en": "Retrieved September 2, 2026",
+          "statement_ja": "登録にはIntel MKL 7資源、AMD Optimizing CPU Libraries 4資源、NEC Numeric Library Collection 4資源、富士通SSL II 1資源等が含まれます。汎用APIを使う場合でも内部実装、threading、vectorization、precision、license、support lifecycleが異なるため、library名だけでは移行容易性を判定できません。",
+          "statement_en": "Registrations include Intel MKL on seven resources, AMD Optimizing CPU Libraries on four, NEC Numeric Library Collection on four, and Fujitsu SSL II on one. Even when common APIs are used, implementation, threading, vectorization, precision, license, and support lifecycle differ, so library names alone cannot determine migration ease.",
+          "hpci_relevance_ja": "system選定ではpeak FLOPSだけでなく、重点algorithmがvendor libraryで到達する性能とOSS fallbackの性能差を評価すべきです。",
+          "hpci_relevance_en": "System selection should evaluate both vendor-library performance for priority algorithms and the gap to OSS fallbacks, not peak FLOPS alone.",
+          "adoption_conditions_ja": [
+            "BLAS/LAPACK/FFT/sparse solver別にvendorとOSSを比較する。",
+            "license費、保守期限、再配布条件を性能と併記する。",
+            "混合精度・高精度emulation・GPU offload対応をtestする。"
+          ],
+          "adoption_conditions_en": [
+            "Compare vendor and OSS paths for BLAS/LAPACK, FFT, and sparse solvers.",
+            "Report license cost, support horizon, and redistribution conditions alongside performance.",
+            "Test mixed precision, high-precision emulation, and GPU offload."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS332"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS332",
+        "title": "HPCI software database: numerical analysis category",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/softwareLoader.cgi?lang=ja&cls=sscl0270",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-numerical-analysis",
+      "checked_at": "2026-09-02T04:08:00+09:00",
+      "locator": "software_array and active resource registrations",
+      "observation_ja": "数値計算分類55 entryからavailable flag付きsoftwareと資源対応を集計しました。",
+      "observation_en": "Aggregated software and resource mappings carrying the available flag from 55 numerical-analysis entries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS331",
+        "title": "HPCI software database constants and interface notices",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/loadConstants.cgi?lang=ja",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-interface-metadata",
+      "checked_at": "2026-09-02T04:09:00+09:00",
+      "locator": "freshness warning and current-resource fields",
+      "observation_ja": "database情報が更新時期により最新でない場合があるという注意を再確認しました。",
+      "observation_en": "Reconfirmed the database warning that information may not be current depending on update timing.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各libraryの実version、build option、GPU backend、性能と数値精度は未確認です。",
+    "database未掲載を非対応とは判定していません。",
+    "独立model Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Actual versions, build options, GPU backends, performance, and numerical accuracy remain unverified.",
+    "Database absence is not interpreted as lack of support.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

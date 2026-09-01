@@ -1,0 +1,194 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000161",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T06:10:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "0ce9305c149740624ac791a194e6da847966fb773654a9ab5fdc626dad37f758",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学『不老・弐』のストレージについて、2026年1月のプレス資料はDDN EXAScalerの物理容量を48.4 PB、9月2日時点のシステムページは40.384 PB・実効37.44 PBと記載する不一致を確認しました。現行ページは約245億inode、4仮想MDS、Type II各ノード7.68 TB NVMe、一部ノードのBeeGFS/BeeOND、Nextcloudを掲載します。容量差を推測で解消せず、版・冗長化・単位・構成変更を確認するCoverage Gapとして残します。容量やinode数だけで帯域、復旧、バックアップ、外部公開の安全性を推定しません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "For Nagoya University's Flow II storage, the January 2026 press release states 48.4 PB of physical DDN EXAScaler capacity, while the system page as of September 2 states 40.384 PB physical and 37.44 PB effective. The current page also lists about 24.5 billion inodes, four virtual metadata servers, 7.68 TB of NVMe per Type-II node, BeeGFS/BeeOND on selected nodes, and Nextcloud. The discrepancy is not resolved by inference; version, redundancy, units, and configuration change remain a Coverage Gap. Capacity and inode count alone do not establish bandwidth, recovery, backup, or safe external publication. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U02",
+      "before_sha256": "5acf766708e28261883cae4cd7faf4eae626b771c19d9bf19912ab44e08660be",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U02",
+        "TDS-CD2-SSW-05-U02-U03-U04"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U03",
+      "before_sha256": "22cf497ca82c47f0349c51e45358a92646ae1ca1bace2215a5e6c0ef0a933402",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U03",
+        "TDS-CD2-SSW-05-U02-U03-U04"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "4450e02ea052c18262edbfc2cca0016eda28f61d81e61b384dd56dce8cd500c1",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-SSW-05-U02-U03-U04",
+      "title_ja": "『不老・弐』のローカル・共有・外部公開ストレージ",
+      "title_en": "Local, shared, and externally published storage on Flow II",
+      "summary_ja": "容量表記の不一致、メタデータ規模、I/O階層、外部共有を別の評価対象にします。",
+      "summary_en": "Treat conflicting capacity, metadata scale, I/O tiers, and external sharing as separate evaluation objects.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-FLOW2-STORAGE-CAPACITY-CONFLICT",
+          "name_ja": "48.4 PBと40.384 PBの物理容量表記不一致",
+          "name_en": "Conflicting 48.4-PB and 40.384-PB physical-capacity figures",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "timing_ja": "2026年1月プレス資料と9月2日時点のシステムページ",
+          "timing_en": "January 2026 press release and system page as of September 2",
+          "statement_ja": "公式プレス資料はDDN EXAScalerの物理容量を48.4 PB、現行システムページは物理40.384 PB・実効37.44 PBと記載します。同じ発行元の時点違いであり、独立確認ではありません。ドライブ容量、冗長化、10進・2進単位、予備領域、構成変更、誤記のどれによる差かは公開資料から確定できません。",
+          "statement_en": "The official press release states 48.4 PB of physical DDN EXAScaler capacity, whereas the current system page states 40.384 PB physical and 37.44 PB effective. These are different dates from one publisher, not independent confirmation. Public material does not establish whether drive capacity, redundancy, decimal/binary units, spare space, a configuration change, or an error explains the difference.",
+          "hpci_relevance_ja": "整備計画の容量は、原始容量、物理容量、使用可能容量、利用者クオータ、バックアップ容量を定義付きで管理し、資料間の差を自動検出する必要があります。",
+          "hpci_relevance_en": "Planning should manage raw, physical, usable, user-quota, and backup capacities with definitions and detect discrepancies across documents automatically.",
+          "adoption_conditions_ja": [
+            "ドライブ本数・容量、符号化・RAID、予備、フォーマット、単位を含む最終構成表を取得する。",
+            "公開値を版と日付に固定し、後の値で過去資料を黙って上書きしない。",
+            "受入試験で利用可能容量と障害時の容量・性能低下を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Obtain the final configuration with drive count and size, coding or RAID, spares, formatting, and units.",
+            "Version and date public values rather than silently overwrite older documents.",
+            "Verify usable capacity and degraded capacity and performance during acceptance."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS162",
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-FLOW2-METADATA-DATA-TIERS",
+          "name_ja": "約245億inodeとNVMe・BeeGFS/BeeOND・EXAScaler階層",
+          "name_en": "About 24.5 billion inodes across NVMe, BeeGFS/BeeOND, and EXAScaler tiers",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点の公開構成",
+          "timing_en": "Planned start October 1, 2026; public configuration as of September 2",
+          "statement_ja": "現行ページは、4仮想MDS、約245億inode、3台のデータストレージ筐体、Type II各ノード7.68 TB NVMeを掲載します。一部のNVMeはBeeGFS/BeeONDとして共有し、ジョブは/beegfsまたは/local/[jobid]を選びます。inode数は作成可能ファイル数の設計規模であり、小規模ファイル性能、同時アクセス、障害復旧を保証しません。",
+          "statement_en": "The current page lists four virtual metadata servers, about 24.5 billion inodes, three data-storage units, and 7.68 TB of NVMe on every Type-II node. Selected NVMe devices are shared through BeeGFS/BeeOND, and jobs choose /beegfs or /local/[jobid]. Inode count is a designed file-count scale, not a guarantee of small-file performance, concurrency, or recovery.",
+          "hpci_relevance_ja": "代表ワークフローのファイル個数・サイズ・寿命に合わせ、ローカル一時領域、バーストバッファ、共有領域、長期保存の移動規則を設計する必要があります。",
+          "hpci_relevance_en": "Data-movement rules among node-local scratch, burst/shared temporary storage, shared storage, and long-term retention should follow representative file counts, sizes, and lifetimes.",
+          "adoption_conditions_ja": [
+            "大・小ファイル、メタデータ集中、同時チェックポイント、読書き混在の実効性能を測る。",
+            "ローカル/BeeOND終了時の退避、容量不足、ノード障害、ジョブ再実行の挙動を検証する。",
+            "物理・実効容量と利用者クオータ、課金、翌年度継続を対応付ける。"
+          ],
+          "adoption_conditions_en": [
+            "Measure effective behavior for large and small files, metadata bursts, concurrent checkpoints, and mixed reads and writes.",
+            "Test staging at local/BeeOND teardown, space exhaustion, node failure, and job rerun.",
+            "Map physical and usable capacity to user quotas, charges, and fiscal-year continuation."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-FLOW2-NEXTCLOUD-BOUNDARY",
+          "name_ja": "Nextcloudによる外部共有とHPCファイルシステムの境界",
+          "name_en": "Boundary between Nextcloud external sharing and the HPC filesystem",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日提供予定",
+          "timing_en": "Planned availability October 1, 2026",
+          "statement_ja": "Nextcloudはブラウザからスパコンデータへアクセスし、研究者間で共有する機能として掲載され、版管理とごみ箱が有効とされています。一方、公開ページだけでは共有対象領域、最大ファイル・転送量、外部ID、アクセス制御、ウイルス検査、監査、バックアップ、HPCジョブとの整合性は分かりません。Nextcloudを長期アーカイブや公開リポジトリと同一視しません。",
+          "statement_en": "Nextcloud is listed for browser access to supercomputer data and researcher-to-researcher sharing, with versioning and trash enabled. The public page does not specify exposed storage areas, file or transfer limits, external identities, access control, malware scanning, audit, backup, or consistency with HPC jobs. Nextcloud is not equated with long-term archive or a publication repository.",
+          "hpci_relevance_ja": "HPCI全体のデータ連携では、利用者向け共有、機械間高速転送、成果公開、長期保存を別サービスとして接続する必要があります。",
+          "hpci_relevance_en": "HPCI data services should connect but distinguish user sharing, high-speed machine transfer, results publication, and long-term retention.",
+          "adoption_conditions_ja": [
+            "認証・認可、共有リンク、外部利用者、監査、削除、保持、バックアップの規程を確認する。",
+            "大規模ファイル、同時同期、HPC書込み中ファイル、版履歴による容量増加を試験する。",
+            "機密・個人データと公開データの境界を資源・プロジェクトごとに強制する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify policies for authentication and authorization, links, external users, audit, deletion, retention, and backup.",
+            "Test large files, concurrent synchronization, files being written by HPC jobs, and capacity growth from version history.",
+            "Enforce confidential, personal, and public data boundaries by resource and project."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS162",
+        "title": "次期スーパーコンピュータ『不老・弐』の導入が決定しました！",
+        "publisher": "名古屋大学情報基盤センター",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T06:00:00+09:00",
+      "locator": "Page 2: DDN EXAScaler physical capacity and Nextcloud",
+      "observation_ja": "物理容量48.4 PBの記載を確認しました。現行システムページとの不一致を解消する内訳はありません。",
+      "observation_en": "Verified the 48.4-PB physical-capacity statement. No itemization resolves the discrepancy with the current system page.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS163",
+        "title": "スーパーコンピュータシステム『不老・弐』",
+        "publisher": "名古屋大学 情報連携推進本部",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（導入中）"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T06:03:00+09:00",
+      "locator": "Type-II local storage, storage subsystem, Nextcloud, and resource-group tables",
+      "observation_ja": "物理40.384 PB、実効37.44 PB、4 vMDS、約245億inode、7.68 TB/node NVMe、BeeGFS/BeeOND、Nextcloudを確認しました。",
+      "observation_en": "Verified 40.384 PB physical, 37.44 PB effective, four virtual MDS instances, about 24.5 billion inodes, 7.68 TB/node NVMe, BeeGFS/BeeOND, and Nextcloud.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-014、GAP-TDS-035、GAP-TDS-036、GAP-TDS-040、GAP-TDS-059は未解決です。容量差の公式説明、最終構成、I/O・復旧、保護、運用実績が必要です。",
+    "48.4 PBと40.384 PBの差は、推測でどちらかを正しい値として採用しません。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-014, GAP-TDS-035, GAP-TDS-036, GAP-TDS-040, and GAP-TDS-059 remain open; an official explanation of the capacity discrepancy, final configuration, I/O and recovery, protection, and operations evidence are needed.",
+    "Neither 48.4 PB nor 40.384 PB is selected as correct by inference.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

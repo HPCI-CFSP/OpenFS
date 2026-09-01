@@ -32,6 +32,11 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        cls.catalog_sources = json.loads(
+            (ROOT / "knowledge" / "public" / "topic-decision-support.json").read_text(
+                encoding="utf-8"
+            )
+        )["sources"]
 
     def collect_fixture(self, payload):
         with tempfile.TemporaryDirectory() as directory:
@@ -49,7 +54,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 encoding="utf-8",
             )
             return collect_roadmap_reference_data(
-                root, self.policy, self.roadmaps, False
+                root, self.policy, self.roadmaps, False, self.catalog_sources
             )
 
     def test_reference_data_covers_high_value_comparisons(self):
@@ -78,6 +83,10 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "TERM-EEA1-E-WAVE",
                 "TERM-EEA1-FRONTFLOW-BLUE",
                 "TERM-EEA1-LQCD-DWF-HMC",
+                "TERM-PUBLIC-PRIVATE-COINVESTMENT",
+                "TERM-ACCESS-TIME-PROCUREMENT",
+                "TERM-DOE-IRI",
+                "TERM-GPU-NODE-HOUR",
             }.issubset(term_ids)
         )
         self.assertTrue(
@@ -97,7 +106,31 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "CMP-STORAGE-MEDIA",
                 "CMP-CONTINUOUS-BENCHMARKING",
                 "CMP-EEA1-REPRODUCIBILITY",
+                "CMP-NATIONAL-COMPUTE-PROCUREMENT-MODES",
             }.issubset(comparison_ids)
+        )
+
+    def test_national_compute_procurement_comparison_keeps_catalog_evidence(self):
+        result = self.collect_fixture(self.payload)
+        comparisons = {
+            item["comparison_id"]: item for item in result["comparison_sets"]
+        }
+        procurement = comparisons["CMP-NATIONAL-COMPUTE-PROCUREMENT-MODES"]
+        self.assertEqual(
+            {row["term_id"] for row in procurement["rows"]},
+            {
+                "TERM-DEDICATED-SUPERCOMPUTER",
+                "TERM-CLOUD-COMPUTE",
+                "TERM-PUBLIC-PRIVATE-COINVESTMENT",
+                "TERM-ACCESS-TIME-PROCUREMENT",
+            },
+        )
+        self.assertTrue(
+            all(
+                row["source_refs"]
+                and all("catalog_source_id" in ref for ref in row["source_refs"])
+                for row in procurement["rows"]
+            )
         )
 
     def test_benchmark_and_storage_comparisons_keep_required_evidence(self):
@@ -430,6 +463,14 @@ class RoadmapReferenceDataTests(unittest.TestCase):
         payload = copy.deepcopy(self.payload)
         payload["terms"][0]["source_refs"][0]["source_id"] = "SRC-NOT-REGISTERED"
         with self.assertRaisesRegex(ValueError, "unknown source"):
+            self.collect_fixture(payload)
+
+    def test_unknown_catalog_source_reference_fails_closed(self):
+        payload = copy.deepcopy(self.payload)
+        payload["terms"][-1]["source_refs"] = [
+            {"catalog_source_id": "SRC-NOT-REGISTERED"}
+        ]
+        with self.assertRaisesRegex(ValueError, "unknown catalog source"):
             self.collect_fixture(payload)
 
     def test_alias_collision_fails_closed(self):

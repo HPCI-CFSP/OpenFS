@@ -1,0 +1,162 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000151",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-02T03:15:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "345c4bd93d66e304b4583bf81cd7d03fb00daf6f1b06fe8e9fb09195d9dda12a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "既存のParsl、Nextflow、Pegasus、ADIOS2、Colmena、WHEELの比較に、米国DOE Integrated Research Infrastructureの3種類の科学パターンと実装方針を追加しました。実時間性、複数データ統合、長期キャンペーンでは必要なサービス水準、再開単位、データ・認証・運用責任が異なります。一つのワークフロー製品へ統一せず、共通サービスと分野別実装の境界を決める必要があります。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The existing comparison of Parsl, Nextflow, Pegasus, ADIOS2, Colmena, and WHEEL is extended with the three science patterns and implementation approach of the U.S. DOE Integrated Research Infrastructure. Time-sensitive, data-integration-intensive, and long-term campaigns require different service levels, restart units, data and identity controls, and operating responsibilities. The design should separate common services from domain implementations rather than mandate one workflow product. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "48eaa4ade3c123abda60e2aaf89143a2f7d13e542bc12e4a718ed12a7328169a",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01",
+        "TDS-CD2-SSW-16-U01",
+        "TDS-CD3-SSW-16-U01",
+        "TDS-CD4-SSW-16-U01",
+        "TDS-CD13-SSW-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD13-SSW-16-U01",
+      "title_ja": "施設横断ワークフローの要求分類と共通基盤",
+      "title_en": "Requirements classification and common services for cross-facility workflows",
+      "summary_ja": "製品名より先に科学パターン、期限、データ、資源、責任を定義します。",
+      "summary_en": "Define science patterns, deadlines, data, resources, and responsibilities before choosing products.",
+      "items": [
+        {
+          "item_id": "TDI-CD13-DOE-IRI-SCIENCE-PATTERNS",
+          "name_ja": "DOE IRIの3種類の科学パターン",
+          "name_en": "Three DOE IRI science patterns",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2023年最終報告とESnet横断分析で確認",
+          "timing_en": "Confirmed in the 2023 final report and cross-program ESnet analysis",
+          "statement_ja": "DOE IRIは施設横断ワークフローを、低遅延・高信頼で実験判断や制御を行うTime-Sensitive、実験・観測・シミュレーション等の複数データを統合するData Integration-Intensive、長期間にわたり資源・データ・共同研究を維持するLong-Term Campaignに分類します。各分野の処理列は異なっても、共通要件を抽出して再利用可能なソフトウェアとサービスを検討する枠組みです。",
+          "statement_en": "DOE IRI classifies cross-facility workflows as Time-Sensitive for low-latency, high-reliability experiment decisions and steering; Data Integration-Intensive for combining experimental, observational, simulation, and other sources; and Long-Term Campaign for sustained resources, data, and collaboration. Although domain pipelines differ, the framework extracts shared requirements to identify reusable software and services.",
+          "hpci_relevance_ja": "HPCIの実験施設連携を一括して『ワークフロー対応』とせず、期限、障害許容、データ寿命、予約期間により分類すれば、必要なネットワーク、スケジューリング、保存、認証、監査を具体化できます。",
+          "hpci_relevance_en": "Rather than label all experiment integration as workflow support, HPCI can classify deadline, failure tolerance, data lifetime, and reservation duration to derive concrete network, scheduling, storage, identity, and audit requirements.",
+          "adoption_conditions_ja": [
+            "代表課題を3パターンへ対応付け、遅延、帯域、再開時間、保存期間、利用期間を実測する。",
+            "同じ課題が複数パターンを持つ場合、段階ごとのサービス水準と責任主体を分ける。",
+            "共通部品化による保守削減と、分野固有要件を失うリスクを検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Map representative projects to the patterns and measure latency, bandwidth, restart time, retention, and campaign duration.",
+            "When one project spans patterns, separate service levels and accountable operators by stage.",
+            "Test maintenance savings from shared components against loss of domain-specific requirements."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS150", "SRC-CDS151"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-DOE-IRI-IMPLEMENTATION-BOUNDARY",
+          "name_ja": "DOE IRIの共通サービスと施設責任の境界",
+          "name_en": "Boundary between DOE IRI common services and facility responsibilities",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2023年参照枠組み、FY2026予算要求で運用管理と中核サービス実装を継続",
+          "timing_en": "2023 reference framework; FY2026 request continues governance and core-service implementation",
+          "statement_ja": "IRI Architecture Blueprintは150人超、28施設、13研究所の専門家により、科学パターン、実装領域、ブループリント、全体原則を整理しました。FY2026予算要求ではIRI Management Councilと中核運用サービス、計算・ネットワーク・データ施設の連携を進め、HPDFは将来の段階導入オプションを持つ設計完了を対象とします。これは概念枠組みと予算要求であり、全施設で同一API・SLAが運用済みであることを示しません。",
+          "statement_en": "The IRI Architecture Blueprint involved more than 150 experts from 28 facilities at 13 laboratories and organized science patterns, practice areas, blueprints, and ecosystem principles. The FY2026 request advances an IRI Management Council, core operating services, collaboration among computing, networking, and data facilities, and completion of HPDF design with options for phased installation. These are a reference framework and budget request, not evidence that one API or service-level agreement is operating across all facilities.",
+          "hpci_relevance_ja": "HPCIでも全国共通サービス、センター固有サービス、実験施設側機能の境界と責任を先に定め、単一ポータルの外観だけで統合完了と判断しないことが重要です。",
+          "hpci_relevance_en": "HPCI should define boundaries and accountability among national common services, center-specific services, and experimental facilities, and should not treat a single portal alone as completed integration.",
+          "adoption_conditions_ja": [
+            "共通化するID、認可、資源記述、データ転送、来歴、監視、障害連絡の最小契約を定義する。",
+            "各センターと実験施設についてサービス所有者、24時間対応範囲、変更管理、費用負担を割り当てる。",
+            "概念実証から本番運用への判定に、複数施設での完遂率、復旧時間、利用者工数を用いる。"
+          ],
+          "adoption_conditions_en": [
+            "Define a minimum common contract for identity, authorization, resource description, data transfer, provenance, monitoring, and incident communication.",
+            "Assign service owner, support window, change control, and cost responsibility for every center and experimental facility.",
+            "Use multi-facility completion rate, recovery time, and user labor to promote prototypes to production."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS150", "SRC-CDS152"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS150",
+        "title": "ASCR Program Documents: Integrated Research Infrastructure Architecture Blueprint Activity",
+        "publisher": "U.S. DOE Office of Science, Advanced Scientific Computing Research",
+        "url": "https://science.osti.gov/ascr/Community-Resources/Program-Documents",
+        "source_class": "official-project",
+        "published_or_updated": "IRI final report published 2023-07; page checked 2026-09-02"
+      },
+      "origin_group": "us-doe-ascr-iri",
+      "checked_at": "2026-09-02T03:07:00+09:00",
+      "locator": "Integrated Research Infrastructure Architecture Blueprint Activity summary and report link",
+      "observation_ja": "150人超、28施設、13研究所の参加、科学パターン、実装領域、ブループリント、原則から成るIRI枠組みを確認しました。",
+      "observation_en": "Verified participation by more than 150 experts from 28 facilities at 13 laboratories and the IRI framework of science patterns, practice areas, blueprints, and principles.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS151",
+        "title": "The DOE Office of Science ESnet Requirements Review Program Through the IRI Lens",
+        "publisher": "U.S. DOE Office of Science and ESnet",
+        "url": "https://science.osti.gov/-/media/Acquisition-Management/contract-competitions/TJNAF/2025/document-library/ESnet-Requirements-Review-Program-Through-the-IRI-Lens.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2023 final report"
+      },
+      "origin_group": "us-doe-esnet-iri",
+      "checked_at": "2026-09-02T03:08:00+09:00",
+      "locator": "Pages 3 onward: Time-Sensitive, Data Integration-Intensive, and Long-Term Campaign patterns",
+      "observation_ja": "3つの科学パターンの定義、代表分野、施設横断の共通ソフトウェア部品を検討する根拠を確認しました。",
+      "observation_en": "Verified definitions and domain examples for the three science patterns and the rationale for shared cross-facility software components.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS152",
+        "title": "DOE FY 2026 Congressional Justification, Volume 5",
+        "publisher": "U.S. Department of Energy",
+        "url": "https://www.energy.gov/sites/default/files/2025-07/doe-fy-2026-vol-5.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-07"
+      },
+      "origin_group": "us-doe-fy2026-budget",
+      "checked_at": "2026-09-02T03:09:00+09:00",
+      "locator": "ASCR pages 23-25: IRI operations, Management Council, core services, facilities collaboration, and HPDF phased design",
+      "observation_ja": "FY2026要求におけるIRI運用管理、中核サービス、ASCR施設・HPDF連携、HPDF段階導入オプションを確認しました。予算要求を稼働実績とは扱いません。",
+      "observation_en": "Verified requested FY2026 support for IRI governance, core services, ASCR facility and HPDF collaboration, and phased HPDF options. A budget request is not treated as operating evidence.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-066は未解決です。HPCI・SPring-8等の代表ワークフローについて、3パターンへの分類、実測SLA、失敗・再開、責任分担を確認する必要があります。",
+    "DOE IRIの本番サービス一覧、共通API、施設別SLA、利用実績、障害・復旧実績は継続確認が必要です。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-066 remains open; representative HPCI and experimental-facility workflows need pattern classification, measured service levels, failure and restart behavior, and accountable owners.",
+    "Continue tracking DOE IRI production services, common APIs, facility service levels, usage, incidents, and recovery evidence.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

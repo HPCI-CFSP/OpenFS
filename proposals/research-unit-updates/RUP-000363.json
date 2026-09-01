@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000363",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-02T07:57:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000128",
+      "bundle_sha256": "36e47372ce4143420d379c19ead8fb2386f0fb672af37264a4e6ba465a0eaaf0"
+    },
+    {
+      "update_id": "RUP-000137",
+      "bundle_sha256": "adf058f1b098bf63801372e01cf4253ac80cd3ae818d45882cbf2b2ae50430b2"
+    },
+    {
+      "update_id": "RUP-000143",
+      "bundle_sha256": "dfd090a4404da1fd7384db21de3d4f54516b9e58483feb7d35a042d7ab64a39e"
+    },
+    {
+      "update_id": "RUP-000192",
+      "bundle_sha256": "762261e7e828242b6930fbb2ac62822514a680a1e820b99c48ab371b932b09d0"
+    },
+    {
+      "update_id": "RUP-000262",
+      "bundle_sha256": "f3b1fbefd191228e22743bf846d5d7b408e76e67d70204504e451dbba86a07a5"
+    },
+    {
+      "update_id": "RUP-000304",
+      "bundle_sha256": "c1c4b904b1c393f2e9bbf96ab95dde88c6e941b2d5c0d77b8a585af7979edf15"
+    },
+    {
+      "update_id": "RUP-000340",
+      "bundle_sha256": "83d8bdda24488e902ae244fe4499c9de53aec451af079e6a4077f22cf68745ac"
+    },
+    {
+      "update_id": "RUP-000346",
+      "bundle_sha256": "b403e40bc4369f474adc09d72326169adc47a2e3a3bc182915dc360e5ede1a2c"
+    }
+  ],
+  "before_profile_sha256": "755c0d5951b9feb3ba5e0adb63b13582d076a2fd79a3c9ea3cacd064f9f4f454",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文科省委託調査の2030年500 EFLOPS、約12万GPU、最大640 PB試算を追加しました。長期指数外挿、200team、GPU性能10倍等に敏感なため、整備目標ではなく感度分析用stress scenarioとして扱います。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds a MEXT-commissioned estimate of 500 EFLOPS, about 120,000 GPUs, and up to 640 PB in 2030. Because it is sensitive to long exponential extrapolation, 200 teams, tenfold GPU improvement, and other assumptions, it is treated as a sensitivity-analysis stress case rather than a system target. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "ca02ab503457009da7ed3bfaf748663a3d50c869cd8c546993eb927965ebecaa",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U01",
+        "TDS-CD2-APP-12-U01",
+        "TDS-CD10-APP-12-U01",
+        "TDS-CD11-APP-12-U01",
+        "TDS-CD12-APP-12-U01-U02",
+        "TDS-CD13-APP-12-FY2026B-AI-DEMAND",
+        "TDS-CD14-APP-12-NICAM-AI-COUPLING",
+        "TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO",
+        "TDS-CD60-APP-12-APEX-CFD-AGENT",
+        "TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE",
+      "title_ja": "2030年AI for Science需要の指数外挿stress scenario",
+      "title_en": "Exponential-extrapolation stress scenario for 2030 AI-for-Science demand",
+      "summary_ja": "文科省委託調査の試算値を目標ではなく、仮定に敏感なstress scenarioとして記録します。",
+      "summary_en": "Record estimates from a MEXT-commissioned study as an assumption-sensitive stress scenario rather than a target.",
+      "items": [
+        {
+          "item_id": "TDI-CD216-MEXT-AIFS-2030-500EFLOPS",
+          "name_ja": "500 EFLOPS・約12万GPU・最大640 PBの試算",
+          "name_en": "Estimate of 500 EFLOPS, about 120,000 GPUs, and up to 640 PB",
+          "stage": "research",
+          "maturity": "uncertain",
+          "timing_ja": "2030年の委託調査試算",
+          "timing_en": "Commissioned-study estimate for 2030",
+          "statement_ja": "文部科学省の2026年委託調査は、主要AIモデルの学習計算量が約5～5.5か月ごと、datasetが8か月ごとに倍増する傾向を2030年まで継続し、AI for Scienceモデルを汎用LLM学習量の0.1～10%、200研究チームが同時活動、GPU単体性能が約10倍になると仮定します。その条件で、1モデル当たりFP16 500 EFLOPSを0.15～15日、全体で500 EFLOPSを30～3,000日、試行錯誤はさらに10～100倍、datasetは1モデル6.4～64 PB、全体最大640 PB、500 EFLOPS級には約12万GPUと試算しています。異なる資料中のFP16 RpeakとHPL-MxPを比較に用い、長期指数外挿と固定倍率を含むため、需要予測の確定値、調達目標、実効性能保証ではありません。",
+          "statement_en": "A 2026 MEXT-commissioned study extends trends of training compute doubling roughly every 5-5.5 months and datasets every 8 months to 2030. It assumes AI-for-Science models use 0.1-10% of general-LLM training compute, 200 research teams work concurrently, and per-GPU performance improves about tenfold. Under those assumptions it estimates 0.15-15 days per model at 500 FP16 EFLOPS; 30-3,000 days across 200 users, with experimentation requiring another 10-100 times; 6.4-64 PB per model and up to 640 PB overall; and about 120,000 GPUs for a 500-EFLOPS-class platform. Because it compares FP16 Rpeak and HPL-MxP figures across examples and relies on long exponential extrapolation and fixed multipliers, these values are not established demand, procurement targets, or delivered-performance guarantees.",
+          "hpci_relevance_ja": "整備案ではこの値を上限寄りstress caseとしてのみ使用し、保守・中位・高位の複数scenarioを、scientific quality、throughput、稼働率、電力、network、storage、budget制約の下で再計算する必要があります。",
+          "hpci_relevance_en": "System plans should use this only as an upper stress case and recompute conservative, central, and high scenarios under scientific-quality, throughput, utilization, power, network, storage, and budget constraints.",
+          "adoption_conditions_ja": [
+            "doubling time、LLM比率、研究team数、同時率、試行回数、GPU性能、利用率を独立parameterにして感度分析する。",
+            "FP16 Rpeak、HPL-MxP、実学習throughputを混同せず、品質到達時間とenergy-to-solutionで再評価する。",
+            "12万GPU単一systemだけでなく、富岳NEXT、大学center、民間cloud、段階増設を含むportfolioでcapacityを比較する。",
+            "毎年実績dataで外挿を再校正し、指数成長が鈍化したscenarioを必ず含める。"
+          ],
+          "adoption_conditions_en": [
+            "Vary doubling time, LLM fraction, research-team count, concurrency, experiment count, GPU performance, and utilization independently in sensitivity analysis.",
+            "Keep FP16 Rpeak, HPL-MxP, and delivered training throughput distinct and reassess by time and energy to scientific quality.",
+            "Compare capacity portfolios spanning FugakuNEXT, university centers, commercial cloud, and staged expansion, not only one 120,000-GPU system.",
+            "Recalibrate annually with observed data and always include scenarios in which exponential growth slows."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS505"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS505",
+        "title": "AI for Scienceの実現に向けた計算基盤等の動向調査",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/content/20260427-mxt-jyohoka01-000041971_R701.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-27"
+      },
+      "origin_group": "mext-aifs-compute-trends-2030-estimate",
+      "checked_at": "2026-09-02T06:53:00+09:00",
+      "locator": "Sections 3.7-3.8 and 4.4, especially Table 4.6 and the required-GPU discussion",
+      "observation_ja": "倍増期間、基準計算量、AI for Science比率、200team、試行倍率、data量、GPU性能10倍、約12万GPUという仮定と結果を確認しました。",
+      "observation_en": "Verified doubling periods, baseline compute, AI-for-Science fraction, 200-team assumption, experimentation multiplier, data volumes, tenfold GPU improvement, and the resulting approximately 120,000-GPU estimate.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "基礎dataset、回帰式、不確実性区間、分野別同時率、power・network・cost実現性、独立再現は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Underlying datasets, regression equations, uncertainty intervals, field-specific concurrency, power/network/cost feasibility, and independent reproduction remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

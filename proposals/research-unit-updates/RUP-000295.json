@@ -1,0 +1,205 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000295",
+  "topic_id": "SSW-15",
+  "created_at": "2026-09-02T07:46:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000195",
+      "bundle_sha256": "4c16418c454b0d4cb2fa1e8a4572643d73feb1e1f82f04bbd228d26f80a1ddeb"
+    },
+    {
+      "update_id": "RUP-000288",
+      "bundle_sha256": "f9e54eb972289e3dcb96d836a31ded03761764a9a442447a7544cdb5a4b3a24f"
+    }
+  ],
+  "before_profile_sha256": "2ab15c8cdbb38db781836d397b4b8be61e54ab1d9e487e2315a62b1e4e39cf79",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "電力管理をdevice、application、systemの三層で追加調査しました。GH200では200〜1,000 Wをapplication phase別に探索し、最適capはtaskと評価metricで変わります。QMCPACKとCastroの混合精度ではNVIDIA GPUで6〜45%のenergy削減が報告される一方、試験したAMD GPUでは同じ効果がなく、telemetry toolの差もあります。Frontierの3か月telemetryから得た8.5%・1,438 MWhは特定jobのbest-case上限であり、production節約実績ではありません。Consensusは未完了です。",
+  "summary_en": "This update examines power management at device, application, and system levels. On GH200, caps from 200 to 1,000 W are explored per application phase, and the preferred cap varies by task and decision metric. Mixed-precision QMCPACK and Castro runs report 6-45% energy savings on NVIDIA GPUs but not the same benefit on the tested AMD GPU, with telemetry-tool differences also reported. The 8.5% and 1,438 MWh derived from three months of Frontier telemetry are best-case bounds for selected jobs, not production savings. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-15-U01",
+      "before_sha256": "6203b65499647c51a51abea3d664b6279d32349e47bf29764fbdbffae1789bda",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-15-U01",
+        "TDS-CD2-SSW-15-U01",
+        "TDS-CD3-SSW-15-FUGAKU-POWER-INCENTIVE",
+        "TDS-CD15-SSW-15-NERSC-SMART-FACILITY",
+        "TDS-CD16-SSW-15-POWER-MANAGEMENT-EVIDENCE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD16-SSW-15-POWER-MANAGEMENT-EVIDENCE",
+      "title_ja": "application phase・精度・system telemetryを用いる電力管理",
+      "title_en": "Power management using application phases, precision, and system telemetry",
+      "summary_ja": "device power cap、application energy、system上限を異なる測定境界として比較し、単一の節約率へまとめません。",
+      "summary_en": "Compare device power caps, application energy, and system-scale bounds as distinct measurement boundaries rather than collapsing them into one savings rate.",
+      "items": [
+        {
+          "item_id": "TDI-CD102-GH200-TASK-POWER-CAPS",
+          "name_ja": "GH200：200〜1,000 Wをtask別に探索",
+          "name_en": "GH200: task-specific search from 200 to 1,000 W",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "公開研究結果",
+          "timing_en": "Published research result",
+          "statement_ja": "ORNLの研究highlightは、材料科学application LSMSをNVIDIA GH200上で実行し、200 Wからdefault最大1,000 Wまでpower limitを変え、application内の処理cycleごとにGPU energyと実行時間を測ったと報告しています。speed-up energy-delayとEuclidean distanceという異なる判断metricを比較しており、最適capがtaskにより異なるとします。公開頁は各taskの絶対時間・energy・最適W値を示していません。",
+          "statement_en": "An ORNL research highlight reports running the LSMS materials-science application on NVIDIA GH200 while varying power limits from 200 W to the default 1,000 W and measuring GPU energy and runtime for distinct processing cycles. It compares speed-up energy-delay and Euclidean-distance decision metrics and finds that the preferred cap differs by task. The public page does not disclose absolute per-task runtime, energy, or selected wattage.",
+          "hpci_relevance_ja": "HPCIのpower capはpartition全体へ固定せず、application phaseとservice deadlineを考慮したrecommendationまたは制御として設計できます。",
+          "hpci_relevance_en": "HPCI power caps can be designed as recommendations or controls informed by application phase and service deadlines rather than one fixed partition-wide value.",
+          "adoption_conditions_ja": [
+            "task boundary、cap切替overhead、CPU/GPU共有電力、thermal responseを測る。",
+            "metricのweightと選択根拠を公開し、time-to-solution上限を設定する。",
+            "自動変更前にrecommendation modeで再現性と安全性を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure task boundaries, cap-switch overhead, shared CPU/GPU power, and thermal response.",
+            "Publish metric weights and rationale and set a time-to-solution limit.",
+            "Validate reproducibility and safety in recommendation mode before automatic control."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS376"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD102-MIXED-PRECISION-ENERGY-VENDOR-DIFFERENCE",
+          "name_ja": "QMCPACK・Castro：混合精度のenergy効果はGPUにより異なる",
+          "name_en": "QMCPACK and Castro: mixed-precision energy effects differ by GPU",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "公開研究結果",
+          "timing_en": "Published research result",
+          "statement_ja": "ORNLはQMCPACKのNiO計算とAMReX-CastroのSedov blast waveをA100、H100、MI250Xで測定し、NVIDIA GPUでは材料codeで6〜25%、天体codeで最大45%のenergy削減を報告しましたが、試験したAMD GPUでは同じ効果を観測しなかったとしています。HWEnergyTracer.jlはvendor管理libraryからpower、temperature、utilizationを収集しますが、AMD側utilization値が急変しworkloadと整合しにくいtool gapも報告しています。",
+          "statement_en": "ORNL measured QMCPACK on NiO and AMReX-Castro on a Sedov blast wave across A100, H100, and MI250X GPUs. It reports 6-25% energy savings for the materials code and up to 45% for the astrophysics code on NVIDIA GPUs, while the same benefit was not observed on the tested AMD hardware. HWEnergyTracer.jl collects power, temperature, and utilization through vendor management libraries, and the study also reports an AMD tooling gap in which utilization fluctuated rapidly without matching the workload.",
+          "hpci_relevance_ja": "precision変更による節約率をGPU世代・vendor横断で固定せず、同じ科学品質、software版、telemetry境界でapplicationごとに検証します。",
+          "hpci_relevance_en": "Do not fix one mixed-precision savings rate across GPU generations or vendors; validate each application at matched scientific quality, software versions, and telemetry boundaries.",
+          "adoption_conditions_ja": [
+            "input・収束・保存則・出力誤差を揃えてFP64とmixed precisionを比較する。",
+            "device energy、node energy、冷却を含むfacility energyを分ける。",
+            "vendor tool値を外部電力計またはnode telemetryで校正する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare FP64 and mixed precision at matched inputs, convergence, conservation laws, and output error.",
+            "Separate device, node, and facility energy including cooling.",
+            "Calibrate vendor-tool readings against external power meters or node telemetry."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS377"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD102-FRONTIER-TELEMETRY-UPPER-BOUND",
+          "name_ja": "Frontier：3か月telemetryによる8.5%・1,438 MWhのbest-case上限",
+          "name_en": "Frontier: an 8.5% and 1,438 MWh best-case bound from three months of telemetry",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "公開研究結果",
+          "timing_en": "Published research result",
+          "statement_ja": "SC24 workshop論文のORNL要約は、Frontierの3か月telemetryを用い、特定のresource-constrained jobに対して性能を損なわず最大8.5%のenergy削減余地、換算1,438 MWhを見積もったと報告しています。論文の貢献はbest-case上限を求める方法であり、全jobへの実制御で達成した年間節約量ではありません。",
+          "statement_en": "ORNL's summary of an SC24 workshop paper reports using three months of Frontier telemetry to estimate up to 8.5% energy-saving potential without performance loss for certain resource-constrained jobs, corresponding to 1,438 MWh. The contribution is a method for establishing a best-case upper bound, not annual savings achieved by production control across all jobs.",
+          "hpci_relevance_ja": "HPCIはtelemetryから削減可能jobを識別し、上限値、pilot実績、production実績を段階別に報告できます。",
+          "hpci_relevance_en": "HPCI can identify jobs with potential savings from telemetry and report analytical bounds, pilot outcomes, and production outcomes as separate stages.",
+          "adoption_conditions_ja": [
+            "対象job割合、selection条件、performance判定、baseline期間を明示する。",
+            "best-case上限と制御後のmetered energy・完了work量を分ける。",
+            "queue、公平性、deadline、再投入によるsystem全体の反作用を評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Disclose selected-job fraction, selection criteria, performance test, and baseline period.",
+            "Separate the best-case bound from metered energy and completed work after control.",
+            "Evaluate system-wide effects through queues, fairness, deadlines, and resubmissions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS378"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS376",
+        "title": "Power-Capping Metric Evaluation for Improving Energy Efficiency in HPC Applications",
+        "publisher": "Oak Ridge National Laboratory",
+        "url": "https://www.ornl.gov/research-highlight/power-capping-metric-evaluation-improving-energy-efficiency-hpc-applications",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-12"
+      },
+      "origin_group": "ornl-gh200-power-cap",
+      "checked_at": "2026-09-02T05:38:00+09:00",
+      "locator": "Research details and significance: GH200, 200-1000 W, phase-specific measurement and metrics",
+      "observation_ja": "GH200、LSMS、cap範囲、task別測定、判断metricを確認しました。",
+      "observation_en": "Verified GH200, LSMS, cap range, per-task measurement, and decision metrics.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS377",
+        "title": "Characterizing GPU Energy Usage in Exascale-Ready Portable Science Application",
+        "publisher": "Oak Ridge National Laboratory",
+        "url": "https://www.ornl.gov/research-highlight/characterizing-gpu-energy-usage-exascale-ready-portable-science-application-0",
+        "source_class": "official-project",
+        "published_or_updated": "2026-02-02"
+      },
+      "origin_group": "ornl-application-energy",
+      "checked_at": "2026-09-02T05:38:00+09:00",
+      "locator": "Achievement and research details: applications, GPUs, mixed precision, energy ranges, and tooling gap",
+      "observation_ja": "2 application、3 GPU、energy削減範囲、AMDでの非観測、telemetry tool差を確認しました。",
+      "observation_en": "Verified two applications, three GPUs, savings ranges, absence of the same effect on AMD, and the telemetry-tool gap.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS378",
+        "title": "Exploring the Frontiers of Energy Efficiency using Power Management at System Scale",
+        "publisher": "Oak Ridge National Laboratory",
+        "url": "https://www.ornl.gov/publication/exploring-frontiers-energy-efficiency-using-power-management-system-scale",
+        "source_class": "official-project",
+        "published_or_updated": "2024-11"
+      },
+      "origin_group": "frontier-system-scale-power",
+      "checked_at": "2026-09-02T05:38:00+09:00",
+      "locator": "Abstract: three-month telemetry, selected-job bound, 8.5%, and 1438 MWh",
+      "observation_ja": "3か月telemetry、特定job、8.5%、1,438 MWh、best-case上限という境界を確認しました。",
+      "observation_en": "Verified the three-month telemetry basis, selected jobs, 8.5%, 1,438 MWh, and best-case-bound scope.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開頁だけでは各applicationの全条件、絶対energy、誤差、system制御のproduction実績を確認できません。",
+    "同条件でHPCI機上の再測定が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The public pages do not expose every application condition, absolute energy, errors, or production results from system control.",
+    "Matched remeasurement on HPCI systems remains necessary.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

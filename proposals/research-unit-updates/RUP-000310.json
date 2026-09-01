@@ -1,0 +1,195 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000310",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:48:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000161",
+      "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"
+    },
+    {
+      "update_id": "RUP-000169",
+      "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"
+    },
+    {
+      "update_id": "RUP-000180",
+      "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"
+    },
+    {
+      "update_id": "RUP-000193",
+      "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"
+    },
+    {
+      "update_id": "RUP-000218",
+      "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"
+    },
+    {
+      "update_id": "RUP-000226",
+      "bundle_sha256": "524f3070c566043a03e935d7cb0f7457b88f608bc3f59ce233d8744edc7b3901"
+    },
+    {
+      "update_id": "RUP-000235",
+      "bundle_sha256": "18dab33bb3335028cc91b5987c86440b44ea8d25c71707ce8fceb1d78ec96def"
+    },
+    {
+      "update_id": "RUP-000243",
+      "bundle_sha256": "16e821133449bf831a75e2f2f0d8200cf5a5f8c633fee0435a46a11803fa2826"
+    },
+    {
+      "update_id": "RUP-000253",
+      "bundle_sha256": "234dc300f5272564d872e4e224e614cae1ee986094e9953f5ec32a16203d9544"
+    },
+    {
+      "update_id": "RUP-000286",
+      "bundle_sha256": "d82debd5e6a02b7fc141c7212490808920321fb95c352bec3027e566dfe71e0d"
+    }
+  ],
+  "before_profile_sha256": "e9f6d95745ab51530b49e003c0f579ac1cf7225b788868dfe20f7444ed57ffeb",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "RIKYUの50 GB home、1 TB group、1.5 TB/GPU scratchを、Lustre/xfs、SSD/HDD、共有範囲、job終了時削除で分けました。groupはportalで100 TBまで変更できますが、追加容量料金はPhase 2後に向け調整中です。容量だけでなくstaging・checkpoint・回収・quota・料金を受入条件にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "RIKYU's 50 GB home, 1 TB group, and 1.5 TB per-GPU scratch areas are separated by Lustre or XFS, SSD or HDD, sharing scope, and deletion at job end. Group capacity is portal-adjustable to 100 TB, but post-Phase-2 additional-capacity pricing remains under preparation. Staging, checkpoints, collection, quotas, and price become acceptance conditions alongside capacity. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U03",
+      "before_sha256": "b81178f76243f30fffa6071a77eeeb6180d31b6805c99b4514735e2f1458d6db",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U03",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-HW1-SSW-05-DAOS-28-MDONSSD",
+        "TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "91fdfeb3f3942b524b358db06c5311f20867c63eaea4b0da073a2a1b75fd322a",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD4-SSW-05-AI-READY-DATA",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD24-SSW-05-MLPERF-STORAGE-3",
+        "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-CD49-SSW-05-HPCI-DUAL-SITE-STORAGE",
+        "TDS-CD42-SSW-05-FUGAKU-METADATA-FAILURES",
+        "TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE",
+      "title_ja": "理究（RIKYU）の保存領域別性能・共有・寿命",
+      "title_en": "RIKYU storage performance, sharing, and lifetime by tier",
+      "summary_ja": "home、group、node-local scratchを容量だけでなく共有範囲、媒体、削除時点、料金確定度で比較します。",
+      "summary_en": "Compare home, group, and node-local scratch by sharing, medium, deletion point, and pricing maturity as well as capacity.",
+      "items": [
+        {
+          "item_id": "TDI-CD117-RIKYU-THREE-STORAGE-TIERS",
+          "name_ja": "50 GB home、1 TB group、1.5 TB/GPU scratchの異なる契約",
+          "name_en": "Distinct contracts for 50 GB home, 1 TB group, and 1.5 TB per-GPU scratch",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月の早期アクセスPhase 2",
+          "timing_en": "Early Access Phase 2 in September 2026",
+          "statement_ja": "各利用者のhomeは50 GBのLustreで本人のみ、各groupは既定1 TBのLustreでmember共有、各計算nodeのscratchはlocal SSD上のxfsで1.5 TB/GPUです。scratchはjob終了時に全削除され、必要な結果は終了前に共有領域へcopyする必要があります。homeは2 PB SSD、groupは10 PB HDDを基盤とするため、同じpath容量でも性能・共有・寿命が異なります。",
+          "statement_en": "Each user has a private 50 GB Lustre home area, each group has a shared 1 TB Lustre area, and compute-node scratch provides 1.5 TB per GPU on local SSD with XFS. Scratch files are deleted at job end and required results must be copied to shared storage beforehand. Home is backed by 2 PB of SSD and group storage by 10 PB of HDD, so performance, sharing, and lifetime differ even when compared by capacity.",
+          "hpci_relevance_ja": "AI training・simulation・agent workflowではdataset staging、checkpoint、結果回収、障害時保全をtier間data flowとして設計する必要があります。",
+          "hpci_relevance_en": "AI training, simulation, and agent workflows need dataset staging, checkpoints, result collection, and failure preservation designed as data flow across tiers.",
+          "adoption_conditions_ja": [
+            "cold/warm cache、metadata、small-file、checkpoint、同時jobで各tierを測る。",
+            "job終了・node故障・preemption時のscratch回収と再開を試験する。",
+            "home・group・scratch間のcopy時間をwalltimeと費用へ含める。"
+          ],
+          "adoption_conditions_en": [
+            "Measure each tier for cold and warm cache, metadata, small files, checkpoints, and concurrent jobs.",
+            "Test scratch recovery and restart at job end, node failure, and preemption.",
+            "Include home-group-scratch copy time in wall time and cost."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS406"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD117-RIKYU-GROUP-QUOTA-PRICE-GAP",
+          "name_ja": "group領域は100 TBまでportal変更、追加容量料金は未確定",
+          "name_en": "Portal-adjustable group quota to 100 TB with additional-capacity pricing undecided",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "Phase 2中は追加容量無料、以後の料金は調整中",
+          "timing_en": "Additional capacity free during Phase 2; later pricing under preparation",
+          "statement_ja": "PIまたはSubPIはgroup領域を1 TB単位で100 TBまで変更でき、増量反映は5～10分、減量は翌月1日です。100 TB超とinode変更はticket申請です。追加容量は将来課金予定ですがPhase 2中は無料で料金調整中のため、正式TCOをまだ算出できません。",
+          "statement_en": "A PI or SubPI can change group storage in 1 TB increments up to 100 TB, with increases taking 5-10 minutes and decreases applying on the first day of the next month. More than 100 TB and inode changes require tickets. Additional capacity is expected to be charged later but is free during Phase 2 and pricing is still being prepared, so final TCO cannot yet be calculated.",
+          "hpci_relevance_ja": "容量quota、inode、反映時間、承認、料金を一体のservice contractとして比較し、無料試行期の費用を正式運用へ外挿しません。",
+          "hpci_relevance_en": "Compare capacity quotas, inodes, activation time, approvals, and price as one service contract without extrapolating free pilot terms to production.",
+          "adoption_conditions_ja": [
+            "正式な円/TB月、inode、snapshot、backup、egress、削除猶予を確認する。",
+            "quota変更の承認・監査・反映SLOと超過時挙動を試験する。",
+            "active data、checkpoint、archiveの保持期間別TCOを計算する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify production JPY per TB-month, inodes, snapshots, backup, egress, and deletion grace.",
+            "Test approval, audit, activation SLO, and over-quota behavior.",
+            "Calculate TCO by retention period for active data, checkpoints, and archives."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS406"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS406",
+        "title": "RIKYU User Guide: Storage",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://docs.r-ccs.riken.jp/rikyu/ja/storage/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "riken-rikyu-storage-guide",
+      "checked_at": "2026-09-02T05:32:00+09:00",
+      "locator": "Home, group, and scratch capacities, filesystems, sharing, deletion, quota changes, and pricing note",
+      "observation_ja": "3領域の容量・媒体・共有・寿命とquota・料金条件を確認しました。",
+      "observation_en": "Verified capacities, media, sharing, lifetime, quotas, and charging conditions for the three areas.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "正式な追加容量料金、実測性能、backup、snapshot、保持・削除規程は未確認です。",
+    "job失敗時のscratch回収と大規模dataset staging実績は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Final additional-capacity charges, measured performance, backup, snapshots, and retention and deletion policies remain unverified.",
+    "Scratch recovery after job failures and large-dataset staging results remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000234",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T07:35:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000133", "bundle_sha256": "b559fd03c2cb1b8d18f47441c5673fb9619cfb32c4588591f8bfc0c358064d40"},
+    {"update_id": "RUP-000178", "bundle_sha256": "239584dade60ea7b9d058c3f9e563e2bfb8fc14365009d2be6cba810ec5b3f10"},
+    {"update_id": "RUP-000181", "bundle_sha256": "f08e5dfe9017c051e76c416e1f22a4d0ebb5104f984bcb84686860b16b14e261"},
+    {"update_id": "RUP-000182", "bundle_sha256": "d1cac1721415c666e63ddcdac5e603b46107972a27364091e9ae8195fc54a481"},
+    {"update_id": "RUP-000221", "bundle_sha256": "cf74f5d937620258b1d4139addb3a3b661ff76baa542ed23008239efefae1eaf"}
+  ],
+  "before_profile_sha256": "e64469c5a952c303919afa9a08543769b9f69b4a5b93d07ac67851c4abd08815",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "NanoTerasuとAOBAの実験施設連携を追加しました。両者は100 Gbit/sで直結され、計測dataをAOBA storageへ転送して解析でき、S3DSとNextcloudで外部研究者を含む共有を行います。2026年度は最大5件程度のNanoTerasu DX課題を募集し、AOBA-S利用料の全額・一定額・2/3を支援します。物理回線だけでなく、data共有、software、利用資格、費用支援が一体で必要です。一方、実data量、end-to-end latency、期限達成率、障害復旧は未公開です。Consensusは未完了です。",
+  "summary_en": "This update adds the NanoTerasu-AOBA experimental-facility integration. A direct 100-Gbit/s link transfers measurement data to AOBA storage for analysis, while S3DS and Nextcloud support sharing including external researchers. The FY2026 NanoTerasu DX program solicits about five projects and can cover all, a fixed amount, or two-thirds of AOBA-S computing charges. A physical link therefore needs to be accompanied by data sharing, software, eligibility, and funding support. Actual data volume, end-to-end latency, deadline compliance, and failure recovery remain unpublished. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "APP-14-U01", "before_sha256": "36234b4b9712cfa444b4c57d3bf27e97de9b2eff28c00f4985faea90315b1354", "evidence_section_ids": ["TDS-CD1-APP-14-U01", "TDS-CD2-APP-14-U01", "TDS-CD3-APP-14-U01", "TDS-CD10-APP-14-U01", "TDS-CD11-APP-14-JPARC-MLF", "TDS-CD12-APP-14-ILIS", "TDS-CD13-APP-14-INSTRUMENT-STANDARDS", "TDS-CD27-APP-14-EXPERIMENT-SLOS", "TDS-CD40-APP-14-NANOTERASU-AOBA"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD40-APP-14-NANOTERASU-AOBA",
+      "title_ja": "NanoTerasuとAOBAの直結data解析・共有",
+      "title_en": "Direct NanoTerasu-AOBA data analysis and sharing",
+      "summary_ja": "回線、保存、解析、共有、利用支援を一つの実験workflowとして評価します。",
+      "summary_en": "Evaluate connectivity, storage, analysis, sharing, and user support as one experimental workflow.",
+      "items": [
+        {
+          "item_id": "TDI-CD40-NANOTERASU-100G-DATA-PATH",
+          "name_ja": "100 Gbit/s直結とS3・Web共有を実装",
+          "name_en": "Direct 100-Gbit/s connectivity with S3 and Web sharing is implemented",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年1月運用報告",
+          "timing_en": "Operating report published January 2026",
+          "statement_ja": "NanoTerasuとAOBAは100 Gbit/s回線で直結され、計測dataをAOBA storageへ転送して解析できます。AOBA側はS3DS APIとNextcloudを用い、access controlを設定して外部研究者とも共有します。報告は迅速な解析が可能になったと述べますが、data setごとの容量、実効転送率、queue待ち、解析時間、返却期限、欠損・再送を数値で示していません。",
+          "statement_en": "NanoTerasu and AOBA are directly connected at 100 Gbit/s, allowing measurement data to be transferred to AOBA storage for analysis. AOBA uses S3DS APIs and Nextcloud with access control for sharing with external researchers. The report says analysis can be completed rapidly but does not quantify dataset size, effective transfer rate, queueing, analysis time, return deadline, loss, or retransmission by dataset.",
+          "hpci_relevance_ja": "実験施設連携では回線速度をarchitecture図へ記すだけでなく、instrumentから結果返却までのSLO、権限、保存、再実行を定義する必要があります。",
+          "hpci_relevance_en": "Experimental-facility integration must define instrument-to-result SLOs, authorization, retention, and reruns rather than showing link speed only in an architecture diagram.",
+          "adoption_conditions_ja": ["計測方式別にdata量、burst、期限、保存期間を記録する。", "transfer・queue・analysis・返却を個別に計測する。", "外部共有の本人確認、権限失効、監査、data削除を試験する。", "回線断・storage障害・再送時の科学的完全性を検証する。"],
+          "adoption_conditions_en": ["Record volume, burst pattern, deadline, and retention by measurement mode.", "Measure transfer, queue, analysis, and return separately.", "Test identity, revocation, audit, and deletion for external sharing.", "Validate scientific integrity under link loss, storage failure, and retransmission."],
+          "actor_ids": [], "source_ids": ["SRC-CDS317"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD40-NANOTERASU-DX-ACCESS-SUPPORT",
+          "name_ja": "最大5課題と利用料支援で連携需要を育成",
+          "name_en": "A roughly five-project program and usage support cultivate integration demand",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年度、2027年3月31日まで",
+          "timing_en": "FY2026 through March 31, 2027",
+          "statement_ja": "東北大学はNanoTerasu dataの分析・可視化などを対象に、AOBA-Sを使うDX利用促進課題を最大5件程度募集しています。採択課題には計算利用負担の全額、一部の一定額、または2/3を支援します。これは施設連携需要が回線開通だけで自動的に成立せず、利用資格、研究支援、費用障壁、成果公開を含む育成が必要なことを示します。募集枠は実際の採択数・利用量・成果を示しません。",
+          "statement_en": "Tohoku University solicits about five NanoTerasu DX projects using AOBA-S for analysis and visualization of facility data. Selected projects may receive full, fixed partial, or two-thirds support for computing charges. This shows that a link alone does not create facility-coupled demand; eligibility, research support, cost barriers, and publication expectations also matter. The solicitation cap does not establish actual awards, usage, or outcomes.",
+          "hpci_relevance_ja": "全国整備では、施設別pilot枠と支援費を設け、利用実績から本番service容量へ段階的に移す仕組みが必要です。",
+          "hpci_relevance_en": "National planning should provide facility-specific pilot allocations and support funding, then graduate to production capacity based on observed use.",
+          "adoption_conditions_ja": ["応募・採択・完了数と計算・保存・転送量を追跡する。", "支援後も継続するworkflowと支援依存を区別する。", "成果公開要件と機密・embargo dataの境界を明確にする。"],
+          "adoption_conditions_en": ["Track applications, awards, completions, and compute, storage, and transfer volumes.", "Separate workflows that continue after support from those dependent on subsidies.", "Clarify publication requirements and boundaries for confidential or embargoed data."],
+          "actor_ids": [], "source_ids": ["SRC-CDS318"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS317", "title": "スーパーコンピュータAOBAサブシステムAOBA-Sにおける運用実績と利用者支援、およびNanoTerasuとの連携について", "publisher": "東北大学サイバーサイエンスセンター", "url": "https://www.ss.cc.tohoku.ac.jp/sscc/refer/pdf_data/v59-1/v59-1_p28-32.pdf", "source_class": "official-project", "published_or_updated": "2026-01-01"},
+      "origin_group": "tohoku-aoba-s-operation-report-2026", "checked_at": "2026-09-02T03:51:00+09:00", "locator": "pp. 28 and 31: S3DS/Nextcloud and the direct 100-Gbit/s NanoTerasu-AOBA path", "observation_ja": "S3DS、Nextcloud、100 Gbit/s直結、AOBA storageへの転送・解析、外部研究者とのaccess-controlled共有を確認しました。", "observation_en": "Verified S3DS, Nextcloud, direct 100-Gbit/s connectivity, transfer and analysis on AOBA storage, and access-controlled sharing with external researchers.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS318", "title": "ナノテラスDX利用促進課題の募集について", "publisher": "東北大学サイバーサイエンスセンター", "url": "https://www.ss.cc.tohoku.ac.jp/n20260415-4/", "source_class": "official-project", "published_or_updated": "2026-04-15"},
+      "origin_group": "tohoku-nanoterasu-dx-program-2026", "checked_at": "2026-09-02T03:52:00+09:00", "locator": "対象、2026年度支援期間、最大5件、AOBA-S、利用負担支援", "observation_ja": "NanoTerasu data分析・可視化、最大5件程度、AOBA-S、2027年3月末まで、全額・一定額・2/3の負担支援を確認しました。", "observation_en": "Verified NanoTerasu data analysis and visualization, about five projects, AOBA-S, support through March 2027, and full, fixed, or two-thirds charge support.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["実data量、end-to-end latency、deadline違反、障害再送、年間利用量は未確認です。", "2026年度の実採択数、支援額、継続利用、科学成果は未確認です。", "他施設との共通比較と独立モデルConsensusは未完了です。"],
+  "remaining_work_en": ["Actual data volume, end-to-end latency, deadline misses, failure retransmission, and annual use remain unverified.", "FY2026 actual awards, support amounts, continuing use, and scientific outcomes remain unverified.", "Common comparison with other facilities and independent-model Consensus remain incomplete."]
+}

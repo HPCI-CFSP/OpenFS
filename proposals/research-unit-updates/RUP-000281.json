@@ -1,0 +1,211 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000281",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T07:43:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000127",
+      "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"
+    },
+    {
+      "update_id": "RUP-000159",
+      "bundle_sha256": "bcb20b7c511099e4e2cf9e1f31e6b3312c80af5ec23b9d3c0dcdf24005e72e04"
+    },
+    {
+      "update_id": "RUP-000172",
+      "bundle_sha256": "004b69a8c614fca240bc12542b1183dcea00e1c60e9a557e41939a1bdcfb0263"
+    },
+    {
+      "update_id": "RUP-000213",
+      "bundle_sha256": "65ae3fc5a9bd161bc7e471b7c2daa9d56c6010e58c5e757df6f72cc2639ed7ca"
+    },
+    {
+      "update_id": "RUP-000246",
+      "bundle_sha256": "88bf048ae90b8275c4185bb15b7701c7054259454a67b1d1487926957759a015"
+    },
+    {
+      "update_id": "RUP-000254",
+      "bundle_sha256": "e2cc7bfe5ba980f536272957f7bd8a002d457d321760e5056c2b306926811ec1"
+    },
+    {
+      "update_id": "RUP-000276",
+      "bundle_sha256": "929b9ca30b78fc94f87fbaed88cc95841d4c57feebaf35dfd520787533587164"
+    }
+  ],
+  "before_profile_sha256": "03530941af408c27e17e3143b17b70f5f91b5d9838c1f6f6ecdc57214c71b9a1",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Kokkos 5.2.0は2026年7月24日に、5.2.1は8月18日に公開されました。5.2では4.x互換経路の大半が削除され、5.3ではMemoryManaged、View::HostMirror、legacy Viewが削除予定です。一方、mdspan形式のView、自己相似RangePolicy、SFC64乱数、rank-1 MDRangePolicy、CUDA 13.3のC++23、AMD gfx1151/1152、初期的なNextSilicon対応、Kokkos Tools 5.2が追加・更新されています。HPCIでは新機能だけでなく、5.3移行前のコード監査とバックエンド別回帰試験が必要です。Consensusは未完了です。",
+  "summary_en": "Kokkos 5.2.0 was released on July 24, 2026, followed by 5.2.1 on August 18. Version 5.2 removes most 4.x compatibility paths, while 5.3 is scheduled to remove MemoryManaged, View::HostMirror, and the legacy View. New or updated capabilities include mdspan-style View arguments, a self-similar RangePolicy, the SFC64 generator, rank-1 MDRangePolicy, C++23 with CUDA 13.3, AMD gfx1151/1152 support, preliminary NextSilicon support, and Kokkos Tools 5.2. HPCI needs code audits before 5.3 and backend-specific regression tests, not only feature tracking. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "5489aa08a834650b36afeeac629427ecbbcfa815d9d237584c4a26fc8d6e4ca9",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U04",
+        "TDS-CD6-SSW-01-U04",
+        "TDS-CD8-SSW-01-U04",
+        "TDS-CD9-SSW-01-U04",
+        "TDS-CD10-SSW-01-U04",
+        "TDS-CD14-SSW-01-PORTABILITY",
+        "TDS-CD18-SSW-01-SOLOMON-STDEXEC",
+        "TDS-CD18-SSW-01-KOKKOS-52-MIGRATION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD18-SSW-01-KOKKOS-52-MIGRATION",
+      "title_ja": "Kokkos 5.2の機能追加と5.3移行条件",
+      "title_en": "Kokkos 5.2 capabilities and 5.3 migration conditions",
+      "summary_ja": "公開日、API移行、バックエンド対応、解析ツールの成熟度を分けて評価します。",
+      "summary_en": "Evaluate release dates, API migration, backend support, and tool maturity separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD88-KOKKOS-52-LIFECYCLE",
+          "name_ja": "5.2公開と5.3互換経路削除",
+          "name_en": "5.2 release and 5.3 compatibility-path removal",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年7月24日～8月18日",
+          "timing_en": "July 24-August 18, 2026",
+          "statement_ja": "公式release一覧はKokkos 5.2.0を2026年7月24日、5.2.1を8月18日としています。5.2ではKOKKOS_ENABLE_DEPRECATED_CODE_4に関する経路の大半を削除し、5.3ではMemoryManagedからMemoryTraits<>、View::HostMirrorからView::host_mirror_typeへの移行を完了し、legacy Viewと回避flagを削除する予定です。4.7の延長supportも終了しました。",
+          "statement_en": "The official release list dates Kokkos 5.2.0 to July 24, 2026, and 5.2.1 to August 18. Version 5.2 removes most KOKKOS_ENABLE_DEPRECATED_CODE_4 paths. Version 5.3 is scheduled to complete migration from MemoryManaged to MemoryTraits<>, from View::HostMirror to View::host_mirror_type, and to remove the legacy View and its fallback flag. Extended support for 4.7 has ended.",
+          "hpci_relevance_ja": "Kokkos採用アプリの更新費用は版番号だけでは判断できません。deprecated APIの使用量と5.3でのbuild・数値回帰を調達前に測定する必要があります。",
+          "hpci_relevance_en": "The update cost of Kokkos applications cannot be inferred from a version number. Deprecated-API use and build and numerical regressions under 5.3 should be measured before procurement.",
+          "adoption_conditions_ja": [
+            "対象repositoryをdeprecated APIごとに静的検査する。",
+            "5.2.1と5.3候補版でbuild、test、性能を比較する。",
+            "コンパイラ・Kokkos・依存libraryの互換表をcommit単位で保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Statically inspect target repositories for each deprecated API.",
+            "Compare builds, tests, and performance between 5.2.1 and a 5.3 candidate.",
+            "Preserve a commit-level compatibility matrix for compilers, Kokkos, and dependencies."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS349",
+            "SRC-CDS350"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD88-KOKKOS-52-PORTABILITY",
+          "name_ja": "mdspan形式・実行policy・GPU backendの拡張",
+          "name_en": "mdspan-style, execution-policy, and GPU-backend extensions",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "Kokkos 5.2 release briefing",
+          "timing_en": "Kokkos 5.2 release briefing",
+          "statement_ja": "5.2はstd::mdspanに合わせたView template引数、hostとteamで使う自己相似RangePolicy、分割可能で再現可能なSFC64乱数、rank-1 MDRangePolicyを追加しました。CUDAではlevel-0 shared scratchの48 KB超とCUDA 13.3以降のC++23、HIPではgfx1151、gfx1152等を追加し、NextSiliconは初期・予備的対応です。mdspan形式にはdefault引数、符号付きindex、任意のmixed extents、独自layout/accessorに制約があります。",
+          "statement_en": "Version 5.2 adds mdspan-style View template arguments, a self-similar RangePolicy usable on host and team levels, a reproducible partitionable SFC64 generator, and rank-1 MDRangePolicy. CUDA updates include level-0 shared scratch above 48 KB and C++23 with CUDA 13.3 or later; HIP adds gfx1151 and gfx1152 support; NextSilicon support is explicitly initial and preliminary. The mdspan-style interface has limitations involving defaults, signed indices, arbitrary mixed extents, and custom layouts and accessors.",
+          "hpci_relevance_ja": "対応architecture名を採用可否と同一視せず、代表kernel、toolchain、正解、性能、memory使用量をbackendごとに確認します。",
+          "hpci_relevance_en": "Architecture-name support should not be equated with adoption readiness; representative kernels, toolchains, correctness, performance, and memory use require backend-specific checks.",
+          "adoption_conditions_ja": [
+            "同一sourceと入力をCUDA、HIP、OpenMP等でbuild・実行する。",
+            "experimental・preliminary・supportedを別状態で管理する。",
+            "mdspan移行時にlayout、index型、ABI、性能を回帰試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Build and run matched source and input across CUDA, HIP, OpenMP, and relevant backends.",
+            "Track experimental, preliminary, and supported states separately.",
+            "Regression-test layout, index types, ABI, and performance during mdspan migration."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS350"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD88-KOKKOS-TOOLS-52",
+          "name_ja": "Kokkos Tools 5.2はMaturing段階",
+          "name_en": "Kokkos Tools 5.2 is at the Maturing stage",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "Kokkos Tools 5.2",
+          "timing_en": "Kokkos Tools 5.2",
+          "statement_ja": "Kokkos Tools 5.2はCoreと同周期で公開され、kernel labelやViewを認識する解析、runtime load、CMake buildを提供します。C++20が必要で、公式資料はlife-cycleをMaturingとし、CIを拡充中です。表ではOpenMPにcompile/runtime試験、CUDAとHIPにはcompile試験、Hopper上LAMMPSにはsanity testが示されますが、全backendのruntime検証ではありません。",
+          "statement_en": "Kokkos Tools 5.2 ships with the Core cycle and provides Kokkos-aware analysis of kernel labels and Views, runtime loading, and CMake builds. It requires C++20 and is classified by the project as Maturing while CI expands. The published table shows compile and runtime tests for OpenMP, compile tests for CUDA and HIP, and a Hopper LAMMPS sanity test; it is not full runtime validation across all backends.",
+          "hpci_relevance_ja": "候補systemの可観測性はtoolの存在ではなく、代表applicationでの動作、overhead、出力互換性、長期保存で評価します。",
+          "hpci_relevance_en": "Observability should be assessed through operation on representative applications, overhead, output compatibility, and long-term retention rather than tool availability alone.",
+          "adoption_conditions_ja": [
+            "CPU・GPU backendごとにruntime試験とoverheadを測る。",
+            "tool outputをperformance regression基盤へ取り込めるか確認する。",
+            "C++20要件とsystem compilerの整合を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure runtime operation and overhead for each CPU and GPU backend.",
+            "Verify ingestion of tool output into performance-regression infrastructure.",
+            "Check the C++20 requirement against system compilers."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS350"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS349",
+        "title": "Kokkos Releases",
+        "publisher": "Kokkos Project",
+        "url": "https://kokkos.org/about/releases/",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "kokkos-release-history",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Release table",
+      "observation_ja": "5.2.0と5.2.1の公開日を確認しました。",
+      "observation_en": "Verified the release dates of 5.2.0 and 5.2.1.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS350",
+        "title": "Kokkos 5.2 Release Briefing",
+        "publisher": "Kokkos Project",
+        "url": "https://raw.githubusercontent.com/kokkos/development/1e08d627ad69dc2c2bb8a0049bce25d49ceec978/release-52.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-04"
+      },
+      "origin_group": "kokkos-52-core-briefing",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Slides 10-45: removals, View migration, policies, PRNG, backends, fixes, and Tools",
+      "observation_ja": "互換経路削除、新機能、backend更新、Tools成熟度を確認しました。",
+      "observation_en": "Verified compatibility removals, new capabilities, backend updates, and Tools maturity.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "代表HPCI applicationでの5.2.1回帰、5.3候補版への移行工数、各backendのruntime試験は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "No representative HPCI-application regression on 5.2.1, migration-effort measurement for a 5.3 candidate, or backend runtime campaign has been completed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

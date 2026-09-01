@@ -1,0 +1,164 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000312",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T07:48:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000141",
+      "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"
+    },
+    {
+      "update_id": "RUP-000147",
+      "bundle_sha256": "50d35e45f17c5bfcfb01122d8bc6da805e7e431028e4c604ffbc4c62c077acd3"
+    },
+    {
+      "update_id": "RUP-000247",
+      "bundle_sha256": "687a30d7341cef8788c95b506a5bbc5e65b6906c1f7a15019b0699897ad29e71"
+    },
+    {
+      "update_id": "RUP-000306",
+      "bundle_sha256": "458b92e96d4213f453f57538a0352ec6140e8b894157b4194d82595c5b515bf3"
+    }
+  ],
+  "before_profile_sha256": "b0e592db4c6a7e3359f39b38a69d1e86bdd5250cc74c5c7b4cc7a9cf0086da25",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "米国OLCFの推論serviceについて、既存Project ID・PI・用途説明による利用審査、S3M Bearer token、vLLM上のOpenAI互換endpoint、常駐・オンデマンド・CPU model、URL取得・file upload禁止を追加しました。互換APIとproject・network・data境界を独立した設計項目としてRIKYU等と比較できます。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The US OLCF inference service adds access review using an existing Project ID, PI, and use-case description, S3M Bearer tokens, OpenAI-compatible endpoints on vLLM, always-on, on-demand, and CPU models, and rejection of URL retrieval and file uploads. This allows API compatibility to be compared independently from project, network, and data boundaries against RIKYU and other services. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "75645cfc3d7e5bacae4c63ff843da22372ba05404b0525a3dfab051746a19bbb",
+      "evidence_section_ids": [
+        "TDS-HC26-SSW-09-U2",
+        "TDS-CD6-SSW-09-U02",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+        "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE"
+      ]
+    },
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "64a1b1dbee85d2d304b279abc0357a615d01da85b6e6b97f0f336ba6a596672c",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U03",
+        "TDS-CD11-SSW-09-U02-U03",
+        "TDS-CD12-SSW-09-U02-U03",
+        "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
+        "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE",
+      "title_ja": "OLCF推論serviceのproject審査・認証・入力境界",
+      "title_en": "OLCF inference-service project review, authentication, and input boundary",
+      "summary_ja": "OpenAI互換APIの背後にあるproject審査、短期token、model配置、外部data取得制限を比較条件にします。",
+      "summary_en": "Compare the project review, minted tokens, model placement, and external-data restrictions behind the OpenAI-compatible API.",
+      "items": [
+        {
+          "item_id": "TDI-CD119-OLCF-PROJECT-SCOPED-INFERENCE",
+          "name_ja": "既存OLCF課題・PI・用途説明を前提にS3M tokenで認証",
+          "name_en": "Existing OLCF project, PI, and use-case review followed by S3M token authentication",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月確認",
+          "timing_en": "Verified September 2026",
+          "statement_ja": "OLCF Inference Serviceは利用希望者に既存OLCF Project ID、PI、workflow内の用途説明をsupportへ送るよう求めます。承認後のrequestはmyOLCF上のSecure Scientific Service Mesh（S3M）で発行したBearer tokenを使います。公開文書は自己登録の一般APIではなく既存projectに結び付くserviceを示しますが、審査期間、quota、料金、利用統計、token寿命は今回確認した頁にありません。",
+          "statement_en": "The OLCF Inference Service asks prospective users to email an existing OLCF Project ID, project PI, and a description of how the workflow will use the service. Requests then authenticate with a Bearer token minted through the Secure Scientific Service Mesh on myOLCF. The documentation shows a service bound to an existing project rather than self-service public signup, but the reviewed page does not state review time, quota, pricing, usage statistics, or token lifetime.",
+          "hpci_relevance_ja": "HPCI推論serviceもproject審査、利用目的、token、quota、成果・費用帰属をbatch計算と共通化するかを設計判断にできます。",
+          "hpci_relevance_en": "HPCI can decide whether inference shares project review, use purpose, tokens, quotas, and outcome and cost attribution with batch computing.",
+          "adoption_conditions_ja": [
+            "申請・承認時間、対象課題、quota、料金、token寿命・失効を確認する。",
+            "project member変更とtoken権限の伝播・監査を試験する。",
+            "batch、storage、推論の利用量と成果を同一課題へ対応付ける。"
+          ],
+          "adoption_conditions_en": [
+            "Verify application and approval time, eligible projects, quotas, price, and token lifetime and revocation.",
+            "Test propagation and audit of project-membership and token-authority changes.",
+            "Map batch, storage, and inference use and outcomes to the same project."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS408"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD119-OLCF-API-DATA-BOUNDARY",
+          "name_ja": "vLLM互換APIでもURL取得・file uploadを受け付けない",
+          "name_en": "The vLLM-compatible API rejects URL retrieval and file uploads",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月確認",
+          "timing_en": "Verified September 2026",
+          "statement_ja": "serviceはvLLM上でOpenAI互換のchat、completions、models、embeddings、responses endpointを提供します。一方、OpenAI式file uploadは非対応で、web URLを指すdataも受け付けません。画像はbase64でrequestへ含め、text fileはlong-context文字列として送ります。modelは常時稼働、オンデマンドload、CPU常駐に分かれるため、同じAPIでもcold-start・容量・対応入力が異なります。",
+          "statement_en": "The service provides OpenAI-compatible chat, completions, models, embeddings, and responses endpoints on vLLM. It does not support OpenAI-style file uploads or accept data pointing to web URLs; images are embedded as base64 and text files sent as long-context strings. Models are classified as always-on, loaded on demand, or always-on CPU, so cold start, capacity, and input support differ behind a common API.",
+          "hpci_relevance_ja": "互換APIとnetwork/data boundaryを独立に設計でき、NDA・未公開dataを扱うserviceでserver-side URL取得を禁止する比較例になります。",
+          "hpci_relevance_en": "This demonstrates that API compatibility and network or data boundaries can be designed independently, including disabling server-side URL retrieval for sensitive data.",
+          "adoption_conditions_ja": [
+            "endpoint別schema、upload、URL、tool calling、stream、size limitを適合試験する。",
+            "常駐・cold load別のP50/P95 latency、failure、GPU占有、energyを測る。",
+            "入力・出力保持、log、malware検査、data classification、egressを明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Conformance-test schemas, uploads, URLs, tool calling, streaming, and size limits per endpoint.",
+            "Measure P50 and P95 latency, failure, GPU occupancy, and energy for warm and cold-loaded models.",
+            "Specify input and output retention, logs, malware inspection, data classification, and egress."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS408"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS408",
+        "title": "OLCF Inference Service Documentation",
+        "publisher": "Oak Ridge Leadership Computing Facility",
+        "url": "https://docs.olcf.ornl.gov/services_and_applications/olcf_inference/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "olcf-inference-service",
+      "checked_at": "2026-09-02T05:37:00+09:00",
+      "locator": "Access request, S3M authentication, endpoints, model placement, multimodal handling, and rejected URL and file-upload inputs",
+      "observation_ja": "project審査、token、API、model配置、入力制限を確認しました。",
+      "observation_en": "Verified project review, tokens, APIs, model placement, and input restrictions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "審査時間、quota、料金、SLO、data retention、token寿命、利用統計は未確認です。",
+    "常駐・オンデマンドmodelの独立latency・throughput・energy測定は必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Review time, quotas, pricing, SLOs, data retention, token lifetime, and usage statistics remain unverified.",
+    "Independent latency, throughput, and energy measurements for warm and on-demand models are required.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000266",
+  "topic_id": "SSW-16",
+  "created_at": "2026-09-02T07:41:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000151",
+      "bundle_sha256": "024770e702d8f1d80cb62a8d64b5be5db98b6f718e0da74815794793aa4f378c"
+    }
+  ],
+  "before_profile_sha256": "b495b0e8f44e8d6cc5a80428c91c2eb25fed1e5c04cb5f709be3591e0c40f4f9",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "JHPCN FY2025報告は、Miyabi・IBM Quantum・mdx上の閉ループSQDワークフローに、計算と監視を分離した永続テレメトリを実装し、再実行せずに新しい指標を追加できる構成を報告しています。現在の実装範囲は中・高位のL2～L4指標で、低位システム指標、監視オーバーヘッド、欠損、保持費用、他アルゴリズムへの一般化は未確認です。Consensusは未完了です。",
+  "summary_en": "The FY2025 JHPCN report implements persistent telemetry decoupled from computation for a closed-loop SQD workflow spanning Miyabi, IBM Quantum systems, and mdx, allowing new metrics to be added without rerunning experiments. The current implementation covers mid- to high-level L2-L4 metrics; low-level system metrics, monitoring overhead, missing data, retention cost, and generalization to other algorithms are unverified. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-16-U01",
+      "before_sha256": "5435c58d3f35edba14a75822bddfa373fac99ebf7a711fe82965cf19d5238168",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-16-U01",
+        "TDS-CD2-SSW-16-U01",
+        "TDS-CD3-SSW-16-U01",
+        "TDS-CD4-SSW-16-U01",
+        "TDS-CD13-SSW-16-U01",
+        "TDS-CD14-SSW-16-QCSC-OBSERVABILITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD14-SSW-16-QCSC-OBSERVABILITY",
+      "title_ja": "量子・HPC閉ループのアプリケーションテレメトリ",
+      "title_en": "Application telemetry for closed-loop quantum-HPC workflows",
+      "summary_ja": "システム指標だけでなく、アルゴリズム段階と科学的解釈を追跡します。",
+      "summary_en": "Track algorithm stages and scientific interpretation beyond system metrics.",
+      "items": [
+        {
+          "item_id": "TDI-CD73-QCSC-PERSISTENT-TELEMETRY",
+          "name_ja": "Miyabi・IBM Quantum・mdxの永続テレメトリ",
+          "name_en": "Persistent telemetry across Miyabi, IBM Quantum, and mdx",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "FY2025参照実装を2026年最終報告",
+          "timing_en": "FY2025 reference implementation in a 2026 final report",
+          "statement_ja": "QCSCワークフロー向け可観測性は、計算と監視を分離し、テレメトリを構造化して永続保存し、事後解析する設計です。Miyabi、IBM Quantum、mdxを使う閉ループSQDの参照実装で、ソルバ挙動と性能の解析に用いられ、保存済みデータから再実行なしに指標を追加できると報告されています。現時点はL2～L4の中・高位テレメトリ中心です。",
+          "statement_en": "The QCSC observability design decouples computation from monitoring and persistently stores structured telemetry for post-hoc analysis. A reference implementation for closed-loop SQD across Miyabi, IBM Quantum, and mdx was used to analyze solver behavior and performance, and the report says stored data permits new metrics without rerunning experiments. Current coverage focuses on mid- to high-level L2-L4 telemetry.",
+          "hpci_relevance_ja": "複数資源ワークフローでは、ジョブ成功だけでなく、アルゴリズム段階、待機、再試行、データ版、精度、費用を共通来歴として保存する必要があります。",
+          "hpci_relevance_en": "Multi-resource workflows should preserve algorithm stage, waits, retries, data version, accuracy, and cost as shared provenance rather than only job success.",
+          "adoption_conditions_ja": [
+            "指標階層、時刻同期、ワークフローID、データ版、サンプリング頻度を固定する。",
+            "監視オーバーヘッド、欠損率、保存量、保持費用を測る。",
+            "後付け指標が必要な原始データを事前に保存していることを検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin metric hierarchy, time synchronization, workflow ID, data version, and sampling frequency.",
+            "Measure monitoring overhead, missingness, storage volume, and retention cost.",
+            "Verify that raw data needed for later metrics was preserved in advance."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS340",
+        "title": "Final Report for JHPCN Joint Research of FY 2025: Innovative Computational Science by Integration of Simulation/Data/Learning on Heterogeneous Supercomputers",
+        "publisher": "Joint Usage/Research Center for Interdisciplinary Large-scale Information Infrastructures (JHPCN)",
+        "url": "https://jhpcn-kyoten.itc.u-tokyo.ac.jp/download/final/jh250027.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "jhpcn-fy2025-sdl-final-report",
+      "checked_at": "2026-09-02T05:39:00+09:00",
+      "locator": "Pages 8-9: QCSC metrics pyramid, persistent telemetry, and reference implementation on Miyabi, IBM Quantum, and mdx",
+      "observation_ja": "計算・監視分離、永続保存、閉ループSQD参照実装、L2～L4範囲を確認しました。",
+      "observation_en": "Verified decoupled monitoring, persistent storage, the closed-loop SQD reference implementation, and L2-L4 scope.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "指標定義、監視オーバーヘッド、欠損、保存量、保持期間、アクセス制御は公開本文から確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Metric definitions, monitoring overhead, missingness, storage volume, retention, and access control are unavailable from the public text.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

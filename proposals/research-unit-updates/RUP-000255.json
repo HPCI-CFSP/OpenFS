@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000255",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-02T07:39:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000156",
+      "bundle_sha256": "ec32a1c889c02ea5fc0b6124db725dc231688e338aa97c4251843c900717ccbf"
+    }
+  ],
+  "before_profile_sha256": "90739f07a91dab641a01bfee1087b620b7535444e855dc24d3dc65543f894ac6",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳では2026年3月31日に終了する課題に対し、4月1～30日はログインのみ可能でジョブ実行不可、5月1日にファイル削除、原則延長なしというデータ終了手順が示されています。継続課題でも参加を終了する利用者には猶予が適用されない場合があります。rsync -aと利用者当たり最大4並列が推奨され、年度末の集中移動はシステム負荷になるとされています。世代更新だけでなく毎年度の課題終了をデータ継続性の基準に含める必要があります。Consensusは未完了です。",
+  "summary_en": "For Fugaku projects ending March 31, 2026, the published procedure allows login but no job execution from April 1-30 and schedules file deletion on May 1, normally without extension. Even in continuing projects, users whose participation ends may not receive the grace period. The guidance recommends rsync -a with at most four concurrent transfers per user and warns that concentrated year-end movement can load the system. Data continuity criteria should cover annual project closure as well as machine replacement. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "8bd773acf7b743b8ba96e83ac004d54c6afb619ad91305de481777f598070e5c",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01",
+        "TDS-CD3-CROSS-14-U01",
+        "TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA",
+      "title_ja": "富岳の課題終了時データ移行期限と転送制約",
+      "title_en": "Fugaku project-end data deadlines and transfer constraints",
+      "summary_ja": "課題期限、ログイン、計算、削除、転送負荷を別々の継続条件として扱います。",
+      "summary_en": "Treat project expiry, login, compute, deletion, and transfer load as distinct continuity conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD62-FUGAKU-PROJECT-END-DATA",
+          "name_ja": "1か月のログイン猶予後にファイル削除",
+          "name_en": "File deletion after a one-month login-only grace period",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月31日終了課題、4月1～30日猶予、5月1日削除",
+          "timing_en": "Projects ending March 31, grace April 1-30, deletion May 1, 2026",
+          "statement_ja": "2026年3月31日に終了する課題は、4月1～30日の1か月、ログインのみ可能でジョブ実行はできず、5月1日にファイルを削除し、原則として延長しないと案内されています。次年度継続課題は対象外ですが、継続課題への参加を終了する利用者にはログイン猶予が適用されず、3月末または削除日にログインできなくなる場合があります。",
+          "statement_en": "Projects ending March 31, 2026 receive a login-only grace period from April 1-30 with no job execution, followed by file deletion on May 1 and normally no extension. Continuing projects are excluded, but users ending participation in a continuing project may not receive the grace period and can lose login at the end of March or on deletion day.",
+          "hpci_relevance_ja": "データ継承はシステム更新時だけでなく、課題・利用者権限の失効時にも、期限、責任者、保存先、検証方法を明示する必要があります。",
+          "hpci_relevance_en": "Data continuity must specify deadlines, responsible parties, destinations, and verification when project or user entitlement expires, not only during system replacement.",
+          "adoption_conditions_ja": [
+            "課題、利用者、データ領域ごとに失効日と削除日を機械可読に通知する。",
+            "削除前に容量、ファイル数、チェックサム、転送完了を確認する。",
+            "継続課題と継続参加者を同一視しない。"
+          ],
+          "adoption_conditions_en": [
+            "Notify expiry and deletion dates in machine-readable form by project, user, and data area.",
+            "Verify capacity, file count, checksums, and transfer completion before deletion.",
+            "Do not equate a continuing project with continued participation by every user."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD62-FUGAKU-TRANSFER-THROTTLE",
+          "name_ja": "年度末転送は利用者当たり最大4並列を推奨",
+          "name_en": "Year-end transfer guidance recommends at most four streams per user",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日公開の年度末データ移行案内",
+          "timing_en": "Year-end data-transfer guidance published March 12, 2026",
+          "statement_ja": "削除と移動を並行して行うとシステム負荷になる可能性があるため、年度末より前の計画的な実施、rsync -a、利用者当たり最大4並列が推奨されています。推奨値は実効帯域、完了保証、HPCI共用ストレージ側の受入容量を示しません。",
+          "statement_en": "Because concurrent deletion and movement can load the system, the guidance recommends planned transfer before year end, rsync -a, and at most four concurrent operations per user. The recommendation does not establish delivered bandwidth, completion guarantees, or destination capacity in HPCI shared storage.",
+          "hpci_relevance_ja": "移行計画は総容量だけでなく、ファイル数、転送窓、送受信側制限、再開、照合を含む必要があります。",
+          "hpci_relevance_en": "Migration plans should cover file count, transfer window, source and destination limits, restart, and verification in addition to total capacity.",
+          "adoption_conditions_ja": [
+            "実データ分布で期限内に転送可能かを事前演習する。",
+            "失敗時の再開とチェックサム照合を自動化する。",
+            "一拠点の推奨並列数を全HPCIの標準値にしない。"
+          ],
+          "adoption_conditions_en": [
+            "Rehearse whether real data distributions can move within the deadline.",
+            "Automate restart and checksum verification after failures.",
+            "Do not treat one site's recommended concurrency as an HPCI-wide standard."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDO061"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDO061",
+        "title": "Important Notes for Using Fugaku, March 2026",
+        "publisher": "HPCI / RIST Helpdesk",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/helpdeskreport/helpdeskreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-helpdesk-guidance",
+      "checked_at": "2026-09-02T04:47:00+09:00",
+      "locator": "Pages 52-53: project-end login grace, deletion date, transfer timing, rsync, and four-stream recommendation",
+      "observation_ja": "課題終了時のログイン、削除、転送方法、並列数の条件を確認しました。",
+      "observation_en": "Verified project-end login, deletion, transfer method, and concurrency conditions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "対象データ量、実転送時間、失敗率、削除前確認、移行先容量は公開資料から確認できません。",
+    "富岳以外のHPCI資源に同じ猶予・削除条件が適用されるとは限りません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Affected data volume, transfer duration, failure rate, pre-deletion verification, and destination capacity are not public.",
+    "Other HPCI resources may use different grace and deletion rules.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

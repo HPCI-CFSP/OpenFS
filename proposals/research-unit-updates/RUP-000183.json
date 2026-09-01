@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000183",
+  "topic_id": "CROSS-16",
+  "created_at": "2026-09-02T07:27:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000164", "bundle_sha256": "c5cb37ea84473f5c8f922f8be9b67b8aebd1f2b69909d9ed8f477a15d03e078b"}
+  ],
+  "before_profile_sha256": "53f6fd6cefcfed64e1615a8a0dc4e3ca162d8ebd0f9dd4b876941d7a93ea6411",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年のOCCTO資料と経済産業省資料から、HPCI設置地域の選定に影響する電力制約を追加しました。OCCTOは2025～2035年度の最大電力需要を年平均0.4%、需要電力量を0.5%増と見込み、2028年度以降は複数地域で需給が厳しくなる可能性を示します。経産省資料はデータセンター需要が今後10年間で約5 GW増加し、系統接続に10年以上かかる例があるとします。全国値は個別候補地の確保電力を保証しません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Current 2026 OCCTO and METI material adds power constraints relevant to HPCI site selection. OCCTO projects average annual growth of 0.4% in peak demand and 0.5% in electricity use from FY2025 to FY2035 and reports that supply-demand balances may become tight in several areas from FY2028. METI material states that data-center demand may grow by about 5 GW over ten years and that some grid connections take more than ten years. National figures do not guarantee deliverable capacity at a candidate site. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-16-U01",
+      "before_sha256": "26cc922a18bdd2385025da755e391f2eb00d6215d69747c6c335c116f02e7541",
+      "evidence_section_ids": ["TDS-CD1-CROSS-16-U01", "TDS-CD2-CROSS-16-U01", "TDS-CD3-CROSS-16-POWER-CONNECTION"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-CROSS-16-POWER-CONNECTION",
+      "title_ja": "電力需要増加と系統接続を設置場所の採否条件にする",
+      "title_en": "Treat demand growth and grid connection as site-selection gates",
+      "summary_ja": "全国の需給見通しと個別候補地の接続可能性を分け、供用時期・確保電力・通信を同時に審査します。",
+      "summary_en": "Separate national forecasts from site-specific connectability and review service date, deliverable power, and communications together.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-OCCTO-2026-DEMAND",
+          "name_ja": "2025～2035年度の全国電力需要増加見通し",
+          "name_en": "National electricity-demand growth projected for FY2025-FY2035",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年1月公表の10年想定",
+          "timing_en": "Ten-year projection published in January 2026",
+          "statement_ja": "OCCTOは、2025～2035年度の最大電力需要を年平均0.4%、需要電力量を0.5%増と想定し、人口減少や省エネによる減少より、経済成長とデータセンター・半導体工場の新増設による増加が大きいとしています。2026年度供給計画では、2028年度以降に複数地域で需給バランスが厳しくなる見通しも示しています。全国平均は特定施設の契約電力や停電リスクではありません。",
+          "statement_en": "OCCTO projects average annual growth of 0.4% in peak demand and 0.5% in electricity use from FY2025 to FY2035, with economic growth and new data centers and semiconductor plants outweighing population and efficiency reductions. Its FY2026 supply-plan summary also reports potentially tight balances in several areas from FY2028. National averages are not a candidate facility's contracted capacity or outage risk.",
+          "hpci_relevance_ja": "計算資源の供用期間と同じ年次で、地域別の供給力、接続工期、契約上限、非常時制約を比較する必要があります。",
+          "hpci_relevance_en": "Regional supply, connection schedule, contract limits, and emergency restrictions need comparison over the same years as the planned compute service.",
+          "adoption_conditions_ja": ["電力会社の接続検討回答と工事工程を候補地ごとに取得する。", "通常・厳気象・設備停止時の供給条件を分ける。", "設備増強時の追加電力を確保済み・申込済み・未申込に分ける。"],
+          "adoption_conditions_en": ["Obtain utility connection studies and construction schedules for each site.", "Separate normal, severe-weather, and equipment-outage supply conditions.", "Classify expansion power as contracted, requested, or not requested."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS221"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-METI-DC-GRID-LEADTIME",
+          "name_ja": "約5 GWのデータセンター需要増と10年超の接続例",
+          "name_en": "About 5 GW of data-center growth and grid connections exceeding ten years",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "今後10年間の政策・需要見通し",
+          "timing_en": "Policy and demand outlook over the next ten years",
+          "statement_ja": "経済産業省資料は、データセンター電力需要が今後10年間で約5 GW増加する見通しと、電力系統への接続に10年以上を要する事例を示し、脱炭素電源・電力インフラと通信インフラを整合して立地を誘導するワット・ビット連携を掲げます。これは個々の申込みが実現する保証でも、HPCIが同じ待ち時間になる証明でもありません。",
+          "statement_en": "METI material projects roughly 5 GW of additional data-center demand over ten years and reports grid-connection cases taking more than ten years. It promotes watt-bit coordination that aligns siting with decarbonized generation, electricity infrastructure, and communications. This neither guarantees that every requested project will proceed nor establishes the same delay for an HPCI site.",
+          "hpci_relevance_ja": "2030年前後に供用するシステムでは、計算機調達より前に受電・通信の実現可能性を確定しないと、装置納入と施設稼働がずれるおそれがあります。",
+          "hpci_relevance_en": "For systems entering service around 2030, power and communications feasibility may need commitment before compute procurement to avoid delivery preceding site readiness.",
+          "adoption_conditions_ja": ["接続完了日、初期容量、増強容量、工事費負担を契約資料で確認する。", "二経路受電、発電機、蓄電池、負荷制御の継続時間を評価する。", "電源立地と計算機立地を分ける場合の通信遅延・障害・費用を測定する。"],
+          "adoption_conditions_en": ["Verify connection date, initial and expansion capacity, and construction cost allocation in utility documents.", "Evaluate duration and coverage of dual feeds, generators, batteries, and load controls.", "Measure latency, failure, and cost when generation and compute locations differ."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS222"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-SITE-POWER-DECISION-GATE",
+          "name_ja": "設置候補地の電力・通信・供用時期ゲート",
+          "name_en": "Power, communications, and service-date gate for candidate sites",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "次期調達の基本設計・市場調査前",
+          "timing_en": "Before basic design and market research for the next procurement",
+          "statement_ja": "全国の需要見通しだけでは候補地を順位付けできません。候補地ごとに、確保済み受電容量、増強日、最大ラック密度、冷却・水、非化石電力、料金、通信経路、災害時運用、実験施設との距離を同じ証拠表で比較し、未回答を明示する必要があります。",
+          "statement_en": "National demand projections cannot rank candidate sites. Each site needs one evidence table covering contracted power, expansion date, rack density, cooling and water, non-fossil electricity, tariff, network routes, disaster operation, and proximity to instruments, with unanswered fields visible.",
+          "hpci_relevance_ja": "アーキテクチャ案ごとに必要電力・熱密度・ネットワークを候補地台帳へ接続し、設置できない案を早期に除外します。",
+          "hpci_relevance_en": "Link each architecture's power, heat-density, and network requirements to the site register so infeasible options are removed early.",
+          "adoption_conditions_ja": ["候補地情報を回答日・根拠・有効期限付きで管理する。", "初期構成と増設構成の双方で施設適合性を判定する。", "電力制約時の性能低下とジョブ影響を代表負荷で検証する。"],
+          "adoption_conditions_en": ["Manage candidate-site data with response date, evidence, and expiry.", "Test facility fit for both initial and expanded configurations.", "Measure performance and job effects under power constraints using representative workloads."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS221", "SRC-CDS222"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS221", "title": "業務紹介：2026年度 全国及び供給区域ごとの需要想定・供給計画", "publisher": "電力広域的運営推進機関", "url": "https://www.occto.or.jp/gyomusyokai/", "source_class": "official-project", "published_or_updated": "2026-08"},
+      "origin_group": "japan-power-demand-and-supply-outlook",
+      "checked_at": "2026-09-02T02:39:00+09:00",
+      "locator": "2026年1月需要想定、2026年3月供給計画、2028年度以降の複数地域",
+      "observation_ja": "2025～2035年度の需要増加率と、2028年度以降の複数地域における需給の厳しさを確認しました。",
+      "observation_en": "Verified FY2025-FY2035 demand growth rates and potentially tight balances in several areas from FY2028.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS222", "title": "データセンター集積型における課題と方向性", "publisher": "経済産業省", "url": "https://www.meti.go.jp/shingikai/sankoshin/shin_kijiku/pdf/030_01_00.pdf", "source_class": "official-project", "published_or_updated": "2026"},
+      "origin_group": "meti-data-center-cluster-power-grid",
+      "checked_at": "2026-09-02T02:40:00+09:00",
+      "locator": "今後10年間の約5 GW需要増、10年以上の系統接続例、ワット・ビット連携",
+      "observation_ja": "データセンターの需要増、系統接続期間、電力・通信を整合した立地方針を確認しました。",
+      "observation_en": "Verified projected data-center growth, grid-connection lead times, and coordinated power-communications siting policy.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-086は未解決です。HPCI候補地別の接続検討回答、確保電力、料金、停電、非化石電力、増強日、冷却・水・通信条件は未収集です。", "全国需要想定を個別HPCI施設の受電可能量へ配分する推測は行っていません。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-086 remains open. Site-specific utility studies, deliverable capacity, tariffs, outages, non-fossil supply, expansion dates, cooling, water, and networking are not collected.", "No attempt is made to allocate national demand forecasts to deliverable power at individual HPCI sites.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

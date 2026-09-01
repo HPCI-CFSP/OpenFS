@@ -1,0 +1,133 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000160",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T05:50:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "747422f6746d457044016f9292f3e709718327d5147b1c6d7c020d815932f210",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学『不老・弐』の公開キュー構成から、Type Iは通常最大20ノード、事前調整する特別キューで最大240ノード、Type IIは通常最大10ノード、特別キューでBeeGFS利用時32ノード・ローカルNVMe利用時42ノードまでを予定していることを確認しました。Type IIには1 GPU単位、1～4 GPU、MIG、対話・デバッグ、大規模実行の経路があります。全ノード数と一般ジョブが取得可能な規模は同じではなく、公開設定は利用開始後の待ち時間、優先度、公平性、実効稼働率を証明しません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The published Flow II queue layout plans normal Type-I jobs up to 20 nodes and a pre-arranged special queue up to 240 nodes; normal Type-II jobs up to 10 nodes, with special queues up to 32 nodes using BeeGFS or 42 nodes using node-local NVMe. Type II provides routes for one GPU, one to four GPUs, MIG, interactive and debug work, and large-scale execution. Installed node count is not the same as the scale available to an ordinary job, and published settings do not establish post-launch queues, priorities, fairness, or effective utilization. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "58facc2119538b376a7f7f62f9b39405a3bd607cce06a660f883f7dfd0c88fa9",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD8-SSW-06-U01",
+      "title_ja": "『不老・弐』の粒度別キューと利用可能規模",
+      "title_en": "Flow II queue granularity and accessible scale",
+      "summary_ja": "共有、単一ノード、中規模、大規模、MIG、対話実行を分け、設置台数と実際の利用可能量を区別します。",
+      "summary_en": "Separate shared, single-node, medium, large, MIG, and interactive modes and distinguish installed from accessible capacity.",
+      "items": [
+        {
+          "item_id": "TDI-CD8-FLOW2-QUEUE-SCALE",
+          "name_ja": "通常キューと事前調整型大規模キューの規模差",
+          "name_en": "Scale difference between normal and pre-arranged large queues",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点の公開設定",
+          "timing_en": "Planned start October 1, 2026; public configuration as of September 2",
+          "statement_ja": "Type Iの通常キューは単一ノードから最大20ノード、特別キューは問い合わせにより最大240ノードを予定します。Type IIの通常キューは最大10ノード・40 GPU、特別キューはBeeGFS利用で最大32ノード・128 GPU、ローカルNVMe利用で最大42ノード・168 GPUです。特別キューはアカウント、ノード数、予定時間を伝えて資源確保を調整する必要があります。",
+          "statement_en": "Normal Type-I queues range from a single node to 20 nodes, with a special queue planned up to 240 nodes after consultation. Normal Type-II queues reach 10 nodes and 40 GPUs; special queues reach 32 nodes and 128 GPUs with BeeGFS or 42 nodes and 168 GPUs with node-local NVMe. Special queues require contacting the center with account, node count, and planned duration to arrange capacity.",
+          "hpci_relevance_ja": "システム規模を需要へ対応付ける際は、全ノード数ではなく、通常・予約・全系利用で得られる同時規模、時間幅、頻度、他利用者への影響を使う必要があります。",
+          "hpci_relevance_en": "Capacity planning should use concurrent scale, duration, frequency, and displacement under normal, reserved, and near-whole-system use rather than total node count alone.",
+          "adoption_conditions_ja": [
+            "規模別に申請数、採択、待ち時間、実行時間、失敗、再予約、他ジョブへの影響を測る。",
+            "特別キューの審査基準、予約期限、公平性、障害時の補償を明示する。",
+            "BeeGFSとローカルNVMeで入力・出力ステージング時間と故障回復を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure requests, approvals, queues, runtime, failures, rebooking, and displacement by scale.",
+            "Publish special-queue review, reservation lead time, fairness, and failure compensation.",
+            "Compare staging time and failure recovery between BeeGFS and node-local NVMe."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD8-FLOW2-GPU-GRANULARITY",
+          "name_ja": "GPU単位共有・MIG・対話実行の小規模経路",
+          "name_en": "Small-scale routes through per-GPU sharing, MIG, and interactive execution",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点の公開設定",
+          "timing_en": "Planned start October 1, 2026; public configuration as of September 2",
+          "statement_ja": "Type IIは1 GPUを36 CPUコアと共有するキュー、1ノード4 GPU、MIGインスタンス、デバッグ・対話キューを掲載します。MIGキューは最長48時間、対話開発用は1時間です。Open OnDemandからターミナル、バッチ投入、JupyterLabを利用できます。公開設定だけでは、MIGのGPU資源分割、性能隔離、対応ライブラリ、データ隔離、待ち時間は分かりません。",
+          "statement_en": "Type II lists a shared route pairing one GPU with 36 CPU cores, full-node four-GPU use, MIG instances, and debug or interactive queues. MIG queues allow up to 48 hours and the interactive development queue one hour. Open OnDemand provides terminal, batch submission, and JupyterLab access. The published configuration does not establish MIG partition sizes, performance isolation, library support, data isolation, or queue delay.",
+          "hpci_relevance_ja": "初学者、開発、推論、小規模解析へ大規模ノードを効率よく分割できますが、分割効率と運用複雑性を全ノード専有と比較する必要があります。",
+          "hpci_relevance_en": "Partitioning can serve onboarding, development, inference, and small analysis efficiently, but partitioning efficiency and operational complexity need comparison with full-node use.",
+          "adoption_conditions_ja": [
+            "MIG構成別に利用可能メモリ、性能、対応ソフト、起動時間、分離性を測る。",
+            "対話・バッチ・MIGの優先度と課金が大規模学習の利用率へ与える影響を確認する。",
+            "Webセッション、Jupyter、コンテナ、ファイル、資格情報の終了・復旧・監査を検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure memory, performance, software support, startup time, and isolation for each MIG profile.",
+            "Check how interactive, batch, and MIG priorities and charging affect large-training utilization.",
+            "Validate termination, recovery, and audit for web sessions, Jupyter, containers, files, and credentials."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS163",
+        "title": "スーパーコンピュータシステム『不老・弐』",
+        "publisher": "名古屋大学 情報連携推進本部",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（導入中）"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T05:42:00+09:00",
+      "locator": "利用可能なリソースグループ：Type I/II通常・特別・MIG・デバッグ・対話キューとOpen OnDemand",
+      "observation_ja": "ノード・GPU粒度、最大規模、経過時間、NVMe/BeeGFS、特別キューの事前調整、MIG、Open OnDemandを確認しました。実際の待ち時間・利用率は未公表です。",
+      "observation_en": "Verified node and GPU granularity, maximum scale, wall time, NVMe/BeeGFS choices, pre-arranged special queues, MIG, and Open OnDemand. Actual queues and utilization are not published.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-015、GAP-TDS-062は未解決です。稼働開始後の待ち時間、稼働率、公平性、故障、MIG隔離、Open OnDemand運用を確認する必要があります。",
+    "公開キュー設定を保証SLAや実績として扱いません。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-015 and GAP-TDS-062 remain open; post-launch evidence is needed for queues, utilization, fairness, failures, MIG isolation, and Open OnDemand operation.",
+    "Published queue settings are not treated as an SLA or observed outcome.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

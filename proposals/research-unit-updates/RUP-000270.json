@@ -1,0 +1,173 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000270",
+  "topic_id": "APP-01",
+  "created_at": "2026-09-02T07:41:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000126",
+      "bundle_sha256": "03278a8d12e926582a7b4fc746bf401a439763013e2dee64a8604615a31bb598"
+    },
+    {
+      "update_id": "RUP-000142",
+      "bundle_sha256": "9caab3ed94ad95d2e376337b77c5407b4d2370ddd2d0e9ea185708becb68c409"
+    },
+    {
+      "update_id": "RUP-000153",
+      "bundle_sha256": "d83e2389bf2e17a7e4f92dce9a1170689c13d63fd2134692a3a09b256515ba8e"
+    },
+    {
+      "update_id": "RUP-000191",
+      "bundle_sha256": "64005d5e2a6d00f11b413d7d05c9aa1aceb6d28729b4b198116e5b549b3b7ceb"
+    },
+    {
+      "update_id": "RUP-000204",
+      "bundle_sha256": "fdb076c45696c453b3f0c7751846b33c773f6fc7150ef7b223d5e57b397b59c8"
+    },
+    {
+      "update_id": "RUP-000205",
+      "bundle_sha256": "4c5c3e77e30959e5487ed1676548eae708801bf5a35b7af8baaad3ffdb73dff0"
+    },
+    {
+      "update_id": "RUP-000206",
+      "bundle_sha256": "e401191050700943756025cc31bbe5ac68680b21c89d2129af307b384eb7854b"
+    },
+    {
+      "update_id": "RUP-000232",
+      "bundle_sha256": "32d39192ba4ff208c882734f4f79f1b9659714139db8d0e0654bcbdf7d026bc4"
+    },
+    {
+      "update_id": "RUP-000248",
+      "bundle_sha256": "60b06fc89479e65051675c3d2aea6edc3b741edc6e4cb9c7031d2fae2eb6284e"
+    }
+  ],
+  "before_profile_sha256": "d51d89476a2a92afad7d6fcf13aa8802b1a255e83ab2c6c7303370346f632a3a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "JHPCN FY2025報告は、TSMP2のMiyabi移植が未完了で、FY2026にOASIS3を使いeCLM(CPU)とParFlow(GPU)をMiyabi-Gで結合し、その後ICONをMiyabi-Cで加える計画、h3-Open-BDEC実装をFY2027としています。また、分子動力学をGPU、軌道中に密度汎関数計算をCPUで行う結合創薬ワークフローを報告しています。複合科学アプリの需要は単一ノード種で完結せず、カプラ、共同スケジュール、データ経路、段階移植を含みます。Consensusは未完了です。",
+  "summary_en": "The FY2025 JHPCN report says the TSMP2 port to Miyabi was incomplete. FY2026 plans couple eCLM on CPU with ParFlow on GPU through OASIS3 on Miyabi-G, then add ICON on Miyabi-C, with h3-Open-BDEC implementation scheduled for FY2027. It also reports a drug-discovery workflow coupling molecular dynamics on GPUs with in-operando density-functional calculations on CPUs. Composite scientific workloads require couplers, co-scheduling, data paths, and staged porting rather than one node type. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-01-U02",
+      "before_sha256": "d382e17715e0afba6ada25ae703537461b6599fa1e94cf6cde42d830bfe815c6",
+      "evidence_section_ids": [
+        "TDS-CD3-APP-01-U02",
+        "TDS-CD10-APP-01-U01",
+        "TDS-CD12-APP-01-U01-U02",
+        "TDS-CD15-APP-01-U01-U02",
+        "TDS-CD16-APP-01-FY2026B-DEMAND",
+        "TDS-CD17-APP-01-FY2026A-HPCI-DEMAND",
+        "TDS-CD18-APP-01-FY2026A-FUGAKU-AWARDS",
+        "TDS-CD56-APP-01-HETEROGENEOUS-COUPLED-WORKLOADS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD56-APP-01-HETEROGENEOUS-COUPLED-WORKLOADS",
+      "title_ja": "異種資源をまたぐ複合科学ワークロード",
+      "title_en": "Composite scientific workloads spanning heterogeneous resources",
+      "summary_ja": "移植工程と実行済み結合ワークフローを区別し、カプラとデータ経路を需要として扱います。",
+      "summary_en": "Separate porting plans from executed coupled workflows and treat couplers and data paths as demand.",
+      "items": [
+        {
+          "item_id": "TDI-CD77-TSMP2-MIYABI-PORT",
+          "name_ja": "TSMP2の段階的Miyabi移植計画",
+          "name_en": "Staged TSMP2 port to Miyabi",
+          "stage": "current",
+          "maturity": "announced",
+          "timing_ja": "FY2026予備検証、FY2027 h3-Open-BDEC実装予定",
+          "timing_en": "FY2026 preliminary validation; FY2027 h3-Open-BDEC planned",
+          "statement_ja": "ICON(大気)、ParFlow(地下水)、eCLM(陸面)からなるTSMP2はJUPITER向け移植が未完了で、Miyabiへの移植も完了していません。FY2026にOASIS3でeCLM(CPU)とParFlow(GPU)をMiyabi-G上で結合し、その後ICONをMiyabi-Cで加える予備検証、FY2027にh3-Open-BDEC実装を予定しています。工程表であり、完了・性能・科学妥当性の実績ではありません。",
+          "statement_en": "TSMP2 combines ICON for atmosphere, ParFlow for groundwater, and eCLM for land surface. Its JUPITER port and Miyabi port were incomplete. The plan is preliminary FY2026 validation of eCLM on CPU and ParFlow on GPU through OASIS3 on Miyabi-G, followed by ICON on Miyabi-C, and h3-Open-BDEC implementation in FY2027. This is a schedule, not evidence of completion, performance, or scientific validity.",
+          "hpci_relevance_ja": "複合モデルの移行計画では、各コンポーネントだけでなくカプラ版、時間同期、格子変換、同時資源確保、検証データをマイルストーンにする必要があります。",
+          "hpci_relevance_en": "Coupled-model migration should milestone coupler version, time synchronization, grid transformation, simultaneous resource allocation, and validation data in addition to components.",
+          "adoption_conditions_ja": [
+            "FY2026の二者結合、三者結合、FY2027実装を別ゲートにする。",
+            "各段階で科学差分、全体時間、待機、転送、失敗回復を測る。",
+            "予定日を実装完了日としてロードマップ表示しない。"
+          ],
+          "adoption_conditions_en": [
+            "Use separate gates for FY2026 two-way coupling, three-way coupling, and FY2027 implementation.",
+            "Measure scientific differences, end-to-end time, waits, transfer, and recovery at each gate.",
+            "Do not render planned dates as completed milestones."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD77-MD-DFT-COUPLING",
+          "name_ja": "GPU分子動力学とCPU密度汎関数計算のin-operando連携",
+          "name_en": "In-operando GPU molecular dynamics and CPU density-functional coupling",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "FY2025実績を2026年最終報告",
+          "timing_en": "FY2025 results in a 2026 final report",
+          "statement_ja": "Wisteria/BDEC-01上の創薬ワークフローはAquarius GPUで古典分子動力学を実行し、軌道からサンプルが生成される間にOdyssey CPUで密度汎関数計算を行い、統計的サンプリングと量子力学的詳細を組み合わせます。HIV-1プロテアーゼの3変異体を比較した結果が示されていますが、本文は追加時間を『minimal』と定性的に述べるだけで、資源数、待機、転送、絶対時間を示しません。",
+          "statement_en": "A Wisteria/BDEC-01 drug-discovery workflow runs classical molecular dynamics on Aquarius GPUs and density-functional calculations in operando on Odyssey CPUs as trajectory samples are generated, combining statistical sampling with quantum-mechanical detail. Results compare three HIV-1 protease variants, but the text describes added time only qualitatively as minimal and omits resource count, waits, transfer, and absolute time.",
+          "hpci_relevance_ja": "異種ノードの価値はピーク性能だけでなく、異なる理論手法を時間的に重ね、全体time-to-solutionと科学情報量を改善できるかで評価する必要があります。",
+          "hpci_relevance_en": "Heterogeneous nodes should be assessed by whether distinct theoretical methods can overlap to improve end-to-end time and scientific information, not peak performance alone.",
+          "adoption_conditions_ja": [
+            "MD/DFTコード版、入力、サンプル頻度、CPU/GPU数、データ量を固定する。",
+            "逐次実行との全体時間、待機、転送、科学差分を比較する。",
+            "『minimal』を定量的なオーバーヘッド値と扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin MD and DFT versions, input, sampling frequency, CPU/GPU count, and data volume.",
+            "Compare end-to-end time, waits, transfer, and scientific differences with sequential execution.",
+            "Do not treat 'minimal' as a quantified overhead."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS340",
+        "title": "Final Report for JHPCN Joint Research of FY 2025: Innovative Computational Science by Integration of Simulation/Data/Learning on Heterogeneous Supercomputers",
+        "publisher": "Joint Usage/Research Center for Interdisciplinary Large-scale Information Infrastructures (JHPCN)",
+        "url": "https://jhpcn-kyoten.itc.u-tokyo.ac.jp/download/final/jh250027.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "jhpcn-fy2025-sdl-final-report",
+      "checked_at": "2026-09-02T05:49:00+09:00",
+      "locator": "Pages 4-6: incomplete TSMP2 port and FY2026/FY2027 plan; coupled GPU molecular dynamics and CPU DFT workflow",
+      "observation_ja": "TSMP2の未完了状態と段階計画、GPU MD・CPU DFTの結合ワークフローを確認しました。",
+      "observation_en": "Verified the incomplete TSMP2 state and staged plan, and the coupled GPU-MD and CPU-DFT workflow.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "TSMP2の移植進捗、結合性能、科学検証、MD/DFTワークフローの定量オーバーヘッドは未公開です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "TSMP2 port progress, coupling performance, scientific validation, and quantitative MD/DFT workflow overhead are unpublished.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

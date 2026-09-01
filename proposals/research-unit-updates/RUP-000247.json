@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000247",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T07:38:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000141",
+      "bundle_sha256": "b6c46da9e4b70bbfe0f0cfb48435d1ab7c51e398fb32dd5eb55a98f2c6cb3bb6"
+    },
+    {
+      "update_id": "RUP-000147",
+      "bundle_sha256": "50d35e45f17c5bfcfb01122d8bc6da805e7e431028e4c604ffbc4c62c077acd3"
+    }
+  ],
+  "before_profile_sha256": "a08b6584041415addf9fbb1fae1257daf146f5a69a6a79564072b573bd3c63be",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI公式databaseのmachine learning分類では、available flag付き登録がPyTorch 16資源、TensorFlow 15、Keras 10、Horovod 6、MLflow 3でした。framework名の広い登録に対し、accelerator backend、distributed training、experiment tracking、serving、version lifecycleの情報は一様ではありません。AI for Science readinessはframework名ではなく、代表modelを用いたend-to-end実行と再現性で評価します。Consensusは未完了です。",
+  "summary_en": "In the HPCI official machine-learning category, registrations carrying the available flag span 16 resources for PyTorch, 15 for TensorFlow, ten for Keras, six for Horovod, and three for MLflow. Broad framework-name registration does not provide uniform accelerator backends, distributed training, experiment tracking, serving, or version lifecycle information. AI-for-Science readiness should be evaluated through reproducible end-to-end execution of representative models. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U01",
+      "before_sha256": "9476797e80960113c1a391ea3c23d0a0fb9ae2646a12c4bd4c3d36f9a50746c3",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-09-U01",
+        "TDS-CD7-SSW-09-U01",
+        "TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS",
+      "title_ja": "HPCI資源のAI framework登録状況",
+      "title_en": "AI framework registrations across HPCI resources",
+      "summary_ja": "frameworkの名前ではなく、backend・分散・再現性・lifecycleをreadinessとして評価します。",
+      "summary_en": "Evaluate backend, distribution, reproducibility, and lifecycle readiness rather than framework names alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD54-HPCI-AI-FRAMEWORK-COVERAGE",
+          "name_ja": "PyTorch/TensorFlowは広く登録、運用機能は限定的に可視化",
+          "name_en": "PyTorch/TensorFlow registration is broad but operational capabilities are sparsely visible",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日取得",
+          "timing_en": "Retrieved September 2, 2026",
+          "statement_ja": "available flag付き登録はPyTorch 16資源、TensorFlow 15、Keras 10、Horovod 6、MLflow 3でした。PyTorch/TensorFlowはCPU-onlyを含む多数資源に登録されますが、CUDA/ROCm、GPU数、distributed backend、container、dataset access、experiment tracking、servingを一括して示すfieldはありません。Chainer、Theano、MXNet等も残り、lifecycle情報も必要です。",
+          "statement_en": "Registrations carrying the available flag span 16 resources for PyTorch, 15 for TensorFlow, ten for Keras, six for Horovod, and three for MLflow. PyTorch and TensorFlow appear on many resources including CPU-only systems, but no single field establishes CUDA/ROCm backend, GPU scale, distributed backend, containers, dataset access, experiment tracking, or serving. Chainer, Theano, and MXNet also remain, making lifecycle status necessary.",
+          "hpci_relevance_ja": "AI向けsystemの利用可能性はGPU台数ではなく、framework/backend/versionとdata・scheduler・monitoringを含むend-to-end stackで判定すべきです。",
+          "hpci_relevance_en": "AI-system usability should be judged by the end-to-end stack of framework, backend, version, data, scheduler, and monitoring rather than GPU count.",
+          "adoption_conditions_ja": [
+            "代表training/inference workflowをCPU、NVIDIA、AMDで継続testする。",
+            "framework、driver、runtime、collective、container imageをversion lockする。",
+            "deprecated/maintenance/currentのlifecycle状態を表示する。",
+            "dataset throughput、checkpoint、failure recoveryをreadinessへ含める。"
+          ],
+          "adoption_conditions_en": [
+            "Continuously test representative training and inference workflows on CPU, NVIDIA, and AMD resources.",
+            "Version-lock frameworks, drivers, runtimes, collectives, and container images.",
+            "Display deprecated, maintenance, and current lifecycle states.",
+            "Include dataset throughput, checkpointing, and failure recovery in readiness."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS335"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS335",
+        "title": "HPCI software database: machine learning category",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/softwareLoader.cgi?lang=ja&cls=sscl0180",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-machine-learning",
+      "checked_at": "2026-09-02T04:13:00+09:00",
+      "locator": "machine-learning software_array and active resource registrations",
+      "observation_ja": "machine learning分類16 entryからavailable flag付きsoftwareと資源対応を集計しました。",
+      "observation_en": "Aggregated software and resource mappings carrying the available flag from 16 machine-learning entries.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS331",
+        "title": "HPCI software database constants and interface notices",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/loadConstants.cgi?lang=ja",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-interface-metadata",
+      "checked_at": "2026-09-02T04:14:00+09:00",
+      "locator": "freshness warning",
+      "observation_ja": "databaseが最新でない場合があるという注意を確認しました。",
+      "observation_en": "Verified the warning that database information may not be current.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "framework別の実version、backend、multi-node scale、性能、failure recoveryは未確認です。",
+    "vLLM、llama.cpp等のserving対応はこの分類から確認できませんでした。",
+    "独立model Consensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Actual versions, backends, multi-node scale, performance, and failure recovery by framework remain unverified.",
+    "Serving support such as vLLM and llama.cpp could not be established from this category.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

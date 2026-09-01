@@ -1,0 +1,190 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000167",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:05:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "f863cbc029f14bb79645703dd3ee93662000b2a9490293a9215c438f732ca313",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳年報2024から、平均稼働率99.9%、利用率90.7%、計画保守11.3日、障害等による停止0.0日を確認しました。一方、富岳NEXTが予定される2030年まで保守が保証された周辺機器はなく、ボタン電池、ファン、PSU、AOCケーブル等の確保と交換が必要です。FEFSと新ストレージの試験は良好でも超大規模検証は未実施です。24時間監視と施設保守を含め、可用性、利用率、部品寿命、移行試験を一体で計画する必要があります。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Fugaku Annual Report 2024 records 99.9% average availability, 90.7% utilization, 11.3 days of scheduled maintenance, and 0.0 days of outage from failures. Yet no peripheral device had support guaranteed through the planned 2030 FugakuNEXT transition; button batteries, fans, PSUs, and active optical cables require replacement or spares. FEFS testing with newer storage was positive but not performed at Fugaku scale. Availability, utilization, component life, migration testing, and 24-hour facility operations must be planned together. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "16dfe2a232f7e2a73eb8494ab7d406b2aebb59e76f904fa89b2eb03a08700043",
+      "evidence_section_ids": ["TDS-CD2-ARCH-10-U01", "TDS-CD3-ARCH-10-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-ARCH-10-U01",
+      "title_ja": "富岳の高稼働実績と2030年までの長期運用リスク",
+      "title_en": "Fugaku operating record and long-term risks through 2030",
+      "summary_ja": "可用性、利用率、計画停止、保守期限、部品、ファイルシステム移行、運用要員を分けて評価します。",
+      "summary_en": "Evaluate availability, utilization, planned outage, support horizon, parts, file-system migration, and staffing separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-FUGAKU-2024-AVAILABILITY-UTILIZATION",
+          "name_ja": "99.9%稼働率と90.7%利用率の分離",
+          "name_en": "Separation of 99.9% availability and 90.7% utilization",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年度実績",
+          "timing_en": "FY2024 observation",
+          "statement_ja": "富岳は2024年度の平均稼働率99.9%、利用率90.7%を報告しています。計画保守は11.3日、障害等によるシステム停止は0.0日で、2022年度の落雷停止2件以降、2024年度まで重大障害はないとしています。稼働率と利用率は異なる指標で、計画保守を含む利用不能時間、空き時間、ジョブ充填、ノード縮退を同じ値として扱えません。",
+          "statement_en": "Fugaku reports 99.9% average availability and 90.7% utilization in FY2024, with 11.3 days of scheduled maintenance and 0.0 days of system outage from failures. It reports no major failures through FY2024 after two lightning-related outages in FY2022. Availability and utilization are different metrics; scheduled unavailability, idle time, job fill, and degraded-node operation cannot be treated as one value.",
+          "hpci_relevance_ja": "候補構成はピーク性能に可用率を一律乗算するのではなく、計画停止、障害、縮退、待ち時間、実際のジョブ充填を用いた年間有効計算量で比較する必要があります。",
+          "hpci_relevance_en": "Candidates should be compared by annual useful work using scheduled outages, failures, degradation, queues, and actual job fill, not peak performance times one availability factor.",
+          "adoption_conditions_ja": [
+            "稼働率、利用率、計画停止、障害停止、ノード縮退、ジョブ失敗を共通定義で公開する。",
+            "障害領域、平均修復時間、再実行ノード時間、チェックポイント回復を追跡する。",
+            "高利用率が待ち時間や緊急処理SLOへ与える影響を同時に測る。"
+          ],
+          "adoption_conditions_en": [
+            "Publish common definitions for availability, utilization, planned and failure outage, degraded nodes, and job failure.",
+            "Track failure domains, repair time, rerun node-hours, and checkpoint recovery.",
+            "Measure the effect of high utilization on queues and urgent-workload SLOs."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS173"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FUGAKU-2030-SPARES-SUPPORT",
+          "name_ja": "2030年までの部品確保と周辺機器保守期限",
+          "name_en": "Spares and peripheral-support horizon through 2030",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年度調査、2025年度以降対応予定",
+          "timing_en": "FY2024 assessment with action planned from FY2025",
+          "statement_ja": "2019年から設置された富岳と周辺機器は一般的な5年保証を超え、2030年まで保守サポートが保証される周辺機器は存在しないと年報は報告しています。本体ではボタン電池、ファン、PSU、AOCケーブル等について交換または保守部品確保が必要です。リストアップと必要数量の検討は、交換完了や故障率低下を意味しません。",
+          "statement_en": "Fugaku and its peripherals, installed from 2019, have passed a typical five-year warranty, and the report states that no peripheral device had support guaranteed through 2030. Button batteries, fans, PSUs, and active optical cables require replacement or spare acquisition. Identifying items and quantities does not establish completed replacement or reduced failure risk.",
+          "hpci_relevance_ja": "調達時点で保守期間、最終購入、予備品、互換部品、ファームウェア、技術者、廃棄・移行を契約しないと、次世代機までの橋渡し費用と停止リスクが後から増えます。",
+          "hpci_relevance_en": "Without contractual support horizon, last-buy, spares, compatible parts, firmware, engineers, disposal, and migration, bridge cost and outage risk rise before the successor arrives.",
+          "adoption_conditions_ja": [
+            "部品ごとに故障率、在庫、保管寿命、交換時間、供給終了、代替認定を管理する。",
+            "本体、ネットワーク、ストレージ、管理サーバ、冷却・電源の最短保守期限を構成案へ表示する。",
+            "後継機遅延を想定した1年・2年延命費用と性能・安全リスクを契約前に評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Manage failure rate, inventory, shelf life, replacement time, end of supply, and alternative qualification per part.",
+            "Show the earliest support end across compute, network, storage, management, cooling, and power in each option.",
+            "Evaluate one- and two-year life-extension cost, performance, and safety risk before contracting."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS174"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FUGAKU-FEFS-SCALE-VALIDATION",
+          "name_ja": "FEFS移行試験と超大規模検証の未実施",
+          "name_en": "FEFS migration tests without full-scale validation",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2024年度試験",
+          "timing_en": "FY2024 testing",
+          "statement_ja": "最新ストレージ装置とFEFSの組合せは製品出荷時相当の試験で良好な結果と報告されていますが、富岳の超大規模システムとしての検証は未実施です。小規模・機能試験の成功を、全ノード・全容量・障害時の移行成立と解釈できません。",
+          "statement_en": "A newer storage system with FEFS produced positive results in testing comparable to product shipment tests, but validation at Fugaku's extreme scale had not been performed. Successful functional or smaller-scale tests do not establish migration across all nodes and capacity or under failures.",
+          "hpci_relevance_ja": "世代更新では、互換性確認、性能試験、障害注入、全量コピー、整合性検証、ロールバックを段階的に行い、旧系を停止する条件を事前に定める必要があります。",
+          "hpci_relevance_en": "Generation migration needs staged compatibility, performance, fault injection, full-copy, integrity, and rollback tests with predefined criteria for retiring the old system.",
+          "adoption_conditions_ja": [
+            "メタデータ量、ファイル分布、同時I/O、容量充填率、障害中の挙動を本番相当で試験する。",
+            "データ全量の転送時間、検証時間、二重運用期間、追加容量を見積もる。",
+            "試験合格条件と未達時のロールバック・利用者通知を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Test metadata scale, file distribution, concurrent I/O, fill level, and fault behavior at production-representative scale.",
+            "Estimate full transfer, verification, overlap period, and extra capacity.",
+            "Define acceptance and rollback or user-notification procedures for failed tests."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS174"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FUGAKU-24H-FACILITY-STAFFING",
+          "name_ja": "24時間施設監視を含む運用要員",
+          "name_en": "Operations staffing including 24-hour facility monitoring",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2024年度運用",
+          "timing_en": "FY2024 operation",
+          "statement_ja": "施設管理は24時間体制で、中央監視室に常時2名以上、日勤者は平日7名・休日1名を配置し、巡回、薬液、フィルター、水質等を管理しています。これは計算機運用・ヘルプデスク・開発者を含む総人員ではなく、施設運転監視の一部です。",
+          "statement_en": "Facility management operates around the clock, with at least two people continuously in the central control room and seven daytime staff on weekdays or one on holidays for inspection, chemicals, filters, water quality, and related work. This is one facility-operations component, not total staffing for system operation, help desk, or development.",
+          "hpci_relevance_ja": "高密度液冷システムは機器費だけでなく、24時間監視、資格者、予防保守、薬液・水質、予備品、緊急対応の人員費を必要とします。",
+          "hpci_relevance_en": "Dense liquid-cooled systems require staffing for 24-hour monitoring, qualified operators, preventive maintenance, water and chemicals, spares, and emergencies in addition to equipment cost.",
+          "adoption_conditions_ja": [
+            "施設、計算機、ネットワーク、ストレージ、セキュリティ、支援の役割別FTEと当直を見積もる。",
+            "自動化後も残る承認、現地作業、安全、障害対応を確認する。",
+            "外部委託とセンター要員の責任、教育、交代要員、長期継続費を契約に含める。"
+          ],
+          "adoption_conditions_en": [
+            "Estimate FTEs and shifts by facility, compute, network, storage, security, and support role.",
+            "Identify approvals, onsite work, safety, and incident response that remain after automation.",
+            "Include responsibility, training, backup personnel, and recurring cost for contractors and center staff."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS175"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS173", "title": "富岳年報2024 2-1 稼働状況", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/1/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-operations",
+      "checked_at": "2026-09-02T07:02:00+09:00",
+      "locator": "年度平均稼働率・利用率、計画保守、障害停止、重大障害",
+      "observation_ja": "99.9%稼働率、90.7%利用率、計画保守11.3日、障害停止0.0日を確認し、指標を分離しました。",
+      "observation_en": "Verified 99.9% availability, 90.7% utilization, 11.3 scheduled-maintenance days, and 0.0 failure-outage days and kept the metrics separate.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS174", "title": "富岳年報2024 2-3 運用の高度化に向けた取り組み", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/3/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-lifecycle",
+      "checked_at": "2026-09-02T07:03:00+09:00",
+      "locator": "長期間運用対策：保証、保守終了、交換部品、FEFS検証、2030年",
+      "observation_ja": "周辺機器の2030年保守保証なし、交換・確保対象部品、FEFS試験と超大規模検証未実施を確認しました。",
+      "observation_en": "Verified the lack of peripheral support guaranteed through 2030, parts requiring replacement or acquisition, FEFS testing, and missing extreme-scale validation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS175", "title": "富岳年報2024 2-2 施設管理", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/2/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-facility",
+      "checked_at": "2026-09-02T07:04:00+09:00",
+      "locator": "24時間監視、中央監視室・日勤配置、設備保守、省エネルギー",
+      "observation_ja": "中央監視室常時2名以上、日勤平日7名・休日1名の施設運用体制を確認しました。総運用人員とは扱っていません。",
+      "observation_en": "Verified at least two continuous control-room staff and seven weekday or one holiday daytime facility staff. This was not treated as total operations staffing.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-077は未解決です。候補構成間で障害領域、修復時間、部品寿命、保守期限、有効計算量、費用を同条件比較する必要があります。",
+    "2025年度以降の部品確保・交換実績、FEFS超大規模試験、富岳NEXT遅延時の延命計画は未確認です。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-077 remains open; candidate configurations need comparable failure domains, repair time, part life, support horizon, useful work, and cost.",
+    "Parts acquisition and replacement from FY2025 onward, extreme-scale FEFS testing, and life extension after any FugakuNEXT delay remain unverified.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

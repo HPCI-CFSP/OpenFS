@@ -1,0 +1,103 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000178",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T06:20:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [{"update_id": "RUP-000133", "bundle_sha256": "b559fd03c2cb1b8d18f47441c5673fb9619cfb32c4588591f8bfc0c358064d40"}],
+  "before_profile_sha256": "dff3a3a9199335973b7d36d952c5de96eb60333ea4a842a695a0e955455e7f42",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "J-PARC MLFの公式資料から、イベントデータを最低2年間保持するストレージ、0.5 PBから2 PBへの拡張、リアルタイム解析CPU、クラウド型遠隔解析、高速ネットワーク、国内データ基盤との共有を含む整備構想を追加しました。2017年度報告ではAWS S3、IAM、Web分析、10台・640コアのEC2クラスタ、Docker Swarmによる試験実装も確認できます。ただし2023年資料は整備中で、実線の予算化済み部分と破線の将来部分を区別しています。現在の本番容量・遅延・可用性・利用件数は未確認です。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Official J-PARC MLF material adds an infrastructure concept covering at least two years of event-data retention, expansion from 0.5 PB to 2 PB, real-time analysis CPUs, cloud-enabled remote analysis, high-throughput networking, and sharing through a domestic data infrastructure. A FY2017 report also documents a test implementation using AWS S3, IAM, web analysis, ten EC2 analysis servers with 640 cores, and Docker Swarm. The 2023 material is explicitly under implementation and distinguishes funded solid lines from future dashed lines. Current production capacity, latency, availability, and usage remain unverified. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "3daf1dc691c08ca66cd9ebab2f1bd672996555046d61288ef75e2dcef2f4094e",
+      "evidence_section_ids": ["TDS-CD1-APP-14-U01", "TDS-CD2-APP-14-U01", "TDS-CD3-APP-14-U01", "TDS-CD10-APP-14-U01", "TDS-CD11-APP-14-JPARC-MLF"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-APP-14-JPARC-MLF",
+      "title_ja": "J-PARC MLFの実験データ処理・遠隔解析基盤",
+      "title_en": "Experimental-data processing and remote analysis at J-PARC MLF",
+      "summary_ja": "予算化済み構成、将来構想、過去の試験実装を分け、HPCI連携に必要な測定値を整理します。",
+      "summary_en": "Separate funded components, future concepts, and historical prototypes, then identify measurements needed for HPCI integration.",
+      "items": [
+        {
+          "item_id": "TDI-CD11-JPARC-MLF-DATA-INFRASTRUCTURE",
+          "name_ja": "イベントデータ保持・リアルタイム解析・遠隔利用の一体構想",
+          "name_en": "Integrated event retention, real-time analysis, and remote access concept",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2023年3月時点で整備中",
+          "timing_en": "Under implementation as of March 2023",
+          "statement_ja": "J-PARC利用者協議会資料は、ビームラインからのイベントデータを最低2年間即時利用できるストレージ、0.5 PBから2 PBへの拡張、リアルタイム解析CPU、クラウド対応遠隔解析、高速ネットワーク、国内データ基盤を介した共有を一つの構成図で示します。実線は予算化済み、破線は将来とされるため、図中の全機能が本番提供済みとは扱えません。",
+          "statement_en": "A J-PARC Users Association document shows one architecture connecting beamline event data, storage retaining at least two years for immediate use, expansion from 0.5 PB to 2 PB, real-time analysis CPUs, cloud-enabled remote analysis, high-throughput networking, and sharing through domestic data infrastructure. Solid lines are funded and dashed lines are future, so the diagram does not establish production availability for every function.",
+          "hpci_relevance_ja": "実験施設連携ノードでは、GPU・CPU性能だけでなく、イベント保持期間、入力率、解析期限、再処理、ネットワーク、権限、外部クラウド境界を仕様化します。",
+          "hpci_relevance_en": "Instrument-integrated nodes need specifications for event retention, ingest rate, analysis deadline, reprocessing, networking, authorization, and cloud boundaries in addition to CPU/GPU performance.",
+          "adoption_conditions_ja": ["実線・破線ごとに稼働開始日、容量、責任主体を確認する。", "装置別の平均・ピーク入力率、許容欠損、解析期限、再処理量を測定する。", "研究・産業利用の認証、持出し、保管、削除、クラウド転送方針を定める。"],
+          "adoption_conditions_en": ["Verify production dates, capacities, and owners for solid- and dashed-line components.", "Measure per-instrument average and peak ingest, tolerated loss, deadlines, and reprocessing volume.", "Define identity, export, retention, deletion, and cloud-transfer policies for academic and industrial use."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS211"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-JPARC-MLF-CLOUD-PROTOTYPE",
+          "name_ja": "AWSを用いた遠隔データ配布・Web解析の試験実装",
+          "name_en": "AWS prototype for remote data delivery and web analysis",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "MLF Annual Report 2017の試験",
+          "timing_en": "Prototype reported in MLF Annual Report 2017",
+          "statement_ja": "MLFの2017年度報告は、実験メタデータカタログから選んだデータをAWS S3へ転送し、IAMとワンタイムパスワードで利用者を制御する配布機能、ブラウザ解析基盤、EC2上の分析サーバ10台・640コアとDocker Swarmによる負荷分散試験を記載しています。実装経験の根拠にはなりますが、現在の本番サービス、規模、費用、セキュリティ承認を証明しません。",
+          "statement_en": "The FY2017 MLF report documents delivery of catalog-selected experimental data to AWS S3 with IAM and one-time-password access, a browser analysis framework, and load tests using ten EC2 analysis servers totaling 640 cores under Docker Swarm. This establishes implementation experience, not current production service, scale, cost, or security approval.",
+          "hpci_relevance_ja": "クラウド・HPCI・施設内計算を同じワークフローで比較する際は、データ複製時間、外部転送費、認証、ソフトウェア再現性、利用終了時削除を含めます。",
+          "hpci_relevance_en": "Comparisons across cloud, HPCI, and facility compute should include replication time, egress cost, identity, software reproducibility, and deletion at project closure.",
+          "adoption_conditions_ja": ["試験環境と現在の本番環境を区別する。", "データ量・同時利用者数・処理時間・失敗・費用を公開条件で再測定する。", "コンテナイメージ、解析コード、入力、出力、権限変更を来歴として保存する。"],
+          "adoption_conditions_en": ["Distinguish historical tests from current production.", "Remeasure data volume, concurrent users, processing time, failures, and cost under publishable conditions.", "Preserve image, code, input, output, and authorization changes as provenance."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS212"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS211", "title": "Data handling infrastructure (under implementation)", "publisher": "J-PARC Users Association", "url": "https://j-parc.jp/documents/pdf/uc/uc230308_No41s.pdf", "source_class": "official-project", "published_or_updated": "2023-03-08"},
+      "origin_group": "jparc-mlf-data-infrastructure",
+      "checked_at": "2026-09-02T02:40:00+09:00",
+      "locator": "MLF data-handling architecture; funded and future links; event storage; analysis; cloud",
+      "observation_ja": "最低2年保持、0.5 PBから2 PB、リアルタイム解析、遠隔解析、国内共有と、実線・破線の区別を確認しました。",
+      "observation_en": "Verified at least two years of retention, 0.5-to-2-PB expansion, real-time and remote analysis, domestic sharing, and solid/dashed status distinctions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS212", "title": "MLF Annual Report 2017: Development of a Remote Data Access Based on the Cloud Environment", "publisher": "J-PARC Center", "url": "https://j-parc.jp/researcher/MatLife/ja/publication/files/MLF-AR_2017.pdf", "source_class": "official-project", "published_or_updated": "2017"},
+      "origin_group": "jparc-mlf-remote-analysis",
+      "checked_at": "2026-09-02T02:42:00+09:00",
+      "locator": "AWS S3 data delivery, IAM/OTP, Nokiba/Shigure web analysis, EC2 and Docker Swarm load test",
+      "observation_ja": "クラウド遠隔配布・分析の実装と10台・640コアの試験構成を確認しました。",
+      "observation_en": "Verified the cloud delivery and analysis implementation and the ten-server, 640-core test configuration.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-074は未解決です。J-PARC MLFの2026年時点の本番容量、入力率、解析期限、可用性、利用者数、外部転送、費用、セキュリティ境界を確認する必要があります。", "ビームライン・実験種別ごとの代表負荷と、SPring-8等との同じ形式による比較は未実施です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-074 remains open. Current J-PARC MLF production capacity, ingest, deadlines, availability, users, transfer, cost, and security boundaries require verification.", "Representative workloads by beamline and experiment type and a matched comparison with SPring-8 and other facilities remain undone.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

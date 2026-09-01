@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000145",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T02:00:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000132", "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"},
+    {"update_id": "RUP-000140", "bundle_sha256": "71a190ed95189126bab43edcee3b29629a0ad6a366f658387ebf055b9cbe0aed"}
+  ],
+  "before_profile_sha256": "4000b0b57d8d09c985bac19570f34ec574660891975a21a8f48e67f362de6544",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省のAI for Science計算資源増強資料から、東京大学のVera-Rubin主案、九州大学の玄界-D計画、筑波大学Siriusの現行構成と増設案を比較可能な形で追加しました。計画、稼働実績、自己資金による構成、代替案を分け、補助金総額を部品単価へ分解しません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds comparable system configurations from MEXT AI-for-Science resource materials: the University of Tokyo's primary Vera-Rubin plan, Kyushu University's Genkai-D plan, and the current and expanded Sirius configuration at the University of Tsukuba. Plans, operating evidence, self-funded components, and alternatives are separated, and total subsidies are not decomposed into component unit prices. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "d34b7107991ab931ff931467f696bfd91c034e93c706940d9941ea493e42da70",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U01", "TDS-HW3-ARCH-05-U01", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01", "TDS-CD12-ARCH-05-U01-U02"]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "7d094e2c319fda07a26489517b036e70faf71065dfdf7ca4fa3b7e881b641f07",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U02", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01", "TDS-CD12-ARCH-05-U01-U02"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD12-ARCH-05-U01-U02",
+      "title_ja": "国内AI for Science計算資源の構成比較",
+      "title_en": "Configuration comparison of Japanese AI-for-Science resources",
+      "summary_ja": "GPU数だけでなく、CPU、メモリ、ネットワーク、ストレージ、サービス期間、代替案を一つの構成として比較します。",
+      "summary_en": "Compare CPU, memory, network, storage, service horizon, and alternatives as one system rather than ranking GPU counts alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD12-UTOKYO-SDLI-CONFIG",
+          "name_ja": "東京大学「計算・データ・学習・推論」融合基盤の主案と代替案",
+          "name_en": "University of Tokyo SDLI primary and fallback configurations",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "FY2026納入、2027年6月提供開始を予定",
+          "timing_en": "Delivery planned in FY2026 and service from June 2027",
+          "statement_ja": "東京大学は主案としてNVIDIA Vera-Rubin NVL4を180ノード・720 GPU、汎用CPUを16ノード・約6,000コア、GPU当たり400 Gbps、外部接続合計800 Gbps、自己資金のNVMe SSD 2 PBで構成する計画を示します。資料上の主案はAI FP4 25 EFLOPS、メモリ207.3 TB、帯域15.8 PB/sです。代替案はGB200を240ノード・960 GPUとし、倍精度は同等の140 PFLOPSとする一方、AI FP4 9.6 EFLOPS、メモリ165.8 TB、帯域6.9 PB/s、Confidential Computing非対応と記載します。製品、台数、性能は調達前の計画です。",
+          "statement_en": "The University of Tokyo's primary plan specifies 180 NVIDIA Vera-Rubin NVL4 nodes with 720 GPUs, 16 general-purpose CPU nodes with about 6,000 cores, 400 Gbps per GPU, 800 Gbps aggregate external connectivity, and 2 PB of self-funded NVMe SSD. The material lists 25 EFLOPS of AI FP4, 207.3 TB of memory, and 15.8 PB/s of bandwidth for the primary plan. A fallback uses 240 GB200 nodes with 960 GPUs, the same stated 140 PFLOPS double-precision figure, but 9.6 EFLOPS AI FP4, 165.8 TB, 6.9 PB/s, and no confidential-computing support. Products, quantities, and performance remain pre-procurement plans.",
+          "hpci_relevance_ja": "GPU数だけでなくメモリ帯域、機密計算、既存の26 PB・100 PB級ストレージとの接続、主案が調達できない場合のサービス差を受入条件にする必要があります。",
+          "hpci_relevance_en": "Acceptance criteria must cover memory bandwidth, confidential computing, links to existing 26-PB and 100-PB-class storage, and service differences if the primary configuration cannot be procured, not GPU count alone.",
+          "adoption_conditions_ja": [
+            "入札仕様、落札構成、実測性能、消費電力、納入日を計画値と照合する。",
+            "主案・代替案で同じアプリケーション、精度、データ経路、セキュリティを比較する。",
+            "36.3億円の補助金総額からGPUやストレージの単価を逆算しない。"
+          ],
+          "adoption_conditions_en": [
+            "Reconcile tender specifications, awarded configuration, measured performance, power, and delivery with the plan.",
+            "Compare primary and fallback on matched applications, precision, data paths, and security.",
+            "Do not infer GPU or storage unit prices from the JPY 3.63-billion total subsidy."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS138"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-KYUSHU-GENKAI-D-CONFIG",
+          "name_ja": "九州大学の玄界-D推論・学習増強計画",
+          "name_en": "Kyushu University Genkai-D inference and training expansion",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年6月30日時点の整備計画",
+          "timing_en": "Plan presented June 30, 2026",
+          "statement_ja": "九州大学は既存の玄界にNVIDIA GB300 NVL72を2基、計144 GPU・72 CPU、GPUメモリ40 TB、CPUメモリ34 TB、FP4 2,880 PFLOPSの玄界-Dを接続し、0.7 PBの高速SSDと既存55.2 PB HDDを組み合わせる案を示します。既存玄界はCPU 1,024ノード、GPU 38ノード・各4 GPUで、全体をInfiniBand NDR 200/400 Gbpsで接続します。これは整備計画であり、納入・稼働・実測性能の確認ではありません。",
+          "statement_en": "Kyushu University proposes attaching two NVIDIA GB300 NVL72 systems to the existing Genkai platform, totaling 144 GPUs and 72 CPUs, 40 TB of GPU memory, 34 TB of CPU memory, and a stated 2,880 PFLOPS of FP4, with 0.7 PB of fast SSD plus the existing 55.2-PB HDD system. Existing Genkai has 1,024 CPU nodes and 38 GPU nodes with four GPUs each, connected using InfiniBand NDR at 200/400 Gbps. This is a system plan, not evidence of delivery, operation, or measured performance.",
+          "hpci_relevance_ja": "推論重視区画を既存HPC・学習資源へ接続する構成として、異なる世代のGPU、ストレージ、バッチと常駐サービスの資源競合を評価できます。",
+          "hpci_relevance_en": "This provides a test case for connecting an inference-oriented partition to existing HPC and training resources, including contention across GPU generations, storage, batch jobs, and persistent services.",
+          "adoption_conditions_ja": [
+            "調達後の型番、GPU数、メモリ、相互接続、ストレージ、電力を再確認する。",
+            "既存玄界と玄界-Dをまたぐ転送時間、ジョブ依存、障害復旧を測定する。",
+            "FP4ピークではなく代表的な学習・推論・科学計算の全体時間で評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Recheck awarded model, GPU count, memory, interconnect, storage, and power after procurement.",
+            "Measure transfer, job dependencies, and failure recovery across existing Genkai and Genkai-D.",
+            "Evaluate end-to-end representative training, inference, and science rather than FP4 peak alone."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS139"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-TSUKUBA-SIRIUS-CONFIG",
+          "name_ja": "筑波大学Siriusの現行構成とFY2026増設",
+          "name_en": "Current Sirius configuration and FY2026 expansion at Tsukuba",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月運用開始、FY2026に9ノード増設予定",
+          "timing_en": "Operating since March 2026; nine-node expansion planned in FY2026",
+          "statement_ja": "筑波大学資料はSiriusを2026年3月から24ノードで運用し、FY2026に9ノードを加えて33ノードへ拡張する計画を示します。各ノードはAMD MI300A APU 4基、PCIe 5.0 NVMe SSD 3.84 TBを4基、InfiniBand NDR 400 Gbpsを4系統備え、増設後はFP64 16.4 PFLOPS、FP8 259 PFLOPS、HBM3 16.5 TiBとする計画です。24ノードの運用開始と33ノードの将来構成を分けます。",
+          "statement_en": "The University of Tsukuba material states that Sirius began operation with 24 nodes in March 2026 and plans nine additional nodes for 33 total in FY2026. Each node has four AMD MI300A APUs, four 3.84-TB PCIe 5.0 NVMe SSDs, and four 400-Gbps InfiniBand NDR links; the expanded configuration is listed at 16.4 PFLOPS FP64, 259 PFLOPS FP8, and 16.5 TiB HBM3. The 24-node launch and planned 33-node configuration are kept distinct.",
+          "hpci_relevance_ja": "CPU・GPU統合メモリ、ノード内NVMe、複数NDRリンクを備える比較的小規模区画として、アプリケーション移植とAI・HPC混在運用を早期に検証できます。",
+          "hpci_relevance_en": "As a relatively small partition combining unified CPU/GPU memory, node-local NVMe, and multiple NDR links, Sirius can support early application-porting and mixed AI/HPC operational studies.",
+          "adoption_conditions_ja": [
+            "24ノードと33ノードの測定値、利用可能資源、増設完了日を混同しない。",
+            "MI300Aの統合メモリ効果をデータ配置、NUMA、I/Oを含む実アプリで測る。",
+            "自己資金による増設とHPCI提供分の境界を年度ごとに確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Do not mix measurements, available capacity, or dates for the 24- and 33-node states.",
+            "Measure MI300A unified-memory effects on applications including placement, NUMA, and I/O.",
+            "Confirm annual boundaries between self-funded expansion and HPCI-provided capacity."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS140"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS138", "title": "AI for Scienceに不可欠な計算資源の戦略的増強: 東京大学情報基盤センター", "publisher": "東京大学情報基盤センター / 文部科学省", "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-3-1.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-ai-resource-utokyo-hpci69",
+      "checked_at": "2026-09-02T01:20:00+09:00",
+      "locator": "Pages 2-5 and 10: configuration, cost envelope, schedule, storage, networking, and resource provision",
+      "observation_ja": "主案・代替案、CPU/GPU・メモリ・帯域、補助金総額、自己資金ストレージ、調達工程、提供期間を確認しました。計画値から部品単価を推定しません。",
+      "observation_en": "Verified primary and fallback configurations, CPU/GPU, memory, bandwidth, subsidy total, self-funded storage, procurement schedule, and service period. Component unit prices are not inferred from plan totals.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS139", "title": "AI4S計算資源 玄界-D（仮称）整備計画", "publisher": "九州大学情報基盤研究開発センター / 文部科学省", "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-3-2-1.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-ai-resource-kyushu-hpci69",
+      "checked_at": "2026-09-02T01:22:00+09:00",
+      "locator": "Pages 2-3: Genkai-D and existing Genkai configuration",
+      "observation_ja": "既存玄界と玄界-D計画のCPU/GPU、メモリ、ストレージ、ネットワークを確認しました。納入・実測済みとは扱いません。",
+      "observation_en": "Verified CPU/GPU, memory, storage, and network specifications for existing Genkai and the Genkai-D plan. Delivery and measured operation are not asserted.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS140", "title": "AI for Scienceに不可欠な計算資源の戦略的増強事業: 筑波大学計算科学研究センター", "publisher": "筑波大学計算科学研究センター / 文部科学省", "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-3-4.pdf", "source_class": "official-project", "published_or_updated": "2026-06-30"},
+      "origin_group": "mext-ai-resource-tsukuba-hpci69",
+      "checked_at": "2026-09-02T01:24:00+09:00",
+      "locator": "Pages 2-6: Sirius history, present system, expansion, software, and allocation",
+      "observation_ja": "Siriusの2026年3月運用開始、24ノード構成、FY2026の33ノード化計画、各ノード仕様と資源配分を確認しました。現行と増設後を分けました。",
+      "observation_en": "Verified Sirius's March 2026 launch, current 24-node configuration, planned FY2026 expansion to 33 nodes, per-node specification, and allocation. Current and expanded states are separated.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-002、GAP-TDS-003、GAP-TDS-010、GAP-TDS-012、GAP-TDS-013は未解決です。落札構成、実測性能・電力・可用性・TCO、アプリ適合性が必要です。",
+    "三システムの仕様表記と精度条件を揃えた比較、北海道大学を含む他採択機関の判読可能な確認が必要です。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-002, GAP-TDS-003, GAP-TDS-010, GAP-TDS-012, and GAP-TDS-013 remain open; awarded configurations and measured performance, power, availability, TCO, and application fit are required.",
+    "A normalized precision-aware comparison and readable verification of other awardees including Hokkaido University remain required.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000228",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:34:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000171", "bundle_sha256": "e5a5524263e3bb6dc60ead5ef98e98283473cfff12954dcbab25a8a7c9ef7c06"}
+  ],
+  "before_profile_sha256": "a4f59f3cab61bb62f5de9f7c823af815ecbeb472a2bb9cd230bdeb4f8f2b5ead",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "九州大学玄界の2026年度大規模計算課題から、全系ベンチマークの実施可能規模と測定外乱を追加しました。公募はノードグループA 1,000ノード、B 32ノード、C 2ノードを、最大12時間、年4回利用できる一方、全ノード実行中も他利用者がシステムを利用し、共有ストレージ性能へ影響し得ると明記しています。したがって全計算ノードの利用と、計算・ネットワーク・ストレージを隔離した測定は同義ではありません。継続ベンチマーキングでは共有サービスの外乱と実運用性を両方記録する必要があります。Consensusは未完了です。",
+  "summary_en": "Kyushu University's FY2026 large-scale Genkai program adds concrete whole-system benchmark scale and measurement-interference conditions. It offers 1,000 group-A nodes, 32 group-B nodes, and two group-C nodes for up to twelve hours on four occasions per year, while explicitly stating that other users continue to use the system and may affect storage performance. Access to all compute nodes is therefore not equivalent to an isolated compute, network, and storage measurement. Continuous benchmarking should record both shared-service interference and operational realism. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-02-U03",
+      "before_sha256": "36d404cc6ad36a002d88a3c5a6d5b6da865c23acd62b69b48438cf859de562ed",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-02-U03",
+        "TDS-CD2-APP-02-U03",
+        "TDS-CD3-APP-02-U03",
+        "TDS-CD4-APP-02-U03",
+        "TDS-CD5-APP-02-U01-U03",
+        "TDS-CD34-APP-02-GENKAI-WHOLE-SYSTEM-MEASUREMENT"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD34-APP-02-GENKAI-WHOLE-SYSTEM-MEASUREMENT",
+      "title_ja": "全計算ノード利用と共有ストレージ外乱の分離",
+      "title_en": "Separate full compute allocation from shared-storage interference",
+      "summary_ja": "全系評価の予約範囲、外乱、反復可能回数、準備資源を測定条件として保存します。",
+      "summary_en": "Preserve reservation scope, interference, repeat opportunities, and preparation resources as measurement conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD34-GENKAI-FULL-NODE-BENCHMARK-WINDOW",
+          "name_ja": "1,000 CPUノード・32 GPUノード・2大容量GPUノードを最大12時間",
+          "name_en": "Up to twelve hours on 1,000 CPU, 32 GPU, and two large-memory GPU nodes",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年度、センター指定日に年4回",
+          "timing_en": "FY2026, four center-designated occasions",
+          "statement_ja": "九州大学の公募は、JHPCN採択実績のある研究者を対象に、玄界A 1,000ノード、B 32ノード、C 2ノードの全ノードjobを1回最大12時間、年4回実行できる枠を示します。準備用に共有job 100,000 pointと100 TBストレージも付与します。公開公募の存在は大規模測定の実施経路を示しますが、任意時刻の反復、全HPCI利用者への提供、複数候補機の同条件比較を保証しません。",
+          "statement_en": "Kyushu's call offers researchers with prior JHPCN acceptance whole-system jobs on 1,000 Genkai-A nodes, 32 B nodes, and two C nodes for up to twelve hours per run on four annual occasions. It also provides 100,000 points for shared preparation jobs and 100 TB of storage. The public program provides a route to large-scale measurement but does not guarantee arbitrary repeat timing, availability to every HPCI user, or matched comparisons across candidate systems.",
+          "hpci_relevance_ja": "次期HPCIには、調達前後の受入試験と継続性能測定に使える全系枠を、対象者、頻度、最大時間、準備資源とともに制度化する価値があります。",
+          "hpci_relevance_en": "Successor HPCI can benefit from institutionalized whole-system windows for acceptance and continuous testing with eligibility, frequency, duration, and preparation resources defined.",
+          "adoption_conditions_ja": [
+            "本番運用、受入試験、独立再現で全系枠の優先順位と費用負担を分ける。",
+            "warm-up、再実行、失敗時再予約、結果公開の条件を事前に定める。",
+            "複数センターで同じ入力と測定scriptを実行できる予約枠を揃える。"
+          ],
+          "adoption_conditions_en": [
+            "Separate priority and funding for production, acceptance, and independent-reproduction windows.",
+            "Define warm-up, rerun, failure rescheduling, and result-publication rules in advance.",
+            "Coordinate reservation windows for identical inputs and measurement scripts across centers."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS309"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD34-GENKAI-SHARED-STORAGE-INTERFERENCE",
+          "name_ja": "全ノード実行中も他利用者が共有ストレージへ影響",
+          "name_en": "Other users may affect shared storage during whole-system compute runs",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年度公募条件",
+          "timing_en": "FY2026 program condition",
+          "statement_ja": "公募資料は、採択課題が全ノードjobを実行中でも他利用者が玄界を利用するため、ストレージ性能へ影響が出る場合があると注意しています。この条件ではCPU/GPU・計算ネットワークの大規模評価は可能でも、I/Oを含むend-to-end時間のrun間変動に共有負荷が混入します。共有負荷は実運用を反映する一方、候補システムの固有性能を分離するには外乱記録または隔離測定が別途必要です。",
+          "statement_en": "The call warns that other users continue to use Genkai during an accepted whole-system job, so storage performance may be affected. Large CPU/GPU and compute-network testing is possible, but shared load can enter run-to-run variation in end-to-end time when I/O is included. Shared load reflects production conditions, while isolating system capability requires interference telemetry or a separate isolated measurement.",
+          "hpci_relevance_ja": "調達比較では隔離性能と共用時性能を別指標にし、後者には同時I/O、queue、cache、保守状態を記録する必要があります。",
+          "hpci_relevance_en": "Procurement comparisons should separate isolated and shared-service performance and record concurrent I/O, queues, cache state, and maintenance state for the latter.",
+          "adoption_conditions_ja": [
+            "測定中の総I/O量、client数、metadata要求、cache状態、障害・保守eventを保存する。",
+            "隔離runと通常共用runを同じ入力で反復し、変動幅を報告する。",
+            "計算時間、I/O時間、queue待ち、前後処理を分離してtime-to-solutionを示す。"
+          ],
+          "adoption_conditions_en": [
+            "Record aggregate I/O, client count, metadata demand, cache state, and failure or maintenance events during measurement.",
+            "Repeat isolated and ordinary shared runs with identical inputs and report variation.",
+            "Separate compute, I/O, queue wait, preprocessing, and postprocessing in time to solution."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS309"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS309",
+        "title": "2026年度 研究用計算機システム共同研究制度 大規模計算課題 公募のお知らせ",
+        "publisher": "九州大学情報基盤研究開発センター",
+        "url": "https://www.cc.kyushu-u.ac.jp/scp/doc/service/Large_Scale_Computing/2026_Large_Scale_Computing.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-03"
+      },
+      "origin_group": "kyushu-genkai-large-scale-computing-2026",
+      "checked_at": "2026-09-02T04:08:00+09:00",
+      "locator": "提供資源、利用回数・時間、ストレージ性能に関する注意事項",
+      "observation_ja": "A 1,000ノード、B 32ノード、C 2ノード、最大12時間・年4回と、他利用者によるストレージ性能影響を確認しました。",
+      "observation_en": "Verified 1,000 A nodes, 32 B nodes, two C nodes, up to twelve hours on four occasions, and possible storage impact from other users.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "全系枠で公開された実測結果、共有I/O量、run間変動、失敗・再実行は未確認です。",
+    "他センターで同等の全系測定枠を利用できるかは未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Published measurements from these windows, shared-I/O volume, run variation, failures, and reruns remain unverified.",
+    "Equivalent whole-system measurement windows at other centers remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

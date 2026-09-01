@@ -1,0 +1,135 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000140",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T01:30:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000132",
+      "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"
+    }
+  ],
+  "before_profile_sha256": "01ffffdc5b597b76947e78e9aee2491122f778d557a339149cdc853bb7bacd3d",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "理研R-CCSの公開資料から、AI for Science開発用スーパーコンピュータ理究（RIKYU）の400ノード・1,600 GPU、InfiniBand XDR、温水冷却、FP64・FP8性能目標と、2025年度末納入・2026年度初頭試験運用の計画を追加しました。資料の予定表記を供用開始実績へ読み替えません。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds RIKEN R-CCS public information on the RIKYU AI-for-Science system: 400 nodes and 1,600 GPUs, InfiniBand XDR, warm-water cooling, FP64 and FP8 performance targets, and planned delivery at the end of FY2025 followed by testing in early FY2026. Planned timing is not treated as observed service launch. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "45fc36b3c636585112a431084e7eb881560cd986f3aeaaf7c355b021cee84af0",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U01", "TDS-HW3-ARCH-05-U01", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01"]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "9c985df3212edf00fe15b7a897f73c9d3f6ba86b9a2d1efd0c1c4c00a56fa912",
+      "evidence_section_ids": ["TDS-HW1-ARCH-05-U02", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-ARCH-05-U01",
+      "title_ja": "理究（RIKYU）のAI for Science向けシステム構成",
+      "title_en": "RIKYU system organization for AI for Science",
+      "summary_ja": "ノード、ネットワーク、冷却、精度別性能、導入段階を分けて記録します。",
+      "summary_en": "Record nodes, networking, cooling, precision-specific performance, and deployment stages separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD11-RIKYU-SYSTEM-CONFIG",
+          "name_ja": "400ノード・1,600 GPUとXDR・温水冷却の構成",
+          "name_en": "A 400-node, 1,600-GPU system with XDR and warm-water cooling",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2025年度末納入、2026年度初頭試験運用の計画",
+          "timing_en": "Planned delivery at FY2025 end and testing in early FY2026",
+          "statement_ja": "理研R-CCS資料は、理究をNVIDIA Grace Blackwellスーパーチップ搭載400ノード、GPU 1,600基、ノード間InfiniBand XDR最大3.2 Tbps、温水冷却対応サーバで構成すると説明します。性能はFP64で64.16 PFLOPS以上、FP8で15.539 EFLOPS以上です。精度が異なる値を直接比較できず、最大リンク値もアプリケーションの実効通信性能ではありません。",
+          "statement_en": "RIKEN R-CCS material describes RIKYU as 400 NVIDIA Grace Blackwell superchip nodes with 1,600 GPUs, up to 3.2 Tbps InfiniBand XDR interconnect, and warm-water-cooled servers. Targets are at least 64.16 PFLOPS FP64 and 15.539 EFLOPS FP8. Values at different precisions are not directly comparable, and maximum link rate is not achieved application communication performance.",
+          "hpci_relevance_ja": "富岳のFP64科学計算とAI向け低精度処理を役割分担する国内の異種システム例として、全工程性能とデータ移動を評価できます。",
+          "hpci_relevance_en": "This domestic heterogeneous-system example can be evaluated for end-to-end performance and data movement when dividing roles between Fugaku FP64 science and lower-precision AI processing.",
+          "adoption_conditions_ja": [
+            "ノード内構成、メモリ容量・帯域、ネットワーク方向数、ストレージ、総電力を確定仕様で確認する。",
+            "同じ科学的品質で富岳単独、理究単独、連携ワークフローを比較する。",
+            "温水温度、流量、CDU、施設側責任、定常電力を受入資料で確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify node organization, memory capacity and bandwidth, network directionality, storage, and total power in final specifications.",
+            "Compare Fugaku-only, RIKYU-only, and linked workflows at matched scientific quality.",
+            "Verify water temperature, flow, CDUs, facility responsibility, and steady-state power in acceptance evidence."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS134"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-RIKYU-DEPLOYMENT-STAGES",
+          "name_ja": "納入・試験運用・本格運用を分けた導入計画",
+          "name_en": "Deployment plan separating delivery, test operation, and full operation",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年6月30日資料では本格運用開始日は未特定",
+          "timing_en": "The June 30, 2026 material does not specify the full-service launch date",
+          "statement_ja": "資料は2025年度末の納入、2026年度初頭からの試験運用、その後の本格運用を予定しています。本格運用の具体日、利用対象、HPCI提供枠、受入試験結果は示されません。2026年度初頭という表現だけでQ1の供用開始を確定できません。",
+          "statement_en": "The material plans delivery at the end of FY2025, test operation from early FY2026, and full operation thereafter. It does not specify a full-service date, eligibility, HPCI allocation, or acceptance results. 'Early FY2026' alone does not establish a Q1 service launch.",
+          "hpci_relevance_ja": "ロードマップでは搬入、試験、限定利用、一般利用、HPCI提供を別イベントとして追跡します。",
+          "hpci_relevance_en": "The roadmap should track delivery, testing, limited access, general access, and HPCI provision as separate events.",
+          "adoption_conditions_ja": [
+            "運用開始通知、利用規程、公募、提供枠、障害・性能報告を追跡する。",
+            "予定日を経過しただけでマイルストーンを達成済みにしない。",
+            "ROQUOおよび富岳との接続・データ移動・責任分担を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Track launch notices, rules, calls, allocations, incidents, and performance reports.",
+            "Do not mark a milestone achieved merely because its target date passed.",
+            "Verify connectivity, data movement, and responsibility with ROQUO and Fugaku."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS134"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS134",
+        "title": "スーパーコンピュータ『理究（RIKYU）』『ROQUO』について",
+        "publisher": "理化学研究所計算科学研究センター",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-4.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "riken-rccs-rikyu-roquo-hpci69",
+      "checked_at": "2026-09-02T01:27:00+09:00",
+      "locator": "RIKYU overview and schedule, pages 2 and 6",
+      "observation_ja": "理究のノード・GPU数、XDR、精度別性能、温水冷却、納入・試験・本格運用の予定を確認しました。予定を実績へ読み替えません。",
+      "observation_en": "Verified RIKYU node and GPU counts, XDR, precision-specific targets, warm-water cooling, and planned delivery, testing, and full operation. Plans are not treated as observed results.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-011、GAP-TDS-048、GAP-TDS-060は未解決です。確定構成、総費用、実効性能、施設条件、保守、供用実績が必要です。",
+    "理究の本格運用開始、HPCI提供、富岳・ROQUO連携の実測を追跡する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-011, GAP-TDS-048, and GAP-TDS-060 remain open; final configuration, total cost, delivered performance, facilities, support, and service evidence are required.",
+    "RIKYU full operation, HPCI provision, and measured Fugaku or ROQUO workflows must be tracked.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000141",
+  "topic_id": "SSW-09",
+  "created_at": "2026-09-02T01:31:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "6f8b9aa384bfee082fb189a8e1536aea6061e1ee40cfe062e60e7da1dcabdfdb",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "理研R-CCSが理究向けに示した、HPC×AIバッチ、運用側共通LLMサービング、利用者固有モデル・AIエージェントの常駐サービスという三つの利用モデルを追加しました。機能構想と提供開始・SLO・対応モデルの実績を分けます。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds three RIKEN R-CCS service models described for RIKYU: HPC-by-AI batch jobs, operator-hosted shared LLM serving, and persistent services for user models or AI agents. It separates the service concept from evidence of launch, SLOs, and supported models. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-09-U02",
+      "before_sha256": "24a9b34fea4327cb17bbfe540d2d7317898b4875a35c6d9b6a18e3583041d0a2",
+      "evidence_section_ids": ["TDS-HC26-SSW-09-U2", "TDS-CD6-SSW-09-U02", "TDS-CD11-SSW-09-U02-U03"]
+    },
+    {
+      "unit_id": "SSW-09-U03",
+      "before_sha256": "d647076644b0dbb7cd52c693ee80d4ffe2f7a901b6a338a42f63aced8dbcd12f",
+      "evidence_section_ids": ["TDS-CD6-SSW-09-U03", "TDS-CD11-SSW-09-U02-U03"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD11-SSW-09-U02-U03",
+      "title_ja": "理究（RIKYU）の三つのAIサービスモデル",
+      "title_en": "Three AI service models described for RIKYU",
+      "summary_ja": "ジョブ、共通推論API、利用者固有の常駐サービスを異なる割当・保守・安全要件として比較します。",
+      "summary_en": "Compare jobs, shared inference APIs, and user-specific persistent services as distinct allocation, maintenance, and safety models.",
+      "items": [
+        {
+          "item_id": "TDI-CD11-RIKYU-SHARED-LLM-SERVING",
+          "name_ja": "運用側が代表的オープンLLMを常時提供する共通API",
+          "name_en": "Operator-hosted API for continuously available representative open LLMs",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日のサービス構想",
+          "timing_en": "Service concept presented June 30, 2026",
+          "statement_ja": "理研資料は、代表的なオープンLLMを運用側が常時提供し、利用者がAPIから呼び出すLLM SERVINGを三本柱の一つに挙げます。各利用者がGPU上へ個別にLLMを立ち上げる重複を減らし、AIエージェントのバックエンドを共通化する狙いです。対応モデル、同時利用数、データ保持、SLO、提供開始実績は資料から確定しません。",
+          "statement_en": "RIKEN material identifies LLM SERVING as one of three service pillars: operators continuously host representative open LLMs and users access them through APIs. The intent is to reduce duplicate per-user model instances and share an AI-agent backend. Supported models, concurrency, data retention, SLOs, and observed service launch are not established by the material.",
+          "hpci_relevance_ja": "共通推論はGPU利用率を改善し得ますが、モデル選択、更新、プロンプト・生成物の扱い、利用者隔離、性能保証を運用サービスとして設計する必要があります。",
+          "hpci_relevance_en": "Shared inference may improve GPU utilization, but model selection, updates, prompt and output handling, tenant isolation, and performance assurance require explicit service operations.",
+          "adoption_conditions_ja": [
+            "モデル版、ライセンス、コンテキスト長、精度、量子化、提供終了方針を公開する。",
+            "同時実行時の待ち時間、トークン性能、失敗率、公平性、電力量を測定する。",
+            "入力・出力・ログの保存、学習利用、管理者アクセス、削除を明文化する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish model versions, licenses, context, precision, quantization, and retirement policy.",
+            "Measure concurrent latency, token throughput, failure rate, fairness, and energy.",
+            "Document storage, training reuse, administrator access, and deletion for inputs, outputs, and logs."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS134"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-RIKYU-ALWAYS-ON-SERVICE",
+          "name_ja": "利用者固有モデル・AIエージェントの24時間365日常駐サービス",
+          "name_en": "24-by-7 persistent service for user models and AI agents",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日のサービス構想",
+          "timing_en": "Service concept presented June 30, 2026",
+          "statement_ja": "ALWAYS-ON SERVICEは、利用者独自モデルやAIエージェントを常時稼働させ、時間単位のバッチ制約を外す構想です。資料は24時間365日動く自律研究基盤と説明しますが、予約単位、冗長化、外部接続、障害復旧、費用、セキュリティ審査の実装は示しません。",
+          "statement_en": "ALWAYS-ON SERVICE is described as continuously running user-specific models or AI agents without hourly batch constraints, providing a 24-by-7 autonomous-research platform. The material does not specify reservation units, redundancy, external connectivity, recovery, price, or security review implementation.",
+          "hpci_relevance_ja": "常駐サービスはバッチGPU時間と別の容量・料金・安全モデルを必要とし、推論API、データ、実験装置、外部ツールを含む障害領域を設計します。",
+          "hpci_relevance_en": "Persistent services need capacity, charging, and safety models distinct from batch GPU-hours, with failure domains covering inference APIs, data, instruments, and external tools.",
+          "adoption_conditions_ja": [
+            "SLO、最大停止時間、チェックポイント、更新、ロールバック、当番責任を定める。",
+            "プロジェクトごとのGPU・CPU・メモリ・ストレージ・外部通信の上限を定義する。",
+            "エージェントのツール権限、支出上限、人の承認、監査、緊急停止を試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Define SLOs, maximum outage, checkpointing, updates, rollback, and on-call responsibility.",
+            "Define per-project limits for GPU, CPU, memory, storage, and external communication.",
+            "Test agent tool authority, spending limits, human approval, audit, and emergency stop."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS134"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD11-RIKYU-BATCH-HPC-AI",
+          "name_ja": "シミュレーションとサロゲートモデルを結ぶHPC×AIバッチ",
+          "name_en": "HPC-by-AI batch jobs linking simulations and surrogate models",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日のサービス構想",
+          "timing_en": "Service concept presented June 30, 2026",
+          "statement_ja": "BATCHモデルは、シミュレーションとAIをジョブ単位で密連携し、サロゲートモデルの開発・推論等に使う従来型バッチサービスです。共通LLM APIや常駐サービスと異なり、開始・終了・資源解放が明確ですが、富岳と理究をまたぐ一体ジョブやデータ転送の仕様は資料から確認できません。",
+          "statement_en": "The BATCH model couples simulation and AI within jobs for tasks such as surrogate-model development and inference. Unlike shared LLM APIs or persistent services, job start, end, and resource release are explicit, but the material does not establish a single cross-system job or data-transfer specification spanning Fugaku and RIKYU.",
+          "hpci_relevance_ja": "三つの利用モデルを同じGPU時間だけで比較せず、総所要時間、占有率、再開、データ転送、運用人時間を測定します。",
+          "hpci_relevance_en": "Do not compare the three models by GPU-hours alone; measure end-to-end time, occupancy, recovery, data transfer, and operating labor.",
+          "adoption_conditions_ja": [
+            "代表的なシミュレーション・学習・推論の依存関係と正解条件を固定する。",
+            "富岳・理究間のデータ量、転送時間、待ち時間、再実行を計測する。",
+            "バッチ・共通API・常駐サービスの費用と科学成果までの時間を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin dependencies and correctness conditions for representative simulation, training, and inference.",
+            "Measure data volume, transfer, queue, and rerun across Fugaku and RIKYU.",
+            "Compare cost and time to scientific results across batch, shared API, and persistent service."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS134"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS134",
+        "title": "スーパーコンピュータ『理究（RIKYU）』『ROQUO』について",
+        "publisher": "理化学研究所計算科学研究センター",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_04-4.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "riken-rccs-rikyu-roquo-hpci69",
+      "checked_at": "2026-09-02T01:27:00+09:00",
+      "locator": "RIKYU service models, page 6",
+      "observation_ja": "バッチ、運用側共通LLM API、利用者固有の24時間常駐サービスという三モデルを確認しました。構想を提供開始・SLO・対応モデルの実績として扱いません。",
+      "observation_en": "Verified three models: batch, operator-hosted shared LLM APIs, and user-specific 24-by-7 persistent services. The concept is not treated as evidence of launch, SLOs, or supported models.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-018、GAP-TDS-033、GAP-TDS-052、GAP-TDS-064は未解決です。提供開始、対応版、SLO、性能・費用、隔離、障害復旧の実績が必要です。",
+    "三モデルを同じ科学ワークフローで比較する公開測定が必要です。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-018, GAP-TDS-033, GAP-TDS-052, and GAP-TDS-064 remain open; launch, supported versions, SLOs, performance, cost, isolation, and recovery evidence are required.",
+    "Public measurements comparing the three models on matched scientific workflows are required.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

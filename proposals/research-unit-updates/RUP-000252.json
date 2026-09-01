@@ -1,0 +1,158 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000252",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:38:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000167",
+      "bundle_sha256": "e5112b0eca00e67e8a66b57563b417aad91ccbe9c434a92e78e835d46a7029ff"
+    },
+    {
+      "update_id": "RUP-000203",
+      "bundle_sha256": "9a2417891b87ccaf73731ca2ed7d1b6a27fdf2673d8a32cd4294aa93a7c69fff"
+    },
+    {
+      "update_id": "RUP-000229",
+      "bundle_sha256": "b5094cdaef2fdd249d311870eeeaf44b30621bd35a939691ea8dc7bf5ca6ea0b"
+    },
+    {
+      "update_id": "RUP-000237",
+      "bundle_sha256": "8e1e11bda9f88bfb418242002f7b8807b3b18a37bd2b7e20297784912a0e2ebc"
+    },
+    {
+      "update_id": "RUP-000240",
+      "bundle_sha256": "ed4b09494308620f23291a34929571c9c25093f0f638effbe3fd72358acf214a"
+    }
+  ],
+  "before_profile_sha256": "fa4d89d236db4a0ad5f6cf85ad3efd523861083ffaff73c83cd9707e02a61803",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳では2025年11月25日17:17から翌26日07:20まで、落雷の影響によるシステム停止が発生し、利用者はjob_eventsで影響ジョブを確認できます。また、BIOノードのOS予約領域により要求したラージページを取得できない場合があり、暫定解放策とOSパッチを経過観察中でした。障害時間と利用者向け記録は確認できますが、部品故障範囲、失われた計算量、復旧手順、再発防止効果は未公開です。Consensusは未完了です。",
+  "summary_en": "Fugaku experienced a system stop attributed to lightning from 17:17 on November 25 to 07:20 on November 26, 2025, and users can identify affected jobs through job_events. The report also says OS-reserved memory on BIO nodes can prevent acquisition of the requested large-page size; a temporary release measure and OS patch remained under observation. Outage timing and user-visible records are available, but component scope, lost compute, recovery procedure, and recurrence-prevention effectiveness are not public. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "482c5e9e7bd569f15de65d2cee4776def1bdf28e29317e4d05cf34007e3b2b06",
+      "evidence_section_ids": [
+        "TDS-CD2-ARCH-10-U01",
+        "TDS-CD3-ARCH-10-U01",
+        "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS",
+        "TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES",
+        "TDS-CD43-ARCH-10-SQUID-CONTROL-PLANE-RAS",
+        "TDS-CD46-ARCH-10-TSUKUBA-SERVICE-BOUNDARY",
+        "TDS-CD8-ARCH-10-FUGAKU-OPERATIONAL-FAILURES"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD8-ARCH-10-FUGAKU-OPERATIONAL-FAILURES",
+      "title_ja": "富岳の停止実績と利用者が確認できる障害来歴",
+      "title_en": "Fugaku outage evidence and user-visible failure provenance",
+      "summary_ja": "停止時間、影響確認、回避策、修正状態を別々に評価します。",
+      "summary_en": "Evaluate outage duration, impact visibility, workarounds, and fix state separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD59-FUGAKU-LIGHTNING-OUTAGE",
+          "name_ja": "落雷に伴う14時間3分のシステム停止",
+          "name_en": "A 14-hour 3-minute system stop associated with lightning",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年11月25～26日",
+          "timing_en": "November 25-26, 2025",
+          "statement_ja": "2025年11月25日17:17から11月26日07:20まで、落雷の影響によるシステム停止が報告されました。利用者はjob_eventsコマンドで影響ジョブを確認できます。資料は停止の開始・終了と確認方法を示しますが、障害領域、失敗ジョブ数、チェックポイントからの復旧率、再計算量、設備側対策を示しません。",
+          "statement_en": "A system stop attributed to lightning was reported from 17:17 on November 25 through 07:20 on November 26, 2025. Users can query affected jobs with job_events. The material gives start and end times and an impact-query route, but not the failure domain, number of failed jobs, checkpoint recovery rate, recomputation, or facility mitigation.",
+          "hpci_relevance_ja": "整備計画では年間稼働率だけでなく、共通原因障害、影響ジョブの特定、チェックポイント復旧、利用枠返還までを受入要件にする必要があります。",
+          "hpci_relevance_en": "Planning should specify common-cause failure handling, affected-job identification, checkpoint recovery, and allocation restitution in addition to annual availability.",
+          "adoption_conditions_ja": [
+            "停止原因、障害領域、検知、隔離、復旧、利用者通知の時刻を保存する。",
+            "影響ジョブ数、失われたノード時間、再実行成功率を測る。",
+            "自然災害の単一事例を将来故障率へ外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve timestamps for cause, failure domain, detection, isolation, recovery, and notice.",
+            "Measure affected jobs, lost node-hours, and rerun success.",
+            "Do not extrapolate one natural-hazard event into a future failure rate."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD59-FUGAKU-LARGEPAGE-DEFECT",
+          "name_ja": "ラージページ取得のノード差と経過観察中の修正",
+          "name_en": "Node-dependent large-page allocation and a fix under observation",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年8月以降、2026年3月12日時点で経過観察中",
+          "timing_en": "From August 2025; under observation as of March 12, 2026",
+          "statement_ja": "BIOノードでLinuxが予約するメモリ領域により、同じサイズのラージページを取得できるノードとできないノードが生じると報告されています。メモリ領域を強制解放する暫定対処とOSパッチが適用され、経過観察中でした。2025年10月の設定変更は通常ページ利用ジョブへ影響し、11月に戻されています。",
+          "statement_en": "The report says Linux-reserved memory on BIO nodes can cause node-to-node differences in obtaining the same large-page size. A temporary forced-release measure and OS patch were applied and remained under observation. An October 2025 configuration change affected normal-page jobs and was reverted in November.",
+          "hpci_relevance_ja": "メモリ容量の公称値だけでなく、OS予約、I/Oノード差、ページ設定、回帰試験を実効メモリ受入試験に含める必要があります。",
+          "hpci_relevance_en": "Usable-memory acceptance should cover OS reservation, I/O-node differences, page configuration, and regression tests rather than nominal capacity alone.",
+          "adoption_conditions_ja": [
+            "ノード別の取得可能ラージページ量と失敗率を測る。",
+            "修正前後で通常ページとラージページの双方を回帰試験する。",
+            "経過観察中を解決済みとして扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure obtainable large-page capacity and failure rate per node.",
+            "Regression-test normal and large pages before and after fixes.",
+            "Do not treat a fix under observation as resolved."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS337",
+        "title": "富岳運用状況報告 2026年3月",
+        "publisher": "理化学研究所 計算科学研究センター",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-operations",
+      "checked_at": "2026-09-02T04:47:00+09:00",
+      "locator": "Pages 4 and 12-14: lightning outage, large-page allocation issue, workaround, patch, and rollback",
+      "observation_ja": "落雷停止とラージページ障害の時間、原因、暫定対策、修正状態を確認しました。",
+      "observation_en": "Verified timing, cause, workaround, and fix state for the lightning outage and large-page issue.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "落雷停止の障害領域、影響ジョブ数、復旧方法、再発防止策は公開資料から確認できません。",
+    "ラージページ修正の完了判定と全ノード回帰結果は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The failure domain, affected-job count, recovery method, and recurrence mitigation for the lightning outage are not public.",
+    "Completion criteria and all-node regression results for the large-page fix remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

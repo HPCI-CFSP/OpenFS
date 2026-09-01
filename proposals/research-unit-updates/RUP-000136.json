@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000136",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-02T00:58:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "cf67e592426bfe00a6350535e2c1967cad6c5e76a57475b22e067c2b1ec8271e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI計画推進委員会の方針案から、学認等による認証連携、プロジェクト単位のアクセス権と環境隔離、Web UI・ポータル、API・常駐サービス、ログ・脆弱性対応を次世代HPCIの共通要件候補として追加しました。共通ログインと各サービスの認可を分けます。方針案であり実装済み仕様ではありません。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds identity federation such as GakuNin, project-level entitlements and isolation, Web UI and portals, APIs and persistent services, logging, and vulnerability response as candidate common requirements from the HPCI planning draft. Common login remains distinct from service authorization. The draft is not a deployed specification, and this remains provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-12-U01",
+      "before_sha256": "5be6d009a06034a5a13b0762228e82dd426675fa3370d3c1619e67369895406f",
+      "evidence_section_ids": ["TDS-CD2-SSW-12-U01", "TDS-CD10-SSW-12-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-SSW-12-U01",
+      "title_ja": "次世代HPCIの認証・認可・サービス境界の共通要件案",
+      "title_en": "Draft common identity, authorization, and service-boundary requirements",
+      "summary_ja": "本人認証、課題権限、環境隔離、サービス認可、監査を独立した制御として整理します。",
+      "summary_en": "Treat identity, project entitlement, isolation, service authorization, and audit as independent controls.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-HPCI-PROJECT-ENTITLEMENT",
+          "name_ja": "学認連携とプロジェクト単位の権限・環境隔離",
+          "name_en": "GakuNin federation with project entitlements and environment isolation",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の方針案",
+          "timing_en": "Draft policy dated June 30, 2026",
+          "statement_ja": "方針案は、学認等を活用した認証連携、認可・利用者管理、プロジェクト単位のアクセス権管理と環境隔離を、次世代HPCI参加機関の共通要件候補に挙げています。Web UI、ポータル、API、エージェント、常駐サービスまで対象が広がるため、本人認証だけでなくサービス別の認可と失効伝播が必要です。実装方式は未決定です。",
+          "statement_en": "The draft lists identity federation such as GakuNin, authorization and user management, project-level entitlements, and environment isolation as candidate common requirements for next-generation HPCI providers. As scope expands to Web UI, portals, APIs, agents, and persistent services, identity alone is insufficient; service-specific authorization and revocation propagation are required. The implementation design is not decided.",
+          "hpci_relevance_ja": "整備仕様には、SSHだけでなくWeb、API、コンテナ、モデル、データ、実験装置ごとの権限付与・取消し・監査を含めます。",
+          "hpci_relevance_en": "System specifications should cover grant, revocation, and audit for Web, API, containers, models, data, and instruments as well as SSH.",
+          "adoption_conditions_ja": [
+            "認証保証レベル、属性発行者、課題権限の正本、各サービスへの反映時間を定める。",
+            "課題終了、所属変更、事故時の一括取消しを複数サービスで試験する。",
+            "環境隔離の脅威モデルと性能・運用費への影響を測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Define identity assurance, attribute issuers, the entitlement authority, and propagation time to services.",
+            "Test coordinated revocation across services for project end, affiliation change, and incidents.",
+            "Measure the threat model and performance or operating-cost effects of isolation."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS131"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-HPCI-SERVICE-SECURITY-OPS",
+          "name_ja": "常駐サービスを含むログ・脆弱性対応",
+          "name_en": "Logging and vulnerability response for persistent services",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の方針案",
+          "timing_en": "Draft policy dated June 30, 2026",
+          "statement_ja": "方針案は、API・エージェント利用環境、常駐サービス、データ・モデル共有、外部データ基盤との連携に加え、セキュリティ、ログ管理、脆弱性対応、利用者支援を共通要件候補に含めています。バッチジョブ終了時に環境を破棄する運用とは異なり、モデル・API・依存イメージを継続保守する責任が生じます。",
+          "statement_en": "The draft includes API and agent environments, persistent services, data and model sharing, external data-platform integration, security, logging, vulnerability response, and user support among candidate common requirements. Unlike disposable batch environments, models, APIs, and dependency images create continuing maintenance responsibility.",
+          "hpci_relevance_ja": "常駐サービスは計算ノードの付加機能ではなく、資産台帳、更新期限、脆弱性対応SLO、監査保存、当番体制を伴うサービスとして費用化します。",
+          "hpci_relevance_en": "Persistent services should be costed as services with inventories, update deadlines, vulnerability-response SLOs, audit retention, and on-call staffing, not as incidental compute-node features.",
+          "adoption_conditions_ja": [
+            "モデル、API、コンテナ、依存関係の所有者と支援期限を台帳化する。",
+            "脆弱性通知から遮断・修正・復旧までの時間を測定する。",
+            "監査ログの範囲、保持、アクセス権、個人情報境界を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Inventory owners and support deadlines for models, APIs, containers, and dependencies.",
+            "Measure time from vulnerability notice through isolation, remediation, and restoration.",
+            "Define audit-log scope, retention, access, and personal-data boundaries."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS131"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS131",
+        "title": "AI for Science時代に対応したHPCI全体での戦略的な整備や制度の共通化に向けた方針（案）",
+        "publisher": "文部科学省研究振興局計算科学技術推進室",
+        "url": "https://www.mext.go.jp/content/20260630-mxt_jyohoka01-000050674_04-1-3.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-hpci-planning-committee-69-draft",
+      "checked_at": "2026-09-02T00:54:00+09:00",
+      "locator": "Sections 2 and 3(1)-3(2), pages 1-3",
+      "observation_ja": "学認連携、プロジェクト権限、環境隔離、Web/API/常駐サービス、ログ・脆弱性対応の共通要件案を確認しました。方針案を実装済み仕様として扱いません。",
+      "observation_en": "Verified draft common requirements for GakuNin federation, project entitlements, isolation, Web/API/persistent services, logging, and vulnerability response. The draft is not treated as a deployed specification.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-079は未解決です。保証レベル、属性・権限正本、取消し時間、サービス別実装、運用実績が必要です。",
+    "方針案の正式決定、参加機関、技術方式、費用・人員を追跡する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-079 remains open; assurance levels, identity and entitlement authorities, revocation time, per-service implementation, and operational evidence are required.",
+    "Formal adoption, participating sites, technical designs, cost, and staffing must be tracked.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

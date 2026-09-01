@@ -1,0 +1,164 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000292",
+  "topic_id": "CROSS-05",
+  "created_at": "2026-09-02T07:45:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000267",
+      "bundle_sha256": "84a05c7945392ff66c1675e4d370d4286773e9f5b4867048446e08d98789eaf6"
+    },
+    {
+      "update_id": "RUP-000277",
+      "bundle_sha256": "7e9cd9e6ee7782a83c7f0b90f96478ca9ae0eb4affb3139f6df43a584467147a"
+    },
+    {
+      "update_id": "RUP-000290",
+      "bundle_sha256": "214b0f8e2f0b090c82b93651aa936f10092beeb8b502a5047b30514549c25134"
+    }
+  ],
+  "before_profile_sha256": "e05f5792d79efedc0da8b0f3ff7e4646b8788bdad61401af8ff1e179a0c78744",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "国内の量子・HPC連携はROQUOの運用開始により、135 GB200 NVL4 node、540 GPU、Quantum-X800、SQC Interfaceという具体的な実装段階へ進みました。一方、外部利用、QPUを含むend-to-end性能、共同予約、障害回復、SLAは別途確認が必要です。研究段階ではPilot-QuantumとQ-Dreamerがapplication semanticsを用いる動的制御を提案していますが、production運用の証拠とは区別します。Consensusは未完了です。",
+  "summary_en": "Japanese quantum-HPC integration has moved to a concrete deployment stage with ROQUO's 135 GB200 NVL4 nodes, 540 GPUs, Quantum-X800 fabric, and SQC Interface. External access, end-to-end performance including QPUs, co-reservation, failure recovery, and SLAs still require separate verification. Research-stage Pilot-Quantum and Q-Dreamer propose dynamic control using application semantics, but are kept distinct from evidence of production operation. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-05-U01",
+      "before_sha256": "c3c4dbfb1f0e74c0b779daeb6aeecdefdca03f8de9e992c665e00c3f258e510a",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-05-U01",
+        "TDS-CD2-CROSS-05-MIYABI-IBM-QUANTUM",
+        "TDS-CD8-CROSS-05-QC-HPC-SERVICE-BOUNDARY",
+        "TDS-CD8-CROSS-05-EUROHPC-QUANTUM-MATURITY",
+        "TDS-CD9-CROSS-05-ROQUO-HYBRID-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD9-CROSS-05-ROQUO-HYBRID-OPERATIONS",
+      "title_ja": "ROQUOの運用開始と量子・HPC資源制御",
+      "title_en": "ROQUO launch and quantum-HPC resource control",
+      "summary_ja": "国内の実運用構成と研究段階のmiddlewareを区別し、接続、予約、data経路、評価指標を具体化します。",
+      "summary_en": "Separate a Japanese production deployment from research-stage middleware, and make connectivity, reservations, data paths, and evaluation metrics explicit.",
+      "items": [
+        {
+          "item_id": "TDI-CD99-ROQUO-OPERATIONS",
+          "name_ja": "ROQUO：540 Blackwell GPUとSQC Interfaceを持つHPC側中核",
+          "name_en": "ROQUO: an HPC-side hub with 540 Blackwell GPUs and the SQC Interface",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月19日運用開始公表",
+          "timing_en": "Operation announced on June 19, 2026",
+          "statement_ja": "理研はROQUOを135台のGB200 NVL4 node、540 Blackwell GPU、270 Grace CPU、Quantum-X800 InfiniBand（最大3.2 Tbps）、32℃温水冷却で構成し、運用開始したと公表しました。全540 GPUのHPLは19.80 PFLOPSです。SQC Interfaceを介して富岳、ibm_kobe、黎明とのdata交換とjob制御を行う構想で、外部利用はtest-user programを予定しています。運用開始は、QPUを含む全経路の一般利用・SLA・application性能が確立したことを意味しません。",
+          "statement_en": "RIKEN announced the start of ROQUO operations with 135 GB200 NVL4 nodes, 540 Blackwell GPUs, 270 Grace CPUs, Quantum-X800 InfiniBand at up to 3.2 Tbps, and 32-degree-Celsius warm-water cooling. HPL across all 540 GPUs reached 19.80 PFLOPS. The SQC Interface is intended to exchange data and control jobs across Fugaku, ibm_kobe, and Reimei, with external access planned through a test-user program. Starting operations does not establish general access, SLAs, or application performance across the complete QPU path.",
+          "hpci_relevance_ja": "HPCIで量子連携を整備する場合、QPUだけでなく、GPU classical backend、interface API、SINET経路、認証、共同予約、storage、冷却と利用制度を一体で検収できます。",
+          "hpci_relevance_en": "An HPCI quantum service can accept the QPU, GPU classical backend, interface API, SINET path, identity, co-reservation, storage, cooling, and access program as one integrated service.",
+          "adoption_conditions_ja": [
+            "SQC Interfaceの公開仕様、対応backend、failure semantics、version policyを確認する。",
+            "QPU queue、GPU allocation、network、storageを含むend-to-end applicationを実測する。",
+            "test-user programの資格、割当、data governance、support、SLAを記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify the SQC Interface specification, supported backends, failure semantics, and version policy.",
+            "Measure end-to-end applications including QPU queues, GPU allocation, network, and storage.",
+            "Record test-user eligibility, allocations, data governance, support, and SLAs."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS368"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD99-PILOT-QUANTUM-QDREAMER",
+          "name_ja": "Pilot-Quantum・Q-Dreamer：application semanticsを用いる研究段階の制御",
+          "name_en": "Pilot-Quantum and Q-Dreamer: research-stage control using application semantics",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "2026年4月公開preprint",
+          "timing_en": "Preprint published in April 2026",
+          "statement_ja": "2026年4月のpreprintは、量子・HPC制御をworkflow、workload、task、resourceの4層に分け、late bindingと動的資源割当を行うPilot-Quantum、circuit cuttingの分割判断を支援するQ-Dreamer、実行motifとmini-appを提案しています。PerlmutterとH100/B200 DGXを含む評価で、Q-Dreamerの最適circuit-cutting構成予測は最大82% accuracyと報告されます。これはproduction schedulerの可用性・fairness・安全性を実証する値ではありません。",
+          "statement_en": "An April 2026 preprint separates quantum-HPC control into workflow, workload, task, and resource layers and proposes Pilot-Quantum for late binding and dynamic allocation, Q-Dreamer for circuit-cutting partition decisions, and execution motifs with mini-apps. Evaluation includes Perlmutter and H100/B200 DGX systems, and reports up to 82% accuracy for predicting optimal circuit-cutting configurations. This does not establish production-scheduler availability, fairness, or safety.",
+          "hpci_relevance_ja": "従来schedulerへQPUを固定resourceとして追加するだけでなく、application semantics、calibration変動、queue、circuit分割を扱うmiddleware層が必要になる可能性があります。",
+          "hpci_relevance_en": "Rather than adding a QPU as a static resource to a conventional scheduler, HPCI may need a middleware layer that handles application semantics, calibration drift, queues, and circuit partitioning.",
+          "adoption_conditions_ja": [
+            "82% accuracyのtarget、baseline、test set、誤予測costを確認する。",
+            "既存batch scheduler、identity、accounting、予約、failure recoveryとの接続を実証する。",
+            "mini-appのmotifがHPCI対象applicationをどこまで代表するか評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify the target, baseline, test set, and cost of errors behind the 82% accuracy.",
+            "Demonstrate integration with batch scheduling, identity, accounting, reservations, and failure recovery.",
+            "Evaluate how well the mini-app motifs represent HPCI target applications."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS369"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS368",
+        "title": "量子HPC連携プラットフォーム向け新スーパーコンピュータ『ROQUO（ろっこう）』運用開始",
+        "publisher": "理化学研究所",
+        "url": "https://www.riken.jp/pr/news/2026/20260619_2/index.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-19"
+      },
+      "origin_group": "riken-roquo-operation",
+      "checked_at": "2026-09-02T05:04:00+09:00",
+      "locator": "System overview, measured performance, expected outcomes, SQC Interface, architecture, and access sections",
+      "observation_ja": "運用開始、node・CPU・GPU、network、冷却、HPL、接続対象、SQC Interface、test-user予定を確認しました。",
+      "observation_en": "Verified operation start, nodes, CPUs, GPUs, network, cooling, HPL, connected systems, SQC Interface, and planned test-user access.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS369",
+        "title": "Hybrid Quantum-HPC Middleware Systems for Adaptive Resource, Workload and Task Management",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2604.03445",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-04-03"
+      },
+      "origin_group": "pilot-quantum-middleware-preprint",
+      "checked_at": "2026-09-02T05:04:00+09:00",
+      "locator": "Abstract: four-layer model, motifs, Pilot-Quantum, Q-Dreamer, platforms, and reported accuracy",
+      "observation_ja": "4層middleware、late binding、mini-app、circuit cutting予測と評価範囲を確認しました。",
+      "observation_en": "Verified the four-layer middleware, late binding, mini-apps, circuit-cutting prediction, and evaluation scope.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "ROQUOのtest-user実績、SQC Interface仕様、QPUを含む性能・障害回復は未確認です。",
+    "Pilot-Quantum論文はpreprintで、production規模の独立再現は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "ROQUO test-user results, the SQC Interface specification, and QPU-inclusive performance and recovery remain unverified.",
+    "Pilot-Quantum is reported in a preprint, and independent production-scale reproduction remains unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

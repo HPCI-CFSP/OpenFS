@@ -1,0 +1,238 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000317",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T07:49:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000132",
+      "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"
+    },
+    {
+      "update_id": "RUP-000140",
+      "bundle_sha256": "71a190ed95189126bab43edcee3b29629a0ad6a366f658387ebf055b9cbe0aed"
+    },
+    {
+      "update_id": "RUP-000145",
+      "bundle_sha256": "5b37f9b86f63c1f8fabaad473aa85a2f754d3050ec747bf3d14e486c9878da97"
+    },
+    {
+      "update_id": "RUP-000157",
+      "bundle_sha256": "1e58801cb003f4df09a3e1b6f537fb20c46d42a961a5228aa11d3287893faa7e"
+    },
+    {
+      "update_id": "RUP-000170",
+      "bundle_sha256": "ab2251f291bd4b934847674b597394bb1129a0a9d4cb8f67245d45392419a012"
+    },
+    {
+      "update_id": "RUP-000287",
+      "bundle_sha256": "c5e8c9403005c3e114200f8478add8df3b9dfc0d3fc97b18cca0c072b463943d"
+    },
+    {
+      "update_id": "RUP-000302",
+      "bundle_sha256": "e4aefd4cd076e3d37d6069461f7cc73ce12e75de5308a99797a4190e304a2a8b"
+    },
+    {
+      "update_id": "RUP-000309",
+      "bundle_sha256": "3b97b22d8ca3872480e63f1f91de3dcdcc1585c9e795ef27d0fb2c3b04359bfe"
+    }
+  ],
+  "before_profile_sha256": "31382007a8b2e88c4cd4b0246a232f4a33d5fd997a97c0365bf738d7533920d2",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "AWS/NVIDIAの追加200万GPU計画と、2026年時点で実際に割り当て可能なP6 node、72-GPU NVLink domain、Capacity Block、Slurm clusterを分けて整理しました。総GPU数を設置済み・利用可能capacityと誤認せず、HPCIではtopology、予約、電力、security、data移動、総費用を含めて比較します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update separates the AWS-NVIDIA plan for two million additional GPUs from P6 nodes, 72-GPU NVLink domains, Capacity Blocks, and Slurm clusters that are actually allocatable in 2026. Aggregate GPU counts are not treated as installed or accessible capacity; HPCI comparisons must include topology, reservations, power, security, data movement, and total cost. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "ad7566c8a92b974a33cf6cbae156e011651f3377371336fa50bca57067fd2d05",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U01",
+        "TDS-HW3-ARCH-05-U01",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02",
+        "TDS-CD14-ARCH-05-U01-U02",
+        "TDS-CD3-ARCH-05-VERA-RUBIN-PUBLIC-SYSTEMS",
+        "TDS-CD4-ARCH-05-RIKYU-OPERATION",
+        "TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE",
+        "TDS-CD31-ARCH-05-AWS-ALLOCATABLE-AI-SCALE"
+      ]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "41fc06a392366ac47f21b891e255cb96c667e4f68e4b461135c70ba032d78616",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U02",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02",
+        "TDS-CD14-ARCH-05-U01-U02",
+        "TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE",
+        "TDS-CD31-ARCH-05-AWS-ALLOCATABLE-AI-SCALE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD31-ARCH-05-AWS-ALLOCATABLE-AI-SCALE",
+      "title_ja": "AWSの計画GPU総量と利用者へ割り当てるsystem単位",
+      "title_en": "AWS planned GPU fleet and allocatable system units",
+      "summary_ja": "将来のGPU総数というcapacity計画と、現時点で利用者が予約・実行できるnode、NVLink domain、Slurm clusterの単位を分けて整理します。",
+      "summary_en": "Separate future fleet-capacity plans from the node, NVLink-domain, and Slurm-cluster units that users can reserve and run today.",
+      "items": [
+        {
+          "item_id": "TDI-CD126-AWS-TWO-MILLION-GPU-PLAN",
+          "name_ja": "2027～2028年の追加200万GPU計画",
+          "name_en": "Plan for two million additional GPUs in 2027-2028",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年8月発表、2027～2028年の展開計画",
+          "timing_en": "Announced August 2026 for planned deployment in 2027-2028",
+          "statement_ja": "AWSとNVIDIAは、AWSのglobal infrastructureへBlackwell Ultra、Rubin、Rubin Ultraを含むNVIDIA GPUを2027～2028年に追加200万基展開する計画を発表しました。Vera CPU基盤、Trainium向けNVLink FusionとNVHBM、Spectrum network、Nitro/EFAも共同設計範囲に含み、米国政府向けsecure infrastructureには10万GPUを計画しています。この数字は契約・設置・稼働・利用可能性が確認された同一時点のcapacityではなく、複数世代と複数地域を合算したforward-looking planです。地域別台数、電力、rack数、利用料金、予約単位、各世代の内訳は公表されていません。",
+          "statement_en": "AWS and NVIDIA announced a plan to deploy two million additional NVIDIA GPUs, including Blackwell Ultra, Rubin, and Rubin Ultra, across AWS global infrastructure in 2027-2028. The co-engineering scope also includes Vera CPU infrastructure, NVLink Fusion with NVHBM for Trainium, Spectrum networking, and Nitro/EFA, while 100,000 GPUs are planned for secure U.S. government infrastructure. The number is a forward-looking aggregate across generations and regions, not capacity proven under one definition of contracted, installed, operational, and customer-accessible systems. Regional counts, power, racks, prices, reservation units, and generation mix are not disclosed.",
+          "hpci_relevance_ja": "HPCIの規模比較ではGPU台数だけを競争目標にせず、利用可能なsystem単位、継続供給、電力、network、software、主権・隔離要件を同じ表で比較する必要があります。",
+          "hpci_relevance_en": "HPCI scale comparisons should not use GPU count alone; allocatable system units, supply continuity, power, networking, software, sovereignty, and isolation requirements must be compared together.",
+          "adoption_conditions_ja": [
+            "計画値を契約済み、設置済み、稼働済み、一般利用可能の四段階に分けて追跡する。",
+            "GPU世代、地域、network、電力、料金、最低予約単位を揃えてHPCI候補と比較する。",
+            "公共・機密workloadでは国内法、data residency、運用責任、退出可能性を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Track planned capacity separately as contracted, installed, operational, and generally accessible.",
+            "Align GPU generation, region, network, power, price, and minimum reservation unit before comparison with HPCI options.",
+            "For public and confidential workloads, verify domestic-law compliance, data residency, operational responsibility, and exit options."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS417"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD127-AWS-CURRENT-ALLOCATABLE-GPU-UNITS",
+          "name_ja": "2026年時点のnode・NVLink domain・Slurm cluster予約単位",
+          "name_en": "Node, NVLink-domain, and Slurm-cluster reservation units available in 2026",
+          "stage": "current",
+          "maturity": "commercial",
+          "timing_ja": "2026年5～6月に提供・対応を公表",
+          "timing_en": "Availability and support announced in May-June 2026",
+          "statement_ja": "2026年の実提供情報では、P6-B200 instanceは8基のB200、合計1,440 GB HBM、最大3.2 Tb/sのEFAv4を備え、Secret-Eastで提供されています。AWS Parallel Computing Serviceは、P6e-GB200/GB300 UltraServerをSlurm管理clusterとして扱い、GB200では72 GPUの一つのNVLink domain、合計13.4 TB HBM、FP8理論性能360 PFLOPS（sparsityなし）を公表しています。GovCloudのCapacity BlocksはP6-B200/B300を1～64 instance、最長6か月、最大8週間前から予約できます。したがって、将来の総GPU数よりも、node、72-GPU domain、予約block、Slurm clusterのどの単位で利用できるかが実用上の比較軸になります。なお、region、security domain、販売契約が異なり、全構成を日本から同条件で利用できることは意味しません。",
+          "statement_en": "Current 2026 availability information shows P6-B200 instances with eight B200 GPUs, 1,440 GB of aggregate HBM, and up to 3.2 Tb/s EFAv4 in the Secret-East Region. AWS Parallel Computing Service supports P6e-GB200 and GB300 UltraServers as Slurm-managed clusters; GB200 exposes one 72-GPU NVLink domain, 13.4 TB of aggregate HBM, and 360 PFLOPS of theoretical FP8 compute without sparsity. GovCloud Capacity Blocks allow reservations of one to 64 P6-B200 or B300 instances for up to six months and up to eight weeks in advance. The practical comparison is therefore the allocatable node, 72-GPU domain, reservation block, and Slurm cluster rather than future fleet totals. Regions, security domains, and commercial terms differ, so these configurations are not necessarily available from Japan under equivalent conditions.",
+          "hpci_relevance_ja": "cloud burstingや外部AI資源を整備案へ含める場合は、理論規模ではなく予約可能期間、topology、scheduler統合、data transfer、security区分、実効費用で受入判定する必要があります。",
+          "hpci_relevance_en": "If cloud bursting or external AI capacity is included in a system plan, acceptance must use reservable duration, topology, scheduler integration, data transfer, security classification, and delivered cost rather than theoretical fleet scale.",
+          "adoption_conditions_ja": [
+            "日本から利用可能なregion、契約、輸出管理、data transfer経路、料金を確認する。",
+            "Slurm topology、job queue、予約取消、障害時補償、multi-tenant性能隔離を実測する。",
+            "同一applicationでon-premise HPCIとcloudのtime-to-solution、data移動時間、総費用を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Confirm regions, contracts, export controls, data-transfer paths, and prices available from Japan.",
+            "Measure Slurm topology, queues, cancellation, failure remedies, and multi-tenant performance isolation.",
+            "Compare time to solution, data-transfer time, and total cost with on-premises HPCI using the same applications."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS418",
+            "SRC-CDS419",
+            "SRC-CDS420"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS417",
+        "title": "AWS and NVIDIA to Deliver 2 Million Additional GPUs and Next-Generation Infrastructure for Agentic and Physical AI",
+        "publisher": "Amazon Web Services and NVIDIA",
+        "url": "https://press.aboutamazon.com/aws/2026/8/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "src-cds417-official",
+      "checked_at": "2026-09-02T05:43:00+09:00",
+      "locator": "Capacity plan, 2027-2028 timing, GPU generations, Vera, NVHBM, networking, and U.S. government scope",
+      "observation_ja": "GPU総数の計画、対象世代、関連部品、政府向け区画を確認しました。",
+      "observation_en": "Verified the aggregate GPU plan, generations, associated components, and government scope.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS418",
+        "title": "AWS Parallel Computing Service supports P6e-GB200 and P6e-GB300 UltraServers",
+        "publisher": "Amazon Web Services",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/06/aws-parallel-computing-service/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-18"
+      },
+      "origin_group": "src-cds418-official",
+      "checked_at": "2026-09-02T05:43:00+09:00",
+      "locator": "P6e UltraServer Slurm support, 72-GPU NVLink domain, HBM capacity, FP8 figure, and availability constraints",
+      "observation_ja": "Slurm対応、72-GPU domain、HBM、理論性能と利用条件を確認しました。",
+      "observation_en": "Verified Slurm support, the 72-GPU domain, HBM, theoretical performance, and access conditions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS419",
+        "title": "Amazon EC2 Capacity Blocks for ML is now available in AWS GovCloud (US) Regions",
+        "publisher": "Amazon Web Services",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/06/amazon-ec2-capacity-blocks-ml-govcloud/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-12"
+      },
+      "origin_group": "src-cds419-official",
+      "checked_at": "2026-09-02T05:43:00+09:00",
+      "locator": "GovCloud Capacity Blocks reservation lead time, duration, cluster size, and supported P6 instances",
+      "observation_ja": "予約期間、予約単位、対象regionとinstanceを確認しました。",
+      "observation_en": "Verified reservation duration, unit, supported regions, and instances.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS420",
+        "title": "Amazon EC2 P6-B200 instances are now available",
+        "publisher": "Amazon Web Services",
+        "url": "https://aws.amazon.com/about-aws/whats-new/2026/05/amazon-ec2-p6-b200-instances-now-available/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-05-28"
+      },
+      "origin_group": "src-cds420-official",
+      "checked_at": "2026-09-02T05:43:00+09:00",
+      "locator": "P6-B200 node composition, HBM, EFA bandwidth, and Secret-East availability",
+      "observation_ja": "node当たりGPU、HBM、network、提供regionを確認しました。",
+      "observation_en": "Verified GPUs, HBM, network, and availability region per node.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "2027～2028年の200万GPUについて契約、設置、稼働、一般利用可能の内訳は未公表です。",
+    "日本から利用可能なregion、価格、最低予約単位、data移動費、主権・法令条件は未確認です。",
+    "HPCI applicationによるon-premiseとcloudの同条件比較および独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The contracted, installed, operational, and generally accessible breakdown of the planned two million GPUs is not public.",
+    "Regions, pricing, minimum reservation units, data-transfer charges, sovereignty, and legal conditions available from Japan remain unverified.",
+    "Matched on-premises versus cloud tests with HPCI applications and independent-model Consensus remain incomplete."
+  ]
+}
