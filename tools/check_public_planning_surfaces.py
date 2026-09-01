@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+try:
+    from .check_performance_model_card import evaluate as evaluate_performance_model_card
+except ImportError:  # pragma: no cover - direct script execution
+    from check_performance_model_card import evaluate as evaluate_performance_model_card
+
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCALES = [1, 4, 32, 128, 1024, 10000]
@@ -409,105 +414,209 @@ def validate(root: Path = ROOT) -> list[str]:
                 / baseline_metrics["node-memory-bandwidth"],
             )
 
-    forecast_ids = [item["forecast_id"] for item in forecasts["forecasts"]]
-    if duplicates := duplicate_values(forecast_ids):
-        errors.append(f"duplicate forecast IDs: {duplicates}")
-    for forecast in forecasts["forecasts"]:
-        if forecast["application_id"] not in known_application_ids:
+    illustration_ids = [item["illustration_id"] for item in forecasts["illustrations"]]
+    if duplicates := duplicate_values(illustration_ids):
+        errors.append(f"duplicate performance-illustration IDs: {duplicates}")
+    legacy_forecast_ids = [
+        item["legacy_forecast_id"] for item in forecasts["illustrations"]
+    ]
+    if duplicates := duplicate_values(legacy_forecast_ids):
+        errors.append(f"duplicate legacy forecast IDs: {duplicates}")
+    for illustration in forecasts["illustrations"]:
+        item_id = illustration["illustration_id"]
+        if illustration["application_id"] not in known_application_ids:
             errors.append(
-                f"{forecast['forecast_id']} references unknown application "
-                f"{forecast['application_id']}"
+                f"{item_id} references unknown application "
+                f"{illustration['application_id']}"
             )
-        if forecast["fugaku_nodes"] not in EXPECTED_SCALES:
+        if illustration["fugaku_nodes"] not in EXPECTED_SCALES:
             errors.append(
-                f"{forecast['forecast_id']} uses a non-standard Fugaku scale"
+                f"{item_id} uses a non-standard Fugaku scale"
             )
-        if forecast["candidate_system_id"] not in known_candidate_system_ids:
+        if illustration["candidate_system_id"] not in known_candidate_system_ids:
             errors.append(
-                f"{forecast['forecast_id']} references unknown candidate system "
-                f"{forecast['candidate_system_id']}"
+                f"{item_id} references unknown candidate system "
+                f"{illustration['candidate_system_id']}"
             )
-        unknown_assumptions = set(forecast["assumption_ids"]) - known_assumption_ids
+        if illustration["model_card_id"] != forecasts["model_contract"]["model_card_id"]:
+            errors.append(f"{item_id} references an unknown model card")
+        unknown_assumptions = (
+            set(illustration["assumption_ids"]) - known_assumption_ids
+        )
         if unknown_assumptions:
             errors.append(
-                f"{forecast['forecast_id']} has unknown assumptions "
+                f"{item_id} has unknown assumptions "
                 f"{sorted(unknown_assumptions)}"
             )
-        unknown_sources = set(forecast["basis_source_ids"]) - forecast_source_ids
+        unknown_sources = set(illustration["basis_source_ids"]) - forecast_source_ids
         if unknown_sources:
             errors.append(
-                f"{forecast['forecast_id']} has unknown basis sources "
+                f"{item_id} has unknown basis sources "
                 f"{sorted(unknown_sources)}"
             )
-        estimate = forecast["estimate"]
+        estimate = illustration["estimate"]
         if not estimate["lower"] <= estimate["base"] <= estimate["upper"]:
             errors.append(
-                f"{forecast['forecast_id']} estimate must satisfy lower <= base <= upper"
+                f"{item_id} estimate must satisfy lower <= base <= upper"
             )
-        if set(forecast["calibration_dataset_ids"]) & set(
-            forecast["validation_dataset_ids"]
+        if (
+            illustration["confidence"] != "low"
+            or illustration["consensus_status"] != "incomplete"
+            or illustration["procurement_eligible"]
         ):
             errors.append(
-                f"{forecast['forecast_id']} reuses calibration data for validation"
+                f"{item_id} must remain low-confidence, Consensus-incomplete, "
+                "and procurement-ineligible"
             )
-        if forecast["forecast_class"] == "analytical-provisional":
-            if (
-                forecast["confidence"] != "low"
-                or forecast["consensus_status"] != "incomplete"
-                or forecast["procurement_eligible"]
-                or forecast["calibration_dataset_ids"]
-                or forecast["validation_dataset_ids"]
-            ):
-                errors.append(
-                    f"{forecast['forecast_id']} analytical forecast must remain "
-                    "low-confidence, unvalidated, and procurement-ineligible"
+        if len(illustration["assumption_ids"]) == 1 and model_limit_ratio is not None:
+            assumption = assumptions.get(illustration["assumption_ids"][0])
+            if assumption and assumption["application_id"] == illustration["application_id"]:
+                fraction = assumption["accelerator_eligible_fraction"]
+                local_speedup = 1 / ((1 - fraction) + fraction / model_limit_ratio)
+                retention = next(
+                    (
+                        item["factor"]
+                        for item in assumption["scale_retention"]
+                        if item["fugaku_nodes"] == illustration["fugaku_nodes"]
+                    ),
+                    None,
                 )
-            if len(forecast["assumption_ids"]) == 1 and model_limit_ratio is not None:
-                assumption = assumptions.get(forecast["assumption_ids"][0])
-                if assumption and assumption["application_id"] == forecast["application_id"]:
-                    fraction = assumption["accelerator_eligible_fraction"]
-                    local_speedup = 1 / ((1 - fraction) + fraction / model_limit_ratio)
-                    retention = next(
-                        (
-                            item["factor"]
-                            for item in assumption["scale_retention"]
-                            if item["fugaku_nodes"] == forecast["fugaku_nodes"]
-                        ),
-                        None,
-                    )
-                    if retention is not None:
-                        expected_base = local_speedup * retention
-                        if abs(estimate["base"] - expected_base) > 0.11:
-                            errors.append(
-                                f"{forecast['forecast_id']} base estimate is not reproducible "
-                                "from the declared model"
-                            )
-                        if abs(estimate["lower"] - expected_base * 0.5) > 0.11:
-                            errors.append(
-                                f"{forecast['forecast_id']} lower bound is not the declared 0.5x"
-                            )
-                        if abs(estimate["upper"] - expected_base * 1.5) > 0.11:
-                            errors.append(
-                                f"{forecast['forecast_id']} upper bound is not the declared 1.5x"
-                            )
+                if retention is not None:
+                    expected_base = local_speedup * retention
+                    if abs(estimate["base"] - expected_base) > 0.11:
+                        errors.append(
+                            f"{item_id} base estimate is not reproducible "
+                            "from the declared model"
+                        )
+                    if abs(estimate["lower"] - expected_base * 0.5) > 0.11:
+                        errors.append(
+                            f"{item_id} lower bound is not the declared 0.5x"
+                        )
+                    if abs(estimate["upper"] - expected_base * 1.5) > 0.11:
+                        errors.append(
+                            f"{item_id} upper bound is not the declared 1.5x"
+                        )
 
-    forecast_cells = [
+    illustration_cells = [
         (item["application_id"], item["fugaku_nodes"])
-        for item in forecasts["forecasts"]
+        for item in forecasts["illustrations"]
     ]
-    if duplicates := duplicate_values([f"{app}:{scale}" for app, scale in forecast_cells]):
-        errors.append(f"duplicate application-scale forecasts: {duplicates}")
+    if duplicates := duplicate_values(
+        [f"{app}:{scale}" for app, scale in illustration_cells]
+    ):
+        errors.append(f"duplicate application-scale illustrations: {duplicates}")
     expected_cells = {
         (application_id, scale)
         for application_id in known_application_ids
         for scale in EXPECTED_SCALES
     }
-    missing_cells = expected_cells - set(forecast_cells)
+    missing_cells = expected_cells - set(illustration_cells)
     if missing_cells:
         errors.append(
-            "application forecasts must cover every declared application-scale cell: "
+            "legacy illustrations must cover every declared application-scale cell: "
             f"{sorted(missing_cells)}"
         )
+
+    validated_model_card_ids = [
+        item["model_card_id"] for item in forecasts["validated_model_cards"]
+    ]
+    if duplicates := duplicate_values(validated_model_card_ids):
+        errors.append(f"duplicate validated performance-model card IDs: {duplicates}")
+    validated_model_cards = {
+        item["model_card_id"]: item for item in forecasts["validated_model_cards"]
+    }
+    for model_card in forecasts["validated_model_cards"]:
+        model_card_id = model_card["model_card_id"]
+        result = evaluate_performance_model_card(model_card)
+        if not result["candidate_ready_for_consensus"]:
+            errors.append(
+                f"{model_card_id} fails deterministic performance-model validation: "
+                f"{result['calculation_errors']}"
+            )
+        if (
+            model_card["status"] != "accepted"
+            or model_card["consensus_status"] != "accepted"
+        ):
+            errors.append(
+                f"{model_card_id} must be accepted by independent Consensus before "
+                "supporting a formal forecast"
+            )
+
+    forecast_ids = [item["forecast_id"] for item in forecasts["forecasts"]]
+    if duplicates := duplicate_values(forecast_ids):
+        errors.append(f"duplicate forecast IDs: {duplicates}")
+    if overlapping_ids := set(forecast_ids) & set(legacy_forecast_ids):
+        errors.append(
+            "formal forecast IDs must not reuse legacy forecast IDs: "
+            f"{sorted(overlapping_ids)}"
+        )
+    for forecast in forecasts["forecasts"]:
+        item_id = forecast["forecast_id"]
+        if forecast["application_id"] not in known_application_ids:
+            errors.append(
+                f"{item_id} references unknown application "
+                f"{forecast['application_id']}"
+            )
+        if forecast["fugaku_nodes"] not in EXPECTED_SCALES:
+            errors.append(f"{item_id} uses a non-standard Fugaku scale")
+        if forecast["candidate_system_id"] not in known_candidate_system_ids:
+            errors.append(
+                f"{item_id} references unknown candidate system "
+                f"{forecast['candidate_system_id']}"
+            )
+        model_card = validated_model_cards.get(forecast["model_card_id"])
+        if model_card is None:
+            errors.append(
+                f"{item_id} references a model card that is not validated and "
+                "Consensus-accepted"
+            )
+        unknown_assumptions = set(forecast["assumption_ids"]) - known_assumption_ids
+        if unknown_assumptions:
+            errors.append(
+                f"{item_id} has unknown assumptions {sorted(unknown_assumptions)}"
+            )
+        unknown_sources = set(forecast["basis_source_ids"]) - forecast_source_ids
+        if unknown_sources:
+            errors.append(
+                f"{item_id} has unknown basis sources {sorted(unknown_sources)}"
+            )
+        estimate = forecast["estimate"]
+        if not estimate["lower"] <= estimate["base"] <= estimate["upper"]:
+            errors.append(
+                f"{item_id} estimate must satisfy lower <= base <= upper"
+            )
+        if set(forecast["calibration_dataset_ids"]) & set(
+            forecast["validation_dataset_ids"]
+        ):
+            errors.append(f"{item_id} reuses calibration data for validation")
+        if model_card is not None:
+            card_calibration_ids = set(model_card["calibration_dataset_ids"])
+            card_validation_ids = {
+                item["dataset_id"] for item in model_card["validations"]
+            }
+            if not set(forecast["calibration_dataset_ids"]).issubset(
+                card_calibration_ids
+            ):
+                errors.append(
+                    f"{item_id} uses calibration data absent from its model card"
+                )
+            if not set(forecast["validation_dataset_ids"]).issubset(
+                card_validation_ids
+            ):
+                errors.append(
+                    f"{item_id} uses validation data absent from its model card"
+                )
+        if (
+            forecast["forecast_class"] != "validated"
+            or not forecast["calibration_dataset_ids"]
+            or not forecast["validation_dataset_ids"]
+            or forecast["confidence"] not in {"medium", "high"}
+            or forecast["consensus_status"] != "accepted"
+        ):
+            errors.append(
+                f"{item_id} must be calibrated, independently validated, "
+                "Consensus-accepted, and at least medium confidence"
+            )
 
     if forecasts["model_contract"]["procurement_use"] == "validated":
         if forecasts["consensus_status"] != "accepted" or not forecasts["forecasts"]:

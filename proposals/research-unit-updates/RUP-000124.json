@@ -1,0 +1,226 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000124",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-01T16:40:40+09:00",
+  "base_commit": "ebc88b9f1f9a59dc901f1dde490d795f24c27002",
+  "before_profile_sha256": "0f291081c7ef565776cfc69d258f5b4e1ff11091e04f1d7f049bb0bda5b6da71",
+  "human_directive_id": "DIR-900020",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "プログラミング仕様、コンパイラ実装、移植事例に加え、機能検証、カーネル比較、アプリケーション比較を異なる層として扱います。SPEChpc、RAJAPerf、OpenMP V&Vは再現可能な比較設計を補完しますが、単独では移植工数、長期保守性、HPCIアプリケーション全体の性能維持を示しません。単一のAIモデルによる暫定調査であり、実機再現と独立Consensusは未完了です。",
+  "summary_en": "In addition to programming specifications, compiler implementations and porting cases, this update treats feature validation, kernel comparison and application comparison as distinct layers. SPEChpc, RAJAPerf and OpenMP V&V complement a reproducible comparison design, but none alone establishes porting effort, long-term maintenance or retained whole-application performance for HPCI workloads. This is provisional single-model research; hardware reproduction and independent Consensus remain incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U04",
+      "before_sha256": "42e7938c0df6f2c446495af1e113348fd78cdce74b3f33e9aeac630cb2b3723e",
+      "evidence_section_ids": [
+        "TDS-CD1-SSW-01-U04",
+        "TDS-CD6-SSW-01-U04",
+        "TDS-CD8-SSW-01-U04"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD8-SSW-01-U04",
+      "title_ja": "版を固定した可搬性評価の三つの層",
+      "title_en": "Three layers of version-pinned portability evaluation",
+      "summary_ja": "機能適合性、代表カーネル、実アプリケーションを分け、同じ版、入力、測定範囲で継続的に比較します。",
+      "summary_en": "Separate feature conformance, representative kernels and applications, and compare them continuously with pinned versions, inputs and measurement boundaries.",
+      "items": [
+        {
+          "item_id": "TDI-CD8-SSW01-PORTABILITY-LAYERED-EVALUATION",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDS011",
+            "SRC-CDS124",
+            "SRC-CDS125"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "機能、カーネル、アプリケーションを分けた評価",
+          "name_en": "Separate feature, kernel and application evaluation",
+          "timing_ja": "2026年9月1日時点の公開比較基盤",
+          "timing_en": "Public comparison infrastructure checked on September 1, 2026",
+          "statement_ja": "OpenMP V&Vはコンパイラ機能の適合性、RAJAPerfは複数実装による代表カーネルの性能、SPEChpcは複数プログラミングモデルによる実アプリケーションとミニアプリケーションの結果を扱います。OpenFSは、これらを代替関係ではなく三つの検証層として組み合わせます。ただし、異なる基盤の得点や実行時間を直接統合せず、版、入力、正解条件、資源範囲を固定します。",
+          "statement_en": "OpenMP V&V addresses compiler-feature conformance, RAJAPerf compares representative kernels through multiple implementations, and SPEChpc reports full-application and mini-app results using multiple programming models. OpenFS treats these as three complementary validation layers rather than substitutes. Scores or runtimes from different suites must not be combined directly; versions, inputs, correctness criteria and resource boundaries must be pinned.",
+          "hpci_relevance_ja": "機能対応表だけで候補スタックを選ばず、HPCIアプリケーションの実行可能性と性能維持を段階的に確認できます。",
+          "hpci_relevance_en": "This enables staged checks of HPCI application viability and retained performance instead of selecting a stack from feature tables alone.",
+          "adoption_conditions_ja": [
+            "各層でコンパイラ、SDK、ライブラリ、入力、精度、計測区間の版と条件を固定する。",
+            "同じ失敗事象を、機能未実装、ビルド不成立、数値不一致、性能低下に分類する。",
+            "移植工数、コード差分、保守期間は別の記録として追加する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin compilers, SDKs, libraries, inputs, precision and timed regions at each layer.",
+            "Classify failures as missing features, build failures, numerical mismatches or performance regressions.",
+            "Add porting effort, code changes and maintenance duration as separate records."
+          ]
+        },
+        {
+          "item_id": "TDI-CD8-SSW01-SPECHPC-COMPARABILITY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS124"
+          ],
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete",
+          "name_ja": "SPEChpc 2021: アプリケーション層の複数モデル比較",
+          "name_en": "SPEChpc 2021: multi-model application-level comparison",
+          "timing_ja": "v1.1.10は2025年10月公開",
+          "timing_en": "Version 1.1.10 released in October 2025",
+          "statement_ja": "SPEChpc 2021は、TinyからLargeまでの科学・工学コードを、MPI、MPI+OpenACC、MPI+OpenMP、MPI+OpenMP target offloadで評価し、提出結果を公開します。現行版はv1.1.10です。v1.1のOpenACCとOpenMP target offloadには性能に影響する変更があり、v1.0の結果と比較できない場合があります。配布には購入または非商用ライセンスの申請が必要で、公開結果だけではソースコードの差分や移植工数を再現できません。",
+          "statement_en": "SPEChpc 2021 evaluates scientific and engineering codes from Tiny through Large using MPI, MPI+OpenACC, MPI+OpenMP and MPI+OpenMP target offload and publishes submitted results. The current version is v1.1.10. Performance-relevant v1.1 changes to OpenACC and OpenMP target offload can make results non-comparable with v1.0. Distribution requires purchase or a non-commercial licence request, and public results alone do not reproduce source changes or porting effort.",
+          "hpci_relevance_ja": "複数ノードを含むアプリケーション層の共通比較候補ですが、版間の比較可能性と配布条件を評価計画に含めます。",
+          "hpci_relevance_en": "It is a candidate for common application-level comparisons including multiple nodes, with version comparability and distribution conditions included in the evaluation plan.",
+          "adoption_conditions_ja": [
+            "スイートの版、問題規模、プログラミングモデル、コンパイラ、結果開示資料を固定する。",
+            "公開結果を現行センター環境の性能や移植容易性へ直接外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin suite version, workload size, programming model, compiler and result disclosure.",
+            "Do not extrapolate published results directly to current center performance or migration effort."
+          ]
+        },
+        {
+          "item_id": "TDI-CD8-SSW01-RAJAPERF-PINNED-KERNELS",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS125"
+          ],
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete",
+          "name_ja": "RAJAPerf: 依存関係を固定したカーネル比較",
+          "name_en": "RAJAPerf: kernel comparisons with pinned dependencies",
+          "timing_ja": "公開資料が示す現行ベンチマーク版はv2026.04.1",
+          "timing_en": "The public documentation identifies v2026.04.1 as the current benchmark version",
+          "statement_ja": "RAJA Performance Suiteは、OpenMP、CUDA、HIP等によるRAJA版と非RAJA版の代表カーネルを比較します。ベンチマーク用リポジトリはRAJA等をサブモジュールとして固定し、ベースライン、実行用スクリプト、解析用スクリプトを含みます。公式資料は、ノード資源を誤って代表しないようMPIで実行すること、RAJA版と非RAJA版が原則として同じ演算を行うことを求めます。一方、カーネルの結果は、通信を含むアプリケーション全体の性能や移植工数を示しません。",
+          "statement_en": "The RAJA Performance Suite compares representative kernels in RAJA and non-RAJA variants using models such as OpenMP, CUDA and HIP. Its benchmark repository pins RAJA and other dependencies as submodules and includes baselines plus run and analysis scripts. Official documentation requires MPI execution to avoid misrepresenting node resources and expects RAJA and non-RAJA variants to perform the same operations in most cases. Kernel results do not establish whole-application behavior with communication or porting effort.",
+          "hpci_relevance_ja": "センターの継続的インテグレーションで、コンパイラやGPU世代の性能退行を追跡する候補になります。",
+          "hpci_relevance_en": "It is a candidate for center CI that tracks compiler- and GPU-generation regressions.",
+          "adoption_conditions_ja": [
+            "ベンチマークのタグとサブモジュールのダイジェスト、ホスト設定、MPIランク数、問題規模を保存する。",
+            "カーネルの性能維持とアプリケーション全体の性能維持を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve benchmark tag and submodule digests, host configuration, MPI ranks and problem size.",
+            "Separate retained kernel performance from retained whole-application performance."
+          ]
+        },
+        {
+          "item_id": "TDI-CD8-SSW01-OPENMPVV-CORRECTNESS-BOUNDARY",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDS011"
+          ],
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete",
+          "name_ja": "OpenMP V&V: 機能適合性とアプリケーション妥当性の境界",
+          "name_en": "OpenMP V&V: boundary between feature conformance and application validity",
+          "timing_ja": "2026年9月1日に活動中のリポジトリを確認",
+          "timing_en": "Active repository checked on September 1, 2026",
+          "statement_ja": "OpenMP Validation and Verificationは、2023年に終了したECP SOLLVEのテストスイートを引き継ぐ、ORNLとUniversity of Delawareの活動中のプロジェクトです。OpenMP offloadingの機能を個別に試験できますが、テストスイートの合格は、対象アプリケーションの数値妥当性、性能、通信動作、移植工数を保証しません。",
+          "statement_en": "OpenMP Validation and Verification is an active ORNL and University of Delaware project continuing the suite from ECP SOLLVE, which concluded in 2023. It can test individual OpenMP offloading features, but a suite pass does not establish application numerical validity, performance, communication behavior or porting effort.",
+          "hpci_relevance_ja": "候補コンパイラの機能退行を、アプリケーション試験より前に検出する第一段階として利用できます。",
+          "hpci_relevance_en": "It can serve as a first stage for detecting compiler-feature regressions before application testing.",
+          "adoption_conditions_ja": [
+            "リポジトリのコミット、試験項目、コンパイラ、対象デバイス、結果を保存する。",
+            "未実装、未試験、失敗を区別し、アプリケーション層の判定へ置き換えない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve repository commit, test subset, compiler, target device and results.",
+            "Distinguish missing, untested and failed cases; do not replace application-level qualification."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD7-SSW-01-U04"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS011",
+        "title": "OpenMP Validation and Verification official repository",
+        "publisher": "OpenMP Validation and Verification Project",
+        "url": "https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV",
+        "source_class": "official-project",
+        "published_or_updated": "Repository README inspected 2026-09-01; revision not exposed by managed view"
+      },
+      "origin_group": "openmp-vv-project",
+      "checked_at": "2026-09-01T16:40:30+09:00",
+      "locator": "README: project continuation, participating organizations and OpenMP offloading validation scope",
+      "observation_ja": "SOLLVE終了後も継続する活動中のプロジェクトとoffloadingテストスイートを確認しました。機能試験をアプリケーション性能や妥当性の証明とは扱いません。",
+      "observation_en": "Confirmed the active successor project and offloading test suite; feature tests are not treated as proof of application performance or validity.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS124",
+        "title": "SPEChpc 2021 benchmark",
+        "publisher": "Standard Performance Evaluation Corporation",
+        "url": "https://www.spec.org/hpc2021/",
+        "source_class": "official-project",
+        "published_or_updated": "Version 1.1.10 released October 2025; page inspected 2026-09-01"
+      },
+      "origin_group": "spec-hpc2021-suite",
+      "checked_at": "2026-09-01T16:40:30+09:00",
+      "locator": "Benchmark description, version notice, features, submitted results and distribution links",
+      "observation_ja": "4種類の問題規模、複数モデル、公開提出結果、v1.1.10、v1.0とのoffload比較制約、購入・非商用ライセンスの経路を確認しました。ソースコードの差分や移植工数は公開結果から推定していません。",
+      "observation_en": "Read the four sizes, multiple models, submitted results, v1.1.10 status, offload comparability caveat with v1.0 and purchase/non-commercial licence routes; no code-diff or porting-effort evidence was inferred.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS125",
+        "title": "RAJA Performance Suite in ATS-6 Benchmarks",
+        "publisher": "Lawrence Livermore National Laboratory",
+        "url": "https://software.llnl.gov/benchmarks/13_rajaperf/rajaperf.html",
+        "source_class": "official-project",
+        "published_or_updated": "Documentation identifies benchmark v2026.04.1; page inspected 2026-09-01"
+      },
+      "origin_group": "llnl-rajaperf-benchmark",
+      "checked_at": "2026-09-01T16:40:30+09:00",
+      "locator": "Purpose, characteristics, v2026.04.1 source instructions, MPI execution rule and source-modification rules",
+      "observation_ja": "複数実装のカーネル、固定したサブモジュールとベースライン、MPIによるノード資源利用、原則として同じ演算を行う規則を確認しました。アプリケーション全体や移植工数の結果とは扱いません。",
+      "observation_en": "Read multi-implementation kernels, pinned submodules and baselines, MPI node-resource rule and same-operation expectation; these are not treated as whole-application or porting-effort results.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-005は未解決です。版を固定した継続的インテグレーションを実際に構築し、同じHPCIコードで機能、数値妥当性、性能、コード差分、移植工数、保守性を測定する必要があります。",
+    "SPEChpcの配布条件、RAJAPerfのカーネル範囲、OpenMP V&Vの機能試験を、同一尺度の完了指標として統合しません。",
+    "実機・ベンチマークの実行と独立したAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-005 remains open. A version-pinned CI must actually measure functionality, numerical validity, performance, code changes, porting effort and maintenance for common HPCI code.",
+    "Do not combine SPEChpc distribution constraints, RAJAPerf kernel scope and OpenMP V&V feature tests into one completion score.",
+    "Hardware and benchmark execution and independent-model Consensus remain incomplete."
+  ],
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000123",
+      "bundle_sha256": "1ef456dc879be0d4d7d0ad3b861427e3246a47840aedc1d2c951a03ef1d956c1"
+    }
+  ]
+}

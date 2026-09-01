@@ -266,9 +266,9 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
         self.assertEqual("https://github.com/SALMON-TDDFT/SALMON2", source["url"])
         app = next(a for a in forecast["applications"] if a["application_id"] == "APP-EEA1-SALMON")
         self.assertIn("SRC-PERF015", app["code_availability"]["source_ids"])
-        for result in forecast["forecasts"]:
+        for result in forecast["illustrations"]:
             self.assertNotIn("SRC-PERF015", result["basis_source_ids"])
-            self.assertEqual([], result["calibration_dataset_ids"])
+        self.assertEqual([], forecast["forecasts"])
 
     def test_porting_measurements_keep_cmg_and_study_version_boundaries(self):
         update = read("proposals/research-unit-updates/RUP-000121.json")
@@ -295,7 +295,19 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
 
     def test_legacy_what_if_values_are_explicitly_uncalibrated(self):
         forecast = read("knowledge/public/application-performance-forecasts.json")
-        self.assertEqual(36, len(forecast["forecasts"]))
+        self.assertEqual("0.4.0", forecast["schema_version"])
+        self.assertEqual(36, len(forecast["illustrations"]))
+        self.assertEqual([], forecast["forecasts"])
+        self.assertEqual(
+            "legacy-what-if-illustration",
+            forecast["model_contract"]["output_class"],
+        )
+        self.assertTrue(
+            all(
+                item["legacy_forecast_id"].startswith("FORECAST-")
+                for item in forecast["illustrations"]
+            )
+        )
         self.assertEqual("incomplete", forecast["consensus_status"])
         self.assertIn("not a measured fraction", forecast["model_contract"]["limitations_en"])
         self.assertIn("neither a statistical confidence interval", forecast["model_contract"]["interval_method_en"])
@@ -303,6 +315,42 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
             self.assertIn("未校正", assumption["basis_ja"])
             self.assertIn("uncalibrated inputs", assumption["basis_en"])
             self.assertIn("do not measure these fractions", assumption["basis_en"])
+
+    def test_resumed_portability_evidence_keeps_three_layers_separate(self):
+        update = read("proposals/research-unit-updates/RUP-000124.json")
+        self.assertEqual(["TDS-CD7-SSW-01-U04"], update["archive_section_ids"])
+        self.assertEqual("incomplete", update["consensus_status"])
+        self.assertIn("単一のAIモデル", update["summary_ja"])
+        items = {
+            item["item_id"]: item
+            for section in update["sections"]
+            for item in section["items"]
+        }
+        layered = items["TDI-CD8-SSW01-PORTABILITY-LAYERED-EVALUATION"]
+        for source_id in ("SRC-CDS011", "SRC-CDS124", "SRC-CDS125"):
+            self.assertIn(source_id, layered["source_ids"])
+        self.assertIn("three complementary validation layers", layered["statement_en"])
+        self.assertTrue(
+            any("GAP-TDS-005 remains open" in item for item in update["remaining_work_en"])
+        )
+
+    def test_nicam_reference_code_does_not_become_a_reproduced_port(self):
+        update = read("proposals/research-unit-updates/RUP-000125.json")
+        sources = {
+            check["source"]["source_id"]: check["source"]
+            for check in update["source_checks"]
+        }
+        self.assertEqual(
+            "https://github.com/hisashiyashiro/nicam_dckernel_2016",
+            sources["SRC-CDS126"]["url"],
+        )
+        item = update["sections"][0]["items"][0]
+        self.assertIn("managed-Web cache miss", item["statement_en"])
+        self.assertIn("does not establish exact identity", item["statement_en"])
+        self.assertTrue(
+            any("GAP-TDS-050 remains open" in value for value in update["remaining_work_en"])
+        )
+        self.assertEqual("incomplete", update["consensus_status"])
 
 
 if __name__ == "__main__":

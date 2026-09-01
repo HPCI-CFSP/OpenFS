@@ -199,19 +199,19 @@ test("legacy what-if cells retain values while disclosing assumptions in both la
     const f = fixture(roadmap.slug, `?lang=${language}`);
     const cells = f.walk(f.get("application-performance-table"))
       .filter((el) => el.className?.includes("forecast-value-cell"));
-    assert.equal(cells.length, performance.forecasts.length);
+    assert.equal(cells.length, performance.illustrations.length);
     assert.equal(cells.length, 36);
     const number = (value) => new Intl.NumberFormat(language === "ja" ? "ja-JP" : "en-US", {
       maximumFractionDigits: 3
     }).format(value);
     let index = 0;
     for (const app of performance.applications) for (const scale of performance.standard_fugaku_node_scales) {
-      const forecast = performance.forecasts.find((item) => item.application_id === app.application_id && item.fugaku_nodes === scale);
-      if (!forecast) continue;
+      const illustration = performance.illustrations.find((item) => item.application_id === app.application_id && item.fugaku_nodes === scale);
+      if (!illustration) continue;
       const cell = cells[index++];
       assert.equal(cell.children[0].textContent, language === "ja" ? "未校正の試算" : "uncalibrated what-if");
-      assert.equal(cell.children[1].textContent, `${number(forecast.estimate.base)}×`);
-      assert.ok(cell.children[2].textContent.includes(`${number(forecast.estimate.lower)}–${number(forecast.estimate.upper)}×`));
+      assert.equal(cell.children[1].textContent, `${number(illustration.estimate.base)}×`);
+      assert.ok(cell.children[2].textContent.includes(`${number(illustration.estimate.lower)}–${number(illustration.estimate.upper)}×`));
     }
     const method = f.get("application-performance-method").textContent;
     assert.ok(method.includes(language === "ja" ? "高速化可能と仮定した実行時間比率" : "Assumed accelerator-eligible runtime fraction"));

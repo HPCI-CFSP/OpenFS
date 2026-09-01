@@ -190,7 +190,7 @@ Compare programming approaches and capabilities in CUDA/HIP, OpenMP, SYCL, and K
 - `SSW-01-U04` **移植と性能維持 / Porting and performance retention** (`partial`)
   - コード変更量、移植工数、機能対応、再現性、機種間の性能維持を同条件でどう測るか。
   - How should code changes, porting effort, feature support, reproducibility, and cross-platform performance retention be measured under matching conditions?
-  - Evidence sections: TDS-CD1-SSW-01-U04, TDS-CD6-SSW-01-U04
+  - Evidence sections: TDS-CD1-SSW-01-U04, TDS-CD6-SSW-01-U04, TDS-CD8-SSW-01-U04, TDS-CD9-SSW-01-U04
 
 Related / 関連: SSW-003, SSW-004, SSW-008, SSW-010, ARCH-012
 
