@@ -12,6 +12,12 @@ Use the five numeric ceilings and independent design profiles in
 unit costs, facility constraints, and independent calibration leave quantities and
 TCO uncomputed. Never restore fixed legacy node counts to fill those gaps.
 
+Planning evidence follows
+[Planning Evidence Integration](../research-baseline/planning-evidence-integration.md).
+The readiness artifact exposes lifecycle, operations, five-year cost,
+application performance, and quantitative requirements in a common form. Its
+coverage counts are not scores and must not be used to rank options.
+
 1. Use accepted Sources, Claims, Findings, and Roadmap Items. Provisional inputs must be labeled and cannot silently support an accepted recommendation.
 2. Load a current `center-profile` for every center in scope. Missing fields remain visible and reduce the scenario's readiness; they are not filled by inference from another center.
 3. Load the human-owned criteria and weights in `config/scenario-policy.json`. When any weight is `null`, the tool displays an unranked comparison.

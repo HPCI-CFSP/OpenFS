@@ -361,6 +361,8 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-HBW2-END-2029Q4",
                 "MS-BLUE-UTOKYO-AI4S-2027Q2",
                 "MS-BLUE-UTOKYO-AI4S-END-2033Q1",
+                "MS-BLUE-UTOKYO-BDEC01-END-2027Q2",
+                "MS-BLUE-UTOKYO-BDEC02-2027H2",
                 "MS-BLUE-GENKAI-D-FY2027",
             },
             set(lifecycle_milestones),

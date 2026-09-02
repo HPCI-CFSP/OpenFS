@@ -231,8 +231,11 @@ test("calibration candidate and infrastructure requirements remain provisional i
     const f = fixture(roadmap.slug, `?lang=${language}`);
     const calibration = f.get("application-calibration-candidates");
     assert.ok(calibration.textContent.includes("PMCAL-GENESIS-WEAK-001"));
+    assert.ok(calibration.textContent.includes("PMCAL-SALMON-WEAK-001"));
     assert.ok(calibration.textContent.includes(language === "ja" ? "合意判定未完了" : "incomplete"));
     assert.ok(calibration.textContent.includes("6.183"));
+    assert.ok(f.get("application-cross-platform-observations").textContent.includes("GENESIS"));
+    assert.ok(f.get("application-quantitative-requirements").textContent.includes("SALMON"));
     const matrix = f.get("application-infrastructure-matrix");
     const cells = f.walk(matrix).filter((el) => el.className?.split(" ").includes("infrastructure-demand"));
     assert.equal(cells.length, performance.applications.length * performance.infrastructure_requirements_matrix.dimensions.length);

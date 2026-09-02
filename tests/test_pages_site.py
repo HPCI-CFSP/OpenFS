@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -602,8 +602,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(0, len(result["application_performance_forecasts"]["validated_model_cards"]))
             self.assertEqual(36, len(result["application_performance_forecasts"]["illustrations"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
-            self.assertEqual(19, len(result["application_performance_forecasts"]["baseline_observations"]))
-            self.assertEqual(1, len(result["application_performance_forecasts"]["calibration_candidates"]))
+            self.assertEqual(23, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(2, len(result["application_performance_forecasts"]["calibration_candidates"]))
+            self.assertEqual(74, len(result["application_performance_forecasts"]["cross_platform_observations"]))
+            self.assertEqual(7, len(result["application_performance_forecasts"]["quantitative_requirements"]))
+            self.assertEqual(5, len(result["planning_evidence_readiness"]["dimensions"]))
             self.assertEqual(
                 6,
                 len(result["application_performance_forecasts"]["infrastructure_requirements_matrix"]["rows"]),
@@ -632,7 +635,7 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and scenario["plan_version"] == "0.5"
+                    and scenario["plan_version"] == "0.6"
                     and [option["tier"] for option in scenario["budget_options"]]
                     == ["jpy-10", "jpy-30", "jpy-100", "jpy-300", "jpy-1000"]
                     and len(scenario["implementation_path"]["phases"]) == 12
@@ -655,6 +658,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="scenario-detail-timeline"', scenario_html)
             self.assertIn('id="scenario-context-notes"', scenario_html)
             self.assertIn('id="scenario-budget-options"', scenario_html)
+            self.assertIn('id="scenario-planning-evidence"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")

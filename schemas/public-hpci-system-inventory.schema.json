@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-hpci-system-inventory.schema.json",
   "title": "OpenFS Public HPCI System Inventory",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "scope_ja", "scope_en", "availability_semantics_ja", "availability_semantics_en", "sources", "systems", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "scope_ja", "scope_en", "availability_semantics_ja", "availability_semantics_en", "sources", "systems", "operational_observations", "operational_data_products", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"const": "0.2.0"},
     "export_id": {"type": "string", "pattern": "^HPCI-SYSTEM-INVENTORY-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -22,6 +22,14 @@
     "systems": {
       "type": "array", "minItems": 1,
       "items": {"$ref": "#/$defs/system"}
+    },
+    "operational_observations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/operationalObservation"}
+    },
+    "operational_data_products": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/operationalDataProduct"}
     },
     "coverage_gaps": {
       "type": "array", "minItems": 1,
@@ -41,7 +49,7 @@
         "publisher": {"type": "string", "minLength": 1},
         "url": {"type": "string", "format": "uri"},
         "published_at": {"type": "string", "format": "date"},
-        "source_class": {"enum": ["government-official", "research-organization", "provider-official"]}
+        "source_class": {"enum": ["government-official", "research-organization", "provider-official", "academic-primary"]}
       },
       "additionalProperties": false
     },
@@ -119,6 +127,54 @@
             }
           }
         }
+      },
+      "additionalProperties": false
+    },
+    "operationalValue": {
+      "type": "object",
+      "required": ["kind", "value", "lower", "upper", "unit"],
+      "properties": {
+        "kind": {"enum": ["exact", "approximate", "range"]},
+        "value": {"type": ["number", "null"], "minimum": 0},
+        "lower": {"type": ["number", "null"], "minimum": 0},
+        "upper": {"type": ["number", "null"], "minimum": 0},
+        "unit": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "operationalObservation": {
+      "type": "object",
+      "required": ["observation_id", "system_ids", "metric", "period_start", "period_end", "value", "basis_ja", "basis_en", "comparability", "source_ids"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OP-HPCI-[A-Z0-9-]+$"},
+        "system_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}},
+        "metric": {"enum": ["design-power", "operating-power", "utilization", "job-count", "maximum-job-duration"]},
+        "period_start": {"type": ["string", "null"], "format": "date"},
+        "period_end": {"type": ["string", "null"], "format": "date"},
+        "value": {"$ref": "#/$defs/operationalValue"},
+        "basis_ja": {"type": "string", "minLength": 1},
+        "basis_en": {"type": "string", "minLength": 1},
+        "comparability": {"enum": ["system-specific", "period-specific"]},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "operationalDataProduct": {
+      "type": "object",
+      "required": ["product_id", "product_type", "system_ids", "period_start", "period_end", "record_count", "fields", "scope_ja", "scope_en", "caveat_ja", "caveat_en", "source_ids"],
+      "properties": {
+        "product_id": {"type": "string", "pattern": "^OPDATA-HPCI-[A-Z0-9-]+$"},
+        "product_type": {"enum": ["public-dataset", "published-chart"]},
+        "system_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}},
+        "period_start": {"type": ["string", "null"], "format": "date"},
+        "period_end": {"type": ["string", "null"], "format": "date"},
+        "record_count": {"type": ["integer", "null"], "minimum": 1},
+        "fields": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
       },
       "additionalProperties": false
     },

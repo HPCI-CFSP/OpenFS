@@ -75,25 +75,42 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
     def test_standard_scales_are_fixed(self):
         self.assertEqual(EXPECTED_SCALES, [1, 4, 32, 128, 1024, 10000])
 
-    def test_genesis_calibration_candidate_is_measured_but_not_accepted(self):
+    def test_calibration_candidates_are_measured_but_not_accepted(self):
         payload = json.loads(
             (
                 ROOT
                 / "knowledge/public/application-performance-forecasts.json"
             ).read_text(encoding="utf-8")
         )
-        self.assertEqual(1, len(payload["calibration_candidates"]))
-        candidate = payload["calibration_candidates"][0]
-        validation_ids = {
-            item["observation_id"] for item in candidate["validation_results"]
-        }
-        self.assertFalse(
-            set(candidate["calibration_observation_ids"]) & validation_ids
+        self.assertEqual(2, len(payload["calibration_candidates"]))
+        self.assertEqual(
+            {"PMCAL-GENESIS-WEAK-001", "PMCAL-SALMON-WEAK-001"},
+            {item["calibration_candidate_id"] for item in payload["calibration_candidates"]},
         )
-        self.assertLess(candidate["maximum_relative_error"], 0.07)
-        self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
-        self.assertEqual("incomplete", candidate["consensus_status"])
-        self.assertFalse(candidate["procurement_eligible"])
+        for candidate in payload["calibration_candidates"]:
+            validation_ids = {
+                item["observation_id"] for item in candidate["validation_results"]
+            }
+            self.assertFalse(
+                set(candidate["calibration_observation_ids"]) & validation_ids
+            )
+            self.assertLess(candidate["maximum_relative_error"], 0.07)
+            self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
+            self.assertEqual("incomplete", candidate["consensus_status"])
+            self.assertFalse(candidate["procurement_eligible"])
+
+    def test_planning_evidence_readiness_is_complete_in_scope_but_provisional(self):
+        payload = json.loads(
+            (ROOT / "knowledge/public/planning-evidence-readiness.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            ["system-lifecycle", "operations", "five-year-cost", "application-performance", "quantitative-requirements"],
+            [item["dimension_id"] for item in payload["dimensions"]],
+        )
+        self.assertEqual(5, next(item for item in payload["dimensions"] if item["dimension_id"] == "operations")["coverage"]["numerator"])
+        self.assertEqual(3, len(payload["scenario_assessments"]))
+        self.assertEqual("provisional", payload["research_status"])
+        self.assertEqual("incomplete", payload["consensus_status"])
 
     def test_infrastructure_matrix_covers_every_application_and_dimension(self):
         payload = json.loads(

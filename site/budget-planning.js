@@ -105,6 +105,12 @@
           ? `月額一定と仮定した${total.months}か月分の単純合計: ${money(total.value_jpy / 1e8, language)}（${t[total.tax_basis] || t.notKnown}）。購入価格・TCOではありません。`
           : `Arithmetic total for ${total.months} months at an unchanged monthly rate: ${money(total.value_jpy / 1e8, language)} (${t[total.tax_basis] || t.notKnown}). Not purchase price or TCO.`));
       }
+      if (item.five_year_known_cost_floor) {
+        const floor = item.five_year_known_cost_floor;
+        section.append(el("p", language === "ja"
+          ? `最初の60か月の契約上の既知費用下限: ${money(floor.value_jpy / 1e8, language)}（${t[floor.tax_basis] || t.notKnown}）。電力、施設共用費、人件費、契約変更、増設を含む5年間TCOではありません。`
+          : `Contractual known-cost floor for the first 60 months: ${money(floor.value_jpy / 1e8, language)} (${t[floor.tax_basis] || t.notKnown}). This is not five-year TCO including electricity, shared facilities, staffing, amendments or expansion.`, "known-cost-floor"));
+      }
       if (item.configuration_observation) {
         const observation = item.configuration_observation;
         const label = language === "ja" ? "公開構成との対応確認" : "Public configuration matching";

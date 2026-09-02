@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "assumptions", "applications", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.5.0"},
+    "schema_version": {"const": "0.6.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -70,7 +70,10 @@
     "calibration_candidates": {"type": "array", "items": {"$ref": "#/$defs/calibrationCandidate"}},
     "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
     "candidate_systems": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/candidateSystem"}},
+    "measured_platforms": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/measuredPlatform"}},
     "baseline_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselineObservation"}},
+    "cross_platform_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/crossPlatformObservation"}},
+    "quantitative_requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/quantitativeRequirement"}},
     "assumptions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assumption"}},
     "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
     "infrastructure_requirements_matrix": {"$ref": "#/$defs/infrastructureMatrix"},
@@ -123,6 +126,20 @@
       },
       "additionalProperties": false
     },
+    "measuredPlatform": {
+      "type": "object",
+      "required": ["platform_id", "name", "processor_ja", "processor_en", "accelerator_ja", "accelerator_en", "source_ids"],
+      "properties": {
+        "platform_id": {"type": "string", "pattern": "^PLAT-PERF-[A-Z0-9-]+$"},
+        "name": {"type": "string", "minLength": 1},
+        "processor_ja": {"type": "string", "minLength": 1},
+        "processor_en": {"type": "string", "minLength": 1},
+        "accelerator_ja": {"type": "string", "minLength": 1},
+        "accelerator_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "baselineObservation": {
       "type": "object",
       "required": ["observation_id", "application_id", "fugaku_nodes", "workload", "status", "value", "unit", "note_ja", "note_en", "source_ids"],
@@ -136,6 +153,46 @@
         "unit": {"type": ["string", "null"]},
         "note_ja": {"type": "string", "minLength": 1},
         "note_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "crossPlatformObservation": {
+      "type": "object",
+      "required": ["observation_id", "application_id", "platform_id", "node_count", "accelerator_count", "workload", "component", "value", "unit", "status", "interpretation_ja", "interpretation_en", "source_ids"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OBS-XPERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "platform_id": {"type": "string", "pattern": "^PLAT-PERF-[A-Z0-9-]+$"},
+        "node_count": {"type": "integer", "minimum": 1},
+        "accelerator_count": {"type": "integer", "minimum": 0},
+        "workload": {"type": "string", "minLength": 1},
+        "component": {"type": "string", "minLength": 1},
+        "value": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "status": {"const": "measured"},
+        "interpretation_ja": {"type": "string", "minLength": 1},
+        "interpretation_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "quantitativeRequirement": {
+      "type": "object",
+      "required": ["requirement_id", "application_id", "evidence_class", "metric", "lower", "value", "upper", "unit", "statement_ja", "statement_en", "planning_use_ja", "planning_use_en", "source_ids"],
+      "properties": {
+        "requirement_id": {"type": "string", "pattern": "^REQ-PERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "evidence_class": {"enum": ["measured-envelope", "published-target", "measurement-gap"]},
+        "metric": {"type": "string", "minLength": 1},
+        "lower": {"type": ["number", "null"], "minimum": 0},
+        "value": {"type": ["number", "null"], "minimum": 0},
+        "upper": {"type": ["number", "null"], "minimum": 0},
+        "unit": {"type": ["string", "null"]},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "planning_use_ja": {"type": "string", "minLength": 1},
+        "planning_use_en": {"type": "string", "minLength": 1},
         "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
       },
       "additionalProperties": false
@@ -298,8 +355,8 @@
         "target_model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
         "status": {"const": "provisional"},
-        "model_type": {"enum": ["piecewise-log2-interpolation"]},
-        "metric_id": {"enum": ["domain-rate"]},
+        "model_type": {"enum": ["piecewise-log2-interpolation", "power-law-interpolation"]},
+        "metric_id": {"enum": ["domain-rate", "achieved-flops"]},
         "unit": {"type": "string", "minLength": 1},
         "equation_ja": {"type": "string", "minLength": 1},
         "equation_en": {"type": "string", "minLength": 1},

@@ -68,6 +68,30 @@ def lease_period_total(case: dict[str, Any]) -> dict[str, Any] | None:
             "basis": "constant-monthly-rate-arithmetic", "window_basis": window["basis"]}
 
 
+def five_year_known_cost_floor(case: dict[str, Any]) -> dict[str, Any] | None:
+    """Return only a five-year contractual subtotal supported by explicit billing evidence."""
+    amount = case.get("amount")
+    if not amount or amount.get("payment_basis") != "monthly":
+        return None
+    months = amount.get("period_months")
+    if not isinstance(months, int) or isinstance(months, bool) or months < 60:
+        return None
+    return {
+        "value_jpy": float(number(amount["value_jpy"]) * 60),
+        "months": 60,
+        "tax_basis": amount["tax_basis"],
+        "basis": "first-60-months-at-published-monthly-rate",
+        "tco_complete": False,
+        "excluded_costs": [
+            "contract-amendments",
+            "electricity",
+            "facility-shared-cost-allocation",
+            "staffing",
+            "later-expansion",
+        ],
+    }
+
+
 def contract_breakdown(case: dict[str, Any]) -> dict[str, Any]:
     """Keep residual cost unallocated, in the ORIGINAL contract's tax basis."""
     amount = case.get("amount")
@@ -160,7 +184,7 @@ def allocate_budget(config: dict[str, Any], scenario_id: str, budget: float,
                          "estimated_cost_oku_jpy": None, "quantity": None}
                         for component in config["components"]],
         "tco_years": config["tco_years"], "tco_oku_jpy": None,
-        "gap_ids": ["PCG-001", "PCG-002", "PCG-003"],
+        "gap_ids": ["PCG-001", "PCG-002", "PCG-003", "PCG-004"],
     }
 
 

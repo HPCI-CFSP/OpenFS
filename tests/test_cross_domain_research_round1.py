@@ -295,7 +295,7 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
 
     def test_legacy_what_if_values_are_explicitly_uncalibrated(self):
         forecast = read("knowledge/public/application-performance-forecasts.json")
-        self.assertEqual("0.5.0", forecast["schema_version"])
+        self.assertEqual("0.6.0", forecast["schema_version"])
         self.assertEqual(36, len(forecast["illustrations"]))
         self.assertEqual([], forecast["forecasts"])
         self.assertEqual([], forecast["validated_model_cards"])
@@ -316,11 +316,11 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
             self.assertIn("未校正", assumption["basis_ja"])
             self.assertIn("uncalibrated inputs", assumption["basis_en"])
             self.assertIn("do not measure these fractions", assumption["basis_en"])
-        self.assertEqual(1, len(forecast["calibration_candidates"]))
-        candidate = forecast["calibration_candidates"][0]
-        self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
-        self.assertEqual("incomplete", candidate["consensus_status"])
-        self.assertFalse(candidate["procurement_eligible"])
+        self.assertEqual(2, len(forecast["calibration_candidates"]))
+        for candidate in forecast["calibration_candidates"]:
+            self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
+            self.assertEqual("incomplete", candidate["consensus_status"])
+            self.assertFalse(candidate["procurement_eligible"])
 
     def test_resumed_portability_evidence_keeps_three_layers_separate(self):
         update = read("proposals/research-unit-updates/RUP-000124.json")
