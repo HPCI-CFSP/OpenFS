@@ -61,10 +61,42 @@ node counts, capacity, power, or TCO. The previous fixed `SIZES` are superseded.
 購入できる数量を保証しません。施設条件、保守、電力、人件費が未確認の間は、
 5年間TCOも未算出とします。過去の固定ノード数は価格推定の根拠に使用しません。
 
+## Five-year TCO evidence matrix / 5年間TCOの証拠マトリクス
+
+Every case is checked against the same 12 non-overlapping scopes: compute and
+accelerators; interconnect; storage; software and licenses; installation and
+integration; maintenance and support; electricity; cooling; shared facilities;
+staffing; refresh and expansion; and decommissioning and migration. A row is
+`observed-contract-scope` only when a checked public source explicitly places it
+inside or outside the contract, `reported-unitemized` when it is reported only as
+part of an inseparable package, and `unknown` otherwise.
+
+This matrix measures evidence coverage, not cost allocation. `unknown` never means
+zero, and `reported-unitemized` cannot be converted to a component price. A
+five-year amount may be shown as a `known-contractual-floor` only when the public
+billing unit and covered 60-month period support deterministic arithmetic. Even
+then, `complete_tco` remains false unless every scope has an evidenced value and
+the scopes do not overlap. The 2026-09-02 audit finds seven public totals among
+eight cases, no evidence-backed component itemization, and no complete five-year
+TCO. The supporting audit is
+[`20260902_001_center-tco-evidence-round1.md`](../research-baseline/20260902_001_center-tco-evidence-round1.md).
+
+各案件を、計算機・アクセラレータ、インターコネクト、ストレージ、ソフトウェア・
+ライセンス、設置・統合、保守・支援、電力、冷却、共用施設、要員、更新・増設、
+撤去・移行の12費目で確認します。公開資料が契約への包含または除外を明示する場合は
+`observed-contract-scope`、一式に含まれることだけが分かり分離できない場合は
+`reported-unitemized`、それ以外は`unknown`とします。
+
+この表は根拠の充足状況を示すもので、費用配分表ではありません。`unknown`をゼロと
+みなさず、`reported-unitemized`から機器単価を算出しません。公開された支払単位と
+60か月の対象期間から機械的に再計算できる場合だけ、契約上の既知費用下限として表示
+します。それでも、12費目すべての値と非重複性が確認されるまで完全なTCOとはしません。
+
 ## Commands and follow-up / 検証と継続調査
 
 ```bash
 python3 tools/check_procurement_costs.py
+python3 tools/check_public_planning_surfaces.py
 python3 tools/estimate_system_cost.py --budget-oku-jpy 30 --deployment-year 2030
 python3 tools/add_budget_architecture_options.py
 ```

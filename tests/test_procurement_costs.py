@@ -100,6 +100,54 @@ class ProcurementCostTests(unittest.TestCase):
         shorter["amount"]["period_months"] = 59
         self.assertIsNone(five_year_known_cost_floor(shorter))
 
+    def test_every_case_has_a_complete_tco_scope_audit(self):
+        scope_ids = [item["scope_id"] for item in self.register["tco_scope_catalog"]]
+        self.assertEqual(12, len(scope_ids))
+        self.assertEqual(12, len(set(scope_ids)))
+        self.assertEqual(
+            0,
+            sum(
+                case["five_year_cost_assessment"]["complete_tco"]
+                for case in self.register["cases"]
+            ),
+        )
+        for case in self.register["cases"]:
+            assessment = case["five_year_cost_assessment"]
+            self.assertEqual(
+                scope_ids,
+                [item["scope_id"] for item in assessment["scope_coverage"]],
+            )
+            for item in assessment["scope_coverage"]:
+                self.assertEqual(
+                    item["evidence_status"] == "unknown",
+                    not item["source_refs"],
+                )
+
+    def test_tco_scope_audit_fails_closed(self):
+        case = self.register["cases"][0]
+        case["five_year_cost_assessment"]["scope_coverage"].pop()
+        with self.assertRaisesRegex(ValueError, "complete catalog"):
+            validate_register(self.register, self.config)
+
+        self.setUp()
+        case = self.register["cases"][0]
+        case["five_year_cost_assessment"]["scope_coverage"][0][
+            "evidence_status"
+        ] = "observed-contract-scope"
+        case["five_year_cost_assessment"]["scope_coverage"][0]["source_refs"] = []
+        with self.assertRaisesRegex(ValueError, "requires source"):
+            validate_register(self.register, self.config)
+
+        self.setUp()
+        sirius = next(
+            item
+            for item in self.register["cases"]
+            if item["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025"
+        )
+        sirius["five_year_cost_assessment"]["known_cost_floor_jpy"] += 1
+        with self.assertRaisesRegex(ValueError, "disagrees"):
+            validate_register(self.register, self.config)
+
     def test_unknown_payment_basis_cannot_be_normalized(self):
         case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")
         self.assertIsNone(lease_period_total(case))
@@ -158,8 +206,14 @@ class ProcurementCostTests(unittest.TestCase):
         case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
         del case["contract_window"]
         case["amount"] = None
+        case["five_year_cost_assessment"].update({
+            "status": "not-computable",
+            "known_cost_floor_jpy": None,
+            "tax_basis": None,
+        })
         validate_register(self.register, self.config)
         self.assertIsNone(lease_period_total(case))
+        self.assertIsNone(five_year_known_cost_floor(case))
         self.assertEqual(855360000, case["reported_period_total"]["value_jpy"])
 
     def test_capacity_ids_are_unique_across_procurements(self):

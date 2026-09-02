@@ -89,6 +89,68 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         self.assertEqual({"year": 2026, "quarter": "Q2"}, source_system["availability_windows"][0]["start"])
         self.assertEqual("incomplete", self.inventory["consensus_status"])
 
+    def test_lifecycle_and_operations_coverage_matches_public_audit(self):
+        roadmap = next(r for r in self.roadmaps if r["roadmap_id"] == "RM-X-BLUEPRINT")
+        milestones = {
+            milestone["milestone_id"]: milestone
+            for lane in roadmap["lanes"]
+            for milestone in lane["milestones"]
+        }
+        observed = set()
+        future = set()
+        any_lifecycle = set()
+        for system in self.inventory["systems"]:
+            for ref in system.get("lifecycle_milestone_refs", []):
+                milestone = milestones[ref["milestone_id"]]
+                any_lifecycle.add(system["system_id"])
+                if milestone["timing_basis"] == "observed":
+                    observed.add(system["system_id"])
+                if milestone["timing_basis"] == "project-target" and milestone["year"] is not None:
+                    future.add(system["system_id"])
+        self.assertEqual(24, len(observed))
+        self.assertEqual(26, len(any_lifecycle))
+        self.assertEqual(9, len(future))
+
+        evidence = [
+            *self.inventory["operational_observations"],
+            *self.inventory["operational_data_products"],
+        ]
+        systems_with_any = {system_id for item in evidence for system_id in item["system_ids"]}
+        self.assertEqual(11, len(systems_with_any))
+
+        by_metric = {}
+        for item in self.inventory["operational_observations"]:
+            by_metric.setdefault(item["metric"], set()).update(item["system_ids"])
+        self.assertEqual(5, len(by_metric["utilization"]))
+        self.assertEqual(1, len(by_metric["operating-power"] | by_metric.get("design-power", set())))
+        availability_metrics = {
+            "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"
+        }
+        availability = set().union(*(by_metric.get(metric, set()) for metric in availability_metrics))
+        self.assertEqual(4, len(availability))
+        jobs = set(by_metric["job-count"])
+        jobs.update(
+            system_id
+            for item in self.inventory["operational_data_products"]
+            if item["product_type"] == "public-dataset"
+            for system_id in item["system_ids"]
+        )
+        self.assertEqual(6, len(jobs))
+
+        no_start = {"HPCI-SYS-FURO2-I", "HPCI-SYS-FURO2-II", "HPCI-SYS-ISM-LARGEMEM"}
+        self.assertEqual(no_start, {s["system_id"] for s in self.inventory["systems"]} - observed)
+        ism = next(
+            s for s in self.inventory["systems"] if s["system_id"] == "HPCI-SYS-ISM-LARGEMEM"
+        )
+        self.assertEqual([], ism.get("lifecycle_milestone_refs", []))
+
+        squid_product = next(
+            item for item in self.inventory["operational_data_products"]
+            if item["product_id"] == "OPDATA-HPCI-SQUID-MONTHLY-UTILIZATION-FY2024"
+        )
+        self.assertEqual("published-table", squid_product["product_type"])
+        self.assertEqual(3, len(squid_product["system_ids"]))
+
     def test_peak_scope_notes_need_bilingual_prose_and_registered_sources(self):
         system = next(s for s in self.inventory["systems"] if s["system_id"] == "HPCI-SYS-SIRIUS")
         self.assertEqual(490.4, system["specifications"]["node_peak_tf"])

@@ -107,7 +107,35 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             ["system-lifecycle", "operations", "five-year-cost", "application-performance", "quantitative-requirements"],
             [item["dimension_id"] for item in payload["dimensions"]],
         )
-        self.assertEqual(5, next(item for item in payload["dimensions"] if item["dimension_id"] == "operations")["coverage"]["numerator"])
+        dimensions = {item["dimension_id"]: item for item in payload["dimensions"]}
+        self.assertEqual(9, dimensions["system-lifecycle"]["coverage"]["numerator"])
+        self.assertEqual(11, dimensions["operations"]["coverage"]["numerator"])
+        self.assertEqual(
+            {"observed-start": 24, "any-lifecycle": 26},
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["system-lifecycle"]["supporting_coverages"]
+            },
+        )
+        self.assertEqual(
+            {
+                "utilization": 5,
+                "power": 1,
+                "availability-downtime": 4,
+                "jobs-history": 6,
+            },
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["operations"]["supporting_coverages"]
+            },
+        )
+        self.assertEqual(
+            {"complete-tco": 0, "public-total": 7, "component-itemization": 0},
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["five-year-cost"]["supporting_coverages"]
+            },
+        )
         self.assertEqual(3, len(payload["scenario_assessments"]))
         self.assertEqual("provisional", payload["research_status"])
         self.assertEqual("incomplete", payload["consensus_status"])

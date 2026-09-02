@@ -7,6 +7,13 @@ public information only. All findings remain provisional work by one AI agent
 and one model. Independent Consensus, production merge, and deployment are not
 part of this update.
 
+> **Supersession note (2026-09-02):** This file preserves the evidence state at
+> the start of the work package. A later public-source audit verifies starts for
+> 24 of 27 systems, any lifecycle evidence for 26, and future provider targets
+> for 9. It also audits all eight procurement cases against 12 five-year TCO
+> scopes. See
+> [`20260902_001_center-tco-evidence-round1.md`](20260902_001_center-tco-evidence-round1.md).
+
 ### HPCI System Evidence
 
 The FY2026 HPCI inventory still distinguishes annual call availability from a
@@ -68,6 +75,13 @@ measurements, application-owner review, and independent Consensus.
 本更新は、`DIR-900024`で承認された優先課題を、公開情報だけを用いて実施したもの
 です。単一のAIエージェントと単一モデルによる暫定結果であり、独立Consensus、
 本番へのマージ、公開環境への反映は本更新の対象外です。
+
+> **後続更新（2026年9月2日）：** 本ファイルは作業開始時点の根拠状況を保存した
+> 記録です。後続の公開情報監査では、開始時期を24/27システム、何らかの
+> ライフサイクル根拠を26/27システム、将来の提供機関目標を9/27システムで確認し、
+> 8件の調達事例を5年間TCOの12費目で監査しました。詳細は
+> [`20260902_001_center-tco-evidence-round1.md`](20260902_001_center-tco-evidence-round1.md)
+> を参照してください。
 
 ### HPCIシステムの根拠
 

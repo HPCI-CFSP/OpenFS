@@ -3,11 +3,13 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/procurement-cost-register.schema.json",
   "title": "Public procurement cost and specification register",
   "type": "object", "additionalProperties": false,
-  "required": ["schema_version", "artifact_id", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "caveat_ja", "caveat_en", "sources", "cases", "coverage_gaps", "publication"],
+  "required": ["schema_version", "artifact_id", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "caveat_ja", "caveat_en", "five_year_tco_method_ja", "five_year_tco_method_en", "tco_scope_catalog", "sources", "cases", "coverage_gaps", "publication"],
   "properties": {
-    "schema_version": {"const": "0.1.0"}, "artifact_id": {"const": "PROCUREMENT-COST-001"}, "as_of": {"type": "string", "format": "date"},
+    "schema_version": {"const": "0.2.0"}, "artifact_id": {"const": "PROCUREMENT-COST-001"}, "as_of": {"type": "string", "format": "date"},
     "research_status": {"const": "provisional"}, "consensus_status": {"const": "incomplete"},
     "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "caveat_ja": {"$ref": "#/$defs/text"}, "caveat_en": {"$ref": "#/$defs/text"},
+    "five_year_tco_method_ja": {"$ref": "#/$defs/text"}, "five_year_tco_method_en": {"$ref": "#/$defs/text"},
+    "tco_scope_catalog": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/tcoScope"}},
     "sources": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["source_id", "title", "url", "publisher", "origin_group", "checked_on", "locator", "retrieval_status"], "properties": {
       "source_id": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"}, "url": {"type": "string", "format": "uri", "pattern": "^https://"}, "publisher": {"$ref": "#/$defs/text"}, "origin_group": {"$ref": "#/$defs/text"}, "checked_on": {"type": "string", "format": "date"}, "locator": {"$ref": "#/$defs/text"}, "retrieval_status": {"enum": ["read", "failed", "not-retrieved"]}
     }}},
@@ -21,7 +23,7 @@
     "amount": {"type": "object", "additionalProperties": false, "required": ["kind", "value_jpy", "tax_basis", "tax_rate", "payment_basis", "period_months", "source_refs"], "properties": {
       "kind": {"enum": ["program-budget", "planned-price", "award", "contract"]}, "value_jpy": {"type": "number", "minimum": 0}, "tax_basis": {"enum": ["including-tax", "excluding-tax", "unknown"]}, "tax_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1}, "payment_basis": {"enum": ["total", "monthly", "unknown"]}, "period_months": {"type": ["integer", "null"], "minimum": 1}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}
     }},
-    "case": {"type": "object", "additionalProperties": false, "required": ["case_id", "title_ja", "title_en", "buyer", "supplier", "contract_kind", "contract_date", "award_date", "amount", "documents", "configuration_match", "component_category", "itemized_costs", "related_case_ids", "aggregation_status", "scope_ja", "scope_en", "gap_ids"], "properties": {
+    "case": {"type": "object", "additionalProperties": false, "required": ["case_id", "title_ja", "title_en", "buyer", "supplier", "contract_kind", "contract_date", "award_date", "amount", "documents", "configuration_match", "component_category", "itemized_costs", "related_case_ids", "aggregation_status", "scope_ja", "scope_en", "gap_ids", "five_year_cost_assessment"], "properties": {
       "case_id": {"type": "string", "pattern": "^PROC-[A-Z0-9-]+$"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "buyer": {"$ref": "#/$defs/text"}, "supplier": {"type": ["string", "null"]}, "contract_kind": {"enum": ["purchase", "lease", "construction", "service", "unknown"]}, "contract_date": {"$ref": "#/$defs/nullableDate"}, "award_date": {"$ref": "#/$defs/nullableDate"}, "amount": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/amount"}]},
       "documents": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "source_id", "access_status"], "properties": {"kind": {"enum": ["tender", "draft-specification", "final-specification", "correction", "award", "contract-result", "deployed-configuration"]}, "source_id": {"$ref": "#/$defs/text"}, "access_status": {"enum": ["public-read", "not-obtained", "expired", "registration-required", "confidentiality-required"]}}}},
       "contract_window": {"type": "object", "additionalProperties": false, "required": ["start", "end", "basis", "source_refs"], "properties": {"start": {"type": "string", "format": "date"}, "end": {"type": "string", "format": "date"}, "basis": {"enum": ["tender-period", "contract-period"]}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}},
@@ -32,8 +34,39 @@
       "configuration_observation": {"type": "object", "additionalProperties": false, "required": ["status", "summary_ja", "summary_en", "match_caveat_ja", "match_caveat_en", "source_refs"], "properties": {"status": {"enum": ["planned", "operating"]}, "summary_ja": {"$ref": "#/$defs/text"}, "summary_en": {"$ref": "#/$defs/text"}, "match_caveat_ja": {"$ref": "#/$defs/text"}, "match_caveat_en": {"$ref": "#/$defs/text"}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}},
       "configuration_match": {"enum": ["unconfirmed", "confirmed"]}, "component_category": {"enum": ["system-package", "compute-cpu", "compute-accelerator", "interconnect", "storage", "facility", "software", "maintenance"]},
       "itemized_costs": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["line_id", "basis", "value_jpy", "tax_basis", "source_refs"], "properties": {"line_id": {"$ref": "#/$defs/text"}, "basis": {"const": "observed"}, "value_jpy": {"type": "number", "minimum": 0}, "tax_basis": {"enum": ["including-tax", "excluding-tax"]}, "source_refs": {"allOf": [{"$ref": "#/$defs/refs"}, {"minItems": 1}]}}}},
-      "related_case_ids": {"$ref": "#/$defs/refs"}, "aggregation_status": {"enum": ["not-cleared", "shared-scope-unresolved"]}, "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"}, "gap_ids": {"$ref": "#/$defs/refs"}
+      "related_case_ids": {"$ref": "#/$defs/refs"}, "aggregation_status": {"enum": ["not-cleared", "shared-scope-unresolved"]}, "scope_ja": {"$ref": "#/$defs/text"}, "scope_en": {"$ref": "#/$defs/text"}, "gap_ids": {"$ref": "#/$defs/refs"},
+      "five_year_cost_assessment": {"$ref": "#/$defs/fiveYearCostAssessment"}
     }},
+    "tcoScope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scope_id", "label_ja", "label_en", "definition_ja", "definition_en"],
+      "properties": {
+        "scope_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "label_ja": {"$ref": "#/$defs/text"}, "label_en": {"$ref": "#/$defs/text"},
+        "definition_ja": {"$ref": "#/$defs/text"}, "definition_en": {"$ref": "#/$defs/text"}
+      }
+    },
+    "fiveYearCostAssessment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "horizon_months", "known_cost_floor_jpy", "tax_basis", "complete_tco", "basis_ja", "basis_en", "scope_coverage"],
+      "properties": {
+        "status": {"enum": ["known-contractual-floor", "not-computable"]},
+        "horizon_months": {"const": 60},
+        "known_cost_floor_jpy": {"type": ["number", "null"], "minimum": 0},
+        "tax_basis": {"enum": ["including-tax", "excluding-tax", "unknown", null]},
+        "complete_tco": {"const": false},
+        "basis_ja": {"$ref": "#/$defs/text"}, "basis_en": {"$ref": "#/$defs/text"},
+        "scope_coverage": {"type": "array", "minItems": 12, "maxItems": 12, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["scope_id", "evidence_status", "source_refs"],
+          "properties": {
+            "scope_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+            "evidence_status": {"enum": ["observed-contract-scope", "reported-unitemized", "unknown"]},
+            "source_refs": {"$ref": "#/$defs/refs"}
+          }
+        }}
+      }
+    },
     "capacityObservation": {
       "type": "object", "additionalProperties": false,
       "required": ["observation_id", "value", "unit", "capacity_basis", "configuration_status", "scope_ja", "scope_en", "caveat_ja", "caveat_en", "source_refs"],

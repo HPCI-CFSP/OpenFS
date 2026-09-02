@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "artifact_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "dimensions", "scenario_assessments", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"const": "0.2.0"},
     "artifact_id": {"const": "PLANNING-EVIDENCE-READINESS-001"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -40,15 +40,30 @@
         "unit_en": {"$ref": "#/$defs/text"}
       }
     },
+    "supportingCoverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["coverage_id", "numerator", "denominator", "unit_ja", "unit_en"],
+      "properties": {
+        "coverage_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "numerator": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 1},
+        "unit_ja": {"$ref": "#/$defs/text"},
+        "unit_en": {"$ref": "#/$defs/text"}
+      }
+    },
     "dimension": {
       "type": "object", "additionalProperties": false,
-      "required": ["dimension_id", "label_ja", "label_en", "status", "coverage", "finding_ja", "finding_en", "planning_use_ja", "planning_use_en", "blockers_ja", "blockers_en", "evidence_refs"],
+      "required": ["dimension_id", "label_ja", "label_en", "status", "coverage", "supporting_coverages", "finding_ja", "finding_en", "planning_use_ja", "planning_use_en", "blockers_ja", "blockers_en", "evidence_refs"],
       "properties": {
         "dimension_id": {"enum": ["system-lifecycle", "operations", "five-year-cost", "application-performance", "quantitative-requirements"]},
         "label_ja": {"$ref": "#/$defs/text"},
         "label_en": {"$ref": "#/$defs/text"},
         "status": {"enum": ["partial", "blocked"]},
         "coverage": {"$ref": "#/$defs/coverage"},
+        "supporting_coverages": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/supportingCoverage"}
+        },
         "finding_ja": {"$ref": "#/$defs/text"},
         "finding_en": {"$ref": "#/$defs/text"},
         "planning_use_ja": {"$ref": "#/$defs/text"},
