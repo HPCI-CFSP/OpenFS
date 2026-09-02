@@ -297,9 +297,9 @@ tbody tr:hover { background: #fafbfb; }
 .performance-contract p { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
 .policy-tag-list { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 5px; }
 .policy-tag-list > span { padding: 3px 6px; border: 1px solid #a9c8bd; border-radius: 3px; background: var(--paper); color: var(--muted); font-size: 9px; }
-.forecast-method-section, .forecast-code-section, .forecast-baseline-section { margin: 20px 0 14px; }
-.forecast-method-section > h4, .forecast-code-section > h4, .forecast-baseline-section > h4 { margin: 0 0 8px; color: var(--navy); font-size: 13px; }
-.forecast-code-section > p { margin: -3px 0 9px; color: var(--muted); font-size: 10px; }
+.forecast-method-section, .forecast-code-section, .forecast-baseline-section, .forecast-calibration-section, .forecast-infrastructure-section, .forecast-legacy-section { margin: 20px 0 14px; }
+.forecast-method-section > h4, .forecast-code-section > h4, .forecast-baseline-section > h4, .forecast-calibration-section > h4, .forecast-infrastructure-section > h4, .forecast-legacy-section > h4 { margin: 0 0 8px; color: var(--navy); font-size: 13px; }
+.forecast-code-section > p, .forecast-calibration-section > p, .forecast-infrastructure-section > p { margin: -3px 0 9px; color: var(--muted); font-size: 10px; }
 .forecast-system-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-block: 1px solid var(--line); }
 .forecast-system-list article { min-width: 0; padding: 13px 15px; border-right: 1px solid var(--line); }
 .forecast-system-list article:last-child { border-right: 0; }
@@ -333,6 +333,33 @@ tbody tr:hover { background: #fafbfb; }
 .forecast-baseline-table th:nth-child(1) { width: 180px; min-width: 180px; }
 .forecast-baseline-table th:nth-child(2) { width: 220px; min-width: 220px; }
 .forecast-baseline-table th:nth-child(3), .forecast-baseline-table th:nth-child(4), .forecast-baseline-table th:nth-child(5) { width: 130px; min-width: 130px; }
+.forecast-calibration-card { padding: 15px; border: 1px solid var(--line); border-left: 4px solid var(--blue); background: var(--paper); }
+.forecast-calibration-card > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.forecast-calibration-card h5 { margin: 0; color: var(--navy); font-size: 13px; overflow-wrap: anywhere; }
+.forecast-calibration-card > p { margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.calibration-provisional-badge { padding: 3px 6px; border: 1px solid #d1a85e; border-radius: 3px; background: #fff8df; color: #6b531d; font-size: 9px; font-weight: 800; }
+.forecast-calibration-card .calibration-equation { padding: 8px 10px; background: #edf5fa; color: #254f67; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.forecast-calibration-card dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 10px 0; border-block: 1px solid var(--line); }
+.forecast-calibration-card dl > div { min-width: 0; padding: 8px; }
+.forecast-calibration-card dt { color: var(--muted); font-size: 8px; overflow-wrap: anywhere; }
+.forecast-calibration-card dd { margin: 2px 0 0; color: var(--navy); font-size: 11px; font-weight: 750; overflow-wrap: anywhere; }
+.calibration-blocker-heading { color: var(--navy); font-size: 10px; }
+.forecast-calibration-card > ul { margin: 5px 0 10px; padding-left: 18px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.forecast-calibration-card details > summary { cursor: pointer; color: var(--green); font-size: 10px; font-weight: 750; }
+.calibration-validation-table th, .calibration-validation-table td { min-width: 145px; white-space: normal; overflow-wrap: anywhere; }
+.infrastructure-requirements-table { width: max-content; min-width: 100%; table-layout: fixed; }
+.infrastructure-requirements-table th:first-child { width: 175px; min-width: 175px; position: sticky; left: 0; z-index: 2; background: var(--paper); }
+.infrastructure-requirements-table thead th:first-child { z-index: 3; background: var(--soft); }
+.infrastructure-requirements-table th:not(:first-child), .infrastructure-requirements-table td { width: 190px; min-width: 190px; white-space: normal; overflow-wrap: anywhere; }
+.infrastructure-demand-level { display: inline-block; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+.infrastructure-demand p { margin: 6px 0 0; font-size: 9px; line-height: 1.45; }
+.infrastructure-demand details { margin-top: 7px; color: var(--muted); font-size: 8px; }
+.infrastructure-demand summary { cursor: pointer; font-weight: 700; }
+.infrastructure-demand details p { color: var(--muted); font-size: 8px; }
+.demand-high { background: #fff1ef; color: #7a2f28; }
+.demand-medium { background: #fff8df; color: #6b531d; }
+.demand-low { background: var(--green-soft); color: #235d47; }
+.demand-unknown { background: var(--soft); color: var(--muted); }
 .performance-matrix th:first-child { width: 235px; min-width: 235px; position: sticky; left: 0; z-index: 2; }
 .performance-matrix thead th:first-child { z-index: 3; background: var(--soft); }
 .performance-matrix thead th:not(:first-child), .performance-matrix td { width: 175px; min-width: 175px; }
@@ -859,6 +886,7 @@ footer strong { color: var(--navy); }
   .forecast-system-list { grid-template-columns: 1fr; }
   .forecast-system-list article { border-right: 0; border-bottom: 1px solid var(--line); }
   .forecast-system-list article:last-child { border-bottom: 0; }
+  .forecast-calibration-card dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .compare-controls, .compare-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .assurance-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .assurance-metrics > div:nth-child(4n) { border-right: 0; }

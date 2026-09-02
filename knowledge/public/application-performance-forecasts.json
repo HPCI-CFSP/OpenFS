@@ -1,14 +1,14 @@
 {
-  "schema_version": "0.4.0",
+  "schema_version": "0.5.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
-  "as_of": "2026-09-01",
+  "as_of": "2026-09-02",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
   "title_en": "EEA1 application performance evidence and reference calculations",
-  "summary_ja": "1、4、32、128、1,024、約10,000ノードを比較するための既存のwhat-if試算を掲載しています。数値は、公開資料の設計検討用仮定とOpenFSが設定した未校正の係数から算出したもので、同じ入力・規模の実測から推定した性能ではありません。別掲の富岳の実測値は参考情報であり、この試算の校正には使っていません。",
-  "summary_en": "This retains existing what-if calculations at 1, 4, 32, 128, 1,024 and about 10,000 nodes. Values use public design-exploration assumptions and uncalibrated coefficients chosen by OpenFS, not performance inferred from matched input/scale measurements. The separately listed Fugaku measurements are contextual evidence, not calibration data for these calculations.",
+  "summary_ja": "1、4、32、128、1,024、約10,000ノードを比較するための従来のwhat-if試算を保持しています。これら36件は未校正のままです。これとは別に、公開された富岳上のGENESIS弱スケーリング実測を用い、校正点と検証点を分離した補間モデル候補を掲載します。この候補は同一の測定系列内でのみ検証したもので、将来機の性能予測や正式な性能モデルではありません。",
+  "summary_en": "This retains the 36 existing what-if calculations at 1, 4, 32, 128, 1,024 and about 10,000 nodes; they remain uncalibrated. Separately, a candidate interpolation model uses published GENESIS weak-scaling measurements on Fugaku with disjoint calibration and holdout points. It is validated only within one measurement series and is neither a future-system forecast nor an accepted performance model.",
   "standard_fugaku_node_scales": [
     1,
     4,
@@ -171,6 +171,28 @@
       "title": "SALMON version 2 source repository",
       "publisher": "SALMON developers",
       "url": "https://github.com/SALMON-TDDFT/SALMON2",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF016",
+      "title": "New parallel computing algorithm of molecular dynamics for extremely huge scale biological systems",
+      "publisher": "Journal of Computational Chemistry / GENESIS developers",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7975918/",
+      "published_at": "2021-02-05",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-PERF017",
+      "title": "GENESIS benchmark",
+      "publisher": "GENESIS developers / RIKEN R-CCS",
+      "url": "https://mdgenesis.org/benchmark/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF018",
+      "title": "GENESIS benchmark input repository",
+      "publisher": "GENESIS developers / RIKEN R-CCS",
+      "url": "https://github.com/genesis-release-r-ccs/genesis_benchmark_input",
       "source_class": "project-official"
     }
   ],
@@ -343,6 +365,160 @@
       "note_en": "One Fugaku node with four MPI processes.",
       "source_ids": [
         "SRC-PERF004"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00016",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 16,
+      "workload": "1.58 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 11.62,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは1.58 million atoms、1 Å格子で、公表並列効率は1.00です。",
+      "note_en": "Fugaku measurement from Table V. System size is 1.58 million atoms at 1 Å grid spacing; published parallel efficiency is 1.00.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00032",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 32,
+      "workload": "3.16 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 11.12,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは3.16 million atoms、1 Å格子で、公表並列効率は0.96です。",
+      "note_en": "Fugaku measurement from Table V. System size is 3.16 million atoms at 1 Å grid spacing; published parallel efficiency is 0.96.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00064",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 64,
+      "workload": "6.32 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 11.07,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは6.32 million atoms、1 Å格子で、公表並列効率は0.95です。",
+      "note_en": "Fugaku measurement from Table V. System size is 6.32 million atoms at 1 Å grid spacing; published parallel efficiency is 0.95.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00128",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 128,
+      "workload": "12.63 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 10.82,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは12.63 million atoms、1 Å格子で、公表並列効率は0.93です。",
+      "note_en": "Fugaku measurement from Table V. System size is 12.63 million atoms at 1 Å grid spacing; published parallel efficiency is 0.93.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00256",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 256,
+      "workload": "25.26 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 10.01,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは25.26 million atoms、1 Å格子で、公表並列効率は0.86です。",
+      "note_en": "Fugaku measurement from Table V. System size is 25.26 million atoms at 1 Å grid spacing; published parallel efficiency is 0.86.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00512",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 512,
+      "workload": "50.53 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 10.27,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは50.53 million atoms、1 Å格子で、公表並列効率は0.88です。",
+      "note_en": "Fugaku measurement from Table V. System size is 50.53 million atoms at 1 Å grid spacing; published parallel efficiency is 0.88.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N01024",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 1024,
+      "workload": "101.05 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 9.26,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは101.05 million atoms、1 Å格子で、公表並列効率は0.80です。",
+      "note_en": "Fugaku measurement from Table V. System size is 101.05 million atoms at 1 Å grid spacing; published parallel efficiency is 0.80.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N02048",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 2048,
+      "workload": "202.11 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 8.53,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは202.11 million atoms、1 Å格子で、公表並列効率は0.73です。",
+      "note_en": "Fugaku measurement from Table V. System size is 202.11 million atoms at 1 Å grid spacing; published parallel efficiency is 0.73.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N04096",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 4096,
+      "workload": "404.21 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 7.54,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは404.21 million atoms、1 Å格子で、公表並列効率は0.65です。",
+      "note_en": "Fugaku measurement from Table V. System size is 404.21 million atoms at 1 Å grid spacing; published parallel efficiency is 0.65.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N08192",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 8192,
+      "workload": "808.43 million atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 7.23,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは808.43 million atoms、1 Å格子で、公表並列効率は0.62です。",
+      "note_en": "Fugaku measurement from Table V. System size is 808.43 million atoms at 1 Å grid spacing; published parallel efficiency is 0.62.",
+      "source_ids": [
+        "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N16384",
+      "application_id": "APP-EEA1-GENESIS",
+      "fugaku_nodes": 16384,
+      "workload": "1.62 billion atoms; PME grid spacing 1 Å; weak scaling",
+      "status": "measured",
+      "value": 6.19,
+      "unit": "ns/day",
+      "note_ja": "論文Table Vの富岳測定値。系サイズは1.62 billion atoms、1 Å格子で、公表並列効率は0.53です。",
+      "note_en": "Fugaku measurement from Table V. System size is 1.62 billion atoms at 1 Å grid spacing; published parallel efficiency is 0.53.",
+      "source_ids": [
+        "SRC-PERF016"
       ]
     }
   ],
@@ -635,6 +811,33 @@
           ],
           "note_ja": "MPI通信パターンをScore-Pで取得したもので、実行時間の予測値ではない。",
           "note_en": "MPI communication was traced with Score-P; this is not a runtime forecast."
+        },
+        {
+          "nodes": 16,
+          "observation_type": "benchmark",
+          "source_ids": [
+            "SRC-PERF016"
+          ],
+          "note_ja": "1 Å格子の弱スケーリング系列に含まれる16ノードの公開実測です。異なる入力の強スケーリング評価には転用しません。",
+          "note_en": "Published 16-node measurement in the 1 Å weak-scaling series; it is not reused for strong scaling of a different input."
+        },
+        {
+          "nodes": 1024,
+          "observation_type": "benchmark",
+          "source_ids": [
+            "SRC-PERF016"
+          ],
+          "note_ja": "1 Å格子の弱スケーリング系列に含まれる1,024ノードの公開実測です。異なる入力の強スケーリング評価には転用しません。",
+          "note_en": "Published 1,024-node measurement in the 1 Å weak-scaling series; it is not reused for strong scaling of a different input."
+        },
+        {
+          "nodes": 16384,
+          "observation_type": "benchmark",
+          "source_ids": [
+            "SRC-PERF016"
+          ],
+          "note_ja": "1 Å格子の弱スケーリング系列に含まれる16,384ノードの公開実測です。異なる入力の強スケーリング評価には転用しません。",
+          "note_en": "Published 16,384-node measurement in the 1 Å weak-scaling series; it is not reused for strong scaling of a different input."
         }
       ],
       "code_availability": {
@@ -650,7 +853,10 @@
         "SRC-PERF001",
         "SRC-PERF004",
         "SRC-PERF006",
-        "SRC-PERF010"
+        "SRC-PERF010",
+        "SRC-PERF016",
+        "SRC-PERF017",
+        "SRC-PERF018"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
@@ -1081,10 +1287,10 @@
       "priority": "P0",
       "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力",
       "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales",
-      "impact_ja": "公開実測が一部の小規模入力に限られ、暫定予測の校正と予測誤差の検証を行えない。",
-      "impact_en": "Public measurements cover only selected small inputs, preventing calibration and error validation of the provisional forecasts.",
-      "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。",
-      "next_action_en": "Register publishable inputs in Benchpark/BenchKit and measure at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.",
+      "impact_ja": "GENESISの弱スケーリング実測系列は追加したものの、6アプリケーションの標準規模と電力をそろえた校正・検証はできません。",
+      "impact_en": "A GENESIS weak-scaling measurement series is now included, but calibration and validation across all six applications at standard scales and with power data remain unavailable.",
+      "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、GENESISは別システムで再測定する。他の5アプリケーションも1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。",
+      "next_action_en": "Register publishable inputs in Benchpark/BenchKit, remeasure GENESIS on another system, and measure the other five applications at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.",
       "status": "open"
     },
     {
@@ -1092,10 +1298,10 @@
       "priority": "P0",
       "scope_ja": "計算・メモリ・通信・I/Oと、計算・通信のオーバーラップを扱うモデルの公開係数、校正データ、独立検証誤差",
       "scope_en": "Published coefficients, calibration data, and independent-validation errors for models of compute, memory, communication, I/O, and compute-communication overlap",
-      "impact_ja": "公開した分析式は再計算できるが、アプリケーション別の仮定と予測区間を実測で反証できず、調達判断には利用できない。",
-      "impact_en": "The published analytical equation is reproducible, but application assumptions and forecast intervals cannot yet be falsified against measurements and cannot support procurement.",
-      "next_action_ja": "PMCARDスキーマでモデル版と適用範囲を登録し、校正用データと独立検証用データを分離する。",
-      "next_action_en": "Register model versions and applicability with PMCARD, and keep calibration datasets separate from independent-validation datasets.",
+      "impact_ja": "GENESISで校正点と検証点を分けた補間候補は作成しましたが、1システム、1ワークロード、1測定系列だけであり、別アーキテクチャへの一般化や将来性能を反証できません。",
+      "impact_en": "The GENESIS interpolation candidate separates calibration and holdout points, but one system, one workload, and one measurement series cannot test generalization to another architecture or future performance.",
+      "next_action_ja": "同一入力を別システムで独立測定し、少なくとも2システム、2ワークロード、2つの独立した出所グループを満たした後にPMCARDとして評価する。",
+      "next_action_en": "Independently measure matched inputs on another system and evaluate a PMCARD only after reaching at least two systems, two workloads, and two independent origin groups.",
       "status": "open"
     },
     {
@@ -1132,13 +1338,13 @@
       "status": "open"
     }
   ],
-  "caveat_ja": "36件の数値と計算式は従来の試算を保持しています。今回の公開資料調査で校正された予測ではありません。独立Consensus、候補機での測定、予測誤差の検証は未完了です。試算範囲を信頼区間や性能保証と解釈せず、調達評価には使用しないでください。",
-  "caveat_en": "The 36 numerical results and equation are retained from the earlier illustration; this research has not calibrated them into predictions. Independent Consensus, candidate-system measurements and error validation remain incomplete. Do not interpret the illustrative range as a confidence interval or performance guarantee, or use it for procurement.",
+  "caveat_ja": "36件の数値と計算式は従来の未校正試算です。新しいGENESIS候補は、同一の富岳弱スケーリング系列で校正点と検証点を分離し、検証点の最大相対誤差は約6.2%でした。ただし、これは系列内補間の再現性だけを示し、別入力、別システム、将来機への予測精度を示しません。独立Consensusと候補機測定は未完了で、調達評価には使用できません。",
+  "caveat_en": "The 36 numerical results and equation remain uncalibrated what-if calculations. The new GENESIS candidate separates calibration and holdout points within one Fugaku weak-scaling series and has a maximum holdout relative error of about 6.2%. This demonstrates only within-series interpolation reproducibility, not predictive accuracy for another input, system, or future machine. Independent Consensus and candidate-system measurements remain incomplete; procurement use is prohibited.",
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-RESUME-20260901-001",
-    "human_approval_directive_id": "DIR-900020"
+    "publication_decision_id": "PUBDEC-APPLICATION-PLANNING-20260902-001",
+    "human_approval_directive_id": "DIR-900024"
   },
   "illustrations": [
     {
@@ -2197,5 +2403,856 @@
       "consensus_status": "incomplete",
       "procurement_eligible": false
     }
-  ]
+  ],
+  "calibration_candidates": [
+    {
+      "calibration_candidate_id": "PMCAL-GENESIS-WEAK-001",
+      "target_model_card_id": "PMCARD-GENESIS-WEAK-001",
+      "application_id": "APP-EEA1-GENESIS",
+      "status": "provisional",
+      "model_type": "piecewise-log2-interpolation",
+      "metric_id": "domain-rate",
+      "unit": "ns/day",
+      "equation_ja": "隣接する校正点の間で、ノード数のlog2に対してns/dayを線形補間します。校正範囲外へは外挿しません。",
+      "equation_en": "Linearly interpolate ns/day against log2(node count) between adjacent calibration anchors. Do not extrapolate beyond the calibration range.",
+      "scope_ja": "2021年論文のGENESIS富岳測定のうち、PME格子間隔1 Åの弱スケーリング系列だけを対象とします。",
+      "scope_en": "Limited to the 1 Å PME-grid GENESIS weak-scaling series measured on Fugaku in the 2021 paper.",
+      "calibration_observation_ids": [
+        "OBS-PERF-GENESIS-WEAK-1A-N00016",
+        "OBS-PERF-GENESIS-WEAK-1A-N00064",
+        "OBS-PERF-GENESIS-WEAK-1A-N00256",
+        "OBS-PERF-GENESIS-WEAK-1A-N01024",
+        "OBS-PERF-GENESIS-WEAK-1A-N04096",
+        "OBS-PERF-GENESIS-WEAK-1A-N16384"
+      ],
+      "validation_results": [
+        {
+          "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00032",
+          "predicted_value": 11.345,
+          "observed_value": 11.12,
+          "absolute_error": 0.225,
+          "relative_error": 0.020233813
+        },
+        {
+          "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00128",
+          "predicted_value": 10.54,
+          "observed_value": 10.82,
+          "absolute_error": 0.28,
+          "relative_error": 0.025878004
+        },
+        {
+          "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N00512",
+          "predicted_value": 9.635,
+          "observed_value": 10.27,
+          "absolute_error": 0.635,
+          "relative_error": 0.061830574
+        },
+        {
+          "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N02048",
+          "predicted_value": 8.4,
+          "observed_value": 8.53,
+          "absolute_error": 0.13,
+          "relative_error": 0.015240328
+        },
+        {
+          "observation_id": "OBS-PERF-GENESIS-WEAK-1A-N08192",
+          "predicted_value": 6.865,
+          "observed_value": 7.23,
+          "absolute_error": 0.365,
+          "relative_error": 0.050484094
+        }
+      ],
+      "maximum_relative_error": 0.061830574,
+      "source_ids": [
+        "SRC-PERF016"
+      ],
+      "readiness": {
+        "candidate_ready_for_consensus": false,
+        "required_minimums": {
+          "systems": 2,
+          "workloads": 2,
+          "origin_groups": 2
+        },
+        "observed_counts": {
+          "systems": 1,
+          "workloads": 1,
+          "origin_groups": 1
+        },
+        "blockers_ja": [
+          "富岳1システム、1ワークロード、1つの測定系列に限定されています。",
+          "公表値は丸められており、独立した再測定がありません。",
+          "別アーキテクチャへの一般化と将来性能の外挿を検証していません。"
+        ],
+        "blockers_en": [
+          "Evidence is limited to one Fugaku system, one workload, and one measurement series.",
+          "Published values are rounded and have no independent remeasurement.",
+          "Generalization to another architecture and future-performance extrapolation are untested."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    }
+  ],
+  "infrastructure_requirements_matrix": {
+    "title_ja": "EEA1アプリケーション需要と計算基盤要件",
+    "title_en": "EEA1 application demand and infrastructure requirements",
+    "summary_ja": "公開コード、実測、技術報告に基づき、各アプリケーションが計算基盤へ与える相対的な要求を整理します。システム整備計画で、演算器だけでなくメモリ、接続、I/O、運用期限、可搬性、データ管理を同時に確認するための入口です。",
+    "summary_en": "Using public code, measurements, and technical reports, this matrix organizes the relative demands each application places on infrastructure. It is a planning entry point for considering compute together with memory, interconnect, I/O, deadlines, portability, and data governance.",
+    "dimensions": [
+      {
+        "dimension_id": "compute-throughput",
+        "label_ja": "演算スループット",
+        "label_en": "Compute throughput"
+      },
+      {
+        "dimension_id": "memory-capacity-bandwidth",
+        "label_ja": "メモリ容量・帯域",
+        "label_en": "Memory capacity and bandwidth"
+      },
+      {
+        "dimension_id": "scale-up-interconnect",
+        "label_ja": "ノード内・スケールアップ接続",
+        "label_en": "Intra-node and scale-up interconnect"
+      },
+      {
+        "dimension_id": "scale-out-interconnect",
+        "label_ja": "ノード間・スケールアウト接続",
+        "label_en": "Scale-out interconnect"
+      },
+      {
+        "dimension_id": "storage-io",
+        "label_ja": "ストレージ・I/O",
+        "label_en": "Storage and I/O"
+      },
+      {
+        "dimension_id": "workflow-latency",
+        "label_ja": "ワークフロー期限・応答性",
+        "label_en": "Workflow deadline and responsiveness"
+      },
+      {
+        "dimension_id": "software-portability",
+        "label_ja": "ソフトウェア可搬性",
+        "label_en": "Software portability"
+      },
+      {
+        "dimension_id": "data-governance",
+        "label_ja": "データ管理・利用制約",
+        "label_en": "Data governance and access constraints"
+      }
+    ],
+    "rows": [
+      {
+        "application_id": "APP-EEA1-GENESIS",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "分子動力学の力計算が主要な計算負荷です。",
+            "rationale_en": "Molecular-dynamics force evaluation is a principal compute load.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "巨大分子系の座標、力、近傍情報を保持・更新するため、容量と帯域の双方が効きます。",
+            "rationale_en": "Coordinates, forces, and neighbor data for very large molecular systems make both capacity and bandwidth relevant.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "medium",
+            "rationale_ja": "GPU等へ移植する場合、ホスト・デバイス間と複数アクセラレータ間のデータ移動が設計条件になります。",
+            "rationale_en": "Host-device and multi-accelerator data movement becomes a design condition for GPU-oriented implementations.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "長距離相互作用のPMEと大規模分割は、ノード間通信と並列効率に依存します。",
+            "rationale_en": "PME for long-range interactions and large decompositions depend on inter-node communication and parallel efficiency.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "medium",
+            "rationale_ja": "軌跡と再開データの継続出力が必要ですが、標準入力でのI/O量は未確定です。",
+            "rationale_en": "Trajectories and restart data require sustained output, but I/O volume for a standard input is not yet fixed.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "medium",
+            "rationale_ja": "単一実行の時間短縮と、多数条件を回すアンサンブルスループットの両方が重要です。",
+            "rationale_en": "Both time to solution for one run and ensemble throughput across many conditions matter.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "medium",
+            "rationale_ja": "公開コードと入力はありますが、EEA1版・依存関係・実行条件の固定が未完了です。",
+            "rationale_en": "Public code and inputs exist, but the EEA1 version, dependencies, and run conditions are not yet pinned.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "medium",
+            "rationale_ja": "入力・軌跡の共有条件は研究データごとに異なり、標準公開入力との分離が必要です。",
+            "rationale_en": "Sharing conditions vary by research dataset and must be separated from standard public inputs.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF006",
+              "SRC-PERF010",
+              "SRC-PERF016",
+              "SRC-PERF017",
+              "SRC-PERF018"
+            ]
+          }
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-SALMON",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "実時間TDDFTの反復計算が演算性能に強く依存します。",
+            "rationale_en": "Iterative real-time TDDFT computation strongly depends on compute throughput.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "波動関数と格子データの保持・更新に容量と帯域が必要です。",
+            "rationale_en": "Wave functions and grid data require substantial capacity and bandwidth.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "medium",
+            "rationale_ja": "GPU化ではデバイス内・デバイス間のデータ配置が性能条件になります。",
+            "rationale_en": "GPU execution makes intra-device and inter-device data placement a performance condition.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "空間・軌道分割の通信を含み、大規模実行ではネットワーク特性の確認が必要です。",
+            "rationale_en": "Spatial and orbital decomposition communicate across ranks, requiring network characterization at scale.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "medium",
+            "rationale_ja": "電子状態や時間発展結果を出力しますが、標準評価のI/O条件は未固定です。",
+            "rationale_en": "Electronic-state and time-evolution outputs matter, but standard evaluation I/O conditions are not pinned.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "medium",
+            "rationale_ja": "単一ケースの時間短縮と材料候補群のスループットを分けて評価する必要があります。",
+            "rationale_en": "Single-case time to solution and throughput over candidate materials need separate evaluation.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "medium",
+            "rationale_ja": "公開実装はありますが、CPU・GPU間で同等の機能と精度を確認する必要があります。",
+            "rationale_en": "A public implementation exists, but equivalent functions and numerical behavior across CPU and GPU paths need confirmation.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "low",
+            "rationale_ja": "公開入力で評価可能ですが、材料データ連携時の利用条件は別途確認が必要です。",
+            "rationale_en": "Public inputs can support evaluation; external materials datasets require separate access review.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF007",
+              "SRC-PERF015"
+            ]
+          }
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-SCALE-LETKF",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "気象モデルと多数メンバーのデータ同化を繰り返すため、総演算量が大きくなります。",
+            "rationale_en": "Repeated weather-model and ensemble data-assimilation steps create high aggregate compute demand.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "格子場とアンサンブル状態を保持・更新するため、容量と帯域が重要です。",
+            "rationale_en": "Grid fields and ensemble states make memory capacity and bandwidth important.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "medium",
+            "rationale_ja": "ノード内並列化やアクセラレータ利用時のデータ配置は追加測定が必要です。",
+            "rationale_en": "Data placement for on-node parallelism or accelerator use requires measurement.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "モデル積分と同化の分散処理は、集合通信と大規模並列効率に依存します。",
+            "rationale_en": "Distributed model integration and assimilation depend on collectives and large-scale efficiency.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "high",
+            "rationale_ja": "観測、初期値、予報場、アンサンブル結果を反復して読み書きします。",
+            "rationale_en": "Observations, initial states, forecasts, and ensemble products are read and written repeatedly.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "high",
+            "rationale_ja": "予報時刻に間に合わせる時間制約と、アンサンブル全体のスループットが同時に必要です。",
+            "rationale_en": "Forecast deadlines and ensemble throughput must be satisfied together.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "medium",
+            "rationale_ja": "公開コードはありますが、入力、依存関係、運用ワークフローの固定が未完了です。",
+            "rationale_en": "Public code exists, but inputs, dependencies, and the operational workflow are not pinned.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "high",
+            "rationale_ja": "観測データの配布条件、保管、来歴管理を計算基盤と一体で扱う必要があります。",
+            "rationale_en": "Observation-data licensing, retention, and provenance must be handled with the compute platform.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF008",
+              "SRC-PERF014"
+            ]
+          }
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-E-WAVE",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "大規模有限要素法の反復解法が主要負荷です。",
+            "rationale_en": "Large finite-element iterative solves are the principal compute load.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "大規模疎行列と場のデータに対して容量と帯域が必要です。",
+            "rationale_en": "Large sparse matrices and field data require capacity and bandwidth.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "unknown",
+            "rationale_ja": "EEA1コードが非公開のため、ノード内データ移動の実測根拠が不足しています。",
+            "rationale_en": "The unreleased EEA1 code leaves insufficient evidence for intra-node data movement.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "領域分割した有限要素計算では、境界交換と大規模並列効率が設計条件です。",
+            "rationale_en": "Domain-decomposed finite-element computation makes halo exchange and large-scale efficiency design conditions.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "high",
+            "rationale_ja": "大規模メッシュ、入力モデル、波動場の出力を扱いますが、標準量は未確定です。",
+            "rationale_en": "Large meshes, input models, and wave-field outputs are involved, but standard volumes are not fixed.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "medium",
+            "rationale_ja": "地震波計算の用途ごとに単一解析時間とケース数を分けて評価する必要があります。",
+            "rationale_en": "Per-run analysis time and case throughput must be evaluated separately for each seismic use case.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "unknown",
+            "rationale_ja": "EEA1で評価するコード本体が公開されておらず、移植条件を検証できません。",
+            "rationale_en": "The EEA1 codebase is unreleased, preventing validation of portability conditions.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "medium",
+            "rationale_ja": "地下構造モデルや観測データの利用条件を公開評価入力と分離して管理する必要があります。",
+            "rationale_en": "Access conditions for subsurface models and observations must be separated from public evaluation inputs.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF011",
+              "SRC-PERF013"
+            ]
+          }
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "大規模流体解析の時間積分と線形解法が主要負荷です。",
+            "rationale_en": "Time integration and linear solvers in large-scale CFD are principal compute loads.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "非構造格子と流れ場の更新に容量と帯域が必要です。",
+            "rationale_en": "Unstructured meshes and flow-field updates require memory capacity and bandwidth.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "unknown",
+            "rationale_ja": "公開されたEEA1コードがないため、アクセラレータ構成の要求は未確認です。",
+            "rationale_en": "No public EEA1 code is available, so accelerator-scale-up requirements remain unverified.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "領域分割による境界通信と大規模並列効率が性能を左右します。",
+            "rationale_en": "Domain-decomposition boundary exchange and large-scale efficiency affect performance.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "high",
+            "rationale_ja": "メッシュ、時系列結果、可視化データの容量と出力頻度を設計に含める必要があります。",
+            "rationale_en": "Mesh, time-series, and visualization volume and output cadence belong in system design.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "high",
+            "rationale_ja": "防災・設計利用では期限内完了が重要ですが、EEA1標準期限は未定義です。",
+            "rationale_en": "Deadline completion matters in disaster-response and design uses, but an EEA1 standard deadline is undefined.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "unknown",
+            "rationale_ja": "コード本体が非公開のため、候補プラットフォームへの移植工数を検証できません。",
+            "rationale_en": "The unreleased codebase prevents validation of porting effort to candidate platforms.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "medium",
+            "rationale_ja": "産業形状や境界条件には共有制約があり得るため、公開ベンチマークと分離が必要です。",
+            "rationale_en": "Industrial geometries and boundary conditions may carry sharing restrictions and need separation from public benchmarks.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF011",
+              "SRC-PERF012"
+            ]
+          }
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "cells": [
+          {
+            "dimension_id": "compute-throughput",
+            "demand_level": "high",
+            "rationale_ja": "格子QCDの反復線形解法が高い演算スループットを必要とします。",
+            "rationale_en": "Iterative lattice-QCD linear solves require high compute throughput.",
+            "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
+            "measurement_gap_en": "Measure achieved compute rate and runtime breakdown on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "memory-capacity-bandwidth",
+            "demand_level": "high",
+            "rationale_ja": "格子場の反復更新はメモリ帯域と容量の双方に依存します。",
+            "rationale_en": "Repeated lattice-field updates depend on both memory bandwidth and capacity.",
+            "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
+            "measurement_gap_en": "Measure capacity floor, achieved bandwidth, and locality on a representative input.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "scale-up-interconnect",
+            "demand_level": "medium",
+            "rationale_ja": "GPU実装では複数デバイス間の格子分割とデータ移動を確認する必要があります。",
+            "rationale_en": "GPU implementations require validation of lattice partitioning and data movement across devices.",
+            "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
+            "measurement_gap_en": "Measure host-device and multi-device transfer volume and latency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "scale-out-interconnect",
+            "demand_level": "high",
+            "rationale_ja": "近接格子通信と全体同期が大規模並列性能に影響します。",
+            "rationale_en": "Nearest-neighbor exchange and global synchronization affect large-scale performance.",
+            "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
+            "measurement_gap_en": "Measure communication volume, collectives, synchronization, and scale efficiency.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "storage-io",
+            "demand_level": "medium",
+            "rationale_ja": "ゲージ配位の保存と再利用が必要ですが、標準評価の容量は未固定です。",
+            "rationale_en": "Gauge configurations must be stored and reused, but standard evaluation volume is not pinned.",
+            "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
+            "measurement_gap_en": "Pin input, checkpoint, and output volume, bandwidth, and cadence.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "workflow-latency",
+            "demand_level": "low",
+            "rationale_ja": "期限応答より、長時間ジョブと配位生成の総スループットが中心です。",
+            "rationale_en": "Long-running jobs and aggregate configuration-generation throughput matter more than interactive deadlines.",
+            "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
+            "measurement_gap_en": "Define deadlines, per-run latency, concurrency, and ensemble volume.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "software-portability",
+            "demand_level": "medium",
+            "rationale_ja": "公開コードとGPU向けビルド例はありますが、版、入力、結果一致の固定が必要です。",
+            "rationale_en": "Public code and GPU build examples exist, but versions, inputs, and result-equivalence checks need pinning.",
+            "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
+            "measurement_gap_en": "Pin code, dependencies, builds, accuracy checks, and candidate-system reproduction steps.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          },
+          {
+            "dimension_id": "data-governance",
+            "demand_level": "low",
+            "rationale_ja": "公開可能な入力と配位を利用できますが、生成物の来歴は保持する必要があります。",
+            "rationale_en": "Publishable inputs and configurations can be used, while generated-data provenance still must be retained.",
+            "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
+            "measurement_gap_en": "Resolve publication scope, access conditions, retention, and provenance requirements.",
+            "source_ids": [
+              "SRC-PERF001",
+              "SRC-PERF004",
+              "SRC-PERF009"
+            ]
+          }
+        ]
+      }
+    ],
+    "caveat_ja": "High、Medium、Low、Unknownは、公開資料を単一のAIモデルが整理した定性的な暫定評価です。ノード数、帯域、容量、調達仕様を示すものではなく、項目間やアプリケーション間の厳密な数値比較には使えません。各セルの測定課題を解消し、独立Consensusを通過するまで正式要件にしません。",
+    "caveat_en": "High, medium, low, and unknown are qualitative provisional assessments synthesized by one model from public evidence. They are not node counts, bandwidths, capacities, or procurement specifications and do not support strict numerical comparison across cells or applications. They remain non-normative until the stated measurement gaps are closed and independent Consensus is complete."
+  }
 }

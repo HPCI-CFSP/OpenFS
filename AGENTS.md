@@ -124,7 +124,10 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 - A successful Pages preview does not mean that production Pages has been
   updated. Report a result as published only after its commit is contained in
   `main` and the production Pages deployment for that commit has succeeded.
-- Never merge a pull request without a separate explicit human instruction.
+- For an explicit human implementation request, carry the work through a branch,
+  validation, push, and a reviewable pull request unless the human asks for analysis
+  only, a checkpoint, or a stop. Never merge that pull request without a separate
+  explicit instruction.
 - Write every new pull-request description and comment in English first, followed
   by Japanese, with equivalent facts, limitations, IDs and validation results.
   Use `# English` and `# 日本語` blocks. Do not submit the untouched template,
