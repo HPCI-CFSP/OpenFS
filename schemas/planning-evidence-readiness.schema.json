@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/planning-evidence-readiness.schema.json",
+  "title": "OpenFS planning evidence readiness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "dimensions", "scenario_assessments", "caveat_ja", "caveat_en", "publication"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "artifact_id": {"const": "PLANNING-EVIDENCE-READINESS-001"},
+    "status": {"const": "published"},
+    "as_of": {"type": "string", "format": "date"},
+    "research_status": {"const": "provisional"},
+    "consensus_status": {"const": "incomplete"},
+    "title_ja": {"$ref": "#/$defs/text"},
+    "title_en": {"$ref": "#/$defs/text"},
+    "summary_ja": {"$ref": "#/$defs/text"},
+    "summary_en": {"$ref": "#/$defs/text"},
+    "dimensions": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {"$ref": "#/$defs/dimension"}
+    },
+    "scenario_assessments": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"$ref": "#/$defs/scenarioAssessment"}
+    },
+    "caveat_ja": {"$ref": "#/$defs/text"},
+    "caveat_en": {"$ref": "#/$defs/text"},
+    "publication": {"$ref": "public-hpci-system-inventory.schema.json#/$defs/publication"}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1},
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["numerator", "denominator", "unit_ja", "unit_en"],
+      "properties": {
+        "numerator": {"type": "integer", "minimum": 0},
+        "denominator": {"type": "integer", "minimum": 1},
+        "unit_ja": {"$ref": "#/$defs/text"},
+        "unit_en": {"$ref": "#/$defs/text"}
+      }
+    },
+    "dimension": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dimension_id", "label_ja", "label_en", "status", "coverage", "finding_ja", "finding_en", "planning_use_ja", "planning_use_en", "blockers_ja", "blockers_en", "evidence_refs"],
+      "properties": {
+        "dimension_id": {"enum": ["system-lifecycle", "operations", "five-year-cost", "application-performance", "quantitative-requirements"]},
+        "label_ja": {"$ref": "#/$defs/text"},
+        "label_en": {"$ref": "#/$defs/text"},
+        "status": {"enum": ["partial", "blocked"]},
+        "coverage": {"$ref": "#/$defs/coverage"},
+        "finding_ja": {"$ref": "#/$defs/text"},
+        "finding_en": {"$ref": "#/$defs/text"},
+        "planning_use_ja": {"$ref": "#/$defs/text"},
+        "planning_use_en": {"$ref": "#/$defs/text"},
+        "blockers_ja": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "blockers_en": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
+      }
+    },
+    "scenarioAssessment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenario_id", "implication_ja", "implication_en", "commitment_boundary_ja", "commitment_boundary_en", "blocking_dimension_ids"],
+      "properties": {
+        "scenario_id": {"type": "string", "pattern": "^SCN-HPCI-[A-Z0-9-]+$"},
+        "implication_ja": {"$ref": "#/$defs/text"},
+        "implication_en": {"$ref": "#/$defs/text"},
+        "commitment_boundary_ja": {"$ref": "#/$defs/text"},
+        "commitment_boundary_en": {"$ref": "#/$defs/text"},
+        "blocking_dimension_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["system-lifecycle", "operations", "five-year-cost", "application-performance", "quantitative-requirements"]}}
+      }
+    }
+  }
+}

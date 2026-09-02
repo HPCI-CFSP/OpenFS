@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from check_procurement_costs import validate_register
 from check_public_planning_surfaces import validate_inventory_links
-from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total
+from estimate_system_cost import allocate_budget, contract_breakdown, five_year_known_cost_floor, lease_period_total
 from catalog_lineage import catalog_aliases, current_finding_topics
 from roadmap_timing import milestone_quarter_window
 
@@ -248,6 +248,7 @@ def collect_procurement_costs(root: Path, policy: dict[str, Any]) -> tuple[dict,
     for case in projected["cases"]:
         case["breakdown"] = contract_breakdown(case)
         case["lease_period_total"] = lease_period_total(case)
+        case["five_year_known_cost_floor"] = five_year_known_cost_floor(case)
     return projected, config
 
 
@@ -1312,6 +1313,14 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "application_performance_forecast_required_bilingual_fields",
         "application performance forecast surface",
     )
+    planning_evidence_readiness = collect_public_supplement(
+        root,
+        policy,
+        "included_public_planning_evidence_readiness",
+        "planning_evidence_readiness_public_fields",
+        "planning_evidence_readiness_required_bilingual_fields",
+        "planning evidence readiness",
+    )
     roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [
         roadmap_index_entry(roadmap, category_by_roadmap)
@@ -1369,6 +1378,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "roadmap_reference_data": roadmap_reference_data,
         "hpci_system_inventory": hpci_system_inventory,
         "application_performance_forecasts": application_performance_forecasts,
+        "planning_evidence_readiness": planning_evidence_readiness,
         "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,

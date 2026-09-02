@@ -10,6 +10,12 @@ the unresolved state to `GAP-BLUE-001` and `GAP-BLUE-003`.
 
 Each summary must retain its research, coverage, and Consensus status. Source links must be public, and publication requires a matching `publication-approval` Directive.
 
+`planning-evidence-readiness.json` connects lifecycle, operational, cost,
+performance, and quantitative-requirement evidence to each public system
+planning option. It publishes coverage and blockers, not a readiness score.
+The view must remain provisional and Consensus-incomplete until independent
+review and accountable human decisions are recorded.
+
 `memory-technology-roadmap.json` is a bilingual, human-approved public display
 artifact for the memory technology watch. It separates observed commercial
 milestones, samples, standards, vendor targets, concepts, and publicly undated

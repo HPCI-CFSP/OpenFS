@@ -13,7 +13,14 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from estimate_system_cost import allocate_budget, contract_breakdown, estimate_configuration, normalize_amount, lease_period_total
+from estimate_system_cost import (
+    allocate_budget,
+    contract_breakdown,
+    estimate_configuration,
+    five_year_known_cost_floor,
+    lease_period_total,
+    normalize_amount,
+)
 from check_procurement_costs import validate_register
 from audit_roadmap_sources_via_fetch_broker import reconcile_offline
 from build_roadmap_freshness_audit import build as build_freshness
@@ -76,6 +83,22 @@ class ProcurementCostTests(unittest.TestCase):
             changed["contract_window"].update(patch_value)
             with self.subTest(patch_value=patch_value), self.assertRaises(ValueError):
                 lease_period_total(changed)
+
+    def test_five_year_known_cost_floor_is_not_complete_tco(self):
+        case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-TSUKUBA-UNIFIED-MEMORY-2025")
+        result = five_year_known_cost_floor(case)
+        self.assertEqual(712800000, result["value_jpy"])
+        self.assertEqual(60, result["months"])
+        self.assertFalse(result["tco_complete"])
+        self.assertIn("electricity", result["excluded_costs"])
+        self.assertEqual(
+            1,
+            sum(five_year_known_cost_floor(item) is not None for item in self.register["cases"]),
+        )
+
+        shorter = copy.deepcopy(case)
+        shorter["amount"]["period_months"] = 59
+        self.assertIsNone(five_year_known_cost_floor(shorter))
 
     def test_unknown_payment_basis_cannot_be_normalized(self):
         case = next(c for c in self.register["cases"] if c["case_id"] == "PROC-NAGOYA-FURO-NEXT-2025")

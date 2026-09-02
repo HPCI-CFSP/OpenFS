@@ -67,6 +67,12 @@ test("portfolio and all plan pages pass their actual root prefix to the budget r
       const text = f.elements().map((node) => node.textContent).join(" ");
       assert.ok(text.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure"));
       assert.ok(text.includes(language === "ja" ? "購入価格・TCOではありません" : "Not purchase price or TCO"));
+      if (route === "scenarios/") {
+        assert.ok(text.includes(language === "ja" ? "計画判断に必要な根拠の充足状況" : "Evidence readiness for planning decisions"));
+      } else {
+        assert.ok(text.includes(language === "ja" ? "公開根拠から見たこの案の位置付け" : "Position of this option against public evidence"));
+        assert.ok(text.includes(language === "ja" ? "確定しない範囲" : "Commitment boundary"));
+      }
     }
   }
 });

@@ -10,8 +10,10 @@ from typing import Any
 
 try:
     from .check_performance_model_card import evaluate as evaluate_performance_model_card
+    from .estimate_system_cost import five_year_known_cost_floor
 except ImportError:  # pragma: no cover - direct script execution
     from check_performance_model_card import evaluate as evaluate_performance_model_card
+    from estimate_system_cost import five_year_known_cost_floor
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -246,6 +248,25 @@ def validate_inventory_links(inventory: dict, register: dict, roadmaps: list[dic
         for ref in system.get("lifecycle_milestone_refs", []):
             if (ref["roadmap_id"], ref["milestone_id"]) not in milestones:
                 errors.append(f"{system['system_id']} links unknown lifecycle milestone: {ref}")
+    source_ids = {source["source_id"] for source in inventory["sources"]}
+    observation_ids = [item["observation_id"] for item in inventory["operational_observations"]]
+    product_ids = [item["product_id"] for item in inventory["operational_data_products"]]
+    if duplicates := duplicate_values(observation_ids + product_ids):
+        errors.append(f"duplicate HPCI operational evidence IDs: {duplicates}")
+    for item in [*inventory["operational_observations"], *inventory["operational_data_products"]]:
+        item_id = item.get("observation_id", item.get("product_id"))
+        if unknown := set(item["system_ids"]) - systems:
+            errors.append(f"{item_id} links unknown HPCI systems: {sorted(unknown)}")
+        if unknown := set(item["source_ids"]) - source_ids:
+            errors.append(f"{item_id} has unknown sources: {sorted(unknown)}")
+    for item in inventory["operational_observations"]:
+        value = item["value"]
+        if value["kind"] in {"exact", "approximate"}:
+            if value["value"] is None or value["lower"] is not None or value["upper"] is not None:
+                errors.append(f"{item['observation_id']} has an invalid scalar operational value")
+        elif (value["value"] is not None or value["lower"] is None or value["upper"] is None
+              or value["lower"] > value["upper"]):
+            errors.append(f"{item['observation_id']} has an invalid operational range")
     return errors
 
 
@@ -255,9 +276,11 @@ def validate(root: Path = ROOT) -> list[str]:
     inventory = load_json(root / "knowledge/public/hpci-system-inventory.json")
     forecasts = load_json(root / "knowledge/public/application-performance-forecasts.json")
     register_path = root / "knowledge/public/procurement-cost-register.json"
+    register = None
     if register_path.exists():
+        register = load_json(register_path)
         roadmaps = [load_json(path) for path in sorted((root / "knowledge/public/roadmaps").glob("*.json"))]
-        errors.extend(validate_inventory_links(inventory, load_json(register_path), roadmaps))
+        errors.extend(validate_inventory_links(inventory, register, roadmaps))
 
     center_ids = {center["center_id"] for center in center_registry["centers"]}
     inventory_source_ids = {source["source_id"] for source in inventory["sources"]}
@@ -321,6 +344,14 @@ def validate(root: Path = ROOT) -> list[str]:
                 f"{candidate['candidate_system_id']} has unknown sources "
                 f"{sorted(unknown_sources)}"
             )
+
+    measured_platform_ids = [item["platform_id"] for item in forecasts["measured_platforms"]]
+    if duplicates := duplicate_values(measured_platform_ids):
+        errors.append(f"duplicate measured platform IDs: {duplicates}")
+    known_measured_platform_ids = set(measured_platform_ids)
+    for platform in forecasts["measured_platforms"]:
+        if unknown := set(platform["source_ids"]) - forecast_source_ids:
+            errors.append(f"{platform['platform_id']} has unknown sources {sorted(unknown)}")
 
     application_ids = [item["application_id"] for item in forecasts["applications"]]
     if duplicates := duplicate_values(application_ids):
@@ -390,6 +421,42 @@ def validate(root: Path = ROOT) -> list[str]:
     observations = {
         item["observation_id"]: item for item in forecasts["baseline_observations"]
     }
+    cross_observation_ids = [
+        item["observation_id"] for item in forecasts["cross_platform_observations"]
+    ]
+    if duplicates := duplicate_values(cross_observation_ids):
+        errors.append(f"duplicate cross-platform observation IDs: {duplicates}")
+    for observation in forecasts["cross_platform_observations"]:
+        item_id = observation["observation_id"]
+        if observation["application_id"] not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if observation["platform_id"] not in known_measured_platform_ids:
+            errors.append(f"{item_id} references unknown measured platform")
+        if unknown := set(observation["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+
+    requirement_ids = [item["requirement_id"] for item in forecasts["quantitative_requirements"]]
+    if duplicates := duplicate_values(requirement_ids):
+        errors.append(f"duplicate quantitative requirement IDs: {duplicates}")
+    covered_requirements = set()
+    for requirement in forecasts["quantitative_requirements"]:
+        item_id = requirement["requirement_id"]
+        covered_requirements.add(requirement["application_id"])
+        if requirement["application_id"] not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if unknown := set(requirement["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+        numeric = [requirement[key] for key in ("lower", "value", "upper")]
+        if requirement["evidence_class"] == "measurement-gap":
+            if any(value is not None for value in numeric) or requirement["unit"] is not None:
+                errors.append(f"{item_id} fills a measurement gap with an unsupported number")
+        elif requirement["unit"] is None or all(value is None for value in numeric):
+            errors.append(f"{item_id} lacks a measured or published numerical basis")
+        if (requirement["lower"] is not None and requirement["upper"] is not None
+                and requirement["lower"] > requirement["upper"]):
+            errors.append(f"{item_id} has a reversed range")
+    if covered_requirements != known_application_ids:
+        errors.append("quantitative requirements must cover every declared application")
     calibration_candidate_ids = [
         item["calibration_candidate_id"]
         for item in forecasts["calibration_candidates"]
@@ -732,6 +799,58 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 "procurement use requires accepted Consensus and published forecasts"
             )
+
+    readiness_path = root / "knowledge/public/planning-evidence-readiness.json"
+    if readiness_path.exists() and register is not None:
+        readiness = load_json(readiness_path)
+        dimension_ids = [item["dimension_id"] for item in readiness["dimensions"]]
+        expected_dimension_ids = [
+            "system-lifecycle", "operations", "five-year-cost",
+            "application-performance", "quantitative-requirements",
+        ]
+        if dimension_ids != expected_dimension_ids:
+            errors.append("planning evidence dimensions must use the stable declared order")
+        dimensions = {item["dimension_id"]: item for item in readiness["dimensions"]}
+        actual_coverage = {
+            "system-lifecycle": len([
+                item for item in inventory["systems"] if item.get("lifecycle_milestone_refs")
+            ]),
+            "operations": len({
+                system_id
+                for item in [*inventory["operational_observations"], *inventory["operational_data_products"]]
+                for system_id in item["system_ids"]
+            }),
+            "five-year-cost": len([
+                item for item in register["cases"] if five_year_known_cost_floor(item)
+            ]),
+            "application-performance": len({
+                item["application_id"] for item in forecasts["cross_platform_observations"]
+            }),
+            "quantitative-requirements": len({
+                item["application_id"] for item in forecasts["quantitative_requirements"]
+                if item["evidence_class"] != "measurement-gap"
+            }),
+        }
+        expected_denominators = {
+            "system-lifecycle": len(inventory["systems"]),
+            "operations": len(inventory["systems"]),
+            "five-year-cost": len(register["cases"]),
+            "application-performance": len(forecasts["applications"]),
+            "quantitative-requirements": len(forecasts["applications"]),
+        }
+        for dimension_id in expected_dimension_ids:
+            coverage = dimensions[dimension_id]["coverage"]
+            if coverage["numerator"] != actual_coverage[dimension_id]:
+                errors.append(f"{dimension_id} planning evidence numerator is stale")
+            if coverage["denominator"] != expected_denominators[dimension_id]:
+                errors.append(f"{dimension_id} planning evidence denominator is stale")
+        scenario_payload = load_json(root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json")
+        known_scenarios = {item["scenario_id"] for item in scenario_payload["scenarios"]}
+        assessed_scenarios = {item["scenario_id"] for item in readiness["scenario_assessments"]}
+        if assessed_scenarios != known_scenarios:
+            errors.append("planning evidence readiness must assess every published scenario")
+        if readiness["consensus_status"] != "incomplete" or readiness["research_status"] != "provisional":
+            errors.append("planning evidence readiness must remain provisional and Consensus-incomplete")
     errors.extend(validate_topic_decision_support(root))
     return errors
 
