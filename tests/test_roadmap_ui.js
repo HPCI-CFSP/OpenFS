@@ -223,3 +223,23 @@ test("legacy what-if cells retain values while disclosing assumptions in both la
     assert.equal(f.get("application-performance-caveat").textContent, performance[`caveat_${language}`]);
   }
 });
+
+test("calibration candidate and infrastructure requirements remain provisional in both languages", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
+  const performance = data.application_performance_forecasts;
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const calibration = f.get("application-calibration-candidates");
+    assert.ok(calibration.textContent.includes("PMCAL-GENESIS-WEAK-001"));
+    assert.ok(calibration.textContent.includes(language === "ja" ? "合意判定未完了" : "incomplete"));
+    assert.ok(calibration.textContent.includes("6.183"));
+    const matrix = f.get("application-infrastructure-matrix");
+    const cells = f.walk(matrix).filter((el) => el.className?.split(" ").includes("infrastructure-demand"));
+    assert.equal(cells.length, performance.applications.length * performance.infrastructure_requirements_matrix.dimensions.length);
+    assert.ok(matrix.textContent.includes(language === "ja" ? "必要な測定・確認" : "Required measurement or check"));
+    assert.equal(
+      f.get("application-infrastructure-caveat").textContent,
+      performance.infrastructure_requirements_matrix[`caveat_${language}`]
+    );
+  }
+});

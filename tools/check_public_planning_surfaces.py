@@ -16,6 +16,16 @@ except ImportError:  # pragma: no cover - direct script execution
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCALES = [1, 4, 32, 128, 1024, 10000]
+EXPECTED_INFRASTRUCTURE_DIMENSIONS = [
+    "compute-throughput",
+    "memory-capacity-bandwidth",
+    "scale-up-interconnect",
+    "scale-out-interconnect",
+    "storage-io",
+    "workflow-latency",
+    "software-portability",
+    "data-governance",
+]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -375,6 +385,105 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 f"{observation['observation_id']} unavailable observation must not have value or unit"
             )
+
+    known_observation_ids = set(observation_ids)
+    observations = {
+        item["observation_id"]: item for item in forecasts["baseline_observations"]
+    }
+    calibration_candidate_ids = [
+        item["calibration_candidate_id"]
+        for item in forecasts["calibration_candidates"]
+    ]
+    if duplicates := duplicate_values(calibration_candidate_ids):
+        errors.append(f"duplicate calibration-candidate IDs: {duplicates}")
+    for calibration in forecasts["calibration_candidates"]:
+        item_id = calibration["calibration_candidate_id"]
+        if calibration["application_id"] not in known_application_ids:
+            errors.append(
+                f"{item_id} references unknown application {calibration['application_id']}"
+            )
+        unknown_sources = set(calibration["source_ids"]) - forecast_source_ids
+        if unknown_sources:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown_sources)}")
+        calibration_ids = set(calibration["calibration_observation_ids"])
+        validation_ids = {
+            item["observation_id"] for item in calibration["validation_results"]
+        }
+        if unknown := (calibration_ids | validation_ids) - known_observation_ids:
+            errors.append(f"{item_id} has unknown observations {sorted(unknown)}")
+        if overlap := calibration_ids & validation_ids:
+            errors.append(f"{item_id} reuses calibration data for validation: {sorted(overlap)}")
+        relative_errors = []
+        for result in calibration["validation_results"]:
+            observation = observations.get(result["observation_id"])
+            if observation is None:
+                continue
+            if observation["application_id"] != calibration["application_id"]:
+                errors.append(
+                    f"{item_id} validates an observation from another application"
+                )
+            if observation["status"] != "measured":
+                errors.append(f"{item_id} validates a non-measured observation")
+            if observation["unit"] != calibration["unit"]:
+                errors.append(f"{item_id} mixes validation units")
+            if abs(result["observed_value"] - observation["value"]) > 1e-9:
+                errors.append(f"{item_id} does not preserve the observed value")
+            expected_absolute = abs(
+                result["predicted_value"] - result["observed_value"]
+            )
+            if abs(result["absolute_error"] - expected_absolute) > 1e-6:
+                errors.append(f"{item_id} has an inconsistent absolute error")
+            expected_relative = (
+                expected_absolute / result["observed_value"]
+                if result["observed_value"] else 0
+            )
+            if abs(result["relative_error"] - expected_relative) > 1e-6:
+                errors.append(f"{item_id} has an inconsistent relative error")
+            relative_errors.append(result["relative_error"])
+        if relative_errors and abs(
+            calibration["maximum_relative_error"] - max(relative_errors)
+        ) > 1e-9:
+            errors.append(f"{item_id} has an inconsistent maximum relative error")
+        readiness = calibration["readiness"]
+        if all(
+            readiness["observed_counts"][key] >= readiness["required_minimums"][key]
+            for key in readiness["required_minimums"]
+        ):
+            errors.append(f"{item_id} is labeled unready despite meeting every minimum")
+        if (
+            readiness["candidate_ready_for_consensus"]
+            or calibration["consensus_status"] != "incomplete"
+            or calibration["procurement_eligible"]
+        ):
+            errors.append(
+                f"{item_id} must remain unready, Consensus-incomplete, and procurement-ineligible"
+            )
+
+    infrastructure = forecasts["infrastructure_requirements_matrix"]
+    dimension_ids = [item["dimension_id"] for item in infrastructure["dimensions"]]
+    if dimension_ids != EXPECTED_INFRASTRUCTURE_DIMENSIONS:
+        errors.append(
+            "application infrastructure dimensions must be stable and in the declared order"
+        )
+    row_ids = [item["application_id"] for item in infrastructure["rows"]]
+    if duplicates := duplicate_values(row_ids):
+        errors.append(f"duplicate application infrastructure rows: {duplicates}")
+    if set(row_ids) != known_application_ids:
+        errors.append(
+            "application infrastructure matrix must cover every declared application exactly once"
+        )
+    for row in infrastructure["rows"]:
+        cell_ids = [item["dimension_id"] for item in row["cells"]]
+        if cell_ids != EXPECTED_INFRASTRUCTURE_DIMENSIONS:
+            errors.append(
+                f"{row['application_id']} infrastructure cells must cover every dimension in order"
+            )
+        for cell in row["cells"]:
+            if unknown := set(cell["source_ids"]) - forecast_source_ids:
+                errors.append(
+                    f"{row['application_id']} {cell['dimension_id']} has unknown sources "
+                    f"{sorted(unknown)}"
+                )
 
     assumption_ids = [item["assumption_id"] for item in forecasts["assumptions"]]
     if duplicates := duplicate_values(assumption_ids):

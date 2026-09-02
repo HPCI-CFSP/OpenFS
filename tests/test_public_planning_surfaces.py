@@ -6,7 +6,8 @@ from pathlib import Path
 
 from tests.test_performance_model_card import valid_card
 from tools.check_public_planning_surfaces import (
-    EXPECTED_SCALES, validate, validate_source_corrections, validate_topic_decision_support,
+    EXPECTED_INFRASTRUCTURE_DIMENSIONS, EXPECTED_SCALES, validate,
+    validate_source_corrections, validate_topic_decision_support,
 )
 
 
@@ -73,6 +74,76 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
 
     def test_standard_scales_are_fixed(self):
         self.assertEqual(EXPECTED_SCALES, [1, 4, 32, 128, 1024, 10000])
+
+    def test_genesis_calibration_candidate_is_measured_but_not_accepted(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(1, len(payload["calibration_candidates"]))
+        candidate = payload["calibration_candidates"][0]
+        validation_ids = {
+            item["observation_id"] for item in candidate["validation_results"]
+        }
+        self.assertFalse(
+            set(candidate["calibration_observation_ids"]) & validation_ids
+        )
+        self.assertLess(candidate["maximum_relative_error"], 0.07)
+        self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
+        self.assertEqual("incomplete", candidate["consensus_status"])
+        self.assertFalse(candidate["procurement_eligible"])
+
+    def test_infrastructure_matrix_covers_every_application_and_dimension(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        matrix = payload["infrastructure_requirements_matrix"]
+        self.assertEqual(
+            EXPECTED_INFRASTRUCTURE_DIMENSIONS,
+            [item["dimension_id"] for item in matrix["dimensions"]],
+        )
+        self.assertEqual(
+            {item["application_id"] for item in payload["applications"]},
+            {item["application_id"] for item in matrix["rows"]},
+        )
+        self.assertTrue(
+            all(
+                [item["dimension_id"] for item in row["cells"]]
+                == EXPECTED_INFRASTRUCTURE_DIMENSIONS
+                for row in matrix["rows"]
+            )
+        )
+
+    def test_rejects_calibration_arithmetic_and_incomplete_matrix(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in (
+                "config/hpci-center-registry.json",
+                "knowledge/public/hpci-system-inventory.json",
+                "knowledge/public/application-performance-forecasts.json",
+            ):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(
+                    (ROOT / relative).read_text(encoding="utf-8"), encoding="utf-8"
+                )
+            path = root / "knowledge/public/application-performance-forecasts.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload["calibration_candidates"][0]["validation_results"][0][
+                "absolute_error"
+            ] = 999
+            payload["infrastructure_requirements_matrix"]["rows"][0]["cells"].pop()
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            errors = validate(root)
+            self.assertTrue(any("inconsistent absolute error" in error for error in errors))
+            self.assertTrue(
+                any("must cover every dimension in order" in error for error in errors)
+            )
 
     def test_eea1_code_availability_is_explicit(self):
         payload = json.loads(
