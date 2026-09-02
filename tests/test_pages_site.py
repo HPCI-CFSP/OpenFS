@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -602,10 +602,11 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(0, len(result["application_performance_forecasts"]["validated_model_cards"]))
             self.assertEqual(36, len(result["application_performance_forecasts"]["illustrations"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
-            self.assertEqual(23, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(24, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(6, len(result["application_performance_forecasts"]["draft_acceptance_criteria"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["calibration_candidates"]))
             self.assertEqual(74, len(result["application_performance_forecasts"]["cross_platform_observations"]))
-            self.assertEqual(7, len(result["application_performance_forecasts"]["quantitative_requirements"]))
+            self.assertEqual(8, len(result["application_performance_forecasts"]["quantitative_requirements"]))
             self.assertEqual(5, len(result["planning_evidence_readiness"]["dimensions"]))
             self.assertEqual(
                 6,
