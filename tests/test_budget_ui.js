@@ -117,7 +117,7 @@ test("reported total, differently defined capacities, and system links remain di
     assert.equal(details.filter((d) => d.open).length, 1);
     assert.equal(details.find((d) => d.open).id, "procurement-PROC-TSUKUBA-UNIFIED-MEMORY-2025");
     const tables = f.root.querySelectorAll("table");
-    assert.equal(tables.length, 3);
+    assert.equal(tables.length, 4);
     assert.ok(f.walk(f.root).some((e) => e.textContent === (language === "ja" ? "実効容量" : "Effective")));
     assert.ok(f.walk(f.root).some((e) => e.textContent?.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure")));
     const systemLinks = f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"));
@@ -149,6 +149,8 @@ test("five-year contractual floor remains distinct from complete TCO", {skip: !p
     const text = f.walk(f.root).map((e) => e.textContent || "").join(" ");
     assert.ok(text.includes(language === "ja" ? "最初の60か月の契約上の既知費用下限" : "Contractual known-cost floor for the first 60 months"));
     assert.ok(text.includes(language === "ja" ? "5年間TCOではありません" : "This is not five-year TCO"));
+    assert.ok(text.includes(language === "ja" ? "5年間TCOの証拠範囲" : "Five-year TCO evidence scope"));
+    assert.ok(text.includes(language === "ja" ? "内訳未分解" : "Unitemized"));
   }
 });
 

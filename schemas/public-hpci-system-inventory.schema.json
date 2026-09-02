@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "scope_ja", "scope_en", "availability_semantics_ja", "availability_semantics_en", "sources", "systems", "operational_observations", "operational_data_products", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.2.0"},
+    "schema_version": {"const": "0.3.0"},
     "export_id": {"type": "string", "pattern": "^HPCI-SYSTEM-INVENTORY-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -148,7 +148,7 @@
       "properties": {
         "observation_id": {"type": "string", "pattern": "^OP-HPCI-[A-Z0-9-]+$"},
         "system_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}},
-        "metric": {"enum": ["design-power", "operating-power", "utilization", "job-count", "maximum-job-duration"]},
+        "metric": {"enum": ["design-power", "operating-power", "utilization", "job-count", "maximum-job-duration", "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"]},
         "period_start": {"type": ["string", "null"], "format": "date"},
         "period_end": {"type": ["string", "null"], "format": "date"},
         "value": {"$ref": "#/$defs/operationalValue"},
@@ -164,7 +164,7 @@
       "required": ["product_id", "product_type", "system_ids", "period_start", "period_end", "record_count", "fields", "scope_ja", "scope_en", "caveat_ja", "caveat_en", "source_ids"],
       "properties": {
         "product_id": {"type": "string", "pattern": "^OPDATA-HPCI-[A-Z0-9-]+$"},
-        "product_type": {"enum": ["public-dataset", "published-chart"]},
+        "product_type": {"enum": ["public-dataset", "published-chart", "published-table"]},
         "system_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}},
         "period_start": {"type": ["string", "null"], "format": "date"},
         "period_end": {"type": ["string", "null"], "format": "date"},

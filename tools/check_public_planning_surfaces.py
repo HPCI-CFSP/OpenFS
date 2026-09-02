@@ -811,15 +811,74 @@ def validate(root: Path = ROOT) -> list[str]:
         if dimension_ids != expected_dimension_ids:
             errors.append("planning evidence dimensions must use the stable declared order")
         dimensions = {item["dimension_id"]: item for item in readiness["dimensions"]}
-        actual_coverage = {
-            "system-lifecycle": len([
-                item for item in inventory["systems"] if item.get("lifecycle_milestone_refs")
-            ]),
-            "operations": len({
+        milestone_records = {
+            (roadmap["roadmap_id"], milestone["milestone_id"]): milestone
+            for roadmap in roadmaps
+            for lane in roadmap["lanes"]
+            for milestone in lane["milestones"]
+        }
+        future_lifecycle_systems = {
+            system["system_id"]
+            for system in inventory["systems"]
+            if any(
+                milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "timing_basis"
+                ]
+                == "project-target"
+                and milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "year"
+                ]
+                is not None
+                for ref in system.get("lifecycle_milestone_refs", [])
+            )
+        }
+        observed_lifecycle_systems = {
+            system["system_id"]
+            for system in inventory["systems"]
+            if any(
+                milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "timing_basis"
+                ]
+                == "observed"
+                for ref in system.get("lifecycle_milestone_refs", [])
+            )
+        }
+        operational_systems = {
+            system_id
+            for item in [
+                *inventory["operational_observations"],
+                *inventory["operational_data_products"],
+            ]
+            for system_id in item["system_ids"]
+        }
+        observations_by_metric = {
+            metric: {
                 system_id
-                for item in [*inventory["operational_observations"], *inventory["operational_data_products"]]
+                for item in inventory["operational_observations"]
+                if item["metric"] in metrics
                 for system_id in item["system_ids"]
-            }),
+            }
+            for metric, metrics in {
+                "utilization": {"utilization"},
+                "power": {"design-power", "operating-power"},
+                "availability-downtime": {
+                    "system-availability",
+                    "scheduled-maintenance",
+                    "unplanned-downtime",
+                    "service-hours",
+                },
+                "jobs-history": {"job-count"},
+            }.items()
+        }
+        observations_by_metric["jobs-history"].update(
+            system_id
+            for item in inventory["operational_data_products"]
+            if item["product_type"] == "public-dataset"
+            for system_id in item["system_ids"]
+        )
+        actual_coverage = {
+            "system-lifecycle": len(future_lifecycle_systems),
+            "operations": len(operational_systems),
             "five-year-cost": len([
                 item for item in register["cases"] if five_year_known_cost_floor(item)
             ]),
@@ -844,6 +903,50 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{dimension_id} planning evidence numerator is stale")
             if coverage["denominator"] != expected_denominators[dimension_id]:
                 errors.append(f"{dimension_id} planning evidence denominator is stale")
+        expected_supporting = {
+            "system-lifecycle": {
+                "observed-start": len(observed_lifecycle_systems),
+                "any-lifecycle": sum(
+                    bool(item.get("lifecycle_milestone_refs"))
+                    for item in inventory["systems"]
+                ),
+            },
+            "operations": {
+                key: len(value) for key, value in observations_by_metric.items()
+            },
+            "five-year-cost": {
+                "complete-tco": sum(
+                    case["five_year_cost_assessment"]["complete_tco"]
+                    for case in register["cases"]
+                ),
+                "public-total": sum(
+                    case.get("amount") is not None for case in register["cases"]
+                ),
+                "component-itemization": sum(
+                    bool(case["itemized_costs"]) for case in register["cases"]
+                ),
+            },
+            "application-performance": {},
+            "quantitative-requirements": {},
+        }
+        for dimension_id, expected in expected_supporting.items():
+            rows = dimensions[dimension_id]["supporting_coverages"]
+            actual = {row["coverage_id"]: row for row in rows}
+            if set(actual) != set(expected):
+                errors.append(f"{dimension_id} supporting coverage IDs are stale")
+                continue
+            for coverage_id, numerator in expected.items():
+                if actual[coverage_id]["numerator"] != numerator:
+                    errors.append(
+                        f"{dimension_id}:{coverage_id} numerator is stale"
+                    )
+                if (
+                    actual[coverage_id]["denominator"]
+                    != expected_denominators[dimension_id]
+                ):
+                    errors.append(
+                        f"{dimension_id}:{coverage_id} denominator is stale"
+                    )
         scenario_payload = load_json(root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json")
         known_scenarios = {item["scenario_id"] for item in scenario_payload["scenarios"]}
         assessed_scenarios = {item["scenario_id"] for item in readiness["scenario_assessments"]}
