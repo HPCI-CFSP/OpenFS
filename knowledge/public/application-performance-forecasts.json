@@ -1,14 +1,14 @@
 {
-  "schema_version": "0.6.0",
+  "schema_version": "0.7.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
-  "as_of": "2026-09-02",
+  "as_of": "2026-09-03",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
   "title_en": "EEA1 application performance evidence and reference calculations",
-  "summary_ja": "従来の未校正what-if試算36件を保持しつつ、富岳上のGENESISとSALMONの弱スケーリング実測から、校正点と検証点を分けた2つの補間候補を掲載します。また、令和6年度FS報告書の5アプリケーションに対する富岳・GPU候補機の実測を、入力、計測区間、ノード数、GPU数を保持した比較表として追加しました。いずれも将来機の予測値や調達性能保証ではありません。",
-  "summary_en": "This retains 36 uncalibrated what-if calculations and adds two interpolation candidates whose calibration and holdout points come from published GENESIS and SALMON weak-scaling measurements on Fugaku. It also records measured Fugaku and GPU-proxy results for five applications from the FY2024 FS report while preserving workload, timed component, node count and GPU count. None is a future-system forecast or procurement performance guarantee.",
+  "summary_ja": "EEA1の6アプリケーションについて、公開実測、公開コード、候補機比較、性能モデルの校正状況、共通の受入試験プロトコル、アプリケーション別の受入基準案を整理します。受入基準案は測定項目を定義した段階であり、目標値の承認とConsensusは完了していません。",
+  "summary_en": "This surface organizes public measurements, code availability, candidate-platform comparisons, model-calibration status, a common acceptance-test protocol, and application-specific draft acceptance criteria for six EEA1 applications. The drafts define what to measure; target approval and Consensus remain incomplete.",
   "standard_fugaku_node_scales": [
     1,
     4,
@@ -210,6 +210,29 @@
       "url": "https://journals.sagepub.com/doi/10.1177/10943420211065723",
       "published_at": "2022-02-01",
       "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-PERF021",
+      "title": "令和3年度『富岳』成果創出加速プログラム 大規模数値シミュレーションによる地震発生から地震動・地盤増幅評価までの統合的予測システムの構築とその社会実装 成果報告書",
+      "publisher": "海洋研究開発機構",
+      "url": "https://www.jamstec.go.jp/fugaku-earthq/ja/docs/r3fugakujishin_seikahokoku.pdf",
+      "published_at": "2022-05-30",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF022",
+      "title": "FugakuNEXTアプリケーション開発・評価環境",
+      "publisher": "理化学研究所 計算科学研究センター",
+      "url": "https://www.r-ccs.riken.jp/events/20260306-1/fugakunext-5.pdf",
+      "published_at": "2026-03-06",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF023",
+      "title": "大規模数値シミュレーションによる地震発生から地震動・地盤増幅評価までの統合的予測システム",
+      "publisher": "海洋研究開発機構",
+      "url": "https://www.jamstec.go.jp/namr/project03.html",
+      "source_class": "research-organization"
     }
   ],
   "candidate_systems": [
@@ -591,6 +614,20 @@
       "note_en": "Measured value from Table 6. Problem size changes with node count; the 27,648-node result is reported as 3.17% of theoretical peak.",
       "source_ids": [
         "SRC-PERF020"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-EWAVE-FUGAKU-385-NODES",
+      "application_id": "APP-EEA1-E-WAVE",
+      "fugaku_nodes": 385,
+      "workload": "238 km x 188 km x 108 km domain; about 1.77 billion finite elements; about 2.38 billion nodes; 20,000 steps at 0.01 s; 1,540 MPI processes",
+      "status": "measured",
+      "value": 7.6,
+      "unit": "h",
+      "note_ja": "表1.2.12の地震動本計算時間です。プリプロセス33.2時間、ポストプロセス2.8時間は別工程・別計算機を含むため、この値に加えていません。",
+      "note_en": "Main ground-motion runtime from Table 1.2.12. The 33.2-hour preprocessing and 2.8-hour postprocessing stages are kept separate because the workflow includes separate stages and systems.",
+      "source_ids": [
+        "SRC-PERF021"
       ]
     }
   ],
@@ -1158,20 +1195,35 @@
           "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."
         }
       ],
-      "observed_scale_hints": [],
+      "observed_scale_hints": [
+        {
+          "nodes": 385,
+          "observation_type": "benchmark",
+          "source_ids": [
+            "SRC-PERF021"
+          ],
+          "note_ja": "約17.7億要素、約23.8億節点、20,000ステップの地震動計算を富岳385ノード・1,540 MPIプロセスで実行した公開実測です。EEA1と同一入力の測定ではありません。",
+          "note_en": "A public Fugaku measurement used 385 nodes and 1,540 MPI processes for a 20,000-step ground-motion case with about 1.77 billion elements and 2.38 billion finite-element mesh nodes. It is not a measurement of the identical EEA1 input."
+        }
+      ],
       "code_availability": {
         "status": "unreleased-in-eea1-reference",
         "source_ids": [
           "SRC-PERF011",
-          "SRC-PERF013"
+          "SRC-PERF013",
+          "SRC-PERF021",
+          "SRC-PERF022"
         ],
-        "note_ja": "JAMSTECの公式ページでE-wave FEMの利用は確認できるが、FugakuNEXTのISC 2026資料はEEA1コードを非公開と記載している。公開コードへのリンクは確認できていない。",
-        "note_en": "JAMSTEC's official page confirms use of E-wave FEM, while the FugakuNEXT ISC 2026 material marks the EEA1 code as unreleased. No public code link was confirmed."
+        "note_ja": "JAMSTECの公式資料でE-wave FEMの富岳実行と精度検証を確認しました。2026年の理研資料はOpenACCによるGPU対応を示す一方、EEA1コード本体は非公開としています。再配布可能なコードと入力は確認できていません。",
+        "note_en": "JAMSTEC official material documents Fugaku execution and accuracy validation of E-wave FEM. A 2026 RIKEN presentation marks OpenACC GPU support while the EEA1 codebase remains unreleased. No redistributable code and input package was confirmed."
       },
       "source_ids": [
         "SRC-PERF001",
         "SRC-PERF011",
-        "SRC-PERF013"
+        "SRC-PERF013",
+        "SRC-PERF021",
+        "SRC-PERF022",
+        "SRC-PERF023"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
@@ -1359,10 +1411,10 @@
       "priority": "P0",
       "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力",
       "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales",
-      "impact_ja": "GENESISとSALMONの弱スケーリング系列、および5アプリケーションの小規模候補機比較を追加しましたが、6アプリケーションの標準規模、同一入力、電力をそろえた校正・検証はできません。",
-      "impact_en": "GENESIS and SALMON weak-scaling series and small-scale candidate-platform comparisons for five applications are now included, but all six applications still lack calibration and validation at standard scales with identical inputs and power measurement.",
-      "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、GENESISは別システムで再測定する。他の5アプリケーションも1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。",
-      "next_action_en": "Register publishable inputs in Benchpark/BenchKit, remeasure GENESIS on another system, and measure the other five applications at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.",
+      "impact_ja": "E-Waveを含む6アプリケーションに何らかの富岳公開実測がありますが、標準規模、同一入力、消費電力をそろえた校正・検証はできません。E-Waveの385ノード実測はEEA1と別入力です。",
+      "impact_en": "All six applications now have some public Fugaku measurement, but calibration and validation at standard scales with identical inputs and power measurement remain unavailable. The 385-node E-Wave result uses a different input from EEA1.",
+      "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、6アプリケーションを1、4、32、128、1,024、約10,000ノードの適用可能な規模で測定します。E-Waveは公開プロキシの提供可否も確認します。",
+      "next_action_en": "Register publishable inputs in Benchpark/BenchKit and measure all six applications at applicable scales among 1, 4, 32, 128, 1,024, and about 10,000 nodes. Also confirm whether a public E-Wave proxy can be provided.",
       "status": "open"
     },
     {
@@ -1415,8 +1467,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260902-002",
-    "human_approval_directive_id": "DIR-900025"
+    "publication_decision_id": "PUBDEC-EEA1-ACCEPTANCE-20260903-001",
+    "human_approval_directive_id": "DIR-900027"
   },
   "illustrations": [
     {
@@ -4778,6 +4830,23 @@
       ]
     },
     {
+      "requirement_id": "REQ-PERF-EWAVE-MEASURED",
+      "application_id": "APP-EEA1-E-WAVE",
+      "evidence_class": "measured-envelope",
+      "metric": "published Fugaku runtime point",
+      "lower": null,
+      "value": 7.6,
+      "upper": null,
+      "unit": "h",
+      "statement_ja": "約17.7億要素、20,000ステップの地震動本計算を富岳385ノードで7.6時間実行した公開値があります。これはEEA1と同一入力ではありません。",
+      "statement_en": "A published Fugaku run reports 7.6 hours on 385 nodes for the 20,000-step main ground-motion calculation with about 1.77 billion elements. The input is not the identical EEA1 case.",
+      "planning_use_ja": "入力を固定したE-Wave受入試験を設計する際の規模・工程分離の根拠として用い、EEA1性能予測の校正点には用いません。",
+      "planning_use_en": "Use it to scope and separate stages in a fixed-input E-Wave acceptance test, not as a calibration point for an EEA1 performance forecast.",
+      "source_ids": [
+        "SRC-PERF021"
+      ]
+    },
+    {
       "requirement_id": "REQ-PERF-EWAVE-GAP",
       "application_id": "APP-EEA1-E-WAVE",
       "evidence_class": "measurement-gap",
@@ -4786,13 +4855,13 @@
       "value": null,
       "upper": null,
       "unit": null,
-      "statement_ja": "EEA1と同一条件で再実行できる公開入力・実測値を確認できていません。",
-      "statement_en": "No public input and measurement reproducible under the EEA1 conditions has been confirmed.",
+      "statement_ja": "富岳385ノードの別入力による公開実測はありますが、EEA1と同一条件で再実行できる公開入力・実測値は確認できていません。",
+      "statement_en": "A public 385-node Fugaku measurement exists for a different input, but no public input and measurement reproducible under the identical EEA1 conditions has been confirmed.",
       "planning_use_ja": "周波数範囲、メッシュ規模、反復数、時間、メモリ、I/Oを定義した公開ベンチマークが必要です。",
       "planning_use_en": "A public benchmark must define frequency range, mesh scale, iterations, elapsed time, memory and I/O.",
       "source_ids": [
         "SRC-PERF001",
-        "SRC-PERF013"
+        "SRC-PERF021"
       ]
     },
     {
@@ -4828,6 +4897,1287 @@
       "source_ids": [
         "SRC-PERF019"
       ]
+    }
+  ],
+  "acceptance_metric_catalog": [
+    {
+      "metric_id": "scientific-correctness",
+      "label_ja": "科学的妥当性",
+      "label_en": "Scientific correctness",
+      "measure_ja": "固定した参照出力との誤差、保存量、収束条件または分野固有指標を記録します。",
+      "measure_en": "Record error against fixed reference output, conserved quantities, convergence, or domain-specific checks.",
+      "value_direction": "application-defined",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "time-to-solution",
+      "label_ja": "実行時間",
+      "label_en": "Time to solution",
+      "measure_ja": "初期化、主計算、I/Oを分離し、合意した終点までの経過時間を測定します。",
+      "measure_en": "Measure elapsed time to an agreed endpoint with initialization, main computation, and I/O separated.",
+      "value_direction": "lower-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "domain-rate",
+      "label_ja": "分野指標による処理速度",
+      "label_en": "Domain throughput",
+      "measure_ja": "ns/day、時間ステップ数/秒、予報日数/日など、科学的成果に対応する処理速度を測定します。",
+      "measure_en": "Measure science-facing throughput such as ns/day, time steps/s, or forecast days/day.",
+      "value_direction": "higher-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "parallel-efficiency",
+      "label_ja": "並列効率",
+      "label_en": "Parallel efficiency",
+      "measure_ja": "固定入力または明示した弱スケーリング入力について、基準規模からの効率を測定します。",
+      "measure_en": "Measure efficiency from a stated reference scale for a fixed input or explicitly weak-scaled input.",
+      "value_direction": "higher-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "energy-to-solution",
+      "label_ja": "解取得までのエネルギー",
+      "label_en": "Energy to solution",
+      "measure_ja": "同一の科学的成果を得る1回の実行に要した計算機・ネットワーク・ストレージの電力量を測定します。",
+      "measure_en": "Measure compute, network, and storage energy for one run producing the same scientific result.",
+      "value_direction": "lower-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "peak-memory-per-node",
+      "label_ja": "ノード当たり最大メモリ使用量",
+      "label_en": "Peak memory per node",
+      "measure_ja": "ホストとアクセラレータを分け、最大使用量と余裕率を記録します。",
+      "measure_en": "Record peak use and headroom separately for host and accelerator memory.",
+      "value_direction": "lower-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "communication-share",
+      "label_ja": "通信時間比率",
+      "label_en": "Communication-time share",
+      "measure_ja": "同期・集合通信・ポイント間通信と計算との重なりを区別して実行時間比率を測定します。",
+      "measure_en": "Measure runtime shares for synchronization, collectives, point-to-point traffic, and compute overlap.",
+      "value_direction": "lower-is-better",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "io-volume",
+      "label_ja": "I/O量",
+      "label_en": "I/O volume",
+      "measure_ja": "入力、チェックポイント、中間結果、最終出力の読書き量を分離して記録します。",
+      "measure_en": "Record read and write volumes separately for input, checkpoints, intermediate data, and final output.",
+      "value_direction": "bounded",
+      "requirement_level": "core"
+    },
+    {
+      "metric_id": "io-throughput",
+      "label_ja": "I/O実効帯域",
+      "label_en": "Effective I/O throughput",
+      "measure_ja": "共有系での実効読書き帯域とI/O待ち時間を記録します。",
+      "measure_en": "Record effective shared-system read/write throughput and I/O wait time.",
+      "value_direction": "higher-is-better",
+      "requirement_level": "conditional"
+    },
+    {
+      "metric_id": "run-variability",
+      "label_ja": "実行時間のばらつき",
+      "label_en": "Run-to-run variability",
+      "measure_ja": "有効測定の最小値、中央値、最大値、変動係数を記録します。",
+      "measure_en": "Report minimum, median, maximum, and coefficient of variation across valid measurements.",
+      "value_direction": "lower-is-better",
+      "requirement_level": "core"
+    }
+  ],
+  "acceptance_protocol": {
+    "protocol_id": "ACCPROTO-EEA1-001",
+    "status": "openfs-provisional",
+    "warmup_runs": 1,
+    "measured_runs": 5,
+    "summary_statistic": "median",
+    "variation_reporting": "min-median-max-and-coefficient-of-variation",
+    "failed_run_policy_ja": "失敗・中断・再実行を除外せず、原因、終了状態、除外判断をすべて記録します。",
+    "failed_run_policy_en": "Record every failure, interruption, retry, termination state, and exclusion decision.",
+    "comparison_rule_ja": "コード版、入力、精度、収束条件、出力、計測区間を固定し、同一ノード数だけでなく、同一アクセラレータ数、メモリ容量、消費電力、費用の比較条件を明記します。",
+    "comparison_rule_en": "Pin code revision, input, precision, convergence, output, and timing boundaries; state whether comparisons equalize node count, accelerators, memory, power, or cost.",
+    "consensus_status": "incomplete",
+    "procurement_eligible": false
+  },
+  "draft_acceptance_criteria": [
+    {
+      "criterion_id": "ACC-PERF-GENESIS-001",
+      "application_id": "APP-EEA1-GENESIS",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "コードのコミット、分子系、原子数、力場、時間刻み、積分ステップ数、長距離相互作用、領域分割、精度、チェックポイント条件を固定します。",
+      "workload_contract_en": "Pin the code commit, molecular system, atom count, force field, time step, integration steps, long-range interactions, decomposition, precision, and checkpoint policy.",
+      "correctness_contract_ja": "参照軌道と統計的に比較し、エネルギー・温度・圧力の安定性および分野責任者が定める許容差を確認します。",
+      "correctness_contract_en": "Compare statistically with a reference trajectory and check energy, temperature, and pressure stability using tolerances set by the domain owner.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF006",
+        "SRC-PERF010",
+        "SRC-PERF016",
+        "SRC-PERF018"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "criterion_id": "ACC-PERF-SALMON-001",
+      "application_id": "APP-EEA1-SALMON",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "コードのコミット、原子・電子数、実空間格子、k点、基底状態・実時間ステップ、時間刻み、精度、出力間隔を固定します。",
+      "workload_contract_en": "Pin the code commit, atom and electron counts, real-space grid, k-points, ground-state and real-time steps, time step, precision, and output interval.",
+      "correctness_contract_ja": "全エネルギー、電荷保存、電子密度および対象物理量を参照結果と比較し、分野責任者が許容差を定めます。",
+      "correctness_contract_en": "Compare total energy, charge conservation, electron density, and target observables with a reference result; the domain owner sets tolerances.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": 1,
+          "upper": null,
+          "unit": "s/step",
+          "threshold_basis": "public-target",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "論文の実用目標である1ステップ1秒を候補値として保持します。受入値としては未承認です。",
+          "statement_en": "Retain the paper's practical target of one second per step as a candidate value; it is not approved as an acceptance threshold.",
+          "source_ids": [
+            "SRC-PERF020"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF007",
+        "SRC-PERF015",
+        "SRC-PERF019",
+        "SRC-PERF020"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "criterion_id": "ACC-PERF-SCALE-LETKF-001",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "コードのコミット、水平・鉛直格子、予報期間、時間刻み、物理過程、アンサンブル数、観測データ、同化サイクル、出力を固定します。",
+      "workload_contract_en": "Pin the code commit, horizontal and vertical grids, forecast window, time step, physics, ensemble size, observations, assimilation cycles, and output.",
+      "correctness_contract_ja": "予報場・解析場、保存量、同化後の分野指標を参照結果と比較し、決定論的再現性と統計的同等性を区別します。",
+      "correctness_contract_en": "Compare forecast and analysis fields, conserved quantities, and post-assimilation science metrics with reference results, separating deterministic reproducibility from statistical equivalence.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "weak-scaling",
+            "throughput-ensemble"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF008",
+        "SRC-PERF014"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "criterion_id": "ACC-PERF-E-WAVE-001",
+      "application_id": "APP-EEA1-E-WAVE",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "再配布可能なコードまたはプロキシ、地盤モデル、領域、要素・節点数、周波数帯、時間刻み、総ステップ数、震源、吸収境界、観測点、出力を固定します。",
+      "workload_contract_en": "Pin a redistributable code or proxy, ground model, domain, element and node counts, frequency band, time step, total steps, source, absorbing boundaries, observation points, and output.",
+      "correctness_contract_ja": "参照波形との相互相関に基づく指標、振幅・位相、対象周波数帯、工学的出力を比較し、許容値を分野責任者が承認します。",
+      "correctness_contract_en": "Compare a waveform cross-correlation measure, amplitude, phase, target frequency band, and engineering outputs; the domain owner approves tolerances.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF021",
+        "SRC-PERF022",
+        "SRC-PERF023"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "criterion_id": "ACC-PERF-FRONTFLOW-BLUE-001",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "再配布可能なコードまたはプロキシ、メッシュ、境界条件、乱流モデル、時間刻み、反復数、収束条件、精度、出力を固定します。",
+      "workload_contract_en": "Pin a redistributable code or proxy, mesh, boundary conditions, turbulence model, time step, iterations, convergence, precision, and output.",
+      "correctness_contract_ja": "質量保存、残差履歴、圧力・速度場、抗力・揚力などの対象量を参照結果と比較し、許容差を分野責任者が定めます。",
+      "correctness_contract_en": "Compare mass conservation, residual history, pressure and velocity fields, and target quantities such as drag and lift with a reference result using owner-set tolerances.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF011",
+        "SRC-PERF012",
+        "SRC-PERF019"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
+    },
+    {
+      "criterion_id": "ACC-PERF-LQCD-DWF-HMC-001",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "status": "draft-measurement-contract",
+      "protocol_id": "ACCPROTO-EEA1-001",
+      "workload_contract_ja": "コードのコミット、ゲージ配位、局所・全体格子、物理パラメータ、精度、ソルバ許容値、HMCトラジェクトリ、通信方式を固定します。",
+      "workload_contract_en": "Pin the code commit, gauge configuration, local and global lattices, physics parameters, precision, solver tolerances, HMC trajectory, and communication method.",
+      "correctness_contract_ja": "プラケット、ハミルトニアン変化、ソルバ残差、HMC受理に関する分野指標を参照結果と比較し、許容差を分野責任者が定めます。",
+      "correctness_contract_en": "Compare plaquette, Hamiltonian change, solver residual, and HMC acceptance-related science metrics with a reference result using owner-set tolerances.",
+      "required_metric_ids": [
+        "scientific-correctness",
+        "time-to-solution",
+        "domain-rate",
+        "parallel-efficiency",
+        "energy-to-solution",
+        "peak-memory-per-node",
+        "communication-share",
+        "io-volume",
+        "io-throughput",
+        "run-variability"
+      ],
+      "target_scales": [
+        {
+          "fugaku_nodes": 1,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 4,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 32,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 128,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 1024,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        },
+        {
+          "fugaku_nodes": 10000,
+          "status": "owner-decision-required",
+          "candidate_scaling_modes": [
+            "strong-scaling",
+            "weak-scaling"
+          ],
+          "reason_ja": "入力のメモリ適合性、分割可能性、科学的妥当性を責任者が確認して確定します。",
+          "reason_en": "The owner must confirm memory fit, decomposability, and scientific validity before designation."
+        }
+      ],
+      "thresholds": [
+        {
+          "metric_id": "scientific-correctness",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "time-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "domain-rate",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "parallel-efficiency",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "energy-to-solution",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        },
+        {
+          "metric_id": "run-variability",
+          "lower": null,
+          "value": null,
+          "upper": null,
+          "unit": null,
+          "threshold_basis": "owner-definition-required",
+          "approval_status": "pending-owner-approval",
+          "statement_ja": "測定方法は定義済みですが、合否値はアプリケーション責任者との合意が必要です。",
+          "statement_en": "The measurement is defined, but the pass/fail value requires agreement with the application owner.",
+          "source_ids": [
+            "SRC-PERF001"
+          ]
+        }
+      ],
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF004",
+        "SRC-PERF009",
+        "SRC-PERF019"
+      ],
+      "readiness": {
+        "measurement_contract_complete": true,
+        "threshold_values_approved": false,
+        "application_owner_approved": false,
+        "independent_validation_complete": false,
+        "blockers_ja": [
+          "コード版と再配布可能な入力の固定が必要です。",
+          "適用規模と合否値についてアプリケーション責任者の承認が必要です。",
+          "別環境での独立検証とConsensusが未完了です。"
+        ],
+        "blockers_en": [
+          "A code revision and redistributable input must be pinned.",
+          "The application owner must approve applicable scales and pass/fail values.",
+          "Independent validation and Consensus are incomplete."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
     }
   ]
 }

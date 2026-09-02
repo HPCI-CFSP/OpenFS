@@ -457,6 +457,68 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{item_id} has a reversed range")
     if covered_requirements != known_application_ids:
         errors.append("quantitative requirements must cover every declared application")
+
+    acceptance_metric_ids = [
+        item["metric_id"] for item in forecasts["acceptance_metric_catalog"]
+    ]
+    if duplicates := duplicate_values(acceptance_metric_ids):
+        errors.append(f"duplicate acceptance metric IDs: {duplicates}")
+    known_acceptance_metric_ids = set(acceptance_metric_ids)
+    core_acceptance_metric_ids = {
+        item["metric_id"]
+        for item in forecasts["acceptance_metric_catalog"]
+        if item["requirement_level"] == "core"
+    }
+    protocol = forecasts["acceptance_protocol"]
+    criterion_ids = [
+        item["criterion_id"] for item in forecasts["draft_acceptance_criteria"]
+    ]
+    if duplicates := duplicate_values(criterion_ids):
+        errors.append(f"duplicate acceptance criterion IDs: {duplicates}")
+    criterion_application_ids = [
+        item["application_id"] for item in forecasts["draft_acceptance_criteria"]
+    ]
+    if duplicates := duplicate_values(criterion_application_ids):
+        errors.append(f"duplicate application acceptance criteria: {duplicates}")
+    covered_criteria = set()
+    for criterion in forecasts["draft_acceptance_criteria"]:
+        item_id = criterion["criterion_id"]
+        application_id = criterion["application_id"]
+        covered_criteria.add(application_id)
+        if application_id not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if criterion["protocol_id"] != protocol["protocol_id"]:
+            errors.append(f"{item_id} references an unknown acceptance protocol")
+        scales = [item["fugaku_nodes"] for item in criterion["target_scales"]]
+        if scales != EXPECTED_SCALES:
+            errors.append(f"{item_id} target scales must match {EXPECTED_SCALES}, in order")
+        required_metrics = set(criterion["required_metric_ids"])
+        if unknown := required_metrics - known_acceptance_metric_ids:
+            errors.append(f"{item_id} has unknown required metrics {sorted(unknown)}")
+        if missing := core_acceptance_metric_ids - required_metrics:
+            errors.append(f"{item_id} omits core acceptance metrics {sorted(missing)}")
+        if unknown := set(criterion["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+        threshold_metric_ids = [item["metric_id"] for item in criterion["thresholds"]]
+        if duplicates := duplicate_values(threshold_metric_ids):
+            errors.append(f"{item_id} repeats threshold metrics {duplicates}")
+        for threshold in criterion["thresholds"]:
+            metric_id = threshold["metric_id"]
+            if metric_id not in required_metrics:
+                errors.append(f"{item_id} sets a threshold for an unrequired metric {metric_id}")
+            if unknown := set(threshold["source_ids"]) - forecast_source_ids:
+                errors.append(f"{item_id}:{metric_id} has unknown sources {sorted(unknown)}")
+            numeric = [threshold[key] for key in ("lower", "value", "upper")]
+            if threshold["threshold_basis"] == "owner-definition-required":
+                if any(value is not None for value in numeric) or threshold["unit"] is not None:
+                    errors.append(f"{item_id}:{metric_id} invents an unapproved threshold")
+            elif threshold["unit"] is None or all(value is None for value in numeric):
+                errors.append(f"{item_id}:{metric_id} lacks its published target value")
+            if (threshold["lower"] is not None and threshold["upper"] is not None
+                    and threshold["lower"] > threshold["upper"]):
+                errors.append(f"{item_id}:{metric_id} has a reversed threshold range")
+    if covered_criteria != known_application_ids:
+        errors.append("draft acceptance criteria must cover every declared application")
     calibration_candidate_ids = [
         item["calibration_candidate_id"]
         for item in forecasts["calibration_candidates"]
@@ -927,7 +989,18 @@ def validate(root: Path = ROOT) -> list[str]:
                 ),
             },
             "application-performance": {},
-            "quantitative-requirements": {},
+            "quantitative-requirements": {
+                "draft-measurement-contracts": len({
+                    item["application_id"]
+                    for item in forecasts["draft_acceptance_criteria"]
+                    if item["readiness"]["measurement_contract_complete"]
+                }),
+                "human-approved-thresholds": len({
+                    item["application_id"]
+                    for item in forecasts["draft_acceptance_criteria"]
+                    if item["readiness"]["threshold_values_approved"]
+                }),
+            },
         }
         for dimension_id, expected in expected_supporting.items():
             rows = dimensions[dimension_id]["supporting_coverages"]

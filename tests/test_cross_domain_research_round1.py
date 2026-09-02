@@ -295,7 +295,7 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
 
     def test_legacy_what_if_values_are_explicitly_uncalibrated(self):
         forecast = read("knowledge/public/application-performance-forecasts.json")
-        self.assertEqual("0.6.0", forecast["schema_version"])
+        self.assertEqual("0.7.0", forecast["schema_version"])
         self.assertEqual(36, len(forecast["illustrations"]))
         self.assertEqual([], forecast["forecasts"])
         self.assertEqual([], forecast["validated_model_cards"])
