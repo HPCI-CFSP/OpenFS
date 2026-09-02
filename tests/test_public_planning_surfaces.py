@@ -137,6 +137,17 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(
+            {
+                "matched-input-comparisons": 0,
+                "independent-validations": 0,
+                "scenario-bindings": 3,
+            },
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["application-performance"]["supporting_coverages"]
+            },
+        )
+        self.assertEqual(
             {"draft-measurement-contracts": 6, "human-approved-thresholds": 0},
             {
                 item["coverage_id"]: item["numerator"]
@@ -272,6 +283,42 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                     self.assertIsNone(threshold["value"])
                     self.assertIsNone(threshold["upper"])
                     self.assertIsNone(threshold["unit"])
+
+    def test_common_benchmark_campaign_binds_all_applications_and_planning_options(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        scenarios = json.loads(
+            (
+                ROOT
+                / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
+            ).read_text(encoding="utf-8")
+        )
+        campaign = payload["common_benchmark_campaign"]
+        self.assertEqual(payload["acceptance_protocol"]["protocol_id"], campaign["protocol_id"])
+        self.assertEqual(
+            {item["criterion_id"] for item in payload["draft_acceptance_criteria"]},
+            set(campaign["criterion_ids"]),
+        )
+        self.assertEqual(payload["comparison_bases"], campaign["comparison_bases"])
+        self.assertEqual(5, campaign["minimum_valid_runs_per_configuration"])
+        self.assertTrue(campaign["exact_workload_match_required"])
+        self.assertEqual(list(range(1, 6)), [item["sequence"] for item in campaign["stages"]])
+        self.assertTrue(all(item["status"] == "blocked" for item in campaign["stages"]))
+        self.assertTrue(all(not item["completed_application_ids"] for item in campaign["stages"]))
+        self.assertEqual(
+            {item["scenario_id"] for item in scenarios["scenarios"]},
+            {item["scenario_id"] for item in campaign["scenario_bindings"]},
+        )
+        self.assertTrue(
+            all(item["sufficiency"] == "necessary-but-insufficient"
+                for item in campaign["scenario_bindings"])
+        )
+        self.assertEqual("incomplete", campaign["consensus_status"])
+        self.assertFalse(campaign["procurement_eligible"])
 
     def test_ewave_public_measurement_is_not_misrepresented_as_eea1_calibration(self):
         payload = json.loads(

@@ -18,6 +18,11 @@ except ImportError:  # pragma: no cover - direct script execution
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCALES = [1, 4, 32, 128, 1024, 10000]
+EXPECTED_SCENARIO_IDS = {
+    "SCN-HPCI-BALANCED-001",
+    "SCN-HPCI-AI-DATA-001",
+    "SCN-HPCI-STAGED-001",
+}
 EXPECTED_INFRASTRUCTURE_DIMENSIONS = [
     "compute-throughput",
     "memory-capacity-bandwidth",
@@ -519,6 +524,78 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f"{item_id}:{metric_id} has a reversed threshold range")
     if covered_criteria != known_application_ids:
         errors.append("draft acceptance criteria must cover every declared application")
+
+    campaign = forecasts["common_benchmark_campaign"]
+    if campaign["protocol_id"] != protocol["protocol_id"]:
+        errors.append("common benchmark campaign references an unknown acceptance protocol")
+    if set(campaign["criterion_ids"]) != set(criterion_ids):
+        errors.append("common benchmark campaign must cover every acceptance criterion")
+    if campaign["comparison_bases"] != forecasts["comparison_bases"]:
+        errors.append("common benchmark campaign comparison bases are stale")
+    if campaign["minimum_valid_runs_per_configuration"] != protocol["measured_runs"]:
+        errors.append("common benchmark campaign run count differs from its protocol")
+    scenario_path = root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
+    for key in ("result_bundle_schema_path", "result_bundle_validator_path"):
+        if scenario_path.exists() and not (root / campaign[key]).is_file():
+            errors.append(f"common benchmark campaign references missing path {campaign[key]}")
+
+    expected_stage_ids = [
+        "BMSTAGE-OWNER-APPROVAL",
+        "BMSTAGE-BASELINE-PACKAGE",
+        "BMSTAGE-MATCHED-MEASUREMENT",
+        "BMSTAGE-INDEPENDENT-VALIDATION",
+        "BMSTAGE-CONSENSUS-DECISION",
+    ]
+    stages = campaign["stages"]
+    if [item["stage_id"] for item in stages] != expected_stage_ids:
+        errors.append("common benchmark campaign stages must use the stable declared order")
+    if [item["sequence"] for item in stages] != list(range(1, 6)):
+        errors.append("common benchmark campaign stage sequence must be contiguous")
+    for stage in stages:
+        completed = set(stage["completed_application_ids"])
+        if unknown := completed - known_application_ids:
+            errors.append(
+                f"{stage['stage_id']} references unknown applications {sorted(unknown)}"
+            )
+        if stage["target_application_count"] != len(known_application_ids):
+            errors.append(f"{stage['stage_id']} target application count is stale")
+        if completed and not stage["evidence_refs"]:
+            errors.append(f"{stage['stage_id']} claims completion without evidence refs")
+        if stage["status"] == "complete" and len(completed) != len(known_application_ids):
+            errors.append(f"{stage['stage_id']} is complete without full application coverage")
+        if stage["status"] == "blocked" and completed:
+            errors.append(f"{stage['stage_id']} is blocked but claims completed applications")
+    criteria_by_application = {
+        item["application_id"]: item for item in forecasts["draft_acceptance_criteria"]
+    }
+    owner_approved = {
+        application_id for application_id, item in criteria_by_application.items()
+        if item["readiness"]["application_owner_approved"]
+    }
+    independently_validated = {
+        application_id for application_id, item in criteria_by_application.items()
+        if item["readiness"]["independent_validation_complete"]
+    }
+    if set(stages[0]["completed_application_ids"]) != owner_approved:
+        errors.append("owner-approval campaign count is stale")
+    if set(stages[3]["completed_application_ids"]) != independently_validated:
+        errors.append("independent-validation campaign count is stale")
+    if campaign["consensus_status"] == "incomplete" and stages[4]["completed_application_ids"]:
+        errors.append("Consensus-incomplete campaign claims completed planning decisions")
+
+    known_scenarios = EXPECTED_SCENARIO_IDS
+    if scenario_path.exists():
+        scenario_payload = load_json(scenario_path)
+        known_scenarios = {
+            item["scenario_id"] for item in scenario_payload["scenarios"]
+        }
+    binding_ids = [item["scenario_id"] for item in campaign["scenario_bindings"]]
+    if duplicates := duplicate_values(binding_ids):
+        errors.append(f"common benchmark campaign repeats scenario bindings {duplicates}")
+    if set(binding_ids) != known_scenarios:
+        errors.append("common benchmark campaign must bind every published scenario")
+    if campaign["consensus_status"] != "incomplete" or campaign["procurement_eligible"]:
+        errors.append("common benchmark campaign must remain non-procurement and Consensus-incomplete")
     calibration_candidate_ids = [
         item["calibration_candidate_id"]
         for item in forecasts["calibration_candidates"]
@@ -988,7 +1065,15 @@ def validate(root: Path = ROOT) -> list[str]:
                     bool(case["itemized_costs"]) for case in register["cases"]
                 ),
             },
-            "application-performance": {},
+            "application-performance": {
+                "matched-input-comparisons": len(
+                    stages[2]["completed_application_ids"]
+                ),
+                "independent-validations": len(
+                    stages[3]["completed_application_ids"]
+                ),
+                "scenario-bindings": len(campaign["scenario_bindings"]),
+            },
             "quantitative-requirements": {
                 "draft-measurement-contracts": len({
                     item["application_id"]
@@ -1013,15 +1098,16 @@ def validate(root: Path = ROOT) -> list[str]:
                     errors.append(
                         f"{dimension_id}:{coverage_id} numerator is stale"
                     )
-                if (
-                    actual[coverage_id]["denominator"]
-                    != expected_denominators[dimension_id]
-                ):
+                expected_denominator = (
+                    len(known_scenarios)
+                    if dimension_id == "application-performance"
+                    and coverage_id == "scenario-bindings"
+                    else expected_denominators[dimension_id]
+                )
+                if actual[coverage_id]["denominator"] != expected_denominator:
                     errors.append(
                         f"{dimension_id}:{coverage_id} denominator is stale"
                     )
-        scenario_payload = load_json(root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json")
-        known_scenarios = {item["scenario_id"] for item in scenario_payload["scenarios"]}
         assessed_scenarios = {item["scenario_id"] for item in readiness["scenario_assessments"]}
         if assessed_scenarios != known_scenarios:
             errors.append("planning evidence readiness must assess every published scenario")
