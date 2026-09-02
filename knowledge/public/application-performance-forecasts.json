@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.5.0",
+  "schema_version": "0.6.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
   "as_of": "2026-09-02",
@@ -7,8 +7,8 @@
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
   "title_en": "EEA1 application performance evidence and reference calculations",
-  "summary_ja": "1、4、32、128、1,024、約10,000ノードを比較するための従来のwhat-if試算を保持しています。これら36件は未校正のままです。これとは別に、公開された富岳上のGENESIS弱スケーリング実測を用い、校正点と検証点を分離した補間モデル候補を掲載します。この候補は同一の測定系列内でのみ検証したもので、将来機の性能予測や正式な性能モデルではありません。",
-  "summary_en": "This retains the 36 existing what-if calculations at 1, 4, 32, 128, 1,024 and about 10,000 nodes; they remain uncalibrated. Separately, a candidate interpolation model uses published GENESIS weak-scaling measurements on Fugaku with disjoint calibration and holdout points. It is validated only within one measurement series and is neither a future-system forecast nor an accepted performance model.",
+  "summary_ja": "従来の未校正what-if試算36件を保持しつつ、富岳上のGENESISとSALMONの弱スケーリング実測から、校正点と検証点を分けた2つの補間候補を掲載します。また、令和6年度FS報告書の5アプリケーションに対する富岳・GPU候補機の実測を、入力、計測区間、ノード数、GPU数を保持した比較表として追加しました。いずれも将来機の予測値や調達性能保証ではありません。",
+  "summary_en": "This retains 36 uncalibrated what-if calculations and adds two interpolation candidates whose calibration and holdout points come from published GENESIS and SALMON weak-scaling measurements on Fugaku. It also records measured Fugaku and GPU-proxy results for five applications from the FY2024 FS report while preserving workload, timed component, node count and GPU count. None is a future-system forecast or procurement performance guarantee.",
   "standard_fugaku_node_scales": [
     1,
     4,
@@ -194,6 +194,22 @@
       "publisher": "GENESIS developers / RIKEN R-CCS",
       "url": "https://github.com/genesis-release-r-ccs/genesis_benchmark_input",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF019",
+      "title": "令和6年度 次世代計算基盤に係る調査研究 システム調査研究チーム成果報告書",
+      "publisher": "Ministry of Education, Culture, Sports, Science and Technology",
+      "url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf",
+      "published_at": "2025-06-30",
+      "source_class": "government-official"
+    },
+    {
+      "source_id": "SRC-PERF020",
+      "title": "Large-scale ab initio simulation of light-matter interaction at the atomic scale in Fugaku",
+      "publisher": "International Journal of High Performance Computing Applications",
+      "url": "https://journals.sagepub.com/doi/10.1177/10943420211065723",
+      "published_at": "2022-02-01",
+      "source_class": "academic-primary"
     }
   ],
   "candidate_systems": [
@@ -519,6 +535,62 @@
       "note_en": "Fugaku measurement from Table V. System size is 1.62 billion atoms at 1 Å grid spacing; published parallel efficiency is 0.53.",
       "source_ids": [
         "SRC-PERF016"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-WEAK-N00432",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 432,
+      "workload": "13,632 atoms / 71,040 electrons at 27,648 nodes; weak-scaling series",
+      "status": "measured",
+      "value": 0.057,
+      "unit": "PFLOPS",
+      "note_ja": "論文Table 6の実測値。計算規模はノード数とともに変化し、27,648ノードでは理論ピークの3.17%と報告されています。",
+      "note_en": "Measured value from Table 6. Problem size changes with node count; the 27,648-node result is reported as 3.17% of theoretical peak.",
+      "source_ids": [
+        "SRC-PERF020"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-WEAK-N01728",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 1728,
+      "workload": "13,632 atoms / 71,040 electrons at 27,648 nodes; weak-scaling series",
+      "status": "measured",
+      "value": 0.219,
+      "unit": "PFLOPS",
+      "note_ja": "論文Table 6の実測値。計算規模はノード数とともに変化し、27,648ノードでは理論ピークの3.17%と報告されています。",
+      "note_en": "Measured value from Table 6. Problem size changes with node count; the 27,648-node result is reported as 3.17% of theoretical peak.",
+      "source_ids": [
+        "SRC-PERF020"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-WEAK-N06912",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 6912,
+      "workload": "13,632 atoms / 71,040 electrons at 27,648 nodes; weak-scaling series",
+      "status": "measured",
+      "value": 0.773,
+      "unit": "PFLOPS",
+      "note_ja": "論文Table 6の実測値。計算規模はノード数とともに変化し、27,648ノードでは理論ピークの3.17%と報告されています。",
+      "note_en": "Measured value from Table 6. Problem size changes with node count; the 27,648-node result is reported as 3.17% of theoretical peak.",
+      "source_ids": [
+        "SRC-PERF020"
+      ]
+    },
+    {
+      "observation_id": "OBS-PERF-SALMON-WEAK-N27648",
+      "application_id": "APP-EEA1-SALMON",
+      "fugaku_nodes": 27648,
+      "workload": "13,632 atoms / 71,040 electrons at 27,648 nodes; weak-scaling series",
+      "status": "measured",
+      "value": 2.692,
+      "unit": "PFLOPS",
+      "note_ja": "論文Table 6の実測値。計算規模はノード数とともに変化し、27,648ノードでは理論ピークの3.17%と報告されています。",
+      "note_en": "Measured value from Table 6. Problem size changes with node count; the 27,648-node result is reported as 3.17% of theoretical peak.",
+      "source_ids": [
+        "SRC-PERF020"
       ]
     }
   ],
@@ -1287,8 +1359,8 @@
       "priority": "P0",
       "scope_ja": "EEA1の6アプリケーションについて、版を固定した入力を使い、6つの標準規模で測定した富岳の実行時間と消費電力",
       "scope_en": "Versioned inputs and Fugaku runtime and power measurements for six EEA1 applications at six standard scales",
-      "impact_ja": "GENESISの弱スケーリング実測系列は追加したものの、6アプリケーションの標準規模と電力をそろえた校正・検証はできません。",
-      "impact_en": "A GENESIS weak-scaling measurement series is now included, but calibration and validation across all six applications at standard scales and with power data remain unavailable.",
+      "impact_ja": "GENESISとSALMONの弱スケーリング系列、および5アプリケーションの小規模候補機比較を追加しましたが、6アプリケーションの標準規模、同一入力、電力をそろえた校正・検証はできません。",
+      "impact_en": "GENESIS and SALMON weak-scaling series and small-scale candidate-platform comparisons for five applications are now included, but all six applications still lack calibration and validation at standard scales with identical inputs and power measurement.",
       "next_action_ja": "公開可能な入力をBenchpark/BenchKitへ登録し、GENESISは別システムで再測定する。他の5アプリケーションも1、4、32、128、1,024、約10,000ノードを適用可能な範囲で継続測定する。",
       "next_action_en": "Register publishable inputs in Benchpark/BenchKit, remeasure GENESIS on another system, and measure the other five applications at 1, 4, 32, 128, 1,024, and about 10,000 nodes where applicable.",
       "status": "open"
@@ -1298,8 +1370,8 @@
       "priority": "P0",
       "scope_ja": "計算・メモリ・通信・I/Oと、計算・通信のオーバーラップを扱うモデルの公開係数、校正データ、独立検証誤差",
       "scope_en": "Published coefficients, calibration data, and independent-validation errors for models of compute, memory, communication, I/O, and compute-communication overlap",
-      "impact_ja": "GENESISで校正点と検証点を分けた補間候補は作成しましたが、1システム、1ワークロード、1測定系列だけであり、別アーキテクチャへの一般化や将来性能を反証できません。",
-      "impact_en": "The GENESIS interpolation candidate separates calibration and holdout points, but one system, one workload, and one measurement series cannot test generalization to another architecture or future performance.",
+      "impact_ja": "2つの系列内補間候補がありますが、いずれも1システム、1ワークロード、1つの出所に限られ、別アーキテクチャや将来性能を検証できません。",
+      "impact_en": "Two within-series interpolation candidates are available, but each remains limited to one system, one workload and one origin and cannot test another architecture or future performance.",
       "next_action_ja": "同一入力を別システムで独立測定し、少なくとも2システム、2ワークロード、2つの独立した出所グループを満たした後にPMCARDとして評価する。",
       "next_action_en": "Independently measure matched inputs on another system and evaluate a PMCARD only after reaching at least two systems, two workloads, and two independent origin groups.",
       "status": "open"
@@ -1338,13 +1410,13 @@
       "status": "open"
     }
   ],
-  "caveat_ja": "36件の数値と計算式は従来の未校正試算です。新しいGENESIS候補は、同一の富岳弱スケーリング系列で校正点と検証点を分離し、検証点の最大相対誤差は約6.2%でした。ただし、これは系列内補間の再現性だけを示し、別入力、別システム、将来機への予測精度を示しません。独立Consensusと候補機測定は未完了で、調達評価には使用できません。",
-  "caveat_en": "The 36 numerical results and equation remain uncalibrated what-if calculations. The new GENESIS candidate separates calibration and holdout points within one Fugaku weak-scaling series and has a maximum holdout relative error of about 6.2%. This demonstrates only within-series interpolation reproducibility, not predictive accuracy for another input, system, or future machine. Independent Consensus and candidate-system measurements remain incomplete; procurement use is prohibited.",
+  "caveat_ja": "36件の従来試算は未校正です。GENESISとSALMONの候補は同一系列内で校正点と検証点を分離していますが、別入力、別システム、将来機への予測精度を示しません。候補機の実測は入力、計測区間、ノード当たり資源量が一致する行だけを比較対象とし、FS報告書が示した未最適化条件も保持します。独立した合意判定と候補機の共通条件測定は未完了で、調達評価には使用できません。",
+  "caveat_en": "The 36 existing calculations remain uncalibrated. GENESIS and SALMON candidates separate calibration and holdout points within each series but do not establish accuracy for another input, system or future machine. Candidate-platform measurements are comparable only where input, timed component and per-node resources match, and known under-optimized conditions from the FS report are retained. Independent Consensus and common-condition candidate measurements remain incomplete; procurement use is prohibited.",
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-APPLICATION-PLANNING-20260902-001",
-    "human_approval_directive_id": "DIR-900024"
+    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260902-002",
+    "human_approval_directive_id": "DIR-900025"
   },
   "illustrations": [
     {
@@ -2491,6 +2563,68 @@
       },
       "consensus_status": "incomplete",
       "procurement_eligible": false
+    },
+    {
+      "calibration_candidate_id": "PMCAL-SALMON-WEAK-001",
+      "target_model_card_id": "PMCARD-SALMON-WEAK-001",
+      "application_id": "APP-EEA1-SALMON",
+      "status": "provisional",
+      "model_type": "power-law-interpolation",
+      "metric_id": "achieved-flops",
+      "unit": "PFLOPS",
+      "equation_ja": "432ノードと27,648ノードの端点から P(N)=0.0002055744×N^0.9269288 を求め、中間2点だけを検証に使います。端点外へは外挿しません。",
+      "equation_en": "Fit P(N)=0.0002055744 x N^0.9269288 to the 432- and 27,648-node endpoints and use only the two intermediate points for validation. Do not extrapolate beyond the endpoints.",
+      "scope_ja": "2022年論文Table 6のSALMON富岳弱スケーリング系列だけを対象とし、入力やアーキテクチャをまたぐ予測ではありません。",
+      "scope_en": "Limited to the SALMON Fugaku weak-scaling series in Table 6 of the 2022 paper; it is not a cross-input or cross-architecture forecast.",
+      "calibration_observation_ids": [
+        "OBS-PERF-SALMON-WEAK-N00432",
+        "OBS-PERF-SALMON-WEAK-N27648"
+      ],
+      "validation_results": [
+        {
+          "observation_id": "OBS-PERF-SALMON-WEAK-N01728",
+          "predicted_value": 0.206035278,
+          "observed_value": 0.219,
+          "absolute_error": 0.012964722,
+          "relative_error": 0.059199642
+        },
+        {
+          "observation_id": "OBS-PERF-SALMON-WEAK-N06912",
+          "predicted_value": 0.744746245,
+          "observed_value": 0.773,
+          "absolute_error": 0.028253755,
+          "relative_error": 0.036550783
+        }
+      ],
+      "maximum_relative_error": 0.059199642,
+      "source_ids": [
+        "SRC-PERF020"
+      ],
+      "readiness": {
+        "candidate_ready_for_consensus": false,
+        "required_minimums": {
+          "systems": 2,
+          "workloads": 2,
+          "origin_groups": 2
+        },
+        "observed_counts": {
+          "systems": 1,
+          "workloads": 1,
+          "origin_groups": 1
+        },
+        "blockers_ja": [
+          "富岳1システム、1入力、1論文系列だけです。",
+          "端点2点のべき乗補間であり、物理的な性能モデルではありません。",
+          "通信時間が60〜70%と報告された条件を別システムへ一般化できません。"
+        ],
+        "blockers_en": [
+          "Evidence is limited to one Fugaku system, one input and one paper series.",
+          "This is an endpoint power-law interpolation, not a physical performance model.",
+          "The reported 60-70% communication share cannot be generalized to another system."
+        ]
+      },
+      "consensus_status": "incomplete",
+      "procurement_eligible": false
     }
   ],
   "infrastructure_requirements_matrix": {
@@ -3254,5 +3388,1446 @@
     ],
     "caveat_ja": "High、Medium、Low、Unknownは、公開資料を単一のAIモデルが整理した定性的な暫定評価です。ノード数、帯域、容量、調達仕様を示すものではなく、項目間やアプリケーション間の厳密な数値比較には使えません。各セルの測定課題を解消し、独立Consensusを通過するまで正式要件にしません。",
     "caveat_en": "High, medium, low, and unknown are qualitative provisional assessments synthesized by one model from public evidence. They are not node counts, bandwidths, capacities, or procurement specifications and do not support strict numerical comparison across cells or applications. They remain non-normative until the stated measurement gaps are closed and independent Consensus is complete."
-  }
+  },
+  "measured_platforms": [
+    {
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "name": "Fugaku",
+      "processor_ja": "Fujitsu A64FX（報告書ではFJコンパイラ）",
+      "processor_en": "Fujitsu A64FX (FJ compiler in the report)",
+      "accelerator_ja": "なし",
+      "accelerator_en": "none",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "platform_id": "PLAT-PERF-QC-A100",
+      "name": "qc-a100",
+      "processor_ja": "1ノード当たり128 CPUコアとして記録",
+      "processor_en": "recorded as 128 CPU cores per node",
+      "accelerator_ja": "1ノード当たり8基のA100",
+      "accelerator_en": "eight A100 GPUs per node",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "name": "qc-gh200",
+      "processor_ja": "1ノード当たり72 CPUコアとして記録",
+      "processor_en": "recorded as 72 CPU cores per node",
+      "accelerator_ja": "1ノード当たり1基のGH200",
+      "accelerator_en": "one GH200 per node",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "platform_id": "PLAT-PERF-QC-H100",
+      "name": "qc-h100",
+      "processor_ja": "1ノード当たり128 CPUコアとして記録",
+      "processor_en": "recorded as 128 CPU cores per node",
+      "accelerator_ja": "報告書のLQCD測定では1基を使用",
+      "accelerator_en": "one device used in the report's LQCD measurement",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "platform_id": "PLAT-PERF-HBW2",
+      "name": "HOKUSAI BigWaterfall2",
+      "processor_ja": "1ノード当たり112 CPUコアとして記録",
+      "processor_en": "recorded as 112 CPU cores per node",
+      "accelerator_ja": "アプリケーション別に使用GPU数が異なる",
+      "accelerator_en": "GPU count used varies by application",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    }
+  ],
+  "cross_platform_observations": [
+    {
+      "observation_id": "OBS-XPERF-GENESIS-FUGAKU-N01",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 124.4,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-FUGAKU-N02",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 73.4,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-FUGAKU-N04",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 42.7,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-A100-N01",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 8,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 25.6,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-A100-N02",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 20.1,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-GH200-N01",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 25.5,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-GH200-N02",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 23.1,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-GH200-N04",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 20.0,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-QC-GH200-N08",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 8,
+      "accelerator_count": 8,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 18.6,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-GENESIS-HBW2-N01",
+      "application_id": "APP-EEA1-GENESIS",
+      "platform_id": "PLAT-PERF-HBW2",
+      "node_count": 1,
+      "accelerator_count": 4,
+      "workload": "FS report GENESIS input",
+      "component": "total elapsed time",
+      "value": 18.6,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "同じ表の同じアプリケーション・入力内でのみ比較します。異なるノード当たり資源量を正規化していません。",
+      "interpretation_en": "Compare only within the same application/input table; resources per node are not normalized.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-GROUND-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 133.93,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-EVOLVE-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 13.982,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-GROUND-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 72.248,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-EVOLVE-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 7.682,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-GROUND-N03",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 55.409,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-EVOLVE-N03",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 5.385,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-GROUND-N04",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 39.396,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-FUGAKU-EVOLVE-N04",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 4.343,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-A100-GROUND-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 8,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 442.443,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-A100-EVOLVE-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 8,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 4.275,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-A100-GROUND-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 227.794,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-A100-EVOLVE-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 3.068,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-GROUND-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 319.059,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-EVOLVE-N01",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 2.405,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-GROUND-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 177.114,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-EVOLVE-N02",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 1.407,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-GROUND-N03",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 3,
+      "accelerator_count": 3,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 111.513,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-EVOLVE-N03",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 3,
+      "accelerator_count": 3,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 1.182,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-GROUND-N04",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "FS report SALMON input",
+      "component": "ground state",
+      "value": 86.185,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SALMON-QC-GH200-EVOLVE-N04",
+      "application_id": "APP-EEA1-SALMON",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "FS report SALMON input",
+      "component": "time evolution",
+      "value": 1.013,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "基底状態と時間発展ではGPU最適化状況が異なるため、合算しません。",
+      "interpretation_en": "Ground-state and time-evolution sections are not combined because their GPU optimization status differs.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SCALE-FUGAKU-N02",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "SCALE",
+      "value": 85.66,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SCALE-FUGAKU-N03",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "SCALE",
+      "value": 46.86,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SCALE-FUGAKU-N04",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "SCALE",
+      "value": 41.316,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-SCALE-QC-A100-N02",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "SCALE",
+      "value": 76.2,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-FUGAKU-N02",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 43.565,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-FUGAKU-N03",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 38.299,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-FUGAKU-N04",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 34.39,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-QC-A100-N02",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 41.629,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-QC-GH200-N02",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 34.951,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-QC-GH200-N03",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 3,
+      "accelerator_count": 3,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 34.197,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LETKF-QC-GH200-N04",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "FS report SCALE-LETKF input",
+      "component": "LETKF",
+      "value": 34.055,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "SCALE部とLETKF部を別々の計測区間として保持します。",
+      "interpretation_en": "SCALE and LETKF are retained as separate timed components.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-FUGAKU-N01",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 28.5,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-FUGAKU-N02",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 30.5,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-FUGAKU-N04",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 32.2,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-QC-A100-N01",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 8,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 107,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-QC-A100-N02",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 16,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 134,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-QC-GH200-N01",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 89.8,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-QC-GH200-N02",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 114,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-QC-GH200-N04",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 126,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-FFB-HBW2-N01",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "platform_id": "PLAT-PERF-HBW2",
+      "node_count": 1,
+      "accelerator_count": 4,
+      "workload": "FS report FrontFlow/blue input",
+      "component": "total elapsed time",
+      "value": 90.3,
+      "unit": "s",
+      "status": "measured",
+      "interpretation_ja": "報告書はGPU測定時にMPSが無効だったため再評価予定としています。将来GPU性能の校正には使いません。",
+      "interpretation_en": "The report says MPS was disabled for the GPU measurements and re-evaluation was planned. These values do not calibrate future GPU performance.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-SMALL-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 397,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-LARGE-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 1,
+      "accelerator_count": 0,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 422,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-SMALL-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 402,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-LARGE-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 2,
+      "accelerator_count": 0,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 426,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-SMALL-N03",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 401,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-LARGE-N03",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 3,
+      "accelerator_count": 0,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 411,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-SMALL-N04",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 397,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-FUGAKU-LARGE-N04",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-FUGAKU",
+      "node_count": 4,
+      "accelerator_count": 0,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 420,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-A100-SMALL-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 699,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-A100-LARGE-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 1831,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-A100-SMALL-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 265,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-A100-LARGE-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-A100",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 492,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-SMALL-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 1123,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-LARGE-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 4077,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-SMALL-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 521,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-LARGE-N02",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 2,
+      "accelerator_count": 2,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 1730,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-SMALL-N03",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 3,
+      "accelerator_count": 3,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 499,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-LARGE-N03",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 3,
+      "accelerator_count": 3,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 1723,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-SMALL-N04",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 470,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-GH200-LARGE-N04",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-GH200",
+      "node_count": 4,
+      "accelerator_count": 4,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 1649,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-H100-SMALL-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-H100",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 983,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-QC-H100-LARGE-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-QC-H100",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 2287,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-HBW2-SMALL-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-HBW2",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "32x8x8x12 per node",
+      "component": "kernel throughput",
+      "value": 915,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "observation_id": "OBS-XPERF-LQCD-HBW2-LARGE-N01",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "platform_id": "PLAT-PERF-HBW2",
+      "node_count": 1,
+      "accelerator_count": 1,
+      "workload": "64x32x16x12 per node",
+      "component": "kernel throughput",
+      "value": 3303,
+      "unit": "GFLOPS",
+      "status": "measured",
+      "interpretation_ja": "弱スケーリング用のノード当たり局所格子を保持します。ノード数だけを合わせた比較ではありません。",
+      "interpretation_en": "The per-node local lattice used for weak scaling is preserved; this is not a same-node-count normalized comparison.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    }
+  ],
+  "quantitative_requirements": [
+    {
+      "requirement_id": "REQ-PERF-GENESIS-SCALE",
+      "application_id": "APP-EEA1-GENESIS",
+      "evidence_class": "measured-envelope",
+      "metric": "measured node scale",
+      "lower": 1,
+      "value": null,
+      "upper": 16384,
+      "unit": "nodes",
+      "statement_ja": "公開実測はFS報告書の1〜4ノードと、別入力の富岳弱スケーリング16〜16,384ノードを含みます。",
+      "statement_en": "Public measurements cover 1-4 nodes in the FS report and 16-16,384 nodes for a different Fugaku weak-scaling input.",
+      "planning_use_ja": "小規模の移植性能と大規模の弱スケーリングを別の受入試験として設定します。",
+      "planning_use_en": "Specify small-scale porting performance and large-scale weak scaling as separate acceptance tests.",
+      "source_ids": [
+        "SRC-PERF016",
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-SALMON-SCALE",
+      "application_id": "APP-EEA1-SALMON",
+      "evidence_class": "measured-envelope",
+      "metric": "measured node scale",
+      "lower": 1,
+      "value": null,
+      "upper": 27648,
+      "unit": "nodes",
+      "statement_ja": "FS報告書の1〜4ノードの区間別時間と、論文の432〜27,648ノード弱スケーリング実測があります。入力は同一ではありません。",
+      "statement_en": "Section timings at 1-4 nodes in the FS report and a 432-27,648-node weak-scaling series are public; the inputs are not identical.",
+      "planning_use_ja": "基底状態、時間発展、通信、I/Oを分け、候補機ごとに同じ入力を再測定します。",
+      "planning_use_en": "Measure ground state, time evolution, communication and I/O separately with the same input on each candidate system.",
+      "source_ids": [
+        "SRC-PERF019",
+        "SRC-PERF020"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-SALMON-STEP-TARGET",
+      "application_id": "APP-EEA1-SALMON",
+      "evidence_class": "published-target",
+      "metric": "practical time per step",
+      "lower": null,
+      "value": 1,
+      "upper": null,
+      "unit": "s/step",
+      "statement_ja": "論文は実用上必要な目標として1ステップ1秒を挙げています。27,648ノードで13,632原子・71,040電子の1ステップを1.2秒未満で実行した実測とは区別します。",
+      "statement_en": "The paper identifies one second per step as a practical target. This is distinct from the measured result below 1.2 seconds for 13,632 atoms and 71,040 electrons on 27,648 nodes.",
+      "planning_use_ja": "対象系サイズと精度を固定したtime-to-solution受入基準候補です。人による承認は未完了です。",
+      "planning_use_en": "A candidate time-to-solution acceptance metric with fixed system size and precision; human approval is incomplete.",
+      "source_ids": [
+        "SRC-PERF020"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-SCALE-LETKF-SCALE",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "evidence_class": "measured-envelope",
+      "metric": "measured node scale",
+      "lower": 2,
+      "value": null,
+      "upper": 4,
+      "unit": "nodes",
+      "statement_ja": "公開比較はSCALE部・LETKF部とも2〜4ノードに限られます。",
+      "statement_en": "The public comparison is limited to 2-4 nodes for both SCALE and LETKF sections.",
+      "planning_use_ja": "計算部と同化部を分けた上で、32ノード以上とアンサンブル処理を追加測定します。",
+      "planning_use_en": "Keep simulation and assimilation sections separate, then add measurements at 32+ nodes and for ensemble throughput.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-EWAVE-GAP",
+      "application_id": "APP-EEA1-E-WAVE",
+      "evidence_class": "measurement-gap",
+      "metric": "public quantitative baseline",
+      "lower": null,
+      "value": null,
+      "upper": null,
+      "unit": null,
+      "statement_ja": "EEA1と同一条件で再実行できる公開入力・実測値を確認できていません。",
+      "statement_en": "No public input and measurement reproducible under the EEA1 conditions has been confirmed.",
+      "planning_use_ja": "周波数範囲、メッシュ規模、反復数、時間、メモリ、I/Oを定義した公開ベンチマークが必要です。",
+      "planning_use_en": "A public benchmark must define frequency range, mesh scale, iterations, elapsed time, memory and I/O.",
+      "source_ids": [
+        "SRC-PERF001",
+        "SRC-PERF013"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-FFB-SCALE",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "evidence_class": "measured-envelope",
+      "metric": "measured node scale",
+      "lower": 1,
+      "value": null,
+      "upper": 4,
+      "unit": "nodes",
+      "statement_ja": "同一FS表の比較範囲は1〜4ノードです。GPU側はMPS無効という既知の測定条件があります。",
+      "statement_en": "The same-table comparison spans 1-4 nodes, with the known condition that MPS was disabled for GPU measurements.",
+      "planning_use_ja": "MPS条件を固定して再測定し、強・弱スケーリングと通信割合を取得します。",
+      "planning_use_en": "Remeasure with a fixed MPS condition and collect strong/weak scaling and communication share.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    },
+    {
+      "requirement_id": "REQ-PERF-LQCD-SCALE",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "evidence_class": "measured-envelope",
+      "metric": "measured node scale",
+      "lower": 1,
+      "value": null,
+      "upper": 4,
+      "unit": "nodes",
+      "statement_ja": "2つの局所格子について1〜4ノードのGFLOPSが公開されています。",
+      "statement_en": "GFLOPS at 1-4 nodes are public for two per-node local lattice sizes.",
+      "planning_use_ja": "同じ局所格子、精度、通信方式で32ノード以上を測定し、ストロングスケーリング不足を定量化します。",
+      "planning_use_en": "Measure at 32+ nodes with the same local lattice, precision and communication method to quantify the reported strong-scaling limitation.",
+      "source_ids": [
+        "SRC-PERF019"
+      ]
+    }
+  ]
 }

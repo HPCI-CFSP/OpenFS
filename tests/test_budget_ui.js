@@ -142,6 +142,16 @@ test("lease period and award date remain distinct from commissioning and purchas
   }
 });
 
+test("five-year contractual floor remains distinct from complete TCO", {skip: !process.env.OPENFS_TEST_PUBLIC_DATA}, () => {
+  for (const language of ["ja", "en"]) {
+    const f = fixture("?lang=" + language);
+    f.api.renderRegister(f.root, language);
+    const text = f.walk(f.root).map((e) => e.textContent || "").join(" ");
+    assert.ok(text.includes(language === "ja" ? "最初の60か月の契約上の既知費用下限" : "Contractual known-cost floor for the first 60 months"));
+    assert.ok(text.includes(language === "ja" ? "5年間TCOではありません" : "This is not five-year TCO"));
+  }
+});
+
 test("inventory links resolve to built pages from portfolio and every nested plan", {skip: !process.env.OPENFS_TEST_PUBLIC_DATA}, () => {
   const site = path.dirname(path.dirname(process.env.OPENFS_TEST_PUBLIC_DATA));
   const routes = ["scenarios/", ...publicSeed.window.OPENFS_PUBLIC_DATA.scenarios.map((s) => s.path)];

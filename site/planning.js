@@ -289,6 +289,80 @@
     return localized(scenario.evaluation.reversibility, "rationale");
   }
 
+  function planningEvidenceLabel(key) {
+    const labels = {
+      ja: {
+        title: "計画判断に必要な根拠の充足状況",
+        lead: "更新時期、運用実績、費用、性能、アプリケーション要件を同じ形式で監査します。数値が登録されていても、比較条件や合意が未確認の項目は正式判断に使いません。",
+        dimension: "判断項目", coverage: "充足範囲", finding: "現時点の把握", planningUse: "計画への使い方", blockers: "未確認事項",
+        partial: "一部確認", blocked: "判断保留",
+        scenarioTitle: "公開根拠から見たこの案の位置付け",
+        commitmentBoundary: "確定しない範囲", blockingDimensions: "判断を止める項目",
+      },
+      en: {
+        title: "Evidence readiness for planning decisions",
+        lead: "Lifecycle, operations, cost, performance and application requirements are audited in one format. A registered number is not used for a formal decision when comparability or consensus remains unverified.",
+        dimension: "Decision dimension", coverage: "Coverage", finding: "Current finding", planningUse: "Planning use", blockers: "Unresolved conditions",
+        partial: "Partial", blocked: "Decision blocked",
+        scenarioTitle: "Position of this option against public evidence",
+        commitmentBoundary: "Commitment boundary", blockingDimensions: "Blocking dimensions",
+      },
+    };
+    return labels[language][key] || key;
+  }
+
+  function renderPlanningEvidenceSummary() {
+    const readiness = data.planning_evidence_readiness;
+    if (!readiness) return;
+    setText("planning-evidence-title", planningEvidenceLabel("title"));
+    setText("planning-evidence-lead", planningEvidenceLabel("lead"));
+    setText("planning-evidence-caveat", localized(readiness, "caveat"));
+    const table = document.createElement("table");
+    table.className = "scenario-comparison-table planning-evidence-table";
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["dimension", "coverage", "finding", "planningUse", "blockers"].forEach((key) => headRow.append(makeCell("th", planningEvidenceLabel(key))));
+    head.append(headRow);
+    const body = document.createElement("tbody");
+    readiness.dimensions.forEach((dimension) => {
+      const row = document.createElement("tr");
+      const status = document.createElement("span");
+      status.className = `status-badge status-${dimension.status}`;
+      status.textContent = planningEvidenceLabel(dimension.status);
+      const dimensionCell = document.createElement("th");
+      dimensionCell.append(makeCell("span", localized(dimension, "label")), status);
+      const coverage = `${dimension.coverage.numerator}/${dimension.coverage.denominator} ${localized(dimension.coverage, "unit")}`;
+      row.append(
+        dimensionCell,
+        makeCell("td", coverage),
+        makeCell("td", localized(dimension, "finding")),
+        makeCell("td", localized(dimension, "planning_use")),
+        makeCell("td", localizedArray(dimension, "blockers").join("; ")),
+      );
+      body.append(row);
+    });
+    table.append(head, body);
+    document.getElementById("planning-evidence-dimensions").replaceChildren(table);
+  }
+
+  function renderScenarioPlanningEvidence(scenario) {
+    const readiness = data.planning_evidence_readiness;
+    if (!readiness) return;
+    const assessment = readiness.scenario_assessments.find((item) => item.scenario_id === scenario.scenario_id);
+    if (!assessment) return;
+    setText("scenario-planning-evidence-title", planningEvidenceLabel("scenarioTitle"));
+    setText("scenario-planning-evidence-implication", localized(assessment, "implication"));
+    setText("scenario-commitment-boundary-label", planningEvidenceLabel("commitmentBoundary"));
+    setText("scenario-commitment-boundary", localized(assessment, "commitment_boundary"));
+    setText("scenario-blocking-dimensions-label", planningEvidenceLabel("blockingDimensions"));
+    const labels = assessment.blocking_dimension_ids.map((id) => {
+      const dimension = readiness.dimensions.find((item) => item.dimension_id === id);
+      return dimension ? localized(dimension, "label") : id;
+    });
+    setText("scenario-blocking-dimensions", labels.join(" · "));
+    setText("scenario-planning-evidence-caveat", localized(readiness, "caveat"));
+  }
+
   function renderScenarioIndex() {
     renderScenarioCards(document.getElementById("scenario-index-list"));
     window.OpenFSBudget.controls(document.getElementById("portfolio-budget-controls"), language, (state) => {
@@ -296,6 +370,7 @@
       refreshScenarioLinks();
     });
     window.OpenFSBudget.renderRegister(document.getElementById("portfolio-procurement-register"), language, rootPrefix);
+    renderPlanningEvidenceSummary();
     renderScenarioTimeline(
       document.getElementById("scenario-portfolio-timeline"),
       data.scenarios.map((scenario) => ({
@@ -385,6 +460,7 @@
     document.title = `${localized(scenario, "title")} | OpenFS`; setText("scenario-breadcrumb-title", localized(scenario, "title")); setText("scenario-id", scenario.scenario_id); setText("scenario-title", localized(scenario, "title")); setText("scenario-objective", localized(scenario, "objective")); setText("scenario-horizon", scenario.planning_horizon); setText("scenario-research-status", tr(scenario.research_status)); setText("scenario-consensus-status", tr(scenario.consensus_status)); setText("scenario-caveat", localized(scenario, "caveat")); setText("scenario-artifact-id", scenario.scenario_id); setText("scenario-plan-version", scenario.plan_version); setText("scenario-effective-from", scenario.effective_from); setText("scenario-review-due", scenario.review_due); setText("scenario-supersedes", scenario.supersedes.length ? scenario.supersedes.join(" · ") : tr("noSupersededVersion")); setText("scenario-evidence-refs", scenario.evidence_refs.join(" · ")); setText("scenario-revision-updated", formatJst(scenario.updated_at)); const updated = document.getElementById("scenario-updated"); updated.href = scenario.source_commit_url; updated.textContent = formatJst(scenario.updated_at); const commit = document.getElementById("scenario-source-commit"); commit.href = scenario.source_commit_url; commit.textContent = scenario.source_commit;
     window.OpenFSFeedback.mount("scenario-feedback", {kind: "scenario", id: scenario.scenario_id, title: localized(scenario, "title"), path: scenario.path});
     renderBudgetOptions(scenario);
+    renderScenarioPlanningEvidence(scenario);
     const timelineDomains = ["compute", "memory", "interconnect", "storage-data", "system-software", "applications", "facility-operations", "procurement-governance"];
     renderScenarioTimeline(
       document.getElementById("scenario-detail-timeline"),

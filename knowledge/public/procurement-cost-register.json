@@ -6,8 +6,8 @@
   "consensus_status": "incomplete",
   "title_ja": "公開調達実績と仕様書の対応表",
   "title_en": "Public procurement costs and specification register",
-  "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで合算や部品単価への換算を行いません。単一のAIモデルによる確認であり、独立したAIモデルの合意判定は未完了です。",
-  "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching, and maintenance terms. These single-model checks have not passed Consensus review by independent models.",
+  "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで、合算や部品単価への換算を行いません。月額と60か月以上の期間を同じ公開資料で確認できる場合に限り、最初の60か月の契約上の既知費用下限を機械的に算出します。これは電力、施設共用費、人件費、契約変更、増設を含む5年間TCOではありません。単一のAIモデルによる確認であり、独立したAIモデルによる合意判定は未完了です。",
+  "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching and maintenance terms. Only when the same public evidence establishes a monthly rate and at least 60 months does OpenFS calculate the contractual known-cost floor for the first 60 months. This is not five-year TCO including electricity, shared facilities, staffing, amendments or expansion. These single-model checks have not passed Consensus review by independent models.",
   "sources": [
     {
       "source_id": "PCS-RIKEN-CONTRACTS-2025",
@@ -509,7 +509,10 @@
       "contract_kind": "lease",
       "contract_date": null,
       "award_date": "2025-11-21",
-      "linked_system_ids": ["HPCI-SYS-FURO2-I", "HPCI-SYS-FURO2-II"],
+      "linked_system_ids": [
+        "HPCI-SYS-FURO2-I",
+        "HPCI-SYS-FURO2-II"
+      ],
       "amount": {
         "kind": "award",
         "value_jpy": 5809518000,
@@ -586,31 +589,59 @@
       "storage_capacity_observations": [
         {
           "observation_id": "CAP-NAGOYA-ANNOUNCEMENT-HEADLINE",
-          "value": 45, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "planned",
-          "scope_ja": "導入発表の総容量（1-2ページ）", "scope_en": "Introduction announcement total (pages 1-2)",
-          "caveat_ja": "物理／実効容量の区別がなく、3ページの物理容量との関係は未確認。", "caveat_en": "Physical versus effective capacity is not specified; its relationship to the physical value on page 3 is unresolved.",
-          "source_refs": ["PCS-NAGOYA-ANNOUNCEMENT-2026"]
+          "value": 45,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "planned",
+          "scope_ja": "導入発表の総容量（1-2ページ）",
+          "scope_en": "Introduction announcement total (pages 1-2)",
+          "caveat_ja": "物理／実効容量の区別がなく、3ページの物理容量との関係は未確認。",
+          "caveat_en": "Physical versus effective capacity is not specified; its relationship to the physical value on page 3 is unresolved.",
+          "source_refs": [
+            "PCS-NAGOYA-ANNOUNCEMENT-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-PHYSICAL",
-          "value": 48.4, "unit": "PB", "capacity_basis": "physical", "configuration_status": "planned",
-          "scope_ja": "導入発表の共有ストレージ（3ページ）", "scope_en": "Shared storage in the introduction announcement (page 3)",
-          "caveat_ja": "資料は物理容量と明記。利用者が使える容量ではない。", "caveat_en": "Explicitly labeled physical capacity, not user-available capacity.",
-          "source_refs": ["PCS-NAGOYA-ANNOUNCEMENT-2026"]
+          "value": 48.4,
+          "unit": "PB",
+          "capacity_basis": "physical",
+          "configuration_status": "planned",
+          "scope_ja": "導入発表の共有ストレージ（3ページ）",
+          "scope_en": "Shared storage in the introduction announcement (page 3)",
+          "caveat_ja": "資料は物理容量と明記。利用者が使える容量ではない。",
+          "caveat_en": "Explicitly labeled physical capacity, not user-available capacity.",
+          "source_refs": [
+            "PCS-NAGOYA-ANNOUNCEMENT-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-EFFECTIVE",
-          "value": 37.44, "unit": "PB", "capacity_basis": "effective", "configuration_status": "planned",
-          "scope_ja": "現行構成ページの共有ストレージ", "scope_en": "Shared storage on the current configuration page",
-          "caveat_ja": "資料は実効容量と明記。個人・HPCI課題への割当量ではない。", "caveat_en": "Explicitly labeled effective capacity, not an individual or HPCI-project allocation.",
-          "source_refs": ["PCS-NAGOYA-CONFIG-2026"]
+          "value": 37.44,
+          "unit": "PB",
+          "capacity_basis": "effective",
+          "configuration_status": "planned",
+          "scope_ja": "現行構成ページの共有ストレージ",
+          "scope_en": "Shared storage on the current configuration page",
+          "caveat_ja": "資料は実効容量と明記。個人・HPCI課題への割当量ではない。",
+          "caveat_en": "Explicitly labeled effective capacity, not an individual or HPCI-project allocation.",
+          "source_refs": [
+            "PCS-NAGOYA-CONFIG-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-HPCI-SYSTEM",
-          "value": 48, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "planned",
-          "scope_ja": "HPCI資源ページのシステム情報", "scope_en": "System information on the HPCI resource page",
-          "caveat_ja": "丸めや物理容量を意味するかは未確認。ユーザー別上限256 TBとは別の値。", "caveat_en": "Rounding and physical-capacity interpretation are unconfirmed. Separate from the 256 TB per-user limit.",
-          "source_refs": ["PCS-NAGOYA-HPCI-2026"]
+          "value": 48,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "planned",
+          "scope_ja": "HPCI資源ページのシステム情報",
+          "scope_en": "System information on the HPCI resource page",
+          "caveat_ja": "丸めや物理容量を意味するかは未確認。ユーザー別上限256 TBとは別の値。",
+          "caveat_en": "Rounding and physical-capacity interpretation are unconfirmed. Separate from the 256 TB per-user limit.",
+          "source_refs": [
+            "PCS-NAGOYA-HPCI-2026"
+          ]
         }
       ],
       "component_category": "system-package",
@@ -634,9 +665,13 @@
       "supplier": "NEC",
       "contract_kind": "lease",
       "contract_date": "2025-06-12",
-      "contract_date_source_refs": ["PCS-TSUKUBA-CONTRACT-2025Q1"],
+      "contract_date_source_refs": [
+        "PCS-TSUKUBA-CONTRACT-2025Q1"
+      ],
       "award_date": "2025-06-12",
-      "linked_system_ids": ["HPCI-SYS-SIRIUS"],
+      "linked_system_ids": [
+        "HPCI-SYS-SIRIUS"
+      ],
       "amount": {
         "kind": "award",
         "value_jpy": 11880000,
@@ -651,10 +686,15 @@
         ]
       },
       "reported_period_total": {
-        "kind": "contract", "value_jpy": 855360000,
-        "tax_basis": "including-tax", "tax_rate": 0.1,
-        "payment_basis": "total", "period_months": 72,
-        "source_refs": ["PCS-TSUKUBA-CONTRACT-2025Q1"]
+        "kind": "contract",
+        "value_jpy": 855360000,
+        "tax_basis": "including-tax",
+        "tax_rate": 0.1,
+        "payment_basis": "total",
+        "period_months": 72,
+        "source_refs": [
+          "PCS-TSUKUBA-CONTRACT-2025Q1"
+        ]
       },
       "contract_window": {
         "start": "2026-03-01",
@@ -732,17 +772,32 @@
       "storage_capacity_observations": [
         {
           "observation_id": "CAP-TSUKUBA-SYSTEM",
-          "value": 5.2, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "operating",
-          "scope_ja": "Siriusの並列ファイルシステム全体", "scope_en": "Sirius parallel filesystem as a whole",
-          "caveat_ja": "資料はファイルシステム容量として記載。物理／実効の別は明記されていない。", "caveat_en": "Published filesystem capacity; physical versus effective basis is not explicit.",
-          "source_refs": ["PCS-TSUKUBA-HPCI-2026", "PCS-TSUKUBA-SIRIUS-SPEC"]
+          "value": 5.2,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "operating",
+          "scope_ja": "Siriusの並列ファイルシステム全体",
+          "scope_en": "Sirius parallel filesystem as a whole",
+          "caveat_ja": "資料はファイルシステム容量として記載。物理／実効の別は明記されていない。",
+          "caveat_en": "Published filesystem capacity; physical versus effective basis is not explicit.",
+          "source_refs": [
+            "PCS-TSUKUBA-HPCI-2026",
+            "PCS-TSUKUBA-SIRIUS-SPEC"
+          ]
         },
         {
           "observation_id": "CAP-TSUKUBA-HPCI-ALLOCATION",
-          "value": 1.5, "unit": "PB", "capacity_basis": "allocation", "configuration_status": "operating",
-          "scope_ja": "FY2026 HPCI課題への提供ストレージ", "scope_en": "Storage offered to FY2026 HPCI projects",
-          "caveat_ja": "全システムの容量ではなく、課題募集上の提供枠。5.2 PBと足し合わせない。", "caveat_en": "An allocation-call envelope, not whole-system capacity. Do not add it to 5.2 PB.",
-          "source_refs": ["PCS-TSUKUBA-HPCI-2026"]
+          "value": 1.5,
+          "unit": "PB",
+          "capacity_basis": "allocation",
+          "configuration_status": "operating",
+          "scope_ja": "FY2026 HPCI課題への提供ストレージ",
+          "scope_en": "Storage offered to FY2026 HPCI projects",
+          "caveat_ja": "全システムの容量ではなく、課題募集上の提供枠。5.2 PBと足し合わせない。",
+          "caveat_en": "An allocation-call envelope, not whole-system capacity. Do not add it to 5.2 PB.",
+          "source_refs": [
+            "PCS-TSUKUBA-HPCI-2026"
+          ]
         }
       ],
       "component_category": "system-package",
@@ -821,10 +876,10 @@
     {
       "gap_id": "PCG-003",
       "priority": "P0",
-      "description_ja": "別契約の共用・重複、税率、施設条件、運用保守費が未確認です。",
-      "description_en": "Shared scope, overlap, tax rates, facility constraints, and recurring costs are unconfirmed.",
-      "next_action_ja": "契約別の包含・除外表を作り、二重計上を防いで5年間TCOを算出します。",
-      "next_action_en": "Build an inclusion/exclusion matrix per contract before computing a five-year TCO without double counting."
+      "description_ja": "最初の60か月を再計算できる契約はSiriusの1件だけで、算出額は7億1,280万円（税込）の契約上の既知費用下限です。8件すべてで完全な5年間TCOは未算出です。",
+      "description_en": "Only the Sirius contract supports arithmetic over the first 60 months, yielding a JPY 712.8 million tax-inclusive contractual known-cost floor. Complete five-year TCO remains unavailable for all eight cases.",
+      "next_action_ja": "各契約の機器、保守、ソフトウェア、設置、電力、冷却、共用施設、人件費、更新・増設の包含・除外を確認し、二重計上のない5年間TCOへ進めます。",
+      "next_action_en": "Confirm inclusion and exclusion of equipment, maintenance, software, installation, electricity, cooling, shared facilities, staffing, refresh and expansion before producing a non-overlapping five-year TCO."
     },
     {
       "gap_id": "PCG-004",
@@ -846,8 +901,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PROCUREMENT-EVIDENCE-20260902-001",
-    "human_approval_directive_id": "DIR-900024",
-    "approved_at": "2026-09-02T18:50:04+09:00"
+    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260902-002",
+    "human_approval_directive_id": "DIR-900025",
+    "approved_at": "2026-09-02T20:15:00+09:00"
   }
 }
