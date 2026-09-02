@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1.0",
   "artifact_id": "PROCUREMENT-COST-001",
-  "as_of": "2026-08-31",
+  "as_of": "2026-09-02",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "公開調達実績と仕様書の対応表",
@@ -15,8 +15,8 @@
       "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251",
       "publisher": "RIKEN",
       "origin_group": "riken-aifs-contract-2025",
-      "checked_on": "2026-08-30",
-      "locator": "PDF p.11, AI for Science supercomputer row",
+      "checked_on": "2026-09-02",
+      "locator": "PDF p.10, AI for Science InfiniBand switch row; p.11, AI for Science supercomputer row",
       "retrieval_status": "read"
     },
     {
@@ -269,15 +269,106 @@
         }
       ],
       "configuration_match": "unconfirmed",
+      "configuration_observation": {
+        "status": "planned",
+        "summary_ja": "理研R-CCSの公開概要は、水冷計算ノード400台、各ノードにNVIDIA GB200 NVL4（Grace CPU 2基、B200 GPU 4基）、XDR 800 Gb/sファットツリー網、実効容量1,081.34 TBのオールNVMe Lustreストレージを記載しています。",
+        "summary_en": "The RIKEN R-CCS public overview lists 400 water-cooled compute nodes, each with NVIDIA GB200 NVL4 (two Grace CPUs and four B200 GPUs), an XDR 800 Gb/s fat-tree fabric, and 1,081.34 TB of effective all-NVMe Lustre storage.",
+        "match_caveat_ja": "公開概要は開発中で、正式サービス情報は未確定と明記されています。最終仕様書を取得していないため、契約総額が公開構成の全要素を含むことや、別契約のInfiniBandスイッチが公開構成の25台に対応することは確認できません。",
+        "match_caveat_en": "The public overview says that the page is under active development and formal service information remains to be announced. Without the final specification, OpenFS cannot confirm that the package amount covers every listed component or that the separately contracted InfiniBand switch corresponds to any of the 25 switches in the public configuration.",
+        "source_refs": [
+          "PCS-RIKEN-CONTRACTS-2025",
+          "PCS-RIKEN-TENDER-2025",
+          "PCS-RIKEN-AWARD-2025",
+          "PCS-RIKEN-CONFIG-2026"
+        ]
+      },
+      "storage_capacity_observations": [
+        {
+          "observation_id": "CAP-RIKEN-AIFS-PHYSICAL",
+          "value": 1351.68,
+          "unit": "TB",
+          "capacity_basis": "physical",
+          "configuration_status": "planned",
+          "scope_ja": "公開概要に記載された共有ストレージの物理容量",
+          "scope_en": "Physical shared-storage capacity in the public overview",
+          "caveat_ja": "利用者が使用できる容量や契約対象容量ではありません。",
+          "caveat_en": "This is neither user-available capacity nor a confirmed contracted capacity.",
+          "source_refs": [
+            "PCS-RIKEN-CONFIG-2026"
+          ]
+        },
+        {
+          "observation_id": "CAP-RIKEN-AIFS-EFFECTIVE",
+          "value": 1081.34,
+          "unit": "TB",
+          "capacity_basis": "effective",
+          "configuration_status": "planned",
+          "scope_ja": "公開概要に記載された共有ストレージの実効容量",
+          "scope_en": "Effective shared-storage capacity in the public overview",
+          "caveat_ja": "個々の利用者やHPCI課題への割当量ではなく、最終契約仕様との一致も未確認です。",
+          "caveat_en": "This is not an individual or HPCI-project allocation, and matching to the final contract specification remains unconfirmed.",
+          "source_refs": [
+            "PCS-RIKEN-CONFIG-2026"
+          ]
+        }
+      ],
       "component_category": "system-package",
       "itemized_costs": [],
       "related_case_ids": [
         "PROC-RIKEN-AIFS-COOLING-2025",
-        "PROC-RIKEN-AIFS-POWER-2025"
+        "PROC-RIKEN-AIFS-POWER-2025",
+        "PROC-RIKEN-AIFS-IB-2025"
       ],
       "aggregation_status": "not-cleared",
-      "scope_ja": "機器一式の契約総額。公開構成との契約範囲の一致、機器別価格、導入作業・保守の内包範囲は未確認です。",
-      "scope_en": "Total package contract. Matching to the public configuration, component prices, and included installation and maintenance are unconfirmed.",
+      "scope_ja": "機器一式の契約総額。400ノード等の公開構成は確認しましたが、契約範囲との一致、機器別価格、導入作業・保守の内包範囲は未確認です。別契約のInfiniBandスイッチ代を、この総額から控除しません。",
+      "scope_en": "Total package contract. The public 400-node configuration is documented, but matching to the contract scope, component prices, and included installation and maintenance remain unconfirmed. The separately contracted InfiniBand switch is not subtracted from this total.",
+      "gap_ids": [
+        "PCG-001",
+        "PCG-002",
+        "PCG-003"
+      ]
+    },
+    {
+      "case_id": "PROC-RIKEN-AIFS-IB-2025",
+      "title_ja": "理研 AI for Science用InfiniBandスイッチ一式",
+      "title_en": "RIKEN AI for Science InfiniBand switch package",
+      "buyer": "RIKEN",
+      "supplier": "Digital Technology Co., Ltd.",
+      "contract_kind": "purchase",
+      "contract_date": "2025-06-19",
+      "award_date": null,
+      "amount": {
+        "kind": "contract",
+        "value_jpy": 5148000,
+        "tax_basis": "including-tax",
+        "tax_rate": null,
+        "payment_basis": "total",
+        "period_months": null,
+        "source_refs": [
+          "PCS-RIKEN-CONTRACTS-2025"
+        ]
+      },
+      "documents": [
+        {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-CONTRACTS-2025",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-CONTRACTS-2025",
+          "access_status": "not-obtained"
+        }
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "interconnect",
+      "itemized_costs": [],
+      "related_case_ids": [
+        "PROC-RIKEN-AIFS-2025"
+      ],
+      "aggregation_status": "not-cleared",
+      "scope_ja": "AI for Science用InfiniBandスイッチ一式として公表された別契約です。最終仕様書と数量を取得していないため、公開概要にあるXDRスイッチ25台との対応、単価、主要計算機契約との重複や包含関係は推定しません。",
+      "scope_en": "A separately published contract for an AI for Science InfiniBand switch package. Because the final specification and quantity were not obtained, OpenFS does not infer correspondence with the 25 XDR switches in the public overview, a unit price, or overlap or inclusion with the main supercomputer contract.",
       "gap_ids": [
         "PCG-001",
         "PCG-002",
@@ -755,8 +846,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PROCUREMENT-RECONCILIATION-001",
-    "human_approval_directive_id": "DIR-900016",
-    "approved_at": "2026-08-31T12:48:51+09:00"
+    "publication_decision_id": "PUBDEC-PROCUREMENT-EVIDENCE-20260902-001",
+    "human_approval_directive_id": "DIR-900024",
+    "approved_at": "2026-09-02T18:50:04+09:00"
   }
 }

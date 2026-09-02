@@ -117,7 +117,7 @@ test("reported total, differently defined capacities, and system links remain di
     assert.equal(details.filter((d) => d.open).length, 1);
     assert.equal(details.find((d) => d.open).id, "procurement-PROC-TSUKUBA-UNIFIED-MEMORY-2025");
     const tables = f.root.querySelectorAll("table");
-    assert.equal(tables.length, 2);
+    assert.equal(tables.length, 3);
     assert.ok(f.walk(f.root).some((e) => e.textContent === (language === "ja" ? "実効容量" : "Effective")));
     assert.ok(f.walk(f.root).some((e) => e.textContent?.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure")));
     const systemLinks = f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"));

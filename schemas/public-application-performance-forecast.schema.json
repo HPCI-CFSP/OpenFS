@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.4.0"},
+    "schema_version": {"const": "0.5.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -67,11 +67,13 @@
         ]
       }
     },
+    "calibration_candidates": {"type": "array", "items": {"$ref": "#/$defs/calibrationCandidate"}},
     "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
     "candidate_systems": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/candidateSystem"}},
     "baseline_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselineObservation"}},
     "assumptions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assumption"}},
     "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
+    "infrastructure_requirements_matrix": {"$ref": "#/$defs/infrastructureMatrix"},
     "illustrations": {"type": "array", "items": {"$ref": "#/$defs/illustration"}},
     "forecasts": {"type": "array", "items": {"$ref": "#/$defs/forecast"}},
     "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
@@ -273,6 +275,120 @@
         "confidence": {"enum": ["medium", "high"]},
         "consensus_status": {"const": "accepted"},
         "procurement_eligible": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "calibrationValidation": {
+      "type": "object",
+      "required": ["observation_id", "predicted_value", "observed_value", "absolute_error", "relative_error"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OBS-PERF-[A-Z0-9-]+$"},
+        "predicted_value": {"type": "number", "minimum": 0},
+        "observed_value": {"type": "number", "minimum": 0},
+        "absolute_error": {"type": "number", "minimum": 0},
+        "relative_error": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "calibrationCandidate": {
+      "type": "object",
+      "required": ["calibration_candidate_id", "target_model_card_id", "application_id", "status", "model_type", "metric_id", "unit", "equation_ja", "equation_en", "scope_ja", "scope_en", "calibration_observation_ids", "validation_results", "maximum_relative_error", "source_ids", "readiness", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "calibration_candidate_id": {"type": "string", "pattern": "^PMCAL-[A-Z0-9-]+$"},
+        "target_model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "status": {"const": "provisional"},
+        "model_type": {"enum": ["piecewise-log2-interpolation"]},
+        "metric_id": {"enum": ["domain-rate"]},
+        "unit": {"type": "string", "minLength": 1},
+        "equation_ja": {"type": "string", "minLength": 1},
+        "equation_en": {"type": "string", "minLength": 1},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "calibration_observation_ids": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^OBS-PERF-[A-Z0-9-]+$"}},
+        "validation_results": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/calibrationValidation"}},
+        "maximum_relative_error": {"type": "number", "minimum": 0},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "readiness": {
+          "type": "object",
+          "required": ["candidate_ready_for_consensus", "required_minimums", "observed_counts", "blockers_ja", "blockers_en"],
+          "properties": {
+            "candidate_ready_for_consensus": {"const": false},
+            "required_minimums": {
+              "type": "object",
+              "required": ["systems", "workloads", "origin_groups"],
+              "properties": {
+                "systems": {"type": "integer", "minimum": 2},
+                "workloads": {"type": "integer", "minimum": 2},
+                "origin_groups": {"type": "integer", "minimum": 2}
+              },
+              "additionalProperties": false
+            },
+            "observed_counts": {
+              "type": "object",
+              "required": ["systems", "workloads", "origin_groups"],
+              "properties": {
+                "systems": {"type": "integer", "minimum": 0},
+                "workloads": {"type": "integer", "minimum": 0},
+                "origin_groups": {"type": "integer", "minimum": 0}
+              },
+              "additionalProperties": false
+            },
+            "blockers_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "blockers_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          },
+          "additionalProperties": false
+        },
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureDimension": {
+      "type": "object",
+      "required": ["dimension_id", "label_ja", "label_en"],
+      "properties": {
+        "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureCell": {
+      "type": "object",
+      "required": ["dimension_id", "demand_level", "rationale_ja", "rationale_en", "measurement_gap_ja", "measurement_gap_en", "source_ids"],
+      "properties": {
+        "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "demand_level": {"enum": ["high", "medium", "low", "unknown"]},
+        "rationale_ja": {"type": "string", "minLength": 1},
+        "rationale_en": {"type": "string", "minLength": 1},
+        "measurement_gap_ja": {"type": "string", "minLength": 1},
+        "measurement_gap_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureRow": {
+      "type": "object",
+      "required": ["application_id", "cells"],
+      "properties": {
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "cells": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureCell"}}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureMatrix": {
+      "type": "object",
+      "required": ["title_ja", "title_en", "summary_ja", "summary_en", "dimensions", "rows", "caveat_ja", "caveat_en"],
+      "properties": {
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "dimensions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/infrastructureDimension"}},
+        "rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureRow"}},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
     },

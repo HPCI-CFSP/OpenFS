@@ -468,6 +468,8 @@ class PagesSiteTests(unittest.TestCase):
             'id="hpci-inventory-table"',
             'id="application-performance-section"',
             'id="application-code-availability"',
+            'id="application-calibration-candidates"',
+            'id="application-infrastructure-matrix"',
             'id="application-performance-table"',
         ):
             self.assertIn(element_id, detail)
@@ -600,7 +602,12 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(0, len(result["application_performance_forecasts"]["validated_model_cards"]))
             self.assertEqual(36, len(result["application_performance_forecasts"]["illustrations"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
-            self.assertEqual(8, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(19, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(1, len(result["application_performance_forecasts"]["calibration_candidates"]))
+            self.assertEqual(
+                6,
+                len(result["application_performance_forecasts"]["infrastructure_requirements_matrix"]["rows"]),
+            )
             self.assertEqual(6, len(result["application_performance_forecasts"]["assumptions"]))
             self.assertNotIn("publication", result["application_performance_forecasts"])
             self.assertEqual(
