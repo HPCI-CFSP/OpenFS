@@ -352,6 +352,42 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
         )
         self.assertEqual("incomplete", update["consensus_status"])
 
+    def test_scientific_ai_models_keep_variant_and_operational_boundaries(self):
+        update = read("proposals/research-unit-updates/RUP-000393.json")
+        self.assertEqual("APP-12", update["topic_id"])
+        self.assertEqual("incomplete", update["consensus_status"])
+        self.assertEqual(1, update["execution"]["agent_count"])
+        self.assertEqual(1, update["execution"]["model_count"])
+        items = {
+            item["item_id"]: item
+            for section in update["sections"]
+            for item in section["items"]
+        }
+        esm = items["TDI-CD223-ESM3-MODEL-FAMILY-BOUNDARY"]["statement_en"]
+        for fragment in ("98B", "1.4B esm3-sm-open-v1", "not a measured configuration"):
+            self.assertIn(fragment, esm)
+        mattersim = items[
+            "TDI-CD224-MATTERSIM-ARCHITECTURE-CHECKPOINT-BOUNDARY"
+        ]["statement_en"]
+        for fragment in ("182M-parameter Graphormer", "880K and 4.5M", "130.5M"):
+            self.assertIn(fragment, mattersim)
+        graphcast = items[
+            "TDI-CD225-GRAPHCAST-MEASURED-CONDITIONS-AND-MIGRATION"
+        ]["statement_en"]
+        for fragment in ("32 Cloud TPU v4", "four weeks", "35 GB", "full operational path"):
+            self.assertIn(fragment, graphcast)
+        self.assertTrue(all(item["consensus_status"] == "incomplete" for item in items.values()))
+
+        surface = read("knowledge/public/topic-decision-support.json")
+        profile = next(p for p in surface["topic_profiles"] if p["topic_id"] == "APP-12")
+        section = next(
+            section
+            for section in profile["sections"]
+            if section["section_id"] == "TDS-CD81-APP-12-PRIMARY-MODEL-RECONCILIATION"
+        )
+        self.assertEqual(set(items), {item["item_id"] for item in section["items"]})
+        self.assertEqual("incomplete", profile["research_updates"][-1]["consensus_status"])
+
 
 if __name__ == "__main__":
     unittest.main()

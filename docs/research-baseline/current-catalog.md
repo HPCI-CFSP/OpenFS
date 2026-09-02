@@ -400,7 +400,7 @@ Characterize model and data scales, quality targets, scientific representativene
 - `APP-12-U01` **学習・推論・AI for Science / Training, inference, and AI for Science** (`partial`)
   - 学習、微調整、推論のモデル・データ規模、要求品質、科学分野の代表性とシミュレーション・実験連携を整理する。
   - Characterize model and data scales, quality targets, scientific representativeness, and simulation or experiment coupling for training, fine-tuning, and inference.
-  - Evidence sections: TDS-CD1-APP-12-U01, TDS-CD2-APP-12-U01, TDS-CD10-APP-12-U01, TDS-CD11-APP-12-U01, TDS-CD12-APP-12-U01-U02, TDS-CD13-APP-12-FY2026B-AI-DEMAND, TDS-CD14-APP-12-NICAM-AI-COUPLING, TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO, TDS-WC380-APP-12-01, TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE, TDS-CD79-APP-12-DOMAIN-AIFS-WORKLOAD-SHAPES, TDS-CD80-APP-12-ECMWF-AIFS-OPERATIONS
+  - Evidence sections: TDS-CD1-APP-12-U01, TDS-CD2-APP-12-U01, TDS-CD10-APP-12-U01, TDS-CD11-APP-12-U01, TDS-CD12-APP-12-U01-U02, TDS-CD13-APP-12-FY2026B-AI-DEMAND, TDS-CD14-APP-12-NICAM-AI-COUPLING, TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO, TDS-WC380-APP-12-01, TDS-CD77-APP-12-MEXT-AIFS-2030-STRESS-CASE, TDS-CD79-APP-12-DOMAIN-AIFS-WORKLOAD-SHAPES, TDS-CD80-APP-12-ECMWF-AIFS-OPERATIONS, TDS-CD81-APP-12-PRIMARY-MODEL-RECONCILIATION
 - `APP-12-U02` **科学AIエージェントの要求 / Scientific-agent requirements** (`partial`)
   - 直列制御、検索、ツール実行、LLM推論、通信待ち、同時実行の要求と信頼性・来歴・安全性を整理する。
   - Characterize serial orchestration, retrieval, tools, LLM inference, communication waits, concurrency, reliability, provenance, and safety requirements.

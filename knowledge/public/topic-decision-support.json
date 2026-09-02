@@ -25282,8 +25282,8 @@
     },
     {
       "topic_id": "APP-12",
-      "summary_ja": "ECMWF AIFSの2025年運用開始、2026年v2更新、51-member ensemble、約6 TB/日の出力、物理IFSとの併用を追加しました。AI推論だけでなくend-to-end serviceを評価します。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "This update adds AIFS operations from 2025, the 2026 v2 upgrade, its 51-member ensemble, roughly 6 TB/day output, and coexistence with the physics-based IFS. Evaluation covers the end-to-end service rather than AI inference alone. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "ESM-3、MatterSim、GraphCastを原論文と現行の公式配布情報へ照合し、論文上の最大モデル、公開チェックポイント、学習条件、ライセンスを分離しました。委託調査の個別数値はモデル版を固定せず利用しません。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+      "summary_en": "This update reconciles ESM-3, MatterSim, and GraphCast against original papers and current official distribution records, separating paper-scale models, downloadable checkpoints, training conditions, and licences. Model-specific figures from the commissioned study are not used without a pinned variant. This is provisional single-model research with Consensus incomplete.",
       "sections": [
         {
           "section_id": "TDS-APP03-CURRENT",
@@ -26514,6 +26514,136 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-CD81-APP-12-PRIMARY-MODEL-RECONCILIATION",
+          "title_ja": "代表的な科学AIモデルの一次資料照合",
+          "title_en": "Primary-source reconciliation of representative scientific AI models",
+          "summary_ja": "同じ製品名やモデル名でも最大構成、公開構成、学習、推論では必要資源と利用条件が異なるため、正確な版と処理段階を固定します。",
+          "summary_en": "A model family can have different paper-scale, downloadable, training, and inference configurations, so planning must pin the exact variant and processing stage.",
+          "items": [
+            {
+              "item_id": "TDI-CD223-ESM3-MODEL-FAMILY-BOUNDARY",
+              "name_ja": "ESM-3: 98B最大モデルと1.4B公開モデルを分離",
+              "name_en": "ESM-3: separate the 98B largest model from the 1.4B open model",
+              "statement_ja": "原論文は1.4B、7B、98Bの系列を示し、98Bモデルについて1.07×10^24 FLOPs、2.78Bの天然タンパク質、拡張後3.15B配列、236M構造、539M機能注釈、771Bトークンを報告しています。一方、現行のローカル実行例は1.4Bのesm3-sm-open-v1で、他のモデルはBiohub経由です。現行リポジトリとモデルカードはMITライセンスを掲示し、別途利用方針への遵守を求めています。委託調査の98Bを、そのままローカル配布版の規模として扱いません。また、同調査にあるH100を数千基用いるとの記述は推測であり、原論文が報告した実測構成ではありません。",
+              "statement_en": "The paper describes 1.4B, 7B, and 98B variants and reports 1.07e24 FLOPs, 2.78B natural proteins, 3.15B augmented sequences, 236M structures, 539M function-annotated proteins, and 771B tokens for the largest-scale training. The current local example instead uses the 1.4B esm3-sm-open-v1, while other models are accessed through Biohub. The current repository and model card state MIT terms and separately request compliance with an acceptable-use policy. OpenFS therefore does not treat the commissioned study's 98B figure as the size of the locally distributed checkpoint. Its estimate of thousands of H100s is an inference, not a measured configuration reported by the original paper.",
+              "hpci_relevance_ja": "HPCIの需要推計では、事前学習、追加学習、バッチ推論、対話的生成を分け、モデルID、系列長、生成回数、精度、公開方法を固定します。",
+              "hpci_relevance_en": "HPCI demand estimates should separate pretraining, fine-tuning, batch inference, and interactive generation and pin model ID, sequence length, sample count, quality, and distribution mode.",
+              "adoption_conditions_ja": [
+                "esm3-sm-open-v1を固定した公開入力で、GPUメモリ、処理量、前処理、出力、再現性を測る。",
+                "98Bを候補に含める場合は、提供形態、同時実行数、料金、データ持出し条件、計算構成を別途確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Measure GPU memory, throughput, preprocessing, outputs, and reproducibility for a pinned esm3-sm-open-v1 and public input.",
+                "If the 98B model is in scope, separately verify access mode, concurrency, price, data-egress conditions, and compute configuration."
+              ],
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "原論文は2025年刊行、配布条件は2026年9月2日に確認",
+              "timing_en": "Paper published in 2025; distribution terms checked on 2 September 2026",
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDS505",
+                "SRC-CDS508",
+                "SRC-CDS509",
+                "SRC-CDS510"
+              ],
+              "confidence": "high",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CD224-MATTERSIM-ARCHITECTURE-CHECKPOINT-BOUNDARY",
+              "name_ja": "MatterSim: 182M論文モデルと880K・4.5M公開版を分離",
+              "name_en": "MatterSim: separate the 182M paper model from 880K and 4.5M public checkpoints",
+              "statement_ja": "原論文は全学習集合を約17M構造とし、M3GNetではデータを最大3Mまで増やして880Kから4.5Mパラメータを8基のNVIDIA A100で学習し、Graphormerでは182Mパラメータを64基のA100で学習したと報告しています。現行モデルカードが公開するのはM3GNetの880K版と4.5M版で、学習データ規模は3Mと6M、ライセンスはMITです。委託調査の130.5Mは、原論文の182Mとも公開チェックポイントとも一致しないため、版が特定されるまで需要推計に使いません。公開版はバルク材料向けで、表面、界面、長距離相互作用、PBEの限界には追加検証または微調整が必要です。",
+              "statement_en": "The paper describes an approximately 17M-structure full corpus. Its M3GNet experiments scale from 880K to 4.5M parameters with up to 3M data points and train on eight NVIDIA A100s, while its 182M-parameter Graphormer trains on 64 A100s. The current model card distributes only the 880K and 4.5M M3GNet checkpoints, lists 3M and 6M training-data sizes, and states MIT terms. The commissioned study's 130.5M figure matches neither the paper's 182M Graphormer nor the public checkpoints, so it is excluded from demand estimates until its variant is identified. The public models target bulk materials; surfaces, interfaces, long-range interactions, and PBE limitations require further validation or fine-tuning.",
+              "hpci_relevance_ja": "材料AIはパラメータ数だけでなく、DFTデータ生成、能動学習、推論を用いた分子動力学、再学習を別々のCPU・GPU・ストレージ負荷として計測します。",
+              "hpci_relevance_en": "Materials-AI planning should measure DFT data generation, active learning, inference-driven molecular dynamics, and retraining as separate CPU, GPU, and storage loads rather than relying on parameter count.",
+              "adoption_conditions_ja": [
+                "公開チェックポイント名、データ集合、原子数、時間ステップ、精度基準を固定して測定する。",
+                "17M全学習集合と182M Graphormerの再現に必要なデータ公開範囲、コード、学習時間、チェックポイント提供状況を確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin checkpoint name, dataset, atom count, time step, and quality threshold for measurement.",
+                "Verify data availability, code, training duration, and checkpoint access needed to reproduce the 17M-corpus and 182M Graphormer setup."
+              ],
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "原論文は2024年、公開モデルカードは2026年9月2日に確認",
+              "timing_en": "Paper released in 2024; public model card checked on 2 September 2026",
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDS505",
+                "SRC-CDS511",
+                "SRC-CDS512"
+              ],
+              "confidence": "high",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CD225-GRAPHCAST-MEASURED-CONDITIONS-AND-MIGRATION",
+              "name_ja": "GraphCast: 論文の測定条件と現行配布先を分離",
+              "name_en": "GraphCast: separate paper measurement conditions from the current distribution home",
+              "statement_ja": "原論文のGraphCastは36.7Mパラメータで、0.25度の721×1440格子、5地表変数と37気圧面上の6大気変数からなる227変数を6時間刻みで予測します。ERA5の1979年から2017年を用い、32基のCloud TPU v4で約4週間学習し、単一のCloud TPU v4で10日予報を60秒未満で生成した条件です。公式掲載ページは出力を約35 GBとしています。この速度はデータ取得、初期値作成、品質管理、保存、配信を含む運用全体の時間ではありません。2026年には旧GraphCastリポジトリがWeatherNextへ移行し、GraphCastはWeatherNext Graphとして収録されています。現行ページはコードとノートブックをApache 2.0、その他資料をCC BY 4.0とし、ERA5とHRESには別の条件があり得ると明記しています。",
+              "statement_en": "The paper's GraphCast has 36.7M parameters and predicts 227 variables at six-hour steps on a 0.25-degree, 721 by 1440 grid: five surface variables and six atmospheric variables across 37 pressure levels. It used ERA5 from 1979 through 2017, trained for roughly four weeks on 32 Cloud TPU v4 devices, and generated a ten-day forecast in under 60 seconds on one Cloud TPU v4. The official publication page describes approximately 35 GB of output. That timing excludes the full operational path for data acquisition, initialization, quality control, storage, and dissemination. By 2026, the former GraphCast repository had moved into WeatherNext, where GraphCast is retained as WeatherNext Graph. The current page licenses code and notebooks under Apache 2.0 and other materials under CC BY 4.0, while warning that ERA5 and HRES can have separate terms.",
+              "hpci_relevance_ja": "気象AIの設備評価では、固定入力による推論速度と、観測取込み、初期値、アンサンブル、保存、配信、物理モデルによる代替を含む運用サービスを分けて測ります。",
+              "hpci_relevance_en": "Weather-AI evaluation should separate inference on pinned inputs from the operational service, including observation ingestion, initial conditions, ensembles, storage, dissemination, and physics-model fallback.",
+              "adoption_conditions_ja": [
+                "GraphCastまたは後継モデルのリリース、重み、入力、解像度、気圧面、予報期間、ハードウェアを固定する。",
+                "推論だけでなく、入力取得から配信までの所要時間、日次データ量、障害時の代替手段を測る。"
+              ],
+              "adoption_conditions_en": [
+                "Pin the GraphCast or successor release, weights, input, resolution, pressure levels, forecast horizon, and hardware.",
+                "Measure acquisition-to-dissemination time, daily data volume, and fallback, not inference alone."
+              ],
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "論文は2023年、現行配布先は2026年9月2日に確認",
+              "timing_en": "Paper published in 2023; current distribution home checked on 2 September 2026",
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDS505",
+                "SRC-CDS513",
+                "SRC-CDS514",
+                "SRC-CDS515"
+              ],
+              "confidence": "high",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-CD226-SCIENTIFIC-MODEL-IDENTITY-CONTRACT",
+              "name_ja": "共通評価単位: モデル名ではなく再現可能な実行条件",
+              "name_en": "Common evaluation unit: reproducible execution conditions, not a family name",
+              "statement_ja": "3例から、モデル名だけでは設備需要を決められないと判断します。比較単位には、モデルIDと重み、学習・追加学習・推論の別、データ版と利用条件、入力形状、出力量、品質基準、ソフトウェア版、演算装置と台数、実行時間、前後処理を含めます。数値が一致しない場合は平均や推測で埋めず、対象版が確定するまで未確認事項として残します。これは一次資料から導いた設計上の判断であり、独立したAIモデルによる検証前の暫定案です。",
+              "statement_en": "These three cases support an inference that a family name is insufficient for infrastructure demand. The comparison unit should include model ID and weights, pretraining versus fine-tuning versus inference, data version and terms, input shape, output volume, quality threshold, software version, accelerator type and count, runtime, and surrounding processing. Conflicting figures should remain unresolved until the variant is identified rather than being averaged or filled by speculation. This is a provisional design inference from the primary sources and has not been reviewed by an independent model.",
+              "hpci_relevance_ja": "同じ必須項目を調達前の再現試験、運用時の計測、将来需要の外挿に用いることで、異なる科学分野を同じ根拠単位で比較できます。",
+              "hpci_relevance_en": "Using the same required fields for pre-procurement reproduction, operational measurement, and future-demand extrapolation enables cross-domain comparisons on a common evidence unit.",
+              "adoption_conditions_ja": [
+                "代表モデルごとに必須項目を満たすモデルカードと測定記録を作成する。",
+                "公開版、提供サービス、論文版の対応関係を確認し、異なる対象を同じ値として集計しない。"
+              ],
+              "adoption_conditions_en": [
+                "Create a model card and measurement record with all required fields for each representative model.",
+                "Reconcile public, service, and paper variants and do not aggregate different targets as one value."
+              ],
+              "stage": "current",
+              "maturity": "research",
+              "timing_ja": "2026年9月2日の一次資料照合から得た暫定的な設計判断",
+              "timing_en": "Provisional design inference from primary-source reconciliation on 2 September 2026",
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-CDS508",
+                "SRC-CDS509",
+                "SRC-CDS511",
+                "SRC-CDS512",
+                "SRC-CDS513",
+                "SRC-CDS515"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -26704,6 +26834,16 @@
             "APP-12-U02"
           ],
           "created_at": "2026-09-02T10:55:13+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000393",
+          "bundle_sha256": "5b8f223074b097682b3c21bdbe27a42313a33648039491b9b4711267281270fc",
+          "base_commit": "4b2a99e62940a1f8abba0ab87a04d8266c73dd9e",
+          "unit_ids": [
+            "APP-12-U01"
+          ],
+          "created_at": "2026-09-02T11:14:00+09:00",
           "consensus_status": "incomplete"
         }
       ]
@@ -61241,6 +61381,70 @@
       "url": "https://www.ecmwf.int/en/forecasts/datasets/aifs-machine-learning-data",
       "source_class": "official-project",
       "published_or_updated": "2026-05-12"
+    },
+    {
+      "source_id": "SRC-CDS508",
+      "title": "Simulating 500 million years of evolution with a language model",
+      "publisher": "EvolutionaryScale / bioRxiv",
+      "url": "https://www.biorxiv.org/content/10.1101/2024.07.01.600583v2",
+      "source_class": "research-artifact",
+      "published_or_updated": "2024-12-31"
+    },
+    {
+      "source_id": "SRC-CDS509",
+      "title": "ESM3 README",
+      "publisher": "Chan Zuckerberg Biohub",
+      "url": "https://github.com/Biohub/esm/blob/main/_assets/ESM3_README.md",
+      "source_class": "official-vendor",
+      "published_or_updated": "checked 2026-09-02"
+    },
+    {
+      "source_id": "SRC-CDS510",
+      "title": "Model Card for esm3-sm-open-v1",
+      "publisher": "Chan Zuckerberg Biohub / Hugging Face",
+      "url": "https://huggingface.co/biohub/esm3-sm-open-v1",
+      "source_class": "official-vendor",
+      "published_or_updated": "checked 2026-09-02"
+    },
+    {
+      "source_id": "SRC-CDS511",
+      "title": "MatterSim: A Deep Learning Atomistic Model Across Elements, Temperatures and Pressures",
+      "publisher": "Microsoft Research / arXiv",
+      "url": "https://arxiv.org/abs/2405.04967",
+      "source_class": "research-artifact",
+      "published_or_updated": "2024-05-10"
+    },
+    {
+      "source_id": "SRC-CDS512",
+      "title": "MatterSim Model Card",
+      "publisher": "Microsoft",
+      "url": "https://github.com/microsoft/mattersim/blob/main/MODEL_CARD.md",
+      "source_class": "official-vendor",
+      "published_or_updated": "checked 2026-09-02"
+    },
+    {
+      "source_id": "SRC-CDS513",
+      "title": "Learning skillful medium-range global weather forecasting",
+      "publisher": "Google DeepMind / Science",
+      "url": "https://www.science.org/doi/10.1126/science.adi2336",
+      "source_class": "peer-reviewed",
+      "published_or_updated": "2023-11-14"
+    },
+    {
+      "source_id": "SRC-CDS514",
+      "title": "GraphCast: Learned Global Weather Forecasting",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/research/publications/22598/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2023-11-14"
+    },
+    {
+      "source_id": "SRC-CDS515",
+      "title": "WeatherNext README",
+      "publisher": "Google DeepMind",
+      "url": "https://github.com/google-deepmind/weathernext/blob/main/README.md",
+      "source_class": "official-vendor",
+      "published_or_updated": "checked 2026-09-02"
     }
   ],
   "coverage_gaps": [
@@ -62377,7 +62581,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PUBLIC-LANGUAGE-CORRECTIONS-20260902-001",
-    "human_approval_directive_id": "DIR-900022"
+    "publication_decision_id": "PUBDEC-PRIMARY-MODEL-RECONCILIATION-20260902-001",
+    "human_approval_directive_id": "DIR-900023"
   }
 }
