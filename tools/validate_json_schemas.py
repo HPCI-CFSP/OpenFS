@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +27,9 @@ def read_json(path: Path) -> Any:
         return json.load(stream)
 
 
+@lru_cache(maxsize=None)
 def schema_registry(root: Path) -> tuple[dict[str, dict[str, Any]], Registry]:
+    """Build each repository's immutable schema registry once per process."""
     schemas: dict[str, dict[str, Any]] = {}
     registry = Registry()
     for path in sorted((root / "schemas").glob("*.schema.json")):

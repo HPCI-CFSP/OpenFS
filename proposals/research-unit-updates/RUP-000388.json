@@ -1,0 +1,205 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000388",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-02T10:55:21+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "f579a4793ad1896393990e1202f2e28e83a34e5f1e597086a5fca55d8e1c8252",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "APSの2026年実証から、SYNAPS-Iによる1.3 TBの1 GPUリアルタイム解析、非AI類似実験2,500 GPU時間との比較、XPCS結果の3分未満返却、service accountとon-demand queueを追加しました。比較条件とtail latencyは不足しており、100超beamline・7施設のmodelは開発目標として分離します。単一のAIモデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "From 2026 APS demonstrations, this update adds SYNAPS-I processing of 1.3 TB on one GPU in real time, a comparison with 2,500 GPU-hours for a similar non-AI experiment, sub-three-minute XPCS feedback, service accounts, and on-demand queues. Comparison conditions and tail latency remain incomplete, and the model spanning more than 100 beamlines and seven facilities is separated as a development target. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-15-U02",
+      "before_sha256": "da514ffcaec68eb4812decca46f847cbed501aa46bcdd523a5dcc65064723183",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U02",
+        "TDS-CD3-APP-15-U02",
+        "TDS-WC388-APP-15-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC388-APP-15-01",
+      "title_ja": "予約・障害・再試行を含む再現評価",
+      "title_en": "Reproducible evaluation with reservations, failures and retries",
+      "summary_ja": "処理が成功した一回だけでなく、継続運用の条件を比較します。",
+      "summary_en": "Compare conditions for sustained operation, not one successful execution.",
+      "items": [
+        {
+          "item_id": "TDI-WC388-APP15-01-01",
+          "stage": "current",
+          "maturity": "deployed",
+          "source_ids": [
+            "SRC-CDA076"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "予約資源: 待機と未使用時間の費用",
+          "name_en": "Reserved resources: waits and idle-time cost",
+          "timing_ja": "現行NERSC公開方針",
+          "timing_en": "Current public NERSC policy",
+          "statement_ja": "NERSCでは予約した資源の空き時間も課金対象です。実験を待つ常駐資源と、イベントごとに確保する資源を比較する際は、実行中の速度だけでなく、未使用の予約時間と通常ジョブへの影響も計測する必要があります。この条件をHPCI全施設の料金制度と同一視しません。",
+          "statement_en": "NERSC charges for unused reserved capacity as well. Comparing resident resources with event-triggered allocation requires measuring idle reservations and impact on ordinary jobs, not only active speed. This is not assumed to be the charging policy of every HPCI site.",
+          "hpci_relevance_ja": "短い応答時間を得るために必要な予備資源の費用を明らかにします。",
+          "hpci_relevance_en": "It exposes the reserve-capacity cost of short response times.",
+          "adoption_conditions_ja": [
+            "施設ごとの予約規則、割込み可否、実際の待機分布を確認する。",
+            "実行時間と課金対象時間を別々に保持する。"
+          ],
+          "adoption_conditions_en": [
+            "Check site-specific reservations, preemption and observed queue distributions.",
+            "Keep execution time separate from chargeable time."
+          ]
+        },
+        {
+          "item_id": "TDI-WC388-APP15-01-02",
+          "stage": "current",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA080"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "WfCommons: 実行記録に基づく合成ワークフロー",
+          "name_en": "WfCommons: trace-based synthetic workflows",
+          "timing_ja": "公開実装・共通JSON形式",
+          "timing_en": "Public implementation and common JSON format",
+          "statement_ja": "WfCommonsは実行記録、合成ワークフロー、実行可能なベンチマーク仕様を提供します。処理構造や入出力量を変えた比較の土台になりますが、生成したグラフだけで実験装置の制御や科学的な正しさまで再現したことにはなりません。代表実測との一致を確認して使います。",
+          "statement_en": "WfCommons provides execution instances, synthetic workflows and executable benchmark specifications. It supports controlled variation of structure and I/O, but a generated graph does not reproduce instrument control or scientific correctness by itself. Validate against representative measurements.",
+          "hpci_relevance_ja": "実設備を常に占有せず、計算基盤の比較用負荷を作る候補です。",
+          "hpci_relevance_en": "It can create comparison loads without continuously occupying real instruments.",
+          "adoption_conditions_ja": [
+            "レシピ、乱数、タスク数、処理量、利用する実行基盤の版を固定する。",
+            "未検証の動的・閉ループ挙動は別の未確認事項とする。"
+          ],
+          "adoption_conditions_en": [
+            "Pin recipe, seed, task count, work volume and execution-engine version.",
+            "Keep unvalidated dynamic/closed-loop behavior as a separate Coverage Gap."
+          ]
+        },
+        {
+          "item_id": "TDI-WC388-APP15-01-03",
+          "stage": "near-term",
+          "maturity": "research",
+          "source_ids": [
+            "SRC-CDA077",
+            "SRC-CDA080",
+            "SRC-CDA079"
+          ],
+          "actor_ids": [],
+          "confidence": "medium",
+          "consensus_status": "incomplete",
+          "name_ja": "障害後の評価: 再開・重複・未処理の確認",
+          "name_en": "Recovery evaluation: resumption, duplicates and missing work",
+          "timing_ja": "OpenFSの暫定評価設計、実験未実施",
+          "timing_en": "Provisional OpenFS evaluation design; not executed",
+          "statement_ja": "合成負荷で資源不足や中断を模擬し、復旧時間だけでなく、未処理データ、重複処理、再実行費用を調べる方針です。校正用とは別の入力率や処理構造で予測を検証します。実機制御と切り離した環境から始め、全系での障害耐性や安全性を確認済みとはしません。",
+          "statement_en": "The proposed study simulates shortages/interruption and measures missing data, duplicates and rerun cost as well as recovery time. Validate predictions on held-out arrival rates or workflow structures. Start separately from physical control; this does not establish system-wide resilience or safety.",
+          "hpci_relevance_ja": "中断後に結果だけが早く出ても、データの一貫性が失われないかを確認します。",
+          "hpci_relevance_en": "It checks data consistency as well as fast post-interruption results.",
+          "adoption_conditions_ja": [
+            "障害種別、注入位置、復旧の定義、データ照合手順を事前に固定する。",
+            "本調査では障害注入や実サービスへの負荷試験を行っていない。"
+          ],
+          "adoption_conditions_en": [
+            "Fix failure type/location, recovery definition and data-reconciliation procedure beforehand.",
+            "No failure injection or live-service load testing was performed."
+          ]
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD1-APP-15-U02"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDA076",
+        "title": "NERSC Resource Usage Policies",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/policies/resource-usage/",
+        "source_class": "official-project",
+        "published_or_updated": "Accessed 2026-09-01"
+      },
+      "origin_group": "nersc-operations-policy",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Reservations, Premium and Realtime QOS",
+      "observation_ja": "Realtimeの特別申請、Premiumとの違い、予約未使用時間も課金する境界を確認。",
+      "observation_en": "Read special-request Realtime access, distinction from Premium and charging of unused reserved time.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA080",
+        "title": "WfCommons workflow instances and benchmark generators",
+        "publisher": "WfCommons project",
+        "url": "https://github.com/wfcommons/wfcommons",
+        "source_class": "official-project",
+        "published_or_updated": "README accessed 2026-09-01"
+      },
+      "origin_group": "wfcommons-project",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "WfFormat, synthetic traces, benchmark specifications and public code",
+      "observation_ja": "実行記録から合成ワークフローと評価用仕様を作る公開基盤を確認。",
+      "observation_en": "Read public generation of synthetic workflows and benchmark specifications from execution instances.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA077",
+        "title": "NERSC Superfacility API examples",
+        "publisher": "NERSC",
+        "url": "https://docs.nersc.gov/services/sfapi/examples/",
+        "source_class": "official-project",
+        "published_or_updated": "API v1.2 examples accessed 2026-09-01"
+      },
+      "origin_group": "nersc-sfapi",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Batch submission and asynchronous task results",
+      "observation_ja": "HTTP要求、非同期APIタスク、Slurmジョブの状態が異なることを確認。例は実行していない。",
+      "observation_en": "Read distinct HTTP, asynchronous API-task and Slurm-job states; examples were not executed.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDA079",
+        "title": "What is perfSONAR?",
+        "publisher": "perfSONAR project",
+        "url": "https://docs.perfsonar.net/intro_about.html",
+        "source_class": "official-project",
+        "published_or_updated": "Documentation 5.2.6 accessed 2026-09-01"
+      },
+      "origin_group": "perfsonar-project",
+      "checked_at": "2026-09-01T01:23:04+09:00",
+      "locator": "Measurement tools, scheduling and archives",
+      "observation_ja": "片道・往復遅延、帯域、競合を避けた測定スケジューリングを確認。",
+      "observation_en": "Read one-way/two-way delay, throughput and conflict-aware measurement scheduling.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

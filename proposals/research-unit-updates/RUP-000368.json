@@ -1,0 +1,178 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000368",
+  "topic_id": "ARCH-12",
+  "created_at": "2026-09-02T10:55:01+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "694c59c70a6f7b5620f99ed7334547acd4257219fdf3d46920210a22cd3fe4c6",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ALCFの4台Cerebras CS-3 clusterについて、90万core・44 GB on-chip、24 MemoryX、8 SwarmX、約200B modelの構成と、strict scheduler未実装、24時間推奨、checkpoint約60秒/10億parameterという実運用条件を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds ALCF's four-system Cerebras CS-3 cluster, including 900,000 cores and 44 GB on chip per engine, 24 MemoryX nodes, eight SwarmX nodes, approximate 200B-model support, and operational conditions including no strict scheduler, 24-hour guidance, and checkpoint time of about 60 seconds per billion parameters. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-12-U01",
+      "before_sha256": "5e937f619b094c886daa4edf6c56ed6fcf530f6673ca372be88872d2c3e22d27",
+      "evidence_section_ids": [
+        "TDS-ARCH02-DOMESTIC",
+        "TDS-HC26-ARCH-12-U1",
+        "TDS-HW1-ARCH-12-U01",
+        "TDS-HW2-ARCH-12-U01",
+        "TDS-CD43-ARCH-12-SILICON-PHOTONIC-LEARNING",
+        "TDS-CD47-ARCH-12-MAGNETIC-MEMRISTOR",
+        "TDS-WC368-ARCH-12-01"
+      ]
+    },
+    {
+      "unit_id": "ARCH-12-U03",
+      "before_sha256": "2598b3791e28c3dfff1c89b723e55a49c6eb0451162ecd9805f6f58cf5fc6c5c",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-12-U03",
+        "TDS-WC368-ARCH-12-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC368-ARCH-12-01",
+      "title_ja": "第三者facilityでのCerebras CS-3構成と運用成熟度",
+      "title_en": "Cerebras CS-3 configuration and operational maturity at a third-party facility",
+      "summary_ja": "ALCFの4台CS-3 clusterを、構成、利用経路、scheduler、checkpoint、software版の実運用条件から評価します。",
+      "summary_en": "Assess ALCF's four-system CS-3 cluster through its configuration, access path, scheduler, checkpoint, and software-version conditions.",
+      "items": [
+        {
+          "item_id": "TDI-WC368-ARCH12-01-01",
+          "name_ja": "4台CS-3・24 MemoryX・8 SwarmXの利用可能cluster",
+          "name_en": "Accessible cluster with four CS-3 systems, 24 MemoryX nodes, and eight SwarmX nodes",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点のALCF運用資料",
+          "timing_en": "ALCF operating documentation checked September 2, 2026",
+          "statement_ja": "ALCF AI Testbedは4台のCS-3 wafer-scale engine、4 worker、4 activation server、24 MemoryX、8 SwarmXでclusterを構成し、Director's Discretionary project等から研究利用できます。各CS-3は90万core、core当たり48 KB SRAM、合計44 GB on-chip memoryとされ、weight streamingで約2000億parameterまでのmodelを対象にします。PyTorch interfaceを備えますが、compile、data前処理・streaming、weight配信、gradient集約は周辺nodeを含むappliance全体で実行されるため、wafer単体の演算値だけではsystem性能を比較できません。",
+          "statement_en": "The ALCF AI Testbed operates a cluster with four CS-3 wafer-scale engines, four worker nodes, four activation servers, 24 MemoryX nodes, and eight SwarmX nodes, accessible for research through programs including Director's Discretionary allocations. Each CS-3 is described as having 900,000 cores, 48 KB of SRAM per core, and 44 GB of total on-chip memory, targeting models up to approximately 200 billion parameters through weight streaming. It exposes a PyTorch interface, but compilation, preprocessing and streaming, weight distribution, and gradient accumulation run across the complete appliance and supporting nodes, so wafer-only arithmetic figures are not system-performance comparisons.",
+          "hpci_relevance_ja": "専用AI装置を比較する際はaccelerator本体に加え、weight memory、fabric、host、compile、storage、allocationを含むsystem boundaryを固定する必要があります。",
+          "hpci_relevance_en": "Comparisons of specialized AI appliances must fix a system boundary that includes weight memory, fabric, hosts, compilation, storage, and allocation, not only the accelerator.",
+          "adoption_conditions_ja": [
+            "GPU clusterと同じmodel、data、quality、total elapsed time、facility energyで比較する。",
+            "compile、input、checkpoint、recoveryを含むphase別時間とdata量を記録する。",
+            "単一CS-3と4-system利用でのscale-out効率、failure domain、再開時間を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Compare with GPU clusters using the same model, data, quality target, total elapsed time, and facility energy.",
+            "Record per-phase time and data volume including compilation, input, checkpoints, and recovery.",
+            "Measure scale-out efficiency, failure domains, and restart time for one versus four CS-3 systems."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS479",
+            "SRC-CDS480"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC368-ARCH12-01-02",
+          "name_ja": "厳密なscheduler未実装、24時間推奨とcheckpoint約60秒/10億parameter",
+          "name_en": "No strict scheduler policy; 24-hour guidance and about 60 seconds per billion parameters for checkpoints",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "現行user guideの運用条件",
+          "timing_en": "Current user-guide operating conditions",
+          "statement_ja": "ALCFは4台のCS-3が高需要である一方、現段階ではstrict scheduling policyを強制せず、複数同時jobや大量queueを避け、大規模jobを原則24時間以内にするよう利用者へ求めています。公開guideはcheckpoint保存時間を10億parameter当たり概ね60秒とし、容量quotaへの影響も指摘します。example環境はCerebras software Release 2.10.0を固定しています。これはhardware availabilityと、共有facilityとしてのfairness、version lifecycle、checkpoint I/O成熟度が別であることを示します。",
+          "statement_en": "ALCF states that its four CS-3 systems are in high demand but currently does not enforce a strict scheduling policy, instead asking users to avoid concurrent submissions and long queues and generally limit large jobs to 24 hours. The guide estimates checkpoint saving at roughly 60 seconds per billion parameters and notes storage-quota effects. Its example environment pins Cerebras software Release 2.10.0. This separates hardware availability from maturity in shared-facility fairness, version lifecycle, and checkpoint I/O.",
+          "hpci_relevance_ja": "HPCIへ導入する場合、善意ベースの利用調整ではなく、allocation accounting、fair-share、reservation、preemption、failure recovery、software support期限が必要です。",
+          "hpci_relevance_en": "HPCI adoption needs allocation accounting, fair share, reservations, preemption, failure recovery, and software support horizons rather than voluntary coordination alone.",
+          "adoption_conditions_ja": [
+            "job accounting単位をengine-hour、system-hour、compile資源、storageへ分けて定義する。",
+            "scheduler、quota、reservation、priority、maintenance、usage reportをproduction policyとして実装する。",
+            "software版更新時にmodelの正しさ、compile artifact、checkpoint互換性を回帰試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Define accounting separately for engine-hours, system-hours, compilation resources, and storage.",
+            "Implement scheduler, quota, reservation, priority, maintenance, and usage reporting as production policies.",
+            "Regression-test model correctness, compiled artifacts, and checkpoint compatibility across software upgrades."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS480",
+            "SRC-CDS481"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD62-ARCH-12-ALCF-CS3-OPERATIONS"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS479",
+        "title": "ALCF AI Testbed",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/ai-testbed/",
+        "source_class": "official-project",
+        "published_or_updated": "Living documentation checked 2026-09-02"
+      },
+      "origin_group": "alcf-ai-testbed-current-access",
+      "checked_at": "2026-09-02T06:47:00+09:00",
+      "locator": "Current deployment and access paths for Cerebras, SambaNova, Graphcore, and Groq",
+      "observation_ja": "CS-3、SN40L、BowPod64、GroqRackの現行配置と、allocationまたはInference Serviceによる利用経路を確認しました。",
+      "observation_en": "Verified current CS-3, SN40L, BowPod64, and GroqRack deployments and their allocation or Inference Service access paths.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS480",
+        "title": "ALCF Cerebras CS-3 System Overview",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/ai-testbed/cerebras/",
+        "source_class": "official-project",
+        "published_or_updated": "Living documentation checked 2026-09-02"
+      },
+      "origin_group": "alcf-cs3-system-configuration",
+      "checked_at": "2026-09-02T06:48:00+09:00",
+      "locator": "Core and memory counts, four-system cluster, worker and activation servers, MemoryX, SwarmX, model scale, and programming model",
+      "observation_ja": "4 CS-3、4 worker、4 activation server、24 MemoryX、8 SwarmX、90万core、44 GB on-chip、約200B model対応を確認しました。",
+      "observation_en": "Verified four CS-3 systems, four workers, four activation servers, 24 MemoryX nodes, eight SwarmX nodes, 900,000 cores, 44 GB on chip, and approximate 200B-model support.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS481",
+        "title": "ALCF Cerebras: Running a Model or Program",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://docs.alcf.anl.gov/ai-testbed/cerebras/running-a-model-or-program/",
+        "source_class": "official-project",
+        "published_or_updated": "Living documentation checked 2026-09-02"
+      },
+      "origin_group": "alcf-cs3-operating-policy",
+      "checked_at": "2026-09-02T06:49:00+09:00",
+      "locator": "Demand, scheduling guidance, runtime guidance, software release, checkpoints, and quotas",
+      "observation_ja": "strict scheduler未実装、24時間推奨、Release 2.10.0、checkpoint約60秒/10億parameter、quota影響を確認しました。",
+      "observation_en": "Verified the absence of strict scheduling, 24-hour guidance, Release 2.10.0, checkpoint time of about 60 seconds per billion parameters, and quota impact.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

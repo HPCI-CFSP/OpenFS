@@ -1,0 +1,158 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000373",
+  "topic_id": "SSW-03",
+  "created_at": "2026-09-02T10:55:06+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "0d1937cae5a86aa3915660d18169202b180e20459b138f802144b92f555d7b93",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Auroraについて、MPI reductionの不正値、OpenMP GPU kernelの解放済みmemory参照、公開reproducer、最大2,112 nodeのnext-eval queueによるmajor imageの段階展開を追加しました。解決版や合格基準は未確認です。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For Aurora, this update adds incorrect MPI reduction values, freed-memory access by an OpenMP GPU kernel, public reproducers, and staged rollout of a major image through a next-eval queue of up to 2,112 nodes. Fixed releases and acceptance criteria remain unverified. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-03-U01",
+      "before_sha256": "dddee0df495a0085dc9bfcd6a38950a843192e8483be28e11531b0a0b3f75cb0",
+      "evidence_section_ids": [
+        "TDS-SSW03-CURRENT",
+        "TDS-SSW03-FUTURE",
+        "TDS-HC26-SSW-03-U1",
+        "TDS-CD2-SSW-03-U01",
+        "TDS-CD3-SSW-03-U01",
+        "TDS-CD4-SSW-03-U01",
+        "TDS-CD20-SSW-03-MPI5-ABI",
+        "TDS-CD21-SSW-03-MPI5-IMPLEMENTATIONS",
+        "TDS-WC373-SSW-03-01",
+        "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025",
+        "TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION",
+        "TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC373-SSW-03-01",
+      "title_ja": "HPCI現行資源のMPI・通信software登録状況",
+      "title_en": "MPI and communication software registered for current HPCI resources",
+      "summary_ja": "共通API、vendor実装、accelerator collective、version情報の違いを移植条件として扱います。",
+      "summary_en": "Treat differences in common APIs, vendor implementations, accelerator collectives, and version metadata as portability conditions.",
+      "items": [
+        {
+          "item_id": "TDI-WC373-SSW03-01-01",
+          "name_ja": "MPI source互換の下で実装はarchitecture別に分岐",
+          "name_en": "MPI implementations diverge by architecture beneath source compatibility",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日取得",
+          "timing_en": "Retrieved September 2, 2026",
+          "statement_ja": "公式databaseの現行登録では、Intel MPIはCamphor3、SQUID、OCTOPUS、Miyabi-C等、OpenMPIはAOBA-B、不老・弐、Camphor3、SQUID、OCTOPUS、Miyabi-G等、富士通MPIは富岳とWisteria/Odyssey、NEC MPIはAOBA-A/S、SQUID、ES4VE、MPICH-Tofuは富岳に登録されています。NCCLはAquariusとMiyabi-Gに登録されています。これは同じMPI source codeでもbuild、launcher、network tuning、GPU collectiveが一様でないことを示します。",
+          "statement_en": "In current official registrations, Intel MPI appears for Camphor3, SQUID, OCTOPUS, Miyabi-C, and others; Open MPI for AOBA-B, Flow Type II, Camphor3, SQUID, OCTOPUS, Miyabi-G, and others; Fujitsu MPI for Fugaku and Wisteria/Odyssey; NEC MPI for AOBA-A/S, SQUID, and ES4VE; and MPICH-Tofu for Fugaku. NCCL is registered for Aquarius and Miyabi-G. The same MPI source therefore does not imply uniform builds, launchers, network tuning, or GPU collectives.",
+          "hpci_relevance_ja": "HPCIの移植性評価ではMPI対応の有無だけでなく、実装・ABI・launcher・network plugin・GPU buffer・collectiveの検証matrixが必要です。",
+          "hpci_relevance_en": "HPCI portability evaluation needs a matrix of implementation, ABI, launcher, network plugin, GPU-buffer, and collective validation rather than a yes/no MPI field.",
+          "adoption_conditions_ja": [
+            "代表applicationを複数MPI実装でbuild・runするCIを設ける。",
+            "MPI ABI、PMIx/launcher、UCX/OFI、GPU-aware機能をversion付きで記録する。",
+            "CPU、NVIDIA GPU、AMD GPU、vector資源ごとにcollective testを実行する。"
+          ],
+          "adoption_conditions_en": [
+            "Provide CI that builds and runs representative applications against multiple MPI implementations.",
+            "Record MPI ABI, PMIx/launcher, UCX/OFI, and GPU-aware features with versions.",
+            "Run collective tests for CPU, NVIDIA GPU, AMD GPU, and vector resources."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS330"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC373-SSW03-01-02",
+          "name_ja": "公式software registryにもversion・更新日の未確認事項",
+          "name_en": "The official software registry has version and freshness coverage gaps",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日取得",
+          "timing_en": "Retrieved September 2, 2026",
+          "statement_ja": "MPI・通信分類では複数の現行資源がversionを「詳細情報なし」として登録しています。検索画面は更新時期によって最新情報でない場合があると明示し、資源提供機関のsoftware pageも確認するよう案内しています。従ってregistryの未掲載を非対応と断定できず、掲載ありも現在利用可能かをcenter側資料・実行testで再確認する必要があります。",
+          "statement_en": "Multiple current resources in the MPI/communication category register the version as unavailable in detail. The search interface explicitly warns that information may not be current depending on update timing and directs users to provider software pages. Registry absence therefore cannot prove lack of support, while a positive entry still needs confirmation against center documentation and execution tests.",
+          "hpci_relevance_ja": "整備計画で利用するsoftware matrixにはas-of日、取得元、last verified、実行test結果を持たせ、database記載と実機状態を分ける必要があります。",
+          "hpci_relevance_en": "Software matrices used for planning should carry as-of date, source, last verification, and execution-test result, separating registry statements from machine state.",
+          "adoption_conditions_ja": [
+            "software entryにversion、更新日、検証node、test hashを必須化する。",
+            "未掲載、詳細不明、center資料のみ、実行確認済みを別状態にする。",
+            "新system提供前に必須softwareのreadiness gateを実施する。"
+          ],
+          "adoption_conditions_en": [
+            "Require version, update date, validation node, and test hash for software entries.",
+            "Distinguish absent, unspecified, center-documented, and execution-verified states.",
+            "Run a required-software readiness gate before new system service begins."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS330",
+            "SRC-CDS331"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD50-SSW-03-HPCI-COMMUNICATION-SOFTWARE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS330",
+        "title": "HPCI software database: MPI and communication category",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/softwareLoader.cgi?lang=ja&cls=sscl0260",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-mpi-communication",
+      "checked_at": "2026-09-02T04:28:00+09:00",
+      "locator": "current software_array entries and per-resource availability/version fields",
+      "observation_ja": "MPI・通信分類のsoftware名、現行資源、version、availabilityをJSON応答から確認しました。",
+      "observation_en": "Verified software names, current resources, versions, and availability in the MPI/communication JSON response.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS331",
+        "title": "HPCI software database constants and interface notices",
+        "publisher": "HPCI運用事務局（RIST）",
+        "url": "https://www.hpci-office.jp/cgi-bin/hpcidatabase/softwaremap/loadConstants.cgi?lang=ja",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "hpci-software-database-interface-metadata",
+      "checked_at": "2026-09-02T04:14:00+09:00",
+      "locator": "freshness warning",
+      "observation_ja": "databaseが最新でない場合があるという注意を確認しました。",
+      "observation_en": "Verified the warning that database information may not be current.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

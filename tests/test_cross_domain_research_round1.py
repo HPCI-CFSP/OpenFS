@@ -109,7 +109,7 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
                            "CMP-AGENT-BENCHMARK-IMPORTANCE"):
             self.assertTrue(expected <= {r["term_id"] for r in comparisons[comparison]["rows"]})
         self.assertEqual("incomplete", reference["consensus_status"])
-        self.assertEqual("DIR-900019", reference["publication"]["human_approval_directive_id"])
+        self.assertEqual("DIR-900021", reference["publication"]["human_approval_directive_id"])
 
     def test_eea1_comparison_preserves_implementation_and_access_limits(self):
         reference = read("knowledge/public/roadmap-reference-data.json")
