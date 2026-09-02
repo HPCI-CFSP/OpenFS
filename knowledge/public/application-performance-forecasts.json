@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.7.0",
+  "schema_version": "0.8.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
   "as_of": "2026-09-03",
@@ -1467,8 +1467,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-EEA1-ACCEPTANCE-20260903-001",
-    "human_approval_directive_id": "DIR-900027"
+    "publication_decision_id": "PUBDEC-COMMON-BENCHMARK-20260903-001",
+    "human_approval_directive_id": "DIR-900028"
   },
   "illustrations": [
     {
@@ -5004,6 +5004,167 @@
     "comparison_rule_en": "Pin code revision, input, precision, convergence, output, and timing boundaries; state whether comparisons equalize node count, accelerators, memory, power, or cost.",
     "consensus_status": "incomplete",
     "procurement_eligible": false
+  },
+  "common_benchmark_campaign": {
+    "campaign_id": "BMPLAN-EEA1-COMMON-001",
+    "status": "provisional-design",
+    "protocol_id": "ACCPROTO-EEA1-001",
+    "result_bundle_schema_path": "schemas/benchmark-result-bundle.schema.json",
+    "result_bundle_validator_path": "tools/check_benchmark_result_bundle.py",
+    "criterion_ids": [
+      "ACC-PERF-GENESIS-001",
+      "ACC-PERF-SALMON-001",
+      "ACC-PERF-SCALE-LETKF-001",
+      "ACC-PERF-E-WAVE-001",
+      "ACC-PERF-FRONTFLOW-BLUE-001",
+      "ACC-PERF-LQCD-DWF-HMC-001"
+    ],
+    "comparison_bases": [
+      "same-node-count",
+      "same-cpu-or-accelerator-count",
+      "same-memory-capacity",
+      "same-power",
+      "same-procurement-cost"
+    ],
+    "minimum_configurations": 2,
+    "minimum_valid_runs_per_configuration": 5,
+    "minimum_institutions": 2,
+    "minimum_origin_groups": 2,
+    "exact_workload_match_required": true,
+    "stages": [
+      {
+        "stage_id": "BMSTAGE-OWNER-APPROVAL",
+        "sequence": 1,
+        "title_ja": "アプリケーション責任者による入力・合否条件の承認",
+        "title_en": "Application-owner approval of inputs and pass/fail conditions",
+        "status": "blocked",
+        "completed_application_ids": [],
+        "target_application_count": 6,
+        "completion_rule_ja": "各責任者がコード版、入力、計算精度、科学的妥当性、適用規模、合否値を承認します。",
+        "completion_rule_en": "Each owner approves the code revision, input, precision, scientific-correctness rule, applicable scales, and pass/fail values.",
+        "blocking_gap_refs": [
+          "GAP-PERF-004",
+          "GAP-PERF-005"
+        ],
+        "evidence_refs": []
+      },
+      {
+        "stage_id": "BMSTAGE-BASELINE-PACKAGE",
+        "sequence": 2,
+        "title_ja": "富岳基準測定パッケージの版固定",
+        "title_en": "Version-pinned Fugaku baseline packages",
+        "status": "blocked",
+        "completed_application_ids": [],
+        "target_application_count": 6,
+        "completion_rule_ja": "コード、入力、依存関係、実行手順、ログ、出力を再取得可能なダイジェスト付きパッケージとして固定します。",
+        "completion_rule_en": "Pin code, input, dependencies, run instructions, logs, and outputs in retrievable packages with digests.",
+        "blocking_gap_refs": [
+          "GAP-PERF-005"
+        ],
+        "evidence_refs": []
+      },
+      {
+        "stage_id": "BMSTAGE-MATCHED-MEASUREMENT",
+        "sequence": 3,
+        "title_ja": "同一入力による候補構成の比較測定",
+        "title_en": "Matched-input measurements across candidate configurations",
+        "status": "blocked",
+        "completed_application_ids": [],
+        "target_application_count": 6,
+        "completion_rule_ja": "少なくとも2構成で同一入力を各5回有効測定し、性能、電力、メモリ、通信、I/O、失敗を個別実行単位で記録します。",
+        "completion_rule_en": "Measure the identical input on at least two configurations with five valid runs each, recording performance, power, memory, communication, I/O, and failures per run.",
+        "blocking_gap_refs": [
+          "GAP-PERF-001",
+          "GAP-PERF-003"
+        ],
+        "evidence_refs": []
+      },
+      {
+        "stage_id": "BMSTAGE-INDEPENDENT-VALIDATION",
+        "sequence": 4,
+        "title_ja": "独立機関による再測定とモデル検証",
+        "title_en": "Independent remeasurement and model validation",
+        "status": "blocked",
+        "completed_application_ids": [],
+        "target_application_count": 6,
+        "completion_rule_ja": "少なくとも2機関・2出所グループで再測定し、校正データとは別のデータで予測誤差を評価します。",
+        "completion_rule_en": "Repeat measurements across at least two institutions and two Origin Groups, then evaluate forecast error on data separate from calibration.",
+        "blocking_gap_refs": [
+          "GAP-PERF-002"
+        ],
+        "evidence_refs": []
+      },
+      {
+        "stage_id": "BMSTAGE-CONSENSUS-DECISION",
+        "sequence": 5,
+        "title_ja": "Consensus Gateと人による計画判断",
+        "title_en": "Consensus Gate and accountable human planning decision",
+        "status": "blocked",
+        "completed_application_ids": [],
+        "target_application_count": 6,
+        "completion_rule_ja": "独立したモデル、サービス、ハーネスによる反証レビューを行い、異論と未確認事項を残したまま責任者が採否を判断します。",
+        "completion_rule_en": "Independent models, providers, and harnesses attempt falsification; an accountable human decides while preserving dissent and unresolved gaps.",
+        "blocking_gap_refs": [
+          "GAP-PERF-001",
+          "GAP-PERF-002"
+        ],
+        "evidence_refs": []
+      }
+    ],
+    "scenario_bindings": [
+      {
+        "scenario_id": "SCN-HPCI-BALANCED-001",
+        "emphasis_ja": "CPU中心、GPU中心、大容量メモリ構成を、科学的妥当性、実行時間、電力、データ移動、移植工数の共通軸で比較します。",
+        "emphasis_en": "Compare CPU-centric, GPU-centric, and large-memory configurations on common axes covering scientific correctness, elapsed time, power, data movement, and porting effort.",
+        "required_output_ids": [
+          "scientific-correctness",
+          "time-to-solution",
+          "energy-to-solution",
+          "data-movement",
+          "porting-effort"
+        ],
+        "decision_boundary_ja": "完全TCOとセンター別施設条件もそろうまで、CPU、GPU、メモリの構成比やノード数を確定しません。",
+        "decision_boundary_en": "Do not fix CPU, GPU, memory ratios or node counts until complete TCO and center-specific facility constraints are also available.",
+        "sufficiency": "necessary-but-insufficient",
+        "decision_effect": "evidence-only"
+      },
+      {
+        "scenario_id": "SCN-HPCI-AI-DATA-001",
+        "emphasis_ja": "科学シミュレーションのEEA1と、別途必要なAI学習・推論・データ処理スイートを同じ電力・費用・データ境界で比較します。",
+        "emphasis_en": "Compare the EEA1 scientific simulations and a separately required AI training, inference, and data-processing suite under common power, cost, and data boundaries.",
+        "required_output_ids": [
+          "scientific-correctness",
+          "throughput",
+          "energy-to-solution",
+          "io-throughput",
+          "accelerator-utilization"
+        ],
+        "decision_boundary_ja": "EEA1だけではAI・データ集約型の代表性を満たさないため、AIワークロードの共通測定が完了するまでアクセラレータ規模を確定しません。",
+        "decision_boundary_en": "EEA1 alone is not representative of an AI- and data-intensive option; do not fix accelerator scale until the common AI-workload measurements are complete.",
+        "sufficiency": "necessary-but-insufficient",
+        "decision_effect": "evidence-only"
+      },
+      {
+        "scenario_id": "SCN-HPCI-STAGED-001",
+        "emphasis_ja": "小規模実証から段階的に測定範囲を拡大し、再現性、移植工数、障害復旧、撤退可能性を各昇格判断で確認します。",
+        "emphasis_en": "Expand measurements from small pilots in stages, checking reproducibility, porting effort, failure recovery, and exit feasibility at each promotion decision.",
+        "required_output_ids": [
+          "scientific-correctness",
+          "run-variability",
+          "porting-effort",
+          "failure-recovery",
+          "reversibility"
+        ],
+        "decision_boundary_ja": "各段階の再現可能な結果と完全TCOが得られるまで、次段階の数量を確定せず代替構成を維持します。",
+        "decision_boundary_en": "Do not commit the next-stage quantity until reproducible results and complete TCO are available; retain alternative configurations.",
+        "sufficiency": "necessary-but-insufficient",
+        "decision_effect": "evidence-only"
+      }
+    ],
+    "consensus_status": "incomplete",
+    "procurement_eligible": false,
+    "caveat_ja": "これは測定計画であり、候補構成の性能結果、採点、推奨順位を示すものではありません。完了数は、根拠束が登録され検証されたアプリケーションだけを数えます。",
+    "caveat_en": "This is a measurement plan, not candidate performance results, scores, or rankings. Completion counts include only applications with registered and validated evidence bundles."
   },
   "draft_acceptance_criteria": [
     {
