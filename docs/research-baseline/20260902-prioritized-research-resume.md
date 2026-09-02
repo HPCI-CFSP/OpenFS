@@ -140,3 +140,41 @@ Node.jsを任意依存として扱うラッパー5件はskipでしたが、専�
 40カタログ・7ロードマップ・3システム整備計画案のPages生成にも成功しました。同一
 検証プロセス内のSchemaレジストリ構築をキャッシュしましたが、Schemaと検証結果は
 変更していません。成果は引き続き暫定であり、独立Consensusは未完了です。
+
+## Primary-model Reconciliation / 代表モデルの一次資料照合
+
+### English
+
+`RUP-000393`, authorized by `DIR-900023`, reconciles ESM-3, MatterSim and
+GraphCast against their original papers and current official distribution
+records. ESM-3's 98B paper-scale model is separated from the downloadable 1.4B
+`esm3-sm-open-v1`; MatterSim's 182M Graphormer is separated from the public
+880K and 4.5M M3GNet checkpoints; and GraphCast's under-60-second inference
+measurement is separated from the operational path for input, quality control,
+storage and dissemination. The commissioned study's 130.5M MatterSim figure is
+not used for demand estimation because it matches neither the original paper nor
+the current model card. Unresolved figures remain Coverage Gaps rather than
+being filled by inference.
+
+Validation passed for 559 Python tests in 491.137 seconds, 2,423 JSON Schema
+artifacts, repository and bilingual-language checks, the immutable-update audit,
+and a Pages build with 40 topics, seven roadmaps and three system-plan scenarios.
+The dedicated offline UI suite passed 44 tests, with one optional test skipped.
+This work remains provisional, Consensus is incomplete, and no merge or
+production Pages deployment was performed.
+
+### 日本語
+
+`DIR-900023`に基づく`RUP-000393`では、ESM-3、MatterSim、GraphCastを原論文と
+現行の公式配布情報へ照合しました。ESM-3の論文上の98Bモデルと、ダウンロード可能な
+1.4Bの`esm3-sm-open-v1`、MatterSimの182M Graphormerと、公開されている880K・
+4.5MのM3GNetチェックポイントを分けて記録しています。GraphCastについても、60秒未満
+という推論時間と、入力取得、品質管理、保存、配信を含む運用全体を区別しました。
+委託調査に記載されたMatterSimの130.5Mという値は、原論文と現行モデルカードの
+どちらにも一致しないため、需要推計に用いていません。未解決の数値は推測で補わず、
+Coverage Gapとして維持しています。
+
+全559件のPython試験は491.137秒で成功しました。JSON Schema 2,423件、repository、
+日英文、追記型更新監査、40カタログ・7ロードマップ・3システム整備計画案のPages生成も
+成功しました。専用オフラインUI試験は44件に成功し、任意条件の1件はskipでした。
+今回の成果は暫定で、Consensusは未完了です。マージと本番Pagesへの反映は行っていません。
