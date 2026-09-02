@@ -1,0 +1,178 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000374",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T10:55:07+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "39145c8aad6be037ef09e76ef79a3c0822fa91a188ee12b5ddd0d464c03446e6",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI共用ストレージの基幹switch、データ公開workflow server、cloud scale-out・log解析基盤の公開契約を追加しました。容量装置とnetwork・公開・拡張serviceを分け、仕様や総運用費は推定しません。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds published contracts for an HPCI shared-storage backbone switch, data-publication workflow servers, and a cloud scale-out and log-analysis platform. It separates capacity devices from network, publication, and extension services and does not infer specifications or total operating cost. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U02",
+      "before_sha256": "786ded20ff65a2536d1b2350552c4e00f8fb570bb646e1f1afd90bb244769b6d",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U02",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE",
+        "TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER",
+        "TDS-CD40-SSW-05-PCIE6-SSD-ZNANDO",
+        "TDS-WC374-SSW-05-01"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "1d9ef5ef9d6eec4482854b2c120beecaa994f98ea47ea5630a628e8c5754bcfe",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD4-SSW-05-AI-READY-DATA",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD24-SSW-05-MLPERF-STORAGE-3",
+        "TDS-CD32-SSW-05-MLPERF-STORAGE-RESULTS",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-CD49-SSW-05-HPCI-DUAL-SITE-STORAGE",
+        "TDS-CD42-SSW-05-FUGAKU-METADATA-FAILURES",
+        "TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE",
+        "TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE",
+        "TDS-WC374-SSW-05-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC374-SSW-05-01",
+      "title_ja": "HPCI共用ストレージを支えるnetwork・公開workflow・cloud拡張",
+      "title_en": "Network, publication workflow, and cloud extension for HPCI shared storage",
+      "summary_ja": "共用storageを装置容量だけでなく、継続運用する複数serviceの組合せとして整理します。",
+      "summary_en": "Treat shared storage as a set of continuously operated services rather than device capacity alone.",
+      "items": [
+        {
+          "item_id": "TDI-WC374-SSW05-01-01",
+          "name_ja": "HPCI共用ストレージ向け基幹スイッチ",
+          "name_en": "Backbone switch for HPCI shared storage",
+          "statement_ja": "理化学研究所は、2025年度HPCI共用ストレージ向け基幹スイッチ一式を、2025年7月8日に東京エレクトロンデバイスと税込962万5,000円で契約しました。一般競争入札で、port数、速度、冗長性、保守、既存networkとの接続範囲は契約結果だけでは分かりません。",
+          "statement_en": "RIKEN awarded Tokyo Electron Device a JPY 9,625,000 tax-inclusive contract on July 8, 2025 for a fiscal-2025 backbone switch for HPCI shared storage. It was an open competitive bid; port count, speed, redundancy, support, and integration scope are not disclosed in the award record.",
+          "hpci_relevance_ja": "共用storageの性能・可用性評価では媒体容量と別に、基幹networkの更新周期、冗長化、交換単位、traffic観測を扱う必要があります。",
+          "hpci_relevance_en": "Shared-storage performance and availability must account separately for backbone-network refresh cycles, redundancy, replacement granularity, and traffic observability.",
+          "adoption_conditions_ja": [
+            "port、速度、oversubscription、冗長構成、保守年数、交換手順を確認する。",
+            "data pathごとのthroughput、latency、failure domainを測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify ports, speed, oversubscription, redundancy, support years, and replacement procedures.",
+            "Measure throughput, latency, and failure domains along each data path."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度契約",
+          "timing_en": "Fiscal-2025 contract",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS503"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC374-SSW05-01-02",
+          "name_ja": "データ公開環境向けworkflow serverの運用・機能整備",
+          "name_en": "Operation and enhancement of workflow servers for data publication",
+          "statement_ja": "理化学研究所は、2025年度HPCI共用ストレージのデータ公開環境向けworkflow server運用・機能整備一式を、2025年9月19日にロングテールソフトウェアと税込1,514万7,000円で契約しました。対象workflow、metadata、審査、公開protocol、SLA、成果は契約結果だけでは分かりません。",
+          "statement_en": "RIKEN awarded Long Tail Software a JPY 15,147,000 tax-inclusive contract on September 19, 2025 for operation and functional enhancement of workflow servers supporting the HPCI shared-storage data-publication environment. The award record does not disclose workflows, metadata, review processes, publication protocols, SLAs, or results.",
+          "hpci_relevance_ja": "データ公開を容量の付帯機能ではなく、curation、metadata、権限、公開、DOI・provenance、利用監視を継続保守するserviceとして費用化する根拠です。",
+          "hpci_relevance_en": "This supports budgeting data publication as a maintained service covering curation, metadata, authorization, publication, DOI and provenance, and usage monitoring rather than an incidental storage feature.",
+          "adoption_conditions_ja": [
+            "ingest、審査、metadata、権限、公開、保存、削除のworkflowと責任者を定義する。",
+            "FAIR性、公開lead time、利用可能率、再現性、securityをSLO化する。"
+          ],
+          "adoption_conditions_en": [
+            "Define workflows and owners for ingest, review, metadata, authorization, publication, retention, and deletion.",
+            "Set SLOs for FAIR properties, publication lead time, availability, reproducibility, and security."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度契約",
+          "timing_en": "Fiscal-2025 contract",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS503"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC374-SSW05-01-03",
+          "name_ja": "cloud連携scale-out方式とlog解析基盤の検討",
+          "name_en": "Cloud-connected scale-out design and log-analysis platform",
+          "statement_ja": "理化学研究所は、HPCI共用ストレージのcloud連携によるscale-out方式の検討とlog解析設計のcloud基盤一式を、2025年10月3日に日本オラクルと税込263万1,200円で契約しました。契約期間は2026年3月31日までです。対象cloud、data量、egress費、security、性能、採否は契約結果だけでは分かりません。",
+          "statement_en": "RIKEN awarded Oracle Japan a JPY 2,631,200 tax-inclusive contract on October 3, 2025 for a cloud platform supporting investigation of cloud-connected scale-out methods and log-analysis design for HPCI shared storage, through March 31, 2026. The award record does not establish cloud scope, data volume, egress charges, security, performance, or adoption outcome.",
+          "hpci_relevance_ja": "burst、archive、解析、障害調査をcloudへ拡張する際は、data sovereignty、egress、identity、暗号化、性能、退出可能性を本体storageと合わせて比較する必要があります。",
+          "hpci_relevance_en": "Cloud extension for burst, archive, analysis, or incident investigation must be compared with primary storage for data sovereignty, egress, identity, encryption, performance, and exit portability.",
+          "adoption_conditions_ja": [
+            "data分類、転送量、egress、API、暗号鍵、監査log、退出手順を確認する。",
+            "on-premisesのみの代替案と同じworkload・期間でTCOと性能を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify data classification, transfer volume, egress, APIs, encryption keys, audit logs, and exit procedures.",
+            "Compare TCO and performance with an on-premises-only alternative over the same workload and period."
+          ],
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年度契約",
+          "timing_en": "Fiscal-2025 contract",
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS503"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD75-SSW-05-HPCI-STORAGE-SERVICE-COMPONENTS"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS503",
+        "title": "競争入札の結果の公表（物品役務等）2025年4月～2025年11月度分",
+        "publisher": "国立研究開発法人理化学研究所",
+        "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251",
+        "source_class": "official-project",
+        "published_or_updated": "Covers contracts from April through November 2025"
+      },
+      "origin_group": "riken-hpci-shared-storage-service-components-2025",
+      "checked_at": "2026-09-02T06:49:00+09:00",
+      "locator": "Pages 10 and 12: AI for Science and quantum-HPC supercomputer contracts",
+      "observation_ja": "二つの契約名、日付、相手方、契約方法、税込契約額を確認しました。",
+      "observation_en": "Verified names, dates, suppliers, procurement methods, and tax-inclusive values for both contracts.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

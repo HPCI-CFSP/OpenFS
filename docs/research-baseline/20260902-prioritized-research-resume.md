@@ -107,3 +107,36 @@ repository検証、40カタログ・7ロードマップ・3計画案のPages生�
 項目数を87件に固定した古い試験が失敗したため、正本の非アーカイブ項目数と公開データを
 照合する試験へ修正しています。全Python suiteは直近の実測時間では07:30 JSTを大幅に
 越えるため開始しておらず、再開時の最初の検証項目です。
+
+## Validation After Resume / 再開後の検証
+
+### English
+
+Work resumed at 09:56 JST under the user's explicit instruction. The two
+failures observed in the interrupted suite were reproduced and corrected. The
+terminal-comparison test now expects the current directive, and 26 public
+wording corrections were recorded as append-only successors `RUP-000367`
+through `RUP-000392` under `DIR-900022`; no applied update was rewritten.
+
+The final Python suite passed 558 tests in 313.346 seconds, with five Python
+wrappers skipped because Node.js is optional in that process. The dedicated
+Node.js UI suite passed all 34 tests. Repository validation, public-language
+checks, the immutable-update audit through `RUP-000392`, and a Pages build of 40
+topics, seven roadmaps and three system-plan scenarios also passed. Schema
+registry construction is now cached within one validation process; this changes
+neither schemas nor validation outcomes. Results remain provisional and
+independent Consensus remains incomplete.
+
+### 日本語
+
+ユーザーの明示的な指示に基づき、09:56 JSTに作業を再開しました。中断した試験で
+確認された2件の失敗を個別に再現し、修正しました。比較試験が現在の指示書を参照する
+ように更新し、公開文の26件の修正は、適用済み更新を書き換えず、`DIR-900022`に基づく
+後続更新`RUP-000367`から`RUP-000392`として記録しました。
+
+最終の全Python suiteは558件に成功し、実行時間は313.346秒でした。Pythonプロセスで
+Node.jsを任意依存として扱うラッパー5件はskipでしたが、専用のNode.js UI試験は34件
+すべてに成功しました。repository検証、公開文検査、`RUP-000392`までの追記型更新監査、
+40カタログ・7ロードマップ・3システム整備計画案のPages生成にも成功しました。同一
+検証プロセス内のSchemaレジストリ構築をキャッシュしましたが、Schemaと検証結果は
+変更していません。成果は引き続き暫定であり、独立Consensusは未完了です。

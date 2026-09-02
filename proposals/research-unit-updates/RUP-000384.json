@@ -1,0 +1,201 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000384",
+  "topic_id": "CROSS-03",
+  "created_at": "2026-09-02T10:55:17+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "249e41ffc3ea6a972f0815f7813448fa7139488de9c22e1a99678fc17bc1fcde",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "American Science Cloudの公開運用資料から、限定early access、組織SSO、project単位のresource・member・token・allocation管理、複数AI modelへの共通APIと版固定を追加調査しました。公開portalが存在しても一般提供やsite横断SLAを意味せず、現時点の対象は承認済みGenesis RFA Phase I teamです。単一のAIモデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Public American Science Cloud operational documentation adds evidence on restricted early access, institutional SSO, project-scoped resources, members, tokens and allocations, and a common multi-model API with version pinning. A public portal does not establish general availability or cross-site SLAs; current eligibility is limited to approved Genesis RFA Phase I teams. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-03-U01",
+      "before_sha256": "beff60f983920476485655eb9c2647bb0682021c5d82c87c602876dc69c21bfc",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-03-U01",
+        "TDS-CD10-CROSS-03-U01",
+        "TDS-CD19-CROSS-03-SUPPORT-CAPACITY",
+        "TDS-CD29-CROSS-03-AI-USER-OPERATIONS",
+        "TDS-CD30-CROSS-03-SUPPORT-OUTCOMES",
+        "TDS-CD56-CROSS-03-HPCI-USER-SUPPORT",
+        "TDS-CD57-CROSS-03-HPCI-INFORMATION-PATHS",
+        "TDS-CD31-CROSS-03-HPCI-SUPPORT-SCALE",
+        "TDS-WC384-CROSS-03-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC384-CROSS-03-01",
+      "title_ja": "American Science Cloudの連合運用モデル",
+      "title_en": "Federated operating model of the American Science Cloud",
+      "summary_ja": "全米規模の構想と、限定提供中のID・project・model gatewayを区別して比較します。",
+      "summary_en": "Distinguish the national-scale vision from the identity, project, and model-gateway services currently offered to a limited cohort.",
+      "items": [
+        {
+          "item_id": "TDI-WC384-CROSS03-01-01",
+          "name_ja": "AmSC：運用portalは存在するが利用対象は限定",
+          "name_en": "AmSC: an operational portal with restricted eligibility",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点の公開運用資料",
+          "timing_en": "Public operational documentation as of September 2, 2026",
+          "statement_ja": "American Science Cloudにはaccount、project、resource、supportを扱う公開運用文書とportalが存在します。一方、2026年9月2日時点でAmSCおよびModel Access Gatewayの利用対象は、MAG accessを承認されたGenesis RFA Phase I teamに限られます。したがって、全国研究者がHPC、data、AI serviceを透過的に利用できる一般提供状態とは扱えません。",
+          "statement_en": "The American Science Cloud has public operational documentation and portals for accounts, projects, resources, and support. However, as of September 2, 2026, AmSC and Model Access Gateway access is limited to Genesis RFA Phase I teams approved for MAG exploratory projects. This is not evidence of generally available transparent access to HPC, data, and AI services for all U.S. researchers.",
+          "hpci_relevance_ja": "連合基盤の進捗を、構想、early access、限定production、一般提供に分けて評価する比較事例になります。",
+          "hpci_relevance_en": "This provides a comparison case for separating vision, early access, limited production, and general availability in federated infrastructure.",
+          "adoption_conditions_ja": [
+            "対象利用者、提供resource、allocation量、申請から利用開始までの時間を公開する。",
+            "site横断workflowの成功率、data転送、障害、support負荷を測る。",
+            "portal公開を全serviceの一般提供と同一視しない。"
+          ],
+          "adoption_conditions_en": [
+            "Publish eligible populations, offered resources, allocation amounts, and time to access.",
+            "Measure cross-site workflow completion, data transfer, failures, and support load.",
+            "Do not equate a public portal with general availability of all services."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS390",
+            "SRC-CDS391",
+            "SRC-CDS392"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC384-CROSS03-01-02",
+          "name_ja": "AmSC：組織ID・project・allocationの結合",
+          "name_en": "AmSC: linking institutional identity, projects, and allocations",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点の公開運用資料",
+          "timing_en": "Public operational documentation as of September 2, 2026",
+          "statement_ja": "AmSC SSOは組織のOIDC identityを優先し、未参加機関にはAmSC accountを用意します。2026年9月2日時点でSSOが明示するIdPはANL、ALCF、LBNL、ORNL、OLCF、SLACで、DOE OneIDを使う研究所もあります。resourceは個人ではなく承認済みprojectに付与され、PIまたはCo-PIがmemberを承認し、projectにsystem access、token、allocation等を対応付けます。これは設計記述であり、認証成功率、account発行時間、全拠点の属性整合性は公表されていません。",
+          "statement_en": "AmSC SSO prefers institutional OIDC identities and provides AmSC accounts for institutions outside the federation. As of September 2, 2026, the documented IdPs include ANL, ALCF, LBNL, ORNL, OLCF, and SLAC, with DOE OneID used for additional laboratories. Resources are assigned to approved projects rather than individuals; PIs or co-PIs approve members, and projects bind system access, tokens, allocations, and other resources. This documents a design, not authentication success rates, account-provisioning latency, or attribute consistency across all sites.",
+          "hpci_relevance_ja": "HPCIでも認証連携だけでなく、project、役割、配分、token、失効、監査を一つの運用contractとして設計する必要があります。",
+          "hpci_relevance_en": "HPCI likewise needs one operating contract that joins federation, projects, roles, allocations, tokens, revocation, and audit rather than identity federation alone.",
+          "adoption_conditions_ja": [
+            "IdPごとの属性、MFA、失効、incident対応、account復旧を適合試験する。",
+            "PI交代・project終了・緊急停止時の権限伝播時間を測る。",
+            "project resourceとsite固有accountの対応関係を監査可能にする。"
+          ],
+          "adoption_conditions_en": [
+            "Conformance-test attributes, MFA, revocation, incident handling, and recovery per IdP.",
+            "Measure authorization propagation for PI changes, project closure, and emergency suspension.",
+            "Make project-resource to site-account mappings auditable."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS390"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC384-CROSS03-01-03",
+          "name_ja": "MAG：複数AI modelの共通APIと版管理",
+          "name_en": "MAG: common API and version control for multiple AI models",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日時点の公開運用資料",
+          "timing_en": "Public operational documentation as of September 2, 2026",
+          "statement_ja": "MAGはproject単位のpersonal access tokenを用い、OpenAI互換interfaceから複数のcommercial modelとopen-weight modelを提供します。model family aliasは提供側が新versionへ更新できる一方、再現性が必要なapplicationはexact versionを指定でき、responseのmodel propertyで実際の版を確認できます。公開一覧はaccountごとに変わり得るため、APIのmodel listが正本です。model品質、data boundary、費用、rate limit、長期保存、provider障害時の挙動は公開頁だけでは確定できません。",
+          "statement_en": "MAG uses project-scoped personal access tokens and exposes multiple commercial and open-weight models through an OpenAI-compatible interface. Family aliases may move to newer versions, while applications requiring reproducibility can select an exact version and inspect the response model property. Because availability can vary by account, the models endpoint is authoritative. The public page does not establish model quality, data boundaries, cost, rate limits, retention, or behavior during provider outages.",
+          "hpci_relevance_ja": "HPCIのAI serviceは、model追加の容易さと科学workflowの再現性を両立するため、aliasと固定版、project quota、監査logを明示的に分けるべきです。",
+          "hpci_relevance_en": "An HPCI AI service should separate aliases from pinned versions and expose project quotas and audit logs so that model agility does not undermine scientific reproducibility.",
+          "adoption_conditions_ja": [
+            "requestごとにprovider、model ID、version、system prompt、parameter、token使用量を保存する。",
+            "alias更新時に回帰評価し、固定版の廃止予告と移行期間を設ける。",
+            "data送信先、保存、学習利用、地域、機密区分をmodel経路ごとに検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Record provider, model ID, version, system prompt, parameters, and token use per request.",
+            "Regression-test alias updates and provide deprecation notice and migration windows for pinned versions.",
+            "Validate destination, retention, training use, region, and sensitivity rules for each model route."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS391"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD32-CROSS-03-AMSC-OPERATIONS"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS390",
+        "title": "American Science Cloud Documentation: Getting Started",
+        "publisher": "U.S. Department of Energy / American Science Cloud",
+        "url": "https://docs.amsc.energy.gov/GM-getting-started/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02; live documentation"
+      },
+      "origin_group": "amsc-operational-docs",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Eligibility, SSO, IdPs, account and project roles, membership, resource and allocation views",
+      "observation_ja": "限定対象、組織SSO、project単位のmember・resource・allocation管理を確認しました。",
+      "observation_en": "Verified restricted eligibility, institutional SSO, and project-scoped member, resource, and allocation management.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS391",
+        "title": "American Science Cloud Documentation: Model Access Gateway",
+        "publisher": "U.S. Department of Energy / American Science Cloud",
+        "url": "https://docs.amsc.energy.gov/model-access-gateway/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02; live documentation"
+      },
+      "origin_group": "amsc-model-access-gateway",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Eligibility, PAT flow, models endpoint, aliases, exact versions, and OpenAI-compatible API",
+      "observation_ja": "project token、共通API、model一覧、aliasと固定版の区別を確認しました。",
+      "observation_en": "Verified project tokens, the common API, model listing, and alias versus pinned-version behavior.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS392",
+        "title": "DOE Genesis Mission Launched: The American Science Cloud",
+        "publisher": "U.S. Department of Energy Office of Science",
+        "url": "https://science.osti.gov/-/media/About/pdf/scac/meetings/2026/DOE-Genesis-Mission-Launched---2026-03-27.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-27"
+      },
+      "origin_group": "doe-genesis-amsc-architecture",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "Pages 4-6: service layers, interfaces, security and allocation, and initial infrastructure partners",
+      "observation_ja": "data・at-scale・model・agent service、共通interface、security/allocation、初期partnerを確認しました。",
+      "observation_en": "Verified data, at-scale, model, and agent services; common interfaces; security and allocation; and initial partners.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}
