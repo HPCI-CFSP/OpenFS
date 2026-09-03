@@ -115,6 +115,16 @@ Every generated artifact must identify its schema version and stable ID. Run-sco
 - Keep machine-generated indexes separate from human-authored records.
 - Do not resolve merge conflicts by discarding another agent's or a human's changes.
 - Submit canonical changes as reviewable pull requests with the source Decision IDs and validation results.
+- Unless there is a documented reason or an explicit human instruction, every
+  pull request containing research results must target the default `main` branch
+  directly. Do not use another feature branch as its base merely to stack work.
+- Include the corresponding GitHub Pages data, presentation, navigation, and
+  validation changes in the same research pull request so that merging it can
+  publish the result without a separate unpublished follow-up.
+- A successful Pages preview does not mean that production Pages has been
+  updated. Report a result as published only after its commit is contained in
+  `main` and the production Pages deployment for that commit has succeeded.
+- Never merge a pull request without a separate explicit human instruction.
 - Write every new pull-request description and comment in English first, followed
   by Japanese, with equivalent facts, limitations, IDs and validation results.
   Use `# English` and `# 日本語` blocks. Do not submit the untouched template,
