@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000353",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:55:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000171",
+      "bundle_sha256": "e5a5524263e3bb6dc60ead5ef98e98283473cfff12954dcbab25a8a7c9ef7c06"
+    },
+    {
+      "update_id": "RUP-000228",
+      "bundle_sha256": "082cfc450fc4c20ad2608d05198465819e922f7f9ec478ff63672dc120a600df"
+    },
+    {
+      "update_id": "RUP-000241",
+      "bundle_sha256": "f89da10f63a1d832cb56bf587392eaae7250ec866e4e650860af1ab91b77b3ce"
+    },
+    {
+      "update_id": "RUP-000268",
+      "bundle_sha256": "76c919e73905190fbe657d7417ddbc2651786e08ce4d55cbd8f1ce58a7313e2b"
+    },
+    {
+      "update_id": "RUP-000336",
+      "bundle_sha256": "85034326c1696ad415e57a2e423c0b3d0165c0ecd0243b31e33885526527288c"
+    },
+    {
+      "update_id": "RUP-000351",
+      "bundle_sha256": "2c9e3e80c339a75baa85f1944f726c5b8700984360ec72734c364a50ec1853ae"
+    },
+    {
+      "update_id": "RUP-000352",
+      "bundle_sha256": "7d40a5825cdc3040274d89c336d6cbec7622af601931f03bef0e35277bf9984a"
+    }
+  ],
+  "before_profile_sha256": "0d14ec973203342f65ad963c71749fa4761da2125c38dbae738d61beceb92a42",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "産業利用上位のOpenFOAMについて、OpenCFD v2606の初期GPU offload、別開発track、結果差、v2612統合目標と、Foundation v14という別配布系列を追加しました。製品名だけでGPU対応を判定しません。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "For the prominent industrial package OpenFOAM, this update adds OpenCFD v2606's initial GPU offload, separate development track, result differences, and v2612 integration target, while distinguishing the separate Foundation v14 distribution. GPU support is not inferred from the product name alone. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-02-U01",
+      "before_sha256": "bbeea9ef891d8d2012c2688bd5f51a14c117ff6a57e35647c5c033bb25ee921f",
+      "evidence_section_ids": [
+        "TDS-APP02-CURRENT",
+        "TDS-APP02-FUTURE",
+        "TDS-CD1-APP-02-U01",
+        "TDS-CD5-APP-02-U01-U03",
+        "TDS-CD47-APP-02-GREEN500-INTERPRETATION",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026",
+        "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY",
+        "TDS-CD67-APP-02-OPENFOAM-GPU-2026"
+      ]
+    },
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "5fa24681ae9a4722a8e80c4547b873c8646356aa526117864b68d90313123c7e",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02",
+        "TDS-CD3-APP-02-U02",
+        "TDS-CD4-APP-02-SP-MIROC-CPU-GPU",
+        "TDS-CD50-APP-02-DISCOVERY-CAAR-READINESS",
+        "TDS-CD65-APP-02-MD-PORTABILITY-2026",
+        "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY",
+        "TDS-CD67-APP-02-OPENFOAM-GPU-2026"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD67-APP-02-OPENFOAM-GPU-2026",
+      "title_ja": "OpenFOAMの配布系列とGPU offload成熟度",
+      "title_en": "OpenFOAM distribution lines and GPU-offload maturity",
+      "summary_ja": "産業利用件数2位のOpenFOAMについて、Foundation v14とOpenCFD v2606を区別し、GPU対応の範囲を整理します。",
+      "summary_en": "For OpenFOAM, second in the industrial-use ranking, distinguish Foundation v14 from OpenCFD v2606 and define the scope of GPU support.",
+      "items": [
+        {
+          "item_id": "TDI-CD196-OPENFOAM-V2606-GPU-BOUNDARY",
+          "name_ja": "v2606の初期GPU offloadは別開発trackで検証途上",
+          "name_en": "Initial v2606 GPU offload remains on a separate development track",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "timing_ja": "OpenCFD v2606は2026年6月公開、v2612統合は目標",
+          "timing_en": "OpenCFD v2606 released June 2026; v2612 integration remains a target",
+          "statement_ja": "OpenCFD/KeysightのOpenFOAM v2606は、C++17/20 execution policyとUMPIRE memory管理を用いる初のGPU offload対応を公表しました。field algebra、linear solver、boundary evaluation等の低層loopを対象とし、AMD・NVIDIAと共同開発しています。一方、GPU codeはmain development lineとは別trackで、選定caseによる試験段階です。CPU版とGPU版でtruncation errorにより結果がわずかに異なると明記し、v2612への統合を将来目標としています。OpenFOAM Foundationは別にv14を2026年7月14日に公開しており、同じ『OpenFOAM最新版』として一括しません。",
+          "statement_en": "OpenCFD/Keysight's OpenFOAM v2606 announces its first GPU-offload support using C++17/20 execution policies and UMPIRE memory management. Developed with AMD and NVIDIA, it targets low-level loops including field algebra, linear solvers, and boundary evaluation. The GPU code nevertheless remains on a separate track from the main development line and has been tested on selected cases. The project notes small CPU-versus-GPU result differences from truncation error and targets integration in v2612. Separately, the OpenFOAM Foundation released v14 on July 14, 2026; the two lines must not be collapsed into one 'latest OpenFOAM' record.",
+          "hpci_relevance_ja": "利用頻度の高いCFD codeのGPU readinessは製品名ではなく、配布系列、release、solver、physics、precision、caseごとに判定する必要があります。",
+          "hpci_relevance_en": "GPU readiness for a heavily used CFD code must be determined by distribution line, release, solver, physics, precision, and case rather than product name alone.",
+          "adoption_conditions_ja": [
+            "HPCI利用報告で使用されたOpenFOAM系列、version、solver、libraryを特定する。",
+            "同一mesh・境界条件でCPU/GPUの収束、保存量、結果差、elapsed time、energyを測る。",
+            "v2612統合後にsource差分、build、multi-node GPU通信、restart、plugin互換性を再検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Identify OpenFOAM distribution line, version, solver, and libraries used in HPCI reports.",
+            "Measure convergence, conserved quantities, result differences, elapsed time, and energy on CPU and GPU with identical meshes and boundary conditions.",
+            "After v2612 integration, revalidate source differences, builds, multi-node GPU communication, restart, and plugin compatibility."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS491",
+            "SRC-CDS492"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS491",
+        "title": "OpenFOAM v2606: New and improved infrastructure",
+        "publisher": "OpenCFD Ltd. / Keysight",
+        "url": "https://www.openfoam.com/news/main-news/openfoam-v2606/infrastructure",
+        "source_class": "official-project",
+        "published_or_updated": "OpenFOAM v2606, June 2026"
+      },
+      "origin_group": "openfoam-openCFD-v2606-gpu",
+      "checked_at": "2026-09-02T06:46:00+09:00",
+      "locator": "Community contribution: GPU; implementation, result caveats, development track, and v2612 target",
+      "observation_ja": "初回GPU offload、UMPIRE、別開発track、truncation error差、v2612統合目標を確認しました。",
+      "observation_en": "Verified first GPU offload, UMPIRE, separate development track, truncation-error differences, and the v2612 integration target.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS492",
+        "title": "Download OpenFOAM",
+        "publisher": "The OpenFOAM Foundation",
+        "url": "https://openfoam.org/download/",
+        "source_class": "official-project",
+        "published_or_updated": "OpenFOAM v14 released 2026-07-14"
+      },
+      "origin_group": "openfoam-foundation-v14",
+      "checked_at": "2026-09-02T06:47:00+09:00",
+      "locator": "v14 release, platforms, source distribution, and licensing",
+      "observation_ja": "Foundation v14の別配布系列、公開日、source配布を確認しました。",
+      "observation_en": "Verified the separate Foundation v14 line, release date, and source distribution.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCIで使われるOpenFOAM系列、solver coverage、CPU/GPU正しさ、multi-node性能は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The HPCI OpenFOAM line in use, solver coverage, CPU/GPU correctness, and multi-node performance remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

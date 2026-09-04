@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "sources", "candidate_systems", "baseline_observations", "assumptions", "applications", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "acceptance_metric_catalog", "acceptance_protocol", "common_benchmark_campaign", "draft_acceptance_criteria", "assumptions", "applications", "baseline_package_readiness", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.4.0"},
+    "schema_version": {"const": "0.9.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -67,11 +67,21 @@
         ]
       }
     },
+    "calibration_candidates": {"type": "array", "items": {"$ref": "#/$defs/calibrationCandidate"}},
     "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
     "candidate_systems": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/candidateSystem"}},
+    "measured_platforms": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/measuredPlatform"}},
     "baseline_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselineObservation"}},
+    "cross_platform_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/crossPlatformObservation"}},
+    "quantitative_requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/quantitativeRequirement"}},
+    "acceptance_metric_catalog": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/acceptanceMetric"}},
+    "acceptance_protocol": {"$ref": "#/$defs/acceptanceProtocol"},
+    "common_benchmark_campaign": {"$ref": "#/$defs/commonBenchmarkCampaign"},
+    "draft_acceptance_criteria": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/draftAcceptanceCriterion"}},
     "assumptions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assumption"}},
     "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
+    "baseline_package_readiness": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselinePackageReadiness"}},
+    "infrastructure_requirements_matrix": {"$ref": "#/$defs/infrastructureMatrix"},
     "illustrations": {"type": "array", "items": {"$ref": "#/$defs/illustration"}},
     "forecasts": {"type": "array", "items": {"$ref": "#/$defs/forecast"}},
     "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
@@ -121,6 +131,20 @@
       },
       "additionalProperties": false
     },
+    "measuredPlatform": {
+      "type": "object",
+      "required": ["platform_id", "name", "processor_ja", "processor_en", "accelerator_ja", "accelerator_en", "source_ids"],
+      "properties": {
+        "platform_id": {"type": "string", "pattern": "^PLAT-PERF-[A-Z0-9-]+$"},
+        "name": {"type": "string", "minLength": 1},
+        "processor_ja": {"type": "string", "minLength": 1},
+        "processor_en": {"type": "string", "minLength": 1},
+        "accelerator_ja": {"type": "string", "minLength": 1},
+        "accelerator_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "baselineObservation": {
       "type": "object",
       "required": ["observation_id", "application_id", "fugaku_nodes", "workload", "status", "value", "unit", "note_ja", "note_en", "source_ids"],
@@ -135,6 +159,200 @@
         "note_ja": {"type": "string", "minLength": 1},
         "note_en": {"type": "string", "minLength": 1},
         "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "crossPlatformObservation": {
+      "type": "object",
+      "required": ["observation_id", "application_id", "platform_id", "node_count", "accelerator_count", "workload", "component", "value", "unit", "status", "interpretation_ja", "interpretation_en", "source_ids"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OBS-XPERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "platform_id": {"type": "string", "pattern": "^PLAT-PERF-[A-Z0-9-]+$"},
+        "node_count": {"type": "integer", "minimum": 1},
+        "accelerator_count": {"type": "integer", "minimum": 0},
+        "workload": {"type": "string", "minLength": 1},
+        "component": {"type": "string", "minLength": 1},
+        "value": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "status": {"const": "measured"},
+        "interpretation_ja": {"type": "string", "minLength": 1},
+        "interpretation_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "quantitativeRequirement": {
+      "type": "object",
+      "required": ["requirement_id", "application_id", "evidence_class", "metric", "lower", "value", "upper", "unit", "statement_ja", "statement_en", "planning_use_ja", "planning_use_en", "source_ids"],
+      "properties": {
+        "requirement_id": {"type": "string", "pattern": "^REQ-PERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "evidence_class": {"enum": ["measured-envelope", "published-target", "measurement-gap"]},
+        "metric": {"type": "string", "minLength": 1},
+        "lower": {"type": ["number", "null"], "minimum": 0},
+        "value": {"type": ["number", "null"], "minimum": 0},
+        "upper": {"type": ["number", "null"], "minimum": 0},
+        "unit": {"type": ["string", "null"]},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "planning_use_ja": {"type": "string", "minLength": 1},
+        "planning_use_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceMetric": {
+      "type": "object",
+      "required": ["metric_id", "label_ja", "label_en", "measure_ja", "measure_en", "value_direction", "requirement_level"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "measure_ja": {"type": "string", "minLength": 1},
+        "measure_en": {"type": "string", "minLength": 1},
+        "value_direction": {"enum": ["lower-is-better", "higher-is-better", "bounded", "exact-match", "application-defined"]},
+        "requirement_level": {"enum": ["core", "conditional"]}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceProtocol": {
+      "type": "object",
+      "required": ["protocol_id", "status", "warmup_runs", "measured_runs", "summary_statistic", "variation_reporting", "failed_run_policy_ja", "failed_run_policy_en", "comparison_rule_ja", "comparison_rule_en", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "status": {"const": "openfs-provisional"},
+        "warmup_runs": {"type": "integer", "minimum": 0},
+        "measured_runs": {"type": "integer", "minimum": 3},
+        "summary_statistic": {"const": "median"},
+        "variation_reporting": {"const": "min-median-max-and-coefficient-of-variation"},
+        "failed_run_policy_ja": {"type": "string", "minLength": 1},
+        "failed_run_policy_en": {"type": "string", "minLength": 1},
+        "comparison_rule_ja": {"type": "string", "minLength": 1},
+        "comparison_rule_en": {"type": "string", "minLength": 1},
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "commonBenchmarkCampaign": {
+      "type": "object",
+      "required": ["campaign_id", "status", "protocol_id", "result_bundle_schema_path", "result_bundle_validator_path", "criterion_ids", "comparison_bases", "minimum_configurations", "minimum_valid_runs_per_configuration", "minimum_institutions", "minimum_origin_groups", "exact_workload_match_required", "stages", "scenario_bindings", "consensus_status", "procurement_eligible", "caveat_ja", "caveat_en"],
+      "properties": {
+        "campaign_id": {"type": "string", "pattern": "^BMPLAN-[A-Z0-9-]+$"},
+        "status": {"const": "provisional-design"},
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "result_bundle_schema_path": {"const": "schemas/benchmark-result-bundle.schema.json"},
+        "result_bundle_validator_path": {"const": "tools/check_benchmark_result_bundle.py"},
+        "criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^ACC-PERF-[A-Z0-9-]+$"}},
+        "comparison_bases": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"enum": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"]}},
+        "minimum_configurations": {"type": "integer", "minimum": 2},
+        "minimum_valid_runs_per_configuration": {"type": "integer", "minimum": 5},
+        "minimum_institutions": {"type": "integer", "minimum": 2},
+        "minimum_origin_groups": {"type": "integer", "minimum": 2},
+        "exact_workload_match_required": {"const": true},
+        "stages": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/benchmarkCampaignStage"}},
+        "scenario_bindings": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/benchmarkScenarioBinding"}},
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "benchmarkCampaignStage": {
+      "type": "object",
+      "required": ["stage_id", "sequence", "title_ja", "title_en", "status", "completed_application_ids", "target_application_count", "completion_rule_ja", "completion_rule_en", "blocking_gap_refs", "evidence_refs"],
+      "properties": {
+        "stage_id": {"type": "string", "pattern": "^BMSTAGE-[A-Z0-9-]+$"},
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 5},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "status": {"enum": ["blocked", "in-progress", "review-candidate", "complete"]},
+        "completed_application_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"}},
+        "target_application_count": {"type": "integer", "minimum": 1},
+        "completion_rule_ja": {"type": "string", "minLength": 1},
+        "completion_rule_en": {"type": "string", "minLength": 1},
+        "blocking_gap_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "benchmarkScenarioBinding": {
+      "type": "object",
+      "required": ["scenario_id", "emphasis_ja", "emphasis_en", "required_output_ids", "decision_boundary_ja", "decision_boundary_en", "sufficiency", "decision_effect"],
+      "properties": {
+        "scenario_id": {"type": "string", "pattern": "^SCN-HPCI-[A-Z0-9-]+$"},
+        "emphasis_ja": {"type": "string", "minLength": 1},
+        "emphasis_en": {"type": "string", "minLength": 1},
+        "required_output_ids": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}},
+        "decision_boundary_ja": {"type": "string", "minLength": 1},
+        "decision_boundary_en": {"type": "string", "minLength": 1},
+        "sufficiency": {"const": "necessary-but-insufficient"},
+        "decision_effect": {"const": "evidence-only"}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceScale": {
+      "type": "object",
+      "required": ["fugaku_nodes", "status", "candidate_scaling_modes", "reason_ja", "reason_en"],
+      "properties": {
+        "fugaku_nodes": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["owner-decision-required", "required", "not-applicable"]},
+        "candidate_scaling_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]}},
+        "reason_ja": {"type": "string", "minLength": 1},
+        "reason_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceThreshold": {
+      "type": "object",
+      "required": ["metric_id", "lower", "value", "upper", "unit", "threshold_basis", "approval_status", "statement_ja", "statement_en", "source_ids"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "lower": {"type": ["number", "null"]},
+        "value": {"type": ["number", "null"]},
+        "upper": {"type": ["number", "null"]},
+        "unit": {"type": ["string", "null"]},
+        "threshold_basis": {"enum": ["public-target", "owner-definition-required"]},
+        "approval_status": {"const": "pending-owner-approval"},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "draftAcceptanceCriterion": {
+      "type": "object",
+      "required": ["criterion_id", "application_id", "status", "protocol_id", "workload_contract_ja", "workload_contract_en", "correctness_contract_ja", "correctness_contract_en", "required_metric_ids", "target_scales", "thresholds", "source_ids", "readiness", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "criterion_id": {"type": "string", "pattern": "^ACC-PERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "status": {"const": "draft-measurement-contract"},
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "workload_contract_ja": {"type": "string", "minLength": 1},
+        "workload_contract_en": {"type": "string", "minLength": 1},
+        "correctness_contract_ja": {"type": "string", "minLength": 1},
+        "correctness_contract_en": {"type": "string", "minLength": 1},
+        "required_metric_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}},
+        "target_scales": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/acceptanceScale"}},
+        "thresholds": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/acceptanceThreshold"}},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "readiness": {
+          "type": "object",
+          "required": ["measurement_contract_complete", "threshold_values_approved", "application_owner_approved", "independent_validation_complete", "blockers_ja", "blockers_en"],
+          "properties": {
+            "measurement_contract_complete": {"const": true},
+            "threshold_values_approved": {"const": false},
+            "application_owner_approved": {"const": false},
+            "independent_validation_complete": {"const": false},
+            "blockers_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "blockers_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          },
+          "additionalProperties": false
+        },
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
       },
       "additionalProperties": false
     },
@@ -218,6 +436,27 @@
       },
       "additionalProperties": false
     },
+    "baselinePackageReadiness": {
+      "type": "object",
+      "required": ["package_id", "application_id", "status", "code_version", "code_commit", "code_license_spdx", "input_version", "input_commit", "input_license_spdx", "eea1_input_match", "harness_candidate_source_id", "source_ids", "note_ja", "note_en"],
+      "properties": {
+        "package_id": {"type": "string", "pattern": "^BPKG-EEA1-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "status": {"enum": ["code-and-input-version-pinned-candidate", "code-version-pinned-candidate", "blocked-no-public-package"]},
+        "code_version": {"type": ["string", "null"], "minLength": 1},
+        "code_commit": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "code_license_spdx": {"type": ["string", "null"], "minLength": 1},
+        "input_version": {"type": ["string", "null"], "minLength": 1},
+        "input_commit": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "input_license_spdx": {"type": ["string", "null"], "minLength": 1},
+        "eea1_input_match": {"enum": ["not-confirmed", "no-public-input"]},
+        "harness_candidate_source_id": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}},
+        "note_ja": {"type": "string", "minLength": 1},
+        "note_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "estimate": {
       "type": "object",
       "required": ["lower", "base", "upper", "unit"],
@@ -273,6 +512,120 @@
         "confidence": {"enum": ["medium", "high"]},
         "consensus_status": {"const": "accepted"},
         "procurement_eligible": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "calibrationValidation": {
+      "type": "object",
+      "required": ["observation_id", "predicted_value", "observed_value", "absolute_error", "relative_error"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^OBS-PERF-[A-Z0-9-]+$"},
+        "predicted_value": {"type": "number", "minimum": 0},
+        "observed_value": {"type": "number", "minimum": 0},
+        "absolute_error": {"type": "number", "minimum": 0},
+        "relative_error": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "calibrationCandidate": {
+      "type": "object",
+      "required": ["calibration_candidate_id", "target_model_card_id", "application_id", "status", "model_type", "metric_id", "unit", "equation_ja", "equation_en", "scope_ja", "scope_en", "calibration_observation_ids", "validation_results", "maximum_relative_error", "source_ids", "readiness", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "calibration_candidate_id": {"type": "string", "pattern": "^PMCAL-[A-Z0-9-]+$"},
+        "target_model_card_id": {"type": "string", "pattern": "^PMCARD-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "status": {"const": "provisional"},
+        "model_type": {"enum": ["piecewise-log2-interpolation", "power-law-interpolation"]},
+        "metric_id": {"enum": ["domain-rate", "achieved-flops"]},
+        "unit": {"type": "string", "minLength": 1},
+        "equation_ja": {"type": "string", "minLength": 1},
+        "equation_en": {"type": "string", "minLength": 1},
+        "scope_ja": {"type": "string", "minLength": 1},
+        "scope_en": {"type": "string", "minLength": 1},
+        "calibration_observation_ids": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^OBS-PERF-[A-Z0-9-]+$"}},
+        "validation_results": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/calibrationValidation"}},
+        "maximum_relative_error": {"type": "number", "minimum": 0},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "readiness": {
+          "type": "object",
+          "required": ["candidate_ready_for_consensus", "required_minimums", "observed_counts", "blockers_ja", "blockers_en"],
+          "properties": {
+            "candidate_ready_for_consensus": {"const": false},
+            "required_minimums": {
+              "type": "object",
+              "required": ["systems", "workloads", "origin_groups"],
+              "properties": {
+                "systems": {"type": "integer", "minimum": 2},
+                "workloads": {"type": "integer", "minimum": 2},
+                "origin_groups": {"type": "integer", "minimum": 2}
+              },
+              "additionalProperties": false
+            },
+            "observed_counts": {
+              "type": "object",
+              "required": ["systems", "workloads", "origin_groups"],
+              "properties": {
+                "systems": {"type": "integer", "minimum": 0},
+                "workloads": {"type": "integer", "minimum": 0},
+                "origin_groups": {"type": "integer", "minimum": 0}
+              },
+              "additionalProperties": false
+            },
+            "blockers_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "blockers_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          },
+          "additionalProperties": false
+        },
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureDimension": {
+      "type": "object",
+      "required": ["dimension_id", "label_ja", "label_en"],
+      "properties": {
+        "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureCell": {
+      "type": "object",
+      "required": ["dimension_id", "demand_level", "rationale_ja", "rationale_en", "measurement_gap_ja", "measurement_gap_en", "source_ids"],
+      "properties": {
+        "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "demand_level": {"enum": ["high", "medium", "low", "unknown"]},
+        "rationale_ja": {"type": "string", "minLength": 1},
+        "rationale_en": {"type": "string", "minLength": 1},
+        "measurement_gap_ja": {"type": "string", "minLength": 1},
+        "measurement_gap_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureRow": {
+      "type": "object",
+      "required": ["application_id", "cells"],
+      "properties": {
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "cells": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureCell"}}
+      },
+      "additionalProperties": false
+    },
+    "infrastructureMatrix": {
+      "type": "object",
+      "required": ["title_ja", "title_en", "summary_ja", "summary_en", "dimensions", "rows", "caveat_ja", "caveat_en"],
+      "properties": {
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "dimensions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/infrastructureDimension"}},
+        "rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureRow"}},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
     },

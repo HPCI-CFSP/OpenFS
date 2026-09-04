@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000184",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-02T07:27:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000163", "bundle_sha256": "5d976b146e66d9ae9796826001062d3c25a1ef929bc7bc81cd8a1b1ba7f60f38"}
+  ],
+  "before_profile_sha256": "16645191f27107519d59b142b992f2360fa8e05a1d907be032758fbe4a693ec5",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "資源エネルギー庁が2026年に示したデータセンター省エネ措置を追加しました。2026年度提出分から電気使用量、PUE、エネルギー消費原単位、目標等の報告・一部公表が加わり、2030年度までの事業者平均PUE 1.4以下、2029年度以降の新設データセンターは稼働後の所定時点でPUE 1.3以下が目標・基準になります。PUEは施設付帯電力の効率で、IT仕事量、総電力量、炭素、水、可用性を単独では評価しません。学術HPC施設への法的適用範囲は未確認です。Consensusは未完了です。",
+  "summary_en": "The update adds Japan's 2026 data-center energy-efficiency measures. From FY2026 filings, reporting and partial disclosure expand to electricity use, PUE, energy intensity, and targets. The benchmark is average PUE of 1.4 or lower by FY2030, while data centers newly established from FY2029 are required to reach PUE of 1.3 or lower at the specified point after operation. PUE measures facility overhead and alone does not measure useful IT work, total energy, carbon, water, or availability. Legal applicability to academic HPC facilities remains unverified. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "9aa70da11745e0ba39273a8d15e247e37dd80a6753ba45c4b1f0cf2dcfdf3042",
+      "evidence_section_ids": ["TDS-CD1-ARCH-06-U01", "TDS-CD2-ARCH-06-U01", "TDS-CD3-ARCH-06-PUE-REGULATION"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-ARCH-06-PUE-REGULATION",
+      "title_ja": "2026年のデータセンター効率報告と新設PUE基準",
+      "title_en": "2026 data-center efficiency reporting and new-build PUE criterion",
+      "summary_ja": "制度値を設計目標へ参照しつつ、PUEだけでHPC施設を評価しないための補助指標を定義します。",
+      "summary_en": "Use policy values as design references while defining complementary metrics that prevent PUE-only HPC evaluation.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-DC-PUE-REPORTING-2026",
+          "name_ja": "2026年度からの電力・PUE・原単位・目標の報告",
+          "name_en": "Electricity, PUE, intensity, and target reporting from FY2026",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年度提出分から",
+          "timing_en": "From FY2026 submissions",
+          "statement_ja": "資源エネルギー庁は、省エネ・非化石転換法に基づく特定事業者の報告へ、データセンターの電気使用量、PUE、エネルギー消費原単位、今後の目標等を追加し、対象情報を年度末までに事業者サイト等で公表するよう求めています。ホスティング・クラウドのテナント型も2026年度提出からPUE算定等の対象に加わります。対象規模・事業区分があるため、全HPC施設へ一律適用されるとは限りません。",
+          "statement_en": "The Agency for Natural Resources and Energy adds data-center electricity use, PUE, energy intensity, future targets, and related fields to filings by covered operators under the energy-efficiency law and asks operators to disclose designated information by fiscal year-end. Hosting and cloud tenants are also added to PUE calculation and related measures from FY2026 submissions. Scope thresholds and business classifications mean this is not established as a universal legal obligation for every HPC facility.",
+          "hpci_relevance_ja": "HPCI施設でも、設計PUEだけでなく、年次実績、IT電力、施設電力、算定境界、稼働率を公開可能な同一形式で記録する価値があります。",
+          "hpci_relevance_en": "HPCI facilities can benefit from recording annual measured PUE, IT energy, facility energy, calculation boundary, and utilization in a comparable publishable form rather than only design PUE.",
+          "adoption_conditions_ja": ["各施設の法的適用区分と報告境界を専門家に確認する。", "設計値、試運転値、年次実績値を区別する。", "共有施設・テナント・HPC運用者間の計測責任を契約で定める。"],
+          "adoption_conditions_en": ["Confirm legal classification and reporting boundary for each facility with qualified experts.", "Separate design, commissioning, and annual measured values.", "Assign metering responsibility across facility, tenant, and HPC operator contracts."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS223", "SRC-CDS224"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-DC-PUE-13-2029",
+          "name_ja": "2030年度PUE 1.4目標と2029年度以降新設PUE 1.3基準",
+          "name_en": "FY2030 PUE 1.4 target and PUE 1.3 criterion for new builds from FY2029",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "timing_ja": "2030年度目標、2029年度以降の新設施設",
+          "timing_en": "FY2030 target and new facilities from FY2029",
+          "statement_ja": "データセンター業の特定事業者には2030年度までに事業者平均PUE 1.4以下の目標が設定されています。2029年度以降に新設するデータセンターには、稼働開始から2年経過後の翌年度以降、PUE 1.3以下が求められ、既に詳細設計済みでも特例は予定されていません。これは制度対象施設の基準であり、特定HPCI施設の達成見込みを示しません。",
+          "statement_en": "Covered data-center operators have a benchmark target of average PUE at or below 1.4 by FY2030. Data centers newly established from FY2029 are required to reach PUE at or below 1.3 from the fiscal year after two years of operation, and no exemption is planned merely because detailed design was already complete. This is a criterion for covered facilities, not evidence that a particular HPCI facility will comply.",
+          "hpci_relevance_ja": "2030年前後の新設・改修では、PUE 1.3を設計比較の最低参照点としつつ、部分PUEや算定範囲の違いを排除する必要があります。",
+          "hpci_relevance_en": "New construction or major refurbishment around 2030 should use PUE 1.3 as a design reference while preventing comparisons across incompatible partial-PUE boundaries.",
+          "adoption_conditions_ja": ["計算棟全体、IT室、冷却系などPUE算定境界を図示する。", "低負荷・定格・夏冬・障害時の実測PUEを評価する。", "PUE達成のためにIT性能・可用性・保守性を損なわないことを確認する。"],
+          "adoption_conditions_en": ["Diagram PUE boundaries across the building, IT rooms, and cooling systems.", "Measure PUE at low and rated load, across seasons, and during degraded operation.", "Confirm that PUE compliance does not compromise IT performance, availability, or maintainability."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS223", "SRC-CDS224"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-PUE-NOT-SUFFICIENT",
+          "name_ja": "PUEだけではHPCの省エネ性能を比較できない",
+          "name_en": "PUE alone cannot compare HPC energy performance",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "設計・受入・年次運用の全段階",
+          "timing_en": "Across design, acceptance, and annual operation",
+          "statement_ja": "PUEは施設全体エネルギーをIT機器エネルギーで割る指標であり、IT機器自身の効率や科学計算の完了量を評価しません。低いPUEでもIT側の消費が大きい場合があります。HPCIでは総電力量、代表仕事量当たりエネルギー、炭素原単位、水使用、排熱利用、可用性、再実行を併記する必要があります。",
+          "statement_en": "PUE divides total facility energy by IT-equipment energy and does not measure IT efficiency or completed scientific work. A facility may have low PUE while its IT load remains inefficient. HPCI evaluation therefore needs total energy, energy per representative completed workload, carbon intensity, water, heat reuse, availability, and reruns alongside PUE.",
+          "hpci_relevance_ja": "施設案と計算機案を、部分最適ではなく科学成果当たりの総エネルギーとサービス品質で比較します。",
+          "hpci_relevance_en": "Compare facility and compute options by total energy per scientific outcome and service quality rather than optimizing one subsystem metric.",
+          "adoption_conditions_ja": ["同じ代表アプリケーション・精度・完了条件でエネルギーを測る。", "PUE、WUE、炭素、排熱、可用性の測定期間と欠測を明示する。", "施設・IT・ネットワーク・ストレージを含む範囲を統一する。"],
+          "adoption_conditions_en": ["Measure energy for identical representative applications, accuracy, and completion criteria.", "Disclose periods and missing data for PUE, WUE, carbon, heat reuse, and availability.", "Harmonize boundaries across facility, IT, network, and storage."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS223", "SRC-CDS224"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS223", "title": "増加が見込まれるデータセンターの電力需要をどうする？さらなる省エネを進める新たな制度に注目！", "publisher": "資源エネルギー庁", "url": "https://www.enecho.meti.go.jp/about/special/johoteikyo/data_center2026.html", "source_class": "official-project", "published_or_updated": "2026-05-20"},
+      "origin_group": "japan-data-center-energy-efficiency-measures",
+      "checked_at": "2026-09-02T02:47:00+09:00",
+      "locator": "2026年度報告、2030年度PUE 1.4、2029年度以降新設PUE 1.3、テナント型",
+      "observation_ja": "報告・公表項目、PUE目標、新設基準、テナント型への対象拡大を確認しました。",
+      "observation_en": "Verified reporting and disclosure fields, PUE targets, the new-build criterion, and expanded tenant scope.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS224", "title": "省エネ・非化石転換法に基づくデータセンター業に係る措置のガイドライン", "publisher": "資源エネルギー庁", "url": "https://www.enecho.meti.go.jp/category/saving_and_new/saving/enterprise/factory/support-tools/data/dc_guideline.pdf?update=260603", "source_class": "official-standard", "published_or_updated": "2026-04-10"},
+      "origin_group": "japan-data-center-energy-guideline",
+      "checked_at": "2026-09-02T02:48:00+09:00",
+      "locator": "PUE定義、事業区分別の算入範囲、報告境界",
+      "observation_ja": "PUEの算定式と事業区分による算入範囲の違いを確認しました。",
+      "observation_en": "Verified the PUE formula and boundary differences by data-center business category.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["HPCI各施設が制度上のデータセンター業・特定事業者に該当するか、どの算定境界が適用されるかは未確認です。", "候補施設の年次PUE、IT・施設別電力量、WUE、炭素、排熱、稼働率を同一境界で収集する必要があります。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["It remains unverified whether each HPCI facility is legally classified as a covered data-center operator and which reporting boundary applies.", "Candidate facilities need annual PUE, IT and facility energy, WUE, carbon, heat reuse, and utilization collected under matched boundaries.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000180",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:26:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"},
+    {"update_id": "RUP-000169", "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"}
+  ],
+  "before_profile_sha256": "b956601bca92954b0e15543108da05bf9b4d8a9434a8a882f60fbf87b4ea0c96",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省のAI for Science資料から、AI-readyデータにはメタデータだけでなく装置情報、取得条件、プロトコル、オントロジー、生成プロセスが必要であり、単純な蓄積では不十分という要件を追加しました。良好な最終データだけでなくネガティブ・中間データを共有するインセンティブ、AIによるメタデータ付与の自動化、分野・用途別のオープン／クローズ設計、持続的な運用人材も必要です。ストレージ容量とデータの再利用可能性を別の受入指標にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "MEXT AI-for-Science material adds that AI-ready data require instrument information, acquisition conditions, protocols, ontologies, and generation processes in addition to metadata; storage alone is insufficient. Incentives for sharing negative and intermediate data, automated metadata assignment, field- and use-specific open/closed design, and sustainable operations staff are also required. Storage capacity and data reusability should be separate acceptance dimensions. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "cf2bc02143f78e7e7914647231a1c3056bf33ce479e9c6ca66f728ecf96760ac",
+      "evidence_section_ids": ["TDS-HW1-SSW-05-U04", "TDS-CD2-SSW-05-U02-U03-U04", "TDS-CD3-SSW-05-U03-U04", "TDS-CD4-SSW-05-AI-READY-DATA"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-SSW-05-AI-READY-DATA",
+      "title_ja": "AI-readyデータの構造・来歴・運用要件",
+      "title_en": "Structure, provenance, and operational requirements for AI-ready data",
+      "summary_ja": "容量、転送性能、AIで再利用できる意味・品質・権限を別々に評価します。",
+      "summary_en": "Evaluate capacity and transfer separately from meaning, quality, provenance, and authorization required for AI reuse.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-AI-READY-METADATA-PROVENANCE",
+          "name_ja": "装置・取得条件・プロトコル・オントロジーを含む来歴",
+          "name_en": "Provenance including instruments, acquisition conditions, protocols, and ontologies",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年2月・5月の文科省検討資料",
+          "timing_en": "MEXT discussion material from February and May 2026",
+          "statement_ja": "文科省資料は、AI-readyデータにメタデータ、装置情報、取得条件、プロトコル、オントロジーを付与し、データ取得プロセス自体を設計・記述する必要性を示します。ファイルが保存され、検索可能であるだけでは、学習、再解析、科学的検証に使えることを保証しません。",
+          "statement_en": "MEXT material identifies metadata, instrument information, acquisition conditions, protocols, ontologies, and explicit design and description of the acquisition process as requirements for AI-ready data. Stored and searchable files alone do not establish suitability for training, reanalysis, or scientific validation.",
+          "hpci_relevance_ja": "HPCIストレージ受入ではPBとGB/sに加え、必須メタデータ充足率、来歴連結率、機械検証、再解析成功率を測ります。",
+          "hpci_relevance_en": "HPCI storage acceptance should measure required-metadata completeness, provenance linkage, machine validation, and successful reanalysis in addition to PB and GB/s.",
+          "adoption_conditions_ja": ["分野ごとの必須・推奨メタデータと版を定める。", "生データ、校正、前処理、モデル、コード、環境、出力を永続IDで結ぶ。", "欠測、単位、座標、装置校正、ライセンス、同意を自動検証する。"],
+          "adoption_conditions_en": ["Define versioned mandatory and recommended metadata by field.", "Link raw data, calibration, preprocessing, model, code, environment, and output using persistent identifiers.", "Automatically validate missingness, units, coordinates, calibration, licenses, and consent."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS215", "SRC-CDS216"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD4-AI-READY-INCENTIVES-AUTOMATION",
+          "name_ja": "中間・ネガティブデータの共有とメタデータ付与の自動化",
+          "name_en": "Sharing intermediate and negative data with automated metadata assignment",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "timing_ja": "2026年の政策検討事項",
+          "timing_en": "Policy discussion in 2026",
+          "statement_ja": "検討資料は、良好な最終データに比べネガティブ・中間データを共有する動機が弱いこと、データセット作成への予算・評価・対価、AIによるメタデータ付与等の自動化が必要との意見を整理しています。自動生成メタデータは負担を減らせますが、正確性と責任の検証は別に必要です。",
+          "statement_en": "The material records weak incentives to share negative and intermediate data compared with successful final data and calls for funding, recognition, compensation, and automation such as AI-assisted metadata assignment. Automated metadata can reduce effort but still requires accuracy and accountability checks.",
+          "hpci_relevance_ja": "データ基盤の人件費と品質管理をTCOへ含め、AI付与結果を未確認のまま正式メタデータへ昇格させない運用を設計します。",
+          "hpci_relevance_en": "Include curation labor and quality control in TCO and prevent unreviewed AI-generated labels from becoming authoritative metadata.",
+          "adoption_conditions_ja": ["自動付与と人確認の対象・精度・責任を定める。", "中間・失敗データの公開範囲、保持期間、再利用条件を合意する。", "データ提供者への評価・費用・引用・アクセス優先を制度化する。"],
+          "adoption_conditions_en": ["Define scope, accuracy, review, and accountability for automated assignment.", "Agree publication, retention, and reuse conditions for intermediate and failed data.", "Establish recognition, funding, citation, and access priority for contributors."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS215", "SRC-CDS216"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD4-AI-READY-OPEN-CLOSED-OPERATIONS",
+          "name_ja": "分野別のオープン／クローズと持続的運用",
+          "name_en": "Field-specific open/closed controls and sustainable operations",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年の政策検討事項",
+          "timing_en": "Policy discussion in 2026",
+          "statement_ja": "資料は、公開範囲を分野・用途に応じて設計し、ライフサイエンス等の機微データではプライバシーとデータ主権を扱う必要性を示します。また、AI-readyデータを責任を持って継続運用する体制と人材の不足を課題としています。一律公開または一律非公開ではありません。",
+          "statement_en": "The material calls for field- and use-specific disclosure, including privacy and data sovereignty for sensitive fields such as life science, and identifies shortages in accountable, sustainable operations and staff for AI-ready data. It does not advocate uniformly open or uniformly closed data.",
+          "hpci_relevance_ja": "共通ストレージ上でも、公開、共同研究、制限、機密、個人関連を分類し、権限、監査、持出し、削除、保存年限を分けます。",
+          "hpci_relevance_en": "Even on shared storage, classify public, collaboration, restricted, confidential, and person-related data and separate authorization, audit, export, deletion, and retention policies.",
+          "adoption_conditions_ja": ["データ分類と利用目的を機械可読なポリシーへ結ぶ。", "認可変更・同意撤回・課題終了を複製・索引・学習済みモデルへ伝播する。", "キュレーション、審査、セキュリティ、利用支援の常勤体制と継続費を確保する。"],
+          "adoption_conditions_en": ["Bind data classification and purpose to machine-readable policy.", "Propagate authorization changes, consent withdrawal, and project closure to replicas, indexes, and trained models.", "Fund sustained curation, review, security, and support staffing."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS215", "SRC-CDS217"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS215", "title": "AI for Scienceの推進に向けた基本的な戦略方針について 検討状況", "publisher": "文部科学省", "url": "https://www.mext.go.jp/content/20260213-mxt_jyohoka01-000047372_4.pdf", "source_class": "official-project", "published_or_updated": "2026-02-13"},
+      "origin_group": "mext-ai-for-science-data-policy",
+      "checked_at": "2026-09-02T03:00:00+09:00",
+      "locator": "AI-ready data, metadata, instruments, protocols, ontologies, incentives, open/closed",
+      "observation_ja": "AI-ready化、取得過程、共有インセンティブ、自動付与、公開範囲の論点を確認しました。",
+      "observation_en": "Verified AI-readiness, acquisition provenance, sharing incentives, automated assignment, and disclosure issues.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS216", "title": "AI for Science実現のための基盤整備について", "publisher": "文部科学省", "url": "https://www.mext.go.jp/content/20260522-mxt_jyohoka01-000050160_5.pdf", "source_class": "official-project", "published_or_updated": "2026-05-22"},
+      "origin_group": "mext-ai-science-infrastructure",
+      "checked_at": "2026-09-02T03:02:00+09:00",
+      "locator": "ARIM data structuring, AI metadata generation, batch and interactive assistance",
+      "observation_ja": "装置・研究室ごとの構造差、人手限界、AIによるメタデータ生成・知識化への要求を確認しました。",
+      "observation_en": "Verified instrument/lab structural differences, human limits, and requirements for AI metadata generation and knowledge representation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS217", "title": "ライフサイエンス委員会 基礎・横断研究戦略作業部会（第13期～）（第5回）議事録", "publisher": "文部科学省", "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu2/116/gijiroku/mext_00005.html", "source_class": "official-project", "published_or_updated": "2026"},
+      "origin_group": "mext-life-science-infrastructure",
+      "checked_at": "2026-09-02T03:04:00+09:00",
+      "locator": "AI-ready data, open-and-closed strategy, data infrastructure, operations personnel",
+      "observation_ja": "ライフサイエンス分野のデータ整備遅れ、オープン・クローズ、データ基盤、人材の課題を確認しました。",
+      "observation_en": "Verified life-science gaps in AI-ready data, open/closed design, infrastructure, and staffing.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["AI-readyデータの分野別必須項目、品質閾値、付与工数、再解析成功率、運用費は未確定です。", "既存HPCI共用ストレージのメタデータ、権限、来歴、削除、学習済みモデルへの伝播機能を実測・監査する必要があります。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Field-specific mandatory attributes, quality thresholds, curation effort, reanalysis success, and operating cost for AI-ready data remain undefined.", "Metadata, authorization, provenance, deletion, and trained-model propagation on current HPCI shared storage require measurement and audit.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

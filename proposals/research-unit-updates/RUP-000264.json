@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000264",
+  "topic_id": "SSW-04",
+  "created_at": "2026-09-02T07:40:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000245",
+      "bundle_sha256": "33587083b74dd9ca8cb3fe6ff8f35ffea5732d31fe45bafb313ce48481dc04a8"
+    }
+  ],
+  "before_profile_sha256": "4ece69b501893e918259cd00fcd57e732fc82e60d12111fcbd939a5abbee9d31",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "JHPCN FY2025報告は、擬エルミート型Bethe–Salpeter方程式の内部固有値を対象にChASEを拡張し、100,000次Hamiltonianの1～3%の固有対をNVIDIA H100で求める強スケーリングを報告しています。GPU実装はYamboへ統合されました。ただし本文にはGPU数別の時間、効率、精度、比較ソルバがなく、「良好なスケーリング」を次期システム性能の定量値には使えません。Consensusは未完了です。",
+  "summary_en": "The FY2025 JHPCN report extends ChASE to interior eigenvalues of the pseudo-Hermitian Bethe-Salpeter equation and reports strong scaling on NVIDIA H100 for 1-3% of the eigenpairs of a 100,000-dimensional Hamiltonian. The GPU implementation was integrated into Yambo. The text does not provide time by GPU count, efficiency, accuracy, or a comparator solver, so its description of good scaling cannot serve as a quantitative successor-system estimate. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-04-U01",
+      "before_sha256": "a3ceaa1d7f93f3382ab9286615c5d2e7702a4cc379030ea749211e958fcd76ff",
+      "evidence_section_ids": [
+        "TDS-SSW04-LIBRARIES",
+        "TDS-CD1-SSW-04-U01",
+        "TDS-CD2-SSW-04-U01",
+        "TDS-CD3-SSW-04-U01",
+        "TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES",
+        "TDS-CD52-SSW-04-CHASE-BSE-GPU"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD52-SSW-04-CHASE-BSE-GPU",
+      "title_ja": "ChASEによるBethe–Salpeter内部固有値計算",
+      "title_en": "ChASE interior-eigenvalue solution for Bethe-Salpeter equations",
+      "summary_ja": "アルゴリズム拡張、アプリ統合、強スケーリングの証拠範囲を分けます。",
+      "summary_en": "Separate algorithm extension, application integration, and the scope of strong-scaling evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD71-CHASE-PSEUDOHERMITIAN-BSE",
+          "name_ja": "GPU ChASEのYambo統合と10万次強スケーリング",
+          "name_en": "GPU ChASE integration into Yambo and 100k strong scaling",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "FY2025実績を2026年最終報告",
+          "timing_en": "FY2025 results in a 2026 final report",
+          "statement_ja": "ChASEは擬エルミート型の完全Bethe–Salpeter方程式で最小正励起に対応する内部固有値を求めるため、二乗演算子へのChebyshevフィルタ、擬エルミートLanczosによるスペクトル境界、正負対称性、斜交射影を導入しました。GPU実装はYamboに統合され、10万次Hamiltonianの1～3%の固有対についてH100強スケーリングが報告されています。本文は数値曲線を文章化しておらず、GPU数別の性能をOpenFSでは確定しません。",
+          "statement_en": "ChASE was adapted to interior eigenvalues representing the smallest positive excitations of the full pseudo-Hermitian Bethe-Salpeter equation through Chebyshev filtering of the squared operator, pseudo-Hermitian Lanczos bounds, positive-negative symmetry, and oblique projection. The GPU implementation was integrated into Yambo, with H100 strong scaling reported for 1-3% of the eigenpairs of a dimension-100,000 Hamiltonian. The text does not transcribe the numerical curve, so OpenFS does not assign performance by GPU count.",
+          "hpci_relevance_ja": "次期ライブラリ評価では、密・疎、内部・端部固有値、対称性、精度、アプリ統合を分け、実アプリ行列で比較する必要があります。",
+          "hpci_relevance_en": "Successor-library evaluation should separate dense/sparse, interior/extremal eigenvalues, symmetry, accuracy, and application integration using real application matrices.",
+          "adoption_conditions_ja": [
+            "Yambo、ChASE、入力行列、許容誤差、固有対割合、GPU数、ビルドを固定する。",
+            "壁時計時間、並列効率、残差、メモリ、通信を公開する。",
+            "『良好』という定性記述を性能予測値へ変換しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin Yambo and ChASE versions, input matrix, tolerance, eigenpair fraction, GPU count, and build.",
+            "Publish wall time, parallel efficiency, residual, memory, and communication.",
+            "Do not convert a qualitative 'good' description into a performance forecast."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS340"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS340",
+        "title": "Final Report for JHPCN Joint Research of FY 2025: Innovative Computational Science by Integration of Simulation/Data/Learning on Heterogeneous Supercomputers",
+        "publisher": "Joint Usage/Research Center for Interdisciplinary Large-scale Information Infrastructures (JHPCN)",
+        "url": "https://jhpcn-kyoten.itc.u-tokyo.ac.jp/download/final/jh250027.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026"
+      },
+      "origin_group": "jhpcn-fy2025-sdl-final-report",
+      "checked_at": "2026-09-02T05:35:00+09:00",
+      "locator": "Pages 6-7: pseudo-Hermitian BSE algorithm, Yambo integration, and H100 strong scaling",
+      "observation_ja": "ChASEのアルゴリズム拡張、Yambo統合、10万次・1～3%固有対のH100評価を確認しました。",
+      "observation_en": "Verified the ChASE algorithm extension, Yambo integration, and H100 evaluation for dimension 100,000 and 1-3% eigenpairs.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GPU数別時間、並列効率、残差、メモリ、電力、比較ソルバは公開本文から確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Time by GPU count, parallel efficiency, residual, memory, energy, and comparator solvers are unavailable from the public text.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

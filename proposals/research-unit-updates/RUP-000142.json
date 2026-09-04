@@ -1,0 +1,194 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000142",
+  "topic_id": "APP-01",
+  "created_at": "2026-09-02T00:45:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000126",
+      "bundle_sha256": "03278a8d12e926582a7b4fc746bf401a439763013e2dee64a8604615a31bb598"
+    }
+  ],
+  "before_profile_sha256": "f2c13f262c3a0b935bf3c1e1e8cf32c8c0bc9d7a72e9584672db0882f47282a0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "次世代計算科学グランドリーチプログラム区分Aの採択資料から、流体、材料・高分子、医療・創薬の将来ワークロードを追加しました。既存コードの規模や機能と、FY2026以降に計画されるGPU最適化、実験自動化、AI・シミュレーション循環を区別し、全国需要の構成比や達成済み性能へは外挿しません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds future workloads in fluid engineering, polymer materials, and healthcare and drug discovery from adopted Category-A Grand Reach project materials. It separates existing code scale and capability from planned GPU optimization, automated experimentation, and AI-simulation loops from FY2026 onward, without extrapolating project selections into national demand shares or achieved performance. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-01-U01",
+      "before_sha256": "14205c72cc0e3ab773b4e2b1304c3ad2345f3cd16c03bf6e09eed13fff260ff5",
+      "evidence_section_ids": ["TDS-APP01-CURRENT", "TDS-APP01-FUTURE", "TDS-CD2-APP-01-U01", "TDS-CD10-APP-01-U01", "TDS-CD12-APP-01-U01-U02"]
+    },
+    {
+      "unit_id": "APP-01-U02",
+      "before_sha256": "62f7b5cbd959e438288705d51cac1dfcd7fee5cc6964ca440dc3b7ef7d39f575",
+      "evidence_section_ids": ["TDS-CD3-APP-01-U02", "TDS-CD10-APP-01-U01", "TDS-CD12-APP-01-U01-U02"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD12-APP-01-U01-U02",
+      "title_ja": "採択プロジェクトが示す将来科学ワークロード",
+      "title_en": "Future scientific workloads described by adopted projects",
+      "summary_ja": "対象分野だけでなく、解像度、計算・実験・AIの結合、データ生成、応答時間、移植性を整備要件として読み取ります。",
+      "summary_en": "Translate the projects into planning requirements for scale, compute-experiment-AI coupling, data generation, turnaround, and portability rather than domain labels alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD12-GRAND-REACH-FLUID-WORKLOAD",
+          "name_ja": "三つの国産流体ソフトとAI・社会実装を結ぶワークロード",
+          "name_en": "Workloads linking three Japanese fluid codes with AI and deployment",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "timing_ja": "FY2026～2030の採択計画、既存実績を含む",
+          "timing_en": "Adopted FY2026-2030 plan, including existing results",
+          "statement_ja": "理研の採択資料はFrontFlow/blue、FFX、CUBEを基盤とし、FrontFlow/blueで1,000億要素規模、FFXで最大6,000億要素規模の解析実績、各コードのOpenACC、CUDAまたはHIP対応を示します。計画は共通カーネル、統合データファイルシステム、AI学習データ出力、推論型壁モデルを開発し、自動車、ファン、船舶、手術、感染、都市暑熱へ展開します。規模とGPU対応は既存実績ですが、統合基盤と将来性能は計画です。",
+          "statement_en": "The RIKEN material builds on FrontFlow/blue, FFX, and CUBE, reporting a 100-billion-element FrontFlow/blue application, a maximum 600-billion-element FFX analysis, and OpenACC, CUDA, or HIP support across the codes. The project plans common kernels, an integrated data-file system, AI-training output, and inference-based wall models for automotive, fan, maritime, surgery, infection, and urban-heat use cases. Reported scale and GPU support are existing evidence; the integrated platform and future performance are plans.",
+          "hpci_relevance_ja": "候補システムは単一ソルバのFLOPSだけでなく、超大規模格子のメモリ・通信、GPU移植、学習データ出力、推論呼出し、産業利用時の所要時間と費用を同一ワークフローで評価する必要があります。",
+          "hpci_relevance_en": "Candidate systems need end-to-end evaluation of memory and communication at very large mesh scales, GPU portability, training-data output, inference calls, turnaround, and industrial cost rather than solver FLOPS alone.",
+          "adoption_conditions_ja": [
+            "1,000億・6,000億要素の入力、使用資源、精度、所要時間、I/O量を取得する。",
+            "三コードのGPU対応範囲と、共通カーネル導入後の性能・結果一致を実測する。",
+            "AI学習・推論を含む全体時間、データ保持量、ライセンス境界を評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Obtain inputs, resources, accuracy, elapsed time, and I/O volume for the 100- and 600-billion-element cases.",
+            "Measure GPU coverage, performance, and result agreement after common-kernel integration across all three codes.",
+            "Evaluate end-to-end time, retained data, and license boundaries including AI training and inference."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS135"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-GRAND-REACH-POLYMER-WORKLOAD",
+          "name_ja": "計算・自動実験・文献を横断する高分子材料ワークロード",
+          "name_en": "Polymer workload spanning simulation, automated experiments, and literature",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の採択資料",
+          "timing_en": "Adopted-project material published June 30, 2026",
+          "statement_ja": "統計数理研究所の資料は、62物性を自動評価する全原子MDワークフロー、粗視化・メソスケールを含むGPU/AI-ready基盤、140並列合成で年間約1万～10万件、フロー自動合成で年間約1万件を目標とする実験データ生成、文献のLLM構造化、マルチモーダル基盤モデルとマルチエージェント連携を一つの構想として示します。年間件数は計画値であり、実生成量やデータ品質の実績ではありません。",
+          "statement_en": "The Institute of Statistical Mathematics material combines an automated all-atom MD workflow for 62 properties; a GPU/AI-ready platform spanning coarse-grained and mesoscale simulation; experimental data-generation targets of roughly 10,000-100,000 records per year from 140-way parallel synthesis and about 10,000 per year from automated flow synthesis; LLM-based literature structuring; multimodal foundation models; and multi-agent orchestration. Annual counts are plans, not observed output or quality evidence.",
+          "hpci_relevance_ja": "HPCI側には短い計算を大量投入する能力、GPU・CPUをまたぐマルチスケール実行、メタデータと来歴、実験装置からの継続投入、検索・学習・推論を一体化するデータ基盤が必要です。",
+          "hpci_relevance_en": "HPCI needs high-throughput submission of many smaller jobs, cross-CPU/GPU multiscale execution, metadata and provenance, continuous instrument ingestion, and integrated search, training, and inference data services.",
+          "adoption_conditions_ja": [
+            "年間目標を実測データ件数、欠測率、再測定率、保存容量、転送量へ分解する。",
+            "62物性ごとの計算時間、GPU適合性、失敗・再試行、精度検証を測定する。",
+            "実験・文献・計算データの識別子、利用条件、品質、来歴を統一する。"
+          ],
+          "adoption_conditions_en": [
+            "Decompose annual targets into observed record counts, missing and rerun rates, storage, and transfer.",
+            "Measure runtime, GPU suitability, failures, retries, and validation for each of the 62 properties.",
+            "Unify identifiers, use conditions, quality, and provenance across experiment, literature, and simulation data."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS136"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD12-GRAND-REACH-HEALTHCARE-WORKLOAD",
+          "name_ja": "CPU・GPU・AIを循環させる医療・創薬ワークロード",
+          "name_en": "Healthcare and drug-discovery workloads cycling across CPU, GPU, and AI",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年4月7日付資料、6月30日公開",
+          "timing_en": "Material dated April 7 and published June 30, 2026",
+          "statement_ja": "京都大学の採択資料は、分子動力学・マルチスケール計算による学習データ生成、サロゲート・粗視化を含む統合探索、創薬・医療応用、DB・計算・モデルを結ぶ自律型AIエージェント基盤を四本柱とします。前半は富岳とGPUクラスタで開発し、移植可能な設計でポスト富岳へ移す方針です。実行規模、データ量、レイテンシ、精度、移植実績は資料から確定しません。",
+          "statement_en": "The Kyoto University material defines four pillars: training-data generation through molecular dynamics and multiscale simulation; integrated exploration with surrogate and coarse-grained models; drug and medical applications; and an autonomous AI-agent platform linking databases, compute, and models. It plans initial development on Fugaku plus GPU clusters and later migration to post-Fugaku through portable design. Execution scale, data volume, latency, accuracy, and observed portability are not established.",
+          "hpci_relevance_ja": "高メモリCPU、大規模GPU、データベース、モデル提供、エージェント実行を別々の設備ではなく再開可能な一連のワークフローとして接続し、医療データの権限・監査を組み込みます。",
+          "hpci_relevance_en": "Connect high-memory CPU, large GPU, databases, model serving, and agent execution as a restartable workflow, with authorization and audit for medical data built in.",
+          "adoption_conditions_ja": [
+            "各段階の入力・出力、精度条件、所要時間、CPU/GPU資源、再実行条件を固定する。",
+            "富岳・GPUクラスタ・将来機間の移植工数と結果一致を公開ベンチマークで測定する。",
+            "個人・臨床データの配置、匿名化、認可、監査、削除を実装前に定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin inputs, outputs, accuracy conditions, elapsed time, CPU/GPU resources, and rerun conditions at every stage.",
+            "Measure migration effort and result agreement across Fugaku, GPU clusters, and future systems with public benchmarks.",
+            "Define placement, de-identification, authorization, audit, and deletion for personal and clinical data before deployment."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS137"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS135",
+        "title": "次世代計算科学グランドリーチプログラム 区分A採択課題: スマート社会を加速する流体ソフト開発基盤とエコシステムの構築",
+        "publisher": "理化学研究所 / 文部科学省",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_02-2.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-grand-reach-riken-fluid",
+      "checked_at": "2026-09-02T00:35:00+09:00",
+      "locator": "Pages 2-7: applications, present code scale, integrated kernels and files, dissemination, and FY2026-2030 plan",
+      "observation_ja": "三国産流体コードの既存規模・GPU対応、共通カーネル・統合ファイル・AI連携の計画、適用分野、公開・商用境界、年度別実施段階を確認しました。既存実績と将来計画を分けました。",
+      "observation_en": "Verified existing scale and GPU support for three Japanese fluid codes, planned common kernels, integrated files and AI coupling, application domains, public-commercial boundaries, and annual phases. Existing evidence and future plans are separated.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS136",
+        "title": "次世代計算科学グランドリーチプログラム 区分A採択課題: 高分子材料科学を変革する次世代AI計算基盤",
+        "publisher": "統計数理研究所 / 文部科学省",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_02-3.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-grand-reach-ism-polymer",
+      "checked_at": "2026-09-02T00:36:00+09:00",
+      "locator": "Pages 1-3: automated simulation, experimental data generation, literature structuring, foundation models, and agents",
+      "observation_ja": "62物性の自動評価、GPU/AI-readyマルチスケール基盤、実験データ生成目標、文献LLM、マルチモーダルモデルとマルチエージェント構想を確認しました。目標件数を実績として扱いません。",
+      "observation_en": "Verified automated evaluation of 62 properties, a GPU/AI-ready multiscale platform, experimental data targets, literature LLMs, multimodal models, and multi-agent plans. Target counts are not treated as observed results.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS137",
+        "title": "次世代計算科学グランドリーチプログラム 区分A採択課題: シミュレーション・AI融合による次世代スパコン医療・創薬HPC基盤の構築",
+        "publisher": "京都大学 / 文部科学省",
+        "url": "https://www.mext.go.jp/content/20260629-mxt_jyohoka01-000050674_02-4.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-grand-reach-kyoto-healthcare",
+      "checked_at": "2026-09-02T00:37:00+09:00",
+      "locator": "Pages 1-3: four-pillar CPU-GPU-AI design, migration strategy, and five research themes",
+      "observation_ja": "学習データ生成、統合探索、医療・創薬応用、DB・計算・モデルを結ぶAIエージェント、富岳とGPUクラスタからポスト富岳への移行方針を確認しました。性能・規模の未記載は未確定のまま残しました。",
+      "observation_en": "Verified training-data generation, integrated exploration, medical and drug applications, an AI agent linking databases, compute, and models, and migration from Fugaku plus GPU clusters to post-Fugaku. Undisclosed scale and performance remain unresolved.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-019とGAP-TDS-067は未解決です。採択三案件を含む全国利用者ポートフォリオの重み、実消費資源、データ量、応答時間が必要です。",
+    "計画されたGPU最適化、統合基盤、実験件数、AI循環の実績と再現可能な測定は未公開です。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-019 and GAP-TDS-067 remain open; portfolio weights, observed resource consumption, data volume, and turnaround across national users including the three projects are required.",
+    "Reproducible measurements of planned GPU optimization, integrated platforms, experimental record counts, and AI loops are not yet public.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

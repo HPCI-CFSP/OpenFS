@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -467,7 +467,10 @@ class PagesSiteTests(unittest.TestCase):
             'id="hpci-system-inventory-section"',
             'id="hpci-inventory-table"',
             'id="application-performance-section"',
+            'id="application-baseline-package-readiness"',
             'id="application-code-availability"',
+            'id="application-calibration-candidates"',
+            'id="application-infrastructure-matrix"',
             'id="application-performance-table"',
         ):
             self.assertIn(element_id, detail)
@@ -496,6 +499,14 @@ class PagesSiteTests(unittest.TestCase):
         search = (ROOT / "site" / "search.js").read_text(encoding="utf-8")
         self.assertIn("data.application_performance_forecasts.applications", search)
         self.assertIn("data.hpci_system_inventory.systems", search)
+
+        catalog = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="term-dialog"', catalog)
+        self.assertIn('id="term-dialog-content"', catalog)
+        catalog_script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")
+        self.assertIn("function appendGlossaryText", catalog_script)
+        self.assertIn("function renderTopicComparisons", catalog_script)
+        self.assertIn("function renderCatalogTermDialog", catalog_script)
 
     def test_timeline_uses_evidence_window_spans_without_q_unknown_column(self):
         script = (ROOT / "site" / "roadmaps.js").read_text(encoding="utf-8")
@@ -592,7 +603,17 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(0, len(result["application_performance_forecasts"]["validated_model_cards"]))
             self.assertEqual(36, len(result["application_performance_forecasts"]["illustrations"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
-            self.assertEqual(8, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(24, len(result["application_performance_forecasts"]["baseline_observations"]))
+            self.assertEqual(6, len(result["application_performance_forecasts"]["draft_acceptance_criteria"]))
+            self.assertEqual(6, len(result["application_performance_forecasts"]["baseline_package_readiness"]))
+            self.assertEqual(2, len(result["application_performance_forecasts"]["calibration_candidates"]))
+            self.assertEqual(74, len(result["application_performance_forecasts"]["cross_platform_observations"]))
+            self.assertEqual(8, len(result["application_performance_forecasts"]["quantitative_requirements"]))
+            self.assertEqual(5, len(result["planning_evidence_readiness"]["dimensions"]))
+            self.assertEqual(
+                6,
+                len(result["application_performance_forecasts"]["infrastructure_requirements_matrix"]["rows"]),
+            )
             self.assertEqual(6, len(result["application_performance_forecasts"]["assumptions"]))
             self.assertNotIn("publication", result["application_performance_forecasts"])
             self.assertEqual(
@@ -617,7 +638,7 @@ class PagesSiteTests(unittest.TestCase):
                 all(
                     scenario["research_status"] == "provisional"
                     and scenario["consensus_status"] == "incomplete"
-                    and scenario["plan_version"] == "0.5"
+                    and scenario["plan_version"] == "0.6"
                     and [option["tier"] for option in scenario["budget_options"]]
                     == ["jpy-10", "jpy-30", "jpy-100", "jpy-300", "jpy-1000"]
                     and len(scenario["implementation_path"]["phases"]) == 12
@@ -640,6 +661,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('id="scenario-detail-timeline"', scenario_html)
             self.assertIn('id="scenario-context-notes"', scenario_html)
             self.assertIn('id="scenario-budget-options"', scenario_html)
+            self.assertIn('id="scenario-planning-evidence"', scenario_html)
             self.assertTrue(
                 all(
                     scenario["path"].startswith("scenarios/scn-hpci-")
@@ -1410,7 +1432,12 @@ class PagesSiteTests(unittest.TestCase):
             self.assertIn('?topic=', search_script)
             self.assertIn('?track=', search_script)
             self.assertIn('?term=', search_script)
-            self.assertIn('new URLSearchParams(window.location.search).get("topic")', (output / "app.js").read_text(encoding="utf-8"))
+            app_script = (output / "app.js").read_text(encoding="utf-8")
+            self.assertIn(
+                "new URLSearchParams(window.location.search)", app_script
+            )
+            self.assertIn('initialParams.get("topic")', app_script)
+            self.assertIn('initialParams.get("term")', app_script)
             roadmap_script = (output / "roadmaps.js").read_text(encoding="utf-8")
             self.assertIn('params.get("track")', roadmap_script)
             self.assertIn('params.get("term")', roadmap_script)

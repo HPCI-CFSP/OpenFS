@@ -1,0 +1,74 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000195",
+  "topic_id": "SSW-15",
+  "created_at": "2026-09-02T07:29:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "1fb5cfcfe3b0186daed547a2b06f784e0b688d6e6e4e12143cb20f90a7ba6b0e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の2025年度電力適応運用を追加しました。2025年4月以降、全リソースグループで未指定時の既定値をBoost Ecoとし、単独Boostを制限しています。利用者はジョブ別の平均電力とエネルギーを取得できます。各課題へ計算資源量に応じた電力資源を配分し、省エネ量に応じて富岳ポイントを付与し、優先実行へ使用できます。1ポイントは420ノード秒に相当しますが、計算資源量自体は増えず、繰越もありません。Consensusは未完了です。",
+  "summary_en": "Fugaku's FY2025 power-adaptive operation was added. From April 2025, unspecified jobs default to Boost Eco in all resource groups, while Boost-only use is restricted. Users can retrieve per-job average power and energy. Projects receive a power resource proportional to allocated compute; energy savings earn Fugaku points usable for priority execution. One point corresponds to 420 node-seconds, but does not add compute allocation and cannot be carried over. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "SSW-15-U01", "before_sha256": "0c67481539f7e48434f2f2954ca51d5d44b1086cd5c86791548ff4aa40a59216", "evidence_section_ids": ["TDS-CD1-SSW-15-U01", "TDS-CD2-SSW-15-U01", "TDS-CD3-SSW-15-FUGAKU-POWER-INCENTIVE"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-SSW-15-FUGAKU-POWER-INCENTIVE",
+      "title_ja": "富岳は既定モード・計測・優先権で省エネを運用へ組み込む",
+      "title_en": "Fugaku embeds energy saving through defaults, measurement, and priority rights",
+      "summary_ja": "制御機能だけでなく、利用者が選ぶ既定値と報奨まで含む運用例を示します。",
+      "summary_en": "Treat power control, user-facing defaults, and incentives as one operating design.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-FUGAKU-BOOST-ECO-MEASUREMENT",
+          "name_ja": "全グループ既定Boost Ecoとジョブ別電力計測",
+          "name_en": "Default Boost Eco in all groups with per-job energy measurement",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年4月以降", "timing_en": "From April 2025",
+          "statement_ja": "電力モード未指定時は全リソースグループでBoost Ecoを使用し、2.2 GHzの単独Boostは省電力のため制限されています。ジョブスクリプトで統計出力を指定すると、全ノードの平均電力合計と開始から終了までのエネルギーを取得できます。モードによる性能・電力効果はプログラム依存です。",
+          "statement_en": "Jobs without an explicit power mode use Boost Eco across all resource groups, while Boost-only operation at 2.2 GHz is restricted for energy reduction. A job-script option emits total average node power and energy from start to finish. Performance and power effects depend on the program.",
+          "hpci_relevance_ja": "次世代では電力制御APIだけでなく、安全な既定値、ジョブ別計測、アプリケーション別推奨を同時に提供すべきです。",
+          "hpci_relevance_en": "Next-generation systems should provide safe defaults, per-job measurement, and application-specific guidance alongside power-control APIs.",
+          "adoption_conditions_ja": ["代表アプリで時間、エネルギー、結果精度をモード別に測定する。", "既定値変更による全体電力と待ち時間への効果を検証する。", "電力値の計測範囲、精度、欠測、保存期間を定義する。"],
+          "adoption_conditions_en": ["Measure time, energy, and result accuracy by mode for representative applications.", "Validate effects of default changes on system power and queue time.", "Define power-measurement scope, accuracy, missing data, and retention."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-FUGAKU-ENERGY-POINTS",
+          "name_ja": "省エネ量を優先実行権へ変換する富岳ポイント",
+          "name_en": "Fugaku points convert energy savings into priority execution",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年度", "timing_en": "FY2025",
+          "statement_ja": "各課題には配分計算資源量に応じた電力資源が配分され、ジョブの実使用エネルギーが基準値を下回る分からポイントを算出します。1ポイントは420ノード秒の優先実行資源に相当します。高消費ジョブでは負になる場合があり、計算資源総量は増えず、未使用分は翌期へ繰り越されません。有償課題は対象外です。",
+          "statement_en": "Each project receives a power resource proportional to compute allocation, and points are calculated from energy saved below a node-hour baseline. One point corresponds to 420 node-seconds of priority execution. High-energy jobs can earn negative points; total compute allocation does not increase, unused priority capacity does not carry over, and fee-based projects are excluded.",
+          "hpci_relevance_ja": "電力制約下では、禁止だけでなく省エネの便益を利用者へ返す制度を、配分公平性と成果効率とともに設計できます。",
+          "hpci_relevance_en": "Under power constraints, incentives can return energy-saving value to users while preserving allocation fairness and scientific throughput.",
+          "adoption_conditions_ja": ["基準電力量の決定方法とアプリ間公平性を検証する。", "獲得・使用ポイント、節電量、待ち時間、成果量を公開集計する。", "極端な性能低下や測定値最適化を防ぐ制約を設ける。"],
+          "adoption_conditions_en": ["Validate baseline-setting and fairness across applications.", "Publish aggregates of earned and used points, energy savings, queue time, and outcomes.", "Prevent pathological slowdowns or optimization for the accounting metric."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS242", "title": "富岳の運用状況報告（2025年9月）", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202509.pdf", "source_class": "official-project", "published_or_updated": "2025-09-11"},
+      "origin_group": "fugaku-storage-operation", "checked_at": "2026-09-02T03:30:00+09:00",
+      "locator": "2025年度電力運用、Boost Eco、ジョブ電力統計、富岳ポイント",
+      "observation_ja": "既定電力モード、単独Boost制限、ジョブ別計測、電力資源と優先実行ポイントの規則を確認しました。",
+      "observation_en": "Verified default power mode, Boost-only restriction, per-job measurement, and power-resource and priority-point rules.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["モード別の通年電力削減量、性能影響、獲得・使用ポイント分布、利用者行動、待ち時間への効果は未確認です。", "基準電力量のアプリケーション間公平性と計測精度は検証していません。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Annual energy savings, performance effects, earned and used point distributions, user behavior, and queue effects by mode remain unverified.", "Cross-application fairness of the energy baseline and measurement accuracy have not been validated.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000291",
+  "topic_id": "APP-11",
+  "created_at": "2026-09-02T07:45:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000263",
+      "bundle_sha256": "b6f5218402d31bbe6bd241bbdc770ba7525ff38a511036eed31b2bc127b65bb6"
+    }
+  ],
+  "before_profile_sha256": "1ab8217b39ffc8380e6d76480c94c8d6eb09d67e9711d64dae74e59416486cf8",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年の公開研究から、量子・古典ハイブリッド応用の評価を、QPU単体指標ではなくworkflow全体へ拡張しました。12,635原子のprotein-ligand計算は、最大94 qubitのQPU実行に加えて、9,200 circuit、100時間超、13億measurement outcome、富岳・Miyabi-G上の大規模対角化を伴います。また、密結合の効果は通信対計算比と実時間制約で変わるため、計算集約型処理と量子誤り訂正等を分けて配置判断します。Consensusは未完了です。",
+  "summary_en": "Public 2026 research extends evaluation of hybrid quantum-classical applications from QPU-only metrics to the full workflow. The 12,635-atom protein-ligand calculation combined up to 94-qubit QPU work with 9,200 circuits, more than 100 hours, 1.3 billion measurement outcomes, and large-scale diagonalization on Fugaku and Miyabi-G. Because the value of tight coupling depends on communication-to-compute ratio and real-time constraints, compute-intensive work and tasks such as quantum error correction require separate placement decisions. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-11-U01",
+      "before_sha256": "e40b8de97f5b78fb046d59f92da3dcef009ca7c440f1744fa012a136a689e883",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-11-U01",
+        "TDS-CD2-APP-11-U01",
+        "TDS-CD3-APP-11-QSCI-HYBRID-BENCHMARK",
+        "TDS-CD4-APP-11-2026-HYBRID-QUANTUM-EVIDENCE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-APP-11-2026-HYBRID-QUANTUM-EVIDENCE",
+      "title_ja": "量子・古典ハイブリッド応用の処理規模と統合条件",
+      "title_en": "Workload scale and integration conditions for hybrid quantum-classical applications",
+      "summary_ja": "分子全体の大きさ、QPU実行、古典側計算、通信・配置効果を分離し、古典最良法との同条件比較に必要な項目を整理します。",
+      "summary_en": "Separate molecular scale, QPU execution, classical computation, and communication or placement effects, and define the evidence needed for matched comparison with the best classical methods.",
+      "items": [
+        {
+          "item_id": "TDI-CD98-PROTEIN-HQC-2026",
+          "name_ja": "12,635原子タンパク質計算：大規模な古典側処理を伴うHQC実証",
+          "name_en": "12,635-atom protein calculation: HQC demonstration with substantial classical work",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年公開研究（査読前）",
+          "timing_en": "Research published in 2026; not peer reviewed",
+          "statement_ja": "2026年5月のpreprintは、11,608原子と12,635原子のprotein-ligand complexをfragment化し、2台の156-qubit IBM Heronで最大94 qubit、9,200 circuit、100時間超、13億measurement outcomeを取得したと報告しています。fragment wavefunctionは富岳とMiyabi-G上のsubspace diagonalizationで計算し、72.5%のparallel efficiencyを報告しています。系全体の原子数はQPUが同時に直接扱った原子数ではありません。",
+          "statement_en": "A May 2026 preprint reports fragmenting protein-ligand complexes of 11,608 and 12,635 atoms, then using two 156-qubit IBM Heron processors for up to 94 qubits, 9,200 circuits, more than 100 hours, and 1.3 billion measurement outcomes. Fragment wavefunctions were computed by subspace diagonalization on Fugaku and Miyabi-G, with 72.5% parallel efficiency reported. The full molecular atom count is not the number of atoms directly processed by a QPU at once.",
+          "hpci_relevance_ja": "HPCIではQPUのqubit数だけでなく、fragment生成、回路数・shot数、queue、古典対角化、node数、data transfer、全体時間を一つのworkflowとして採寸する必要があります。",
+          "hpci_relevance_en": "HPCI should measure fragment generation, circuit and shot counts, queues, classical diagonalization, node count, data transfer, and end-to-end time as one workflow rather than using QPU qubit count alone.",
+          "adoption_conditions_ja": [
+            "同じ分子、fragment、basis、accuracy targetで、最良の古典法とtime-to-solution・energy・costを比較する。",
+            "72.5%のparallel efficiencyについてnode数、strong/weak scaling、計測区間を固定する。",
+            "QPU時間、queue、古典計算、通信、post-processingを別々に記録する。"
+          ],
+          "adoption_conditions_en": [
+            "Compare time to solution, energy, and cost with the best classical method for the same molecule, fragments, basis, and accuracy target.",
+            "Pin node count, strong or weak scaling, and the timed region behind the 72.5% parallel efficiency.",
+            "Record QPU time, queueing, classical computation, communication, and post-processing separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS366"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD98-HYBRID-INTEGRATION-BOUNDARY",
+          "name_ja": "密結合の価値はworkflowの通信・計算比と実時間制約で変わる",
+          "name_en": "The value of tight coupling depends on workflow communication-to-compute ratio and real-time constraints",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年公開研究（査読前）",
+          "timing_en": "Research published in 2026; not peer reviewed",
+          "statement_ja": "2026年7月のpreprintは、hybrid workflowをquantum compute、classical compute、communicationへ分解し、application levelでは通信対計算比、real-time levelでは期限内にclassical処理を完了できるかを判定するmodelを提案しています。著者らの代表workflow分析では、現時点の計算集約型処理にQPUとHPCのco-locationが与える性能効果は小さい一方、量子誤り訂正のようなreal-time処理ではtight integrationが不可欠としています。",
+          "statement_en": "A July 2026 preprint decomposes hybrid workflows into quantum compute, classical compute, and communication. It proposes a communication-to-computation ratio at the application level and a feasibility condition for whether classical processing meets real-time deadlines. In the authors' representative workflows, QPU-HPC co-location offers little performance benefit for today's compute-intensive work, whereas tight integration is essential for real-time work such as quantum error correction.",
+          "hpci_relevance_ja": "量子機をHPC施設へ置くかremote serviceを使うかは、抽象的な『密結合』方針ではなく、workflowごとの通信比、queue、反応期限、data governance、可用性、費用で判断できます。",
+          "hpci_relevance_en": "The choice between co-locating a QPU at an HPC facility and using a remote service can be based on per-workflow communication ratio, queues, reaction deadlines, data governance, availability, and cost rather than an abstract tight-coupling preference.",
+          "adoption_conditions_ja": [
+            "対象applicationごとに量子計算、古典計算、通信、queueの時間分解を実測する。",
+            "application-level throughputとreal-time feasibilityを別の合否基準にする。",
+            "hardware進歩によるcrossover条件を感度分析し、固定した配置結論にしない。"
+          ],
+          "adoption_conditions_en": [
+            "Measure quantum, classical, communication, and queue-time components for each target application.",
+            "Use separate acceptance criteria for application-level throughput and real-time feasibility.",
+            "Perform sensitivity analysis for hardware-driven crossover conditions instead of fixing one placement conclusion."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS367"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS366",
+        "title": "Crossing the 12,000-atom barrier with heterogeneous quantum-classical supercomputing: quantum chemistry of protein-ligand complexes",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2605.01138",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-05-01"
+      },
+      "origin_group": "2026-protein-hqc-preprint",
+      "checked_at": "2026-09-02T05:03:00+09:00",
+      "locator": "Abstract: system sizes, QPU resources, circuits, outcomes, supercomputers, and parallel efficiency",
+      "observation_ja": "分子規模、QPU資源、回路数、実行時間、測定数、古典計算機、parallel efficiencyを確認しました。",
+      "observation_en": "Verified molecular scale, QPU resources, circuit count, duration, measurement count, classical systems, and parallel efficiency.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS367",
+        "title": "Performance Model for Hybrid Quantum-Classical Workflows",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2607.15426",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-07-16"
+      },
+      "origin_group": "2026-hybrid-performance-model",
+      "checked_at": "2026-09-02T05:03:00+09:00",
+      "locator": "Abstract and introduction: two analysis levels, decomposition, placement finding, and real-time feasibility",
+      "observation_ja": "application-level通信比とreal-time feasibility、co-locationの効果がworkflowで異なるという結論を確認しました。",
+      "observation_en": "Verified the application-level communication ratio, real-time feasibility condition, and workflow-dependent value of co-location.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "両論文はpreprintであり、査読・独立再現・同条件の古典最良法比較は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Both sources are preprints; peer review, independent reproduction, and matched comparison with the best classical method remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

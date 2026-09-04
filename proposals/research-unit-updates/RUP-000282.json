@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000282",
+  "topic_id": "SSW-04",
+  "created_at": "2026-09-02T07:43:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000245",
+      "bundle_sha256": "33587083b74dd9ca8cb3fe6ff8f35ffea5732d31fe45bafb313ce48481dc04a8"
+    },
+    {
+      "update_id": "RUP-000264",
+      "bundle_sha256": "0c887eeadb597230972245c401f98d114ed7201243a715ccde2dfd7ed82e1628"
+    }
+  ],
+  "before_profile_sha256": "d8b0b603cd2597e6a2a6983b09b1e75c2ced032b7dc62cffd80cda39c6585088",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Kokkos Kernels 5.2.0は、QR分解後のQ適用・生成、Cholesky分解・求解、batched回転・norm・swap・Iamax、疎行列転置の共役mode、merge-path load balancing、cuSPARSE SpMV前処理を追加・拡張しました。BLAS1 benchmarkの範囲と複数の不具合も改善されています。ただしAPI追加は、各CPU・GPUでvendor libraryと同等の性能・精度・規模を保証しません。HPCIでは代表行列群による正解性・性能・memory・fallback試験が必要です。Consensusは未完了です。",
+  "summary_en": "Kokkos Kernels 5.2.0 adds or extends application and generation of Q after QR factorization, Cholesky factorization and solves, batched rotations, norms, swap and Iamax, conjugate sparse transpose, merge-path load balancing, and cuSPARSE SpMV preprocessing. It also expands BLAS1 benchmarks and fixes multiple defects. API availability does not establish vendor-library-equivalent performance, accuracy, or scale on every CPU and GPU. HPCI needs correctness, performance, memory, and fallback tests on representative matrix suites. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-04-U01",
+      "before_sha256": "86fd0ec61afdf7c6b2f5ebb95f29f35b67bec7b3c7085ab23c453c753a87c80c",
+      "evidence_section_ids": [
+        "TDS-SSW04-LIBRARIES",
+        "TDS-CD1-SSW-04-U01",
+        "TDS-CD2-SSW-04-U01",
+        "TDS-CD3-SSW-04-U01",
+        "TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES",
+        "TDS-CD52-SSW-04-CHASE-BSE-GPU",
+        "TDS-CD20-SSW-04-KOKKOS-KERNELS-52"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD20-SSW-04-KOKKOS-KERNELS-52",
+      "title_ja": "Kokkos Kernels 5.2の線形代数・疎行列機能",
+      "title_en": "Linear-algebra and sparse capabilities in Kokkos Kernels 5.2",
+      "summary_ja": "API収録、backend実装、数値品質、実効性能を別の成熟度として評価します。",
+      "summary_en": "Evaluate API inclusion, backend implementation, numerical quality, and effective performance as separate maturity levels.",
+      "items": [
+        {
+          "item_id": "TDI-CD89-KOKKOS-KERNELS-52-DENSE",
+          "name_ja": "QR・Cholesky・batched denseの拡張",
+          "name_en": "QR, Cholesky, and batched-dense extensions",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "Kokkos Kernels 5.2.0",
+          "timing_en": "Kokkos Kernels 5.2.0",
+          "statement_ja": "5.1で追加されたgeqrfに続き、5.2資料はQの適用・生成用gemqrと資料表記gegqr、Cholesky用potrf・potrsを追加しています。batched denseにはscaled L2 norm、rot・rotg・rotm・rotmgのserial/team/team-vector版、swap、L1・L2・L-infinity norm、Team/TeamVector Iamaxが加わりました。名称収録だけではbackend別実装や数値安定性を示しません。",
+          "statement_en": "Following geqrf in 5.1, the 5.2 briefing lists gemqr and the briefing's spelling gegqr for applying or generating Q, plus potrf and potrs for Cholesky workflows. Batched dense additions include scaled L2 norms; serial, team, and team-vector rot, rotg, rotm, and rotmg; swap; L1, L2, and L-infinity norms; and Team/TeamVector Iamax. Listing an API does not establish backend implementation or numerical stability.",
+          "hpci_relevance_ja": "数値library選定では、機能表だけでなく、行列性質、精度、失敗通知、vendor backend、small-batch効率を比較します。",
+          "hpci_relevance_en": "Numerical-library selection should compare matrix properties, precision, failure signaling, vendor backends, and small-batch efficiency rather than feature tables alone.",
+          "adoption_conditions_ja": [
+            "条件数・サイズ・batch数・精度を変え、residualと失敗率を測る。",
+            "CPU・NVIDIA・AMD等でvendor library経路とportable経路を区別する。",
+            "API名、実装版、backend、compile optionを結果に保存する。"
+          ],
+          "adoption_conditions_en": [
+            "Vary conditioning, size, batch count, and precision while measuring residuals and failures.",
+            "Distinguish vendor-library and portable paths across CPUs, NVIDIA, AMD, and other targets.",
+            "Store API name, implementation version, backend, and compile options with results."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS351"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD89-KOKKOS-KERNELS-52-SPARSE",
+          "name_ja": "疎行列・SpMV経路と不具合修正",
+          "name_en": "Sparse, SpMV-path, and defect updates",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "Kokkos Kernels 5.2.0",
+          "timing_en": "Kokkos Kernels 5.2.0",
+          "statement_ja": "疎行列転置は共役modeを追加し、load balancing用merge-path、cuSPARSE SpMV経路のpreprocess呼出しを追加しました。SPGEMMHandleがdefaultをhost algorithmで上書きする不具合や、gemmからscalを呼ぶ際のexecution-space欠落なども修正されています。修正前後でalgorithm選択や性能が変わり得るため、版更新を単純な機能追加として扱えません。",
+          "statement_en": "Sparse transpose adds a conjugate mode, merge-path is added for load balancing, and cuSPARSE SpMV paths call preprocessing unless fast setup is requested. Fixes include preventing SPGEMMHandle from replacing the default with a host algorithm and supplying the missing execution-space instance when gemm calls scal. Algorithm selection and performance can therefore change across versions; this is not merely a feature addition.",
+          "hpci_relevance_ja": "疎行列性能はmatrix構造とbackendで大きく変わるため、HPCIの実利用行列を保存した継続benchmarkが必要です。",
+          "hpci_relevance_en": "Sparse performance depends strongly on matrix structure and backend, requiring a continuous benchmark with preserved matrices from HPCI workloads.",
+          "adoption_conditions_ja": [
+            "対称・非対称、規則・不規則、複素行列を含むmatrix suiteを用意する。",
+            "preprocess時間と反復SpMV時間を分け、反復回数別に評価する。",
+            "algorithm自動選択、host fallback、memory転送をtraceする。"
+          ],
+          "adoption_conditions_en": [
+            "Prepare a matrix suite covering symmetric, nonsymmetric, regular, irregular, and complex cases.",
+            "Separate preprocessing from repeated SpMV time and evaluate by iteration count.",
+            "Trace automatic algorithm selection, host fallback, and memory transfers."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS351"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS351",
+        "title": "Kokkos Kernels 5.2.0 Release Briefing",
+        "publisher": "Kokkos Kernels Project",
+        "url": "https://raw.githubusercontent.com/kokkos/development/1e08d627ad69dc2c2bb8a0049bce25d49ceec978/kk-release-52.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-04"
+      },
+      "origin_group": "kokkos-kernels-52-briefing",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Slides 5-18: LAPACK, batched dense, sparse, benchmarks, deprecations, defects",
+      "observation_ja": "5.2の線形代数・疎行列追加、benchmark拡張、不具合修正を確認しました。",
+      "observation_en": "Verified 5.2 linear-algebra and sparse additions, benchmark expansion, and defect fixes.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各APIのbackend別利用可否、vendor library呼出し、精度、代表行列での性能、修正前後の回帰は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Backend availability, vendor-library routing, accuracy, representative-matrix performance, and pre/post-fix regressions remain unverified for each API.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

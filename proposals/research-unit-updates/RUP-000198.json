@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000198",
+  "topic_id": "ARCH-04",
+  "created_at": "2026-09-02T07:29:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "da1b41fc790b7af759c28cf2a57be1f88148c105790972a9f80f49b1b471f2e1",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Ultra EthernetとUALinkの公式仕様公開状況を更新しました。Ultra Ethernetは2025年6月の1.0公開後、2026年7月に1.0.3へ更新されています。UALinkは2025年4月の200G 1.0に加え、2026年にCommon 2.0、128G/200Gデータリンク・物理層、Chiplet 1.01、Manageability 1.0を公開しています。規格公開は製品供給や相互運用性の実証を意味しないため、採用前に実装、適合試験、集合通信、運用管理を検証します。Consensusは未完了です。",
+  "summary_en": "The official publication state of Ultra Ethernet and UALink specifications was updated. Ultra Ethernet progressed from the June 2025 release of 1.0 to version 1.0.3 in July 2026. In addition to UALink 200G 1.0 in April 2025, the consortium published Common 2.0, 128G and 200G data-link and physical-layer specifications, Chiplet 1.01, and Manageability 1.0 in 2026. Specification publication does not establish product availability or multi-vendor interoperability, so implementation, compliance, collectives, and operations require validation before adoption. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-04-U01",
+      "before_sha256": "c928304b9a2c25160412c5e605033b0d1aa2174cbc4bb1b5006277d5255d8b16",
+      "evidence_section_ids": ["TDS-ARCH03-TIERING", "TDS-ARCH03-FABRIC", "TDS-HW1-ARCH-04-U01", "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS"]
+    },
+    {
+      "unit_id": "ARCH-04-U02",
+      "before_sha256": "90e093e41d11aa1d8a4145f5268327280a4f9c57e133577199814335a9502139",
+      "evidence_section_ids": ["TDS-ARCH04-CURRENT", "TDS-HC26-ARCH-04-U2", "TDS-HW1-ARCH-04-U02", "TDS-HW2-ARCH-04-U02", "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS",
+      "title_ja": "Ultra EthernetとUALinkを仕様公開・製品化・相互運用の段階で評価する",
+      "title_en": "Evaluate Ultra Ethernet and UALink across specification, product, and interoperability stages",
+      "summary_ja": "Scale-outとScale-upの公開規格を役割別に整理し、仕様の公開を導入実績と取り違えないようにします。",
+      "summary_en": "Separate the roles of open scale-out and scale-up specifications without treating publication as deployment evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD3-UEC-1-0-3",
+          "name_ja": "Ultra Ethernet 1.0.3：AI・HPC向けScale-out通信スタック",
+          "name_en": "Ultra Ethernet 1.0.3: a scale-out communication stack for AI and HPC",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "1.0は2025年6月、1.0.3は2026年7月16日公開",
+          "timing_en": "1.0 published June 2025; 1.0.3 published July 16, 2026",
+          "statement_ja": "Ultra Ethernet Consortiumは、NIC、スイッチ、光部品、ケーブルを含むEthernetベースの通信スタックとして1.0を公開し、RDMA、複数経路、輻輳管理、パケット配送信頼性、セキュリティを定義しました。仕様履歴では1.0.1、1.0.2、1.0.3へ訂正が続き、1.0.2にはCMS輻輳制御アルゴリズムの修正が含まれます。2026年7月時点の実装参照は1.0.3です。",
+          "statement_en": "The Ultra Ethernet Consortium published 1.0 as an Ethernet-based communication stack spanning NICs, switches, optics, and cables, defining RDMA, multipathing, congestion management, packet-delivery reliability, and security. Its public history records corrections through 1.0.1, 1.0.2, and 1.0.3; version 1.0.2 includes a correction to CMS congestion-control algorithms. Version 1.0.3 is the current implementation reference as of July 2026.",
+          "hpci_relevance_ja": "RoCEやInfiniBandと比較する際は、ピーク帯域だけでなく、混雑時の末尾遅延、順序、再送、MPI・libfabric対応、運用監視を同一負荷で測る必要があります。",
+          "hpci_relevance_en": "Comparison with RoCE and InfiniBand requires matched-workload measurement of tail latency under congestion, ordering, retransmission, MPI and libfabric support, and operations visibility rather than peak bandwidth alone.",
+          "adoption_conditions_ja": ["1.0.3への準拠範囲と適合試験結果を確認する。", "複数ベンダーNIC・スイッチ・光部品の相互運用を実機で確認する。", "AI集合通信とMPI通信を混在させ、輻輳・障害・公平性を評価する。"],
+          "adoption_conditions_en": ["Verify the implemented 1.0.3 scope and compliance results.", "Test interoperability across multi-vendor NICs, switches, and optics.", "Mix AI collectives and MPI traffic to assess congestion, failure behavior, and fairness."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS249", "SRC-CDS250"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-UALINK-200G-1-0",
+          "name_ja": "UALink 200G 1.0：最大1,024アクセラレータのScale-up規格",
+          "name_en": "UALink 200G 1.0: scale-up specification for up to 1,024 accelerators",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2025年4月公開",
+          "timing_en": "Published April 2025",
+          "statement_ja": "UALink 200G 1.0は、AI計算Pod内のアクセラレータとスイッチを対象に、レーン当たり200G、最大1,024エンドポイント、load/store/atomicのメモリセマンティクスを定義します。ホスト接続や広域Scale-outを置換する同一階層の規格ではなく、PCIe/CXL等のノード内接続とEthernet/InfiniBand等のScale-out網の間に位置するScale-up fabricです。",
+          "statement_en": "UALink 200G 1.0 defines a scale-up fabric between accelerators and switches inside an AI compute pod, with 200G per lane, up to 1,024 endpoints, and load, store, and atomic memory semantics. It is not a same-layer replacement for host attachment or wide scale-out networking; it sits between node-local PCIe or CXL connections and scale-out Ethernet or InfiniBand fabrics.",
+          "hpci_relevance_ja": "導入候補の分類では接続階層を明示し、NVLink等の専有Scale-up fabricと、帯域、遅延、ソフトウェア、供給者選択、保守を比較します。",
+          "hpci_relevance_en": "Candidate classification should state the connection layer and compare bandwidth, latency, software, supplier choice, and maintenance with proprietary scale-up fabrics such as NVLink.",
+          "adoption_conditions_ja": ["アクセラレータ、スイッチ、ケーブル、管理ソフトの製品供給時期を確認する。", "NCCL等の集合通信と障害分離、分割運用を検証する。", "仕様上限1,024と実装可能規模を区別する。"],
+          "adoption_conditions_en": ["Verify product timing for accelerators, switches, cables, and management software.", "Validate collectives such as NCCL, fault isolation, and partitioning.", "Distinguish the 1,024-endpoint specification limit from deployable scale."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS251"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD3-UALINK-2-0-SUITE",
+          "name_ja": "UALink 2.0仕様群：演算、管理、チップレット、物理層を分離拡張",
+          "name_en": "UALink 2.0 suite: separate extensions for compute, management, chiplets, and link layers",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "timing_ja": "2026年7月までに公開",
+          "timing_en": "Published by July 2026",
+          "statement_ja": "UALink Consortiumは、Common 2.0でIn-Network Computeを導入し、128G Data Link and Physical Layers 1.0、200G Data Link and Physical Layers 2.0、UCIe 3.0準拠のChiplet 1.01、gNMI、YANG、SAI、Redfishを利用するManageability 1.0を公開しました。共通仕様と物理層を分離することで、速度世代を独立して更新する構成です。ただし、仕様公開だけでは対応シリコン、スイッチ、管理ツール、相互運用実績を確認できません。",
+          "statement_en": "The UALink Consortium published Common 2.0 with In-Network Compute, 128G Data Link and Physical Layers 1.0, 200G Data Link and Physical Layers 2.0, UCIe 3.0-aligned Chiplet 1.01, and Manageability 1.0 using gNMI, YANG, SAI, and Redfish. Separating common semantics from link layers allows speed generations to evolve independently. Publication alone does not verify supporting silicon, switches, management tools, or interoperability experience.",
+          "hpci_relevance_ja": "2028年以降の調達要件では、単一速度名ではなく、共通プロトコル、物理層、管理、チップレット、演算オフロードの対応版を組合せとして指定する必要があります。",
+          "hpci_relevance_en": "Procurements from 2028 onward may need to specify compatible versions across common protocol, physical layer, management, chiplet, and compute-offload components rather than a single speed label.",
+          "adoption_conditions_ja": ["各仕様の版組合せと後方互換性を確認する。", "In-Network Computeの数値的再現性、障害時挙動、ソフトウェアAPIを評価する。", "管理APIと既存監視・資産管理・セキュリティ運用の統合を実証する。"],
+          "adoption_conditions_en": ["Verify version combinations and backward compatibility across the suite.", "Evaluate numerical reproducibility, failure behavior, and software APIs for In-Network Compute.", "Demonstrate management integration with existing monitoring, asset, and security operations."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS251", "SRC-CDS252"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS249", "title": "Specification History", "publisher": "Ultra Ethernet Consortium", "url": "https://ultraethernet.org/specification-history/", "source_class": "official-standard", "published_or_updated": "2026-07-16"},
+      "origin_group": "uec-specification-history",
+      "checked_at": "2026-09-02T03:00:00+09:00",
+      "locator": "Versions 1.0 through 1.0.3, release dates, and correction descriptions",
+      "observation_ja": "1.0.3が現行公開版であることと、1.0.1・1.0.2の訂正内容を確認しました。",
+      "observation_en": "Verified that 1.0.3 is the current public version and reviewed the correction descriptions for 1.0.1 and 1.0.2.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS250", "title": "UEC Launches Specification 1.0 Transforming Ethernet for AI and HPC at Scale", "publisher": "Ultra Ethernet Consortium", "url": "https://ultraethernet.org/ultra-ethernet-consortium-uec-launches-specification-1-0-transforming-ethernet-for-ai-and-hpc-at-scale/", "source_class": "official-standard", "published_or_updated": "2025-06-11"},
+      "origin_group": "uec-1-0-release",
+      "checked_at": "2026-09-02T03:01:00+09:00",
+      "locator": "Scope across NICs, switches, optics, and cables; RDMA, congestion, interoperability, and scale",
+      "observation_ja": "UEC 1.0の対象範囲と初版公開日を確認しました。",
+      "observation_en": "Verified the scope and initial release date of UEC 1.0.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS251", "title": "Specifications", "publisher": "UALink Consortium", "url": "https://ualinkconsortium.org/specification/", "source_class": "official-standard", "published_or_updated": "2026"},
+      "origin_group": "ualink-specification-suite",
+      "checked_at": "2026-09-02T03:02:00+09:00",
+      "locator": "200G 1.0, Common 2.0, 128G and 200G DL/PL, Chiplet 1.01, and Manageability 1.0",
+      "observation_ja": "公開中のUALink仕様群と各仕様の役割を確認しました。",
+      "observation_en": "Verified the published UALink specification suite and the role of each specification.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS252", "title": "Building Open, Scalable AI Infrastructure with UALink", "publisher": "UALink Consortium", "url": "https://ualinkconsortium.org/blog/building-open-scalable-ai-infrastructure-with-ualink-1532/", "source_class": "official-standard", "published_or_updated": "2026-07-15"},
+      "origin_group": "ualink-2-0-roadmap",
+      "checked_at": "2026-09-02T03:03:00+09:00",
+      "locator": "Recent publication of the 2.0 suite; In-Network Compute, manageability, and chiplet roadmap",
+      "observation_ja": "2.0仕様群の公開と拡張領域を確認しました。",
+      "observation_en": "Verified publication of the 2.0 suite and its expansion areas.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["UEC 1.0.3およびUALink 2.0仕様群の対応製品一覧、第三者適合試験、複数ベンダー相互運用結果は未確認です。", "MPI・libfabric・NCCL等の実装対応、実効帯域、末尾遅延、輻輳、公平性、障害時性能の同条件比較は未実施です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Product lists, third-party compliance tests, and multi-vendor interoperability results remain unverified for UEC 1.0.3 and the UALink 2.0 suite.", "Matched comparisons of MPI, libfabric, and NCCL support, delivered bandwidth, tail latency, congestion, fairness, and failure behavior have not been completed.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

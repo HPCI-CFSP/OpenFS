@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000170",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T07:20:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000132", "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"},
+    {"update_id": "RUP-000140", "bundle_sha256": "71a190ed95189126bab43edcee3b29629a0ad6a366f658387ebf055b9cbe0aed"},
+    {"update_id": "RUP-000145", "bundle_sha256": "5b37f9b86f63c1f8fabaad473aa85a2f754d3050ec747bf3d14e486c9878da97"},
+    {"update_id": "RUP-000157", "bundle_sha256": "1e58801cb003f4df09a3e1b6f537fb20c46d42a961a5228aa11d3287893faa7e"}
+  ],
+  "before_profile_sha256": "39a484ebc81955ec72588a93e44c51fcc0bb35b1db062bd343f8547a27402b4c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "HPCIアーキテクチャマップ2026年度版から、CPU/GPU一体型としてMiyabi-G（GH200×1、1,120ノード）、Sirius（MI300A×4、24ノード）、不老・弐Type II（GB200 NVL4、54ノード）が併存することを確認しました。ノード当たりFP64は70.4、490.4、167.3 TFLOPSと記載されますが、メモリ結合、GPU数、ネットワーク、提供単位が異なります。理論値をアプリケーション性能へ読み替えず、CPU/GPU一体型を一種類として扱いません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The FY2026 HPCI architecture map lists three CPU/GPU-integrated families: Miyabi-G with one GH200 across 1,120 nodes, Sirius with four MI300A APUs across 24 nodes, and Flow II Type II with GB200 NVL4 across 54 nodes. Published node FP64 values are 70.4, 490.4, and 167.3 TFLOPS, but memory coupling, GPU count, network, and allocation units differ. Theoretical values are not treated as application performance, and integrated CPU/GPU systems are not treated as one architecture. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {"unit_id": "ARCH-05-U01", "before_sha256": "8611ffe02ad5d8a15fdadd1b9f698af28dfea592e78261f2ac992e30c2eb77fe", "evidence_section_ids": ["TDS-HW1-ARCH-05-U01", "TDS-HW3-ARCH-05-U01", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01", "TDS-CD12-ARCH-05-U01-U02", "TDS-CD13-ARCH-05-U01-U02", "TDS-CD14-ARCH-05-U01-U02"]},
+    {"unit_id": "ARCH-05-U02", "before_sha256": "ef588b9b2e8148fb40bffc5b2d65bbc4d1978013fdd9c7125f31ee63b18ddba1", "evidence_section_ids": ["TDS-HW1-ARCH-05-U02", "TDS-CD10-ARCH-05-U01", "TDS-CD11-ARCH-05-U01", "TDS-CD12-ARCH-05-U01-U02", "TDS-CD13-ARCH-05-U01-U02", "TDS-CD14-ARCH-05-U01-U02"]}
+  ],
+  "sections": [{
+    "section_id": "TDS-CD14-ARCH-05-U01-U02",
+    "title_ja": "HPCIにおける三つのCPU/GPU一体型システム",
+    "title_en": "Three CPU/GPU-integrated system patterns in HPCI",
+    "summary_ja": "GH200、MI300A、GB200 NVL4を、構成・メモリ・ネットワーク・規模・比較限界で分けます。",
+    "summary_en": "Separate GH200, MI300A, and GB200 NVL4 by composition, memory, network, scale, and comparison limits.",
+    "items": [
+      {
+        "item_id": "TDI-CD14-ARCH05-MIYABI-G-GH200",
+        "name_ja": "Miyabi-G：GH200を1ノード1基で1,120ノード",
+        "name_en": "Miyabi-G: one GH200 per node across 1,120 nodes",
+        "stage": "current", "maturity": "deployed", "timing_ja": "令和8年度提供構成", "timing_en": "FY2026 offered configuration",
+        "statement_ja": "Miyabi-Gは1,120ノードで、各ノードにGrace CPU 72コアとH100 GPUから成るGH200を1基搭載し、ノード当たりFP64 70.4 TFLOPS、CPUメモリ120 GB、GPUメモリ96 GB、InfiniBand NDR200と記載されています。CPU・GPU間のコヒーレンスがあっても、メモリ容量と帯域は単一の均質プールではなく、配置と転送の確認が必要です。",
+        "statement_en": "Miyabi-G has 1,120 nodes, each with one GH200 combining a 72-core Grace CPU and H100 GPU, published at 70.4 FP64 TFLOPS per node, 120 GB CPU memory, 96 GB GPU memory, and InfiniBand NDR200. Coherence does not make CPU and GPU memory one homogeneous pool; placement and movement still require validation.",
+        "hpci_relevance_ja": "大規模な同型GPU群は強・弱スケーリングに有利な可能性がありますが、単一GPUノードのメモリ、通信、CPU前後処理、ジョブ形状との適合を測る必要があります。",
+        "hpci_relevance_en": "A large homogeneous GPU fleet may support scaling, but single-GPU-node memory, communication, CPU preprocessing, and job shape need measurement.",
+        "adoption_conditions_ja": ["CPU・GPUメモリ配置と転送をアプリケーション別に測る。", "1～1,120ノードで通信効率、故障、待ち時間を評価する。", "ノード時間とGPU時間、占有・共有、支援ソフトを対応付ける。"],
+        "adoption_conditions_en": ["Measure CPU/GPU placement and movement by application.", "Evaluate communication efficiency, failures, and queues from one to 1,120 nodes.", "Relate node-hours to GPU-hours, exclusivity, sharing, and support software."],
+        "actor_ids": [], "source_ids": ["SRC-CDS180"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-ARCH05-SIRIUS-MI300A",
+        "name_ja": "Sirius：MI300A×4のユニファイドメモリノード",
+        "name_en": "Sirius: four-MI300A unified-memory nodes",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年10月利用開始予定として掲載", "timing_en": "Listed for planned use from October 2026",
+        "statement_ja": "Siriusは24ノードで、1ノードにMI300A APUを4基搭載し、ノード当たりFP64 490.4 TFLOPS、MI300A当たり128 GiBのユニファイドメモリ、InfiniBand NDR×4と掲載されています。高いノード理論値は4 APUの合計であり、24ノード規模、メモリ局所性、APU間・ノード間通信を無視してMiyabi-GやFlow IIと比較できません。",
+        "statement_en": "Sirius has 24 nodes, each with four MI300A APUs, published at 490.4 FP64 TFLOPS per node, 128 GiB unified memory per MI300A, and four InfiniBand NDR links. The high node theoretical value aggregates four APUs and cannot be compared with Miyabi-G or Flow II without accounting for 24-node scale, memory locality, and intra- and inter-node communication.",
+        "hpci_relevance_ja": "統合メモリは移植を容易にする可能性がありますが、容量、NUMA性、帯域競合、複数APUのデータ配置を代表コードで確認する必要があります。",
+        "hpci_relevance_en": "Unified memory may simplify porting, but capacity, NUMA behavior, bandwidth contention, and data placement across APUs need representative-code tests.",
+        "adoption_conditions_ja": ["CPU・GPU共有アドレスと物理配置・ページ移動を分けて測る。", "4 APU内と24ノード間のスケーリングを別に評価する。", "仮想ノード時間の定義を物理APU・GPU時間へ対応付ける。"],
+        "adoption_conditions_en": ["Separate shared addressing from physical placement and page movement.", "Evaluate scaling within four APUs and across 24 nodes separately.", "Map virtual-node-hours to physical APU and GPU time."],
+        "actor_ids": [], "source_ids": ["SRC-CDS180"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-ARCH05-FLOW2-GB200-NVL4",
+        "name_ja": "不老・弐Type II：GB200 NVL4を54ノード",
+        "name_en": "Flow II Type II: 54 GB200 NVL4 nodes",
+        "stage": "near-term", "maturity": "announced", "timing_ja": "2026年10月利用開始予定", "timing_en": "Service planned from October 2026",
+        "statement_ja": "不老・弐Type IIは54ノードで、各ノードにGrace CPU×2とB200×4のGB200 NVL4を搭載し、ノード当たりFP64 167.3 TFLOPS、CPUメモリ960 GiB、GPUメモリ692.8 GiB、InfiniBand NDRと掲載されています。2026年9月2日時点では提供開始前であり、理論値、公開構成、実測、課金、通常ジョブ上限を分ける必要があります。",
+        "statement_en": "Flow II Type II has 54 nodes, each with GB200 NVL4 comprising two Grace CPUs and four B200 GPUs, published at 167.3 FP64 TFLOPS per node, 960 GiB CPU memory, 692.8 GiB GPU memory, and InfiniBand NDR. As of September 2, 2026 it was not yet in service, so theoretical values, published configuration, measurements, billing, and normal-job limits must remain separate.",
+        "hpci_relevance_ja": "大容量CPU/GPUメモリを持つ4 GPUノードは単ノードAI・前後処理に有力ですが、54ノード全体の並列性と通常利用可能規模は別に判断する必要があります。",
+        "hpci_relevance_en": "A four-GPU node with large CPU and GPU memory may suit single-node AI and preprocessing, while whole-system scale and ordinary accessible scale require separate decisions.",
+        "adoption_conditions_ja": ["受入後に単GPU、1ノード、複数ノードの性能・電力・故障を測る。", "CPU/GPUメモリ、NVLink/NVL、InfiniBand、ローカルNVMe/BeeGFSのデータ経路を確認する。", "半年提供の実利用、待ち時間、料金、移植支援を追跡する。"],
+        "adoption_conditions_en": ["Measure single-GPU, single-node, and multi-node performance, power, and failures after acceptance.", "Verify paths across CPU/GPU memory, NVLink/NVL, InfiniBand, local NVMe, and BeeGFS.", "Track actual use, queues, pricing, and porting support during the half-year offer."],
+        "actor_ids": [], "source_ids": ["SRC-CDS180"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [{
+    "source": {"source_id": "SRC-CDS180", "title": "HPCI共用計算資源 アーキテクチャマップ 2026年度版", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/download_file/044f9f69-c501-48f9-bbed-9ddbb2d54262/752", "source_class": "official-project", "published_or_updated": "2026年度版"},
+    "origin_group": "hpci-architecture-map-2026", "checked_at": "2026-09-02T07:18:00+09:00", "locator": "CPU/GPU一体型：Miyabi-G、Sirius、不老・弐Type IIのシステム・ノード・メモリ・ネットワーク", "observation_ja": "三システムのノード数、FP64理論値、CPU/GPU構成、メモリ、ネットワークを確認しました。理論値を実効性能へ変換していません。", "observation_en": "Verified node counts, theoretical FP64, CPU/GPU composition, memory, and network for the three systems. Theoretical values were not converted into effective performance.", "result": "read-primary-single-model"
+  }],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-011とGAP-TDS-060は未解決です。三構成を同じ代表アプリケーション、精度、規模、電力、費用、ソフトウェアで実測比較する必要があります。", "Siriusと不老・弐の運用開始後実績、メモリ容量の単位範囲、通常利用可能規模は未確認です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-011 and GAP-TDS-060 remain open; the three configurations require measurements with matched applications, precision, scale, energy, cost, and software.", "Post-launch observations for Sirius and Flow II, exact memory-scope units, and ordinary accessible scale remain unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

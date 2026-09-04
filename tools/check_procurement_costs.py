@@ -8,7 +8,13 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-from estimate_system_cost import allocate_budget, contract_breakdown, lease_period_total, number
+from estimate_system_cost import (
+    allocate_budget,
+    contract_breakdown,
+    five_year_known_cost_floor,
+    lease_period_total,
+    number,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,6 +29,9 @@ def validate_register(payload: dict, config: dict) -> None:
     sources = unique(payload["sources"], "source_id")
     source_records = {s["source_id"]: s for s in payload["sources"]}
     cases = unique(payload["cases"], "case_id")
+    tco_scopes = [item["scope_id"] for item in payload["tco_scope_catalog"]]
+    if len(tco_scopes) != 12 or len(tco_scopes) != len(set(tco_scopes)):
+        raise ValueError("TCO scope catalog must contain 12 unique scopes")
     unique([entry for case in payload["cases"] for entry in case.get("storage_capacity_observations", [])],
            "observation_id")
     gaps = unique(payload["coverage_gaps"], "gap_id")
@@ -48,6 +57,44 @@ def validate_register(payload: dict, config: dict) -> None:
         refs.update(case.get("contract_date_source_refs", []))
         capacities = case.get("storage_capacity_observations", [])
         refs.update(ref for entry in capacities for ref in entry["source_refs"])
+        assessment = case["five_year_cost_assessment"]
+        scope_rows = assessment["scope_coverage"]
+        if [row["scope_id"] for row in scope_rows] != tco_scopes:
+            raise ValueError(
+                f"TCO scope coverage must follow the complete catalog: {case['case_id']}"
+            )
+        for row in scope_rows:
+            row_refs = set(row["source_refs"])
+            if row["evidence_status"] == "unknown" and row_refs:
+                raise ValueError("unknown TCO scope must not cite evidence")
+            if row["evidence_status"] != "unknown" and not row_refs:
+                raise ValueError("evidenced TCO scope requires source references")
+            if row_refs - sources or any(
+                source_records[ref]["retrieval_status"] != "read" for ref in row_refs
+            ):
+                raise ValueError("TCO scope must cite checked public sources")
+        floor = five_year_known_cost_floor(case)
+        if assessment["status"] == "known-contractual-floor":
+            if not floor or assessment["complete_tco"]:
+                raise ValueError(
+                    "known contractual floor must remain distinct from complete TCO"
+                )
+            if (
+                number(assessment["known_cost_floor_jpy"])
+                != number(floor["value_jpy"])
+                or assessment["tax_basis"] != floor["tax_basis"]
+            ):
+                raise ValueError(
+                    "stored five-year floor disagrees with contractual arithmetic"
+                )
+        elif (
+            assessment["known_cost_floor_jpy"] is not None
+            or assessment["tax_basis"] is not None
+            or floor is not None
+        ):
+            raise ValueError(
+                "non-computable five-year assessment cannot carry a cost floor"
+            )
         if refs - sources or set(case["related_case_ids"]) - cases or set(case["gap_ids"]) - gaps:
             raise ValueError(f"unresolved references: {case['case_id']}")
         if case["case_id"] in case["related_case_ids"]:

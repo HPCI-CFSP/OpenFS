@@ -1,0 +1,223 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000157",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T04:40:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000132",
+      "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"
+    },
+    {
+      "update_id": "RUP-000140",
+      "bundle_sha256": "71a190ed95189126bab43edcee3b29629a0ad6a366f658387ebf055b9cbe0aed"
+    },
+    {
+      "update_id": "RUP-000145",
+      "bundle_sha256": "5b37f9b86f63c1f8fabaad473aa85a2f754d3050ec747bf3d14e486c9878da97"
+    }
+  ],
+  "before_profile_sha256": "8aa79409fab69e40f6522fe6c7176f77aeac87af77a5ea5eb31b731a4bee7165",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学『不老・弐』の公式構成を追加しました。Type IはAMD EPYC 9965を2基搭載する256ノード、Type IIはGrace CPU 2基とB200 GPU 4基を密結合したGB200 NVL4を搭載する54ノードで、48.4 PBのDDN EXAScalerとNextcloudを組み合わせます。HPCIには2026年10月から2027年3月にType I 537,600ノード時間、Type II 113,400ノード時間を提供予定です。CPU FP64、GPU FP16、メモリ、ストレージ、ノード時間は異なる量であり、総合性能として合算しません。9月2日時点では導入中で、10月1日は稼働予定です。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The official configuration of Nagoya University's Flow II is added. Type I has 256 nodes, each with two AMD EPYC 9965 processors; Type II has 54 GB200 NVL4 nodes, each tightly coupling two Grace CPUs and four B200 GPUs. The system combines 48.4 PB of DDN EXAScaler storage with Nextcloud. Planned HPCI availability from October 2026 through March 2027 is 537,600 Type-I node-hours and 113,400 Type-II node-hours. CPU FP64, GPU FP16, memory, storage, and node-hours are different quantities and are not summed as one performance number. As of September 2, the system is being installed and October 1 remains a planned start. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "c1271d1ce0e2d905e20d66ffd1ff2192b2a2aad912e7657eb69af3d436fe16d7",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U01",
+        "TDS-HW3-ARCH-05-U01",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02"
+      ]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "fff0f77099f1131ba06f68dee7a523cccb4c62f598de44e978357a672e4c1bb1",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U02",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD13-ARCH-05-U01-U02",
+      "title_ja": "『不老・弐』のCPU・GPU・データ統合構成",
+      "title_en": "Integrated CPU, GPU, and data architecture of Flow II",
+      "summary_ja": "計算ノード、メモリ、接続、ローカルI/O、共有ストレージ、HPCI提供量を分離して評価します。",
+      "summary_en": "Evaluate compute nodes, memory, interconnect, local I/O, shared storage, and HPCI allocation separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD13-FLOW2-CPU-GPU-COMPOSITION",
+          "name_ja": "汎用CPU系と密結合GPU系の二系統構成",
+          "name_en": "Dual general-purpose CPU and tightly coupled GPU partitions",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日稼働予定、9月2日時点は導入中",
+          "timing_en": "Planned start October 1, 2026; under installation as of September 2",
+          "statement_ja": "Type IはAMD EPYC 9965（192コア）を2ソケット、通常768 GiB、3ノードだけ6 TiB、InfiniBand NDR 200 Gbpsを備える256ノードで、総FP64は7.07 PFLOPSです。Type IIはGrace CPU 2基、B200 GPU 4基、各GPU 186 GB HBM3eを密結合するGB200 NVL4を54ノード搭載し、総FP64 9.03 PFLOPS、FP16 1.048 EFLOPSと公表されています。FP16値を科学計算のFP64性能へ換算しません。",
+          "statement_en": "Type I has 256 nodes with two 192-core AMD EPYC 9965 sockets, 768 GiB normally and 6 TiB on three nodes, and 200 Gbps InfiniBand NDR, for 7.07 PFLOPS total FP64. Type II has 54 GB200 NVL4 nodes, each tightly coupling two Grace CPUs, four B200 GPUs, and 186 GB of HBM3e per GPU, with published totals of 9.03 PFLOPS FP64 and 1.048 EFLOPS FP16. The FP16 figure is not converted into scientific FP64 performance.",
+          "hpci_relevance_ja": "HPCIのノード構成はCPU対GPUの台数比ではなく、代表ワークロードの精度、メモリ容量・帯域、CPU-GPU転送、スケーリング、可搬性で決める必要があります。",
+          "hpci_relevance_en": "HPCI node composition should be based on representative-workload precision, memory capacity and bandwidth, CPU-GPU movement, scaling, and portability rather than a CPU-to-GPU node-count ratio.",
+          "adoption_conditions_ja": [
+            "科学シミュレーション、AI学習・推論、前後処理ごとに同一入力と品質で実効性能を測る。",
+            "大容量メモリ3ノードの同時利用、待ち時間、故障時の代替可能性を確認する。",
+            "Grace/B200密結合へ移植するコード量、CPU専用経路、通信ライブラリ対応を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Measure effective performance at the same input and quality for simulation, AI training and inference, and preprocessing or postprocessing.",
+            "Check concurrent use, queueing, and failure substitution for the three large-memory nodes.",
+            "Measure code changes, CPU-only paths, and communication-library support for the tightly coupled Grace/B200 partition."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS162",
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-FLOW2-DATA-PATH",
+          "name_ja": "ノード内NVMe・BeeGFS/BeeOND・48.4 PB共有ストレージ",
+          "name_en": "Node-local NVMe, BeeGFS/BeeOND, and 48.4 PB shared storage",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月1日提供予定",
+          "timing_en": "Planned availability October 1, 2026",
+          "statement_ja": "Type II各ノードは7.68 TB NVMe SSDを持ち、一部ノードではBeeGFS/BeeONDとして共有利用する計画です。共有ストレージは物理容量48.4 PBのDDN EXAScalerで、Nextcloudによる外部公開・受渡しも計画されています。容量、実効帯域、メタデータ性能、耐障害性、バックアップ、外部公開の認可は別の指標であり、容量だけではAIデータ処理能力を示しません。",
+          "statement_en": "Each Type-II node has a 7.68 TB NVMe SSD, with BeeGFS/BeeOND planned to expose local storage as a shared file system on selected nodes. Shared storage is a 48.4 PB physical-capacity DDN EXAScaler system, with Nextcloud planned for external publication and exchange. Capacity, effective bandwidth, metadata performance, resilience, backup, and authorization for external sharing are separate metrics; capacity alone does not establish AI data-processing capability.",
+          "hpci_relevance_ja": "AI for ScienceではGPU時間と同時に、学習データの取込み、チェックポイント、再利用、公開、長期保存を設計する必要があります。ローカルI/Oと共有I/Oの使い分けも評価対象です。",
+          "hpci_relevance_en": "AI-for-Science planning must cover ingestion, checkpoints, reuse, publication, and long-term retention together with GPU time. The division between local and shared I/O also requires evaluation.",
+          "adoption_conditions_ja": [
+            "代表ファイルサイズ・個数で読書き帯域、メタデータ、同時利用、チェックポイント復旧を測る。",
+            "BeeOND領域の作成・破棄、共有ストレージへの退避、障害時の保証を定義する。",
+            "Nextcloud公開時の認証・認可、個人情報・機密情報、版管理、転送費用を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure read/write bandwidth, metadata, concurrency, and checkpoint recovery with representative file sizes and counts.",
+            "Define BeeOND creation and teardown, staging to shared storage, and guarantees on failure.",
+            "Verify authentication and authorization, sensitive-data handling, versioning, and transfer cost for Nextcloud publication."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS162",
+            "SRC-CDS163"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-FLOW2-HPCI-ALLOCATION",
+          "name_ja": "稼働初年度6か月のHPCI提供予定量",
+          "name_en": "Planned six-month HPCI allocation in the first service year",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年10月～2027年3月",
+          "timing_en": "October 2026 through March 2027",
+          "statement_ja": "令和8年度HPCI資源一覧は、不老・弐Type Iを537,600ノード時間、Type IIを113,400ノード時間、2026年10月から2027年3月に提供予定とします。掲載量は配分可能枠であり、実稼働率、ジョブ待ち時間、利用者需要、大学内枠を含む全システム容量を示しません。異なるノードのノード時間を合算しません。",
+          "statement_en": "The FY2026 HPCI resource list plans 537,600 Type-I node-hours and 113,400 Type-II node-hours from October 2026 through March 2027. These are allocatable HPCI envelopes, not evidence of utilization, queue delay, user demand, or total system capacity including local allocations. Node-hours from the two different node types are not added together.",
+          "hpci_relevance_ja": "設備容量からHPCI提供量、大学内利用、保守、予備、政策課題を分け、半年分の実績から次年度の年間配分を更新する必要があります。",
+          "hpci_relevance_en": "Installed capacity should be separated into HPCI, local, maintenance, reserve, and policy allocations, with the following full-year plan updated from the first six months of evidence.",
+          "adoption_conditions_ja": [
+            "総ノード時間、HPCI枠、大学内枠、保守・障害損失を資源種別ごとに照合する。",
+            "要求、査定、配分、実消費、待ち時間、失敗率をType I/IIで別々に公開可能な形で集計する。",
+            "開始予定、受入試験、利用者提供、安定運用を別のマイルストーンとして追跡する。"
+          ],
+          "adoption_conditions_en": [
+            "Reconcile total node-hours, HPCI, local, maintenance, and outage losses by resource type.",
+            "Aggregate requests, review adjustments, awards, consumption, queues, and failure rates separately for Types I and II.",
+            "Track planned start, acceptance, user access, and stable operation as separate milestones."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS164"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS162",
+        "title": "次期スーパーコンピュータ『不老・弐』の導入が決定しました！",
+        "publisher": "名古屋大学情報基盤センター",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/flow2_pressrelease_202601.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-01"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T04:24:00+09:00",
+      "locator": "Pages 1-3: Type I/II node counts and performance, GB200 NVL4 composition, storage and Nextcloud",
+      "observation_ja": "CPU/GPU二系統の構成、性能・メモリ、54 GB200 NVL4ノード、48.4 PBストレージ、Nextcloud計画を確認しました。",
+      "observation_en": "Verified the CPU/GPU partitions, performance and memory, 54 GB200 NVL4 nodes, 48.4 PB storage, and planned Nextcloud service.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS163",
+        "title": "スーパーコンピュータシステム『不老・弐』",
+        "publisher": "名古屋大学 情報連携推進本部",
+        "url": "https://icts.nagoya-u.ac.jp/ja/sc/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（導入中）"
+      },
+      "origin_group": "nagoya-flow2-system-2026",
+      "checked_at": "2026-09-02T04:27:00+09:00",
+      "locator": "System composition: Type I, Type II, interconnect, node-local storage, shared storage, and current installation status",
+      "observation_ja": "9月2日時点の導入中表示、256 Type Iノード、54 Type IIノード、NDR、NVMe/BeeGFS/BeeOND、共有ストレージ構成を確認しました。",
+      "observation_en": "Verified installation status as of September 2, 256 Type-I nodes, 54 Type-II nodes, NDR, NVMe/BeeGFS/BeeOND, and shared storage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS164",
+        "title": "令和8年度課題募集におけるハードウェア・ソフトウェア資源一覧",
+        "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）",
+        "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（随時更新）"
+      },
+      "origin_group": "hpci-fy2026-resource-list",
+      "checked_at": "2026-09-02T04:31:00+09:00",
+      "locator": "Nagoya University rows: Flow II Types I and II, node composition, resource envelope, and period",
+      "observation_ja": "Type I 537,600 NH、Type II 113,400 NH、2026年10月～2027年3月、最大256/54ノードの提供予定を確認しました。",
+      "observation_en": "Verified planned HPCI availability of 537,600 Type-I and 113,400 Type-II node-hours from October 2026 through March 2027, with up to 256 and 54 nodes respectively.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-011、GAP-TDS-048、GAP-TDS-060は未解決です。受入試験、実効アプリケーション性能、I/O、電力、稼働率、待ち時間、故障、ソフトウェア移植の実績が必要です。",
+    "10月1日の稼働開始、HPCI提供実績、BeeONDとNextcloudの運用・セキュリティ条件は開始後に確認します。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-011, GAP-TDS-048, and GAP-TDS-060 remain open; acceptance results and evidence on application performance, I/O, power, utilization, queues, failures, and software migration are needed.",
+    "The October 1 service start, actual HPCI delivery, and operational and security conditions for BeeOND and Nextcloud require post-launch verification.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

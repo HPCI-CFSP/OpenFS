@@ -223,3 +223,45 @@ test("legacy what-if cells retain values while disclosing assumptions in both la
     assert.equal(f.get("application-performance-caveat").textContent, performance[`caveat_${language}`]);
   }
 });
+
+test("EEA1 baseline-package candidates expose immutable pins without claiming completion", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
+  const performance = data.application_performance_forecasts;
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const table = f.get("application-baseline-package-readiness");
+    const rows = f.walk(table).filter((el) => el.tagName === "tr");
+    assert.equal(rows.length, performance.baseline_package_readiness.length + 1);
+    assert.ok(table.textContent.includes("v2.1.6.1 (025e9eb)"));
+    assert.ok(table.textContent.includes("v1.0.0 (498091f)"));
+    assert.ok(table.textContent.includes(language === "ja" ? "未確認" : "Not confirmed"));
+    assert.ok(table.textContent.includes(language === "ja" ? "公開パッケージなし" : "No public package"));
+    assert.equal(
+      performance.common_benchmark_campaign.stages.find((item) => item.stage_id === "BMSTAGE-BASELINE-PACKAGE").completed_application_ids.length,
+      0
+    );
+  }
+});
+
+test("calibration candidate and infrastructure requirements remain provisional in both languages", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
+  const performance = data.application_performance_forecasts;
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const calibration = f.get("application-calibration-candidates");
+    assert.ok(calibration.textContent.includes("PMCAL-GENESIS-WEAK-001"));
+    assert.ok(calibration.textContent.includes("PMCAL-SALMON-WEAK-001"));
+    assert.ok(calibration.textContent.includes(language === "ja" ? "合意判定未完了" : "incomplete"));
+    assert.ok(calibration.textContent.includes("6.183"));
+    assert.ok(f.get("application-cross-platform-observations").textContent.includes("GENESIS"));
+    assert.ok(f.get("application-quantitative-requirements").textContent.includes("SALMON"));
+    const matrix = f.get("application-infrastructure-matrix");
+    const cells = f.walk(matrix).filter((el) => el.className?.split(" ").includes("infrastructure-demand"));
+    assert.equal(cells.length, performance.applications.length * performance.infrastructure_requirements_matrix.dimensions.length);
+    assert.ok(matrix.textContent.includes(language === "ja" ? "必要な測定・確認" : "Required measurement or check"));
+    assert.equal(
+      f.get("application-infrastructure-caveat").textContent,
+      performance.infrastructure_requirements_matrix[`caveat_${language}`]
+    );
+  }
+});

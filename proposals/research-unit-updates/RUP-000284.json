@@ -1,0 +1,184 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000284",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:44:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000160",
+      "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"
+    },
+    {
+      "update_id": "RUP-000174",
+      "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"
+    },
+    {
+      "update_id": "RUP-000194",
+      "bundle_sha256": "7726fc26160a4f3484e7e3187a701e60c23ad866d31691e75018ff10640a4dcd"
+    },
+    {
+      "update_id": "RUP-000216",
+      "bundle_sha256": "33ecdaac64481e6550149125932e4c15a58b3c7ba6900e0c92dd929348f1d87b"
+    },
+    {
+      "update_id": "RUP-000251",
+      "bundle_sha256": "82b9ed067447fa7ca02f2ce08961f53d76d60cef40d81a7eee06a84f2f4052d9"
+    },
+    {
+      "update_id": "RUP-000259",
+      "bundle_sha256": "09537c26563e7ec4e061464a44d6773f5d993803e79d62e9e3114a81f6b9d044"
+    },
+    {
+      "update_id": "RUP-000275",
+      "bundle_sha256": "0f46b1721bfcf6baf5b0058311cd963fcb9d72c1f1d0ebce8e976da04459720a"
+    }
+  ],
+  "before_profile_sha256": "39cbaba999be278839be2782e6acf6b8deae9e3a9c6629dbc3f0f2ffae0dda70",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Spack 1.2.0は2026年6月21日に公開され、DAG単位で複数package buildを並行実行するinstaller、concretization group・cache、install時のSPDX 2.3 SBOM、書込み先を制限するspack isolate、実験的な非特権Landlock sandboxを導入しました。1.2.1と1.2.2はinstaller hang、solver性能、concretization cacheの指数的計算量等を修正しています。package repository v2026.06.0は8,917 packageを収録します。HPCIでは新機能の有無より、版・recipe・cache・SBOM・sandbox policyを固定した再構築試験が必要です。Consensusは未完了です。",
+  "summary_en": "Spack 1.2.0, released June 21, 2026, introduces a DAG-parallel installer, concretization groups and caching, install-time SPDX 2.3 SBOM generation, spack isolate write restrictions, and experimental unprivileged Landlock sandboxing. Versions 1.2.1 and 1.2.2 fix installer hangs, solver performance, and accidental exponential complexity in the concretization cache. The v2026.06.0 package repository contains 8,917 packages. HPCI needs rebuild tests with pinned tool, recipes, caches, SBOMs, and sandbox policies rather than a feature-presence checklist. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-06-U01",
+      "before_sha256": "838672d6d236586bb9ebb64285ca9db7378d910416b6bb67329c76b9e26f6ef8",
+      "evidence_section_ids": [
+        "TDS-CD6-SSW-06-U01",
+        "TDS-CD7-SSW-06-U01",
+        "TDS-CD8-SSW-06-U01",
+        "TDS-CD14-SSW-06-HPCI-EXECUTION",
+        "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+        "TDS-CD22-SSW-06-SCHEDULERS-2026",
+        "TDS-CD23-SSW-06-FUGAKU-QUEUE-OPERATIONS",
+        "TDS-CD24-SSW-06-FUGAKU-QUEUE-CONTROL",
+        "TDS-CD25-SSW-06-MIYABI-MIG-OPERATIONS",
+        "TDS-CD14-SSW-06-SPACK-12-REPRODUCIBILITY"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD14-SSW-06-SPACK-12-REPRODUCIBILITY",
+      "title_ja": "Spack 1.2の並列構築・SBOM・隔離",
+      "title_en": "Parallel builds, SBOMs, and isolation in Spack 1.2",
+      "summary_ja": "構築速度、依存解決の再現性、供給網来歴、build隔離を別々に評価します。",
+      "summary_en": "Evaluate build speed, concretization reproducibility, supply-chain provenance, and build isolation separately.",
+      "items": [
+        {
+          "item_id": "TDI-CD91-SPACK-120-INSTALLER",
+          "name_ja": "DAG並列installerとconcretization group・cache",
+          "name_en": "DAG-parallel installer and concretization groups and cache",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月21日～7月20日",
+          "timing_en": "June 21-July 20, 2026",
+          "statement_ja": "Spack 1.2.0はsingle-threaded event-driven schedulerが独立package buildを並行投入し、POSIX pipeのjobserverでjob数を共有します。1環境内のspecを依存関係付きgroupへ分け、groupごとにtarget・variant等を変えられ、同一solveはcacheします。ただし1.2.1はforkserver下のinstaller hang、1.2.2はspliced specのhashで生じる指数的計算量を修正しており、1.2.0の機能名だけでは安定性を判断できません。",
+          "statement_en": "Spack 1.2.0 uses a single-threaded event-driven scheduler to run independent package builds concurrently and shares job capacity through a POSIX-pipe jobserver. Specs within one environment can be split into dependency-linked groups with different targets or variants, and identical solves are cached. However, 1.2.1 fixed an installer hang under forkserver and 1.2.2 fixed accidental exponential hash complexity for spliced specs, so 1.2.0 feature availability alone does not establish stability.",
+          "hpci_relevance_ja": "多数architectureを持つHPCIでは、環境分割を減らせる可能性がありますが、solver時間、build失敗、cache汚染、並列buildの資源競合を大規模stackで測る必要があります。",
+          "hpci_relevance_en": "A multi-architecture HPCI may reduce environment fragmentation, but solver time, build failures, cache contamination, and concurrent-build contention require measurement on full software stacks.",
+          "adoption_conditions_ja": [
+            "1.2.2、spack-packages commit、compiler、external、mirrorを固定する。",
+            "cold/warm concretization、逐次/並列build、失敗再開を測る。",
+            "group間dependencyとbinary cache再利用をarchitecture別に検証する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin 1.2.2, the spack-packages commit, compilers, externals, and mirrors.",
+            "Measure cold and warm concretization, serial and parallel builds, and failure recovery.",
+            "Validate inter-group dependencies and binary-cache reuse per architecture."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS358",
+            "SRC-CDS359"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD91-SPACK-120-SBOM-SANDBOX",
+          "name_ja": "SPDX 2.3 SBOMと実験的Landlock sandbox",
+          "name_en": "SPDX 2.3 SBOM and experimental Landlock sandbox",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "Spack 1.2.0",
+          "timing_en": "Spack 1.2.0",
+          "statement_ja": "1.2.0はinstall prefix配下にSPDX 2.3 SBOMを自動生成し、入手可能なmetadataからsupplier、component名・版・識別子・依存関係を記録します。spack isolateはSpack prefixまたは指定path以外への書込みを制限します。Linux 5.13以降のLandlock sandboxはrootやunprivileged namespaceを要せずbuildのread/write/execute範囲を絞りますが、1.2では実験的で、1.3でdefault化を目標とする段階です。",
+          "statement_en": "Version 1.2.0 automatically generates SPDX 2.3 SBOMs under each install prefix with available supplier, component, version, identifier, and dependency metadata. spack isolate restricts writes to the Spack prefix or a designated path. Experimental Landlock sandboxing on Linux 5.13 or later narrows build read, write, and execute access without root or unprivileged namespaces; in 1.2 it remains experimental, with default enablement targeted for 1.3.",
+          "hpci_relevance_ja": "OpenFSが推奨するrestricted shellをsoftware buildにも適用できる候補ですが、SBOM欠損項目とsandbox escape・互換性を独立検証する必要があります。",
+          "hpci_relevance_en": "This is a candidate for extending OpenFS restricted-shell principles to software builds, but SBOM omissions, sandbox escape resistance, and compatibility require independent validation.",
+          "adoption_conditions_ja": [
+            "SBOMをrecipe、source checksum、patch、compiler、build logと照合する。",
+            "network、filesystem、subprocessを含むdeny/allow testを作る。",
+            "sandbox有無でbuild成功率、時間、成果物hashを比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Reconcile SBOMs with recipes, source checksums, patches, compilers, and build logs.",
+            "Create deny/allow tests covering network, filesystems, and subprocesses.",
+            "Compare build success, duration, and artifact hashes with and without sandboxing."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS358"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS358",
+        "title": "Spack v1.2.0-v1.2.2 releases",
+        "publisher": "Spack Project",
+        "url": "https://github.com/spack/spack/releases",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-20"
+      },
+      "origin_group": "spack-12-releases",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "v1.2.0-v1.2.2 notes: installer, groups, cache, SBOM, isolate, Landlock, regressions",
+      "observation_ja": "Spack 1.2の機能、実験状態、後続修正を確認しました。",
+      "observation_en": "Verified Spack 1.2 capabilities, experimental status, and subsequent fixes.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS359",
+        "title": "Spack packages v2026.06.0",
+        "publisher": "Spack Project",
+        "url": "https://github.com/spack/spack-packages/releases/tag/v2026.06.0",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-22"
+      },
+      "origin_group": "spack-packages-202606",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "v2026.06.0 compatibility and 8,917-package count",
+      "observation_ja": "package repositoryのAPI互換性と収録数を確認しました。",
+      "observation_en": "Verified package-repository API compatibility and package count.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "HPCI規模のstackに対するsolver/build時間、SBOM完全性、sandbox security、複数architectureのbinary cache再利用は未測定です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Solver and build time, SBOM completeness, sandbox security, and multi-architecture binary-cache reuse remain unmeasured on an HPCI-scale stack.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

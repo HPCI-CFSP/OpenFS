@@ -35,7 +35,7 @@
       noReportText: "昇格ワークフローで受理され、人による公開承認を受けた報告書やデータをここに自動表示します。",
       footerDescription: "HPCI-CFSP 公開調査ビュー", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "レビュー済み", statusRetired: "廃止", verificationPending: "独立検証待ち", verificationAccepted: "合意判定で受理済み", evidenceCollected: "根拠あり・検証待ち", notYetReviewed: "未検証", noPublicUpdate: "公開結果なし",
-      findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見を準備中", closeDialog: "詳細を閉じる",
+      findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見を準備中", closeDialog: "詳細を閉じる", closeTermDialog: "用語の説明を閉じる",
       topicDetailMeta: "調査項目の詳細", canonicalTopicId: "正規Topic ID", relatedRoadmaps: "関連ロードマップ", roadmapPlanned: "（作成予定）", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "この調査項目に対応する調査結果は、まだ公開されていません。今後の調査で公開可能な結果が得られた時点で更新します。",
       topicResultsKicker: "調査項目別の結果", topicResultsLead: "この調査項目に直接対応する公開知見を、{runCount}回の調査実行から{findingCount}件表示しています。",
@@ -51,7 +51,7 @@
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項",
       commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "時期未公表", officialScanIncomplete: "一次情報の継続確認が必要",
-      decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
+      decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較表の根拠資料", relatedTermRoadmaps: "用語に関連するロードマップ", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
       conferenceLink: "Hot Chips 2026: presentations, organizations and research coverage",
@@ -81,7 +81,7 @@
       noReportText: "Exports appear here after acceptance by the promotion workflow and explicit human publication approval.",
       footerDescription: "HPCI-CFSP public research view", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", verificationPending: "independent review pending", verificationAccepted: "accepted through the Consensus Gate", evidenceCollected: "evidence available; review pending", notYetReviewed: "not reviewed", noPublicUpdate: "no public result",
-      findingAvailable: "public findings", decisionAvailable: "technology synthesis", summaryPending: "public findings in preparation", closeDialog: "Close details",
+      findingAvailable: "public findings", decisionAvailable: "technology synthesis", summaryPending: "public findings in preparation", closeDialog: "Close details", closeTermDialog: "Close term definition",
       topicDetailMeta: "Topic details", canonicalTopicId: "Canonical Topic ID", relatedRoadmaps: "Related roadmaps", roadmapPlanned: "(planned)", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this topic has been published yet. This page will be updated when a later research cycle produces a publishable result.",
       topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this research topic from {runCount} research runs.",
@@ -97,7 +97,7 @@
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
       commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required",
-      decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
+      decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", catalogComparisons: "Related technology comparisons", catalogComparisonsLead: "Compare competing and complementary technologies in the findings using common planning criteria.", decisionUse: "Use in planning decisions", comparisonCaveat: "Caveat", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Sources for this term or comparison", relatedTermRoadmaps: "Roadmaps related to this term", comparisonRoadmaps: "Roadmaps covered by this comparison", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
     }
   };
 
@@ -119,6 +119,7 @@
   let activeTopicId = null;
   let activeTopicRegion = "all";
   let activeRoadmapMilestoneId = null;
+  let activeTermId = null;
 
   function readLanguage() {
     const requested = new URLSearchParams(window.location.search).get("lang");
@@ -255,6 +256,125 @@
 
   function localized(item, field) {
     return item[`${field}_${language}`] || item[field] || "";
+  }
+
+  function referenceData() {
+    return data.roadmap_reference_data || {terms: [], comparison_sets: []};
+  }
+
+  function referenceTermMap() {
+    return new Map(referenceData().terms.map((term) => [term.term_id, term]));
+  }
+
+  function roadmapArtifactMap() {
+    return new Map((data.roadmap_artifacts || []).map((roadmap) => [roadmap.roadmap_id, roadmap]));
+  }
+
+  function topicRoadmapIds(topic) {
+    return new Set((topic?.related_roadmaps || []).map((roadmap) => roadmap.roadmap_id));
+  }
+
+  function relevantTermsForTopic(topic) {
+    const roadmapIds = topicRoadmapIds(topic);
+    return referenceData().terms.filter((term) => term.roadmap_ids.some((roadmapId) => roadmapIds.has(roadmapId)));
+  }
+
+  function currentTopic() {
+    return data.topics.find((topic) => topic.topic_id === activeTopicId);
+  }
+
+  function aliasMatchesText(value, alias) {
+    const lowerValue = String(value || "").toLocaleLowerCase();
+    const lowerAlias = alias.toLocaleLowerCase();
+    let start = lowerValue.indexOf(lowerAlias);
+    while (start !== -1) {
+      const end = start + lowerAlias.length;
+      const asciiStart = /^[a-z0-9_]/i.test(alias);
+      const asciiEnd = /[a-z0-9_]$/i.test(alias);
+      const before = lowerValue[start - 1] || "";
+      const after = lowerValue[end] || "";
+      if ((!asciiStart || !/[a-z0-9_]/i.test(before)) && (!asciiEnd || !/[a-z0-9_]/i.test(after))) return true;
+      start = lowerValue.indexOf(lowerAlias, start + 1);
+    }
+    return false;
+  }
+
+  function appendGlossaryText(root, value, topic = currentTopic()) {
+    const entries = relevantTermsForTopic(topic)
+      .flatMap((term) => term.aliases.map((alias) => ({alias, term})))
+      .sort((left, right) => right.alias.length - left.alias.length);
+    if (!value || entries.length === 0) {
+      root.append(document.createTextNode(value || ""));
+      return;
+    }
+    const byAlias = new Map(entries.map((entry) => [entry.alias.toLocaleLowerCase(), entry.term]));
+    const escaped = entries.map((entry) => entry.alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const matcher = new RegExp(escaped.join("|"), "giu");
+    let cursor = 0;
+    let match;
+    while ((match = matcher.exec(value)) !== null) {
+      const alias = match[0];
+      const start = match.index;
+      const end = start + alias.length;
+      const asciiStart = /^[A-Za-z0-9_]/.test(alias);
+      const asciiEnd = /[A-Za-z0-9_]$/.test(alias);
+      if ((asciiStart && /[A-Za-z0-9_]/.test(value[start - 1] || "")) || (asciiEnd && /[A-Za-z0-9_]/.test(value[end] || ""))) continue;
+      root.append(document.createTextNode(value.slice(cursor, start)));
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "glossary-term-link";
+      button.textContent = alias;
+      button.setAttribute("aria-haspopup", "dialog");
+      button.addEventListener("click", () => openCatalogTerm(byAlias.get(alias.toLocaleLowerCase()).term_id));
+      root.append(button);
+      cursor = end;
+    }
+    root.append(document.createTextNode(value.slice(cursor)));
+  }
+
+  function referenceSource(sourceRef) {
+    if (sourceRef.catalog_source_id) {
+      const source = data.topic_decision_support.sources.find((entry) => entry.source_id === sourceRef.catalog_source_id);
+      return source ? {roadmap: null, source} : null;
+    }
+    const roadmap = roadmapArtifactMap().get(sourceRef.roadmap_id);
+    const source = roadmap?.sources.find((entry) => entry.source_id === sourceRef.source_id);
+    return source ? {roadmap, source} : null;
+  }
+
+  function appendReferenceSourceList(root, sourceRefs) {
+    sourceRefs.forEach((sourceRef) => {
+      const match = referenceSource(sourceRef);
+      if (!match) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = match.source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = match.source.title;
+      const publisher = document.createElement("span");
+      const sourceId = sourceRef.catalog_source_id || sourceRef.source_id;
+      publisher.textContent = match.roadmap
+        ? `${localized(match.roadmap, "title")} · ${match.source.publisher} · ${sourceId}`
+        : `${match.source.publisher} · ${sourceId}`;
+      item.append(link, publisher);
+      root.append(item);
+    });
+  }
+
+  function appendRoadmapLinks(root, roadmapIds, termId = null) {
+    const artifacts = roadmapArtifactMap();
+    roadmapIds.forEach((roadmapId) => {
+      const roadmap = artifacts.get(roadmapId);
+      if (!roadmap) return;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      const termQuery = termId ? `?term=${encodeURIComponent(termId)}&lang=${language}` : `?lang=${language}`;
+      link.href = `roadmaps/${roadmap.slug}/${termQuery}`;
+      link.textContent = localized(roadmap, "title");
+      item.append(link);
+      root.append(item);
+    });
   }
 
   function roadmapSourceMap() {
@@ -755,7 +875,7 @@
     root.appendChild(toolbar);
   }
 
-  function renderDecisionDimensions(root, profile) {
+  function renderDecisionDimensions(root, profile, topic) {
     const section = document.createElement("section");
     section.className = "decision-dimensions";
     const title = document.createElement("h3");
@@ -765,9 +885,9 @@
     profile.hpci_decision_dimensions.forEach((dimension) => {
       const item = document.createElement("article");
       const heading = document.createElement("strong");
-      heading.textContent = localized(dimension, "label");
+      appendGlossaryText(heading, localized(dimension, "label"), topic);
       const question = document.createElement("p");
-      question.textContent = localized(dimension, "question");
+      appendGlossaryText(question, localized(dimension, "question"), topic);
       item.append(heading, question);
       list.appendChild(item);
     });
@@ -794,14 +914,14 @@
     return container;
   }
 
-  function renderTechnologyItem(item, actorMap) {
+  function renderTechnologyItem(item, actorMap, topic) {
     const article = document.createElement("article");
     article.className = `decision-item decision-stage-${item.stage}`;
     article.id = item.item_id;
     const header = document.createElement("div");
     header.className = "decision-item-header";
     const title = document.createElement("h5");
-    title.textContent = localized(item, "name");
+    appendGlossaryText(title, localized(item, "name"), topic);
     const badges = document.createElement("div");
     badges.className = "decision-badges";
     [enumLabel(item.maturity), `${tr("confidence")}: ${tr(item.confidence)}`].forEach((value) => {
@@ -812,22 +932,22 @@
     header.append(title, badges);
     const timing = document.createElement("p");
     timing.className = "decision-timing";
-    timing.textContent = `${tr("timing")}: ${localized(item, "timing")}`;
+    appendGlossaryText(timing, `${tr("timing")}: ${localized(item, "timing")}`, topic);
     const statement = document.createElement("p");
     statement.className = "decision-statement";
-    statement.textContent = localized(item, "statement");
+    appendGlossaryText(statement, localized(item, "statement"), topic);
     const relevanceTitle = document.createElement("strong");
     relevanceTitle.className = "decision-subtitle";
     relevanceTitle.textContent = tr("hpciRelevance");
     const relevance = document.createElement("p");
-    relevance.textContent = localized(item, "hpci_relevance");
+    appendGlossaryText(relevance, localized(item, "hpci_relevance"), topic);
     const conditionsTitle = document.createElement("strong");
     conditionsTitle.className = "decision-subtitle";
     conditionsTitle.textContent = tr("adoptionConditions");
     const conditions = document.createElement("ul");
     localized(item, "adoption_conditions").forEach((condition) => {
       const entry = document.createElement("li");
-      entry.textContent = condition;
+      appendGlossaryText(entry, condition, topic);
       conditions.appendChild(entry);
     });
     const actorsTitle = document.createElement("strong");
@@ -845,7 +965,7 @@
     return article;
   }
 
-  function renderDecisionSections(root, profile, actorMap) {
+  function renderDecisionSections(root, profile, actorMap, topic) {
     const renderedItems = new Map();
     const stageOrder = ["current", "near-term", "research", "contested"];
     const stageLabels = {
@@ -861,10 +981,10 @@
       section.className = "decision-technology-section";
       section.id = profileSection.section_id;
       const title = document.createElement("h3");
-      title.textContent = localized(profileSection, "title");
+      appendGlossaryText(title, localized(profileSection, "title"), topic);
       const summary = document.createElement("p");
       summary.className = "decision-section-summary";
-      summary.textContent = localized(profileSection, "summary");
+      appendGlossaryText(summary, localized(profileSection, "summary"), topic);
       section.append(title, summary);
       stageOrder.forEach((stage) => {
         const items = filtered.filter((item) => item.stage === stage);
@@ -879,7 +999,7 @@
           const previous = renderedItems.get(key);
           if (!previous) {
             renderedItems.set(key, item.item_id);
-            list.appendChild(renderTechnologyItem(item, actorMap));
+            list.appendChild(renderTechnologyItem(item, actorMap, topic));
             return;
           }
           const reference = document.createElement("p");
@@ -1052,7 +1172,7 @@
       const title = document.createElement("strong");
       title.textContent = `${gap.gap_id} / ${gap.priority}`;
       const question = document.createElement("p");
-      question.textContent = localized(gap, "question");
+      appendGlossaryText(question, localized(gap, "question"));
       const next = document.createElement("p");
       next.textContent = `${tr("nextAction")}: ${localized(gap, "next_action")}`;
       item.append(title, question, next);
@@ -1086,7 +1206,7 @@
       heading.append(title, status);
       const summaryText = document.createElement("p");
       summaryText.className = "research-summary-text";
-      summaryText.textContent = localized(summary, "summary");
+      appendGlossaryText(summaryText, localized(summary, "summary"));
       const meta = document.createElement("dl");
       meta.className = "research-meta";
       appendMetaItem(meta, tr("sourceRun"), summary.source_run_id);
@@ -1100,7 +1220,7 @@
       summary.findings.forEach((finding) => {
         const item = document.createElement("li");
         const statement = document.createElement("p");
-        statement.textContent = localized(finding, "statement");
+        appendGlossaryText(statement, localized(finding, "statement"));
         const sourceLabel = document.createElement("span");
         sourceLabel.className = "source-label";
         sourceLabel.textContent = tr("sources");
@@ -1128,7 +1248,7 @@
       const caveatTitle = document.createElement("strong");
       caveatTitle.textContent = tr("sourceCaveat");
       const caveatText = document.createElement("p");
-      caveatText.textContent = localized(summary, "caveat");
+      appendGlossaryText(caveatText, localized(summary, "caveat"));
       caveat.append(caveatTitle, caveatText);
       section.append(heading, summaryText, meta, findingsTitle, findings, caveat);
       history.appendChild(section);
@@ -1138,6 +1258,202 @@
 
   function topicFeedbackLink(kind, id, title, relatedIds = []) {
     return window.OpenFSFeedback.link({kind, id, title, relatedIds: [activeTopicId, ...relatedIds], path: `?topic=${encodeURIComponent(activeTopicId)}`});
+  }
+
+  function topicReferenceText(topic, profile) {
+    const values = [topic.title_ja, topic.title_en, topic.summary_ja, topic.summary_en];
+    (topic.research_units || []).forEach((unit) => values.push(
+      unit.title_ja, unit.title_en, unit.question_ja, unit.question_en
+    ));
+    if (profile) {
+      values.push(profile.summary_ja, profile.summary_en);
+      profile.hpci_decision_dimensions.forEach((dimension) => values.push(
+        dimension.label_ja, dimension.label_en, dimension.question_ja, dimension.question_en
+      ));
+      profile.sections.forEach((section) => {
+        values.push(section.title_ja, section.title_en, section.summary_ja, section.summary_en);
+        section.items.forEach((item) => values.push(
+          item.name_ja, item.name_en, item.statement_ja, item.statement_en,
+          item.hpci_relevance_ja, item.hpci_relevance_en,
+          ...(item.adoption_conditions_ja || []), ...(item.adoption_conditions_en || [])
+        ));
+      });
+    }
+    return values.filter(Boolean).join("\n");
+  }
+
+  function matchedTopicTermIds(topic, profile) {
+    const text = topicReferenceText(topic, profile);
+    return new Set(relevantTermsForTopic(topic)
+      .filter((term) => term.aliases.some((alias) => aliasMatchesText(text, alias)))
+      .map((term) => term.term_id));
+  }
+
+  function topicComparisons(topic, profile) {
+    const roadmapIds = topicRoadmapIds(topic);
+    const termIds = matchedTopicTermIds(topic, profile);
+    return referenceData().comparison_sets.filter((comparison) =>
+      comparison.roadmap_ids.some((roadmapId) => roadmapIds.has(roadmapId)) &&
+      comparison.rows.some((row) => termIds.has(row.term_id))
+    );
+  }
+
+  function renderTopicComparisons(root, topic, profile) {
+    const comparisons = topicComparisons(topic, profile);
+    if (!comparisons.length) return;
+    const terms = referenceTermMap();
+    const container = document.createElement("section");
+    container.className = "topic-reference-section";
+    const kicker = document.createElement("span");
+    kicker.className = "eyebrow";
+    kicker.textContent = tr("catalogComparisons");
+    const heading = document.createElement("h3");
+    heading.textContent = tr("catalogComparisons");
+    const lead = document.createElement("p");
+    lead.className = "topic-reference-lead";
+    lead.textContent = tr("catalogComparisonsLead");
+    container.append(kicker, heading, lead);
+    comparisons.forEach((comparison) => {
+      const section = document.createElement("section");
+      section.className = "technology-comparison";
+      section.id = `catalog-comparison-${comparison.comparison_id}`;
+      const title = document.createElement("h4");
+      title.textContent = localized(comparison, "title");
+      const summary = document.createElement("p");
+      summary.className = "technology-comparison-summary";
+      summary.textContent = localized(comparison, "summary");
+      const use = document.createElement("p");
+      use.className = "technology-comparison-use";
+      const useLabel = document.createElement("strong");
+      useLabel.textContent = `${tr("decisionUse")}: `;
+      use.append(useLabel, document.createTextNode(localized(comparison, "decision_use")));
+      const wrap = document.createElement("div");
+      wrap.className = "technology-comparison-wrap";
+      const table = document.createElement("table");
+      table.className = "technology-comparison-table";
+      const head = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      const termHead = document.createElement("th");
+      termHead.textContent = language === "ja" ? "技術" : "Technology";
+      headRow.append(termHead);
+      comparison.columns.forEach((column) => {
+        const cell = document.createElement("th");
+        cell.textContent = localized(column, "label");
+        headRow.append(cell);
+      });
+      head.append(headRow);
+      const body = document.createElement("tbody");
+      comparison.rows.forEach((row) => {
+        const item = document.createElement("tr");
+        const termCell = document.createElement("th");
+        termCell.scope = "row";
+        const term = terms.get(row.term_id);
+        if (!term) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "comparison-term-link";
+        button.textContent = localized(term, "label");
+        button.setAttribute("aria-haspopup", "dialog");
+        button.addEventListener("click", () => openCatalogTerm(row.term_id));
+        const sources = document.createElement("div");
+        sources.className = "comparison-row-sources";
+        row.source_refs.forEach((sourceRef) => {
+          const match = referenceSource(sourceRef);
+          if (!match) return;
+          const link = document.createElement("a");
+          link.href = match.source.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = match.source.title;
+          sources.append(link);
+        });
+        termCell.append(button, sources);
+        item.append(termCell);
+        comparison.columns.forEach((column) => {
+          const cell = document.createElement("td");
+          const value = row.cells.find((entry) => entry.column_id === column.column_id);
+          cell.textContent = localized(value, "text");
+          item.append(cell);
+        });
+        body.append(item);
+      });
+      table.append(head, body);
+      wrap.append(table);
+      const caveat = document.createElement("p");
+      caveat.className = "technology-comparison-caveat";
+      const caveatLabel = document.createElement("strong");
+      caveatLabel.textContent = `${tr("comparisonCaveat")}: `;
+      caveat.append(caveatLabel, document.createTextNode(localized(comparison, "caveat")));
+      const roadmapTitle = document.createElement("strong");
+      roadmapTitle.className = "comparison-roadmap-title";
+      roadmapTitle.textContent = tr("comparisonRoadmaps");
+      const roadmapLinks = document.createElement("ul");
+      roadmapLinks.className = "related-roadmap-list comparison-roadmap-links";
+      appendRoadmapLinks(roadmapLinks, comparison.roadmap_ids);
+      section.append(title, summary, use, wrap, caveat, roadmapTitle, roadmapLinks);
+      container.append(section);
+    });
+    root.append(container);
+  }
+
+  function renderCatalogTermDialog() {
+    if (!activeTermId) return;
+    const term = referenceTermMap().get(activeTermId);
+    if (!term) return;
+    setText("term-dialog-id", term.term_id);
+    setText("term-dialog-title", localized(term, "label"));
+    setText("term-dialog-meta", `${term.category} · ${referenceData().as_of}`);
+    const root = document.getElementById("term-dialog-content");
+    root.replaceChildren();
+    const section = document.createElement("section");
+    section.className = "roadmap-term-detail";
+    const title = document.createElement("h3");
+    title.textContent = tr("termDefinition");
+    const definition = document.createElement("p");
+    definition.textContent = localized(term, "definition");
+    const relatedTitle = document.createElement("h4");
+    relatedTitle.textContent = tr("relatedTerms");
+    const related = document.createElement("div");
+    related.className = "roadmap-related-terms";
+    term.related_term_ids.forEach((termId) => {
+      const relatedTerm = referenceTermMap().get(termId);
+      if (!relatedTerm) return;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "related-term-link";
+      button.textContent = localized(relatedTerm, "label");
+      button.addEventListener("click", () => {
+        activeTermId = termId;
+        const url = new URL(window.location.href);
+        url.searchParams.set("term", termId);
+        window.history.replaceState(null, "", url);
+        renderCatalogTermDialog();
+      });
+      related.append(button);
+    });
+    const sourcesTitle = document.createElement("h4");
+    sourcesTitle.textContent = tr("referenceSources");
+    const sources = document.createElement("ul");
+    sources.className = "source-list roadmap-dialog-source-list";
+    appendReferenceSourceList(sources, term.source_refs);
+    const roadmapTitle = document.createElement("h4");
+    roadmapTitle.textContent = tr("relatedTermRoadmaps");
+    const roadmaps = document.createElement("ul");
+    roadmaps.className = "related-roadmap-list";
+    appendRoadmapLinks(roadmaps, term.roadmap_ids, term.term_id);
+    section.append(title, definition, relatedTitle, related, sourcesTitle, sources, roadmapTitle, roadmaps);
+    root.append(topicFeedbackLink("term", term.term_id, localized(term, "label")), section);
+  }
+
+  function openCatalogTerm(termId) {
+    if (!referenceTermMap().has(termId)) return;
+    activeTermId = termId;
+    const url = new URL(window.location.href);
+    url.searchParams.set("term", termId);
+    window.history.replaceState(null, "", url);
+    renderCatalogTermDialog();
+    const dialog = document.getElementById("term-dialog");
+    if (!dialog.open) dialog.showModal();
   }
 
   function renderTopicDetail() {
@@ -1180,7 +1496,7 @@
       kicker.className = "eyebrow";
       kicker.textContent = tr("decisionSummary");
       const text = document.createElement("p");
-      text.textContent = localized(profile, "summary");
+      appendGlossaryText(text, localized(profile, "summary"), topic);
       const notice = document.createElement("p");
       notice.className = "decision-provisional-notice";
       notice.textContent = tr("provisionalNotice");
@@ -1188,8 +1504,8 @@
       root.appendChild(overview);
       const actorMap = decisionActorMap();
       renderRegionFilter(root, profile, actorMap);
-      renderDecisionDimensions(root, profile);
-      renderDecisionSections(root, profile, actorMap);
+      renderDecisionDimensions(root, profile, topic);
+      renderDecisionSections(root, profile, actorMap, topic);
       if (profile.related_surface_ids.length) {
         const heading = document.createElement("h3");
         heading.className = "related-tables-heading";
@@ -1200,6 +1516,7 @@
       if (profile.related_surface_ids.includes("numerical-methods")) renderNumericalMatrix(root);
       renderCoverageGaps(root, profile);
     }
+    renderTopicComparisons(root, topic, profile);
     if (topic.related_roadmaps.length) {
       const section = document.createElement("section");
       section.className = "topic-related-roadmaps";
@@ -1291,18 +1608,18 @@
     const heading = document.createElement("h3");
     heading.textContent = tr("scopeTitle");
     const summary = document.createElement("p");
-    summary.textContent = localized(topic, "summary");
+    appendGlossaryText(summary, localized(topic, "summary"), topic);
     const list = document.createElement("ul");
     list.className = "research-unit-list";
     (topic.research_units || []).forEach((unit) => {
       const item = document.createElement("li");
       const title = document.createElement("strong");
-      title.textContent = localized(unit, "title");
+      appendGlossaryText(title, localized(unit, "title"), topic);
       const status = document.createElement("span");
       status.className = "research-unit-status";
       status.textContent = tr(statusKeys[unit.status]);
       const question = document.createElement("p");
-      question.textContent = localized(unit, "question");
+      appendGlossaryText(question, localized(unit, "question"), topic);
       item.append(title, status, question);
       if (unit.latest_update_id) {
         const provenance = document.createElement("a");
@@ -1440,6 +1757,7 @@
     renderReports();
     renderTopicDetail();
     renderRoadmapDialog();
+    renderCatalogTermDialog();
   }
 
   document.querySelectorAll("[data-language]").forEach((button) => {
@@ -1457,12 +1775,29 @@
     if (event.target === event.currentTarget) event.currentTarget.close();
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
+    const termDialog = document.getElementById("term-dialog");
+    if (termDialog.open) termDialog.close();
     activeTopicId = null;
     const url = new URL(window.location.href);
     url.searchParams.delete("topic");
     window.history.replaceState(null, "", url);
   });
+  document.getElementById("term-dialog-close").addEventListener("click", () => {
+    document.getElementById("term-dialog").close();
+  });
+  document.getElementById("term-dialog").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) event.currentTarget.close();
+  });
+  document.getElementById("term-dialog").addEventListener("close", () => {
+    activeTermId = null;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("term");
+    window.history.replaceState(null, "", url);
+  });
   render();
-  const initialTopicId = new URLSearchParams(window.location.search).get("topic");
+  const initialParams = new URLSearchParams(window.location.search);
+  const initialTopicId = initialParams.get("topic");
   if (initialTopicId) openTopicDetail(initialTopicId);
+  const initialTermId = initialParams.get("term");
+  if (initialTopicId && initialTermId) openCatalogTerm(initialTermId);
 })();

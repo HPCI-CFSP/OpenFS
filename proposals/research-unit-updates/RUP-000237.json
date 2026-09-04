@@ -1,0 +1,68 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000237",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:36:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000167", "bundle_sha256": "e5112b0eca00e67e8a66b57563b417aad91ccbe9c434a92e78e835d46a7029ff"},
+    {"update_id": "RUP-000203", "bundle_sha256": "9a2417891b87ccaf73731ca2ed7d1b6a27fdf2673d8a32cd4294aa93a7c69fff"},
+    {"update_id": "RUP-000229", "bundle_sha256": "b5094cdaef2fdd249d311870eeeaf44b30621bd35a939691ea8dc7bf5ca6ea0b"}
+  ],
+  "before_profile_sha256": "d03cd43ea2bb17170abf5ca5d8ac0b72fe735f66a4fd11cd4bfd11443c00c339",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "大阪大学SQUIDの公開運用情報から、compute node以外のservice control planeをRAS対象へ追加しました。2025年5月には新規jobが開始しない障害、9月24日と10月1日には統計処理遅延により利用者別point消費を計算できない障害が発生し、いずれも復旧済みです。年度末保守はSQUID、storage、ONION、Shibboleth、portalを同時停止し、大阪大学をprimary centerとするHPCI loginにも影響しました。次期整備ではscheduler、metering、identity、data、portalを含むend-to-end可用性と共通障害領域を評価する必要があります。Consensusは未完了です。",
+  "summary_en": "Public SQUID operating notices add service-control-plane failures to RAS evaluation beyond compute nodes. In May 2025, newly submitted jobs did not start; on September 24 and October 1, delayed statistics processing prevented correct per-user point accounting. Both were reported resolved. Year-end maintenance simultaneously stopped SQUID, storage, ONION, Shibboleth, and portals and affected HPCI login for users selecting Osaka as their primary center. Successor planning must evaluate end-to-end availability and common failure domains across scheduling, metering, identity, data, and portals. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "ARCH-10-U01", "before_sha256": "148443a25df8fda5986f6137735eae68a4396e597f9edbdd9a306a333fc1be43", "evidence_section_ids": ["TDS-CD2-ARCH-10-U01", "TDS-CD3-ARCH-10-U01", "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS", "TDS-CD35-ARCH-10-GENKAI-DEPENDENCIES", "TDS-CD43-ARCH-10-SQUID-CONTROL-PLANE-RAS"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD43-ARCH-10-SQUID-CONTROL-PLANE-RAS",
+      "title_ja": "SQUIDのscheduler・metering・認証を含むRAS",
+      "title_en": "SQUID RAS including scheduling, metering, and identity",
+      "summary_ja": "計算機本体だけでなく、job開始、利用量計算、認証、data accessの可用性を評価します。",
+      "summary_en": "Evaluate job launch, usage accounting, identity, and data access in addition to compute hardware.",
+      "items": [
+        {
+          "item_id": "TDI-CD43-SQUID-JOB-AND-METERING-INCIDENTS",
+          "name_ja": "job開始不能と利用point計算不能は異なるcontrol-plane障害",
+          "name_en": "Job-start and usage-accounting failures are distinct control-plane incidents",
+          "stage": "current", "maturity": "deployed", "timing_ja": "2025年5月23日、9月24日、10月1日", "timing_en": "May 23, September 24, and October 1, 2025",
+          "statement_ja": "2025年5月23日にSQUIDで新規投入jobが開始しない障害が発生し、同日17:15までに復旧したと公表されました。2025年9月24日と10月1日には統計処理遅延により、占有利用を含む全利用者のpoint消費を適切に計算できない事象があり、後に解消されました。公表文は原因、開始時刻、影響job数、誤計上の訂正方法、復旧所要時間を完全には示していません。",
+          "statement_en": "On May 23, 2025, SQUID stopped starting newly submitted jobs and was reported restored by 17:15 that day. On September 24 and October 1, delayed statistics processing prevented correct point-consumption calculation for all users, including exclusive-use users, and was later resolved. The notices do not fully report root cause, start time, affected job count, correction method for accounting, or time to repair.",
+          "hpci_relevance_ja": "有効計算量と利用者信頼性には、hardware availabilityだけでなくscheduler、queue state、metering、billing correctionを含める必要があります。",
+          "hpci_relevance_en": "Effective compute delivered and user trust require scheduler, queue state, metering, and billing correction to be included alongside hardware availability.",
+          "adoption_conditions_ja": ["service別にincident開始・検知・通知・復旧・訂正時刻を保存する。", "queued/running job、checkpoint、利用point、請求への影響を定量化する。", "metering再計算と利用者への訂正通知を自動検証する。"],
+          "adoption_conditions_en": ["Preserve incident start, detection, notice, recovery, and correction times by service.", "Quantify effects on queued and running jobs, checkpoints, usage points, and charges.", "Automatically verify metering recomputation and user correction notices."],
+          "actor_ids": [], "source_ids": ["SRC-CDS321", "SRC-CDS322"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD43-SQUID-MAINTENANCE-BLAST-RADIUS",
+          "name_ja": "年度末保守でcompute・storage・identity・portalが同時停止",
+          "name_en": "Year-end maintenance simultaneously stops compute, storage, identity, and portals",
+          "stage": "current", "maturity": "deployed", "timing_ja": "2025年3月31日17:00～4月9日17:00（予定は4月11日13:00まで）", "timing_en": "March 31 17:00-April 9 17:00, 2025; originally scheduled through April 11 13:00",
+          "statement_ja": "年度末保守は当初10日20時間を予定し、9日で前倒し再開しました。SQUIDのfront-end、login、license、storage、全compute node、ExaScaler、ONION-file/object、Shibboleth、portalを停止し、未実行jobを削除しました。大阪大学をprimary centerとする利用者は期間中にHPCIのcertificate発行system等へloginできませんでした。これは計画停止ですが、compute・data・identity・管理UIが共通maintenance windowへ結合していることを示します。",
+          "statement_en": "Year-end maintenance was scheduled for 10 days 20 hours and reopened early after nine days. It stopped SQUID front-end, login, license, storage, all compute nodes, ExaScaler, ONION file/object services, Shibboleth, and portals, and deleted jobs that had not started. Users selecting Osaka as their HPCI primary center could not log in to services including certificate issuance during the window. This was planned downtime, but it exposes a common maintenance domain spanning compute, data, identity, and management UI.",
+          "hpci_relevance_ja": "連合基盤では一拠点の保守が全国identityやdata accessへ波及しないよう、冗長primary、read-only access、job移送、credential継続を設計すべきです。",
+          "hpci_relevance_en": "Federated infrastructure should design redundant primary identity, read-only data access, job relocation, and credential continuity so one center's maintenance does not propagate nationally.",
+          "adoption_conditions_ja": ["planned/unplanned downtimeをservice別・利用者影響別に記録する。", "identityとcertificate発行の代替経路を保守中に試験する。", "保守中も必要なdataをread-onlyで取得できる構成を評価する。", "未実行job削除・再投入・priority保持の手順を自動化する。"],
+          "adoption_conditions_en": ["Record planned and unplanned downtime by service and user impact.", "Test alternative identity and certificate-issuance paths during maintenance.", "Evaluate read-only retrieval of required data during maintenance.", "Automate deletion, resubmission, and priority preservation for queued jobs."],
+          "actor_ids": [], "source_ids": ["SRC-CDS323"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS321", "title": "SQUIDで発生している障害について（2025年5月23日）", "publisher": "大阪大学D3センター", "url": "https://www.hpc.cmc.osaka-u.ac.jp/maintenance/20250523/", "source_class": "official-project", "published_or_updated": "2025-05-23"}, "origin_group": "osaka-squid-job-start-incident", "checked_at": "2026-09-02T03:57:00+09:00", "locator": "incident description and 17:15 recovery update", "observation_ja": "新規投入jobが開始しない事象と同日17:15の復旧を確認しました。", "observation_en": "Verified that newly submitted jobs did not start and that recovery was reported at 17:15 the same day.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS322", "title": "SQUIDポイントの消費が適切に反映されない問題について", "publisher": "大阪大学D3センター", "url": "https://www.hpc.cmc.osaka-u.ac.jp/maintenance/20251002/", "source_class": "official-project", "published_or_updated": "2025-10-02"}, "origin_group": "osaka-squid-point-accounting-incident", "checked_at": "2026-09-02T03:58:00+09:00", "locator": "incident dates, delayed statistics processing, affected users, and resolution", "observation_ja": "2025年9月24日・10月1日の統計処理遅延、全利用者へのpoint計算影響、解消を確認しました。", "observation_en": "Verified delayed statistics processing on September 24 and October 1, the point-accounting impact on all users, and resolution.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS323", "title": "大規模計算機システム年度末メンテナンスに伴うサービスの一時停止について", "publisher": "大阪大学D3センター", "url": "https://www.hpc.cmc.osaka-u.ac.jp/maintenance/20250331/", "source_class": "official-project", "published_or_updated": "2025-04-09"}, "origin_group": "osaka-d3-year-end-maintenance-2025", "checked_at": "2026-09-02T03:59:00+09:00", "locator": "planned and actual window; compute, storage, ONION, Shibboleth, portal, job, and HPCI login effects", "observation_ja": "予定停止期間、前倒し再開、全compute/storage/identity/portal停止、未実行job削除、primary center利用者のHPCI login影響を確認しました。", "observation_en": "Verified planned and early-reopen times, complete compute/storage/identity/portal outage, deletion of queued jobs, and HPCI login impact for primary-center users.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["各障害の原因、MTTR、影響job・node-hour、point訂正結果は未確認です。", "計画保守の代替identity・data access・job移送の実績は未確認です。", "独立model Consensusは未完了です。"],
+  "remaining_work_en": ["Root cause, MTTR, affected jobs and node-hours, and point-correction results remain unverified.", "Operational evidence for alternative identity, data access, and job relocation during planned maintenance remains unverified.", "Independent-model Consensus remains incomplete."]
+}

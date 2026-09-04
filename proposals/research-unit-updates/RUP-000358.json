@@ -1,0 +1,250 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000358",
+  "topic_id": "CROSS-06",
+  "created_at": "2026-09-02T07:56:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000134",
+      "bundle_sha256": "c3d494a38867684825d36451d01fc27d1ff8f8d1d383318e5d0b1dbc41d4c9f3"
+    },
+    {
+      "update_id": "RUP-000139",
+      "bundle_sha256": "379be0186989b47554116c81bdc2c776dc699b88f466738bdf6386b65aff9ff3"
+    },
+    {
+      "update_id": "RUP-000150",
+      "bundle_sha256": "06d1efb8bcf6ad06a90755bc639014a30aca3fedb50fef30ab88a8f2ba10cd19"
+    },
+    {
+      "update_id": "RUP-000158",
+      "bundle_sha256": "a57b987ca4f147508f145a4038c598c9ac641a494595b69d1e6a0c1e4b775bfa"
+    },
+    {
+      "update_id": "RUP-000179",
+      "bundle_sha256": "e16e20ca6e87d6fac48f32636b13e44a890948d512aa673cf1cd2d5dab4e485d"
+    },
+    {
+      "update_id": "RUP-000185",
+      "bundle_sha256": "a95fb122e018939b0dbe11b9b499493c3a0d4ff7fdccf0ab10bcf3d5c2b237d0"
+    },
+    {
+      "update_id": "RUP-000186",
+      "bundle_sha256": "18fec59af78f1121d92ae5cc1edaa9a72f1dcf3722ca6d79a09d1f949d7fdc41"
+    },
+    {
+      "update_id": "RUP-000187",
+      "bundle_sha256": "ea26972d267b398fe5fa58f2220751ae36bf16ef8ad3b8258548e3f3d636ab0b"
+    },
+    {
+      "update_id": "RUP-000188",
+      "bundle_sha256": "ab3dec40aaf2aa10860a540202f5382ed2f5c0c250a1da4d3f52c62029f726cd"
+    },
+    {
+      "update_id": "RUP-000197",
+      "bundle_sha256": "4e85180287f461314704a938a5c2526f88dbd2997e27067446c89e556905debc"
+    },
+    {
+      "update_id": "RUP-000200",
+      "bundle_sha256": "e72a374b66d0276f628ddc5c5275c7d9f58081ad1fb08dc31fdd018be3263105"
+    },
+    {
+      "update_id": "RUP-000355",
+      "bundle_sha256": "792e19cdf786558f0a3ca42b9fef43bbd1147212b0ac5fe842c3dc49687eadd5"
+    }
+  ],
+  "before_profile_sha256": "cfacb5d491142911e6d99df1c78f1f29db306fb2207951cfa200b85b5f1a8e40",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳NEXTの全体・CPU基本設計、加速部基本設計、CPU－加速部間link評価を別work packageとして追加しました。公開契約額の大差はscope・知財・共同開発条件が不明なため技術価値や工数比へ換算せず、multi-vendor integrationの責任境界として扱います。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds separate FugakuNEXT work packages for the overall-system and CPU basic design, accelerator basic design, and CPU-to-accelerator link evaluation. Large differences in published award values are not converted into technical-worth or effort ratios because scope, IP, and co-development terms are undisclosed; they are used to expose multi-vendor integration boundaries. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-06-U01",
+      "before_sha256": "2c5efad30ae4ed4a008f5a1d1a72859dbf6e2bae2d8bd6011e37c0360091da51",
+      "evidence_section_ids": [
+        "TDS-PCD-CONTRACTS",
+        "TDS-PCD-SCOPE",
+        "TDS-PRP-PLANNING",
+        "TDS-CD1-CROSS-06-U01",
+        "TDS-CD2-CROSS-06-U01",
+        "TDS-CD10-CROSS-06-U01",
+        "TDS-CD14-CROSS-06-U01",
+        "TDS-CD15-CROSS-06-PROCUREMENT-PROCEDURE",
+        "TDS-CD16-CROSS-06-MIYABI-CONTRACT",
+        "TDS-CD17-CROSS-06-SIRIUS-CONTRACT",
+        "TDS-CD18-CROSS-06-TSUBAME4-CONTRACT",
+        "TDS-CD19-CROSS-06-ABCI3-COST-ACCESS",
+        "TDS-CD20-CROSS-06-EUROHPC-EXASCALE-CONTRACTS",
+        "TDS-CD21-CROSS-06-MIMER-LUMIAI-SCOPE",
+        "TDS-CD69-CROSS-06-RIKEN-AIFS-PRECURSOR-PROCUREMENT",
+        "TDS-CD72-CROSS-06-FUGAKUNEXT-DESIGN-CONTRACTS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD72-CROSS-06-FUGAKUNEXT-DESIGN-CONTRACTS",
+      "title_ja": "異なる供給者を統合する設計work packageと公開契約額",
+      "title_en": "Published design work packages for integrating different suppliers",
+      "summary_ja": "富岳NEXTの全体・CPU、加速部、CPU－加速部間linkを別契約として整理し、金額を技術価値の比率には使いません。",
+      "summary_en": "Record separate FugakuNEXT contracts for the overall system and CPU, accelerator, and CPU-to-accelerator link without treating values as relative technical worth.",
+      "items": [
+        {
+          "item_id": "TDI-CD204-FUGAKUNEXT-CPU-BASIC-DESIGN",
+          "name_ja": "全体システム・計算ノード・CPU部の基本設計",
+          "name_en": "Overall-system, compute-node, and CPU basic design",
+          "timing_ja": "2025年6月16日～2026年2月27日",
+          "timing_en": "June 16, 2025 through February 27, 2026",
+          "statement_ja": "理化学研究所は、富岳NEXTの全体システム、計算ノード、CPU部の基本設計一式を、富士通と税込56億6,500万円で契約しました。一般競争入札の総合評価で、予定価格と落札率は非公表です。これは設計役務の契約額であり、将来の量産CPU、計算ノード、完成システムの購入価格ではありません。",
+          "statement_en": "RIKEN awarded Fujitsu a JPY 5,665,000,000 tax-inclusive contract for the FugakuNEXT overall-system, compute-node, and CPU basic design. The award used comprehensive evaluation in an open competition; planned price and award ratio were not disclosed. This is a design-service value, not a purchase price for future production CPUs, nodes, or the completed system.",
+          "hpci_relevance_ja": "大規模な国産CPU・全体設計を機器調達と分け、成果物、知財、検証環境、詳細設計への移行条件を費用化する国内実例です。",
+          "hpci_relevance_en": "This is a domestic example of pricing large-scale domestic CPU and system design separately from equipment procurement, including deliverables, IP, validation environments, and gates to detailed design.",
+          "adoption_conditions_ja": [
+            "仕様書と成果物で設計範囲、prototype、IP、source、検証、再利用権を確認する。",
+            "基本設計、詳細設計、製造、導入、保守の費用を混同しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify design scope, prototypes, IP, source, validation, and reuse rights from specifications and deliverables.",
+            "Keep basic design, detailed design, manufacturing, deployment, and maintenance costs distinct."
+          ],
+          "source_ids": [
+            "SRC-CDS498"
+          ],
+          "stage": "current",
+          "maturity": "announced",
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD205-FUGAKUNEXT-ACCELERATOR-BASIC-DESIGN",
+          "name_ja": "加速部の基本設計",
+          "name_en": "Accelerator basic design",
+          "timing_ja": "2025年8月21日～2026年2月27日",
+          "timing_en": "August 21, 2025 through February 27, 2026",
+          "statement_ja": "理化学研究所は、富岳NEXTの加速部の基本設計一式を、NVIDIAと税込72万7,200円で契約しました。一般競争入札の総合評価で、予定価格と落札率は非公表です。公開契約額が全体・CPU設計と大きく異なる理由は契約結果だけでは分からず、技術価値、総開発費、将来GPU価格、供給者負担の比率を示す値として使えません。",
+          "statement_en": "RIKEN awarded NVIDIA a JPY 727,200 tax-inclusive contract for the FugakuNEXT accelerator basic design. The award used comprehensive evaluation in an open competition; planned price and award ratio were not disclosed. The award record does not explain why this value differs greatly from the overall-system and CPU design contract, so it cannot represent relative technical worth, total development cost, future GPU price, or supplier cost sharing.",
+          "hpci_relevance_ja": "国際共同設計では契約額の大小だけでなく、供給者側投資、既存product roadmap、成果物、利用権、継続供給、保守責任を明示する必要があります。",
+          "hpci_relevance_en": "International co-design must disclose supplier investment, product-roadmap assumptions, deliverables, usage rights, continuity of supply, and maintenance responsibility rather than relying on award value alone.",
+          "adoption_conditions_ja": [
+            "加速部の成果物、supplier contribution、利用・変更権、product commitmentを確認する。",
+            "CPU側契約と同じscope taxonomyで比較し、金額差を工数差と解釈しない。"
+          ],
+          "adoption_conditions_en": [
+            "Verify accelerator deliverables, supplier contribution, rights to use and modify, and product commitments.",
+            "Compare with the CPU contract under the same scope taxonomy and do not interpret price differences as effort differences."
+          ],
+          "source_ids": [
+            "SRC-CDS499"
+          ],
+          "stage": "current",
+          "maturity": "announced",
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD206-FUGAKUNEXT-CPU-ACCELERATOR-LINK",
+          "name_ja": "CPU部－加速部間高速リンク接続案の評価・検証",
+          "name_en": "Evaluation and validation of the CPU-to-accelerator high-speed link",
+          "timing_ja": "2025年12月15日契約",
+          "timing_en": "Contract awarded December 15, 2025",
+          "statement_ja": "理化学研究所は、富岳NEXTのCPU部－加速部間高速リンク接続案の評価・検証を、富士通と税込10億5,415万2,000円で随意契約しました。公開理由は、接続方式の設計に計算ノード・CPU部の基本設計と同一の設計思想、設計技術、ノウハウが不可欠であることを挙げています。接続案、bandwidth、protocol、prototype、成果は公開契約結果だけでは分かりません。",
+          "statement_en": "RIKEN awarded Fujitsu a JPY 1,054,152,000 tax-inclusive negotiated contract to evaluate and validate FugakuNEXT CPU-to-accelerator high-speed-link options. The published rationale says the link design must use the same design philosophy, technology, and know-how as the compute-node and CPU basic design. The award record does not disclose candidate links, bandwidth, protocol, prototypes, or results.",
+          "hpci_relevance_ja": "CPUとacceleratorを別企業が担当する構成では、境界linkを独立した高額work packageとして扱い、性能、coherence、RAS、power、IP、責任分界を早期に検証する必要があります。",
+          "hpci_relevance_en": "When different suppliers own CPU and accelerator designs, the boundary link can be a substantial independent work package requiring early validation of performance, coherence, RAS, power, IP, and responsibility boundaries.",
+          "adoption_conditions_ja": [
+            "候補protocol、bandwidth、latency、coherence、power、RAS、securityを同一条件で評価する。",
+            "CPU・accelerator両社のinterface仕様、test ownership、変更管理、障害責任を契約化する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate candidate protocols, bandwidth, latency, coherence, power, RAS, and security under matched conditions.",
+            "Contract interface specifications, test ownership, change control, and fault responsibility across CPU and accelerator suppliers."
+          ],
+          "source_ids": [
+            "SRC-CDS500"
+          ],
+          "stage": "current",
+          "maturity": "announced",
+          "actor_ids": [],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS498",
+        "title": "競争入札の結果の公表：富岳NEXT全体システム・計算ノード・CPU部の基本設計",
+        "publisher": "国立研究開発法人理化学研究所",
+        "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004121.PDF/id/000000251",
+        "source_class": "official-project",
+        "published_or_updated": "Covers contracts from April through September 2025"
+      },
+      "origin_group": "riken-fugakunext-cpu-basic-design-2025",
+      "checked_at": "2026-09-02T06:45:00+09:00",
+      "locator": "Contract entry dated June 16, 2025",
+      "observation_ja": "契約範囲、相手方、期間、税込契約額、契約方式を確認しました。",
+      "observation_en": "Verified scope, supplier, period, tax-inclusive value, and procurement method.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS499",
+        "title": "競争入札の結果の公表：富岳NEXT加速部の基本設計",
+        "publisher": "国立研究開発法人理化学研究所",
+        "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251",
+        "source_class": "official-project",
+        "published_or_updated": "Covers contracts from April through November 2025"
+      },
+      "origin_group": "riken-fugakunext-accelerator-basic-design-2025",
+      "checked_at": "2026-09-02T06:45:00+09:00",
+      "locator": "Page 11, contract entry dated August 21, 2025",
+      "observation_ja": "契約範囲、相手方、期間、税込契約額、契約方式を確認しました。",
+      "observation_en": "Verified scope, supplier, period, tax-inclusive value, and procurement method.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS500",
+        "title": "2025年度契約分：富岳NEXT CPU部－加速部間高速リンク接続案の評価・検証",
+        "publisher": "国立研究開発法人理化学研究所",
+        "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004160.PDF/id/000000169",
+        "source_class": "official-project",
+        "published_or_updated": "Includes contract awarded December 15, 2025"
+      },
+      "origin_group": "riken-fugakunext-cpu-accelerator-link-2025",
+      "checked_at": "2026-09-02T06:45:00+09:00",
+      "locator": "Contract entry for CPU-to-accelerator high-speed-link option evaluation and validation",
+      "observation_ja": "契約範囲、相手方、税込契約額、およびCPU基本設計との一体性を理由とする随意契約理由を確認しました。",
+      "observation_en": "Verified scope, supplier, tax-inclusive value, and negotiated-contract rationale based on continuity with CPU basic design.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各仕様書、成果物、supplier負担、知財、検証結果、詳細設計・製造への接続条件は未確認です。",
+    "公開契約額の差を開発費や価値の比率として解釈していません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Specifications, deliverables, supplier contributions, IP, validation results, and gates to detailed design and manufacturing remain unverified.",
+    "Differences in award values are not interpreted as development-cost or value ratios.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000194",
+  "topic_id": "SSW-06",
+  "created_at": "2026-09-02T07:29:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000160", "bundle_sha256": "7a77eb39a85f11403170baad2e165486022d4fda7366600c3311af4c7adca407"},
+    {"update_id": "RUP-000174", "bundle_sha256": "3655ec018d03a41c2f63766f462642fe1a4e07298bf5d8445835e6eab25ef2af"}
+  ],
+  "before_profile_sha256": "a25e4f76555b78776c2afbb7bb6adfb6e20ddf6e99f5a2641ae68bb3b0ef51a5",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional", "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の2025年9月運用資料から、大規模ジョブ期間と中規模ジョブ期間の実績を追加しました。大規模ジョブ期間は全体の約半分に当たる82,944ノードを専用化し、残り半分を共用に残します。公表された三つの中規模実行期間では、資源群ノード時間に対する実利用が27.2%、39.0%、59.6%、要求ノード時間に対する実利用が24.2%、29.7%、49.8%でした。大規模連続実行を可能にしつつ充填率を上げるには、専用期間、バックフィル、実行時間見積もり、準備状態を一体で設計する必要があります。Consensusは未完了です。",
+  "summary_en": "Fugaku's September 2025 operations briefing adds observed behavior for large- and medium-scale job periods. Large-job periods dedicate 82,944 nodes, about half the system, while leaving half for shared use. Across three published medium-job periods, used node-hours were 27.2%, 39.0%, and 59.6% of the resource-group windows and 24.2%, 29.7%, and 49.8% of requested node-hours. Supporting long contiguous runs while improving fill requires joint design of dedicated windows, backfill, runtime estimates, and job readiness. Consensus is incomplete.",
+  "units": [
+    {"unit_id": "SSW-06-U01", "before_sha256": "346a8de7f36717d39c1843eb4505bea7d7e385d2076cc23cffa1a143239f7c26", "evidence_section_ids": ["TDS-CD6-SSW-06-U01", "TDS-CD7-SSW-06-U01", "TDS-CD8-SSW-06-U01", "TDS-CD14-SSW-06-HPCI-EXECUTION", "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD15-SSW-06-FUGAKU-LARGE-JOB-WINDOWS",
+      "title_ja": "富岳の専用実行期間は大規模ジョブ保証と充填率の両立課題を示す",
+      "title_en": "Fugaku dedicated windows expose the tradeoff between large-job assurance and fill",
+      "summary_ja": "大規模ジョブに連続資源を確保する方法と、期間内に実際に使われた資源量を分けて評価します。",
+      "summary_en": "Evaluate the mechanism that assures contiguous capacity separately from actual resource use within each window.",
+      "items": [
+        {
+          "item_id": "TDI-CD15-FUGAKU-LARGE-JOB-SPLIT",
+          "name_ja": "大規模ジョブ期間は82,944ノードを専用化",
+          "name_en": "Large-job periods dedicate 82,944 nodes",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年9～10月の運用計画", "timing_en": "September-October 2025 operating plan",
+          "statement_ja": "大規模ジョブ期間は全体の約50%に当たる216ラック・82,944ノードを対象とし、残り50%を共用に残します。中規模ジョブは大規模期間の終了後等に高優先度で実行します。全系を単一ジョブへ固定せず、大規模連続資源と通常利用を同時に維持する運用です。",
+          "statement_en": "Large-job periods target 216 racks and 82,944 nodes, approximately 50% of the system, while leaving 50% for shared use. Medium jobs run at high priority after large-job periods and related windows. The operation preserves contiguous large capacity and ordinary shared service instead of dedicating the full system to one job.",
+          "hpci_relevance_ja": "次世代システムは最大ジョブ規模だけでなく、同時に維持すべき通常サービス量と保証頻度を要件化すべきです。",
+          "hpci_relevance_en": "Next-generation requirements should specify retained ordinary-service capacity and assurance frequency as well as maximum job size.",
+          "adoption_conditions_ja": ["大規模窓の頻度、期間、応募、採択、開始遅延を記録する。", "通常キューへの待ち時間影響を測定する。", "専用窓と動的予約・バックフィルを比較する。"],
+          "adoption_conditions_en": ["Record large-window frequency, duration, demand, awards, and start delay.", "Measure queue-time effects on ordinary service.", "Compare fixed windows with dynamic reservation and backfill."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD15-FUGAKU-MEDIUM-JOB-FILL",
+          "name_ja": "中規模実行期間の実利用は資源群の27.2～59.6%",
+          "name_en": "Medium-job windows used 27.2-59.6% of resource-group capacity",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2025年8～9月の三期間", "timing_en": "Three periods in August-September 2025",
+          "statement_ja": "公表された三期間では、実行ジョブ数36・70・75件、平均要求ノード数25,546・19,489・20,873、資源群ノード時間に対する実利用27.2%・39.0%・59.6%、要求ノード時間に対する実利用24.2%・29.7%・49.8%でした。数値は特定期間の観測であり、低い実利用の原因や通年平均を示しません。",
+          "statement_en": "Across three reported periods, executed jobs numbered 36, 70, and 75; average requested nodes were 25,546, 19,489, and 20,873; used node-hours were 27.2%, 39.0%, and 59.6% of the resource group and 24.2%, 29.7%, and 49.8% of requested node-hours. These are observations for specific windows and do not establish causes or annual averages.",
+          "hpci_relevance_ja": "大規模資源の価値は予約可能量だけでなく、準備済みジョブを期間内に充填できる運用能力で決まります。",
+          "hpci_relevance_en": "The value of large capacity depends not only on reservable scale but on operational ability to fill it with ready jobs.",
+          "adoption_conditions_ja": ["未実行理由を依存関係、見積時間、失敗、準備不足、割当不足に分類する。", "バックフィル、柔軟ノード数、チェックポイント、再開の効果を測定する。", "専用窓の科学的成果と機会費用を評価する。"],
+          "adoption_conditions_en": ["Classify non-execution by dependencies, runtime estimates, failures, readiness, and allocation limits.", "Measure effects of backfill, elastic node counts, checkpointing, and restart.", "Evaluate scientific outcomes and opportunity cost of dedicated windows."],
+          "actor_ids": [], "source_ids": ["SRC-CDS242"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS242", "title": "富岳の運用状況報告（2025年9月）", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202509.pdf", "source_class": "official-project", "published_or_updated": "2025-09-11"},
+      "origin_group": "fugaku-storage-operation", "checked_at": "2026-09-02T03:24:00+09:00",
+      "locator": "大規模・中規模ジョブ実行期間、82,944ノード、実行ジョブ数、要求・実利用ノード時間",
+      "observation_ja": "大規模期間の資源分割と三つの中規模期間のジョブ数・平均規模・実利用率を確認しました。",
+      "observation_en": "Verified large-period resource split and job count, average size, and delivered use across three medium periods.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["通年の規模別待ち時間、専用窓の応募・採択率、失敗・未実行理由、バックフィル量、通常利用への影響は未確認です。", "特定三期間の実利用率を通年値や将来システムへ外挿しません。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Annual queue time by size, window demand and acceptance, failure and non-execution reasons, backfill, and ordinary-service effects remain unverified.", "The three observed window fill rates are not extrapolated to annual behavior or future systems.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

@@ -109,7 +109,7 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
                            "CMP-AGENT-BENCHMARK-IMPORTANCE"):
             self.assertTrue(expected <= {r["term_id"] for r in comparisons[comparison]["rows"]})
         self.assertEqual("incomplete", reference["consensus_status"])
-        self.assertEqual("DIR-900019", reference["publication"]["human_approval_directive_id"])
+        self.assertEqual("DIR-900021", reference["publication"]["human_approval_directive_id"])
 
     def test_eea1_comparison_preserves_implementation_and_access_limits(self):
         reference = read("knowledge/public/roadmap-reference-data.json")
@@ -295,9 +295,10 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
 
     def test_legacy_what_if_values_are_explicitly_uncalibrated(self):
         forecast = read("knowledge/public/application-performance-forecasts.json")
-        self.assertEqual("0.4.0", forecast["schema_version"])
+        self.assertEqual("0.9.0", forecast["schema_version"])
         self.assertEqual(36, len(forecast["illustrations"]))
         self.assertEqual([], forecast["forecasts"])
+        self.assertEqual([], forecast["validated_model_cards"])
         self.assertEqual(
             "legacy-what-if-illustration",
             forecast["model_contract"]["output_class"],
@@ -315,6 +316,11 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
             self.assertIn("未校正", assumption["basis_ja"])
             self.assertIn("uncalibrated inputs", assumption["basis_en"])
             self.assertIn("do not measure these fractions", assumption["basis_en"])
+        self.assertEqual(2, len(forecast["calibration_candidates"]))
+        for candidate in forecast["calibration_candidates"]:
+            self.assertFalse(candidate["readiness"]["candidate_ready_for_consensus"])
+            self.assertEqual("incomplete", candidate["consensus_status"])
+            self.assertFalse(candidate["procurement_eligible"])
 
     def test_resumed_portability_evidence_keeps_three_layers_separate(self):
         update = read("proposals/research-unit-updates/RUP-000124.json")
@@ -351,6 +357,42 @@ class CrossDomainResearchRoundTests(unittest.TestCase):
             any("GAP-TDS-050 remains open" in value for value in update["remaining_work_en"])
         )
         self.assertEqual("incomplete", update["consensus_status"])
+
+    def test_scientific_ai_models_keep_variant_and_operational_boundaries(self):
+        update = read("proposals/research-unit-updates/RUP-000393.json")
+        self.assertEqual("APP-12", update["topic_id"])
+        self.assertEqual("incomplete", update["consensus_status"])
+        self.assertEqual(1, update["execution"]["agent_count"])
+        self.assertEqual(1, update["execution"]["model_count"])
+        items = {
+            item["item_id"]: item
+            for section in update["sections"]
+            for item in section["items"]
+        }
+        esm = items["TDI-CD223-ESM3-MODEL-FAMILY-BOUNDARY"]["statement_en"]
+        for fragment in ("98B", "1.4B esm3-sm-open-v1", "not a measured configuration"):
+            self.assertIn(fragment, esm)
+        mattersim = items[
+            "TDI-CD224-MATTERSIM-ARCHITECTURE-CHECKPOINT-BOUNDARY"
+        ]["statement_en"]
+        for fragment in ("182M-parameter Graphormer", "880K and 4.5M", "130.5M"):
+            self.assertIn(fragment, mattersim)
+        graphcast = items[
+            "TDI-CD225-GRAPHCAST-MEASURED-CONDITIONS-AND-MIGRATION"
+        ]["statement_en"]
+        for fragment in ("32 Cloud TPU v4", "four weeks", "35 GB", "full operational path"):
+            self.assertIn(fragment, graphcast)
+        self.assertTrue(all(item["consensus_status"] == "incomplete" for item in items.values()))
+
+        surface = read("knowledge/public/topic-decision-support.json")
+        profile = next(p for p in surface["topic_profiles"] if p["topic_id"] == "APP-12")
+        section = next(
+            section
+            for section in profile["sections"]
+            if section["section_id"] == "TDS-CD81-APP-12-PRIMARY-MODEL-RECONCILIATION"
+        )
+        self.assertEqual(set(items), {item["item_id"] for item in section["items"]})
+        self.assertEqual("incomplete", profile["research_updates"][-1]["consensus_status"])
 
 
 if __name__ == "__main__":

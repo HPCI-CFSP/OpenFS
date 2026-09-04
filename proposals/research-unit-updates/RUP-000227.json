@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000227",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T07:34:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000131", "bundle_sha256": "56c0cc39d11f1d38d93405774490f6d2f794f8b8e87393b9fda1809487fbbc73"},
+    {"update_id": "RUP-000138", "bundle_sha256": "6d403dd4a362d262a64e228d22c402aabb0fe0d534f269c12f95fce07ee4f570"},
+    {"update_id": "RUP-000146", "bundle_sha256": "747f2f1da34d90bba17ce1575f7244d615618dd743afe580b4c7bdd6aa17ff19"},
+    {"update_id": "RUP-000166", "bundle_sha256": "df3c3107248f37f16e1bc4dbe3a92a20d76f8e0fc3186fe84b4af5c76dd89751"},
+    {"update_id": "RUP-000209", "bundle_sha256": "1b985f00d65b3a060ee5154f030e3f94391b962b6a8a8db187443fb3a0795978"},
+    {"update_id": "RUP-000225", "bundle_sha256": "492eb4ca656db9a3f02dbf6abf29679a1ab63e7c0e5ee1d371a5f0307740fbad"}
+  ],
+  "before_profile_sha256": "d8bfe741bd6fe8ee5802228c8a2ae939f0d88b245247277bfcb92611cb243f6a",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "九州大学のITOから玄界への世代更新について、計算資源粒度とデータ継続性の公開条件を追加しました。玄界はITOよりノード数を減らし、1ノードのコア数、性能、メモリ、GPU性能を増やしているため、旧来のノード数指定をそのまま使うと資源浪費や待ち時間増加につながり得ます。玄界ストレージはバックアップされず、将来の次期システムへの移行は利用者自身が行い、通常保守中はNextcloud公開分を含め参照できません。次期整備では計算能力、ジョブ粒度、データ保護、保守中アクセス、移行責任を別々に定義する必要があります。Consensusは未完了です。",
+  "summary_en": "This update adds public conditions on compute-resource granularity and data continuity from Kyushu University's transition from ITO to Genkai. Genkai reduces node counts while increasing per-node cores, performance, memory, and GPU performance, so reusing previous node-count requests can waste resources or increase queue time. Genkai storage is not backed up, future migration to a successor is user-managed, and files including Nextcloud-published content are normally inaccessible during maintenance. Successor planning must define compute capability, job granularity, data protection, maintenance access, and migration responsibility separately. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U02",
+      "before_sha256": "79f3a0e33997b1a1ee3e15d2026ecd2b669ce7492930ae5cb939658d69e7f7e1",
+      "evidence_section_ids": [
+        "TDS-CBL-MIGRATION",
+        "TDS-CD1-CROSS-08-U02",
+        "TDS-CD2-CROSS-08-U02",
+        "TDS-CD10-CROSS-08-U01",
+        "TDS-CD12-CROSS-08-U01-U02",
+        "TDS-CD33-CROSS-08-GENKAI-MIGRATION"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD33-CROSS-08-GENKAI-MIGRATION",
+      "title_ja": "九州大学玄界の資源粒度とデータ移行責任",
+      "title_en": "Kyushu Genkai resource granularity and data-migration responsibility",
+      "summary_ja": "世代更新前後のノード粒度、ジョブ変更、バックアップ、保守、次期移行を分離して扱います。",
+      "summary_en": "Separate node granularity, job changes, backup, maintenance, and future migration across generations.",
+      "items": [
+        {
+          "item_id": "TDI-CD33-GENKAI-NODE-GRANULARITY",
+          "name_ja": "ノード数減少と1ノード能力向上はジョブ粒度の再設計を要求",
+          "name_en": "Fewer, more capable nodes require job-granularity redesign",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "玄界は2024年運用開始、2026年9月2日に現行案内を確認",
+          "timing_en": "Genkai entered operation in 2024; current guidance checked September 2, 2026",
+          "statement_ja": "九州大学の比較表では、CPU系はITO Aの2,000ノードから玄界Aの1,024ノードへ減る一方、1ノードのコア数は36から120、メモリは192 GBから512 GB、SPEC CPU2017 FP Rate指標は200から1,040へ増えています。GPU系はITO Bの128ノードから玄界Bの38ノードへ減り、1ノードGPU FP64は21.2 TFLOPSから134 TFLOPS、メモリは384 GBから1 TBへ増えています。センターはITOと同じノード数指定が資源浪費や待ち時間増加につながり得ると説明しています。指標は世代間の公式比較であり、全アプリケーションの実測高速化率ではありません。",
+          "statement_en": "Kyushu's comparison shows CPU nodes decreasing from 2,000 in ITO A to 1,024 in Genkai A while per-node cores rise from 36 to 120, memory from 192 GB to 512 GB, and the cited SPEC CPU2017 FP Rate indicator from 200 to 1,040. GPU nodes fall from 128 in ITO B to 38 in Genkai B while per-node GPU FP64 rises from 21.2 to 134 TFLOPS and memory from 384 GB to 1 TB. The center warns that requesting the same node count as on ITO can waste resources or increase queue time. These are official cross-generation indicators, not measured speedups for every application.",
+          "hpci_relevance_ja": "全国的な更新ではnode-hourを固定換算せず、必要メモリ、並列度、time-to-solution、待ち時間に基づいて配分単位を再校正する必要があります。",
+          "hpci_relevance_en": "National refreshes should recalibrate allocation units from memory, parallelism, time to solution, and queueing rather than fixed node-hour conversion.",
+          "adoption_conditions_ja": [
+            "主要アプリケーションごとに旧新ノード数、実行時間、メモリ、並列効率を測定する。",
+            "課金・配分単位と最大同時ノード数を新しいノード粒度へ合わせる。",
+            "旧ジョブscriptの資源指定、module名、resource group差を移行試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure old and new node counts, runtime, memory, and parallel efficiency per major application.",
+            "Align charging and allocation units and maximum concurrent nodes with new node granularity.",
+            "Test changes to resource requests, module names, and resource groups in previous job scripts."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS307"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD33-GENKAI-STORAGE-RESPONSIBILITY",
+          "name_ja": "バックアップなし・利用者移行・保守中アクセス不能",
+          "name_en": "No backup, user-managed migration, and no maintenance-period access",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日に現行運用案内を確認",
+          "timing_en": "Current operational guidance checked September 2, 2026",
+          "statement_ja": "玄界の公式ストレージ案内は、ストレージをバックアップせず、削除ファイルを復元できないため、重要データを利用者がバックアップするよう求めています。将来の次期システムへのファイル移行も利用者自身が行う方針です。通常保守中はストレージ上のファイルを参照できず、Nextcloudで公開したデータも利用不能になります。大容量ストレージの存在は、バックアップ、災害復旧、保守中の公開継続を意味しません。",
+          "statement_en": "Genkai's official storage guidance states that storage is not backed up and deleted files cannot be restored, requiring users to protect important data. Users are also responsible for migration to a future successor. During normal maintenance, storage files are inaccessible, including data published through Nextcloud. Large capacity does not establish backup, disaster recovery, or publication continuity during maintenance.",
+          "hpci_relevance_ja": "次期HPCIではscratch、project、archive、publication、backupをサービス水準と費用の異なる層として明示し、移行責任を契約前に定める必要があります。",
+          "hpci_relevance_en": "Successor HPCI should define scratch, project, archive, publication, and backup as tiers with distinct service levels and costs and assign migration responsibility before procurement.",
+          "adoption_conditions_ja": [
+            "容量表示にbackup有無、復元目標、保守中アクセス、削除期限を併記する。",
+            "利用者自己移行に必要な転送帯域、期間、検証、支援工数を確保する。",
+            "公開データの継続性を計算機保守から分離できる外部保存先を用意する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish backup status, recovery objectives, maintenance access, and deletion deadlines with capacity.",
+            "Provide bandwidth, time, validation, and support labor for user-managed migration.",
+            "Provide external preservation capable of separating public-data continuity from compute maintenance."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS308"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS307",
+        "title": "ITOと玄界の相違点",
+        "publisher": "九州大学情報基盤研究開発センター",
+        "url": "https://www.cc.kyushu-u.ac.jp/scp/usage/diff_ito_genkai/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "kyushu-ito-genkai-migration",
+      "checked_at": "2026-09-02T04:00:00+09:00",
+      "locator": "計算機構成、旧ジョブscript、アカウント、利用負担金の相違",
+      "observation_ja": "CPU・GPU系の旧新ノード数、1ノード能力、資源指定変更、待ち時間上の注意を確認しました。",
+      "observation_en": "Verified old/new CPU and GPU node counts, per-node capability, resource-request changes, and queueing cautions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS308",
+        "title": "ストレージとファイル操作",
+        "publisher": "九州大学情報基盤研究開発センター",
+        "url": "https://www.cc.kyushu-u.ac.jp/scp/usage/storage/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02"
+      },
+      "origin_group": "kyushu-genkai-storage-policy",
+      "checked_at": "2026-09-02T04:01:00+09:00",
+      "locator": "バックアップ及び次期システムへの移行",
+      "observation_ja": "バックアップなし、利用者による次期移行、保守中のファイル・Nextcloudアクセス不能を確認しました。",
+      "observation_en": "Verified no backup, user-managed successor migration, and file and Nextcloud inaccessibility during maintenance.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "旧新システム上の主要アプリケーションについて、同一入力によるnode-hour・time-to-solution比較は未確認です。",
+    "利用者自己移行の成功率、転送量、支援工数、データ損失事例は公開情報で未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Like-for-like node-hour and time-to-solution comparisons for major applications remain unverified.",
+    "Public information does not establish user-migration success rate, transferred volume, support labor, or data-loss cases.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

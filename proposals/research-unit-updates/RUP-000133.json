@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000133",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T00:40:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "2cd5e45bf4c5bb1c68e4569fe92087f9462da49b667896c9c05bded7c438d0c0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "文部科学省の公開議事録から、SPring-8等の大型実験施設で、実験中の即時解析、施設・HPCI間に分散するデータの一元的取扱い、民間利用者を含む認証、高速・安全な通信が求められていることを追加しました。ライフサイエンスの倫理審査と材料分野の構造化負担も、実験連携基盤の分野別要件として区別します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds public MEXT evidence that large experimental facilities such as SPring-8 require in-experiment analysis, unified handling of data distributed across facilities and HPCI, identity that can include industry users, and fast secure networking. It also separates life-science ethics review and materials-data structuring burden as domain-specific requirements. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "b655a135d259b9deb9dbd09a257423d94cd03ac62aad00bfe1f96c5939566a6a",
+      "evidence_section_ids": ["TDS-CD1-APP-14-U01", "TDS-CD2-APP-14-U01", "TDS-CD3-APP-14-U01", "TDS-CD10-APP-14-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-APP-14-U01",
+      "title_ja": "国内実験施設・分野データ基盤から見た処理要件",
+      "title_en": "Processing requirements from domestic facilities and domain data platforms",
+      "summary_ja": "即時解析、データ配置、認証、通信、倫理・構造化負担を分野別に分解します。",
+      "summary_en": "Decompose in-experiment analysis, data placement, identity, networking, ethics, and structuring burden by domain.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-SPRING8-REALTIME-DATA",
+          "name_ja": "SPring-8の即時解析と分散データの一元的利用要求",
+          "name_en": "SPring-8 requirements for in-experiment analysis and unified distributed-data use",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月16日の検討会で報告",
+          "timing_en": "Reported in the June 16, 2026 working-group discussion",
+          "statement_ja": "文部科学省議事録は、SPring-8のデータが装置、施設、HPCIに分散して利用しにくいこと、実験中の即時解析にリアルタイム処理パイプラインと性能向上が必要であることを記録しています。民間利用者を含む統一認証と、高速で安全な通信も要件として挙げられています。入力率、応答期限、許容欠損、年間量の数値は当該議事録では示されません。",
+          "statement_en": "MEXT minutes record that SPring-8 data are distributed across instruments, the facility, and HPCI, reducing usability, and that in-experiment analysis needs a real-time processing pipeline and higher performance. Unified identity that includes industry users and fast secure networking are also identified. The minutes do not quantify input rate, response deadline, tolerated loss, or annual volume.",
+          "hpci_relevance_ja": "実験連携向け整備では、平均演算性能ではなく、装置別の期限、ネットワーク経路、近傍処理、遠隔再解析、認証対象を対応付ける必要があります。",
+          "hpci_relevance_en": "Facility-linked planning must map instrument-specific deadlines, network paths, near-source processing, remote reanalysis, and eligible identities rather than relying on average compute performance.",
+          "adoption_conditions_ja": [
+            "代表装置ごとに入力率、バースト、応答期限、許容欠損、年間稼働時間を測定する。",
+            "装置近傍で削減するデータと、原データを保存して遠隔再解析する範囲を定める。",
+            "施設・HPCI・民間利用者間の認証、認可、監査、障害時責任を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure input rate, bursts, response deadline, tolerated loss, and annual operating time for representative instruments.",
+            "Define what is reduced near the instrument and what raw data remain available for remote reanalysis.",
+            "Verify identity, authorization, audit, and incident responsibility across the facility, HPCI, and industry users."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-DOMAIN-DATA-OPERATIONS",
+          "name_ja": "分野ごとに異なるデータ運用負担",
+          "name_en": "Domain-specific data operations burden",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年6月16日の検討会で整理",
+          "timing_en": "Characterized in the June 16, 2026 working-group discussion",
+          "statement_ja": "議事録は、ライフサイエンスでは倫理審査、キュレーション、国際共同研究のアクセス制御、材料分野ではAI用データセットへの転換、ワーキングデータの構造化、分野横断連携を課題として整理しています。同じストレージ容量でも、審査・メタデータ・アクセス制御・自動化の負担が異なります。",
+          "statement_en": "The minutes characterize ethics review, curation, and international-collaboration access control in life sciences, while materials research needs AI-ready datasets, structuring of working data, and cross-domain integration. Equal storage capacity can therefore carry different review, metadata, access-control, and automation burdens.",
+          "hpci_relevance_ja": "共通基盤は容量だけを配るのではなく、分野別のメタデータ、権限、保持、キュレーション支援を追加できる構造にします。",
+          "hpci_relevance_en": "A common platform should support domain extensions for metadata, authorization, retention, and curation rather than allocating capacity alone.",
+          "adoption_conditions_ja": [
+            "分野別のデータ分類、倫理・契約条件、保持期間、再利用条件を明文化する。",
+            "構造化・キュレーションの人時間と自動化精度を測定する。",
+            "共通機能と分野固有機能の運用責任・継続費用を分ける。"
+          ],
+          "adoption_conditions_en": [
+            "Document domain data classes, ethics or contract conditions, retention, and reuse conditions.",
+            "Measure human structuring or curation time and automation accuracy.",
+            "Separate operating ownership and recurring cost for common and domain-specific functions."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS128"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS128",
+        "title": "AI for Scienceを支える研究データの管理・利活用と流通の在り方ワーキンググループ（第6回）議事録",
+        "publisher": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/shingi/gijyutu/gijyutu29/006/gijiroku/mext_00007.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-16"
+      },
+      "origin_group": "mext-ai-for-science-data-wg-2026",
+      "checked_at": "2026-09-02T00:38:00+09:00",
+      "locator": "Minutes, material 1 discussion corresponding to pages 12-16; lines 64-80",
+      "observation_ja": "SPring-8の即時解析・分散データ・認証・通信、ライフサイエンスの倫理とキュレーション、材料分野のAI用データセット化と構造化負担を確認しました。定量値のない要求は測定済み性能として扱いません。",
+      "observation_en": "Verified SPring-8 in-experiment analysis, distributed data, identity and networking needs, plus life-science ethics and curation and materials AI-dataset and structuring burden. Unquantified requirements are not treated as measured performance.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-024とGAP-TDS-074は未解決です。装置別の入力率、期限、許容欠損、年間量、運用記録が必要です。",
+    "各要件が正式な整備計画・予算・運用仕様へ反映された範囲を後続資料で確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-024 and GAP-TDS-074 remain open; instrument-specific input rates, deadlines, tolerated loss, annual demand, and operating records are required.",
+    "Later documents must establish which requirements enter formal plans, budgets, and operating specifications.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000372",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-02T10:55:05+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "e54c46b06e42f24c23399beb96a21bf8f800410ce3227b6dc71d51cfff9994b8",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "R-CCSの電気・都市ガス調達予定総額と神戸西エリアの建物運転・監視・保守契約を追加しました。区域、期間、予定総額、実績額を区別し、富岳単体費、単価、PUE、実使用量は推定しません。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds planned electricity and city-gas procurement totals for R-CCS and a Kobe west-area building operation, monitoring, and maintenance contract. It distinguishes area, period, planned total, and actual cost and does not infer Fugaku-only cost, unit prices, PUE, or consumption. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "ea891504a4140f8eaaa3d437f44bdbcc4d71116c2af32553189b7ba2d1bc4628",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-06-U01",
+        "TDS-CD2-ARCH-06-U01",
+        "TDS-CD3-ARCH-06-PUE-REGULATION",
+        "TDS-CD4-ARCH-06-HIGH-DENSITY-GRID-DYNAMICS",
+        "TDS-WC372-ARCH-06-01",
+        "TDS-CD45-ARCH-06-AIFS-FACILITY-CONTRACTS",
+        "TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC372-ARCH-06-01",
+      "title_ja": "高密度AI rack向け800 VDC配電の段階導入",
+      "title_en": "Phased 800 VDC power distribution for high-density AI racks",
+      "summary_ja": "既存AC施設のside power rack、row単位配電、新設DC-native施設を、成熟度と施設改修範囲で比較します。",
+      "summary_en": "Compare side power racks for existing AC facilities, row-level distribution, and new DC-native facilities by maturity and renovation scope.",
+      "items": [
+        {
+          "item_id": "TDI-WC372-ARCH06-01-01",
+          "name_ja": "既存施設retrofitとDC-native新設の二経路",
+          "name_en": "Two paths: existing-facility retrofit and DC-native construction",
+          "stage": "near-term",
+          "maturity": "standardized",
+          "timing_ja": "side power rackは2026年後半、row power centerは2027年目標",
+          "timing_en": "Side power rack targeted for H2 2026 and row power center for 2027",
+          "statement_ja": "OCPでGoogle、Microsoft、NVIDIA等が800 VDCの共通interfaceとsystem要件を策定しています。2026年7月時点のSolid-State Transformer仕様はv0.3で、既存480 VAC施設では隣接side power rackが±400 Vまたは0～800 VDCへ変換する短期経路、新設施設ではMVACを直接800 VDCへ変換してdata hallへ配電する長期経路を示します。NVIDIAはMGX対応power rackを2026年後半、最大2 MW/rowのrow power centerを2027年目標としています。800 VDCは既存ACの全面置換ではなく追加選択肢であり、v0.3仕様、公表目標、製品の一般提供、認証済みsiteを同一視しません。",
+          "statement_en": "Google, Microsoft, NVIDIA, and others are developing common 800 VDC interfaces and system requirements through OCP. The Solid-State Transformer specification was version 0.3 in July 2026. A near-term path converts existing 480 VAC to plus-or-minus 400 V or 0-800 VDC in an adjacent side power rack, while a longer-term path converts MVAC directly to 800 VDC for data-hall distribution in new facilities. NVIDIA targets an MGX-compatible power rack in H2 2026 and a row power center supporting up to 2 MW per row in 2027. 800 VDC is an additional option rather than a wholesale replacement for existing AC, and version 0.3 specifications, announced targets, generally available products, and certified sites are not treated as equivalent.",
+          "hpci_relevance_ja": "HPCI更新ではcomputer本体より先に、受電容量、row space、保護協調、保守資格、液冷、既存AC設備を含むsite別導入経路を決める必要があります。",
+          "hpci_relevance_en": "HPCI refresh planning must decide site-specific paths for incoming power, row space, protection coordination, maintenance qualifications, liquid cooling, and existing AC infrastructure before selecting compute hardware.",
+          "adoption_conditions_ja": [
+            "各centerの480 VAC余力、row space、短絡容量、接地、UPS/BESS、保守手順を実測する。",
+            "v0.3から最終仕様への変更、UL/NFPA/IEEE/IEC認証、日本の法令・施工資格を追跡する。",
+            "AC案とside power rack案についてconversion loss、銅量、障害ドメイン、交換時間、総費用を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure 480 VAC headroom, row space, fault current, grounding, UPS/BESS, and maintenance procedures at each center.",
+            "Track changes from version 0.3 to final specifications, UL/NFPA/IEEE/IEC certification, and Japanese codes and qualifications.",
+            "Compare conversion losses, copper, failure domains, replacement time, and total cost for AC and side-power-rack paths."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS425",
+            "SRC-CDS426"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC372-ARCH06-01-02",
+          "name_ja": "800 VDCの安全・相互運用・power smoothing未確定事項",
+          "name_en": "Unresolved 800 VDC safety, interoperability, and power-smoothing requirements",
+          "stage": "contested",
+          "maturity": "uncertain",
+          "timing_ja": "2026年時点で仕様・認証・製品ecosystemを整備中",
+          "timing_en": "Specifications, certification, and product ecosystem still developing in 2026",
+          "statement_ja": "OCPはpower quality、power smoothing、end-to-end interface、millisecond級fault clearing、BESS/UPS統合を標準化対象とし、UL Solutions、NFPA、IEEE、IECとの安全・規制整備を進めています。80社超が対応製品を開発中とされますが、複数ベンダー製品のplug-and-play相互運用、認証済み組合せ、故障率、arc-fault時の隔離、保守要員の安全性、HPCI施設での効率はまだ公表実績として確立していません。open specificationは供給網形成の条件ですが、相互運用済み製品や長期保守を自動的に保証しません。",
+          "statement_en": "OCP identifies power quality, power smoothing, end-to-end interfaces, millisecond-scale fault clearing, and BESS/UPS integration as standardization topics and is working with UL Solutions, NFPA, IEEE, and IEC on safety and regulatory frameworks. More than 80 companies are said to be developing compatible products, but multi-vendor plug-and-play interoperability, certified combinations, failure rates, arc-fault isolation, maintainer safety, and efficiency in HPCI facilities are not established by public operating evidence. An open specification is a condition for supply-chain formation, not an automatic guarantee of interoperable products or long-term support.",
+          "hpci_relevance_ja": "標準化途上の高電圧DCを採用する場合、調達仕様には適合試験、責任分界、spare、訓練、停電・fire対応、将来revisionへのupgradeを含める必要があります。",
+          "hpci_relevance_en": "If high-voltage DC is adopted during standardization, procurement specifications must cover conformance tests, responsibility boundaries, spares, training, outage and fire response, and upgrades to later revisions.",
+          "adoption_conditions_ja": [
+            "認証済みconverter、busway、connector、breaker、rackの組合せを構成管理する。",
+            "fault injection、black-start、islanding、BESS切替、emergency shutdownを受入試験する。",
+            "vendor退出時の代替部品、仕様revision、保守期間、事故責任を契約化する。"
+          ],
+          "adoption_conditions_en": [
+            "Configuration-manage certified combinations of converters, busways, connectors, breakers, and racks.",
+            "Acceptance-test fault injection, black start, islanding, BESS transfer, and emergency shutdown.",
+            "Contract for replacement parts, specification revisions, support duration, and liability if vendors exit."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS426"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD34-ARCH-06-800VDC-POWER-PATHS"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS425",
+        "title": "Why Scaling AI Compute Performance Requires a New Power Architecture",
+        "publisher": "NVIDIA",
+        "url": "https://blogs.nvidia.com/blog/800-vdc-power-architecture-ai-factory/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-11"
+      },
+      "origin_group": "nvidia-800vdc-roadmap-official",
+      "checked_at": "2026-09-02T05:52:00+09:00",
+      "locator": "Lines 10-27: conversion rationale, H2 2026 power rack, 2027 row power center, 2 MW per row, and DC power block",
+      "observation_ja": "三段階の導入経路、時期、row規模、ecosystem主張を確認しました。",
+      "observation_en": "Verified the three deployment paths, timing, row scale, and ecosystem claim.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS426",
+        "title": "Powering the Next Era of AI: How Google, Microsoft and NVIDIA Are Standardizing and Accelerating the Industry Transition to LVDC",
+        "publisher": "Open Compute Project",
+        "url": "https://www.opencompute.org/index.php/blog/powering-the-next-era-of-ai-how-google-microsoft-and-nvidia-are-standardizing-and-accelerating-the-industry-transition-to-lvdc",
+        "source_class": "official-standard",
+        "published_or_updated": "2026-08-11"
+      },
+      "origin_group": "ocp-lvdc-standardization-official",
+      "checked_at": "2026-09-02T05:53:00+09:00",
+      "locator": "Lines 20-69: common requirements, SST v0.3, certification, two deployment paths, fault protection, storage, and suppliers",
+      "observation_ja": "標準化範囲、v0.3、二経路、安全・認証、相互運用の未完了を確認しました。",
+      "observation_en": "Verified standardization scope, version 0.3, two deployment paths, safety and certification work, and incomplete interoperability.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

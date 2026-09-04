@@ -1,0 +1,159 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000221",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T07:33:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000133", "bundle_sha256": "b559fd03c2cb1b8d18f47441c5673fb9619cfb32c4588591f8bfc0c358064d40"},
+    {"update_id": "RUP-000178", "bundle_sha256": "239584dade60ea7b9d058c3f9e563e2bfb8fc14365009d2be6cba810ec5b3f10"},
+    {"update_id": "RUP-000181", "bundle_sha256": "f08e5dfe9017c051e76c416e1f22a4d0ebb5104f984bcb84686860b16b14e261"},
+    {"update_id": "RUP-000182", "bundle_sha256": "d1cac1721415c666e63ddcdac5e603b46107972a27364091e9ae8195fc54a481"}
+  ],
+  "before_profile_sha256": "d84f88dcc459ffefc7f392e0e6fad0734ca2e4ad0a00331af1a5634f03dbeaf5",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "実験施設連携・リアルタイム処理について、2026年のAPSとDIII-Dの公開運用例を追加しました。APSでは最大500倍高輝度化した光源から1秒未満に1万frame規模が発生し得るため、beamlineからALCFへ自動転送し、実験中に解析結果を返します。DIII-Dでは数秒のplasma shotの後、10～20分の間隔内に解析して次のshot条件を決めます。同じ『リアルタイム』でも期限とデータ率が異なるため、HPCIでは転送、予約、実行、返却、認証、失敗時処理を用途別SLOとして設計する必要があります。Consensusは未完了です。",
+  "summary_en": "This update adds 2026 public operational examples from APS and DIII-D to experiment-facility and real-time workload research. The upgraded APS can produce on the order of 10,000 frames in less than a second under a source up to 500 times brighter, motivating automated beamline-to-ALCF transfer and experiment-time analysis. DIII-D has plasma shots lasting seconds followed by 10-20 minute intervals in which analysis informs the next shot. These are both called real time but have different deadlines and data rates. HPCI therefore needs use-case-specific SLOs for transfer, reservation, execution, return, authentication, and failure handling. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "dff550518af69728f4f4627e791e02a88d40e45b6a76fb22f2641add07c1ce5a",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U01",
+        "TDS-CD2-APP-14-U01",
+        "TDS-CD3-APP-14-U01",
+        "TDS-CD10-APP-14-U01",
+        "TDS-CD11-APP-14-JPARC-MLF",
+        "TDS-CD12-APP-14-ILIS",
+        "TDS-CD13-APP-14-INSTRUMENT-STANDARDS",
+        "TDS-CD27-APP-14-EXPERIMENT-SLOS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD27-APP-14-EXPERIMENT-SLOS",
+      "title_ja": "APSとDIII-Dに見る実験時間内処理の異なる期限",
+      "title_en": "Different experiment-time deadlines at APS and DIII-D",
+      "summary_ja": "データ発生から次の実験判断までの期限を、用途別のend-to-end SLOとして定義します。",
+      "summary_en": "Define use-case-specific end-to-end SLOs from data generation to the next experimental decision.",
+      "items": [
+        {
+          "item_id": "TDI-CD27-APS-STREAMING",
+          "name_ja": "APSは高rate X線データを実験中にALCFで解析",
+          "name_en": "APS analyzes high-rate X-ray data at ALCF during experiments",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年4月公開の運用事例",
+          "timing_en": "Operational example published April 2026",
+          "statement_ja": "Advanced Photon Sourceの高輝度化後はX線が最大500倍明るく、microsecond scaleを観測し、1秒未満に1万frame規模を取得し得ます。ArgonneはbeamlineからALCFへ実験データを自動streamingし、Polaris等で収集中に解析して結果を返すpipelineを運用しています。これは全frameを恒久保存する要件とは限らず、局所処理、転送、解析、要約、保存の分担を測定ごとに決める必要があります。",
+          "statement_en": "After the Advanced Photon Source upgrade, X-ray beams can be up to 500 times brighter, observations reach microsecond scales, and on the order of 10,000 frames may be collected in less than one second. Argonne operates an automated pipeline that streams beamline data to ALCF systems such as Polaris for analysis during collection and returns results. This does not necessarily require permanent retention of every frame; local processing, transfer, analysis, reduction, and storage responsibilities need to be defined per experiment.",
+          "hpci_relevance_ja": "SPring-8、J-PARC等との連携では、平均転送帯域だけでなくburst率、期限、予約枠、データ削減、結果返却を契約する必要があります。",
+          "hpci_relevance_en": "Integration with facilities such as SPring-8 and J-PARC requires contracts for burst rate, deadline, reservations, data reduction, and result return rather than average transfer bandwidth alone.",
+          "adoption_conditions_ja": [
+            "検出器rate、burst長、転送量、局所buffer、保存対象を測定方式別に定義する。",
+            "転送開始から解析結果返却までのp50/p95/p99と期限違反を測定する。",
+            "回線断、計算待機、欠損frame、再処理時の科学的品質と責任分担を定める。",
+            "実験者、サービスaccount、計算課題、データ権限の対応を監査可能にする。"
+          ],
+          "adoption_conditions_en": [
+            "Define detector rate, burst duration, transfer volume, local buffer, and retained data by measurement mode.",
+            "Measure p50, p95, p99, and deadline misses from transfer start through returned analysis.",
+            "Define scientific-quality and responsibility rules for link loss, queue delay, missing frames, and reprocessing.",
+            "Make mappings among experimenters, service accounts, allocations, and data rights auditable."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS298"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD27-DIIID-SHOT-CYCLE",
+          "name_ja": "DIII-Dは10～20分のshot間隔を解析期限にする",
+          "name_en": "DIII-D uses the 10-20 minute inter-shot interval as an analysis deadline",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年7月公開の運用事例",
+          "timing_en": "Operational example published July 2026",
+          "statement_ja": "DIII-Dではplasma shotが数秒続き、次のshotまで10～20分のcooling期間があります。ALCF資源はこの時間内に解析し、将来はAI-powered digital twinで次の実験条件を最適化することを目指します。実験間隔内の解析は、常時millisecond応答とは異なり、予約・起動・転送・simulation・人間確認を期限内に収めるworkflowです。",
+          "statement_en": "At DIII-D, plasma shots last seconds and are separated by cooling intervals of about 10-20 minutes. ALCF resources analyze results within that interval, with future AI-powered digital twins intended to help optimize subsequent experimental conditions. This is not continuous millisecond response; it is a deadline workflow combining reservation, launch, transfer, simulation, and human review within the inter-shot window.",
+          "hpci_relevance_ja": "期限が分単位の実験では専用常駐node以外にも、事前予約や優先queueで通常バッチと共存できる可能性があり、必要資源量を実測で決められます。",
+          "hpci_relevance_en": "For minute-scale deadlines, advance reservations or priority queues may coexist with normal batch workloads without permanently dedicated nodes; measurements should determine required capacity.",
+          "adoption_conditions_ja": [
+            "shot cycle、最終判断期限、人間確認時間、再試行余裕を分ける。",
+            "予約資源の未使用時間と通常バッチへのbackfill効果を測る。",
+            "digital twinの推定誤差と実験制御へ反映可能な範囲を検証する。",
+            "期限未達時に安全側へ移る既定手順を定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Separate shot cycle, final decision deadline, human-review time, and retry margin.",
+            "Measure idle reserved capacity and backfill effectiveness for normal batch jobs.",
+            "Validate digital-twin error and the scope of parameters permitted to affect experiment control.",
+            "Define a safe default procedure when the deadline is missed."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS299"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS298",
+        "title": "Data analysis at the speed of light source experiments",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/news/data-analysis-speed-light-source-experiments",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-14"
+      },
+      "origin_group": "aps-alcf-experiment-time",
+      "checked_at": "2026-09-02T04:04:00+09:00",
+      "locator": "APS data-rate, automated pipeline, and experiment steering sections",
+      "observation_ja": "最大500倍の高輝度化、microsecond scale、1秒未満の1万frame規模、自動streamingと実験中解析を確認しました。",
+      "observation_en": "Verified up to 500-times higher brightness, microsecond-scale observations, approximately 10,000 frames in less than a second, automated streaming, and experiment-time analysis.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS299",
+        "title": "Using AI and supercomputers to streamline fusion experiments",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/news/using-ai-and-supercomputers-streamline-fusion-experiments",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-13"
+      },
+      "origin_group": "diiid-alcf-experiment-time",
+      "checked_at": "2026-09-02T04:05:00+09:00",
+      "locator": "shot timing, cooling interval, analysis, and digital-twin objectives",
+      "observation_ja": "数秒のshot、10～20分の間隔、時間制約下の解析とdigital twinの将来目標を確認しました。",
+      "observation_en": "Verified seconds-long shots, 10-20 minute intervals, time-constrained analysis, and future digital-twin objectives.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "APSとDIII-Dのend-to-end遅延分布、欠損率、年間利用量、運用費は公開資料で未確認です。",
+    "国内実験施設を同じSLO項目で比較した公開運用台帳は未完成です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "End-to-end latency distributions, loss rates, annual demand, and operating costs for APS and DIII-D were not verified in public material.",
+    "A public operations register comparing Japanese experimental facilities under the same SLO fields remains incomplete.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

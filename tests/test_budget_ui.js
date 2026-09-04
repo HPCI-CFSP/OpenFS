@@ -101,12 +101,15 @@ test("comparison links retain budget/year and distinguish allocations from estim
 
 test("public register displays all cases with access restrictions and no raw HTML", () => {
   const f = fixture(); f.data.procurement_register.cases[0].title_en = "<script>not markup</script>";
+  const expectedSystemLinks = f.data.procurement_register.cases.reduce(
+    (count, item) => count + (item.linked_system_ids || []).length, 0
+  );
   f.api.renderRegister(f.root, "en");
   assert.equal(f.root.querySelectorAll("details").length, f.data.procurement_register.cases.length);
   assert.equal(f.root.querySelectorAll("summary")[0].textContent, "<script>not markup</script>");
   assert.ok(f.walk(f.root).some((e) => e.textContent?.includes("Confidentiality required; not obtained")));
   assert.ok(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("https://")).every((a) => a.rel === "noopener noreferrer"));
-  assert.equal(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("../roadmaps/")).length, 3);
+  assert.equal(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("../roadmaps/")).length, expectedSystemLinks);
 });
 
 test("reported total, differently defined capacities, and system links remain distinguishable", () => {
@@ -117,11 +120,14 @@ test("reported total, differently defined capacities, and system links remain di
     assert.equal(details.filter((d) => d.open).length, 1);
     assert.equal(details.find((d) => d.open).id, "procurement-PROC-TSUKUBA-UNIFIED-MEMORY-2025");
     const tables = f.root.querySelectorAll("table");
-    assert.equal(tables.length, 2);
+    assert.equal(tables.length, 4);
     assert.ok(f.walk(f.root).some((e) => e.textContent === (language === "ja" ? "実効容量" : "Effective")));
     assert.ok(f.walk(f.root).some((e) => e.textContent?.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure")));
     const systemLinks = f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"));
-    assert.equal(systemLinks.length, 3);
+    const expectedSystemLinks = f.data.procurement_register.cases.reduce(
+      (count, item) => count + (item.linked_system_ids || []).length, 0
+    );
+    assert.equal(systemLinks.length, expectedSystemLinks);
     assert.ok(systemLinks.every((a) => a.href.includes(`?lang=${language}#HPCI-SYS-`)));
   }
 });
@@ -139,6 +145,18 @@ test("lease period and award date remain distinct from commissioning and purchas
     assert.ok(text.includes(caseData.award_date));
     assert.ok(text.includes(language === "ja" ? "購入価格・TCOではありません" : "Not purchase price or TCO"));
     assert.ok(text.includes(language === "ja" ? "月額" : "Monthly"));
+  }
+});
+
+test("five-year contractual floor remains distinct from complete TCO", {skip: !process.env.OPENFS_TEST_PUBLIC_DATA}, () => {
+  for (const language of ["ja", "en"]) {
+    const f = fixture("?lang=" + language);
+    f.api.renderRegister(f.root, language);
+    const text = f.walk(f.root).map((e) => e.textContent || "").join(" ");
+    assert.ok(text.includes(language === "ja" ? "最初の60か月の契約上の既知費用下限" : "Contractual known-cost floor for the first 60 months"));
+    assert.ok(text.includes(language === "ja" ? "5年間TCOではありません" : "This is not five-year TCO"));
+    assert.ok(text.includes(language === "ja" ? "5年間TCOの証拠範囲" : "Five-year TCO evidence scope"));
+    assert.ok(text.includes(language === "ja" ? "内訳未分解" : "Unitemized"));
   }
 });
 

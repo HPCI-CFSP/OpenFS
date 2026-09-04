@@ -1,0 +1,300 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000283",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-02T07:44:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000210",
+      "bundle_sha256": "f15addd3693585f725953fb389f7396a71f83d486158b414e6875069f1b23ce1"
+    },
+    {
+      "update_id": "RUP-000211",
+      "bundle_sha256": "7dec8991ee83d030b07477ff7ae8307c97909c6ad719bf6b8ed505998b997677"
+    },
+    {
+      "update_id": "RUP-000217",
+      "bundle_sha256": "616a0ef9f5ecd4cb24486968d618c93623f1bdeab8f28bcf22e35706e3fad423"
+    },
+    {
+      "update_id": "RUP-000220",
+      "bundle_sha256": "136b6e2474588413dcfd97f44a407d3c8b6ff4b6e5a7b7e48784812eef969d42"
+    },
+    {
+      "update_id": "RUP-000230",
+      "bundle_sha256": "cd6fe39d3766d425c6060465fc5ea9220e9b36c7fae786ecb807c84837f8a362"
+    },
+    {
+      "update_id": "RUP-000269",
+      "bundle_sha256": "a6b01f21d00495bc8913e561e8a7329038dcab2f830c856c01f526655797451a"
+    }
+  ],
+  "before_profile_sha256": "5bde1e43b0bfa17e5ee85040bdd04ad8f8be0d923210c5f604da88dda36c9bc5",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年公開の科学AIエージェントbenchmarkは、研究規模バイオ解析を評価するBixBench3、約200件の対話的科学課題を段階評価するSciAgentArena、9,110件のsystematic reviewから結論統合を評価するSciConBench、20件のend-to-end AI研究課題をmodel・scaffoldの組合せで測るAIRS-Benchへ分化しています。BixBench3では20課題・138成果物に対する最高scoreが0.48、100 GB超の課題で平均0.10、1回平均6.8時間・1.02億token・43ドルと報告され、科学AI評価自体がHPC級の長時間・大容量workloadになり得ます。指標と公開条件が異なるため得点の横比較は行いません。Consensusは未完了です。",
+  "summary_en": "Scientific-agent benchmarks published in 2026 have differentiated into BixBench3 for research-scale biological analysis, SciAgentArena for stepwise evaluation of about 200 interactive scientific tasks, SciConBench for conclusion synthesis across 9,110 systematic-review questions, and AIRS-Bench for 20 end-to-end AI-research tasks evaluated as model-scaffold pairings. BixBench3 reports a best score of 0.48 across 20 tasks and 138 artifacts, a mean of 0.10 on tasks above 100 GB, and averages of 6.8 hours, 102 million tokens, and USD 43 per attempt, showing that scientific-agent evaluation can itself become a long-running, data-intensive HPC workload. Scores are not compared across benchmarks because metrics and access conditions differ. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-13-U02",
+      "before_sha256": "e1ae73208461dfef1998bde9378900f0ef412e92b326fca52af396485a390a9d",
+      "evidence_section_ids": [
+        "TDS-AIP-AGENTS",
+        "TDS-CD2-APP-13-U02",
+        "TDS-CD3-APP-13-U02",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE",
+        "TDS-CD20-APP-13-AGENTIC-MATURITY",
+        "TDS-CD26-APP-13-GENEBENCH-PRO",
+        "TDS-CD27-APP-13-SCIENTIFIC-AGENT-BENCHMARKS-2026"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD27-APP-13-SCIENTIFIC-AGENT-BENCHMARKS-2026",
+      "title_ja": "2026年の科学AIエージェントbenchmark比較",
+      "title_en": "Comparison of scientific-agent benchmarks published in 2026",
+      "summary_ja": "研究工程、task規模、data量、評価器、外部接続、費用、公開性を共通軸にします。",
+      "summary_en": "Use research stage, task scale, data volume, grader, external access, cost, and openness as common axes.",
+      "items": [
+        {
+          "item_id": "TDI-CD90-BIXBENCH3",
+          "name_ja": "BixBench3：研究規模の計算生物学解析",
+          "name_en": "BixBench3: research-scale computational biology analysis",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年8月26日公開",
+          "timing_en": "Published August 26, 2026",
+          "statement_ja": "BixBench3は、公開研究由来のraw biological data、研究目的、method guidance、構造化成果物契約を与え、20課題・138固有成果物を決定論的graderとprocess judgeで評価します。13モデルのscoreは0.00～0.48、100 GB未満は平均0.36、100 GB超は0.10、1～2段は0.36、3段以上は0.24でした。1回平均6.8時間・1.02億token・43ドル、最長24時間・10.7億token・525ドルです。公開runnerはGCP n2-standard-32、API key、GPT-5.5 judge、一部Cell Ranger licenseを必要とします。",
+          "statement_en": "BixBench3 provides raw biological data from published studies, a research objective, methodological guidance, and structured artifact contracts, grading 20 tasks and 138 unique artifacts with a deterministic grader and a process judge. Thirteen models scored 0.00-0.48; means were 0.36 below 100 GB versus 0.10 above 100 GB, and 0.36 for one or two steps versus 0.24 for three or more. An attempt averaged 6.8 hours, 102 million tokens, and USD 43; maxima were 24 hours, 1.07 billion tokens, and USD 525. The public runner requires a GCP n2-standard-32 VM, API keys, a GPT-5.5 judge, and licensed Cell Ranger software for some tasks.",
+          "hpci_relevance_ja": "HPCIは科学AIエージェントを軽量なchat workloadとみなさず、raw data staging、長時間sandbox、license、外部API、judge依存、成果物検証を含むserviceとして評価する必要があります。",
+          "hpci_relevance_en": "HPCI should not treat scientific agents as lightweight chat workloads; evaluation must include raw-data staging, long-running sandboxes, licensing, external APIs, judge dependency, and artifact validation.",
+          "adoption_conditions_ja": [
+            "20課題、input checksum、runtime image、model、effort、judge、価格をversion固定する。",
+            "artifact scoreとprocess judge scoreを分離し、deterministic部分を優先する。",
+            "外部API・commercial softwareを使わない再現経路とHPCI上の費用を測る。"
+          ],
+          "adoption_conditions_en": [
+            "Version-pin the 20 tasks, input checksums, runtime image, model, effort, judge, and price basis.",
+            "Separate artifact and process-judge scores and prioritize deterministic components.",
+            "Measure an HPCI reproduction path and cost without external APIs or commercial software."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS352",
+            "SRC-CDS353"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD90-SCIAGENTARENA",
+          "name_ja": "SciAgentArena：約200件の段階評価型科学課題",
+          "name_en": "SciAgentArena: about 200 stepwise-evaluated scientific tasks",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年6月10日公開",
+          "timing_en": "Published June 10, 2026",
+          "statement_ja": "SciAgentArenaは5科学domain・4 task categoryにわたる約200課題を、agent-agnosticな対話環境とstepwise verificationで評価し、18 agentを比較しています。公開説明では、定型的で評価基準が明確なdata-analysisでは有効ですが、novel insight、自律的探索、open-ended solutionで弱いと報告します。単一agentが全domainで優位ではなく、最終正答率だけでなくstability、reliability、costを扱います。",
+          "statement_en": "SciAgentArena evaluates about 200 tasks across five scientific domains and four task categories in an agent-agnostic interactive environment with stepwise verification, comparing 18 agents. Its public description reports useful performance on well-specified data-analysis workflows but weakness in novel insight, self-directed exploration, and open-ended solutions. No single agent dominates every domain, and evaluation goes beyond final accuracy to stability, reliability, and cost.",
+          "hpci_relevance_ja": "HPCIの科学AI評価には、domain別task、途中段階の検証、失敗位置、costを導入し、平均値だけでなくworst-caseと未完了率を示すべきです。",
+          "hpci_relevance_en": "HPCI scientific-agent evaluation should include domain-specific tasks, intermediate verification, failure location, and cost, reporting worst cases and incompletion in addition to means.",
+          "adoption_conditions_ja": [
+            "公開dataset・code・leaderboardの版とtask access条件を固定する。",
+            "domain、task category、step別の成功率と費用を報告する。",
+            "agent固有環境と共通評価環境の境界を監査する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin versions and access conditions for datasets, code, and leaderboard tasks.",
+            "Report success and cost by domain, task category, and step.",
+            "Audit the boundary between agent-specific environments and the shared evaluator."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS354",
+            "SRC-CDS355"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD90-SCICONBENCH",
+          "name_ja": "SciConBench：clean-room科学結論統合",
+          "name_en": "SciConBench: clean-room scientific conclusion synthesis",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年6月9日公開",
+          "timing_en": "Published June 9, 2026",
+          "statement_ja": "SciConBenchはsystematic reviewから得た9,110問と専門家記述の結論を用い、結論をatomic factへ分解してprecision・recall・F1で評価します。SciConHarnessは制御されたWeb利用によるclean-room評価を行い、8つのfrontier model・deep research agentで最高factual F1は0.337でした。無制限評価よりclean-roomで性能が低下したため、data leakageが能力推定を押し上げる可能性を示します。",
+          "statement_en": "SciConBench uses 9,110 questions and expert-written conclusions from systematic reviews, decomposing conclusions into atomic facts for precision, recall, and F1 evaluation. SciConHarness provides controlled-web clean-room evaluation. Across eight frontier models and deep-research agents, the best factual F1 was 0.337. Lower clean-room performance than unconstrained evaluation indicates that data leakage may inflate capability estimates.",
+          "hpci_relevance_ja": "OpenFS自体の評価にも、snapshot化した情報源、取得許可、未知のholdout、atomic claim単位のprecision・recallを用い、公開Web閲覧時のleakageを管理できます。",
+          "hpci_relevance_en": "OpenFS can use source snapshots, controlled retrieval permissions, held-out material, and atomic-claim precision and recall to manage leakage in evaluations over the public web.",
+          "adoption_conditions_ja": [
+            "clean-roomと通常Web利用の結果を別々に報告する。",
+            "atomic fact抽出・判定器のexpert妥当性と再現性を監査する。",
+            "医療以外のHPCI技術調査でdomain shiftを測る。"
+          ],
+          "adoption_conditions_en": [
+            "Report clean-room and ordinary-web results separately.",
+            "Audit expert validity and reproducibility of atomic-fact extraction and judging.",
+            "Measure domain shift from health reviews to HPCI technology research."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS356"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD90-AIRS-BENCH",
+          "name_ja": "AIRS-Bench：model・scaffold構成のAI研究評価",
+          "name_en": "AIRS-Bench: AI-research evaluation of model-scaffold configurations",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年公開、2026年9月2日repository確認",
+          "timing_en": "Published in 2026; repository checked September 2, 2026",
+          "statement_ja": "AIRS-Benchは17論文・16 datasetから20課題を構成し、problem・dataset・metric・human SOTAを与えて予測成果物を評価します。modelとscaffoldの組合せをagentと定義し、MLGymのReActとaira-dojoのone-shot・greedyを含む14構成を複数seedで比較します。normalized scoreは観測最悪値と文献SOTAに基づくため、task集合や参加構成が変わる場合の比較には注意が必要です。公開codeはCC BY-NC 4.0です。",
+          "statement_en": "AIRS-Bench defines 20 tasks from 17 papers and 16 datasets, providing a problem, dataset, metric, and human SOTA and grading prediction artifacts. It defines an agent as a model-scaffold pairing and compares 14 configurations across multiple seeds, including MLGym ReAct and aira-dojo one-shot and greedy scaffolds. Its normalized score depends on the worst observed result and literature SOTA, requiring care when task sets or participating configurations change. The public code is CC BY-NC 4.0.",
+          "hpci_relevance_ja": "OpenFSはmodel名だけでなくmodel・scaffold・harness・budgetの構成単位で評価し、非商用licenseが共同利用・調達評価へ与える制約を確認すべきです。",
+          "hpci_relevance_en": "OpenFS should evaluate model, scaffold, harness, and budget as a configuration rather than by model name and should review how the noncommercial license constrains shared use and procurement evaluation.",
+          "adoption_conditions_ja": [
+            "task、dataset、SOTA、最悪値、seed、scaffold、budgetを保存する。",
+            "normalized scoreに加えraw metric、valid submission率、費用を保持する。",
+            "licenseとdatasetの再配布・機関横断利用条件を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve tasks, datasets, SOTA, worst values, seeds, scaffolds, and budgets.",
+            "Retain raw metrics, valid-submission rate, and cost in addition to normalized score.",
+            "Review licensing and dataset redistribution and cross-institution use."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS357"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS352",
+        "title": "BixBench3: Benchmarking AI agents on research-study-scale computational biology tasks",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2608.25286",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-08-26"
+      },
+      "origin_group": "bixbench3-paper",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Abstract: task/artifact counts, model results, data and step effects, time/token/cost",
+      "observation_ja": "BixBench3の規模、score、data量・段数との関係、実行資源を確認しました。",
+      "observation_en": "Verified BixBench3 scale, scores, data and step relationships, and execution resources.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS353",
+        "title": "BixBench3 public harness and deterministic grader",
+        "publisher": "Edison Scientific",
+        "url": "https://github.com/EdisonScientific/BixBench3",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "bixbench3-repository",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "README: runner, grader, data layout, VM, keys, licensed tools, output retention",
+      "observation_ja": "BixBench3の公開実装、実行環境、外部依存、成果物を確認しました。",
+      "observation_en": "Verified the public implementation, runtime, external dependencies, and outputs of BixBench3.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS354",
+        "title": "Benchmarking AI Agents for Addressing Scientific Challenges Across Scales",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2606.12736",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-06-10"
+      },
+      "origin_group": "sciagentarena-paper",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Abstract: about 200 tasks, stepwise verification, interactive environment, capability limits",
+      "observation_ja": "SciAgentArenaのtask規模、評価方式、主な限界を確認しました。",
+      "observation_en": "Verified SciAgentArena task scale, evaluation design, and principal limitations.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS355",
+        "title": "SciAgentArena",
+        "publisher": "SciAgentArena authors",
+        "url": "https://sciagentarena.github.io/",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "sciagentarena-project",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Overview: 18 agents, five domains, four categories, living submissions",
+      "observation_ja": "SciAgentArenaの比較対象、domain、task category、公開platformを確認しました。",
+      "observation_en": "Verified SciAgentArena agents, domains, task categories, and public platform.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS356",
+        "title": "Can AI Agents Synthesize Scientific Conclusions?",
+        "publisher": "arXiv",
+        "url": "https://arxiv.org/abs/2606.11337",
+        "source_class": "research-artifact",
+        "published_or_updated": "2026-06-09"
+      },
+      "origin_group": "sciconbench-paper",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "Abstract: 9.11K questions, clean-room harness, eight systems, best F1 0.337",
+      "observation_ja": "SciConBenchの規模、clean-room設計、最高F1、leakage観察を確認しました。",
+      "observation_en": "Verified SciConBench scale, clean-room design, best F1, and leakage observation.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS357",
+        "title": "AIRS-Bench: a Suite of Tasks for Frontier AI Research Science Agents",
+        "publisher": "Meta Research",
+        "url": "https://github.com/facebookresearch/airs-bench",
+        "source_class": "research-artifact",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "airs-bench-repository",
+      "checked_at": "2026-09-02T05:02:00+09:00",
+      "locator": "README: 20 tasks, papers/datasets, model-scaffold definition, harnesses, metrics, leaderboard, license",
+      "observation_ja": "AIRS-Benchのtask構成、agent定義、評価指標、公開実装、licenseを確認しました。",
+      "observation_en": "Verified AIRS-Bench task composition, agent definition, metrics, public implementation, and license.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "4 benchmarkを同一model・harness・予算・hardwareで再実行した比較はありません。SciConBenchの公開code・data取得条件も今回の確認範囲では確定していません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "No comparison reruns all four benchmarks with the same model, harness, budget, and hardware. Public code and data access conditions for SciConBench were not established in this review.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

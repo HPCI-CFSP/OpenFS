@@ -1,0 +1,162 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000254",
+  "topic_id": "SSW-01",
+  "created_at": "2026-09-02T07:39:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000127",
+      "bundle_sha256": "2afaeff46f62d9ff52cc71ac81e640d9e4919e1e3c3b0286b2c9e72d7c38aa88"
+    },
+    {
+      "update_id": "RUP-000159",
+      "bundle_sha256": "bcb20b7c511099e4e2cf9e1f31e6b3312c80af5ec23b9d3c0dcdf24005e72e04"
+    },
+    {
+      "update_id": "RUP-000172",
+      "bundle_sha256": "004b69a8c614fca240bc12542b1183dcea00e1c60e9a557e41939a1bdcfb0263"
+    },
+    {
+      "update_id": "RUP-000213",
+      "bundle_sha256": "65ae3fc5a9bd161bc7e471b7c2daa9d56c6010e58c5e757df6f72cc2639ed7ca"
+    },
+    {
+      "update_id": "RUP-000246",
+      "bundle_sha256": "88bf048ae90b8275c4185bb15b7701c7054259454a67b1d1487926957759a015"
+    }
+  ],
+  "before_profile_sha256": "5e34553ec13e60e725f455ad3a4a28c74d6aca058654ebf5fda974b15e33e139",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の2026年3月障害一覧には、ビルド失敗だけでなく、clangモードの入れ子クラスやstd::regex、OpenMP指示節の組合せで誤った実行結果を生じ得る不具合が含まれます。修正済み、修正予定なし、未定、2027年4月予定が混在しています。ツールチェーン評価では、機能対応表だけでなく、既知不具合、回避策、修正期限、代表コードの回帰試験を継続管理する必要があります。Consensusは未完了です。",
+  "summary_en": "Fugaku's March 2026 defect list includes not only build failures but cases that can produce incorrect results in clang-mode nested classes, std::regex, and combinations of OpenMP directives. Statuses include fixed, will not fix, TBD, and a planned April 2027 correction. Toolchain evaluation must therefore manage known defects, workarounds, fix horizons, and regression tests on representative code in addition to feature matrices. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-01-U02",
+      "before_sha256": "010df929746eb951b0fce07af8a6324f57462f12b7c530625783c8a56831b49f",
+      "evidence_section_ids": [
+        "TDS-SSW02-TOOLCHAINS",
+        "TDS-HC26-SSW-01-U2",
+        "TDS-CD1-SSW-01-U02",
+        "TDS-CD2-SSW-01-U02",
+        "TDS-CD3-SSW-01-U02",
+        "TDS-CD4-SSW-01-U02",
+        "TDS-CD11-SSW-01-U02",
+        "TDS-CD14-SSW-01-PORTABILITY",
+        "TDS-CD20-SSW-01-OPENMP-STANDARDS",
+        "TDS-CD52-SSW-01-HPCI-COMPILERS",
+        "TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS",
+      "title_ja": "富岳ツールチェーンの既知不具合と数値結果の保護",
+      "title_en": "Known Fugaku toolchain defects and protection of computational results",
+      "summary_ja": "機能有無ではなく、誤結果、回避策、修正状態、回帰試験を追跡します。",
+      "summary_en": "Track incorrect-result risks, workarounds, fix state, and regression tests rather than feature presence alone.",
+      "items": [
+        {
+          "item_id": "TDI-CD61-FUGAKU-WRONG-RESULT-DEFECTS",
+          "name_ja": "誤結果を生じ得るC++・OpenMP不具合",
+          "name_en": "C++ and OpenMP defects that can produce incorrect results",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日時点の障害一覧",
+          "timing_en": "Defect list as of March 12, 2026",
+          "statement_ja": "資料は、clangモードの入れ子クラスのコンストラクタ確認で結果異常が起こり得て回避策なし・修正時期未定、std::regexの特定の不正範囲で結果異常が起こり得て回避策なし・修正予定なし、と記録しています。OpenMPのreductionとschedule、またはC/C++のparallel for simdとscheduleの組合せでも結果異常が報告され、条件回避またはclangモードを回避策とし、2025年10月10日に対処完了とされています。",
+          "statement_en": "The report records possible incorrect results in clang mode when checking nested-class constructors, with no workaround and fix date TBD, and in certain invalid std::regex ranges, with no workaround and no planned fix. It also records incorrect results for combinations of OpenMP reduction and schedule, or C/C++ parallel-for-simd and schedule; avoiding the condition or using clang mode was advised, and the defects are marked fixed on October 10, 2025.",
+          "hpci_relevance_ja": "次期環境の検収ではコンパイル成功やベンチマーク速度だけでなく、既知不具合を含む正答性回帰試験と利用者通知を必須にする必要があります。",
+          "hpci_relevance_en": "Acceptance of a successor environment should require correctness regression and user notification for known defects, not only successful compilation and benchmark speed.",
+          "adoption_conditions_ja": [
+            "修正版のコンパイラ版、モード、最適化、OpenMP構文を固定して再試験する。",
+            "誤結果とコンパイルエラーを別の重大度で管理する。",
+            "修正予定なしの機能には代替コンパイラまたはコード経路を用意する。"
+          ],
+          "adoption_conditions_en": [
+            "Retest pinned compiler versions, modes, optimization flags, and OpenMP constructs.",
+            "Track incorrect results separately from compile errors with different severity.",
+            "Provide alternate compilers or code paths for defects marked will-not-fix."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD61-FUGAKU-FORTRAN-SUPPORT-HORIZON",
+          "name_ja": "Fortran 2003メモリリークは2027年4月修正予定",
+          "name_en": "Fortran 2003 memory-leak fix planned for April 2027",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年3月12日時点、修正予定2027年4月",
+          "timing_en": "As of March 12, 2026; fix planned for April 2027",
+          "statement_ja": "Fortran 2003のオブジェクト指向機能で、多相変数へ非多相派生型を繰り返し代入するとメモリリークが生じる不具合が記録されています。回避策は発生条件を避けるコード修正で、修正予定は2027年4月です。予定日は修正版の提供・検証・配備完了を意味しません。",
+          "statement_en": "A memory leak is recorded for repeated assignment of a nonpolymorphic derived type to a polymorphic variable using Fortran 2003 object-oriented features. The workaround is to modify code to avoid the condition, with a fix planned for April 2027. The planned date does not establish release, validation, or deployment of a corrected compiler.",
+          "hpci_relevance_ja": "長寿命科学コードの移行計画には、言語標準対応だけでなく修正待ち期間、回避コードの保守費、旧・新処理系の併存を含める必要があります。",
+          "hpci_relevance_en": "Migration planning for long-lived scientific code should include fix latency, maintenance of workaround code, and old/new compiler coexistence in addition to language-standard support.",
+          "adoption_conditions_ja": [
+            "影響コードと入力を最小再現例と実アプリの双方で保存する。",
+            "修正版提供後にメモリ使用量と数値結果を再検証する。",
+            "修正予定を利用可能な機能として扱わない。"
+          ],
+          "adoption_conditions_en": [
+            "Preserve affected cases as both minimal reproductions and application tests.",
+            "Revalidate memory use and numerical results after a fixed compiler is delivered.",
+            "Do not treat a planned fix as an available feature."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS337"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS337",
+        "title": "富岳運用状況報告 2026年3月",
+        "publisher": "理化学研究所 計算科学研究センター",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202603.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-12"
+      },
+      "origin_group": "fugaku-march-2026-operations",
+      "checked_at": "2026-09-02T04:47:00+09:00",
+      "locator": "Pages 12-15: compiler and runtime defects, workarounds, fixed/will-not-fix/TBD states, and April 2027 plan",
+      "observation_ja": "誤結果、メモリリーク、回避策、修正状態を機能別に確認しました。",
+      "observation_en": "Verified incorrect-result and memory-leak defects, workarounds, and fix states by feature.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "修正版コンパイラの版、回帰試験結果、影響アプリケーション数は公開資料から確認できません。",
+    "一覧が全既知不具合を網羅するかは未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Fixed compiler versions, regression results, and affected-application counts are not public.",
+    "It is not established that the list covers every known defect.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

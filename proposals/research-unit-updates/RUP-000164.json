@@ -1,0 +1,187 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000164",
+  "topic_id": "CROSS-16",
+  "created_at": "2026-09-02T06:50:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "a6c23a9349bc5f9ca00382edc0f2f8ebeca641bbbeb8b59b5b14ba8e04e8dd8e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "SPring-8データセンターは、CPU 64ノード、A100 GPU 16ノード、転送6ノード、解析用6.4 PBストレージを実験施設内に配置しています。一方、Data Flow Serviceは課題当たり2 TB・1ファイル100 MBで、中長期保管は利用者側またはHPCI共用ストレージへの移行を前提とします。2025AのSPring-8・HPCI連携利用も施設ごとの申請が必要でした。近接処理、広域転送、長期保管、利用制度を分離せず設計する必要があります。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The SPring-8 Data Center places 64 CPU nodes, 16 A100 GPU nodes, six transfer nodes, and 6.4 PB of analysis storage on site. Its Data Flow Service, however, is limited to 2 TB per project and 100 MB per file and assumes medium- and long-term retention at users' institutions or HPCI shared storage. The 2025A SPring-8/HPCI complementary-use route still required applications to each facility. Proximity processing, wide-area transfer, retention, and access policy must be designed together. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-16-U01",
+      "before_sha256": "f1c052ead0bbef796e421b95524f4863f9dbb10754703322ea85877c7d479511",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-16-U01",
+        "TDS-CD2-CROSS-16-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-CROSS-16-U01",
+      "title_ja": "SPring-8における近接処理・転送・保管・申請の境界",
+      "title_en": "Boundaries among proximity processing, transfer, retention, and access at SPring-8",
+      "summary_ja": "実験施設のオンサイト機能と外部HPC・保存先の役割を、容量と手続きから整理します。",
+      "summary_en": "Use capacities and procedures to separate onsite experimental functions from external HPC and retention roles.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-CROSS16-SPRING8-ONSITE-COMPUTE",
+          "name_ja": "実験施設内のCPU・GPU・転送・解析ストレージ",
+          "name_en": "Onsite CPU, GPU, transfer, and analysis storage",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2023年10月から共用、2026年9月2日構成確認",
+          "timing_en": "Shared service since October 2023; configuration checked September 2, 2026",
+          "statement_ja": "SPring-8データセンターは、CPUノード64台、NVIDIA A100を1基ずつ搭載したGPUノード16台、外部・内部転送サーバ6台、S3ゲートウェイ4台を備えます。共有ストレージは用途別に分かれ、解析データの一時保存領域は実効6.4 PBです。ノード数と容量だけでは、実験中の入力率、期限、同時利用、実効I/O性能への適合を証明しません。",
+          "statement_en": "The SPring-8 Data Center provides 64 CPU nodes, 16 GPU nodes each with one NVIDIA A100, six internal/external transfer servers, and four S3 gateways. Shared storage is separated by use, including 6.4 PB usable for temporary analysis data. Counts and capacity alone do not prove suitability for experimental ingest rate, deadlines, concurrency, or effective I/O performance.",
+          "hpci_relevance_ja": "データ発生源の近くには、全量を遠隔へ送る前の品質確認、圧縮、選別、再構成に必要な最小計算・保存・転送機能を置く必要があります。",
+          "hpci_relevance_en": "Near the data source, minimum compute, storage, and transfer capability is needed for quality checks, compression, selection, and reconstruction before moving full datasets remotely.",
+          "adoption_conditions_ja": [
+            "ビームライン別のピーク・平均データ率、同時実験数、結果返却期限を測る。",
+            "オンサイト前処理による削減率と科学的情報損失を検証する。",
+            "転送ノード、S3、Lustre、外部HPC間の認証・再送・障害復旧を一体で試験する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure peak and average data rate, concurrent experiments, and result deadlines by beamline.",
+            "Validate reduction and scientific-information loss from onsite preprocessing.",
+            "Test authentication, retry, and failure recovery across transfer nodes, S3, Lustre, and external HPC."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS169"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-CROSS16-SPRING8-DATAFLOW-BOUNDARY",
+          "name_ja": "2 TBの簡易共有と中長期保管の分離",
+          "name_en": "Separation of 2-TB sharing from medium- and long-term retention",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月2日に確認した現行サービス",
+          "timing_en": "Current service checked September 2, 2026",
+          "statement_ja": "Data Flow ServiceはSPring-8実験データの一時保管・所外ダウンロード・共有を提供し、容量は課題当たり2 TB、最大ファイルサイズは100 MBです。中長期保管は所属機関・法人またはHPCI共用ストレージへ移すことを前提とします。6.4 PBの解析用ストレージと2 TBの利用サービス枠は用途・単位が異なり、同じ容量指標として比較できません。",
+          "statement_en": "The Data Flow Service supports temporary retention, offsite download, and sharing of SPring-8 experimental data, with 2 TB per project and a 100-MB maximum file size. Medium- and long-term retention is expected at the user's institution or HPCI shared storage. The 6.4-PB analysis tier and the 2-TB service allowance have different purposes and units and cannot be compared as the same capacity metric.",
+          "hpci_relevance_ja": "計算システム整備では、物理容量だけでなく、課題別割当、ファイル制約、保持期間、搬出先、責任分界をデータライフサイクルとして定義する必要があります。",
+          "hpci_relevance_en": "System planning must define per-project allocation, file constraints, retention, destination, and responsibility as a data lifecycle, not only physical capacity.",
+          "adoption_conditions_ja": [
+            "物理容量、実効容量、利用者クオータ、一時領域、長期領域を別指標にする。",
+            "大量小ファイルと大容量ファイルの双方について転送・再構成時間を測る。",
+            "保存期限前の通知、転送失敗、利用終了、削除証跡の責任を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Use separate metrics for physical, usable, user-quota, temporary, and long-term capacity.",
+            "Measure transfer and reconstruction for both many-small-file and large-file datasets.",
+            "Assign responsibility for expiry notices, transfer failure, service end, and deletion evidence."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS169", "SRC-CDS170"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-CROSS16-SPRING8-HPCI-SEPARATE-APPLICATIONS",
+          "name_ja": "SPring-8・HPCI連携利用に残る別申請",
+          "name_en": "Separate applications retained for SPring-8 and HPCI complementary use",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025A募集制度",
+          "timing_en": "2025A call structure",
+          "statement_ja": "2025Aの連携利用は、SPring-8とSACLA、J-PARC MLF、または富岳を含むHPCIの併用を対象にしましたが、利用者は各施設へ個別に申請する必要がありました。同時期申請や一方の採択後申請は可能でも、ビームタイムと計算資源が一つの採択・予約・SLOで保証される制度ではありません。",
+          "statement_en": "The 2025A complementary-use call covered SPring-8 with SACLA, J-PARC MLF, or HPCI including Fugaku, but applicants still had to apply to each facility. Applications could be synchronized or follow an earlier award, yet beamtime and compute were not guaranteed through one selection, reservation, or SLO.",
+          "hpci_relevance_ja": "実験連携を実用化するには、設備が接続されているだけでなく、期限に合わせた共同採択、予約、データ経路、障害時の代替、問い合わせ窓口が必要です。",
+          "hpci_relevance_en": "Operational experimental integration requires coordinated selection, reservation, data paths, failover, and support aligned to deadlines, not connectivity alone.",
+          "adoption_conditions_ja": [
+            "実験と計算の採択・予約成功率、ずれ時間、未使用枠を追跡する。",
+            "締切未達時の再予約、代替資源、データ保持、費用負担を定める。",
+            "共通窓口が各施設の責任範囲と申請状態を利用者へ一貫して説明できるようにする。"
+          ],
+          "adoption_conditions_en": [
+            "Track joint selection and reservation success, timing mismatch, and unused allocation.",
+            "Define rebooking, alternative resources, retention, and cost after missed deadlines.",
+            "Provide a common desk that explains each facility's responsibility and application state consistently."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS171"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS169",
+        "title": "システム概要 - SPring-8 Data Center Portal",
+        "publisher": "SPring-8 Data Center",
+        "url": "https://dc-portal.spring8.or.jp/overview/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点"
+      },
+      "origin_group": "spring8-data-center-current",
+      "checked_at": "2026-09-02T06:42:00+09:00",
+      "locator": "CPU/GPU nodes, S3 gateways, transfer servers, and shared-storage tiers",
+      "observation_ja": "CPU 64、A100 GPU 16、転送6、S3ゲートウェイ4、解析用Lustre実効6.4 PBを確認しました。ノード数を実効性能へ外挿していません。",
+      "observation_en": "Verified 64 CPU nodes, 16 A100 GPU nodes, six transfer servers, four S3 gateways, and 6.4 PB usable analysis Lustre. Counts were not extrapolated into effective performance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS170",
+        "title": "データフローサービス - SPring-8 Data Center Portal",
+        "publisher": "SPring-8 Data Center",
+        "url": "https://dc-portal.spring8.or.jp/dfs/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点"
+      },
+      "origin_group": "spring8-data-center-current",
+      "checked_at": "2026-09-02T06:44:00+09:00",
+      "locator": "Service purpose, 2-TB per-project allowance, 100-MB file limit, medium/long-term retention destination",
+      "observation_ja": "一時保管・共有、課題当たり2 TB、100 MBファイル上限、中長期保管を利用者側またはHPCI共用ストレージへ移す前提を確認しました。",
+      "observation_en": "Verified temporary retention and sharing, 2 TB per project, a 100-MB file limit, and the expectation that medium- and long-term retention moves to user institutions or HPCI shared storage.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS171",
+        "title": "2025A SPring-8におけるSACLA、J-PARC MLFまたは富岳を含むHPCIとの連携利用課題募集",
+        "publisher": "SPring-8 User Information / JASRI",
+        "url": "https://user.spring8.or.jp/?p=51104",
+        "source_class": "official-project",
+        "published_or_updated": "2024-10-24"
+      },
+      "origin_group": "spring8-hpci-complementary-use-2025a",
+      "checked_at": "2026-09-02T06:46:00+09:00",
+      "locator": "Eligible complementary-use patterns and separate application procedures",
+      "observation_ja": "連携利用の対象、同時期・採択後・利用後申請の経路、各施設への別申請を確認しました。共同予約や共通SLOは資料から確認できません。",
+      "observation_en": "Verified eligible complementary-use patterns, synchronized or sequential application routes, and separate applications to each facility. Joint reservation or a common SLO was not established by the source.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-074、GAP-TDS-085、GAP-TDS-086は未解決です。実験別の入力率、期限、欠損許容、転送実績、共同予約成功率が必要です。",
+    "公開構成は実効I/O、同時利用、障害復旧、年間データ量を示さないため、容量だけから将来規模を外挿しません。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-074, GAP-TDS-085, and GAP-TDS-086 remain open; ingest rates, deadlines, loss tolerance, transfer observations, and coordinated-reservation success by experiment are required.",
+    "The published configuration does not establish effective I/O, concurrency, recovery, or annual data volume, so capacity is not extrapolated into future scale.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

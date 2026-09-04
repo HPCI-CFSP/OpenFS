@@ -1,0 +1,117 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000268",
+  "topic_id": "APP-02",
+  "created_at": "2026-09-02T07:41:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000171",
+      "bundle_sha256": "e5a5524263e3bb6dc60ead5ef98e98283473cfff12954dcbab25a8a7c9ef7c06"
+    },
+    {
+      "update_id": "RUP-000228",
+      "bundle_sha256": "082cfc450fc4c20ad2608d05198465819e922f7f9ec478ff63672dc120a600df"
+    },
+    {
+      "update_id": "RUP-000241",
+      "bundle_sha256": "f89da10f63a1d832cb56bf587392eaae7250ec866e4e650860af1ab91b77b3ce"
+    }
+  ],
+  "before_profile_sha256": "8eb621140ce92c19d9ed2b5210de365189fd3246e42bb472c0ae9d408e2de553",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学SC25資料は、OpenACCでGPU化済みの気象コードSP-MIROCについて、通信モジュールを変更してGrace CPUも併用し、GPUのみより約25%高い性能を得たと報告しています。メモリ律速でCPUのメモリ・キャッシュ帯域も利用できた事例ですが、入力、ノード数、実行時間、電力、再現回数が公開要約にないため、一般にCPU併用が25%向上すると外挿できません。Consensusは未完了です。",
+  "summary_en": "A University of Tokyo SC25 summary reports that SP-MIROC, a weather code already ported to GPUs with OpenACC, was modified mainly in communication modules to use Grace CPU cores as well and achieved about 25% higher performance than the GPU-only version. This memory-bound example benefited from CPU memory and cache bandwidth, but the public summary omits input, node count, runtime, energy, and repetitions, so a general 25% CPU-coexecution gain cannot be inferred. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-02-U02",
+      "before_sha256": "f420a5216b7fa8c19374b030a4cf1432441b6f202f32b5fea698d2c6042f8b86",
+      "evidence_section_ids": [
+        "TDS-SSW07-CURRENT",
+        "TDS-SSW07-FUTURE",
+        "TDS-CD1-APP-02-U02",
+        "TDS-CD3-APP-02-U02",
+        "TDS-CD4-APP-02-SP-MIROC-CPU-GPU"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-APP-02-SP-MIROC-CPU-GPU",
+      "title_ja": "SP-MIROCのGrace CPU・Hopper GPU協調実行",
+      "title_en": "Grace CPU-Hopper GPU coexecution for SP-MIROC",
+      "summary_ja": "GPU単独との比較を、メモリ律速、コード変更、測定条件と共に扱います。",
+      "summary_en": "Treat the GPU-only comparison together with memory bottlenecks, code changes, and measurement conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD75-SP-MIROC-CPU-GPU",
+          "name_ja": "メモリ律速コードで約25%のCPU/GPU協調効果",
+          "name_en": "About 25% CPU-GPU coexecution gain for a memory-bound code",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "SC25で2025年11月に報告",
+          "timing_en": "Reported at SC25 in November 2025",
+          "statement_ja": "Miyabi-GのSP-MIROCは、既存のOpenACC GPU版から通信モジュールを主に変更し、GPUに加えてGrace CPUコアを使用しました。公式SC25要約は、メモリ律速の性質を利用し、GPU単独版より約25%高い性能を得たと説明しています。これは単一コード・報告条件の結果であり、入力、ノード数、CPU/GPU仕事配分、時間区間、絶対時間、電力は要約にありません。",
+          "statement_en": "SP-MIROC on Miyabi-G was changed mainly in communication modules from its existing OpenACC GPU version to use Grace CPU cores alongside the GPU. The official SC25 summary attributes about 25% higher performance than GPU-only execution to the memory-bound workload and use of CPU memory and cache bandwidth. This is a result for one code under reported conditions; the summary omits input, node count, CPU/GPU work split, timing region, absolute time, and energy.",
+          "hpci_relevance_ja": "CPUを制御専用と仮定せず、統合メモリ型ノードではCPU/GPU協調の候補を実アプリで評価する一方、電力・移植工数を含めて選択する必要があります。",
+          "hpci_relevance_en": "On coherent-memory nodes, real applications should evaluate CPU-GPU coexecution rather than assume the CPU is control-only, while including energy and porting effort in the decision.",
+          "adoption_conditions_ja": [
+            "コード版、入力、ノード数、CPU/GPU割当、OpenACC版、コンパイラ、時間区間を固定する。",
+            "絶対時間、電力、帯域、CPU/GPU利用率、通信を測る。",
+            "約25%を他アプリや将来GPUへ定数として適用しない。"
+          ],
+          "adoption_conditions_en": [
+            "Pin code version, input, node count, CPU/GPU split, OpenACC version, compiler, and timing region.",
+            "Measure absolute time, energy, bandwidth, CPU/GPU utilization, and communication.",
+            "Do not apply the roughly 25% value as a constant to other applications or future GPUs."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS341"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS341",
+        "title": "Participation in SC25",
+        "publisher": "Information Technology Center, The University of Tokyo",
+        "url": "https://www.itc.u-tokyo.ac.jp/supercomputing/en/2025/11/07/post-1716-2/",
+        "source_class": "official-project",
+        "published_or_updated": "2025-11-07"
+      },
+      "origin_group": "utokyo-sc25-application-performance",
+      "checked_at": "2026-09-02T05:45:00+09:00",
+      "locator": "Lines 87-92: Miyabi architecture, SP-MIROC CPU/GPU coexecution, and distributed FFT",
+      "observation_ja": "SP-MIROCのOpenACC共通コード、通信変更、メモリ律速、GPU単独比約25%を確認しました。",
+      "observation_en": "Verified SP-MIROC's common OpenACC code, communication changes, memory-bound nature, and roughly 25% over GPU-only execution.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "入力、ノード数、CPU/GPU仕事配分、絶対時間、電力、帯域、反復数は公開要約から確認できません。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Input, node count, CPU/GPU work split, absolute time, energy, bandwidth, and repetitions are unavailable from the public summary.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

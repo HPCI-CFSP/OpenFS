@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000318",
+  "topic_id": "CROSS-05",
+  "created_at": "2026-09-02T07:49:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000267",
+      "bundle_sha256": "84a05c7945392ff66c1675e4d370d4286773e9f5b4867048446e08d98789eaf6"
+    },
+    {
+      "update_id": "RUP-000277",
+      "bundle_sha256": "7e9cd9e6ee7782a83c7f0b90f96478ca9ae0eb4affb3139f6df43a584467147a"
+    },
+    {
+      "update_id": "RUP-000290",
+      "bundle_sha256": "214b0f8e2f0b090c82b93651aa936f10092beeb8b502a5047b30514549c25134"
+    },
+    {
+      "update_id": "RUP-000292",
+      "bundle_sha256": "957bb5d7115341a48cbda1ab5aa15b5e35e168b1ff08841278bf8385875dc991"
+    }
+  ],
+  "before_profile_sha256": "ff07541bbe6c137b1fca2fa1682e092cecbf67c8ddf138f76c145475f563611c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "QuEra Libraの2028年Megaquop目標を、稼働実績ではなく開発中のvendor targetとして追加しました。logical性能、QECのclassical処理、Braket連携、施設電力・面積を分離し、HPCIではend-to-end workflowと施設境界を受入評価します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds QuEra Libra's 2028 Megaquop goal as a vendor target under development rather than operational evidence. It separates logical performance, classical QEC processing, Braket integration, and facility power and footprint so HPCI can evaluate the end-to-end workflow and facility boundaries. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-05-U01",
+      "before_sha256": "5fe876b004db0f6e54eccbd36b01dd26a7b77cf520ffcf50e23d089155a4a65e",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-05-U01",
+        "TDS-CD2-CROSS-05-MIYABI-IBM-QUANTUM",
+        "TDS-CD8-CROSS-05-QC-HPC-SERVICE-BOUNDARY",
+        "TDS-CD8-CROSS-05-EUROHPC-QUANTUM-MATURITY",
+        "TDS-CD9-CROSS-05-ROQUO-HYBRID-OPERATIONS",
+        "TDS-CD32-CROSS-05-QUERA-LIBRA-HYBRID-OPERATIONS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD32-CROSS-05-QUERA-LIBRA-HYBRID-OPERATIONS",
+      "title_ja": "QuEra Libraのfault-tolerant目標とHPC併設条件",
+      "title_en": "QuEra Libra fault-tolerance target and HPC colocation conditions",
+      "summary_ja": "量子性能の製品目標、cloud連携、classical処理依存、施設条件を分離し、HPCIでの受入試験に変換します。",
+      "summary_en": "Separate quantum product targets, cloud integration, classical dependencies, and facility conditions and convert them into HPCI acceptance tests.",
+      "items": [
+        {
+          "item_id": "TDI-CD128-QUERA-LIBRA-MEGAQUOP-2028",
+          "name_ja": "2028年LibraのMegaquop目標",
+          "name_en": "Libra Megaquop target for 2028",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2028年のAmazon Braket提供目標",
+          "timing_en": "Targeted for Amazon Braket availability in 2028",
+          "statement_ja": "AWSとQuEraは、中性原子方式のLibraを2028年までにAmazon Braketへ提供し、256 logical qubit、logical fidelity 99.9999%、1回の計算で100万回のerror-corrected quantum operationを行うMegaquop級とする目標を示しました。QuEra roadmapは10,000超のphysical qubit、high-rate QEC、transversal logical operation、qubit loss検出と途中再装填を掲げています。これらは開発中製品のvendor targetであり、稼働済みsystemの測定値、第三者が再現したlogical error rate、classical計算を上回ったapplication結果ではありません。",
+          "statement_en": "AWS and QuEra target delivery of the neutral-atom Libra system through Amazon Braket by 2028, specifying 256 logical qubits, 99.9999% logical fidelity, and a Megaquop-scale execution of one million error-corrected quantum operations. QuEra's roadmap lists more than 10,000 physical qubits, high-rate QEC, transversal logical operations, loss detection, and mid-circuit reload. These are vendor targets for a system under development, not measured operation, independently reproduced logical error rates, or application results exceeding classical computing.",
+          "hpci_relevance_ja": "HPCIはqubit数だけで候補を比較せず、logical circuit成功率、time-to-solution、classical前後処理、QEC負荷、queue、費用を一つのend-to-end workflowとして評価する必要があります。",
+          "hpci_relevance_en": "HPCI should not compare candidates by qubit count alone; logical-circuit success, time to solution, classical pre/post-processing, QEC load, queues, and cost must be evaluated as one end-to-end workflow.",
+          "adoption_conditions_ja": [
+            "logical qubit、logical operation、error rateの測定定義と第三者検証を確認する。",
+            "化学・材料・高energy physicsの公開問題で最良classical手法との精度・時間・総費用を比較する。",
+            "Braketの提供region、予約、queue、利用上限、data境界、料金を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify measurement definitions and third-party validation for logical qubits, operations, and error rates.",
+            "Compare accuracy, time, and total cost against best classical methods on public chemistry, materials, and high-energy-physics problems.",
+            "Confirm Braket regions, reservations, queues, limits, data boundaries, and prices."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS421",
+            "SRC-CDS422"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD129-QUERA-HPC-FACILITY-COLOCATION",
+          "name_ja": "量子・HPC hybridのclassical処理と施設境界",
+          "name_en": "Classical-processing and facility boundaries for quantum-HPC hybrids",
+          "stage": "research",
+          "maturity": "announced",
+          "timing_ja": "Libraは2028年、次世代は2028～2029年目標",
+          "timing_en": "Libra targeted for 2028 and next generation for 2028-2029",
+          "statement_ja": "Amazon BraketはQiskit、PennyLane、Bloqade、CUDA-Qを支援し、HPC/AI資源とのhybrid workflowを掲げます。QuEraはLibraについて室温運用、cryogenic cooling不要、40 kW未満、1,000 ft²未満を示す一方、QECでは頻繁なsyndrome測定をclassical machine learningでdecodeし、計算後もQEC engineでpost-processingすると説明しています。次世代Gigaquopは2028～2029年、1,000超のlogical qubit、20,000超のphysical qubitを目標とします。したがって施設負荷だけでなく、低latency classical control、decoder計算、network、data retention、運用責任がhybrid systemの一部です。公表電力・面積には測定境界、peak/average、外部classical infrastructureが含まれるか示されていません。",
+          "statement_en": "Amazon Braket supports Qiskit, PennyLane, Bloqade, and CUDA-Q and presents integration with HPC and AI resources. QuEra lists room-temperature operation, no cryogenic cooling, less than 40 kW, and less than 1,000 square feet for Libra, while explaining that frequent syndrome measurements are decoded by classical machine learning and that QEC-engine post-processing follows quantum execution. A 2028-2029 next-generation Gigaquop system targets more than 1,000 logical and 20,000 physical qubits. Facility load therefore does not capture low-latency classical control, decoder compute, networks, data retention, and operational ownership. Published power and footprint figures do not disclose measurement boundaries, peak versus average load, or inclusion of external classical infrastructure.",
+          "hpci_relevance_ja": "量子装置をHPCI centerへ併設またはcloud接続する案では、QPUだけでなくcontrol/decoder server、network latency、scheduler、facility、保守境界を構成表へ含める必要があります。",
+          "hpci_relevance_en": "HPCI colocation or cloud-access plans must include control and decoder servers, network latency, scheduling, facilities, and maintenance boundaries rather than the QPU alone.",
+          "adoption_conditions_ja": [
+            "40 kW・1,000 ft²の境界、冷却、UPS、laser、安全設備、保守spaceを確認する。",
+            "QEC decoderとclassical前後処理のCPU/GPU、memory、network、storage負荷を測定する。",
+            "batch schedulerからQPU予約、hybrid job再試行、障害回復、課金、監査まで実証する。"
+          ],
+          "adoption_conditions_en": [
+            "Clarify the less-than-40-kW and less-than-1,000-square-foot boundaries, cooling, UPS, lasers, safety systems, and service space.",
+            "Measure CPU/GPU, memory, network, and storage loads for QEC decoding and classical pre/post-processing.",
+            "Demonstrate QPU reservation, hybrid-job retry, failure recovery, charging, and audit from the batch scheduler."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS421",
+            "SRC-CDS422"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS421",
+        "title": "AWS Deepens Strategic Collaboration with QuEra to Bring Fault-Tolerant Quantum Computing to Amazon Braket",
+        "publisher": "Amazon Web Services",
+        "url": "https://aws.amazon.com/blogs/quantum-computing/aws-deepens-strategic-collaboration-with-quera-to-bring-fault-tolerant-quantum-computing-to-amazon-braket/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-06-15"
+      },
+      "origin_group": "aws-quera-libra-official",
+      "checked_at": "2026-09-02T05:46:00+09:00",
+      "locator": "Lines 37-62: 2028 Braket target, Megaquop definition, supported software, HPC/AI integration, modality limits, and limited capacity",
+      "observation_ja": "2028年提供目標、Megaquop、software、hybrid連携、capacityの限定を確認しました。",
+      "observation_en": "Verified the 2028 target, Megaquop definition, software, hybrid integration, and limited capacity.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS422",
+        "title": "The Road to Commercially Valuable Fault-Tolerant Quantum Computing",
+        "publisher": "QuEra Computing",
+        "url": "https://www.quera.com/our-quantum-roadmap",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "quera-product-roadmap-official",
+      "checked_at": "2026-09-02T05:47:00+09:00",
+      "locator": "Lines 16-44, 203-318: product timing, qubits, fidelity, QEC architecture, power, footprint, and classical decoding",
+      "observation_ja": "Libraと次世代の目標、QEC、classical decoder、電力・面積を確認しました。",
+      "observation_en": "Verified Libra and next-generation targets, QEC, classical decoding, power, and footprint.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Libraの論理性能、稼働率、利用料金、queue、外部classical infrastructureを含む総電力は未測定です。",
+    "最良classical計算との公開problemによる時間・精度・費用比較は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Libra logical performance, uptime, price, queues, and total power including external classical infrastructure remain unmeasured.",
+    "Time, accuracy, and cost comparisons against best classical computing on public problems have not been completed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

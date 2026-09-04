@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000168",
+  "topic_id": "CROSS-15",
+  "created_at": "2026-09-02T07:10:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000149", "bundle_sha256": "38c515527de3ad41dd99cc6f4d92dffd531ea10baf65bbe80062a50b66467ab4"},
+    {"update_id": "RUP-000152", "bundle_sha256": "6533a74e7ef360f620682defed32b63c5cd443a96bec0abd16ffee8fd3dc3adc"},
+    {"update_id": "RUP-000155", "bundle_sha256": "d1533f99e7ad6decc467facc8a075872292534688667391754888699fe08ff51"},
+    {"update_id": "RUP-000162", "bundle_sha256": "8244815c2c0f1a8218defa4810708ef51bdf0f64cf61057ca397ab46d5bc25d9"},
+    {"update_id": "RUP-000165", "bundle_sha256": "6845544780cf6c8b7bedc9fba2d3b5510a916afe6b7e71942087f9f8184b2153"}
+  ],
+  "before_profile_sha256": "f93d7656c102c44e2ac253adf5fc121b4af00aab88b37701a8bb4e9ad13b089e",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "富岳年報2024から、R-CCSに富岳運用経費として143億円が措置され、建屋・計算機保守、光熱水、通信ネットワーク等に129.2億円が計上されたことを確認しました。同年度の利用実績は1,102百万ノード時間、年度末消化率92.1%です。ただし、予算は複数の費目・施設・期間を含み、ノード時間は利用実績であるため、両者を単純除算した値を単価や次期構成の価格として使いません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Fugaku Annual Report 2024 states that R-CCS received JPY14.3 billion for Fugaku operation, including JPY12.92 billion for building and system maintenance, utilities, and communications. FY2024 use was 1.102 billion node-hours with a 92.1% year-end allocation consumption rate. Because the budget spans multiple cost items, facilities, and periods while node-hours are observed use, their quotient is not used as a tariff or successor-system price. This is provisional single-model research with Consensus incomplete.",
+  "units": [{
+    "unit_id": "CROSS-15-U01",
+    "before_sha256": "14783f469ba68d6edc547f30983403962cfc1a16ce8b10f15f8d2d47db09d68c",
+    "evidence_section_ids": ["TDS-CD1-CROSS-15-U01", "TDS-CD2-CROSS-15-U01", "TDS-CD3-CROSS-15-U01", "TDS-CD12-CROSS-15-U01", "TDS-CD14-CROSS-15-U01", "TDS-CD15-CROSS-15-U01", "TDS-CD16-CROSS-15-U01", "TDS-CD17-CROSS-15-U01", "TDS-CD18-CROSS-15-U01"]
+  }],
+  "sections": [{
+    "section_id": "TDS-CD18-CROSS-15-U01",
+    "title_ja": "富岳の年度運用費と利用実績の費用境界",
+    "title_en": "Cost boundary between Fugaku annual operations and observed use",
+    "summary_ja": "年度予算、費目範囲、利用ノード時間、消化率を分離し、擬似的な円/ノード時間を作らないようにします。",
+    "summary_en": "Separate annual budget, cost scope, node-hours, and allocation consumption to avoid a spurious yen-per-node-hour figure.",
+    "items": [
+      {
+        "item_id": "TDI-CD18-FUGAKU-FY2024-OPERATING-BUDGET",
+        "name_ja": "143億円の運用予算と129.2億円の施設・保守等費目",
+        "name_en": "JPY14.3-billion operating budget and JPY12.92-billion facilities/maintenance scope",
+        "stage": "current", "maturity": "deployed",
+        "timing_ja": "2024年度予算", "timing_en": "FY2024 budget",
+        "statement_ja": "R-CCSには富岳運用に必要な経費として総額143億円が措置され、そのうち建屋や計算機システムの保守、光熱水、通信ネットワーク等として129.2億円が計上されています。残る13.8億円の内訳、費目ごとの実支出、消費税、減価償却、R-CCS他活動との境界は当該記述だけでは確定しません。予算額を調達価格や利用料金と同一視できません。",
+        "statement_en": "R-CCS received JPY14.3 billion for Fugaku operation, of which JPY12.92 billion was budgeted for building and computer-system maintenance, utilities, communications networks, and related costs. The source does not determine the remaining JPY1.38 billion, actual expenditure by item, tax, depreciation, or boundaries with other R-CCS activity. Budget is not procurement price or user tariff.",
+        "hpci_relevance_ja": "次期システムでは購入・借入だけでなく、建屋、保守、電力・水、回線、人員、ソフトウェア、予備品、移行を年度別キャッシュフローで比較する必要があります。",
+        "hpci_relevance_en": "Successor planning needs annual cash flow for facilities, maintenance, power and water, network, staffing, software, spares, and migration in addition to purchase or lease.",
+        "adoption_conditions_ja": ["予算、契約、実支出、内部振替、補助金、利用料収入を費目・年度ごとに分ける。", "固定費と利用量に比例する変動費を分離する。", "比較案件の所有形態、期間、税、保守、施設範囲をそろえる。"],
+        "adoption_conditions_en": ["Separate budget, contracts, expenditure, internal transfers, subsidies, and tariff revenue by item and year.", "Separate fixed cost from costs varying with use.", "Align ownership, duration, tax, maintenance, and facility scope across comparisons."],
+        "actor_ids": [], "source_ids": ["SRC-CDS176"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD18-FUGAKU-FY2024-NODEHOUR-BOUNDARY",
+        "name_ja": "1,102百万ノード時間と92.1%消化率の利用範囲",
+        "name_en": "Scope of 1.102 billion node-hours and 92.1% allocation consumption",
+        "stage": "current", "maturity": "deployed",
+        "timing_ja": "2024年度実績", "timing_en": "FY2024 observation",
+        "statement_ja": "富岳の2024年度利用実績は1,102百万ノード時間、年度末の消化率は92.1%と報告されています。これは調整・高度化・利用拡大を除く集計であり、利用可能時間、障害再実行、待ち時間、科学的成果、支援工数を示しません。143億円または129.2億円をこのノード時間で除算しても、費用範囲と分母が一致しないため公式単価にはなりません。",
+        "statement_en": "Fugaku reports 1.102 billion node-hours of FY2024 use and a 92.1% year-end allocation consumption rate. The aggregation excludes adjustment, optimization support, and usage expansion and does not represent available time, reruns, queues, scientific outcomes, or support labor. Dividing JPY14.3 billion or JPY12.92 billion by these node-hours does not produce an authoritative unit cost because numerator and denominator scopes differ.",
+        "hpci_relevance_ja": "費用効率はノード時間ではなく、代表アプリケーションの有効完了量、科学品質、総エネルギー、可用性、支援をそろえて評価する必要があります。",
+        "hpci_relevance_en": "Cost efficiency should use completed representative work, scientific quality, total energy, availability, and support rather than node-hours alone.",
+        "adoption_conditions_ja": ["利用可能、配分、実行、成功、再実行のノード時間を分離する。", "代表仕事量の完了件数と品質へノード時間を対応付ける。", "費用モデルの分母・分子に含む期間・サービス・費目を明示する。"],
+        "adoption_conditions_en": ["Separate available, allocated, executed, successful, and rerun node-hours.", "Map node-hours to completed representative work and quality.", "State periods, services, and items in each cost-model numerator and denominator."],
+        "actor_ids": [], "source_ids": ["SRC-CDS177"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD18-FUGAKU-ENERGY-INDEX-BOUNDARY",
+        "name_ja": "2021年度比92%の消費電力と効果測定の境界",
+        "name_en": "Boundary of the FY2024 energy index at 92% of FY2021",
+        "stage": "current", "maturity": "deployed",
+        "timing_ja": "2024年度実績", "timing_en": "FY2024 observation",
+        "statement_ja": "施設年報は省電力機能と冷却運用の改善を継続し、2024年度の富岳消費電力が2021年度比92%になったと報告しています。しかし年度ごとの仕事量、気象、保守、ノード状態、電力モード、計測範囲が同一とは示されておらず、8%を技術単独の省エネルギー率や費用削減率として扱えません。",
+        "statement_en": "The facility report states that continued power-mode and cooling improvements reduced Fugaku's FY2024 electricity consumption to 92% of FY2021. It does not establish identical work, weather, maintenance, node state, power modes, or measurement scope, so the 8% difference is not attributed as a standalone technical energy or cost saving.",
+        "hpci_relevance_ja": "省エネルギー施策は総電力量だけでなく、同じ仕事量、完了時間、気象補正、施設全体の計測範囲で検証する必要があります。",
+        "hpci_relevance_en": "Energy measures need validation at matched work, completion time, weather adjustment, and facility-wide measurement scope, not total electricity alone.",
+        "adoption_conditions_ja": ["IT電力、冷却・電源損失、施設全体、契約電力を分離する。", "代表仕事量当たりエネルギーと年間総量を併記する。", "電力価格、炭素係数、気象、稼働率の変化を補正する。"],
+        "adoption_conditions_en": ["Separate IT, cooling and electrical losses, facility total, and contracted power.", "Report energy per representative work and annual total together.", "Adjust for power price, carbon factor, weather, and utilization changes."],
+        "actor_ids": [], "source_ids": ["SRC-CDS175"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS176", "title": "富岳年報2024 1-2 理化学研究所計算科学研究センター", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/1/2/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-budget", "checked_at": "2026-09-02T07:07:00+09:00", "locator": "R-CCS budget and Fugaku operations costs", "observation_ja": "143億円と、建屋・計算機保守、光熱水、通信等129.2億円を確認しました。予算を実支出・調達額・単価と同一視していません。", "observation_en": "Verified JPY14.3 billion and JPY12.92 billion for building/system maintenance, utilities, communications, and related costs. Budget was not equated with expenditure, procurement, or tariff.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS177", "title": "富岳年報2024 3-3 利用状況", "publisher": "理化学研究所計算科学研究センター・RIST", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/3/3/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-use", "checked_at": "2026-09-02T07:08:00+09:00", "locator": "Annual node-hour use and allocation consumption", "observation_ja": "1,102百万ノード時間と92.1%消化率、集計除外範囲を確認しました。予算との単純除算をしていません。", "observation_en": "Verified 1.102 billion node-hours, 92.1% consumption, and exclusions. No direct division into budget was made.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS175", "title": "富岳年報2024 2-2 施設管理", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/2/", "source_class": "official-project", "published_or_updated": "2024年度実績"},
+      "origin_group": "fugaku-annual-report-2024-facility", "checked_at": "2026-09-02T07:09:00+09:00", "locator": "Energy conservation and FY2024 electricity relative to FY2021", "observation_ja": "2024年度消費電力が2021年度比92%との記載を確認しました。仕事量・気象等が一致しないため技術単独効果へ帰属していません。", "observation_en": "Verified FY2024 electricity consumption at 92% of FY2021. It was not attributed to one technology because work, weather, and other conditions are not matched.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-088は未解決です。年度予算を実支出、固定・変動費、資源別利用、成果へ接続する必要があります。", "富岳運用経費の詳細内訳と費目別実支出、利用料収入、減価償却、延命費用は未確認です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-088 remains open; annual budgets must be connected to expenditure, fixed and variable costs, resource use, and outcomes.", "Detailed Fugaku operating expenditure, tariff revenue, depreciation, and life-extension cost remain unverified.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

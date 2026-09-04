@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000131",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T00:15:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "bcea338b7caa2bcc1c0f8c6194a7fd2d3842ddd294889c999af0dc7f380046a2",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "筑波大学の2026年3月16日付資料提供招請から、HPC-AIスーパーコンピュータの導入予定を2027年3月以降として追加し、既存Pegasus・Siriusの並列ファイルシステムへ接続する移行条件を整理しました。資料提供招請は契約・落札・供用開始ではないため、予定と実績を分けます。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds the University of Tsukuba's planned HPC-AI system introduction from March 2027 onward and its migration requirement to connect to existing Pegasus and Sirius parallel file systems, based on a March 16, 2026 request for information. An RFI is not a contract, award, or service launch, so plans and results are separated. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U01",
+      "before_sha256": "5521404dbf24055fc89a21e3d102e7e364576371d4e179ec55147b58ea691d4f",
+      "evidence_section_ids": ["TDS-CBL-BASELINE", "TDS-CBL-CHANGES-V2", "TDS-CD1-CROSS-08-U01", "TDS-CD10-CROSS-08-U01"]
+    },
+    {
+      "unit_id": "CROSS-08-U02",
+      "before_sha256": "69082f576c59c99f4b65f988506364ee402dd5441a53597c873ae615b0992829",
+      "evidence_section_ids": ["TDS-CBL-MIGRATION", "TDS-CD1-CROSS-08-U02", "TDS-CD2-CROSS-08-U02", "TDS-CD10-CROSS-08-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-CROSS-08-U01",
+      "title_ja": "筑波大学HPC-AIシステムの導入計画と移行条件",
+      "title_en": "University of Tsukuba HPC-AI system plan and migration conditions",
+      "summary_ja": "導入予定、要求仕様、既存システムとの接続を、契約・受入・供用開始とは区別して管理します。",
+      "summary_en": "Track the planned introduction, requirements, and connections to existing systems separately from contract, acceptance, and service launch.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-TSUKUBA-HPC-AI-TIMELINE",
+          "name_ja": "2027年3月以降のHPC-AIシステム導入計画",
+          "name_en": "Planned HPC-AI system introduction from March 2027 onward",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2027年3月以降の導入予定",
+          "timing_en": "Planned introduction from March 2027 onward",
+          "statement_ja": "筑波大学の資料提供招請は、全国共同利用資源としてHPC-AIスーパーコンピュータ一式を購入し、令和8年度3月以降、すなわち2027年3月以降に導入する計画を示します。公示日は2026年3月16日です。資料提供招請のため、ベンダー、契約額、確定構成、受入日、供用開始日は未確定です。",
+          "statement_en": "The University of Tsukuba RFI plans to purchase an HPC-AI supercomputer for nationwide shared use and introduce it from March 2027 onward. The notice was published on March 16, 2026. Because this is an RFI, the vendor, contract price, finalized configuration, acceptance date, and service launch are not established.",
+          "hpci_relevance_ja": "HPCIセンター更新表では、資料提供招請、公示、落札、搬入、検収、試験運用、共同利用開始を別のイベントとして記録します。",
+          "hpci_relevance_en": "The HPCI center timeline should record RFI, tender, award, delivery, acceptance, pilot operation, and shared-service launch as separate events.",
+          "adoption_conditions_ja": [
+            "後続の入札公告、落札結果、契約額、確定仕様、供用開始通知を追跡する。",
+            "既存システムの停止時期と新システムの試験・移行期間を確認する。",
+            "全国共同利用へ提供する割合、年間提供時間、利用制度を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Track the tender, award, price, final specification, and service-launch notice.",
+            "Verify existing-system retirement and the new system's test and migration periods.",
+            "Verify nationwide-shared allocation, annual service hours, and access policy."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS130"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-TSUKUBA-STORAGE-CONTINUITY",
+          "name_ja": "Pegasus・Siriusストレージへの接続による移行経路",
+          "name_en": "Migration path through Pegasus and Sirius storage connectivity",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年3月16日の基本要求要件",
+          "timing_en": "Basic requirements published March 16, 2026",
+          "statement_ja": "要求要件は、新システムのログインサーバから既存のPegasusおよびSiriusの並列ファイルシステムへInfiniBandで接続し、アクセス可能とすることを求めています。新旧システム間のデータ移行経路として有用ですが、名前空間、帯域、認可、停止時の扱い、移行完了後の保持期間は公示本文からは分かりません。",
+          "statement_en": "The requirements call for the new system's login servers to access the existing Pegasus and Sirius parallel file systems over InfiniBand. This provides a potential data-migration path, but namespace behavior, delivered bandwidth, authorization, outage handling, and retention after migration are not defined in the notice.",
+          "hpci_relevance_ja": "更新計画では、計算性能とは別に、新旧間のデータ転送、アカウント対応、ライセンス、再現性確認、旧環境停止までの猶予を受入条件にします。",
+          "hpci_relevance_en": "Refresh planning should make data transfer, account mapping, licensing, reproducibility checks, and overlap before legacy shutdown acceptance criteria distinct from compute performance.",
+          "adoption_conditions_ja": [
+            "移行対象容量、ファイル数、実効帯域、所要期間を実データで測る。",
+            "新旧アカウント、グループ、ACL、課題IDの対応を検証する。",
+            "旧システム停止とデータ削除の通知・異議申立て・復旧手順を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Measure migration volume, file count, delivered bandwidth, and duration using real data.",
+            "Validate mapping of old and new accounts, groups, ACLs, and project IDs.",
+            "Define notice, appeal, and recovery procedures for legacy shutdown and data deletion."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS130"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS130",
+        "title": "HPC-AIスーパーコンピュータシステム 一式－資料提供招請に関する公表",
+        "publisher": "国立大学法人筑波大学（政府公共調達データベース掲載）",
+        "url": "https://www.jetro.go.jp/gov_procurement/national/articles/385153/2026031600450001.html",
+        "source_class": "official-project",
+        "published_or_updated": "2026-03-16"
+      },
+      "origin_group": "tsukuba-hpc-ai-procurement-2026",
+      "checked_at": "2026-09-02T00:09:00+09:00",
+      "locator": "Items 1(4)-1(6), requirements C and procurement schedule",
+      "observation_ja": "全国共同利用目的、2027年3月以降の導入予定、既存Pegasus・Siriusストレージへの接続要件を確認しました。資料提供招請を契約・導入完了として扱いません。",
+      "observation_en": "Verified nationwide shared-use purpose, planned introduction from March 2027 onward, and access to existing Pegasus and Sirius storage. The RFI is not treated as a contract or completed deployment.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-042、GAP-TDS-043、GAP-TDS-090は未解決です。契約、確定構成、費用、施設、人員、提供枠、利用実績を追跡する必要があります。",
+    "新旧システムの重複期間と移行性能は導入説明書・実測資料で確認する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-042, GAP-TDS-043, and GAP-TDS-090 remain open; contract, final configuration, cost, facilities, staffing, allocation, and utilization must be tracked.",
+    "Legacy overlap and migration performance require the implementation specification and measured evidence.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

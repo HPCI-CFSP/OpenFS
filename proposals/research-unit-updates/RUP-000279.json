@@ -1,0 +1,101 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000279",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-02T07:43:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "b5b410b9aecc419477dc89ed5ac3ee7ae1bd603fd451833d91932fb8f678aedd",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "東京大学とNHRの共同研究は、GH200上のGPU常駐AMR格子ボルツマン計算について、事後解析、CPUステージングを介したCatalyst2可視化、完全GPU常駐のin-situ処理へ段階移行しています。現在はGH200固有最適化中で、性能値、可視化周期、科学誤差、メモリ占有は未公開です。実験・リアルタイム系の評価では、シミュレーション時間だけでなく、可視化・解析の期限、データ削減、GPUメモリ競合を測る必要があります。Consensusは未完了です。",
+  "summary_en": "A University of Tokyo and NHR project is moving a GPU-resident adaptive-mesh lattice-Boltzmann simulation on GH200 from post hoc analysis through CPU-staged Catalyst2 visualization toward fully GPU-resident in-situ processing. GH200-specific optimization is ongoing; performance, visualization cadence, scientific error, and memory occupancy are unpublished. Evaluation of experimental and real-time workloads should measure visualization and analysis deadlines, data reduction, and GPU-memory contention in addition to simulation time. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-15-U01",
+      "before_sha256": "4b0a41545107f0647af8a238d015048978be0d094951a1819e794d665abad5d8",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U01",
+        "TDS-CD7-APP-15-GPU-RESIDENT-INSITU"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD7-APP-15-GPU-RESIDENT-INSITU",
+      "title_ja": "GPU常駐シミュレーションのin-situ可視化",
+      "title_en": "In-situ visualization of GPU-resident simulation",
+      "summary_ja": "事後解析、CPUステージング、GPU常駐処理を段階別に比較します。",
+      "summary_en": "Compare post hoc, CPU-staged, and GPU-resident processing as distinct stages.",
+      "items": [
+        {
+          "item_id": "TDI-CD86-GH200-AMR-INSITU",
+          "name_ja": "GH200上のAMR-LBMとCatalyst2の段階移行",
+          "name_en": "Staged AMR-LBM and Catalyst2 transition on GH200",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "ISC-HPC 2026関連研究、開発中",
+          "timing_en": "ISC-HPC 2026-related work; under development",
+          "statement_ja": "GPU常駐のAMR格子ボルツマン計算は、完全分離の事後解析から、CPU側でステージングするCatalyst2可視化を経て、完全GPU常駐のin-situ処理へ移行中です。GH200のGrace CPUとHopper GPU、NVLink-C2C、ユニファイドメモリを前提に最適化しています。研究進行の説明であり、リアルタイム期限達成、性能向上、データ削減率、科学的同等性の実績値ではありません。",
+          "statement_en": "A GPU-resident adaptive-mesh lattice-Boltzmann simulation is moving from separate post hoc analysis through CPU-staged Catalyst2 visualization toward fully GPU-resident in-situ processing. Optimization targets GH200's Grace CPU, Hopper GPU, NVLink-C2C, and unified memory. This is a project-progress description, not measured evidence of deadline attainment, speedup, data reduction, or scientific equivalence.",
+          "hpci_relevance_ja": "将来システムでは、GPU計算だけを最大化せず、可視化・解析・保存を同時実行した際のtime-to-insightとデータ量を受入指標にする必要があります。",
+          "hpci_relevance_en": "Future systems should accept on time-to-insight and data volume with concurrent visualization, analysis, and storage rather than maximizing GPU simulation alone.",
+          "adoption_conditions_ja": [
+            "格子、AMR条件、可視化周期、出力、科学的許容誤差を固定する。",
+            "事後、CPUステージング、GPU常駐で全体時間、GPU/CPU時間、メモリ、I/O、エネルギーを比較する。",
+            "GH200固有効果とCatalyst2・アルゴリズム効果を分離する。"
+          ],
+          "adoption_conditions_en": [
+            "Pin grid, AMR conditions, visualization cadence, output, and scientific tolerance.",
+            "Compare end-to-end time, GPU/CPU time, memory, I/O, and energy across post hoc, CPU-staged, and GPU-resident modes.",
+            "Separate GH200-specific effects from Catalyst2 and algorithmic effects."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS347"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS347",
+        "title": "研究事例紹介",
+        "publisher": "東京大学情報基盤センター スーパーコンピューティング部門",
+        "url": "https://www.cc.u-tokyo.ac.jp/outline/researches.php",
+        "source_class": "official-project",
+        "published_or_updated": "accessed 2026-09-02"
+      },
+      "origin_group": "utokyo-supercomputing-research-cases",
+      "checked_at": "2026-09-02T04:52:00+09:00",
+      "locator": "Lines 94-99: GH200 GPU-resident AMR-LBM, Catalyst2 CPU staging, and staged in-situ workflow",
+      "observation_ja": "AMR-LBM可視化の三段階と開発中の状態を確認しました。",
+      "observation_en": "Verified the three AMR-LBM visualization stages and ongoing-development status.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "入力、ノード数、可視化周期、絶対時間、データ削減、メモリ、エネルギー、科学差分は未公開です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Input, node count, cadence, absolute time, data reduction, memory, energy, and scientific differences are unpublished.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

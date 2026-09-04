@@ -1,0 +1,141 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000210",
+  "topic_id": "APP-13",
+  "created_at": "2026-09-02T07:31:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "b97525987ea6f685825974063e5314891317583c4d475bdad29623238eb22673",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "MLPerf Training: HPCは2025年1月に終了し、過去の科学AI学習結果のみ継続公開されています。一方、MLCommonsは2026年7月に継続投稿型のEndpoints v0.7を公開し、8月には文書取り込みと反復的な複数ホップQ&Aを測るEnd-to-End RAGベンチマークを導入しました。RAGでは単一モデルのtokens/sではなく、パイプライン全体のtasks/sと品質条件を測ります。次期HPCIではベンチマークの廃止・追加を追跡し、科学AI・RAG・エージェントを実ワークフロー単位で継続評価する必要があります。Consensusは未完了です。",
+  "summary_en": "MLPerf Training: HPC was retired in January 2025, leaving prior scientific-AI training results available. MLCommons then released rolling-oriented Endpoints v0.7 in July 2026 and introduced an End-to-End RAG benchmark in August that measures document ingestion and iterative multi-hop question answering. RAG uses pipeline-level tasks per second under a quality condition rather than a single model's tokens per second. A successor HPCI should track benchmark retirement and introduction and continuously evaluate scientific AI, RAG, and agents at workflow level. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-13-U01",
+      "before_sha256": "97a1739834e4b4648970dfe54f0204458f16eb43061a709b4cf213cbcc2d0c4f",
+      "evidence_section_ids": [
+        "TDS-AIP-EVALUATION",
+        "TDS-HC26-APP-13-U1",
+        "TDS-CD2-APP-13-U01",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE"
+      ]
+    },
+    {
+      "unit_id": "APP-13-U02",
+      "before_sha256": "e52c1778657c7a031c46049ca267fddf756acb7d3f1d5702a1c97b548b732800",
+      "evidence_section_ids": [
+        "TDS-AIP-AGENTS",
+        "TDS-CD2-APP-13-U02",
+        "TDS-CD3-APP-13-U02",
+        "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD19-APP-13-AI-BENCHMARK-LIFECYCLE",
+      "title_ja": "科学AI・RAG・エージェント評価の世代更新",
+      "title_en": "Benchmark lifecycle for scientific AI, RAG, and agents",
+      "summary_ja": "ベンチマークの廃止と新規導入を追跡し、単一モデルから複合ワークフローへ評価対象を拡張します。",
+      "summary_en": "Track benchmark retirement and introduction while expanding evaluation from single models to composed workflows.",
+      "items": [
+        {
+          "item_id": "TDI-CD19-MLPERF-HPC-RETIRED",
+          "name_ja": "MLPerf Training: HPCは2025年1月に終了",
+          "name_en": "MLPerf Training: HPC retired in January 2025",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2025年1月終了、過去結果は継続公開",
+          "timing_en": "Retired January 2025; past results remain available",
+          "statement_ja": "MLCommons公式ページはMLPerf Training: HPCが2025年1月に終了したと明記しています。最終系にはDeepCAM、CosmoFlow、DimeNet++、AlphaFold2があり、指定品質までの学習時間を測る強スケーリングと、複数モデルの同時学習スループットを測る弱スケーリングを提供していました。過去結果は有用ですが、廃止済みスイートを次期調達の唯一のAI評価軸にはできません。",
+          "statement_en": "MLCommons states that MLPerf Training: HPC was retired in January 2025. Its final suite included DeepCAM, CosmoFlow, DimeNet++, and AlphaFold2, with strong-scaling time to target quality and weak-scaling concurrent-model throughput. Historical results remain useful but a retired suite cannot be the sole AI procurement criterion for a successor system.",
+          "hpci_relevance_ja": "科学AI評価は旧結果との連続性を保ちつつ、現行Training、Science、推論、ストレージ、RAG、エージェント評価へ更新する必要があります。",
+          "hpci_relevance_en": "Scientific-AI evaluation should preserve continuity with historical results while moving to current Training, Science, inference, storage, RAG, and agent evaluation.",
+          "adoption_conditions_ja": ["旧HPCスイートを再現する場合は版・品質目標・データ・ルールを固定する。", "廃止時期と後継評価をベンチマーク台帳で管理する。"],
+          "adoption_conditions_en": ["Pin version, quality target, data, and rules when reproducing the retired HPC suite.", "Maintain retirement dates and successor evaluations in a benchmark registry."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS276"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD19-MLPERF-END-TO-END-RAG",
+          "name_ja": "End-to-End RAGは取り込みと複数ホップQ&Aをパイプライン全体で評価",
+          "name_en": "End-to-End RAG evaluates ingestion and multi-hop Q&A as complete pipelines",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年8月26日導入",
+          "timing_en": "Introduced August 26, 2026",
+          "statement_ja": "MLCommonsの新しいEnd-to-End RAGは、文書群からベクトルDBを作る取り込みと、検索・推論を最大5ホップ反復するQ&Aを別ワークロードとして測ります。データは824問、2,515 Wikipedia HTML文書、約10.7万パッセージです。Q&A性能はtokens/sではなくtasks/sで測り、回答精度が参照値の97%以上であることを要求します。性能測定はホップ数と検索文書を記録入力で固定して変動を抑えます。検索品質は公式スコアではなくDB整合性確認であり、回答の正しさ、出典品質、ツール利用能力の完全なエージェント評価ではありません。",
+          "statement_en": "MLCommons' new End-to-End RAG benchmark separates ingestion, which builds a vector database, from Q&A, which iterates retrieve-and-reason for up to five hops. It uses 824 queries, 2,515 Wikipedia HTML documents, and about 107,000 passages. Q&A performance is measured in tasks per second, not tokens per second, subject to answer accuracy of at least 97% of the reference. Recorded inputs fix hop counts and retrieved documents during performance runs to reduce variation. Retrieval quality is a database-integrity check rather than an official score, so this is not a complete evaluation of answer correctness, provenance quality, or agent tool-use capability.",
+          "hpci_relevance_ja": "OpenFSや科学AIエージェントの評価では、取り込み時間・容量、検索、推論、NIC・ストレージ、回答品質を一つのワークフローとして測るための有力な基準になります。",
+          "hpci_relevance_en": "It provides a useful basis for evaluating OpenFS and scientific-AI agents across ingestion time and capacity, retrieval, inference, NIC and storage behavior, and answer quality as one workflow.",
+          "adoption_conditions_ja": ["公式参照実装とルールを固定し、取り込みとQ&Aを分離して測定する。", "tasks/sに加えて出典適合、正答、失敗、コスト、電力、p95/p99遅延を補助指標とする。", "公開文書とNDA文書を隔離した同型データセットで情報境界を検証する。"],
+          "adoption_conditions_en": ["Pin the official reference implementation and rules, measuring ingestion and Q&A separately.", "Supplement tasks/s with provenance fitness, correctness, failures, cost, power, and p95/p99 latency.", "Validate information boundaries using structurally equivalent isolated public and NDA corpora."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS277"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD19-MLPERF-ENDPOINTS-ROLLING-AGENTIC",
+          "name_ja": "MLPerf Endpointsは継続投稿とエージェント評価を計画",
+          "name_en": "MLPerf Endpoints plans rolling submissions and agentic evaluation",
+          "stage": "near-term",
+          "maturity": "prototype",
+          "timing_ja": "v0.7は2026年7月、v1.0とエージェント項目は2026年後半の計画",
+          "timing_en": "v0.7 in July 2026; v1.0 and agentic coverage planned later in 2026",
+          "statement_ja": "Endpoints v0.7はCoreWeave、Google、Intel、KRAI、NVIDIAの初期結果、提出自動化、継続レビュー、動的可視化を備える基盤版です。MLCommonsはv1.0で費用・電力の正規化、エージェント型ワークロード、継続投稿を拡張する計画を示しています。これは将来計画であり、現時点で完成したエージェント評価標準ではありません。",
+          "statement_en": "Endpoints v0.7 is a foundation release with initial results from CoreWeave, Google, Intel, KRAI, and NVIDIA plus automated submissions, continuous review, and dynamic visualization. MLCommons plans buyer-oriented cost and power normalization, agentic workloads, and rolling submissions for v1.0. This is a roadmap, not a completed agent-evaluation standard today.",
+          "hpci_relevance_ja": "AIサービス調達は固定時点の単一スコアではなく、モデル・価格・電力・APIが変わるたびに再測定できる継続評価基盤が必要です。",
+          "hpci_relevance_en": "AI-service procurement needs continuous reevaluation as models, prices, power, and APIs change rather than a single static score.",
+          "adoption_conditions_ja": ["v1.0の確定ルールとエージェント項目を公開後に再確認する。", "オンプレミスと外部APIを同一タスク・品質・費用・情報境界で比較する。"],
+          "adoption_conditions_en": ["Recheck the final v1.0 rules and agentic workload after publication.", "Compare on-premises and external APIs under identical tasks, quality, cost, and information boundaries."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS278"],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS276", "title": "MLPerf Training: HPC", "publisher": "MLCommons", "url": "https://mlcommons.org/benchmarks/training-hpc/", "source_class": "official-project", "published_or_updated": "2025-01"},
+      "origin_group": "mlcommons-ai-benchmark-lifecycle", "checked_at": "2026-09-02T03:20:00+09:00", "locator": "retirement notice, benchmark and metric tables", "observation_ja": "2025年1月の終了、4科学ワークロード、強・弱スケーリング指標を確認しました。", "observation_en": "Verified the January 2025 retirement, four scientific workloads, and strong- and weak-scaling metrics.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS277", "title": "Introducing the MLPerf End-to-End RAG Inference Benchmark", "publisher": "MLCommons", "url": "https://mlcommons.org/2026/08/endtoend-inference/", "source_class": "official-project", "published_or_updated": "2026-08-26"},
+      "origin_group": "mlcommons-ai-benchmark-lifecycle", "checked_at": "2026-09-02T03:21:00+09:00", "locator": "pipeline, dataset, performance, reproducibility and accuracy sections", "observation_ja": "取り込み・Q&A構成、データ規模、tasks/s、精度閾値、記録入力、検索品質の扱いを確認しました。", "observation_en": "Verified ingestion and Q&A structure, data scale, tasks/s, accuracy threshold, recorded inputs, and treatment of retrieval quality.", "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS278", "title": "MLPerf Endpoints v0.7: A Foundation Release", "publisher": "MLCommons", "url": "https://mlcommons.org/2026/07/mlperf-endpoints-v0-7-release/", "source_class": "official-project", "published_or_updated": "2026-07-28"},
+      "origin_group": "mlcommons-ai-benchmark-lifecycle", "checked_at": "2026-09-02T03:22:00+09:00", "locator": "v0.7 capabilities and v1.0 roadmap", "observation_ja": "初期参加者、自動提出、継続レビュー、費用・電力正規化、エージェント項目と継続投稿の計画を確認しました。", "observation_en": "Verified initial participants, automated submission, continuous review, and plans for cost and power normalization, agentic workloads, and rolling submissions.", "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "End-to-End RAGの公式提出結果、エネルギー測定、HPCI上の再現結果は未確認です。",
+    "MLPerf Endpoints v1.0とエージェント型ワークロードは計画段階で、確定ルールは未確認です。",
+    "科学AI向け後継ベンチマークと旧MLPerf HPC結果の接続方法は追加検討が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Official End-to-End RAG submissions, energy measurements, and reproduction on HPCI resources have not been verified.",
+    "MLPerf Endpoints v1.0 and its agentic workload remain planned; final rules have not been verified.",
+    "Further work is needed to connect successor scientific-AI benchmarks to historical MLPerf HPC results.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

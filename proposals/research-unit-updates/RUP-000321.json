@@ -1,0 +1,208 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000321",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:50:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000161",
+      "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"
+    },
+    {
+      "update_id": "RUP-000169",
+      "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"
+    },
+    {
+      "update_id": "RUP-000180",
+      "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"
+    },
+    {
+      "update_id": "RUP-000193",
+      "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"
+    },
+    {
+      "update_id": "RUP-000218",
+      "bundle_sha256": "f2e28cc97f757f4b01e571e44072e49a8c46fd3b25e711fc5c8198844ff22b9a"
+    },
+    {
+      "update_id": "RUP-000226",
+      "bundle_sha256": "524f3070c566043a03e935d7cb0f7457b88f608bc3f59ce233d8744edc7b3901"
+    },
+    {
+      "update_id": "RUP-000235",
+      "bundle_sha256": "18dab33bb3335028cc91b5987c86440b44ea8d25c71707ce8fceb1d78ec96def"
+    },
+    {
+      "update_id": "RUP-000243",
+      "bundle_sha256": "16e821133449bf831a75e2f2f0d8200cf5a5f8c633fee0435a46a11803fa2826"
+    },
+    {
+      "update_id": "RUP-000253",
+      "bundle_sha256": "234dc300f5272564d872e4e224e614cae1ee986094e9953f5ec32a16203d9544"
+    },
+    {
+      "update_id": "RUP-000286",
+      "bundle_sha256": "d82debd5e6a02b7fc141c7212490808920321fb95c352bec3027e566dfe71e0d"
+    },
+    {
+      "update_id": "RUP-000310",
+      "bundle_sha256": "8ca0a2a87cfe88adc080b4d7d88bda6a437421890d6e11e15548094b8776e829"
+    },
+    {
+      "update_id": "RUP-000316",
+      "bundle_sha256": "eff597a3f355e0112a19bc3122d875946769b0dfe5630eaad8da4385dfb764e6"
+    }
+  ],
+  "before_profile_sha256": "b26ccd730c8b1d2e539f85b1fe5e99f7a68a5e37976d212124ddf340577a3092",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "KIOXIA GP1を、HBM代替ではなくGPU直接access可能なflash容量tierとして追加しました。2026年末の限定sample、1,000万IOPS仕様、2027年の1億IOPS・PCIe 7.0目標を分け、容量、latency、write、software、価格を未確認事項として残します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds KIOXIA GP1 as a GPU-direct flash-capacity tier rather than an HBM replacement. It separates selected-customer samples by the end of 2026, the 10-million-IOPS specification, and the 2027 target for 100 million IOPS with PCIe 7.0, leaving capacity, latency, writes, software, and pricing unresolved. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U01",
+      "before_sha256": "2c7b094c935d7541ecf5b2f5686416cefdfcf5b2268d3361fdb36dabdce57c13",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U01",
+        "TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER"
+      ]
+    },
+    {
+      "unit_id": "SSW-05-U02",
+      "before_sha256": "e9bac934865d698c31b9782db1afa22fcc8502b13c69dfb77f8cad2ec861c1ad",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U02",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
+        "TDS-CD30-SSW-05-CONTEXT-MEMORY-STORAGE",
+        "TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD35-SSW-05-KIOXIA-GP1-GPU-FLASH-TIER",
+      "title_ja": "KIOXIA GP1によるGPU直接flash memory tier",
+      "title_en": "GPU-direct flash-memory tier with KIOXIA GP1",
+      "summary_ja": "高IOPS SSDをHBM代替ではなく容量拡張tierとして位置付け、sample、将来目標、未公開条件を分離します。",
+      "summary_en": "Position high-IOPS SSDs as a capacity-extension tier rather than an HBM replacement, separating samples, future targets, and undisclosed conditions.",
+      "items": [
+        {
+          "item_id": "TDI-CD134-KIOXIA-GP1-10M-IOPS-SAMPLE",
+          "name_ja": "GP1のPCIe 6.0・1,000万IOPS評価sample",
+          "name_en": "GP1 PCIe 6.0 sample targeting 10 million IOPS",
+          "stage": "near-term",
+          "maturity": "sampling",
+          "timing_ja": "2026年末までに限定顧客へ評価sample予定",
+          "timing_en": "Evaluation samples planned for selected customers by the end of 2026",
+          "statement_ja": "KIOXIA GP1は第2世代XL-FLASH、PCIe 6.0、NVMe 2.2を用い、512 byte random readで最大1,000万IOPS、最大50 DWPDを掲げるGPU direct access向けSSDです。E3.SとE1.S 9.5/15 mmを予定し、一部form factorはcold-plate液冷、全形状はair coolingに対応するとしています。HBM/DRAMより低価格なflash容量tierをGPUから直接扱う構想ですが、2026年末は限定顧客向け評価sampleであり、一般販売ではありません。容量、read latency分布、random write、queue depth、GPU software stack、failure semantics、価格は公表資料だけでは確定しません。",
+          "statement_en": "KIOXIA GP1 is a GPU-direct-access SSD using second-generation XL-FLASH, PCIe 6.0, and NVMe 2.2, with a stated maximum of 10 million 512-byte random-read IOPS and up to 50 DWPD. E3.S and 9.5/15-mm E1.S form factors are planned; selected forms support cold-plate liquid cooling and all are described as supporting air cooling. It is intended as a lower-cost flash-capacity tier directly accessible by GPUs, but the end-of-2026 milestone is an evaluation sample for selected customers, not general availability. Capacity, read-latency distribution, random-write behavior, queue depth, GPU software stack, failure semantics, and price are not established by the public material.",
+          "hpci_relevance_ja": "HPCIでは大規模model、embedding、graph、sparse data、checkpoint restartのworking setをHBMへ常駐できない場合のtierとして、実効latencyとGPU idle削減を評価できます。",
+          "hpci_relevance_en": "HPCI can evaluate the tier for models, embeddings, graphs, sparse data, and checkpoint-restart working sets that do not fit in HBM, using delivered latency and GPU-idle reduction.",
+          "adoption_conditions_ja": [
+            "capacity、latency percentile、queue depth、read/write混在、endurance、powerをsampleで測定する。",
+            "GPU direct path、driver、filesystem/object API、memory allocator、error handlingを公開再現する。",
+            "HBM、DRAM、TLC SSDとの同一working setによるtime-to-solutionと総費用を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure capacity, latency percentiles, queue depth, mixed reads/writes, endurance, and power on samples.",
+            "Reproduce the GPU-direct path, drivers, filesystem or object APIs, memory allocator, and error handling publicly.",
+            "Compare time to solution and total cost against HBM, DRAM, and TLC SSD using the same working sets."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS427"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD135-KIOXIA-100M-IOPS-PCIE7-TARGET",
+          "name_ja": "1億IOPS・PCIe 7.0世代の2027年目標",
+          "name_en": "2027 target for 100 million IOPS and PCIe 7.0",
+          "stage": "research",
+          "maturity": "announced",
+          "timing_ja": "第3世代XL-FLASH・PCIe 7.0を2027年目標",
+          "timing_en": "Third-generation XL-FLASH and PCIe 7.0 targeted for 2027",
+          "statement_ja": "Kioxiaは第3世代XL-FLASHとPCIe 7.0により1億IOPSを2027年に目指すroadmapを示しています。これはGP1の1,000万IOPS sampleから10倍のrandom-read IOPSを狙うvendor targetであり、製品名、lane数、controller数、容量、消費電力、host/GPU接続、sample/量産時期は確定していません。IOPSの増加だけでは、single-drive latency、application throughput、network越し共有、耐障害性は保証されません。",
+          "statement_en": "Kioxia presents a roadmap targeting 100 million IOPS in 2027 with third-generation XL-FLASH and PCIe 7.0. This is a vendor target for ten times the random-read IOPS of the 10-million-IOPS GP1 sample; product name, lane and controller counts, capacity, power, host/GPU attachment, and sample or production timing are not fixed publicly. Higher IOPS alone does not establish single-drive latency, application throughput, shared access over a network, or fault tolerance.",
+          "hpci_relevance_ja": "2027年目標をsystem設計へ使う場合は、PCIe 7 host availability、slot/retimer、cooling、software、複数drive集約を同じroadmapで追跡する必要があります。",
+          "hpci_relevance_en": "Using the 2027 target in system design requires tracking PCIe 7 host availability, slots and retimers, cooling, software, and multi-drive aggregation on the same roadmap.",
+          "adoption_conditions_ja": [
+            "PCIe 7 host、switch、retimer、cable、form factorのsample時期を追跡する。",
+            "1億IOPSのblock size、read/write比、queue depth、drive数、power、冷却を確認する。",
+            "single-node memory tierとshared storageの責任分界、coherence、persistenceを定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Track sample timing for PCIe 7 hosts, switches, retimers, cables, and form factors.",
+            "Confirm block size, read/write mix, queue depth, drive count, power, and cooling for 100 million IOPS.",
+            "Define responsibility boundaries, coherence, and persistence between a node-local memory tier and shared storage."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS428"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS427",
+        "title": "AIアプリケーション向けSuper High IOPS SSD KIOXIA GP1シリーズの開発について",
+        "publisher": "キオクシア株式会社",
+        "url": "https://www.kioxia.com/ja-jp/business/news/2026/20260804-1.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-08-04"
+      },
+      "origin_group": "kioxia-gp1-official",
+      "checked_at": "2026-09-02T05:56:00+09:00",
+      "locator": "Product announcement: sample timing, PCIe 6.0/NVMe 2.2, XL-FLASH, 512-byte random reads, form factors, cooling, and endurance",
+      "observation_ja": "sample時期、interface、IOPS条件、形状、冷却、enduranceを確認しました。",
+      "observation_en": "Verified sample timing, interfaces, IOPS conditions, form factors, cooling, and endurance.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS428",
+        "title": "A New Era in AI Storage Pioneered by the Coexistence of HBM and SSDs",
+        "publisher": "Kioxia Corporation",
+        "url": "https://www.kioxia.com/en-jp/insights/hbm-ssd-202603.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-03-17"
+      },
+      "origin_group": "kioxia-ai-storage-roadmap-official",
+      "checked_at": "2026-09-02T05:57:00+09:00",
+      "locator": "2026 10-million-IOPS and 2027 100-million-IOPS roadmap with XL-FLASH and PCIe generations",
+      "observation_ja": "2026年と2027年のIOPS、XL-FLASH、PCIe世代の目標を確認しました。",
+      "observation_en": "Verified the 2026 and 2027 IOPS, XL-FLASH, and PCIe-generation targets.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GP1の容量、latency分布、write性能、software、価格、一般提供時期は未公表です。",
+    "1億IOPS目標は製品実測ではなく、HPCI applicationによる比較も未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GP1 capacity, latency distribution, write performance, software, price, and general availability are not public.",
+    "The 100-million-IOPS figure is a target rather than a product measurement, and HPCI application comparisons have not been performed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

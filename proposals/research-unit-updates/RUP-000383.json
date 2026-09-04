@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000383",
+  "topic_id": "APP-14",
+  "created_at": "2026-09-02T10:55:16+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "c776385e52bbb23a28824456964c59d2b63b8ac68b44e4ecd822af8d485252f3",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "CHESS、National Science Data Fabric、ORNL INTERSECT/DIALを結ぶminute-by-minute実験steeringと、AEcroscopyの標準logging、Gated Active Learningによる前提外dataの隔離を追加しました。定量的なlatency、情報効率、安全gate性能は未確認です。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds minute-by-minute experiment steering across CHESS, the National Science Data Fabric, and ORNL INTERSECT/DIAL, plus standardized AEcroscopy logging and isolation of out-of-assumption data through Gated Active Learning. Quantitative latency, information efficiency, and safety-gate performance remain unverified. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-14-U01",
+      "before_sha256": "0d104bc347250513e807e6b38472a9c0ba9790c115c754f68495310e5ff9ae70",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-14-U01",
+        "TDS-CD2-APP-14-U01",
+        "TDS-CD3-APP-14-U01",
+        "TDS-CD10-APP-14-U01",
+        "TDS-CD11-APP-14-JPARC-MLF",
+        "TDS-CD12-APP-14-ILIS",
+        "TDS-CD13-APP-14-INSTRUMENT-STANDARDS",
+        "TDS-CD27-APP-14-EXPERIMENT-SLOS",
+        "TDS-CD40-APP-14-NANOTERASU-AOBA",
+        "TDS-WC383-APP-14-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC383-APP-14-01",
+      "title_ja": "遠隔施設を結ぶ自律実験とAI判断の安全gate",
+      "title_en": "Cross-facility autonomous experiments and safety gates for AI decisions",
+      "summary_ja": "実験装置、data fabric、active learning、制御返送を閉ループにしつつ、前提外dataを人の確認へ戻す構成を整理します。",
+      "summary_en": "Characterize closed loops spanning instruments, data fabrics, active learning, and control return while routing out-of-assumption data back to human review.",
+      "items": [
+        {
+          "item_id": "TDI-WC383-APP14-01-01",
+          "name_ja": "CHESSとORNLを結ぶminute-by-minute experiment steering",
+          "name_en": "Minute-by-minute experiment steering between CHESS and ORNL",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年8月6日に実証を公表",
+          "timing_en": "Demonstration announced August 6, 2026",
+          "statement_ja": "ORNLとUTKはCornell High Energy Synchrotron Sourceで3D printed metal部品の残留ひずみを測定し、取得dataをminute単位でAI解析して次の測定を選ぶ閉ループを実証しました。CHESS beamlineはNational Science Data Fabric経由でORNLのINTERSECTとDistributed INTERSECT Active Learning（DIAL）へ接続され、Tennesseeから遠隔実行されました。記事は実験結果を今後webinarと論文で公表するとしており、data rate、network/decision latency、停止条件、失敗率、AIと固定scanの情報効率比較はまだ示していません。",
+          "statement_en": "ORNL and UTK demonstrated a closed loop at the Cornell High Energy Synchrotron Source that mapped residual strain in a 3D-printed metal component and used minute-by-minute AI analysis to choose subsequent measurements. The CHESS beamline connected through the National Science Data Fabric to ORNL's INTERSECT and Distributed INTERSECT Active Learning (DIAL), enabling remote operation from Tennessee. The article says results will be presented later in a webinar and publication; it does not yet report data rates, network or decision latency, stop conditions, failure rates, or information-efficiency comparisons against a fixed scan.",
+          "hpci_relevance_ja": "HPCIはbatch完了時間だけでなく、実験data到着から解析・判断・装置指令までのdeadline、予約、network、再試行、provenanceをservice levelとして設計する必要があります。",
+          "hpci_relevance_en": "HPCI should design service levels for deadlines from experimental-data arrival through analysis, decision, and instrument command, including reservations, networking, retries, and provenance, rather than only batch completion time.",
+          "adoption_conditions_ja": [
+            "instrument timestamp、data arrival、compute start/end、decision、command acknowledgmentを同一traceに保存する。",
+            "network断、model timeout、異常値、装置拒否時の停止・fallback・人の承認を定義する。",
+            "固定scanとactive learningを科学的情報量、beamtime、compute費用、再現性で比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Record instrument timestamps, data arrival, compute start and finish, decisions, and command acknowledgments in one trace.",
+            "Define stop, fallback, and human-approval behavior for network loss, model timeout, anomalies, and instrument rejection.",
+            "Compare fixed scans and active learning by scientific information, beam time, compute cost, and reproducibility."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS458"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC383-APP14-01-02",
+          "name_ja": "AEcroscopyの標準loggingとGated Active Learning",
+          "name_en": "Standardized logging with AEcroscopy and Gated Active Learning",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年4月にORNLが研究内容を公表",
+          "timing_en": "ORNL research profile published April 2026",
+          "statement_ja": "ORNLはAEcroscopyを、microscope制御、data取得・処理、experiment logを標準化するsoftware-hardware systemとして説明しています。Gated Active Learning Frameworkはmodel前提に合うdataだけを学習へ通し、外れたdataを別途reviewする安全filterです。異常dataから誤った仮説を自己強化する危険への具体策ですが、公開記事はsoftware版、公開repository、threshold、false accept/reject、停止latency、複数装置での定量評価を示していません。",
+          "statement_en": "ORNL describes AEcroscopy as a software-hardware system that standardizes microscope control, data acquisition and processing, and experiment logs. Its Gated Active Learning Framework passes only data consistent with model assumptions into training and holds out-of-family data for separate review. This is a concrete mitigation for self-reinforcing errors from anomalous data, but the public article does not provide software versions, a public repository, thresholds, false-accept or false-reject rates, stop latency, or quantitative multi-instrument evaluation.",
+          "hpci_relevance_ja": "自律実験の採用条件はthroughputだけでなく、全判断の再現可能なlog、model適用範囲、異常時のhuman gate、再開可能なstateを含むべきです。",
+          "hpci_relevance_en": "Adoption criteria for autonomous experiments should include reproducible logs for every decision, model applicability bounds, human gates for anomalies, and restartable state, not throughput alone.",
+          "adoption_conditions_ja": [
+            "raw data、preprocessing、model/version、proposal、承認・却下、装置状態、resultをimmutableに結ぶ。",
+            "gateの適用範囲、threshold、false accept/reject、escalation時間を検証する。",
+            "人間が安全に停止・修正・再開でき、過去decisionを再生できるようにする。"
+          ],
+          "adoption_conditions_en": [
+            "Immutably link raw data, preprocessing, model and version, proposal, approval or rejection, instrument state, and result.",
+            "Validate gate scope, thresholds, false accepts and rejects, and escalation time.",
+            "Enable safe human stop, correction, restart, and replay of prior decisions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS459"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD53-APP-14-ORNL-AUTONOMOUS-EXPERIMENT"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS458",
+        "title": "AI powers self-driving science",
+        "publisher": "Oak Ridge National Laboratory",
+        "url": "https://www.ornl.gov/news/ai-powers-self-driving-science",
+        "source_class": "official-project",
+        "published_or_updated": "Published 2026-08-06"
+      },
+      "origin_group": "ornl-chess-intersect-dial-demonstration",
+      "checked_at": "2026-09-02T06:42:00+09:00",
+      "locator": "CHESS experiment, minute-by-minute steering, INTERSECT, DIAL, National Science Data Fabric, and pending publication",
+      "observation_ja": "遠隔beamlineをdata fabricとactive learningへ接続した閉ループ実証と、定量結果が未公表である境界を確認しました。",
+      "observation_en": "Verified a closed-loop demonstration linking a remote beamline through a data fabric to active learning, and the boundary that quantitative results remain unpublished.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS459",
+        "title": "AI helps Yongtao Liu build self-driving lab experiments",
+        "publisher": "Oak Ridge National Laboratory",
+        "url": "https://www.ornl.gov/news/ai-helps-yongtao-liu-build-self-driving-lab-experiments",
+        "source_class": "official-project",
+        "published_or_updated": "Published 2026-04-02; updated 2026-04-18"
+      },
+      "origin_group": "ornl-aecroscopy-gated-active-learning",
+      "checked_at": "2026-09-02T06:43:00+09:00",
+      "locator": "AEcroscopy logging and control, Gated Active Learning, cross-facility loops, human oversight, and timing mismatch",
+      "observation_ja": "標準化された実験logging、前提外dataを除外するgate、人間の監督、装置間time scale差を確認しました。",
+      "observation_en": "Verified standardized experiment logging, gating of out-of-assumption data, human oversight, and time-scale differences across instruments.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000309",
+  "topic_id": "ARCH-05",
+  "created_at": "2026-09-02T07:48:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000132",
+      "bundle_sha256": "464d7422a1852dc4e3dd19100241009ead43aac6958d882ea6a2513aa1422b89"
+    },
+    {
+      "update_id": "RUP-000140",
+      "bundle_sha256": "71a190ed95189126bab43edcee3b29629a0ad6a366f658387ebf055b9cbe0aed"
+    },
+    {
+      "update_id": "RUP-000145",
+      "bundle_sha256": "5b37f9b86f63c1f8fabaad473aa85a2f754d3050ec747bf3d14e486c9878da97"
+    },
+    {
+      "update_id": "RUP-000157",
+      "bundle_sha256": "1e58801cb003f4df09a3e1b6f537fb20c46d42a961a5228aa11d3287893faa7e"
+    },
+    {
+      "update_id": "RUP-000170",
+      "bundle_sha256": "ab2251f291bd4b934847674b597394bb1129a0a9d4cb8f67245d45392419a012"
+    },
+    {
+      "update_id": "RUP-000287",
+      "bundle_sha256": "c5e8c9403005c3e114200f8478add8df3b9dfc0d3fc97b18cca0c072b463943d"
+    },
+    {
+      "update_id": "RUP-000302",
+      "bundle_sha256": "e4aefd4cd076e3d37d6069461f7cc73ce12e75de5308a99797a4190e304a2a8b"
+    }
+  ],
+  "before_profile_sha256": "81e3913885b7d9426a38618c4357c9957cb4959f15dbec287026fd5d6df4cea1",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "RIKYUの全400ノード・1,600 GPUと、Phase 2の公開job上限4ノード・16 GPU・96時間を分離しました。さらに6 Spine・17 Leafの2層Fat Treeについて、同一LeafとSpine越えの性能条件を追加しました。全系peakを通常job性能にせず、割当規模とtopologyを受入条件にします。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "RIKYU's full 400-node, 1,600-GPU scale is separated from the Phase 2 public job limit of four nodes, 16 GPUs, and 96 hours. Its six-spine, 17-leaf two-tier fat tree adds distinct same-leaf and cross-spine performance conditions. Aggregate peak is not treated as normal-job performance; allocation scale and topology become acceptance conditions. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-05-U01",
+      "before_sha256": "8cffb291b48dd2d521a8aad97243bddcf42f334666c549b57982fd730391ba13",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U01",
+        "TDS-HW3-ARCH-05-U01",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02",
+        "TDS-CD14-ARCH-05-U01-U02",
+        "TDS-CD3-ARCH-05-VERA-RUBIN-PUBLIC-SYSTEMS",
+        "TDS-CD4-ARCH-05-RIKYU-OPERATION",
+        "TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE"
+      ]
+    },
+    {
+      "unit_id": "ARCH-05-U02",
+      "before_sha256": "663c492fbff78adf1ce65875a7f7b323fcde0aa8de9f5ae1ce6123eebdbc28ef",
+      "evidence_section_ids": [
+        "TDS-HW1-ARCH-05-U02",
+        "TDS-CD10-ARCH-05-U01",
+        "TDS-CD11-ARCH-05-U01",
+        "TDS-CD12-ARCH-05-U01-U02",
+        "TDS-CD13-ARCH-05-U01-U02",
+        "TDS-CD14-ARCH-05-U01-U02",
+        "TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD5-ARCH-05-RIKYU-ALLOCATABLE-SCALE",
+      "title_ja": "理究（RIKYU）の全体規模と利用可能job規模の分離",
+      "title_en": "Separating RIKYU system scale from allocatable job scale",
+      "summary_ja": "全400ノードの公称値、通常job上限、network局所性を別の設計値として扱います。",
+      "summary_en": "Treat the 400-node system, normal job limits, and network locality as separate design values.",
+      "items": [
+        {
+          "item_id": "TDI-CD116-RIKYU-SYSTEM-VS-JOB-SCALE",
+          "name_ja": "400ノード・1,600 GPUのsystemに対し公開job上限は4ノード・16 GPU",
+          "name_en": "A 400-node, 1,600-GPU system with a published job limit of 4 nodes and 16 GPUs",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月の早期アクセスPhase 2",
+          "timing_en": "Early Access Phase 2 in September 2026",
+          "statement_ja": "RIKYUは400ノード・1,600 GPUですが、公開Guideでjobが指定できるGPU数は1、2、3、4、8、12、16で、最大4ノード・16 GPU、最大実行時間96時間です。1 GPU時はCPU 36 coreと総memory約400 GB、4 GPU時は144 coreと約1,600 GBが目安です。これはPhase 2の公開利用枠であり、特別運用や将来の大規模jobを否定するものではありません。",
+          "statement_en": "RIKYU has 400 nodes and 1,600 GPUs, while its public guide allows requests for 1, 2, 3, 4, 8, 12, or 16 GPUs, up to four nodes and 16 GPUs for 96 hours. One GPU is paired with up to 36 CPU cores and about 400 GB combined memory, while four GPUs reach 144 cores and about 1,600 GB. This describes the Phase 2 public allocation envelope and does not rule out special operations or later larger jobs.",
+          "hpci_relevance_ja": "整備計画では総peakだけでなく、利用者が確保できるnode/GPU数、walltime、memory granularity、large-job経路を明記する必要があります。",
+          "hpci_relevance_en": "Planning must publish allocatable nodes and GPUs, wall time, memory granularity, and large-job routes in addition to aggregate peak performance.",
+          "adoption_conditions_ja": [
+            "通常・大規模・専用実行の上限、頻度、審査、待ち時間を分ける。",
+            "実際のjob size分布、利用率、queue time、失敗率を公開する。",
+            "全系peakを一般job性能へ読み替えない。"
+          ],
+          "adoption_conditions_en": [
+            "Separate normal, large, and dedicated-run limits, frequency, review, and waits.",
+            "Publish actual job-size distributions, utilization, queue times, and failures.",
+            "Do not interpret full-system peak as normal-job performance."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS404",
+            "SRC-CDS405"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD116-RIKYU-LEAF-SPINE-LOCALITY",
+          "name_ja": "2層Fat Treeでは同一Leaf内とSpine越えを分けて評価",
+          "name_en": "Evaluate same-leaf and cross-spine traffic separately in the two-tier fat tree",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年9月確認",
+          "timing_en": "Verified September 2026",
+          "statement_ja": "計算networkは6 Spine・17 Leafの2層Fat Treeで、16 Leafが各24ノード、1 Leafが16ノードへ接続します。Guideは同一Leaf配下が高速で、Spine越えでは経路や同時trafficにより性能がやや低下し得ると明記します。各nodeのInfiniBand XDR 800 Gbps×4というlink値だけではcollective・all-to-all・storage競合時の実効性能は決まりません。",
+          "statement_en": "The compute network is a two-tier fat tree with six spine and 17 leaf switches: 16 leaves connect 24 nodes each and one connects 16. The guide says same-leaf communication is faster and cross-spine performance may decline with route and concurrent traffic. A per-node InfiniBand XDR link figure of 4 by 800 Gbps does not determine achieved collectives, all-to-all, or storage-contention performance.",
+          "hpci_relevance_ja": "node配置aware schedulingとnetwork benchmarkを調達検収に入れ、small jobの局所性とlarge jobのbisectionを別に測る必要があります。",
+          "hpci_relevance_en": "Procurement acceptance should include placement-aware scheduling and network benchmarks that separate small-job locality from large-job bisection behavior.",
+          "adoption_conditions_ja": [
+            "同一Leaf・複数Leafでpoint-to-point、collective、all-to-allを測る。",
+            "同時jobとstorage traffic下のP50/P95性能を測る。",
+            "schedulerのplacement policyとtopology情報公開範囲を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure point-to-point, collectives, and all-to-all within and across leaves.",
+            "Measure P50 and P95 performance under concurrent jobs and storage traffic.",
+            "Verify scheduler placement policy and exposed topology information."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS404"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS404",
+        "title": "RIKYU User Guide: System overview",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://docs.r-ccs.riken.jp/rikyu/ja/system/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "riken-rikyu-system-guide",
+      "checked_at": "2026-09-02T05:31:00+09:00",
+      "locator": "System composition, per-node links and memory, aggregate scale, and two-tier fat-tree topology",
+      "observation_ja": "全体構成とLeaf・Spine接続および性能上の注意を確認しました。",
+      "observation_en": "Verified aggregate composition, leaf-spine connectivity, and the performance caveat.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS405",
+        "title": "RIKYU User Guide: Job resources",
+        "publisher": "RIKEN Center for Computational Science",
+        "url": "https://docs.r-ccs.riken.jp/rikyu/ja/resources/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "riken-rikyu-job-resource-guide",
+      "checked_at": "2026-09-02T05:31:00+09:00",
+      "locator": "Allowed GPU counts, allocated nodes, CPU and memory envelope, and 96-hour limit",
+      "observation_ja": "通常jobで指定できるGPU・node・CPU・memory・walltimeを確認しました。",
+      "observation_en": "Verified allowed GPU, node, CPU, memory, and wall-time values for normal jobs.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "実際のjob分布、queue、large-job経路、network実測、placement policyは未確認です。",
+    "正式運用後の利用上限変更は継続追跡が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Actual job distributions, queues, large-job routes, network measurements, and placement policy remain unverified.",
+    "Post-early-access allocation limits require continued tracking.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

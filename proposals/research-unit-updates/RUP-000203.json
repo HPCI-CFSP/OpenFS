@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000203",
+  "topic_id": "ARCH-10",
+  "created_at": "2026-09-02T07:30:40+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000167",
+      "bundle_sha256": "e5112b0eca00e67e8a66b57563b417aad91ccbe9c434a92e78e835d46a7029ff"
+    }
+  ],
+  "before_profile_sha256": "59e9b65d0088a10e5142085b682ac0cee357834cdf534ab472f1d649cdf7f007",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の高い年次稼働率に加え、2025年8月の個別ファイルシステム障害を確認しました。vol0004では同日に5時間19分と3時間5分、vol0001では1時間58分にわたりアクセス不能・遅延が報告され、ログイン、前後処理、ジョブに影響しました。個別ボリューム障害は全系停止と同じではありませんが、年間稼働率だけでは利用者が被るI/O停止、ジョブ再実行、データ整合性確認を表せません。原因、影響ジョブ数、失われたノード時間、データ損失の有無は公開資料から確定しません。Consensusは未完了です。",
+  "summary_en": "In addition to Fugaku's high annual availability, public operations material records volume-specific filesystem incidents in August 2025. vol0004 had access-unavailable or delayed periods of 5 hours 19 minutes and 3 hours 5 minutes on one day, and vol0001 had a 1 hour 58 minute period, affecting login, pre/post-processing, and jobs. A volume incident is not equivalent to whole-system outage, but annual availability alone does not express user-visible I/O interruption, job reruns, or integrity checks. Cause, affected-job count, lost node-hours, and whether data loss occurred are not established by the public material. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-10-U01",
+      "before_sha256": "6cad961228f817c84cfedc8ca92934f5d99ebe2c55fd7b6de3cf1a6cbd061c9e",
+      "evidence_section_ids": [
+        "TDS-CD2-ARCH-10-U01",
+        "TDS-CD3-ARCH-10-U01",
+        "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD4-ARCH-10-USER-VISIBLE-INCIDENTS",
+      "title_ja": "全系稼働率と個別サービス障害を分けて測る",
+      "title_en": "Measure whole-system availability separately from service-specific incidents",
+      "summary_ja": "ボリューム、利用経路、ジョブ、データへの影響を、全系停止とは別の指標で追跡します。",
+      "summary_en": "Track effects on volumes, access paths, jobs, and data separately from whole-system outage.",
+      "items": [
+        {
+          "item_id": "TDI-CD4-FUGAKU-FILESYSTEM-INCIDENTS-202508",
+          "name_ja": "富岳：2025年8月のボリューム別ファイルシステム障害",
+          "name_en": "Fugaku: volume-specific filesystem incidents in August 2025",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "vol0004：2025年8月23日、vol0001：2025年8月29日",
+          "timing_en": "vol0004: August 23, 2025; vol0001: August 29, 2025",
+          "statement_ja": "R-CCSの利用者説明資料は、vol0004で8月23日01:44～07:03と11:35～14:40、vol0001で8月29日01:04～03:02にアクセス不能・遅延が発生したと報告しています。影響経路はログインノード、プレポスト環境、ジョブで、vol0004は復旧対応中に運用から切り離してジョブ実行を再開しました。利用者はjob_eventsで影響ジョブを確認できます。資料は原因、影響ジョブ総数、データ損失の有無、再実行ノード時間を示していません。",
+          "statement_en": "An R-CCS user briefing reports access unavailability or delay for vol0004 from 01:44 to 07:03 and 11:35 to 14:40 on August 23, and for vol0001 from 01:04 to 03:02 on August 29. Login nodes, pre/post-processing, and jobs were affected; vol0004 was detached while job execution resumed during recovery. Users could identify affected jobs through job_events. The material does not state root cause, total affected jobs, whether data loss occurred, or rerun node-hours.",
+          "hpci_relevance_ja": "次世代システムでは、全系稼働率に加え、ストレージ領域別の停止時間、影響ジョブ、再実行費用、データ整合性、縮退運転を共通指標として公開する必要があります。",
+          "hpci_relevance_en": "Next-generation systems should publish common metrics for per-storage-service interruption, affected jobs, rerun cost, data integrity, and degraded operation alongside whole-system availability.",
+          "adoption_conditions_ja": [
+            "計算、ログイン、スケジューラー、ファイルシステム、ポータルを別サービスとしてSLOと障害時間を記録する。",
+            "ジョブIDから影響、再実行、ノード時間、チェックポイント回復、データ検査を追跡する。",
+            "原因、復旧措置、再発防止、残余リスクを公開可能な事後報告にまとめる。",
+            "単月の個別障害から年間故障率や将来製品の信頼性を外挿しない。"
+          ],
+          "adoption_conditions_en": [
+            "Record SLOs and incident duration separately for compute, login, scheduler, filesystem, and portal services.",
+            "Trace job impact, reruns, node-hours, checkpoint recovery, and data checks from job identifiers.",
+            "Publish an appropriate post-incident record covering cause, recovery, prevention, and residual risk.",
+            "Do not extrapolate annual failure rates or future-product reliability from one month's incidents."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS242"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS242",
+        "title": "富岳の運用状況報告（2025年9月）",
+        "publisher": "理化学研究所計算科学研究センター",
+        "url": "https://www.r-ccs.riken.jp/fugaku/docs/workshop/2025/systemreport/systemreport_202509.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-09-11"
+      },
+      "origin_group": "fugaku-filesystem-incidents-202508",
+      "checked_at": "2026-09-02T03:12:00+09:00",
+      "locator": "Pages 18-19: vol0004 and vol0001 filesystem incidents",
+      "observation_ja": "発生・復旧時刻、影響経路、vol0004切離し、job_eventsによる影響確認方法を確認しました。",
+      "observation_en": "Verified incident and recovery times, affected access paths, vol0004 detachment, and the job_events impact-check route.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各障害の原因、影響ジョブ数、再実行ノード時間、データ損失・整合性、再発防止策は公開資料から確認できません。",
+    "ファイルシステムを含むサービス別SLOと年間事象系列を集め、全系稼働率と併記する必要があります。",
+    "独立した運用記録確認と、独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Root cause, affected-job count, rerun node-hours, data loss or integrity, and prevention actions are not established publicly for these incidents.",
+    "Service-specific SLOs and a multi-year incident series including filesystems are needed alongside whole-system availability.",
+    "Independent operations-record review and independent-model Consensus remain incomplete."
+  ]
+}

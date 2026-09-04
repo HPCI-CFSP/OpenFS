@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000173",
+  "topic_id": "SSW-08",
+  "created_at": "2026-09-02T05:50:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000144", "bundle_sha256": "91768493b43cfa1ccccad66cf8a0ce1b6f9f6ef7eb3d9aaab216f750047abe5c"},
+    {"update_id": "RUP-000148", "bundle_sha256": "8e88896a4ca9afc656ca3b772ad67538d3986cf2cf28e60eeece70870637076e"}
+  ],
+  "before_profile_sha256": "891bd3fdab15270eebc15e8bb0f71d7879e2054a3cf32d21682cb599ae2cb6a3",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "富岳のR-CCSソフトウェア台帳とVirtual Fugakuの公開情報から、ソフトウェア名の有無ではなく、サポート状態、保守主体、配布形態、ライセンス、移植実証範囲を継続性の判断軸として追加しました。公開台帳には機能強化を含むサポート、質問・バグ修正、サポート停止が併存し、ソース非公開の無償実行ファイルもあります。Virtual Fugaku ver.2.0は必要なアプリだけを選ぶSingularity配布へ改善されていますが、公開実績は主にArm/AWSであり、GPUや異種HPCI全体の互換性を実証したものではありません。単一モデルによる暫定調査で、独立Consensusは未完了です。",
+  "summary_en": "Using Fugaku's R-CCS software inventory and Virtual Fugaku information, this update adds support status, responsible maintainers, distribution form, licensing, and demonstrated porting scope as sustainability criteria beyond software-name availability. The public inventory combines feature-enhancement support, question and bug-fix support, discontinued support, and freely available binaries without source. Virtual Fugaku 2.0 improves distribution through selectable Singularity content, but published implementation evidence centers on Arm/AWS and does not establish compatibility across GPUs or the heterogeneous HPCI portfolio. This is provisional single-model research with independent Consensus incomplete.",
+  "units": [
+    {"unit_id": "SSW-08-U01", "before_sha256": "9178d91b5c05e561bd0b4520b5572a799333bd7624ffda87afe6f890a11424f4", "evidence_section_ids": ["TDS-CD1-SSW-08-U01", "TDS-CD2-SSW-08-U01", "TDS-CD12-SSW-08-U01-U02", "TDS-CD13-SSW-08-U01-U02", "TDS-CD14-SSW-08-SUSTAINABILITY"]},
+    {"unit_id": "SSW-08-U02", "before_sha256": "d8a7a9644815d2b13744bd636093add8621e915c259c829676dec026dc7b438c", "evidence_section_ids": ["TDS-CD1-SSW-08-U02", "TDS-CD2-SSW-08-U02", "TDS-CD12-SSW-08-U01-U02", "TDS-CD13-SSW-08-U01-U02", "TDS-CD14-SSW-08-SUSTAINABILITY"]}
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD14-SSW-08-SUSTAINABILITY",
+      "title_ja": "公開台帳から見た保守状態と共通環境の実証範囲",
+      "title_en": "Support status and demonstrated scope of common environments",
+      "summary_ja": "提供中、保守中、サポート停止、移植構想を区別し、次世代システムへの移行責任を明示します。",
+      "summary_en": "Distinguish availability, active maintenance, discontinued support, and porting ambitions while assigning migration responsibility for future systems.",
+      "items": [
+        {
+          "item_id": "TDI-CD14-FUGAKU-SUPPORT-STATE-INVENTORY",
+          "name_ja": "同一台帳に併存する異なるサポート状態",
+          "name_en": "Different support states within one software inventory",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2026年7月23日更新", "timing_en": "Updated July 23, 2026",
+          "statement_ja": "富岳のR-CCSソフトウェア台帳は、fugaku-mcp、Omni XcalableMP、EigenExa等に質問対応・バグ修正・機能強化を掲げる一方、MPICH on TofuとIHK/McKernelをサポート停止と明記します。GENESISは質問対応とバグ修正、SCALEは機能強化まで含みます。したがって『利用可能』は保守水準を表す単一状態ではありません。",
+          "statement_en": "Fugaku's R-CCS software inventory lists questions, bug fixes, and feature enhancement for fugaku-mcp, Omni XcalableMP, EigenExa, and others, while explicitly marking MPICH on Tofu and IHK/McKernel as unsupported. GENESIS lists questions and bug fixes, while SCALE also lists feature enhancement. Availability is therefore not one uniform maintenance state.",
+          "hpci_relevance_ja": "主要ソフトウェアごとに、利用可否、セキュリティ修正、バグ修正、機能追加、移植、終了予定、代替手段を別フィールドで管理します。",
+          "hpci_relevance_en": "Track availability, security fixes, bug fixes, feature work, porting, end-of-support, and replacements as separate fields for every critical package.",
+          "adoption_conditions_ja": ["サポート状態の定義と更新日を統一する。", "停止済み機能の利用実態と代替経路を確認する。", "次期システムの移植責任者と予算を運用開始前に決める。"],
+          "adoption_conditions_en": ["Standardize support-state definitions and update dates.", "Confirm current use and replacement paths for discontinued components.", "Assign migration owners and budgets before the next system starts service."],
+          "actor_ids": [], "source_ids": ["SRC-CDS191"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD14-SOURCE-LICENSE-MIGRATION-RISK",
+          "name_ja": "ソース公開形態とライセンスが移植可能性を左右",
+          "name_en": "Source availability and licensing shape migration feasibility",
+          "stage": "current", "maturity": "deployed",
+          "timing_ja": "2026年7月23日更新", "timing_en": "Updated July 23, 2026",
+          "statement_ja": "台帳にはMIT、GPL、LGPL、BSD系のソフトウェアと、NTChemやFrontFlow/red-HPCのように実行ファイルを無償公開する一方でソースコードを公開しないソフトウェアが併存します。後者は利用可能でも、将来CPU/GPUへの移植、脆弱性修正、再ビルドを利用者だけで完結できません。",
+          "statement_en": "The inventory combines MIT, GPL, LGPL, and BSD-family software with packages such as NTChem and FrontFlow/red-HPC that provide binaries without publishing source. The latter may be usable today, but users cannot independently complete future CPU/GPU ports, vulnerability fixes, or rebuilds.",
+          "hpci_relevance_ja": "採用評価に、ソースアクセス、再配布、改変、ビルド再現、第三者保守、輸出・利用制限を含め、非公開ソースには供給者の移植確約を求めます。",
+          "hpci_relevance_en": "Evaluate source access, redistribution, modification, reproducible builds, third-party maintenance, and export or usage restrictions, and require supplier porting commitments for closed-source components.",
+          "adoption_conditions_ja": ["ライセンス原文と契約条件を法務確認する。", "非公開ソースの次世代移植、修正期限、終了時の扱いを契約化する。", "重要コードにはOSSまたは代替実装を含む退出計画を持つ。"],
+          "adoption_conditions_en": ["Obtain legal review of license texts and contract terms.", "Contract future ports, fix times, and end-of-support treatment for closed-source packages.", "Maintain an exit plan, including OSS or alternative implementations, for critical codes."],
+          "actor_ids": [], "source_ids": ["SRC-CDS191"], "confidence": "high", "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD14-VIRTUAL-FUGAKU-V2-SCOPE",
+          "name_ja": "Virtual Fugaku ver.2.0の実装範囲と将来像",
+          "name_en": "Implemented scope and ambition of Virtual Fugaku 2.0",
+          "stage": "near-term", "maturity": "prototype",
+          "timing_ja": "ver.1.0は2024年8月、ver.2.0は2025年11月", "timing_en": "Version 1.0 in August 2024; version 2.0 in November 2025",
+          "statement_ja": "Virtual Fugakuは富岳のソフトウェア環境を他のスパコンやクラウドへ再現することを目指し、A64FXと同じArm系のAWS Gravitonを対象に開発されました。ver.2.0は必要なアプリだけを追加できるようにしてコンテナを軽量化し、Singularityイメージと試行環境を提供します。公開ページは将来の富岳NEXT、AI for Science、量子への展開を掲げますが、x86、NVIDIA/AMD GPU、ベクトル機、全HPCI資源で同一動作・性能を実証したとは記載していません。",
+          "statement_en": "Virtual Fugaku aims to reproduce Fugaku's software environment on other supercomputers and clouds and was developed first for AWS Graviton, an Arm platform related to A64FX. Version 2.0 reduced image size by allowing users to select applications and provides Singularity images and a trial environment. The public page describes future extension to FugakuNEXT, AI for Science, and quantum platforms, but does not report equivalent behavior or performance across x86, NVIDIA or AMD GPUs, vector systems, and all HPCI resources.",
+          "hpci_relevance_ja": "共通環境候補として採用しつつ、イメージ配布成功、科学的正解、CPU/GPU性能、MPI/I/O、セキュリティ更新、長期保存を別々に評価します。",
+          "hpci_relevance_en": "Treat it as a common-environment candidate while separately evaluating image deployment, scientific correctness, CPU/GPU performance, MPI/I/O, security updates, and long-term preservation.",
+          "adoption_conditions_ja": ["対象アーキテクチャごとのサポート表と検証結果を公開する。", "コンテナ内外のMPI、GPU、ファイルシステム連携を測る。", "SBOM、署名、脆弱性修正期限、廃止版の保存方針を定める。"],
+          "adoption_conditions_en": ["Publish a support matrix and validation results for each target architecture.", "Measure container/host MPI, GPU, and file-system integration.", "Define SBOM, signing, vulnerability-fix deadlines, and preservation policy for retired images."],
+          "actor_ids": [], "source_ids": ["SRC-CDS192"], "confidence": "high", "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS191", "title": "富岳 R-CCSソフトウェア", "publisher": "理化学研究所計算科学研究センター", "url": "https://riken-rccs.github.io/fugaku-doc/docs/software/oss-master/rccs_sw/ja/build/html/rccs_sw.html", "source_class": "official-project", "published_or_updated": "2026-07-23"}, "origin_group": "fugaku-rccs-software", "checked_at": "2026-09-02T02:22:00+09:00", "locator": "バージョン、開発チーム、ライセンス、サポート内容、問い合わせ先", "observation_ja": "個別ソフトウェアの保守状態、担当、ライセンス、ソース公開形態を確認しました。サポート停止を利用不能と同義にはしていません。", "observation_en": "Verified per-package support status, ownership, licensing, and source availability. Unsupported is not treated as synonymous with unavailable.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS192", "title": "バーチャル富岳", "publisher": "理化学研究所計算科学研究センター", "url": "https://www.r-ccs.riken.jp/fugaku/virtual-fugaku/index.html", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "virtual-fugaku", "checked_at": "2026-09-02T02:25:00+09:00", "locator": "概要、課題、現状、今後", "observation_ja": "Arm/AWSでの初期対象、2024年ver.1.0、2025年ver.2.0、選択型Singularity配布、利用者起点更新方針、将来展開を確認しました。将来像を全HPCIでの実証とは扱いません。", "observation_en": "Verified the initial Arm/AWS target, 2024 version 1.0, 2025 version 2.0, selectable Singularity distribution, usage-driven updates, and future scope. The ambition is not treated as validation across all HPCI systems.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-025、GAP-TDS-063、GAP-TDS-066は未解決です。主要ソフトウェアの実利用数、保守費、修正時間、移植工数、終了予定を同一形式で収集する必要があります。", "Virtual Fugaku ver.2.0の対象パッケージ、利用件数、アーキテクチャ別の正解・性能・MPI/I/O互換性は公開情報だけでは分かりません。", "独立したAIモデルによる本文確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-025, GAP-TDS-063, and GAP-TDS-066 remain open. Usage counts, maintenance cost, fix time, porting effort, and end-of-support plans for critical packages need consistent collection.", "Public information does not establish the complete Virtual Fugaku 2.0 package set, usage, or architecture-specific correctness, performance, and MPI/I/O compatibility.", "Independent-model source review and Consensus remain incomplete."]
+}

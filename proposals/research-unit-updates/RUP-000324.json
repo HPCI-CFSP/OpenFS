@@ -1,0 +1,192 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000324",
+  "topic_id": "APP-15",
+  "created_at": "2026-09-02T07:50:50+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000279",
+      "bundle_sha256": "c7e0acded50da09a7f946350cefa8e24f756300e0ad1f1fd2b66ab0a770f66d8"
+    },
+    {
+      "update_id": "RUP-000293",
+      "bundle_sha256": "c85ae3053c1fdedc4a0eca442e69579b63c77586397ea2d34993847fec9e6c19"
+    },
+    {
+      "update_id": "RUP-000307",
+      "bundle_sha256": "76603e71743fda8f31212413d8fa3fa5259f78cd0114f2625607842afbae4543"
+    }
+  ],
+  "before_profile_sha256": "66d230874cd7c8d75ad47694e5df9d0dce3f73c3ee97001eb74a84942c76c22c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "APSの2026年実証から、SYNAPS-Iによる1.3 TBの1 GPUリアルタイム解析、非AI類似実験2,500 GPU時間との比較、XPCS結果の3分未満返却、service accountとon-demand queueを追加しました。比較条件とtail latencyは不足しており、100超beamline・7施設のmodelは開発目標として分離します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "From 2026 APS demonstrations, this update adds SYNAPS-I processing of 1.3 TB on one GPU in real time, a comparison with 2,500 GPU-hours for a similar non-AI experiment, sub-three-minute XPCS feedback, service accounts, and on-demand queues. Comparison conditions and tail latency remain incomplete, and the model spanning more than 100 beamlines and seven facilities is separated as a development target. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-15-U01",
+      "before_sha256": "9b7d4dcf529abb41e06e09243ca7e5eb85baedfb9194a5b9737ce0bd6d192ed1",
+      "evidence_section_ids": [
+        "TDS-CD2-APP-15-U01",
+        "TDS-CD7-APP-15-GPU-RESIDENT-INSITU",
+        "TDS-CD9-APP-15-SPRING8-OPERATED-PIPELINE",
+        "TDS-CD38-APP-15-APS-SYNAPSI-EXPERIMENT-TIME"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD38-APP-15-APS-SYNAPSI-EXPERIMENT-TIME",
+      "title_ja": "APSの実験時間内AI解析とSYNAPS-Iの定量例",
+      "title_en": "APS experiment-time AI analysis and quantitative SYNAPS-I examples",
+      "summary_ja": "実験中の結果返却、AI画像再構成、予約・認証の運用を、公開された処理量と所要時間から評価します。",
+      "summary_en": "Evaluate in-experiment feedback, AI image reconstruction, reservations, and identity operations using published data volumes and elapsed times.",
+      "items": [
+        {
+          "item_id": "TDI-CD140-SYNAPSI-PTYCHOGRAPHY-13TB",
+          "name_ja": "SYNAPS-Iの1.3 TB ptychography実証",
+          "name_en": "SYNAPS-I 1.3 TB ptychography demonstration",
+          "stage": "current",
+          "maturity": "prototype",
+          "timing_ja": "2026年4月公表の26-ID beamline実証",
+          "timing_en": "26-ID beamline demonstration reported in April 2026",
+          "statement_ja": "SYNAPS-IはAPS/CNMの26-ID beamlineで、microelectronicsとquantum sampleのptychography data 1.3 TBを1 GPUで実験中に解析したと報告されています。同資料は、AIを使わない類似実験なら2,500 GPU時間を要し、resolutionとcontrastが10倍、処理が100倍高速だったとしています。ただし、GPU機種、取得時間、input shape、baseline algorithm・hardware、画質指標、学習費用、転送時間、再試行、電力は公表本文から確定できません。速度倍率と解像度倍率を同じ評価量として扱いません。",
+          "statement_en": "SYNAPS-I reports processing 1.3 TB of ptychography data from microelectronics and quantum samples on one GPU during an experiment at the APS/CNM 26-ID beamline. The same source states that a similar non-AI experiment would require 2,500 GPU-hours, with tenfold higher resolution and contrast and 100-fold faster processing. The public article does not establish the GPU model, acquisition duration, input shape, baseline algorithm or hardware, image-quality metric, training cost, transfer time, retries, or energy. Speed and resolution multipliers are not treated as one metric.",
+          "hpci_relevance_ja": "実験設備連携では、単純なGPUピーク性能でなく、取得から判断可能な画像までの時間、画質、data削減、再学習、障害を一つのbenchmark contractにする必要があります。",
+          "hpci_relevance_en": "Experiment integration needs a benchmark contract spanning acquisition-to-actionable-image time, quality, data reduction, retraining, and failures rather than GPU peak performance alone.",
+          "adoption_conditions_ja": [
+            "入力data、GPU、model、baseline、画質指標、転送、前後処理を版付きで公開する。",
+            "p50・p95・p99 latency、deadline達成率、drop、再試行、energyを連続runで測る。",
+            "AI出力を従来再構成とblind sampleで比較し、実験判断への誤差影響を評価する。"
+          ],
+          "adoption_conditions_en": [
+            "Publish versioned input data, GPU, model, baseline, quality metrics, transfer, and preprocessing/postprocessing.",
+            "Measure p50, p95, and p99 latency, deadline compliance, drops, retries, and energy over continuous runs.",
+            "Compare AI output with conventional reconstruction on blind samples and assess error effects on experimental decisions."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS433"
+          ],
+          "confidence": "medium",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD141-APS-XPCS-UNDER-THREE-MINUTES",
+          "name_ja": "XPCSの3分未満フィードバックと無人起動経路",
+          "name_en": "Sub-three-minute XPCS feedback with automated triggering",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年4月公表の利用事例",
+          "timing_en": "User case reported in April 2026",
+          "statement_ja": "APS Data Management SystemとGlobusは、data取得を起点に、storage、access permission、Polaris上の解析、APSへの結果返送を研究者の手操作なしで進めます。ALCFは個人ではなく実験に結び付くservice accountと、即時処理用にnodeを確保するon-demand queueを使っています。XPCS利用者は測定後3分未満で結果を受け取った事例を報告していますが、data量、queue規模、距離、転送率、同時beamline数、上位分位、失敗率は示されていません。",
+          "statement_en": "The APS Data Management System and Globus use data acquisition to trigger storage, access permissions, analysis on Polaris, and result return to APS without manual action by scientists. ALCF uses service accounts tied to experiments rather than individuals and on-demand queues that reserve nodes for immediate processing. An XPCS user case reports receiving results in under three minutes, but does not disclose data volume, queue size, distance, transfer rate, concurrent beamlines, tail percentiles, or failure rate.",
+          "hpci_relevance_ja": "国内の放射光・観測設備では、計算機だけでなく実験identity、予約資源、data権限、結果返却を一体のserviceとして設計する比較対象になります。",
+          "hpci_relevance_en": "For Japanese light-source and observational facilities, this is a comparison point for designing experiment identity, reserved resources, data rights, and result return as one service.",
+          "adoption_conditions_ja": [
+            "実験責任者・利用者・service account・allocation・data権限の対応を監査可能にする。",
+            "on-demand予約による通常batch利用への容量・待ち時間影響を測定する。",
+            "beamline、network、storage、queue、analysisの各段階でdeadlineと障害時fallbackを定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Make mappings among experiment leads, users, service accounts, allocations, and data rights auditable.",
+            "Measure capacity and wait-time effects of on-demand reservations on ordinary batch use.",
+            "Define deadlines and failure fallbacks for beamline, network, storage, queue, and analysis stages."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS434"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD142-SYNAPSI-MULTIFACILITY-TARGET",
+          "name_ja": "100超beamline・7施設を対象とするmultimodal model構想",
+          "name_en": "Multimodal-model target spanning more than 100 beamlines and seven facilities",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年4月時点の開発目標",
+          "timing_en": "Development target as of April 2026",
+          "statement_ja": "SYNAPS-Iは、7つのDOE施設の100超beamlineからneutron、X-ray、microscopy dataを統合し、現在50 billion imageを超えるarchiveを用いてbillion-parameter multimodal foundation modelを学習する目標を掲げます。開発teamは将来10本のAPS beamlineを支援できる可能性を述べています。これは学習完了、全dataの権利処理、7施設での本番提供、10 beamline同時運用を意味しません。",
+          "statement_en": "SYNAPS-I targets a billion-parameter multimodal foundation model integrating neutron, X-ray, and microscopy data from more than 100 beamlines across seven DOE facilities and an archive exceeding 50 billion images. The team describes a potential future capability to support ten APS beamlines. This does not establish completed training, rights clearance for all data, production service at seven facilities, or ten-beamline concurrency.",
+          "hpci_relevance_ja": "複数施設の科学data基盤では、model規模より先にmetadata、権利、校正差、drift、施設横断validation、継続学習の責任分担を設計する必要があります。",
+          "hpci_relevance_en": "Multi-facility scientific data platforms need governance for metadata, rights, calibration differences, drift, cross-facility validation, and continual-learning responsibility before model scale alone.",
+          "adoption_conditions_ja": [
+            "施設・装置・測定条件別のdata license、同意、provenance、retentionを定義する。",
+            "施設を分離した外部検証と、装置更新後のdrift検知を行う。",
+            "学習・推論・転送・保存のresourceとenergyを分けて公開する。"
+          ],
+          "adoption_conditions_en": [
+            "Define data licenses, consent, provenance, and retention by facility, instrument, and measurement condition.",
+            "Perform held-out facility validation and detect drift after instrument upgrades.",
+            "Report training, inference, transfer, and storage resources and energy separately."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS433"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS433",
+        "title": "Real-time AI engine poised to revolutionize large-scale imaging data at national labs",
+        "publisher": "Advanced Photon Source, Argonne National Laboratory",
+        "url": "https://www.aps.anl.gov/APS-News/2026-04-02/real-time-ai-engine-poised-to-revolutionize-large-scale-imaging-data-at",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-02"
+      },
+      "origin_group": "aps-synapsi-2026-official",
+      "checked_at": "2026-09-02T06:04:00+09:00",
+      "locator": "Lines 34-71: model scope, ptychography workflow, 1.3 TB, one GPU, 2,500 GPU-hours, performance claims, and deployment target",
+      "observation_ja": "実証data量、GPU数、比較値、model規模・施設範囲の目標と不足条件を確認しました。",
+      "observation_en": "Verified demonstration data volume, GPU count, comparison figures, model and facility targets, and missing conditions.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS434",
+        "title": "Data analysis at the speed of light source experiments",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/news/data-analysis-speed-light-source-experiments",
+        "source_class": "official-project",
+        "published_or_updated": "2026-04-14"
+      },
+      "origin_group": "alcf-aps-experiment-time-2026-official",
+      "checked_at": "2026-09-02T06:05:00+09:00",
+      "locator": "Lines 140-186: automated path, service accounts, on-demand queues, many beamlines, and sub-three-minute XPCS feedback",
+      "observation_ja": "自動起動経路、実験単位identity、予約queue、結果返却時間と未公開SLOを確認しました。",
+      "observation_en": "Verified automated triggering, experiment-scoped identity, reserved queues, result-return time, and unpublished SLOs.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "SYNAPS-I比較のGPU、baseline、画質指標、転送、学習費用、energyは未公表です。",
+    "XPCSのdata量、同時利用、p95/p99、失敗率、通常batchへの影響は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "The SYNAPS-I comparison does not publish GPU, baseline, quality metrics, transfer, training cost, or energy.",
+    "XPCS data volume, concurrency, p95/p99, failure rate, and effects on ordinary batch use remain unverified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

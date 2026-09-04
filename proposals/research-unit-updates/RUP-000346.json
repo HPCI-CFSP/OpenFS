@@ -1,0 +1,196 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000346",
+  "topic_id": "APP-12",
+  "created_at": "2026-09-02T07:54:30+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000128",
+      "bundle_sha256": "36e47372ce4143420d379c19ead8fb2386f0fb672af37264a4e6ba465a0eaaf0"
+    },
+    {
+      "update_id": "RUP-000137",
+      "bundle_sha256": "adf058f1b098bf63801372e01cf4253ac80cd3ae818d45882cbf2b2ae50430b2"
+    },
+    {
+      "update_id": "RUP-000143",
+      "bundle_sha256": "dfd090a4404da1fd7384db21de3d4f54516b9e58483feb7d35a042d7ab64a39e"
+    },
+    {
+      "update_id": "RUP-000192",
+      "bundle_sha256": "762261e7e828242b6930fbb2ac62822514a680a1e820b99c48ab371b932b09d0"
+    },
+    {
+      "update_id": "RUP-000262",
+      "bundle_sha256": "f3b1fbefd191228e22743bf846d5d7b408e76e67d70204504e451dbba86a07a5"
+    },
+    {
+      "update_id": "RUP-000304",
+      "bundle_sha256": "c1c4b904b1c393f2e9bbf96ab95dde88c6e941b2d5c0d77b8a585af7979edf15"
+    },
+    {
+      "update_id": "RUP-000340",
+      "bundle_sha256": "83d8bdda24488e902ae244fe4499c9de53aec451af079e6a4077f22cf68745ac"
+    }
+  ],
+  "before_profile_sha256": "467360288c6e5d2d4d3fcac18161f5c27df75a15dac62ec1c1ebd5be3871b5b0",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ALCF APEXの初回projectについて、Aurora CFD、co-evolving knowledge graph、複数open model、domain tool付き分析agentのworkflowを追加しました。実測data量、latency、解析品質、人手削減、energyはCoverage Gapとして残します。単一モデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "This update adds the inaugural ALCF APEX workflow spanning Aurora CFD, a co-evolving knowledge graph, multiple open models, and an analysis agent with domain tools. Measured data volume, latency, analysis quality, labor reduction, and energy remain coverage gaps. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-12-U01",
+      "before_sha256": "a03a16f29be5d26faeeb19d5d8876b5e74c2207d5cb2e4e499fa71560e3e94da",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U01",
+        "TDS-CD2-APP-12-U01",
+        "TDS-CD10-APP-12-U01",
+        "TDS-CD11-APP-12-U01",
+        "TDS-CD12-APP-12-U01-U02",
+        "TDS-CD13-APP-12-FY2026B-AI-DEMAND",
+        "TDS-CD14-APP-12-NICAM-AI-COUPLING",
+        "TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO",
+        "TDS-CD60-APP-12-APEX-CFD-AGENT"
+      ]
+    },
+    {
+      "unit_id": "APP-12-U02",
+      "before_sha256": "4464df57b78693441ba5533175fcc25ff634b3a7202549ce3e7a335cc1fdf897",
+      "evidence_section_ids": [
+        "TDS-CD1-APP-12-U02",
+        "TDS-CD2-APP-12-U02",
+        "TDS-CD12-APP-12-U01-U02",
+        "TDS-CD15-APP-12-JAPAN-SCIENTIST-AI-JAM",
+        "TDS-CD54-APP-12-GENESIS-WORKLOAD-PORTFOLIO",
+        "TDS-CD60-APP-12-APEX-CFD-AGENT"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD60-APP-12-APEX-CFD-AGENT",
+      "title_ja": "大規模CFD・知識グラフ・分析agentの連携要件",
+      "title_en": "Requirements for coupling large-scale CFD, knowledge graphs, and analysis agents",
+      "summary_ja": "ALCF APEXの初回projectを、simulation、data抽象化、LLM推論、検証可能な知見の一連のworkflowとして評価します。",
+      "summary_en": "Assess the inaugural ALCF APEX project as an end-to-end workflow spanning simulation, data abstraction, LLM inference, and verifiable insight.",
+      "items": [
+        {
+          "item_id": "TDI-CD182-APEX-CFD-KG-AGENT-WORKFLOW",
+          "name_ja": "Aurora CFDから知識グラフを更新し、LLM分析agentへ接続",
+          "name_en": "Populate a knowledge graph from Aurora CFD and connect it to an LLM analysis agent",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "APEX初回projectとして2026年6月に開始を公表",
+          "timing_en": "Announced in June 2026 as the inaugural APEX project",
+          "statement_ja": "ALCF APEXの初回projectは、Auroraで乱流・反応流の高忠実度CFDを実行し、simulationとともに更新される知識グラフへ結果を抽象化し、domain toolを備えたLLM分析agentがgraph上の近傍を探索して知見を蓄積する構成です。推論はALCF Inference Service上の複数open-source model backendでsimulationと並行して試す計画で、facility-funded postdocとALCF staff支援も含みます。これは計算量だけでなく、解析待ちを含むtime-to-insightをsystem要件へ入れる事例です。",
+          "statement_en": "The inaugural ALCF APEX project plans to run high-fidelity turbulent and reacting-flow CFD on Aurora, abstract results into a knowledge graph that co-evolves with the simulations, and use an LLM analysis agent with domain tools to traverse graph neighborhoods and accumulate insights. Inference is to run against multiple open-source model backends through the ALCF Inference Service in parallel with simulations, with a facility-funded postdoctoral researcher and ALCF staff support. The case extends system requirements beyond compute time to include analysis delay and time to insight.",
+          "hpci_relevance_ja": "HPCIではsimulation、graph構築、推論service、provenance保存を別resourceとして割り当て、end-to-endの完了時間とscientistの確認工数を測れる構成が必要です。",
+          "hpci_relevance_en": "HPCI should be able to allocate simulation, graph construction, inference services, and provenance storage as distinct resources and measure end-to-end completion time and scientist review effort.",
+          "adoption_conditions_ja": [
+            "CFD出力からgraph node・edge・物理量へ変換するschemaとversionを固定する。",
+            "simulation、graph更新、retrieval、LLM、domain toolごとの時間、data量、失敗率を記録する。",
+            "agentの自然言語出力を、元field、derived quantity、code、parameterへ逆参照できるようにする。"
+          ],
+          "adoption_conditions_en": [
+            "Version the schema that maps CFD outputs to graph nodes, edges, and physical quantities.",
+            "Record time, data volume, and failure rates for simulation, graph update, retrieval, LLM inference, and domain tools separately.",
+            "Make each natural-language claim traceable to source fields, derived quantities, code, and parameters."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS475",
+            "SRC-CDS476"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD183-APEX-CFD-EVALUATION-GAPS",
+          "name_ja": "実測data量・latency・解析品質・人手削減は未公表",
+          "name_en": "Measured data volume, latency, analysis quality, and labor reduction are undisclosed",
+          "stage": "research",
+          "maturity": "research",
+          "timing_ja": "project開始時点のCoverage Gap",
+          "timing_en": "Coverage gaps at project launch",
+          "statement_ja": "公開資料はworkflow構想と利用可能resourceを示しますが、CFD problem size、出力data量、graph規模、推論request数、model、latency、誤検出・見逃し、expert評価、再現性、人手削減率、追加energyを報告していません。『自然言語で検証可能な知見』という目標も、検証手順と合格基準が必要です。したがって現段階は将来負荷の要求抽出に使い、性能向上の実績とは扱いません。",
+          "statement_en": "The public material describes the workflow concept and available resources but does not report CFD problem size, output volume, graph scale, inference-request count, model, latency, false positives and negatives, expert assessment, reproducibility, labor reduction, or incremental energy. The goal of producing verifiable insight in natural language also needs a verification procedure and acceptance criteria. At this stage, OpenFS uses the project to derive future-workload requirements rather than as evidence of achieved acceleration.",
+          "hpci_relevance_ja": "pilotではFLOPSやsimulation時間に加え、data reduction率、insight precision/recall、根拠追跡成功率、expert review時間、失敗時の復旧をKPIにする必要があります。",
+          "hpci_relevance_en": "Pilots should add data-reduction ratio, insight precision and recall, evidence-trace success, expert-review time, and failure recovery to FLOPS and simulation time.",
+          "adoption_conditions_ja": [
+            "人手解析baselineと同一caseで時間、coverage、誤り、再現性を比較する。",
+            "複数modelを同じgraph・tool・prompt・seed条件で評価し、model変更の影響を保存する。",
+            "誤った提案がsimulationや実験制御へ波及しないhuman approval gateを設ける。"
+          ],
+          "adoption_conditions_en": [
+            "Compare time, coverage, errors, and reproducibility with a manual-analysis baseline on the same cases.",
+            "Evaluate multiple models under matched graph, tool, prompt, and seed conditions and preserve the effect of model changes.",
+            "Use a human-approval gate so incorrect proposals cannot propagate into simulation or experiment control."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS475",
+            "SRC-CDS476"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS475",
+        "title": "ALCF launches APEX program with project using AI to advance fluid dynamics research",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/news/alcf-launches-apex-program-project-using-ai-advance-fluid-dynamics-research",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-11"
+      },
+      "origin_group": "alcf-apex-cfd-agent-project",
+      "checked_at": "2026-09-02T06:36:00+09:00",
+      "locator": "Project workflow, knowledge graph, analysis agent, Aurora and inference-service roles, and open-source intent",
+      "observation_ja": "CFD、co-evolving knowledge graph、domain-tool付きLLM agent、複数model backend、施設支援の構成を確認しました。",
+      "observation_en": "Verified the CFD, co-evolving knowledge graph, domain-tool-equipped LLM agent, multiple model backends, and facility support structure.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS476",
+        "title": "APEX Proposal Requirements and Submissions Instructions",
+        "publisher": "Argonne Leadership Computing Facility",
+        "url": "https://www.alcf.anl.gov/science/apex-proposal-requirements-and-submissions-instructions",
+        "source_class": "official-project",
+        "published_or_updated": "2026 call; checked 2026-09-02"
+      },
+      "origin_group": "alcf-apex-resource-contract",
+      "checked_at": "2026-09-02T06:37:00+09:00",
+      "locator": "Available Aurora, Metis, Tara, and inference-service resources and project requirements",
+      "observation_ja": "Aurora、Metis、Tara、AI Testbedとinference serviceを組み合わせるprogram上のresource選択肢を確認しました。",
+      "observation_en": "Verified program-level resource options combining Aurora, Metis, Tara, the AI Testbed, and inference services.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "実測data量、latency、品質、再現性、人手削減、energyと公開codeを追跡する必要があります。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Measured data volume, latency, quality, reproducibility, labor reduction, energy, and public code require follow-up.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

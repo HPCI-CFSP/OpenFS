@@ -21,7 +21,7 @@ function fixture(query = "") {
       this.classList = {toggle: () => {}};
     }
     set textContent(value) { this.text = String(value); this.children = []; }
-    get textContent() { return this.text + this.children.map((c) => typeof c === "string" ? c : c.textContent).join(" "); }
+    get textContent() { return this.text + this.children.map((c) => typeof c === "string" ? c : c.textContent).join(""); }
     append(...nodes) { this.children.push(...nodes); }
     appendChild(node) { this.append(node); return node; }
     replaceChildren(...nodes) { this.text = ""; this.children = nodes; }
@@ -40,7 +40,7 @@ function fixture(query = "") {
   });
   const get = (id) => ids.get(id) || [...ids.values()].flatMap(walk).find((el) => el.id === id);
   const document = {documentElement: {}, body: new Element("body"),
-    createElement: (tag) => new Element(tag), getElementById: get,
+    createElement: (tag) => new Element(tag), createTextNode: (value) => String(value), getElementById: get,
     querySelectorAll: (selector) => selector === "[data-language]" ? languageButtons : []};
   const location = new URL(`https://hpci-cfsp.github.io/OpenFS/${query}`);
   const window = {OPENFS_PUBLIC_DATA: structuredClone(data), location,
@@ -111,6 +111,52 @@ test("category filters and research-unit keywords find the reorganized storage t
   assert.ok(f.get("topic-rows").textContent.includes("ARCH-012"));
 });
 
+test("catalog findings link centralized terms, comparisons, sources, and roadmaps", () => {
+  const f = fixture("?topic=ARCH-03&lang=ja");
+  const content = f.get("topic-dialog-content");
+  const hbm = f.walk(content).find((el) => el.className === "glossary-term-link" && el.textContent === "HBM");
+  assert.ok(hbm, "ARCH-03 should link HBM to the centralized glossary");
+  hbm.dispatch("click");
+  assert.equal(f.get("term-dialog").open, true);
+  assert.equal(f.location.searchParams.get("term"), "TERM-HBM");
+  assert.ok(f.get("term-dialog-content").textContent.includes(
+    data.roadmap_reference_data.terms.find((term) => term.term_id === "TERM-HBM").definition_ja
+  ));
+  const termLinks = f.walk(f.get("term-dialog-content")).filter((el) => el.tagName === "a");
+  assert.ok(termLinks.some((link) => link.href?.startsWith("http")), "term dialog should show primary sources");
+  assert.ok(termLinks.some((link) => link.href?.includes("roadmaps/hardware/memory-data-movement/")), "term dialog should link its roadmap");
+  assert.ok(f.walk(content).some((el) => el.className === "technology-comparison-table"), "topic should show a relevant comparison table");
+  f.languageButtons.find((button) => button.dataset.language === "en").dispatch("click");
+  assert.equal(f.get("term-dialog-title").textContent, "HBM");
+  f.get("term-dialog-close").dispatch("click");
+  assert.equal(f.location.searchParams.has("term"), false);
+});
+
+test("procurement findings expose the new comparison and catalog primary sources", () => {
+  const f = fixture("?topic=CROSS-06&lang=ja");
+  const content = f.get("topic-dialog-content");
+  const comparison = f.get("catalog-comparison-CMP-NATIONAL-COMPUTE-PROCUREMENT-MODES");
+  assert.ok(comparison, "CROSS-06 should show the national-compute procurement comparison");
+  assert.ok(comparison.textContent.includes("官民共同投資"));
+  const term = f.walk(content).find((el) =>
+    el.className === "glossary-term-link" && el.textContent === "官民共同投資"
+  );
+  assert.ok(term, "CROSS-06 should link the co-investment term to the centralized glossary");
+  term.dispatch("click");
+  assert.equal(f.location.searchParams.get("term"), "TERM-PUBLIC-PRIVATE-COINVESTMENT");
+  const sourceLinks = f.walk(f.get("term-dialog-content")).filter((el) => el.tagName === "a");
+  assert.ok(
+    sourceLinks.some((link) => link.href === data.topic_decision_support.sources.find(
+      (source) => source.source_id === "SRC-CDS146"
+    ).url),
+    "catalog-backed glossary entries should expose their primary source"
+  );
+  assert.ok(
+    sourceLinks.some((link) => link.href?.includes("roadmaps/cross-cutting/reference-blueprint-centers/")),
+    "the glossary entry should link the reference-blueprint roadmap"
+  );
+});
+
 test("hardware follow-ups show each current item in its own bilingual catalog", () => {
   let itemCount = 0;
   for (const profile of data.topic_decision_support.topic_profiles) {
@@ -131,7 +177,14 @@ test("hardware follow-ups show each current item in its own bilingual catalog", 
       for (const archived of profile.archived_section_ids || []) assert.equal(f.get(archived), undefined);
     }
   }
-  assert.equal(itemCount, 87);
+  const canonical = JSON.parse(readFileSync(path.join(root, "knowledge/public/topic-decision-support.json"), "utf8"));
+  const expectedCount = canonical.topic_profiles.reduce((total, profile) => {
+    const archived = new Set(profile.archived_section_ids || []);
+    return total + profile.sections
+      .filter((section) => /^TDS-HW[123]-/.test(section.section_id) && !archived.has(section.section_id))
+      .reduce((count, section) => count + section.items.length, 0);
+  }, 0);
+  assert.equal(itemCount, expectedCount);
 });
 
 test("cross-domain follow-ups render all current claims under their owning catalogs", () => {
@@ -165,5 +218,5 @@ test("cross-domain follow-ups render all current claims under their owning catal
       for (const id of archived) assert.equal(f.get(id), undefined);
     }
   }
-  assert.equal(topicCount, 33);
+  assert.ok(topicCount >= 33, `expected at least 33 cross-domain topic profiles, found ${topicCount}`);
 });

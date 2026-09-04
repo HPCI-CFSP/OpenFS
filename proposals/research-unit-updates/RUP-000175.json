@@ -1,0 +1,76 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000175",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-02T06:05:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [{"update_id": "RUP-000136", "bundle_sha256": "dc9e4942f311bff0ccc530173163f9104ae2eccd58c7fd4ef9f252bfdf702138"}],
+  "before_profile_sha256": "719ff15d651e6afdb3b38837487c39747b0790cb8875c1679939987fa3429376",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {"mode": "interactive-human-authorized", "agent_count": 1, "model_count": 1, "provider": "OpenAI", "model_identity": "Codex; exact model/version not exposed in this execution", "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY", "retrieval_capability": "managed-web"},
+  "summary_ja": "HPCI公式の利用開始・終了手続きとOAuth移行資料から、HPCIアカウントによるシングルサインオンと、資源提供機関ごとのローカルアカウント発行・失効が併存する運用を整理しました。OAuth-SSHへの移行によりGSI依存は減りますが、jwt-agent、hpcissh、サイト側アカウント、鍵・権限、機関別書類は残ります。整備計画では認証方式の共通化だけでなく、課題・所属・資源・データに対応するプロビジョニングと失効の所要時間、失敗、監査を共通KPIにします。単一モデルによる暫定調査で、独立Consensusは未完了です。",
+  "summary_en": "Official HPCI onboarding, offboarding, and OAuth-transition material shows coexistence of HPCI-account single sign-on with provider-specific local-account issuance and expiry. OAuth-SSH reduces GSI dependence but retains jwt-agent, hpcissh, site accounts, keys and authorization, and provider-specific documents. Planning should go beyond common authentication protocols and establish common KPIs for provisioning and deprovisioning time, failures, and audit across projects, affiliations, resources, and data. This is provisional single-model research with independent Consensus incomplete.",
+  "units": [{"unit_id": "SSW-12-U01", "before_sha256": "d63272320efb1e07b2c3d64cddde39a4e94a77b0fd0dcb5ee6680bdeea86d27a", "evidence_section_ids": ["TDS-CD2-SSW-12-U01", "TDS-CD10-SSW-12-U01", "TDS-CD14-SSW-12-HPCI-IDENTITY"]}],
+  "sections": [{
+    "section_id": "TDS-CD14-SSW-12-HPCI-IDENTITY",
+    "title_ja": "HPCIアカウント、ローカルアカウント、OAuthの責任境界",
+    "title_en": "Responsibility boundaries among HPCI accounts, local accounts, and OAuth",
+    "summary_ja": "ログインの共通化と、資源・課題・データ権限の発行・失効を別の運用機能として評価します。",
+    "summary_en": "Evaluate common login separately from issuance and revocation of resource, project, and data authorization.",
+    "items": [
+      {
+        "item_id": "TDI-CD14-HPCI-DUAL-ACCOUNT-LAYER",
+        "name_ja": "シングルサインオンと機関別ローカルアカウントの二層構造",
+        "name_en": "Two-layer structure of single sign-on and provider-local accounts",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年9月2日確認", "timing_en": "Checked September 2, 2026",
+        "statement_ja": "HPCI公式手続きは、HPCIアカウントだけで各資源へサインオンできると説明する一方、利用開始には参加者全員がHPCIアカウントとローカルアカウントを取得する必要があるとします。複数資源を使う場合は各資源提供機関からローカルアカウントが発行され、機関別ポリシーに従う書類提出が必要です。認証資格の共通化は、資源側アカウントと認可の共通化を意味しません。",
+        "statement_en": "Official HPCI procedures state that an HPCI account supports single sign-on to resources, while also requiring every participant to obtain both an HPCI account and a local account before use. Multiple resources result in local accounts from each provider and provider-policy-specific documentation. Common authentication credentials do not mean common resource accounts or authorization.",
+        "hpci_relevance_ja": "整備案ではHPCI-ID、所属、課題、ローカルID、役割、資源、データ領域の対応を機械可読にし、一括申請後の各サイト進捗を追跡します。",
+        "hpci_relevance_en": "Make mappings among HPCI-ID, affiliation, project, local ID, role, resource, and data space machine-readable and track per-site progress after a unified request.",
+        "adoption_conditions_ja": ["発行依頼、承認、反映、初回ログインの時刻を記録する。", "サイト固有の追加同意・書類・審査を表示する。", "HPCI-IDとローカルIDの不一致・重複・失効漏れを監査する。"],
+        "adoption_conditions_en": ["Record request, approval, activation, and first-login timestamps.", "Expose site-specific consent, documents, and review steps.", "Audit mismatches, duplicates, and missed revocations between HPCI and local IDs."],
+        "actor_ids": [], "source_ids": ["SRC-CDS198", "SRC-CDS199"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-HPCI-OAUTH-SSH-MIGRATION",
+        "name_ja": "GSIからOAuth-SSHへの移行後に残るクライアント運用",
+        "name_en": "Client operations retained after the GSI-to-OAuth-SSH transition",
+        "stage": "current", "maturity": "deployed", "timing_ja": "OAuth対応版2024年6月、移行資料2026年", "timing_en": "OAuth guide June 2024; transition material 2026",
+        "statement_ja": "HPCIはGSI認証からOAuth認証へ移行し、代理証明書取得のmyproxy-logonをjwt-agent、gsisshをhpcisshへ置き換える対応を示しています。jwt-agentはブラウザで取得した情報と連携し、トークン有効中はパスワード入力なしで接続できます。一方、クライアント導入、トークン管理、対象サーバ上のアカウント、SSH接続経路は引き続き必要です。",
+        "statement_en": "HPCI migrated from GSI to OAuth and maps myproxy-logon proxy-certificate acquisition to jwt-agent and gsissh to hpcissh. jwt-agent works with browser-acquired information and enables passwordless connection while the token is valid. Client setup, token management, an account on the target server, and an SSH path remain necessary.",
+        "hpci_relevance_ja": "OAuth採用の有無だけでなく、初期設定時間、トークン更新失敗、非対話実行、失効伝播、サイト障害時の挙動を測ります。",
+        "hpci_relevance_en": "Measure setup time, token-renewal failures, unattended execution, revocation propagation, and behavior during site failures rather than treating OAuth adoption as sufficient.",
+        "adoption_conditions_ja": ["アクセストークンをログやジョブスクリプトへ露出しない。", "失効と課題参加者変更を各サイトへ期限内に伝播する。", "CLI、ポータル、ワークフロー、サービスアカウントの認証経路を別々に試験する。"],
+        "adoption_conditions_en": ["Do not expose access tokens in logs or job scripts.", "Propagate revocation and membership changes to every site within a defined deadline.", "Test CLI, portal, workflow, and service-account authentication paths separately."],
+        "actor_ids": [], "source_ids": ["SRC-CDS200", "SRC-CDS201"], "confidence": "high", "consensus_status": "incomplete"
+      },
+      {
+        "item_id": "TDI-CD14-HPCI-ACCOUNT-LIFECYCLE",
+        "name_ja": "課題継続・終了時のアカウントとデータ猶予",
+        "name_en": "Account and data-grace behavior at project continuation and closure",
+        "stage": "current", "maturity": "deployed", "timing_ja": "2026年9月2日確認", "timing_en": "Checked September 2, 2026",
+        "statement_ja": "HPCIアカウントは課題が連続する場合に継続できますが、本人確認は最長5年で再確認が必要です。ローカルアカウントは資源提供機関ごとに新規発行され、終了課題では原則1か月のデータ退避猶予がある一方、計算は実行できません。富岳課題は2025年6月9日以降FAASを利用する手続きへ移行しました。ライフサイクルは完全には一元化されていません。",
+        "statement_en": "An HPCI account may continue across adjacent projects, but identity verification expires after at most five years. Local accounts are newly issued per provider, and closed projects generally receive a one-month data-evacuation grace period without compute execution. Since June 9, 2025, all Fugaku projects use the FAAS procedure. The lifecycle is not fully centralized.",
+        "hpci_relevance_ja": "新旧課題・新旧システムの重複期間を設け、アカウント継続、データ退避、成果保存、失効を一つの移行計画で管理します。",
+        "hpci_relevance_en": "Provide overlap across old/new projects and systems and manage account continuity, data evacuation, result preservation, and revocation in one transition plan.",
+        "adoption_conditions_ja": ["猶予期間中に可能な操作を資源ごとに明示する。", "継続課題でも旧ローカルIDの失効条件を確認する。", "大量データの退避時間が猶予期間内に収まるか測定する。"],
+        "adoption_conditions_en": ["State allowed operations during grace periods for every resource.", "Verify old-local-ID expiry even for continuing projects.", "Measure whether bulk data evacuation fits within the grace period."],
+        "actor_ids": [], "source_ids": ["SRC-CDS199", "SRC-CDS202", "SRC-CDS203"], "confidence": "high", "consensus_status": "incomplete"
+      }
+    ]
+  }],
+  "archive_section_ids": [],
+  "source_checks": [
+    {"source": {"source_id": "SRC-CDS198", "title": "課題開始時のアカウント発行の手続きと留意点", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/procedure_project_start", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-account-start", "checked_at": "2026-09-02T02:55:00+09:00", "locator": "HPCIアカウント、ローカルアカウント、手続き", "observation_ja": "SSO、HPCI/ローカル二層、機関別書類、対面認証を確認しました。", "observation_en": "Verified SSO, the HPCI/local two-layer model, provider-specific documents, and in-person identity verification.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS199", "title": "アカウントの発行・継続・切替に関する留意事項", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/procedure_project_start/start_members", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-account-lifecycle", "checked_at": "2026-09-02T02:57:00+09:00", "locator": "継続、本人確認期限、資源別ローカルアカウント", "observation_ja": "連続課題のHPCIアカウント継続、最長5年の本人確認、資源別ローカルアカウント発行を確認しました。", "observation_en": "Verified HPCI-account continuation for adjacent projects, the five-year maximum identity-verification period, and per-resource local accounts.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS200", "title": "HPCIシステム利用情報・マニュアル等", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/hpci_info_manuals", "source_class": "official-project", "published_or_updated": "2026-04-11"}, "origin_group": "hpci-oauth-manual-index", "checked_at": "2026-09-02T02:58:00+09:00", "locator": "GSIからOAuthへの移行、OAuthログインマニュアル", "observation_ja": "認証方式の移行と現行マニュアル版を確認しました。", "observation_en": "Verified the authentication transition and current manual versions.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS201", "title": "GSI認証からOAuth認証への移行ガイド", "publisher": "HPCI認証局運用機関", "url": "https://www.hpci-office.jp/application/files/3917/1929/8153/Transitioning_to_OAuth.pdf", "source_class": "official-project", "published_or_updated": "2026"}, "origin_group": "hpci-oauth-transition", "checked_at": "2026-09-02T03:00:00+09:00", "locator": "GSI/OAuthコマンド対応：jwt-agent、hpcissh、hpciscp", "observation_ja": "代理証明書・GSI-SSHからトークン・OAuth-SSHへのコマンド移行を確認しました。", "observation_en": "Verified command migration from proxy certificates and GSI-SSH to tokens and OAuth-SSH.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS202", "title": "課題終了時に課題参加者が留意すべきこと", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/procedure_project_end/end_members", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-account-end", "checked_at": "2026-09-02T03:01:00+09:00", "locator": "ローカルアカウント、1か月猶予、富岳の継続条件", "observation_ja": "終了後の猶予、計算不可、ローカルアカウント失効の例外を確認しました。", "observation_en": "Verified post-project grace, disabled compute, and local-account expiry exceptions.", "result": "read-primary-single-model"},
+    {"source": {"source_id": "SRC-CDS203", "title": "アカウント発行のための手続き", "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）", "url": "https://www.hpci-office.jp/for_users/procedure_project_start/start_representative", "source_class": "official-project", "published_or_updated": "2026-09-02時点"}, "origin_group": "hpci-project-representative-procedure", "checked_at": "2026-09-02T03:02:00+09:00", "locator": "情報開示同意、本人確認、富岳FAAS移行", "observation_ja": "課題情報開示、最長5年の本人確認、2025年6月以降のFAAS手続きを確認しました。", "observation_en": "Verified project-information disclosure, five-year identity verification, and the FAAS procedure since June 2025.", "result": "read-primary-single-model"}
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["GAP-TDS-032とGAP-TDS-065は未解決です。サイト別のアカウント発行時間、失敗率、権限反映遅延、失効遅延、問い合わせ件数を測る必要があります。", "OAuth-SSH移行後の利用率、トークン障害、非対話ワークフロー、サービスアカウントの実績は公開資料だけでは分かりません。", "独立したAIモデルによる本文確認とConsensusは未完了です。"],
+  "remaining_work_en": ["GAP-TDS-032 and GAP-TDS-065 remain open. Per-site account-issuance time, failure rate, authorization delay, revocation delay, and support volume need measurement.", "Public material does not establish post-migration OAuth-SSH adoption, token failures, unattended workflow behavior, or service-account practice.", "Independent-model source review and Consensus remain incomplete."]
+}

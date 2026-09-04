@@ -1,13 +1,13 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "artifact_id": "PROCUREMENT-COST-001",
-  "as_of": "2026-08-31",
+  "as_of": "2026-09-04",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "公開調達実績と仕様書の対応表",
   "title_en": "Public procurement costs and specification register",
-  "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで合算や部品単価への換算を行いません。単一のAIモデルによる確認であり、独立したAIモデルの合意判定は未完了です。",
-  "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching, and maintenance terms. These single-model checks have not passed Consensus review by independent models.",
+  "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで、合算や部品単価への換算を行いません。月額と60か月以上の期間を同じ公開資料で確認できる場合に限り、最初の60か月の契約上の既知費用下限を機械的に算出します。これは電力、施設共用費、人件費、契約変更、増設を含む5年間TCOではありません。単一のAIモデルによる確認であり、独立したAIモデルによる合意判定は未完了です。",
+  "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching and maintenance terms. Only when the same public evidence establishes a monthly rate and at least 60 months does OpenFS calculate the contractual known-cost floor for the first 60 months. This is not five-year TCO including electricity, shared facilities, staffing, amendments or expansion. These single-model checks have not passed Consensus review by independent models.",
   "sources": [
     {
       "source_id": "PCS-RIKEN-CONTRACTS-2025",
@@ -15,8 +15,8 @@
       "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004138.PDF/id/000000251",
       "publisher": "RIKEN",
       "origin_group": "riken-aifs-contract-2025",
-      "checked_on": "2026-08-30",
-      "locator": "PDF p.11, AI for Science supercomputer row",
+      "checked_on": "2026-09-02",
+      "locator": "PDF p.10, AI for Science InfiniBand switch row; p.11, AI for Science supercomputer row",
       "retrieval_status": "read"
     },
     {
@@ -218,6 +218,26 @@
       "checked_on": "2026-08-31",
       "locator": "Contract 2025-04-01; published 2025-06-02; maintenance package, not hardware purchase",
       "retrieval_status": "read"
+    },
+    {
+      "source_id": "PCS-RIKEN-FUGAKU-MAINT-2024",
+      "title": "FY2024 Fugaku maintenance contract notice",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/310658/2024042200670107.html",
+      "publisher": "JETRO (RIKEN announcement)",
+      "origin_group": "riken-fugaku-maintenance-2024",
+      "checked_on": "2026-09-04",
+      "locator": "Contract 2024-04-01; JPY 6,261,801,700; maintenance package, not hardware purchase",
+      "retrieval_status": "read"
+    },
+    {
+      "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+      "title": "RIKEN single-source contract results through March 2026",
+      "url": "https://choutatsu.riken.jp/r-world/info/procurement/docs/infofile/file/ic000004218.PDF/id/000000169",
+      "publisher": "RIKEN",
+      "origin_group": "riken-fugaku-contracts-2025-2026",
+      "checked_on": "2026-09-04",
+      "locator": "Fugaku overhaul and network-switch replacement: JPY 1,586,200,000, FY2025; Fugaku maintenance and operations support: JPY 6,259,572,132, FY2025, and JPY 5,958,583,928, FY2026",
+      "retrieval_status": "read"
     }
   ],
   "cases": [
@@ -269,20 +289,267 @@
         }
       ],
       "configuration_match": "unconfirmed",
+      "configuration_observation": {
+        "status": "planned",
+        "summary_ja": "理研R-CCSの公開概要は、水冷計算ノード400台、各ノードにNVIDIA GB200 NVL4（Grace CPU 2基、B200 GPU 4基）、XDR 800 Gb/sファットツリー網、実効容量1,081.34 TBのオールNVMe Lustreストレージを記載しています。",
+        "summary_en": "The RIKEN R-CCS public overview lists 400 water-cooled compute nodes, each with NVIDIA GB200 NVL4 (two Grace CPUs and four B200 GPUs), an XDR 800 Gb/s fat-tree fabric, and 1,081.34 TB of effective all-NVMe Lustre storage.",
+        "match_caveat_ja": "公開概要は開発中で、正式サービス情報は未確定と明記されています。最終仕様書を取得していないため、契約総額が公開構成の全要素を含むことや、別契約のInfiniBandスイッチが公開構成の25台に対応することは確認できません。",
+        "match_caveat_en": "The public overview says that the page is under active development and formal service information remains to be announced. Without the final specification, OpenFS cannot confirm that the package amount covers every listed component or that the separately contracted InfiniBand switch corresponds to any of the 25 switches in the public configuration.",
+        "source_refs": [
+          "PCS-RIKEN-CONTRACTS-2025",
+          "PCS-RIKEN-TENDER-2025",
+          "PCS-RIKEN-AWARD-2025",
+          "PCS-RIKEN-CONFIG-2026"
+        ]
+      },
+      "storage_capacity_observations": [
+        {
+          "observation_id": "CAP-RIKEN-AIFS-PHYSICAL",
+          "value": 1351.68,
+          "unit": "TB",
+          "capacity_basis": "physical",
+          "configuration_status": "planned",
+          "scope_ja": "公開概要に記載された共有ストレージの物理容量",
+          "scope_en": "Physical shared-storage capacity in the public overview",
+          "caveat_ja": "利用者が使用できる容量や契約対象容量ではありません。",
+          "caveat_en": "This is neither user-available capacity nor a confirmed contracted capacity.",
+          "source_refs": [
+            "PCS-RIKEN-CONFIG-2026"
+          ]
+        },
+        {
+          "observation_id": "CAP-RIKEN-AIFS-EFFECTIVE",
+          "value": 1081.34,
+          "unit": "TB",
+          "capacity_basis": "effective",
+          "configuration_status": "planned",
+          "scope_ja": "公開概要に記載された共有ストレージの実効容量",
+          "scope_en": "Effective shared-storage capacity in the public overview",
+          "caveat_ja": "個々の利用者やHPCI課題への割当量ではなく、最終契約仕様との一致も未確認です。",
+          "caveat_en": "This is not an individual or HPCI-project allocation, and matching to the final contract specification remains unconfirmed.",
+          "source_refs": [
+            "PCS-RIKEN-CONFIG-2026"
+          ]
+        }
+      ],
       "component_category": "system-package",
       "itemized_costs": [],
       "related_case_ids": [
         "PROC-RIKEN-AIFS-COOLING-2025",
-        "PROC-RIKEN-AIFS-POWER-2025"
+        "PROC-RIKEN-AIFS-POWER-2025",
+        "PROC-RIKEN-AIFS-IB-2025"
       ],
       "aggregation_status": "not-cleared",
-      "scope_ja": "機器一式の契約総額。公開構成との契約範囲の一致、機器別価格、導入作業・保守の内包範囲は未確認です。",
-      "scope_en": "Total package contract. Matching to the public configuration, component prices, and included installation and maintenance are unconfirmed.",
+      "scope_ja": "機器一式の契約総額。400ノード等の公開構成は確認しましたが、契約範囲との一致、機器別価格、導入作業・保守の内包範囲は未確認です。別契約のInfiniBandスイッチ代を、この総額から控除しません。",
+      "scope_en": "Total package contract. The public 400-node configuration is documented, but matching to the contract scope, component prices, and included installation and maintenance remain unconfirmed. The separately contracted InfiniBand switch is not subtracted from this total.",
       "gap_ids": [
         "PCG-001",
         "PCG-002",
         "PCG-003"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PROC-RIKEN-AIFS-IB-2025",
+      "title_ja": "理研 AI for Science用InfiniBandスイッチ一式",
+      "title_en": "RIKEN AI for Science InfiniBand switch package",
+      "buyer": "RIKEN",
+      "supplier": "Digital Technology Co., Ltd.",
+      "contract_kind": "purchase",
+      "contract_date": "2025-06-19",
+      "award_date": null,
+      "amount": {
+        "kind": "contract",
+        "value_jpy": 5148000,
+        "tax_basis": "including-tax",
+        "tax_rate": null,
+        "payment_basis": "total",
+        "period_months": null,
+        "source_refs": [
+          "PCS-RIKEN-CONTRACTS-2025"
+        ]
+      },
+      "documents": [
+        {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-CONTRACTS-2025",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-CONTRACTS-2025",
+          "access_status": "not-obtained"
+        }
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "interconnect",
+      "itemized_costs": [],
+      "related_case_ids": [
+        "PROC-RIKEN-AIFS-2025"
+      ],
+      "aggregation_status": "not-cleared",
+      "scope_ja": "AI for Science用InfiniBandスイッチ一式として公表された別契約です。最終仕様書と数量を取得していないため、公開概要にあるXDRスイッチ25台との対応、単価、主要計算機契約との重複や包含関係は推定しません。",
+      "scope_en": "A separately published contract for an AI for Science InfiniBand switch package. Because the final specification and quantity were not obtained, OpenFS does not infer correspondence with the 25 XDR switches in the public overview, a unit price, or overlap or inclusion with the main supercomputer contract.",
+      "gap_ids": [
+        "PCG-001",
+        "PCG-002",
+        "PCG-003"
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-CONTRACTS-2025"
+            ]
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-RIKEN-AIFS-COOLING-2025",
@@ -328,7 +595,82 @@
       "scope_en": "Outdoor cooling installation. Piping, controls, and pumps are shared with quantum-HPC facilities; the whole amount is not allocated to this computer. The tax rate is unconfirmed.",
       "gap_ids": [
         "PCG-003"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-WORKS-2025"
+            ]
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-WORKS-2025"
+            ]
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-RIKEN-AIFS-POWER-2025",
@@ -374,7 +716,82 @@
       "scope_en": "Power expansion for compute and cooling, with connections to or shared infrastructure with Fugaku and quantum HPC. Tax rate, allocation, and overlap with other contracts are unconfirmed.",
       "gap_ids": [
         "PCG-003"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-WORKS-2025"
+            ]
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-WORKS-2025"
+            ]
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-JAXA-JSS4-2025",
@@ -407,7 +824,78 @@
       "scope_en": "The announcement covers installation, lease, and maintenance/operation support. Specifications require confidentiality commitments, so OpenFS records only the public announcement. Award value was not researched in this update.",
       "gap_ids": [
         "PCG-004"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-NAGOYA-FURO-NEXT-2025",
@@ -418,7 +906,10 @@
       "contract_kind": "lease",
       "contract_date": null,
       "award_date": "2025-11-21",
-      "linked_system_ids": ["HPCI-SYS-FURO2-I", "HPCI-SYS-FURO2-II"],
+      "linked_system_ids": [
+        "HPCI-SYS-FURO2-I",
+        "HPCI-SYS-FURO2-II"
+      ],
       "amount": {
         "kind": "award",
         "value_jpy": 5809518000,
@@ -495,31 +986,59 @@
       "storage_capacity_observations": [
         {
           "observation_id": "CAP-NAGOYA-ANNOUNCEMENT-HEADLINE",
-          "value": 45, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "planned",
-          "scope_ja": "導入発表の総容量（1-2ページ）", "scope_en": "Introduction announcement total (pages 1-2)",
-          "caveat_ja": "物理／実効容量の区別がなく、3ページの物理容量との関係は未確認。", "caveat_en": "Physical versus effective capacity is not specified; its relationship to the physical value on page 3 is unresolved.",
-          "source_refs": ["PCS-NAGOYA-ANNOUNCEMENT-2026"]
+          "value": 45,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "planned",
+          "scope_ja": "導入発表の総容量（1-2ページ）",
+          "scope_en": "Introduction announcement total (pages 1-2)",
+          "caveat_ja": "物理／実効容量の区別がなく、3ページの物理容量との関係は未確認。",
+          "caveat_en": "Physical versus effective capacity is not specified; its relationship to the physical value on page 3 is unresolved.",
+          "source_refs": [
+            "PCS-NAGOYA-ANNOUNCEMENT-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-PHYSICAL",
-          "value": 48.4, "unit": "PB", "capacity_basis": "physical", "configuration_status": "planned",
-          "scope_ja": "導入発表の共有ストレージ（3ページ）", "scope_en": "Shared storage in the introduction announcement (page 3)",
-          "caveat_ja": "資料は物理容量と明記。利用者が使える容量ではない。", "caveat_en": "Explicitly labeled physical capacity, not user-available capacity.",
-          "source_refs": ["PCS-NAGOYA-ANNOUNCEMENT-2026"]
+          "value": 48.4,
+          "unit": "PB",
+          "capacity_basis": "physical",
+          "configuration_status": "planned",
+          "scope_ja": "導入発表の共有ストレージ（3ページ）",
+          "scope_en": "Shared storage in the introduction announcement (page 3)",
+          "caveat_ja": "資料は物理容量と明記。利用者が使える容量ではない。",
+          "caveat_en": "Explicitly labeled physical capacity, not user-available capacity.",
+          "source_refs": [
+            "PCS-NAGOYA-ANNOUNCEMENT-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-EFFECTIVE",
-          "value": 37.44, "unit": "PB", "capacity_basis": "effective", "configuration_status": "planned",
-          "scope_ja": "現行構成ページの共有ストレージ", "scope_en": "Shared storage on the current configuration page",
-          "caveat_ja": "資料は実効容量と明記。個人・HPCI課題への割当量ではない。", "caveat_en": "Explicitly labeled effective capacity, not an individual or HPCI-project allocation.",
-          "source_refs": ["PCS-NAGOYA-CONFIG-2026"]
+          "value": 37.44,
+          "unit": "PB",
+          "capacity_basis": "effective",
+          "configuration_status": "planned",
+          "scope_ja": "現行構成ページの共有ストレージ",
+          "scope_en": "Shared storage on the current configuration page",
+          "caveat_ja": "資料は実効容量と明記。個人・HPCI課題への割当量ではない。",
+          "caveat_en": "Explicitly labeled effective capacity, not an individual or HPCI-project allocation.",
+          "source_refs": [
+            "PCS-NAGOYA-CONFIG-2026"
+          ]
         },
         {
           "observation_id": "CAP-NAGOYA-HPCI-SYSTEM",
-          "value": 48, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "planned",
-          "scope_ja": "HPCI資源ページのシステム情報", "scope_en": "System information on the HPCI resource page",
-          "caveat_ja": "丸めや物理容量を意味するかは未確認。ユーザー別上限256 TBとは別の値。", "caveat_en": "Rounding and physical-capacity interpretation are unconfirmed. Separate from the 256 TB per-user limit.",
-          "source_refs": ["PCS-NAGOYA-HPCI-2026"]
+          "value": 48,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "planned",
+          "scope_ja": "HPCI資源ページのシステム情報",
+          "scope_en": "System information on the HPCI resource page",
+          "caveat_ja": "丸めや物理容量を意味するかは未確認。ユーザー別上限256 TBとは別の値。",
+          "caveat_en": "Rounding and physical-capacity interpretation are unconfirmed. Separate from the 256 TB per-user limit.",
+          "source_refs": [
+            "PCS-NAGOYA-HPCI-2026"
+          ]
         }
       ],
       "component_category": "system-package",
@@ -533,7 +1052,102 @@
         "PCG-002",
         "PCG-003",
         "PCG-005"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-NAGOYA-AWARD-2025",
+              "PCS-NAGOYA-TENDER-2025",
+              "PCS-NAGOYA-AWARD-ORIGINAL"
+            ]
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-TSUKUBA-UNIFIED-MEMORY-2025",
@@ -543,9 +1157,13 @@
       "supplier": "NEC",
       "contract_kind": "lease",
       "contract_date": "2025-06-12",
-      "contract_date_source_refs": ["PCS-TSUKUBA-CONTRACT-2025Q1"],
+      "contract_date_source_refs": [
+        "PCS-TSUKUBA-CONTRACT-2025Q1"
+      ],
       "award_date": "2025-06-12",
-      "linked_system_ids": ["HPCI-SYS-SIRIUS"],
+      "linked_system_ids": [
+        "HPCI-SYS-SIRIUS"
+      ],
       "amount": {
         "kind": "award",
         "value_jpy": 11880000,
@@ -560,10 +1178,15 @@
         ]
       },
       "reported_period_total": {
-        "kind": "contract", "value_jpy": 855360000,
-        "tax_basis": "including-tax", "tax_rate": 0.1,
-        "payment_basis": "total", "period_months": 72,
-        "source_refs": ["PCS-TSUKUBA-CONTRACT-2025Q1"]
+        "kind": "contract",
+        "value_jpy": 855360000,
+        "tax_basis": "including-tax",
+        "tax_rate": 0.1,
+        "payment_basis": "total",
+        "period_months": 72,
+        "source_refs": [
+          "PCS-TSUKUBA-CONTRACT-2025Q1"
+        ]
       },
       "contract_window": {
         "start": "2026-03-01",
@@ -641,17 +1264,32 @@
       "storage_capacity_observations": [
         {
           "observation_id": "CAP-TSUKUBA-SYSTEM",
-          "value": 5.2, "unit": "PB", "capacity_basis": "unspecified", "configuration_status": "operating",
-          "scope_ja": "Siriusの並列ファイルシステム全体", "scope_en": "Sirius parallel filesystem as a whole",
-          "caveat_ja": "資料はファイルシステム容量として記載。物理／実効の別は明記されていない。", "caveat_en": "Published filesystem capacity; physical versus effective basis is not explicit.",
-          "source_refs": ["PCS-TSUKUBA-HPCI-2026", "PCS-TSUKUBA-SIRIUS-SPEC"]
+          "value": 5.2,
+          "unit": "PB",
+          "capacity_basis": "unspecified",
+          "configuration_status": "operating",
+          "scope_ja": "Siriusの並列ファイルシステム全体",
+          "scope_en": "Sirius parallel filesystem as a whole",
+          "caveat_ja": "資料はファイルシステム容量として記載。物理／実効の別は明記されていない。",
+          "caveat_en": "Published filesystem capacity; physical versus effective basis is not explicit.",
+          "source_refs": [
+            "PCS-TSUKUBA-HPCI-2026",
+            "PCS-TSUKUBA-SIRIUS-SPEC"
+          ]
         },
         {
           "observation_id": "CAP-TSUKUBA-HPCI-ALLOCATION",
-          "value": 1.5, "unit": "PB", "capacity_basis": "allocation", "configuration_status": "operating",
-          "scope_ja": "FY2026 HPCI課題への提供ストレージ", "scope_en": "Storage offered to FY2026 HPCI projects",
-          "caveat_ja": "全システムの容量ではなく、課題募集上の提供枠。5.2 PBと足し合わせない。", "caveat_en": "An allocation-call envelope, not whole-system capacity. Do not add it to 5.2 PB.",
-          "source_refs": ["PCS-TSUKUBA-HPCI-2026"]
+          "value": 1.5,
+          "unit": "PB",
+          "capacity_basis": "allocation",
+          "configuration_status": "operating",
+          "scope_ja": "FY2026 HPCI課題への提供ストレージ",
+          "scope_en": "Storage offered to FY2026 HPCI projects",
+          "caveat_ja": "全システムの容量ではなく、課題募集上の提供枠。5.2 PBと足し合わせない。",
+          "caveat_en": "An allocation-call envelope, not whole-system capacity. Do not add it to 5.2 PB.",
+          "source_refs": [
+            "PCS-TSUKUBA-HPCI-2026"
+          ]
         }
       ],
       "component_category": "system-package",
@@ -664,7 +1302,102 @@
         "PCG-001",
         "PCG-002",
         "PCG-003"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "known-contractual-floor",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": 712800000,
+        "tax_basis": "including-tax",
+        "complete_tco": false,
+        "basis_ja": "公開月額1,188万円を最初の60か月に適用した契約上の既知費用下限です。完全TCOではありません。",
+        "basis_en": "Contractual known-cost floor obtained by applying the published JPY 11.88 million monthly rate to the first 60 months. It is not complete TCO.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "reported-unitemized",
+            "source_refs": [
+              "PCS-TSUKUBA-AWARD-2025",
+              "PCS-TSUKUBA-TENDER-2025",
+              "PCS-TSUKUBA-CONTRACT-2025Q1"
+            ]
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     },
     {
       "case_id": "PROC-RIKEN-FUGAKU-MAINT-2025",
@@ -681,9 +1414,10 @@
         "tax_basis": "unknown",
         "tax_rate": null,
         "payment_basis": "total",
-        "period_months": null,
+        "period_months": 12,
         "source_refs": [
-          "PCS-RIKEN-FUGAKU-MAINT-2025"
+          "PCS-RIKEN-FUGAKU-MAINT-2025",
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
         ]
       },
       "documents": [
@@ -693,21 +1427,364 @@
           "access_status": "public-read"
         },
         {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+          "access_status": "public-read"
+        },
+        {
           "kind": "final-specification",
           "source_id": "PCS-RIKEN-FUGAKU-MAINT-2025",
           "access_status": "not-obtained"
         }
       ],
+      "contract_window": {
+        "start": "2025-04-01",
+        "end": "2026-03-31",
+        "basis": "contract-period",
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+        ]
+      },
+      "contract_date_source_refs": [
+        "PCS-RIKEN-FUGAKU-MAINT-2025",
+        "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+      ],
+      "linked_system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
       "configuration_match": "unconfirmed",
       "component_category": "maintenance",
       "itemized_costs": [],
-      "related_case_ids": [],
+      "related_case_ids": [
+        "PROC-RIKEN-FUGAKU-MAINT-2024",
+        "PROC-RIKEN-FUGAKU-OVERHAUL-2025",
+        "PROC-RIKEN-FUGAKU-MAINT-2026"
+      ],
       "aggregation_status": "not-cleared",
-      "scope_ja": "2025年度の保守一式の契約額で、計算機購入費ではありません。保守対象、交換部材、ソフトウェア支援、税区分、他の運用費との境界は未確認のため、別システムの保守率に転用しません。",
-      "scope_en": "This is the FY2025 maintenance package, not computer acquisition. Covered equipment, replacement parts, software support, taxes, and boundaries with other operating costs are unconfirmed; it is not used as a maintenance-rate estimate for another system.",
+      "scope_ja": "2025年度のハードウェア・ソフトウェア保守および運用管理支援一式の契約額で、計算機購入費ではありません。内訳、税区分、同年度のオーバーホール契約や他の運用費との境界は未確認のため、合算せず、別システムの保守率にも転用しません。",
+      "scope_en": "This FY2025 contract covers hardware and software maintenance plus management and operations support; it is not computer acquisition. Itemization, tax treatment, and boundaries with the same-year overhaul and other operating costs remain unconfirmed, so the amounts are not aggregated or reused as a maintenance-rate estimate for another system.",
       "gap_ids": [
         "PCG-003"
-      ]
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "公開情報だけでは、この調達を特定構成の重複のない5年間費用へ変換できません。",
+        "basis_en": "Public evidence does not support converting this procurement into a non-overlapping five-year cost for a defined configuration.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "observed-contract-scope",
+            "source_refs": [
+              "PCS-RIKEN-FUGAKU-MAINT-2025",
+              "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+            ]
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PROC-RIKEN-FUGAKU-MAINT-2024",
+      "title_ja": "理研 2024年度「富岳」保守",
+      "title_en": "RIKEN FY2024 Fugaku maintenance",
+      "buyer": "RIKEN",
+      "supplier": "Fujitsu",
+      "contract_kind": "service",
+      "contract_date": "2024-04-01",
+      "award_date": null,
+      "amount": {
+        "kind": "contract",
+        "value_jpy": 6261801700,
+        "tax_basis": "unknown",
+        "tax_rate": null,
+        "payment_basis": "total",
+        "period_months": null,
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-MAINT-2024"
+        ]
+      },
+      "documents": [
+        {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-FUGAKU-MAINT-2024",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-FUGAKU-MAINT-2024",
+          "access_status": "not-obtained"
+        }
+      ],
+      "contract_date_source_refs": [
+        "PCS-RIKEN-FUGAKU-MAINT-2024"
+      ],
+      "linked_system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "maintenance",
+      "itemized_costs": [],
+      "related_case_ids": [
+        "PROC-RIKEN-FUGAKU-MAINT-2025",
+        "PROC-RIKEN-FUGAKU-OVERHAUL-2025",
+        "PROC-RIKEN-FUGAKU-MAINT-2026"
+      ],
+      "aggregation_status": "not-cleared",
+      "scope_ja": "2024年度の「富岳」保守一式として公表された契約額です。公表ページだけでは役務期間、税区分、保守対象の内訳を確認できないため、年度間比較の観測値としてのみ保持し、5年間費用へ外挿しません。",
+      "scope_en": "Published contract amount for the FY2024 Fugaku maintenance package. The disclosure alone does not establish the service period, tax treatment, or covered-item breakdown, so the value is retained only as an annual observation and is not extrapolated into a five-year cost.",
+      "gap_ids": [
+        "PCG-003"
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "役務期間と12区分の包含・除外を同一の公開根拠で確認できないため、5年間費用は算出しません。",
+        "basis_en": "Five-year cost is not calculated because the service period and inclusion or exclusion of the 12 scopes are not established by the same public evidence.",
+        "scope_coverage": [
+          {"scope_id": "compute-and-accelerators", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "interconnect", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "storage", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "software-and-licenses", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "installation-and-integration", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "maintenance-and-support", "evidence_status": "observed-contract-scope", "source_refs": ["PCS-RIKEN-FUGAKU-MAINT-2024"]},
+          {"scope_id": "electricity", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "cooling", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "shared-facility", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "staffing", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "refresh-and-expansion", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "decommission-and-migration", "evidence_status": "unknown", "source_refs": []}
+        ]
+      }
+    },
+    {
+      "case_id": "PROC-RIKEN-FUGAKU-OVERHAUL-2025",
+      "title_ja": "理研 2025年度「富岳」本体オーバーホール・ネットワークスイッチ更新",
+      "title_en": "RIKEN FY2025 Fugaku overhaul and network-switch replacement",
+      "buyer": "RIKEN",
+      "supplier": "Fujitsu",
+      "contract_kind": "service",
+      "contract_date": "2025-04-01",
+      "award_date": null,
+      "amount": {
+        "kind": "contract",
+        "value_jpy": 1586200000,
+        "tax_basis": "unknown",
+        "tax_rate": null,
+        "payment_basis": "total",
+        "period_months": 12,
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+        ]
+      },
+      "documents": [
+        {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+          "access_status": "not-obtained"
+        }
+      ],
+      "contract_window": {
+        "start": "2025-04-01",
+        "end": "2026-03-31",
+        "basis": "contract-period",
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+        ]
+      },
+      "contract_date_source_refs": [
+        "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+      ],
+      "linked_system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "refresh-and-expansion",
+      "itemized_costs": [],
+      "related_case_ids": [
+        "PROC-RIKEN-FUGAKU-MAINT-2024",
+        "PROC-RIKEN-FUGAKU-MAINT-2025",
+        "PROC-RIKEN-FUGAKU-MAINT-2026"
+      ],
+      "aggregation_status": "not-cleared",
+      "scope_ja": "2025年度の「富岳」本体オーバーホールとネットワークスイッチ更新を一式で扱う契約額です。両作業の価格内訳と同年度保守契約との境界は公開資料で分離できないため、ネットワーク単価や総運用費へ換算しません。",
+      "scope_en": "This FY2025 amount covers a Fugaku system overhaul and network-switch replacement as one package. Public evidence does not separate the two work items or establish boundaries with the same-year maintenance contract, so it is not converted into network unit prices or total operating cost.",
+      "gap_ids": [
+        "PCG-002",
+        "PCG-003"
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "単年度の更新契約であり、他契約との重複と5年間の更新周期を確認できないため、5年間費用は算出しません。",
+        "basis_en": "Five-year cost is not calculated because this is a one-year refresh contract and neither overlap with other contracts nor a five-year refresh cycle is established.",
+        "scope_coverage": [
+          {"scope_id": "compute-and-accelerators", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "interconnect", "evidence_status": "reported-unitemized", "source_refs": ["PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"]},
+          {"scope_id": "storage", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "software-and-licenses", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "installation-and-integration", "evidence_status": "reported-unitemized", "source_refs": ["PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"]},
+          {"scope_id": "maintenance-and-support", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "electricity", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "cooling", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "shared-facility", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "staffing", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "refresh-and-expansion", "evidence_status": "observed-contract-scope", "source_refs": ["PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"]},
+          {"scope_id": "decommission-and-migration", "evidence_status": "unknown", "source_refs": []}
+        ]
+      }
+    },
+    {
+      "case_id": "PROC-RIKEN-FUGAKU-MAINT-2026",
+      "title_ja": "理研 2026年度「富岳」保守",
+      "title_en": "RIKEN FY2026 Fugaku maintenance",
+      "buyer": "RIKEN",
+      "supplier": "Fujitsu",
+      "contract_kind": "service",
+      "contract_date": "2026-03-03",
+      "award_date": null,
+      "amount": {
+        "kind": "contract",
+        "value_jpy": 5958583928,
+        "tax_basis": "unknown",
+        "tax_rate": null,
+        "payment_basis": "total",
+        "period_months": 12,
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+        ]
+      },
+      "documents": [
+        {
+          "kind": "contract-result",
+          "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026",
+          "access_status": "not-obtained"
+        }
+      ],
+      "contract_window": {
+        "start": "2026-04-01",
+        "end": "2027-03-31",
+        "basis": "contract-period",
+        "source_refs": [
+          "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+        ]
+      },
+      "contract_date_source_refs": [
+        "PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"
+      ],
+      "linked_system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "maintenance",
+      "itemized_costs": [],
+      "related_case_ids": [
+        "PROC-RIKEN-FUGAKU-MAINT-2024",
+        "PROC-RIKEN-FUGAKU-MAINT-2025",
+        "PROC-RIKEN-FUGAKU-OVERHAUL-2025"
+      ],
+      "aggregation_status": "not-cleared",
+      "scope_ja": "2026年度のハードウェア・ソフトウェア保守および運用管理支援一式の契約額です。年度ごとの実績比較には使えますが、税区分、内訳、更新工事との境界が未確認のため、5年間TCOや将来機の保守率へ外挿しません。",
+      "scope_en": "This FY2026 contract covers hardware and software maintenance plus management and operations support. It can be retained as an annual observation, but unknown tax treatment, itemization, and boundaries with refresh work prevent extrapolation into five-year TCO or a maintenance rate for a future system.",
+      "gap_ids": [
+        "PCG-003"
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "単年度契約を5年分へ単純に乗算せず、今後の契約、停止・更新条件、12区分の包含・除外を確認するまで算出しません。",
+        "basis_en": "The annual contract is not multiplied by five; calculation remains blocked until future contracts, outage and refresh conditions, and inclusion or exclusion of the 12 scopes are established.",
+        "scope_coverage": [
+          {"scope_id": "compute-and-accelerators", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "interconnect", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "storage", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "software-and-licenses", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "installation-and-integration", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "maintenance-and-support", "evidence_status": "observed-contract-scope", "source_refs": ["PCS-RIKEN-FUGAKU-CONTRACTS-2025-2026"]},
+          {"scope_id": "electricity", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "cooling", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "shared-facility", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "staffing", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "refresh-and-expansion", "evidence_status": "unknown", "source_refs": []},
+          {"scope_id": "decommission-and-migration", "evidence_status": "unknown", "source_refs": []}
+        ]
+      }
     }
   ],
   "coverage_gaps": [
@@ -730,10 +1807,10 @@
     {
       "gap_id": "PCG-003",
       "priority": "P0",
-      "description_ja": "別契約の共用・重複、税率、施設条件、運用保守費が未確認です。",
-      "description_en": "Shared scope, overlap, tax rates, facility constraints, and recurring costs are unconfirmed.",
-      "next_action_ja": "契約別の包含・除外表を作り、二重計上を防いで5年間TCOを算出します。",
-      "next_action_en": "Build an inclusion/exclusion matrix per contract before computing a five-year TCO without double counting."
+      "description_ja": "全11件を12区分の5年間TCO証拠マトリクスで監査しました。Siriusのみ最初の60か月の契約上の既知費用下限7億1,280万円（税込）を再計算できますが、完全な5年間TCOは0件です。富岳の2024～2026年度保守契約と2025年度更新契約は年度別観測であり、5年間費用へ単純外挿しません。",
+      "description_en": "All 11 cases are audited against a 12-scope five-year TCO evidence matrix. Only Sirius supports a JPY 712.8 million tax-inclusive contractual known-cost floor for the first 60 months; complete five-year TCO remains available for zero cases. Fugaku maintenance contracts for FY2024-FY2026 and its FY2025 refresh contract are annual observations and are not simply extrapolated into five-year cost.",
+      "next_action_ja": "各契約の機器、保守、ソフトウェア、設置、電力、冷却、共用施設、人件費、更新・増設の包含・除外を確認し、二重計上のない5年間TCOへ進めます。",
+      "next_action_en": "Confirm inclusion and exclusion of equipment, maintenance, software, installation, electricity, cooling, shared facilities, staffing, refresh and expansion before producing a non-overlapping five-year TCO."
     },
     {
       "gap_id": "PCG-004",
@@ -755,8 +1832,96 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PROCUREMENT-RECONCILIATION-001",
-    "human_approval_directive_id": "DIR-900016",
-    "approved_at": "2026-08-31T12:48:51+09:00"
-  }
+    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260904-001",
+    "human_approval_directive_id": "DIR-900100",
+    "approved_at": "2026-09-04T21:04:06+09:00"
+  },
+  "five_year_tco_method_ja": "5年間TCOは、下記12区分を重複なく確認できた場合だけ算出します。公開総額が区分別に分解されていない場合は、包含の可能性を示すだけで、各区分の金額や完全性を推定しません。",
+  "five_year_tco_method_en": "Five-year TCO is calculated only when all 12 scopes below are supported without double counting. An unitemized public total indicates only possible package coverage; it does not establish per-scope amounts or completeness.",
+  "tco_scope_catalog": [
+    {
+      "scope_id": "compute-and-accelerators",
+      "label_ja": "計算ノード・アクセラレータ",
+      "label_en": "Compute nodes and accelerators",
+      "definition_ja": "CPU、GPU、その他の演算装置とノード筐体",
+      "definition_en": "CPUs, GPUs, other compute devices, and node enclosures"
+    },
+    {
+      "scope_id": "interconnect",
+      "label_ja": "インターコネクト",
+      "label_en": "Interconnect",
+      "definition_ja": "NIC、スイッチ、ケーブル、ネットワーク管理",
+      "definition_en": "NICs, switches, cables, and network management"
+    },
+    {
+      "scope_id": "storage",
+      "label_ja": "ストレージ",
+      "label_en": "Storage",
+      "definition_ja": "HDD、SSD、ストレージ装置、データ保護",
+      "definition_en": "HDDs, SSDs, storage appliances, and data protection"
+    },
+    {
+      "scope_id": "software-and-licenses",
+      "label_ja": "ソフトウェア・ライセンス",
+      "label_en": "Software and licenses",
+      "definition_ja": "OS、コンパイラ、ライブラリ、運用ソフトウェアの費用",
+      "definition_en": "OS, compilers, libraries, and operations software"
+    },
+    {
+      "scope_id": "installation-and-integration",
+      "label_ja": "設置・統合",
+      "label_en": "Installation and integration",
+      "definition_ja": "搬入、据付、配線、試験、移行支援",
+      "definition_en": "Delivery, installation, cabling, acceptance tests, and migration support"
+    },
+    {
+      "scope_id": "maintenance-and-support",
+      "label_ja": "保守・支援",
+      "label_en": "Maintenance and support",
+      "definition_ja": "ハードウェア保守、ソフトウェア支援、部品交換",
+      "definition_en": "Hardware maintenance, software support, and replacement parts"
+    },
+    {
+      "scope_id": "electricity",
+      "label_ja": "電力",
+      "label_en": "Electricity",
+      "definition_ja": "IT機器と関連設備の消費電力料金",
+      "definition_en": "Electricity for IT equipment and related infrastructure"
+    },
+    {
+      "scope_id": "cooling",
+      "label_ja": "冷却",
+      "label_en": "Cooling",
+      "definition_ja": "冷却設備の導入、運転、冷却水等",
+      "definition_en": "Cooling-system acquisition, operation, and coolant"
+    },
+    {
+      "scope_id": "shared-facility",
+      "label_ja": "共用施設",
+      "label_en": "Shared facility",
+      "definition_ja": "建屋、受変電、非常電源等の共用費配賦",
+      "definition_en": "Allocated cost of buildings, substations, backup power, and shared facilities"
+    },
+    {
+      "scope_id": "staffing",
+      "label_ja": "人員",
+      "label_en": "Staffing",
+      "definition_ja": "運用、利用支援、セキュリティ、施設担当者",
+      "definition_en": "Operations, user support, security, and facility staff"
+    },
+    {
+      "scope_id": "refresh-and-expansion",
+      "label_ja": "更新・増設",
+      "label_en": "Refresh and expansion",
+      "definition_ja": "5年間の追加ノード、容量増強、部品更新",
+      "definition_en": "Additional nodes, capacity expansion, and component refresh during five years"
+    },
+    {
+      "scope_id": "decommission-and-migration",
+      "label_ja": "撤去・移行",
+      "label_en": "Decommissioning and migration",
+      "definition_ja": "旧設備撤去、データ・ソフトウェア移行、廃棄",
+      "definition_en": "Retirement, data and software migration, and disposal"
+    }
+  ]
 }

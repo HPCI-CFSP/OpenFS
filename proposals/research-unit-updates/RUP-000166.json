@@ -1,0 +1,164 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000166",
+  "topic_id": "CROSS-08",
+  "created_at": "2026-09-02T07:00:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000131", "bundle_sha256": "56c0cc39d11f1d38d93405774490f6d2f794f8b8e87393b9fda1809487fbbc73"},
+    {"update_id": "RUP-000138", "bundle_sha256": "6d403dd4a362d262a64e228d22c402aabb0fe0d534f269c12f95fce07ee4f570"},
+    {"update_id": "RUP-000146", "bundle_sha256": "747f2f1da34d90bba17ce1575f7244d615618dd743afe580b4c7bdd6aa17ff19"}
+  ],
+  "before_profile_sha256": "8c811f9c41b027e859066ab48db5cb52156225a026f40370ccc7aed388c15a0d",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "令和8年度HPCI公式一覧から、A64FX、x86 CPU、SX-Aurora TSUBASA、A100/H100/B200、GH200、MI300Aが同じ年度に提供される異種ポートフォリオを確認しました。提供量はノード時間、GPU時間、仮想ノード時間、ノード年が混在し、名古屋大学の不老・弐は半年、ABCI 3.0は独自ルールで提供量未定です。HPCI共用ストレージは東西二重化で総容量90 PBと公表されています。値を単純合計せず、期間、単位、構成、利用上限を正規化する必要があります。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The FY2026 HPCI official inventory shows a heterogeneous portfolio including A64FX, x86 CPUs, SX-Aurora TSUBASA, A100/H100/B200, GH200, and MI300A. Offered amounts mix node-hours, GPU-hours, virtual-node-hours, and node-years; Nagoya Flow II is offered for half a year, while ABCI 3.0 follows provider-specific rules with its HPCI amount undecided. HPCI shared storage is published as 90 PB total with east-west duplication. Values must not be added without normalizing period, unit, configuration, and concurrency limits. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-08-U01",
+      "before_sha256": "4bc576581b147a11f34a4036410e22acf3a179cf6452d970dee59116e26e8e7a",
+      "evidence_section_ids": [
+        "TDS-CBL-BASELINE",
+        "TDS-CBL-CHANGES-V2",
+        "TDS-CD1-CROSS-08-U01",
+        "TDS-CD10-CROSS-08-U01",
+        "TDS-CD11-CROSS-08-U01",
+        "TDS-CD12-CROSS-08-U01-U02",
+        "TDS-CD13-CROSS-08-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD13-CROSS-08-U01",
+      "title_ja": "令和8年度HPCI提供ポートフォリオの比較基準",
+      "title_en": "Comparison basis for the FY2026 HPCI resource portfolio",
+      "summary_ja": "異種アーキテクチャ、提供量の単位、期間、同時利用上限、ストレージを分離して現在地を示します。",
+      "summary_en": "Describe the current portfolio by separating architecture, allocation unit, period, concurrency limit, and storage.",
+      "items": [
+        {
+          "item_id": "TDI-CD13-HPCI-FY2026-HETEROGENEOUS-PORTFOLIO",
+          "name_ja": "CPU・ベクトル・GPU・統合APUの併存",
+          "name_en": "Coexistence of CPU, vector, GPU, and integrated-APU resources",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "令和8年度定期募集",
+          "timing_en": "FY2026 regular call",
+          "statement_ja": "共通運用の一覧には、A64FX、複数世代のIntel XeonとAMD EPYC、SX-Aurora TSUBASA、NVIDIA A100/H100/B200、Grace Hopper、AMD MI300Aが含まれます。例として、Wisteria/OdysseyはA64FX、AOBAと地球シミュレータはベクトル、Miyabi-GはGH200、SiriusはMI300A×4、不老・弐Type IIはGrace CPU×2+B200×4です。HPCIは一種類の標準ノードではなく、移植・精度・メモリ・通信・運用を伴う異種ポートフォリオです。",
+          "statement_en": "The common-use inventory includes A64FX, multiple Intel Xeon and AMD EPYC generations, SX-Aurora TSUBASA, NVIDIA A100/H100/B200, Grace Hopper, and AMD MI300A. Examples include A64FX Wisteria/Odyssey, vector AOBA and Earth Simulator partitions, GH200 Miyabi-G, four-MI300A Sirius nodes, and Flow II Type II with two Grace CPUs and four B200 GPUs. HPCI is a heterogeneous portfolio with portability, precision, memory, network, and operational implications, not a single standard node.",
+          "hpci_relevance_ja": "次期整備計画は全国を一構成へ統一するかではなく、どの負荷へどの資源を割り当て、共通ソフトウェア・データ・支援をどこまで整えるかを判断する必要があります。",
+          "hpci_relevance_en": "Planning must decide which workloads map to which resources and how much common software, data, and support to provide, rather than simply choose one national node type.",
+          "adoption_conditions_ja": [
+            "代表アプリケーションごとに移植工数、科学的妥当性、処理量、電力、費用を測る。",
+            "命令・精度・メモリ・通信・ライブラリ要件から適合資源を検索できるようにする。",
+            "希少アーキテクチャの維持目的、最低利用量、保守期限、代替経路を明示する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure porting labor, scientific validity, throughput, energy, and cost by representative application.",
+            "Support resource discovery by instruction, precision, memory, network, and library requirements.",
+            "State the purpose, minimum use, support horizon, and alternative path for specialized architectures."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS164"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-HPCI-FY2026-ALLOCATION-UNIT-MISMATCH",
+          "name_ja": "ノード時間・GPU時間・仮想ノード時間・ノード年の混在",
+          "name_en": "Mixed node-hour, GPU-hour, virtual-node-hour, and node-year units",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "令和8年度定期募集",
+          "timing_en": "FY2026 regular call",
+          "statement_ja": "Grand Chariot 2 GPUは63,072ノード時間と252,288 GPU時間、Siriusは240,000仮想ノード時間、Wisteria/Aquariusは34,560ノード時間（4ノード年）、玄界Bは共有18,720ノード時間とノード固定2ノード年で示されます。不老・弐は2026年10月から2027年3月の半年提供です。単位と期間が違うため、提供量をそのまま合計・順位付けできません。",
+          "statement_en": "Grand Chariot 2 GPU is listed as 63,072 node-hours and 252,288 GPU-hours, Sirius as 240,000 virtual-node-hours, Wisteria/Aquarius as 34,560 node-hours (four node-years), and Genkai B as 18,720 shared node-hours plus two fixed node-years. Flow II is offered only from October 2026 through March 2027. Different units and periods preclude direct summation or ranking.",
+          "hpci_relevance_ja": "全国容量の比較には、物理ノードではなく、同じ代表仕事量を品質条件付きで処理できる年間量へ変換する必要があります。換算不能な項目は別軸で残します。",
+          "hpci_relevance_en": "National capacity comparison requires annual completed representative work at fixed quality rather than physical-node counts; nonconvertible values must remain separate.",
+          "adoption_conditions_ja": [
+            "各単位へ物理構成、共有・占有、MIG、最大同時数、提供期間を対応付ける。",
+            "アプリケーション別の実測処理量がない限り、異機種間の換算係数を設定しない。",
+            "設置規模、HPCI提供枠、採択枠、実消費、利用不能時間を分けて集計する。"
+          ],
+          "adoption_conditions_en": [
+            "Associate each unit with physical configuration, sharing, MIG, concurrency, and service period.",
+            "Do not assign cross-system conversion factors without measured application throughput.",
+            "Aggregate installed scale, HPCI offer, awarded allocation, consumption, and unavailable time separately."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS164"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD13-HPCI-FY2026-STORAGE-AND-INDEPENDENT-RESOURCE",
+          "name_ja": "90 PB共用ストレージと独自ルール資源の境界",
+          "name_en": "Boundary between 90-PB shared storage and provider-specific resources",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "令和8年度定期募集",
+          "timing_en": "FY2026 regular call",
+          "statement_ja": "HPCI共用ストレージは東京大学の東拠点とR-CCSの西拠点で二重化され、総容量90.0 PB、通期提供と公表されています。一方、各計算機にも50 TB SSDから60 PB級までのローカル保存領域があります。ABCI 3.0はHPCI構成機関の独自ルールで運用され、H200×8ノード構成は掲載されていますが提供資源量は未定です。90 PBの総容量を実効ユーザ容量や片拠点障害時容量へ換算しません。",
+          "statement_en": "HPCI shared storage is duplicated between the University of Tokyo east site and R-CCS west site and published as 90.0 PB total for the full year. Compute systems also expose local tiers ranging from 50-TB SSD to 60-PB-class storage. ABCI 3.0 follows provider-specific rules; its H200-by-eight node is listed but its offered HPCI amount is undecided. The 90-PB total is not converted into usable user capacity or single-site-failure capacity without evidence.",
+          "hpci_relevance_ja": "共通データ基盤は容量だけでなく、複製方式、障害時書込、転送帯域、クオータ、保持、ローカル階層との整合を設計する必要があります。独自ルール資源には統合窓口と提供条件の明示が必要です。",
+          "hpci_relevance_en": "Shared data infrastructure needs replication, degraded-mode writes, transfer bandwidth, quotas, retention, and local-tier integration. Provider-specific resources need a unified discovery route and explicit conditions.",
+          "adoption_conditions_ja": [
+            "総容量、複製前後の実効容量、クオータ、予約容量、障害時容量を分ける。",
+            "各ローカルストレージとの転送実効値、データ保持、出口費用、削除手順を確認する。",
+            "独自ルール資源の申請、認証、課金、支援、成果報告を共通一覧から参照可能にする。"
+          ],
+          "adoption_conditions_en": [
+            "Separate total, post-replication usable, quota, reserved, and degraded-mode capacities.",
+            "Confirm effective transfer, retention, egress cost, and deletion procedures for local tiers.",
+            "Expose application, authentication, charging, support, and reporting for provider-specific resources through the common inventory."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS164"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS164",
+        "title": "令和8年度課題募集におけるハードウェア・ソフトウェア資源一覧",
+        "publisher": "一般財団法人高度情報科学技術研究機構（HPCI運営代表機関）",
+        "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-02時点（随時更新）"
+      },
+      "origin_group": "hpci-fy2026-resource-inventory",
+      "checked_at": "2026-09-02T06:58:00+09:00",
+      "locator": "共通運用資源、独自ルール資源、共用ストレージの機関・構成・提供量・期間・最大利用数",
+      "observation_ja": "CPU・ベクトル・GPU・APUの併存、異なる提供単位、半年提供、不定提供量、ローカル保存、東西二重化90 PBを確認しました。異機種の提供量を合計していません。",
+      "observation_en": "Verified coexistence of CPU, vector, GPU, and APU resources, mixed offer units, a half-year offer, undecided capacity, local storage, and 90-PB east-west duplicated shared storage. Heterogeneous offers were not summed.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-042とGAP-TDS-090は未解決です。提供量を実消費、待ち時間、電力、移植工数、専任人員、更新計画へ接続する必要があります。",
+    "異なる提供単位を代表アプリケーションの処理量へ変換する実測値と、90 PBの実効・障害時容量は未確認です。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-042 and GAP-TDS-090 remain open; offers must be connected to consumption, queues, power, porting labor, dedicated staff, and refresh plans.",
+    "Measured conversion of mixed units into representative application throughput and usable or degraded-mode capacity for the 90-PB service remain unverified.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}

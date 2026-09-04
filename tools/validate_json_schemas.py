@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +27,9 @@ def read_json(path: Path) -> Any:
         return json.load(stream)
 
 
+@lru_cache(maxsize=None)
 def schema_registry(root: Path) -> tuple[dict[str, dict[str, Any]], Registry]:
+    """Build each repository's immutable schema registry once per process."""
     schemas: dict[str, dict[str, Any]] = {}
     registry = Registry()
     for path in sorted((root / "schemas").glob("*.schema.json")):
@@ -89,6 +92,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "public-hpci-system-inventory.schema.json"
     if ref == "knowledge/public/application-performance-forecasts.json":
         return "public-application-performance-forecast.schema.json"
+    if ref == "knowledge/public/planning-evidence-readiness.json":
+        return "planning-evidence-readiness.schema.json"
     if ref == "knowledge/public/source-catalog-map.json":
         return "source-catalog-map.schema.json"
     if ref.startswith("knowledge/public/roadmaps/"):

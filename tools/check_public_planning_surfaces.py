@@ -10,12 +10,29 @@ from typing import Any
 
 try:
     from .check_performance_model_card import evaluate as evaluate_performance_model_card
+    from .estimate_system_cost import five_year_known_cost_floor
 except ImportError:  # pragma: no cover - direct script execution
     from check_performance_model_card import evaluate as evaluate_performance_model_card
+    from estimate_system_cost import five_year_known_cost_floor
 
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SCALES = [1, 4, 32, 128, 1024, 10000]
+EXPECTED_SCENARIO_IDS = {
+    "SCN-HPCI-BALANCED-001",
+    "SCN-HPCI-AI-DATA-001",
+    "SCN-HPCI-STAGED-001",
+}
+EXPECTED_INFRASTRUCTURE_DIMENSIONS = [
+    "compute-throughput",
+    "memory-capacity-bandwidth",
+    "scale-up-interconnect",
+    "scale-out-interconnect",
+    "storage-io",
+    "workflow-latency",
+    "software-portability",
+    "data-governance",
+]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -236,6 +253,25 @@ def validate_inventory_links(inventory: dict, register: dict, roadmaps: list[dic
         for ref in system.get("lifecycle_milestone_refs", []):
             if (ref["roadmap_id"], ref["milestone_id"]) not in milestones:
                 errors.append(f"{system['system_id']} links unknown lifecycle milestone: {ref}")
+    source_ids = {source["source_id"] for source in inventory["sources"]}
+    observation_ids = [item["observation_id"] for item in inventory["operational_observations"]]
+    product_ids = [item["product_id"] for item in inventory["operational_data_products"]]
+    if duplicates := duplicate_values(observation_ids + product_ids):
+        errors.append(f"duplicate HPCI operational evidence IDs: {duplicates}")
+    for item in [*inventory["operational_observations"], *inventory["operational_data_products"]]:
+        item_id = item.get("observation_id", item.get("product_id"))
+        if unknown := set(item["system_ids"]) - systems:
+            errors.append(f"{item_id} links unknown HPCI systems: {sorted(unknown)}")
+        if unknown := set(item["source_ids"]) - source_ids:
+            errors.append(f"{item_id} has unknown sources: {sorted(unknown)}")
+    for item in inventory["operational_observations"]:
+        value = item["value"]
+        if value["kind"] in {"exact", "approximate"}:
+            if value["value"] is None or value["lower"] is not None or value["upper"] is not None:
+                errors.append(f"{item['observation_id']} has an invalid scalar operational value")
+        elif (value["value"] is not None or value["lower"] is None or value["upper"] is None
+              or value["lower"] > value["upper"]):
+            errors.append(f"{item['observation_id']} has an invalid operational range")
     return errors
 
 
@@ -245,9 +281,11 @@ def validate(root: Path = ROOT) -> list[str]:
     inventory = load_json(root / "knowledge/public/hpci-system-inventory.json")
     forecasts = load_json(root / "knowledge/public/application-performance-forecasts.json")
     register_path = root / "knowledge/public/procurement-cost-register.json"
+    register = None
     if register_path.exists():
+        register = load_json(register_path)
         roadmaps = [load_json(path) for path in sorted((root / "knowledge/public/roadmaps").glob("*.json"))]
-        errors.extend(validate_inventory_links(inventory, load_json(register_path), roadmaps))
+        errors.extend(validate_inventory_links(inventory, register, roadmaps))
 
     center_ids = {center["center_id"] for center in center_registry["centers"]}
     inventory_source_ids = {source["source_id"] for source in inventory["sources"]}
@@ -312,6 +350,14 @@ def validate(root: Path = ROOT) -> list[str]:
                 f"{sorted(unknown_sources)}"
             )
 
+    measured_platform_ids = [item["platform_id"] for item in forecasts["measured_platforms"]]
+    if duplicates := duplicate_values(measured_platform_ids):
+        errors.append(f"duplicate measured platform IDs: {duplicates}")
+    known_measured_platform_ids = set(measured_platform_ids)
+    for platform in forecasts["measured_platforms"]:
+        if unknown := set(platform["source_ids"]) - forecast_source_ids:
+            errors.append(f"{platform['platform_id']} has unknown sources {sorted(unknown)}")
+
     application_ids = [item["application_id"] for item in forecasts["applications"]]
     if duplicates := duplicate_values(application_ids):
         errors.append(f"duplicate forecast application IDs: {duplicates}")
@@ -346,6 +392,55 @@ def validate(root: Path = ROOT) -> list[str]:
                     f"{sorted(unknown_hint_sources)}"
                 )
 
+    package_ids = [
+        item["package_id"] for item in forecasts["baseline_package_readiness"]
+    ]
+    if duplicates := duplicate_values(package_ids):
+        errors.append(f"duplicate baseline-package IDs: {duplicates}")
+    package_application_ids = [
+        item["application_id"] for item in forecasts["baseline_package_readiness"]
+    ]
+    if duplicates := duplicate_values(package_application_ids):
+        errors.append(f"duplicate application baseline packages: {duplicates}")
+    if set(package_application_ids) != known_application_ids:
+        errors.append("baseline-package readiness must cover every EEA1 application once")
+    for package in forecasts["baseline_package_readiness"]:
+        item_id = package["package_id"]
+        unknown_sources = set(package["source_ids"]) - forecast_source_ids
+        if unknown_sources:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown_sources)}")
+        harness_source = package["harness_candidate_source_id"]
+        if harness_source not in package["source_ids"]:
+            errors.append(f"{item_id} omits its harness candidate from source_ids")
+        if package["status"] == "blocked-no-public-package":
+            if any(package[field] is not None for field in (
+                "code_version", "code_commit", "code_license_spdx",
+                "input_version", "input_commit", "input_license_spdx",
+            )):
+                errors.append(f"{item_id} carries version data despite being blocked")
+        else:
+            if not package["code_version"] or not package["code_commit"]:
+                errors.append(f"{item_id} lacks a pinned code version and commit")
+            elif not any(
+                package["code_commit"] in source["url"]
+                for source in forecasts["sources"]
+                if source["source_id"] in package["source_ids"]
+            ):
+                errors.append(f"{item_id} code commit lacks an immutable source URL")
+        if package["status"] == "code-and-input-version-pinned-candidate":
+            if not package["input_version"] or not package["input_commit"]:
+                errors.append(f"{item_id} lacks a pinned input version and commit")
+            elif not any(
+                package["input_commit"] in source["url"]
+                for source in forecasts["sources"]
+                if source["source_id"] in package["source_ids"]
+            ):
+                errors.append(f"{item_id} input commit lacks an immutable source URL")
+        elif package["input_version"] is not None or package["input_commit"] is not None:
+            errors.append(f"{item_id} has input pins inconsistent with its status")
+        if package["eea1_input_match"] == "not-confirmed" and package["input_commit"] is None:
+            errors.append(f"{item_id} cannot assess an absent input as not-confirmed")
+
     observation_ids = [
         item["observation_id"] for item in forecasts["baseline_observations"]
     ]
@@ -375,6 +470,279 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 f"{observation['observation_id']} unavailable observation must not have value or unit"
             )
+
+    known_observation_ids = set(observation_ids)
+    observations = {
+        item["observation_id"]: item for item in forecasts["baseline_observations"]
+    }
+    cross_observation_ids = [
+        item["observation_id"] for item in forecasts["cross_platform_observations"]
+    ]
+    if duplicates := duplicate_values(cross_observation_ids):
+        errors.append(f"duplicate cross-platform observation IDs: {duplicates}")
+    for observation in forecasts["cross_platform_observations"]:
+        item_id = observation["observation_id"]
+        if observation["application_id"] not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if observation["platform_id"] not in known_measured_platform_ids:
+            errors.append(f"{item_id} references unknown measured platform")
+        if unknown := set(observation["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+
+    requirement_ids = [item["requirement_id"] for item in forecasts["quantitative_requirements"]]
+    if duplicates := duplicate_values(requirement_ids):
+        errors.append(f"duplicate quantitative requirement IDs: {duplicates}")
+    covered_requirements = set()
+    for requirement in forecasts["quantitative_requirements"]:
+        item_id = requirement["requirement_id"]
+        covered_requirements.add(requirement["application_id"])
+        if requirement["application_id"] not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if unknown := set(requirement["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+        numeric = [requirement[key] for key in ("lower", "value", "upper")]
+        if requirement["evidence_class"] == "measurement-gap":
+            if any(value is not None for value in numeric) or requirement["unit"] is not None:
+                errors.append(f"{item_id} fills a measurement gap with an unsupported number")
+        elif requirement["unit"] is None or all(value is None for value in numeric):
+            errors.append(f"{item_id} lacks a measured or published numerical basis")
+        if (requirement["lower"] is not None and requirement["upper"] is not None
+                and requirement["lower"] > requirement["upper"]):
+            errors.append(f"{item_id} has a reversed range")
+    if covered_requirements != known_application_ids:
+        errors.append("quantitative requirements must cover every declared application")
+
+    acceptance_metric_ids = [
+        item["metric_id"] for item in forecasts["acceptance_metric_catalog"]
+    ]
+    if duplicates := duplicate_values(acceptance_metric_ids):
+        errors.append(f"duplicate acceptance metric IDs: {duplicates}")
+    known_acceptance_metric_ids = set(acceptance_metric_ids)
+    core_acceptance_metric_ids = {
+        item["metric_id"]
+        for item in forecasts["acceptance_metric_catalog"]
+        if item["requirement_level"] == "core"
+    }
+    protocol = forecasts["acceptance_protocol"]
+    criterion_ids = [
+        item["criterion_id"] for item in forecasts["draft_acceptance_criteria"]
+    ]
+    if duplicates := duplicate_values(criterion_ids):
+        errors.append(f"duplicate acceptance criterion IDs: {duplicates}")
+    criterion_application_ids = [
+        item["application_id"] for item in forecasts["draft_acceptance_criteria"]
+    ]
+    if duplicates := duplicate_values(criterion_application_ids):
+        errors.append(f"duplicate application acceptance criteria: {duplicates}")
+    covered_criteria = set()
+    for criterion in forecasts["draft_acceptance_criteria"]:
+        item_id = criterion["criterion_id"]
+        application_id = criterion["application_id"]
+        covered_criteria.add(application_id)
+        if application_id not in known_application_ids:
+            errors.append(f"{item_id} references unknown application")
+        if criterion["protocol_id"] != protocol["protocol_id"]:
+            errors.append(f"{item_id} references an unknown acceptance protocol")
+        scales = [item["fugaku_nodes"] for item in criterion["target_scales"]]
+        if scales != EXPECTED_SCALES:
+            errors.append(f"{item_id} target scales must match {EXPECTED_SCALES}, in order")
+        required_metrics = set(criterion["required_metric_ids"])
+        if unknown := required_metrics - known_acceptance_metric_ids:
+            errors.append(f"{item_id} has unknown required metrics {sorted(unknown)}")
+        if missing := core_acceptance_metric_ids - required_metrics:
+            errors.append(f"{item_id} omits core acceptance metrics {sorted(missing)}")
+        if unknown := set(criterion["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
+        threshold_metric_ids = [item["metric_id"] for item in criterion["thresholds"]]
+        if duplicates := duplicate_values(threshold_metric_ids):
+            errors.append(f"{item_id} repeats threshold metrics {duplicates}")
+        for threshold in criterion["thresholds"]:
+            metric_id = threshold["metric_id"]
+            if metric_id not in required_metrics:
+                errors.append(f"{item_id} sets a threshold for an unrequired metric {metric_id}")
+            if unknown := set(threshold["source_ids"]) - forecast_source_ids:
+                errors.append(f"{item_id}:{metric_id} has unknown sources {sorted(unknown)}")
+            numeric = [threshold[key] for key in ("lower", "value", "upper")]
+            if threshold["threshold_basis"] == "owner-definition-required":
+                if any(value is not None for value in numeric) or threshold["unit"] is not None:
+                    errors.append(f"{item_id}:{metric_id} invents an unapproved threshold")
+            elif threshold["unit"] is None or all(value is None for value in numeric):
+                errors.append(f"{item_id}:{metric_id} lacks its published target value")
+            if (threshold["lower"] is not None and threshold["upper"] is not None
+                    and threshold["lower"] > threshold["upper"]):
+                errors.append(f"{item_id}:{metric_id} has a reversed threshold range")
+    if covered_criteria != known_application_ids:
+        errors.append("draft acceptance criteria must cover every declared application")
+
+    campaign = forecasts["common_benchmark_campaign"]
+    if campaign["protocol_id"] != protocol["protocol_id"]:
+        errors.append("common benchmark campaign references an unknown acceptance protocol")
+    if set(campaign["criterion_ids"]) != set(criterion_ids):
+        errors.append("common benchmark campaign must cover every acceptance criterion")
+    if campaign["comparison_bases"] != forecasts["comparison_bases"]:
+        errors.append("common benchmark campaign comparison bases are stale")
+    if campaign["minimum_valid_runs_per_configuration"] != protocol["measured_runs"]:
+        errors.append("common benchmark campaign run count differs from its protocol")
+    scenario_path = root / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
+    for key in ("result_bundle_schema_path", "result_bundle_validator_path"):
+        if scenario_path.exists() and not (root / campaign[key]).is_file():
+            errors.append(f"common benchmark campaign references missing path {campaign[key]}")
+
+    expected_stage_ids = [
+        "BMSTAGE-OWNER-APPROVAL",
+        "BMSTAGE-BASELINE-PACKAGE",
+        "BMSTAGE-MATCHED-MEASUREMENT",
+        "BMSTAGE-INDEPENDENT-VALIDATION",
+        "BMSTAGE-CONSENSUS-DECISION",
+    ]
+    stages = campaign["stages"]
+    if [item["stage_id"] for item in stages] != expected_stage_ids:
+        errors.append("common benchmark campaign stages must use the stable declared order")
+    if [item["sequence"] for item in stages] != list(range(1, 6)):
+        errors.append("common benchmark campaign stage sequence must be contiguous")
+    if stages[1]["completed_application_ids"]:
+        errors.append(
+            "version-pinned baseline candidates must not complete the baseline-package stage"
+        )
+    for stage in stages:
+        completed = set(stage["completed_application_ids"])
+        if unknown := completed - known_application_ids:
+            errors.append(
+                f"{stage['stage_id']} references unknown applications {sorted(unknown)}"
+            )
+        if stage["target_application_count"] != len(known_application_ids):
+            errors.append(f"{stage['stage_id']} target application count is stale")
+        if completed and not stage["evidence_refs"]:
+            errors.append(f"{stage['stage_id']} claims completion without evidence refs")
+        if stage["status"] == "complete" and len(completed) != len(known_application_ids):
+            errors.append(f"{stage['stage_id']} is complete without full application coverage")
+        if stage["status"] == "blocked" and completed:
+            errors.append(f"{stage['stage_id']} is blocked but claims completed applications")
+    criteria_by_application = {
+        item["application_id"]: item for item in forecasts["draft_acceptance_criteria"]
+    }
+    owner_approved = {
+        application_id for application_id, item in criteria_by_application.items()
+        if item["readiness"]["application_owner_approved"]
+    }
+    independently_validated = {
+        application_id for application_id, item in criteria_by_application.items()
+        if item["readiness"]["independent_validation_complete"]
+    }
+    if set(stages[0]["completed_application_ids"]) != owner_approved:
+        errors.append("owner-approval campaign count is stale")
+    if set(stages[3]["completed_application_ids"]) != independently_validated:
+        errors.append("independent-validation campaign count is stale")
+    if campaign["consensus_status"] == "incomplete" and stages[4]["completed_application_ids"]:
+        errors.append("Consensus-incomplete campaign claims completed planning decisions")
+
+    known_scenarios = EXPECTED_SCENARIO_IDS
+    if scenario_path.exists():
+        scenario_payload = load_json(scenario_path)
+        known_scenarios = {
+            item["scenario_id"] for item in scenario_payload["scenarios"]
+        }
+    binding_ids = [item["scenario_id"] for item in campaign["scenario_bindings"]]
+    if duplicates := duplicate_values(binding_ids):
+        errors.append(f"common benchmark campaign repeats scenario bindings {duplicates}")
+    if set(binding_ids) != known_scenarios:
+        errors.append("common benchmark campaign must bind every published scenario")
+    if campaign["consensus_status"] != "incomplete" or campaign["procurement_eligible"]:
+        errors.append("common benchmark campaign must remain non-procurement and Consensus-incomplete")
+    calibration_candidate_ids = [
+        item["calibration_candidate_id"]
+        for item in forecasts["calibration_candidates"]
+    ]
+    if duplicates := duplicate_values(calibration_candidate_ids):
+        errors.append(f"duplicate calibration-candidate IDs: {duplicates}")
+    for calibration in forecasts["calibration_candidates"]:
+        item_id = calibration["calibration_candidate_id"]
+        if calibration["application_id"] not in known_application_ids:
+            errors.append(
+                f"{item_id} references unknown application {calibration['application_id']}"
+            )
+        unknown_sources = set(calibration["source_ids"]) - forecast_source_ids
+        if unknown_sources:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown_sources)}")
+        calibration_ids = set(calibration["calibration_observation_ids"])
+        validation_ids = {
+            item["observation_id"] for item in calibration["validation_results"]
+        }
+        if unknown := (calibration_ids | validation_ids) - known_observation_ids:
+            errors.append(f"{item_id} has unknown observations {sorted(unknown)}")
+        if overlap := calibration_ids & validation_ids:
+            errors.append(f"{item_id} reuses calibration data for validation: {sorted(overlap)}")
+        relative_errors = []
+        for result in calibration["validation_results"]:
+            observation = observations.get(result["observation_id"])
+            if observation is None:
+                continue
+            if observation["application_id"] != calibration["application_id"]:
+                errors.append(
+                    f"{item_id} validates an observation from another application"
+                )
+            if observation["status"] != "measured":
+                errors.append(f"{item_id} validates a non-measured observation")
+            if observation["unit"] != calibration["unit"]:
+                errors.append(f"{item_id} mixes validation units")
+            if abs(result["observed_value"] - observation["value"]) > 1e-9:
+                errors.append(f"{item_id} does not preserve the observed value")
+            expected_absolute = abs(
+                result["predicted_value"] - result["observed_value"]
+            )
+            if abs(result["absolute_error"] - expected_absolute) > 1e-6:
+                errors.append(f"{item_id} has an inconsistent absolute error")
+            expected_relative = (
+                expected_absolute / result["observed_value"]
+                if result["observed_value"] else 0
+            )
+            if abs(result["relative_error"] - expected_relative) > 1e-6:
+                errors.append(f"{item_id} has an inconsistent relative error")
+            relative_errors.append(result["relative_error"])
+        if relative_errors and abs(
+            calibration["maximum_relative_error"] - max(relative_errors)
+        ) > 1e-9:
+            errors.append(f"{item_id} has an inconsistent maximum relative error")
+        readiness = calibration["readiness"]
+        if all(
+            readiness["observed_counts"][key] >= readiness["required_minimums"][key]
+            for key in readiness["required_minimums"]
+        ):
+            errors.append(f"{item_id} is labeled unready despite meeting every minimum")
+        if (
+            readiness["candidate_ready_for_consensus"]
+            or calibration["consensus_status"] != "incomplete"
+            or calibration["procurement_eligible"]
+        ):
+            errors.append(
+                f"{item_id} must remain unready, Consensus-incomplete, and procurement-ineligible"
+            )
+
+    infrastructure = forecasts["infrastructure_requirements_matrix"]
+    dimension_ids = [item["dimension_id"] for item in infrastructure["dimensions"]]
+    if dimension_ids != EXPECTED_INFRASTRUCTURE_DIMENSIONS:
+        errors.append(
+            "application infrastructure dimensions must be stable and in the declared order"
+        )
+    row_ids = [item["application_id"] for item in infrastructure["rows"]]
+    if duplicates := duplicate_values(row_ids):
+        errors.append(f"duplicate application infrastructure rows: {duplicates}")
+    if set(row_ids) != known_application_ids:
+        errors.append(
+            "application infrastructure matrix must cover every declared application exactly once"
+        )
+    for row in infrastructure["rows"]:
+        cell_ids = [item["dimension_id"] for item in row["cells"]]
+        if cell_ids != EXPECTED_INFRASTRUCTURE_DIMENSIONS:
+            errors.append(
+                f"{row['application_id']} infrastructure cells must cover every dimension in order"
+            )
+        for cell in row["cells"]:
+            if unknown := set(cell["source_ids"]) - forecast_source_ids:
+                errors.append(
+                    f"{row['application_id']} {cell['dimension_id']} has unknown sources "
+                    f"{sorted(unknown)}"
+                )
 
     assumption_ids = [item["assumption_id"] for item in forecasts["assumptions"]]
     if duplicates := duplicate_values(assumption_ids):
@@ -623,6 +991,181 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 "procurement use requires accepted Consensus and published forecasts"
             )
+
+    readiness_path = root / "knowledge/public/planning-evidence-readiness.json"
+    if readiness_path.exists() and register is not None:
+        readiness = load_json(readiness_path)
+        dimension_ids = [item["dimension_id"] for item in readiness["dimensions"]]
+        expected_dimension_ids = [
+            "system-lifecycle", "operations", "five-year-cost",
+            "application-performance", "quantitative-requirements",
+        ]
+        if dimension_ids != expected_dimension_ids:
+            errors.append("planning evidence dimensions must use the stable declared order")
+        dimensions = {item["dimension_id"]: item for item in readiness["dimensions"]}
+        milestone_records = {
+            (roadmap["roadmap_id"], milestone["milestone_id"]): milestone
+            for roadmap in roadmaps
+            for lane in roadmap["lanes"]
+            for milestone in lane["milestones"]
+        }
+        future_lifecycle_systems = {
+            system["system_id"]
+            for system in inventory["systems"]
+            if any(
+                milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "timing_basis"
+                ]
+                == "project-target"
+                and milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "year"
+                ]
+                is not None
+                for ref in system.get("lifecycle_milestone_refs", [])
+            )
+        }
+        observed_lifecycle_systems = {
+            system["system_id"]
+            for system in inventory["systems"]
+            if any(
+                milestone_records[(ref["roadmap_id"], ref["milestone_id"])][
+                    "timing_basis"
+                ]
+                == "observed"
+                for ref in system.get("lifecycle_milestone_refs", [])
+            )
+        }
+        operational_systems = {
+            system_id
+            for item in [
+                *inventory["operational_observations"],
+                *inventory["operational_data_products"],
+            ]
+            for system_id in item["system_ids"]
+        }
+        observations_by_metric = {
+            metric: {
+                system_id
+                for item in inventory["operational_observations"]
+                if item["metric"] in metrics
+                for system_id in item["system_ids"]
+            }
+            for metric, metrics in {
+                "utilization": {"utilization"},
+                "power": {"design-power", "operating-power"},
+                "availability-downtime": {
+                    "system-availability",
+                    "scheduled-maintenance",
+                    "unplanned-downtime",
+                    "service-hours",
+                },
+                "jobs-history": {"job-count"},
+            }.items()
+        }
+        observations_by_metric["jobs-history"].update(
+            system_id
+            for item in inventory["operational_data_products"]
+            if item["product_type"] == "public-dataset"
+            for system_id in item["system_ids"]
+        )
+        actual_coverage = {
+            "system-lifecycle": len(future_lifecycle_systems),
+            "operations": len(operational_systems),
+            "five-year-cost": len([
+                item for item in register["cases"] if five_year_known_cost_floor(item)
+            ]),
+            "application-performance": len({
+                item["application_id"] for item in forecasts["cross_platform_observations"]
+            }),
+            "quantitative-requirements": len({
+                item["application_id"] for item in forecasts["quantitative_requirements"]
+                if item["evidence_class"] != "measurement-gap"
+            }),
+        }
+        expected_denominators = {
+            "system-lifecycle": len(inventory["systems"]),
+            "operations": len(inventory["systems"]),
+            "five-year-cost": len(register["cases"]),
+            "application-performance": len(forecasts["applications"]),
+            "quantitative-requirements": len(forecasts["applications"]),
+        }
+        for dimension_id in expected_dimension_ids:
+            coverage = dimensions[dimension_id]["coverage"]
+            if coverage["numerator"] != actual_coverage[dimension_id]:
+                errors.append(f"{dimension_id} planning evidence numerator is stale")
+            if coverage["denominator"] != expected_denominators[dimension_id]:
+                errors.append(f"{dimension_id} planning evidence denominator is stale")
+        expected_supporting = {
+            "system-lifecycle": {
+                "observed-start": len(observed_lifecycle_systems),
+                "any-lifecycle": sum(
+                    bool(item.get("lifecycle_milestone_refs"))
+                    for item in inventory["systems"]
+                ),
+            },
+            "operations": {
+                key: len(value) for key, value in observations_by_metric.items()
+            },
+            "five-year-cost": {
+                "complete-tco": sum(
+                    case["five_year_cost_assessment"]["complete_tco"]
+                    for case in register["cases"]
+                ),
+                "public-total": sum(
+                    case.get("amount") is not None for case in register["cases"]
+                ),
+                "component-itemization": sum(
+                    bool(case["itemized_costs"]) for case in register["cases"]
+                ),
+            },
+            "application-performance": {
+                "matched-input-comparisons": len(
+                    stages[2]["completed_application_ids"]
+                ),
+                "independent-validations": len(
+                    stages[3]["completed_application_ids"]
+                ),
+                "scenario-bindings": len(campaign["scenario_bindings"]),
+            },
+            "quantitative-requirements": {
+                "draft-measurement-contracts": len({
+                    item["application_id"]
+                    for item in forecasts["draft_acceptance_criteria"]
+                    if item["readiness"]["measurement_contract_complete"]
+                }),
+                "human-approved-thresholds": len({
+                    item["application_id"]
+                    for item in forecasts["draft_acceptance_criteria"]
+                    if item["readiness"]["threshold_values_approved"]
+                }),
+            },
+        }
+        for dimension_id, expected in expected_supporting.items():
+            rows = dimensions[dimension_id]["supporting_coverages"]
+            actual = {row["coverage_id"]: row for row in rows}
+            if set(actual) != set(expected):
+                errors.append(f"{dimension_id} supporting coverage IDs are stale")
+                continue
+            for coverage_id, numerator in expected.items():
+                if actual[coverage_id]["numerator"] != numerator:
+                    errors.append(
+                        f"{dimension_id}:{coverage_id} numerator is stale"
+                    )
+                expected_denominator = (
+                    len(known_scenarios)
+                    if dimension_id == "application-performance"
+                    and coverage_id == "scenario-bindings"
+                    else expected_denominators[dimension_id]
+                )
+                if actual[coverage_id]["denominator"] != expected_denominator:
+                    errors.append(
+                        f"{dimension_id}:{coverage_id} denominator is stale"
+                    )
+        assessed_scenarios = {item["scenario_id"] for item in readiness["scenario_assessments"]}
+        if assessed_scenarios != known_scenarios:
+            errors.append("planning evidence readiness must assess every published scenario")
+        if readiness["consensus_status"] != "incomplete" or readiness["research_status"] != "provisional":
+            errors.append("planning evidence readiness must remain provisional and Consensus-incomplete")
     errors.extend(validate_topic_decision_support(root))
     return errors
 

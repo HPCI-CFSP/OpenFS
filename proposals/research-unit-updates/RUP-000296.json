@@ -1,0 +1,207 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000296",
+  "topic_id": "CROSS-14",
+  "created_at": "2026-09-02T07:46:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000156",
+      "bundle_sha256": "ec32a1c889c02ea5fc0b6124db725dc231688e338aa97c4251843c900717ccbf"
+    },
+    {
+      "update_id": "RUP-000255",
+      "bundle_sha256": "d7ec94807c6be2ac5518f8ebaba6e4c1239badfafd7d52f780386f6993a7792d"
+    }
+  ],
+  "before_profile_sha256": "cd41f3d7ec55f1442f939a7770d059ba0b810240c481b64427b01ee2623ac9d2",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "米DOEのHPDFについて、二拠点data hub、early service、設計・建設の成熟度、利用者要件形成を追加調査しました。計算機更新とは別の長期data serviceを設計する参考になりますが、FY2026要求はline-item建設費を含まず、一般提供、容量、SLA、RPO/RTOは確認できません。Consensusは未完了です。",
+  "summary_en": "This update examines the U.S. DOE HPDF's dual-site data hubs, early services, design and construction maturity, and user-requirements process. It informs long-lived data services that are independent of compute refreshes, but the FY2026 request contains no line-item construction funding and public evidence does not establish general availability, capacity, SLAs, or RPO/RTO. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "CROSS-14-U01",
+      "before_sha256": "2e37ab2dc210c2337eab3ddc530bbc4b065d0aa6586210363e3d3384c0f59d73",
+      "evidence_section_ids": [
+        "TDS-CD1-CROSS-14-U01",
+        "TDS-CD2-CROSS-14-U01",
+        "TDS-CD3-CROSS-14-U01",
+        "TDS-CD11-CROSS-14-FUGAKU-PROJECT-END-DATA",
+        "TDS-CD16-CROSS-14-HPDF-DATA-SERVICE"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD16-CROSS-14-HPDF-DATA-SERVICE",
+      "title_ja": "計算機世代から独立した科学データサービス",
+      "title_en": "Scientific data services independent of compute generations",
+      "summary_ja": "HPDFの二拠点構成、早期サービス、設計・建設の状態を分け、データ基盤を単一計算機の付帯設備として扱わない設計条件を抽出します。",
+      "summary_en": "Separate HPDF's dual-site architecture, early services, and design/construction status to derive conditions for treating data infrastructure as more than an accessory to one compute system.",
+      "items": [
+        {
+          "item_id": "TDI-CD103-HPDF-DUAL-SITE-HUB",
+          "name_ja": "HPDF：Jefferson Lab・Berkeley Labの二拠点Hub",
+          "name_en": "HPDF: dual-site hubs at Jefferson Lab and Berkeley Lab",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年8月時点でconceptual designとearly serviceを実施",
+          "timing_en": "Conceptual design and early services as of August 2026",
+          "statement_ja": "Berkeley Labの公式ページはHPDFをdistributed hybrid facilityと位置付け、Jefferson LabとBerkeley Labの両campusへ中核infraを配置し、storage、processing、analytics、専門人材を一体で提供する計画を示しています。科学者とAI systemが分散・連合dataを扱うことをvisionとし、American Science CloudのInfrastructure Partnerにも位置付けられています。二拠点構成は計画であり、公開頁だけでは同期方式、RPO/RTO、容量、帯域、利用料金、allocationを確認できません。",
+          "statement_en": "Berkeley Lab's official page describes HPDF as a distributed hybrid facility with core infrastructure at both Jefferson Lab and Berkeley Lab, integrating storage, processing, analytics, and expert support. Its vision is to let scientists and AI systems work with distributed and federated data, and it is identified as an Infrastructure Partner in the American Science Cloud. The dual-site architecture is a plan; the public page does not establish synchronization, RPO/RTO, capacity, bandwidth, pricing, or allocations.",
+          "hpci_relevance_ja": "HPCIでもdata serviceを計算機ごとの付帯storageから分離し、複数世代・複数centerへ継続するserviceとして評価する根拠になります。",
+          "hpci_relevance_en": "This supports evaluating HPCI data services as persistent, multi-generation and multi-center services rather than storage attached to each machine.",
+          "adoption_conditions_ja": [
+            "複製、backup、archive、cacheを区別し、障害domainとRPO/RTOを定義する。",
+            "compute allocationとdata allocation、ID、project lifetimeを別々に管理する。",
+            "WAN障害時のread/write条件と整合性回復を実測する。"
+          ],
+          "adoption_conditions_en": [
+            "Distinguish replication, backup, archive, and cache and define failure domains and RPO/RTO.",
+            "Manage compute allocations, data allocations, identity, and project lifetimes separately.",
+            "Measure read/write behavior and reconciliation after WAN failures."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS379",
+            "SRC-CDS381"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD103-HPDF-DESIGN-VERSUS-OPERATIONS",
+          "name_ja": "HPDF：early serviceと本格施設を分けて判定",
+          "name_en": "HPDF: distinguish early services from the full facility",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "FY2026要求はfinal designと段階導入案",
+          "timing_en": "FY2026 request supports final design and phased-installation options",
+          "statement_ja": "FY2026のDOE予算要求はHPDFのline-item construction fundingを計上せず、final designを完了して段階導入の選択肢を検討するとしています。一方、2026年8月更新のHPDF頁はconceptual designとearly data/AI service開発、利用者test、co-designを進めていると記載します。したがって、試験可能なserviceがあることを、施設全体の建設・一般提供・SLA達成と読み替えてはいけません。",
+          "statement_en": "DOE's FY2026 request contains no line-item construction funding for HPDF and instead calls for completing final design and considering phased-installation options. The August 2026 HPDF page concurrently reports conceptual design, early data and AI service development, user testing, and co-design. Availability of testable services therefore must not be read as completion of construction, general availability, or achievement of service levels.",
+          "hpci_relevance_ja": "HPCIの整備計画では、prototype、limited pilot、general service、stable operationsを別のmilestoneとして予算・評価できます。",
+          "hpci_relevance_en": "HPCI planning can budget and evaluate prototype, limited pilot, general service, and stable operations as distinct milestones.",
+          "adoption_conditions_ja": [
+            "段階ごとに利用者数、data量、障害率、復旧、support、securityの受入基準を置く。",
+            "予算要求、設計完了、調達、設置、運用開始を同一の到達状態にしない。",
+            "段階導入で後段が未実施になった場合の最低有用構成を定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Set acceptance criteria for users, data volume, failure rate, recovery, support, and security at each stage.",
+            "Do not collapse a budget request, design completion, procurement, installation, and operations into one status.",
+            "Define a minimum useful configuration if later installation phases do not proceed."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS379",
+            "SRC-CDS380"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD103-HPDF-REQUIREMENTS-CODESIGN",
+          "name_ja": "HPDF：利用者調査と15件の中核要件",
+          "name_en": "HPDF: user study and fifteen core requirements",
+          "stage": "current",
+          "maturity": "research",
+          "timing_ja": "2026年8月公開のdesign input",
+          "timing_en": "Design inputs published August 2026",
+          "statement_ja": "HPDFのUX teamはDOE施設・projectでdata/compute基盤を率いる12人へ8件の半構造化interviewを行い、公開mission文書等のmeta-analysisから15件の中核要件を抽出したと報告しています。これは要件形成の証拠であり、代表性を保証する大規模survey、採択済み仕様、稼働serviceの評価ではありません。",
+          "statement_en": "HPDF reports eight semi-structured interviews with twelve leaders of data and computing infrastructure across DOE facilities and projects, plus a meta-analysis of public mission documents that identified fifteen core requirements. This is evidence of requirements development, not a population-representative survey, an approved specification, or an evaluation of an operating service.",
+          "hpci_relevance_ja": "HPCIでもcenter、実験施設、application分野、運用者、data stewardの要求を、機器仕様へ落とす前に追跡可能な形で統合する方法として参考になります。",
+          "hpci_relevance_en": "HPCI can use this as a reference for traceably integrating requirements from centers, experimental facilities, application domains, operators, and data stewards before translating them into procurement specifications.",
+          "adoption_conditions_ja": [
+            "要求ごとにstakeholder、根拠、優先度、検証test、非採用理由を対応付ける。",
+            "少人数interviewの偏りを利用統計、incident、workflow trace、公開consultationで補う。",
+            "要件一覧と実装・運用KPIの対応を継続更新する。"
+          ],
+          "adoption_conditions_en": [
+            "Map each requirement to stakeholders, evidence, priority, validation tests, and reasons for rejection.",
+            "Complement small-sample interviews with usage data, incidents, workflow traces, and public consultation.",
+            "Continuously update the mapping from requirements to implementation and operational KPIs."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS379"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS379",
+        "title": "The High Performance Data Facility (HPDF)",
+        "publisher": "Lawrence Berkeley National Laboratory",
+        "url": "https://cs.lbl.gov/hpdf/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-08-27"
+      },
+      "origin_group": "lbl-hpdf-current-plan",
+      "checked_at": "2026-09-02T05:08:00+09:00",
+      "locator": "HPDF overview, partnership, services, early development, user study, and requirements meta-analysis",
+      "observation_ja": "二拠点構成、service範囲、early development、8 interview・12人、15要件、2026-08-27更新を確認しました。",
+      "observation_en": "Verified dual-site architecture, service scope, early development, eight interviews with twelve people, fifteen requirements, and the August 27, 2026 update.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS380",
+        "title": "FY 2026 Congressional Justification: Advanced Scientific Computing Research",
+        "publisher": "U.S. Department of Energy",
+        "url": "https://www.energy.gov/sites/default/files/2025-07/FY2026-PresidentsRequest-ASCR.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2025-07"
+      },
+      "origin_group": "doe-hpdf-fy2026-budget",
+      "checked_at": "2026-09-02T05:08:00+09:00",
+      "locator": "Pages 10, 23, 26, and 30: no line-item construction, final design, phased installation, and funding tables",
+      "observation_ja": "line-item construction fundingなし、final designと段階導入案、FY2026 OPC 4百万ドルを確認しました。",
+      "observation_en": "Verified no line-item construction funding, final design and phased-installation options, and USD 4 million in FY2026 OPC.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS381",
+        "title": "Jefferson Lab Data Center as part of the High Performance Data Facility Project",
+        "publisher": "U.S. Department of Energy",
+        "url": "https://www.energy.gov/nepa/articles/cx-034458-jefferson-lab-data-center-part-high-performance-data-facility-hpdf-project",
+        "source_class": "official-project",
+        "published_or_updated": "2025-08-14"
+      },
+      "origin_group": "doe-hpdf-jefferson-data-center",
+      "checked_at": "2026-09-02T05:08:00+09:00",
+      "locator": "NEPA notice: Jefferson Lab Data Center location and intended HPC, storage, and retrieval equipment",
+      "observation_ja": "Jefferson Lab側data centerの建設場所と、HPC・storage・retrieval設備を収容する計画を確認しました。",
+      "observation_en": "Verified the planned Jefferson Lab data-center location and its intended HPC, storage, and retrieval equipment.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開情報では二拠点の容量、bandwidth、RPO/RTO、SLA、料金、allocation、一般提供時期を確認できません。",
+    "HPDFの15要件本文とHPCI側の要求を項目単位で比較する作業が必要です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Public information does not establish dual-site capacity, bandwidth, RPO/RTO, SLAs, pricing, allocations, or general-availability timing.",
+    "A requirement-by-requirement comparison between HPDF's fifteen requirements and HPCI needs remains necessary.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

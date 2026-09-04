@@ -1,0 +1,151 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000285",
+  "topic_id": "SSW-12",
+  "created_at": "2026-09-02T07:44:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000136",
+      "bundle_sha256": "dc9e4942f311bff0ccc530173163f9104ae2eccd58c7fd4ef9f252bfdf702138"
+    },
+    {
+      "update_id": "RUP-000175",
+      "bundle_sha256": "752d722e96b79ffb5a0223fdc6e91732657c97fae41a8bf318a27ab19079fab1"
+    },
+    {
+      "update_id": "RUP-000261",
+      "bundle_sha256": "085b812c2e0573dfca65582deed98c5fa88efdbe429f653a7002d201cd5ebe25"
+    },
+    {
+      "update_id": "RUP-000272",
+      "bundle_sha256": "20a91d8c5855c6bb1ed633c5236118db32979e808a10054acbe2688764fdd678"
+    }
+  ],
+  "before_profile_sha256": "f0ba3ad75554aee45ed857bed294a5ec026e4fb7a15820e5ec56078a9c5f1e75",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "Open OnDemand 4.2はWCAG 2.1 AA対応、OS更新、SBOM、workflow同期key、download無効時のedit link抑止、PBSPro status対応を追加しました。4.2.3はCVE-2026-55171とCVE-2026-55169を修正しますが、OIDC利用siteがoidc_crypto_passphraseを明示しない場合、Apacheが旧設定で動き続けて緩和が適用されないsilent failureがあり得ます。HPCIの共通portalでは、upgrade成功ではなく有効設定・log・security testを受入条件にすべきです。Consensusは未完了です。",
+  "summary_en": "Open OnDemand 4.2 adds WCAG 2.1 AA-oriented accessibility work, operating-system changes, an SBOM, workflow synchronization keys, edit-link suppression when downloads are disabled, and PBSPro status support. Version 4.2.3 fixes CVE-2026-55171 and CVE-2026-55169, but an OIDC site that omits an explicit oidc_crypto_passphrase can leave Apache running the old configuration, creating a silent failure in which the mitigation is not applied. A shared HPCI portal should accept effective configuration, logs, and security tests rather than package-upgrade success alone. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-12-U01",
+      "before_sha256": "88b1fb6cba0770d78b6ce47c739c8eea5efc3f7911bfee6fde2ab37a5dee0f6d",
+      "evidence_section_ids": [
+        "TDS-CD2-SSW-12-U01",
+        "TDS-CD10-SSW-12-U01",
+        "TDS-CD14-SSW-12-HPCI-IDENTITY",
+        "TDS-CD15-SSW-12-FUGAKU-IDENTITY-CONTROLS",
+        "TDS-CD19-SSW-12-HPCI-CONTROL-PLANE-SCALE",
+        "TDS-CD25-SSW-12-OPENONDEMAND-42"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD25-SSW-12-OPENONDEMAND-42",
+      "title_ja": "Open OnDemand 4.2のportal機能とsecurity移行",
+      "title_en": "Portal capabilities and security migration in Open OnDemand 4.2",
+      "summary_ja": "利用性、workflow分離、data export、認証暗号設定、upgrade検証を一体で確認します。",
+      "summary_en": "Review usability, workflow isolation, data export, authentication cryptography, and upgrade validation together.",
+      "items": [
+        {
+          "item_id": "TDI-CD92-OOD-422-PORTAL",
+          "name_ja": "WCAG対応・SBOM・workflow同期・PBSPro status",
+          "name_en": "WCAG work, SBOM, workflow synchronization, and PBSPro status",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "4.2.2: 2026年5月、4.2.3: 2026年7月",
+          "timing_en": "4.2.2: May 2026; 4.2.3: July 2026",
+          "statement_ja": "4.2.2はkeyboard navigation、label、focus、contrast、screen-reader alert等のaccessibilityを改善し、WCAG 2.1 AAのACRを公開しました。OS dependencyのSBOM、workflow実行ごとのOOD_WORKFLOW_SYNC_KEY、download_enabled=false時のedit link抑止、PBSPro cluster_info APIも追加します。Ubuntu 22.04 supportは削除され、Debian 13とUbuntu 26.04が追加されました。",
+          "statement_en": "Version 4.2.2 improves keyboard navigation, labels, focus, contrast, and screen-reader alerts and publishes a WCAG 2.1 AA ACR. It adds an OS-dependency SBOM, a per-run OOD_WORKFLOW_SYNC_KEY, edit-link suppression when download_enabled is false, and PBSPro cluster_info support. Ubuntu 22.04 support is removed, while Debian 13 and Ubuntu 26.04 are added.",
+          "hpci_relevance_ja": "共通portalは単なるGUIではなく、accessibility、workflow間data分離、download policy、scheduler adapter、support OSを含む運用contractとして評価します。",
+          "hpci_relevance_en": "A shared portal should be assessed as an operational contract covering accessibility, workflow data separation, download policy, scheduler adapters, and supported operating systems rather than as a GUI alone.",
+          "adoption_conditions_ja": [
+            "各HPCI siteのOS、scheduler、authentication、interactive appをcompatibility matrix化する。",
+            "keyboard・screen reader・focusとworkflow並行実行を受入試験する。",
+            "download禁止時のeditor、terminal、notebook等の別経路を確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Build a compatibility matrix for each HPCI site's OS, scheduler, authentication, and interactive applications.",
+            "Acceptance-test keyboard, screen-reader, focus, and concurrent workflows.",
+            "Check editor, terminal, notebook, and other paths when downloads are disabled."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS360"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD92-OOD-423-OIDC-CVE",
+          "name_ja": "OIDC暗号phrase修正にsilent failureの注意",
+          "name_en": "Silent-failure caveat in OIDC cryptographic-passphrase remediation",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "Open OnDemand 4.2.3",
+          "timing_en": "Open OnDemand 4.2.3",
+          "statement_ja": "4.2.3は予測可能なdefault OIDCCryptoPassphraseを廃止してCVE-2026-55171を修正します。OIDC siteがupgrade前にood_portal.ymlへoidc_crypto_passphraseを設定しない場合、Apache自体は起動しても新設定を適用できず、旧設定のまま動作して緩和が効かない可能性があります。RHELでのlog directory ownership変更に伴うCVE-2026-55169対応も、非Puppet siteではFACL更新が必要です。",
+          "statement_en": "Version 4.2.3 removes a predictable default OIDCCryptoPassphrase to fix CVE-2026-55171. If an OIDC site does not set oidc_crypto_passphrase in ood_portal.yml before upgrade, Apache may start while failing to apply the new configuration, continuing with the old setting and leaving the mitigation ineffective. The CVE-2026-55169-related log-directory ownership change on RHEL also requires an FACL update at non-Puppet sites.",
+          "hpci_relevance_ja": "HPCI portalのsecurity patch管理はpackage版照合だけでは不十分で、effective configurationと否定試験が必要です。",
+          "hpci_relevance_en": "Security-patch management for HPCI portals requires effective-configuration inspection and negative testing, not package-version checks alone.",
+          "adoption_conditions_ja": [
+            "stagingでOIDC login、config generation、restart、log、key rotationを試験する。",
+            "旧default phraseと未設定をconfiguration scannerで検出する。",
+            "RHEL log accessを運用者・service account・監査者ごとに確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Test OIDC login, configuration generation, restart, logs, and key rotation in staging.",
+            "Detect the former default phrase and missing values with a configuration scanner.",
+            "Verify RHEL log access for operators, service accounts, and auditors."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS360"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS360",
+        "title": "Open OnDemand 4.2 release",
+        "publisher": "Open OnDemand Project",
+        "url": "https://discourse.openondemand.org/t/open-ondemand-4-2-release/4885",
+        "source_class": "official-project",
+        "published_or_updated": "2026-07-07"
+      },
+      "origin_group": "openondemand-42-release",
+      "checked_at": "2026-09-02T05:18:00+09:00",
+      "locator": "4.2.2 features and 4.2.3 security and upgrade notes",
+      "observation_ja": "portal機能、support OS、SBOM、CVE修正、silent failure条件を確認しました。",
+      "observation_en": "Verified portal features, supported operating systems, SBOM, CVE fixes, and the silent-failure condition.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "各HPCI siteのOpen OnDemand版、OIDC設定、patch適用、有効設定、accessibility・data export試験結果は未収集です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Open OnDemand versions, OIDC settings, patch state, effective configurations, and accessibility and data-export tests remain uncollected across HPCI sites.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

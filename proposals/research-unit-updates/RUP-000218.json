@@ -1,0 +1,112 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000218",
+  "topic_id": "SSW-05",
+  "created_at": "2026-09-02T07:33:10+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {"update_id": "RUP-000161", "bundle_sha256": "f79591b2a03ab0728ac815727b9be2dff45bd931e676de7986f24a9697b3350e"},
+    {"update_id": "RUP-000169", "bundle_sha256": "285332147693bcc9c2dc91cfedb32245bd49a1898ddb2e5bd00221ff8421ca21"},
+    {"update_id": "RUP-000180", "bundle_sha256": "6a3460f175ffe5519c78f11b48fc6ece0d848ccbd7c60f234d10bd5bfbfe30fb"},
+    {"update_id": "RUP-000193", "bundle_sha256": "950967809d4f1936340fffa064cf5f809ce725190577ca534b540b9cb422943f"}
+  ],
+  "before_profile_sha256": "c4cfd13ba766d4b66d0a2eed49b8ad1d0facb9c473a70a0bfda1ac0ceb12bdab",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "ストレージシステム・データ管理について、2026年9月1日公開のMLPerf Storage 3.0を追加しました。新しいKV cache試験とvector database試験により、学習データ供給とチェックポイントだけでなく、LLM推論と検索拡張処理の保存系も比較対象になりました。S3オブジェクトアクセスもPOSIXと並ぶ選択肢になり、次期HPCIではファイル中心の科学計算、オブジェクト中心のAIデータ、低遅延KV、vector indexを一つの平均帯域値で評価できません。アクセス方式別の性能・電力・復旧・整合性試験が必要です。Consensusは未完了です。",
+  "summary_en": "This update adds MLPerf Storage 3.0, published September 1, 2026, to storage-system and data-management research. New KV-cache and vector-database tests extend coverage beyond training-data delivery and checkpointing to LLM inference and retrieval-oriented storage. S3 object access is now an alternative to POSIX, so a successor HPCI cannot evaluate file-oriented science, object-oriented AI data, low-latency KV access, and vector indexing with one average-bandwidth metric. Protocol-specific performance, energy, recovery, and consistency tests are required. Consensus is incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-05-U04",
+      "before_sha256": "28e7f6aec32581f9f4a022c0669430acefa61791decdb28ba755a06792744297",
+      "evidence_section_ids": [
+        "TDS-HW1-SSW-05-U04",
+        "TDS-CD2-SSW-05-U02-U03-U04",
+        "TDS-CD3-SSW-05-U03-U04",
+        "TDS-CD4-SSW-05-AI-READY-DATA",
+        "TDS-CD5-SSW-05-FUGAKU-CAPACITY-LIFECYCLE",
+        "TDS-CD24-SSW-05-MLPERF-STORAGE-3"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD24-SSW-05-MLPERF-STORAGE-3",
+      "title_ja": "MLPerf Storage 3.0によるAI保存系の評価拡張",
+      "title_en": "Expanded AI storage evaluation in MLPerf Storage 3.0",
+      "summary_ja": "学習、チェックポイント、KV cache、vector database、POSIX、S3を負荷・アクセス方式別に評価します。",
+      "summary_en": "Evaluate training, checkpointing, KV cache, vector databases, POSIX, and S3 by workload and access method.",
+      "items": [
+        {
+          "item_id": "TDI-CD24-MLPERF-STORAGE-30",
+          "name_ja": "Storage 3.0はKV cache・vector database・S3を追加",
+          "name_en": "Storage 3.0 adds KV cache, vector database, and S3",
+          "stage": "current",
+          "maturity": "standardized",
+          "timing_ja": "2026年9月1日結果公開",
+          "timing_en": "Results published September 1, 2026",
+          "statement_ja": "MLPerf Storage 3.0は、LLM推論のKV cache読書きを測る試験と、vector index作成・検索を測るvector database試験を追加しました。また、従来のPOSIX層に加えてS3オブジェクトアクセスを選択可能にしました。これにより、学習データ供給、チェックポイント、推論キャッシュ、検索基盤を一つの公開スイートで扱える範囲が広がりました。ただし、異なる試験の結果は同一指標ではなく、提出構成の可用性区分やプロトコル条件も確認する必要があります。",
+          "statement_en": "MLPerf Storage 3.0 adds a KV-cache test for LLM-inference cache reads and writes and a vector-database test for vector indexing and querying. It also makes S3 object access available alongside the existing POSIX layer. This broadens one public suite from training-data delivery and checkpointing to inference cache and retrieval infrastructure. Results from different tests are not one interchangeable metric, and submission-availability divisions and protocol conditions must be checked.",
+          "hpci_relevance_ja": "HPCIの共有保存系を、科学計算ファイルだけでなくAI推論・RAG・エージェントのデータ経路まで含めて設計するための評価候補になります。",
+          "hpci_relevance_en": "It is a candidate evaluation framework for designing HPCI shared storage around scientific files as well as AI inference, RAG, and agent data paths.",
+          "adoption_conditions_ja": [
+            "学習、チェックポイント、KV cache、vector databaseを別々のSLOと容量計画で評価する。",
+            "POSIXとS3で整合性、認証、障害復旧、メタデータ負荷、実効容量を比較する。",
+            "公開スコアに加えて冷キャッシュ、混在負荷、電力、費用、縮退時性能を測定する。",
+            "ベンチマークの版、データ規模、アクセラレータ数、可用性区分を固定する。"
+          ],
+          "adoption_conditions_en": [
+            "Evaluate training, checkpointing, KV cache, and vector databases with separate SLOs and capacity plans.",
+            "Compare consistency, authentication, failure recovery, metadata load, and effective capacity for POSIX and S3.",
+            "Add cold-cache, mixed-load, energy, cost, and degraded-mode measurements to public scores.",
+            "Pin benchmark version, dataset scale, accelerator count, and availability division."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS294"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS294",
+        "title": "MLPerf Storage v3.0 Benchmark Results",
+        "publisher": "MLCommons",
+        "url": "https://mlcommons.org/2026/09/mlperf-storage-v3-0-results/",
+        "source_class": "official-project",
+        "published_or_updated": "2026-09-01"
+      },
+      "origin_group": "mlperf-storage-30",
+      "checked_at": "2026-09-02T03:46:00+09:00",
+      "locator": "new benchmark tests and S3 object storage access layer sections",
+      "observation_ja": "KV cache、vector database、S3アクセスの追加と、学習・推論をまたぐ評価目的を確認しました。",
+      "observation_en": "Verified the addition of KV cache, vector database, and S3 access and the suite's coverage across training and inference storage.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Storage 3.0の提出結果をHPCI候補の容量、可用性、保守、価格と対応付けた比較は未実施です。",
+    "同じ設備でPOSIXとS3、単独負荷と混在負荷を比較した国内公開実測は未確認です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Storage 3.0 submissions have not yet been mapped to HPCI candidate capacity, availability, support, and price.",
+    "No domestic public same-system comparison of POSIX versus S3 and isolated versus mixed workloads has been verified.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

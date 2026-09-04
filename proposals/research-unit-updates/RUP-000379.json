@@ -1,0 +1,142 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000379",
+  "topic_id": "APP-01",
+  "created_at": "2026-09-02T10:55:12+09:00",
+  "base_commit": "8f5da9ee11dcd040372e1204a52d649c19eb0a3d",
+  "before_profile_sha256": "0a91845e8dcfccd32f3cf909a0977faa879af626cf0b4c243fabc9b7b56d37b4",
+  "human_directive_id": "DIR-900022",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "富岳の産業利用に関する公開報告541件から、LAMMPS、OpenFOAM、GAUSSIAN、Quantum ESPRESSO、GROMACS、VASP等の利用件数上位20と、OSS 10・商用8・独自条件2という提供形態を追加しました。件数を計算需要量へ換算せず、次期systemのapplication readinessとlicense移行の根拠として扱います。単一のAIモデルによる暫定調査でConsensusは未完了です。",
+  "summary_en": "From 541 public Fugaku industrial-use reports, this update adds the top 20 packages, led by LAMMPS, OpenFOAM, GAUSSIAN, Quantum ESPRESSO, GROMACS, and VASP, plus a delivery mix of ten OSS, eight commercial, and two independently conditioned packages. Counts are not converted into compute demand; they inform application readiness and license migration for a successor system. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "APP-01-U01",
+      "before_sha256": "28fdb37617573ef9bf44a60fcbbbf35a703452ab7f593994eb6579fbf66c6b49",
+      "evidence_section_ids": [
+        "TDS-APP01-CURRENT",
+        "TDS-APP01-FUTURE",
+        "TDS-CD2-APP-01-U01",
+        "TDS-CD10-APP-01-U01",
+        "TDS-CD12-APP-01-U01-U02",
+        "TDS-CD15-APP-01-U01-U02",
+        "TDS-CD16-APP-01-FY2026B-DEMAND",
+        "TDS-CD17-APP-01-FY2026A-HPCI-DEMAND",
+        "TDS-CD18-APP-01-FY2026A-FUGAKU-AWARDS",
+        "TDS-CD19-APP-01-INDUSTRIAL-APPLICATION-ASSETS",
+        "TDS-CD38-APP-01-UTOKYO-AI-SCIENCE-DEMAND",
+        "TDS-CD55-APP-01-HPCI-USER-NEEDS",
+        "TDS-WC379-APP-01-01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-WC379-APP-01-01",
+      "title_ja": "富岳の産業利用報告に現れるアプリケーション需要",
+      "title_en": "Application demand observed in Fugaku industrial-use reports",
+      "summary_ja": "公開済み産業利用報告541件の上位20 softwareを、分野、提供形態、次期systemへの移行条件から読みます。",
+      "summary_en": "Interpret the top 20 software packages in 541 public industrial-use reports by field, delivery model, and successor-system migration conditions.",
+      "items": [
+        {
+          "item_id": "TDI-WC379-APP01-01-01",
+          "name_ja": "分子動力学・流体・量子化学・物性が上位を構成",
+          "name_en": "Molecular dynamics, CFD, quantum chemistry, and materials dominate the published ranking",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月29日時点の公開利用報告541件",
+          "timing_en": "541 public reports counted as of June 29, 2026",
+          "statement_ja": "HPCI運用事務局は、富岳の産業利用に関する公開済み利用報告541件からsoftware利用件数上位20を集計しています。上位6はLAMMPS 68件、OpenFOAM 39件、GAUSSIAN 35件、Quantum ESPRESSO 34件、GROMACS 30件、VASP 24件です。続いてFrontFlow/blueとGENESISが各16件、NuFD/FrontFlowRedが14件、HELYXとSTAR-CCM+が各13件です。分子動力学、流体解析、量子化学、物性物理が複数softwareで現れるため、次期systemの代表性評価は単一benchmarkだけでなく、異なるalgorithm、license、I/O、scale特性を持つapplication群で行う必要があります。",
+          "statement_en": "The HPCI operations office ranks the top 20 software packages reported in 541 published Fugaku industrial-use reports. The top six are LAMMPS in 68 projects, OpenFOAM in 39, GAUSSIAN in 35, Quantum ESPRESSO in 34, GROMACS in 30, and VASP in 24. FrontFlow/blue and GENESIS follow at 16 each, NuFD/FrontFlowRed at 14, and HELYX and STAR-CCM+ at 13 each. Molecular dynamics, CFD, quantum chemistry, and materials physics appear through multiple packages, so successor-system representativeness should use application cohorts with different algorithms, licenses, I/O, and scaling characteristics rather than one benchmark.",
+          "hpci_relevance_ja": "公開された実利用頻度は、application readiness、porting、support staff、license交渉の優先順位を決める基礎資料になります。",
+          "hpci_relevance_en": "Published use frequency provides a basis for prioritizing application readiness, porting, support staff, and license negotiations.",
+          "adoption_conditions_ja": [
+            "上位applicationごとに使用version、input、node規模、実行時間、I/O、精度、利用分野を追跡する。",
+            "CPU、GPU、異種nodeでの正しさ、性能、移植工数、保守工数を同じprotocolで測る。",
+            "公開報告に現れない非公開codeと新興AI workloadを別の需要調査で補う。"
+          ],
+          "adoption_conditions_en": [
+            "Track version, input, node scale, runtime, I/O, precision, and domain for each leading application.",
+            "Measure correctness, performance, porting effort, and maintenance across CPU, GPU, and heterogeneous nodes using one protocol.",
+            "Complement public reports with separate demand studies for private codes and emerging AI workloads."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS484"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-WC379-APP01-01-02",
+          "name_ja": "上位20にOSS 10、商用8、独自条件2の提供形態",
+          "name_en": "Top 20 comprise ten OSS, eight commercial, and two independently conditioned packages",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月29日時点の分類",
+          "timing_en": "Classification as of June 29, 2026",
+          "statement_ja": "上位20 softwareの提供形態は、OSS 10件、商用8件、独自利用条件2件です。商用にはGAUSSIAN、VASP、NuFD/FrontFlowRed、HELYX、STAR-CCM+、EXAPARTICLES/FLOW、scFLOW、ANSYS Fluentが含まれます。独自条件はFrontFlow/blueとABINIT-MPです。この行数は利用課題数の割合ではありません。また1課題が複数softwareを報告し得るため、表中の利用件数を加算して固有課題数や需要量とみなしません。新architectureの採用にはOSSのbuild・validationだけでなく、商用licenseの対象CPU/GPU、課金単位、移行時期、support期限を同時に確認する必要があります。",
+          "statement_en": "The top 20 contain ten OSS packages, eight commercial packages, and two packages with independent use conditions. Commercial entries include GAUSSIAN, VASP, NuFD/FrontFlowRed, HELYX, STAR-CCM+, EXAPARTICLES/FLOW, scFLOW, and ANSYS Fluent; FrontFlow/blue and ABINIT-MP use independent conditions. These row counts are not shares of user projects. Because one project may report multiple packages, usage counts must not be summed into unique projects or compute demand. Adoption of a new architecture requires not only OSS builds and validation but also verification of commercial-license coverage for CPUs and GPUs, charging units, migration timing, and support horizons.",
+          "hpci_relevance_ja": "hardware選定とsoftware・license継続性を別々に決めると、利用頻度の高い産業workflowが移行時に使えないriskがあります。",
+          "hpci_relevance_en": "Separating hardware selection from software and license continuity risks making frequently used industrial workflows unavailable during migration.",
+          "adoption_conditions_ja": [
+            "各候補nodeについて上位20 softwareの対応表をversion・license・support期限付きで作る。",
+            "商用softwareは実行可能性だけでなくlicense費、同時実行、GPU課金、持込み条件を確認する。",
+            "移行前に代表inputのregression testと利用者受入試験を行う。"
+          ],
+          "adoption_conditions_en": [
+            "Build a top-20 compatibility matrix for each candidate node with versions, licenses, and support horizons.",
+            "For commercial software, verify license cost, concurrency, GPU charging, and bring-your-own-license conditions in addition to executability.",
+            "Run regression tests on representative inputs and user acceptance tests before migration."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS484"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [
+    "TDS-CD64-APP-01-FUGAKU-INDUSTRIAL-SOFTWARE"
+  ],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS484",
+        "title": "主要統計情報等：『富岳』の産業利用に関する課題のアプリケーションの利用状況",
+        "publisher": "一般財団法人高度情報科学技術研究機構 HPCI運用事務局",
+        "url": "https://www.hpci-office.jp/about_hpci/statistics",
+        "source_class": "official-project",
+        "published_or_updated": "Application counts as of 2026-06-29"
+      },
+      "origin_group": "hpci-fugaku-industrial-application-statistics",
+      "checked_at": "2026-09-02T06:41:00+09:00",
+      "locator": "『富岳』の産業利用に関する課題のアプリケーションの利用状況、上位20表",
+      "observation_ja": "541件の公開報告を母集団とする上位20 softwareの名称、利用件数、応用分野、提供形態を確認しました。",
+      "observation_en": "Verified names, reported project counts, application fields, and delivery models for the top 20 software packages across 541 public reports.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "公開中の日本語表記だけを修正し、根拠、英語内容、未確認事項、暫定状態を変更していません。",
+    "独立したAIエージェントとAIモデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "Only active reader-facing Japanese wording was corrected; evidence, English content, open gaps and provisional status are unchanged.",
+    "Consensus review by independent AI agents and models remains incomplete."
+  ]
+}

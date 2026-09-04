@@ -1,0 +1,117 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000176",
+  "topic_id": "ARCH-01",
+  "created_at": "2026-09-02T06:10:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "36a6dfbd9b8b8589acd36634b442b23744f5c335ff2ae66e0e3258c960ba477c",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年6月のTOP500公式資料から、中国のLineShineがCPUのみの構成でHPL 2.198 EFLOP/s、HPCG 22.00 PFLOP/s、HPL-MxP 7.92 EFLOP/sを記録したことを追加しました。GPU・APU中心の異種構成と異なる選択肢ですが、三つの指標の順位と比率は用途適合性を直接証明しません。ノード内メモリ、ネットワーク、製造、ソフトウェア互換性の公開情報が不足するため、HPCI候補との比較は代表アプリケーションでの再現測定が必要です。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "Official June 2026 TOP500 material adds China's LineShine as a CPU-only system reporting 2.198 EFLOP/s HPL, 22.00 PFLOP/s HPCG, and 7.92 EFLOP/s HPL-MxP. It is an alternative to GPU- and APU-heavy heterogeneous systems, but rankings and ratios across the three metrics do not establish workload suitability. Public information remains insufficient on node memory, networking, manufacturing, and software compatibility, so comparison with HPCI candidates requires reproduced application measurements. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-01-U01",
+      "before_sha256": "3e76280277e3bd0c1cffb8b44073cf731eeab8f4ebc88ac8473ef7226499e52e",
+      "evidence_section_ids": ["TDS-ARCH01-CURRENT", "TDS-ARCH01-FUTURE", "TDS-HC26-ARCH-01-U1", "TDS-HW1-ARCH-01-U01", "TDS-CD15-ARCH-01-LINESHINE"]
+    },
+    {
+      "unit_id": "ARCH-01-U02",
+      "before_sha256": "1f2dd9711f8b46c20fe58321c697b3f74c5193c89674c4a98ec98b7271370a8c",
+      "evidence_section_ids": ["TDS-HW1-ARCH-01-U02", "TDS-CD15-ARCH-01-LINESHINE"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD15-ARCH-01-LINESHINE",
+      "title_ja": "LineShineに見るCPU中心のHPC・AI統合構成",
+      "title_en": "CPU-centric HPC and AI integration represented by LineShine",
+      "summary_ja": "公表されたシステム構成、ベンチマーク結果、未公開の実装条件を分け、異種アクセラレータ構成との比較条件を整理します。",
+      "summary_en": "Separate published system configuration and benchmark results from undisclosed implementation conditions, then define comparison requirements against heterogeneous accelerators.",
+      "items": [
+        {
+          "item_id": "TDI-CD15-LINESHINE-PUBLISHED-SYSTEM",
+          "name_ja": "LineShine：CPUのみで構成されたエクサスケールシステム",
+          "name_en": "LineShine: a CPU-only exascale system",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2025年設置、2026年6月TOP500登録",
+          "timing_en": "Installed in 2025 and listed in June 2026",
+          "statement_ja": "TOP500のシステム登録は、LineShineを304コア・1.55 GHzのLX2プロセッサ、LingQiインターコネクト、Kylin OS、13,789,440コアからなるCPUのみのシステムとして掲載しています。HPL実効性能は2,198.40 PFLOP/s、理論ピークは2,735.82 PFLOP/s、申告電力は42,220 kWです。公表値だけでは、ノード数、ノード内メモリ容量・帯域、ネットワークトポロジ、製造工程、可用性を一貫して検証できません。",
+          "statement_en": "The TOP500 system entry lists LineShine as a CPU-only system with 304-core 1.55-GHz LX2 processors, the LingQi interconnect, Kylin OS, and 13,789,440 cores. It reports 2,198.40 PFLOP/s HPL, 2,735.82 PFLOP/s peak, and 42,220 kW. The published record alone does not consistently verify node count, node-memory capacity and bandwidth, network topology, manufacturing process, or availability.",
+          "hpci_relevance_ja": "CPU中心構成も候補集合から除外せず、消費電力、ソフトウェア移植、メモリ帯域、通信、保守をGPU・APU構成と同じ基準で比較します。",
+          "hpci_relevance_en": "Retain CPU-centric systems in the candidate set and compare power, software porting, memory bandwidth, communication, and support against GPU and APU systems under matched criteria.",
+          "adoption_conditions_ja": ["公表構成と受入試験時の実構成を照合する。", "ノード単位の電力・メモリ・通信・故障時性能を取得する。", "コンパイラ、MPI、数値ライブラリ、アプリケーションの移植範囲を確認する。"],
+          "adoption_conditions_en": ["Reconcile the published configuration with the accepted deployed system.", "Obtain node-level power, memory, communication, and degraded-operation measurements.", "Verify compiler, MPI, numerical-library, and application portability."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS204", "SRC-CDS205"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD15-LINESHINE-BENCHMARK-BALANCE",
+          "name_ja": "HPL・HPCG・HPL-MxPで異なる性能像",
+          "name_en": "Different performance views from HPL, HPCG, and HPL-MxP",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月ランキング",
+          "timing_en": "June 2026 rankings",
+          "statement_ja": "TOP500はLineShineのHPLを2.198 EFLOP/s、HPCGを22.00 PFLOP/s、HPL-MxPを7.92 EFLOP/sと報告しています。HPLとHPCGでは首位ですが、HPL-MxPはEl Capitan、Aurora、Frontierに次ぐ4位です。これはベンチマークごとに強みが異なることを示しますが、科学アプリケーションやAI学習・推論の性能、精度、費用を直接示すものではありません。",
+          "statement_en": "TOP500 reports 2.198 EFLOP/s HPL, 22.00 PFLOP/s HPCG, and 7.92 EFLOP/s HPL-MxP for LineShine. It ranks first in HPL and HPCG but fourth in HPL-MxP behind El Capitan, Aurora, and Frontier. This demonstrates metric-dependent strengths, not scientific-application or AI training/inference performance, accuracy, or cost.",
+          "hpci_relevance_ja": "整備判断では単一ランキングを代理指標にせず、メモリ律速、通信律速、混合精度、推論、I/Oを含む代表負荷のポートフォリオで評価します。",
+          "hpci_relevance_en": "Do not use one ranking as a planning proxy; evaluate a portfolio spanning memory-bound, communication-bound, mixed-precision, inference, and I/O workloads.",
+          "adoption_conditions_ja": ["ベンチマーク版、問題規模、実行構成、消費電力の測定境界を固定する。", "HPL-MxPの倍率だけからAI性能を推定しない。", "同じアプリケーション、入力、精度、完了条件で候補ノードを比較する。"],
+          "adoption_conditions_en": ["Pin benchmark version, problem size, execution configuration, and power boundary.", "Do not infer AI performance from the HPL-MxP multiplier alone.", "Compare candidates with the same applications, inputs, precision, and completion criteria."],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS204", "SRC-CDS206"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {"source_id": "SRC-CDS204", "title": "LineShine Debuts at No. 1 as the TOP500 Enters a New Global Exascale Era", "publisher": "TOP500", "url": "https://www.top500.org/news/lineshine-debuts-no-1-top500-enters-new-global-exascale-era/?pubDate=20260628", "source_class": "official-project", "published_or_updated": "2026-06-23"},
+      "origin_group": "top500-june-2026",
+      "checked_at": "2026-09-02T02:20:00+09:00",
+      "locator": "LineShine HPL, HPCG, HPL-MxP, processor, interconnect, power",
+      "observation_ja": "CPUのみの構成と三つのランキング結果、申告電力を確認しました。",
+      "observation_en": "Verified the CPU-only characterization, three benchmark results, and reported power.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS205", "title": "LineShine - LingKun, LX2 304C 1.55GHz, LingQi, Kylin OS", "publisher": "TOP500", "url": "https://top500.org/system/180490/", "source_class": "official-project", "published_or_updated": "2026-06"},
+      "origin_group": "top500-system-entry",
+      "checked_at": "2026-09-02T02:22:00+09:00",
+      "locator": "Cores, processor, interconnect, installation year, performance, power, software",
+      "observation_ja": "コア数、LX2、LingQi、Kylin OS、HPL、HPCG、電力、OpenBLAS-local、OpenMPIを確認しました。",
+      "observation_en": "Verified core count, LX2, LingQi, Kylin OS, HPL, HPCG, power, OpenBLAS-local, and OpenMPI.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {"source_id": "SRC-CDS206", "title": "HPCG - June 2026", "publisher": "TOP500", "url": "https://www.top500.org/lists/hpcg/2026/06/", "source_class": "official-project", "published_or_updated": "2026-06"},
+      "origin_group": "top500-hpcg-june-2026",
+      "checked_at": "2026-09-02T02:24:00+09:00",
+      "locator": "HPCG ranking and system table",
+      "observation_ja": "LineShine 22,004.90 TFLOP/s、El Capitan 17,410 TFLOP/s、富岳16,000 TFLOP/sを確認しました。",
+      "observation_en": "Verified 22,004.90 TFLOP/s for LineShine, 17,410 TFLOP/s for El Capitan, and 16,000 TFLOP/s for Fugaku.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": ["LineShineのノード数、ノード内メモリ、ネットワーク、製造、可用性、ソフトウェア移植性は、公開された一次仕様で十分に検証できていません。", "同一アプリケーション、入力、精度、電力境界によるHPCI候補との比較実測が必要です。", "独立モデルによる一次資料確認とConsensusは未完了です。"],
+  "remaining_work_en": ["Node count, node memory, networking, manufacturing, availability, and software portability for LineShine are not sufficiently verified by published primary specifications.", "Matched application, input, precision, and power-boundary measurements against HPCI candidates are required.", "Independent-model primary-source review and Consensus remain incomplete."]
+}

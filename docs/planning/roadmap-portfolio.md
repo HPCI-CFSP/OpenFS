@@ -109,6 +109,14 @@ retrieval receipts. `tools/check_agent_evaluation_bundle.py` rejects direct
 outbound access, privileged candidate runs, missing holdouts when required,
 budget overruns, and non-independent evaluators before Consensus review.
 
+The reference-architecture roadmap also distinguishes observed system starts
+from future provider targets. The 2026-09-02 audit links verified operation or
+trial-operation starts for 24 of 27 FY2026 resources and future retirement,
+refresh, or expansion timing for 9. Annual HPCI call windows are not lifecycle
+milestones. Operational and procurement coverage is reported separately in the
+planning-evidence readiness view, so a published contract total or utilization
+value cannot silently satisfy a lifecycle, TCO, or acceptance gate.
+
 ## 4. Recommended sequence
 
 ### P0: establish the planning backbone

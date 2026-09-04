@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000135",
+  "topic_id": "SSW-11",
+  "created_at": "2026-09-02T00:57:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "before_profile_sha256": "f7d42cabcef37d9e5a84779a7a3a9b1e57d9bc0fc7d52d66fb036eebed1084ce",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "HPCI計画推進委員会の方針案から、現状はHPCI全体の利用状況・ジョブ・キューを統合して最適資源へ負荷分散する機能が存在しないとの整理と、資源ブローカー・メタスケジューラを共通要件候補とする方針を追加しました。現状認識と将来要件を分け、即時実行保証とは扱いません。単一モデルの暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds the HPCI planning draft's assessment that HPCI does not currently provide integrated visibility of utilization, jobs, and queues with load balancing to an optimal resource, and its proposal to consider resource brokers and metaschedulers as common requirements. Current-state evidence and future requirements are separated, and no immediate-execution guarantee is inferred. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "SSW-11-U01",
+      "before_sha256": "26e334f27ec2a0b887d48510c487a70fa622e462a09cff38e3053a4f15da322d",
+      "evidence_section_ids": ["TDS-CD2-SSW-11-U01", "TDS-CD10-SSW-11-U01"]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD10-SSW-11-U01",
+      "title_ja": "HPCI資源仲介の現状差分と共通要件案",
+      "title_en": "Current HPCI brokering gap and draft common requirements",
+      "summary_ja": "現状にない機能を明示し、導入時に必要な入力、出力、説明責任、失敗時動作を定義します。",
+      "summary_en": "Identify missing current capabilities and define inputs, outputs, explainability, and failure behavior for adoption.",
+      "items": [
+        {
+          "item_id": "TDI-CD10-HPCI-NO-INTEGRATED-BROKER",
+          "name_ja": "現行HPCIに統合的な最適資源仲介はない",
+          "name_en": "Current HPCI lacks integrated optimal-resource brokering",
+          "stage": "current",
+          "maturity": "deployed",
+          "timing_ja": "2026年6月30日の方針案による現状整理",
+          "timing_en": "Current-state assessment in the June 30, 2026 draft",
+          "statement_ja": "方針案は、HPCIが複数機関の資源を接続する仕組みとして機能してきた一方、全体の利用状況、ジョブ情報、キュー状態を統合把握し、最適資源へロードバランシングする機能は存在しないと整理しています。シングルサインオンや統一申請窓口を、実行先の自動最適化と同一視できません。",
+          "statement_en": "The draft says HPCI has connected resources from multiple institutions but does not provide integrated visibility of overall utilization, job information, and queue state with load balancing to an optimal resource. Single sign-on and a common application entry point therefore cannot be equated with automated execution-site optimization.",
+          "hpci_relevance_ja": "現行機能を基準にし、資源カタログ、待ち時間予測、データ所在、ソフトウェア適合、割当判断を段階的に追加する必要があります。",
+          "hpci_relevance_en": "Use current capability as the baseline, then add resource catalogs, queue prediction, data location, software compatibility, and allocation decisions in stages.",
+          "adoption_conditions_ja": [
+            "現行HPCIで取得可能な利用状況・ジョブ・キュー情報と更新間隔を確認する。",
+            "最適の目的関数を所要時間、費用、電力、データ移動、科学的適合性に分ける。",
+            "情報欠損・遅延・拠点停止時に誤配分しない失敗動作を定義する。"
+          ],
+          "adoption_conditions_en": [
+            "Verify currently available utilization, job, and queue data and their update intervals.",
+            "Separate optimization objectives for turnaround, cost, power, data movement, and scientific suitability.",
+            "Define fail-safe behavior for missing or stale data and site outages."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS131"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD10-HPCI-BROKER-COMMON-REQUIREMENT",
+          "name_ja": "資源ブローカー・メタスケジューラの共通要件案",
+          "name_en": "Draft common requirement for resource brokers and metaschedulers",
+          "stage": "near-term",
+          "maturity": "research",
+          "timing_ja": "2026年6月30日の方針案",
+          "timing_en": "Draft policy dated June 30, 2026",
+          "statement_ja": "方針案は、要求に応じて適切な資源へ割り当てるメタスケジューラ・資源ブローカー、利用実績の把握・可視化、統合的な課金・ポイント・クレジットを、次世代HPCI参加機関に求める共通要件候補に含めています。対応機関、技術方式、導入期限は未決定です。",
+          "statement_en": "The draft includes metaschedulers or resource brokers, utilization measurement and visibility, and integrated charging, points, or credits among candidate common requirements for next-generation HPCI providers. Participating institutions, technical designs, and delivery dates are not decided.",
+          "hpci_relevance_ja": "ブローカー採用は単一製品選定ではなく、共通資源記述、サイト内スケジューラ連携、権限、計測、説明可能性の標準化として扱います。",
+          "hpci_relevance_en": "Broker adoption should be treated as standardization of resource descriptions, local-scheduler integration, entitlements, metering, and explainability rather than selection of one product.",
+          "adoption_conditions_ja": [
+            "共通APIとサイト固有アダプタの責任境界を決める。",
+            "選択理由、拒否理由、予測誤差、再試行を利用者と運用者が追跡できるようにする。",
+            "複数拠点でシャドー運用し、手動選択との所要時間・失敗率を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Define the boundary between common APIs and site-specific adapters.",
+            "Make selection, rejection, prediction error, and retry traceable to users and operators.",
+            "Shadow-test across sites and compare turnaround and failure rates with manual selection."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS131"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS131",
+        "title": "AI for Science時代に対応したHPCI全体での戦略的な整備や制度の共通化に向けた方針（案）",
+        "publisher": "文部科学省研究振興局計算科学技術推進室",
+        "url": "https://www.mext.go.jp/content/20260630-mxt_jyohoka01-000050674_04-1-3.pdf",
+        "source_class": "official-project",
+        "published_or_updated": "2026-06-30"
+      },
+      "origin_group": "mext-hpci-planning-committee-69-draft",
+      "checked_at": "2026-09-02T00:54:00+09:00",
+      "locator": "Sections 2 and 3(2), pages 1-3",
+      "observation_ja": "現行HPCIの統合資源把握・負荷分散機能の欠如と、資源ブローカー・メタスケジューラ等の共通要件案を確認しました。将来案を実装済み機能として扱いません。",
+      "observation_en": "Verified the current gap in integrated HPCI resource visibility and load balancing, and the draft common requirement for brokers and metaschedulers. Future proposals are not treated as deployed functions.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-078は未解決です。共通API、サイト対応、予測精度、障害時動作、実運用比較が必要です。",
+    "方針案の正式決定と参加機関・実装期限を追跡する必要があります。",
+    "独立モデルによる本文確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-078 remains open; common APIs, site support, prediction accuracy, failure behavior, and operational comparisons are required.",
+    "Formal adoption, participating sites, and implementation deadlines must be tracked.",
+    "Independent-model source review and Consensus remain incomplete."
+  ]
+}

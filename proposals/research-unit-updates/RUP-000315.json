@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000315",
+  "topic_id": "ARCH-04",
+  "created_at": "2026-09-02T07:49:20+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [
+    {
+      "update_id": "RUP-000198",
+      "bundle_sha256": "00e5356de1553675b2dd42f08db56f4b79eadae013bab6f136982b9a0a82037a"
+    }
+  ],
+  "before_profile_sha256": "a10b406c48797d5dc398fdcd55eb4cda3c54e541a081251188e0bb5a1d3c1369",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "2026年の新規一次情報として、NVIDIA Spectrum-6/ConnectX-9とAMD HeliosのSalina DPU、UALoE、Vulcano 800を追加しました。front-end、scale-up、scale-out、optics、冷却、管理softwareを一体で比較し、aggregate帯域、公表性能、初期採用、一般提供、実測を区別します。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "This update adds new 2026 primary-source information on NVIDIA Spectrum-6 and ConnectX-9 and AMD Helios with Salina DPU, UALoE, and Vulcano 800. It compares front-end, scale-up, scale-out, optics, cooling, and management software together while separating aggregate bandwidth, vendor claims, early adoption, general availability, and measurements. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-04-U01",
+      "before_sha256": "1e1832bb87b42cd370cc758572e86b92085a1b5d2e3ae3861e88d8d8daa76e95",
+      "evidence_section_ids": [
+        "TDS-ARCH03-TIERING",
+        "TDS-ARCH03-FABRIC",
+        "TDS-HW1-ARCH-04-U01",
+        "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS",
+        "TDS-CD29-ARCH-04-2026-AI-FABRICS"
+      ]
+    },
+    {
+      "unit_id": "ARCH-04-U02",
+      "before_sha256": "8bcaede740b7a712de7bfebd08d9b1cdc29ecf22b447da14d5393828864c1371",
+      "evidence_section_ids": [
+        "TDS-ARCH04-CURRENT",
+        "TDS-HC26-ARCH-04-U2",
+        "TDS-HW1-ARCH-04-U02",
+        "TDS-HW2-ARCH-04-U02",
+        "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS",
+        "TDS-CD29-ARCH-04-2026-AI-FABRICS"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD29-ARCH-04-2026-AI-FABRICS",
+      "title_ja": "2026年AI基盤のfront-end・scale-up・scale-out network",
+      "title_en": "Front-end, scale-up, and scale-out networks for 2026 AI infrastructure",
+      "summary_ja": "NVIDIA Spectrum-6とAMD Heliosのnetwork構成を、接続階層、公開仕様、運用機能、実証不足に分けて整理します。",
+      "summary_en": "Organize NVIDIA Spectrum-6 and AMD Helios networking by connectivity tier, published specifications, operational functions, and missing independent evidence.",
+      "items": [
+        {
+          "item_id": "TDI-CD122-NVIDIA-SPECTRUM6-SCALEOUT",
+          "name_ja": "Spectrum-6とConnectX-9によるscale-out Ethernet",
+          "name_en": "Scale-out Ethernet with Spectrum-6 and ConnectX-9",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2026年7月発表、初期導入事業者を公表",
+          "timing_en": "Announced July 2026 with initial infrastructure adopters named",
+          "statement_ja": "NVIDIAはSpectrum-6を102.4 Tb/sのEthernet switch systemとして公表し、ConnectX-9 SuperNICと組み合わせた次世代Spectrum-XをVera Rubinのscale-out fabricに位置付けました。pluggable opticsとco-packaged opticsの両方、液冷、open network OS、複数のRDMA transportを支援するとしています。CoreWeave、Microsoft、Nebius、OCI等を初期導入事業者として挙げていますが、個別の稼働開始日、構成規模、可用性、第三者測定は示されていません。最大95%のnetwork efficiencyや既製Ethernet比最大1.6倍はNVIDIA公表値であり、HPCIのMPI・I/O混在負荷へ直接適用しません。",
+          "statement_en": "NVIDIA describes Spectrum-6 as a 102.4 Tb/s Ethernet switch system and pairs it with ConnectX-9 SuperNICs as the next Spectrum-X scale-out fabric for Vera Rubin. It supports pluggable and co-packaged optics, liquid cooling, open network operating systems, and a choice of RDMA transports. CoreWeave, Microsoft, Nebius, OCI, and others are named as early adopters, but deployment dates, installed scale, availability, and third-party measurements are not given. Claims of up to 95% network efficiency and up to 1.6x performance over off-the-shelf Ethernet are NVIDIA figures and are not transferred directly to HPCI MPI and mixed-I/O workloads.",
+          "hpci_relevance_ja": "HPCIの次期network候補はport速度だけでなく、optics方式、冷却、RDMA実装、障害迂回、network OS、vendor lock-inを一体で比較する必要があります。",
+          "hpci_relevance_en": "Future HPCI networks should compare optics, cooling, RDMA implementation, failure bypass, network operating systems, and vendor dependence together rather than port speed alone.",
+          "adoption_conditions_ja": [
+            "出荷・一般提供・国内保守の時期と構成別価格を確認する。",
+            "MPI、GPU collective、storage I/Oの混在時に実効帯域、p99 latency、公平性、障害回復を測定する。",
+            "pluggable opticsとCPOについて電力、故障単位、交換時間、予備品を比較する。"
+          ],
+          "adoption_conditions_en": [
+            "Confirm shipment, general availability, domestic support, and configuration pricing.",
+            "Measure delivered bandwidth, p99 latency, fairness, and recovery under mixed MPI, GPU-collective, and storage-I/O traffic.",
+            "Compare power, failure domains, replacement time, and spares for pluggable optics and CPO."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS413"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD123-AMD-HELIOS-THREE-TIER-FABRIC",
+          "name_ja": "AMD Heliosのfront-end・scale-up・scale-out三層network",
+          "name_en": "Three-tier front-end, scale-up, and scale-out networking in AMD Helios",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "Advancing AI 2026で発表",
+          "timing_en": "Announced at Advancing AI 2026",
+          "statement_ja": "AMDはHeliosのnetworkを、Salina DPUによるfront-end、UALoEによるscale-up、Vulcano 800 AI NICによるscale-out/scale-acrossの三層として提示しました。scale-upは72基のMI455Xをsingle-hopで接続し、aggregate 260 TB/sと31 TBのHBM4、18の独立UALoE station、Fabric Manager/Fabric OS、分割可能なvPodを公表しています。Vulcano 800はGPU当たり最大2.4 Tb/sのscale-out帯域としています。これらはrack aggregate値またはAMD公表値であり、個々のGPU pairの専有帯域、一般提供、異種vendor相互運用、実applicationの性能を意味しません。",
+          "statement_en": "AMD presents Helios networking as three tiers: a Salina DPU front end, UALoE scale-up, and Vulcano 800 AI NIC scale-out and scale-across. The scale-up design connects 72 MI455X GPUs in a single hop and publishes 260 TB/s aggregate bandwidth, 31 TB of HBM4, 18 independent UALoE stations, Fabric Manager and Fabric OS, and partitionable vPods. Vulcano 800 is specified for up to 2.4 Tb/s of scale-out bandwidth per GPU. These are rack-aggregate or AMD-reported figures and do not establish bandwidth exclusively available to each GPU pair, general availability, heterogeneous-vendor interoperability, or application performance.",
+          "hpci_relevance_ja": "三層networkと管理softwareを別々の部品ではなく一つのsystem architectureとして受入評価し、open standardの表明と実際の相互運用性を分ける必要があります。",
+          "hpci_relevance_en": "The three network tiers and management software should be accepted as one system architecture, while claims of open standards must be separated from demonstrated interoperability.",
+          "adoption_conditions_ja": [
+            "Salina、UALoE、Vulcano 800の製品提供時期、switch構成、国内保守を確認する。",
+            "UALink/UEC準拠範囲と他vendorのNIC・switch・acceleratorとの相互運用を検証する。",
+            "vPod分割時の性能隔離、障害継続、telemetry、software upgradeを測定する。"
+          ],
+          "adoption_conditions_en": [
+            "Confirm product timing, switch configurations, and domestic support for Salina, UALoE, and Vulcano 800.",
+            "Verify UALink and UEC conformance scope and interoperability with other vendors' NICs, switches, and accelerators.",
+            "Measure performance isolation, failure continuity, telemetry, and software upgrades under vPod partitioning."
+          ],
+          "actor_ids": [],
+          "source_ids": [
+            "SRC-CDS414"
+          ],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS413",
+        "title": "NVIDIA Spectrum-6 Arrives in Gigascale AI Factories",
+        "publisher": "NVIDIA",
+        "url": "https://blogs.nvidia.com/blog/nvidia-spectrum-six-arrives-in-gigascale-ai-factories/",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-21"
+      },
+      "origin_group": "nvidia-spectrum6-official",
+      "checked_at": "2026-09-02T05:38:00+09:00",
+      "locator": "Lines 13-44: switch capacity, adopters, ConnectX-9, optics, liquid cooling, RDMA, and vendor performance claims",
+      "observation_ja": "仕様、初期導入者、光実装、冷却、softwareと公表性能値を確認しました。",
+      "observation_en": "Verified specifications, early adopters, optical forms, cooling, software, and vendor-reported performance figures.",
+      "result": "read-primary-single-model"
+    },
+    {
+      "source": {
+        "source_id": "SRC-CDS414",
+        "title": "AI Networking Built for Scale",
+        "publisher": "AMD",
+        "url": "https://www.amd.com/en/blogs/2026/ai-networking-built-for-scale.html",
+        "source_class": "official-vendor",
+        "published_or_updated": "2026-07-23"
+      },
+      "origin_group": "amd-helios-networking-official",
+      "checked_at": "2026-09-02T05:39:00+09:00",
+      "locator": "Lines 455-480: three network tiers, Salina, UALoE, Helios scale-up, Fabric software, vPods, and Vulcano 800",
+      "observation_ja": "三層network構成、aggregate帯域、管理software、分割機能、scale-out仕様を確認しました。",
+      "observation_en": "Verified the three-tier network, aggregate bandwidth, management software, partitioning, and scale-out specifications.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "Spectrum-6、Salina、UALoE、Vulcano 800の一般提供、価格、国内保守、公開適合試験は未確認です。",
+    "同一のMPI、GPU collective、I/O混在負荷による第三者比較は未実施です。",
+    "独立モデルによるConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "General availability, pricing, domestic support, and public compliance tests remain unverified for Spectrum-6, Salina, UALoE, and Vulcano 800.",
+    "No third-party matched comparison using MPI, GPU collectives, and mixed I/O has been completed.",
+    "Independent-model Consensus remains incomplete."
+  ]
+}

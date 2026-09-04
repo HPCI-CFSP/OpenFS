@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "update_id": "RUP-000163",
+  "topic_id": "ARCH-06",
+  "created_at": "2026-09-02T06:40:00+09:00",
+  "base_commit": "6e7a783e5d00998d7d24ae329d1b9b38043b144e",
+  "predecessor_updates": [],
+  "before_profile_sha256": "c8df0c99b32f3c77fb4c4b875f568ab73de5b0e6db64fa0d0bc4ec709f988160",
+  "human_directive_id": "DIR-900021",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "execution": {
+    "mode": "interactive-human-authorized",
+    "agent_count": 1,
+    "model_count": 1,
+    "provider": "OpenAI",
+    "model_identity": "Codex; exact model/version not exposed in this execution",
+    "security_profile_id": "SEC-PROFILE-REPOSITORY-ONLY",
+    "retrieval_capability": "managed-web"
+  },
+  "summary_ja": "名古屋大学『不老・弐』の初期資料提供招請から、空調を含む3 MVA以内、総消費電力量の上限を12時間単位で変更できることを望ましい条件とした施設制約を追加しました。100 Gbps以上のSINET6・学内LAN接続も要求されています。これらは調達初期の設計条件であり、実際の最大・平均電力、PUE、冷却余力、実効帯域、制御効果を示す実測値ではありません。単一モデルによる暫定調査で、Consensusは未完了です。",
+  "summary_en": "The early Flow II request for information adds a facility constraint of at most 3 MVA including cooling and a preferred ability to change total-energy caps in 12-hour units. It also required at least 100 Gbps connections to SINET6 and the campus network. These are early procurement design conditions, not measured peak or average power, PUE, cooling headroom, effective bandwidth, or control effectiveness. This is provisional single-model research with Consensus incomplete.",
+  "units": [
+    {
+      "unit_id": "ARCH-06-U01",
+      "before_sha256": "07f9e6b9d6125c913b91f17a1812ef469e85654b3c1dfa39de028d269ceab550",
+      "evidence_section_ids": [
+        "TDS-CD1-ARCH-06-U01",
+        "TDS-CD2-ARCH-06-U01"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_id": "TDS-CD2-ARCH-06-U01",
+      "title_ja": "調達仕様に現れる施設・電力・外部接続制約",
+      "title_en": "Facility, power, and external-connectivity constraints in procurement",
+      "summary_ja": "設備条件を機器仕様から分離し、設計要求と運用実測を区別します。",
+      "summary_en": "Separate facility conditions from equipment specifications and distinguish design requirements from operational measurements.",
+      "items": [
+        {
+          "item_id": "TDI-CD2-ARCH06-FLOW2-3MVA-CAP",
+          "name_ja": "空調を含む3 MVAの設計上限",
+          "name_en": "Three-MVA design ceiling including cooling",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2024年8月資料提供招請、2026年10月運用開始予定",
+          "timing_en": "August 2024 request for information; service planned from October 2026",
+          "statement_ja": "資料提供招請は、空調機を含むシステム全体を3 MVA以内で稼働させることを基本要件としました。この値は受電容量、平均消費電力、IT機器だけの電力、将来増設余力を示すものではなく、市場調査段階の上限条件です。",
+          "statement_en": "The request for information required the complete system, including cooling equipment, to operate within 3 MVA. This does not state utility capacity, average consumption, IT-only power, or future expansion headroom; it is a ceiling from the market-sounding stage.",
+          "hpci_relevance_ja": "整備候補はアクセラレータ数ではなく、既設設備内の年間処理量、冷却方式、冗長性、保守時の能力低下まで含めて比較する必要があります。",
+          "hpci_relevance_en": "Candidates should be compared by annual completed work within existing facilities, cooling method, redundancy, and derating during maintenance, not accelerator count alone.",
+          "adoption_conditions_ja": [
+            "最終仕様、受入試験、運用時のIT電力・施設電力・PUEを分けて記録する。",
+            "冗長系停止時、夏季、部分負荷、保守時の冷却余力を確認する。",
+            "設備改修、電力契約、用水、排熱処理の費用境界を契約額と照合する。"
+          ],
+          "adoption_conditions_en": [
+            "Record final specification, acceptance tests, IT power, facility power, and PUE separately.",
+            "Confirm cooling headroom during redundant-system outage, summer, partial load, and maintenance.",
+            "Reconcile facility upgrades, utility contracts, water, and heat rejection with the procurement cost boundary."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS165"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-ARCH06-FLOW2-12H-ENERGY-CAP",
+          "name_ja": "12時間単位の動的電力量上限制御",
+          "name_en": "Dynamic total-energy caps in 12-hour units",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2024年8月資料提供招請",
+          "timing_en": "August 2024 request for information",
+          "statement_ja": "資料提供招請は、システム総消費電力量の上限を12時間単位で変更できる機構を望ましい条件としました。これは動的制御の実装、採用、精度、ジョブ性能、故障率への効果を証明しません。電力ではなく電力量の上限である点も、瞬時ピーク制御と区別する必要があります。",
+          "statement_en": "The request for information preferred a mechanism that can change the system's total-energy ceiling in 12-hour units. This does not prove implementation, adoption, accuracy, or effects on job performance and failures. An energy ceiling must also be distinguished from instantaneous peak-power control.",
+          "hpci_relevance_ja": "再生可能電力、電力価格、需給逼迫へ適応するには、ジョブ期限と公平性を保った電力・電力量制御をスケジューラと共同設計する必要があります。",
+          "hpci_relevance_en": "Adapting to renewable supply, price, and grid stress requires joint design of power and energy controls with scheduling while preserving deadlines and fairness.",
+          "adoption_conditions_ja": [
+            "電力上限と電力量上限、制御周期、計測点、誤差を仕様化する。",
+            "代表ジョブの完了時間、エネルギー、待ち時間、再実行、故障率を制御有無で比較する。",
+            "価格・炭素・系統要請の信号源と、緊急ジョブの例外規則を定める。"
+          ],
+          "adoption_conditions_en": [
+            "Specify power versus energy caps, control period, measurement points, and error.",
+            "Compare completion time, energy, queue time, retries, and failures with and without control.",
+            "Define price, carbon, and grid signal sources and exception rules for urgent jobs."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS165"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        },
+        {
+          "item_id": "TDI-CD2-ARCH06-FLOW2-100G-EXTERNAL",
+          "name_ja": "100 Gbps以上の外部接続条件",
+          "name_en": "External-connectivity requirement of at least 100 Gbps",
+          "stage": "near-term",
+          "maturity": "announced",
+          "timing_ja": "2024年8月資料提供招請",
+          "timing_en": "August 2024 request for information",
+          "statement_ja": "資料提供招請はSINET6と学内LANへ100 Gbps以上で接続し、HPCIへ接続できることを基本要件としました。物理リンク速度は、実データ転送のエンドツーエンド帯域、同時利用時の公平性、暗号化・検査負荷、障害時の代替経路を保証しません。",
+          "statement_en": "The request for information required connections of at least 100 Gbps to SINET6 and the campus LAN and connectivity to HPCI. Physical link rate does not guarantee end-to-end data throughput, fairness under concurrency, encryption and inspection overhead, or failover paths.",
+          "hpci_relevance_ja": "計算設備と回線を別々に整備すると、実験・AIデータの取り込みや世代移行で回線が律速します。転送SLOを施設要件として扱う必要があります。",
+          "hpci_relevance_en": "Independent compute and network procurement can make links the bottleneck for experimental and AI data or generation migration. Transfer SLOs should be facility requirements.",
+          "adoption_conditions_ja": [
+            "拠点間の実効帯域、遅延、並列ストリーム、暗号化、再送、障害切替を測る。",
+            "日次・ピークの流入出データ量と、期限付きワークフローの完了条件を対応付ける。",
+            "回線、DTN、ストレージ、認証の責任主体と保守時間を一体で確認する。"
+          ],
+          "adoption_conditions_en": [
+            "Measure inter-site throughput, latency, parallel streams, encryption, retries, and failover.",
+            "Relate daily and peak ingress and egress to completion requirements for deadline workflows.",
+            "Confirm ownership and maintenance windows for links, DTNs, storage, and authentication together."
+          ],
+          "actor_ids": [],
+          "source_ids": ["SRC-CDS165"],
+          "confidence": "high",
+          "consensus_status": "incomplete"
+        }
+      ]
+    }
+  ],
+  "archive_section_ids": [],
+  "source_checks": [
+    {
+      "source": {
+        "source_id": "SRC-CDS165",
+        "title": "スーパーコンピュータ『不老』NEXTシステム 資料提供招請",
+        "publisher": "国立大学法人東海国立大学機構",
+        "url": "https://kanpo.adm.nagoya-u.ac.jp/detail_seifu.php?no=538",
+        "source_class": "official-project",
+        "published_or_updated": "2024-08-06"
+      },
+      "origin_group": "nagoya-flow2-procurement",
+      "checked_at": "2026-09-02T06:35:00+09:00",
+      "locator": "Basic requirements J-M: 3 MVA including cooling, 12-hour energy cap, SINET6/campus links, HPCI connection",
+      "observation_ja": "空調込み3 MVA、12時間単位の総消費電力量上限変更、SINET6・学内LAN 100 Gbps以上、HPCI接続を確認しました。初期要求を運用実績として扱っていません。",
+      "observation_en": "Verified 3 MVA including cooling, 12-hour changes to total-energy caps, at least 100 Gbps SINET6 and campus links, and HPCI connectivity. Early requirements were not treated as operating results.",
+      "result": "read-primary-single-model"
+    }
+  ],
+  "coverage_gaps": [],
+  "remaining_work_ja": [
+    "GAP-TDS-012とGAP-TDS-076は未解決です。最終仕様、受入試験、IT・施設電力、PUE、冷却余力、改修費の実測が必要です。",
+    "12時間単位の動的制御が最終システムへ採用されたか、性能・電力・故障へどのように作用するかは未確認です。",
+    "独立モデルによる一次資料確認とConsensusは未完了です。"
+  ],
+  "remaining_work_en": [
+    "GAP-TDS-012 and GAP-TDS-076 remain open; final specifications and measured acceptance data for IT and facility power, PUE, cooling headroom, and upgrade cost are required.",
+    "Whether 12-hour dynamic control was adopted in the final system and how it affects performance, energy, and failures remain unverified.",
+    "Independent-model primary-source review and Consensus remain incomplete."
+  ]
+}
