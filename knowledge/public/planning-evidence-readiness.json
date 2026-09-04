@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "artifact_id": "PLANNING-EVIDENCE-READINESS-001",
   "status": "published",
-  "as_of": "2026-09-02",
+  "as_of": "2026-09-03",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "システム整備計画案に用いる根拠の充足状況",
@@ -174,16 +174,16 @@
         "unit_ja": "候補機比較の公開実測があるアプリケーション",
         "unit_en": "applications with public candidate-platform measurements"
       },
-      "finding_ja": "5アプリケーションの富岳・GPU候補機実測と、GENESIS・SALMONの系列内補間候補を登録しました。検証済みの将来性能予測は0件です。",
-      "finding_en": "Registered Fugaku/GPU-proxy measurements for five applications and within-series GENESIS and SALMON interpolation candidates. There are zero validated future-performance forecasts.",
-      "planning_use_ja": "入力、計測区間、ノード当たり資源量を固定した再測定を行い、time-to-solution、電力、移植工数を同時に比較します。",
-      "planning_use_en": "Remeasure with fixed inputs, timing boundaries and per-node resources, comparing time to solution, power and porting effort together.",
+      "finding_ja": "6アプリケーションの富岳公開実測、5アプリケーションの候補機実測、GENESIS・SALMONの系列内補間候補を登録しました。さらに、6アプリケーションを3つの計画案へ接続する共通ベンチマーク計画を定義しましたが、同一入力比較と独立検証は0件です。E-Waveの385ノード実測はEEA1と別入力で、検証済みの将来性能予測も0件です。",
+      "finding_en": "Registered public Fugaku measurements for six applications, candidate-platform measurements for five, and within-series GENESIS and SALMON interpolation candidates. A common benchmark plan now binds all six applications to the three planning options, but matched-input comparisons and independent validations remain at zero. The 385-node E-Wave result uses a different input from EEA1, and there are zero validated future-performance forecasts.",
+      "planning_use_ja": "入力、計測区間、ノード当たり資源量を固定した共通キャンペーンで、実行時間、電力、移植工数を同時に比較し、計画案ごとの判断境界に接続します。",
+      "planning_use_en": "Use the common campaign to remeasure fixed inputs, timing boundaries and per-node resources, compare time to solution, power and porting effort together, and feed the explicit decision boundary for each planning option.",
       "blockers_ja": [
-        "E-Waveの再現可能な公開実測がありません。",
+        "E-Waveには候補機での同一入力実測と再配布可能な評価パッケージがありません。",
         "2つの補間候補はいずれも1システム・1入力・1出所です。"
       ],
       "blockers_en": [
-        "No reproducible public E-Wave measurement is available.",
+        "E-Wave lacks a matched-input candidate-platform measurement and redistributable evaluation package.",
         "Each interpolation candidate is limited to one system, one input and one origin."
       ],
       "evidence_refs": [
@@ -191,7 +191,29 @@
         "GAP-PERF-001",
         "GAP-PERF-002"
       ],
-      "supporting_coverages": []
+      "supporting_coverages": [
+        {
+          "coverage_id": "matched-input-comparisons",
+          "numerator": 0,
+          "denominator": 6,
+          "unit_ja": "同一入力で2構成以上を各5回測定したアプリケーション",
+          "unit_en": "applications measured five times on at least two configurations with identical inputs"
+        },
+        {
+          "coverage_id": "independent-validations",
+          "numerator": 0,
+          "denominator": 6,
+          "unit_ja": "独立機関・独立出所で再検証したアプリケーション",
+          "unit_en": "applications revalidated by independent institutions and Origin Groups"
+        },
+        {
+          "coverage_id": "scenario-bindings",
+          "numerator": 3,
+          "denominator": 3,
+          "unit_ja": "測定結果の利用目的と判断境界を定義した計画案",
+          "unit_en": "planning options with defined measurement uses and decision boundaries"
+        }
+      ]
     },
     {
       "dimension_id": "quantitative-requirements",
@@ -199,13 +221,13 @@
       "label_en": "Quantitative application requirements",
       "status": "blocked",
       "coverage": {
-        "numerator": 5,
+        "numerator": 6,
         "denominator": 6,
         "unit_ja": "測定範囲または公開目標があるアプリケーション",
         "unit_en": "applications with a measured envelope or public target"
       },
-      "finding_ja": "5アプリケーションについて公開された測定規模を計画指標へ変換し、SALMONでは1ステップ1秒という公開目標も分離して登録しました。人が承認した受入目標は0件です。",
-      "finding_en": "Converted published measurement scales for five applications into planning metrics and separately registered SALMON's public one-second-per-step target. There are zero human-approved acceptance targets.",
+      "finding_ja": "6アプリケーションの公開測定範囲と、SALMONの1ステップ1秒という公開目標を登録しました。さらに6アプリケーション共通の測定プロトコルと受入基準案を作成しましたが、人が承認した合否値は0件です。",
+      "finding_en": "Registered public measurement envelopes for all six applications and SALMON's public one-second-per-step target. A common measurement protocol and six draft acceptance criteria are now available, but there are zero human-approved pass/fail values.",
       "planning_use_ja": "科学的成果に結び付くtime-to-solution、スループット、電力、I/O、規模を、代表入力とともに受入基準化します。",
       "planning_use_en": "Turn science-relevant time to solution, throughput, power, I/O and scale into acceptance criteria with representative inputs.",
       "blockers_ja": [
@@ -218,9 +240,25 @@
       ],
       "evidence_refs": [
         "APP-PERFORMANCE-FORECAST-001",
+        "ACCPROTO-EEA1-001",
         "GAP-PERF-003"
       ],
-      "supporting_coverages": []
+      "supporting_coverages": [
+        {
+          "coverage_id": "draft-measurement-contracts",
+          "numerator": 6,
+          "denominator": 6,
+          "unit_ja": "測定契約案があるアプリケーション",
+          "unit_en": "applications with a draft measurement contract"
+        },
+        {
+          "coverage_id": "human-approved-thresholds",
+          "numerator": 0,
+          "denominator": 6,
+          "unit_ja": "人が合否値を承認したアプリケーション",
+          "unit_en": "applications with human-approved pass/fail values"
+        }
+      ]
     }
   ],
   "scenario_assessments": [
@@ -270,7 +308,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260902-003",
-    "human_approval_directive_id": "DIR-900026"
+    "publication_decision_id": "PUBDEC-COMMON-BENCHMARK-20260903-001",
+    "human_approval_directive_id": "DIR-900028"
   }
 }

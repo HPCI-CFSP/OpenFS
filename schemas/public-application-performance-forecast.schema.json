@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "assumptions", "applications", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "acceptance_metric_catalog", "acceptance_protocol", "common_benchmark_campaign", "draft_acceptance_criteria", "assumptions", "applications", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.6.0"},
+    "schema_version": {"const": "0.8.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -74,6 +74,10 @@
     "baseline_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/baselineObservation"}},
     "cross_platform_observations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/crossPlatformObservation"}},
     "quantitative_requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/quantitativeRequirement"}},
+    "acceptance_metric_catalog": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/acceptanceMetric"}},
+    "acceptance_protocol": {"$ref": "#/$defs/acceptanceProtocol"},
+    "common_benchmark_campaign": {"$ref": "#/$defs/commonBenchmarkCampaign"},
+    "draft_acceptance_criteria": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/draftAcceptanceCriterion"}},
     "assumptions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assumption"}},
     "applications": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/application"}},
     "infrastructure_requirements_matrix": {"$ref": "#/$defs/infrastructureMatrix"},
@@ -194,6 +198,160 @@
         "planning_use_ja": {"type": "string", "minLength": 1},
         "planning_use_en": {"type": "string", "minLength": 1},
         "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceMetric": {
+      "type": "object",
+      "required": ["metric_id", "label_ja", "label_en", "measure_ja", "measure_en", "value_direction", "requirement_level"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "measure_ja": {"type": "string", "minLength": 1},
+        "measure_en": {"type": "string", "minLength": 1},
+        "value_direction": {"enum": ["lower-is-better", "higher-is-better", "bounded", "exact-match", "application-defined"]},
+        "requirement_level": {"enum": ["core", "conditional"]}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceProtocol": {
+      "type": "object",
+      "required": ["protocol_id", "status", "warmup_runs", "measured_runs", "summary_statistic", "variation_reporting", "failed_run_policy_ja", "failed_run_policy_en", "comparison_rule_ja", "comparison_rule_en", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "status": {"const": "openfs-provisional"},
+        "warmup_runs": {"type": "integer", "minimum": 0},
+        "measured_runs": {"type": "integer", "minimum": 3},
+        "summary_statistic": {"const": "median"},
+        "variation_reporting": {"const": "min-median-max-and-coefficient-of-variation"},
+        "failed_run_policy_ja": {"type": "string", "minLength": 1},
+        "failed_run_policy_en": {"type": "string", "minLength": 1},
+        "comparison_rule_ja": {"type": "string", "minLength": 1},
+        "comparison_rule_en": {"type": "string", "minLength": 1},
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "commonBenchmarkCampaign": {
+      "type": "object",
+      "required": ["campaign_id", "status", "protocol_id", "result_bundle_schema_path", "result_bundle_validator_path", "criterion_ids", "comparison_bases", "minimum_configurations", "minimum_valid_runs_per_configuration", "minimum_institutions", "minimum_origin_groups", "exact_workload_match_required", "stages", "scenario_bindings", "consensus_status", "procurement_eligible", "caveat_ja", "caveat_en"],
+      "properties": {
+        "campaign_id": {"type": "string", "pattern": "^BMPLAN-[A-Z0-9-]+$"},
+        "status": {"const": "provisional-design"},
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "result_bundle_schema_path": {"const": "schemas/benchmark-result-bundle.schema.json"},
+        "result_bundle_validator_path": {"const": "tools/check_benchmark_result_bundle.py"},
+        "criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^ACC-PERF-[A-Z0-9-]+$"}},
+        "comparison_bases": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"enum": ["same-node-count", "same-cpu-or-accelerator-count", "same-memory-capacity", "same-power", "same-procurement-cost"]}},
+        "minimum_configurations": {"type": "integer", "minimum": 2},
+        "minimum_valid_runs_per_configuration": {"type": "integer", "minimum": 5},
+        "minimum_institutions": {"type": "integer", "minimum": 2},
+        "minimum_origin_groups": {"type": "integer", "minimum": 2},
+        "exact_workload_match_required": {"const": true},
+        "stages": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/benchmarkCampaignStage"}},
+        "scenario_bindings": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/benchmarkScenarioBinding"}},
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false},
+        "caveat_ja": {"type": "string", "minLength": 1},
+        "caveat_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "benchmarkCampaignStage": {
+      "type": "object",
+      "required": ["stage_id", "sequence", "title_ja", "title_en", "status", "completed_application_ids", "target_application_count", "completion_rule_ja", "completion_rule_en", "blocking_gap_refs", "evidence_refs"],
+      "properties": {
+        "stage_id": {"type": "string", "pattern": "^BMSTAGE-[A-Z0-9-]+$"},
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 5},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "status": {"enum": ["blocked", "in-progress", "review-candidate", "complete"]},
+        "completed_application_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"}},
+        "target_application_count": {"type": "integer", "minimum": 1},
+        "completion_rule_ja": {"type": "string", "minLength": 1},
+        "completion_rule_en": {"type": "string", "minLength": 1},
+        "blocking_gap_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "benchmarkScenarioBinding": {
+      "type": "object",
+      "required": ["scenario_id", "emphasis_ja", "emphasis_en", "required_output_ids", "decision_boundary_ja", "decision_boundary_en", "sufficiency", "decision_effect"],
+      "properties": {
+        "scenario_id": {"type": "string", "pattern": "^SCN-HPCI-[A-Z0-9-]+$"},
+        "emphasis_ja": {"type": "string", "minLength": 1},
+        "emphasis_en": {"type": "string", "minLength": 1},
+        "required_output_ids": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}},
+        "decision_boundary_ja": {"type": "string", "minLength": 1},
+        "decision_boundary_en": {"type": "string", "minLength": 1},
+        "sufficiency": {"const": "necessary-but-insufficient"},
+        "decision_effect": {"const": "evidence-only"}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceScale": {
+      "type": "object",
+      "required": ["fugaku_nodes", "status", "candidate_scaling_modes", "reason_ja", "reason_en"],
+      "properties": {
+        "fugaku_nodes": {"type": "integer", "minimum": 1},
+        "status": {"enum": ["owner-decision-required", "required", "not-applicable"]},
+        "candidate_scaling_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["strong-scaling", "weak-scaling", "throughput-ensemble"]}},
+        "reason_ja": {"type": "string", "minLength": 1},
+        "reason_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceThreshold": {
+      "type": "object",
+      "required": ["metric_id", "lower", "value", "upper", "unit", "threshold_basis", "approval_status", "statement_ja", "statement_en", "source_ids"],
+      "properties": {
+        "metric_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "lower": {"type": ["number", "null"]},
+        "value": {"type": ["number", "null"]},
+        "upper": {"type": ["number", "null"]},
+        "unit": {"type": ["string", "null"]},
+        "threshold_basis": {"enum": ["public-target", "owner-definition-required"]},
+        "approval_status": {"const": "pending-owner-approval"},
+        "statement_ja": {"type": "string", "minLength": 1},
+        "statement_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "draftAcceptanceCriterion": {
+      "type": "object",
+      "required": ["criterion_id", "application_id", "status", "protocol_id", "workload_contract_ja", "workload_contract_en", "correctness_contract_ja", "correctness_contract_en", "required_metric_ids", "target_scales", "thresholds", "source_ids", "readiness", "consensus_status", "procurement_eligible"],
+      "properties": {
+        "criterion_id": {"type": "string", "pattern": "^ACC-PERF-[A-Z0-9-]+$"},
+        "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "status": {"const": "draft-measurement-contract"},
+        "protocol_id": {"type": "string", "pattern": "^ACCPROTO-[A-Z0-9-]+$"},
+        "workload_contract_ja": {"type": "string", "minLength": 1},
+        "workload_contract_en": {"type": "string", "minLength": 1},
+        "correctness_contract_ja": {"type": "string", "minLength": 1},
+        "correctness_contract_en": {"type": "string", "minLength": 1},
+        "required_metric_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}},
+        "target_scales": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/acceptanceScale"}},
+        "thresholds": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/acceptanceThreshold"}},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "readiness": {
+          "type": "object",
+          "required": ["measurement_contract_complete", "threshold_values_approved", "application_owner_approved", "independent_validation_complete", "blockers_ja", "blockers_en"],
+          "properties": {
+            "measurement_contract_complete": {"const": true},
+            "threshold_values_approved": {"const": false},
+            "application_owner_approved": {"const": false},
+            "independent_validation_complete": {"const": false},
+            "blockers_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+            "blockers_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+          },
+          "additionalProperties": false
+        },
+        "consensus_status": {"const": "incomplete"},
+        "procurement_eligible": {"const": false}
       },
       "additionalProperties": false
     },

@@ -136,6 +136,24 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 for item in dimensions["five-year-cost"]["supporting_coverages"]
             },
         )
+        self.assertEqual(
+            {
+                "matched-input-comparisons": 0,
+                "independent-validations": 0,
+                "scenario-bindings": 3,
+            },
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["application-performance"]["supporting_coverages"]
+            },
+        )
+        self.assertEqual(
+            {"draft-measurement-contracts": 6, "human-approved-thresholds": 0},
+            {
+                item["coverage_id"]: item["numerator"]
+                for item in dimensions["quantitative-requirements"]["supporting_coverages"]
+            },
+        )
         self.assertEqual(3, len(payload["scenario_assessments"]))
         self.assertEqual("provisional", payload["research_status"])
         self.assertEqual("incomplete", payload["consensus_status"])
@@ -231,6 +249,131 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 for item in applications.values()
             )
         )
+
+    def test_eea1_acceptance_contracts_cover_all_applications_without_invented_thresholds(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        applications = {item["application_id"] for item in payload["applications"]}
+        criteria = payload["draft_acceptance_criteria"]
+        self.assertEqual(applications, {item["application_id"] for item in criteria})
+        self.assertEqual(len(applications), len(criteria))
+        self.assertEqual(5, payload["acceptance_protocol"]["measured_runs"])
+        self.assertEqual("incomplete", payload["acceptance_protocol"]["consensus_status"])
+        core_metrics = {
+            item["metric_id"]
+            for item in payload["acceptance_metric_catalog"]
+            if item["requirement_level"] == "core"
+        }
+        for criterion in criteria:
+            self.assertTrue(core_metrics.issubset(criterion["required_metric_ids"]))
+            self.assertEqual(EXPECTED_SCALES, [
+                item["fugaku_nodes"] for item in criterion["target_scales"]
+            ])
+            self.assertFalse(criterion["readiness"]["threshold_values_approved"])
+            self.assertFalse(criterion["readiness"]["application_owner_approved"])
+            self.assertEqual("incomplete", criterion["consensus_status"])
+            self.assertFalse(criterion["procurement_eligible"])
+            for threshold in criterion["thresholds"]:
+                if threshold["threshold_basis"] == "owner-definition-required":
+                    self.assertIsNone(threshold["lower"])
+                    self.assertIsNone(threshold["value"])
+                    self.assertIsNone(threshold["upper"])
+                    self.assertIsNone(threshold["unit"])
+
+    def test_common_benchmark_campaign_binds_all_applications_and_planning_options(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        scenarios = json.loads(
+            (
+                ROOT
+                / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json"
+            ).read_text(encoding="utf-8")
+        )
+        campaign = payload["common_benchmark_campaign"]
+        self.assertEqual(payload["acceptance_protocol"]["protocol_id"], campaign["protocol_id"])
+        self.assertEqual(
+            {item["criterion_id"] for item in payload["draft_acceptance_criteria"]},
+            set(campaign["criterion_ids"]),
+        )
+        self.assertEqual(payload["comparison_bases"], campaign["comparison_bases"])
+        self.assertEqual(5, campaign["minimum_valid_runs_per_configuration"])
+        self.assertTrue(campaign["exact_workload_match_required"])
+        self.assertEqual(list(range(1, 6)), [item["sequence"] for item in campaign["stages"]])
+        self.assertTrue(all(item["status"] == "blocked" for item in campaign["stages"]))
+        self.assertTrue(all(not item["completed_application_ids"] for item in campaign["stages"]))
+        self.assertEqual(
+            {item["scenario_id"] for item in scenarios["scenarios"]},
+            {item["scenario_id"] for item in campaign["scenario_bindings"]},
+        )
+        self.assertTrue(
+            all(item["sufficiency"] == "necessary-but-insufficient"
+                for item in campaign["scenario_bindings"])
+        )
+        self.assertEqual("incomplete", campaign["consensus_status"])
+        self.assertFalse(campaign["procurement_eligible"])
+
+    def test_ewave_public_measurement_is_not_misrepresented_as_eea1_calibration(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        measurement = next(
+            item for item in payload["baseline_observations"]
+            if item["observation_id"] == "OBS-PERF-EWAVE-FUGAKU-385-NODES"
+        )
+        self.assertEqual(385, measurement["fugaku_nodes"])
+        self.assertEqual(7.6, measurement["value"])
+        self.assertEqual("h", measurement["unit"])
+        self.assertNotIn(
+            measurement["observation_id"],
+            {
+                observation_id
+                for candidate in payload["calibration_candidates"]
+                for observation_id in candidate["calibration_observation_ids"]
+            },
+        )
+        ewave = next(
+            item for item in payload["applications"]
+            if item["application_id"] == "APP-EEA1-E-WAVE"
+        )
+        self.assertEqual([385], [item["nodes"] for item in ewave["observed_scale_hints"]])
+        self.assertTrue(all(
+            item["status"] == "calibration-required"
+            for item in ewave["scale_readiness"]
+        ))
+
+    def test_rejects_unapproved_numeric_acceptance_threshold(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in (
+                "config/hpci-center-registry.json",
+                "knowledge/public/hpci-system-inventory.json",
+                "knowledge/public/application-performance-forecasts.json",
+            ):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(
+                    (ROOT / relative).read_text(encoding="utf-8"), encoding="utf-8"
+                )
+            path = root / "knowledge/public/application-performance-forecasts.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            threshold = payload["draft_acceptance_criteria"][0]["thresholds"][0]
+            threshold["value"] = 0.95
+            threshold["unit"] = "score"
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            self.assertTrue(any(
+                "invents an unapproved threshold" in error for error in validate(root)
+            ))
 
     def test_rejects_reused_calibration_data(self):
         with tempfile.TemporaryDirectory() as temporary:
