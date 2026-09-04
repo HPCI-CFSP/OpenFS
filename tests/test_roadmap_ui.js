@@ -236,6 +236,7 @@ test("EEA1 baseline-package candidates expose immutable pins without claiming co
     assert.ok(table.textContent.includes("v1.0.0 (498091f)"));
     assert.ok(table.textContent.includes(language === "ja" ? "未確認" : "Not confirmed"));
     assert.ok(table.textContent.includes(language === "ja" ? "公開パッケージなし" : "No public package"));
+    assert.ok(table.textContent.includes(language === "ja" ? "完成に必要な次の作業" : "Next action to complete package"));
     assert.equal(
       performance.common_benchmark_campaign.stages.find((item) => item.stage_id === "BMSTAGE-BASELINE-PACKAGE").completed_application_ids.length,
       0
@@ -259,6 +260,10 @@ test("calibration candidate and infrastructure requirements remain provisional i
     const cells = f.walk(matrix).filter((el) => el.className?.split(" ").includes("infrastructure-demand"));
     assert.equal(cells.length, performance.applications.length * performance.infrastructure_requirements_matrix.dimensions.length);
     assert.ok(matrix.textContent.includes(language === "ja" ? "必要な測定・確認" : "Required measurement or check"));
+    assert.ok(matrix.textContent.includes(language === "ja" ? "合否値: 責任者未承認" : "Pass/fail values: owner approval pending"));
+    const external = f.get("application-external-requirements");
+    assert.ok(external.textContent.includes(language === "ja" ? "ゲノム科学・計算化学" : "genomics and computational-chemistry"));
+    assert.ok(external.textContent.includes("800 Gbps"));
     assert.equal(
       f.get("application-infrastructure-caveat").textContent,
       performance.infrastructure_requirements_matrix[`caveat_${language}`]

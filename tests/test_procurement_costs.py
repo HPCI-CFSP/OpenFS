@@ -101,7 +101,7 @@ class ProcurementCostTests(unittest.TestCase):
         self.assertIsNone(five_year_known_cost_floor(shorter))
 
     def test_fugaku_annual_contracts_are_observations_not_five_year_extrapolations(self):
-        self.assertEqual(11, len(self.register["cases"]))
+        self.assertEqual(13, len(self.register["cases"]))
         expected = {
             "PROC-RIKEN-FUGAKU-MAINT-2024": 6261801700,
             "PROC-RIKEN-FUGAKU-MAINT-2025": 6259572132,

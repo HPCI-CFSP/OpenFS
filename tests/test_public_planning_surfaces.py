@@ -130,7 +130,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            {"complete-tco": 0, "public-total": 10, "component-itemization": 0},
+            {"complete-tco": 0, "public-total": 11, "component-itemization": 0},
             {
                 item["coverage_id"]: item["numerator"]
                 for item in dimensions["five-year-cost"]["supporting_coverages"]
@@ -155,6 +155,18 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(3, len(payload["scenario_assessments"]))
+        framework = payload["evaluation_framework"]
+        self.assertEqual(11, len(framework["criteria"]))
+        self.assertEqual(6, len(framework["accountability_boundaries"]))
+        self.assertTrue(all(item["weight"] is None for item in framework["criteria"]))
+        self.assertTrue(all(item["score_status"] == "not-scored" for item in framework["criteria"]))
+        scenarios = json.loads(
+            (ROOT / "roadmaps/scenarios/accepted/hpci-p0-scenarios.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            set(scenarios["scenarios"][0]["evaluation"]),
+            {item["criterion_id"] for item in framework["criteria"]},
+        )
         self.assertEqual("provisional", payload["research_status"])
         self.assertEqual("incomplete", payload["consensus_status"])
 
@@ -181,6 +193,8 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 for row in matrix["rows"]
             )
         )
+        self.assertTrue(all(row["planning_criterion_ids"] for row in matrix["rows"]))
+        self.assertTrue(all(row["owner_approval_status"] == "pending" for row in matrix["rows"]))
 
     def test_rejects_calibration_arithmetic_and_incomplete_matrix(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -277,6 +291,8 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertTrue(all(item["eea1_input_match"] != "confirmed" for item in packages))
+        self.assertTrue(all(item["closure_plan"]["status"] == "blocked" for item in packages))
+        self.assertTrue(all(len(item["closure_plan"]["required_artifacts"]) == 8 for item in packages))
         baseline_stage = next(
             item
             for item in payload["common_benchmark_campaign"]["stages"]
@@ -284,6 +300,40 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         self.assertEqual([], baseline_stage["completed_application_ids"])
         self.assertEqual("blocked", baseline_stage["status"])
+
+    def test_public_requirement_example_is_not_an_eea1_threshold(self):
+        payload = json.loads(
+            (ROOT / "knowledge/public/application-performance-forecasts.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(1, len(payload["external_requirement_examples"]))
+        example = payload["external_requirement_examples"][0]
+        self.assertEqual("official-planned-requirement", example["status"])
+        self.assertEqual(6, len(example["requirements"]))
+        self.assertTrue(all(item["label_ja"] and item["label_en"] for item in example["requirements"]))
+        self.assertIn("not a price", example["boundary_en"])
+        self.assertTrue(all(item["owner_approval_status"] == "pending" for item in payload["infrastructure_requirements_matrix"]["rows"]))
+
+    def test_fugaku_fy2024_operations_are_append_only(self):
+        payload = json.loads(
+            (ROOT / "knowledge/public/hpci-system-inventory.json").read_text(encoding="utf-8")
+        )
+        observations = {item["observation_id"]: item for item in payload["operational_observations"]}
+        self.assertEqual(90.7, observations["OP-HPCI-FUGAKU-UTILIZATION-FY2024"]["value"]["value"])
+        self.assertEqual(99.9, observations["OP-HPCI-FUGAKU-AVAILABILITY-FY2024"]["value"]["value"])
+        self.assertIn("OP-HPCI-FUGAKU-UTILIZATION-FY2023", observations)
+
+    def test_procurement_examples_preserve_price_and_requirement_boundaries(self):
+        payload = json.loads(
+            (ROOT / "knowledge/public/procurement-cost-register.json").read_text(encoding="utf-8")
+        )
+        cases = {item["case_id"]: item for item in payload["cases"]}
+        gpu = cases["PROC-ROIS-AI-GPU-SERVER-2025"]
+        self.assertEqual(79_970_000, gpu["amount"]["value_jpy"])
+        self.assertEqual([], gpu["itemized_costs"])
+        kyoto = cases["PROC-KYOTO-GENOMICS-CHEMISTRY-SYSTEM-2026"]
+        self.assertIsNone(kyoto["amount"])
+        self.assertEqual("planned", kyoto["configuration_observation"]["status"])
+        self.assertFalse(kyoto["five_year_cost_assessment"]["complete_tco"])
 
     def test_eea1_acceptance_contracts_cover_all_applications_without_invented_thresholds(self):
         payload = json.loads(

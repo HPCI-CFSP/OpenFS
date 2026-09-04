@@ -2,7 +2,7 @@
   "schema_version": "0.3.0",
   "export_id": "HPCI-SYSTEM-INVENTORY-001",
   "status": "published",
-  "as_of": "2026-09-04",
+  "as_of": "2026-09-05",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "scope_ja": "HPCIの令和8年度課題募集で公開された計算資源を、提供機関、アーキテクチャ、主要仕様、申請・利用対象期間の観点から比較する公開情報台帳です。",
@@ -160,6 +160,13 @@
       "publisher": "National Institute of Advanced Industrial Science and Technology",
       "url": "https://abci.ai/ja/about_abci/info.html",
       "source_class": "provider-official"
+    },
+    {
+      "source_id": "SRC-HPCI-SYS022",
+      "title": "富岳年報2024: 稼働状況",
+      "publisher": "RIKEN Center for Computational Science",
+      "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/1/",
+      "source_class": "provider-official"
     }
   ],
   "systems": [
@@ -202,7 +209,8 @@
       },
       "source_ids": [
         "SRC-HPCI-SYS001",
-        "SRC-HPCI-SYS002"
+        "SRC-HPCI-SYS002",
+        "SRC-HPCI-SYS022"
       ],
       "evidence_status": "official-architecture-map",
       "lifecycle_milestone_refs": [
@@ -211,7 +219,7 @@
           "milestone_id": "MS-BLUE-FUGAKU-START-2021Q1"
         }
       ],
-      "checked_on": "2026-09-02"
+      "checked_on": "2026-09-05"
     },
     {
       "system_id": "HPCI-SYS-WISTERIA-ODYSSEY",
@@ -1607,8 +1615,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260904-001",
-    "human_approval_directive_id": "DIR-900100"
+    "publication_decision_id": "PUBDEC-PLANNING-DECISION-EVIDENCE-20260905-001",
+    "human_approval_directive_id": "DIR-900101"
   },
   "operational_observations": [
     {
@@ -2031,6 +2039,94 @@
       "source_ids": [
         "SRC-HPCI-SYS021"
       ]
+    },
+    {
+      "observation_id": "OP-HPCI-FUGAKU-UTILIZATION-FY2024",
+      "system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "metric": "utilization",
+      "period_start": "2024-04-01",
+      "period_end": "2025-03-31",
+      "value": {
+        "kind": "exact",
+        "value": 90.7,
+        "lower": null,
+        "upper": null,
+        "unit": "% node-time"
+      },
+      "basis_ja": "通年のノード利用率。利用可能なノード時間に対するジョブ利用ノード時間の割合で、システム稼働率とは異なります。",
+      "basis_en": "Annual node utilization: node-time used by jobs divided by available node-time. It is distinct from system availability.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS022"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-FUGAKU-AVAILABILITY-FY2024",
+      "system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "metric": "system-availability",
+      "period_start": "2024-04-01",
+      "period_end": "2025-03-31",
+      "value": {
+        "kind": "exact",
+        "value": 99.9,
+        "lower": null,
+        "upper": null,
+        "unit": "%"
+      },
+      "basis_ja": "予定保守を分母から除き、障害等による停止を差し引く公式の年度平均稼働率です。",
+      "basis_en": "Official annual average availability excluding scheduled maintenance from the denominator and subtracting outage time caused by failures.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS022"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-FUGAKU-SCHEDULED-MAINT-FY2024",
+      "system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "metric": "scheduled-maintenance",
+      "period_start": "2024-04-01",
+      "period_end": "2025-03-31",
+      "value": {
+        "kind": "exact",
+        "value": 11.3,
+        "lower": null,
+        "upper": null,
+        "unit": "days"
+      },
+      "basis_ja": "2024年度に予定された保守日数の合計です。",
+      "basis_en": "Total scheduled-maintenance days in FY2024.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS022"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-FUGAKU-UNPLANNED-DOWNTIME-FY2024",
+      "system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "metric": "unplanned-downtime",
+      "period_start": "2024-04-01",
+      "period_end": "2025-03-31",
+      "value": {
+        "kind": "exact",
+        "value": 0.0,
+        "lower": null,
+        "upper": null,
+        "unit": "days"
+      },
+      "basis_ja": "2024年度に障害等で全系停止した日数です。個別ノード停止の合計0.09日は含めません。",
+      "basis_en": "FY2024 full-system outage days caused by failures and related events. The 0.09 aggregate node-outage days are not included.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS022"
+      ]
     }
   ],
   "operational_data_products": [
@@ -2105,6 +2201,29 @@
       "caveat_en": "The values are not separated by CPU, GPU, and VE node groups and therefore do not support comparisons among those groups.",
       "source_ids": [
         "SRC-HPCI-SYS018"
+      ]
+    },
+    {
+      "product_id": "OPDATA-HPCI-FUGAKU-OPERATIONS-FY2024",
+      "product_type": "published-chart",
+      "system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "period_start": "2024-04-01",
+      "period_end": "2025-03-31",
+      "record_count": null,
+      "fields": [
+        "monthly node utilization",
+        "registered projects and users",
+        "daily active users",
+        "job-count distribution by requested node scale"
+      ],
+      "scope_ja": "富岳年報2024が公開する月別ノード利用率、利用者・課題数、ジョブ件数、要求ノード規模別分布の図です。小規模ジョブ増加とスケジューラ対策も説明されています。",
+      "scope_en": "Charts in the Fugaku 2024 annual report cover monthly node utilization, users and projects, job counts, and requested-node scale. The report also describes increased small-job volume and scheduler measures.",
+      "caveat_ja": "図から値を推測して転記していません。機械可読値がない系列は、傾向の根拠としてのみ扱います。",
+      "caveat_en": "No values were inferred from chart pixels. Series without machine-readable values are used only as evidence of reported trends.",
+      "source_ids": [
+        "SRC-HPCI-SYS022"
       ]
     }
   ]

@@ -72,6 +72,9 @@ test("portfolio and all plan pages pass their actual root prefix to the budget r
       assert.ok(text.includes(language === "ja" ? "購入価格・TCOではありません" : "Not purchase price or TCO"));
       if (route === "scenarios/") {
         assert.ok(text.includes(language === "ja" ? "計画判断に必要な根拠の充足状況" : "Evidence readiness for planning decisions"));
+        assert.ok(text.includes(language === "ja" ? "評価軸と意思決定の責任分界" : "Evaluation criteria and decision accountability"));
+        assert.ok(text.includes(language === "ja" ? "重み付けは未承認" : "Weights are unapproved"));
+        assert.ok(text.includes(language === "ja" ? "HPCI計画推進委員会と所管部局" : "HPCI Plan Promotion Committee and responsible ministry office"));
       } else {
         assert.ok(text.includes(language === "ja" ? "公開根拠から見たこの案の位置付け" : "Position of this option against public evidence"));
         assert.ok(text.includes(language === "ja" ? "確定しない範囲" : "Commitment boundary"));

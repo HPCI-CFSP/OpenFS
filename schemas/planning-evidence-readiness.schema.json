@@ -4,9 +4,9 @@
   "title": "OpenFS planning evidence readiness",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "artifact_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "dimensions", "scenario_assessments", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "artifact_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "evaluation_framework", "dimensions", "scenario_assessments", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.2.0"},
+    "schema_version": {"const": "0.3.0"},
     "artifact_id": {"const": "PLANNING-EVIDENCE-READINESS-001"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -16,6 +16,7 @@
     "title_en": {"$ref": "#/$defs/text"},
     "summary_ja": {"$ref": "#/$defs/text"},
     "summary_en": {"$ref": "#/$defs/text"},
+    "evaluation_framework": {"$ref": "#/$defs/evaluationFramework"},
     "dimensions": {
       "type": "array", "minItems": 5, "maxItems": 5,
       "items": {"$ref": "#/$defs/dimension"}
@@ -71,6 +72,66 @@
         "blockers_ja": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
         "blockers_en": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
         "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}}
+      }
+    },
+    "evaluationSource": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "title", "publisher", "url", "checked_on", "locator"],
+      "properties": {
+        "source_id": {"type": "string", "pattern": "^SRC-PLAN[0-9]{3}$"},
+        "title": {"$ref": "#/$defs/text"},
+        "publisher": {"$ref": "#/$defs/text"},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "checked_on": {"type": "string", "format": "date"},
+        "locator": {"$ref": "#/$defs/text"}
+      }
+    },
+    "accountabilityBoundary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["boundary_id", "decision_scope_ja", "decision_scope_en", "accountable_role_ja", "accountable_role_en", "openfs_role_ja", "openfs_role_en", "status", "source_ids"],
+      "properties": {
+        "boundary_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "decision_scope_ja": {"$ref": "#/$defs/text"},
+        "decision_scope_en": {"$ref": "#/$defs/text"},
+        "accountable_role_ja": {"$ref": "#/$defs/text"},
+        "accountable_role_en": {"$ref": "#/$defs/text"},
+        "openfs_role_ja": {"$ref": "#/$defs/text"},
+        "openfs_role_en": {"$ref": "#/$defs/text"},
+        "status": {"enum": ["documented", "requires-current-confirmation"]},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PLAN[0-9]{3}$"}}
+      }
+    },
+    "evaluationCriterion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["criterion_id", "label_ja", "label_en", "required_evidence_ja", "required_evidence_en", "accountability_boundary_id", "weight", "threshold_status", "score_status", "source_ids"],
+      "properties": {
+        "criterion_id": {"enum": ["application-coverage", "time-to-solution", "power-facility-fit", "lifecycle-cost", "maturity-schedule", "software-migration", "operations-security", "hpci-interoperability", "technology-origin-and-ecosystem", "center-fit", "reversibility"]},
+        "label_ja": {"$ref": "#/$defs/text"},
+        "label_en": {"$ref": "#/$defs/text"},
+        "required_evidence_ja": {"$ref": "#/$defs/text"},
+        "required_evidence_en": {"$ref": "#/$defs/text"},
+        "accountability_boundary_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "weight": {"type": "null"},
+        "threshold_status": {"const": "not-approved"},
+        "score_status": {"const": "not-scored"},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PLAN[0-9]{3}$"}}
+      }
+    },
+    "evaluationFramework": {
+      "type": "object", "additionalProperties": false,
+      "required": ["framework_id", "status", "title_ja", "title_en", "summary_ja", "summary_en", "weight_policy_ja", "weight_policy_en", "sources", "accountability_boundaries", "criteria"],
+      "properties": {
+        "framework_id": {"const": "EVALFRAME-PLANNING-001"},
+        "status": {"const": "draft-for-human-review"},
+        "title_ja": {"$ref": "#/$defs/text"},
+        "title_en": {"$ref": "#/$defs/text"},
+        "summary_ja": {"$ref": "#/$defs/text"},
+        "summary_en": {"$ref": "#/$defs/text"},
+        "weight_policy_ja": {"$ref": "#/$defs/text"},
+        "weight_policy_en": {"$ref": "#/$defs/text"},
+        "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evaluationSource"}},
+        "accountability_boundaries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/accountabilityBoundary"}},
+        "criteria": {"type": "array", "minItems": 11, "maxItems": 11, "items": {"$ref": "#/$defs/evaluationCriterion"}}
       }
     },
     "scenarioAssessment": {

@@ -296,6 +296,8 @@
         lead: "更新時期、運用実績、費用、性能、アプリケーション要件を同じ形式で監査します。数値が登録されていても、比較条件や合意が未確認の項目は正式判断に使いません。",
         dimension: "判断項目", coverage: "充足範囲", finding: "現時点の把握", planningUse: "計画への使い方", blockers: "未確認事項",
         partial: "一部確認", blocked: "判断保留",
+        accountability: "責任分界", criteria: "共通の11評価軸", requiredEvidence: "必要な根拠", accountableRole: "確認主体", status: "状態",
+        documented: "公開文書で確認", requiresConfirmation: "現行の責任者確認が必要", notApproved: "重み・合否値は未承認", sources: "評価方針の公開根拠",
         scenarioTitle: "公開根拠から見たこの案の位置付け",
         commitmentBoundary: "確定しない範囲", blockingDimensions: "判断を止める項目",
       },
@@ -304,11 +306,78 @@
         lead: "Lifecycle, operations, cost, performance and application requirements are audited in one format. A registered number is not used for a formal decision when comparability or consensus remains unverified.",
         dimension: "Decision dimension", coverage: "Coverage", finding: "Current finding", planningUse: "Planning use", blockers: "Unresolved conditions",
         partial: "Partial", blocked: "Decision blocked",
+        accountability: "Accountability boundaries", criteria: "Eleven common evaluation criteria", requiredEvidence: "Required evidence", accountableRole: "Confirmation role", status: "Status",
+        documented: "Documented in public sources", requiresConfirmation: "Current owner confirmation required", notApproved: "Weights and thresholds unapproved", sources: "Public basis for the framework",
         scenarioTitle: "Position of this option against public evidence",
         commitmentBoundary: "Commitment boundary", blockingDimensions: "Blocking dimensions",
       },
     };
     return labels[language][key] || key;
+  }
+
+  function renderPlanningEvaluationFramework() {
+    const framework = data.planning_evidence_readiness?.evaluation_framework;
+    if (!framework) return;
+    setText("planning-evaluation-title", localized(framework, "title"));
+    setText("planning-evaluation-lead", localized(framework, "summary"));
+    setText("planning-evaluation-weight-policy", localized(framework, "weight_policy"));
+    setText("planning-accountability-title", planningEvidenceLabel("accountability"));
+    setText("planning-criteria-title", planningEvidenceLabel("criteria"));
+    setText("planning-evaluation-sources-title", planningEvidenceLabel("sources"));
+    const boundaryRoot = document.getElementById("planning-accountability-boundaries");
+    boundaryRoot.replaceChildren();
+    framework.accountability_boundaries.forEach((boundary) => {
+      const article = document.createElement("article");
+      article.className = "planning-accountability-card";
+      const heading = document.createElement("h5");
+      heading.textContent = localized(boundary, "decision_scope");
+      const role = document.createElement("p");
+      const roleLabel = document.createElement("strong");
+      roleLabel.textContent = `${planningEvidenceLabel("accountableRole")}: `;
+      role.append(roleLabel, localized(boundary, "accountable_role"));
+      const openfs = document.createElement("p");
+      openfs.textContent = localized(boundary, "openfs_role");
+      const status = document.createElement("span");
+      status.className = "status-badge status-partial";
+      status.textContent = planningEvidenceLabel(boundary.status === "documented" ? "documented" : "requiresConfirmation");
+      article.append(status, heading, role, openfs);
+      boundaryRoot.append(article);
+    });
+    const boundaries = new Map(framework.accountability_boundaries.map((item) => [item.boundary_id, item]));
+    const table = document.createElement("table");
+    table.className = "scenario-comparison-table planning-criteria-table";
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["dimension", "requiredEvidence", "accountableRole", "status"].forEach((key) => headRow.append(makeCell("th", planningEvidenceLabel(key))));
+    head.append(headRow);
+    const body = document.createElement("tbody");
+    framework.criteria.forEach((criterion) => {
+      const boundary = boundaries.get(criterion.accountability_boundary_id);
+      const row = document.createElement("tr");
+      row.append(
+        makeCell("th", localized(criterion, "label")),
+        makeCell("td", localized(criterion, "required_evidence")),
+        makeCell("td", boundary ? localized(boundary, "accountable_role") : criterion.accountability_boundary_id),
+        makeCell("td", planningEvidenceLabel("notApproved")),
+      );
+      body.append(row);
+    });
+    table.append(head, body);
+    document.getElementById("planning-evaluation-criteria").replaceChildren(table);
+    const sourceRoot = document.getElementById("planning-evaluation-sources");
+    sourceRoot.replaceChildren();
+    framework.sources.forEach((source) => {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = source.title;
+      const meta = document.createElement("span");
+      meta.textContent = `${source.publisher} · ${source.checked_on} · ${source.locator}`;
+      item.append(link, meta);
+      sourceRoot.append(item);
+    });
   }
 
   function renderPlanningEvidenceSummary() {
@@ -385,6 +454,7 @@
       refreshScenarioLinks();
     });
     window.OpenFSBudget.renderRegister(document.getElementById("portfolio-procurement-register"), language, rootPrefix);
+    renderPlanningEvaluationFramework();
     renderPlanningEvidenceSummary();
     renderScenarioTimeline(
       document.getElementById("scenario-portfolio-timeline"),
