@@ -1,14 +1,14 @@
 {
-  "schema_version": "0.9.0",
+  "schema_version": "1.0.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
-  "as_of": "2026-09-04",
+  "as_of": "2026-09-05",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
   "title_en": "EEA1 application performance evidence and reference calculations",
-  "summary_ja": "EEA1の6アプリケーションについて、公開実測、公開コード、版固定候補、候補機比較、性能モデルの校正状況、共通の受入試験プロトコル、アプリケーション別の受入基準案を整理します。版固定候補はEEA1入力との一致や再配布可能性を保証せず、目標値の承認とConsensusも完了していません。",
-  "summary_en": "This surface organizes public measurements, code availability, version-pinned candidates, candidate-platform comparisons, model-calibration status, a common acceptance-test protocol, and application-specific draft acceptance criteria for six EEA1 applications. The pinned candidates do not establish an EEA1 input match or redistributability; target approval and Consensus also remain incomplete.",
+  "summary_ja": "EEA1の6アプリケーションについて、公開実測、公開コード、版固定候補、候補機比較、性能モデルの校正状況、共通の受入試験プロトコル、再現パッケージを完成させるための不足物、アプリケーション要件から計画評価軸への対応を整理します。外部の公開調達要求は要件変換の参考例であり、EEA1の合否値ではありません。",
+  "summary_en": "For six EEA1 applications, this surface organizes public measurements, public code, pinned candidates, candidate-platform comparisons, calibration status, a common acceptance protocol, missing artifacts required to complete reproducibility packages, and mappings from application needs to planning criteria. An external public procurement requirement is a translation example, not an EEA1 pass/fail value.",
   "standard_fugaku_node_scales": [
     1,
     4,
@@ -275,6 +275,14 @@
       "publisher": "RIKEN-RCCS",
       "url": "https://github.com/RIKEN-RCCS/benchpark/commit/30d698dcab53c2d79e229b45bfcd0defcae33b72",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF030",
+      "title": "Kyoto University supercomputer request for information and basic requirements",
+      "publisher": "JETRO (Kyoto University announcement)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/386021/2026032600480001.html",
+      "published_at": "2026-03-26",
+      "source_class": "government-official"
     }
   ],
   "candidate_systems": [
@@ -1475,7 +1483,35 @@
         "SRC-PERF029"
       ],
       "note_ja": "公開コードと公開ベンチマーク入力をコミット単位で固定できる候補です。ただし、入力のライセンスとEEA1入力との一致が未確認のため、再配布可能な富岳基準測定パッケージとしては未完成です。",
-      "note_en": "Public code and benchmark input can be pinned to immutable commits. The input license and correspondence with the EEA1 workload remain unverified, so this is not yet a redistributable Fugaku baseline package."
+      "note_en": "Public code and benchmark input can be pinned to immutable commits. The input license and correspondence with the EEA1 workload remain unverified, so this is not yet a redistributable Fugaku baseline package.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [
+          "code",
+          "input",
+          "code-license",
+          "content-digest"
+        ],
+        "next_action_ja": "入力ライセンス、EEA1入力との一致、依存関係、実行手順、参照出力をアプリケーション責任者と確認します。",
+        "next_action_en": "Confirm the input license, EEA1 workload match, dependencies, run procedure and reference output with the application owner.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF024",
+          "SRC-PERF025",
+          "SRC-PERF029"
+        ]
+      }
     },
     {
       "package_id": "BPKG-EEA1-SALMON",
@@ -1494,7 +1530,33 @@
         "SRC-PERF029"
       ],
       "note_ja": "SALMON2のコード版は固定できますが、EEA1のスーパーセル入力、依存関係、実行手順を再取得可能な形で固定できていません。",
-      "note_en": "The SALMON2 code version can be pinned, but the EEA1 supercell input, dependencies, and run procedure are not yet fixed in a retrievable package."
+      "note_en": "The SALMON2 code version can be pinned, but the EEA1 supercell input, dependencies, and run procedure are not yet fixed in a retrievable package.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "next_action_ja": "EEA1スーパーセル入力、依存関係、実行手順、参照出力を固定し、公開サンプルを代替入力として使えるか責任者に確認します。",
+        "next_action_en": "Pin the EEA1 supercell input, dependencies, run procedure and reference output; ask the owner whether a public sample can serve as a proxy.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF026",
+          "SRC-PERF029"
+        ]
+      }
     },
     {
       "package_id": "BPKG-EEA1-SCALE-LETKF",
@@ -1513,7 +1575,33 @@
         "SRC-PERF029"
       ],
       "note_ja": "SCALE-LETKFのコード版は固定できますが、EEA1の初期条件、境界条件、アンサンブル、依存するSCALE-RM版を含む入力一式は未登録です。",
-      "note_en": "The SCALE-LETKF code version can be pinned, but the EEA1 initial and boundary conditions, ensemble, and dependent SCALE-RM version are not registered as one input package."
+      "note_en": "The SCALE-LETKF code version can be pinned, but the EEA1 initial and boundary conditions, ensemble, and dependent SCALE-RM version are not registered as one input package.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "next_action_ja": "初期・境界条件、アンサンブル、SCALE-RM依存版、実行手順、参照出力を一つの版固定束にします。",
+        "next_action_en": "Bundle initial and boundary conditions, ensemble, dependent SCALE-RM revision, run procedure and reference output into one pinned package.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF027",
+          "SRC-PERF029"
+        ]
+      }
     },
     {
       "package_id": "BPKG-EEA1-E-WAVE",
@@ -1534,7 +1622,31 @@
         "SRC-PERF029"
       ],
       "note_ja": "公開資料は富岳実測とGPU対応状況を示しますが、EEA1コードと入力の再配布可能なパッケージは確認できません。公開プロキシの提供可否を責任者に確認する必要があります。",
-      "note_en": "Public sources document Fugaku measurements and GPU-porting status, but no redistributable EEA1 code-and-input package was confirmed. The application owner must determine whether a public proxy can be provided."
+      "note_en": "Public sources document Fugaku measurements and GPU-porting status, but no redistributable EEA1 code-and-input package was confirmed. The application owner must determine whether a public proxy can be provided.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [],
+        "next_action_ja": "責任者に再配布可能なコード・入力または科学的に妥当な公開プロキシの提供可否を確認します。",
+        "next_action_en": "Ask the owner whether redistributable code and input, or a scientifically valid public proxy, can be provided.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF011",
+          "SRC-PERF021",
+          "SRC-PERF022",
+          "SRC-PERF029"
+        ]
+      }
     },
     {
       "package_id": "BPKG-EEA1-FRONTFLOW-BLUE",
@@ -1554,7 +1666,30 @@
         "SRC-PERF029"
       ],
       "note_ja": "HPCIでの利用情報は公開されていますが、EEA1コード、標準メッシュ、実行条件を再配布可能な形で固定できていません。",
-      "note_en": "HPCI usage information is public, but the EEA1 code, standard mesh, and run conditions cannot yet be pinned as a redistributable package."
+      "note_en": "HPCI usage information is public, but the EEA1 code, standard mesh, and run conditions cannot yet be pinned as a redistributable package.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [],
+        "next_action_ja": "責任者に再配布可能なコード、標準メッシュ、実行条件、参照出力の提供可否を確認します。",
+        "next_action_en": "Ask the owner whether redistributable code, a standard mesh, run conditions and reference output can be provided.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF011",
+          "SRC-PERF012",
+          "SRC-PERF029"
+        ]
+      }
     },
     {
       "package_id": "BPKG-EEA1-LQCD-DWF-HMC",
@@ -1573,7 +1708,33 @@
         "SRC-PERF029"
       ],
       "note_ja": "公開リポジトリのコミットは固定できますが、リリースタグとEEA1の格子、収束条件、初期配置を含む入力一式は未登録です。",
-      "note_en": "A public repository commit can be pinned, but no release tag or EEA1 input package covering the lattice, convergence conditions, and initial configuration is registered."
+      "note_en": "A public repository commit can be pinned, but no release tag or EEA1 input package covering the lattice, convergence conditions, and initial configuration is registered.",
+      "closure_plan": {
+        "status": "blocked",
+        "required_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "next_action_ja": "リリース版、EEA1格子、初期配置、収束条件、依存関係、実行手順、参照出力を固定します。",
+        "next_action_en": "Pin a release, EEA1 lattice, initial configuration, convergence rules, dependencies, run procedure and reference output.",
+        "accountable_confirmation_ja": "アプリケーション責任者と測定キャンペーン責任者による確認が必要です。",
+        "accountable_confirmation_en": "Confirmation by the application owner and benchmark-campaign owner is required.",
+        "source_ids": [
+          "SRC-PERF028",
+          "SRC-PERF029"
+        ]
+      }
     }
   ],
   "forecasts": [],
@@ -1639,8 +1800,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260904-001",
-    "human_approval_directive_id": "DIR-900100"
+    "publication_decision_id": "PUBDEC-PLANNING-DECISION-EVIDENCE-20260905-001",
+    "human_approval_directive_id": "DIR-900101"
   },
   "illustrations": [
     {
@@ -2854,8 +3015,8 @@
   "infrastructure_requirements_matrix": {
     "title_ja": "EEA1アプリケーション需要と計算基盤要件",
     "title_en": "EEA1 application demand and infrastructure requirements",
-    "summary_ja": "公開コード、実測、技術報告に基づき、各アプリケーションが計算基盤へ与える相対的な要求を整理します。システム整備計画で、演算器だけでなくメモリ、接続、I/O、運用期限、可搬性、データ管理を同時に確認するための入口です。",
-    "summary_en": "Using public code, measurements, and technical reports, this matrix organizes the relative demands each application places on infrastructure. It is a planning entry point for considering compute together with memory, interconnect, I/O, deadlines, portability, and data governance.",
+    "summary_ja": "各アプリケーションの公開根拠から、8つのシステム要件軸への影響と、3案を比較する評価軸への対応を整理します。需要レベルは設計上の注意点であり、容量・性能の採用値ではありません。",
+    "summary_en": "Maps public application evidence to eight system-requirement dimensions and to the criteria used to compare the three options. Demand levels are design signals, not adopted capacity or performance values.",
     "dimensions": [
       {
         "dimension_id": "compute-throughput",
@@ -3038,7 +3199,15 @@
               "SRC-PERF018"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "power-facility-fit",
+          "software-migration"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-GENESIS-001",
+        "owner_approval_status": "pending"
       },
       {
         "application_id": "APP-EEA1-SALMON",
@@ -3155,7 +3324,15 @@
               "SRC-PERF015"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "power-facility-fit",
+          "software-migration"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-SALMON-001",
+        "owner_approval_status": "pending"
       },
       {
         "application_id": "APP-EEA1-SCALE-LETKF",
@@ -3272,7 +3449,16 @@
               "SRC-PERF014"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "hpci-interoperability",
+          "software-migration",
+          "center-fit"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-SCALE-LETKF-001",
+        "owner_approval_status": "pending"
       },
       {
         "application_id": "APP-EEA1-E-WAVE",
@@ -3381,7 +3567,15 @@
               "SRC-PERF013"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "power-facility-fit",
+          "software-migration"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-E-WAVE-001",
+        "owner_approval_status": "pending"
       },
       {
         "application_id": "APP-EEA1-FRONTFLOW-BLUE",
@@ -3498,7 +3692,14 @@
               "SRC-PERF012"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "software-migration"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-FRONTFLOW-BLUE-001",
+        "owner_approval_status": "pending"
       },
       {
         "application_id": "APP-EEA1-LQCD-DWF-HMC",
@@ -3607,7 +3808,15 @@
               "SRC-PERF009"
             ]
           }
-        ]
+        ],
+        "planning_criterion_ids": [
+          "application-coverage",
+          "time-to-solution",
+          "hpci-interoperability",
+          "software-migration"
+        ],
+        "acceptance_criterion_id": "ACC-PERF-LQCD-DWF-HMC-001",
+        "owner_approval_status": "pending"
       }
     ],
     "caveat_ja": "High、Medium、Low、Unknownは、公開資料を単一のAIモデルが整理した定性的な暫定評価です。ノード数、帯域、容量、調達仕様を示すものではなく、項目間やアプリケーション間の厳密な数値比較には使えません。各セルの測定課題を解消し、独立Consensusを通過するまで正式要件にしません。",
@@ -6511,6 +6720,91 @@
       },
       "consensus_status": "incomplete",
       "procurement_eligible": false
+    }
+  ],
+  "external_requirement_examples": [
+    {
+      "case_id": "EXREQ-KYOTO-GENOMICS-CHEMISTRY-2026",
+      "title_ja": "ゲノム科学・計算化学の用途からシステム要件への変換例",
+      "title_en": "Example translating genomics and computational-chemistry needs into system requirements",
+      "status": "official-planned-requirement",
+      "summary_ja": "京都大学の資料提供招請は、利用分野を起点に、計算ノード、GPU、メモリ、ストレージ、相互接続、運用基盤を一式の要求へ展開しています。",
+      "summary_en": "Kyoto University's request for information starts from user domains and expands them into requirements for compute nodes, GPUs, memory, storage, interconnect and operations infrastructure.",
+      "requirements": [
+        {
+          "dimension_id": "compute",
+          "label_ja": "計算資源",
+          "label_en": "Compute",
+          "requirement_ja": "共有メモリ24 TiB以上のノード群、CPUノード群、B200相当以上のGPUを2基以上搭載するノード群を用途別に組み合わせる。",
+          "requirement_en": "Combine a shared-memory group with at least 24 TiB, CPU groups and a group with at least two B200-class-or-better GPUs per node by workload.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        },
+        {
+          "dimension_id": "memory",
+          "label_ja": "メモリ",
+          "label_en": "Memory",
+          "requirement_ja": "用途に応じてノード当たり512 GiB、1 TiB、1.5 TiB、共有24 TiB以上を使い分ける。",
+          "requirement_en": "Use workload-specific tiers of at least 512 GiB, 1 TiB, 1.5 TiB and 24 TiB shared memory per node or group.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        },
+        {
+          "dimension_id": "storage",
+          "label_ja": "ストレージ",
+          "label_en": "Storage",
+          "requirement_ja": "大容量系2.1 PB物理・1.2 PB実効、高速系27 PB物理・20 PB実効、災害復旧1.45 PB物理・1.2 PB実効を分ける。",
+          "requirement_en": "Separate 2.1 PB physical/1.2 PB effective bulk storage, 27 PB physical/20 PB effective fast storage and 1.45 PB physical/1.2 PB effective disaster-recovery storage.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        },
+        {
+          "dimension_id": "interconnect",
+          "label_ja": "相互接続",
+          "label_en": "Interconnect",
+          "requirement_ja": "計算・ログイン・基盤サーバと高速分散ファイルシステムを800 Gbps以上で接続する。",
+          "requirement_en": "Connect compute, login and infrastructure servers with the fast distributed file system at 800 Gbps or more.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        },
+        {
+          "dimension_id": "resilience-facility",
+          "label_ja": "耐障害性・施設",
+          "label_en": "Resilience and facility",
+          "requirement_ja": "5分程度の瞬時停電に耐えるUPS、災害復旧ストレージ、十分な冷却と消費電力抑制を含める。",
+          "requirement_en": "Include UPS for about five minutes of outage, disaster-recovery storage, sufficient cooling and power-reduction measures.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        },
+        {
+          "dimension_id": "software",
+          "label_ja": "ソフトウェア",
+          "label_en": "Software",
+          "requirement_ja": "Linux、ゲノム解析・計算化学ソフトウェア、GPU系ではCUDAを要求する。",
+          "requirement_en": "Require Linux, genomics and computational-chemistry software, and CUDA for the GPU group.",
+          "source_ids": [
+            "SRC-PERF030"
+          ]
+        }
+      ],
+      "planning_criterion_ids": [
+        "application-coverage",
+        "time-to-solution",
+        "power-facility-fit",
+        "software-migration",
+        "operations-security",
+        "center-fit"
+      ],
+      "boundary_ja": "資料提供招請段階の予定要件です。価格、最終仕様、採用製品、実測性能ではなく、EEA1の受入基準にも転用しません。",
+      "boundary_en": "These are planned requirements at the request-for-information stage, not a price, final specification, selected product or measured performance, and they are not reused as EEA1 acceptance criteria.",
+      "source_ids": [
+        "SRC-PERF030"
+      ]
     }
   ]
 }

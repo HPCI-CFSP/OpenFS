@@ -3,9 +3,9 @@
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/public-application-performance-forecast.schema.json",
   "title": "OpenFS Public Application Performance Forecast Surface",
   "type": "object",
-  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "acceptance_metric_catalog", "acceptance_protocol", "common_benchmark_campaign", "draft_acceptance_criteria", "assumptions", "applications", "baseline_package_readiness", "infrastructure_requirements_matrix", "illustrations", "forecasts", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
+  "required": ["schema_version", "export_id", "status", "as_of", "research_status", "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en", "standard_fugaku_node_scales", "scaling_modes", "comparison_bases", "metric_policy", "model_contract", "validated_model_cards", "calibration_candidates", "sources", "candidate_systems", "measured_platforms", "baseline_observations", "cross_platform_observations", "quantitative_requirements", "acceptance_metric_catalog", "acceptance_protocol", "common_benchmark_campaign", "draft_acceptance_criteria", "assumptions", "applications", "baseline_package_readiness", "infrastructure_requirements_matrix", "illustrations", "forecasts", "external_requirement_examples", "coverage_gaps", "caveat_ja", "caveat_en", "publication"],
   "properties": {
-    "schema_version": {"const": "0.9.0"},
+    "schema_version": {"const": "1.0.0"},
     "export_id": {"type": "string", "pattern": "^APP-PERFORMANCE-FORECAST-[A-Z0-9-]+$"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -84,6 +84,7 @@
     "infrastructure_requirements_matrix": {"$ref": "#/$defs/infrastructureMatrix"},
     "illustrations": {"type": "array", "items": {"$ref": "#/$defs/illustration"}},
     "forecasts": {"type": "array", "items": {"$ref": "#/$defs/forecast"}},
+    "external_requirement_examples": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/externalRequirementExample"}},
     "coverage_gaps": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gap"}},
     "caveat_ja": {"type": "string", "minLength": 1},
     "caveat_en": {"type": "string", "minLength": 1},
@@ -438,7 +439,7 @@
     },
     "baselinePackageReadiness": {
       "type": "object",
-      "required": ["package_id", "application_id", "status", "code_version", "code_commit", "code_license_spdx", "input_version", "input_commit", "input_license_spdx", "eea1_input_match", "harness_candidate_source_id", "source_ids", "note_ja", "note_en"],
+      "required": ["package_id", "application_id", "status", "code_version", "code_commit", "code_license_spdx", "input_version", "input_commit", "input_license_spdx", "eea1_input_match", "harness_candidate_source_id", "source_ids", "closure_plan", "note_ja", "note_en"],
       "properties": {
         "package_id": {"type": "string", "pattern": "^BPKG-EEA1-[A-Z0-9-]+$"},
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
@@ -452,6 +453,7 @@
         "eea1_input_match": {"enum": ["not-confirmed", "no-public-input"]},
         "harness_candidate_source_id": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"},
         "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}},
+        "closure_plan": {"$ref": "#/$defs/baselineClosurePlan"},
         "note_ja": {"type": "string", "minLength": 1},
         "note_en": {"type": "string", "minLength": 1}
       },
@@ -607,9 +609,12 @@
     },
     "infrastructureRow": {
       "type": "object",
-      "required": ["application_id", "cells"],
+      "required": ["application_id", "planning_criterion_ids", "acceptance_criterion_id", "owner_approval_status", "cells"],
       "properties": {
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "planning_criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["application-coverage", "time-to-solution", "power-facility-fit", "lifecycle-cost", "maturity-schedule", "software-migration", "operations-security", "hpci-interoperability", "technology-origin-and-ecosystem", "center-fit", "reversibility"]}},
+        "acceptance_criterion_id": {"type": "string", "pattern": "^ACC-PERF-[A-Z0-9-]+$"},
+        "owner_approval_status": {"const": "pending"},
         "cells": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureCell"}}
       },
       "additionalProperties": false
@@ -626,6 +631,52 @@
         "rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/infrastructureRow"}},
         "caveat_ja": {"type": "string", "minLength": 1},
         "caveat_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "baselineClosurePlan": {
+      "type": "object",
+      "required": ["status", "required_artifacts", "verified_artifacts", "next_action_ja", "next_action_en", "accountable_confirmation_ja", "accountable_confirmation_en", "source_ids"],
+      "properties": {
+        "status": {"const": "blocked"},
+        "required_artifacts": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"enum": ["code", "input", "dependencies", "run-procedure", "reference-output", "code-license", "input-license", "content-digest"]}},
+        "verified_artifacts": {"type": "array", "uniqueItems": true, "items": {"enum": ["code", "input", "dependencies", "run-procedure", "reference-output", "code-license", "input-license", "content-digest"]}},
+        "next_action_ja": {"type": "string", "minLength": 1},
+        "next_action_en": {"type": "string", "minLength": 1},
+        "accountable_confirmation_ja": {"type": "string", "minLength": 1},
+        "accountable_confirmation_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}}
+      },
+      "additionalProperties": false
+    },
+    "externalRequirement": {
+      "type": "object",
+      "required": ["dimension_id", "label_ja", "label_en", "requirement_ja", "requirement_en", "source_ids"],
+      "properties": {
+        "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "label_ja": {"type": "string", "minLength": 1},
+        "label_en": {"type": "string", "minLength": 1},
+        "requirement_ja": {"type": "string", "minLength": 1},
+        "requirement_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}}
+      },
+      "additionalProperties": false
+    },
+    "externalRequirementExample": {
+      "type": "object",
+      "required": ["case_id", "title_ja", "title_en", "status", "summary_ja", "summary_en", "requirements", "planning_criterion_ids", "boundary_ja", "boundary_en", "source_ids"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^EXREQ-[A-Z0-9-]+$"},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "status": {"const": "official-planned-requirement"},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1},
+        "requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/externalRequirement"}},
+        "planning_criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["application-coverage", "time-to-solution", "power-facility-fit", "lifecycle-cost", "maturity-schedule", "software-migration", "operations-security", "hpci-interoperability", "technology-origin-and-ecosystem", "center-fit", "reversibility"]}},
+        "boundary_ja": {"type": "string", "minLength": 1},
+        "boundary_en": {"type": "string", "minLength": 1},
+        "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^SRC-PERF[0-9]{3}$"}}
       },
       "additionalProperties": false
     },

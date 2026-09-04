@@ -33,6 +33,19 @@ EXPECTED_INFRASTRUCTURE_DIMENSIONS = [
     "software-portability",
     "data-governance",
 ]
+EXPECTED_PLANNING_CRITERIA = {
+    "application-coverage",
+    "time-to-solution",
+    "power-facility-fit",
+    "lifecycle-cost",
+    "maturity-schedule",
+    "software-migration",
+    "operations-security",
+    "hpci-interoperability",
+    "technology-origin-and-ecosystem",
+    "center-fit",
+    "reversibility",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -440,6 +453,13 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{item_id} has input pins inconsistent with its status")
         if package["eea1_input_match"] == "not-confirmed" and package["input_commit"] is None:
             errors.append(f"{item_id} cannot assess an absent input as not-confirmed")
+        closure = package["closure_plan"]
+        if set(closure["verified_artifacts"]) - set(closure["required_artifacts"]):
+            errors.append(f"{item_id} verifies artifacts outside its closure contract")
+        if unknown := set(closure["source_ids"]) - forecast_source_ids:
+            errors.append(f"{item_id} closure plan has unknown sources {sorted(unknown)}")
+        if package["eea1_input_match"] != "confirmed" and closure["status"] != "blocked":
+            errors.append(f"{item_id} closure plan must remain blocked without an EEA1 input match")
 
     observation_ids = [
         item["observation_id"] for item in forecasts["baseline_observations"]
@@ -737,12 +757,31 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(
                 f"{row['application_id']} infrastructure cells must cover every dimension in order"
             )
+        if row["owner_approval_status"] != "pending":
+            errors.append(f"{row['application_id']} claims application-owner approval")
+        criterion = criteria_by_application.get(row["application_id"])
+        if criterion is None or row["acceptance_criterion_id"] != criterion["criterion_id"]:
+            errors.append(f"{row['application_id']} does not link its acceptance criterion")
+        if unknown := set(row["planning_criterion_ids"]) - EXPECTED_PLANNING_CRITERIA:
+            errors.append(f"{row['application_id']} has unknown planning criteria {sorted(unknown)}")
         for cell in row["cells"]:
             if unknown := set(cell["source_ids"]) - forecast_source_ids:
                 errors.append(
                     f"{row['application_id']} {cell['dimension_id']} has unknown sources "
                     f"{sorted(unknown)}"
                 )
+
+    external_case_ids = [item["case_id"] for item in forecasts["external_requirement_examples"]]
+    if duplicates := duplicate_values(external_case_ids):
+        errors.append(f"duplicate external requirement examples: {duplicates}")
+    for example in forecasts["external_requirement_examples"]:
+        if unknown := set(example["source_ids"]) - forecast_source_ids:
+            errors.append(f"{example['case_id']} has unknown sources {sorted(unknown)}")
+        if unknown := set(example["planning_criterion_ids"]) - EXPECTED_PLANNING_CRITERIA:
+            errors.append(f"{example['case_id']} has unknown planning criteria {sorted(unknown)}")
+        for requirement in example["requirements"]:
+            if unknown := set(requirement["source_ids"]) - forecast_source_ids:
+                errors.append(f"{example['case_id']}:{requirement['dimension_id']} has unknown sources {sorted(unknown)}")
 
     assumption_ids = [item["assumption_id"] for item in forecasts["assumptions"]]
     if duplicates := duplicate_values(assumption_ids):
@@ -995,6 +1034,25 @@ def validate(root: Path = ROOT) -> list[str]:
     readiness_path = root / "knowledge/public/planning-evidence-readiness.json"
     if readiness_path.exists() and register is not None:
         readiness = load_json(readiness_path)
+        framework = readiness["evaluation_framework"]
+        framework_source_ids = {item["source_id"] for item in framework["sources"]}
+        boundary_ids = {item["boundary_id"] for item in framework["accountability_boundaries"]}
+        scenario_criteria = set(next(iter(scenario_payload["scenarios"]))["evaluation"])
+        if scenario_criteria != EXPECTED_PLANNING_CRITERIA:
+            errors.append("published scenarios do not use the stable planning criteria")
+        declared_criteria = {item["criterion_id"] for item in framework["criteria"]}
+        if declared_criteria != scenario_criteria:
+            errors.append("planning evaluation framework must match scenario evaluation criteria")
+        for criterion in framework["criteria"]:
+            if criterion["weight"] is not None or criterion["score_status"] != "not-scored":
+                errors.append(f"{criterion['criterion_id']} introduces an unapproved weight or score")
+            if criterion["accountability_boundary_id"] not in boundary_ids:
+                errors.append(f"{criterion['criterion_id']} references an unknown accountability boundary")
+            if unknown := set(criterion["source_ids"]) - framework_source_ids:
+                errors.append(f"{criterion['criterion_id']} has unknown framework sources {sorted(unknown)}")
+        for boundary in framework["accountability_boundaries"]:
+            if unknown := set(boundary["source_ids"]) - framework_source_ids:
+                errors.append(f"{boundary['boundary_id']} has unknown framework sources {sorted(unknown)}")
         dimension_ids = [item["dimension_id"] for item in readiness["dimensions"]]
         expected_dimension_ids = [
             "system-lifecycle", "operations", "five-year-cost",
