@@ -101,12 +101,15 @@ test("comparison links retain budget/year and distinguish allocations from estim
 
 test("public register displays all cases with access restrictions and no raw HTML", () => {
   const f = fixture(); f.data.procurement_register.cases[0].title_en = "<script>not markup</script>";
+  const expectedSystemLinks = f.data.procurement_register.cases.reduce(
+    (count, item) => count + (item.linked_system_ids || []).length, 0
+  );
   f.api.renderRegister(f.root, "en");
   assert.equal(f.root.querySelectorAll("details").length, f.data.procurement_register.cases.length);
   assert.equal(f.root.querySelectorAll("summary")[0].textContent, "<script>not markup</script>");
   assert.ok(f.walk(f.root).some((e) => e.textContent?.includes("Confidentiality required; not obtained")));
   assert.ok(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("https://")).every((a) => a.rel === "noopener noreferrer"));
-  assert.equal(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("../roadmaps/")).length, 3);
+  assert.equal(f.root.querySelectorAll("a").filter((a) => a.href.startsWith("../roadmaps/")).length, expectedSystemLinks);
 });
 
 test("reported total, differently defined capacities, and system links remain distinguishable", () => {
@@ -121,7 +124,10 @@ test("reported total, differently defined capacities, and system links remain di
     assert.ok(f.walk(f.root).some((e) => e.textContent === (language === "ja" ? "実効容量" : "Effective")));
     assert.ok(f.walk(f.root).some((e) => e.textContent?.includes(language === "ja" ? "契約資料に記載された予定総額" : "Planned total reported in the contract disclosure")));
     const systemLinks = f.root.querySelectorAll("a").filter((a) => a.href.includes("#HPCI-SYS-"));
-    assert.equal(systemLinks.length, 3);
+    const expectedSystemLinks = f.data.procurement_register.cases.reduce(
+      (count, item) => count + (item.linked_system_ids || []).length, 0
+    );
+    assert.equal(systemLinks.length, expectedSystemLinks);
     assert.ok(systemLinks.every((a) => a.href.includes(`?lang=${language}#HPCI-SYS-`)));
   }
 });

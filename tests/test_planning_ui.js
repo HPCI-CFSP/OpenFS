@@ -57,7 +57,10 @@ test("portfolio and all plan pages pass their actual root prefix to the budget r
       f.buttons.find((b) => b.dataset.language === language).dispatch("click");
       assert.equal(f.location.searchParams.get("lang"), language);
       const links = f.elements().filter((node) => node.href?.includes("#HPCI-SYS-"));
-      assert.equal(links.length, 3, route);
+      const expectedSystemLinks = data.procurement_register.cases.reduce(
+        (count, item) => count + (item.linked_system_ids || []).length, 0
+      );
+      assert.equal(links.length, expectedSystemLinks, route);
       for (const link of links) {
         const url = new URL(link.href, f.location);
         assert.equal(url.searchParams.get("lang"), language);

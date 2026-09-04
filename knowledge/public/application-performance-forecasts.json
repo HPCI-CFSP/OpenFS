@@ -1,14 +1,14 @@
 {
-  "schema_version": "0.8.0",
+  "schema_version": "0.9.0",
   "export_id": "APP-PERFORMANCE-FORECAST-001",
   "status": "published",
-  "as_of": "2026-09-03",
+  "as_of": "2026-09-04",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "EEA1アプリケーションの性能根拠と参考試算",
   "title_en": "EEA1 application performance evidence and reference calculations",
-  "summary_ja": "EEA1の6アプリケーションについて、公開実測、公開コード、候補機比較、性能モデルの校正状況、共通の受入試験プロトコル、アプリケーション別の受入基準案を整理します。受入基準案は測定項目を定義した段階であり、目標値の承認とConsensusは完了していません。",
-  "summary_en": "This surface organizes public measurements, code availability, candidate-platform comparisons, model-calibration status, a common acceptance-test protocol, and application-specific draft acceptance criteria for six EEA1 applications. The drafts define what to measure; target approval and Consensus remain incomplete.",
+  "summary_ja": "EEA1の6アプリケーションについて、公開実測、公開コード、版固定候補、候補機比較、性能モデルの校正状況、共通の受入試験プロトコル、アプリケーション別の受入基準案を整理します。版固定候補はEEA1入力との一致や再配布可能性を保証せず、目標値の承認とConsensusも完了していません。",
+  "summary_en": "This surface organizes public measurements, code availability, version-pinned candidates, candidate-platform comparisons, model-calibration status, a common acceptance-test protocol, and application-specific draft acceptance criteria for six EEA1 applications. The pinned candidates do not establish an EEA1 input match or redistributability; target approval and Consensus also remain incomplete.",
   "standard_fugaku_node_scales": [
     1,
     4,
@@ -233,6 +233,48 @@
       "publisher": "海洋研究開発機構",
       "url": "https://www.jamstec.go.jp/namr/project03.html",
       "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-PERF024",
+      "title": "GENESIS v2.1.6.1 immutable source snapshot",
+      "publisher": "GENESIS developers / RIKEN R-CCS",
+      "url": "https://github.com/genesis-release-r-ccs/genesis/commit/025e9eba262ac9f1b5447573b5ad73af87cfc4b0",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF025",
+      "title": "GENESIS benchmark input v1.0.0 immutable snapshot",
+      "publisher": "GENESIS developers / RIKEN R-CCS",
+      "url": "https://github.com/genesis-release-r-ccs/genesis_benchmark_input/commit/498091f5ce62291e0c7e10828da31d86545b5174",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF026",
+      "title": "SALMON2 v.2.3.0 immutable source snapshot",
+      "publisher": "SALMON developers",
+      "url": "https://github.com/SALMON-TDDFT/SALMON2/commit/30ba64694ec761cdb6288f01a75b8bcabf05721f",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF027",
+      "title": "SCALE-LETKF 5.5.5-v2 immutable source snapshot",
+      "publisher": "SCALE-LETKF developers / RIKEN",
+      "url": "https://github.com/scale-letkf-riken/scale-letkf/commit/9d25a29020cf40ad12159bcd06d05ba6f6cce6ed",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF028",
+      "title": "LQCD-DWF-HMC immutable main-branch snapshot",
+      "publisher": "LQCD-DWF-HMC developers",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC/commit/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-PERF029",
+      "title": "Benchpark immutable develop-branch snapshot",
+      "publisher": "RIKEN-RCCS",
+      "url": "https://github.com/RIKEN-RCCS/benchpark/commit/30d698dcab53c2d79e229b45bfcd0defcae33b72",
+      "source_class": "project-official"
     }
   ],
   "candidate_systems": [
@@ -953,10 +995,12 @@
         "status": "public-source-confirmed",
         "source_ids": [
           "SRC-PERF006",
-          "SRC-PERF010"
+          "SRC-PERF010",
+          "SRC-PERF024",
+          "SRC-PERF025"
         ],
-        "note_ja": "公式Webサイトと開発元の公開GitHubリポジトリを確認した。予測の再現には、EEA1で使用した版と入力の固定が別途必要である。",
-        "note_en": "The official website and the developers' public GitHub repository were confirmed. Reproducing the forecast still requires the EEA1 version and input to be pinned."
+        "note_ja": "公式Webサイトと開発元の公開GitHubリポジトリを確認し、コードv2.1.6.1とベンチマーク入力v1.0.0の固定候補を登録しました。入力リポジトリの再配布条件とEEA1で使った版・入力との一致は未確認です。",
+        "note_en": "The official website and developer repositories were confirmed, and code v2.1.6.1 plus benchmark-input v1.0.0 are registered as pinned candidates. Redistribution terms for the input repository and correspondence with the EEA1 version and input remain unverified."
       },
       "source_ids": [
         "SRC-PERF001",
@@ -965,7 +1009,9 @@
         "SRC-PERF010",
         "SRC-PERF016",
         "SRC-PERF017",
-        "SRC-PERF018"
+        "SRC-PERF018",
+        "SRC-PERF024",
+        "SRC-PERF025"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
@@ -1043,16 +1089,18 @@
         "status": "public-source-confirmed",
         "source_ids": [
           "SRC-PERF015",
-          "SRC-PERF007"
+          "SRC-PERF007",
+          "SRC-PERF026"
         ],
-        "note_ja": "2系の公開開発リポジトリはSALMON2であり、旧版のSALMONとは区別する。EEA1で使用した版、入力、ビルド条件は未固定で、配布物・タグとの同一性も未検証である。公開コードの確認は性能試算の校正を意味しない。",
-        "note_en": "The public version-2 development repository is SALMON2, distinct from legacy SALMON. The EEA1 revision, input and build conditions are unpinned; correspondence with the distribution artifact and tag is unverified. Public code availability does not calibrate the performance illustration."
+        "note_ja": "2系の公開開発リポジトリはSALMON2であり、旧版のSALMONとは区別します。v.2.3.0の固定候補を登録しましたが、EEA1で使用した版、入力、ビルド条件との一致は未確認です。公開コードの確認は性能試算の校正を意味しません。",
+        "note_en": "The public version-2 development repository is SALMON2, distinct from legacy SALMON. A pinned v.2.3.0 candidate is registered, but correspondence with the EEA1 version, input, and build conditions is unverified. Public code availability does not calibrate the performance illustration."
       },
       "source_ids": [
         "SRC-PERF001",
         "SRC-PERF004",
         "SRC-PERF007",
-        "SRC-PERF015"
+        "SRC-PERF015",
+        "SRC-PERF026"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
@@ -1122,16 +1170,18 @@
         "status": "public-source-confirmed",
         "source_ids": [
           "SRC-PERF008",
-          "SRC-PERF014"
+          "SRC-PERF014",
+          "SRC-PERF027"
         ],
-        "note_ja": "SCALE-RMの公開ソース文書とSCALE-LETKFの公開GitHubリポジトリを確認した。完全なEEA1入力と初期条件は未登録である。",
-        "note_en": "Public SCALE-RM source documentation and the SCALE-LETKF GitHub repository were confirmed. A complete EEA1 input and initial conditions are not registered."
+        "note_ja": "SCALE-RMの公開ソース文書とSCALE-LETKFの公開GitHubリポジトリを確認し、5.5.5-v2の固定候補を登録しました。完全なEEA1入力、初期条件、依存するSCALE-RM版は未登録です。",
+        "note_en": "Public SCALE-RM documentation and the SCALE-LETKF GitHub repository were confirmed, and 5.5.5-v2 is registered as a pinned candidate. The complete EEA1 input, initial conditions, and dependent SCALE-RM version remain unregistered."
       },
       "source_ids": [
         "SRC-PERF001",
         "SRC-PERF004",
         "SRC-PERF008",
-        "SRC-PERF014"
+        "SRC-PERF014",
+        "SRC-PERF027"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
@@ -1387,21 +1437,143 @@
       "code_availability": {
         "status": "public-source-confirmed",
         "source_ids": [
-          "SRC-PERF009"
+          "SRC-PERF009",
+          "SRC-PERF028"
         ],
-        "note_ja": "EEA1名と一致する公開GitHubリポジトリを確認した。富岳向け、汎用CPU向け、OpenACCによるGPU向けのビルド例を含むが、標準入力と測定条件の固定は未完了である。",
-        "note_en": "A public GitHub repository matching the EEA1 name was confirmed. It includes Fugaku, general-CPU, and OpenACC GPU build examples, but standard inputs and measurement conditions are not yet pinned."
+        "note_ja": "EEA1名と一致する公開GitHubリポジトリを確認し、mainブランチのコミットを固定候補として登録しました。富岳、汎用CPU、OpenACC GPU向けのビルド例を含みますが、リリースタグ、標準入力、測定条件の固定は未完了です。",
+        "note_en": "A public GitHub repository matching the EEA1 name was confirmed, and a main-branch commit is registered as a pinned candidate. It includes Fugaku, general-CPU, and OpenACC GPU build examples, but no release tag, standard input, or measurement conditions are pinned."
       },
       "source_ids": [
         "SRC-PERF001",
         "SRC-PERF004",
-        "SRC-PERF009"
+        "SRC-PERF009",
+        "SRC-PERF028"
       ],
       "coverage_gap_refs": [
         "GAP-WORK-003",
         "GAP-PERF-001",
         "GAP-PERF-005"
       ]
+    }
+  ],
+  "baseline_package_readiness": [
+    {
+      "package_id": "BPKG-EEA1-GENESIS",
+      "application_id": "APP-EEA1-GENESIS",
+      "status": "code-and-input-version-pinned-candidate",
+      "code_version": "v2.1.6.1",
+      "code_commit": "025e9eba262ac9f1b5447573b5ad73af87cfc4b0",
+      "code_license_spdx": "LGPL-3.0",
+      "input_version": "v1.0.0",
+      "input_commit": "498091f5ce62291e0c7e10828da31d86545b5174",
+      "input_license_spdx": null,
+      "eea1_input_match": "not-confirmed",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF024",
+        "SRC-PERF025",
+        "SRC-PERF029"
+      ],
+      "note_ja": "公開コードと公開ベンチマーク入力をコミット単位で固定できる候補です。ただし、入力のライセンスとEEA1入力との一致が未確認のため、再配布可能な富岳基準測定パッケージとしては未完成です。",
+      "note_en": "Public code and benchmark input can be pinned to immutable commits. The input license and correspondence with the EEA1 workload remain unverified, so this is not yet a redistributable Fugaku baseline package."
+    },
+    {
+      "package_id": "BPKG-EEA1-SALMON",
+      "application_id": "APP-EEA1-SALMON",
+      "status": "code-version-pinned-candidate",
+      "code_version": "v.2.3.0",
+      "code_commit": "30ba64694ec761cdb6288f01a75b8bcabf05721f",
+      "code_license_spdx": "Apache-2.0",
+      "input_version": null,
+      "input_commit": null,
+      "input_license_spdx": null,
+      "eea1_input_match": "no-public-input",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF026",
+        "SRC-PERF029"
+      ],
+      "note_ja": "SALMON2のコード版は固定できますが、EEA1のスーパーセル入力、依存関係、実行手順を再取得可能な形で固定できていません。",
+      "note_en": "The SALMON2 code version can be pinned, but the EEA1 supercell input, dependencies, and run procedure are not yet fixed in a retrievable package."
+    },
+    {
+      "package_id": "BPKG-EEA1-SCALE-LETKF",
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "status": "code-version-pinned-candidate",
+      "code_version": "5.5.5-v2",
+      "code_commit": "9d25a29020cf40ad12159bcd06d05ba6f6cce6ed",
+      "code_license_spdx": "MIT",
+      "input_version": null,
+      "input_commit": null,
+      "input_license_spdx": null,
+      "eea1_input_match": "no-public-input",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF027",
+        "SRC-PERF029"
+      ],
+      "note_ja": "SCALE-LETKFのコード版は固定できますが、EEA1の初期条件、境界条件、アンサンブル、依存するSCALE-RM版を含む入力一式は未登録です。",
+      "note_en": "The SCALE-LETKF code version can be pinned, but the EEA1 initial and boundary conditions, ensemble, and dependent SCALE-RM version are not registered as one input package."
+    },
+    {
+      "package_id": "BPKG-EEA1-E-WAVE",
+      "application_id": "APP-EEA1-E-WAVE",
+      "status": "blocked-no-public-package",
+      "code_version": null,
+      "code_commit": null,
+      "code_license_spdx": null,
+      "input_version": null,
+      "input_commit": null,
+      "input_license_spdx": null,
+      "eea1_input_match": "no-public-input",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF011",
+        "SRC-PERF021",
+        "SRC-PERF022",
+        "SRC-PERF029"
+      ],
+      "note_ja": "公開資料は富岳実測とGPU対応状況を示しますが、EEA1コードと入力の再配布可能なパッケージは確認できません。公開プロキシの提供可否を責任者に確認する必要があります。",
+      "note_en": "Public sources document Fugaku measurements and GPU-porting status, but no redistributable EEA1 code-and-input package was confirmed. The application owner must determine whether a public proxy can be provided."
+    },
+    {
+      "package_id": "BPKG-EEA1-FRONTFLOW-BLUE",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "status": "blocked-no-public-package",
+      "code_version": null,
+      "code_commit": null,
+      "code_license_spdx": null,
+      "input_version": null,
+      "input_commit": null,
+      "input_license_spdx": null,
+      "eea1_input_match": "no-public-input",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF011",
+        "SRC-PERF012",
+        "SRC-PERF029"
+      ],
+      "note_ja": "HPCIでの利用情報は公開されていますが、EEA1コード、標準メッシュ、実行条件を再配布可能な形で固定できていません。",
+      "note_en": "HPCI usage information is public, but the EEA1 code, standard mesh, and run conditions cannot yet be pinned as a redistributable package."
+    },
+    {
+      "package_id": "BPKG-EEA1-LQCD-DWF-HMC",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "status": "code-version-pinned-candidate",
+      "code_version": "main snapshot",
+      "code_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "code_license_spdx": "GPL-3.0",
+      "input_version": null,
+      "input_commit": null,
+      "input_license_spdx": null,
+      "eea1_input_match": "no-public-input",
+      "harness_candidate_source_id": "SRC-PERF029",
+      "source_ids": [
+        "SRC-PERF028",
+        "SRC-PERF029"
+      ],
+      "note_ja": "公開リポジトリのコミットは固定できますが、リリースタグとEEA1の格子、収束条件、初期配置を含む入力一式は未登録です。",
+      "note_en": "A public repository commit can be pinned, but no release tag or EEA1 input package covering the lattice, convergence conditions, and initial configuration is registered."
     }
   ],
   "forecasts": [],
@@ -1452,23 +1624,23 @@
     },
     {
       "gap_id": "GAP-PERF-005",
-      "priority": "P1",
+      "priority": "P0",
       "scope_ja": "EEA1の6アプリケーションについて、版を固定した公開コード、入力、ビルド条件、実行手順を対応付けた再現性台帳",
       "scope_en": "A reproducibility register mapping versioned public code, inputs, build conditions, and run procedures for all six EEA1 applications",
-      "impact_ja": "公開コードが確認できるアプリケーションでも、EEA1評価に用いた版と入力を一意に再実行できない。E-WaveとFrontFlow/blueは、2026年の公式資料でコード本体が非公開とされている。",
-      "impact_en": "Even where public code is available, the exact EEA1 version and input cannot be rerun unambiguously. The 2026 official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.",
-      "next_action_ja": "公開されている4本はコミット、入力、依存関係、実行コマンドを固定する。非公開の2本は、公開可能なプロキシまたは再配布可能な評価パッケージの提供可否を開発元へ確認する。",
-      "next_action_en": "Pin commits, inputs, dependencies, and commands for the four public codebases. For the two unreleased codebases, ask the developers whether a public proxy or redistributable evaluation package can be provided.",
+      "impact_ja": "公開コード4本のうちGENESIS、SALMON、SCALE-LETKFはタグ付きコミット、LQCD-DWF-HMCはmainブランチのコミットを固定候補として登録しました。しかし、EEA1入力との一致は0件で、GENESIS入力の再配布条件も未確認です。E-WaveとFrontFlow/blueは、2026年の公式資料でコード本体が非公開とされています。",
+      "impact_en": "Pinned candidates now cover tagged commits for GENESIS, SALMON, and SCALE-LETKF plus a main-branch commit for LQCD-DWF-HMC. However, zero packages have a verified EEA1 input match, and redistribution terms for the GENESIS input are unverified. The 2026 official material marks the E-Wave and FrontFlow/blue EEA1 codebases as unreleased.",
+      "next_action_ja": "4本の固定候補にEEA1入力、依存関係、実行コマンド、出力ダイジェストを追加し、ライセンスを確認します。非公開の2本は、公開可能なプロキシまたは再配布可能な評価パッケージの提供可否を開発元へ確認します。",
+      "next_action_en": "Add EEA1 inputs, dependencies, commands, output digests, and license checks to the four pinned candidates. For the two unreleased codebases, ask the developers whether a public proxy or redistributable evaluation package can be provided.",
       "status": "open"
     }
   ],
-  "caveat_ja": "36件の従来試算は未校正です。GENESISとSALMONの候補は同一系列内で校正点と検証点を分離していますが、別入力、別システム、将来機への予測精度を示しません。候補機の実測は入力、計測区間、ノード当たり資源量が一致する行だけを比較対象とし、FS報告書が示した未最適化条件も保持します。独立した合意判定と候補機の共通条件測定は未完了で、調達評価には使用できません。",
-  "caveat_en": "The 36 existing calculations remain uncalibrated. GENESIS and SALMON candidates separate calibration and holdout points within each series but do not establish accuracy for another input, system or future machine. Candidate-platform measurements are comparable only where input, timed component and per-node resources match, and known under-optimized conditions from the FS report are retained. Independent Consensus and common-condition candidate measurements remain incomplete; procurement use is prohibited.",
+  "caveat_ja": "36件の従来試算は未校正です。版固定候補は、EEA1入力との一致、完全な実行環境、再配布可能性、性能再現性を保証しません。GENESISとSALMONの校正候補は同一系列内で校正点と検証点を分離していますが、別入力、別システム、将来機への予測精度を示しません。候補機の実測は入力、計測区間、ノード当たり資源量が一致する行だけを比較対象とし、FS報告書が示した未最適化条件も保持します。独立した合意判定と候補機の共通条件測定は未完了で、調達評価には使用できません。",
+  "caveat_en": "The 36 existing calculations remain uncalibrated. Version-pinned candidates do not establish an EEA1 input match, complete execution environment, redistributability, or performance reproducibility. GENESIS and SALMON calibration candidates separate calibration and holdout points within each series but do not establish accuracy for another input, system or future machine. Candidate-platform measurements are comparable only where input, timed component and per-node resources match, and known under-optimized conditions from the FS report are retained. Independent Consensus and common-condition candidate measurements remain incomplete; procurement use is prohibited.",
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-COMMON-BENCHMARK-20260903-001",
-    "human_approval_directive_id": "DIR-900028"
+    "publication_decision_id": "PUBDEC-PLANNING-EVIDENCE-20260904-001",
+    "human_approval_directive_id": "DIR-900100"
   },
   "illustrations": [
     {

@@ -107,8 +107,8 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
                     observed.add(system["system_id"])
                 if milestone["timing_basis"] == "project-target" and milestone["year"] is not None:
                     future.add(system["system_id"])
-        self.assertEqual(24, len(observed))
-        self.assertEqual(26, len(any_lifecycle))
+        self.assertEqual(25, len(observed))
+        self.assertEqual(27, len(any_lifecycle))
         self.assertEqual(9, len(future))
 
         evidence = [
@@ -116,7 +116,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             *self.inventory["operational_data_products"],
         ]
         systems_with_any = {system_id for item in evidence for system_id in item["system_ids"]}
-        self.assertEqual(11, len(systems_with_any))
+        self.assertEqual(12, len(systems_with_any))
 
         by_metric = {}
         for item in self.inventory["operational_observations"]:
@@ -127,7 +127,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"
         }
         availability = set().union(*(by_metric.get(metric, set()) for metric in availability_metrics))
-        self.assertEqual(4, len(availability))
+        self.assertEqual(5, len(availability))
         jobs = set(by_metric["job-count"])
         jobs.update(
             system_id
@@ -137,12 +137,22 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         )
         self.assertEqual(6, len(jobs))
 
-        no_start = {"HPCI-SYS-FURO2-I", "HPCI-SYS-FURO2-II", "HPCI-SYS-ISM-LARGEMEM"}
+        no_start = {"HPCI-SYS-FURO2-I", "HPCI-SYS-FURO2-II"}
         self.assertEqual(no_start, {s["system_id"] for s in self.inventory["systems"]} - observed)
         ism = next(
             s for s in self.inventory["systems"] if s["system_id"] == "HPCI-SYS-ISM-LARGEMEM"
         )
-        self.assertEqual([], ism.get("lifecycle_milestone_refs", []))
+        self.assertEqual(
+            "MS-BLUE-ISM-DATA-ASSIMILATION-INTRO-2023Q1",
+            ism["lifecycle_milestone_refs"][0]["milestone_id"],
+        )
+        abci_outage = next(
+            item
+            for item in self.inventory["operational_observations"]
+            if item["observation_id"] == "OP-HPCI-ABCI3-UNPLANNED-OUTAGE-20250304"
+        )
+        self.assertEqual(611, abci_outage["value"]["value"])
+        self.assertEqual("minutes", abci_outage["value"]["unit"])
 
         squid_product = next(
             item for item in self.inventory["operational_data_products"]

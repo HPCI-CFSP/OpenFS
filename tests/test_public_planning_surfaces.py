@@ -109,9 +109,9 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         dimensions = {item["dimension_id"]: item for item in payload["dimensions"]}
         self.assertEqual(9, dimensions["system-lifecycle"]["coverage"]["numerator"])
-        self.assertEqual(11, dimensions["operations"]["coverage"]["numerator"])
+        self.assertEqual(12, dimensions["operations"]["coverage"]["numerator"])
         self.assertEqual(
-            {"observed-start": 24, "any-lifecycle": 26},
+            {"observed-start": 25, "any-lifecycle": 27},
             {
                 item["coverage_id"]: item["numerator"]
                 for item in dimensions["system-lifecycle"]["supporting_coverages"]
@@ -121,7 +121,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             {
                 "utilization": 5,
                 "power": 1,
-                "availability-downtime": 4,
+                "availability-downtime": 5,
                 "jobs-history": 6,
             },
             {
@@ -130,7 +130,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            {"complete-tco": 0, "public-total": 7, "component-itemization": 0},
+            {"complete-tco": 0, "public-total": 10, "component-itemization": 0},
             {
                 item["coverage_id"]: item["numerator"]
                 for item in dimensions["five-year-cost"]["supporting_coverages"]
@@ -249,6 +249,41 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 for item in applications.values()
             )
         )
+
+    def test_eea1_baseline_package_candidates_are_pinned_but_not_complete(self):
+        payload = json.loads(
+            (
+                ROOT
+                / "knowledge/public/application-performance-forecasts.json"
+            ).read_text(encoding="utf-8")
+        )
+        packages = payload["baseline_package_readiness"]
+        self.assertEqual(6, len(packages))
+        self.assertEqual(
+            {item["application_id"] for item in payload["applications"]},
+            {item["application_id"] for item in packages},
+        )
+        self.assertEqual(
+            {
+                "APP-EEA1-GENESIS",
+                "APP-EEA1-SALMON",
+                "APP-EEA1-SCALE-LETKF",
+                "APP-EEA1-LQCD-DWF-HMC",
+            },
+            {
+                item["application_id"]
+                for item in packages
+                if item["code_commit"] is not None
+            },
+        )
+        self.assertTrue(all(item["eea1_input_match"] != "confirmed" for item in packages))
+        baseline_stage = next(
+            item
+            for item in payload["common_benchmark_campaign"]["stages"]
+            if item["stage_id"] == "BMSTAGE-BASELINE-PACKAGE"
+        )
+        self.assertEqual([], baseline_stage["completed_application_ids"])
+        self.assertEqual("blocked", baseline_stage["status"])
 
     def test_eea1_acceptance_contracts_cover_all_applications_without_invented_thresholds(self):
         payload = json.loads(

@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -467,6 +467,7 @@ class PagesSiteTests(unittest.TestCase):
             'id="hpci-system-inventory-section"',
             'id="hpci-inventory-table"',
             'id="application-performance-section"',
+            'id="application-baseline-package-readiness"',
             'id="application-code-availability"',
             'id="application-calibration-candidates"',
             'id="application-infrastructure-matrix"',
@@ -604,6 +605,7 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(2, len(result["application_performance_forecasts"]["candidate_systems"]))
             self.assertEqual(24, len(result["application_performance_forecasts"]["baseline_observations"]))
             self.assertEqual(6, len(result["application_performance_forecasts"]["draft_acceptance_criteria"]))
+            self.assertEqual(6, len(result["application_performance_forecasts"]["baseline_package_readiness"]))
             self.assertEqual(2, len(result["application_performance_forecasts"]["calibration_candidates"]))
             self.assertEqual(74, len(result["application_performance_forecasts"]["cross_platform_observations"]))
             self.assertEqual(8, len(result["application_performance_forecasts"]["quantitative_requirements"]))

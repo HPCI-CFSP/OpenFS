@@ -224,6 +224,25 @@ test("legacy what-if cells retain values while disclosing assumptions in both la
   }
 });
 
+test("EEA1 baseline-package candidates expose immutable pins without claiming completion", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
+  const performance = data.application_performance_forecasts;
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const table = f.get("application-baseline-package-readiness");
+    const rows = f.walk(table).filter((el) => el.tagName === "tr");
+    assert.equal(rows.length, performance.baseline_package_readiness.length + 1);
+    assert.ok(table.textContent.includes("v2.1.6.1 (025e9eb)"));
+    assert.ok(table.textContent.includes("v1.0.0 (498091f)"));
+    assert.ok(table.textContent.includes(language === "ja" ? "未確認" : "Not confirmed"));
+    assert.ok(table.textContent.includes(language === "ja" ? "公開パッケージなし" : "No public package"));
+    assert.equal(
+      performance.common_benchmark_campaign.stages.find((item) => item.stage_id === "BMSTAGE-BASELINE-PACKAGE").completed_application_ids.length,
+      0
+    );
+  }
+});
+
 test("calibration candidate and infrastructure requirements remain provisional in both languages", () => {
   const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-APP-WORKLOADS");
   const performance = data.application_performance_forecasts;

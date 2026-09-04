@@ -379,6 +379,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-JCAHPC-MIYABI-START-2025Q1",
                 "MS-BLUE-HBW2-TRIAL-2023Q4",
                 "MS-BLUE-AIST-ABCI3-START-2025Q1",
+                "MS-BLUE-ISM-DATA-ASSIMILATION-INTRO-2023Q1",
             },
             set(lifecycle_milestones),
         )

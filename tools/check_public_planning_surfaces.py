@@ -392,6 +392,55 @@ def validate(root: Path = ROOT) -> list[str]:
                     f"{sorted(unknown_hint_sources)}"
                 )
 
+    package_ids = [
+        item["package_id"] for item in forecasts["baseline_package_readiness"]
+    ]
+    if duplicates := duplicate_values(package_ids):
+        errors.append(f"duplicate baseline-package IDs: {duplicates}")
+    package_application_ids = [
+        item["application_id"] for item in forecasts["baseline_package_readiness"]
+    ]
+    if duplicates := duplicate_values(package_application_ids):
+        errors.append(f"duplicate application baseline packages: {duplicates}")
+    if set(package_application_ids) != known_application_ids:
+        errors.append("baseline-package readiness must cover every EEA1 application once")
+    for package in forecasts["baseline_package_readiness"]:
+        item_id = package["package_id"]
+        unknown_sources = set(package["source_ids"]) - forecast_source_ids
+        if unknown_sources:
+            errors.append(f"{item_id} has unknown sources {sorted(unknown_sources)}")
+        harness_source = package["harness_candidate_source_id"]
+        if harness_source not in package["source_ids"]:
+            errors.append(f"{item_id} omits its harness candidate from source_ids")
+        if package["status"] == "blocked-no-public-package":
+            if any(package[field] is not None for field in (
+                "code_version", "code_commit", "code_license_spdx",
+                "input_version", "input_commit", "input_license_spdx",
+            )):
+                errors.append(f"{item_id} carries version data despite being blocked")
+        else:
+            if not package["code_version"] or not package["code_commit"]:
+                errors.append(f"{item_id} lacks a pinned code version and commit")
+            elif not any(
+                package["code_commit"] in source["url"]
+                for source in forecasts["sources"]
+                if source["source_id"] in package["source_ids"]
+            ):
+                errors.append(f"{item_id} code commit lacks an immutable source URL")
+        if package["status"] == "code-and-input-version-pinned-candidate":
+            if not package["input_version"] or not package["input_commit"]:
+                errors.append(f"{item_id} lacks a pinned input version and commit")
+            elif not any(
+                package["input_commit"] in source["url"]
+                for source in forecasts["sources"]
+                if source["source_id"] in package["source_ids"]
+            ):
+                errors.append(f"{item_id} input commit lacks an immutable source URL")
+        elif package["input_version"] is not None or package["input_commit"] is not None:
+            errors.append(f"{item_id} has input pins inconsistent with its status")
+        if package["eea1_input_match"] == "not-confirmed" and package["input_commit"] is None:
+            errors.append(f"{item_id} cannot assess an absent input as not-confirmed")
+
     observation_ids = [
         item["observation_id"] for item in forecasts["baseline_observations"]
     ]
@@ -551,6 +600,10 @@ def validate(root: Path = ROOT) -> list[str]:
         errors.append("common benchmark campaign stages must use the stable declared order")
     if [item["sequence"] for item in stages] != list(range(1, 6)):
         errors.append("common benchmark campaign stage sequence must be contiguous")
+    if stages[1]["completed_application_ids"]:
+        errors.append(
+            "version-pinned baseline candidates must not complete the baseline-package stage"
+        )
     for stage in stages:
         completed = set(stage["completed_application_ids"])
         if unknown := completed - known_application_ids:
