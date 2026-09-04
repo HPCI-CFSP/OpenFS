@@ -32,6 +32,16 @@ Coverage numerators and denominators are recomputed by
 `tools/check_public_planning_surfaces.py`. The validator fails when the public
 readiness view no longer matches its source artifacts.
 
+As of 2026-09-02, verified operation or trial-operation starts cover 24 of 27
+systems, any lifecycle evidence covers 26, and provider-published future
+retirement, refresh, or expansion timing covers 9. Registered public operating
+evidence covers 11 systems, but only 5 have numerical utilization, 1 has
+numerical power, 4 have availability or downtime evidence, and 6 have job-count
+or job-history evidence. Seven of eight procurement cases have a public total;
+none has evidence-backed component itemization or complete five-year TCO. See
+[`20260902_001_center-tco-evidence-round1.md`](20260902_001_center-tco-evidence-round1.md)
+for the method and interpretation limits.
+
 ## Planning use
 
 Each system planning option receives an evidence implication, a commitment
@@ -64,3 +74,12 @@ requirements are available.
 
 `tools/check_public_planning_surfaces.py` は、各項目の充足数を元データから
 再計算します。元データと公開用監査結果が一致しない場合は検証を失敗させます。
+
+2026年9月2日時点では、正式運用または試験運用の開始を24/27システム、何らかの
+ライフサイクル根拠を26/27システム、提供機関が公表した将来の終了・更新・増強時期を
+9/27システムで確認しています。公開運用情報は11システムにありますが、利用率の
+数値は5、電力の数値は1、可用性または停止時間は4、ジョブ件数または履歴は6です。
+8件の調達事例のうち7件に公開総額がありますが、公開根拠に基づく機器別金額と
+完全な5年間TCOはいずれも0件です。方法と解釈上の制約は
+[`20260902_001_center-tco-evidence-round1.md`](20260902_001_center-tco-evidence-round1.md)
+に記録しています。

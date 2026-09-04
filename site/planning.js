@@ -331,10 +331,25 @@
       status.textContent = planningEvidenceLabel(dimension.status);
       const dimensionCell = document.createElement("th");
       dimensionCell.append(makeCell("span", localized(dimension, "label")), status);
-      const coverage = `${dimension.coverage.numerator}/${dimension.coverage.denominator} ${localized(dimension.coverage, "unit")}`;
+      const coverage = document.createElement("div");
+      const primaryCoverage = document.createElement("strong");
+      primaryCoverage.textContent = `${dimension.coverage.numerator}/${dimension.coverage.denominator} ${localized(dimension.coverage, "unit")}`;
+      coverage.append(primaryCoverage);
+      if (dimension.supporting_coverages.length) {
+        const supporting = document.createElement("ul");
+        supporting.className = "supporting-coverage-list";
+        dimension.supporting_coverages.forEach((item) => {
+          const line = document.createElement("li");
+          line.textContent = `${item.numerator}/${item.denominator} ${localized(item, "unit")}`;
+          supporting.append(line);
+        });
+        coverage.append(supporting);
+      }
+      const coverageCell = document.createElement("td");
+      coverageCell.append(coverage);
       row.append(
         dimensionCell,
-        makeCell("td", coverage),
+        coverageCell,
         makeCell("td", localized(dimension, "finding")),
         makeCell("td", localized(dimension, "planning_use")),
         makeCell("td", localizedArray(dimension, "blockers").join("; ")),

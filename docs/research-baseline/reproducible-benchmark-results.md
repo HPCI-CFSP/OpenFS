@@ -11,6 +11,14 @@ environment. It records individual runs before aggregates so the validator can
 recompute medians. At least two configurations, two institutions, two independent
 Origin Groups, and three valid repetitions per configuration are required.
 
+The generic three-run minimum is a reusable floor, not a sufficient EEA1 campaign.
+The EEA1 profile is defined once in
+`knowledge/public/application-performance-forecasts.json` under
+`common_benchmark_campaign`: it references `ACCPROTO-EEA1-001`, requires five valid
+runs per configuration, and binds all six application criteria to all three system
+planning options. A result meeting only the generic floor does not complete an EEA1
+campaign stage.
+
 `tools/check_benchmark_result_bundle.py` applies Gap-specific checks. Compute and
 memory comparisons require energy and failure/recovery trials. Portability
 comparisons require code and effort records. MPI comparisons require at least two
