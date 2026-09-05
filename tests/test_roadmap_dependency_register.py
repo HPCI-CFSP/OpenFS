@@ -71,6 +71,22 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
         self.assertGreaterEqual(result["counts"]["portfolio_gate_p0_gaps"], 1)
         self.assertTrue(result["gaps_remain_open"])
 
+    def test_facility_constraints_gate_interconnect_selection(self):
+        dependency = next(
+            item
+            for item in self.register["dependencies"]
+            if item["dependency_id"] == "XDEP-FACILITY-NET"
+        )
+        self.assertEqual("RM-HW-FACILITY", dependency["upstream_roadmap_id"])
+        self.assertEqual("RM-HW-INTERCONNECT", dependency["downstream_roadmap_id"])
+        self.assertEqual("constrains", dependency["relationship"])
+        self.assertEqual("high", dependency["criticality"])
+        self.assertIn("DEP-NET-FACILITY-001", dependency["source_dependency_ids"])
+        self.assertEqual(
+            {"MS-FACILITY-REQ-BASELINE", "MS-NET-HPCI-2027"},
+            set(dependency["gate_refs"]),
+        )
+
     def test_cycle_fails_closed(self):
         changed = copy.deepcopy(self.register)
         dependency = next(
