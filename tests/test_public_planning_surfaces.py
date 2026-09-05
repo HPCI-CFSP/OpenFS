@@ -49,7 +49,12 @@ class SourceCorrectionTests(unittest.TestCase):
     def test_historical_metadata_may_remain_but_active_uses_fail(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for ref in ("config/research-baseline.json", "knowledge/public/topic-decision-support.json"):
+            for ref in (
+                "config/research-baseline.json",
+                "config/roadmap-portfolio.json",
+                "knowledge/public/roadmap-reference-data.json",
+                "knowledge/public/topic-decision-support.json",
+            ):
                 (root / ref).parent.mkdir(parents=True, exist_ok=True)
                 (root / ref).write_text((ROOT / ref).read_text())
             path = root / "knowledge/public/topic-decision-support.json"

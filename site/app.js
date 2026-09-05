@@ -9,8 +9,7 @@
 
   const copy = {
     ja: {
-      conferenceLink: "Hot Chips 2026：発表・組織・調査状況",
-      scopeTitle: "調査範囲と進捗", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照",
+      scopeTitle: "調査項目", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照", researchUnit: "調査", researchDetails: "詳しい調査結果", topicOverview: "調査結果の概要", unitRoadmaps: "対応するロードマップ", stageCurrentBadge: "実用化・市場導入済み", stageNearTermBadge: "導入初期・近い将来", stageResearchBadge: "中長期の研究開発候補", stageContestedBadge: "見解不一致・未確定",
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
       navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       aboutKicker: "OpenFSについて",
@@ -51,11 +50,10 @@
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項",
       commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "時期未公表", officialScanIncomplete: "一次情報の継続確認が必要",
-      decisionSummary: "整備判断に向けた技術整理", provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", regionFilter: "地域・主体で絞り込む", allRegions: "すべて", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", regionBasis: "地域分類の根拠", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較表の根拠資料", relatedTermRoadmaps: "用語に関連するロードマップ", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", noRegionalItems: "この地域条件に該当する項目はありません。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
+      provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較表の根拠資料", relatedTermRoadmaps: "用語に関連するロードマップ", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
-      conferenceLink: "Hot Chips 2026: presentations, organizations and research coverage",
-      scopeTitle: "Research scope and progress", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence",
+      scopeTitle: "Research topics", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence", researchUnit: "Study", researchDetails: "Detailed findings", topicOverview: "Research summary", unitRoadmaps: "Related roadmaps", stageCurrentBadge: "Deployed or commercially available", stageNearTermBadge: "Early adoption or near-term direction", stageResearchBadge: "Mid- to long-term R&D candidate", stageContestedBadge: "Contested or unresolved",
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
       navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       aboutKicker: "ABOUT OPENFS",
@@ -97,7 +95,7 @@
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
       commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required",
-      decisionSummary: "Technology synthesis for planning decisions", provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", regionFilter: "Filter by region and actor", allRegions: "All", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", regionBasis: "Basis for region classification", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", catalogComparisons: "Related technology comparisons", catalogComparisonsLead: "Compare competing and complementary technologies in the findings using common planning criteria.", decisionUse: "Use in planning decisions", comparisonCaveat: "Caveat", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Sources for this term or comparison", relatedTermRoadmaps: "Roadmaps related to this term", comparisonRoadmaps: "Roadmaps covered by this comparison", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", noRegionalItems: "No item matches this region filter.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
+      provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", catalogComparisons: "Related technology comparisons", catalogComparisonsLead: "Compare competing and complementary technologies in the findings using common planning criteria.", decisionUse: "Use in planning decisions", comparisonCaveat: "Caveat", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Sources for this term or comparison", relatedTermRoadmaps: "Roadmaps related to this term", comparisonRoadmaps: "Roadmaps covered by this comparison", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
     }
   };
 
@@ -117,7 +115,6 @@
   let activeCategory = "all";
   let language = readLanguage();
   let activeTopicId = null;
-  let activeTopicRegion = "all";
   let activeRoadmapMilestoneId = null;
   let activeTermId = null;
 
@@ -785,12 +782,6 @@
     );
   }
 
-  function decisionRegionMap() {
-    return new Map(
-      (data.topic_decision_support?.regions || []).map((region) => [region.region_id, region])
-    );
-  }
-
   function enumLabel(value) {
     const keys = {
       "not-verified": "notVerified",
@@ -824,57 +815,6 @@
     return list;
   }
 
-  function itemMatchesRegion(item, actorMap) {
-    if (activeTopicRegion === "all") return true;
-    return item.actor_ids.some((actorId) => (
-      actorMap.get(actorId)?.region_ids.includes(activeTopicRegion)
-    ));
-  }
-
-  function profileRegionIds(profile, actorMap) {
-    const values = new Set();
-    profile.sections.forEach((section) => section.items.forEach((item) => {
-      item.actor_ids.forEach((actorId) => {
-        actorMap.get(actorId)?.region_ids.forEach((regionId) => values.add(regionId));
-      });
-    }));
-    return values;
-  }
-
-  function renderRegionFilter(root, profile, actorMap) {
-    const regionMap = decisionRegionMap();
-    const available = profileRegionIds(profile, actorMap);
-    if (activeTopicRegion !== "all" && !available.has(activeTopicRegion)) {
-      activeTopicRegion = "all";
-    }
-    const toolbar = document.createElement("div");
-    toolbar.className = "decision-region-toolbar";
-    const label = document.createElement("strong");
-    label.textContent = tr("regionFilter");
-    const controls = document.createElement("div");
-    controls.className = "segmented decision-region-filter";
-    controls.setAttribute("role", "group");
-    controls.setAttribute("aria-label", tr("regionFilter"));
-    const options = [
-      {region_id: "all", name_ja: tr("allRegions"), name_en: tr("allRegions")},
-      ...Array.from(available).map((regionId) => regionMap.get(regionId)).filter(Boolean)
-    ];
-    options.forEach((region) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.classList.toggle("active", region.region_id === activeTopicRegion);
-      button.setAttribute("aria-pressed", String(region.region_id === activeTopicRegion));
-      button.textContent = localized(region, "name");
-      button.addEventListener("click", () => {
-        activeTopicRegion = region.region_id;
-        renderTopicDetail();
-      });
-      controls.appendChild(button);
-    });
-    toolbar.append(label, controls);
-    root.appendChild(toolbar);
-  }
-
   function renderDecisionDimensions(root, profile, topic) {
     const section = document.createElement("section");
     section.className = "decision-dimensions";
@@ -904,11 +844,9 @@
       const details = document.createElement("details");
       const summary = document.createElement("summary");
       summary.textContent = actor.name;
-      const basis = document.createElement("p");
-      basis.textContent = `${tr("regionBasis")}: ${localized(actor, "region_basis")}`;
       const roles = document.createElement("p");
       roles.textContent = `${tr("actorRoles")}: ${localized(actor, "roles").join(" / ")}`;
-      details.append(summary, basis, roles);
+      details.append(summary, roles);
       container.appendChild(details);
     });
     return container;
@@ -924,7 +862,13 @@
     appendGlossaryText(title, localized(item, "name"), topic);
     const badges = document.createElement("div");
     badges.className = "decision-badges";
-    [enumLabel(item.maturity), `${tr("confidence")}: ${tr(item.confidence)}`].forEach((value) => {
+    const stageBadgeKeys = {
+      current: "stageCurrentBadge",
+      "near-term": "stageNearTermBadge",
+      research: "stageResearchBadge",
+      contested: "stageContestedBadge"
+    };
+    [tr(stageBadgeKeys[item.stage]), enumLabel(item.maturity), `${tr("confidence")}: ${tr(item.confidence)}`].forEach((value) => {
       const badge = document.createElement("span");
       badge.textContent = value;
       badges.appendChild(badge);
@@ -972,11 +916,9 @@
       current: "currentStage", "near-term": "nearTermStage",
       research: "researchStage", contested: "contestedStage"
     };
-    let displayed = 0;
     profile.sections.forEach((profileSection) => {
-      const filtered = profileSection.items.filter((item) => itemMatchesRegion(item, actorMap));
+      const filtered = profileSection.items;
       if (!filtered.length) return;
-      displayed += filtered.length;
       const section = document.createElement("section");
       section.className = "decision-technology-section";
       section.id = profileSection.section_id;
@@ -1015,12 +957,6 @@
       });
       root.appendChild(section);
     });
-    if (!displayed) {
-      const empty = document.createElement("p");
-      empty.className = "dialog-empty";
-      empty.textContent = tr("noRegionalItems");
-      root.appendChild(empty);
-    }
   }
 
   function renderPlatformMatrix(root) {
@@ -1298,25 +1234,45 @@
     );
   }
 
-  function renderTopicComparisons(root, topic, profile) {
-    const comparisons = topicComparisons(topic, profile);
+  function resolveTopicComparisons(topic, profile, comparisonRefs = null) {
+    if (!comparisonRefs) {
+      return topicComparisons(topic, profile).map((comparison) => ({comparison, termIds: null}));
+    }
+    const comparisons = new Map(referenceData().comparison_sets.map((comparison) => [comparison.comparison_id, comparison]));
+    return comparisonRefs.map((reference) => ({
+      comparison: comparisons.get(reference.comparison_id),
+      termIds: new Set(reference.term_ids || [])
+    })).filter((entry) => entry.comparison);
+  }
+
+  function renderTopicComparisons(root, topic, profile, options = {}) {
+    const {
+      comparisonRefs = null,
+      embedded = false,
+      instanceId = "",
+      profileItems = [],
+      termItemRefs = []
+    } = options;
+    const comparisons = resolveTopicComparisons(topic, profile, comparisonRefs);
     if (!comparisons.length) return;
     const terms = referenceTermMap();
     const container = document.createElement("section");
-    container.className = "topic-reference-section";
-    const kicker = document.createElement("span");
-    kicker.className = "eyebrow";
-    kicker.textContent = tr("catalogComparisons");
-    const heading = document.createElement("h3");
-    heading.textContent = tr("catalogComparisons");
-    const lead = document.createElement("p");
-    lead.className = "topic-reference-lead";
-    lead.textContent = tr("catalogComparisonsLead");
-    container.append(kicker, heading, lead);
-    comparisons.forEach((comparison) => {
+    container.className = `topic-reference-section${embedded ? " topic-reference-embedded" : ""}`;
+    if (!embedded) {
+      const kicker = document.createElement("span");
+      kicker.className = "eyebrow";
+      kicker.textContent = tr("catalogComparisons");
+      const heading = document.createElement("h3");
+      heading.textContent = tr("catalogComparisons");
+      const lead = document.createElement("p");
+      lead.className = "topic-reference-lead";
+      lead.textContent = tr("catalogComparisonsLead");
+      container.append(kicker, heading, lead);
+    }
+    comparisons.forEach(({comparison, termIds}) => {
       const section = document.createElement("section");
       section.className = "technology-comparison";
-      section.id = `catalog-comparison-${comparison.comparison_id}`;
+      section.id = `catalog-comparison-${comparison.comparison_id}${instanceId ? `-${instanceId}` : ""}`;
       const title = document.createElement("h4");
       title.textContent = localized(comparison, "title");
       const summary = document.createElement("p");
@@ -1343,7 +1299,7 @@
       });
       head.append(headRow);
       const body = document.createElement("tbody");
-      comparison.rows.forEach((row) => {
+      comparison.rows.filter((row) => !termIds || termIds.has(row.term_id)).forEach((row) => {
         const item = document.createElement("tr");
         const termCell = document.createElement("th");
         termCell.scope = "row";
@@ -1367,7 +1323,29 @@
           link.textContent = match.source.title;
           sources.append(link);
         });
-        termCell.append(button, sources);
+        const linkedItemIds = new Set(
+          termItemRefs.find((reference) => reference.term_id === row.term_id)?.item_ids || []
+        );
+        const itemStages = Array.from(new Set(profileItems
+          .filter((profileItem) => linkedItemIds.has(profileItem.item_id))
+          .map((profileItem) => profileItem.stage)));
+        if (itemStages.length) {
+          const stages = document.createElement("div");
+          stages.className = "comparison-stage-badges";
+          const labels = {
+            current: "stageCurrentBadge", "near-term": "stageNearTermBadge",
+            research: "stageResearchBadge", contested: "stageContestedBadge"
+          };
+          itemStages.forEach((stage) => {
+            const badge = document.createElement("span");
+            badge.className = `comparison-stage-badge comparison-stage-${stage}`;
+            badge.textContent = tr(labels[stage]);
+            stages.appendChild(badge);
+          });
+          termCell.append(button, stages, sources);
+        } else {
+          termCell.append(button, sources);
+        }
         item.append(termCell);
         comparison.columns.forEach((column) => {
           const cell = document.createElement("td");
@@ -1384,13 +1362,17 @@
       const caveatLabel = document.createElement("strong");
       caveatLabel.textContent = `${tr("comparisonCaveat")}: `;
       caveat.append(caveatLabel, document.createTextNode(localized(comparison, "caveat")));
-      const roadmapTitle = document.createElement("strong");
-      roadmapTitle.className = "comparison-roadmap-title";
-      roadmapTitle.textContent = tr("comparisonRoadmaps");
-      const roadmapLinks = document.createElement("ul");
-      roadmapLinks.className = "related-roadmap-list comparison-roadmap-links";
-      appendRoadmapLinks(roadmapLinks, comparison.roadmap_ids);
-      section.append(title, summary, use, wrap, caveat, roadmapTitle, roadmapLinks);
+      if (embedded) section.append(title, wrap);
+      else section.append(title, summary, use, wrap, caveat);
+      if (!embedded) {
+        const roadmapTitle = document.createElement("strong");
+        roadmapTitle.className = "comparison-roadmap-title";
+        roadmapTitle.textContent = tr("comparisonRoadmaps");
+        const roadmapLinks = document.createElement("ul");
+        roadmapLinks.className = "related-roadmap-list comparison-roadmap-links";
+        appendRoadmapLinks(roadmapLinks, comparison.roadmap_ids);
+        section.append(roadmapTitle, roadmapLinks);
+      }
       container.append(section);
     });
     root.append(container);
@@ -1456,6 +1438,130 @@
     if (!dialog.open) dialog.showModal();
   }
 
+  function renderTopicOverview(root, profile, topic) {
+    const overview = document.createElement("section");
+    overview.className = "topic-results-overview decision-overview structured-topic-overview";
+    const heading = document.createElement("h3");
+    heading.textContent = tr("topicOverview");
+    const text = document.createElement("p");
+    appendGlossaryText(text, localized(profile, "summary"), topic);
+    const notice = document.createElement("p");
+    notice.className = "decision-provisional-notice";
+    notice.textContent = tr("provisionalNotice");
+    overview.append(heading, text, notice);
+    root.appendChild(overview);
+  }
+
+  function renderRelatedSurfaces(root, profile) {
+    if (!profile.related_surface_ids.length) return;
+    const heading = document.createElement("h3");
+    heading.className = "related-tables-heading";
+    heading.textContent = tr("relatedTables");
+    root.appendChild(heading);
+    if (profile.related_surface_ids.includes("platform-software")) renderPlatformMatrix(root);
+    if (profile.related_surface_ids.includes("numerical-methods")) renderNumericalMatrix(root);
+  }
+
+  function renderRoadmapReferences(root, roadmapIds, embedded = false) {
+    if (!roadmapIds?.length) return;
+    const section = document.createElement("section");
+    section.className = embedded ? "unit-roadmaps" : "topic-related-roadmaps";
+    const heading = document.createElement(embedded ? "h4" : "h3");
+    heading.textContent = embedded ? tr("unitRoadmaps") : tr("relatedRoadmaps");
+    const list = document.createElement("ul");
+    list.className = "related-roadmap-list";
+    appendRoadmapLinks(list, roadmapIds);
+    section.append(heading, list);
+    root.appendChild(section);
+  }
+
+  function renderRelatedTopics(root, topic) {
+    if (!topic.related_topic_ids?.length) return;
+    const section = document.createElement("section");
+    section.className = "roadmap-related-topics topic-related-topics";
+    const heading = document.createElement("h3");
+    heading.textContent = tr("relatedTopics");
+    section.append(heading, topicLinks(topic.related_topic_ids));
+    root.appendChild(section);
+  }
+
+  function renderStructuredDecisionSection(root, profileSection, actorMap, topic) {
+    const section = document.createElement("section");
+    section.className = "structured-unit-section decision-technology-section";
+    section.id = profileSection.section_id;
+    const title = document.createElement("h4");
+    appendGlossaryText(title, localized(profileSection, "title"), topic);
+    const summary = document.createElement("p");
+    summary.className = "decision-section-summary";
+    appendGlossaryText(summary, localized(profileSection, "summary"), topic);
+    const list = document.createElement("div");
+    list.className = "decision-item-list";
+    profileSection.items.forEach((item) => list.appendChild(renderTechnologyItem(item, actorMap, topic)));
+    section.append(title, summary, list);
+    root.appendChild(section);
+  }
+
+  function researchUnitLabel(topic, unit) {
+    const index = topic.research_units.findIndex((entry) => entry.unit_id === unit.unit_id) + 1;
+    return `[${tr("researchUnit")}${index}] ${localized(unit, "title")}`;
+  }
+
+  function renderResearchUnitComponent(root, component, topic, profile, actorMap) {
+    const unit = topic.research_units.find((entry) => entry.unit_id === component.unit_id);
+    if (!unit) return;
+    const profileSections = component.section_ids
+      .map((sectionId) => profile.sections.find((section) => section.section_id === sectionId))
+      .filter(Boolean);
+    const profileItems = profileSections.flatMap((section) => section.items);
+    const section = document.createElement("section");
+    section.className = "structured-research-unit";
+    section.id = `catalog-unit-${unit.unit_id}`;
+    const header = document.createElement("header");
+    header.className = "structured-research-unit-header";
+    const heading = document.createElement("h3");
+    heading.textContent = researchUnitLabel(topic, unit);
+    const status = document.createElement("span");
+    status.className = "research-unit-status";
+    status.textContent = tr(statusKeys[unit.status]);
+    const question = document.createElement("p");
+    appendGlossaryText(question, localized(unit, "question"), topic);
+    header.append(heading, status, question);
+    section.appendChild(header);
+    renderTopicComparisons(section, topic, profile, {
+      comparisonRefs: component.comparison_refs,
+      embedded: true,
+      instanceId: component.component_id,
+      profileItems,
+      termItemRefs: component.term_item_refs
+    });
+    if (profileSections.length) {
+      const detailHeading = document.createElement("h4");
+      detailHeading.className = "structured-details-heading";
+      detailHeading.textContent = tr("researchDetails");
+      section.appendChild(detailHeading);
+      profileSections.forEach((profileSection) => renderStructuredDecisionSection(section, profileSection, actorMap, topic));
+    }
+    renderRoadmapReferences(section, component.roadmap_ids, true);
+    root.appendChild(section);
+  }
+
+  function renderStructuredTopicLayout(root, topic, profile, summaries) {
+    const actorMap = decisionActorMap();
+    profile.page_layout.components.forEach((component) => {
+      switch (component.type) {
+        case "topic-overview": renderTopicOverview(root, profile, topic); break;
+        case "research-unit-index": renderTopicScope(root, topic, {numbered: true}); break;
+        case "research-unit": renderResearchUnitComponent(root, component, topic, profile, actorMap); break;
+        case "decision-dimensions": renderDecisionDimensions(root, profile, topic); break;
+        case "related-surfaces": renderRelatedSurfaces(root, profile); break;
+        case "coverage-gaps": renderCoverageGaps(root, profile); break;
+        case "research-history": renderResearchHistory(root, summaries, component.open_by_default === true); break;
+        case "related-topics": renderRelatedTopics(root, topic); break;
+        default: break;
+      }
+    });
+  }
+
   function renderTopicDetail() {
     if (!activeTopicId) return;
     const topic = data.topics.find((item) => item.topic_id === activeTopicId);
@@ -1469,14 +1575,6 @@
     window.OpenFSFeedback.mount("topic-feedback", {kind: "topic", id: topic.topic_id, title: localized(topic, "title"), path: `?topic=${encodeURIComponent(topic.topic_id)}`});
     const root = document.getElementById("topic-dialog-content");
     root.replaceChildren();
-    renderTopicScope(root, topic);
-    if (data.conference_coverage?.entries.some((entry) => [entry.primary_topic_id, ...entry.related_topic_ids].includes(topic.topic_id))) {
-      const conference = document.createElement("p");
-      const link = document.createElement("a");
-      link.href = `conferences/hot-chips-2026/?lang=${language}`;
-      link.textContent = tr("conferenceLink");
-      conference.append(link); root.append(conference);
-    }
     const summaries = summariesForTopic(topic.topic_id);
     const profile = decisionProfileForTopic(topic.topic_id);
     if (!summaries.length && !profile) {
@@ -1489,31 +1587,17 @@
       empty.append(title, body);
       root.appendChild(empty);
     }
+    if (profile?.page_layout) {
+      renderStructuredTopicLayout(root, topic, profile, summaries);
+      return;
+    }
+    renderTopicScope(root, topic);
     if (profile) {
-      const overview = document.createElement("section");
-      overview.className = "topic-results-overview decision-overview";
-      const kicker = document.createElement("span");
-      kicker.className = "eyebrow";
-      kicker.textContent = tr("decisionSummary");
-      const text = document.createElement("p");
-      appendGlossaryText(text, localized(profile, "summary"), topic);
-      const notice = document.createElement("p");
-      notice.className = "decision-provisional-notice";
-      notice.textContent = tr("provisionalNotice");
-      overview.append(kicker, text, notice);
-      root.appendChild(overview);
+      renderTopicOverview(root, profile, topic);
       const actorMap = decisionActorMap();
-      renderRegionFilter(root, profile, actorMap);
       renderDecisionDimensions(root, profile, topic);
       renderDecisionSections(root, profile, actorMap, topic);
-      if (profile.related_surface_ids.length) {
-        const heading = document.createElement("h3");
-        heading.className = "related-tables-heading";
-        heading.textContent = tr("relatedTables");
-        root.appendChild(heading);
-      }
-      if (profile.related_surface_ids.includes("platform-software")) renderPlatformMatrix(root);
-      if (profile.related_surface_ids.includes("numerical-methods")) renderNumericalMatrix(root);
+      renderRelatedSurfaces(root, profile);
       renderCoverageGaps(root, profile);
     }
     renderTopicComparisons(root, topic, profile);
@@ -1546,6 +1630,7 @@
       root.appendChild(section);
     }
     renderResearchHistory(root, summaries, !profile);
+    renderRelatedTopics(root, topic);
   }
 
   function openTopicDetail(topicId) {
@@ -1553,7 +1638,6 @@
     const alias = (data.catalog_aliases || []).find((item) => item.topic_id === topicId || item.legacy_code === topicId);
     if (!current && !alias) return;
     topicId = current ? current.topic_id : topicId;
-    if (activeTopicId !== topicId) activeTopicRegion = "all";
     activeTopicId = topicId;
     const url = new URL(window.location.href);
     url.searchParams.set("topic", topicId);
@@ -1601,10 +1685,11 @@
     }
   }
 
-  function renderTopicScope(root, topic) {
+  function renderTopicScope(root, topic, options = {}) {
+    const {numbered = false} = options;
     if (!topic.summary_ja && !topic.research_units?.length) return;
     const section = document.createElement("section");
-    section.className = "topic-scope";
+    section.className = `topic-scope${numbered ? " structured-unit-index" : ""}`;
     const heading = document.createElement("h3");
     heading.textContent = tr("scopeTitle");
     const summary = document.createElement("p");
@@ -1613,27 +1698,35 @@
     list.className = "research-unit-list";
     (topic.research_units || []).forEach((unit) => {
       const item = document.createElement("li");
-      const title = document.createElement("strong");
-      appendGlossaryText(title, localized(unit, "title"), topic);
+      const title = numbered ? document.createElement("a") : document.createElement("strong");
+      if (numbered) {
+        title.href = `#catalog-unit-${unit.unit_id}`;
+        title.textContent = researchUnitLabel(topic, unit);
+        title.addEventListener("click", (event) => {
+          event.preventDefault();
+          document.getElementById(`catalog-unit-${unit.unit_id}`)?.scrollIntoView({block: "start"});
+        });
+      } else {
+        appendGlossaryText(title, localized(unit, "title"), topic);
+      }
       const status = document.createElement("span");
       status.className = "research-unit-status";
       status.textContent = tr(statusKeys[unit.status]);
       const question = document.createElement("p");
       appendGlossaryText(question, localized(unit, "question"), topic);
       item.append(title, status, question);
-      if (unit.latest_update_id) {
+      if (!numbered && unit.latest_update_id) {
         const provenance = document.createElement("a");
         provenance.href = `https://github.com/HPCI-CFSP/OpenFS/blob/${data.site.commit_sha}/proposals/research-unit-updates/${unit.latest_update_id}.json`;
         provenance.textContent = language === "ja" ? "暫定調査の根拠・履歴" : "Provisional research provenance";
         item.appendChild(provenance);
       }
-      unit.evidence_section_ids.forEach((id, index) => {
+      if (!numbered) unit.evidence_section_ids.forEach((id, index) => {
         const link = document.createElement("a");
         link.href = `#${id}`;
         link.textContent = `${tr("evidenceSections")} ${index + 1}`;
         link.addEventListener("click", (event) => {
           event.preventDefault();
-          if (activeTopicRegion !== "all") { activeTopicRegion = "all"; renderTopicDetail(); }
           document.getElementById(id)?.scrollIntoView({block: "start"});
         });
         item.appendChild(link);
@@ -1643,11 +1736,6 @@
     section.appendChild(heading);
     if (!topic.research_units?.length) section.appendChild(summary);
     section.appendChild(list);
-    if (topic.related_topic_ids?.length) {
-      const related = document.createElement("h4");
-      related.textContent = tr("relatedTopics");
-      section.append(related, topicLinks(topic.related_topic_ids));
-    }
     root.appendChild(section);
   }
 

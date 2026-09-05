@@ -952,6 +952,34 @@
       ],
       "related_term_ids": [
         "TERM-HBM",
+        "TERM-TSV",
+        "TERM-ZHBM"
+      ]
+    },
+    {
+      "term_id": "TERM-ZHBM",
+      "label_ja": "zHBM",
+      "label_en": "zHBM",
+      "aliases": [
+        "zHBM"
+      ],
+      "category": "memory",
+      "short_definition_ja": "AIアクセラレータ上へHBMを積層するSamsungの構想。",
+      "short_definition_en": "Samsung concept for stacking HBM above an AI accelerator.",
+      "definition_ja": "zHBMは、AIアクセラレータの直上へHBMを積層し、接続距離の短縮と実装密度の向上を目指すSamsungの構想です。JEDECの新しいHBM世代名ではなく、製品の量産・販売時期も公表されていないため、中長期の実装候補として扱います。",
+      "definition_en": "zHBM is a Samsung concept that stacks HBM directly above an AI accelerator to shorten interconnect distance and increase integration density. It is not a new JEDEC HBM generation, and no volume-production or sales date has been published, so OpenFS treats it as a longer-term integration candidate.",
+      "roadmap_ids": [
+        "RM-HW-MEMORY"
+      ],
+      "source_refs": [
+        {
+          "roadmap_id": "RM-HW-MEMORY",
+          "source_id": "SRC-MEM017"
+        }
+      ],
+      "related_term_ids": [
+        "TERM-HBM",
+        "TERM-NVHBM",
         "TERM-TSV"
       ]
     },
@@ -1356,10 +1384,10 @@
     },
     {
       "comparison_id": "CMP-MEMORY-HIERARCHY", "roadmap_ids": ["RM-HW-MEMORY", "RM-HW-COMPUTE", "RM-X-BLUEPRINT"],
-      "title_ja": "主記憶・高帯域メモリの比較", "title_en": "Main-memory and high-bandwidth-memory comparison",
-      "summary_ja": "DDR、LPDDR、HBM、SOCAMMと、開発段階のHBF・ZAMを、規格・モジュール・実装方式の違いと成熟度を明示して比較します。", "summary_en": "Compare DDR, LPDDR, HBM, SOCAMM and developing HBF/ZAM while distinguishing standards, modules, implementation approaches and maturity.",
+      "title_ja": "メモリ技術・実装方式・階層構成の比較", "title_en": "Memory technology, implementation, and hierarchy comparison",
+      "summary_ja": "DDR、LPDDR、HBM等のメモリ方式、SOCAMM、NVHBM、zHBM等の実装方式、CXLとPIMの階層上の役割を、技術階層と成熟度を区別して比較します。", "summary_en": "Compare memory technologies such as DDR, LPDDR, and HBM; implementation approaches such as SOCAMM, NVHBM, and zHBM; and the hierarchy roles of CXL and PIM while distinguishing abstraction layer and maturity.",
       "decision_use_ja": "容量、帯域、電力、交換性、プラットフォーム依存を組み合わせ、単一指標ではなくノード構成を選ぶために使う。", "decision_use_en": "Use capacity, bandwidth, power, serviceability, and platform dependence together to select node configurations rather than ranking one metric.",
-      "caveat_ja": "同じ抽象度・成熟度の技術ではなく、相互に置換可能とは限りません。定量値は世代と構成に依存し、HBF・ZAMの目標を実測性能や供給保証とは扱いません。", "caveat_en": "These technologies differ in abstraction level and maturity and are not necessarily interchangeable. Quantitative values depend on generation/configuration; HBF/ZAM targets are not measured performance or supply guarantees.",
+      "caveat_ja": "同じ抽象度・成熟度の技術ではなく、相互に置換可能とは限りません。CXLは接続規格、PIMは演算配置方式です。定量値は世代と構成に依存し、発表済みの目標を実測性能や供給保証とは扱いません。", "caveat_en": "These technologies differ in abstraction layer and maturity and are not necessarily interchangeable. CXL is an interconnect standard, while PIM changes compute placement. Quantitative values depend on generation and configuration; announced targets are not measured performance or supply guarantees.",
       "columns": [
         {"column_id": "overview", "label_ja": "位置付け", "label_en": "Position"},
         {"column_id": "strengths", "label_ja": "主な利点", "label_en": "Strengths"},
@@ -1396,6 +1424,20 @@
           {"column_id": "serviceability", "text_ja": "直付けLPDDRより交換しやすいが、RDIMM同等性は実装確認が必要。", "text_en": "More serviceable than soldered LPDDR, but RDIMM-equivalent operations require validation."},
           {"column_id": "recommended-use", "text_ja": "大容量・低電力AIサーバ、ラック密度重視構成。", "text_en": "High-capacity, low-power AI servers and rack-density-oriented systems."}
         ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM013"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM014"}]},
+        {"term_id": "TERM-NVHBM", "cells": [
+          {"column_id": "overview", "text_ja": "HBMベースダイへメモリ制御機能を組み込むカスタム実装方式。", "text_en": "A custom implementation that integrates memory-control functions into the HBM base die."},
+          {"column_id": "strengths", "text_ja": "帯域と電力効率の向上を目標とし、アクセラレータとの共同設計を可能にする。", "text_en": "Targets higher bandwidth and power efficiency through accelerator-memory co-design."},
+          {"column_id": "limitations", "text_ja": "ベンダー依存、互換性、製品化時期、独立実測が未確認。", "text_en": "Vendor dependence, compatibility, product timing, and independent measurements remain unverified."},
+          {"column_id": "serviceability", "text_ja": "アクセラレータパッケージと一体化するため、メモリ単体の交換は想定しにくい。", "text_en": "Package integration makes memory-only field replacement unlikely."},
+          {"column_id": "recommended-use", "text_ja": "帯域律速のAI・HPC向け将来アクセラレータ候補。", "text_en": "A future accelerator option for bandwidth-bound AI and HPC workloads."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM042"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM043"}]},
+        {"term_id": "TERM-ZHBM", "cells": [
+          {"column_id": "overview", "text_ja": "AIアクセラレータ直上へHBMを積層する3D実装構想。", "text_en": "A 3D-integration concept that stacks HBM directly above an AI accelerator."},
+          {"column_id": "strengths", "text_ja": "接続距離の短縮と実装密度の向上を目標とする。", "text_en": "Targets shorter interconnects and higher integration density."},
+          {"column_id": "limitations", "text_ja": "熱、歩留まり、テスト、保守、量産時期が未確認。", "text_en": "Thermals, yield, test, serviceability, and volume timing remain unverified."},
+          {"column_id": "serviceability", "text_ja": "アクセラレータとメモリの一体化により故障交換単位が大きくなる可能性がある。", "text_en": "Accelerator-memory integration may enlarge the field-replacement unit."},
+          {"column_id": "recommended-use", "text_ja": "中長期の高密度AIアクセラレータ実装候補。", "text_en": "A medium- to long-term dense AI-accelerator integration candidate."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM017"}]},
         {
           "term_id": "TERM-HBF",
           "cells": [
@@ -1475,7 +1517,21 @@
               "source_id": "SRC-HW1-ZAM"
             }
           ]
-        }
+        },
+        {"term_id": "TERM-CXL", "cells": [
+          {"column_id": "overview", "text_ja": "CPU、アクセラレータ、メモリ拡張装置を接続するキャッシュ・メモリ整合I/O規格。", "text_en": "A cache- and memory-coherent I/O standard connecting CPUs, accelerators, and memory expanders."},
+          {"column_id": "strengths", "text_ja": "容量拡張、共有、プーリング、階層化の構成自由度を高める。", "text_en": "Increases flexibility for expansion, sharing, pooling, and tiering."},
+          {"column_id": "limitations", "text_ja": "ローカルDRAMより遅延が増え、規格世代と製品・管理ソフトの成熟に時間差がある。", "text_en": "Adds latency relative to local DRAM, with a lag between specifications and product or management-software maturity."},
+          {"column_id": "serviceability", "text_ja": "拡張装置として分離できるが、障害領域、相互運用性、管理方法の検証が必要。", "text_en": "Can use separate expansion devices, but failure domains, interoperability, and management require validation."},
+          {"column_id": "recommended-use", "text_ja": "大容量、共有メモリ、段階的な容量増設、資源分離の候補。", "text_en": "A candidate for large capacity, shared memory, staged expansion, and resource disaggregation."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET008"}, {"roadmap_id": "RM-HW-INTERCONNECT", "source_id": "SRC-NET020"}]},
+        {"term_id": "TERM-PIM", "cells": [
+          {"column_id": "overview", "text_ja": "メモリ内部または近傍へ演算機能を置くアーキテクチャ。", "text_en": "An architecture that places compute functions in or near memory."},
+          {"column_id": "strengths", "text_ja": "対象処理ではCPU・GPUとのデータ移動と消費エネルギーを削減できる可能性がある。", "text_en": "Can reduce data movement and energy between memory and CPUs or GPUs for suitable operations."},
+          {"column_id": "limitations", "text_ja": "演算範囲、精度、プログラミングモデル、ホスト連携、汎用性に制約がある。", "text_en": "Constraints include operation coverage, precision, programming model, host integration, and generality."},
+          {"column_id": "serviceability", "text_ja": "製品ごとにメモリ形態、SDK、交換単位、障害処理が異なる。", "text_en": "Memory form, SDK, replacement unit, and failure handling differ by product."},
+          {"column_id": "recommended-use", "text_ja": "検索、疎な処理、メモリ集約処理など、データ移動が支配的な限定用途。", "text_en": "Targeted data-movement-dominated uses such as search, sparse processing, and memory-intensive kernels."}
+        ], "source_refs": [{"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM032"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM033"}, {"roadmap_id": "RM-HW-MEMORY", "source_id": "SRC-MEM041"}]}
       ]
     },
     {
@@ -2514,7 +2570,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PRIORITIZED-RESEARCH-20260902-001",
-    "human_approval_directive_id": "DIR-900021"
+    "publication_decision_id": "PUBDEC-CATALOG-LAYOUT-20260905-001",
+    "human_approval_directive_id": "DIR-900102"
   }
 }

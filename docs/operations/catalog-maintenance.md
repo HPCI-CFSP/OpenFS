@@ -37,8 +37,9 @@ migration instead of silently replacing its history.
 - Software sustainability remains a research Topic because maintainer capacity,
   funding, dependencies, support lifetimes, licensing, and exit options affect
   long-term procurement and operation. It covers commercial and open-source software.
-- Country-specific adoption is a cross-domain view over the same technical
-  records. Global supply risks remain distinct from Japanese industrial deployment.
+- Actor and region metadata remain provenance for dedicated supply-chain,
+  economic-security, and industrial-deployment analysis. Ordinary public Topic
+  pages do not classify or filter technical findings by country or region.
 
 ## Work assignment and completion
 
@@ -58,6 +59,12 @@ migration instead of silently replacing its history.
 6. AI-proposed Topics continue through `OFS-004` and the research-topic Consensus
    gate. An accepted additive Topic without a unit breakdown remains an unstarted
    scope assignment; decompose it before claiming research completion.
+
+Public Topic layouts may use an ordered `page_layout` of reusable components.
+Each component references canonical research-unit, decision-section, comparison,
+roadmap, and history IDs. Reorder those references instead of duplicating prose
+or moving evidence records; extend the schema and renderer before introducing a
+new component type.
 
 ## Harness and output transfers
 

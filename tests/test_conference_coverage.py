@@ -1,9 +1,6 @@
 import copy
 import json
-import os
 from pathlib import Path
-import shutil
-import subprocess
 import sys
 import tempfile
 import unittest
@@ -104,16 +101,11 @@ class ConferenceCoverageTests(unittest.TestCase):
             self.assertIsNone(milestones[f"MS-HC26-{key}"]["quarter"])
         self.assertEqual("2027 H2", timing_label(milestones["MS-HC26-MOP-PRODUCTION"], "en"))
 
-    def test_bilingual_page_and_offline_dom_events(self):
-        node = os.environ.get("OPENFS_NODE") or shutil.which("node")
-        if not node: self.skipTest("Node.js is required for offline DOM checks")
+    def test_conference_register_is_not_a_standalone_public_page(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             build(ROOT, output)
-            page = (output / "conferences/hot-chips-2026/index.html").read_text()
-            self.assertIn("../../assets/branding/openfs-logo-compact.svg", page)
-            self.assertNotIn("{{", page)
-            env = dict(os.environ, OPENFS_TEST_PUBLIC_DATA=str(output / "data/openfs-public.js"))
-            result = subprocess.run([node, "--test", "tests/test_conference_ui.js"], cwd=ROOT,
-                                    env=env, capture_output=True, text=True)
-            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            self.assertFalse((output / "conferences").exists())
+            self.assertFalse((output / "conferences.js").exists())
+            public_data = (output / "data/openfs-public.js").read_text(encoding="utf-8")
+            self.assertNotIn('"conference_coverage"', public_data)

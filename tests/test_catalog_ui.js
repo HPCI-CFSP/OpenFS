@@ -132,6 +132,39 @@ test("catalog findings link centralized terms, comparisons, sources, and roadmap
   assert.equal(f.location.searchParams.has("term"), false);
 });
 
+test("ARCH-03 uses ordered reusable components with unit-specific comparisons", () => {
+  const f = fixture("?topic=ARCH-03&lang=ja");
+  const content = f.get("topic-dialog-content");
+  const nodes = f.walk(content);
+  const positions = [
+    "catalog-unit-ARCH-03-U01",
+    "catalog-unit-ARCH-03-U02",
+    "catalog-unit-ARCH-03-U03"
+  ].map((id) => nodes.indexOf(f.get(id)));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((left, right) => left - right));
+  assert.ok(content.textContent.includes("[調査1] メモリ規格・方式"));
+  assert.ok(content.textContent.includes("[調査2] モジュール・カスタム実装"));
+  assert.ok(content.textContent.includes("[調査3] メモリ階層の構成"));
+
+  const first = f.get("catalog-comparison-CMP-MEMORY-HIERARCHY-TPC-ARCH03-U01");
+  const second = f.get("catalog-comparison-CMP-MEMORY-HIERARCHY-TPC-ARCH03-U02");
+  const third = f.get("catalog-comparison-CMP-MEMORY-HIERARCHY-TPC-ARCH03-U03");
+  assert.ok(first.textContent.includes("DDR"));
+  assert.ok(!first.textContent.includes("CXL"));
+  assert.ok(second.textContent.includes("SOCAMM"));
+  assert.ok(second.textContent.includes("NVHBM"));
+  assert.ok(third.textContent.includes("CXL"));
+  assert.ok(third.textContent.includes("PIM"));
+  assert.ok(f.walk(content).some((element) => String(element.className || "").includes("comparison-stage-badge")));
+  assert.ok(!content.textContent.includes("地域・主体で絞り込む"));
+  assert.ok(!content.textContent.includes("Hot Chips 2026：発表・組織・調査状況"));
+
+  const history = nodes.findIndex((element) => element.className === "research-history");
+  const related = nodes.findIndex((element) => String(element.className || "").includes("topic-related-topics"));
+  assert.ok(history >= 0 && related > history);
+});
+
 test("procurement findings expose the new comparison and catalog primary sources", () => {
   const f = fixture("?topic=CROSS-06&lang=ja");
   const content = f.get("topic-dialog-content");
