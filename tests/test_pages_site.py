@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json", "DIR-900103.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json", "DIR-900103.json", "DIR-900104.json", "DIR-900105.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -575,12 +575,13 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual(3, len(result["consensus_packages"]))
+            self.assertEqual(4, len(result["consensus_packages"]))
             self.assertEqual(
                 {
                     "CRP-P0-ROADMAPS-V02",
                     "CRP-P0-ROADMAPS-V03",
                     "CRP-P0-ROADMAPS-V04",
+                    "CRP-P0-ROADMAPS-V05",
                 },
                 {package["package_id"] for package in result["consensus_packages"]},
             )
@@ -614,6 +615,19 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(74, len(result["application_performance_forecasts"]["cross_platform_observations"]))
             self.assertEqual(8, len(result["application_performance_forecasts"]["quantitative_requirements"]))
             self.assertEqual(5, len(result["planning_evidence_readiness"]["dimensions"]))
+            self.assertEqual(
+                19,
+                result["fs3_decision_evidence"]["roadmaps"]["summary"]["roadmap_count"],
+            )
+            self.assertEqual(
+                "incomplete", result["fs3_decision_evidence"]["consensus_status"]
+            )
+            self.assertNotIn("publication", result["fs3_decision_evidence"])
+            self.assertEqual(1, len(result["reports"]))
+            self.assertEqual(
+                "REPORT-FS3-DECISION-EVIDENCE-20260906",
+                result["reports"][0]["report_id"],
+            )
             self.assertEqual(
                 6,
                 len(result["application_performance_forecasts"]["infrastructure_requirements_matrix"]["rows"]),
@@ -763,7 +777,11 @@ class PagesSiteTests(unittest.TestCase):
                 sum(len(roadmap["coverage_gaps"]) for roadmap in result["roadmap_artifacts"]),
                 30,
             )
-            self.assertEqual([], result["reports"])
+            self.assertEqual(1, len(result["reports"]))
+            self.assertEqual(
+                "REPORT-FS3-DECISION-EVIDENCE-20260906",
+                result["reports"][0]["report_id"],
+            )
             baseline = json.loads((ROOT / "config/research-baseline.json").read_text(encoding="utf-8"))
             self.assertEqual(baseline["derived_at"], result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))

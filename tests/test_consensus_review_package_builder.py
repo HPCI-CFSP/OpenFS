@@ -34,12 +34,12 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
             "CRP-P0-ROADMAPS-TEST",
         )
 
-    def test_current_builder_covers_every_published_p0_roadmap(self):
+    def test_current_builder_covers_every_published_roadmap(self):
         portfolio = committed_json(ROOT, self.commit, "config/roadmap-portfolio.json")
         expected = {
             item["roadmap_id"]
             for item in portfolio["roadmap_families"]
-            if item["priority"] == "P0" and item["status"] == "published"
+            if item["status"] == "published"
         }
         actual = {
             unit["unit_id"].removeprefix("CRU-")
@@ -47,8 +47,8 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
             if unit["kind"] == "roadmap"
         }
         self.assertEqual({item.removeprefix("RM-") for item in expected}, actual)
-        self.assertEqual(15, self.manifest["portfolio_summary"]["roadmap_count"])
-        self.assertEqual(26, self.manifest["portfolio_summary"]["dependency_count"])
+        self.assertEqual(19, self.manifest["portfolio_summary"]["roadmap_count"])
+        self.assertEqual(30, self.manifest["portfolio_summary"]["dependency_count"])
 
     def test_procurement_and_readiness_evidence_are_reviewable(self):
         artifacts = {item["path"] for item in self.manifest["artifact_manifest"]}
@@ -58,6 +58,10 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
             "schemas/procurement-cost-register.schema.json",
             "schemas/planning-evidence-readiness.schema.json",
             "tools/check_procurement_costs.py",
+            "knowledge/public/fs3-decision-evidence.json",
+            "schemas/fs3-decision-evidence.schema.json",
+            "tools/build_fs3_decision_evidence.py",
+            "reviews/directives/DIR-900105.json",
         }
         self.assertLessEqual(expected_artifacts, artifacts)
 

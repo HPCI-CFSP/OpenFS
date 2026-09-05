@@ -3,10 +3,10 @@
   "export_id": "ROADMAP-DEPENDENCY-REGISTER-001",
   "status": "published",
   "as_of": "2026-09-06",
-  "title_ja": "P0ロードマップ間の依存関係一覧",
-  "title_en": "P0 cross-roadmap dependency register",
-  "summary_ja": "15本の公開P0ロードマップ間の依存関係を整理した暫定版です。技術、施設、ソフトウェア、AI、調達、運用、継続監視から参照構成までの判断経路を示します。独立レビューは未完了です。",
-  "summary_en": "A provisional register connecting 15 published P0 roadmaps across technology, facilities, software, AI, procurement, operations, and horizon scanning to the reference blueprint. Independent review remains incomplete.",
+  "title_ja": "公開ロードマップ間の依存関係一覧",
+  "title_en": "Public cross-roadmap dependency register",
+  "summary_ja": "19本の公開ロードマップ間の依存関係を整理した暫定版です。技術、供給網、施設、ソフトウェア、アプリケーション、調達、運用、利用支援、継続監視から参照構成までの判断経路を示します。独立レビューは未完了です。",
+  "summary_en": "A provisional register connecting 19 published roadmaps across technology, supply chain, facilities, software, applications, procurement, operations, adoption, and horizon scanning to the reference blueprint. Independent review remains incomplete.",
   "consensus_status": "incomplete",
   "dependencies": [
     {
@@ -106,34 +106,6 @@
       "coverage_gap_refs": [
         "GAP-NET-001",
         "GAP-NET-005"
-      ]
-    },
-    {
-      "dependency_id": "XDEP-FACILITY-NET",
-      "upstream_roadmap_id": "RM-HW-FACILITY",
-      "downstream_roadmap_id": "RM-HW-INTERCONNECT",
-      "relationship": "constrains",
-      "criticality": "high",
-      "basis": "evidence-backed",
-      "statement_ja": "施設の電力、冷却、ラック、配線条件は、ネットワークの構成、伝送媒体、到達距離、光接続の導入範囲を制約する。",
-      "statement_en": "Facility power, cooling, rack, and cabling conditions constrain network topology, media, reach, and the deployable scope of optical connectivity.",
-      "decision_impact_ja": "ネットワーク方式を選定する前に、スイッチ・光部品を含むラック電力、冷却方式、配線経路、交換単位をセンター別に確認する。",
-      "decision_impact_en": "Before selecting a network, verify per-center rack power including switches and optics, cooling mode, cable routes, and replacement units.",
-      "risk_if_late_ja": "施設条件の確認が遅れると、トポロジー、光部品、ラック配置の再設計が必要になり、導入時期と費用の不確実性が増える。",
-      "risk_if_late_en": "Late facility validation can force topology, optics, and rack-layout redesign, increasing schedule and cost uncertainty.",
-      "source_ids": [
-        "SRC-NET009",
-        "SRC-NET010"
-      ],
-      "source_dependency_ids": [
-        "DEP-NET-FACILITY-001"
-      ],
-      "gate_refs": [
-        "MS-FACILITY-REQ-BASELINE",
-        "MS-NET-HPCI-2027"
-      ],
-      "coverage_gap_refs": [
-        "GAP-FACILITY-001"
       ]
     },
     {
@@ -574,6 +546,34 @@
       ]
     },
     {
+      "dependency_id": "XDEP-FACILITY-NET",
+      "upstream_roadmap_id": "RM-HW-FACILITY",
+      "downstream_roadmap_id": "RM-HW-INTERCONNECT",
+      "relationship": "constrains",
+      "criticality": "high",
+      "basis": "evidence-backed",
+      "statement_ja": "施設の電力、冷却、ラック、配線条件は、ネットワークの構成、伝送媒体、到達距離、光接続の導入範囲を制約する。",
+      "statement_en": "Facility power, cooling, rack, and cabling conditions constrain network topology, media, reach, and the deployable scope of optical connectivity.",
+      "decision_impact_ja": "ネットワーク方式を選定する前に、スイッチ・光部品を含むラック電力、冷却方式、配線経路、交換単位をセンター別に確認する。",
+      "decision_impact_en": "Before selecting a network, verify per-center rack power including switches and optics, cooling mode, cable routes, and replacement units.",
+      "risk_if_late_ja": "施設条件の確認が遅れると、トポロジー、光部品、ラック配置の再設計が必要になり、導入時期と費用の不確実性が増える。",
+      "risk_if_late_en": "Late facility validation can force topology, optics, and rack-layout redesign, increasing schedule and cost uncertainty.",
+      "source_ids": [
+        "SRC-NET009",
+        "SRC-NET010"
+      ],
+      "source_dependency_ids": [
+        "DEP-NET-FACILITY-001"
+      ],
+      "gate_refs": [
+        "MS-FACILITY-REQ-BASELINE",
+        "MS-NET-HPCI-2027"
+      ],
+      "coverage_gap_refs": [
+        "GAP-FACILITY-001"
+      ]
+    },
+    {
       "dependency_id": "XDEP-FACILITY-BLUE",
       "upstream_roadmap_id": "RM-HW-FACILITY",
       "downstream_roadmap_id": "RM-X-BLUEPRINT",
@@ -776,6 +776,109 @@
         "MS-HORIZON-2026-BASELINE"
       ],
       "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-SOVEREIGNTY-BLUE",
+      "upstream_roadmap_id": "RM-HW-SOVEREIGNTY",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "constrains",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "供給能力、認定、保守、代替経路が導入時期と構成の可逆性を制約する。",
+      "statement_en": "Capacity, qualification, support, and alternatives constrain deployment timing and architectural reversibility.",
+      "decision_impact_ja": "候補部品を出自だけで評価せず、供給量、認定、保守、代替時の再設計を計画案へ反映する。",
+      "decision_impact_en": "Reflect volume, qualification, support, and redesign under substitution rather than judging components by origin alone.",
+      "risk_if_late_ja": "供給証拠が遅れると、量産目標を調達可能な数量・時期と誤認する。",
+      "risk_if_late_en": "Late supply evidence can cause production targets to be mistaken for procurable volume and dates.",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-CDX001",
+        "SRC-CDX007"
+      ],
+      "source_dependency_ids": [
+        "DEP-SOVEREIGNTY-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-SOVEREIGNTY-GATE-2027Q2"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-PERFORMANCE-BLUE",
+      "upstream_roadmap_id": "RM-SSW-PERFORMANCE",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "informs",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "実効性能、電力、待ち時間、失敗の観測が候補構成の比較と運用条件を知らせる。",
+      "statement_en": "Observed performance, power, queueing, and failures inform candidate comparison and operating conditions.",
+      "decision_impact_ja": "ピーク値だけでなく、同一入力・計測境界による性能と電力を計画案へ反映する。",
+      "decision_impact_en": "Use performance and power from matched inputs and measurement boundaries, not peak values alone.",
+      "risk_if_late_ja": "観測契約が遅れると、個別研究結果を本番SLOへ誤って一般化する。",
+      "risk_if_late_en": "Late observability contracts can cause isolated research results to be generalized into production SLOs.",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-CDS376"
+      ],
+      "source_dependency_ids": [
+        "DEP-PERFORMANCE-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-PERFORMANCE-CONTRACT-2027Q2"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-REALTIME-BLUE",
+      "upstream_roadmap_id": "RM-APP-REALTIME",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "informs",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "実験・緊急・量子ユースケースの期限、データ率、正答条件がサービス構成を知らせる。",
+      "statement_en": "Deadlines, data rates, and correctness conditions for experimental, urgent, and quantum use cases inform service architecture.",
+      "decision_impact_ja": "取得、転送、計算、判断、復旧を一つのエンドツーエンド経路として評価する。",
+      "decision_impact_en": "Evaluate acquisition, transfer, computation, decision, and recovery as one end-to-end path.",
+      "risk_if_late_ja": "ユースケース契約が遅れると、個別要素の速度からサービス能力を過大評価する。",
+      "risk_if_late_en": "Late use-case contracts can overstate service capability from component speed.",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-CDS397",
+        "SRC-CDS455"
+      ],
+      "source_dependency_ids": [
+        "DEP-REALTIME-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-REALTIME-GATE-2027Q2"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-ADOPTION-BLUE",
+      "upstream_roadmap_id": "RM-APP-ADOPTION",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "enables",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "移行支援、技能、保守責任、終了条件が候補構成を継続利用可能なサービスにする。",
+      "statement_en": "Migration support, skills, stewardship, and exit conditions make candidate architectures sustainable services.",
+      "decision_impact_ja": "主要ソフトウェアの移植・検証・支援工数と責任者を導入工程へ反映する。",
+      "decision_impact_en": "Reflect porting, validation, support effort, and ownership for critical software in deployment schedules.",
+      "risk_if_late_ja": "準備が遅れると、機器稼働後も利用者が移行できず、保守不能な構成が残る。",
+      "risk_if_late_en": "Late readiness can leave users unable to migrate and software unsupported after hardware starts operating.",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-PORT052",
+        "SRC-CDO066"
+      ],
+      "source_dependency_ids": [
+        "DEP-ADOPTION-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-ADOPTION-GATE-2027Q2"
+      ],
+      "coverage_gap_refs": []
     }
   ],
   "portfolio_gate_gap_refs": [
@@ -803,7 +906,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
-    "human_approval_directive_id": "DIR-900103"
+    "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
+    "human_approval_directive_id": "DIR-900105"
   }
 }

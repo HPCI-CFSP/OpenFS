@@ -1347,6 +1347,14 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "planning_evidence_readiness_required_bilingual_fields",
         "planning evidence readiness",
     )
+    fs3_decision_evidence = collect_public_supplement(
+        root,
+        policy,
+        "included_public_fs3_decision_evidence",
+        "fs3_decision_evidence_public_fields",
+        "fs3_decision_evidence_required_bilingual_fields",
+        "FS3.0 decision-evidence package",
+    )
     roadmap_assurance = collect_roadmap_assurance(root, policy)
     roadmaps = [
         roadmap_index_entry(roadmap, category_by_roadmap)
@@ -1404,6 +1412,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "hpci_system_inventory": hpci_system_inventory,
         "application_performance_forecasts": application_performance_forecasts,
         "planning_evidence_readiness": planning_evidence_readiness,
+        "fs3_decision_evidence": fs3_decision_evidence,
         "roadmap_assurance": roadmap_assurance,
         "roadmaps": roadmaps,
         "scenarios": scenarios,

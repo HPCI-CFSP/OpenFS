@@ -76,19 +76,23 @@
       "properties": {
         "information_classification": {"const": "public"},
         "publication_approved": {"const": true},
-        "publication_decision_id": {"enum": ["PUBDEC-20260826-003", "PUBDEC-HARDWARE-RESEARCH-20260831", "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901", "PUBDEC-P0-ROADMAP-PLANNING-20260905-001"]},
-        "human_approval_directive_id": {"enum": ["DIR-900006", "DIR-900015", "DIR-900018", "DIR-900019", "DIR-900103"]}
+        "publication_decision_id": {"enum": ["PUBDEC-20260826-003", "PUBDEC-HARDWARE-RESEARCH-20260831", "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901", "PUBDEC-P0-ROADMAP-PLANNING-20260905-001", "PUBDEC-RESEARCH-READINESS-20260906-001"]},
+        "human_approval_directive_id": {"enum": ["DIR-900006", "DIR-900015", "DIR-900018", "DIR-900019", "DIR-900103", "DIR-900105"]}
       },
       "allOf": [{
-        "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900103"}}},
-        "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001"}}},
+        "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900105"}}},
+        "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-RESEARCH-READINESS-20260906-001"}}},
         "else": {
-          "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900018"}}},
-          "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-HARDWARE-RESEARCH-20260831"}}},
+          "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900103"}}},
+          "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001"}}},
           "else": {
-            "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900019"}}},
-            "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901"}}},
-            "else": {"properties": {"publication_decision_id": {"const": "PUBDEC-20260826-003"}}}
+            "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900018"}}},
+            "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-HARDWARE-RESEARCH-20260831"}}},
+            "else": {
+              "if": {"properties": {"human_approval_directive_id": {"const": "DIR-900019"}}},
+              "then": {"properties": {"publication_decision_id": {"const": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901"}}},
+              "else": {"properties": {"publication_decision_id": {"const": "PUBDEC-20260826-003"}}}
+            }
           }
         }
       }],
