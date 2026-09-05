@@ -175,7 +175,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         dimensions = {item["dimension_id"]: item for item in payload["dimensions"]}
         self.assertEqual(9, dimensions["system-lifecycle"]["coverage"]["numerator"])
-        self.assertEqual(12, dimensions["operations"]["coverage"]["numerator"])
+        self.assertEqual(14, dimensions["operations"]["coverage"]["numerator"])
         self.assertEqual(
             {"observed-start": 25, "any-lifecycle": 27},
             {
@@ -185,10 +185,11 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         self.assertEqual(
             {
-                "utilization": 5,
+                "utilization": 6,
                 "power": 1,
                 "availability-downtime": 5,
                 "jobs-history": 6,
+                "call-demand": 25,
             },
             {
                 item["coverage_id"]: item["numerator"]
@@ -385,12 +386,22 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         payload = json.loads(
             (ROOT / "knowledge/public/application-performance-forecasts.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(1, len(payload["external_requirement_examples"]))
-        example = payload["external_requirement_examples"][0]
-        self.assertEqual("official-planned-requirement", example["status"])
-        self.assertEqual(6, len(example["requirements"]))
-        self.assertTrue(all(item["label_ja"] and item["label_en"] for item in example["requirements"]))
-        self.assertIn("not a price", example["boundary_en"])
+        self.assertEqual(5, len(payload["external_requirement_examples"]))
+        for example in payload["external_requirement_examples"]:
+            self.assertEqual("official-planned-requirement", example["status"])
+            self.assertTrue(example["requirements"])
+            self.assertTrue(all(item["label_ja"] and item["label_en"] for item in example["requirements"]))
+            self.assertIn("not reused as EEA1", example["boundary_en"])
+        self.assertEqual(
+            {
+                "EXREQ-KYOTO-GENOMICS-CHEMISTRY-2026",
+                "EXREQ-RIKEN-AIFS-2023",
+                "EXREQ-TSUKUBA-SIRIUS-2024",
+                "EXREQ-NAGOYA-FURO-NEXT-2024",
+                "EXREQ-JAXA-JSS4-PLATFORM-2026",
+            },
+            {item["case_id"] for item in payload["external_requirement_examples"]},
+        )
         self.assertTrue(all(item["owner_approval_status"] == "pending" for item in payload["infrastructure_requirements_matrix"]["rows"]))
 
     def test_fugaku_fy2024_operations_are_append_only(self):
