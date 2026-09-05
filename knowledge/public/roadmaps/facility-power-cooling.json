@@ -1,0 +1,272 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "FACILITY-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-HW-FACILITY",
+  "status": "published",
+  "domain": "hardware",
+  "slug": "hardware/facility-power-cooling",
+  "as_of": "2026-09-05",
+  "title_ja": "施設・電力・冷却",
+  "title_en": "Facility, power, and cooling",
+  "summary_ja": "受電、液冷、熱設計、施設工期をシステム導入判断へ接続する暫定ロードマップです。富岳NEXTの公開施設要件は個別計画の根拠であり、他センターへ一律には適用しません。",
+  "summary_en": "A provisional roadmap connecting power delivery, liquid cooling, thermal design, and facility schedules to deployment decisions. Public FugakuNEXT requirements support that project and are not assumed to apply uniformly to other centers.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "facility",
+      "name_ja": "施設要件",
+      "name_en": "Facility requirements"
+    },
+    {
+      "group_id": "acceptance",
+      "name_ja": "受入・運用",
+      "name_en": "Acceptance and operations"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "FACILITY-DESIGN",
+      "group": "facility",
+      "name_ja": "建屋・受電・冷却設計",
+      "name_en": "Building, power, and cooling design",
+      "summary_ja": "計算機側の熱・電力条件と施設工程を同期します。",
+      "summary_en": "Synchronize compute thermal and power requirements with facility delivery.",
+      "current_state_ja": "富岳NEXTでは水冷、CDU、温水条件、負荷変動追従が要求されています。",
+      "current_state_en": "FugakuNEXT requirements specify water cooling, CDUs, warm-water conditions, and load following.",
+      "hpci_implications_ja": "センターごとの受電容量、冷却温度、増設余地を別々に確認します。",
+      "hpci_implications_en": "Verify power capacity, cooling temperatures, and expansion headroom per center.",
+      "source_ids": [
+        "SRC-BLUE009",
+        "SRC-BLUE043"
+      ]
+    },
+    {
+      "track_id": "FACILITY-METRICS",
+      "group": "acceptance",
+      "name_ja": "効率・水・レジリエンス",
+      "name_en": "Efficiency, water, and resilience",
+      "summary_ja": "PUEだけでなく水使用、復旧、計測境界を扱います。",
+      "summary_en": "Cover water use, recovery, and measurement boundaries in addition to PUE.",
+      "current_state_ja": "DOEの公開ガイドは評価項目を示しますが、各HPCIセンターの実測値ではありません。",
+      "current_state_en": "DOE public guidance defines evaluation considerations but is not measured data for each HPCI center.",
+      "hpci_implications_ja": "共通の計測期間と境界で受入・運用データを比較します。",
+      "hpci_implications_en": "Compare acceptance and operating data using common periods and boundaries.",
+      "source_ids": [
+        "SRC-CDO003",
+        "SRC-CDO009"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-FACILITY-RIKEN",
+      "track_id": "FACILITY-DESIGN",
+      "owner": "RIKEN R-CCS",
+      "scope_ja": "富岳NEXT新建屋",
+      "scope_en": "FugakuNEXT building",
+      "milestones": [
+        {
+          "milestone_id": "MS-FACILITY-REQ-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "policy",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "施設要求の公開版を確認",
+          "label_en": "Public facility requirements checked",
+          "detail_ja": "2026年7月31日修正版と募集ページを基準資料としました。確認時点は施設完成を意味しません。",
+          "detail_en": "The July 31, 2026 revision and solicitation page form the baseline; the check date is not facility completion.",
+          "source_ids": [
+            "SRC-BLUE009",
+            "SRC-BLUE043"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-FACILITY-COOLING-2028",
+          "year": 2028,
+          "quarter": null,
+          "timing_precision": "year",
+          "maturity": "target",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "project-target",
+          "comparison_priority": "key",
+          "label_ja": "冷却水条件の調整予定",
+          "label_en": "Cooling-water conditions scheduled for coordination",
+          "detail_ja": "流量・圧力等は2028年頃に計算機側の要求に合わせて決定予定です。四半期は公表されていません。",
+          "detail_en": "Flow, pressure, and related conditions are scheduled for determination around 2028 against compute requirements; no quarter is published.",
+          "source_ids": [
+            "SRC-BLUE043"
+          ],
+          "dependency_refs": [
+            "DEP-FACILITY-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-FACILITY-OPERATION-2030",
+          "year": 2030,
+          "quarter": null,
+          "timing_precision": "year",
+          "maturity": "target",
+          "event_type": "hpci-adoption",
+          "timing_basis": "project-target",
+          "comparison_priority": "key",
+          "label_ja": "2030年頃の運転開始目標",
+          "label_en": "Target operation around 2030",
+          "detail_ja": "募集ページに示されたプロジェクト目標であり、確定した稼働四半期ではありません。",
+          "detail_en": "This is the project target on the solicitation page, not a confirmed operating quarter.",
+          "source_ids": [
+            "SRC-BLUE009"
+          ],
+          "dependency_refs": [
+            "DEP-FACILITY-BLUEPRINT"
+          ]
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-FACILITY-OPENFS",
+      "track_id": "FACILITY-METRICS",
+      "owner": "OpenFS",
+      "scope_ja": "センター共通の施設証拠",
+      "scope_en": "Common center facility evidence",
+      "milestones": [
+        {
+          "milestone_id": "MS-FACILITY-CENTER-EVIDENCE",
+          "year": 2027,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "センター別計測表の暫定判断点",
+          "label_en": "Provisional gate for center measurement sheets",
+          "detail_ja": "受電、冷却、増設余地、計測境界が揃ったセンターだけを比較対象とするOpenFS上の暫定計画です。",
+          "detail_en": "A provisional OpenFS plan to compare only centers with documented power, cooling, expansion headroom, and measurement boundaries.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-CDO003",
+            "SRC-CDO009"
+          ],
+          "dependency_refs": [
+            "DEP-FACILITY-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-FACILITY-ALL-CENTERS",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "全センターの同条件実測は未完了",
+          "label_en": "Matched measurements across all centers are incomplete",
+          "detail_ja": "公開資料だけでは同じ期間・境界の電力、冷却、水使用、可用性を揃えられていません。",
+          "detail_en": "Public sources do not yet provide power, cooling, water, and availability under matched periods and boundaries.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-FACILITY-BLUEPRINT",
+      "relationship": "constrains",
+      "upstream_roadmap_id": "RM-HW-FACILITY",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "施設工程と電力・冷却上限が導入可能な構成と時期を制約します。",
+      "statement_en": "Facility schedules and power/cooling limits constrain feasible architecture and timing.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-BLUE043"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-P0-PLAN",
+      "title": "OpenFS roadmap portfolio and evidence rules",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/research-baseline/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-BLUE009",
+      "title": "Solicitation for the design, construction, operation, and maintenance of the new FugakuNEXT building",
+      "publisher": "RIKEN R-CCS",
+      "url": "https://www.r-ccs.riken.jp/fugaku-next/fugaku-next-dbo/index.html",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-BLUE043",
+      "title": "富岳NEXT新建屋DBO要求水準書 共通事項及び施設整備編 2026年7月31日修正版",
+      "publisher": "RIKEN",
+      "url": "https://www.r-ccs.riken.jp/fugaku-next/fugakunext-dbo_2026-0731_2-1.pdf",
+      "source_class": "research-organization",
+      "published_at": "2026-07-31"
+    },
+    {
+      "source_id": "SRC-CDO003",
+      "title": "Best Practices Guide for Energy-Efficient Data Center Design",
+      "publisher": "US Department of Energy / FEMP",
+      "url": "https://www.energy.gov/sites/default/files/2024-07/best-practice-guide-data-center-design_0.pdf",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDO009",
+      "title": "Cooling Water Efficiency Opportunities for Federal Data Centers",
+      "publisher": "US Department of Energy / FEMP",
+      "url": "https://www.energy.gov/cmei/femp/cooling-water-efficiency-opportunities-federal-data-centers",
+      "source_class": "project-official"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-FACILITY-001",
+      "priority": "P1",
+      "scope_ja": "センター別の同条件電力・冷却データ",
+      "scope_en": "Matched center power and cooling data",
+      "impact_ja": "施設適合性を横断比較できません。",
+      "impact_en": "Facility fit cannot be compared across centers.",
+      "next_action_ja": "各センターの公開値、測定境界、期間、増設余地を収集します。",
+      "next_action_en": "Collect public values, boundaries, periods, and expansion headroom per center.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-FACILITY-002",
+      "priority": "P2",
+      "scope_ja": "建設費・運転費と復旧試験",
+      "scope_en": "Construction, operating cost, and recovery testing",
+      "impact_ja": "5年費用とサービス継続性を定量化できません。",
+      "impact_en": "Five-year cost and continuity cannot be quantified.",
+      "next_action_ja": "公開契約、エネルギー・水費、保守範囲、復旧実績を照合します。",
+      "next_action_en": "Match public contracts, energy/water cost, support scope, and recovery evidence.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表資料の確認時点、公開目標、OpenFSの暫定計画を区別し、未公表の時期・費用・性能は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. Documentation checks, published targets, and provisional OpenFS plans are separated, and unpublished timing, cost, and performance are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
+  }
+}

@@ -1,0 +1,270 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "SECURITY-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-SSW-SECURITY",
+  "status": "published",
+  "domain": "system-software",
+  "slug": "system-software/identity-security-federation",
+  "as_of": "2026-09-05",
+  "title_ja": "認証・セキュリティ・連合運用",
+  "title_en": "Identity, security, and federated operations",
+  "summary_ja": "統合認証、保証レベル、HPCセキュリティ、機密計算を段階的に検証する暫定ロードマップです。標準準拠と運用受入を分けます。",
+  "summary_en": "A provisional roadmap for staged validation of federated identity, assurance, HPC security, and confidential computing. Standards conformance is separated from operational acceptance.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "identity",
+      "name_ja": "認証・認可",
+      "name_en": "Identity and authorization"
+    },
+    {
+      "group_id": "security",
+      "name_ja": "計算・運用セキュリティ",
+      "name_en": "Compute and operational security"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "SECURITY-IDENTITY",
+      "group": "identity",
+      "name_ja": "連合認証と保証",
+      "name_en": "Federated identity and assurance",
+      "summary_ja": "ログイン、MFA、属性、保証レベルを追跡します。",
+      "summary_en": "Track login, MFA, attributes, and assurance levels.",
+      "current_state_ja": "HPCI手順、REFEDS MFA、OpenID Federationの公開資料を確認しました。",
+      "current_state_en": "HPCI procedures, REFEDS MFA, and OpenID Federation documentation were checked.",
+      "hpci_implications_ja": "利用者、サービス、ワークロードIDの境界を定義する必要があります。",
+      "hpci_implications_en": "User, service, and workload identity boundaries need definition.",
+      "source_ids": [
+        "SRC-CDO027",
+        "SRC-BLUE041",
+        "SRC-BLUE040"
+      ]
+    },
+    {
+      "track_id": "SECURITY-HPC",
+      "group": "security",
+      "name_ja": "HPCゼロトラスト・機密計算",
+      "name_en": "HPC zero trust and confidential computing",
+      "summary_ja": "管理面、計算面、データ面の統制を扱います。",
+      "summary_en": "Cover control-plane, compute-plane, and data-plane controls.",
+      "current_state_ja": "NISTのHPC向け文書とZero Trust資料は統制設計の基準であり、製品認定ではありません。",
+      "current_state_en": "NIST HPC and Zero Trust documents are control-design references, not product certifications.",
+      "hpci_implications_ja": "性能影響、鍵管理、障害対応、監査証跡を候補構成で試験します。",
+      "hpci_implications_en": "Test performance impact, key management, incident handling, and audit trails on candidate stacks.",
+      "source_ids": [
+        "SRC-CDO039",
+        "SRC-CDO040",
+        "SRC-CDO053"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-SECURITY-IDENTITY",
+      "track_id": "SECURITY-IDENTITY",
+      "owner": "HPCI and standards bodies",
+      "scope_ja": "現行認証と標準",
+      "scope_en": "Current identity and standards",
+      "milestones": [
+        {
+          "milestone_id": "MS-SECURITY-2026-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "standard",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "認証・保証標準の公開状態を確認",
+          "label_en": "Identity and assurance standards checked",
+          "detail_ja": "公開資料の確認であり、全サービスの移行完了を意味しません。",
+          "detail_en": "This is a documentation check and does not mean all services have migrated.",
+          "source_ids": [
+            "SRC-CDO027",
+            "SRC-BLUE041",
+            "SRC-BLUE040"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-SECURITY-FEDERATION",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-adoption",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "共通保証プロファイルの提供時期は未確定",
+          "label_en": "Common assurance-profile availability is undated",
+          "detail_ja": "センター横断の属性、MFA、復旧、監査要件は確定していません。",
+          "detail_en": "Cross-center attribute, MFA, recovery, and audit requirements are not fixed.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": [
+            "DEP-SECURITY-BLUEPRINT"
+          ]
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-SECURITY-OPENFS",
+      "track_id": "SECURITY-HPC",
+      "owner": "OpenFS",
+      "scope_ja": "候補構成のセキュリティ受入",
+      "scope_en": "Security acceptance for candidate stacks",
+      "milestones": [
+        {
+          "milestone_id": "MS-SECURITY-PROFILE-2027",
+          "year": 2027,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "信頼境界・受入項目の暫定判断点",
+          "label_en": "Provisional trust-boundary and acceptance gate",
+          "detail_ja": "統制、責任、性能影響、復旧を候補構成ごとに記録する暫定計画です。",
+          "detail_en": "A provisional plan to record controls, ownership, performance impact, and recovery per candidate stack.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-CDO039",
+            "SRC-CDO040"
+          ],
+          "dependency_refs": [
+            "DEP-SECURITY-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-SECURITY-CONFIDENTIAL",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "機密計算の相互運用は未確認",
+          "label_en": "Confidential-computing interoperability is unverified",
+          "detail_ja": "CPU、GPU、ネットワーク、ストレージをまたぐ証明・鍵管理・復旧は未検証です。",
+          "detail_en": "Attestation, key management, and recovery across CPU, GPU, network, and storage remain unverified.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SECURITY-BLUEPRINT",
+      "relationship": "constrains",
+      "upstream_roadmap_id": "RM-SSW-SECURITY",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "信頼境界と受入基準が利用可能な構成・データ区分を制約します。",
+      "statement_en": "Trust boundaries and acceptance criteria constrain deployable architectures and data classes.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDO039"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-P0-PLAN",
+      "title": "OpenFS roadmap portfolio and evidence rules",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/research-baseline/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-CDO027",
+      "title": "HPCI クイックスタートガイド HPCI-UM01-001-31",
+      "publisher": "HPCI / RIST",
+      "url": "https://www.hpci-office.jp/download_file/view/10e18227-b957-41b4-942e-70036697c946/578",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-BLUE041",
+      "title": "REFEDS MFA Profile Version 2.0",
+      "publisher": "REFEDS",
+      "url": "https://refeds.org/profile/mfa",
+      "source_class": "standards-body",
+      "published_at": "2026-06-10"
+    },
+    {
+      "source_id": "SRC-BLUE040",
+      "title": "OpenID Federation 1.0 Final Specification Approved",
+      "publisher": "OpenID Foundation",
+      "url": "https://openid.net/openid-federation-1-0-final-specification-approved/",
+      "source_class": "standards-body",
+      "published_at": "2026-02-17"
+    },
+    {
+      "source_id": "SRC-CDO039",
+      "title": "NIST SP 800-223: High-Performance Computing Security",
+      "publisher": "NIST",
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-223.pdf",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-CDO040",
+      "title": "NIST SP 800-234: High-Performance Computing Security Overlay",
+      "publisher": "NIST",
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-234.pdf",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-CDO053",
+      "title": "NIST SP 800-207: Zero Trust Architecture",
+      "publisher": "NIST",
+      "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+      "source_class": "standards-body"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-SECURITY-001",
+      "priority": "P1",
+      "scope_ja": "センター共通の保証・監査プロファイル",
+      "scope_en": "Common center assurance and audit profile",
+      "impact_ja": "利用者体験と統制強度を横断比較できません。",
+      "impact_en": "User experience and control strength cannot be compared across centers.",
+      "next_action_ja": "属性、MFA、復旧、ログ、インシデント連携を共通試験します。",
+      "next_action_en": "Test attributes, MFA, recovery, logging, and incident coordination consistently.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-SECURITY-002",
+      "priority": "P2",
+      "scope_ja": "機密計算の性能・運用実証",
+      "scope_en": "Confidential-computing performance and operations",
+      "impact_ja": "保護機能の採用による性能・障害対応コストを評価できません。",
+      "impact_en": "Performance and operational costs of protection cannot be assessed.",
+      "next_action_ja": "候補ハードウェアで証明、鍵更新、障害復旧、性能を測定します。",
+      "next_action_en": "Measure attestation, key rotation, recovery, and performance on candidate hardware.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表資料の確認時点、公開目標、OpenFSの暫定計画を区別し、未公表の時期・費用・性能は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. Documentation checks, published targets, and provisional OpenFS plans are separated, and unpublished timing, cost, and performance are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
+  }
+}

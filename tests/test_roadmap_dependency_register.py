@@ -40,6 +40,7 @@ class RoadmapDependencyRegisterTests(unittest.TestCase):
             "DIR-900015": "PUBDEC-20260826-003",
             "DIR-900018": "PUBDEC-HARDWARE-RESEARCH-20260831",
             "DIR-900019": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901",
+            "DIR-900103": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
         }
         for directive, decision in decisions.items():
             expected = {**publication, "human_approval_directive_id": directive,

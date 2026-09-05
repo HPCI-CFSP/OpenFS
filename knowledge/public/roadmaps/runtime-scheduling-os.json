@@ -1,0 +1,262 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "RUNTIME-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-SSW-RUNTIME",
+  "status": "published",
+  "domain": "system-software",
+  "slug": "system-software/runtime-scheduling-os",
+  "as_of": "2026-09-05",
+  "title_ja": "通信・ランタイム・スケジューリング・OS",
+  "title_en": "Communication, runtimes, scheduling, and operating systems",
+  "summary_ja": "通信標準、GPU通信、実行時系、ジョブ管理を連合資源へ接続する暫定ロードマップです。仕様公開と各システムでの相互運用確認を区別します。",
+  "summary_en": "A provisional roadmap connecting communication standards, GPU collectives, runtimes, and workload management to federated resources. It separates specification publication from system-level interoperability.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "communication",
+      "name_ja": "通信・ランタイム",
+      "name_en": "Communication and runtimes"
+    },
+    {
+      "group_id": "scheduling",
+      "name_ja": "OS・ジョブ管理",
+      "name_en": "Operating systems and workload management"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "RUNTIME-COMM",
+      "group": "communication",
+      "name_ja": "MPI・UCX・集合通信",
+      "name_en": "MPI, UCX, and collectives",
+      "summary_ja": "仕様、実装、GPU・NIC対応を分離して追跡します。",
+      "summary_en": "Track specifications, implementations, and GPU/NIC support separately.",
+      "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。",
+      "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline.",
+      "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。",
+      "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing.",
+      "source_ids": [
+        "SRC-PORT014",
+        "SRC-PORT026",
+        "SRC-CDS015",
+        "SRC-CDS016"
+      ]
+    },
+    {
+      "track_id": "RUNTIME-SCHED",
+      "group": "scheduling",
+      "name_ja": "スケジューラ・電力連携",
+      "name_en": "Scheduling and power integration",
+      "summary_ja": "ジョブ配置、会計、電力制約の連携を扱います。",
+      "summary_en": "Cover workload placement, accounting, and power constraints.",
+      "current_state_ja": "Slurmはエネルギー会計設定を公開していますが、HPCI横断の共通実装を意味しません。",
+      "current_state_en": "Slurm documents energy accounting, but this does not establish a common HPCI-wide implementation.",
+      "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。",
+      "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment.",
+      "source_ids": [
+        "SRC-CDO055"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-RUNTIME-COMM",
+      "track_id": "RUNTIME-COMM",
+      "owner": "Standards and projects",
+      "scope_ja": "通信仕様・実装",
+      "scope_en": "Communication specifications and implementations",
+      "milestones": [
+        {
+          "milestone_id": "MS-RUNTIME-2026-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "standard",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "MPI・UCX・UCCの公開状態を確認",
+          "label_en": "MPI, UCX, and UCC status checked",
+          "detail_ja": "仕様ページと実装資料の確認であり、特定システムの性能保証ではありません。",
+          "detail_en": "This checks specifications and implementation documentation; it does not guarantee performance on a specific system.",
+          "source_ids": [
+            "SRC-PORT014",
+            "SRC-PORT026",
+            "SRC-CDS015",
+            "SRC-CDS016"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-RUNTIME-INTEROP",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "候補構成の相互運用時期は未確定",
+          "label_en": "Candidate-stack interoperability timing is unknown",
+          "detail_ja": "CPU、GPU、NIC、MPI、集合通信を固定した試験日程は未公表です。",
+          "detail_en": "No public schedule fixes CPU, GPU, NIC, MPI, and collective versions for testing.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": [
+            "DEP-RUNTIME-BLUEPRINT"
+          ]
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-RUNTIME-OPENFS",
+      "track_id": "RUNTIME-SCHED",
+      "owner": "OpenFS",
+      "scope_ja": "連合実行の受入条件",
+      "scope_en": "Federated execution acceptance",
+      "milestones": [
+        {
+          "milestone_id": "MS-RUNTIME-MATRIX-2027",
+          "year": 2027,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "互換性マトリクスの暫定判断点",
+          "label_en": "Provisional compatibility-matrix gate",
+          "detail_ja": "API、版、失敗処理、会計、電力制御を候補構成別に記録する暫定計画です。",
+          "detail_en": "A provisional plan to record APIs, versions, failure handling, accounting, and power controls per candidate stack.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-CDO055"
+          ],
+          "dependency_refs": [
+            "DEP-RUNTIME-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-RUNTIME-FEDERATED-GA",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-adoption",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "連合実行の提供時期は未確定",
+          "label_en": "Federated execution availability is undated",
+          "detail_ja": "共通SLAと運用責任を含む提供時期は公表資料から確定できません。",
+          "detail_en": "Public sources do not establish availability with common SLAs and operational ownership.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-RUNTIME-BLUEPRINT",
+      "relationship": "enables",
+      "upstream_roadmap_id": "RM-SSW-RUNTIME",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "通信と実行時系の相互運用が候補構成の実運用を可能にします。",
+      "statement_en": "Communication and runtime interoperability enables candidate architectures to operate in practice.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-PORT014"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-P0-PLAN",
+      "title": "OpenFS roadmap portfolio and evidence rules",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/research-baseline/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-PORT014",
+      "title": "MPI Documents: MPI 5.0",
+      "publisher": "MPI Forum",
+      "url": "https://www.mpi-forum.org/docs/",
+      "published_at": "2025-06-05",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-PORT026",
+      "title": "MPICH 5.0.0 Released",
+      "publisher": "MPICH Project",
+      "url": "https://www.mpich.org/2026/02/04/mpich-5-0-0-released/",
+      "published_at": "2026-02-04",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS015",
+      "title": "UCX FAQ: GPU support and transport selection",
+      "publisher": "OpenUCX Project",
+      "url": "https://openucx.readthedocs.io/en/master/faq.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS016",
+      "title": "Unified Collective Communication official repository",
+      "publisher": "OpenUCX/UCC Project",
+      "url": "https://github.com/openucx/ucc",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDO055",
+      "title": "Slurm energy accounting configuration",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/slurm.conf.html",
+      "source_class": "project-official"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-RUNTIME-001",
+      "priority": "P1",
+      "scope_ja": "候補ハードウェア別の通信互換性",
+      "scope_en": "Communication compatibility by candidate hardware",
+      "impact_ja": "仕様対応だけでは性能・障害処理を判断できません。",
+      "impact_en": "Specification support alone cannot establish performance or failure behavior.",
+      "next_action_ja": "固定版のCPU・GPU・NIC・MPI・集合通信で回帰試験します。",
+      "next_action_en": "Run regression tests with pinned CPU, GPU, NIC, MPI, and collective versions.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-RUNTIME-002",
+      "priority": "P2",
+      "scope_ja": "連合ジョブ管理のSLA・会計意味",
+      "scope_en": "Federated scheduling SLA and accounting semantics",
+      "impact_ja": "センター間で待ち時間や費用を比較できません。",
+      "impact_en": "Queue time and cost cannot be compared across centers.",
+      "next_action_ja": "資源記述、優先度、課金、緊急実行、失敗時責任を定義します。",
+      "next_action_en": "Define resource descriptions, priority, charging, urgent use, and failure ownership.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表資料の確認時点、公開目標、OpenFSの暫定計画を区別し、未公表の時期・費用・性能は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. Documentation checks, published targets, and provisional OpenFS plans are separated, and unpublished timing, cost, and performance are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
+  }
+}

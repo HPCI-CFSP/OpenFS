@@ -1,0 +1,268 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "WORKFLOW-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-SSW-WORKFLOW",
+  "status": "published",
+  "domain": "system-software",
+  "slug": "system-software/data-workflow-platform",
+  "as_of": "2026-09-05",
+  "title_ja": "データ・AI・実験ワークフロー基盤",
+  "title_en": "Data, AI, and experimental workflow platform",
+  "summary_ja": "HPC、AI、データ転送、実験施設をまたぐ実行と再開可能性を扱う暫定ロードマップです。個別ツールの機能とHPCI横断サービスを区別します。",
+  "summary_en": "A provisional roadmap for execution and restartability across HPC, AI, data transfer, and experimental facilities. It separates individual tool capabilities from HPCI-wide services.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "execution",
+      "name_ja": "ワークフロー実行",
+      "name_en": "Workflow execution"
+    },
+    {
+      "group_id": "data",
+      "name_ja": "データ連携",
+      "name_en": "Data integration"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "WORKFLOW-EXEC",
+      "group": "execution",
+      "name_ja": "再開可能なワークフロー",
+      "name_en": "Restartable workflows",
+      "summary_ja": "依存関係、再実行、監視、実行先を追跡します。",
+      "summary_en": "Track dependencies, restart, monitoring, and execution backends.",
+      "current_state_ja": "Parsl、Nextflow、WHEEL等に個別機能がありますが、共通運用は未確認です。",
+      "current_state_en": "Parsl, Nextflow, WHEEL, and others provide individual capabilities; common operations remain unverified.",
+      "hpci_implications_ja": "代表ワークフローを複数センターで同じ来歴付きで再実行する必要があります。",
+      "hpci_implications_en": "Representative workflows need reproducible execution with provenance across centers.",
+      "source_ids": [
+        "SRC-CDS066",
+        "SRC-CDS067",
+        "SRC-CDS075"
+      ]
+    },
+    {
+      "track_id": "WORKFLOW-DATA",
+      "group": "data",
+      "name_ja": "転送・ストリーミング・来歴",
+      "name_en": "Transfer, streaming, and provenance",
+      "summary_ja": "大容量転送と実験データの連続処理を扱います。",
+      "summary_en": "Cover bulk transfer and continuous experimental-data processing.",
+      "current_state_ja": "ADIOS2、Globus、EuroHPC workflow資料を確認しました。",
+      "current_state_en": "ADIOS2, Globus, and EuroHPC workflow documentation were checked.",
+      "hpci_implications_ja": "認証、データ所在、再送、メタデータ、保存期間を一体で試験します。",
+      "hpci_implications_en": "Test identity, location, retransmission, metadata, and retention together.",
+      "source_ids": [
+        "SRC-CDS071",
+        "SRC-CDO075",
+        "SRC-STP010"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-WORKFLOW-PROJECTS",
+      "track_id": "WORKFLOW-EXEC",
+      "owner": "Workflow projects",
+      "scope_ja": "公開ツールの機能基準",
+      "scope_en": "Public-tool capability baseline",
+      "milestones": [
+        {
+          "milestone_id": "MS-WORKFLOW-2026-BASELINE",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "再開・実行先・監視機能を確認",
+          "label_en": "Restart, executor, and monitoring features checked",
+          "detail_ja": "各プロジェクトの公開資料を確認した時点であり、HPCI共通サービスの提供日ではありません。",
+          "detail_en": "This is a documentation baseline, not an HPCI-wide service availability date.",
+          "source_ids": [
+            "SRC-CDS066",
+            "SRC-CDS067",
+            "SRC-CDS075"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-WORKFLOW-CROSS-SITE",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-adoption",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "複数拠点サービスの時期は未確定",
+          "label_en": "Multi-site service timing is undated",
+          "detail_ja": "共通認証、データ転送、再開、SLAを含む提供時期は確認できません。",
+          "detail_en": "No public date establishes a service combining common identity, transfer, restart, and SLA.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": [
+            "DEP-WORKFLOW-BLUEPRINT"
+          ]
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-WORKFLOW-OPENFS",
+      "track_id": "WORKFLOW-DATA",
+      "owner": "OpenFS",
+      "scope_ja": "代表ワークフロー実証",
+      "scope_en": "Reference workflow demonstration",
+      "milestones": [
+        {
+          "milestone_id": "MS-WORKFLOW-PILOT-2027",
+          "year": 2027,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "pilot",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "代表ワークフロー実証の暫定判断点",
+          "label_en": "Provisional reference-workflow pilot gate",
+          "detail_ja": "シミュレーション、AI、実験データの少なくとも各1件で再実行性を確認する暫定計画です。",
+          "detail_en": "A provisional plan to test reproducibility for at least one simulation, AI, and experimental-data workflow.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-CDO075",
+            "SRC-STP010"
+          ],
+          "dependency_refs": [
+            "DEP-WORKFLOW-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-WORKFLOW-SLA",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "公開SLAと責任分担は未確定",
+          "label_en": "Public SLA and ownership are undated",
+          "detail_ja": "拠点をまたぐ失敗時の責任、再送、復旧時間が未定です。",
+          "detail_en": "Ownership, retransmission, and recovery time for cross-site failures remain undefined.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-WORKFLOW-BLUEPRINT",
+      "relationship": "enables",
+      "upstream_roadmap_id": "RM-SSW-WORKFLOW",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "再開可能なデータ・実行経路が複合ワークロードの構成案を実現可能にします。",
+      "statement_en": "Restartable data and execution paths make mixed-workload architecture options deployable.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDO075"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-P0-PLAN",
+      "title": "OpenFS roadmap portfolio and evidence rules",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/research-baseline/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-CDS066",
+      "title": "Parsl memoization and checkpointing",
+      "publisher": "Parsl Project",
+      "url": "https://parsl.readthedocs.io/en/latest/userguide/workflows/checkpoints.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS067",
+      "title": "Nextflow caching and resuming",
+      "publisher": "Seqera / Nextflow",
+      "url": "https://docs.seqera.io/nextflow/cache-and-resume",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS071",
+      "title": "ADIOS2 supported engines: SST streaming",
+      "publisher": "ADIOS2 Project",
+      "url": "https://adios2.readthedocs.io/en/latest/engines/engines.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS075",
+      "title": "RIKEN-RCCS WHEEL public repository",
+      "publisher": "RIKEN R-CCS",
+      "url": "https://github.com/RIKEN-RCCS/WHEEL",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDO075",
+      "title": "EFP Workflows",
+      "publisher": "EuroHPC Federation Platform consortium",
+      "url": "https://docs.my-eurohpc.eu/workflows/overview/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-STP010",
+      "title": "Globus Connect Server v5 installation guide",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5/",
+      "source_class": "project-official"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-WORKFLOW-001",
+      "priority": "P1",
+      "scope_ja": "複数拠点での再現可能な実証",
+      "scope_en": "Reproducible multi-site demonstration",
+      "impact_ja": "機能一覧だけでは実運用時の成功率と復旧時間が分かりません。",
+      "impact_en": "Feature lists do not establish operational success or recovery time.",
+      "next_action_ja": "代表ワークフロー、版、入力、来歴、障害注入結果を公開します。",
+      "next_action_en": "Publish representative workflows, versions, inputs, provenance, and fault-injection results.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-WORKFLOW-002",
+      "priority": "P2",
+      "scope_ja": "実験データの継続転送と保存方針",
+      "scope_en": "Continuous experimental transfer and retention",
+      "impact_ja": "帯域、再送、所在、保存費を構成へ反映できません。",
+      "impact_en": "Bandwidth, retry, location, and retention cost cannot be translated into architecture.",
+      "next_action_ja": "実験施設別にデータ量、到着率、保持期間、公開範囲を測定します。",
+      "next_action_en": "Measure volume, arrival rate, retention, and disclosure boundaries per facility.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表資料の確認時点、公開目標、OpenFSの暫定計画を区別し、未公表の時期・費用・性能は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. Documentation checks, published targets, and provisional OpenFS plans are separated, and unpublished timing, cost, and performance are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
+  }
+}
