@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from build_consensus_review_package import build_manifest, committed_json  # noqa: E402
+from evaluate_consensus_review_package import evaluate  # noqa: E402
 
 
 class ConsensusReviewPackageBuilderTests(unittest.TestCase):
@@ -109,6 +111,22 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
             )
         )
         Draft202012Validator(schema).validate(self.manifest)
+
+    def test_generated_manifest_has_no_integrity_errors_before_review(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manifest_path = Path(directory) / "manifest.json"
+            manifest_path.write_text(
+                json.dumps(self.manifest, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            result = evaluate(
+                ROOT,
+                manifest_path,
+                evaluated_at="2026-09-06T01:00:00Z",
+            )
+        self.assertEqual("incomplete", result["status"])
+        self.assertEqual([], result["integrity_errors"])
+        self.assertEqual(0, result["counts"]["assessments"])
 
 
 if __name__ == "__main__":

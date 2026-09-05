@@ -11,6 +11,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from build_consensus_review_package import review_source_class
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MAXIMUM_CLOCK_SKEW_SECONDS = 60
@@ -196,18 +198,20 @@ def evaluate(
                 if path in {
                     "knowledge/public/hpci-system-inventory.json",
                     "knowledge/public/application-performance-forecasts.json",
+                    "knowledge/public/procurement-cost-register.json",
+                    "knowledge/public/planning-evidence-readiness.json",
                 }
             ]
             for supplement_path in supplement_paths:
                 supplement = committed_json(
                     root, manifest["base_commit"], supplement_path
                 )
-                for source in supplement["sources"]:
+                for source in supplement.get("sources", []):
                     expected[source["source_id"]] = {
                         (
                             source["source_id"],
                             source["url"],
-                            source["source_class"],
+                            review_source_class(source),
                         )
                     }
             declared = {
