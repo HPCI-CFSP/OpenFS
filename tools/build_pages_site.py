@@ -1097,6 +1097,31 @@ def collect_roadmap_assurance(
     return assurance
 
 
+def apply_topic_presentation_overrides(artifact: dict[str, Any]) -> None:
+    """Apply presentation-only copy after immutable research-update auditing."""
+    overrides = artifact.pop("presentation_overrides", {})
+    sections = {
+        section["section_id"]: section
+        for profile in artifact["topic_profiles"]
+        for section in profile["sections"]
+    }
+    gaps = {gap["gap_id"]: gap for gap in artifact["coverage_gaps"]}
+    for override in overrides.get("section_overrides", []):
+        section = sections.get(override["section_id"])
+        if section is None:
+            raise ValueError(
+                f"presentation override references unknown section {override['section_id']}"
+            )
+        section.update({key: value for key, value in override.items() if key != "section_id"})
+    for override in overrides.get("coverage_gap_overrides", []):
+        gap = gaps.get(override["gap_id"])
+        if gap is None:
+            raise ValueError(
+                f"presentation override references unknown gap {override['gap_id']}"
+            )
+        gap.update({key: value for key, value in override.items() if key != "gap_id"})
+
+
 def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     from apply_research_unit_update import audit_updates
     update_errors = audit_updates(root)
@@ -1162,6 +1187,7 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "topic_decision_support_required_bilingual_fields",
         "topic decision support surface",
     )
+    apply_topic_presentation_overrides(topic_decision_support)
     active_topic_ids = {topic["topic_id"] for topic in active_topics}
     for profile in topic_decision_support["topic_profiles"]:
         profile["sections"] = [section for section in profile["sections"]
@@ -1343,7 +1369,6 @@ def build_public_data(root: Path, policy: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema_version": "0.2.0",
         "catalog_as_of": baseline["derived_at"],
-        "conference_coverage": collect_conference_coverage(root, policy),
         "site": site_metadata,
         "baseline": {
             "baseline_id": baseline["baseline_id"],
@@ -1411,7 +1436,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js", "conferences.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js"):
         shutil.copy2(source / filename, output / filename)
     copy_brand_assets(root, output)
     data_dir = output / "data"
@@ -1430,11 +1455,6 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         f"window.OPENFS_PUBLIC_DATA={serialized};\n", encoding="utf-8"
     )
     search_index = output / "search" / "index.html"
-    conference_index = output / "conferences" / "hot-chips-2026" / "index.html"
-    conference_index.parent.mkdir(parents=True)
-    conference_index.write_text(render_template(
-        source / "conference-detail.html",
-        {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version}), encoding="utf-8")
     search_index.parent.mkdir(parents=True)
     search_index.write_text(
         render_template(

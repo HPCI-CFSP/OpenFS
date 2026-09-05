@@ -114,6 +114,20 @@ def validate_topic_decision_support(root: Path) -> list[str]:
         if item["status"] == "partial" and item["topic_id"] not in retired_topic_ids
     }
     source_ids = {item["source_id"] for item in artifact["sources"]}
+    baseline_topics = {item["topic_id"]: item for item in baseline["topics"]}
+    reference_path = root / "knowledge/public/roadmap-reference-data.json"
+    reference_data = load_json(reference_path) if reference_path.exists() else None
+    reference_term_ids = {
+        item["term_id"] for item in reference_data["terms"]
+    } if reference_data else set()
+    comparisons = {
+        item["comparison_id"]: item for item in reference_data["comparison_sets"]
+    } if reference_data else {}
+    portfolio_path = root / "config/roadmap-portfolio.json"
+    roadmap_portfolio = load_json(portfolio_path) if portfolio_path.exists() else None
+    roadmap_ids = {
+        item["roadmap_id"] for item in roadmap_portfolio["roadmap_families"]
+    } if roadmap_portfolio else set()
     errors.extend(validate_source_corrections(artifact["sources"]))
     superseded_source_ids = {
         item["correction"]["supersedes_source_id"]
@@ -187,9 +201,126 @@ def validate_topic_decision_support(root: Path) -> list[str]:
         if not profile["coverage_gap_ids"]:
             errors.append(f"{profile['topic_id']} lacks an explicit Coverage Gap")
 
+        layout = profile.get("page_layout")
+        if layout:
+            components = layout["components"]
+            component_ids = [item["component_id"] for item in components]
+            check_duplicates(f"{profile['topic_id']} page component IDs", component_ids)
+            if components[0]["type"] != "topic-overview":
+                errors.append(f"{profile['topic_id']} page layout must start with topic-overview")
+            if len(components) < 2 or components[1]["type"] != "research-unit-index":
+                errors.append(f"{profile['topic_id']} page layout must place research-unit-index second")
+            if components[-1]["type"] != "related-topics":
+                errors.append(f"{profile['topic_id']} page layout must end with related-topics")
+
+            baseline_topic = baseline_topics.get(profile["topic_id"], {})
+            expected_unit_ids = {
+                unit["unit_id"] for unit in baseline_topic.get("research_units", [])
+            }
+            unit_components = [
+                item for item in components if item["type"] == "research-unit"
+            ]
+            layout_unit_ids = [item["unit_id"] for item in unit_components]
+            if duplicates := duplicate_values(layout_unit_ids):
+                errors.append(
+                    f"{profile['topic_id']} page layout repeats research units {duplicates}"
+                )
+            if set(layout_unit_ids) != expected_unit_ids:
+                errors.append(
+                    f"{profile['topic_id']} page layout research-unit coverage differs; "
+                    f"missing={sorted(expected_unit_ids - set(layout_unit_ids))}, "
+                    f"extra={sorted(set(layout_unit_ids) - expected_unit_ids)}"
+                )
+
+            archived = set(profile.get("archived_section_ids", []))
+            active_section_ids = {
+                section["section_id"] for section in profile["sections"]
+                if section["section_id"] not in archived
+            }
+            layout_section_ids = [
+                section_id for component in unit_components
+                for section_id in component["section_ids"]
+            ]
+            if duplicates := duplicate_values(layout_section_ids):
+                errors.append(
+                    f"{profile['topic_id']} page layout repeats decision sections {duplicates}"
+                )
+            if set(layout_section_ids) != active_section_ids:
+                errors.append(
+                    f"{profile['topic_id']} page layout decision-section coverage differs; "
+                    f"missing={sorted(active_section_ids - set(layout_section_ids))}, "
+                    f"extra={sorted(set(layout_section_ids) - active_section_ids)}"
+                )
+
+            for component in unit_components:
+                if roadmap_portfolio and (unknown := set(component["roadmap_ids"]) - roadmap_ids):
+                    errors.append(
+                        f"{component['component_id']} has unknown roadmaps {sorted(unknown)}"
+                    )
+                component_item_ids = {
+                    item["item_id"] for section in profile["sections"]
+                    if section["section_id"] in component["section_ids"]
+                    for item in section["items"]
+                }
+                term_item_ids = [
+                    reference["term_id"] for reference in component["term_item_refs"]
+                ]
+                if reference_data and (unknown := set(term_item_ids) - reference_term_ids):
+                    errors.append(
+                        f"{component['component_id']} maps unknown terms {sorted(unknown)}"
+                    )
+                if duplicates := duplicate_values(term_item_ids):
+                    errors.append(
+                        f"{component['component_id']} repeats term-item mappings {duplicates}"
+                    )
+                filtered_term_ids = {
+                    term_id for reference in component["comparison_refs"]
+                    for term_id in reference["term_ids"]
+                }
+                if set(term_item_ids) != filtered_term_ids:
+                    errors.append(
+                        f"{component['component_id']} term-item mappings differ from "
+                        "its comparison filters"
+                    )
+                for reference in component["term_item_refs"]:
+                    if unknown := set(reference["item_ids"]) - component_item_ids:
+                        errors.append(
+                            f"{component['component_id']} maps terms to items outside "
+                            f"the component {sorted(unknown)}"
+                        )
+                for reference in component["comparison_refs"]:
+                    if reference_data is None:
+                        continue
+                    comparison = comparisons.get(reference["comparison_id"])
+                    if not comparison:
+                        errors.append(
+                            f"{component['component_id']} has unknown comparison "
+                            f"{reference['comparison_id']}"
+                        )
+                        continue
+                    comparison_terms = {row["term_id"] for row in comparison["rows"]}
+                    if unknown := set(reference["term_ids"]) - comparison_terms:
+                        errors.append(
+                            f"{component['component_id']} filters unknown comparison terms "
+                            f"{sorted(unknown)}"
+                        )
+
     check_duplicates("topic profile IDs", profile_ids)
     check_duplicates("topic decision section IDs", section_ids)
     check_duplicates("topic decision item IDs", technology_item_ids)
+    presentation = artifact.get("presentation_overrides", {})
+    section_override_ids = [
+        item["section_id"] for item in presentation.get("section_overrides", [])
+    ]
+    gap_override_ids = [
+        item["gap_id"] for item in presentation.get("coverage_gap_overrides", [])
+    ]
+    check_duplicates("section presentation overrides", section_override_ids)
+    check_duplicates("Coverage Gap presentation overrides", gap_override_ids)
+    if unknown := set(section_override_ids) - set(section_ids):
+        errors.append(f"presentation overrides reference unknown sections {sorted(unknown)}")
+    if unknown := set(gap_override_ids) - set(gaps):
+        errors.append(f"presentation overrides reference unknown gaps {sorted(unknown)}")
     active_profile_ids = set(profile_ids) - retired_topic_ids
     if active_profile_ids != partial_topic_ids:
         errors.append(

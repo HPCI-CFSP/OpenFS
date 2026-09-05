@@ -55,6 +55,105 @@
       },
       "additionalProperties": false
     },
+    "comparisonRef": {
+      "type": "object",
+      "required": ["comparison_id", "term_ids"],
+      "properties": {
+        "comparison_id": {"type": "string", "pattern": "^CMP-[A-Z0-9-]+$"},
+        "term_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^TERM-[A-Z0-9-]+$"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "termItemRef": {
+      "type": "object",
+      "required": ["term_id", "item_ids"],
+      "properties": {
+        "term_id": {"type": "string", "pattern": "^TERM-[A-Z0-9-]+$"},
+        "item_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^TDI-[A-Z0-9-]+$"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "topicPageComponent": {
+      "type": "object",
+      "required": ["component_id", "type"],
+      "properties": {
+        "component_id": {"type": "string", "pattern": "^TPC-[A-Z0-9-]+$"},
+        "type": {
+          "enum": [
+            "topic-overview", "research-unit-index", "research-unit",
+            "decision-dimensions", "related-surfaces", "coverage-gaps",
+            "research-history", "related-topics"
+          ]
+        },
+        "unit_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}-U[0-9]{2}$"},
+        "section_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}
+        },
+        "comparison_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/comparisonRef"}
+        },
+        "term_item_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/termItemRef"}
+        },
+        "roadmap_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"}
+        },
+        "open_by_default": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "research-unit"}}, "required": ["type"]},
+          "then": {"required": ["unit_id", "section_ids", "comparison_refs", "term_item_refs", "roadmap_ids"]}
+        }
+      ],
+      "additionalProperties": false
+    },
+    "sectionPresentationOverride": {
+      "type": "object",
+      "required": ["section_id", "title_ja", "title_en", "summary_ja", "summary_en"],
+      "properties": {
+        "section_id": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"},
+        "title_ja": {"type": "string", "minLength": 1},
+        "title_en": {"type": "string", "minLength": 1},
+        "summary_ja": {"type": "string", "minLength": 1},
+        "summary_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "gapPresentationOverride": {
+      "type": "object",
+      "required": ["gap_id", "question_ja", "question_en", "next_action_ja", "next_action_en"],
+      "properties": {
+        "gap_id": {"type": "string", "pattern": "^GAP-TDS-[0-9]{3}$"},
+        "question_ja": {"type": "string", "minLength": 1},
+        "question_en": {"type": "string", "minLength": 1},
+        "next_action_ja": {"type": "string", "minLength": 1},
+        "next_action_en": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "softwareEntry": {
       "type": "object",
       "required": [
@@ -142,6 +241,19 @@
           "topic_id": {"type": "string", "pattern": "^(ARCH|SSW|APP|CROSS)-[0-9]{2}$"},
           "summary_ja": {"type": "string", "minLength": 1},
           "summary_en": {"type": "string", "minLength": 1},
+          "page_layout": {
+            "type": "object",
+            "required": ["layout_version", "components"],
+            "properties": {
+              "layout_version": {"const": "1.0"},
+              "components": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"$ref": "#/$defs/topicPageComponent"}
+              }
+            },
+            "additionalProperties": false
+          },
           "archived_section_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^TDS-[A-Z0-9-]+$"}},
           "research_updates": {
             "type": "array",
@@ -197,6 +309,23 @@
         "additionalProperties": false
       },
       "minItems": 4
+    },
+    "presentation_overrides": {
+      "type": "object",
+      "required": ["section_overrides", "coverage_gap_overrides"],
+      "properties": {
+        "section_overrides": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sectionPresentationOverride"}
+        },
+        "coverage_gap_overrides": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/gapPresentationOverride"}
+        }
+      },
+      "additionalProperties": false
     },
     "platform_matrix": {
       "type": "object",
@@ -349,7 +478,7 @@
         "information_classification": {"const": "public"},
         "publication_approved": {"const": true},
         "publication_decision_id": {"type": "string", "minLength": 1},
-        "human_approval_directive_id": {"enum": ["DIR-900012", "DIR-900013", "DIR-900014", "DIR-900015", "DIR-900016", "DIR-900017", "DIR-900018", "DIR-900019", "DIR-900020", "DIR-900021", "DIR-900022", "DIR-900023"]}
+        "human_approval_directive_id": {"enum": ["DIR-900012", "DIR-900013", "DIR-900014", "DIR-900015", "DIR-900016", "DIR-900017", "DIR-900018", "DIR-900019", "DIR-900020", "DIR-900021", "DIR-900022", "DIR-900023", "DIR-900102"]}
       },
       "additionalProperties": false
     }

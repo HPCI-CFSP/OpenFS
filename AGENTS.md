@@ -177,11 +177,15 @@ remaining matching items; never silently treat the example as the full scope.
   unresolved issues. Keep the prose and structured items in one canonical
   source and generate every public view from it. Link each Topic to all relevant
   roadmap families and each roadmap back to all active source Topics.
-- Regional views are filters over cited actors and their design, development,
-  manufacturing, or standardization roles. Do not duplicate conclusions into
+- Keep actor and region metadata as provenance for dedicated supply-chain,
+  economic-security, and industrial-deployment analysis. Do not group or filter
+  ordinary public Topic findings by country or region, duplicate conclusions into
   country-specific pages, reduce a multi-region supply chain to one nationality,
   treat region as technical merit, or restrict the world survey to a fixed set of
   countries.
+- Build rearrangeable Topic pages from the ordered component references in
+  `page_layout`. Components reference canonical research-unit, decision-section,
+  comparison, roadmap, and history IDs; do not copy their prose into layout data.
 - Keep the platform software matrix and numerical-method matrix in the same
   structured public artifact. Distinguish formal, partial, experimental,
   community, and unverified support. For numerical methods, record input,

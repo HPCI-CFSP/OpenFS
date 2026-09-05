@@ -149,11 +149,18 @@ Consensus state. Research-run summaries remain available as collapsed provenance
 and individual findings; their titles are not promoted into duplicate Topic
 headings or described as a vague "source survey."
 
-Regional presentation is a facet over structured actors rather than a parallel
-set of country reports. One actor can carry multiple region references, while its
-design, development, manufacturing, and standardization roles remain explicit.
-The list is extensible beyond Japan, the United States, China, and Europe, and a
-regional filter never implies technical preference. The same artifact is the
+Topic pages may define an ordered `page_layout` made from reusable overview,
+research-unit index, research-unit, decision-dimension, related-surface, Coverage
+Gap, history, and related-topic components. Components reference canonical IDs
+instead of copying prose, so their display order can change without moving or
+duplicating the underlying evidence. Topics without a layout retain the default
+renderer; `ARCH-03` is the first structured-layout pilot.
+
+Actor and region metadata remain available for provenance, supply-chain, and
+economic-security analysis, but ordinary public Topic pages do not group or
+filter technical findings by country or region. Dedicated cross-domain analysis
+must state the reason for the classification and cite the relevant design,
+development, manufacturing, or standardization role. The same artifact is the
 single public source for the CPU/GPU software capability matrix and the numerical
 method matrix. The latter separates input, compute, accumulation, and output
 precision, mixed-precision methods, and high-precision emulation.

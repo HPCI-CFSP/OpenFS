@@ -87,6 +87,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "TERM-ACCESS-TIME-PROCUREMENT",
                 "TERM-DOE-IRI",
                 "TERM-GPU-NODE-HOUR",
+                "TERM-ZHBM",
             }.issubset(term_ids)
         )
         self.assertTrue(
@@ -213,6 +214,14 @@ class RoadmapReferenceDataTests(unittest.TestCase):
         }
         self.assertTrue(
             {"TERM-AMD-MATRIX-CORE", "TERM-CUSTOM-XPU"}.issubset(compute_terms)
+        )
+
+        memory_terms = {
+            row["term_id"]
+            for row in comparisons["CMP-MEMORY-HIERARCHY"]["rows"]
+        }
+        self.assertTrue(
+            {"TERM-NVHBM", "TERM-ZHBM", "TERM-CXL", "TERM-PIM"}.issubset(memory_terms)
         )
 
         eea1_terms = {
