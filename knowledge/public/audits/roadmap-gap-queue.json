@@ -2,26 +2,26 @@
   "schema_version": "0.2.0",
   "export_id": "ROADMAP-GAP-QUEUE-001",
   "status": "published",
-  "queue_id": "RGQ-20260905-001",
-  "as_of": "2026-09-05",
-  "generated_at": "2026-09-05T22:30:00+09:00",
+  "queue_id": "RGQ-20260906-001",
+  "as_of": "2026-09-06",
+  "generated_at": "2026-09-06T00:20:00+09:00",
   "method_ja": "公開ロードマップにある未確認事項を優先度順に収集し、既存の調査モニターまたは独立レビュー用パッケージへ明示的に割り当てます。原則としてP0は毎週、P1は毎月、P2は四半期ごとに再調査します。P0の情報源探索には、検索条件に加えて、必要な独立情報源の数と具体的な解消条件を明記します。",
   "method_en": "This queue collects every unresolved item from the published roadmaps, orders the items by priority, and assigns each one to an existing research monitor or an independent-review package. P0 items are normally rechecked weekly, P1 items monthly, and P2 items quarterly. Each P0 source-discovery item includes explicit search plans, a minimum number of independent origins, and concrete closure criteria.",
   "caveat_ja": "このキューは調査の割り当てを示すものであり、未確認事項が解消したことを示すものではありません。すべての解消条件を検証し、必要な独立情報源の数と合意判定の条件を満たすまで、状態は未解決のままです。自動生成した検索案は探索の出発点にすぎません。無効になっている調査モニターは、本番運用の準備条件を満たすまで自動実行されません。",
   "caveat_en": "This queue assigns research; it does not establish that an unresolved item has been closed. Each item remains open until every closure criterion, the required number of independent origins, and the Consensus Gate requirements have been satisfied. An automatically generated query is only a starting point for discovery, and disabled research monitors do not run until the production-readiness gates pass.",
   "summary": {
-    "roadmap_count": 15,
-    "gap_count": 67,
+    "roadmap_count": 19,
+    "gap_count": 75,
     "p0": 21,
-    "p1": 31,
+    "p1": 39,
     "p2": 15,
-    "source_discovery": 66,
+    "source_discovery": 74,
     "consensus_review": 1,
     "ready_for_scheduled_discovery": 0,
-    "staged_monitor_disabled": 66,
+    "staged_monitor_disabled": 74,
     "awaiting_independent_review": 1,
     "explicit_query_overrides": 23,
-    "generated_query_fallbacks": 43,
+    "generated_query_fallbacks": 51,
     "p0_explicit_query_overrides": 20,
     "p0_generated_query_fallbacks": 0
   },
@@ -1193,6 +1193,110 @@
       "queue_item_id": "RGQ-0021"
     },
     {
+      "gap_id": "GAP-ADOPTION-001",
+      "roadmap_id": "RM-APP-ADOPTION",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "候補構成別の移植・支援工数",
+      "scope_en": "Porting and support effort by candidate architecture",
+      "impact_ja": "導入日までに必要な要員と期間を見積もれません。",
+      "impact_en": "Staffing and lead time required before deployment cannot be estimated.",
+      "next_action_ja": "主要アプリと利用者群ごとに、移植、検証、最適化、問合せ工数を実測します。",
+      "next_action_en": "Measure porting, validation, tuning, and support effort for major applications and user cohorts.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "候補構成別の移植・支援工数 主要アプリと利用者群ごとに、移植、検証、最適化、問合せ工数を実測します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Porting and support effort by candidate architecture Measure porting, validation, tuning, and support effort for major applications and user cohorts. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-ADOPTION-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0022"
+    },
+    {
+      "gap_id": "GAP-ADOPTION-002",
+      "roadmap_id": "RM-APP-ADOPTION",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "重要ソフトウェアの保守責任と撤退計画",
+      "scope_en": "Stewardship and exit plans for critical software",
+      "impact_ja": "提供終了や人員交代時の継続性を判断できません。",
+      "impact_en": "Continuity cannot be assessed when support ends or personnel change.",
+      "next_action_ja": "責任者、代替者、資金、検証環境、保守期間、移行先を登録します。",
+      "next_action_en": "Register owners, backups, funding, validation environments, support horizons, and migration targets.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "重要ソフトウェアの保守責任と撤退計画 責任者、代替者、資金、検証環境、保守期間、移行先を登録します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Stewardship and exit plans for critical software Register owners, backups, funding, validation environments, support horizons, and migration targets. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-ADOPTION-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0023"
+    },
+    {
       "gap_id": "GAP-AI-001",
       "roadmap_id": "RM-APP-AI",
       "priority": "P1",
@@ -1242,7 +1346,111 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0022"
+      "queue_item_id": "RGQ-0024"
+    },
+    {
+      "gap_id": "GAP-REALTIME-001",
+      "roadmap_id": "RM-APP-REALTIME",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "ユースケース別のエンドツーエンドSLA",
+      "scope_en": "End-to-end SLA by use case",
+      "impact_ja": "個別要素の速度から継続サービスを設計できません。",
+      "impact_en": "A sustained service cannot be designed from component speed alone.",
+      "next_action_ja": "取得から判断までの期限、データ率、再送、復旧、責任を固定します。",
+      "next_action_en": "Fix acquisition-to-decision deadlines, data rates, retry, recovery, and ownership.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "ユースケース別のエンドツーエンドSLA 取得から判断までの期限、データ率、再送、復旧、責任を固定します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "End-to-end SLA by use case Fix acquisition-to-decision deadlines, data rates, retry, recovery, and ownership. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-REALTIME-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0025"
+    },
+    {
+      "gap_id": "GAP-REALTIME-002",
+      "roadmap_id": "RM-APP-REALTIME",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "量子・HPC連携の古典基準と総費用",
+      "scope_en": "Classical baseline and total cost for quantum-HPC integration",
+      "impact_ja": "量子機を使う効果と運用負担を比較できません。",
+      "impact_en": "Benefits and operational burden of quantum use cannot be compared.",
+      "next_action_ja": "同一問題の古典基準、精度、待ち時間、前後処理、失敗、費用を測定します。",
+      "next_action_en": "Measure identical-problem classical baselines, accuracy, queueing, preprocessing/postprocessing, failures, and cost.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "量子・HPC連携の古典基準と総費用 同一問題の古典基準、精度、待ち時間、前後処理、失敗、費用を測定します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Classical baseline and total cost for quantum-HPC integration Measure identical-problem classical baselines, accuracy, queueing, preprocessing/postprocessing, failures, and cost. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-REALTIME-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0026"
     },
     {
       "gap_id": "GAP-WORK-002",
@@ -1294,7 +1502,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0023"
+      "queue_item_id": "RGQ-0027"
     },
     {
       "gap_id": "GAP-WORK-007",
@@ -1346,7 +1554,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0024"
+      "queue_item_id": "RGQ-0028"
     },
     {
       "gap_id": "GAP-WORK-008",
@@ -1398,7 +1606,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0025"
+      "queue_item_id": "RGQ-0029"
     },
     {
       "gap_id": "GAP-WORK-016",
@@ -1450,7 +1658,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0026"
+      "queue_item_id": "RGQ-0030"
     },
     {
       "gap_id": "GAP-COMP-001",
@@ -1502,7 +1710,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0027"
+      "queue_item_id": "RGQ-0031"
     },
     {
       "gap_id": "GAP-COMP-002",
@@ -1554,7 +1762,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0028"
+      "queue_item_id": "RGQ-0032"
     },
     {
       "gap_id": "GAP-COMP-006",
@@ -1606,7 +1814,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0029"
+      "queue_item_id": "RGQ-0033"
     },
     {
       "gap_id": "GAP-COMP-008",
@@ -1658,7 +1866,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0030"
+      "queue_item_id": "RGQ-0034"
     },
     {
       "gap_id": "GAP-COMP-009",
@@ -1717,7 +1925,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0031"
+      "queue_item_id": "RGQ-0035"
     },
     {
       "gap_id": "GAP-FACILITY-001",
@@ -1769,7 +1977,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0032"
+      "queue_item_id": "RGQ-0036"
     },
     {
       "gap_id": "GAP-NET-001",
@@ -1821,7 +2029,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0033"
+      "queue_item_id": "RGQ-0037"
     },
     {
       "gap_id": "GAP-NET-002",
@@ -1873,7 +2081,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0034"
+      "queue_item_id": "RGQ-0038"
     },
     {
       "gap_id": "GAP-NET-006",
@@ -1929,7 +2137,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0035"
+      "queue_item_id": "RGQ-0039"
     },
     {
       "gap_id": "GAP-MEM002",
@@ -1983,7 +2191,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0036"
+      "queue_item_id": "RGQ-0040"
     },
     {
       "gap_id": "GAP-MEM004",
@@ -2037,7 +2245,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0037"
+      "queue_item_id": "RGQ-0041"
     },
     {
       "gap_id": "GAP-MEM006",
@@ -2091,7 +2299,111 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0038"
+      "queue_item_id": "RGQ-0042"
+    },
+    {
+      "gap_id": "GAP-SOVEREIGNTY-001",
+      "roadmap_id": "RM-HW-SOVEREIGNTY",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "候補部品ごとの供給量・認定・リードタイム",
+      "scope_en": "Candidate component capacity, qualification, and lead time",
+      "impact_ja": "量産目標を調達可能な数量と時期へ変換できません。",
+      "impact_en": "Production targets cannot be translated into procurable volume and timing.",
+      "next_action_ja": "供給者の認定資料、供給確約、保守契約、代替時の再設計を候補別に収集します。",
+      "next_action_en": "Collect qualification, supply commitments, support contracts, and substitution redesign by candidate.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "候補部品ごとの供給量・認定・リードタイム 供給者の認定資料、供給確約、保守契約、代替時の再設計を候補別に収集します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Candidate component capacity, qualification, and lead time Collect qualification, supply commitments, support contracts, and substitution redesign by candidate. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-SOVEREIGNTY-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0043"
+    },
+    {
+      "gap_id": "GAP-SOVEREIGNTY-002",
+      "roadmap_id": "RM-HW-SOVEREIGNTY",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "国内外候補を同じ条件で比較する実測",
+      "scope_en": "Matched measurements for Japanese and international candidates",
+      "impact_ja": "出自と実用性を混同する恐れがあります。",
+      "impact_en": "Origin may be conflated with practical readiness.",
+      "next_action_ja": "同一アプリケーション、電力境界、ソフトウェア版、保守期間で比較します。",
+      "next_action_en": "Compare identical applications, power boundaries, software versions, and support periods.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "国内外候補を同じ条件で比較する実測 同一アプリケーション、電力境界、ソフトウェア版、保守期間で比較します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Matched measurements for Japanese and international candidates Compare identical applications, power boundaries, software versions, and support periods. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-SOVEREIGNTY-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0044"
     },
     {
       "gap_id": "GAP-STOR-002",
@@ -2143,7 +2455,111 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0039"
+      "queue_item_id": "RGQ-0045"
+    },
+    {
+      "gap_id": "GAP-PERFORMANCE-001",
+      "roadmap_id": "RM-SSW-PERFORMANCE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "候補機・センター間で共通の観測契約",
+      "scope_en": "Common observability contract across candidates and centers",
+      "impact_ja": "個別資料の数値を同じ指標として比較できません。",
+      "impact_en": "Values from separate sources cannot be compared as the same metric.",
+      "next_action_ja": "入力、版、期間、計測境界、欠測、失敗を共通Schemaで記録します。",
+      "next_action_en": "Record input, version, period, measurement boundary, missing data, and failures in one schema.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "候補機・センター間で共通の観測契約 入力、版、期間、計測境界、欠測、失敗を共通Schemaで記録します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Common observability contract across candidates and centers Record input, version, period, measurement boundary, missing data, and failures in one schema. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PERFORMANCE-001-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0046"
+    },
+    {
+      "gap_id": "GAP-PERFORMANCE-002",
+      "roadmap_id": "RM-SSW-PERFORMANCE",
+      "priority": "P1",
+      "workstream": "source-discovery",
+      "cadence": "monthly",
+      "assignment_ref": "MON-GLOBAL-TECH-001",
+      "task_id": "OFS-005",
+      "monitor_enabled": false,
+      "execution_state": "staged-monitor-disabled",
+      "scope_ja": "電力適応制御の負荷別安全性と利益",
+      "scope_en": "Workload-specific safety and benefit of power-aware control",
+      "impact_ja": "研究結果を本番運用へ一般化できません。",
+      "impact_en": "Research results cannot be generalized to production operation.",
+      "next_action_ja": "代表負荷ごとに性能、エネルギー、熱、復旧、結果妥当性を測定します。",
+      "next_action_en": "Measure performance, energy, thermals, recovery, and correctness for each representative workload.",
+      "query_seeds": [
+        {
+          "language": "ja",
+          "query": "電力適応制御の負荷別安全性と利益 代表負荷ごとに性能、エネルギー、熱、復旧、結果妥当性を測定します。 公式 一次情報"
+        },
+        {
+          "language": "en",
+          "query": "Workload-specific safety and benefit of power-aware control Measure performance, energy, thermals, recovery, and correctness for each representative workload. official primary source"
+        }
+      ],
+      "required_source_classes": [
+        "official-primary",
+        "research-primary",
+        "standards-body",
+        "peer-reviewed-research",
+        "vendor-primary",
+        "procurement-primary"
+      ],
+      "query_plan_origin": "generated-fallback",
+      "closure_plan": {
+        "minimum_independent_origin_groups": 1,
+        "requires_consensus_gate": true,
+        "criteria": [
+          {
+            "criterion_id": "GAP-PERFORMANCE-002-C1",
+            "verification_method": "evidence-review",
+            "requirement_ja": "未確認事項を直接扱う一次情報を確認し、その制約と反証になり得る情報を含めて独立レビューする。",
+            "requirement_en": "Confirm primary evidence directly covering the Gap and independently review its limitations and possible counterevidence."
+          }
+        ]
+      },
+      "closure_plan_origin": "generated-default",
+      "closure_state": "criteria-unverified",
+      "status": "open",
+      "queue_item_id": "RGQ-0047"
     },
     {
       "gap_id": "GAP-PORT-002",
@@ -2195,7 +2611,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0040"
+      "queue_item_id": "RGQ-0048"
     },
     {
       "gap_id": "GAP-PORT-003",
@@ -2247,7 +2663,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0041"
+      "queue_item_id": "RGQ-0049"
     },
     {
       "gap_id": "GAP-PORT-008",
@@ -2302,7 +2718,7 @@
       "closure_plan_origin": "explicit-override",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0042"
+      "queue_item_id": "RGQ-0050"
     },
     {
       "gap_id": "GAP-PORT-009",
@@ -2354,7 +2770,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0043"
+      "queue_item_id": "RGQ-0051"
     },
     {
       "gap_id": "GAP-PORT-010",
@@ -2406,7 +2822,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0044"
+      "queue_item_id": "RGQ-0052"
     },
     {
       "gap_id": "GAP-RUNTIME-001",
@@ -2458,7 +2874,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0045"
+      "queue_item_id": "RGQ-0053"
     },
     {
       "gap_id": "GAP-SECURITY-001",
@@ -2510,7 +2926,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0046"
+      "queue_item_id": "RGQ-0054"
     },
     {
       "gap_id": "GAP-WORKFLOW-001",
@@ -2562,7 +2978,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0047"
+      "queue_item_id": "RGQ-0055"
     },
     {
       "gap_id": "GAP-BLUE-004",
@@ -2612,7 +3028,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0048"
+      "queue_item_id": "RGQ-0056"
     },
     {
       "gap_id": "GAP-BLUE-005",
@@ -2662,7 +3078,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0049"
+      "queue_item_id": "RGQ-0057"
     },
     {
       "gap_id": "GAP-HORIZON-001",
@@ -2714,7 +3130,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0050"
+      "queue_item_id": "RGQ-0058"
     },
     {
       "gap_id": "GAP-OPERATIONS-001",
@@ -2766,7 +3182,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0051"
+      "queue_item_id": "RGQ-0059"
     },
     {
       "gap_id": "GAP-PROCUREMENT-001",
@@ -2818,7 +3234,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0052"
+      "queue_item_id": "RGQ-0060"
     },
     {
       "gap_id": "GAP-AI-002",
@@ -2870,7 +3286,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0053"
+      "queue_item_id": "RGQ-0061"
     },
     {
       "gap_id": "GAP-WORK-005",
@@ -2922,7 +3338,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0054"
+      "queue_item_id": "RGQ-0062"
     },
     {
       "gap_id": "GAP-COMP-003",
@@ -2974,7 +3390,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0055"
+      "queue_item_id": "RGQ-0063"
     },
     {
       "gap_id": "GAP-FACILITY-002",
@@ -3026,7 +3442,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0056"
+      "queue_item_id": "RGQ-0064"
     },
     {
       "gap_id": "GAP-NET-005",
@@ -3078,7 +3494,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0057"
+      "queue_item_id": "RGQ-0065"
     },
     {
       "gap_id": "GAP-MEM001",
@@ -3132,7 +3548,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0058"
+      "queue_item_id": "RGQ-0066"
     },
     {
       "gap_id": "GAP-MEM005",
@@ -3186,7 +3602,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0059"
+      "queue_item_id": "RGQ-0067"
     },
     {
       "gap_id": "GAP-STOR-003",
@@ -3238,7 +3654,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0060"
+      "queue_item_id": "RGQ-0068"
     },
     {
       "gap_id": "GAP-PORT-005",
@@ -3290,7 +3706,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0061"
+      "queue_item_id": "RGQ-0069"
     },
     {
       "gap_id": "GAP-RUNTIME-002",
@@ -3342,7 +3758,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0062"
+      "queue_item_id": "RGQ-0070"
     },
     {
       "gap_id": "GAP-SECURITY-002",
@@ -3394,7 +3810,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0063"
+      "queue_item_id": "RGQ-0071"
     },
     {
       "gap_id": "GAP-WORKFLOW-002",
@@ -3446,7 +3862,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0064"
+      "queue_item_id": "RGQ-0072"
     },
     {
       "gap_id": "GAP-HORIZON-002",
@@ -3498,7 +3914,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0065"
+      "queue_item_id": "RGQ-0073"
     },
     {
       "gap_id": "GAP-OPERATIONS-002",
@@ -3550,7 +3966,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0066"
+      "queue_item_id": "RGQ-0074"
     },
     {
       "gap_id": "GAP-PROCUREMENT-002",
@@ -3602,7 +4018,7 @@
       "closure_plan_origin": "generated-default",
       "closure_state": "criteria-unverified",
       "status": "open",
-      "queue_item_id": "RGQ-0067"
+      "queue_item_id": "RGQ-0075"
     }
   ],
   "publication": {

@@ -1,0 +1,257 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "PERFORMANCE-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-SSW-PERFORMANCE",
+  "status": "published",
+  "domain": "system-software",
+  "slug": "system-software/observability-performance-power",
+  "as_of": "2026-09-06",
+  "title_ja": "可観測性・性能工学・電力適応運用",
+  "title_en": "Observability, performance engineering, and power-aware operations",
+  "summary_ja": "ジョブ、通信、I/O、電力・冷却の観測を性能モデルと運用制御へ接続する暫定ロードマップです。研究上の電力制御結果と、センター全体で安全に運用できる制御を区別します。",
+  "summary_en": "A provisional roadmap connecting job, communication, I/O, power, and cooling telemetry to performance models and operational controls. Research power-capping results are separated from controls proven safe for center-wide operation.",
+  "horizon": {
+    "start_year": 2024,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "measurement",
+      "name_ja": "計測・性能モデル",
+      "name_en": "Measurement and performance models"
+    },
+    {
+      "group_id": "control",
+      "name_ja": "電力適応運用",
+      "name_en": "Power-aware operations"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "PERFORMANCE-OBSERVABILITY",
+      "group": "measurement",
+      "name_ja": "共通テレメトリと再現測定",
+      "name_en": "Common telemetry and reproducible measurement",
+      "summary_ja": "性能、電力、待ち時間、失敗を同じ実行単位で記録します。",
+      "summary_en": "Record performance, power, queueing, and failures for the same execution unit.",
+      "current_state_ja": "既存資料は個別ツールやシステムの計測機能を示しますが、HPCI全体で共通の意味・粒度・保持期間は未確定です。",
+      "current_state_en": "Existing material documents measurement capabilities for individual tools and systems, but common HPCI-wide semantics, granularity, and retention are unresolved.",
+      "hpci_implications_ja": "候補構成を同じ入力、版、精度、計測境界で比較できる観測契約が必要です。",
+      "hpci_implications_en": "Candidate systems need an observability contract with identical inputs, versions, correctness, and measurement boundaries.",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-CDO055"
+      ]
+    },
+    {
+      "track_id": "PERFORMANCE-POWER",
+      "group": "control",
+      "name_ja": "ジョブ別電力制御と施設連携",
+      "name_en": "Per-job power control and facility coordination",
+      "summary_ja": "性能・エネルギー・期限の関係を負荷別に扱います。",
+      "summary_en": "Treat performance, energy, and deadlines by workload.",
+      "current_state_ja": "ORNLのGH200研究はタスク別の電力上限の有効性を示しますが、全負荷・全候補機・本番運用への一般化はできません。OCPの800 VDC資料は施設側の標準化活動です。",
+      "current_state_en": "ORNL's GH200 study shows task-specific power-cap effects, but cannot be generalized to every workload, platform, or production service. OCP's 800 VDC material concerns facility-side standardization.",
+      "hpci_implications_ja": "電力上限の安全性、性能劣化、復旧、施設負荷追従をアプリケーション別に検証します。",
+      "hpci_implications_en": "Validate power-cap safety, performance impact, recovery, and facility-load following per application.",
+      "source_ids": [
+        "SRC-CDS376",
+        "SRC-CDS426"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-PERFORMANCE-RESEARCH",
+      "track_id": "PERFORMANCE-POWER",
+      "owner": "ORNL and OCP",
+      "scope_ja": "公開された研究・標準化活動",
+      "scope_en": "Published research and standardization",
+      "milestones": [
+        {
+          "milestone_id": "MS-PERFORMANCE-POWERCAP-2025Q2",
+          "year": 2025,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "research",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "GH200電力上限制御の研究発表",
+          "label_en": "GH200 power-capping study",
+          "detail_ja": "200Wから1000Wの範囲を調べたタスク固有の研究結果です。センター共通の推奨値ではありません。",
+          "detail_en": "A task-specific study spanning 200 W to 1000 W; it is not a center-wide recommended setting.",
+          "source_ids": [
+            "SRC-CDS376"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-PERFORMANCE-ORNL-PAGE-2026Q1",
+          "year": 2026,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "research",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "ORNL研究紹介の公開",
+          "label_en": "ORNL research highlight published",
+          "detail_ja": "研究紹介ページの公開時点であり、運用展開日ではありません。",
+          "detail_en": "The publication date of the research highlight, not a production-deployment date.",
+          "source_ids": [
+            "SRC-CDS376"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-PERFORMANCE-OCP-2026Q3",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "standard",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "800 VDC標準化活動を確認",
+          "label_en": "800 VDC standardization activity checked",
+          "detail_ja": "OCPが業界活動を公表した時点です。仕様完成やHPCI施設への導入日ではありません。",
+          "detail_en": "The date OCP described the industry effort; it is not specification completion or HPCI deployment.",
+          "source_ids": [
+            "SRC-CDS426"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-PERFORMANCE-OPENFS",
+      "track_id": "PERFORMANCE-OBSERVABILITY",
+      "owner": "OpenFS",
+      "scope_ja": "共通観測・受入条件",
+      "scope_en": "Common observability and acceptance",
+      "milestones": [
+        {
+          "milestone_id": "MS-PERFORMANCE-CONTRACT-2027Q2",
+          "year": 2027,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "decision-gate",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "性能・電力観測契約の暫定判断点",
+          "label_en": "Provisional performance and power observability gate",
+          "detail_ja": "入力、版、精度、計測区間、IT/施設電力境界、失敗を固定した比較形式を審査する暫定計画です。",
+          "detail_en": "A provisional plan to review a comparison contract pinning input, version, correctness, timing interval, IT/facility power boundary, and failures.",
+          "source_ids": [
+            "SRC-OPENFS-REMAINING-PLAN",
+            "SRC-CDS376",
+            "SRC-CDO055"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-PERFORMANCE-SLO-UNDATED",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "共通SLOの採用時期は未確定",
+          "label_en": "Common SLO adoption is undated",
+          "detail_ja": "性能、期限、電力、失敗率の合否値は、人による承認と実測がないため設定していません。",
+          "detail_en": "Pass/fail values for performance, deadlines, power, and failure rate remain unset pending measurements and human approval.",
+          "source_ids": [
+            "SRC-OPENFS-REMAINING-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PERFORMANCE-BLUEPRINT",
+      "relationship": "informs",
+      "upstream_roadmap_id": "RM-SSW-PERFORMANCE",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "実効性能、電力、待ち時間、失敗の観測が候補構成の比較と運用条件を知らせます。",
+      "statement_en": "Observed performance, power, queueing, and failures inform candidate comparison and operating conditions.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-REMAINING-PLAN",
+        "SRC-CDS376"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-REMAINING-PLAN",
+      "title": "OpenFS Roadmap Portfolio",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/planning/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-CDS376",
+      "title": "Power-Capping Metric Evaluation for Improving Energy Efficiency in HPC Applications",
+      "publisher": "Oak Ridge National Laboratory",
+      "url": "https://www.ornl.gov/research-highlight/power-capping-metric-evaluation-improving-energy-efficiency-hpc-applications",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS426",
+      "title": "Powering the Next Era of AI: How Google, Microsoft and NVIDIA Are Standardizing and Accelerating the Industry Transition to LVDC",
+      "publisher": "Open Compute Project",
+      "url": "https://www.opencompute.org/index.php/blog/powering-the-next-era-of-ai-how-google-microsoft-and-nvidia-are-standardizing-and-accelerating-the-industry-transition-to-lvdc",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-CDO055",
+      "title": "Slurm energy accounting configuration",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/slurm.conf.html",
+      "source_class": "project-official"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-PERFORMANCE-001",
+      "priority": "P1",
+      "scope_ja": "候補機・センター間で共通の観測契約",
+      "scope_en": "Common observability contract across candidates and centers",
+      "impact_ja": "個別資料の数値を同じ指標として比較できません。",
+      "impact_en": "Values from separate sources cannot be compared as the same metric.",
+      "next_action_ja": "入力、版、期間、計測境界、欠測、失敗を共通Schemaで記録します。",
+      "next_action_en": "Record input, version, period, measurement boundary, missing data, and failures in one schema.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-PERFORMANCE-002",
+      "priority": "P1",
+      "scope_ja": "電力適応制御の負荷別安全性と利益",
+      "scope_en": "Workload-specific safety and benefit of power-aware control",
+      "impact_ja": "研究結果を本番運用へ一般化できません。",
+      "impact_en": "Research results cannot be generalized to production operation.",
+      "next_action_ja": "代表負荷ごとに性能、エネルギー、熱、復旧、結果妥当性を測定します。",
+      "next_action_en": "Measure performance, energy, thermals, recovery, and correctness for each representative workload.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表された実績、組織・企業の目標、OpenFSの暫定判断点を区別し、未公表の時期、性能、費用は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; the Consensus Gate using independent models is incomplete. Observed events, organization or vendor targets, and provisional OpenFS gates are separated, and unpublished timing, performance, and cost are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
+    "human_approval_directive_id": "DIR-900105"
+  }
+}
