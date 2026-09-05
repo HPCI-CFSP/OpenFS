@@ -73,6 +73,67 @@ class SourceCorrectionTests(unittest.TestCase):
             self.assertTrue(any("superseded source metadata" in e for e in validate_topic_decision_support(root)))
 
 
+class TopicPageLayoutTests(unittest.TestCase):
+    def copied_root(self, temporary):
+        root = Path(temporary)
+        for ref in (
+            "config/research-baseline.json",
+            "config/roadmap-portfolio.json",
+            "knowledge/public/roadmap-reference-data.json",
+            "knowledge/public/topic-decision-support.json",
+        ):
+            (root / ref).parent.mkdir(parents=True, exist_ok=True)
+            (root / ref).write_text((ROOT / ref).read_text(encoding="utf-8"), encoding="utf-8")
+        return root
+
+    def mutate_layout(self, root, topic_id, callback):
+        path = root / "knowledge/public/topic-decision-support.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        profile = next(item for item in payload["topic_profiles"] if item["topic_id"] == topic_id)
+        callback(profile["page_layout"]["components"])
+        path.write_text(json.dumps(payload), encoding="utf-8")
+
+    def test_layouts_cover_active_sections_without_duplicates(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = self.copied_root(temporary)
+            self.mutate_layout(
+                root,
+                "ARCH-03",
+                lambda components: components[2]["section_ids"].append(
+                    components[3]["section_ids"][0]
+                ),
+            )
+            errors = validate_topic_decision_support(root)
+            self.assertTrue(any("repeats decision sections" in error for error in errors))
+
+    def test_related_surfaces_require_one_explicit_component(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = self.copied_root(temporary)
+            self.mutate_layout(
+                root,
+                "SSW-05",
+                lambda components: components.__setitem__(
+                    slice(None),
+                    [item for item in components if item["type"] != "related-surfaces"],
+                ),
+            )
+            errors = validate_topic_decision_support(root)
+            self.assertTrue(any("related-surfaces coverage differs" in error for error in errors))
+
+    def test_comparison_and_unit_roadmaps_must_overlap(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = self.copied_root(temporary)
+            self.mutate_layout(
+                root,
+                "ARCH-03",
+                lambda components: components[2].__setitem__(
+                    "roadmap_ids", ["RM-SSW-SECURITY"]
+                ),
+            )
+            errors = validate_topic_decision_support(root)
+            self.assertTrue(any("has no roadmap in common" in error for error in errors))
+
+
 class PublicPlanningSurfaceTests(unittest.TestCase):
     def test_repository_surfaces_pass(self):
         self.assertEqual(validate(ROOT), [])
@@ -159,6 +220,20 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
                 for item in dimensions["quantitative-requirements"]["supporting_coverages"]
             },
         )
+        expected_roadmap_refs = {
+            "system-lifecycle": {"RM-HW-FACILITY", "RM-X-OPERATIONS"},
+            "operations": {"RM-HW-FACILITY", "RM-X-OPERATIONS"},
+            "five-year-cost": {"RM-X-PROCUREMENT"},
+            "application-performance": {"RM-APP-WORKLOADS", "RM-APP-AI"},
+            "quantitative-requirements": {"RM-APP-WORKLOADS", "RM-X-BLUEPRINT"},
+        }
+        for dimension_id, roadmap_refs in expected_roadmap_refs.items():
+            with self.subTest(dimension_id=dimension_id):
+                self.assertTrue(
+                    roadmap_refs.issubset(
+                        set(dimensions[dimension_id]["evidence_refs"])
+                    )
+                )
         self.assertEqual(3, len(payload["scenario_assessments"]))
         framework = payload["evaluation_framework"]
         self.assertEqual(11, len(framework["criteria"]))

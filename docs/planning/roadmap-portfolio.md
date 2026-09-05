@@ -58,6 +58,18 @@ hardware choices to center-level decisions. This six-roadmap wave is a delivery
 milestone within the broader P0 backlog; it does not downgrade the remaining P0
 families.
 
+The second P0 publication wave adds eight provisional roadmaps: facility, power,
+and cooling; communication, runtimes, scheduling, and operating systems; data and
+workflow platforms; identity and security; AI for Science and scientific agents;
+procurement and investment scenarios; integrated operations; and horizon
+scanning. Together with the previously published storage roadmap, the public P0
+portfolio now contains 15 roadmaps. Four P1 families remain planned rather than
+published. `tools/build_p0_roadmap_wave.py` and
+`tools/build_p0_dependency_wave.py` reproduce the second-wave artifacts and their
+dependency edges from registered public sources. Generated dates and judgments
+remain provisional; successful generation and validation do not constitute
+Consensus review by independent models.
+
 Every artifact uses `schemas/public-roadmap.schema.json`. The public comparison
 shows `comparison_priority: key` milestones, primary-source coverage, structured
 Coverage Gaps, and dependencies. Exact quarters require cited support. OpenFS

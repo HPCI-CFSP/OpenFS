@@ -206,12 +206,36 @@ def validate_topic_decision_support(root: Path) -> list[str]:
             components = layout["components"]
             component_ids = [item["component_id"] for item in components]
             check_duplicates(f"{profile['topic_id']} page component IDs", component_ids)
+            singleton_types = (
+                "topic-overview",
+                "research-unit-index",
+                "coverage-gaps",
+                "research-history",
+                "related-topics",
+            )
+            for component_type in singleton_types:
+                count = sum(item["type"] == component_type for item in components)
+                if count != 1:
+                    errors.append(
+                        f"{profile['topic_id']} page layout must contain exactly one "
+                        f"{component_type} component"
+                    )
             if components[0]["type"] != "topic-overview":
                 errors.append(f"{profile['topic_id']} page layout must start with topic-overview")
             if len(components) < 2 or components[1]["type"] != "research-unit-index":
                 errors.append(f"{profile['topic_id']} page layout must place research-unit-index second")
             if components[-1]["type"] != "related-topics":
                 errors.append(f"{profile['topic_id']} page layout must end with related-topics")
+
+            related_surface_count = sum(
+                item["type"] == "related-surfaces" for item in components
+            )
+            expected_related_surface_count = 1 if profile.get("related_surface_ids") else 0
+            if related_surface_count != expected_related_surface_count:
+                errors.append(
+                    f"{profile['topic_id']} page layout related-surfaces coverage differs; "
+                    f"expected={expected_related_surface_count}, actual={related_surface_count}"
+                )
 
             baseline_topic = baseline_topics.get(profile["topic_id"], {})
             expected_unit_ids = {
@@ -282,6 +306,15 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                         f"{component['component_id']} term-item mappings differ from "
                         "its comparison filters"
                     )
+                comparison_ids = [
+                    reference["comparison_id"]
+                    for reference in component["comparison_refs"]
+                ]
+                if duplicates := duplicate_values(comparison_ids):
+                    errors.append(
+                        f"{component['component_id']} repeats comparison references "
+                        f"{duplicates}"
+                    )
                 for reference in component["term_item_refs"]:
                     if unknown := set(reference["item_ids"]) - component_item_ids:
                         errors.append(
@@ -303,6 +336,12 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                         errors.append(
                             f"{component['component_id']} filters unknown comparison terms "
                             f"{sorted(unknown)}"
+                        )
+                    if not (set(comparison.get("roadmap_ids", [])) & set(component["roadmap_ids"])):
+                        errors.append(
+                            f"{component['component_id']} comparison "
+                            f"{reference['comparison_id']} has no roadmap in common with "
+                            "the research unit"
                         )
 
     check_duplicates("topic profile IDs", profile_ids)

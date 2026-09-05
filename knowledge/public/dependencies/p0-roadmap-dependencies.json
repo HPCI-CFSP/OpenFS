@@ -2,11 +2,11 @@
   "schema_version": "0.1.0",
   "export_id": "ROADMAP-DEPENDENCY-REGISTER-001",
   "status": "published",
-  "as_of": "2026-09-01",
+  "as_of": "2026-09-05",
   "title_ja": "P0ロードマップ間の依存関係一覧",
   "title_en": "P0 cross-roadmap dependency register",
-  "summary_ja": "公開ロードマップ間の依存関係を整理した暫定版です。メモリと実装の供給段階、通信の実効性能と保守、ストレージの復旧・移行条件を計算ノードと計画案に結び付け、採用前に確認する事項と遅延時の代替案を示します。独立レビューは未完了です。",
-  "summary_en": "A provisional register connecting memory/packaging supply stages, network performance and serviceability, and storage recovery/migration requirements to compute nodes and planning options. It identifies adoption checks and alternatives if readiness is delayed; independent review is incomplete.",
+  "summary_ja": "15本の公開P0ロードマップ間の依存関係を整理した暫定版です。技術、施設、ソフトウェア、AI、調達、運用、継続監視から参照構成までの判断経路を示します。独立レビューは未完了です。",
+  "summary_en": "A provisional register connecting 15 published P0 roadmaps across technology, facilities, software, AI, procurement, operations, and horizon scanning to the reference blueprint. Independent review remains incomplete.",
   "consensus_status": "incomplete",
   "dependencies": [
     {
@@ -544,6 +544,210 @@
       "coverage_gap_refs": [
         "GAP-STOR-001"
       ]
+    },
+    {
+      "dependency_id": "XDEP-FACILITY-BLUE",
+      "upstream_roadmap_id": "RM-HW-FACILITY",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "constrains",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "施設工程と電力・冷却上限が導入可能な構成と時期を制約する。",
+      "statement_en": "Facility schedules and power/cooling limits constrain feasible architecture and timing.",
+      "decision_impact_ja": "ラック密度、段階導入、試運転の前提としてセンター別条件を明示する。",
+      "decision_impact_en": "Make center conditions explicit for rack density, staged deployment, and commissioning.",
+      "risk_if_late_ja": "条件確定が遅れると、計算機と施設の再設計が必要になる。",
+      "risk_if_late_en": "Late constraints can force compute and facility redesign.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-BLUE043"
+      ],
+      "source_dependency_ids": [
+        "DEP-FACILITY-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-FACILITY-REQ-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-RUNTIME-BLUE",
+      "upstream_roadmap_id": "RM-SSW-RUNTIME",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "enables",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "通信・ランタイムの相互運用が候補ハードウェアの実利用を可能にする。",
+      "statement_en": "Communication and runtime interoperability enables practical use of candidate hardware.",
+      "decision_impact_ja": "CPU、GPU、NIC、MPI、集合通信、スケジューラを一体で受入評価する。",
+      "decision_impact_en": "Accept CPU, GPU, NIC, MPI, collectives, and scheduling as a stack.",
+      "risk_if_late_ja": "ソフトウェア対応が遅れると、利用可能な性能と移行期間を過大評価する。",
+      "risk_if_late_en": "Late software support can overstate usable performance and understate migration time.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-PORT014"
+      ],
+      "source_dependency_ids": [
+        "DEP-RUNTIME-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-RUNTIME-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-WORKFLOW-BLUE",
+      "upstream_roadmap_id": "RM-SSW-WORKFLOW",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "enables",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "再開可能な実行経路とデータ経路が複合ワークロードの運用を可能にする。",
+      "statement_en": "Restartable execution and data paths enable operation of mixed workloads.",
+      "decision_impact_ja": "シミュレーション、AI、実験連携を個別機能ではなく一連のサービスとして評価する。",
+      "decision_impact_en": "Evaluate simulation, AI, and experimental integration as an end-to-end service.",
+      "risk_if_late_ja": "実証が遅れると、データ転送と再実行の費用・停止時間が計画から漏れる。",
+      "risk_if_late_en": "Late demonstrations can omit transfer, rerun cost, and interruption from planning.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDO075"
+      ],
+      "source_dependency_ids": [
+        "DEP-WORKFLOW-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-WORKFLOW-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-SECURITY-BLUE",
+      "upstream_roadmap_id": "RM-SSW-SECURITY",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "constrains",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "信頼境界と受入基準が扱えるデータ区分と構成を制約する。",
+      "statement_en": "Trust boundaries and acceptance criteria constrain data classes and deployable architectures.",
+      "decision_impact_ja": "認証、認可、監査、機密計算の責任と性能影響を構成案へ反映する。",
+      "decision_impact_en": "Reflect identity, authorization, audit, confidential-computing ownership, and performance impact.",
+      "risk_if_late_ja": "後付けすると互換性、鍵管理、運用責任の再設計が必要になる。",
+      "risk_if_late_en": "Retrofitting can require redesign of interoperability, key management, and ownership.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDO039"
+      ],
+      "source_dependency_ids": [
+        "DEP-SECURITY-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-SECURITY-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-AI-BLUE",
+      "upstream_roadmap_id": "RM-APP-AI",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "informs",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "AI負荷の実測と正答条件が計算・メモリ・ネットワーク・ストレージ要件を知らせる。",
+      "statement_en": "Measured AI workloads and correctness requirements inform compute, memory, network, and storage needs.",
+      "decision_impact_ja": "学習、推論、エージェント処理を異なる負荷として構成案へ割り当てる。",
+      "decision_impact_en": "Assign training, inference, and agent execution as distinct workloads in planning options.",
+      "risk_if_late_ja": "測定が遅れると、ピーク演算値だけでAI適性を誤判定する。",
+      "risk_if_late_en": "Late measurement can misjudge AI fitness from peak arithmetic alone.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-AIP001",
+        "SRC-AIP002"
+      ],
+      "source_dependency_ids": [
+        "DEP-AI-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-AI-STACK-2026"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-PROCUREMENT-BLUE",
+      "upstream_roadmap_id": "RM-X-PROCUREMENT",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "constrains",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "予算境界、契約期間、保守、施設費が実現可能なシステム規模を制約する。",
+      "statement_en": "Budget boundaries, contract terms, support, and facility cost constrain feasible system scale.",
+      "decision_impact_ja": "総額ではなく同じ5年費用境界で複数案を比較する。",
+      "decision_impact_en": "Compare options using matched five-year cost boundaries rather than total award alone.",
+      "risk_if_late_ja": "費用内訳が遅れると、計算資源規模を過大評価する。",
+      "risk_if_late_en": "Late itemization can overstate feasible compute capacity.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-PRP001",
+        "SRC-PRP003"
+      ],
+      "source_dependency_ids": [
+        "DEP-PROCUREMENT-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-PROCUREMENT-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-OPERATIONS-BLUE",
+      "upstream_roadmap_id": "RM-X-OPERATIONS",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "enables",
+      "criticality": "high",
+      "basis": "openfs-assessment",
+      "statement_ja": "連合アクセスと継続運用の責任分担が計画案を実サービスにする。",
+      "statement_en": "Federated access and continuity ownership turn architecture options into operable services.",
+      "decision_impact_ja": "申請、配分、支援、障害、移行、データ継続を構成案ごとに確認する。",
+      "decision_impact_en": "Check requests, allocation, support, incidents, migration, and data continuity per option.",
+      "risk_if_late_ja": "責任分担が遅れると、技術的に稼働しても共通サービスとして提供できない。",
+      "risk_if_late_en": "Late ownership decisions can prevent a technically working system from becoming a common service.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDO065",
+        "SRC-BLUE042"
+      ],
+      "source_dependency_ids": [
+        "DEP-OPERATIONS-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-OPERATIONS-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
+    },
+    {
+      "dependency_id": "XDEP-HORIZON-BLUE",
+      "upstream_roadmap_id": "RM-X-HORIZON",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "relationship": "informs",
+      "criticality": "medium",
+      "basis": "openfs-assessment",
+      "statement_ja": "技術・供給・政策シグナルが計画案の前提と再検討時期を知らせる。",
+      "statement_en": "Technology, supply, and policy signals inform assumptions and reconsideration dates.",
+      "decision_impact_ja": "採用済み前提と新規候補を区別し、変更履歴と反対意見を残す。",
+      "decision_impact_en": "Separate adopted assumptions from candidates and retain change history and dissent.",
+      "risk_if_late_ja": "監視が遅れると、陳腐化した前提のまま判断時点を迎える。",
+      "risk_if_late_en": "Late monitoring can leave obsolete assumptions in place at decision time.",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-CDX001",
+        "SRC-CDX007"
+      ],
+      "source_dependency_ids": [
+        "DEP-HORIZON-BLUEPRINT"
+      ],
+      "gate_refs": [
+        "MS-HORIZON-2026-BASELINE"
+      ],
+      "coverage_gap_refs": []
     }
   ],
   "portfolio_gate_gap_refs": [
@@ -555,8 +759,8 @@
       "constraint_id": "EXT-FACILITY",
       "name_ja": "電力・冷却・建屋・工期",
       "name_en": "Power, cooling, buildings, and construction windows",
-      "impact_ja": "計算・ネットワーク・メモリ密度と、センターごとの段階的な導入の実現可能性を制約する。P0には富岳NEXTの公開施設日程を取り込んだが、全センターを対象とする専用施設ロードマップはまだない。",
-      "impact_en": "These factors constrain compute, network, and memory density as well as phased deployment at each center. P0 now includes the public FugakuNEXT facility schedule, but a dedicated facility roadmap covering all centers is still unavailable.",
+      "impact_ja": "計算・ネットワーク・メモリ密度と段階導入を制約する。専用施設ロードマップに富岳NEXTの公開工程を取り込んだが、全センターを同じ境界で比較できる電力・冷却・水使用・増設余地のデータは未完了である。",
+      "impact_en": "These factors constrain compute, network, and memory density as well as staged deployment. The facility roadmap includes the public FugakuNEXT schedule, but matched power, cooling, water, and expansion-headroom data for all centers remain incomplete.",
       "status": "coverage-gap"
     },
     {
@@ -571,7 +775,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901",
-    "human_approval_directive_id": "DIR-900019"
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
   }
 }

@@ -1,0 +1,278 @@
+{
+  "schema_version": "0.2.0",
+  "export_id": "AI-SCIENCE-ROADMAP-EXPORT-001",
+  "roadmap_id": "RM-APP-AI",
+  "status": "published",
+  "domain": "applications",
+  "slug": "applications/ai-for-science-agents",
+  "as_of": "2026-09-05",
+  "title_ja": "AI for Science・科学AIエージェント",
+  "title_en": "AI for Science and scientific AI agents",
+  "summary_ja": "大規模学習・推論、科学AIエージェント、評価基盤をシステム要件へ接続する暫定ロードマップです。製品機能、ベンチマーク、公的な科学成果を分けて扱います。",
+  "summary_en": "A provisional roadmap connecting large-scale training and inference, scientific AI agents, and evaluation infrastructure to system requirements. Product features, benchmarks, and scientific outcomes are treated separately.",
+  "horizon": {
+    "start_year": 2026,
+    "end_year": 2032,
+    "extension_policy": "extend-to-latest-dated-evidence"
+  },
+  "timeline_granularity": "quarter",
+  "research_status": "provisional",
+  "coverage_status": "official-source-scan-incomplete",
+  "consensus_status": "incomplete",
+  "groups": [
+    {
+      "group_id": "training-serving",
+      "name_ja": "学習・推論",
+      "name_en": "Training and inference"
+    },
+    {
+      "group_id": "agents",
+      "name_ja": "科学AIエージェント",
+      "name_en": "Scientific AI agents"
+    }
+  ],
+  "tracks": [
+    {
+      "track_id": "AI-TRAIN-SERVE",
+      "group": "training-serving",
+      "name_ja": "分散学習・推論サービング",
+      "name_en": "Distributed training and inference serving",
+      "summary_ja": "並列化、メモリ、チェックポイント、待ち時間を扱います。",
+      "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
+      "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。",
+      "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline.",
+      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。",
+      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths.",
+      "source_ids": [
+        "SRC-CDS048",
+        "SRC-CDS050",
+        "SRC-CDS053",
+        "SRC-AIP001",
+        "SRC-AIP002"
+      ]
+    },
+    {
+      "track_id": "AI-SCIENTIFIC-AGENTS",
+      "group": "agents",
+      "name_ja": "科学タスクとエージェント評価",
+      "name_en": "Scientific tasks and agent evaluation",
+      "summary_ja": "正答、再現性、費用、時間、ツール利用を扱います。",
+      "summary_en": "Cover correctness, reproducibility, cost, time, and tool use.",
+      "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。",
+      "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes.",
+      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。",
+      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records.",
+      "source_ids": [
+        "SRC-CDA053",
+        "SRC-HC26-JALAPENO-RESULTS"
+      ]
+    }
+  ],
+  "lanes": [
+    {
+      "lane_id": "LANE-AI-STACK",
+      "track_id": "AI-TRAIN-SERVE",
+      "owner": "AI software projects",
+      "scope_ja": "学習・推論スタック",
+      "scope_en": "Training and serving stack",
+      "milestones": [
+        {
+          "milestone_id": "MS-AI-STACK-2026",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "as-of-baseline",
+          "comparison_priority": "key",
+          "label_ja": "分散学習・推論機能を確認",
+          "label_en": "Training and serving capabilities checked",
+          "detail_ja": "公開機能の確認であり、候補HPCI構成上の性能測定ではありません。",
+          "detail_en": "This checks public capabilities and is not a performance measurement on candidate HPCI systems.",
+          "source_ids": [
+            "SRC-CDS048",
+            "SRC-CDS050",
+            "SRC-CDS053"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-AI-STACK-ACCEPTANCE",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "共通受入試験の時期は未確定",
+          "label_en": "Common acceptance testing is undated",
+          "detail_ja": "固定モデル、入力、同時実行数、精度、電力での比較日程はありません。",
+          "detail_en": "No schedule exists for comparison with pinned models, inputs, concurrency, accuracy, and power.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": [
+            "DEP-AI-BLUEPRINT"
+          ]
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-AI-AGENTS",
+      "track_id": "AI-SCIENTIFIC-AGENTS",
+      "owner": "OpenFS",
+      "scope_ja": "科学AIエージェント評価",
+      "scope_en": "Scientific-agent evaluation",
+      "milestones": [
+        {
+          "milestone_id": "MS-AI-AGENT-SUITE-2027",
+          "year": 2027,
+          "quarter": "Q2",
+          "timing_precision": "quarter",
+          "maturity": "pilot",
+          "event_type": "hpci-evaluation",
+          "timing_basis": "openfs-provisional-plan",
+          "comparison_priority": "key",
+          "label_ja": "科学タスク群の暫定実証点",
+          "label_en": "Provisional scientific task-suite pilot",
+          "detail_ja": "正答、再実行性、時間、費用、ツール権限を測る公開タスク群を試す暫定計画です。",
+          "detail_en": "A provisional plan to pilot public tasks measuring correctness, reproducibility, time, cost, and tool permissions.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-CDA053",
+            "SRC-HC26-JALAPENO-RESULTS"
+          ],
+          "dependency_refs": [
+            "DEP-AI-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-AI-CONSENSUS",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "research",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "独立したAIモデルによる評価の完了時期は未確定",
+          "label_en": "Evaluation by independent models is undated",
+          "detail_ja": "現在の調査は単一のAIモデルによるものであり、Consensus Gateの完了時期を推測しません。",
+          "detail_en": "Current research uses one model; the Consensus Gate completion date is not inferred.",
+          "source_ids": [
+            "SRC-OPENFS-P0-PLAN"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-AI-BLUEPRINT",
+      "relationship": "informs",
+      "upstream_roadmap_id": "RM-APP-AI",
+      "downstream_roadmap_id": "RM-X-BLUEPRINT",
+      "statement_ja": "AI負荷の実測と正答条件が計算・メモリ・ネットワーク・ストレージ構成を知らせます。",
+      "statement_en": "Measured AI workloads and correctness requirements inform compute, memory, network, and storage architecture.",
+      "basis": "openfs-assessment",
+      "source_ids": [
+        "SRC-OPENFS-P0-PLAN",
+        "SRC-AIP001",
+        "SRC-AIP002"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-OPENFS-P0-PLAN",
+      "title": "OpenFS roadmap portfolio and evidence rules",
+      "publisher": "OpenFS",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/docs/research-baseline/roadmap-portfolio.md",
+      "source_class": "openfs-governance"
+    },
+    {
+      "source_id": "SRC-CDS048",
+      "title": "Megatron Core parallelism guide",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-CDS050",
+      "title": "DeepSpeed ZeRO configuration, documentation 0.19.6",
+      "publisher": "DeepSpeed project",
+      "url": "https://deepspeed.readthedocs.io/en/latest/zero3.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDS053",
+      "title": "vLLM automatic prefix caching",
+      "publisher": "vLLM Project",
+      "url": "https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-AIP001",
+      "title": "MLPerf Training rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/training_policies/blob/master/training_rules.adoc",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-AIP002",
+      "title": "MLPerf Inference rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDA053",
+      "title": "ScienceAgentBench verified scientific tasks",
+      "publisher": "OSU NLP Group / ScienceAgentBench authors",
+      "url": "https://github.com/OSU-NLP-Group/ScienceAgentBench",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-HC26-JALAPENO-RESULTS",
+      "title": "Jalapeno first results",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/jalapeno-first-results/",
+      "source_class": "vendor-official",
+      "published_at": "2026-08-25"
+    }
+  ],
+  "coverage_gaps": [
+    {
+      "gap_id": "GAP-AI-001",
+      "priority": "P1",
+      "scope_ja": "HPCI候補構成での共通AI負荷測定",
+      "scope_en": "Common AI workload measurements on candidate HPCI systems",
+      "impact_ja": "学習・推論の必要資源を比較できません。",
+      "impact_en": "Training and inference resource needs cannot be compared.",
+      "next_action_ja": "モデル、入力、精度、同時実行、電力、データ移動を固定して測定します。",
+      "next_action_en": "Measure with pinned models, inputs, accuracy, concurrency, power, and data movement.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-AI-002",
+      "priority": "P2",
+      "scope_ja": "科学AIエージェントの再現性と監査",
+      "scope_en": "Scientific-agent reproducibility and audit",
+      "impact_ja": "出力の正しさと科学的利用可能性を判断できません。",
+      "impact_en": "Output correctness and scientific usability cannot be established.",
+      "next_action_ja": "公開タスク、期待結果、ツール権限、実行ログ、再試行方針を定義します。",
+      "next_action_en": "Define public tasks, expected results, tool permissions, run records, and retry policy.",
+      "status": "open"
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる暫定調査です。独立したAIモデルによるConsensus Gateは未完了です。公表資料の確認時点、公開目標、OpenFSの暫定計画を区別し、未公表の時期・費用・性能は推測していません。",
+  "caveat_en": "Provisional research by one model and one agent; Consensus review by independent models is incomplete. Documentation checks, published targets, and provisional OpenFS plans are separated, and unpublished timing, cost, and performance are not inferred.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
+    "human_approval_directive_id": "DIR-900103"
+  }
+}

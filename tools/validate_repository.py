@@ -207,6 +207,8 @@ REQUIRED_FILES = [
     "tools/build_source_catalog_map.py",
     "tools/build_roadmap_freshness_audit.py",
     "tools/build_roadmap_gap_queue.py",
+    "tools/build_p0_roadmap_wave.py",
+    "tools/build_p0_dependency_wave.py",
     "tools/build_center_profile_assurance.py",
     "tools/check_performance_model_card.py",
     "tools/check_benchmark_result_bundle.py",
