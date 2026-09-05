@@ -59,6 +59,20 @@ test("catalog-only evidence is searchable in Japanese and English", () => {
   }
 });
 
+test("published reports are searchable and keep safe external links", () => {
+  const report = data.reports.find((item) => item.report_id === "REPORT-FS3-DECISION-EVIDENCE-20260906");
+  assert.ok(report);
+  for (const language of ["ja", "en"]) {
+    const f = fixture(report.report_id, language);
+    f.get("global-search-type").value = "report";
+    f.get("global-search-type").dispatch("change");
+    assert.equal(f.results().length, 1);
+    const link = f.walk(f.results()[0]).find((el) => el.tagName === "a");
+    assert.equal(link.href, report.download_url);
+    assert.equal(link.rel, "noopener noreferrer");
+  }
+});
+
 function addSyntheticSources(payload) {
   const profile = payload.topic_decision_support.topic_profiles[0];
   const sources = payload.topic_decision_support.sources;

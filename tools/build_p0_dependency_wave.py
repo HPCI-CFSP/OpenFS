@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Append the second-wave P0 roadmap edges to the public dependency register."""
+"""Maintain post-baseline roadmap edges in the public dependency register."""
 
 from __future__ import annotations
 
@@ -18,6 +18,10 @@ EDGE_IDS = {
     "XDEP-PROCUREMENT-BLUE",
     "XDEP-OPERATIONS-BLUE",
     "XDEP-HORIZON-BLUE",
+    "XDEP-SOVEREIGNTY-BLUE",
+    "XDEP-PERFORMANCE-BLUE",
+    "XDEP-REALTIME-BLUE",
+    "XDEP-ADOPTION-BLUE",
 }
 
 
@@ -111,15 +115,57 @@ EDGES = [
 ]
 
 
+REMAINING_EDGES = [
+    edge("XDEP-SOVEREIGNTY-BLUE", "RM-HW-SOVEREIGNTY", "constrains", "high",
+         "供給能力、認定、保守、代替経路が導入時期と構成の可逆性を制約する。",
+         "Capacity, qualification, support, and alternatives constrain deployment timing and architectural reversibility.",
+         "候補部品を出自だけで評価せず、供給量、認定、保守、代替時の再設計を計画案へ反映する。",
+         "Reflect volume, qualification, support, and redesign under substitution rather than judging components by origin alone.",
+         "供給証拠が遅れると、量産目標を調達可能な数量・時期と誤認する。",
+         "Late supply evidence can cause production targets to be mistaken for procurable volume and dates.",
+         ["SRC-OPENFS-REMAINING-PLAN", "SRC-CDX001", "SRC-CDX007"],
+         "DEP-SOVEREIGNTY-BLUEPRINT", "MS-SOVEREIGNTY-GATE-2027Q2"),
+    edge("XDEP-PERFORMANCE-BLUE", "RM-SSW-PERFORMANCE", "informs", "high",
+         "実効性能、電力、待ち時間、失敗の観測が候補構成の比較と運用条件を知らせる。",
+         "Observed performance, power, queueing, and failures inform candidate comparison and operating conditions.",
+         "ピーク値だけでなく、同一入力・計測境界による性能と電力を計画案へ反映する。",
+         "Use performance and power from matched inputs and measurement boundaries, not peak values alone.",
+         "観測契約が遅れると、個別研究結果を本番SLOへ誤って一般化する。",
+         "Late observability contracts can cause isolated research results to be generalized into production SLOs.",
+         ["SRC-OPENFS-REMAINING-PLAN", "SRC-CDS376"],
+         "DEP-PERFORMANCE-BLUEPRINT", "MS-PERFORMANCE-CONTRACT-2027Q2"),
+    edge("XDEP-REALTIME-BLUE", "RM-APP-REALTIME", "informs", "high",
+         "実験・緊急・量子ユースケースの期限、データ率、正答条件がサービス構成を知らせる。",
+         "Deadlines, data rates, and correctness conditions for experimental, urgent, and quantum use cases inform service architecture.",
+         "取得、転送、計算、判断、復旧を一つのエンドツーエンド経路として評価する。",
+         "Evaluate acquisition, transfer, computation, decision, and recovery as one end-to-end path.",
+         "ユースケース契約が遅れると、個別要素の速度からサービス能力を過大評価する。",
+         "Late use-case contracts can overstate service capability from component speed.",
+         ["SRC-OPENFS-REMAINING-PLAN", "SRC-CDS397", "SRC-CDS455"],
+         "DEP-REALTIME-BLUEPRINT", "MS-REALTIME-GATE-2027Q2"),
+    edge("XDEP-ADOPTION-BLUE", "RM-APP-ADOPTION", "enables", "high",
+         "移行支援、技能、保守責任、終了条件が候補構成を継続利用可能なサービスにする。",
+         "Migration support, skills, stewardship, and exit conditions make candidate architectures sustainable services.",
+         "主要ソフトウェアの移植・検証・支援工数と責任者を導入工程へ反映する。",
+         "Reflect porting, validation, support effort, and ownership for critical software in deployment schedules.",
+         "準備が遅れると、機器稼働後も利用者が移行できず、保守不能な構成が残る。",
+         "Late readiness can leave users unable to migrate and software unsupported after hardware starts operating.",
+         ["SRC-OPENFS-REMAINING-PLAN", "SRC-PORT052", "SRC-CDO066"],
+         "DEP-ADOPTION-BLUEPRINT", "MS-ADOPTION-GATE-2027Q2"),
+]
+
+
 def main():
     payload = json.loads(PATH.read_text(encoding="utf-8"))
-    payload["as_of"] = "2026-09-05"
-    payload["summary_ja"] = "15本の公開P0ロードマップ間の依存関係を整理した暫定版です。技術、施設、ソフトウェア、AI、調達、運用、継続監視から参照構成までの判断経路を示します。独立レビューは未完了です。"
-    payload["summary_en"] = "A provisional register connecting 15 published P0 roadmaps across technology, facilities, software, AI, procurement, operations, and horizon scanning to the reference blueprint. Independent review remains incomplete."
+    payload["as_of"] = "2026-09-06"
+    payload["title_ja"] = "公開ロードマップ間の依存関係一覧"
+    payload["title_en"] = "Public cross-roadmap dependency register"
+    payload["summary_ja"] = "19本の公開ロードマップ間の依存関係を整理した暫定版です。技術、供給網、施設、ソフトウェア、アプリケーション、調達、運用、利用支援、継続監視から参照構成までの判断経路を示します。独立レビューは未完了です。"
+    payload["summary_en"] = "A provisional register connecting 19 published roadmaps across technology, supply chain, facilities, software, applications, procurement, operations, adoption, and horizon scanning to the reference blueprint. Independent review remains incomplete."
     payload["dependencies"] = [
         item for item in payload["dependencies"]
         if item["dependency_id"] not in EDGE_IDS
-    ] + EDGES
+    ] + EDGES + REMAINING_EDGES
     for constraint in payload["external_constraints"]:
         if constraint["constraint_id"] == "EXT-FACILITY":
             constraint["impact_ja"] = "計算・ネットワーク・メモリ密度と段階導入を制約する。専用施設ロードマップに富岳NEXTの公開工程を取り込んだが、全センターを同じ境界で比較できる電力・冷却・水使用・増設余地のデータは未完了である。"
@@ -127,8 +173,8 @@ def main():
     payload["publication"] = {
         "information_classification": "public",
         "publication_approved": True,
-        "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
-        "human_approval_directive_id": "DIR-900103",
+        "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
+        "human_approval_directive_id": "DIR-900104",
     }
     PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

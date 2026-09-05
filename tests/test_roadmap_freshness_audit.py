@@ -66,7 +66,7 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             audit["summary"]["source_count"],
         )
         self.assertEqual(0, audit["summary"]["future_observed_conflicts"])
-        self.assertEqual(2, audit["summary"]["retrospective_timing_checks"])
+        self.assertEqual(3, audit["summary"]["retrospective_timing_checks"])
         self.assertEqual(
             len(audit["attention_items"]),
             len({item["attention_id"] for item in audit["attention_items"]}),

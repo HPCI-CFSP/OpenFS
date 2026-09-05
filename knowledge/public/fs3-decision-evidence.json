@@ -1,0 +1,1853 @@
+{
+  "schema_version": "0.1.0",
+  "artifact_id": "FS3-DECISION-EVIDENCE-001",
+  "status": "published",
+  "as_of": "2026-09-06",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "title_ja": "FS3.0システム整備計画の判断根拠パッケージ",
+  "title_en": "FS3.0 system-planning decision-evidence package",
+  "summary_ja": "HPCI 27システム、公開調達13案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。",
+  "summary_en": "A provisional package connecting 27 HPCI systems, 13 public procurement cases, six EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.",
+  "security_readiness": {
+    "status": "blocked",
+    "selected_profile_id": null,
+    "production_eligible_profile_ids": [],
+    "checks": {
+      "production_security_profile_available": false,
+      "owner_controls_verified": false,
+      "security_profile_selected": false,
+      "full_safe_fetch_refresh_completed": false,
+      "source_triage_resolved": false
+    },
+    "blockers": [
+      "production_security_profile_available",
+      "owner_controls_verified",
+      "security_profile_selected",
+      "full_safe_fetch_refresh_completed",
+      "source_triage_resolved"
+    ],
+    "owner_actions": [
+      {
+        "action_id": "deploy-and-verify-security-profile",
+        "summary_ja": "管理Web検索、匿名Safe Fetch、SSRF防止、Shell外向き通信遮断、依存取得分離、Git公開制限を実環境で検証します。",
+        "summary_en": "Deploy and verify managed search, anonymous Safe Fetch, SSRF protection, shell-egress blocking, dependency-egress separation, and restricted Git publication.",
+        "refs": [
+          "config/research-web-security-policy.json",
+          "config/execution-security-profiles.json"
+        ]
+      },
+      {
+        "action_id": "record-owner-attestations",
+        "summary_ja": "GitHubとプロバイダー側の外部設定を確認し、秘密情報を含まない有効期限付き証明を記録します。",
+        "summary_en": "Verify external GitHub and provider settings and record expiring, non-secret attestations.",
+        "refs": [
+          "config/owner-controls.json",
+          "docs/operations/production-readiness.md"
+        ]
+      },
+      {
+        "action_id": "select-production-profile",
+        "summary_ja": "上記の検証後だけ、`OPENFS_SECURITY_PROFILE_ID`にproduction_eligibleなProfile IDを設定します。",
+        "summary_en": "Only after verification, set `OPENFS_SECURITY_PROFILE_ID` to a production-eligible profile ID.",
+        "refs": [
+          "docs/operations/automation-setup.md"
+        ]
+      },
+      {
+        "action_id": "refresh-and-triage-roadmap-sources",
+        "summary_ja": "Safe Web Fetch Brokerによる全URL監査を実行し、取得結果と本文確認を分離したまま未解決項目を再審査します。",
+        "summary_en": "Run the full URL audit through the Safe Web Fetch Broker and reassess unresolved entries while keeping retrieval and semantic review separate.",
+        "refs": [
+          "tools/audit_roadmap_sources_via_fetch_broker.py",
+          "knowledge/public/audits/roadmap-source-triage.json"
+        ]
+      }
+    ],
+    "source_triage": {
+      "reviewed": 108,
+      "confirmed": 108,
+      "unresolved": 84,
+      "full_refresh_status": "blocked"
+    }
+  },
+  "hpci_systems": {
+    "summary": {
+      "system_count": 27,
+      "future_lifecycle_count": 9,
+      "operations_evidence_count": 12,
+      "facility_power_evidence_count": 1
+    },
+    "systems": [
+      {
+        "system_id": "HPCI-SYS-FUGAKU",
+        "name_ja": "スーパーコンピュータ 富岳",
+        "name_en": "Supercomputer Fugaku",
+        "center_id": "CENTER-RIKEN-RCCS",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-FUGAKU-START-2021Q1"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-FUGAKU-AVAILABILITY-FY2023",
+          "OP-HPCI-FUGAKU-AVAILABILITY-FY2024",
+          "OP-HPCI-FUGAKU-SCHEDULED-MAINT-FY2023",
+          "OP-HPCI-FUGAKU-SCHEDULED-MAINT-FY2024",
+          "OP-HPCI-FUGAKU-UNPLANNED-DOWNTIME-FY2023",
+          "OP-HPCI-FUGAKU-UNPLANNED-DOWNTIME-FY2024",
+          "OP-HPCI-FUGAKU-UTILIZATION-FY2023",
+          "OP-HPCI-FUGAKU-UTILIZATION-FY2024",
+          "OPDATA-HPCI-FUGAKU-FDATA",
+          "OPDATA-HPCI-FUGAKU-OPERATIONS-FY2024"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-WISTERIA-ODYSSEY",
+        "name_ja": "Wisteria/BDEC-01 Odyssey",
+        "name_en": "Wisteria/BDEC-01 Odyssey",
+        "center_id": "CENTER-UTOKYO-ITC",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-UTOKYO-BDEC01-END-2027Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-UTOKYO-BDEC01-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-WISTERIA-ODYSSEY-UTILIZATION-FY2023"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-SQUID-CPU",
+        "name_ja": "SQUID 汎用CPUノード群",
+        "name_en": "SQUID general-purpose CPU nodes",
+        "center_id": "CENTER-OSAKA-D3",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-END-2027Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-SQUID-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-SQUID-JOBS-FY2024",
+          "OPDATA-HPCI-SQUID-MONTHLY-UTILIZATION-FY2024"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-OCTOPUS-CPU",
+        "name_ja": "OCTOPUS 汎用CPUノード群",
+        "name_en": "OCTOPUS general-purpose CPU nodes",
+        "center_id": "CENTER-OSAKA-D3",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-OCTOPUS-START-2025Q3"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-CAMPHOR3-A",
+        "name_ja": "Camphor3 システムA",
+        "name_en": "Camphor3 System A",
+        "center_id": "CENTER-KYOTO-ACCMS",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-KYOTO-CAMPHOR3-START-2023Q4"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-CAMPHOR3-JOBS-2024H2-2025H1",
+          "OP-HPCI-CAMPHOR3-SCHEDULED-MAINT-2024H2-2025H1",
+          "OP-HPCI-CAMPHOR3-SERVICE-HOURS-2024H2-2025H1",
+          "OP-HPCI-CAMPHOR3-UNPLANNED-DOWNTIME-2024H2-2025H1",
+          "OP-HPCI-CAMPHOR3-UTILIZATION-2024H2-2025H1"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-GENKAI-A",
+        "name_ja": "玄界 ノードグループA",
+        "name_en": "Genkai node group A",
+        "center_id": "CENTER-KYUSHU-RIIT",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-KYUSHU-GENKAI-START-2024Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-GRAND-CHARIOT2-CPU",
+        "name_ja": "Grand Chariot 2 CPUノード",
+        "name_en": "Grand Chariot 2 CPU nodes",
+        "center_id": "CENTER-HOKKAIDO-IIC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-HOKKAIDO-GC2-START-2025Q3"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-HOKUSAI-BW2",
+        "name_ja": "HOKUSAI BigWaterfall2",
+        "name_en": "HOKUSAI BigWaterfall2",
+        "center_id": "CENTER-RIKEN-IRDS",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-HBW2-END-2029Q4",
+          "RM-X-BLUEPRINT:MS-BLUE-HBW2-TRIAL-2023Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-MIYABI-C",
+        "name_ja": "Miyabi-C 汎用CPUノード群",
+        "name_en": "Miyabi-C general-purpose CPU nodes",
+        "center_id": "CENTER-JCAHPC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-JCAHPC-MIYABI-START-2025Q1"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-FURO2-I",
+        "name_ja": "不老・弐 Type Iサブシステム",
+        "name_en": "Furo-II Type I subsystem",
+        "center_id": "CENTER-NAGOYA-ITC",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-NAGOYA-FLOW2-2026Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-ES4-CPU",
+        "name_ja": "地球シミュレータ CPUノード部 ES4CPU",
+        "name_en": "Earth Simulator CPU nodes ES4CPU",
+        "center_id": "CENTER-JAMSTEC-CEIST",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-JAMSTEC-ES4-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-ES4-AVAILABILITY-FY2021",
+          "OPDATA-HPCI-ES4-WEEKLY-UTILIZATION"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-AOBA-B",
+        "name_ja": "AOBA-B LX 406Rz-2",
+        "name_en": "AOBA-B LX 406Rz-2",
+        "center_id": "CENTER-TOHOKU-CSC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TOHOKU-AOBA-AB-START-2020Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-ISM-LARGEMEM",
+        "name_ja": "データ同化スーパーコンピュータシステム",
+        "name_en": "Supercomputer System for Data Assimilation",
+        "center_id": "CENTER-ISM-CSST",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-ISM-DATA-ASSIMILATION-INTRO-2023Q1"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-FURO2-II",
+        "name_ja": "不老・弐 Type IIサブシステム",
+        "name_en": "Furo-II Type II subsystem",
+        "center_id": "CENTER-NAGOYA-ITC",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-NAGOYA-FLOW2-2026Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-MIYABI-G",
+        "name_ja": "Miyabi-G 演算加速ノード群",
+        "name_en": "Miyabi-G accelerated nodes",
+        "center_id": "CENTER-JCAHPC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-JCAHPC-MIYABI-START-2025Q1"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-SIRIUS",
+        "name_ja": "Sirius PACS12.0",
+        "name_en": "Sirius PACS12.0",
+        "center_id": "CENTER-TSUKUBA-CCS",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TSUKUBA-SIRIUS-2026Q1",
+          "RM-X-BLUEPRINT:MS-BLUE-TSUKUBA-SIRIUS-FULL-2026Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-TSUKUBA-SIRIUS-EXPANSION-UNDATED"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-TSUBAME4",
+        "name_ja": "TSUBAME4.0",
+        "name_en": "TSUBAME4.0",
+        "center_id": "CENTER-SCIENCE-TOKYO-IIC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TSUBAME4-START-2024Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-TSUBAME4-DESIGN-POWER",
+          "OP-HPCI-TSUBAME4-NORMAL-POWER"
+        ],
+        "facility_status": "power-evidence-registered",
+        "facility_evidence_refs": [
+          "OP-HPCI-TSUBAME4-DESIGN-POWER",
+          "OP-HPCI-TSUBAME4-NORMAL-POWER"
+        ],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing."
+      },
+      {
+        "system_id": "HPCI-SYS-GENKAI-B",
+        "name_ja": "玄界 ノードグループB",
+        "name_en": "Genkai node group B",
+        "center_id": "CENTER-KYUSHU-RIIT",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-KYUSHU-GENKAI-START-2024Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-PEGASUS",
+        "name_ja": "Pegasus",
+        "name_en": "Pegasus",
+        "center_id": "CENTER-TSUKUBA-CCS",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TSUKUBA-PEGASUS-START-2023Q2"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-WISTERIA-AQUARIUS",
+        "name_ja": "Wisteria/BDEC-01 Aquarius",
+        "name_en": "Wisteria/BDEC-01 Aquarius",
+        "center_id": "CENTER-UTOKYO-ITC",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-UTOKYO-BDEC01-END-2027Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-UTOKYO-BDEC01-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-WISTERIA-AQUARIUS-UTILIZATION-FY2023H2"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-SQUID-GPU",
+        "name_ja": "SQUID GPUノード群",
+        "name_en": "SQUID GPU nodes",
+        "center_id": "CENTER-OSAKA-D3",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-END-2027Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-SQUID-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-SQUID-JOBS-FY2024",
+          "OPDATA-HPCI-SQUID-MONTHLY-UTILIZATION-FY2024"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-GRAND-CHARIOT2-GPU",
+        "name_ja": "Grand Chariot 2 GPUノード",
+        "name_en": "Grand Chariot 2 GPU nodes",
+        "center_id": "CENTER-HOKKAIDO-IIC",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-HOKKAIDO-GC2-START-2025Q3",
+          "RM-X-BLUEPRINT:MS-BLUE-HOKKAIDO-GPU-2027Q2"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-AOBA-A",
+        "name_ja": "AOBA-A",
+        "name_en": "AOBA-A",
+        "center_id": "CENTER-TOHOKU-CSC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TOHOKU-AOBA-AB-START-2020Q4"
+        ],
+        "operations_status": "coverage-gap",
+        "operational_evidence_refs": [],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, utilization, availability, job history, or other operating evidence, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-AOBA-S",
+        "name_ja": "AOBA-S",
+        "name_en": "AOBA-S",
+        "center_id": "CENTER-TOHOKU-CSC",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-TOHOKU-AOBA-S-START-2023Q3"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-AOBA-S-JOBS-24H",
+          "OP-HPCI-AOBA-S-MAX-JOB-DURATION",
+          "OP-HPCI-AOBA-S-UTILIZATION-TYPICAL"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-ES4-VE",
+        "name_ja": "地球シミュレータ VE搭載ノード部 ES4VE",
+        "name_en": "Earth Simulator VE nodes ES4VE",
+        "center_id": "CENTER-JAMSTEC-CEIST",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-JAMSTEC-ES4-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-ES4-AVAILABILITY-FY2021",
+          "OPDATA-HPCI-ES4-WEEKLY-UTILIZATION"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-SQUID-VE",
+        "name_ja": "SQUID ベクトルノード群",
+        "name_en": "SQUID vector nodes",
+        "center_id": "CENTER-OSAKA-D3",
+        "lifecycle_status": "future-public-timing",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-END-2027Q2",
+          "RM-X-BLUEPRINT:MS-BLUE-OSAKA-SQUID-START-2021Q2"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-SQUID-JOBS-FY2024",
+          "OPDATA-HPCI-SQUID-MONTHLY-UTILIZATION-FY2024"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for design/operating power and cooling under a defined boundary."
+      },
+      {
+        "system_id": "HPCI-SYS-ABCI3",
+        "name_ja": "ABCI 3.0",
+        "name_en": "ABCI 3.0",
+        "center_id": "CENTER-AIST-IHF",
+        "lifecycle_status": "history-only",
+        "lifecycle_refs": [
+          "RM-X-BLUEPRINT:MS-BLUE-AIST-ABCI3-START-2025Q1"
+        ],
+        "operations_status": "registered",
+        "operational_evidence_refs": [
+          "OP-HPCI-ABCI3-UNPLANNED-OUTAGE-20250304"
+        ],
+        "facility_status": "coverage-gap",
+        "facility_evidence_refs": [],
+        "next_action_ja": "公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。",
+        "next_action_en": "Confirm public primary evidence for future refresh, retirement, or expansion timing, design/operating power and cooling under a defined boundary."
+      }
+    ]
+  },
+  "procurements": {
+    "summary": {
+      "case_count": 13,
+      "public_amount_count": 11,
+      "public_specification_count": 1,
+      "component_itemized_count": 0,
+      "known_five_year_floor_count": 1,
+      "complete_tco_count": 0
+    },
+    "cases": [
+      {
+        "case_id": "PROC-RIKEN-AIFS-2025",
+        "title_ja": "理研 AI for Science用スーパーコンピュータ一式",
+        "title_en": "RIKEN AI for Science supercomputer package",
+        "amount_jpy": 6731406000,
+        "amount_basis": "contract:total:including-tax",
+        "public_document_count": 4,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 6,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 6,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-AIFS-IB-2025",
+        "title_ja": "理研 AI for Science用InfiniBandスイッチ一式",
+        "title_en": "RIKEN AI for Science InfiniBand switch package",
+        "amount_jpy": 5148000,
+        "amount_basis": "contract:total:including-tax",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 1,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 11,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-AIFS-COOLING-2025",
+        "title_ja": "理研 AIスーパーコンピュータ設備増強工事（機械）",
+        "title_en": "RIKEN AI supercomputer mechanical facility work",
+        "amount_jpy": 341000000,
+        "amount_basis": "contract:total:including-tax",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 2,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 10,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-AIFS-POWER-2025",
+        "title_ja": "理研 AIスーパーコンピュータ設備増強工事（電気）",
+        "title_en": "RIKEN AI supercomputer electrical facility work",
+        "amount_jpy": 363000000,
+        "amount_basis": "contract:total:including-tax",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 2,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 10,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-JAXA-JSS4-2025",
+        "title_ja": "JAXA JSS4 スーパーコンピュータ調達",
+        "title_en": "JAXA JSS4 supercomputer procurement",
+        "amount_jpy": null,
+        "amount_basis": null,
+        "public_document_count": 1,
+        "specification_access": "restricted",
+        "component_scope_evidence_count": 0,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 12,
+        "decision_use_ja": "価格根拠がないため費用比較には使用できません。",
+        "decision_use_en": "Not usable for cost comparison because no public price is registered."
+      },
+      {
+        "case_id": "PROC-NAGOYA-FURO-NEXT-2025",
+        "title_ja": "名古屋大学「不老」NEXTシステムの借入",
+        "title_en": "Nagoya University Furo NEXT lease",
+        "amount_jpy": 5809518000,
+        "amount_basis": "award:unknown:including-tax",
+        "public_document_count": 6,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 6,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 6,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-TSUKUBA-UNIFIED-MEMORY-2025",
+        "title_ja": "筑波大学ユニファイドメモリ型スーパーコンピュータの借入",
+        "title_en": "University of Tsukuba unified-memory supercomputer lease",
+        "amount_jpy": 11880000,
+        "amount_basis": "award:monthly:including-tax",
+        "public_document_count": 8,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 6,
+        "component_itemization_count": 0,
+        "five_year_status": "known-contractual-floor",
+        "known_five_year_floor_jpy": 712800000,
+        "unknown_scope_count": 6,
+        "decision_use_ja": "公表された契約範囲に限る60か月費用下限として利用できます。完全なTCOではありません。",
+        "decision_use_en": "Usable only as a 60-month contractual floor for the published scope; it is not complete TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-FUGAKU-MAINT-2025",
+        "title_ja": "理研 2025年度「富岳」保守",
+        "title_en": "RIKEN FY2025 Fugaku maintenance",
+        "amount_jpy": 6259572132,
+        "amount_basis": "contract:total:unknown",
+        "public_document_count": 2,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 1,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 11,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-FUGAKU-MAINT-2024",
+        "title_ja": "理研 2024年度「富岳」保守",
+        "title_en": "RIKEN FY2024 Fugaku maintenance",
+        "amount_jpy": 6261801700,
+        "amount_basis": "contract:total:unknown",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 1,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 11,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-FUGAKU-OVERHAUL-2025",
+        "title_ja": "理研 2025年度「富岳」本体オーバーホール・ネットワークスイッチ更新",
+        "title_en": "RIKEN FY2025 Fugaku overhaul and network-switch replacement",
+        "amount_jpy": 1586200000,
+        "amount_basis": "contract:total:unknown",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 3,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 9,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-RIKEN-FUGAKU-MAINT-2026",
+        "title_ja": "理研 2026年度「富岳」保守",
+        "title_en": "RIKEN FY2026 Fugaku maintenance",
+        "amount_jpy": 5958583928,
+        "amount_basis": "contract:total:unknown",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 1,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 11,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-ROIS-AI-GPU-SERVER-2025",
+        "title_ja": "情報・システム研究機構 AI技術開発用GPUサーバ",
+        "title_en": "ROIS GPU server for AI technology development",
+        "amount_jpy": 79970000,
+        "amount_basis": "award:total:unknown",
+        "public_document_count": 1,
+        "specification_access": "not-obtained",
+        "component_scope_evidence_count": 0,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 12,
+        "decision_use_ja": "公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。",
+        "decision_use_en": "Usable as a published total, but not decomposed into component prices or five-year TCO."
+      },
+      {
+        "case_id": "PROC-KYOTO-GENOMICS-CHEMISTRY-SYSTEM-2026",
+        "title_ja": "京都大学 ゲノム科学・計算化学向け次期スーパーコンピュータ要求要件",
+        "title_en": "Kyoto University next supercomputer requirements for genomics and computational chemistry",
+        "amount_jpy": null,
+        "amount_basis": null,
+        "public_document_count": 1,
+        "specification_access": "public-read",
+        "component_scope_evidence_count": 0,
+        "component_itemization_count": 0,
+        "five_year_status": "not-computable",
+        "known_five_year_floor_jpy": null,
+        "unknown_scope_count": 12,
+        "decision_use_ja": "価格根拠がないため費用比較には使用できません。",
+        "decision_use_en": "Not usable for cost comparison because no public price is registered."
+      }
+    ]
+  },
+  "eea1": {
+    "summary": {
+      "application_count": 6,
+      "code_version_pinned_count": 4,
+      "input_version_pinned_count": 1,
+      "complete_baseline_package_count": 0,
+      "approved_threshold_count": 0,
+      "validated_forecast_count": 0,
+      "isolated_illustration_count": 36
+    },
+    "standard_node_scales": [
+      1,
+      4,
+      32,
+      128,
+      1024,
+      10000
+    ],
+    "applications": [
+      {
+        "application_id": "APP-EEA1-GENESIS",
+        "name": "GENESIS",
+        "domain_ja": "生命科学・分子動力学",
+        "domain_en": "Life science and molecular dynamics",
+        "package_status": "code-and-input-version-pinned-candidate",
+        "code_version": "v2.1.6.1",
+        "input_version": "v1.0.0",
+        "eea1_input_match": "not-confirmed",
+        "verified_artifacts": [
+          "code",
+          "input",
+          "code-license",
+          "content-digest"
+        ],
+        "missing_artifacts": [
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "input-license"
+        ],
+        "observed_node_scales": [
+          2,
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "標準入力と公開実測時間が未登録。",
+            "reason_en": "The standard input and public measured runtime are not registered."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "measurement-available",
+            "reason_ja": "基本設計報告書は4ノードのMPI通信トレース取得を記載するが、公開実行時間は未登録。",
+            "reason_en": "The basic-design report records a four-node MPI trace, but no public runtime is registered."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "同一入力の公開実測が必要。",
+            "reason_en": "A public same-input measurement is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "同一入力の公開実測が必要。",
+            "reason_en": "A public same-input measurement is required."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "通信・負荷不均衡を含む公開実測が必要。",
+            "reason_en": "A public measurement including communication and imbalance is required."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "適用可能な問題規模と並列効率の確認が必要。",
+            "reason_en": "Applicable problem size and parallel efficiency must be established."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-GENESIS-SCALE"
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-SALMON",
+        "name": "SALMON",
+        "domain_ja": "新物質・エネルギー・TDDFT",
+        "domain_en": "Materials, energy, and TDDFT",
+        "package_status": "code-version-pinned-candidate",
+        "code_version": "v.2.3.0",
+        "input_version": null,
+        "eea1_input_match": "no-public-input",
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "missing_artifacts": [
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "input-license"
+        ],
+        "observed_node_scales": [
+          1,
+          432,
+          1728,
+          6912,
+          27648
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "標準スーパーセル入力がこの実行規模に適合するかは確認できていない。",
+            "reason_en": "The applicability of a standard supercell input at this execution scale has not been confirmed."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "calibration-required",
+            "reason_ja": "同一入力の公開実測が必要。",
+            "reason_en": "A public same-input measurement is required."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "同一入力の公開実測が必要。",
+            "reason_en": "A public same-input measurement is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "48ノード通信トレースはあるが、128ノードの実行時間は未登録。",
+            "reason_en": "A 48-node communication trace exists, but no 128-node runtime is registered."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "帯域と通信の外挿検証が必要。",
+            "reason_en": "Bandwidth and communication extrapolation must be validated."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "問題サイズを拡大した入力と並列効率の確認が必要。",
+            "reason_en": "A larger problem instance and evidence of parallel efficiency are required."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-SALMON-SCALE",
+          "REQ-PERF-SALMON-STEP-TARGET"
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-SCALE-LETKF",
+        "name": "SCALE-LETKF",
+        "domain_ja": "気象・気候・データ同化",
+        "domain_en": "Weather, climate, and data assimilation",
+        "package_status": "code-version-pinned-candidate",
+        "code_version": "5.5.5-v2",
+        "input_version": null,
+        "eea1_input_match": "no-public-input",
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "missing_artifacts": [
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "input-license"
+        ],
+        "observed_node_scales": [
+          1
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "SCALEとLETKFを含む最小標準入力が未登録。",
+            "reason_en": "A minimum standard input spanning SCALE and LETKF is not registered."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "calibration-required",
+            "reason_ja": "同化アンサンブル条件を固定した公開実測が必要。",
+            "reason_en": "A public measurement with fixed assimilation-ensemble conditions is required."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "同一入力または明示した弱スケーリング入力が必要。",
+            "reason_en": "A same-input or explicitly weak-scaled input is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "計算・通信・I/O内訳の公開実測が必要。",
+            "reason_en": "A public compute, communication, and I/O breakdown is required."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "アンサンブル並列と空間並列を分離した測定が必要。",
+            "reason_en": "Measurements must separate ensemble and spatial parallelism."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "実運用可能な大規模入力とI/O制約の確認が必要。",
+            "reason_en": "An operationally realistic large input and I/O constraints must be established."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-SCALE-LETKF-SCALE"
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-E-WAVE",
+        "name": "E-Wave",
+        "domain_ja": "地震・津波防災",
+        "domain_en": "Earthquake and tsunami disaster science",
+        "package_status": "blocked-no-public-package",
+        "code_version": null,
+        "input_version": null,
+        "eea1_input_match": "no-public-input",
+        "verified_artifacts": [],
+        "missing_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "observed_node_scales": [
+          385
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "公開可能な標準メッシュと実測が未登録。",
+            "reason_en": "No publishable standard mesh and measurement are registered."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "疎行列演算とAllreduceの実行時間の内訳が必要。",
+            "reason_en": "A runtime breakdown for sparse-matrix operations and Allreduce is required."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "低遅延通信を含む検証が必要。",
+            "reason_en": "Validation including low-latency communication is required."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "問題規模、反復数、収束条件を固定した検証が必要。",
+            "reason_en": "Problem size, iteration count, and convergence conditions must be fixed and validated."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-EWAVE-GAP",
+          "REQ-PERF-EWAVE-MEASURED"
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+        "name": "FrontFlow/blue",
+        "domain_ja": "ものづくり・非構造格子CFD",
+        "domain_en": "Manufacturing and unstructured-grid CFD",
+        "package_status": "blocked-no-public-package",
+        "code_version": null,
+        "input_version": null,
+        "eea1_input_match": "no-public-input",
+        "verified_artifacts": [],
+        "missing_artifacts": [
+          "code",
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "code-license",
+          "input-license",
+          "content-digest"
+        ],
+        "observed_node_scales": [
+          1
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "標準メッシュと公開実行時間が未登録。",
+            "reason_en": "A standard mesh and public runtime are not registered."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "間接メモリアクセスと通信の内訳が必要。",
+            "reason_en": "Indirect-memory and communication breakdowns are required."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "768ノード通信トレースはあるが、1,024ノードの実行時間は未登録。",
+            "reason_en": "A 768-node communication trace exists, but no 1,024-node runtime is registered."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "大規模メッシュと並列効率の公開検証が必要。",
+            "reason_en": "Public validation for a large mesh and parallel efficiency is required."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-FFB-SCALE"
+        ]
+      },
+      {
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "name": "LQCD-DWF-HMC",
+        "domain_ja": "基礎科学・格子QCD",
+        "domain_en": "Fundamental science and lattice QCD",
+        "package_status": "code-version-pinned-candidate",
+        "code_version": "main snapshot",
+        "input_version": null,
+        "eea1_input_match": "no-public-input",
+        "verified_artifacts": [
+          "code",
+          "code-license",
+          "content-digest"
+        ],
+        "missing_artifacts": [
+          "input",
+          "dependencies",
+          "run-procedure",
+          "reference-output",
+          "input-license"
+        ],
+        "observed_node_scales": [
+          1
+        ],
+        "standard_scale_readiness": [
+          {
+            "fugaku_nodes": 1,
+            "status": "calibration-required",
+            "reason_ja": "標準格子が1ノードに適合するか未確認。",
+            "reason_en": "It is unconfirmed whether the standard lattice fits one node."
+          },
+          {
+            "fugaku_nodes": 4,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 32,
+            "status": "calibration-required",
+            "reason_ja": "公開実測が必要。",
+            "reason_en": "A public measurement is required."
+          },
+          {
+            "fugaku_nodes": 128,
+            "status": "calibration-required",
+            "reason_ja": "混合精度と収束条件を固定した実測が必要。",
+            "reason_en": "A measurement with fixed mixed-precision and convergence conditions is required."
+          },
+          {
+            "fugaku_nodes": 1024,
+            "status": "calibration-required",
+            "reason_ja": "1,024ノード標準入力の公開実測が必要。",
+            "reason_en": "A public standard-input measurement at 1,024 nodes is required."
+          },
+          {
+            "fugaku_nodes": 10000,
+            "status": "calibration-required",
+            "reason_ja": "2,048ノード通信トレースからの外挿だけでは不足。",
+            "reason_en": "Extrapolation from the 2,048-node communication trace alone is insufficient."
+          }
+        ],
+        "measurement_contract_complete": true,
+        "threshold_status": "not-approved",
+        "correctness_rule_status": "draft-not-approved",
+        "quantitative_requirement_ids": [
+          "REQ-PERF-LQCD-SCALE"
+        ]
+      }
+    ]
+  },
+  "application_requirements": {
+    "dimensions": [
+      {
+        "dimension_id": "compute-throughput",
+        "label_ja": "演算スループット",
+        "label_en": "Compute throughput"
+      },
+      {
+        "dimension_id": "memory-capacity-bandwidth",
+        "label_ja": "メモリ容量・帯域",
+        "label_en": "Memory capacity and bandwidth"
+      },
+      {
+        "dimension_id": "scale-up-interconnect",
+        "label_ja": "ノード内・スケールアップ接続",
+        "label_en": "Intra-node and scale-up interconnect"
+      },
+      {
+        "dimension_id": "scale-out-interconnect",
+        "label_ja": "ノード間・スケールアウト接続",
+        "label_en": "Scale-out interconnect"
+      },
+      {
+        "dimension_id": "storage-io",
+        "label_ja": "ストレージ・I/O",
+        "label_en": "Storage and I/O"
+      },
+      {
+        "dimension_id": "workflow-latency",
+        "label_ja": "ワークフロー期限・応答性",
+        "label_en": "Workflow deadline and responsiveness"
+      },
+      {
+        "dimension_id": "software-portability",
+        "label_ja": "ソフトウェア可搬性",
+        "label_en": "Software portability"
+      },
+      {
+        "dimension_id": "data-governance",
+        "label_ja": "データ管理・利用制約",
+        "label_en": "Data governance and access constraints"
+      }
+    ],
+    "applications": [
+      {
+        "application_id": "APP-EEA1-GENESIS",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "medium",
+          "scale-out-interconnect": "high",
+          "storage-io": "medium",
+          "workflow-latency": "medium",
+          "software-portability": "medium",
+          "data-governance": "medium"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-GENESIS-SCALE"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF004",
+          "SRC-PERF006",
+          "SRC-PERF010",
+          "SRC-PERF016",
+          "SRC-PERF017",
+          "SRC-PERF018"
+        ],
+        "threshold_status": "not-approved"
+      },
+      {
+        "application_id": "APP-EEA1-SALMON",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "medium",
+          "scale-out-interconnect": "high",
+          "storage-io": "medium",
+          "workflow-latency": "medium",
+          "software-portability": "medium",
+          "data-governance": "low"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-SALMON-SCALE",
+          "REQ-PERF-SALMON-STEP-TARGET"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF004",
+          "SRC-PERF007",
+          "SRC-PERF015"
+        ],
+        "threshold_status": "not-approved"
+      },
+      {
+        "application_id": "APP-EEA1-SCALE-LETKF",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "medium",
+          "scale-out-interconnect": "high",
+          "storage-io": "high",
+          "workflow-latency": "high",
+          "software-portability": "medium",
+          "data-governance": "high"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "data-governance",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect",
+          "storage-io",
+          "workflow-latency"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-SCALE-LETKF-SCALE"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF004",
+          "SRC-PERF008",
+          "SRC-PERF014"
+        ],
+        "threshold_status": "not-approved"
+      },
+      {
+        "application_id": "APP-EEA1-E-WAVE",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "unknown",
+          "scale-out-interconnect": "high",
+          "storage-io": "high",
+          "workflow-latency": "medium",
+          "software-portability": "unknown",
+          "data-governance": "medium"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect",
+          "storage-io"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-EWAVE-GAP",
+          "REQ-PERF-EWAVE-MEASURED"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF011",
+          "SRC-PERF013"
+        ],
+        "threshold_status": "not-approved"
+      },
+      {
+        "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "unknown",
+          "scale-out-interconnect": "high",
+          "storage-io": "high",
+          "workflow-latency": "high",
+          "software-portability": "unknown",
+          "data-governance": "medium"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect",
+          "storage-io",
+          "workflow-latency"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-FFB-SCALE"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF004",
+          "SRC-PERF011",
+          "SRC-PERF012"
+        ],
+        "threshold_status": "not-approved"
+      },
+      {
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "demand_levels": {
+          "compute-throughput": "high",
+          "memory-capacity-bandwidth": "high",
+          "scale-up-interconnect": "medium",
+          "scale-out-interconnect": "high",
+          "storage-io": "medium",
+          "workflow-latency": "low",
+          "software-portability": "medium",
+          "data-governance": "low"
+        },
+        "high_dimension_ids": [
+          "compute-throughput",
+          "memory-capacity-bandwidth",
+          "scale-out-interconnect"
+        ],
+        "measurement_gap_count": 8,
+        "quantitative_requirement_ids": [
+          "REQ-PERF-LQCD-SCALE"
+        ],
+        "source_ids": [
+          "SRC-PERF001",
+          "SRC-PERF004",
+          "SRC-PERF009"
+        ],
+        "threshold_status": "not-approved"
+      }
+    ]
+  },
+  "roadmaps": {
+    "summary": {
+      "roadmap_count": 19,
+      "milestone_count": 385,
+      "undated_milestone_count": 52,
+      "dependency_count": 29,
+      "p0_gap_count": 21,
+      "p1_gap_count": 39,
+      "p2_gap_count": 15
+    },
+    "roadmaps": [
+      {
+        "roadmap_id": "RM-APP-ADOPTION",
+        "title_ja": "利用支援・ソフトウェア持続性・運営体制",
+        "title_en": "User support, software sustainability, and governance",
+        "slug": "applications/workforce-adoption-sustainability",
+        "milestone_count": 6,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 2,
+          "P2": 0
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-APP-AI",
+        "title_ja": "AI for Science・科学AIエージェント",
+        "title_en": "AI for Science and scientific AI agents",
+        "slug": "applications/ai-for-science-agents",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-APP-REALTIME",
+        "title_ja": "緊急・リアルタイム・実験連携・量子応用",
+        "title_en": "Urgent, real-time, experimental, and quantum applications",
+        "slug": "applications/realtime-experiment-quantum",
+        "milestone_count": 8,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 2,
+          "P2": 0
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-APP-WORKLOADS",
+        "title_ja": "科学ワークロード・ベンチマーク・性能モデル",
+        "title_en": "Scientific workloads, benchmarks, and performance models",
+        "slug": "applications/workloads-benchmarks-models",
+        "milestone_count": 38,
+        "undated_milestone_count": 5,
+        "coverage_gap_counts": {
+          "P0": 4,
+          "P1": 4,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-COMPUTE",
+        "title_ja": "計算ノード・プロセッサ・アクセラレータ",
+        "title_en": "Compute nodes, processors, and accelerators",
+        "slug": "hardware/compute-nodes-accelerators",
+        "milestone_count": 55,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 3,
+          "P1": 5,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-FACILITY",
+        "title_ja": "施設・電力・冷却",
+        "title_en": "Facility, power, and cooling",
+        "slug": "hardware/facility-power-cooling",
+        "milestone_count": 5,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-INTERCONNECT",
+        "title_ja": "インターコネクト・光・資源分離",
+        "title_en": "Interconnect, optics, and disaggregation",
+        "slug": "hardware/interconnect-optics-disaggregation",
+        "milestone_count": 35,
+        "undated_milestone_count": 3,
+        "coverage_gap_counts": {
+          "P0": 2,
+          "P1": 3,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-MEMORY",
+        "title_ja": "メモリ・データ移動技術ロードマップ（2026年以降）",
+        "title_en": "Memory and Data-Movement Technology Roadmap, 2026 and Beyond",
+        "slug": "hardware/memory-data-movement",
+        "milestone_count": 62,
+        "undated_milestone_count": 12,
+        "coverage_gap_counts": {
+          "P0": 1,
+          "P1": 3,
+          "P2": 2
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-SOVEREIGNTY",
+        "title_ja": "供給網・技術主権・ライフサイクル",
+        "title_en": "Supply chain, technology sovereignty, and lifecycle",
+        "slug": "hardware/supply-sovereignty-lifecycle",
+        "milestone_count": 7,
+        "undated_milestone_count": 0,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 2,
+          "P2": 0
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-HW-STORAGE",
+        "title_ja": "ストレージ・データ基盤",
+        "title_en": "Storage and data platforms",
+        "slug": "hardware/storage-data-platforms",
+        "milestone_count": 19,
+        "undated_milestone_count": 5,
+        "coverage_gap_counts": {
+          "P0": 1,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-SSW-PERFORMANCE",
+        "title_ja": "可観測性・性能工学・電力適応運用",
+        "title_en": "Observability, performance engineering, and power-aware operations",
+        "slug": "system-software/observability-performance-power",
+        "milestone_count": 5,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 2,
+          "P2": 0
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-SSW-PORTABILITY",
+        "title_ja": "性能可搬性・コンパイラ・自動最適化",
+        "title_en": "Performance portability, compilers, and automated optimization",
+        "slug": "system-software/portability-compilers-tuning",
+        "milestone_count": 47,
+        "undated_milestone_count": 5,
+        "coverage_gap_counts": {
+          "P0": 4,
+          "P1": 5,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-SSW-RUNTIME",
+        "title_ja": "通信・ランタイム・スケジューリング・OS",
+        "title_en": "Communication, runtimes, scheduling, and operating systems",
+        "slug": "system-software/runtime-scheduling-os",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-SSW-SECURITY",
+        "title_ja": "認証・セキュリティ・連合運用",
+        "title_en": "Identity, security, and federated operations",
+        "slug": "system-software/identity-security-federation",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-SSW-WORKFLOW",
+        "title_ja": "データ・AI・実験ワークフロー基盤",
+        "title_en": "Data, AI, and experimental workflow platform",
+        "slug": "system-software/data-workflow-platform",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-X-BLUEPRINT",
+        "title_ja": "参照構成・HPCI基盤センター導入",
+        "title_en": "Reference architectures and HPCI center deployment",
+        "slug": "cross-cutting/reference-blueprint-centers",
+        "milestone_count": 70,
+        "undated_milestone_count": 4,
+        "coverage_gap_counts": {
+          "P0": 6,
+          "P1": 2,
+          "P2": 0
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-X-HORIZON",
+        "title_ja": "技術動向監視・新規調査項目発見",
+        "title_en": "Technology horizon scanning and new research-topic discovery",
+        "slug": "cross-cutting/horizon-scanning-topic-discovery",
+        "milestone_count": 4,
+        "undated_milestone_count": 1,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-X-OPERATIONS",
+        "title_ja": "統合運用・ガバナンス・サービス継続",
+        "title_en": "Integrated operations, governance, and service continuity",
+        "slug": "cross-cutting/operations-governance-continuity",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      },
+      {
+        "roadmap_id": "RM-X-PROCUREMENT",
+        "title_ja": "調達・共同投資・システム整備計画案",
+        "title_en": "Procurement, joint investment, and deployment scenarios",
+        "slug": "cross-cutting/procurement-investment-scenarios",
+        "milestone_count": 4,
+        "undated_milestone_count": 2,
+        "coverage_gap_counts": {
+          "P0": 0,
+          "P1": 1,
+          "P2": 1
+        },
+        "consensus_status": "incomplete"
+      }
+    ]
+  },
+  "report_structure": [
+    {
+      "chapter_id": "CH-01",
+      "title_ja": "目的・対象・方法と情報境界",
+      "title_en": "Purpose, scope, method, and information boundary",
+      "purpose_ja": "公開情報だけを用いる調査範囲、更新方法、セキュリティ、Consensus状態を示します。",
+      "purpose_en": "Define the public-only scope, update method, security boundary, and Consensus status.",
+      "evidence_refs": [
+        "config/research-web-security-policy.json",
+        "knowledge/public/audits/roadmap-source-triage.json"
+      ]
+    },
+    {
+      "chapter_id": "CH-02",
+      "title_ja": "HPCIシステムの現況と更新制約",
+      "title_en": "Current HPCI systems and refresh constraints",
+      "purpose_ja": "27システムの構成、将来時期、運用実績、施設根拠の有無を比較します。",
+      "purpose_en": "Compare architecture, future timing, operating evidence, and facility evidence for 27 systems.",
+      "evidence_refs": [
+        "knowledge/public/hpci-system-inventory.json",
+        "RM-X-BLUEPRINT"
+      ]
+    },
+    {
+      "chapter_id": "CH-03",
+      "title_ja": "技術・供給・施設ロードマップ",
+      "title_en": "Technology, supply, and facility roadmaps",
+      "purpose_ja": "計算、メモリ、接続、ストレージ、施設、供給網を四半期単位で比較します。",
+      "purpose_en": "Compare compute, memory, interconnect, storage, facilities, and supply at quarterly granularity.",
+      "evidence_refs": [
+        "knowledge/public/roadmaps",
+        "knowledge/public/dependencies/p0-roadmap-dependencies.json"
+      ]
+    },
+    {
+      "chapter_id": "CH-04",
+      "title_ja": "システムソフトウェアと運用準備",
+      "title_en": "System software and operational readiness",
+      "purpose_ja": "移植性、ランタイム、ワークフロー、セキュリティ、可観測性の依存関係を示します。",
+      "purpose_en": "Describe dependencies across portability, runtimes, workflows, security, and observability.",
+      "evidence_refs": [
+        "RM-SSW-PORTABILITY",
+        "RM-SSW-RUNTIME",
+        "RM-SSW-WORKFLOW",
+        "RM-SSW-SECURITY",
+        "RM-SSW-PERFORMANCE"
+      ]
+    },
+    {
+      "chapter_id": "CH-05",
+      "title_ja": "アプリケーション需要と性能評価",
+      "title_en": "Application demand and performance evaluation",
+      "purpose_ja": "EEA1の再現可能性、測定範囲、定量要件、未承認の合否条件を分離します。",
+      "purpose_en": "Separate EEA1 reproducibility, measured ranges, quantitative requirements, and unapproved thresholds.",
+      "evidence_refs": [
+        "knowledge/public/application-performance-forecasts.json",
+        "RM-APP-WORKLOADS"
+      ]
+    },
+    {
+      "chapter_id": "CH-06",
+      "title_ja": "調達実績とライフサイクル費用",
+      "title_en": "Procurement evidence and lifecycle cost",
+      "purpose_ja": "13案件の公表総額、仕様書、費目範囲、5年費用の計算可否を示します。",
+      "purpose_en": "Show public totals, specifications, scope coverage, and five-year cost computability for 13 cases.",
+      "evidence_refs": [
+        "knowledge/public/procurement-cost-register.json",
+        "RM-X-PROCUREMENT"
+      ]
+    },
+    {
+      "chapter_id": "CH-07",
+      "title_ja": "複数のシステム整備計画案",
+      "title_en": "Multiple system planning options",
+      "purpose_ja": "同じ11評価軸と依存関係で3案を比較し、予算・数量・採否は人の判断として残します。",
+      "purpose_en": "Compare three options using the same eleven criteria and dependencies while leaving budget, quantity, and adoption to accountable humans.",
+      "evidence_refs": [
+        "knowledge/public/planning-evidence-readiness.json",
+        "roadmaps/scenarios/accepted"
+      ]
+    },
+    {
+      "chapter_id": "CH-08",
+      "title_ja": "未確認事項、検証計画、来歴",
+      "title_en": "Coverage gaps, validation plan, and provenance",
+      "purpose_ja": "不足根拠、責任者、次の測定・調査、Consensus Gate、更新履歴を示します。",
+      "purpose_en": "Record missing evidence, owners, next measurements and research, the Consensus Gate, and change history.",
+      "evidence_refs": [
+        "knowledge/public/audits/roadmap-gap-queue.json",
+        "reviews/consensus-packages",
+        "reviews/directives/DIR-900104.json"
+      ]
+    }
+  ],
+  "caveat_ja": "単一のAIモデル・単一エージェントによる公開情報ベースの暫定整理です。独立したAIモデルによるConsensus Gate、各責任者による要件・閾値・予算・調達判断は未完了です。充足数は調査範囲であり、案の点数や推奨順位を示すものではありません。",
+  "caveat_en": "A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
+    "human_approval_directive_id": "DIR-900104"
+  }
+}
