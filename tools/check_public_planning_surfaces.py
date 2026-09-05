@@ -437,11 +437,12 @@ def validate_inventory_links(inventory: dict, register: dict, roadmaps: list[dic
             if (ref["roadmap_id"], ref["milestone_id"]) not in milestones:
                 errors.append(f"{system['system_id']} links unknown lifecycle milestone: {ref}")
     source_ids = {source["source_id"] for source in inventory["sources"]}
+    demand_ids = [item["observation_id"] for item in inventory["resource_demand_observations"]]
     observation_ids = [item["observation_id"] for item in inventory["operational_observations"]]
     product_ids = [item["product_id"] for item in inventory["operational_data_products"]]
-    if duplicates := duplicate_values(observation_ids + product_ids):
-        errors.append(f"duplicate HPCI operational evidence IDs: {duplicates}")
-    for item in [*inventory["operational_observations"], *inventory["operational_data_products"]]:
+    if duplicates := duplicate_values(demand_ids + observation_ids + product_ids):
+        errors.append(f"duplicate HPCI demand or operational evidence IDs: {duplicates}")
+    for item in [*inventory["resource_demand_observations"], *inventory["operational_observations"], *inventory["operational_data_products"]]:
         item_id = item.get("observation_id", item.get("product_id"))
         if unknown := set(item["system_ids"]) - systems:
             errors.append(f"{item_id} links unknown HPCI systems: {sorted(unknown)}")
@@ -1332,7 +1333,12 @@ def validate(root: Path = ROOT) -> list[str]:
                 ),
             },
             "operations": {
-                key: len(value) for key, value in observations_by_metric.items()
+                **{key: len(value) for key, value in observations_by_metric.items()},
+                "call-demand": len({
+                    system_id
+                    for item in inventory["resource_demand_observations"]
+                    for system_id in item["system_ids"]
+                }),
             },
             "five-year-cost": {
                 "complete-tco": sum(

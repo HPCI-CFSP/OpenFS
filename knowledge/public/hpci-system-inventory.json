@@ -1,8 +1,8 @@
 {
-  "schema_version": "0.3.0",
+  "schema_version": "0.4.0",
   "export_id": "HPCI-SYSTEM-INVENTORY-001",
   "status": "published",
-  "as_of": "2026-09-05",
+  "as_of": "2026-09-06",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "scope_ja": "HPCIの令和8年度課題募集で公開された計算資源を、提供機関、アーキテクチャ、主要仕様、申請・利用対象期間の観点から比較する公開情報台帳です。",
@@ -167,6 +167,20 @@
       "publisher": "RIKEN Center for Computational Science",
       "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/1/",
       "source_class": "provider-official"
+    },
+    {
+      "source_id": "SRC-HPCI-SYS023",
+      "title": "HPCI 主要統計情報等：HPCI共用計算機資源ごとの採択率の推移",
+      "publisher": "HPCI",
+      "url": "https://www.hpci-office.jp/about_hpci/statistics",
+      "source_class": "government-official"
+    },
+    {
+      "source_id": "SRC-HPCI-SYS024",
+      "title": "スーパーコンピュータ玄界の利用状況分析",
+      "publisher": "大学ICT推進協議会 / 九州大学情報基盤研究開発センター",
+      "url": "https://www.jstage.jst.go.jp/article/axies/2025/0/2025_676/_pdf/-char/en",
+      "source_class": "academic-primary"
     }
   ],
   "systems": [
@@ -1590,12 +1604,12 @@
     {
       "gap_id": "GAP-HPCI-SYS-002",
       "priority": "P0",
-      "scope_ja": "12システムに何らかの公開運用情報を登録したが、指標別では利用率5、電力1、可用性・停止5、ジョブ件数・履歴6システムにとどまる",
-      "scope_en": "Some public operational evidence is registered for 12 systems, but metric-specific coverage is limited to utilization for 5, power for 1, availability or downtime for 5, and job counts or histories for 6 systems",
+      "scope_ja": "14システムに何らかの公開運用情報を登録したが、指標別では利用率6、電力1、可用性・停止5、ジョブ件数・履歴6システムにとどまる",
+      "scope_en": "Some public operational evidence is registered for 14 systems, but metric-specific coverage is limited to utilization for 6, power for 1, availability or downtime for 5, and job counts or histories for 6 systems",
       "impact_ja": "公称仕様と申請可能量だけでは整備の優先順位を決められない。",
       "impact_en": "Nominal specifications and publicly requestable capacity are insufficient to determine investment priorities.",
-      "next_action_ja": "残る15システムを追加し、運用期間、分母、保守除外、電力境界を共通化します。画像しかない値は推測せず、機械可読データの取得課題として残します。",
-      "next_action_en": "Add the remaining 15 systems and align periods, denominators, maintenance exclusions, and power boundaries. Keep chart-only values as machine-readable-data gaps rather than inferring numbers.",
+      "next_action_ja": "残る13システムを追加し、運用期間、分母、保守除外、電力境界を共通化します。画像しかない値は推測せず、機械可読データの取得課題として残します。",
+      "next_action_en": "Add the remaining 13 systems and align periods, denominators, maintenance exclusions, and power boundaries. Keep chart-only values as machine-readable-data gaps rather than inferring numbers.",
       "status": "open"
     },
     {
@@ -1607,6 +1621,17 @@
       "impact_en": "ABCI 3.0 node, memory, network, and storage configuration is now documented, but national AI-resource comparison still lacks aligned allocation conditions and capacity definitions.",
       "next_action_ja": "HPCIおよび各提供機関の公式ページを継続的に確認し、実提供量と定義をそろえた比較項目を追加する。",
       "next_action_en": "Continue monitoring official HPCI and provider pages, then add comparison fields with aligned allocation quantities and definitions.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-HPCI-SYS-004",
+      "priority": "P1",
+      "scope_ja": "令和8年度定期募集の資源需要は25システム分を登録したが、「富岳」とABCI 3.0は同じ資源別表に含まれず、通常運用の利用率とも直接比較できない",
+      "scope_en": "FY2026 regular-call demand is registered for 25 systems, but Fugaku and ABCI 3.0 are absent from the same resource table and the results are not directly comparable with operational utilization",
+      "impact_ja": "公募時の競争率だけでは、HPCI全体の潜在需要や増強優先度を一意に判断できません。",
+      "impact_en": "Call competition alone cannot determine total latent HPCI demand or a unique expansion priority.",
+      "next_action_ja": "富岳とABCIの対応する公募・配分統計を別定義のまま収集し、採択後利用量、待ち時間、ジョブ構成と組み合わせます。",
+      "next_action_en": "Collect corresponding Fugaku and ABCI call or allocation statistics under their own definitions, then combine them with post-award use, wait time and workload mix.",
       "status": "open"
     }
   ],
@@ -2127,6 +2152,94 @@
       "source_ids": [
         "SRC-HPCI-SYS022"
       ]
+    },
+    {
+      "observation_id": "OP-HPCI-TSUBAME4-UTILIZATION-202404",
+      "system_ids": [
+        "HPCI-SYS-TSUBAME4"
+      ],
+      "metric": "utilization",
+      "period_start": "2024-04-01",
+      "period_end": "2024-04-30",
+      "value": {
+        "kind": "exact",
+        "value": 47.06,
+        "lower": null,
+        "upper": null,
+        "unit": "% nodes"
+      },
+      "basis_ja": "月別ノード利用率。資料では、ノードの一部でも使用されていれば利用中として数えています。",
+      "basis_en": "Monthly node utilization. The source counts a node as in use when any partition of that node is active.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS011"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-TSUBAME4-UTILIZATION-202405",
+      "system_ids": [
+        "HPCI-SYS-TSUBAME4"
+      ],
+      "metric": "utilization",
+      "period_start": "2024-05-01",
+      "period_end": "2024-05-31",
+      "value": {
+        "kind": "exact",
+        "value": 87.22,
+        "lower": null,
+        "upper": null,
+        "unit": "% nodes"
+      },
+      "basis_ja": "月別ノード利用率。資料では、ノードの一部でも使用されていれば利用中として数えています。",
+      "basis_en": "Monthly node utilization. The source counts a node as in use when any partition of that node is active.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS011"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-TSUBAME4-UTILIZATION-202406",
+      "system_ids": [
+        "HPCI-SYS-TSUBAME4"
+      ],
+      "metric": "utilization",
+      "period_start": "2024-06-01",
+      "period_end": "2024-06-30",
+      "value": {
+        "kind": "exact",
+        "value": 95.31,
+        "lower": null,
+        "upper": null,
+        "unit": "% nodes"
+      },
+      "basis_ja": "月別ノード利用率。資料では、ノードの一部でも使用されていれば利用中として数えています。",
+      "basis_en": "Monthly node utilization. The source counts a node as in use when any partition of that node is active.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS011"
+      ]
+    },
+    {
+      "observation_id": "OP-HPCI-TSUBAME4-UTILIZATION-202407",
+      "system_ids": [
+        "HPCI-SYS-TSUBAME4"
+      ],
+      "metric": "utilization",
+      "period_start": "2024-07-01",
+      "period_end": "2024-07-31",
+      "value": {
+        "kind": "exact",
+        "value": 93.89,
+        "lower": null,
+        "upper": null,
+        "unit": "% nodes"
+      },
+      "basis_ja": "月別ノード利用率。資料では、ノードの一部でも使用されていれば利用中として数えています。",
+      "basis_en": "Monthly node utilization. The source counts a node as in use when any partition of that node is active.",
+      "comparability": "period-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS011"
+      ]
     }
   ],
   "operational_data_products": [
@@ -2224,6 +2337,473 @@
       "caveat_en": "No values were inferred from chart pixels. Series without machine-readable values are used only as evidence of reported trends.",
       "source_ids": [
         "SRC-HPCI-SYS022"
+      ]
+    },
+    {
+      "product_id": "OPDATA-HPCI-GENKAI-UTILIZATION-2024-2025",
+      "product_type": "published-chart",
+      "system_ids": [
+        "HPCI-SYS-GENKAI-A",
+        "HPCI-SYS-GENKAI-B"
+      ],
+      "period_start": "2024-10-01",
+      "period_end": "2025-07-31",
+      "record_count": null,
+      "fields": [
+        "monthly utilization",
+        "relative resource volume",
+        "research-field share"
+      ],
+      "scope_ja": "玄界A・B・Cについて、月別利用率、利用資源量の相対値、研究分野別割合を示した公表図です。",
+      "scope_en": "Published charts for Genkai A, B and C cover monthly utilization, relative resource volume and research-field shares.",
+      "caveat_ja": "公開図から数値を推測していません。OpenFSのHPCI台帳にない玄界Cは、この製品のsystem_idsには含めていません。",
+      "caveat_en": "No numeric values were inferred from chart pixels. Genkai C is omitted from system_ids because it is not in the current OpenFS HPCI inventory.",
+      "source_ids": [
+        "SRC-HPCI-SYS024"
+      ]
+    }
+  ],
+  "resource_demand_observations": [
+    {
+      "observation_id": "DEMAND-HPCI-GRAND-CHARIOT2-CPU-R8",
+      "system_ids": [
+        "HPCI-SYS-GRAND-CHARIOT2-CPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 6,
+      "requested_resource_ratio": 1.36,
+      "acceptance_rate_percent": 66.7,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-GRAND-CHARIOT2-GPU-R8",
+      "system_ids": [
+        "HPCI-SYS-GRAND-CHARIOT2-GPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 4,
+      "requested_resource_ratio": 1.1,
+      "acceptance_rate_percent": 75.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-AOBA-A-R8",
+      "system_ids": [
+        "HPCI-SYS-AOBA-A"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.05,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-AOBA-B-R8",
+      "system_ids": [
+        "HPCI-SYS-AOBA-B"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.25,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-AOBA-S-R8",
+      "system_ids": [
+        "HPCI-SYS-AOBA-S"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 5,
+      "requested_resource_ratio": 0.19,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-PEGASUS-R8",
+      "system_ids": [
+        "HPCI-SYS-PEGASUS"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 3,
+      "requested_resource_ratio": 0.51,
+      "acceptance_rate_percent": 66.7,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-SIRIUS-R8",
+      "system_ids": [
+        "HPCI-SYS-SIRIUS"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.02,
+      "acceptance_rate_percent": 0.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-MIYABI-G-R8",
+      "system_ids": [
+        "HPCI-SYS-MIYABI-G"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 19,
+      "requested_resource_ratio": 0.71,
+      "acceptance_rate_percent": 89.5,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-MIYABI-C-R8",
+      "system_ids": [
+        "HPCI-SYS-MIYABI-C"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.09,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-WISTERIA-AQUARIUS-R8",
+      "system_ids": [
+        "HPCI-SYS-WISTERIA-AQUARIUS"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 6,
+      "requested_resource_ratio": 1.09,
+      "acceptance_rate_percent": 83.3,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-WISTERIA-ODYSSEY-R8",
+      "system_ids": [
+        "HPCI-SYS-WISTERIA-ODYSSEY"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 10,
+      "requested_resource_ratio": 0.38,
+      "acceptance_rate_percent": 60.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-TSUBAME4-R8",
+      "system_ids": [
+        "HPCI-SYS-TSUBAME4"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 22,
+      "requested_resource_ratio": 1.78,
+      "acceptance_rate_percent": 63.6,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-FURO2-I-R8",
+      "system_ids": [
+        "HPCI-SYS-FURO2-I"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 0,
+      "requested_resource_ratio": 0.0,
+      "acceptance_rate_percent": 0.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-FURO2-II-R8",
+      "system_ids": [
+        "HPCI-SYS-FURO2-II"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.02,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-CAMPHOR3-A-R8",
+      "system_ids": [
+        "HPCI-SYS-CAMPHOR3-A"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 14,
+      "requested_resource_ratio": 1.25,
+      "acceptance_rate_percent": 71.4,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-SQUID-CPU-R8",
+      "system_ids": [
+        "HPCI-SYS-SQUID-CPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 26,
+      "requested_resource_ratio": 1.25,
+      "acceptance_rate_percent": 69.2,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-SQUID-GPU-R8",
+      "system_ids": [
+        "HPCI-SYS-SQUID-GPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 16,
+      "requested_resource_ratio": 2.57,
+      "acceptance_rate_percent": 37.5,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-SQUID-VE-R8",
+      "system_ids": [
+        "HPCI-SYS-SQUID-VE"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 3,
+      "requested_resource_ratio": 0.66,
+      "acceptance_rate_percent": 66.7,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-OCTOPUS-R8",
+      "system_ids": [
+        "HPCI-SYS-OCTOPUS-CPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 6,
+      "requested_resource_ratio": 1.57,
+      "acceptance_rate_percent": 50.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-GENKAI-A-R8",
+      "system_ids": [
+        "HPCI-SYS-GENKAI-A"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 11,
+      "requested_resource_ratio": 0.79,
+      "acceptance_rate_percent": 81.8,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-GENKAI-B-SHARED-R8",
+      "system_ids": [
+        "HPCI-SYS-GENKAI-B"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "shared",
+      "application_count": 4,
+      "requested_resource_ratio": 1.0,
+      "acceptance_rate_percent": 50.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "allocation-mode-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-GENKAI-B-NODE-FIXED-R8",
+      "system_ids": [
+        "HPCI-SYS-GENKAI-B"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "node-fixed",
+      "application_count": 0,
+      "requested_resource_ratio": 0.0,
+      "acceptance_rate_percent": 0.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "allocation-mode-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-ES4-VE-R8",
+      "system_ids": [
+        "HPCI-SYS-ES4-VE"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.06,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-ES4-CPU-R8",
+      "system_ids": [
+        "HPCI-SYS-ES4-CPU"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.16,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-ISM-LARGEMEM-R8",
+      "system_ids": [
+        "HPCI-SYS-ISM-LARGEMEM"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 1,
+      "requested_resource_ratio": 0.25,
+      "acceptance_rate_percent": 100.0,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
+      ]
+    },
+    {
+      "observation_id": "DEMAND-HPCI-HOKUSAI-BW2-R8",
+      "system_ids": [
+        "HPCI-SYS-HOKUSAI-BW2"
+      ],
+      "call_id": "R8",
+      "allocation_mode": "unspecified",
+      "application_count": 7,
+      "requested_resource_ratio": 0.52,
+      "acceptance_rate_percent": 57.1,
+      "basis_ja": "令和8年度定期募集の資源別集計です。応募数は同時利用等を含む資源単位の審査対象件数であり、要求資源倍率は提供可能資源量に対する要求資源量の割合です。",
+      "basis_en": "Resource-level FY2026 regular-call totals. Applications are counted per reviewed resource, including defined simultaneous-use cases; requested-resource ratio is requested resources divided by available resources.",
+      "comparability": "resource-specific",
+      "source_ids": [
+        "SRC-HPCI-SYS023"
       ]
     }
   ]

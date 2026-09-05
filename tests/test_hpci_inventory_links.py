@@ -116,12 +116,12 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             *self.inventory["operational_data_products"],
         ]
         systems_with_any = {system_id for item in evidence for system_id in item["system_ids"]}
-        self.assertEqual(12, len(systems_with_any))
+        self.assertEqual(14, len(systems_with_any))
 
         by_metric = {}
         for item in self.inventory["operational_observations"]:
             by_metric.setdefault(item["metric"], set()).update(item["system_ids"])
-        self.assertEqual(5, len(by_metric["utilization"]))
+        self.assertEqual(6, len(by_metric["utilization"]))
         self.assertEqual(1, len(by_metric["operating-power"] | by_metric.get("design-power", set())))
         availability_metrics = {
             "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"
@@ -160,6 +160,14 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         )
         self.assertEqual("published-table", squid_product["product_type"])
         self.assertEqual(3, len(squid_product["system_ids"]))
+
+        demand = self.inventory["resource_demand_observations"]
+        self.assertEqual(26, len(demand))
+        self.assertEqual(25, len({system_id for item in demand for system_id in item["system_ids"]}))
+        self.assertEqual({"R8"}, {item["call_id"] for item in demand})
+        squid_gpu = next(item for item in demand if item["observation_id"] == "DEMAND-HPCI-SQUID-GPU-R8")
+        self.assertEqual(2.57, squid_gpu["requested_resource_ratio"])
+        self.assertEqual(37.5, squid_gpu["acceptance_rate_percent"])
 
     def test_peak_scope_notes_need_bilingual_prose_and_registered_sources(self):
         system = next(s for s in self.inventory["systems"] if s["system_id"] == "HPCI-SYS-SIRIUS")
