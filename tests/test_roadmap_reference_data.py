@@ -392,6 +392,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-OSAKA-OCTOPUS-START-2025Q3",
                 "MS-BLUE-OSAKA-OCTOPUS-LEASE-END-2031Q3",
                 "MS-BLUE-KYUSHU-GENKAI-START-2024Q4",
+                "MS-BLUE-KYUSHU-GENKAI-LEASE-END-2030Q1",
                 "MS-BLUE-JAMSTEC-ES4-START-2021Q2",
                 "MS-BLUE-JAMSTEC-ES4-END-2027Q1",
                 "MS-BLUE-JCAHPC-MIYABI-START-2025Q1",
