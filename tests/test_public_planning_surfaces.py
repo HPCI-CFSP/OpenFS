@@ -174,8 +174,8 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             [item["dimension_id"] for item in payload["dimensions"]],
         )
         dimensions = {item["dimension_id"]: item for item in payload["dimensions"]}
-        self.assertEqual(9, dimensions["system-lifecycle"]["coverage"]["numerator"])
-        self.assertEqual(21, dimensions["operations"]["coverage"]["numerator"])
+        self.assertEqual(12, dimensions["system-lifecycle"]["coverage"]["numerator"])
+        self.assertEqual(25, dimensions["operations"]["coverage"]["numerator"])
         self.assertEqual(
             {"observed-start": 25, "any-lifecycle": 27},
             {

@@ -109,7 +109,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
                     future.add(system["system_id"])
         self.assertEqual(25, len(observed))
         self.assertEqual(27, len(any_lifecycle))
-        self.assertEqual(9, len(future))
+        self.assertEqual(12, len(future))
 
         quantitative_systems = {
             system_id
@@ -137,8 +137,8 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             for system_id in item["system_ids"]
         }
         self.assertEqual(14, len(quantitative_systems))
-        self.assertEqual(21, len(public_operational_systems))
-        self.assertEqual(24, len(registered_operational_systems))
+        self.assertEqual(25, len(public_operational_systems))
+        self.assertEqual(25, len(registered_operational_systems))
 
         by_metric = {}
         for item in self.inventory["operational_observations"]:
