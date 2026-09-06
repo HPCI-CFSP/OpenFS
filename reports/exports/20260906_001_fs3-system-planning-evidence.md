@@ -141,7 +141,7 @@ flowchart LR
 |---|---|---|---|---|
 | CH-01 目的・対象・方法と情報境界 | 注記付きで記載可能 | 公開情報のみを扱う調査・公開境界と、未完了のConsensus状態を説明できます。 | production-security-profile, owner-control-attestations | OpenFS管理者 |
 | CH-02 HPCIシステムの現況と更新制約 | 根拠不足 | HPCI 27システムの公開仕様と確認済みの運用・施設根拠を、定義の違いを明記して比較できます。 | system-future-timing, comparable-utilization-and-power | HPCI提供機関・計画担当 |
-| CH-03 技術・供給・施設ロードマップ | 注記付きで記載可能 | 公開一次情報に基づく技術・供給・施設の時系列と、依存関係およびCoverage Gapを提示できます。 | roadmap-consensus, undated-milestones | 技術・施設分野の責任者 |
+| CH-03 技術・供給・施設ロードマップ | 注記付きで記載可能 | 公開一次情報に基づく技術・供給・施設の時系列と、依存関係および未確認事項を提示できます。 | roadmap-consensus, undated-milestones | 技術・施設分野の責任者 |
 | CH-04 システムソフトウェアと運用準備 | 注記付きで記載可能 | 移植性、ランタイム、ワークフロー、セキュリティ、可観測性の公開ロードマップを比較できます。 | software-portability-measurements, operations-acceptance-thresholds | システムソフトウェア・運用責任者 |
 | CH-05 アプリケーション需要と性能評価 | 根拠不足 | EEA1の公開実測範囲、版固定状況、公開プロキシ、不足成果物を区別して提示できます。 | eea1-matched-inputs, independent-performance-validation, approved-thresholds | アプリケーション・測定責任者 |
 | CH-06 調達実績とライフサイクル費用 | 根拠不足 | 公開された契約・落札総額、概算年額、仕様書、60か月費用下限を区別して提示できます。 | component-itemization, complete-five-year-tco, scope-normalization | 調達・財務・施設責任者 |
