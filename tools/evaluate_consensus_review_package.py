@@ -184,11 +184,26 @@ def evaluate(
                 for track in roadmap.get("tracks", [])
                 for band in track.get("generation_bands", [])
             }
+            availability_requirements = {
+                availability["availability_id"]: {
+                    (
+                        source_id,
+                        source_registry[source_id]["url"],
+                        source_registry[source_id]["source_class"],
+                    )
+                    for source_id in availability["source_ids"]
+                    if source_registry[source_id]["source_class"] != "openfs-governance"
+                }
+                for lane in roadmap["lanes"]
+                for availability in lane.get("availability_events", [])
+                if availability["timing_basis"] != "no-public-date"
+            }
             expected = {
                 selector: options
                 for selector, options in {
                     **milestone_requirements,
                     **generation_band_requirements,
+                    **availability_requirements,
                 }.items()
                 if options
             }

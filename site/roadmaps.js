@@ -20,9 +20,10 @@
       trackNotesKicker: "項目別の注記", trackNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項", dependenciesKicker: "相互依存", dependenciesTitle: "他ロードマップとの依存関係", coverageGapsTitle: "未確認事項", gapImpact: "影響", gapNextAction: "次の確認",
       comparisonsKicker: "技術選択の比較", comparisonsTitle: "関連技術の比較表", comparisonsLead: "役割、利点、制約、適用先を共通の軸で比較します。", decisionUse: "判断への使い方", comparisonCaveat: "比較上の注意", glossaryKicker: "共通用語集", glossaryTitle: "このロードマップの用語", glossaryLead: "用語を選択すると、一元管理された説明と根拠資料を表示します。", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較の根拠", referenceRevision: "共通データ更新", timingWindow: "表示範囲", timingWindowNote: "表示範囲は公開情報の時期精度を表し、事象の継続期間ではありません。", quarterNotPublished: "四半期未公表",
       commercial: "製品・量産", sample: "サンプル", standard: "標準", published: "公開済み", target: "公表目標", concept: "構想・研究", pilot: "実証", decisionGate: "判断ゲート", deployment: "導入", undated: "時期未公表",
-      timingBasis: "時期の根拠", timingPrecision: "時期の精度", eventType: "事象の種別", quarterPrecision: "四半期", halfYearPrecision: "半期", yearPrecision: "年", undatedPrecision: "未公表", milestoneDetail: "マイルストーン詳細", generationBandDetail: "世代見通し詳細", publicSources: "公開根拠資料", directSources: "直接参照",
+      timingBasis: "時期の根拠", timingPrecision: "時期の精度", eventType: "事象の種別", quarterPrecision: "四半期", halfYearPrecision: "半期", yearPrecision: "年", undatedPrecision: "未公表", milestoneDetail: "マイルストーン詳細", generationBandDetail: "総合見通しの詳細", publicSources: "公開根拠資料", directSources: "直接参照",
       observed: "確認済み", asOfBaseline: "調査基準日現在の提供状況", standardRelease: "標準公開", vendorTarget: "ベンダー目標", projectTarget: "プロジェクト目標", policyTarget: "政策目標", openfsPlan: "OpenFS暫定計画", openfsSynthesis: "OpenFSによる統合整理", noPublicDate: "時期未公表",
       generationOutlook: "世代見通し（暫定）", generationPhase: "世代フェーズ", confidence: "確度", highConfidence: "高", mediumConfidence: "中", lowConfidence: "低", openEnded: "終了時期未確認", standardizationPhase: "標準化", introductionPhase: "導入", mainstreamPhase: "主流", transitionPhase: "移行", continuingPhase: "継続", generationWindowNote: "世代帯は、複数の公開情報を統合した時期の範囲です。世代間の重複を許容し、終了時期が未確認の矢印は、表示期間後も続く可能性を示します。",
+      overallOutlook: "総合見通し（暫定）", outlookBasis: "公開情報の統合整理", planningYear: "システム計画年", planningYearSummary: "計画年までの製品化開始", availabilityConfirmed: "製品化・量産を確認", availabilityTarget: "製品化・量産の公表目標", availabilityUndisclosed: "製品化・量産時期未公表", availabilityTimelineNote: "主線表には製品化、量産、商用提供に関する確認済み実績または公式目標だけを表示します。選択した計画年以前の製品化開始は、その年の調達可能性、供給量、価格、保守期間を保証しません。研究、標準化、試作、サンプル、実証の根拠は項目を選択すると確認できます。", availabilityDetail: "製品化・量産の詳細", availabilityStatus: "製品化状況", availabilityType: "提供形態", commercialAvailability: "商用提供", commercialShipment: "商用出荷", volumeProduction: "量産", commercialization: "実用化", lifecycleEvidence: "製品化までの公開根拠", noLifecycleEvidence: "この段階の公開根拠は未確認", lifecycleResearch: "1. 構想・研究", lifecycleStandardization: "2. 標準化作業", lifecycleStandardPublished: "3. 規格・仕様公開", lifecyclePrototype: "4. 試作・サンプル", lifecyclePilot: "5. 実証・評価", sourcePublished: "発表日",
       productEvent: "製品", standardEvent: "標準", researchEvent: "研究", policyEvent: "政策", evaluationEvent: "HPCI評価", adoptionEvent: "HPCI導入",
       provisional: "暫定", accepted: "受理済み", coverageMet: "設定した調査範囲を確認済み", consensusIncomplete: "合意判定未完了", profileIncomplete: "一次情報の継続確認が必要",
       sourceCoverage: "一次情報の登録比率", tracksUnit: "項目", milestonesUnit: "マイルストーン", gapsUnit: "未確認事項", keyMilestones: "重要なマイルストーン", selectedRoadmaps: "比較対象", dependencyMap: "依存関係一覧",
@@ -44,9 +45,10 @@
       trackNotesKicker: "TRACK NOTES", trackNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat", dependenciesKicker: "INTERDEPENDENCIES", dependenciesTitle: "Dependencies on other roadmaps", coverageGapsTitle: "Coverage gaps", gapImpact: "Impact", gapNextAction: "Next check",
       comparisonsKicker: "TECHNOLOGY CHOICES", comparisonsTitle: "Related technology comparisons", comparisonsLead: "Compare roles, strengths, constraints, and suitable uses on common dimensions.", decisionUse: "How to use this comparison", comparisonCaveat: "Comparison caveat", glossaryKicker: "SHARED GLOSSARY", glossaryTitle: "Terms in this roadmap", glossaryLead: "Select a term to open its centrally maintained explanation and supporting sources.", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Glossary and comparison sources", referenceRevision: "Shared data updated", timingWindow: "Displayed window", timingWindowNote: "The displayed window expresses public timing precision, not the duration of the event.", quarterNotPublished: "quarter not published",
       commercial: "product / volume", sample: "sample", standard: "standard", published: "published", target: "published target", concept: "concept / research", pilot: "pilot", decisionGate: "decision gate", deployment: "deployment", undated: "timing not public",
-      timingBasis: "Timing basis", timingPrecision: "Timing precision", eventType: "Event type", quarterPrecision: "quarter", halfYearPrecision: "half-year", yearPrecision: "year", undatedPrecision: "not public", milestoneDetail: "Milestone detail", generationBandDetail: "Generation outlook detail", publicSources: "Public supporting sources", directSources: "Direct sources",
+      timingBasis: "Timing basis", timingPrecision: "Timing precision", eventType: "Event type", quarterPrecision: "quarter", halfYearPrecision: "half-year", yearPrecision: "year", undatedPrecision: "not public", milestoneDetail: "Milestone detail", generationBandDetail: "Overall outlook detail", publicSources: "Public supporting sources", directSources: "Direct sources",
       observed: "observed", asOfBaseline: "availability as of baseline", standardRelease: "standard release", vendorTarget: "vendor target", projectTarget: "project target", policyTarget: "policy target", openfsPlan: "OpenFS provisional plan", openfsSynthesis: "OpenFS synthesis", noPublicDate: "no public date",
       generationOutlook: "Generation outlook (provisional)", generationPhase: "Generation phase", confidence: "Confidence", highConfidence: "high", mediumConfidence: "medium", lowConfidence: "low", openEnded: "end date not confirmed", standardizationPhase: "standardization", introductionPhase: "introduction", mainstreamPhase: "mainstream", transitionPhase: "transition", continuingPhase: "continuing", generationWindowNote: "A generation band synthesizes multiple public sources into a timing window. Generations may overlap, and an open-ended arrow means the generation may continue beyond the displayed horizon.",
+      overallOutlook: "Overall outlook (provisional)", outlookBasis: "Synthesis of public evidence", planningYear: "System planning year", planningYearSummary: "Productization starts by planning year", availabilityConfirmed: "Productization / volume confirmed", availabilityTarget: "Announced productization / volume target", availabilityUndisclosed: "Productization / volume timing not public", availabilityTimelineNote: "The main timeline shows only confirmed outcomes or official targets for productization, volume production, or commercial availability. A productization start before the selected planning year does not guarantee procurement availability, supply volume, price, or support in that year. Select an item to review research, standardization, prototype, sample, and pilot evidence.", availabilityDetail: "Productization and volume detail", availabilityStatus: "Availability status", availabilityType: "Availability type", commercialAvailability: "Commercial availability", commercialShipment: "Commercial shipment", volumeProduction: "Volume production", commercialization: "Commercialization", lifecycleEvidence: "Public evidence before productization", noLifecycleEvidence: "No public evidence confirmed for this stage", lifecycleResearch: "1. Concept and research", lifecycleStandardization: "2. Standardization work", lifecycleStandardPublished: "3. Standard or specification published", lifecyclePrototype: "4. Prototype or sample", lifecyclePilot: "5. Pilot or evaluation", sourcePublished: "Published",
       productEvent: "product", standardEvent: "standard", researchEvent: "research", policyEvent: "policy", evaluationEvent: "HPCI evaluation", adoptionEvent: "HPCI adoption",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared scope met", consensusIncomplete: "incomplete", profileIncomplete: "continued primary-source review required",
       sourceCoverage: "Primary-source registration ratio", tracksUnit: "tracks", milestonesUnit: "milestones", gapsUnit: "gaps", keyMilestones: "Key milestones", selectedRoadmaps: "Roadmaps to compare", dependencyMap: "Dependency list",
@@ -77,6 +79,9 @@
   const generationPhaseKeys = {standardization: "standardizationPhase", introduction: "introductionPhase", mainstream: "mainstreamPhase", transition: "transitionPhase", continuing: "continuingPhase"};
   const confidenceKeys = {high: "highConfidence", medium: "mediumConfidence", low: "lowConfidence"};
   const eventTypeKeys = {product: "productEvent", standard: "standardEvent", research: "researchEvent", policy: "policyEvent", "hpci-evaluation": "evaluationEvent", "hpci-adoption": "adoptionEvent"};
+  const availabilityStatusKeys = {confirmed: "availabilityConfirmed", "announced-target": "availabilityTarget", "timing-undisclosed": "availabilityUndisclosed"};
+  const availabilityTypeKeys = {"commercial-availability": "commercialAvailability", "commercial-shipment": "commercialShipment", "volume-production": "volumeProduction", commercialization: "commercialization"};
+  const lifecycleStageKeys = {research_concept: "lifecycleResearch", standardization: "lifecycleStandardization", standard_published: "lifecycleStandardPublished", prototype_sample: "lifecyclePrototype", pilot_validation: "lifecyclePilot"};
   const relationshipKeys = {requires: "requires", informs: "informs", constrains: "constrains", enables: "enables", "co-evolves": "coEvolves"};
   const readinessKeys = {"calibration-required": "calibrationRequired", "measurement-available": "measurementAvailable", "forecast-available": "forecastAvailable", "not-applicable": "notApplicable"};
   const demandLevelKeys = {high: "demandHigh", medium: "demandMedium", low: "demandLow", unknown: "demandUnknown"};
@@ -89,6 +94,8 @@
   let activeRoadmapGroup = "all";
   let activeRoadmapMilestoneId = null;
   let activeRoadmapGenerationBandId = null;
+  let activeRoadmapAvailabilityId = null;
+  let planningYear = 2030;
   let activeTermId = null;
   const selectedRoadmaps = new Set(data.roadmaps.map((item) => item.export_id));
 
@@ -120,7 +127,7 @@
   function currentRoadmap() { return data.roadmap_artifacts.find((item) => item.export_id === document.body.dataset.roadmapId); }
   function feedbackContext(roadmap, kind, id, title, relatedIds = [], queryId = id) {
     const page = data.roadmaps.find((item) => item.roadmap_id === roadmap.roadmap_id);
-    const query = ["track", "milestone", "generation", "term", "comparison"].includes(kind) ? `?${kind}=${encodeURIComponent(queryId)}` : "";
+    const query = ["track", "milestone", "generation", "availability", "term", "comparison"].includes(kind) ? `?${kind}=${encodeURIComponent(queryId)}` : "";
     return {kind, id, title, relatedIds: [roadmap.roadmap_id, ...relatedIds], path: `${page.path}${query}`};
   }
   function sourceMap(roadmap) { return new Map(roadmap.sources.map((source) => [source.source_id, source])); }
@@ -173,7 +180,7 @@
   }
 
   function appendSourceList(root, roadmap, sourceIds) {
-    const sources = sourceMap(roadmap); sourceIds.forEach((sourceId) => { const source = sources.get(sourceId); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); publisher.textContent = `${source.publisher} · ${sourceClassLabels[language][source.source_class] || source.source_class}`; item.append(link, publisher); root.append(item); });
+    const sources = sourceMap(roadmap); sourceIds.forEach((sourceId) => { const source = sources.get(sourceId); if (!source) return; const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const publisher = document.createElement("span"); const published = source.published_at ? ` · ${tr("sourcePublished")}: ${source.published_at}` : ""; publisher.textContent = `${source.publisher} · ${sourceClassLabels[language][source.source_class] || source.source_class}${published}`; item.append(link, publisher); root.append(item); });
   }
   function referenceData() { return data.roadmap_reference_data || {terms: [], comparison_sets: []}; }
   function termMap() { return new Map(referenceData().terms.map((term) => [term.term_id, term])); }
@@ -222,8 +229,51 @@
   function milestoneButton(milestone) {
     const button = document.createElement("button"); button.type = "button"; button.className = `roadmap-milestone maturity-${milestone.maturity} priority-${milestone.comparison_priority} precision-${milestone.timing_precision}`; button.setAttribute("aria-haspopup", "dialog"); button.setAttribute("aria-label", `${milestonePeriodLabel(milestone)}: ${localized(milestone, "label")}`); const period = document.createElement("span"); period.className = "roadmap-milestone-period"; period.textContent = milestonePeriodLabel(milestone); const label = document.createElement("span"); label.className = "roadmap-milestone-label"; label.textContent = localized(milestone, "label"); button.append(period, label); button.addEventListener("click", () => openRoadmapMilestone(milestone.milestone_id)); return button;
   }
-  function renderRoadmapLegend() {
-    const root = document.getElementById("roadmap-legend"); root.replaceChildren(); ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"].forEach((maturity) => { const item = document.createElement("span"); item.className = `legend-item maturity-${maturity}`; item.textContent = tr(maturityKeys[maturity]); root.append(item); });
+  function availabilityButton(event) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `roadmap-milestone availability-${event.availability_status} precision-${event.timing_precision}`;
+    if (event.year !== null && event.year > planningYear) button.classList.add("after-planning-year");
+    if (event.year === null) button.classList.add("timing-uncertain-for-planning");
+    button.setAttribute("aria-haspopup", "dialog");
+    button.setAttribute("aria-label", `${milestonePeriodLabel(event)}: ${localized(event, "label")}`);
+    const period = document.createElement("span"); period.className = "roadmap-milestone-period"; period.textContent = milestonePeriodLabel(event);
+    const label = document.createElement("span"); label.className = "roadmap-milestone-label"; label.textContent = localized(event, "label");
+    button.append(period, label);
+    button.addEventListener("click", () => openRoadmapAvailability(event.availability_id));
+    return button;
+  }
+  function renderRoadmapLegend(roadmap) {
+    const root = document.getElementById("roadmap-legend"); root.replaceChildren();
+    if (roadmap.timeline_presentation === "market-availability") {
+      ["confirmed", "announced-target", "timing-undisclosed"].forEach((status) => { const item = document.createElement("span"); item.className = `legend-item availability-${status}`; item.textContent = tr(availabilityStatusKeys[status]); root.append(item); });
+      return;
+    }
+    ["commercial", "sample", "standard", "published", "target", "concept", "pilot", "decision-gate", "deployment", "undated"].forEach((maturity) => { const item = document.createElement("span"); item.className = `legend-item maturity-${maturity}`; item.textContent = tr(maturityKeys[maturity]); root.append(item); });
+  }
+  function renderAvailabilityControl(roadmap) {
+    const root = document.getElementById("roadmap-availability-control");
+    if (!root) return;
+    const enabled = roadmap.timeline_presentation === "market-availability";
+    root.hidden = !enabled;
+    if (!enabled) { root.replaceChildren(); return; }
+    planningYear = Math.max(roadmap.horizon.start_year, Math.min(planningYear, roadmap.horizon.end_year));
+    const label = document.createElement("label");
+    const title = document.createElement("strong"); title.textContent = tr("planningYear");
+    const select = document.createElement("select"); select.id = "roadmap-planning-year-select";
+    for (let year = roadmap.horizon.start_year; year <= roadmap.horizon.end_year; year += 1) { const option = document.createElement("option"); option.value = String(year); option.textContent = String(year); option.selected = year === planningYear; select.append(option); }
+    select.addEventListener("change", () => { planningYear = Number(select.value); renderAvailabilityControl(roadmap); renderRoadmapTimeline(roadmap); });
+    label.append(title, select);
+    const events = roadmap.lanes.flatMap((lane) => lane.availability_events || []);
+    const before = events.filter((event) => event.year !== null && event.year <= planningYear);
+    const confirmed = before.filter((event) => event.availability_status === "confirmed").length;
+    const targets = before.filter((event) => event.availability_status === "announced-target").length;
+    const undisclosed = events.filter((event) => event.year === null).length;
+    const summary = document.createElement("div"); summary.className = "roadmap-availability-summary";
+    const count = document.createElement("strong"); count.textContent = `${tr("planningYearSummary")}: ${tr("availabilityConfirmed")} ${confirmed} / ${tr("availabilityTarget")} ${targets} / ${tr("availabilityUndisclosed")} ${undisclosed}`;
+    const note = document.createElement("p"); note.className = "roadmap-availability-note"; note.textContent = tr("availabilityTimelineNote");
+    summary.append(count, note); root.replaceChildren(label, summary);
+    setText("roadmap-table-note", tr("availabilityTimelineNote"));
   }
   function renderGroupFilter(roadmap) {
     const root = document.getElementById("roadmap-group-filter"); root.replaceChildren();
@@ -267,24 +317,60 @@
     const cell = document.createElement("th"); cell.scope = "rowgroup"; cell.rowSpan = rowSpan; cell.className = "roadmap-tech-column roadmap-technology-cell"; const name = document.createElement("strong"); appendGlossaryText(name, localized(track, "name"), roadmap); const group = document.createElement("span"); group.textContent = localized(roadmap.groups.find((item) => item.group_id === track.group), "name"); cell.append(name, group); return cell;
   }
   function renderRoadmapTimeline(roadmap) {
-    const root = document.getElementById("roadmap-timeline"); root.replaceChildren(); const tracks = roadmap.tracks.filter((track) => activeRoadmapGroup === "all" || track.group === activeRoadmapGroup); const years = []; for (let year = roadmap.horizon.start_year; year <= roadmap.horizon.end_year; year += 1) years.push(year);
-    const table = document.createElement("table"); table.className = "roadmap-table"; table.style.width = `${512 + years.length * 448}px`; table.style.minWidth = table.style.width; const colgroup = document.createElement("colgroup"); ["roadmap-tech-column", "roadmap-vendor-column", ...Array(years.length).fill("roadmap-year-column"), "roadmap-undated-column"].forEach((className) => { const col = document.createElement("col"); col.className = className; colgroup.append(col); });
-    const head = document.createElement("thead"); const yearRow = document.createElement("tr"); const trackHead = document.createElement("th"); trackHead.className = "roadmap-tech-column"; trackHead.textContent = tr("trackColumn"); const ownerHead = document.createElement("th"); ownerHead.className = "roadmap-vendor-column"; ownerHead.textContent = tr("ownerColumn"); yearRow.append(trackHead, ownerHead); years.forEach((year) => { const cell = document.createElement("th"); cell.className = "roadmap-year-heading"; const label = document.createElement("strong"); label.textContent = year; const quarters = document.createElement("span"); quarters.className = "roadmap-quarter-scale"; ["Q1", "Q2", "Q3", "Q4"].forEach((quarter) => { const item = document.createElement("span"); item.textContent = quarter; quarters.append(item); }); cell.append(label, quarters); yearRow.append(cell); }); const undated = document.createElement("th"); undated.className = "roadmap-year-heading roadmap-undated-heading"; undated.textContent = tr("undatedColumn"); yearRow.append(undated); head.append(yearRow);
-    const body = document.createElement("tbody"); tracks.forEach((track) => { const lanes = roadmap.lanes.filter((lane) => lane.track_id === track.track_id); const bands = track.generation_bands || []; if (bands.length > 0) { const row = document.createElement("tr"); row.className = "roadmap-generation-row"; row.append(roadmapTechnologyCell(roadmap, track, lanes.length + 1)); const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell roadmap-generation-owner"; const ownerName = document.createElement("strong"); ownerName.textContent = "OpenFS"; const scope = document.createElement("span"); scope.textContent = tr("generationOutlook"); owner.append(ownerName, scope); row.append(owner); const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-generation-cell"; const grid = document.createElement("div"); grid.className = "roadmap-generation-grid"; grid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`; grid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`); grid.style.setProperty("--year-width", `${100 / years.length}%`); placeGenerationBands(bands, roadmap).forEach(({band, start, end, row: gridRow}) => { const button = generationBandButton(band); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); grid.append(button); }); cell.append(grid); row.append(cell); const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell roadmap-generation-undated"; row.append(undatedCell); body.append(row); } lanes.forEach((lane, laneIndex) => { const row = document.createElement("tr"); if (laneIndex === 0 && bands.length === 0) row.append(roadmapTechnologyCell(roadmap, track, lanes.length));
-      const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell"; const ownerName = document.createElement("strong"); ownerName.textContent = localized(lane, "owner"); const scope = document.createElement("span"); scope.textContent = localized(lane, "scope"); owner.append(ownerName, scope); row.append(owner);
-      const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-milestone-cell";
-      const laneGrid = document.createElement("div"); laneGrid.className = "roadmap-milestone-grid";
-      laneGrid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`;
-      laneGrid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`);
-      laneGrid.style.setProperty("--year-width", `${100 / years.length}%`);
-      placeMilestones(lane.milestones.filter((milestone) => milestone.year !== null), roadmap).forEach(({milestone, start, end, row: gridRow}) => {
-        const button = milestoneButton(milestone); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); laneGrid.append(button);
+    const root = document.getElementById("roadmap-timeline");
+    root.replaceChildren();
+    const availabilityMode = roadmap.timeline_presentation === "market-availability";
+    const tracks = roadmap.tracks.filter((track) => activeRoadmapGroup === "all" || track.group === activeRoadmapGroup);
+    const years = [];
+    for (let year = roadmap.horizon.start_year; year <= roadmap.horizon.end_year; year += 1) years.push(year);
+    const table = document.createElement("table");
+    table.className = `roadmap-table${availabilityMode ? " roadmap-availability-table" : ""}`;
+    table.style.width = `${512 + years.length * 448}px`;
+    table.style.minWidth = table.style.width;
+    const colgroup = document.createElement("colgroup");
+    ["roadmap-tech-column", "roadmap-vendor-column", ...Array(years.length).fill("roadmap-year-column"), "roadmap-undated-column"].forEach((className) => { const col = document.createElement("col"); col.className = className; colgroup.append(col); });
+    const head = document.createElement("thead");
+    const yearRow = document.createElement("tr");
+    const trackHead = document.createElement("th"); trackHead.className = "roadmap-tech-column"; trackHead.textContent = tr("trackColumn");
+    const ownerHead = document.createElement("th"); ownerHead.className = "roadmap-vendor-column"; ownerHead.textContent = tr("ownerColumn");
+    yearRow.append(trackHead, ownerHead);
+    years.forEach((year) => { const cell = document.createElement("th"); cell.className = "roadmap-year-heading"; const label = document.createElement("strong"); label.textContent = year; const quarters = document.createElement("span"); quarters.className = "roadmap-quarter-scale"; ["Q1", "Q2", "Q3", "Q4"].forEach((quarter) => { const item = document.createElement("span"); item.textContent = quarter; quarters.append(item); }); cell.append(label, quarters); yearRow.append(cell); });
+    const undated = document.createElement("th"); undated.className = "roadmap-year-heading roadmap-undated-heading"; undated.textContent = tr("undatedColumn"); yearRow.append(undated); head.append(yearRow);
+    const body = document.createElement("tbody");
+    tracks.forEach((track) => {
+      const allLanes = roadmap.lanes.filter((lane) => lane.track_id === track.track_id);
+      const lanes = availabilityMode ? allLanes.filter((lane) => (lane.availability_events || []).length > 0) : allLanes;
+      const bands = track.generation_bands || [];
+      if (lanes.length === 0 && bands.length === 0) return;
+      if (bands.length > 0) {
+        const row = document.createElement("tr"); row.className = "roadmap-generation-row roadmap-track-start";
+        row.append(roadmapTechnologyCell(roadmap, track, lanes.length + 1));
+        const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell roadmap-generation-owner";
+        const ownerName = document.createElement("strong"); ownerName.textContent = tr("overallOutlook");
+        const scope = document.createElement("span"); scope.textContent = tr("outlookBasis"); owner.append(ownerName, scope); row.append(owner);
+        const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-generation-cell";
+        const grid = document.createElement("div"); grid.className = "roadmap-generation-grid"; grid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`; grid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`); grid.style.setProperty("--year-width", `${100 / years.length}%`);
+        placeGenerationBands(bands, roadmap).forEach(({band, start, end, row: gridRow}) => { const button = generationBandButton(band); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); grid.append(button); });
+        cell.append(grid); row.append(cell);
+        const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell roadmap-generation-undated"; row.append(undatedCell); body.append(row);
+      }
+      lanes.forEach((lane, laneIndex) => {
+        const row = document.createElement("tr");
+        if (laneIndex === 0 && bands.length === 0) { row.classList.add("roadmap-track-start"); row.append(roadmapTechnologyCell(roadmap, track, lanes.length)); }
+        const owner = document.createElement("th"); owner.scope = "row"; owner.className = "roadmap-vendor-column roadmap-vendor-cell";
+        const ownerName = document.createElement("strong"); ownerName.textContent = localized(lane, "owner");
+        const scope = document.createElement("span"); scope.textContent = localized(lane, "scope"); owner.append(ownerName, scope); row.append(owner);
+        const cell = document.createElement("td"); cell.colSpan = years.length; cell.className = "roadmap-milestone-cell";
+        const laneGrid = document.createElement("div"); laneGrid.className = "roadmap-milestone-grid"; laneGrid.style.gridTemplateColumns = `repeat(${years.length * 4}, minmax(0, 1fr))`; laneGrid.style.setProperty("--quarter-width", `${100 / (years.length * 4)}%`); laneGrid.style.setProperty("--year-width", `${100 / years.length}%`);
+        const items = availabilityMode ? lane.availability_events : lane.milestones;
+        placeMilestones(items.filter((item) => item.year !== null), roadmap).forEach(({milestone: item, start, end, row: gridRow}) => { const button = availabilityMode ? availabilityButton(item) : milestoneButton(item); button.style.gridColumn = `${start} / ${end}`; button.style.gridRow = String(gridRow); laneGrid.append(button); });
+        cell.append(laneGrid); row.append(cell);
+        const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell";
+        items.filter((item) => item.year === null).forEach((item) => undatedCell.append(availabilityMode ? availabilityButton(item) : milestoneButton(item)));
+        row.append(undatedCell); body.append(row);
       });
-      cell.append(laneGrid); row.append(cell);
-      const undatedCell = document.createElement("td"); undatedCell.className = "roadmap-undated-cell";
-      lane.milestones.filter((milestone) => milestone.year === null).forEach((milestone) => undatedCell.append(milestoneButton(milestone)));
-      row.append(undatedCell); body.append(row);
-    }); }); table.append(colgroup, head, body); root.append(table);
+    });
+    table.append(colgroup, head, body); root.append(table);
   }
   function renderTrackDetails(roadmap) {
     const root = document.getElementById("roadmap-track-details"); root.replaceChildren(); roadmap.tracks.filter((track) => activeRoadmapGroup === "all" || track.group === activeRoadmapGroup).forEach((track) => { const details = document.createElement("details"); details.className = "memory-technology-note"; details.id = `track-${track.track_id}`; const toggle = document.createElement("summary"); const name = document.createElement("strong"); appendGlossaryText(name, localized(track, "name"), roadmap); const summary = document.createElement("span"); appendGlossaryText(summary, localized(track, "summary"), roadmap); toggle.append(name, summary); const body = document.createElement("div"); body.className = "memory-technology-note-body"; const stateTitle = document.createElement("h4"); stateTitle.textContent = tr("currentState"); const state = document.createElement("p"); appendGlossaryText(state, localized(track, "current_state"), roadmap); const implicationTitle = document.createElement("h4"); implicationTitle.textContent = tr("hpciImplications"); const implication = document.createElement("p"); appendGlossaryText(implication, localized(track, "hpci_implications"), roadmap); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list memory-source-list"; appendSourceList(sources, roadmap, track.source_ids); body.append(stateTitle, state, implicationTitle, implication, sourcesTitle, sources); details.append(toggle, body); root.append(details); });
@@ -658,7 +744,7 @@
   }
   function renderRoadmapDetail() {
     const roadmap = currentRoadmap(); if (!roadmap) { document.querySelector("main").textContent = tr("noRoadmaps"); return; } document.title = `${localized(roadmap, "title")} | OpenFS`; setText("roadmap-breadcrumb-title", localized(roadmap, "title")); setText("roadmap-title", localized(roadmap, "title")); setText("roadmap-summary", localized(roadmap, "summary")); setText("roadmap-as-of", roadmap.as_of); setText("roadmap-horizon", `${roadmap.horizon.start_year}-${roadmap.horizon.end_year}`); setText("roadmap-research-status", statusLabel(roadmap.research_status)); setText("roadmap-coverage-status", statusLabel(roadmap.coverage_status)); setText("roadmap-consensus-status", statusLabel(roadmap.consensus_status)); setText("roadmap-caveat-text", localized(roadmap, "caveat")); setText("roadmap-artifact-id", roadmap.export_id); setText("roadmap-revision-updated", formatJst(roadmap.updated_at));
-    const updated = document.getElementById("roadmap-updated"); updated.href = roadmap.source_commit_url; updated.textContent = formatJst(roadmap.updated_at); const commit = document.getElementById("roadmap-source-commit"); commit.href = roadmap.source_commit_url; commit.textContent = roadmap.source_commit; setText("roadmap-source-coverage", `${roadmap.source_coverage.primary_source_count}/${roadmap.source_coverage.source_count} (${Math.round(roadmap.source_coverage.primary_source_ratio * 100)}%)`); renderRelatedTopics(roadmap); renderGroupFilter(roadmap); renderRoadmapLegend(); renderRoadmapTimeline(roadmap); renderHPCIInventory(roadmap); renderApplicationPerformance(roadmap); renderTechnologyComparisons(roadmap); renderTrackDetails(roadmap); renderGlossary(roadmap); renderDependencies(roadmap); renderCoverageGaps(roadmap);
+    const updated = document.getElementById("roadmap-updated"); updated.href = roadmap.source_commit_url; updated.textContent = formatJst(roadmap.updated_at); const commit = document.getElementById("roadmap-source-commit"); commit.href = roadmap.source_commit_url; commit.textContent = roadmap.source_commit; setText("roadmap-source-coverage", `${roadmap.source_coverage.primary_source_count}/${roadmap.source_coverage.source_count} (${Math.round(roadmap.source_coverage.primary_source_ratio * 100)}%)`); renderRelatedTopics(roadmap); renderGroupFilter(roadmap); renderRoadmapLegend(roadmap); renderAvailabilityControl(roadmap); renderRoadmapTimeline(roadmap); renderHPCIInventory(roadmap); renderApplicationPerformance(roadmap); renderTechnologyComparisons(roadmap); renderTrackDetails(roadmap); renderGlossary(roadmap); renderDependencies(roadmap); renderCoverageGaps(roadmap);
   }
   function renderRelatedTopics(roadmap) {
     window.OpenFSFeedback.mount("roadmap-feedback", feedbackContext(roadmap, "roadmap", roadmap.roadmap_id, localized(roadmap, "title")));
@@ -675,27 +761,78 @@
   }
   function findRoadmapMilestone(milestoneId) { const roadmap = currentRoadmap(); for (const lane of roadmap.lanes) { const milestone = lane.milestones.find((item) => item.milestone_id === milestoneId); if (milestone) return {roadmap, track: roadmap.tracks.find((item) => item.track_id === lane.track_id), lane, milestone}; } return null; }
   function findRoadmapGenerationBand(generationBandId) { const roadmap = currentRoadmap(); for (const track of roadmap.tracks) { const band = (track.generation_bands || []).find((item) => item.generation_band_id === generationBandId); if (band) return {roadmap, track, band}; } return null; }
+  function findRoadmapAvailability(availabilityId) { const roadmap = currentRoadmap(); for (const lane of roadmap.lanes) { const event = (lane.availability_events || []).find((item) => item.availability_id === availabilityId); if (event) return {roadmap, track: roadmap.tracks.find((item) => item.track_id === lane.track_id), lane, event}; } return null; }
   function appendMetaItem(root, label, value) { const item = document.createElement("div"); const term = document.createElement("dt"); term.textContent = label; const description = document.createElement("dd"); description.textContent = value; item.append(term, description); root.append(item); }
   function renderRoadmapDialog() {
+    if (activeRoadmapAvailabilityId) { renderRoadmapAvailabilityDialog(); return; }
     if (activeRoadmapGenerationBandId) { renderRoadmapGenerationBandDialog(); return; }
     if (!activeRoadmapMilestoneId) return; const match = findRoadmapMilestone(activeRoadmapMilestoneId); if (!match) return; const {roadmap, track, lane, milestone} = match; const period = milestonePeriodLabel(milestone); setText("roadmap-dialog-id", milestone.milestone_id); setText("roadmap-dialog-title", localized(milestone, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${localized(lane, "owner")} / ${period}`);
     const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-milestone-detail"; const status = document.createElement("span"); status.className = `summary-status maturity-${milestone.maturity}`; status.textContent = tr(maturityKeys[milestone.maturity]); const title = document.createElement("h3"); title.textContent = tr("milestoneDetail"); const detail = document.createElement("p"); appendGlossaryText(detail, localized(milestone, "detail"), roadmap); const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list"; appendMetaItem(meta, tr("trackColumn"), localized(track, "name")); appendMetaItem(meta, tr("ownerColumn"), `${localized(lane, "owner")} / ${localized(lane, "scope")}`); appendMetaItem(meta, tr("eventType"), tr(eventTypeKeys[milestone.event_type])); appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[milestone.timing_basis])); appendMetaItem(meta, tr("timingPrecision"), tr(timingPrecisionKeys[milestone.timing_precision])); appendMetaItem(meta, tr("timingWindow"), period); appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of); const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("timingWindowNote"); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, milestone.source_ids); section.append(status, title, detail, meta, timingNote, sourcesTitle, sources); root.append(section);
     root.prepend(window.OpenFSFeedback.link(feedbackContext(roadmap, "milestone", milestone.milestone_id, localized(milestone, "label"), [track.track_id, lane.lane_id])));
   }
+  function renderRoadmapAvailabilityDialog() {
+    const match = findRoadmapAvailability(activeRoadmapAvailabilityId);
+    if (!match) return;
+    const {roadmap, track, lane, event} = match;
+    const period = milestonePeriodLabel(event);
+    setText("roadmap-dialog-id", event.availability_id);
+    setText("roadmap-dialog-title", localized(event, "label"));
+    setText("roadmap-dialog-meta", `${localized(track, "name")} / ${localized(lane, "owner")} / ${period}`);
+    const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren();
+    const section = document.createElement("section"); section.className = "roadmap-milestone-detail roadmap-availability-detail";
+    const status = document.createElement("span"); status.className = `summary-status availability-${event.availability_status}`; status.textContent = tr(availabilityStatusKeys[event.availability_status]);
+    const title = document.createElement("h3"); title.textContent = tr("availabilityDetail");
+    const detail = document.createElement("p"); appendGlossaryText(detail, localized(event, "detail"), roadmap);
+    const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list";
+    appendMetaItem(meta, tr("trackColumn"), localized(track, "name"));
+    appendMetaItem(meta, tr("ownerColumn"), `${localized(lane, "owner")} / ${localized(lane, "scope")}`);
+    appendMetaItem(meta, tr("availabilityStatus"), tr(availabilityStatusKeys[event.availability_status]));
+    appendMetaItem(meta, tr("availabilityType"), tr(availabilityTypeKeys[event.availability_type]));
+    appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[event.timing_basis]));
+    appendMetaItem(meta, tr("timingPrecision"), tr(timingPrecisionKeys[event.timing_precision]));
+    appendMetaItem(meta, tr("timingWindow"), period);
+    appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of);
+    const lifecycleTitle = document.createElement("h4"); lifecycleTitle.textContent = tr("lifecycleEvidence");
+    const lifecycle = document.createElement("ol"); lifecycle.className = "roadmap-lifecycle-list";
+    Object.entries(lifecycleStageKeys).forEach(([stage, labelKey]) => {
+      const item = document.createElement("li");
+      const heading = document.createElement("strong"); heading.textContent = tr(labelKey);
+      const refs = event.lifecycle_evidence[stage];
+      if (refs.length === 0) {
+        const empty = document.createElement("span"); empty.textContent = tr("noLifecycleEvidence"); item.append(heading, empty);
+      } else {
+        const evidence = document.createElement("ul");
+        refs.forEach((milestoneId) => { const evidenceMatch = findRoadmapMilestone(milestoneId); if (!evidenceMatch) return; const entry = document.createElement("li"); const evidenceTitle = document.createElement("strong"); evidenceTitle.textContent = `${milestonePeriodLabel(evidenceMatch.milestone)} · ${localized(evidenceMatch.milestone, "label")}`; const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, evidenceMatch.milestone.source_ids); entry.append(evidenceTitle, sources); evidence.append(entry); });
+        item.append(heading, evidence);
+      }
+      lifecycle.append(item);
+    });
+    const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("availabilityTimelineNote");
+    const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources");
+    const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, event.source_ids);
+    section.append(status, title, detail, meta, lifecycleTitle, lifecycle, timingNote, sourcesTitle, sources); root.append(section);
+    root.prepend(window.OpenFSFeedback.link(feedbackContext(roadmap, "availability", event.availability_id, localized(event, "label"), [track.track_id, lane.lane_id])));
+  }
   function renderRoadmapGenerationBandDialog() {
-    const match = findRoadmapGenerationBand(activeRoadmapGenerationBandId); if (!match) return; const {roadmap, track, band} = match; const period = generationBandPeriodLabel(band); setText("roadmap-dialog-id", band.generation_band_id); setText("roadmap-dialog-title", localized(band, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${tr("generationOutlook")} / ${period}`); const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-milestone-detail roadmap-generation-detail"; const status = document.createElement("span"); status.className = "summary-status"; status.textContent = statusLabel(band.consensus_status); const title = document.createElement("h3"); title.textContent = tr("generationBandDetail"); const detail = document.createElement("p"); appendGlossaryText(detail, localized(band, "detail"), roadmap); const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list"; appendMetaItem(meta, tr("trackColumn"), localized(track, "name")); appendMetaItem(meta, tr("generationPhase"), tr(generationPhaseKeys[band.phase])); appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[band.timing_basis])); appendMetaItem(meta, tr("confidence"), tr(confidenceKeys[band.confidence])); appendMetaItem(meta, tr("timingWindow"), period); appendMetaItem(meta, tr("consensusStatus"), statusLabel(band.consensus_status)); appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of); const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("generationWindowNote"); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, band.source_ids); section.append(status, title, detail, meta, timingNote, sourcesTitle, sources); root.append(section);
+    const match = findRoadmapGenerationBand(activeRoadmapGenerationBandId); if (!match) return; const {roadmap, track, band} = match; const period = generationBandPeriodLabel(band); setText("roadmap-dialog-id", band.generation_band_id); setText("roadmap-dialog-title", localized(band, "label")); setText("roadmap-dialog-meta", `${localized(track, "name")} / ${tr("overallOutlook")} / ${period}`); const root = document.getElementById("roadmap-dialog-content"); root.replaceChildren(); const section = document.createElement("section"); section.className = "roadmap-milestone-detail roadmap-generation-detail"; const status = document.createElement("span"); status.className = "summary-status"; status.textContent = statusLabel(band.consensus_status); const title = document.createElement("h3"); title.textContent = tr("generationBandDetail"); const detail = document.createElement("p"); appendGlossaryText(detail, localized(band, "detail"), roadmap); const meta = document.createElement("dl"); meta.className = "research-meta roadmap-dialog-meta-list"; appendMetaItem(meta, tr("trackColumn"), localized(track, "name")); appendMetaItem(meta, tr("generationPhase"), tr(generationPhaseKeys[band.phase])); appendMetaItem(meta, tr("timingBasis"), tr(timingBasisKeys[band.timing_basis])); appendMetaItem(meta, tr("confidence"), tr(confidenceKeys[band.confidence])); appendMetaItem(meta, tr("timingWindow"), period); appendMetaItem(meta, tr("consensusStatus"), statusLabel(band.consensus_status)); appendMetaItem(meta, tr("researchAsOf"), roadmap.as_of); const timingNote = document.createElement("p"); timingNote.className = "roadmap-timing-note"; timingNote.textContent = tr("generationWindowNote"); const sourcesTitle = document.createElement("h4"); sourcesTitle.textContent = tr("publicSources"); const sources = document.createElement("ul"); sources.className = "source-list roadmap-dialog-source-list"; appendSourceList(sources, roadmap, band.source_ids); section.append(status, title, detail, meta, timingNote, sourcesTitle, sources); root.append(section);
     root.prepend(window.OpenFSFeedback.link(feedbackContext(roadmap, "generation", band.generation_band_id, localized(band, "label"), [track.track_id])));
   }
   function openRoadmapMilestone(milestoneId) {
     if (!findRoadmapMilestone(milestoneId)) return;
-    activeRoadmapGenerationBandId = null; activeRoadmapMilestoneId = milestoneId;
-    const url = new URL(window.location.href); url.searchParams.set("milestone", milestoneId); url.searchParams.delete("generation"); window.history.replaceState(null, "", url);
+    activeRoadmapGenerationBandId = null; activeRoadmapAvailabilityId = null; activeRoadmapMilestoneId = milestoneId;
+    const url = new URL(window.location.href); url.searchParams.set("milestone", milestoneId); url.searchParams.delete("generation"); url.searchParams.delete("availability"); window.history.replaceState(null, "", url);
+    renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
+  }
+  function openRoadmapAvailability(availabilityId) {
+    if (!findRoadmapAvailability(availabilityId)) return;
+    activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; activeRoadmapAvailabilityId = availabilityId;
+    const url = new URL(window.location.href); url.searchParams.set("availability", availabilityId); url.searchParams.delete("milestone"); url.searchParams.delete("generation"); window.history.replaceState(null, "", url);
     renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
   }
   function openRoadmapGenerationBand(generationBandId) {
     if (!findRoadmapGenerationBand(generationBandId)) return;
-    activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = generationBandId;
-    const url = new URL(window.location.href); url.searchParams.set("generation", generationBandId); url.searchParams.delete("milestone"); window.history.replaceState(null, "", url);
+    activeRoadmapMilestoneId = null; activeRoadmapAvailabilityId = null; activeRoadmapGenerationBandId = generationBandId;
+    const url = new URL(window.location.href); url.searchParams.set("generation", generationBandId); url.searchParams.delete("milestone"); url.searchParams.delete("availability"); window.history.replaceState(null, "", url);
     renderRoadmapDialog(); const dialog = document.getElementById("roadmap-dialog"); if (!dialog.open) dialog.showModal();
   }
   function appendReferenceSourceList(root, sourceRefs) {
@@ -725,7 +862,7 @@
   function render() { applyStaticCopy(); if (page === "roadmap-index") { renderRoadmapCategoryFilter(); renderRoadmapIndex(); } if (page === "roadmap-detail") { renderRoadmapDetail(); renderRoadmapDialog(); renderRoadmapTermDialog(); } if (page === "roadmap-compare") renderComparison(); }
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; rememberLanguage(language); render(); }));
   document.getElementById("roadmap-search")?.addEventListener("input", renderRoadmapIndex);
-  const dialog = document.getElementById("roadmap-dialog"); document.getElementById("roadmap-dialog-close")?.addEventListener("click", () => dialog.close()); dialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); dialog?.addEventListener("close", () => { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; const url = new URL(window.location.href); url.searchParams.delete("milestone"); url.searchParams.delete("generation"); window.history.replaceState(null, "", url); });
+  const dialog = document.getElementById("roadmap-dialog"); document.getElementById("roadmap-dialog-close")?.addEventListener("click", () => dialog.close()); dialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); dialog?.addEventListener("close", () => { activeRoadmapMilestoneId = null; activeRoadmapGenerationBandId = null; activeRoadmapAvailabilityId = null; const url = new URL(window.location.href); url.searchParams.delete("milestone"); url.searchParams.delete("generation"); url.searchParams.delete("availability"); window.history.replaceState(null, "", url); });
   const termDialog = document.getElementById("roadmap-term-dialog"); document.getElementById("roadmap-term-dialog-close")?.addEventListener("click", () => termDialog.close()); termDialog?.addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }); termDialog?.addEventListener("close", () => { activeTermId = null; const url = new URL(window.location.href); url.searchParams.delete("term"); window.history.replaceState(null, "", url); });
   render();
   if (page === "roadmap-detail") {
@@ -742,6 +879,8 @@
     if (!validTerm && milestoneId && findRoadmapMilestone(milestoneId)) openRoadmapMilestone(milestoneId);
     const generationId = params.get("generation");
     if (!validTerm && !activeRoadmapMilestoneId && generationId && findRoadmapGenerationBand(generationId)) openRoadmapGenerationBand(generationId);
+    const availabilityId = params.get("availability");
+    if (!validTerm && !activeRoadmapMilestoneId && !activeRoadmapGenerationBandId && availabilityId && findRoadmapAvailability(availabilityId)) openRoadmapAvailability(availabilityId);
     const systemId = window.location.hash.slice(1);
     if (data.hpci_system_inventory?.systems.some((system) => system.system_id === systemId)) {
       document.getElementById(systemId)?.scrollIntoView({block: "start"});

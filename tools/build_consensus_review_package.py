@@ -81,6 +81,7 @@ ARTIFACTS = [
     ("config/scenario-policy.json", "policy"),
     ("config/publication-policy.json", "policy"),
     ("config/publication-i18n.json", "policy"),
+    ("config/public-analytics.json", "policy"),
     ("config/acquisition-policy.json", "policy"),
     ("config/activation-policy.json", "policy"),
     ("config/agent-evaluation-policy.json", "policy"),
@@ -98,6 +99,8 @@ ARTIFACTS = [
     ("config/agent-registry.json", "registry"),
     ("config/role-permissions.json", "policy"),
     ("schemas/public-roadmap.schema.json", "schema"),
+    ("schemas/public-analytics.schema.json", "schema"),
+    ("schemas/roadmap-evidence-audit.schema.json", "schema"),
     ("schemas/roadmap-reference-data.schema.json", "schema"),
     ("schemas/public-hpci-system-inventory.schema.json", "schema"),
     ("schemas/public-application-performance-forecast.schema.json", "schema"),
@@ -143,6 +146,7 @@ ARTIFACTS = [
     ("schemas/source-receipt.schema.json", "schema"),
     ("schemas/issue-payload.schema.json", "schema"),
     ("tools/build_roadmap_freshness_audit.py", "tool"),
+    ("tools/build_roadmap_evidence_audit.py", "tool"),
     ("tools/build_roadmap_source_triage.py", "tool"),
     ("tools/build_roadmap_gap_queue.py", "tool"),
     ("tools/check_performance_model_card.py", "tool"),
@@ -206,12 +210,15 @@ ARTIFACTS = [
     ("docs/policies/language-and-terminology.md", "operations-guide"),
     ("docs/policies/research-web-access.md", "operations-guide"),
     ("docs/security/research-web-security-model.md", "operations-guide"),
+    ("docs/publication/analytics.md", "operations-guide"),
     ("site/planning.js", "presentation"),
     ("site/index.html", "presentation"),
     ("site/scenarios-index.html", "presentation"),
     ("site/scenario-detail.html", "presentation"),
     ("site/roadmap-evidence.html", "presentation"),
     ("site/styles.css", "presentation"),
+    ("site/analytics.js", "presentation"),
+    ("site/privacy.html", "presentation"),
     ("site/app.js", "presentation"),
     ("site/roadmaps.js", "presentation"),
     ("site/roadmap-detail.html", "presentation"),
@@ -220,6 +227,9 @@ ARTIFACTS = [
     ("site/fs3-report.html", "presentation"),
     ("site/fs3-report.js", "presentation"),
     ("tests/test_pages_site.py", "tool"),
+    ("tests/test_analytics_ui.py", "tool"),
+    ("tests/analytics_ui.test.cjs", "tool"),
+    ("tests/test_roadmap_assurance.py", "tool"),
     ("tests/test_pull_request_description.py", "tool"),
     ("tests/test_public_planning_surfaces.py", "tool"),
     ("tests/test_public_language.py", "tool"),
@@ -235,6 +245,7 @@ ARTIFACTS = [
     ("reviews/directives/DIR-900104.json", "directive"),
     ("reviews/directives/DIR-900105.json", "directive"),
     ("reviews/directives/DIR-900106.json", "directive"),
+    ("reviews/directives/DIR-900107.json", "directive"),
     ("reports/exports/20260906_001_fs3-system-planning-evidence.md", "planning-surface"),
     ("runs/RUN-OFS003-PILOT-005/center-profile-coverage.json", "run-audit"),
     ("runs/RUN-OFS003-PILOT-005/followup-effectiveness.json", "run-audit"),
@@ -289,6 +300,11 @@ def roadmap_unit(
         milestone
         for lane in roadmap["lanes"]
         for milestone in lane["milestones"]
+    ]
+    availability_events = [
+        availability
+        for lane in roadmap["lanes"]
+        for availability in lane.get("availability_events", [])
     ]
     sources = {source["source_id"]: source for source in roadmap["sources"]}
     generation_bands = [
@@ -382,6 +398,25 @@ def roadmap_unit(
                     "source_options": source_options,
                 }
             )
+    for availability in availability_events:
+        if availability["timing_basis"] == "no-public-date":
+            continue
+        source_options = [
+            {
+                "source_id": source_id,
+                "source_url": sources[source_id]["url"],
+                "source_class": sources[source_id]["source_class"],
+            }
+            for source_id in availability["source_ids"]
+            if sources[source_id]["source_class"] != "openfs-governance"
+        ]
+        if source_options:
+            primary_source_requirements.append(
+                {
+                    "selector": availability["availability_id"],
+                    "source_options": source_options,
+                }
+            )
     supplement_selectors: list[str] = []
     for supplement in supplements:
         supplement_id = supplement.get("export_id") or supplement.get("artifact_id")
@@ -433,6 +468,7 @@ def roadmap_unit(
             roadmap["roadmap_id"],
             *[track["track_id"] for track in roadmap["tracks"]],
             *[band["generation_band_id"] for band in generation_bands],
+            *[availability["availability_id"] for availability in availability_events],
             *[milestone["milestone_id"] for milestone in milestones],
             *[gap["gap_id"] for gap in roadmap["coverage_gaps"]],
             *supplement_selectors,
@@ -447,6 +483,7 @@ def roadmap_unit(
             "四半期を直接支えない資料からQ1-Q4を推定していないか。",
             "重要な反例、競合候補、製品中止、時期変更が未確認事項から漏れていないか。",
             "世代帯が単一ベンダー予測を業界合意として扱ったり、重複期間を消したりしていないか。",
+            "製品化・量産、サンプル出荷、規格公開、研究実証が主線表で混同されていないか。",
             "HPCI年度課題募集の提供期間をシステム運用期間と混同せず、校正・独立検証前の数値性能予測を掲載していないか。",
         ],
         "falsification_prompts_en": [
@@ -454,6 +491,7 @@ def roadmap_unit(
             "Is any quarter inferred from a source that supports only a year or wider interval?",
             "Are material counterexamples, alternatives, cancellations, or schedule changes missing from Coverage Gaps?",
             "Does any generation band turn a single-vendor projection into industry consensus or erase overlapping generations?",
+            "Does the primary timeline keep market availability distinct from samples, standards publication, and research demonstrations?",
             "Are annual HPCI call windows kept distinct from service-lifecycle dates, and are numerical performance forecasts withheld until calibration and independent validation exist?",
         ],
     }
@@ -620,12 +658,12 @@ def shared_units() -> list[dict[str, Any]]:
             "kind": "publication-assurance",
             "title_ja": "公開境界・来歴・表示",
             "title_en": "Publication boundary, provenance, and presentation",
-            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "reviews/directives/DIR-900009.json", "reviews/directives/DIR-900012.json", "reviews/directives/DIR-900103.json", "reviews/directives/DIR-900104.json", "reviews/directives/DIR-900105.json", "reviews/directives/DIR-900106.json", "config/consensus-policy.json", "config/publication-policy.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/hpci-system-inventory.json", "knowledge/public/application-performance-forecasts.json", "knowledge/public/procurement-cost-register.json", "knowledge/public/planning-evidence-readiness.json", "knowledge/public/fs3-decision-evidence.json", "reports/exports/20260906_001_fs3-system-planning-evidence.md", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/public-hpci-system-inventory.schema.json", "schemas/public-application-performance-forecast.schema.json", "schemas/procurement-cost-register.schema.json", "schemas/planning-evidence-readiness.schema.json", "schemas/fs3-decision-evidence.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/check_public_planning_surfaces.py", "tools/check_procurement_costs.py", "tools/build_fs3_decision_evidence.py", "tools/build_remaining_roadmap_wave.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/pull_request_template.md", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "AGENTS.md", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "docs/policies/research-principles.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/fs3-report.html", "site/fs3-report.js", "site/styles.css"],
-            "selectors": ["DIR-900006", "DIR-900009", "DIR-900012", "DIR-900103", "DIR-900104", "DIR-900105", "DIR-900106", "HPCI-SYSTEM-INVENTORY-001", "APP-PERFORMANCE-FORECAST-001", "PROCUREMENT-COST-001", "PLANNING-EVIDENCE-READINESS-001", "FS3-DECISION-EVIDENCE-001", "claim_readiness", "planning_requirement_matrix", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version"],
+            "artifact_paths": ["reviews/directives/DIR-900006.json", "reviews/directives/DIR-900008.json", "reviews/directives/DIR-900009.json", "reviews/directives/DIR-900012.json", "reviews/directives/DIR-900103.json", "reviews/directives/DIR-900104.json", "reviews/directives/DIR-900105.json", "reviews/directives/DIR-900106.json", "reviews/directives/DIR-900107.json", "config/consensus-policy.json", "config/publication-policy.json", "config/public-analytics.json", "config/source-registry.json", "config/roadmap-gap-query-overrides.json", "config/roadmap-source-retrieval-reviews.json", "config/monitors/MON-MEMORY-001.json", "config/monitors/MON-GLOBAL-TECH-001.json", "config/monitors/MON-HPCI-CENTERS-001.json", "config/monitors/MON-FS-BASELINE-001.json", "knowledge/public/roadmap-reference-data.json", "knowledge/public/hpci-system-inventory.json", "knowledge/public/application-performance-forecasts.json", "knowledge/public/procurement-cost-register.json", "knowledge/public/planning-evidence-readiness.json", "knowledge/public/fs3-decision-evidence.json", "reports/exports/20260906_001_fs3-system-planning-evidence.md", "knowledge/public/audits/roadmap-source-audit.json", "knowledge/public/audits/roadmap-source-triage.json", "knowledge/public/audits/roadmap-evidence-audit.json", "knowledge/public/audits/roadmap-freshness-audit.json", "knowledge/public/audits/roadmap-gap-queue.json", "schemas/consensus-review-package.schema.json", "schemas/consensus-package-review.schema.json", "schemas/consensus-package-gate-result.schema.json", "schemas/public-analytics.schema.json", "schemas/roadmap-reference-data.schema.json", "schemas/public-hpci-system-inventory.schema.json", "schemas/public-application-performance-forecast.schema.json", "schemas/procurement-cost-register.schema.json", "schemas/planning-evidence-readiness.schema.json", "schemas/fs3-decision-evidence.schema.json", "schemas/roadmap-source-retrieval-reviews.schema.json", "schemas/roadmap-source-triage.schema.json", "schemas/roadmap-freshness-audit.schema.json", "schemas/roadmap-gap-queue.schema.json", "schemas/roadmap-gap-query-overrides.schema.json", "schemas/run.schema.json", "schemas/weekly-cycle.schema.json", "schemas/work-item.schema.json", "schemas/source-receipt.schema.json", "schemas/issue-payload.schema.json", "tools/build_roadmap_source_triage.py", "tools/build_roadmap_freshness_audit.py", "tools/build_roadmap_gap_queue.py", "tools/check_public_planning_surfaces.py", "tools/check_procurement_costs.py", "tools/build_fs3_decision_evidence.py", "tools/build_remaining_roadmap_wave.py", "tools/prepare_freshness_issue.py", "tools/run_controller.py", "tools/prepare_weekly_cycle.py", "tools/register_source.py", "tools/register_no_result.py", "tools/build_pages_site.py", "tools/build_consensus_review_package.py", "tools/evaluate_consensus_review_package.py", ".github/pull_request_template.md", ".github/workflows/weekly-review.yml", ".github/workflows/weekly-coordinator.yml", "AGENTS.md", "skills/source-discovery/SKILL.md", "skills/roadmap-planning/SKILL.md", "docs/operations/automation-setup.md", "docs/operations/provider-worker-protocol.md", "docs/policies/research-principles.md", "docs/publication/analytics.md", "site/planning.js", "site/roadmap-evidence.html", "site/roadmap-detail.html", "site/roadmaps.js", "site/fs3-report.html", "site/fs3-report.js", "site/styles.css", "site/analytics.js", "site/privacy.html"],
+            "selectors": ["DIR-900006", "DIR-900009", "DIR-900012", "DIR-900103", "DIR-900104", "DIR-900105", "DIR-900106", "DIR-900107", "HPCI-SYSTEM-INVENTORY-001", "APP-PERFORMANCE-FORECAST-001", "PROCUREMENT-COST-001", "PLANNING-EVIDENCE-READINESS-001", "FS3-DECISION-EVIDENCE-001", "claim_readiness", "planning_requirement_matrix", "consensus_status", "research_status", "publication", "ROADMAP-SOURCE-TRIAGE-001", "ROADMAP-GAP-QUEUE-001", "coverage_gap_refs", "assignment_contract_version", "PUBLIC-ANALYTICS-001", "analytics-consent"],
             "primary_source_requirements": [],
             "required_checks": ["publication-boundary", "scope-alignment", "source-identity", "temporal-validity", "review-protocol-integrity"],
-            "falsification_prompts_ja": ["未完了の合意判定を受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。", "未確認事項の割り当てから作業項目（Work Item）、情報源（Source）、該当情報なし（no-result）の記録まで、来歴が途切れていないか。", "本番運用の準備条件を満たす前に、本番検索を開始できないか。"],
-            "falsification_prompts_en": ["Could incomplete Consensus be read as accepted?", "Is URL reachability presented as claim correctness?", "Does any content exceed the approved public-information boundary?", "Is Gap provenance lost between assignment, Work Item, Source, and no-result records?", "Can production search start before production readiness?"],
+            "falsification_prompts_ja": ["未完了の合意判定を受理済みと読める表示がないか。", "URL到達性を主張の正しさとして表示していないか。", "公開承認範囲外の情報が含まれていないか。", "未確認事項の割り当てから作業項目（Work Item）、情報源（Source）、該当情報なし（no-result）の記録まで、来歴が途切れていないか。", "本番運用の準備条件を満たす前に、本番検索を開始できないか。", "アクセス解析が同意前または本番Pages以外で読み込まれたり、検索語、Feedback入力、URLのクエリやページ内位置を送信したりしないか。"],
+            "falsification_prompts_en": ["Could incomplete Consensus be read as accepted?", "Is URL reachability presented as claim correctness?", "Does any content exceed the approved public-information boundary?", "Is Gap provenance lost between assignment, Work Item, Source, and no-result records?", "Can production search start before production readiness?", "Can analytics load before consent or outside production Pages, or transmit search terms, Feedback text, URL queries, or fragments?"],
         },
     ]
 
@@ -647,6 +685,11 @@ def build_manifest(
         "roadmap_count": len(roadmaps),
         "milestone_count": sum(
             len(lane["milestones"])
+            for roadmap in roadmaps
+            for lane in roadmap["lanes"]
+        ),
+        "availability_event_count": sum(
+            len(lane.get("availability_events", []))
             for roadmap in roadmaps
             for lane in roadmap["lanes"]
         ),

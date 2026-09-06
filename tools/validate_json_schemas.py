@@ -50,6 +50,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "research-unit-update.schema.json"
     if ref == "config/budget-planning.json":
         return "budget-planning.schema.json"
+    if ref == "config/public-analytics.json":
+        return "public-analytics.schema.json"
     if ref == "knowledge/public/procurement-cost-register.json":
         return "procurement-cost-register.schema.json"
     if ref == "config/research-baseline.json":

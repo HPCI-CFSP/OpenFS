@@ -6,11 +6,11 @@
   "required": [
     "schema_version", "export_id", "status", "as_of", "review_scope",
     "consensus_status", "method_ja", "method_en", "summary", "entries",
-    "generation_band_entries",
+    "availability_entries", "generation_band_entries",
     "publication"
   ],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"const": "0.2.0"},
     "export_id": {"const": "ROADMAP-EVIDENCE-AUDIT-001"},
     "status": {"const": "published"},
     "as_of": {"type": "string", "format": "date"},
@@ -21,7 +21,9 @@
     "summary": {
       "type": "object",
       "required": [
-        "milestone_count", "generation_band_count", "classified_primary", "classified_forward_looking",
+        "milestone_count", "availability_event_count", "availability_confirmed",
+        "availability_announced_target", "availability_timing_undisclosed",
+        "generation_band_count", "classified_primary", "classified_forward_looking",
         "as_of_baseline", "coverage_gap", "openfs_provisional", "openfs_governance_event",
         "independently_verified", "pending_independent_review",
         "source_supported_quarter", "source_supported_half_year", "source_supported_quarter_range",
@@ -32,6 +34,10 @@
       ],
       "properties": {
         "milestone_count": {"type": "integer", "minimum": 1},
+        "availability_event_count": {"type": "integer", "minimum": 0},
+        "availability_confirmed": {"type": "integer", "minimum": 0},
+        "availability_announced_target": {"type": "integer", "minimum": 0},
+        "availability_timing_undisclosed": {"type": "integer", "minimum": 0},
         "generation_band_count": {"type": "integer", "minimum": 0},
         "classified_primary": {"type": "integer", "minimum": 0},
         "classified_forward_looking": {"type": "integer", "minimum": 0},
@@ -100,6 +106,54 @@
           "review_note_ja": {"type": "string", "minLength": 1},
           "review_note_en": {"type": "string", "minLength": 1}
           ,"semantic_verification": {"const": "pending-independent-review"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "availability_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "roadmap_id", "availability_id", "generation", "availability_status",
+          "availability_type", "review_status", "claim_support", "timing_status",
+          "source_ids", "lifecycle_evidence", "locator_hint_ja", "locator_hint_en",
+          "review_note_ja", "review_note_en", "semantic_verification"
+        ],
+        "properties": {
+          "roadmap_id": {"type": "string", "pattern": "^RM-[A-Z0-9-]+$"},
+          "availability_id": {"type": "string", "pattern": "^AV-[A-Z0-9-]+$"},
+          "generation": {"type": "string", "minLength": 1},
+          "availability_status": {"enum": ["confirmed", "announced-target", "timing-undisclosed"]},
+          "availability_type": {"enum": ["commercial-availability", "commercial-shipment", "volume-production", "commercialization"]},
+          "review_status": {
+            "enum": ["classified-primary-event", "classified-forward-looking", "as-of-baseline", "coverage-gap"]
+          },
+          "claim_support": {
+            "enum": ["official-primary-source-cited", "official-target-source-cited", "current-state-only", "absence-not-exhaustively-provable"]
+          },
+          "timing_status": {"enum": ["declared-event-timing", "declared-target-timing", "baseline-only", "unresolved"]},
+          "source_ids": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^SRC-[A-Z0-9-]+$"}
+          },
+          "lifecycle_evidence": {
+            "type": "object",
+            "required": ["research_concept", "standardization", "standard_published", "prototype_sample", "pilot_validation"],
+            "properties": {
+              "research_concept": {"$ref": "public-roadmap.schema.json#/$defs/milestoneIdList"},
+              "standardization": {"$ref": "public-roadmap.schema.json#/$defs/milestoneIdList"},
+              "standard_published": {"$ref": "public-roadmap.schema.json#/$defs/milestoneIdList"},
+              "prototype_sample": {"$ref": "public-roadmap.schema.json#/$defs/milestoneIdList"},
+              "pilot_validation": {"$ref": "public-roadmap.schema.json#/$defs/milestoneIdList"}
+            },
+            "additionalProperties": false
+          },
+          "locator_hint_ja": {"type": "string", "minLength": 1},
+          "locator_hint_en": {"type": "string", "minLength": 1},
+          "review_note_ja": {"type": "string", "minLength": 1},
+          "review_note_en": {"type": "string", "minLength": 1},
+          "semantic_verification": {"const": "pending-independent-review"}
         },
         "additionalProperties": false
       }

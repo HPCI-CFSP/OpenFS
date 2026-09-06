@@ -114,6 +114,22 @@ def render_template(path: Path, replacements: dict[str, str]) -> str:
     variables = {"ROOT_PREFIX": "", "HOME_HREF": replacements.get("ROOT_PREFIX") or "./", **replacements}
     for key, replacement in variables.items():
         value = value.replace(f"{{{{{key}}}}}", replacement)
+    analytics_path = path.parents[1] / "config" / "public-analytics.json"
+    if not analytics_path.is_file():
+        analytics_path = ROOT / "config" / "public-analytics.json"
+    analytics = load_json(analytics_path)
+    root_prefix = variables["ROOT_PREFIX"]
+    analytics_tag = (
+        f'<script src="{root_prefix}analytics.js?v={variables.get("ASSET_VERSION", "")}" '
+        f'data-status="{html.escape(analytics["status"], quote=True)}" '
+        f'data-measurement-id="{html.escape(analytics["measurement_id"], quote=True)}" '
+        f'data-production-hostname="{html.escape(analytics["production_hostname"], quote=True)}" '
+        f'data-production-path-prefix="{html.escape(analytics["production_path_prefix"], quote=True)}" '
+        f'data-storage-key="{html.escape(analytics["storage_key"], quote=True)}" '
+        f'data-privacy-path="{root_prefix}{html.escape(analytics["privacy_path"], quote=True)}" '
+        f'data-root-prefix="{root_prefix}"></script>'
+    )
+    value = value.replace("</body>", f"  {analytics_tag}\n</body>")
     return value
 
 
@@ -773,6 +789,10 @@ def collect_roadmaps(
                 window = milestone_quarter_window(milestone)
                 if window is not None:
                     latest_dated_year = max(latest_dated_year, window[1] // 4)
+            for availability in lane.get("availability_events", []):
+                window = milestone_quarter_window(availability)
+                if window is not None:
+                    latest_dated_year = max(latest_dated_year, window[1] // 4)
         if extension_policy == "fixed" and latest_dated_year > configured_end_year:
             raise ValueError(f"{label} has dated evidence outside its fixed horizon")
         end_year = (
@@ -805,7 +825,13 @@ def collect_roadmaps(
             for lane in projected["lanes"]
             for milestone in lane["milestones"]
         }
+        milestone_track = {
+            milestone["milestone_id"]: lane["track_id"]
+            for lane in projected["lanes"]
+            for milestone in lane["milestones"]
+        }
         milestone_ids: set[str] = set()
+        availability_ids: set[str] = set()
         for lane in projected["lanes"]:
             lane_id = lane["lane_id"]
             if lane_id in lane_ids:
@@ -838,6 +864,79 @@ def collect_roadmaps(
                 unknown_refs = set(milestone["dependency_refs"]) - allowed_refs
                 if unknown_refs:
                     raise ValueError(f"milestone {milestone_id} has unknown dependency references: {sorted(unknown_refs)}")
+            for availability in lane.get("availability_events", []):
+                availability_id = availability["availability_id"]
+                if availability_id in availability_ids:
+                    raise ValueError(f"duplicate roadmap availability event: {availability_id}")
+                availability_ids.add(availability_id)
+                unknown_sources = set(availability["source_ids"]) - known_sources
+                if unknown_sources:
+                    raise ValueError(
+                        f"availability event {availability_id} references unknown sources: "
+                        f"{sorted(unknown_sources)}"
+                    )
+                year = availability["year"]
+                window = milestone_quarter_window(availability)
+                if year is None:
+                    if availability["timing_basis"] != "no-public-date":
+                        raise ValueError(
+                            f"undated availability event {availability_id} has a dated timing basis"
+                        )
+                elif window[0] < start_year * 4 or window[1] >= (end_year + 1) * 4:
+                    raise ValueError(
+                        f"availability event {availability_id} is outside the horizon"
+                    )
+                if availability["availability_status"] == "announced-target" and availability["timing_basis"] not in {"vendor-target", "project-target"}:
+                    raise ValueError(
+                        f"availability target {availability_id} lacks an official target basis"
+                    )
+                expected_status_by_basis = {
+                    "observed": "confirmed",
+                    "as-of-baseline": "confirmed",
+                    "vendor-target": "announced-target",
+                    "project-target": "announced-target",
+                    "no-public-date": "timing-undisclosed",
+                }
+                if availability["availability_status"] != expected_status_by_basis[availability["timing_basis"]]:
+                    raise ValueError(
+                        f"availability event {availability_id} has inconsistent status and timing basis"
+                    )
+                lifecycle_refs = {
+                    milestone_id
+                    for stage_refs in availability["lifecycle_evidence"].values()
+                    for milestone_id in stage_refs
+                }
+                unknown_refs = lifecycle_refs - all_milestone_ids
+                if unknown_refs:
+                    raise ValueError(
+                        f"availability event {availability_id} references unknown lifecycle evidence: "
+                        f"{sorted(unknown_refs)}"
+                    )
+                cross_track_refs = {
+                    milestone_id
+                    for milestone_id in lifecycle_refs
+                    if milestone_track[milestone_id] != lane["track_id"]
+                }
+                if cross_track_refs:
+                    raise ValueError(
+                        f"availability event {availability_id} references lifecycle evidence from another track: "
+                        f"{sorted(cross_track_refs)}"
+                    )
+
+        if projected.get("timeline_presentation") == "market-availability":
+            tracks_without_availability = {
+                track_id
+                for track_id in known_tracks
+                if not any(
+                    lane["track_id"] == track_id and lane.get("availability_events")
+                    for lane in projected["lanes"]
+                )
+            }
+            if tracks_without_availability:
+                raise ValueError(
+                    f"{label} has market-availability tracks without availability events: "
+                    f"{sorted(tracks_without_availability)}"
+                )
 
         primary_source_count = sum(
             source["source_class"] != "openfs-governance"
@@ -1445,7 +1544,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js", "fs3-report.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js", "fs3-report.js", "analytics.js"):
         shutil.copy2(source / filename, output / filename)
     copy_brand_assets(root, output)
     data_dir = output / "data"
@@ -1477,6 +1576,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     feedback_index.write_text(
         render_template(
             source / "feedback.html",
+            {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    privacy_index = output / "privacy" / "index.html"
+    privacy_index.parent.mkdir(parents=True)
+    privacy_index.write_text(
+        render_template(
+            source / "privacy.html",
             {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
         ),
         encoding="utf-8",

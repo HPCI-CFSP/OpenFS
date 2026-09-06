@@ -127,6 +127,38 @@ def build_entry(
     }
 
 
+def build_availability_entry(
+    roadmap_id: str,
+    availability: dict[str, Any],
+) -> dict[str, Any]:
+    status, support, timing, note_ja, note_en = STATUS_BY_BASIS[
+        availability["timing_basis"]
+    ]
+    return {
+        "roadmap_id": roadmap_id,
+        "availability_id": availability["availability_id"],
+        "generation": availability["generation"],
+        "availability_status": availability["availability_status"],
+        "availability_type": availability["availability_type"],
+        "review_status": status,
+        "claim_support": support,
+        "timing_status": timing,
+        "source_ids": availability["source_ids"],
+        "lifecycle_evidence": availability["lifecycle_evidence"],
+        "locator_hint_ja": (
+            f"独立レビューでは、引用元で「{availability['label_ja']}」と"
+            f"製品化・量産時期「{timing_label(availability, 'ja')}」を照合する必要がある。"
+        ),
+        "locator_hint_en": (
+            f"Cross-check '{availability['label_en']}' and the market-availability timing "
+            f"'{timing_label(availability, 'en')}' in the cited source."
+        ),
+        "review_note_ja": note_ja,
+        "review_note_en": note_en,
+        "semantic_verification": "pending-independent-review",
+    }
+
+
 def generation_band_boundary_label(boundary: dict[str, Any]) -> str:
     if boundary["precision"] == "quarter":
         return f"{boundary['year']} {boundary['quarter']}"
@@ -184,6 +216,7 @@ def build_generation_band_entry(
 
 def build_audit(root: Path) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
+    availability_entries: list[dict[str, Any]] = []
     generation_band_entries: list[dict[str, Any]] = []
     timing_counts: Counter[str] = Counter()
     roadmaps = [
@@ -216,27 +249,41 @@ def build_audit(root: Path) -> dict[str, Any]:
                     timing_counts[f"openfs_governance_{milestone['timing_precision'].replace('-', '_')}"] += 1
                 else:
                     timing_counts[f"source_supported_{milestone['timing_precision'].replace('-', '_')}"] += 1
+            for availability in lane.get("availability_events", []):
+                availability_entries.append(
+                    build_availability_entry(roadmap["roadmap_id"], availability)
+                )
         for track in roadmap["tracks"]:
             for band in track.get("generation_bands", []):
                 generation_band_entries.append(
                     build_generation_band_entry(roadmap["roadmap_id"], band)
                 )
     entries.sort(key=lambda item: (item["roadmap_id"], item["milestone_id"]))
+    availability_entries.sort(
+        key=lambda item: (item["roadmap_id"], item["availability_id"])
+    )
     generation_band_entries.sort(
         key=lambda item: (item["roadmap_id"], item["generation_band_id"])
     )
     counts = Counter(item["review_status"] for item in entries)
+    availability_counts = Counter(
+        item["availability_status"] for item in availability_entries
+    )
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "export_id": "ROADMAP-EVIDENCE-AUDIT-001",
         "status": "published",
         "as_of": as_of,
         "review_scope": "single-model-structured-claim-classification",
         "consensus_status": "incomplete",
-        "method_ja": "公開ロードマップに含まれる全マイルストーンと世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",
-        "method_en": "Every milestone and generation band in the published roadmaps was structurally classified for source-reference presence, claim type, and timing semantics. One model checked major updates against primary sources. This audit does not independently verify the meaning of every item and is separate from URL-reachability checks. Consensus review by independent models remains incomplete.",
+        "method_ja": "公開ロードマップに含まれる全マイルストーン、製品化・量産イベント、世代区分について、出典IDの有無、主張の種類、時期表現の整合性を機械的に分類しました。主要な更新項目は、単一のAIモデルが一次情報と照合しています。全項目の意味内容を独立に検証した結果ではなく、URLの到達性監査とも区別しています。独立したAIモデルによる合意判定は未完了です。",
+        "method_en": "Every milestone, market-availability event, and generation band in the published roadmaps was structurally classified for source-reference presence, claim type, and timing semantics. One model checked major updates against primary sources. This audit does not independently verify the meaning of every item and is separate from URL-reachability checks. Consensus review by independent models remains incomplete.",
         "summary": {
             "milestone_count": len(entries),
+            "availability_event_count": len(availability_entries),
+            "availability_confirmed": availability_counts["confirmed"],
+            "availability_announced_target": availability_counts["announced-target"],
+            "availability_timing_undisclosed": availability_counts["timing-undisclosed"],
             "generation_band_count": len(generation_band_entries),
             "classified_primary": counts["classified-primary-event"],
             "classified_forward_looking": counts["classified-forward-looking"],
@@ -245,7 +292,7 @@ def build_audit(root: Path) -> dict[str, Any]:
             "openfs_provisional": counts["openfs-provisional"],
             "openfs_governance_event": counts["openfs-governance-event"],
             "independently_verified": 0,
-            "pending_independent_review": len(entries) + len(generation_band_entries),
+            "pending_independent_review": len(entries) + len(availability_entries) + len(generation_band_entries),
             "source_supported_quarter": timing_counts["source_supported_quarter"],
             "source_supported_half_year": timing_counts["source_supported_half_year"],
             "source_supported_quarter_range": timing_counts["source_supported_quarter_range"],
@@ -261,6 +308,7 @@ def build_audit(root: Path) -> dict[str, Any]:
             "openfs_governance_year": timing_counts["openfs_governance_year"],
         },
         "entries": entries,
+        "availability_entries": availability_entries,
         "generation_band_entries": generation_band_entries,
         "publication": {
             "information_classification": "public",

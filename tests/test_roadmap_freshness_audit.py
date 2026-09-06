@@ -58,6 +58,14 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             audit["summary"]["milestone_count"],
         )
         self.assertEqual(
+            sum(
+                len(lane.get("availability_events", []))
+                for roadmap in roadmaps
+                for lane in roadmap["lanes"]
+            ),
+            audit["summary"]["availability_event_count"],
+        )
+        self.assertEqual(
             sum(len(track.get("generation_bands", [])) for roadmap in roadmaps for track in roadmap["tracks"]),
             audit["summary"]["generation_band_count"],
         )
@@ -66,7 +74,17 @@ class RoadmapFreshnessAuditTests(unittest.TestCase):
             audit["summary"]["source_count"],
         )
         self.assertEqual(0, audit["summary"]["future_observed_conflicts"])
-        self.assertEqual(3, audit["summary"]["retrospective_timing_checks"])
+        self.assertEqual(
+            sum(
+                item["reason"]
+                in {
+                    "retrospective-source-timing-check",
+                    "retrospective-availability-timing-check",
+                }
+                for item in audit["attention_items"]
+            ),
+            audit["summary"]["retrospective_timing_checks"],
+        )
         self.assertEqual(
             len(audit["attention_items"]),
             len({item["attention_id"] for item in audit["attention_items"]}),

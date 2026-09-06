@@ -20,7 +20,18 @@ function fixture(slug = "reference-blueprint-centers", query = "", mutate = () =
     constructor(tag) {
       this.tagName = tag; this.children = []; this.dataset = {}; this.attributes = {};
       this.events = {}; this.value = ""; this.open = false; this.text = "";
-      this.classList = {toggle: () => {}}; this.style = {setProperty() {}};
+      this.classList = {
+        toggle: (name, enabled) => {
+          const names = new Set((this.className || "").split(" ").filter(Boolean));
+          if (enabled) names.add(name); else names.delete(name);
+          this.className = [...names].join(" ");
+        },
+        add: (...names) => {
+          const values = new Set((this.className || "").split(" ").filter(Boolean));
+          names.forEach((name) => values.add(name));
+          this.className = [...values].join(" ");
+        }
+      }; this.style = {setProperty() {}};
     }
     set textContent(value) { this.text = String(value); this.children = []; }
     get textContent() { return this.text + this.children.map((c) => typeof c === "string" ? c : c.textContent).join(" "); }
@@ -112,10 +123,11 @@ test("generation URLs are updated, cleared on close, and cannot open two dialogs
   const milestoneButton = f.walk(f.get("roadmap-timeline")).find((el) => el.className?.startsWith("roadmap-milestone "));
   milestoneButton.dispatch("click");
   assert.equal(f.location.searchParams.has("generation"), false);
-  assert.equal(f.location.searchParams.has("milestone"), true);
+  const eventQuery = artifact.timeline_presentation === "market-availability" ? "availability" : "milestone";
+  assert.equal(f.location.searchParams.has(eventQuery), true);
   const generationButton = f.walk(f.get("roadmap-timeline")).find((el) => el.className?.startsWith("roadmap-generation-band "));
   generationButton.dispatch("click");
-  assert.equal(f.location.searchParams.has("milestone"), false);
+  assert.equal(f.location.searchParams.has(eventQuery), false);
   f.get("roadmap-dialog-close").dispatch("click");
   assert.equal(f.location.searchParams.has("generation"), false);
   const term = data.roadmap_reference_data.terms[0];
@@ -146,6 +158,7 @@ test("cross-year windows render once across the year boundary without collisions
   for (const language of ["ja", "en"]) {
     const f = fixture(roadmap.slug, `?lang=${language}`, (payload) => {
       const artifact = payload.roadmap_artifacts.find((r) => r.roadmap_id === roadmap.roadmap_id);
+      artifact.timeline_presentation = "milestones";
       const lane = artifact.lanes[0];
       lane.milestones = [
         {...lane.milestones[0], milestone_id: "MS-TEST-FISCAL", year: 2032, quarter: "Q2", half: null,
@@ -176,11 +189,14 @@ test("each dated event occupies its exact quarter width on a common grid", () =>
   for (const roadmap of data.roadmap_artifacts) {
     const f = fixture(roadmap.slug, "?lang=en");
     const buttons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-milestone "));
-    const milestones = roadmap.lanes.flatMap((lane) => lane.milestones);
+    const milestones = roadmap.timeline_presentation === "market-availability"
+      ? roadmap.lanes.flatMap((lane) => lane.availability_events || [])
+      : roadmap.lanes.flatMap((lane) => lane.milestones);
     assert.equal(buttons.length, milestones.length);
     for (const button of buttons) {
       button.dispatch("click");
-      const milestone = milestones.find((item) => item.milestone_id === f.location.searchParams.get("milestone"));
+      const queryKey = roadmap.timeline_presentation === "market-availability" ? "availability" : "milestone";
+      const milestone = milestones.find((item) => (item.availability_id || item.milestone_id) === f.location.searchParams.get(queryKey));
       assert.ok(milestone);
       if (milestone.year === null) continue;
       const [start, end] = button.style.gridColumn.split(" / ").map(Number);
@@ -189,6 +205,31 @@ test("each dated event occupies its exact quarter width on a common grid", () =>
         : {quarter: 1, "half-year": 2, year: 4}[milestone.timing_precision];
       assert.equal(end - start, width, milestone.milestone_id);
     }
+  }
+});
+
+test("market availability roadmap hides pre-product milestones and exposes lifecycle evidence", () => {
+  const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-HW-MEMORY");
+  assert.equal(roadmap.timeline_presentation, "market-availability");
+  for (const language of ["ja", "en"]) {
+    const f = fixture(roadmap.slug, `?lang=${language}`);
+    const buttons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-milestone "));
+    const events = roadmap.lanes.flatMap((lane) => lane.availability_events || []);
+    assert.equal(buttons.length, events.length);
+    assert.ok(!buttons.some((button) => button.textContent.includes(language === "ja" ? "HBM5モックアップ" : "HBM5 mock-up")));
+    assert.ok(buttons.some((button) => button.textContent.includes(language === "ja" ? "HBM5量産" : "HBM5 production")));
+    assert.ok(f.get("roadmap-availability-control").textContent.includes("2030"));
+    assert.ok(f.get("roadmap-legend").textContent.includes(language === "ja" ? "製品化・量産を確認" : "Productization / volume confirmed"));
+    const hbm5 = events.find((event) => event.availability_id === "AV-HBM-SAMSUNG-HBM5-UNDATED");
+    const linked = fixture(roadmap.slug, `?lang=${language}&availability=${hbm5.availability_id}`);
+    assert.equal(linked.get("roadmap-dialog").open, true);
+    assert.equal(linked.get("roadmap-dialog-title").textContent, hbm5[`label_${language}`]);
+    const content = linked.get("roadmap-dialog-content").textContent;
+    assert.ok(content.includes(language === "ja" ? "1. 構想・研究" : "1. Concept and research"));
+    assert.ok(content.includes(language === "ja" ? "HBM5モックアップを公開" : "HBM5 mock-up unveiled"));
+    assert.ok(content.includes("2026-08-05"));
+    linked.get("roadmap-dialog-close").dispatch("click");
+    assert.equal(linked.location.searchParams.has("availability"), false);
   }
 });
 

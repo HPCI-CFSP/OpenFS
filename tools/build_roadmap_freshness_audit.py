@@ -86,11 +86,17 @@ def build(
     items: list[dict[str, Any]] = []
     roadmap_summaries: list[dict[str, Any]] = []
     total_milestones = 0
+    total_availability_events = 0
     total_generation_bands = 0
     total_sources = 0
     for roadmap in roadmaps:
         roadmap_items: list[dict[str, Any]] = []
         milestones = [milestone for lane in roadmap["lanes"] for milestone in lane["milestones"]]
+        availability_events = [
+            event
+            for lane in roadmap["lanes"]
+            for event in lane.get("availability_events", [])
+        ]
         generation_bands = [
             band
             for track in roadmap.get("tracks", [])
@@ -98,6 +104,7 @@ def build(
         ]
         source_registry = {source["source_id"]: source for source in roadmap["sources"]}
         total_milestones += len(milestones)
+        total_availability_events += len(availability_events)
         total_generation_bands += len(generation_bands)
         total_sources += len(roadmap["sources"])
         key_source_ids = {
@@ -109,6 +116,10 @@ def build(
             source_id
             for band in generation_bands
             for source_id in band["source_ids"]
+        } | {
+            source_id
+            for event in availability_events
+            for source_id in event["source_ids"]
         }
         for milestone in milestones:
             year = milestone["year"]
@@ -164,6 +175,57 @@ def build(
                             "The cited primary sources were published after the recorded event quarter. Retrospective reporting may be valid, but the text must explicitly entail the event timing.",
                             "独立レビューで一次資料の本文を確認し、公開日を出来事の日付として代用しない。",
                             "Verify the primary-source text during independent review; do not substitute publication date for event date.",
+                        ))
+        for event in availability_events:
+            year = event["year"]
+            quarter = quarter_number(event["quarter"])
+            window = milestone_quarter_window(event)
+            audit_quarter = as_of.year * 4 + current_quarter - 1
+            basis = event["timing_basis"]
+            if basis == "no-public-date":
+                roadmap_items.append(attention(
+                    roadmap["roadmap_id"], "market-availability", event["availability_id"], "high",
+                    "no-public-date-availability",
+                    "製品化・量産時期を確認できず、推測で時期を補っていない。",
+                    "No market-availability date was confirmed; no timing was inferred.",
+                    "公式プロジェクト、標準化団体、ベンダーの製品・量産発表を次回の調査で再検索する。",
+                    "Recheck official project, standards, and vendor product or volume-production announcements in the next loop.",
+                ))
+            if basis in TARGET_BASES and year is not None and window[1] < audit_quarter:
+                roadmap_items.append(attention(
+                    roadmap["roadmap_id"], "market-availability", event["availability_id"], "high",
+                    "availability-target-date-passed",
+                    "公表された製品化・量産目標時期を過ぎているため、達成・延期・中止を一次情報で再確認する必要がある。",
+                    "The announced market-availability target has passed and needs primary-source confirmation of completion, delay, or cancellation.",
+                    "目標を実績へ自動変換せず、公式更新を確認して状態を改訂する。",
+                    "Do not convert the target into confirmed availability; check official updates and revise its state.",
+                ))
+            if basis in OBSERVED_BASES and year is not None:
+                if window[0] > audit_quarter:
+                    roadmap_items.append(attention(
+                        roadmap["roadmap_id"], "market-availability", event["availability_id"], "critical",
+                        "future-availability-conflict",
+                        "確認済みの製品化・量産として分類された時期が基準日より後で、時制が矛盾している。",
+                        "The event is classified as confirmed market availability but dated after the audit baseline.",
+                        "公開を停止し、日付または状態を一次情報に照らして修正する。",
+                        "Block publication and correct the date or status against the primary source.",
+                    ))
+                if event["timing_precision"] == "quarter" and quarter is not None:
+                    publication_periods = [
+                        period
+                        for source_id in event["source_ids"]
+                        if (period := publication_period(source_registry[source_id])) is not None
+                    ]
+                    if publication_periods and all(
+                        period > (year, quarter) for period in publication_periods
+                    ):
+                        roadmap_items.append(attention(
+                            roadmap["roadmap_id"], "market-availability", event["availability_id"], "low",
+                            "retrospective-availability-timing-check",
+                            "引用一次資料の公開四半期が、記録された製品化・量産四半期より後である。遡及報告は正当な場合があるが、本文による時期の確認が必要。",
+                            "The cited primary sources were published after the recorded market-availability quarter. Retrospective reporting may be valid, but the text must entail the timing.",
+                            "独立レビューで一次資料の本文を確認し、公開日を製品化・量産の日付として代用しない。",
+                            "Verify the primary-source text during independent review; do not substitute publication date for the market-availability date.",
                         ))
         for band in generation_bands:
             if band["timing_basis"] not in TARGET_BASES or band["end"] is None:
@@ -222,6 +284,7 @@ def build(
         roadmap_summaries.append({
             "roadmap_id": roadmap["roadmap_id"],
             "milestone_count": len(milestones),
+            "availability_event_count": len(availability_events),
             "generation_band_count": len(generation_bands),
             "source_count": len(roadmap["sources"]),
             "attention_count": len(roadmap_items),
@@ -240,19 +303,20 @@ def build(
     reasons = Counter(item["reason"] for item in items)
     generated = generated_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     return {
-        "schema_version": "0.1.0",
+        "schema_version": "0.2.0",
         "export_id": "ROADMAP-FRESHNESS-AUDIT-001",
         "status": "published",
         "audit_id": f"RFA-{as_of.strftime('%Y%m%d')}-001",
         "as_of": as_of.isoformat(),
         "generated_at": generated,
-        "method_ja": "公開ロードマップを機械的に走査し、世代区分、時期未公表の項目、期限を過ぎた目標、基準日より後の実績、遡及報告、公開日が未記録の情報源、到達性の警告を、次回確認すべき項目として分類しました。",
-        "method_en": "This audit mechanically scans published roadmaps and identifies items that require follow-up: generation bands, undated milestones, passed targets, observed events dated after the audit baseline, retrospective reports, sources without recorded publication dates, and reachability warnings.",
+        "method_ja": "公開ロードマップを機械的に走査し、世代区分、製品化・量産イベント、時期未公表の項目、期限を過ぎた目標、基準日より後の実績、遡及報告、公開日が未記録の情報源、到達性の警告を、次回確認すべき項目として分類しました。",
+        "method_en": "This audit mechanically scans published roadmaps and identifies items that require follow-up: generation bands, market-availability events, undated items, passed targets, observed events dated after the audit baseline, retrospective reports, sources without recorded publication dates, and reachability warnings.",
         "caveat_ja": "更新確認が必要という表示は、内容が誤っているという判定ではありません。過去の一次資料や遡及報告が現在も有効な場合があり、目標時期を過ぎただけでは、達成、延期、中止のいずれとも推定しません。",
         "caveat_en": "Freshness attention is not a finding of error. Older primary sources and retrospective reports may remain valid, and a passed target is not inferred to be completed, delayed, or cancelled.",
         "summary": {
             "roadmap_count": len(roadmaps),
             "milestone_count": total_milestones,
+            "availability_event_count": total_availability_events,
             "generation_band_count": total_generation_bands,
             "source_count": total_sources,
             "attention_count": len(items),
@@ -261,10 +325,12 @@ def build(
             "medium": counts["medium"],
             "low": counts["low"],
             "no_public_date_milestones": reasons["no-public-date"],
-            "past_target_rechecks": reasons["target-date-passed"],
+            "no_public_date_availability_events": reasons["no-public-date-availability"],
+            "past_target_rechecks": reasons["target-date-passed"] + reasons["availability-target-date-passed"],
+            "past_availability_target_rechecks": reasons["availability-target-date-passed"],
             "past_generation_window_rechecks": reasons["generation-window-passed"],
-            "future_observed_conflicts": reasons["future-observed-conflict"],
-            "retrospective_timing_checks": reasons["retrospective-source-timing-check"],
+            "future_observed_conflicts": reasons["future-observed-conflict"] + reasons["future-availability-conflict"],
+            "retrospective_timing_checks": reasons["retrospective-source-timing-check"] + reasons["retrospective-availability-timing-check"],
             "source_date_unknown": reasons["source-publication-date-unrecorded"],
             "source_attention": sum(count for reason, count in reasons.items() if reason.startswith("source-") and reason != "source-publication-date-unrecorded"),
         },

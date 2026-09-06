@@ -8,6 +8,7 @@ on:
       - "assets/branding/**"
       - "config/publication-policy.json"
       - "config/publication-i18n.json"
+      - "config/public-analytics.json"
       - "config/catalog-taxonomy.json"
       - "config/budget-planning.json"
       - "config/research-baseline.json"
@@ -22,6 +23,10 @@ on:
       - "tools/build_pages_site.py"
       - "tools/roadmap_timing.py"
       - "schemas/public-roadmap.schema.json"
+      - "schemas/public-analytics.schema.json"
+      - "docs/publication/analytics.md"
+      - "tests/analytics_ui.test.cjs"
+      - "tests/test_analytics_ui.py"
       - "tools/check_conference_coverage.py"
       - "schemas/conference-coverage.schema.json"
       - "tests/test_conference_coverage.py"
@@ -68,7 +73,7 @@ jobs:
         run: |
           python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
       - name: Run Pages tests
-        run: python3 -m unittest tests.test_pages_site -v
+        run: python3 -m unittest tests.test_pages_site tests.test_analytics_ui -v
       - name: Build static preview
         run: python3 tools/build_pages_site.py --output _site
       - name: Add preview instructions
