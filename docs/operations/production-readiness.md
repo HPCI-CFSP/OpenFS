@@ -60,7 +60,7 @@ an approved cost ceiling, and no Monitor has completed the required manually
 initiated Runs with review approval.
 This accurately reflects the current activation boundary; it is not an error in the pilot artifacts.
 
-The roadmap source triage currently records 108 reviewed and exact-URL-confirmed
+The roadmap source triage currently records 110 reviewed and exact-URL-confirmed
 entries and 84 unresolved entries. Twenty unresolved entries were added with the
 four roadmap families published on 2026-09-06; they have not yet been retrieved
 through a production-eligible Safe Web Fetch profile. These counts describe the current audit
