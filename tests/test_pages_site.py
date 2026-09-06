@@ -579,7 +579,7 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual(5, len(result["consensus_packages"]))
+            self.assertEqual(6, len(result["consensus_packages"]))
             self.assertEqual(
                 {
                     "CRP-P0-ROADMAPS-V02",
@@ -587,6 +587,7 @@ class PagesSiteTests(unittest.TestCase):
                     "CRP-P0-ROADMAPS-V04",
                     "CRP-P0-ROADMAPS-V05",
                     "CRP-P0-ROADMAPS-V06",
+                    "CRP-P0-ROADMAPS-V07",
                 },
                 {package["package_id"] for package in result["consensus_packages"]},
             )
