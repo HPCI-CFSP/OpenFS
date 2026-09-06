@@ -376,6 +376,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-GENKAI-D-FY2027",
                 "MS-BLUE-FUGAKU-START-2021Q1",
                 "MS-BLUE-HOKKAIDO-GC2-START-2025Q3",
+                "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
                 "MS-BLUE-TOHOKU-AOBA-AB-START-2020Q4",
                 "MS-BLUE-TOHOKU-AOBA-S-START-2023Q3",
                 "MS-BLUE-TOHOKU-AOBA-S-LEASE-END-2028Q1",

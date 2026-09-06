@@ -109,11 +109,13 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
                     future.add(system["system_id"])
         self.assertEqual(25, len(observed))
         self.assertEqual(27, len(any_lifecycle))
-        self.assertEqual(15, len(future))
+        self.assertEqual(16, len(future))
         expected_contractual_ends = {
             "HPCI-SYS-OCTOPUS-CPU": "MS-BLUE-OSAKA-OCTOPUS-LEASE-END-2031Q3",
             "HPCI-SYS-CAMPHOR3-A": "MS-BLUE-KYOTO-CAMPHOR3-LEASE-END-2027Q4",
             "HPCI-SYS-AOBA-S": "MS-BLUE-TOHOKU-AOBA-S-LEASE-END-2028Q1",
+            "HPCI-SYS-GRAND-CHARIOT2-CPU": "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
+            "HPCI-SYS-GRAND-CHARIOT2-GPU": "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
         }
         systems = {item["system_id"]: item for item in self.inventory["systems"]}
         for system_id, milestone_id in expected_contractual_ends.items():
