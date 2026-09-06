@@ -51,7 +51,7 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
             data["procurements"]["summary"]["case_count"],
         )
         self.assertGreaterEqual(data["procurements"]["summary"]["case_count"], 14)
-        self.assertEqual(11, data["procurements"]["summary"]["public_contract_or_award_amount_count"])
+        self.assertEqual(12, data["procurements"]["summary"]["public_contract_or_award_amount_count"])
         self.assertEqual(1, data["procurements"]["summary"]["provider_reported_payment_count"])
         self.assertEqual(0, data["procurements"]["summary"]["component_itemized_count"])
         self.assertEqual(0, data["procurements"]["summary"]["complete_tco_count"])

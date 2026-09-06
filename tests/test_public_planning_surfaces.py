@@ -199,7 +199,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         self.assertEqual(
             {
                 "complete-tco": 0,
-                "public-total": 11,
+                "public-total": 12,
                 "provider-reported-payment": 1,
                 "component-itemization": 0,
             },
