@@ -10,7 +10,7 @@ HPCI 27システム、公開調達16案件、EEA1 6アプリ、19ロードマッ
 
 | 対象 | 登録数 | 現在確認できる範囲 | 判断上の境界 |
 |---|---:|---|---|
-| HPCIシステム | 27 | 将来時期 21、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
+| HPCIシステム | 27 | 将来時期 22、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
 | 公開調達 | 16 | 契約・落札総額 12、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
 | ロードマップ | 19 | 398マイルストーン、30依存関係 | Consensus Gate未完了 |
@@ -37,7 +37,7 @@ flowchart LR
 
 | システム | センター | 将来時期 | 運用根拠 | 数値/集計/状態/認証 | 電力・施設根拠 | 次の確認 |
 |---|---|---|---|---|---|---|
-| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 過去・現況のみ | 数値実績あり | 9/2/0/0 | 電力根拠登録済み (1) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
+| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 将来時期の公開根拠あり | 数値実績あり | 9/2/0/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
 | Wisteria/BDEC-01 Odyssey | `CENTER-UTOKYO-ITC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | SQUID 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | OCTOPUS 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
@@ -155,7 +155,7 @@ flowchart LR
 
 | 根拠領域 | 根拠状態 | バランス型・連携基盤 | AI・データ集約型重点整備 | 段階導入・代替選択肢維持型 | 主な未確認事項 |
 |---|---|---|---|---|---|
-| システム更新時期・移行制約 | 一部確認済み | 注記付きで利用可能 | 注記付きで利用可能 | 確定を妨げる | 6システムは提供機関が公表した将来の更新・終了・増強時期へ未接続です。 / 不老・弐2資源の正式な稼働開始時期と、統計数理研究所システムのHPCI提供開始日は未確認です。 |
+| システム更新時期・移行制約 | 一部確認済み | 注記付きで利用可能 | 注記付きで利用可能 | 確定を妨げる | 5システムは提供機関が公表した将来の運用継続・更新・終了・増強時期へ未接続です。 / 不老・弐2資源の正式な稼働開始時期と、統計数理研究所システムのHPCI提供開始日は未確認です。 |
 | 稼働率・電力・利用実態 | 一部確認済み | 確定を妨げる | 確定を妨げる | 確定を妨げる | 期間、分母、保守除外、電力境界が提供機関間で一致していません。 / 稼働前の不老・弐2資源を除く25システムに公開運用情報への経路がありますが、電力の数値は5システムに限られ、富岳本体の運用電力、Miyabiのノード定格、ABCIの施設容量、TSUBAME4.0の冷却込み電力で境界が異なります。公開ステータスと認証付きポータルだけでは、稼働率、待ち時間、採択後の利用量を判断できません。 |
 | 公開調達額・5年間費用 | 根拠不足のため確定不可 | 確定を妨げる | 確定を妨げる | 確定を妨げる | 契約ごとの包含・除外と共用費配賦が未確認です。 / 公開価格と将来構成の対応は未校正です。 |
 | EEA1実測・性能モデル | 一部確認済み | 確定を妨げる | 確定を妨げる | 確定を妨げる | 6アプリケーションすべてで、EEA1入力と一致する再配布可能な基準測定パッケージが未完成です。E-WaveとFrontFlow/blueはコード本体も非公開です。 / 2つの補間候補はいずれも1システム・1入力・1出所です。 |
@@ -168,7 +168,7 @@ A provisional package connecting 27 HPCI systems, 16 public procurement cases, 6
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
 - Secure unattended Web research: **blocked**; 84 source-triage entries remain unresolved.
-- HPCI inventory: 27 systems; 21 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
+- HPCI inventory: 27 systems; 22 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
 - Procurement: 16 cases; public contract or award totals: 12; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
 - Roadmaps: 19 provisional public roadmaps and 30 registered cross-roadmap dependencies.

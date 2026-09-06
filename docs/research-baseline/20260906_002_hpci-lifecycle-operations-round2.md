@@ -9,7 +9,7 @@ Consensus.
 
 Coverage after this pass is:
 
-- future retirement, refresh, or expansion timing: 21 of 27 systems;
+- future operation-continuity, retirement, refresh, or expansion timing: 22 of 27 systems;
 - public operational-information paths: 25 of 27 systems; and
 - quantitative operational observations: 16 of 27 systems.
 
@@ -21,6 +21,7 @@ availability, queue-time, or power evidence.
 
 | System | Evidence added | Planning boundary |
 | --- | --- | --- |
+| Fugaku | RIKEN's FY2024 annual report states that Fugaku needs to remain operational until FugakuNEXT begins operating around 2030. | Linked to the existing 2030 successor-transition milestone. This is an operation-continuity plan, not a confirmed Fugaku shutdown date or migration window. |
 | Earth Simulator ES4 CPU and VE | JAMSTEC states that FY2026 is the current ES4's final operating fiscal year. | Recorded as 2027 Q1, the Japanese fiscal-year end. This does not establish the successor launch or migration period. |
 | TSUBAME4.0 | The public procurement notice gives a lease period ending March 31, 2030. | Recorded as 2030 Q1. A contractual lease end does not establish a successor launch or migration period. |
 | OCTOPUS CPU | The public procurement notice gives a lease period ending August 31, 2031. | Recorded as 2031 Q3. The matching service start identifies the contract, but the lease end does not establish a service stop, successor launch, or migration period. |
@@ -52,10 +53,11 @@ Primary sources:
 - Tohoku University, [AOBA emergency maintenance notice](https://www.ss.cc.tohoku.ac.jp/n20260709-1/)
 - University of Osaka D3 Center, [OCTOPUS system page](https://www.hpc.cmc.osaka-u.ac.jp/octopus2/)
 - Institute of Statistical Mathematics, [current usage rules](https://www.ism.ac.jp/computer_system/jpn/hpci/6-11.pdf)
+- RIKEN R-CCS, [Fugaku Annual Report 2024: measures for advanced operations](https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/3/)
 
 ## Coverage gaps
 
-Future timing remains unverified for six systems: Fugaku, AOBA A and B, the ISM
+Future timing remains unverified for five systems: AOBA A and B, the ISM
 large-memory system, Pegasus, and ABCI 3.0. The planned 2027 Tsukuba system is a center-level
 update and does not establish the retirement dates of Sirius or Pegasus. No date
 should be inferred from a typical lease term or another system's lifecycle.
@@ -68,8 +70,8 @@ boundaries are not aligned across providers.
 
 ## 日本語要約
 
-令和8年度HPCI資源一覧の27システムを対象に、将来の更新・終了・増強時期と公開運用情報を
-追加調査しました。将来時期は21システム、公開運用情報への経路は25システム、数値を伴う
+令和8年度HPCI資源一覧の27システムを対象に、将来の運用継続・更新・終了・増強時期と公開運用情報を
+追加調査しました。将来の運用継続・終了・更新・増強時期は22システム、公開運用情報への経路は25システム、数値を伴う
 運用実績は16システムです。地球シミュレータES4は令和8年度が現行システムの運用最終年度、
 TSUBAME4.0は2030年3月31日が借入期間の終期であることを一次情報で確認しました。ただし、
 いずれも後継機の稼働開始日や移行期間を示すものではありません。
@@ -103,5 +105,7 @@ JCAHPC公表の正式運用開始日と一致しますが、契約終期は正�
 
 AOBA-A・Bの保守通知、OCTOPUSの運転状態、統計数理研究所の利用細則も登録しましたが、
 これらは公開運用情報への経路であり、稼働率、年度可用性、待ち時間、電力の数値実績としては
-扱いません。将来時期が未確認の6システムはCoverage Gapとして残し、一般的な借入期間など
+扱いません。富岳については、富岳NEXTが運用を開始する2030年頃まで継続運用する必要がある
+という年報の方針を既存の移行マイルストーンへ接続しましたが、富岳の停止日や移行期間は
+確定していません。将来時期が未確認の5システムはCoverage Gapとして残し、一般的な借入期間など
 から日付を推定していません。単一モデルによる調査のためConsensusは未完了です。

@@ -113,7 +113,15 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
                     future.add(system["system_id"])
         self.assertEqual(25, len(observed))
         self.assertEqual(27, len(any_lifecycle))
-        self.assertEqual(21, len(future))
+        self.assertEqual(22, len(future))
+        fugaku = next(
+            system for system in self.inventory["systems"]
+            if system["system_id"] == "HPCI-SYS-FUGAKU"
+        )
+        self.assertIn(
+            "MS-BLUE-FN-2030",
+            {item["milestone_id"] for item in fugaku["lifecycle_milestone_refs"]},
+        )
         expected_contractual_ends = {
             "HPCI-SYS-OCTOPUS-CPU": "MS-BLUE-OSAKA-OCTOPUS-LEASE-END-2031Q3",
             "HPCI-SYS-CAMPHOR3-A": "MS-BLUE-KYOTO-CAMPHOR3-LEASE-END-2027Q4",
