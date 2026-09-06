@@ -61,6 +61,15 @@ migration instead of silently replacing its history.
    scope assignment; decompose it before claiming research completion.
 
 Public Topic layouts may use an ordered `page_layout` of reusable components.
+All active Topics must now provide this layout. Run
+`python3 tools/build_topic_page_layouts.py --write` after adding a new active
+Topic to create its initial component frame from `research_units` and
+`evidence_section_ids`; the command marks the result `generated`, refreshes it
+when those canonical references change, and preserves layouts marked `curated`.
+Generated layouts retain the legacy page-wide comparison selection as a movable
+component; a curated layout may put filtered comparisons inside research units.
+Run the same tool with `--check` in validation to prevent a Topic from silently
+returning to the legacy presentation.
 Each component references canonical research-unit, decision-section, comparison,
 roadmap, and history IDs. Reorder those references instead of duplicating prose
 or moving evidence records; extend the schema and renderer before introducing a

@@ -149,12 +149,18 @@ Consensus state. Research-run summaries remain available as collapsed provenance
 and individual findings; their titles are not promoted into duplicate Topic
 headings or described as a vague "source survey."
 
-Topic pages may define an ordered `page_layout` made from reusable overview,
-research-unit index, research-unit, decision-dimension, related-surface, Coverage
+Every active Topic page defines an ordered `page_layout` made from reusable overview,
+research-unit index, Topic-comparison, research-unit, decision-dimension, related-surface, Coverage
 Gap, history, and related-topic components. Components reference canonical IDs
 instead of copying prose, so their display order can change without moving or
-duplicating the underlying evidence. Topics without a layout retain the default
-renderer; `ARCH-03` is the first structured-layout pilot.
+duplicating the underlying evidence. `tools/build_topic_page_layouts.py` adds a
+default layout from the canonical research-unit and evidence-section references.
+Generated layouts place applicable centrally maintained comparison tables after
+the unit index and before detailed units. Curated layouts may instead place
+filtered comparison tables within the relevant unit. The builder creates a layout
+when a new active Topic has none and refreshes only layouts marked `generated`.
+It never overwrites a `curated` layout, comparison table, or term mapping.
+Validation rejects any active Topic that falls back to the legacy renderer.
 
 Actor and region metadata remain available for provenance, supply-chain, and
 economic-security analysis, but ordinary public Topic pages do not group or

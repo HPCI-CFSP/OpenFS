@@ -202,6 +202,10 @@ def validate_topic_decision_support(root: Path) -> list[str]:
             errors.append(f"{profile['topic_id']} lacks an explicit Coverage Gap")
 
         layout = profile.get("page_layout")
+        if profile["topic_id"] in partial_topic_ids and not layout:
+            errors.append(
+                f"active Topic {profile['topic_id']} lacks a structured page layout"
+            )
         if layout:
             components = layout["components"]
             component_ids = [item["component_id"] for item in components]
@@ -220,6 +224,18 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                         f"{profile['topic_id']} page layout must contain exactly one "
                         f"{component_type} component"
                     )
+            comparison_component_count = sum(
+                item["type"] == "topic-comparisons" for item in components
+            )
+            if comparison_component_count > 1:
+                errors.append(
+                    f"{profile['topic_id']} page layout repeats topic-comparisons"
+                )
+            if layout["layout_mode"] == "generated" and comparison_component_count != 1:
+                errors.append(
+                    f"{profile['topic_id']} generated page layout must contain "
+                    "exactly one topic-comparisons component"
+                )
             if components[0]["type"] != "topic-overview":
                 errors.append(f"{profile['topic_id']} page layout must start with topic-overview")
             if len(components) < 2 or components[1]["type"] != "research-unit-index":
