@@ -3108,8 +3108,8 @@
   "infrastructure_requirements_matrix": {
     "title_ja": "EEA1アプリケーション需要と計算基盤要件",
     "title_en": "EEA1 application demand and infrastructure requirements",
-    "summary_ja": "各アプリケーションの公開根拠から、8つのシステム要件軸への影響と、3案を比較する評価軸への対応を整理します。需要レベルは設計上の注意点であり、容量・性能の採用値ではありません。",
-    "summary_en": "Maps public application evidence to eight system-requirement dimensions and to the criteria used to compare the three options. Demand levels are design signals, not adopted capacity or performance values.",
+    "summary_ja": "6つのアプリケーションについて、公開根拠を48件の暫定システム要件候補へ変換し、8つの要件軸、受入評価指標、定量的根拠、3案の比較基準を接続します。需要レベルは設計上の注意点であり、容量・性能の採用値ではありません。",
+    "summary_en": "Translates public evidence for six applications into 48 provisional system-requirement candidates and links them to eight requirement dimensions, acceptance metrics, quantitative evidence and the criteria used to compare the three options. Demand levels are design signals, not adopted capacity or performance values.",
     "dimensions": [
       {
         "dimension_id": "compute-throughput",
@@ -3157,8 +3157,20 @@
         "application_id": "APP-EEA1-GENESIS",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-GENESIS-SCALE"
+            ],
             "rationale_ja": "分子動力学の力計算が主要な計算負荷です。",
             "rationale_en": "Molecular-dynamics force evaluation is a principal compute load.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3174,8 +3186,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "巨大分子系の座標、力、近傍情報を保持・更新するため、容量と帯域の双方が効きます。",
             "rationale_en": "Coordinates, forces, and neighbor data for very large molecular systems make both capacity and bandwidth relevant.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3191,8 +3212,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "GPU等へ移植する場合、ホスト・デバイス間と複数アクセラレータ間のデータ移動が設計条件になります。",
             "rationale_en": "Host-device and multi-accelerator data movement becomes a design condition for GPU-oriented implementations.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3208,8 +3238,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-GENESIS-SCALE"
+            ],
             "rationale_ja": "長距離相互作用のPMEと大規模分割は、ノード間通信と並列効率に依存します。",
             "rationale_en": "PME for long-range interactions and large decompositions depend on inter-node communication and parallel efficiency.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3225,8 +3266,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "軌跡と再開データの継続出力が必要ですが、標準入力でのI/O量は未確定です。",
             "rationale_en": "Trajectories and restart data require sustained output, but I/O volume for a standard input is not yet fixed.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3242,8 +3292,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "単一実行の時間短縮と、多数条件を回すアンサンブルスループットの両方が重要です。",
             "rationale_en": "Both time to solution for one run and ensemble throughput across many conditions matter.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3259,8 +3318,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開コードと入力はありますが、EEA1版・依存関係・実行条件の固定が未完了です。",
             "rationale_en": "Public code and inputs exist, but the EEA1 version, dependencies, and run conditions are not yet pinned.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3276,8 +3343,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-GENESIS-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "入力・軌跡の共有条件は研究データごとに異なり、標準公開入力との分離が必要です。",
             "rationale_en": "Sharing conditions vary by research dataset and must be separated from standard public inputs.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3306,8 +3380,20 @@
         "application_id": "APP-EEA1-SALMON",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-SALMON-SCALE"
+            ],
             "rationale_ja": "実時間TDDFTの反復計算が演算性能に強く依存します。",
             "rationale_en": "Iterative real-time TDDFT computation strongly depends on compute throughput.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3320,8 +3406,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "波動関数と格子データの保持・更新に容量と帯域が必要です。",
             "rationale_en": "Wave functions and grid data require substantial capacity and bandwidth.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3334,8 +3429,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "GPU化ではデバイス内・デバイス間のデータ配置が性能条件になります。",
             "rationale_en": "GPU execution makes intra-device and inter-device data placement a performance condition.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3348,8 +3452,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-SALMON-SCALE"
+            ],
             "rationale_ja": "空間・軌道分割の通信を含み、大規模実行ではネットワーク特性の確認が必要です。",
             "rationale_en": "Spatial and orbital decomposition communicate across ranks, requiring network characterization at scale.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3362,8 +3477,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "電子状態や時間発展結果を出力しますが、標準評価のI/O条件は未固定です。",
             "rationale_en": "Electronic-state and time-evolution outputs matter, but standard evaluation I/O conditions are not pinned.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3376,8 +3500,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-SALMON-STEP-TARGET"
+            ],
             "rationale_ja": "単一ケースの時間短縮と材料候補群のスループットを分けて評価する必要があります。",
             "rationale_en": "Single-case time to solution and throughput over candidate materials need separate evaluation.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3390,8 +3525,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開実装はありますが、CPU・GPU間で同等の機能と精度を確認する必要があります。",
             "rationale_en": "A public implementation exists, but equivalent functions and numerical behavior across CPU and GPU paths need confirmation.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3404,8 +3547,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SALMON-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "low",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開入力で評価可能ですが、材料データ連携時の利用条件は別途確認が必要です。",
             "rationale_en": "Public inputs can support evaluation; external materials datasets require separate access review.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3431,8 +3581,20 @@
         "application_id": "APP-EEA1-SCALE-LETKF",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-SCALE-LETKF-SCALE"
+            ],
             "rationale_ja": "気象モデルと多数メンバーのデータ同化を繰り返すため、総演算量が大きくなります。",
             "rationale_en": "Repeated weather-model and ensemble data-assimilation steps create high aggregate compute demand.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3445,8 +3607,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "格子場とアンサンブル状態を保持・更新するため、容量と帯域が重要です。",
             "rationale_en": "Grid fields and ensemble states make memory capacity and bandwidth important.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3459,8 +3630,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "ノード内並列化やアクセラレータ利用時のデータ配置は追加測定が必要です。",
             "rationale_en": "Data placement for on-node parallelism or accelerator use requires measurement.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3473,8 +3653,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-SCALE-LETKF-SCALE"
+            ],
             "rationale_ja": "モデル積分と同化の分散処理は、集合通信と大規模並列効率に依存します。",
             "rationale_en": "Distributed model integration and assimilation depend on collectives and large-scale efficiency.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3487,8 +3678,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "観測、初期値、予報場、アンサンブル結果を反復して読み書きします。",
             "rationale_en": "Observations, initial states, forecasts, and ensemble products are read and written repeatedly.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3501,8 +3701,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "予報時刻に間に合わせる時間制約と、アンサンブル全体のスループットが同時に必要です。",
             "rationale_en": "Forecast deadlines and ensemble throughput must be satisfied together.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3515,8 +3724,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開コードはありますが、入力、依存関係、運用ワークフローの固定が未完了です。",
             "rationale_en": "Public code exists, but inputs, dependencies, and the operational workflow are not pinned.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3529,8 +3746,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-SCALE-LETKF-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "観測データの配布条件、保管、来歴管理を計算基盤と一体で扱う必要があります。",
             "rationale_en": "Observation-data licensing, retention, and provenance must be handled with the compute platform.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3557,8 +3781,21 @@
         "application_id": "APP-EEA1-E-WAVE",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-EWAVE-MEASURED",
+              "REQ-PERF-EWAVE-GAP"
+            ],
             "rationale_ja": "大規模有限要素法の反復解法が主要負荷です。",
             "rationale_en": "Large finite-element iterative solves are the principal compute load.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3570,8 +3807,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "大規模疎行列と場のデータに対して容量と帯域が必要です。",
             "rationale_en": "Large sparse matrices and field data require capacity and bandwidth.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3583,8 +3829,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "unknown",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "EEA1コードが非公開のため、ノード内データ移動の実測根拠が不足しています。",
             "rationale_en": "The unreleased EEA1 code leaves insufficient evidence for intra-node data movement.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3596,8 +3851,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "領域分割した有限要素計算では、境界交換と大規模並列効率が設計条件です。",
             "rationale_en": "Domain-decomposed finite-element computation makes halo exchange and large-scale efficiency design conditions.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3609,8 +3873,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "大規模メッシュ、入力モデル、波動場の出力を扱いますが、標準量は未確定です。",
             "rationale_en": "Large meshes, input models, and wave-field outputs are involved, but standard volumes are not fixed.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3622,8 +3895,20 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-EWAVE-MEASURED",
+              "REQ-PERF-EWAVE-GAP"
+            ],
             "rationale_ja": "地震波計算の用途ごとに単一解析時間とケース数を分けて評価する必要があります。",
             "rationale_en": "Per-run analysis time and case throughput must be evaluated separately for each seismic use case.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3635,8 +3920,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "unknown",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "EEA1で評価するコード本体が公開されておらず、移植条件を検証できません。",
             "rationale_en": "The EEA1 codebase is unreleased, preventing validation of portability conditions.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3648,8 +3941,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-E-WAVE-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "地下構造モデルや観測データの利用条件を公開評価入力と分離して管理する必要があります。",
             "rationale_en": "Access conditions for subsurface models and observations must be separated from public evaluation inputs.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3674,8 +3974,20 @@
         "application_id": "APP-EEA1-FRONTFLOW-BLUE",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-FFB-SCALE"
+            ],
             "rationale_ja": "大規模流体解析の時間積分と線形解法が主要負荷です。",
             "rationale_en": "Time integration and linear solvers in large-scale CFD are principal compute loads.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3688,8 +4000,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "非構造格子と流れ場の更新に容量と帯域が必要です。",
             "rationale_en": "Unstructured meshes and flow-field updates require memory capacity and bandwidth.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3702,8 +4023,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "unknown",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開されたEEA1コードがないため、アクセラレータ構成の要求は未確認です。",
             "rationale_en": "No public EEA1 code is available, so accelerator-scale-up requirements remain unverified.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3716,8 +4046,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-FFB-SCALE"
+            ],
             "rationale_ja": "領域分割による境界通信と大規模並列効率が性能を左右します。",
             "rationale_en": "Domain-decomposition boundary exchange and large-scale efficiency affect performance.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3730,8 +4071,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "メッシュ、時系列結果、可視化データの容量と出力頻度を設計に含める必要があります。",
             "rationale_en": "Mesh, time-series, and visualization volume and output cadence belong in system design.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3744,8 +4094,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "防災・設計利用では期限内完了が重要ですが、EEA1標準期限は未定義です。",
             "rationale_en": "Deadline completion matters in disaster-response and design uses, but an EEA1 standard deadline is undefined.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3758,8 +4117,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "unknown",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "コード本体が非公開のため、候補プラットフォームへの移植工数を検証できません。",
             "rationale_en": "The unreleased codebase prevents validation of porting effort to candidate platforms.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3772,8 +4139,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-FRONTFLOW-BLUE-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "産業形状や境界条件には共有制約があり得るため、公開ベンチマークと分離が必要です。",
             "rationale_en": "Industrial geometries and boundary conditions may carry sharing restrictions and need separation from public benchmarks.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3798,8 +4172,20 @@
         "application_id": "APP-EEA1-LQCD-DWF-HMC",
         "cells": [
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-COMPUTE",
             "dimension_id": "compute-throughput",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution",
+              "domain-rate",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-LQCD-SCALE"
+            ],
             "rationale_ja": "格子QCDの反復線形解法が高い演算スループットを必要とします。",
             "rationale_en": "Iterative lattice-QCD linear solves require high compute throughput.",
             "measurement_gap_ja": "代表入力での実効演算率と時間内訳を測定する。",
@@ -3811,8 +4197,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-MEMORY",
             "dimension_id": "memory-capacity-bandwidth",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "peak-memory-per-node",
+              "time-to-solution",
+              "energy-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "格子場の反復更新はメモリ帯域と容量の双方に依存します。",
             "rationale_en": "Repeated lattice-field updates depend on both memory bandwidth and capacity.",
             "measurement_gap_ja": "容量下限、実効帯域、アクセス局所性を代表入力で測定する。",
@@ -3824,8 +4219,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-SCALE-UP",
             "dimension_id": "scale-up-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "GPU実装では複数デバイス間の格子分割とデータ移動を確認する必要があります。",
             "rationale_en": "GPU implementations require validation of lattice partitioning and data movement across devices.",
             "measurement_gap_ja": "ホスト・デバイス間および複数デバイス間の転送量と待ち時間を測定する。",
@@ -3837,8 +4241,19 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-SCALE-OUT",
             "dimension_id": "scale-out-interconnect",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "quantitative-reference-linked",
             "demand_level": "high",
+            "acceptance_metric_ids": [
+              "communication-share",
+              "parallel-efficiency",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [
+              "REQ-PERF-LQCD-SCALE"
+            ],
             "rationale_ja": "近接格子通信と全体同期が大規模並列性能に影響します。",
             "rationale_en": "Nearest-neighbor exchange and global synchronization affect large-scale performance.",
             "measurement_gap_ja": "通信量、集合通信、同期待ち、並列効率を規模別に測定する。",
@@ -3850,8 +4265,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-STORAGE-IO",
             "dimension_id": "storage-io",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "io-volume",
+              "io-throughput",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "ゲージ配位の保存と再利用が必要ですが、標準評価の容量は未固定です。",
             "rationale_en": "Gauge configurations must be stored and reused, but standard evaluation volume is not pinned.",
             "measurement_gap_ja": "入力、チェックポイント、出力の容量、帯域、頻度を固定する。",
@@ -3863,8 +4287,17 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-WORKFLOW-LATENCY",
             "dimension_id": "workflow-latency",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "low",
+            "acceptance_metric_ids": [
+              "time-to-solution",
+              "domain-rate",
+              "run-variability"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "期限応答より、長時間ジョブと配位生成の総スループットが中心です。",
             "rationale_en": "Long-running jobs and aggregate configuration-generation throughput matter more than interactive deadlines.",
             "measurement_gap_ja": "期限、単一実行時間、同時実行数、アンサンブル量を定義する。",
@@ -3876,8 +4309,16 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-SOFTWARE-PORTABILITY",
             "dimension_id": "software-portability",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "medium",
+            "acceptance_metric_ids": [
+              "scientific-correctness",
+              "time-to-solution"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開コードとGPU向けビルド例はありますが、版、入力、結果一致の固定が必要です。",
             "rationale_en": "Public code and GPU build examples exist, but versions, inputs, and result-equivalence checks need pinning.",
             "measurement_gap_ja": "コード版、依存関係、ビルド、精度、候補機での再現手順を固定する。",
@@ -3889,8 +4330,15 @@
             ]
           },
           {
+            "system_requirement_id": "SYSREQ-EEA1-LQCD-DWF-HMC-DATA-GOVERNANCE",
             "dimension_id": "data-governance",
+            "requirement_status": "provisional-owner-approval-required",
+            "evidence_status": "qualitative-evidence-only",
             "demand_level": "low",
+            "acceptance_metric_ids": [
+              "scientific-correctness"
+            ],
+            "quantitative_requirement_ids": [],
             "rationale_ja": "公開可能な入力と配位を利用できますが、生成物の来歴は保持する必要があります。",
             "rationale_en": "Publishable inputs and configurations can be used, while generated-data provenance still must be retained.",
             "measurement_gap_ja": "入力と生成物の公開範囲、利用条件、保管期間、来歴要件を確定する。",
@@ -3912,8 +4360,8 @@
         "owner_approval_status": "pending"
       }
     ],
-    "caveat_ja": "High、Medium、Low、Unknownは、公開資料を単一のAIモデルが整理した定性的な暫定評価です。ノード数、帯域、容量、調達仕様を示すものではなく、項目間やアプリケーション間の厳密な数値比較には使えません。各セルの測定課題を解消し、独立Consensusを通過するまで正式要件にしません。",
-    "caveat_en": "High, medium, low, and unknown are qualitative provisional assessments synthesized by one model from public evidence. They are not node counts, bandwidths, capacities, or procurement specifications and do not support strict numerical comparison across cells or applications. They remain non-normative until the stated measurement gaps are closed and independent Consensus is complete."
+    "caveat_ja": "全48件はアプリケーション責任者の承認待ちです。「定量根拠あり」は公開された実測範囲、公表目標または測定不足への参照があることだけを示し、合否値が承認済みであることを意味しません。定性根拠のみの項目を含め、同一入力による測定、独立検証、Consensus Gateを完了するまで正式な調達要件には使用しません。",
+    "caveat_en": "All 48 candidates await application-owner approval. 'Quantitative reference linked' means only that a published measurement envelope, published target or measurement-gap record is linked; it does not mean a pass/fail value has been approved. No candidate, including qualitative-only entries, may become a formal procurement requirement before matched-input measurement, independent validation and the Consensus Gate are complete."
   },
   "measured_platforms": [
     {
@@ -5249,6 +5697,10 @@
       "source_ids": [
         "SRC-PERF016",
         "SRC-PERF019"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "scale-out-interconnect"
       ]
     },
     {
@@ -5267,6 +5719,10 @@
       "source_ids": [
         "SRC-PERF019",
         "SRC-PERF020"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "scale-out-interconnect"
       ]
     },
     {
@@ -5284,6 +5740,9 @@
       "planning_use_en": "A candidate time-to-solution acceptance metric with fixed system size and precision; human approval is incomplete.",
       "source_ids": [
         "SRC-PERF020"
+      ],
+      "system_requirement_dimension_ids": [
+        "workflow-latency"
       ]
     },
     {
@@ -5301,6 +5760,10 @@
       "planning_use_en": "Keep simulation and assimilation sections separate, then add measurements at 32+ nodes and for ensemble throughput.",
       "source_ids": [
         "SRC-PERF019"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "scale-out-interconnect"
       ]
     },
     {
@@ -5318,6 +5781,10 @@
       "planning_use_en": "Use it to scope and separate stages in a fixed-input E-Wave acceptance test, not as a calibration point for an EEA1 performance forecast.",
       "source_ids": [
         "SRC-PERF021"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "workflow-latency"
       ]
     },
     {
@@ -5336,6 +5803,10 @@
       "source_ids": [
         "SRC-PERF001",
         "SRC-PERF021"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "workflow-latency"
       ]
     },
     {
@@ -5353,6 +5824,10 @@
       "planning_use_en": "Remeasure with a fixed MPS condition and collect strong/weak scaling and communication share.",
       "source_ids": [
         "SRC-PERF019"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "scale-out-interconnect"
       ]
     },
     {
@@ -5370,6 +5845,10 @@
       "planning_use_en": "Measure at 32+ nodes with the same local lattice, precision and communication method to quantify the reported strong-scaling limitation.",
       "source_ids": [
         "SRC-PERF019"
+      ],
+      "system_requirement_dimension_ids": [
+        "compute-throughput",
+        "scale-out-interconnect"
       ]
     }
   ],

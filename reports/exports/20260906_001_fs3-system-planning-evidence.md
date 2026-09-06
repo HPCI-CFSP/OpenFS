@@ -101,16 +101,16 @@ flowchart LR
 
 ## 6. アプリケーション需要からシステム要件へ
 
-定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。
+6アプリケーション×8要件軸を48件の暫定システム要件候補として識別しました。定量根拠への接続は13件、定性根拠のみは35件、人による承認済み要件は0件です。定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。
 
-| アプリケーション | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |
-|---|---|---|---:|
-| GENESIS | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-GENESIS-SCALE | 8 |
-| SALMON | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-SALMON-SCALE, REQ-PERF-SALMON-STEP-TARGET | 8 |
-| SCALE-LETKF | compute-throughput, data-governance, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-SCALE-LETKF-SCALE | 8 |
-| E-Wave | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io | REQ-PERF-EWAVE-GAP, REQ-PERF-EWAVE-MEASURED | 8 |
-| FrontFlow/blue | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-FFB-SCALE | 8 |
-| LQCD-DWF-HMC | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-LQCD-SCALE | 8 |
+| アプリケーション | 暫定要件候補 | 定量根拠接続 | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |
+|---|---:|---:|---|---|---:|
+| GENESIS | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-GENESIS-SCALE | 8 |
+| SALMON | 8 | 3 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-SALMON-SCALE, REQ-PERF-SALMON-STEP-TARGET | 8 |
+| SCALE-LETKF | 8 | 2 | compute-throughput, data-governance, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-SCALE-LETKF-SCALE | 8 |
+| E-Wave | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io | REQ-PERF-EWAVE-GAP, REQ-PERF-EWAVE-MEASURED | 8 |
+| FrontFlow/blue | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-FFB-SCALE | 8 |
+| LQCD-DWF-HMC | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-LQCD-SCALE | 8 |
 
 ## 7. 公開ロードマップと依存関係
 

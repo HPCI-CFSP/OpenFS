@@ -185,10 +185,11 @@
     },
     "quantitativeRequirement": {
       "type": "object",
-      "required": ["requirement_id", "application_id", "evidence_class", "metric", "lower", "value", "upper", "unit", "statement_ja", "statement_en", "planning_use_ja", "planning_use_en", "source_ids"],
+      "required": ["requirement_id", "application_id", "system_requirement_dimension_ids", "evidence_class", "metric", "lower", "value", "upper", "unit", "statement_ja", "statement_en", "planning_use_ja", "planning_use_en", "source_ids"],
       "properties": {
         "requirement_id": {"type": "string", "pattern": "^REQ-PERF-[A-Z0-9-]+$"},
         "application_id": {"type": "string", "pattern": "^APP-EEA1-[A-Z0-9-]+$"},
+        "system_requirement_dimension_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["compute-throughput", "memory-capacity-bandwidth", "scale-up-interconnect", "scale-out-interconnect", "storage-io", "workflow-latency", "software-portability", "data-governance"]}},
         "evidence_class": {"enum": ["measured-envelope", "published-target", "measurement-gap"]},
         "metric": {"type": "string", "minLength": 1},
         "lower": {"type": ["number", "null"], "minimum": 0},
@@ -612,10 +613,15 @@
     },
     "infrastructureCell": {
       "type": "object",
-      "required": ["dimension_id", "demand_level", "rationale_ja", "rationale_en", "measurement_gap_ja", "measurement_gap_en", "source_ids"],
+      "required": ["system_requirement_id", "dimension_id", "requirement_status", "evidence_status", "demand_level", "acceptance_metric_ids", "quantitative_requirement_ids", "rationale_ja", "rationale_en", "measurement_gap_ja", "measurement_gap_en", "source_ids"],
       "properties": {
+        "system_requirement_id": {"type": "string", "pattern": "^SYSREQ-EEA1-[A-Z0-9-]+$"},
         "dimension_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "requirement_status": {"const": "provisional-owner-approval-required"},
+        "evidence_status": {"enum": ["quantitative-reference-linked", "qualitative-evidence-only"]},
         "demand_level": {"enum": ["high", "medium", "low", "unknown"]},
+        "acceptance_metric_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"}},
+        "quantitative_requirement_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^REQ-PERF-[A-Z0-9-]+$"}},
         "rationale_ja": {"type": "string", "minLength": 1},
         "rationale_en": {"type": "string", "minLength": 1},
         "measurement_gap_ja": {"type": "string", "minLength": 1},

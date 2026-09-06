@@ -60,6 +60,20 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
         self.assertEqual(0, data["eea1"]["summary"]["approved_threshold_count"])
         self.assertEqual(0, data["eea1"]["summary"]["validated_forecast_count"])
         self.assertEqual(2, data["eea1"]["summary"]["public_proxy_asset_count"])
+        self.assertEqual(48, data["application_requirements"]["summary"]["candidate_count"])
+        self.assertEqual(
+            13,
+            data["application_requirements"]["summary"][
+                "quantitative_reference_linked_count"
+            ],
+        )
+        self.assertEqual(
+            35,
+            data["application_requirements"]["summary"][
+                "qualitative_evidence_only_count"
+            ],
+        )
+        self.assertEqual(0, data["application_requirements"]["summary"]["owner_approved_count"])
         self.assertEqual(19, data["roadmaps"]["summary"]["roadmap_count"])
         self.assertEqual(8, len(data["claim_readiness"]))
         scenario_ids = set(data["planning_requirement_matrix"]["scenario_ids"])
@@ -78,6 +92,8 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
         self.assertIn("費目別の価格内訳 0件、完全なTCO 0件", report)
         self.assertIn("完全な再現パッケージ 0件", report)
         self.assertIn("## 8. 報告書に記載できる主張と残作業", report)
+        self.assertIn("48件の暫定システム要件候補", report)
+        self.assertIn("定量根拠への接続は13件", report)
         self.assertIn("## 9. 根拠とシステム整備計画案の対応", report)
         self.assertIn("```mermaid", report)
         self.assertIn("Consensus: incomplete", report)

@@ -220,7 +220,11 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            {"draft-measurement-contracts": 6, "human-approved-thresholds": 0},
+            {
+                "draft-measurement-contracts": 6,
+                "human-approved-thresholds": 0,
+                "quantitative-reference-linked-system-requirements": 13,
+            },
             {
                 item["coverage_id"]: item["numerator"]
                 for item in dimensions["quantitative-requirements"]["supporting_coverages"]
@@ -281,6 +285,56 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         self.assertTrue(all(row["planning_criterion_ids"] for row in matrix["rows"]))
         self.assertTrue(all(row["owner_approval_status"] == "pending" for row in matrix["rows"]))
+        cells = [cell for row in matrix["rows"] for cell in row["cells"]]
+        self.assertEqual(48, len(cells))
+        self.assertEqual(48, len({cell["system_requirement_id"] for cell in cells}))
+        self.assertTrue(all(
+            cell["requirement_status"] == "provisional-owner-approval-required"
+            for cell in cells
+        ))
+        self.assertTrue(all(cell["acceptance_metric_ids"] for cell in cells))
+        self.assertTrue(all(
+            cell["evidence_status"] == (
+                "quantitative-reference-linked"
+                if cell["quantitative_requirement_ids"]
+                else "qualitative-evidence-only"
+            )
+            for cell in cells
+        ))
+        linked = {
+            (requirement_id, row["application_id"], cell["dimension_id"])
+            for row in matrix["rows"]
+            for cell in row["cells"]
+            for requirement_id in cell["quantitative_requirement_ids"]
+        }
+        expected = {
+            (requirement["requirement_id"], requirement["application_id"], dimension_id)
+            for requirement in payload["quantitative_requirements"]
+            for dimension_id in requirement["system_requirement_dimension_ids"]
+        }
+        self.assertEqual(expected, linked)
+
+    def test_rejects_broken_system_requirement_traceability(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in (
+                "config/hpci-center-registry.json",
+                "knowledge/public/hpci-system-inventory.json",
+                "knowledge/public/application-performance-forecasts.json",
+            ):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(
+                    (ROOT / relative).read_text(encoding="utf-8"), encoding="utf-8"
+                )
+            path = root / "knowledge/public/application-performance-forecasts.json"
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            cell = payload["infrastructure_requirements_matrix"]["rows"][0]["cells"][0]
+            cell["quantitative_requirement_ids"] = []
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            errors = validate(root)
+            self.assertTrue(any("inconsistent evidence status" in error for error in errors))
+            self.assertTrue(any("lacks a matrix backlink" in error for error in errors))
 
     def test_rejects_calibration_arithmetic_and_incomplete_matrix(self):
         with tempfile.TemporaryDirectory() as temporary:

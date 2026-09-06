@@ -305,16 +305,42 @@ def build_eea1() -> tuple[dict[str, Any], dict[str, Any]]:
     for row in matrix["rows"]:
         levels = {item["dimension_id"]: item["demand_level"] for item in row["cells"]}
         source_ids = sorted({source for item in row["cells"] for source in item["source_ids"]})
+        system_requirement_ids = [item["system_requirement_id"] for item in row["cells"]]
+        linked_system_requirement_ids = [
+            item["system_requirement_id"]
+            for item in row["cells"]
+            if item["quantitative_requirement_ids"]
+        ]
         requirement_rows.append({
             "application_id": row["application_id"],
+            "system_requirement_ids": system_requirement_ids,
             "demand_levels": levels,
             "high_dimension_ids": sorted(key for key, value in levels.items() if value == "high"),
             "measurement_gap_count": sum(bool(item.get("measurement_gap_ja")) for item in row["cells"]),
             "quantitative_requirement_ids": sorted(requirements[row["application_id"]]),
+            "quantitative_linked_system_requirement_ids": linked_system_requirement_ids,
+            "acceptance_metric_ids": sorted({
+                metric_id for item in row["cells"] for metric_id in item["acceptance_metric_ids"]
+            }),
             "source_ids": source_ids,
+            "requirement_status": "provisional-owner-approval-required",
             "threshold_status": "not-approved",
         })
-    return eea, {"dimensions": matrix["dimensions"], "applications": requirement_rows}
+    candidate_count = sum(len(item["system_requirement_ids"]) for item in requirement_rows)
+    linked_count = sum(
+        len(item["quantitative_linked_system_requirement_ids"])
+        for item in requirement_rows
+    )
+    return eea, {
+        "summary": {
+            "candidate_count": candidate_count,
+            "quantitative_reference_linked_count": linked_count,
+            "qualitative_evidence_only_count": candidate_count - linked_count,
+            "owner_approved_count": 0,
+        },
+        "dimensions": matrix["dimensions"],
+        "applications": requirement_rows,
+    }
 
 
 def build_roadmaps(roadmaps: list[dict[str, Any]], dependency_register: dict[str, Any]) -> dict[str, Any]:
@@ -540,10 +566,11 @@ def render_report(data: dict[str, Any]) -> str:
     lines += ["", "## 5. EEA1再現性と性能評価", "", "`1 / 4 / 32 / 128 / 1024 / 10000`ノードを共通表示軸とします。異なる入力の実測は、同一入力の性能予測の校正点として扱いません。公開プロキシも、EEA1入力との一致を責任者が確認するまでは代替基準にしません。", "", "| アプリケーション | コード版 | 入力版 | 公開プロキシ | 確認済み成果物 | 不足成果物 | 公開実測ノード | 閾値・予測 |", "|---|---|---|---:|---|---|---|---|"]
     for item in eea["applications"]:
         lines.append(f"| {item['name']} | {esc(item['code_version'] or '未確認')} | {esc(item['input_version'] or '未確認')} | {len(item['public_proxy_assets'])} | {esc(', '.join(item['verified_artifacts']) or 'なし')} | {esc(', '.join(item['missing_artifacts']) or 'なし')} | {esc(', '.join(map(str, item['observed_node_scales'])) or 'なし')} | 閾値未承認 / 検証済み予測なし |")
-    lines += ["", "## 6. アプリケーション需要からシステム要件へ", "", "定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。", "", "| アプリケーション | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |", "|---|---|---|---:|"]
+    requirement_summary = data["application_requirements"]["summary"]
+    lines += ["", "## 6. アプリケーション需要からシステム要件へ", "", f"6アプリケーション×8要件軸を{requirement_summary['candidate_count']}件の暫定システム要件候補として識別しました。定量根拠への接続は{requirement_summary['quantitative_reference_linked_count']}件、定性根拠のみは{requirement_summary['qualitative_evidence_only_count']}件、人による承認済み要件は{requirement_summary['owner_approved_count']}件です。定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。", "", "| アプリケーション | 暫定要件候補 | 定量根拠接続 | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |", "|---|---:|---:|---|---|---:|"]
     names = {item["application_id"]: item["name"] for item in eea["applications"]}
     for item in data["application_requirements"]["applications"]:
-        lines.append(f"| {names[item['application_id']]} | {esc(', '.join(item['high_dimension_ids']) or 'none')} | {esc(', '.join(item['quantitative_requirement_ids']) or 'none')} | {item['measurement_gap_count']} |")
+        lines.append(f"| {names[item['application_id']]} | {len(item['system_requirement_ids'])} | {len(item['quantitative_linked_system_requirement_ids'])} | {esc(', '.join(item['high_dimension_ids']) or 'none')} | {esc(', '.join(item['quantitative_requirement_ids']) or 'none')} | {item['measurement_gap_count']} |")
     lines += ["", "## 7. 公開ロードマップと依存関係", "", "| ロードマップ | マイルストーン | 四半期未特定 | 未確認事項 (P0/P1/P2) |", "|---|---:|---:|---:|"]
     for item in roadmaps["roadmaps"]:
         counts = item["coverage_gap_counts"]
