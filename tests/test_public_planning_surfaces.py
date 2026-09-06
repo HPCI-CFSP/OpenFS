@@ -186,7 +186,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         self.assertEqual(
             {
                 "utilization": 6,
-                "power": 1,
+                "power": 5,
                 "availability-downtime": 7,
                 "jobs-history": 6,
                 "call-demand": 25,

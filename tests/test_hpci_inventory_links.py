@@ -136,7 +136,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             ]
             for system_id in item["system_ids"]
         }
-        self.assertEqual(14, len(quantitative_systems))
+        self.assertEqual(16, len(quantitative_systems))
         self.assertEqual(25, len(public_operational_systems))
         self.assertEqual(25, len(registered_operational_systems))
 
@@ -144,7 +144,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         for item in self.inventory["operational_observations"]:
             by_metric.setdefault(item["metric"], set()).update(item["system_ids"])
         self.assertEqual(6, len(by_metric["utilization"]))
-        self.assertEqual(1, len(by_metric["operating-power"] | by_metric.get("design-power", set())))
+        self.assertEqual(5, len(by_metric["operating-power"] | by_metric.get("design-power", set())))
         availability_metrics = {
             "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"
         }
