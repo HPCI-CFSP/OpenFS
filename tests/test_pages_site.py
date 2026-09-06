@@ -575,13 +575,14 @@ class PagesSiteTests(unittest.TestCase):
             )
             self.assertGreater(topics_by_id["ARCH-01"]["coverage_gap_count"], 0)
             self.assertEqual([], result["consensus_receipts"])
-            self.assertEqual(4, len(result["consensus_packages"]))
+            self.assertEqual(5, len(result["consensus_packages"]))
             self.assertEqual(
                 {
                     "CRP-P0-ROADMAPS-V02",
                     "CRP-P0-ROADMAPS-V03",
                     "CRP-P0-ROADMAPS-V04",
                     "CRP-P0-ROADMAPS-V05",
+                    "CRP-P0-ROADMAPS-V06",
                 },
                 {package["package_id"] for package in result["consensus_packages"]},
             )
@@ -622,12 +623,33 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(
                 "incomplete", result["fs3_decision_evidence"]["consensus_status"]
             )
+            self.assertEqual(
+                8, len(result["fs3_decision_evidence"]["claim_readiness"])
+            )
+            self.assertEqual(
+                5,
+                len(
+                    result["fs3_decision_evidence"]["planning_requirement_matrix"][
+                        "rows"
+                    ]
+                ),
+            )
             self.assertNotIn("publication", result["fs3_decision_evidence"])
             self.assertEqual(1, len(result["reports"]))
             self.assertEqual(
                 "REPORT-FS3-DECISION-EVIDENCE-20260906",
                 result["reports"][0]["report_id"],
             )
+            self.assertEqual(
+                "https://hpci-cfsp.github.io/OpenFS/reports/fs3-system-planning-evidence/",
+                result["reports"][0]["download_url"],
+            )
+            fs3_report_html = (
+                output / "reports" / "fs3-system-planning-evidence" / "index.html"
+            ).read_text(encoding="utf-8")
+            self.assertIn('id="report-claim-readiness"', fs3_report_html)
+            self.assertIn('id="report-planning-matrix"', fs3_report_html)
+            self.assertNotIn("{{ROOT_PREFIX}}", fs3_report_html)
             self.assertEqual(
                 6,
                 len(result["application_performance_forecasts"]["infrastructure_requirements_matrix"]["rows"]),

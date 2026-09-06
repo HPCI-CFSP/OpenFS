@@ -101,7 +101,7 @@ class ProcurementCostTests(unittest.TestCase):
         self.assertIsNone(five_year_known_cost_floor(shorter))
 
     def test_fugaku_annual_contracts_are_observations_not_five_year_extrapolations(self):
-        self.assertEqual(14, len(self.register["cases"]))
+        self.assertEqual(15, len(self.register["cases"]))
         expected = {
             "PROC-RIKEN-FUGAKU-MAINT-2024": 6261801700,
             "PROC-RIKEN-FUGAKU-MAINT-2025": 6259572132,
@@ -120,6 +120,15 @@ class ProcurementCostTests(unittest.TestCase):
             "refresh-and-expansion",
             cases["PROC-RIKEN-FUGAKU-OVERHAUL-2025"]["component_category"],
         )
+
+        hbw2 = cases["PROC-RIKEN-HBW2-ANNUAL-PAYMENT-2023"]
+        self.assertEqual("provider-reported-payment", hbw2["amount"]["kind"])
+        self.assertEqual("annual", hbw2["amount"]["payment_basis"])
+        self.assertEqual("approximate", hbw2["amount"]["precision"])
+        self.assertIsNone(five_year_known_cost_floor(hbw2))
+        self.assertIsNone(contract_breakdown(hbw2)["observed_total_jpy"])
+        with self.assertRaises(ValueError):
+            normalize_amount(hbw2["amount"])
 
     def test_every_case_has_a_complete_tco_scope_audit(self):
         scope_ids = [item["scope_id"] for item in self.register["tco_scope_catalog"]]

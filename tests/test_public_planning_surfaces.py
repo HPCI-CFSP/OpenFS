@@ -175,7 +175,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         )
         dimensions = {item["dimension_id"]: item for item in payload["dimensions"]}
         self.assertEqual(9, dimensions["system-lifecycle"]["coverage"]["numerator"])
-        self.assertEqual(14, dimensions["operations"]["coverage"]["numerator"])
+        self.assertEqual(21, dimensions["operations"]["coverage"]["numerator"])
         self.assertEqual(
             {"observed-start": 25, "any-lifecycle": 27},
             {
@@ -187,7 +187,7 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             {
                 "utilization": 6,
                 "power": 1,
-                "availability-downtime": 5,
+                "availability-downtime": 7,
                 "jobs-history": 6,
                 "call-demand": 25,
             },
@@ -197,7 +197,12 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            {"complete-tco": 0, "public-total": 11, "component-itemization": 0},
+            {
+                "complete-tco": 0,
+                "public-total": 11,
+                "provider-reported-payment": 1,
+                "component-itemization": 0,
+            },
             {
                 item["coverage_id"]: item["numerator"]
                 for item in dimensions["five-year-cost"]["supporting_coverages"]
@@ -374,6 +379,23 @@ class PublicPlanningSurfaceTests(unittest.TestCase):
         self.assertTrue(all(item["eea1_input_match"] != "confirmed" for item in packages))
         self.assertTrue(all(item["closure_plan"]["status"] == "blocked" for item in packages))
         self.assertTrue(all(len(item["closure_plan"]["required_artifacts"]) == 8 for item in packages))
+        salmon = next(
+            item for item in packages if item["application_id"] == "APP-EEA1-SALMON"
+        )
+        self.assertEqual(2, len(salmon["public_proxy_assets"]))
+        self.assertTrue(
+            all(
+                item["relationship_to_eea1"] == "public-proxy-not-matched"
+                for item in salmon["public_proxy_assets"]
+            )
+        )
+        self.assertTrue(
+            all(
+                item["input_version"] is None
+                for item in packages
+                if item["application_id"] == "APP-EEA1-SALMON"
+            )
+        )
         baseline_stage = next(
             item
             for item in payload["common_benchmark_campaign"]["stages"]

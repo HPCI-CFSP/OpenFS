@@ -111,12 +111,34 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         self.assertEqual(27, len(any_lifecycle))
         self.assertEqual(9, len(future))
 
-        evidence = [
-            *self.inventory["operational_observations"],
-            *self.inventory["operational_data_products"],
-        ]
-        systems_with_any = {system_id for item in evidence for system_id in item["system_ids"]}
-        self.assertEqual(14, len(systems_with_any))
+        quantitative_systems = {
+            system_id
+            for item in self.inventory["operational_observations"]
+            for system_id in item["system_ids"]
+        }
+        public_operational_systems = {
+            system_id
+            for item in [
+                *self.inventory["operational_observations"],
+                *[
+                    product
+                    for product in self.inventory["operational_data_products"]
+                    if product["access_status"] == "public-read"
+                ],
+            ]
+            for system_id in item["system_ids"]
+        }
+        registered_operational_systems = {
+            system_id
+            for item in [
+                *self.inventory["operational_observations"],
+                *self.inventory["operational_data_products"],
+            ]
+            for system_id in item["system_ids"]
+        }
+        self.assertEqual(14, len(quantitative_systems))
+        self.assertEqual(21, len(public_operational_systems))
+        self.assertEqual(24, len(registered_operational_systems))
 
         by_metric = {}
         for item in self.inventory["operational_observations"]:
@@ -127,7 +149,7 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
             "system-availability", "scheduled-maintenance", "unplanned-downtime", "service-hours"
         }
         availability = set().union(*(by_metric.get(metric, set()) for metric in availability_metrics))
-        self.assertEqual(5, len(availability))
+        self.assertEqual(7, len(availability))
         jobs = set(by_metric["job-count"])
         jobs.update(
             system_id

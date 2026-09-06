@@ -1268,7 +1268,11 @@ def validate(root: Path = ROOT) -> list[str]:
             system_id
             for item in [
                 *inventory["operational_observations"],
-                *inventory["operational_data_products"],
+                *[
+                    product
+                    for product in inventory["operational_data_products"]
+                    if product["access_status"] == "public-read"
+                ],
             ]
             for system_id in item["system_ids"]
         }
@@ -1346,7 +1350,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     for case in register["cases"]
                 ),
                 "public-total": sum(
-                    case.get("amount") is not None for case in register["cases"]
+                    (case.get("amount") or {}).get("kind") in {"contract", "award"}
+                    for case in register["cases"]
+                ),
+                "provider-reported-payment": sum(
+                    (case.get("amount") or {}).get("kind") == "provider-reported-payment"
+                    for case in register["cases"]
                 ),
                 "component-itemization": sum(
                     bool(case["itemized_costs"]) for case in register["cases"]

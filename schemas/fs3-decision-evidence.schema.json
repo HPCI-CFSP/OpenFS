@@ -8,8 +8,8 @@
     "schema_version", "artifact_id", "status", "as_of", "research_status",
     "consensus_status", "title_ja", "title_en", "summary_ja", "summary_en",
     "security_readiness", "hpci_systems", "procurements", "eea1",
-    "application_requirements", "roadmaps", "report_structure", "caveat_ja",
-    "caveat_en", "publication"
+    "application_requirements", "roadmaps", "report_structure", "claim_readiness",
+    "planning_requirement_matrix", "caveat_ja", "caveat_en", "publication"
   ],
   "properties": {
     "schema_version": {"const": "0.1.0"},
@@ -29,6 +29,8 @@
     "application_requirements": {"$ref": "#/$defs/requirementSection"},
     "roadmaps": {"$ref": "#/$defs/roadmapSection"},
     "report_structure": {"type": "array", "minItems": 8, "items": {"$ref": "#/$defs/chapter"}},
+    "claim_readiness": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/claimReadiness"}},
+    "planning_requirement_matrix": {"$ref": "#/$defs/planningRequirementMatrix"},
     "caveat_ja": {"$ref": "#/$defs/text"},
     "caveat_en": {"$ref": "#/$defs/text"},
     "publication": {"$ref": "public-hpci-system-inventory.schema.json#/$defs/publication"}
@@ -60,11 +62,16 @@
     },
     "systemRow": {
       "type": "object", "additionalProperties": false,
-      "required": ["system_id", "name_ja", "name_en", "center_id", "lifecycle_status", "lifecycle_refs", "operations_status", "operational_evidence_refs", "facility_status", "facility_evidence_refs", "next_action_ja", "next_action_en"],
+      "required": ["system_id", "name_ja", "name_en", "center_id", "lifecycle_status", "lifecycle_refs", "operations_status", "operational_evidence_refs", "quantitative_operational_refs", "public_aggregate_refs", "public_status_refs", "restricted_operational_refs", "facility_status", "facility_evidence_refs", "next_action_ja", "next_action_en"],
       "properties": {
         "system_id": {"type": "string", "pattern": "^HPCI-SYS-[A-Z0-9-]+$"}, "name_ja": {"$ref": "#/$defs/text"}, "name_en": {"$ref": "#/$defs/text"}, "center_id": {"$ref": "#/$defs/text"},
         "lifecycle_status": {"enum": ["future-public-timing", "history-only"]}, "lifecycle_refs": {"$ref": "#/$defs/refs"},
-        "operations_status": {"enum": ["registered", "coverage-gap"]}, "operational_evidence_refs": {"$ref": "#/$defs/refs"},
+        "operations_status": {"enum": ["quantitative-observation", "published-aggregate", "public-status-feed", "restricted-data-product", "coverage-gap"]},
+        "operational_evidence_refs": {"$ref": "#/$defs/refs"},
+        "quantitative_operational_refs": {"$ref": "#/$defs/refs"},
+        "public_aggregate_refs": {"$ref": "#/$defs/refs"},
+        "public_status_refs": {"$ref": "#/$defs/refs"},
+        "restricted_operational_refs": {"$ref": "#/$defs/refs"},
         "facility_status": {"enum": ["power-evidence-registered", "coverage-gap"]}, "facility_evidence_refs": {"$ref": "#/$defs/refs"},
         "next_action_ja": {"$ref": "#/$defs/text"}, "next_action_en": {"$ref": "#/$defs/text"}
       }
@@ -76,9 +83,9 @@
     },
     "procurementRow": {
       "type": "object", "additionalProperties": false,
-      "required": ["case_id", "title_ja", "title_en", "amount_jpy", "amount_basis", "public_document_count", "specification_access", "component_scope_evidence_count", "component_itemization_count", "five_year_status", "known_five_year_floor_jpy", "unknown_scope_count", "decision_use_ja", "decision_use_en"],
+      "required": ["case_id", "title_ja", "title_en", "amount_jpy", "amount_kind", "amount_basis", "public_document_count", "specification_access", "component_scope_evidence_count", "component_itemization_count", "five_year_status", "known_five_year_floor_jpy", "unknown_scope_count", "decision_use_ja", "decision_use_en"],
       "properties": {
-        "case_id": {"$ref": "#/$defs/text"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "amount_jpy": {"type": ["number", "null"], "minimum": 0}, "amount_basis": {"type": ["string", "null"]},
+        "case_id": {"$ref": "#/$defs/text"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "amount_jpy": {"type": ["number", "null"], "minimum": 0}, "amount_kind": {"enum": ["contract", "award", "provider-reported-payment", null]}, "amount_basis": {"type": ["string", "null"]},
         "public_document_count": {"type": "integer", "minimum": 0}, "specification_access": {"enum": ["public-read", "not-obtained", "restricted", "none"]}, "component_scope_evidence_count": {"type": "integer", "minimum": 0}, "component_itemization_count": {"type": "integer", "minimum": 0},
         "five_year_status": {"enum": ["known-contractual-floor", "not-computable"]}, "known_five_year_floor_jpy": {"type": ["number", "null"], "minimum": 0}, "unknown_scope_count": {"type": "integer", "minimum": 0}, "decision_use_ja": {"$ref": "#/$defs/text"}, "decision_use_en": {"$ref": "#/$defs/text"}
       }
@@ -90,9 +97,9 @@
     },
     "eeaRow": {
       "type": "object", "additionalProperties": false,
-      "required": ["application_id", "name", "domain_ja", "domain_en", "package_status", "code_version", "input_version", "eea1_input_match", "verified_artifacts", "missing_artifacts", "observed_node_scales", "standard_scale_readiness", "measurement_contract_complete", "threshold_status", "correctness_rule_status", "quantitative_requirement_ids"],
+      "required": ["application_id", "name", "domain_ja", "domain_en", "package_status", "code_version", "input_version", "eea1_input_match", "public_proxy_assets", "verified_artifacts", "missing_artifacts", "observed_node_scales", "standard_scale_readiness", "measurement_contract_complete", "threshold_status", "correctness_rule_status", "quantitative_requirement_ids"],
       "properties": {
-        "application_id": {"$ref": "#/$defs/text"}, "name": {"$ref": "#/$defs/text"}, "domain_ja": {"$ref": "#/$defs/text"}, "domain_en": {"$ref": "#/$defs/text"}, "package_status": {"$ref": "#/$defs/text"}, "code_version": {"type": ["string", "null"]}, "input_version": {"type": ["string", "null"]}, "eea1_input_match": {"$ref": "#/$defs/text"}, "verified_artifacts": {"$ref": "#/$defs/refs"}, "missing_artifacts": {"$ref": "#/$defs/refs"}, "observed_node_scales": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 1}}, "standard_scale_readiness": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"type": "object"}}, "measurement_contract_complete": {"type": "boolean"}, "threshold_status": {"const": "not-approved"}, "correctness_rule_status": {"const": "draft-not-approved"}, "quantitative_requirement_ids": {"$ref": "#/$defs/refs"}
+        "application_id": {"$ref": "#/$defs/text"}, "name": {"$ref": "#/$defs/text"}, "domain_ja": {"$ref": "#/$defs/text"}, "domain_en": {"$ref": "#/$defs/text"}, "package_status": {"$ref": "#/$defs/text"}, "code_version": {"type": ["string", "null"]}, "input_version": {"type": ["string", "null"]}, "eea1_input_match": {"$ref": "#/$defs/text"}, "public_proxy_assets": {"type": "array", "items": {"type": "object"}}, "verified_artifacts": {"$ref": "#/$defs/refs"}, "missing_artifacts": {"$ref": "#/$defs/refs"}, "observed_node_scales": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 1}}, "standard_scale_readiness": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"type": "object"}}, "measurement_contract_complete": {"type": "boolean"}, "threshold_status": {"const": "not-approved"}, "correctness_rule_status": {"const": "draft-not-approved"}, "quantitative_requirement_ids": {"$ref": "#/$defs/refs"}
       }
     },
     "requirementSection": {
@@ -109,6 +116,52 @@
       "type": "object", "additionalProperties": false,
       "required": ["chapter_id", "title_ja", "title_en", "purpose_ja", "purpose_en", "evidence_refs"],
       "properties": {"chapter_id": {"type": "string", "pattern": "^CH-[0-9]{2}$"}, "title_ja": {"$ref": "#/$defs/text"}, "title_en": {"$ref": "#/$defs/text"}, "purpose_ja": {"$ref": "#/$defs/text"}, "purpose_en": {"$ref": "#/$defs/text"}, "evidence_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}}}
+    },
+    "claimReadiness": {
+      "type": "object", "additionalProperties": false,
+      "required": ["chapter_id", "claim_state", "publishable_claim_ja", "publishable_claim_en", "evidence_refs", "unresolved_refs", "owner_action_ja", "owner_action_en", "decision_authority_ja", "decision_authority_en"],
+      "properties": {
+        "chapter_id": {"type": "string", "pattern": "^CH-[0-9]{2}$"},
+        "claim_state": {"enum": ["publishable-with-caveat", "evidence-incomplete", "blocked"]},
+        "publishable_claim_ja": {"$ref": "#/$defs/text"}, "publishable_claim_en": {"$ref": "#/$defs/text"},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "unresolved_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "owner_action_ja": {"$ref": "#/$defs/text"}, "owner_action_en": {"$ref": "#/$defs/text"},
+        "decision_authority_ja": {"$ref": "#/$defs/text"}, "decision_authority_en": {"$ref": "#/$defs/text"}
+      }
+    },
+    "scenarioImplication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenario_id", "scenario_title_ja", "scenario_title_en", "impact_status", "interpretation_ja", "interpretation_en"],
+      "properties": {
+        "scenario_id": {"type": "string", "pattern": "^SCN-HPCI-[A-Z0-9-]+$"},
+        "scenario_title_ja": {"$ref": "#/$defs/text"}, "scenario_title_en": {"$ref": "#/$defs/text"},
+        "impact_status": {"enum": ["blocking", "available-with-caveat"]},
+        "interpretation_ja": {"$ref": "#/$defs/text"}, "interpretation_en": {"$ref": "#/$defs/text"}
+      }
+    },
+    "planningRequirementRow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requirement_id", "label_ja", "label_en", "evidence_status", "evidence_refs", "coverage_gaps_ja", "coverage_gaps_en", "scenario_implications"],
+      "properties": {
+        "requirement_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "label_ja": {"$ref": "#/$defs/text"}, "label_en": {"$ref": "#/$defs/text"},
+        "evidence_status": {"enum": ["partial", "blocked", "ready"]},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "coverage_gaps_ja": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "coverage_gaps_en": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+        "scenario_implications": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/scenarioImplication"}}
+      }
+    },
+    "planningRequirementMatrix": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "scenario_ids", "rows", "caveat_ja", "caveat_en"],
+      "properties": {
+        "status": {"const": "provisional-not-scored"},
+        "scenario_ids": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^SCN-HPCI-[A-Z0-9-]+$"}},
+        "rows": {"type": "array", "minItems": 5, "items": {"$ref": "#/$defs/planningRequirementRow"}},
+        "caveat_ja": {"$ref": "#/$defs/text"}, "caveat_en": {"$ref": "#/$defs/text"}
+      }
     }
   }
 }

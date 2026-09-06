@@ -71,7 +71,11 @@ def lease_period_total(case: dict[str, Any]) -> dict[str, Any] | None:
 def five_year_known_cost_floor(case: dict[str, Any]) -> dict[str, Any] | None:
     """Return only a five-year contractual subtotal supported by explicit billing evidence."""
     amount = case.get("amount")
-    if not amount or amount.get("payment_basis") != "monthly":
+    if (
+        not amount
+        or amount.get("kind") not in {"contract", "award"}
+        or amount.get("payment_basis") != "monthly"
+    ):
         return None
     months = amount.get("period_months")
     if not isinstance(months, int) or isinstance(months, bool) or months < 60:
@@ -95,10 +99,10 @@ def five_year_known_cost_floor(case: dict[str, Any]) -> dict[str, Any] | None:
 def contract_breakdown(case: dict[str, Any]) -> dict[str, Any]:
     """Keep residual cost unallocated, in the ORIGINAL contract's tax basis."""
     amount = case.get("amount")
-    if amount and amount["kind"] not in {"contract", "award"}:
-        raise ValueError("a budget is not an observed contract cost")
     if not amount or amount["payment_basis"] != "total":
         return {"observed_total_jpy": None, "itemized_jpy": None, "unallocated_jpy": None}
+    if amount["kind"] not in {"contract", "award"}:
+        raise ValueError("a budget or provider estimate is not an observed contract cost")
     total = number(amount["value_jpy"])
     allocated = Decimal(0)
     ids: set[str] = set()
