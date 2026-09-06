@@ -363,6 +363,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-TSUKUBA-SIRIUS-2026Q1",
                 "MS-BLUE-TSUKUBA-SIRIUS-FULL-2026Q2",
                 "MS-BLUE-TSUKUBA-SIRIUS-EXPANSION-UNDATED",
+                "MS-BLUE-TSUKUBA-SIRIUS-LEASE-END-2031Q3",
                 "MS-BLUE-TSUKUBA-HPC-AI-INTRO-2027Q1",
                 "MS-BLUE-NAGOYA-FLOW2-2026Q4",
                 "MS-BLUE-NAGOYA-FURO-END-2026Q1",

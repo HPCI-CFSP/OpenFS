@@ -83,7 +83,11 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
         self.assertIsNone(milestone["year"])
         self.assertEqual("no-public-date", milestone["timing_basis"])
         link_inventory_evidence(self.inventory, self.register, self.roadmaps)
-        self.assertIsNone(source_system["lifecycle_events"][-1]["year"])
+        linked_event = next(
+            event for event in source_system["lifecycle_events"]
+            if event["milestone_id"] == "MS-BLUE-TSUKUBA-SIRIUS-EXPANSION-UNDATED"
+        )
+        self.assertIsNone(linked_event["year"])
         self.assertEqual(24, source_system["specifications"]["node_count"])
         self.assertEqual("512 GiB (4 x 128 GiB unified memory)", source_system["specifications"]["node_memory"])
         self.assertEqual({"year": 2026, "quarter": "Q2"}, source_system["availability_windows"][0]["start"])
@@ -109,13 +113,14 @@ class InventoryEvidenceLinkTests(unittest.TestCase):
                     future.add(system["system_id"])
         self.assertEqual(25, len(observed))
         self.assertEqual(27, len(any_lifecycle))
-        self.assertEqual(16, len(future))
+        self.assertEqual(17, len(future))
         expected_contractual_ends = {
             "HPCI-SYS-OCTOPUS-CPU": "MS-BLUE-OSAKA-OCTOPUS-LEASE-END-2031Q3",
             "HPCI-SYS-CAMPHOR3-A": "MS-BLUE-KYOTO-CAMPHOR3-LEASE-END-2027Q4",
             "HPCI-SYS-AOBA-S": "MS-BLUE-TOHOKU-AOBA-S-LEASE-END-2028Q1",
             "HPCI-SYS-GRAND-CHARIOT2-CPU": "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
             "HPCI-SYS-GRAND-CHARIOT2-GPU": "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
+            "HPCI-SYS-SIRIUS": "MS-BLUE-TSUKUBA-SIRIUS-LEASE-END-2031Q3",
         }
         systems = {item["system_id"]: item for item in self.inventory["systems"]}
         for system_id, milestone_id in expected_contractual_ends.items():

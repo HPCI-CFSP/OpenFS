@@ -85,7 +85,7 @@ test("inventory links resolve to the correct bilingual lifecycle dialog", () => 
     assert.ok(performance.textContent.includes("496.08"));
     assert.ok(performance.textContent.includes(language === "ja" ? "性能値の定義" : "Peak-performance definitions"));
     const events = f.walk(row).filter((el) => el.href?.includes("milestone="));
-    assert.equal(events.length, 3);
+    assert.equal(events.length, 4);
     assert.equal(f.walk(row).filter((el) => el.href?.includes("#procurement-")).length, 1);
     for (const event of events) {
       const url = new URL(event.href, f.location);
