@@ -63,6 +63,11 @@ class RoadmapGapQueueTests(unittest.TestCase):
             len(p0_discovery), queue["summary"]["p0_explicit_query_overrides"]
         )
         self.assertEqual(0, queue["summary"]["p0_generated_query_fallbacks"])
+        self.assertEqual(12, queue["summary"]["p0_evidence_review_required"])
+        self.assertEqual(13, queue["summary"]["p0_reproducible_measurement_required"])
+        self.assertEqual(4, queue["summary"]["p0_conformance_test_required"])
+        self.assertEqual(6, queue["summary"]["p0_authority_confirmation_required"])
+        self.assertEqual(1, queue["summary"]["p0_consensus_quorum_required"])
         p0_items = [item for item in queue["assignments"] if item["priority"] == "P0"]
         self.assertTrue(
             all(item["closure_state"] == "criteria-unverified" for item in p0_items)

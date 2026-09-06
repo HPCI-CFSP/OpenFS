@@ -82,3 +82,16 @@ test("portfolio and all plan pages pass their actual root prefix to the budget r
     }
   }
 });
+
+test("evidence page distinguishes P0 closure methods from Web discovery", () => {
+  const expected = data.roadmap_assurance.gap_queue.summary;
+  for (const language of ["ja", "en"]) {
+    const f = fixture("roadmaps/evidence/", language);
+    const summary = f.document.getElementById("gap-queue-summary");
+    assert.equal(summary.childElementCount, 9);
+    assert.ok(summary.textContent.includes(language === "ja" ? "再現測定が必要" : "Reproducible measurement required"));
+    assert.ok(summary.textContent.includes(String(expected.p0_reproducible_measurement_required)));
+    assert.ok(summary.textContent.includes(language === "ja" ? "責任主体の確認が必要" : "Authority confirmation required"));
+    assert.ok(summary.textContent.includes(String(expected.p0_authority_confirmation_required)));
+  }
+});

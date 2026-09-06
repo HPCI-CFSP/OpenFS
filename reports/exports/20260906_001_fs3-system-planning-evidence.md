@@ -2,7 +2,7 @@
 
 基準日: 2026-09-06 / Status: provisional / Consensus: incomplete
 
-HPCI 27システム、公開調達15案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
+HPCI 27システム、公開調達16案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
 
 > 単一のAIモデル・単一エージェントによる公開情報ベースの暫定整理です。独立したAIモデルによるConsensus Gate、各責任者による要件・閾値・予算・調達判断は未完了です。充足数は調査範囲であり、案の点数や推奨順位を示すものではありません。
 
@@ -10,10 +10,10 @@ HPCI 27システム、公開調達15案件、EEA1 6アプリ、19ロードマッ
 
 | 対象 | 登録数 | 現在確認できる範囲 | 判断上の境界 |
 |---|---:|---|---|
-| HPCIシステム | 27 | 将来時期 9、数値運用実績 14、公開集計 8、公開運用フィード 7、電力根拠 1 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
-| 公開調達 | 15 | 契約・落札総額 11、概算年額 1、公開仕様 5、60か月費用下限 1 | 費目別の価格内訳 0件、完全なTCO 0件 |
+| HPCIシステム | 27 | 将来時期 22、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
+| 公開調達 | 16 | 契約・落札総額 12、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
-| ロードマップ | 19 | 387マイルストーン、30依存関係 | Consensus Gate未完了 |
+| ロードマップ | 19 | 398マイルストーン、30依存関係 | Consensus Gate未完了 |
 
 ```mermaid
 flowchart LR
@@ -37,35 +37,35 @@ flowchart LR
 
 | システム | センター | 将来時期 | 運用根拠 | 数値/集計/状態/認証 | 電力・施設根拠 | 次の確認 |
 |---|---|---|---|---|---|---|
-| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 過去・現況のみ | 数値実績あり | 8/2/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
+| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 将来時期の公開根拠あり | 数値実績あり | 9/2/0/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
 | Wisteria/BDEC-01 Odyssey | `CENTER-UTOKYO-ITC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | SQUID 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| OCTOPUS 汎用CPUノード群 | `CENTER-OSAKA-D3` | 過去・現況のみ | 認証付き利用者データのみ | 0/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| Camphor3 システムA | `CENTER-KYOTO-ACCMS` | 過去・現況のみ | 数値実績あり | 5/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
-| 玄界 ノードグループA | `CENTER-KYUSHU-RIIT` | 過去・現況のみ | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
-| Grand Chariot 2 CPUノード | `CENTER-HOKKAIDO-IIC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| OCTOPUS 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| Camphor3 システムA | `CENTER-KYOTO-ACCMS` | 将来時期の公開根拠あり | 数値実績あり | 5/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| 玄界 ノードグループA | `CENTER-KYUSHU-RIIT` | 将来時期の公開根拠あり | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| Grand Chariot 2 CPUノード | `CENTER-HOKKAIDO-IIC` | 将来時期の公開根拠あり | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | HOKUSAI BigWaterfall2 | `CENTER-RIKEN-IRDS` | 将来時期の公開根拠あり | 数値実績あり | 1/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| Miyabi-C 汎用CPUノード群 | `CENTER-JCAHPC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| Miyabi-C 汎用CPUノード群 | `CENTER-JCAHPC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/1/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
 | 不老・弐 Type Iサブシステム | `CENTER-NAGOYA-ITC` | 将来時期の公開根拠あり | 公開根拠未確認 | 0/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| 地球シミュレータ CPUノード部 ES4CPU | `CENTER-JAMSTEC-CEIST` | 過去・現況のみ | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
-| AOBA-B LX 406Rz-2 | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 認証付き利用者データのみ | 0/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| データ同化スーパーコンピュータシステム | `CENTER-ISM-CSST` | 過去・現況のみ | 公開根拠未確認 | 0/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| 地球シミュレータ CPUノード部 ES4CPU | `CENTER-JAMSTEC-CEIST` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| AOBA-B LX 406Rz-2 | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| データ同化スーパーコンピュータシステム | `CENTER-ISM-CSST` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | 不老・弐 Type IIサブシステム | `CENTER-NAGOYA-ITC` | 将来時期の公開根拠あり | 公開根拠未確認 | 0/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| Miyabi-G 演算加速ノード群 | `CENTER-JCAHPC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| Sirius PACS12.0 | `CENTER-TSUKUBA-CCS` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| TSUBAME4.0 | `CENTER-SCIENCE-TOKYO-IIC` | 過去・現況のみ | 数値実績あり | 6/0/0/0 | 電力根拠登録済み (2) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
-| 玄界 ノードグループB | `CENTER-KYUSHU-RIIT` | 過去・現況のみ | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
+| Miyabi-G 演算加速ノード群 | `CENTER-JCAHPC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/1/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
+| Sirius PACS12.0 | `CENTER-TSUKUBA-CCS` | 将来時期の公開根拠あり | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| TSUBAME4.0 | `CENTER-SCIENCE-TOKYO-IIC` | 将来時期の公開根拠あり | 数値実績あり | 6/0/0/0 | 電力根拠登録済み (2) | 確認済みの範囲を維持する。 |
+| 玄界 ノードグループB | `CENTER-KYUSHU-RIIT` | 将来時期の公開根拠あり | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | Pegasus | `CENTER-TSUKUBA-CCS` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | Wisteria/BDEC-01 Aquarius | `CENTER-UTOKYO-ITC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | SQUID GPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | Grand Chariot 2 GPUノード | `CENTER-HOKKAIDO-IIC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| AOBA-A | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 認証付き利用者データのみ | 0/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
-| AOBA-S | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 数値実績あり | 3/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
-| 地球シミュレータ VE搭載ノード部 ES4VE | `CENTER-JAMSTEC-CEIST` | 過去・現況のみ | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
+| AOBA-A | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
+| AOBA-S | `CENTER-TOHOKU-CSC` | 将来時期の公開根拠あり | 数値実績あり | 3/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| 地球シミュレータ VE搭載ノード部 ES4VE | `CENTER-JAMSTEC-CEIST` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | SQUID ベクトルノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| ABCI 3.0 | `CENTER-AIST-IHF` | 過去・現況のみ | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、同一境界の設計・運転電力と冷却条件を確認する。 |
+| ABCI 3.0 | `CENTER-AIST-IHF` | 過去・現況のみ | 数値実績あり | 2/0/0/0 | 電力根拠登録済み (1) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
 
-## 4. 公開調達15案件と5年間費用
+## 4. 公開調達16案件と5年間費用
 
 | 調達案件 | 公表額 | 金額区分 | 仕様書 | 費目根拠 | 60か月費用 | 未確認費目 | 判断への利用 |
 |---|---:|---|---|---:|---:|---:|---|
@@ -83,6 +83,7 @@ flowchart LR
 | 情報・システム研究機構 AI技術開発用GPUサーバ | 79,970,000円 | 落札総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
 | 京都大学 ゲノム科学・計算化学向け次期スーパーコンピュータ要求要件 | 未確認 | 未確認 | 公開仕様書を確認済み | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
 | JAXA JSS4 コンピュータ基盤システム要求要件 | 未確認 | 未確認 | 公開仕様書を確認済み | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
+| 東京工業大学 TSUBAME4.0スーパーコンピュータの借入 | 84,064,519円 | 落札総額 | 公開仕様書を未取得 | 3/12 | 5,043,871,140円 | 9/12 | 公表された契約範囲に限る60か月費用下限として利用できます。完全なTCOではありません。 |
 | HOKUSAI BigWaterfall2 提供機関公表の年間支払額 | 300,000,000円 | 提供機関公表の概算年額 | 仕様書なし | 4/12 | 未確認 | 8/12 | 提供機関公表の概算年額として費用境界の参考にできますが、落札額・契約総額・5年間TCOではありません。 |
 
 ## 5. EEA1再現性と性能評価
@@ -100,16 +101,16 @@ flowchart LR
 
 ## 6. アプリケーション需要からシステム要件へ
 
-定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。
+6アプリケーション×8要件軸を48件の暫定システム要件候補として識別しました。定量根拠への接続は13件、定性根拠のみは35件、人による承認済み要件は0件です。定性的な`high / medium / low / unknown`は設計上の注意点であり、採用閾値や点数ではありません。数値がある場合も、公開実測範囲または公開目標として保持します。
 
-| アプリケーション | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |
-|---|---|---|---:|
-| GENESIS | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-GENESIS-SCALE | 8 |
-| SALMON | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-SALMON-SCALE, REQ-PERF-SALMON-STEP-TARGET | 8 |
-| SCALE-LETKF | compute-throughput, data-governance, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-SCALE-LETKF-SCALE | 8 |
-| E-Wave | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io | REQ-PERF-EWAVE-GAP, REQ-PERF-EWAVE-MEASURED | 8 |
-| FrontFlow/blue | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-FFB-SCALE | 8 |
-| LQCD-DWF-HMC | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-LQCD-SCALE | 8 |
+| アプリケーション | 暫定要件候補 | 定量根拠接続 | 高い要求が想定される軸 | 定量要件・実測範囲 | 測定不足セル |
+|---|---:|---:|---|---|---:|
+| GENESIS | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-GENESIS-SCALE | 8 |
+| SALMON | 8 | 3 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-SALMON-SCALE, REQ-PERF-SALMON-STEP-TARGET | 8 |
+| SCALE-LETKF | 8 | 2 | compute-throughput, data-governance, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-SCALE-LETKF-SCALE | 8 |
+| E-Wave | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io | REQ-PERF-EWAVE-GAP, REQ-PERF-EWAVE-MEASURED | 8 |
+| FrontFlow/blue | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect, storage-io, workflow-latency | REQ-PERF-FFB-SCALE | 8 |
+| LQCD-DWF-HMC | 8 | 2 | compute-throughput, memory-capacity-bandwidth, scale-out-interconnect | REQ-PERF-LQCD-SCALE | 8 |
 
 ## 7. 公開ロードマップと依存関係
 
@@ -130,7 +131,7 @@ flowchart LR
 | [通信・ランタイム・スケジューリング・OS](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/runtime-scheduling-os/?lang=ja) | 4 | 2 | 0/1/1 |
 | [認証・セキュリティ・連合運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/identity-security-federation/?lang=ja) | 4 | 2 | 0/1/1 |
 | [データ・AI・実験ワークフロー基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/data-workflow-platform/?lang=ja) | 4 | 2 | 0/1/1 |
-| [参照構成・HPCI基盤センター導入](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/reference-blueprint-centers/?lang=ja) | 70 | 4 | 6/2/0 |
+| [参照構成・HPCI基盤センター導入](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/reference-blueprint-centers/?lang=ja) | 81 | 4 | 6/2/0 |
 | [技術動向監視・新規調査項目発見](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/horizon-scanning-topic-discovery/?lang=ja) | 4 | 1 | 0/1/1 |
 | [統合運用・ガバナンス・サービス継続](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/operations-governance-continuity/?lang=ja) | 4 | 2 | 0/1/1 |
 | [調達・共同投資・システム整備計画案](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/procurement-investment-scenarios/?lang=ja) | 4 | 2 | 0/1/1 |
@@ -154,21 +155,21 @@ flowchart LR
 
 | 根拠領域 | 根拠状態 | バランス型・連携基盤 | AI・データ集約型重点整備 | 段階導入・代替選択肢維持型 | 主な未確認事項 |
 |---|---|---|---|---|---|
-| システム更新時期・移行制約 | 一部確認済み | 注記付きで利用可能 | 注記付きで利用可能 | 確定を妨げる | 18システムは提供機関が公表した将来の更新・終了・増強時期へ未接続です。 / 不老・弐2資源の正式な稼働開始時期と、統計数理研究所システムのHPCI提供開始日は未確認です。 |
-| 稼働率・電力・利用実態 | 一部確認済み | 確定を妨げる | 確定を妨げる | 確定を妨げる | 期間、分母、保守除外、電力境界が提供機関間で一致していません。 / 6システムには公開運用情報がなく、電力の数値は1システムだけです。公開ステータスと認証付きポータルだけでは、稼働率、待ち時間、採択後の利用量を判断できません。 |
+| システム更新時期・移行制約 | 一部確認済み | 注記付きで利用可能 | 注記付きで利用可能 | 確定を妨げる | 5システムは提供機関が公表した将来の運用継続・更新・終了・増強時期へ未接続です。 / 不老・弐2資源の正式な稼働開始時期と、統計数理研究所システムのHPCI提供開始日は未確認です。 |
+| 稼働率・電力・利用実態 | 一部確認済み | 確定を妨げる | 確定を妨げる | 確定を妨げる | 期間、分母、保守除外、電力境界が提供機関間で一致していません。 / 稼働前の不老・弐2資源を除く25システムに公開運用情報への経路がありますが、電力の数値は5システムに限られ、富岳本体の運用電力、Miyabiのノード定格、ABCIの施設容量、TSUBAME4.0の冷却込み電力で境界が異なります。公開ステータスと認証付きポータルだけでは、稼働率、待ち時間、採択後の利用量を判断できません。 |
 | 公開調達額・5年間費用 | 根拠不足のため確定不可 | 確定を妨げる | 確定を妨げる | 確定を妨げる | 契約ごとの包含・除外と共用費配賦が未確認です。 / 公開価格と将来構成の対応は未校正です。 |
 | EEA1実測・性能モデル | 一部確認済み | 確定を妨げる | 確定を妨げる | 確定を妨げる | 6アプリケーションすべてで、EEA1入力と一致する再配布可能な基準測定パッケージが未完成です。E-WaveとFrontFlow/blueはコード本体も非公開です。 / 2つの補間候補はいずれも1システム・1入力・1出所です。 |
 | アプリケーション定量要件 | 根拠不足のため確定不可 | 確定を妨げる | 確定を妨げる | 確定を妨げる | 測定範囲は要求値そのものではありません。 / 利用者・分野代表者による目標値の承認が必要です。 |
 
 ## English summary
 
-A provisional package connecting 27 HPCI systems, 15 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
+A provisional package connecting 27 HPCI systems, 16 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
 - Secure unattended Web research: **blocked**; 84 source-triage entries remain unresolved.
-- HPCI inventory: 27 systems; 9 have public future lifecycle timing, 14 have quantitative operational observations, 8 have public aggregate products, 7 have public status or notice feeds; systems with registered power evidence: 1.
-- Procurement: 15 cases; public contract or award totals: 11; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
+- HPCI inventory: 27 systems; 22 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
+- Procurement: 16 cases; public contract or award totals: 12; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
 - Roadmaps: 19 provisional public roadmaps and 30 registered cross-roadmap dependencies.
 

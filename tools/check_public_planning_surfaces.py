@@ -202,6 +202,10 @@ def validate_topic_decision_support(root: Path) -> list[str]:
             errors.append(f"{profile['topic_id']} lacks an explicit Coverage Gap")
 
         layout = profile.get("page_layout")
+        if profile["topic_id"] in partial_topic_ids and not layout:
+            errors.append(
+                f"active Topic {profile['topic_id']} lacks a structured page layout"
+            )
         if layout:
             components = layout["components"]
             component_ids = [item["component_id"] for item in components]
@@ -220,6 +224,18 @@ def validate_topic_decision_support(root: Path) -> list[str]:
                         f"{profile['topic_id']} page layout must contain exactly one "
                         f"{component_type} component"
                     )
+            comparison_component_count = sum(
+                item["type"] == "topic-comparisons" for item in components
+            )
+            if comparison_component_count > 1:
+                errors.append(
+                    f"{profile['topic_id']} page layout repeats topic-comparisons"
+                )
+            if layout["layout_mode"] == "generated" and comparison_component_count != 1:
+                errors.append(
+                    f"{profile['topic_id']} generated page layout must contain "
+                    "exactly one topic-comparisons component"
+                )
             if components[0]["type"] != "topic-overview":
                 errors.append(f"{profile['topic_id']} page layout must start with topic-overview")
             if len(components) < 2 or components[1]["type"] != "research-unit-index":
@@ -681,6 +697,9 @@ def validate(root: Path = ROOT) -> list[str]:
             errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
 
     requirement_ids = [item["requirement_id"] for item in forecasts["quantitative_requirements"]]
+    quantitative_requirements_by_id = {
+        item["requirement_id"]: item for item in forecasts["quantitative_requirements"]
+    }
     if duplicates := duplicate_values(requirement_ids):
         errors.append(f"duplicate quantitative requirement IDs: {duplicates}")
     covered_requirements = set()
@@ -689,6 +708,12 @@ def validate(root: Path = ROOT) -> list[str]:
         covered_requirements.add(requirement["application_id"])
         if requirement["application_id"] not in known_application_ids:
             errors.append(f"{item_id} references unknown application")
+        if unknown := set(requirement["system_requirement_dimension_ids"]) - set(
+            EXPECTED_INFRASTRUCTURE_DIMENSIONS
+        ):
+            errors.append(
+                f"{item_id} references unknown system-requirement dimensions {sorted(unknown)}"
+            )
         if unknown := set(requirement["source_ids"]) - forecast_source_ids:
             errors.append(f"{item_id} has unknown sources {sorted(unknown)}")
         numeric = [requirement[key] for key in ("lower", "value", "upper")]
@@ -922,6 +947,8 @@ def validate(root: Path = ROOT) -> list[str]:
         errors.append(
             "application infrastructure matrix must cover every declared application exactly once"
         )
+    system_requirement_ids = []
+    requirement_links = set()
     for row in infrastructure["rows"]:
         cell_ids = [item["dimension_id"] for item in row["cells"]]
         if cell_ids != EXPECTED_INFRASTRUCTURE_DIMENSIONS:
@@ -936,10 +963,58 @@ def validate(root: Path = ROOT) -> list[str]:
         if unknown := set(row["planning_criterion_ids"]) - EXPECTED_PLANNING_CRITERIA:
             errors.append(f"{row['application_id']} has unknown planning criteria {sorted(unknown)}")
         for cell in row["cells"]:
+            system_requirement_ids.append(cell["system_requirement_id"])
+            if cell["requirement_status"] != "provisional-owner-approval-required":
+                errors.append(
+                    f"{cell['system_requirement_id']} claims an approved system requirement"
+                )
+            linked_quantitative_ids = set(cell["quantitative_requirement_ids"])
+            expected_evidence_status = (
+                "quantitative-reference-linked"
+                if linked_quantitative_ids
+                else "qualitative-evidence-only"
+            )
+            if cell["evidence_status"] != expected_evidence_status:
+                errors.append(
+                    f"{cell['system_requirement_id']} has inconsistent evidence status"
+                )
+            if unknown := linked_quantitative_ids - set(requirement_ids):
+                errors.append(
+                    f"{cell['system_requirement_id']} links unknown quantitative requirements "
+                    f"{sorted(unknown)}"
+                )
+            for requirement_id in linked_quantitative_ids & set(requirement_ids):
+                requirement = quantitative_requirements_by_id[requirement_id]
+                if requirement["application_id"] != row["application_id"]:
+                    errors.append(
+                        f"{cell['system_requirement_id']} links another application's "
+                        f"quantitative requirement {requirement_id}"
+                    )
+                requirement_links.add(
+                    (requirement_id, row["application_id"], cell["dimension_id"])
+                )
+            if unknown := set(cell["acceptance_metric_ids"]) - known_acceptance_metric_ids:
+                errors.append(
+                    f"{cell['system_requirement_id']} links unknown acceptance metrics "
+                    f"{sorted(unknown)}"
+                )
             if unknown := set(cell["source_ids"]) - forecast_source_ids:
                 errors.append(
                     f"{row['application_id']} {cell['dimension_id']} has unknown sources "
                     f"{sorted(unknown)}"
+                )
+    if duplicates := duplicate_values(system_requirement_ids):
+        errors.append(f"duplicate system requirement IDs: {duplicates}")
+    for requirement in forecasts["quantitative_requirements"]:
+        for dimension_id in requirement["system_requirement_dimension_ids"]:
+            expected_link = (
+                requirement["requirement_id"],
+                requirement["application_id"],
+                dimension_id,
+            )
+            if expected_link not in requirement_links:
+                errors.append(
+                    f"{requirement['requirement_id']} lacks a matrix backlink for {dimension_id}"
                 )
 
     external_case_ids = [item["case_id"] for item in forecasts["external_requirement_examples"]]
@@ -1381,6 +1456,11 @@ def validate(root: Path = ROOT) -> list[str]:
                     for item in forecasts["draft_acceptance_criteria"]
                     if item["readiness"]["threshold_values_approved"]
                 }),
+                "quantitative-reference-linked-system-requirements": sum(
+                    bool(cell["quantitative_requirement_ids"])
+                    for row in forecasts["infrastructure_requirements_matrix"]["rows"]
+                    for cell in row["cells"]
+                ),
             },
         }
         for dimension_id, expected in expected_supporting.items():
@@ -1398,6 +1478,12 @@ def validate(root: Path = ROOT) -> list[str]:
                     len(known_scenarios)
                     if dimension_id == "application-performance"
                     and coverage_id == "scenario-bindings"
+                    else sum(
+                        len(row["cells"])
+                        for row in forecasts["infrastructure_requirements_matrix"]["rows"]
+                    )
+                    if dimension_id == "quantitative-requirements"
+                    and coverage_id == "quantitative-reference-linked-system-requirements"
                     else expected_denominators[dimension_id]
                 )
                 if actual[coverage_id]["denominator"] != expected_denominator:

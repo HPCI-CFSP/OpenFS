@@ -85,7 +85,7 @@ test("inventory links resolve to the correct bilingual lifecycle dialog", () => 
     assert.ok(performance.textContent.includes("496.08"));
     assert.ok(performance.textContent.includes(language === "ja" ? "性能値の定義" : "Peak-performance definitions"));
     const events = f.walk(row).filter((el) => el.href?.includes("milestone="));
-    assert.equal(events.length, 3);
+    assert.equal(events.length, 4);
     assert.equal(f.walk(row).filter((el) => el.href?.includes("#procurement-")).length, 1);
     for (const event of events) {
       const url = new URL(event.href, f.location);
@@ -300,6 +300,16 @@ test("calibration candidate and infrastructure requirements remain provisional i
     const matrix = f.get("application-infrastructure-matrix");
     const cells = f.walk(matrix).filter((el) => el.className?.split(" ").includes("infrastructure-demand"));
     assert.equal(cells.length, performance.applications.length * performance.infrastructure_requirements_matrix.dimensions.length);
+    assert.equal(
+      f.walk(matrix).filter((el) => el.className?.split(" ").includes("system-requirement-id")).length,
+      cells.length
+    );
+    assert.ok(matrix.textContent.includes("SYSREQ-EEA1-SALMON-WORKFLOW-LATENCY"));
+    assert.ok(matrix.textContent.includes(language === "ja" ? "定量根拠あり" : "quantitative reference linked"));
+    assert.ok(matrix.textContent.includes(language === "ja" ? "定性根拠のみ" : "qualitative evidence only"));
+    const linkedEvidence = f.walk(matrix).find((el) => el.href === "#REQ-PERF-SALMON-STEP-TARGET");
+    assert.ok(linkedEvidence);
+    assert.equal(f.get("REQ-PERF-SALMON-STEP-TARGET").tagName, "tr");
     assert.ok(matrix.textContent.includes(language === "ja" ? "必要な測定・確認" : "Required measurement or check"));
     assert.ok(matrix.textContent.includes(language === "ja" ? "合否値: 責任者未承認" : "Pass/fail values: owner approval pending"));
     const external = f.get("application-external-requirements");

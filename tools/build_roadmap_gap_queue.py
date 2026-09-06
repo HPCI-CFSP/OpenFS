@@ -237,6 +237,15 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
         for item in assignments
         if item["priority"] == "P0"
     )
+    p0_closure_methods = Counter(
+        method
+        for item in assignments
+        if item["priority"] == "P0"
+        for method in {
+            criterion["verification_method"]
+            for criterion in item["closure_plan"]["criteria"]
+        }
+    )
     generated = generated_at or datetime.now(timezone.utc).replace(
         microsecond=0
     ).isoformat().replace("+00:00", "Z")
@@ -266,6 +275,15 @@ def build(root: Path, generated_at: str | None = None) -> dict[str, Any]:
             "generated_query_fallbacks": query_origins["generated-fallback"],
             "p0_explicit_query_overrides": p0_query_origins["explicit-override"],
             "p0_generated_query_fallbacks": p0_query_origins["generated-fallback"],
+            "p0_evidence_review_required": p0_closure_methods["evidence-review"],
+            "p0_reproducible_measurement_required": p0_closure_methods[
+                "reproducible-measurement"
+            ],
+            "p0_conformance_test_required": p0_closure_methods["conformance-test"],
+            "p0_authority_confirmation_required": p0_closure_methods[
+                "authority-confirmation"
+            ],
+            "p0_consensus_quorum_required": p0_closure_methods["consensus-quorum"],
         },
         "assignments": assignments,
         "publication": {

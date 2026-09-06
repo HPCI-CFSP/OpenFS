@@ -1551,6 +1551,7 @@
       switch (component.type) {
         case "topic-overview": renderTopicOverview(root, profile, topic); break;
         case "research-unit-index": renderTopicScope(root, topic, {numbered: true}); break;
+        case "topic-comparisons": renderTopicComparisons(root, topic, profile); break;
         case "research-unit": renderResearchUnitComponent(root, component, topic, profile, actorMap); break;
         case "decision-dimensions": renderDecisionDimensions(root, profile, topic); break;
         case "related-surfaces": renderRelatedSurfaces(root, profile); break;

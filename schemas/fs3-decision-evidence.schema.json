@@ -104,8 +104,25 @@
     },
     "requirementSection": {
       "type": "object", "additionalProperties": false,
-      "required": ["dimensions", "applications"],
-      "properties": {"dimensions": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"type": "object"}}, "applications": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"type": "object"}}}
+      "required": ["summary", "dimensions", "applications"],
+      "properties": {"summary": {"$ref": "#/$defs/summaryCounts"}, "dimensions": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"type": "object"}}, "applications": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/applicationRequirementRow"}}}
+    },
+    "applicationRequirementRow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["application_id", "system_requirement_ids", "demand_levels", "high_dimension_ids", "measurement_gap_count", "quantitative_requirement_ids", "quantitative_linked_system_requirement_ids", "acceptance_metric_ids", "source_ids", "requirement_status", "threshold_status"],
+      "properties": {
+        "application_id": {"$ref": "#/$defs/text"},
+        "system_requirement_ids": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "pattern": "^SYSREQ-EEA1-[A-Z0-9-]+$"}},
+        "demand_levels": {"type": "object", "minProperties": 8, "maxProperties": 8, "additionalProperties": {"enum": ["high", "medium", "low", "unknown"]}},
+        "high_dimension_ids": {"$ref": "#/$defs/refs"},
+        "measurement_gap_count": {"type": "integer", "minimum": 0, "maximum": 8},
+        "quantitative_requirement_ids": {"$ref": "#/$defs/refs"},
+        "quantitative_linked_system_requirement_ids": {"$ref": "#/$defs/refs"},
+        "acceptance_metric_ids": {"$ref": "#/$defs/refs"},
+        "source_ids": {"$ref": "#/$defs/refs"},
+        "requirement_status": {"const": "provisional-owner-approval-required"},
+        "threshold_status": {"const": "not-approved"}
+      }
     },
     "roadmapSection": {
       "type": "object", "additionalProperties": false,
