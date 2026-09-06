@@ -9,7 +9,7 @@ Consensus.
 
 Coverage after this pass is:
 
-- future retirement, refresh, or expansion timing: 19 of 27 systems;
+- future retirement, refresh, or expansion timing: 21 of 27 systems;
 - public operational-information paths: 25 of 27 systems; and
 - quantitative operational observations: 16 of 27 systems.
 
@@ -31,6 +31,7 @@ availability, queue-time, or power evidence.
 | University of Tsukuba | A request for information plans an HPC-AI system from March 2027 onward and requires access to the existing Pegasus and Sirius file systems. | Recorded as a provisional 2027 Q1 center update, not a final procurement, operating launch, or HPCI availability date. |
 | Tohoku University | A request for information plans a new system from October 2026 onward with requirements of at least 50 PFLOPS FP64, 140 TB main memory, 4 PB/s aggregate memory bandwidth, and 10 PB effective storage. | Recorded as a center-level plan. The source does not identify an AOBA subsystem replacement or confirm a contract, commissioning, or HPCI availability. |
 | Genkai A and B | The public procurement notice gives a lease period ending February 28, 2030. | Recorded as 2030 Q1 for both resources. This contractual end does not establish a service stop, successor launch, or migration window. |
+| Miyabi-C and Miyabi-G | The public procurement notice gives a lease period ending January 13, 2031. Its start matches JCAHPC's published formal-operation date. | Recorded as 2031 Q1 for both resources. This contractual end does not establish a service stop, successor launch, or migration window. |
 | AOBA-A and AOBA-B | A provider notice records service suspension, maintenance, recovery, and job impact. | One incident record, not an annual availability or utilization aggregate. |
 | OCTOPUS CPU | The provider system page reports operation from September 1, 2025 and a current steady-operation state. | Current service status, not availability, downtime, utilization, or queue statistics. |
 | ISM large-memory system | Usage rules effective April 1, 2026 define applications, accounts, renewal, and usage-based fees. | Evidence of an active service framework, not current incident or performance statistics. |
@@ -47,14 +48,15 @@ Primary sources:
 - JETRO Government Procurement Database, [University of Tsukuba unified-memory supercomputer procurement notice](https://www.jetro.go.jp/gov_procurement/national/articles/327537/2024092400280001.html)
 - JETRO Government Procurement Database, [Tohoku University supercomputing system request for information](https://www.jetro.go.jp/gov_procurement/national/articles/370622/2025102700520001.html)
 - JETRO Government Procurement Database, [Kyushu University supercomputer system procurement notice](https://www.jetro.go.jp/gov_procurement/national/articles/265854/2023030600270001.html)
+- JETRO Government Procurement Database, [Joint Center for Advanced High Performance Computing supercomputer system procurement notice](https://www.jetro.go.jp/gov_procurement/national/articles/283236/2023082100450002.html)
 - Tohoku University, [AOBA emergency maintenance notice](https://www.ss.cc.tohoku.ac.jp/n20260709-1/)
 - University of Osaka D3 Center, [OCTOPUS system page](https://www.hpc.cmc.osaka-u.ac.jp/octopus2/)
 - Institute of Statistical Mathematics, [current usage rules](https://www.ism.ac.jp/computer_system/jpn/hpci/6-11.pdf)
 
 ## Coverage gaps
 
-Future timing remains unverified for eight systems: Fugaku, Miyabi C and G,
-AOBA A and B, the ISM large-memory system, Pegasus, and ABCI 3.0. The planned 2027 Tsukuba system is a center-level
+Future timing remains unverified for six systems: Fugaku, AOBA A and B, the ISM
+large-memory system, Pegasus, and ABCI 3.0. The planned 2027 Tsukuba system is a center-level
 update and does not establish the retirement dates of Sirius or Pegasus. No date
 should be inferred from a typical lease term or another system's lifecycle.
 
@@ -67,7 +69,7 @@ boundaries are not aligned across providers.
 ## 日本語要約
 
 令和8年度HPCI資源一覧の27システムを対象に、将来の更新・終了・増強時期と公開運用情報を
-追加調査しました。将来時期は19システム、公開運用情報への経路は25システム、数値を伴う
+追加調査しました。将来時期は21システム、公開運用情報への経路は25システム、数値を伴う
 運用実績は16システムです。地球シミュレータES4は令和8年度が現行システムの運用最終年度、
 TSUBAME4.0は2030年3月31日が借入期間の終期であることを一次情報で確認しました。ただし、
 いずれも後継機の稼働開始日や移行期間を示すものではありません。
@@ -94,7 +96,12 @@ Siriusは初期24ノードに対応するユニファイドメモリ型スーパ
 2024年7月1日から2030年2月28日までであることを確認しました。これは契約上の終期であり、
 正式なサービス停止日、移行期間、後継機の稼働開始日を示すものではありません。
 
+Miyabi-C・Gは、最先端共同HPC基盤施設スーパーコンピュータシステムの入札公告から、
+借入期間が2025年1月14日から2031年1月13日までであることを確認しました。借入開始日は
+JCAHPC公表の正式運用開始日と一致しますが、契約終期は正式なサービス停止日、移行期間、
+後継機の稼働開始日を示すものではありません。
+
 AOBA-A・Bの保守通知、OCTOPUSの運転状態、統計数理研究所の利用細則も登録しましたが、
 これらは公開運用情報への経路であり、稼働率、年度可用性、待ち時間、電力の数値実績としては
-扱いません。将来時期が未確認の8システムはCoverage Gapとして残し、一般的な借入期間など
+扱いません。将来時期が未確認の6システムはCoverage Gapとして残し、一般的な借入期間など
 から日付を推定していません。単一モデルによる調査のためConsensusは未完了です。

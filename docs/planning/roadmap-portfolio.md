@@ -124,7 +124,7 @@ budget overruns, and non-independent evaluators before Consensus review.
 The reference-architecture roadmap also distinguishes observed system starts
 from future provider targets. The 2026-09-07 audit links verified introduction,
 operation, or trial-operation starts for 25 of 27 FY2026 resources and future
-retirement, refresh, or expansion timing for 19. Annual HPCI call windows are not lifecycle
+retirement, refresh, or expansion timing for 21. Annual HPCI call windows are not lifecycle
 milestones. Operational and procurement coverage is reported separately in the
 planning-evidence readiness view, so a published contract total or utilization
 value cannot silently satisfy a lifecycle, TCO, or acceptance gate.

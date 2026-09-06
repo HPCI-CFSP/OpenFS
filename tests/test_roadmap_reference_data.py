@@ -396,6 +396,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-JAMSTEC-ES4-START-2021Q2",
                 "MS-BLUE-JAMSTEC-ES4-END-2027Q1",
                 "MS-BLUE-JCAHPC-MIYABI-START-2025Q1",
+                "MS-BLUE-JCAHPC-MIYABI-LEASE-END-2031Q1",
                 "MS-BLUE-HBW2-TRIAL-2023Q4",
                 "MS-BLUE-AIST-ABCI3-START-2025Q1",
                 "MS-BLUE-ISM-DATA-ASSIMILATION-INTRO-2023Q1",
