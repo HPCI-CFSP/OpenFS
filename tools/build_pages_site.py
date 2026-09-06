@@ -1445,7 +1445,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
-    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js"):
+    for filename in ("styles.css", "app.js", "roadmaps.js", "planning.js", "budget-planning.js", "search.js", "feedback.js", "fs3-report.js"):
         shutil.copy2(source / filename, output / filename)
     copy_brand_assets(root, output)
     data_dir = output / "data"
@@ -1478,6 +1478,15 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         render_template(
             source / "feedback.html",
             {"ROOT_PREFIX": "../", "ASSET_VERSION": asset_version},
+        ),
+        encoding="utf-8",
+    )
+    fs3_report = output / "reports" / "fs3-system-planning-evidence" / "index.html"
+    fs3_report.parent.mkdir(parents=True, exist_ok=True)
+    fs3_report.write_text(
+        render_template(
+            source / "fs3-report.html",
+            {"ROOT_PREFIX": "../../", "ASSET_VERSION": asset_version},
         ),
         encoding="utf-8",
     )

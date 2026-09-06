@@ -38,6 +38,9 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
             data["security_readiness"]["source_triage"]["unresolved"],
         )
         self.assertEqual(27, data["hpci_systems"]["summary"]["system_count"])
+        self.assertGreaterEqual(data["hpci_systems"]["summary"]["quantitative_operations_count"], 1)
+        self.assertGreaterEqual(data["hpci_systems"]["summary"]["public_status_feed_count"], 1)
+        self.assertGreaterEqual(data["hpci_systems"]["summary"]["restricted_data_product_count"], 1)
         procurement_register = json.loads(
             (ROOT / "knowledge/public/procurement-cost-register.json").read_text(
                 encoding="utf-8"
@@ -48,19 +51,34 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
             data["procurements"]["summary"]["case_count"],
         )
         self.assertGreaterEqual(data["procurements"]["summary"]["case_count"], 14)
+        self.assertEqual(11, data["procurements"]["summary"]["public_contract_or_award_amount_count"])
+        self.assertEqual(1, data["procurements"]["summary"]["provider_reported_payment_count"])
         self.assertEqual(0, data["procurements"]["summary"]["component_itemized_count"])
         self.assertEqual(0, data["procurements"]["summary"]["complete_tco_count"])
         self.assertEqual(6, data["eea1"]["summary"]["application_count"])
         self.assertEqual(0, data["eea1"]["summary"]["complete_baseline_package_count"])
         self.assertEqual(0, data["eea1"]["summary"]["approved_threshold_count"])
         self.assertEqual(0, data["eea1"]["summary"]["validated_forecast_count"])
+        self.assertEqual(2, data["eea1"]["summary"]["public_proxy_asset_count"])
         self.assertEqual(19, data["roadmaps"]["summary"]["roadmap_count"])
+        self.assertEqual(8, len(data["claim_readiness"]))
+        scenario_ids = set(data["planning_requirement_matrix"]["scenario_ids"])
+        self.assertEqual(3, len(scenario_ids))
+        self.assertTrue(
+            all(
+                {item["scenario_id"] for item in row["scenario_implications"]}
+                == scenario_ids
+                for row in data["planning_requirement_matrix"]["rows"]
+            )
+        )
 
     def test_report_preserves_unresolved_evidence(self):
         report = render_report(self.artifact)
         self.assertIn("## 2. Web調査自動化のセキュリティ境界", report)
         self.assertIn("費目別の価格内訳 0件、完全なTCO 0件", report)
         self.assertIn("完全な再現パッケージ 0件", report)
+        self.assertIn("## 8. 報告書に記載できる主張と残作業", report)
+        self.assertIn("## 9. 根拠とシステム整備計画案の対応", report)
         self.assertIn("```mermaid", report)
         self.assertIn("Consensus: incomplete", report)
 
@@ -74,7 +92,7 @@ class Fs3DecisionEvidenceTests(unittest.TestCase):
         self.assertTrue(report["summary"])
         self.assertTrue(report["summary_en"])
         self.assertEqual(
-            "DIR-900105", report["publication"]["human_approval_directive_id"]
+            "DIR-900106", report["publication"]["human_approval_directive_id"]
         )
 
 

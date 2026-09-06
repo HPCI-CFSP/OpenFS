@@ -62,6 +62,7 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
             "schemas/fs3-decision-evidence.schema.json",
             "tools/build_fs3_decision_evidence.py",
             "reviews/directives/DIR-900105.json",
+            "reviews/directives/DIR-900106.json",
         }
         self.assertLessEqual(expected_artifacts, artifacts)
 
