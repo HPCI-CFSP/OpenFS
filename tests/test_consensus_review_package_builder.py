@@ -48,7 +48,38 @@ class ConsensusReviewPackageBuilderTests(unittest.TestCase):
         }
         self.assertEqual({item.removeprefix("RM-") for item in expected}, actual)
         self.assertEqual(19, self.manifest["portfolio_summary"]["roadmap_count"])
+        self.assertGreater(
+            self.manifest["portfolio_summary"]["availability_event_count"], 0
+        )
         self.assertEqual(30, self.manifest["portfolio_summary"]["dependency_count"])
+
+    def test_market_availability_events_are_reviewable(self):
+        memory = committed_json(
+            ROOT,
+            self.commit,
+            "knowledge/public/roadmaps/memory-data-movement.json",
+        )
+        expected = {
+            event["availability_id"]
+            for lane in memory["lanes"]
+            for event in lane.get("availability_events", [])
+        }
+        unit = next(
+            item
+            for item in self.manifest["review_units"]
+            if item["unit_id"] == "CRU-HW-MEMORY"
+        )
+        self.assertLessEqual(expected, set(unit["selectors"]))
+        source_checks = {
+            item["selector"] for item in unit["primary_source_requirements"]
+        }
+        expected_dated = {
+            event["availability_id"]
+            for lane in memory["lanes"]
+            for event in lane.get("availability_events", [])
+            if event["timing_basis"] != "no-public-date"
+        }
+        self.assertLessEqual(expected_dated, source_checks)
 
     def test_procurement_and_readiness_evidence_are_reviewable(self):
         artifacts = {item["path"] for item in self.manifest["artifact_manifest"]}

@@ -75,7 +75,7 @@ class PagesSiteTests(unittest.TestCase):
         )
         directives = root / "reviews" / "directives"
         directives.mkdir(parents=True)
-        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json", "DIR-900103.json", "DIR-900104.json", "DIR-900105.json"):
+        for name in ("DIR-900004.json", "DIR-900005.json", "DIR-900013.json", "DIR-900015.json", "DIR-900016.json", "DIR-900017.json", "DIR-900018.json", "DIR-900019.json", "DIR-900025.json", "DIR-900026.json", "DIR-900027.json", "DIR-900100.json", "DIR-900103.json", "DIR-900104.json", "DIR-900105.json", "DIR-900107.json"):
             shutil.copy2(ROOT / "reviews" / "directives" / name, directives / name)
         return root / "knowledge" / "public" / "roadmaps" / "memory-data-movement.json"
 
@@ -233,6 +233,8 @@ class PagesSiteTests(unittest.TestCase):
         self.assertIn("--requirement requirements-validation.txt", workflow)
         self.assertLess(workflow.index(install_step), workflow.index(test_step))
         self.assertIn('"knowledge/public/**"', workflow)
+        self.assertIn('"config/public-analytics.json"', workflow)
+        self.assertIn('"schemas/public-analytics.schema.json"', workflow)
         self.assertIn("fetch-depth: 0", workflow)
 
     def test_pr_preview_is_artifact_only_and_read_only(self):
@@ -247,6 +249,8 @@ class PagesSiteTests(unittest.TestCase):
         self.assertNotIn("id-token: write", workflow)
         self.assertNotIn("actions/deploy-pages@", workflow)
         self.assertIn('"knowledge/public/**"', workflow)
+        self.assertIn('"config/public-analytics.json"', workflow)
+        self.assertIn('"schemas/public-analytics.schema.json"', workflow)
         self.assertIn("fetch-depth: 0", workflow)
         self.assertIn('- "requirements-validation.txt"', workflow)
         self.assertIn("--requirement requirements-validation.txt", workflow)
@@ -808,6 +812,16 @@ class PagesSiteTests(unittest.TestCase):
             self.assertEqual(baseline["derived_at"], result["catalog_as_of"])
             self.assertEqual(40, len(result["site"]["commit_sha"]))
             self.assertTrue(result["site"]["commit_url"].endswith(result["site"]["commit_sha"]))
+            privacy_html = (output / "privacy" / "index.html").read_text(encoding="utf-8")
+            self.assertIn("アクセス解析について", privacy_html)
+            self.assertIn("Analytics notice", privacy_html)
+            self.assertTrue((output / "analytics.js").is_file())
+            for page in output.rglob("*.html"):
+                rendered = page.read_text(encoding="utf-8")
+                self.assertIn("analytics.js?v=", rendered, page)
+                self.assertIn('data-measurement-id="G-7JB5N480MT"', rendered, page)
+                self.assertIn('data-production-hostname="hpci-cfsp.github.io"', rendered, page)
+                self.assertIn('data-production-path-prefix="/OpenFS/"', rendered, page)
             self.assertIn("T", result["site"]["updated_at"])
             roadmap_portfolio = json.loads(
                 (ROOT / "config/roadmap-portfolio.json").read_text(encoding="utf-8")
@@ -1211,6 +1225,67 @@ class PagesSiteTests(unittest.TestCase):
             payload["lanes"][0]["milestones"][0]["source_ids"] = ["SRC-MEM999"]
             path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "unknown sources"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_market_availability_rejects_unknown_sources_and_cross_track_evidence(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            event = next(
+                item
+                for lane in payload["lanes"]
+                for item in lane.get("availability_events", [])
+            )
+            event["source_ids"] = ["SRC-MEM999"]
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "availability event .* unknown sources"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+            payload = json.loads((ROOT / "knowledge/public/roadmaps/memory-data-movement.json").read_text(encoding="utf-8"))
+            event = next(
+                item
+                for lane in payload["lanes"]
+                for item in lane.get("availability_events", [])
+            )
+            event["lifecycle_evidence"]["research_concept"] = ["MS-HBM-NVHBM-ANNOUNCEMENT"]
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "lifecycle evidence from another track"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_market_availability_target_requires_official_target_basis(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            event = next(
+                item
+                for lane in payload["lanes"]
+                for item in lane.get("availability_events", [])
+                if item["availability_status"] == "announced-target"
+            )
+            event["timing_basis"] = "observed"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "lacks an official target basis"):
+                collect_roadmaps(root, policy, include_commit_metadata=False)
+
+    def test_market_availability_status_must_match_timing_basis(self):
+        policy = self.publication_policy()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = self.write_roadmap_fixture(root)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            event = next(
+                item
+                for lane in payload["lanes"]
+                for item in lane.get("availability_events", [])
+                if item["availability_status"] == "timing-undisclosed"
+            )
+            event["availability_status"] = "confirmed"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "inconsistent status and timing basis"):
                 collect_roadmaps(root, policy, include_commit_metadata=False)
 
     def test_memory_roadmap_extends_to_later_dated_evidence(self):

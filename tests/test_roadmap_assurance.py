@@ -105,7 +105,9 @@ class RoadmapAssuranceTests(unittest.TestCase):
             )
         self.assertEqual(0, self.evidence["summary"]["independently_verified"])
         self.assertEqual(
-            len(milestones) + self.evidence["summary"]["generation_band_count"],
+            len(milestones)
+            + self.evidence["summary"]["availability_event_count"]
+            + self.evidence["summary"]["generation_band_count"],
             self.evidence["summary"]["pending_independent_review"],
         )
         timing_summary = self.evidence["summary"]
@@ -139,6 +141,50 @@ class RoadmapAssuranceTests(unittest.TestCase):
             + timing_summary["openfs_provisional_quarter_range"]
             + timing_summary["openfs_provisional_year"],
         )
+
+    def test_evidence_audit_covers_every_market_availability_event_exactly_once(self):
+        availability_items = [
+            event
+            for roadmap in self.roadmaps
+            for lane in roadmap["lanes"]
+            for event in lane.get("availability_events", [])
+        ]
+        events = {event["availability_id"]: event for event in availability_items}
+        entries = {
+            entry["availability_id"]: entry
+            for entry in self.evidence["availability_entries"]
+        }
+        self.assertEqual(
+            len(availability_items),
+            len(events),
+            "availability event IDs must be globally unique",
+        )
+        self.assertGreater(len(events), 0)
+        self.assertEqual(set(events), set(entries))
+        self.assertEqual(
+            len(events), self.evidence["summary"]["availability_event_count"]
+        )
+        self.assertEqual(
+            len(events),
+            self.evidence["summary"]["availability_confirmed"]
+            + self.evidence["summary"]["availability_announced_target"]
+            + self.evidence["summary"]["availability_timing_undisclosed"],
+        )
+        expected_status = {
+            "observed": "classified-primary-event",
+            "as-of-baseline": "as-of-baseline",
+            "vendor-target": "classified-forward-looking",
+            "project-target": "classified-forward-looking",
+            "no-public-date": "coverage-gap",
+        }
+        for availability_id, event in events.items():
+            entry = entries[availability_id]
+            self.assertEqual(expected_status[event["timing_basis"]], entry["review_status"])
+            self.assertEqual(event["availability_status"], entry["availability_status"])
+            self.assertEqual(event["availability_type"], entry["availability_type"])
+            self.assertEqual(event["source_ids"], entry["source_ids"])
+            self.assertEqual(event["lifecycle_evidence"], entry["lifecycle_evidence"])
+            self.assertEqual("pending-independent-review", entry["semantic_verification"])
 
     def test_evidence_audit_covers_every_generation_band_exactly_once(self):
         bands = {
