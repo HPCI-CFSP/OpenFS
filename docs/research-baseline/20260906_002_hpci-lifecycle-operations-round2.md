@@ -29,6 +29,7 @@ availability, queue-time, or power evidence.
 | Grand Chariot 2 CPU and GPU | The public procurement notice gives a lease period ending March 31, 2030. | Recorded as 2030 Q1 for both HPCI resources. The notice does not establish a service stop, migration period, or successor launch. |
 | Sirius | The public procurement notice gives a lease period ending September 30, 2031. | Recorded as 2031 Q3 for the initial 24-node system. Contract inclusion and deployment timing for the separately announced nine-node expansion remain unverified. |
 | University of Tsukuba | A request for information plans an HPC-AI system from March 2027 onward and requires access to the existing Pegasus and Sirius file systems. | Recorded as a provisional 2027 Q1 center update, not a final procurement, operating launch, or HPCI availability date. |
+| Tohoku University | A request for information plans a new system from October 2026 onward with requirements of at least 50 PFLOPS FP64, 140 TB main memory, 4 PB/s aggregate memory bandwidth, and 10 PB effective storage. | Recorded as a center-level plan. The source does not identify an AOBA subsystem replacement or confirm a contract, commissioning, or HPCI availability. |
 | AOBA-A and AOBA-B | A provider notice records service suspension, maintenance, recovery, and job impact. | One incident record, not an annual availability or utilization aggregate. |
 | OCTOPUS CPU | The provider system page reports operation from September 1, 2025 and a current steady-operation state. | Current service status, not availability, downtime, utilization, or queue statistics. |
 | ISM large-memory system | Usage rules effective April 1, 2026 define applications, accounts, renewal, and usage-based fees. | Evidence of an active service framework, not current incident or performance statistics. |
@@ -43,6 +44,7 @@ Primary sources:
 - JETRO Government Procurement Database, [University of Tsukuba HPC-AI supercomputer request for information](https://www.jetro.go.jp/gov_procurement/national/articles/385153/2026031600450001.html)
 - JETRO Government Procurement Database, [Hokkaido University interdisciplinary large-scale computing system procurement notice](https://www.jetro.go.jp/gov_procurement/national/articles/302618/2024021400260000.html)
 - JETRO Government Procurement Database, [University of Tsukuba unified-memory supercomputer procurement notice](https://www.jetro.go.jp/gov_procurement/national/articles/327537/2024092400280001.html)
+- JETRO Government Procurement Database, [Tohoku University supercomputing system request for information](https://www.jetro.go.jp/gov_procurement/national/articles/370622/2025102700520001.html)
 - Tohoku University, [AOBA emergency maintenance notice](https://www.ss.cc.tohoku.ac.jp/n20260709-1/)
 - University of Osaka D3 Center, [OCTOPUS system page](https://www.hpc.cmc.osaka-u.ac.jp/octopus2/)
 - Institute of Statistical Mathematics, [current usage rules](https://www.ism.ac.jp/computer_system/jpn/hpci/6-11.pdf)
@@ -73,6 +75,11 @@ TSUBAME4.0は2030年3月31日が借入期間の終期であることを一次情
 公告上の借入期間の終期であることを確認しました。筑波大学では2027年3月以降のHPC-AI
 新システム導入計画と、既存Pegasus・Siriusのファイルシステムへ接続する要件が公示されています。
 これらは契約または計画上の日付であり、サービス停止、後継機の稼働、HPCI提供の確定日ではありません。
+
+東北大学については、2026年10月以降に新システムを導入する資料提供招請を確認しました。
+倍精度50 PFLOPS以上、主記憶140 TB以上、総メモリ帯域4 PB/s以上、実効ストレージ10 PB以上が
+要求されていますが、AOBA-A・B・Sのどれを置き換えるか、正式契約、稼働開始日、HPCI提供開始日は
+確認できません。このため、既存AOBA各資源の終了時期には結び付けていません。
 
 Grand Chariot 2は、CPU・GPUの両資源を含む学際大規模計算機システムの借入期間が
 2030年3月31日までであることを確認しました。これも契約境界であり、正式なサービス停止日、

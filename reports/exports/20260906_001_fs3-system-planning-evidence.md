@@ -13,7 +13,7 @@ HPCI 27システム、公開調達16案件、EEA1 6アプリ、19ロードマッ
 | HPCIシステム | 27 | 将来時期 17、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
 | 公開調達 | 16 | 契約・落札総額 12、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
-| ロードマップ | 19 | 395マイルストーン、30依存関係 | Consensus Gate未完了 |
+| ロードマップ | 19 | 396マイルストーン、30依存関係 | Consensus Gate未完了 |
 
 ```mermaid
 flowchart LR
@@ -131,7 +131,7 @@ flowchart LR
 | [通信・ランタイム・スケジューリング・OS](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/runtime-scheduling-os/?lang=ja) | 4 | 2 | 0/1/1 |
 | [認証・セキュリティ・連合運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/identity-security-federation/?lang=ja) | 4 | 2 | 0/1/1 |
 | [データ・AI・実験ワークフロー基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/data-workflow-platform/?lang=ja) | 4 | 2 | 0/1/1 |
-| [参照構成・HPCI基盤センター導入](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/reference-blueprint-centers/?lang=ja) | 78 | 4 | 6/2/0 |
+| [参照構成・HPCI基盤センター導入](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/reference-blueprint-centers/?lang=ja) | 79 | 4 | 6/2/0 |
 | [技術動向監視・新規調査項目発見](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/horizon-scanning-topic-discovery/?lang=ja) | 4 | 1 | 0/1/1 |
 | [統合運用・ガバナンス・サービス継続](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/operations-governance-continuity/?lang=ja) | 4 | 2 | 0/1/1 |
 | [調達・共同投資・システム整備計画案](https://hpci-cfsp.github.io/OpenFS/roadmaps/cross-cutting/procurement-investment-scenarios/?lang=ja) | 4 | 2 | 0/1/1 |

@@ -380,6 +380,7 @@ class RoadmapReferenceDataTests(unittest.TestCase):
                 "MS-BLUE-HOKKAIDO-GC2-LEASE-END-2030Q1",
                 "MS-BLUE-TOHOKU-AOBA-AB-START-2020Q4",
                 "MS-BLUE-TOHOKU-AOBA-S-START-2023Q3",
+                "MS-BLUE-TOHOKU-NEW-SYSTEM-2026Q4",
                 "MS-BLUE-TOHOKU-AOBA-S-LEASE-END-2028Q1",
                 "MS-BLUE-TSUKUBA-PEGASUS-START-2023Q2",
                 "MS-BLUE-UTOKYO-BDEC01-START-2021Q2",
