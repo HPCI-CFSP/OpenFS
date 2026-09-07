@@ -1,5 +1,12 @@
 # TODO
 
+## P0: public catalog layout consistency
+
+- [ ] Define one documented information-architecture policy for the six curated and 34 generated active Topic layouts, distinguishing universal rules from reviewed, machine-checkable Topic-specific exceptions.
+- [ ] Audit all 40 active catalog pages for component order, duplicated headings and content, labels, comparison placement, glossary links, roadmap links, Coverage Gaps, research history, related Topics, and Japanese/English presentation.
+- [ ] Implement universal corrections in the deterministic layout builder instead of repeating manual page edits, while preserving evidence and provisional/Consensus status.
+- [ ] Add fail-closed data, link, rendering, and regression checks; complete this P0 item only when every active Topic passes the shared policy or its declared exception.
+
 ## Phase 0: design contracts
 
 - [x] Define the architecture and trust boundaries.
