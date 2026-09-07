@@ -208,6 +208,29 @@ test("each dated event occupies its exact quarter width on a common grid", () =>
   }
 });
 
+test("all roadmaps use the shared key-outcome legend and status styling", () => {
+  const statusByBasis = {observed: "attained", "as-of-baseline": "attained", "standard-release": "attained", "vendor-target": "official-plan", "project-target": "official-plan", "policy-target": "official-plan", "openfs-provisional-plan": "provisional", "openfs-synthesis": "provisional", "no-public-date": "timing-unconfirmed"};
+  const availabilityStatus = {confirmed: "attained", "announced-target": "official-plan", "timing-undisclosed": "timing-unconfirmed"};
+  for (const roadmap of data.roadmap_artifacts) {
+    const f = fixture(roadmap.slug, "?lang=ja");
+    const legend = f.get("roadmap-legend");
+    for (const label of ["到達済み", "公式予定", "暫定見通し", "時期未確認"]) assert.ok(legend.textContent.includes(label), `${roadmap.roadmap_id}: ${label}`);
+    assert.equal(legend.children.length, 4, roadmap.roadmap_id);
+    const items = roadmap.timeline_presentation === "market-availability"
+      ? roadmap.lanes.flatMap((lane) => lane.availability_events || [])
+      : roadmap.lanes.flatMap((lane) => lane.milestones);
+    const expectedCounts = new Map();
+    items.forEach((item) => { const status = item.availability_status ? availabilityStatus[item.availability_status] : statusByBasis[item.timing_basis]; assert.ok(status, `${roadmap.roadmap_id}: unsupported outcome basis`); expectedCounts.set(status, (expectedCounts.get(status) || 0) + 1); });
+    const buttons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-milestone "));
+    for (const [status, count] of expectedCounts) assert.equal(buttons.filter((button) => button.className.includes(`outcome-${status}`)).length, count, `${roadmap.roadmap_id}: ${status}`);
+    const bandStatus = {observed: "attained", "standard-release": "attained", "vendor-target": "official-plan", "project-target": "official-plan", "openfs-synthesis": "provisional"};
+    const bands = roadmap.tracks.flatMap((track) => track.generation_bands || []);
+    const bandButtons = f.walk(f.get("roadmap-timeline")).filter((el) => el.className?.startsWith("roadmap-generation-band "));
+    assert.equal(bandButtons.length, bands.length, `${roadmap.roadmap_id}: generation bands`);
+    bands.forEach((band) => assert.ok(bandButtons.some((button) => button.textContent.includes(band.label_ja) && button.className.includes(`outcome-${bandStatus[band.timing_basis]}`)), `${roadmap.roadmap_id}: ${band.generation_band_id}`));
+  }
+});
+
 test("market availability roadmap hides pre-product milestones and exposes lifecycle evidence", () => {
   const roadmap = data.roadmap_artifacts.find((r) => r.roadmap_id === "RM-HW-MEMORY");
   assert.equal(roadmap.timeline_presentation, "market-availability");
@@ -219,7 +242,7 @@ test("market availability roadmap hides pre-product milestones and exposes lifec
     assert.ok(!buttons.some((button) => button.textContent.includes(language === "ja" ? "HBM5モックアップ" : "HBM5 mock-up")));
     assert.ok(buttons.some((button) => button.textContent.includes(language === "ja" ? "HBM5量産" : "HBM5 production")));
     assert.ok(f.get("roadmap-availability-control").textContent.includes("2030"));
-    assert.ok(f.get("roadmap-legend").textContent.includes(language === "ja" ? "製品化・量産を確認" : "Productization / volume confirmed"));
+    assert.ok(f.get("roadmap-legend").textContent.includes(language === "ja" ? "到達済み" : "Attained"));
     const hbm5 = events.find((event) => event.availability_id === "AV-HBM-SAMSUNG-HBM5-UNDATED");
     const linked = fixture(roadmap.slug, `?lang=${language}&availability=${hbm5.availability_id}`);
     assert.equal(linked.get("roadmap-dialog").open, true);

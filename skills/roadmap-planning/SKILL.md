@@ -37,7 +37,13 @@ research or claim that Consensus is complete.
    `extend-to-latest-dated-evidence`, later dated evidence extends the display
    horizon, while undated gaps and open-ended bands do not.
 5. Separate factual events from OpenFS planning. Only HPCI evaluation or adoption
-   gates may use `timing_basis: openfs-provisional-plan`.
+   gates may use `timing_basis: openfs-provisional-plan`. The public renderer uses
+   one four-state key-outcome legend across every roadmap: observed,
+   as-of-baseline, and standard-release evidence maps to `Attained`; vendor,
+   project, and policy targets map to `Official plan`; OpenFS provisional plans
+   and synthesis map to `Provisional outlook`; and no-public-date items map to
+   `Timing unconfirmed`. Do not change `timing_basis` merely to obtain a preferred
+   color. Keep the event type and maturity stage in the detail view.
 6. Link each track, milestone, generation band, and dependency to source IDs. Declare dependencies
    against stable roadmap IDs and distinguish evidence-backed relations from
    OpenFS assessment.

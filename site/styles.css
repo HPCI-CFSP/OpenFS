@@ -198,6 +198,15 @@ tbody tr:hover { background: #fafbfb; }
 .maturity-deployment { --maturity-color: #087b82; --maturity-soft: #eaf7f7; }
 .maturity-undated { --maturity-color: #68737d; --maturity-soft: #f1f3f4; }
 .legend-item[class*="maturity-"] { color: var(--maturity-color); }
+.outcome-attained { --outcome-color: #145f4c; --outcome-soft: #e7f3ef; --outcome-border: #0f4d3e; --maturity-color: var(--outcome-border); --maturity-soft: var(--outcome-soft); }
+.outcome-official-plan { --outcome-color: #176b57; --outcome-soft: #edf7f4; --outcome-border: #19715b; --maturity-color: var(--outcome-border); --maturity-soft: var(--outcome-soft); }
+.outcome-provisional { --outcome-color: #8a6200; --outcome-soft: #fff7dc; --outcome-border: #a97900; --maturity-color: var(--outcome-border); --maturity-soft: var(--outcome-soft); }
+.outcome-timing-unconfirmed { --outcome-color: #58686c; --outcome-soft: #eef1f1; --outcome-border: #87979a; --maturity-color: var(--outcome-border); --maturity-soft: var(--outcome-soft); }
+.legend-item[class*="outcome-"] { color: var(--outcome-color); }
+.legend-item.outcome-attained::before { background: var(--outcome-color); border-color: var(--outcome-border); }
+.legend-item.outcome-official-plan::before { background: var(--outcome-soft); border: 2px dashed var(--outcome-border); }
+.legend-item.outcome-provisional::before { background: var(--outcome-soft); border: 2px dotted var(--outcome-border); }
+.legend-item.outcome-timing-unconfirmed::before { background: var(--outcome-soft); border-color: var(--outcome-border); }
 .roadmap-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid #bdc7ce; border-radius: 5px; background: var(--paper); box-shadow: var(--shadow); }
 .roadmap-table { table-layout: fixed; }
 .roadmap-table col.roadmap-tech-column { width: 180px; }
@@ -245,6 +254,9 @@ tbody tr:hover { background: #fafbfb; }
 .roadmap-generation-band.phase-transition { --generation-color: #8a6510; --generation-soft: #fff5d8; }
 .roadmap-generation-band.phase-continuing { --generation-color: #176d74; --generation-soft: #e7f5f5; }
 .roadmap-generation-band.confidence-low { border-style: dashed; border-left-style: solid; }
+.roadmap-generation-band.outcome-attained { --generation-color: var(--outcome-border); --generation-soft: var(--outcome-soft); border-style: solid; }
+.roadmap-generation-band.outcome-official-plan { --generation-color: var(--outcome-border); --generation-soft: var(--outcome-soft); border-style: dashed; border-left-style: solid; }
+.roadmap-generation-band.outcome-provisional { --generation-color: var(--outcome-border); --generation-soft: var(--outcome-soft); border-style: dotted; border-left-style: solid; }
 .roadmap-generation-period, .roadmap-generation-label { display: block; }
 .roadmap-generation-period { margin-bottom: 2px; color: var(--generation-color); font-size: 8px; font-weight: 800; }
 .roadmap-generation-band:hover, .roadmap-generation-band:focus-visible { outline: 2px solid color-mix(in srgb, var(--generation-color) 35%, transparent); outline-offset: 1px; }
@@ -1159,15 +1171,14 @@ footer strong { color: var(--navy); }
 .roadmap-availability-control label, .roadmap-availability-summary { display: grid; gap: 5px; margin: 0; }
 .roadmap-availability-control select { min-width: 140px; }
 .roadmap-availability-note { max-width: 760px; margin: 0; color: #40545a; font-size: .88rem; }
-.roadmap-milestone.availability-confirmed { background: #145f4c; border-color: #0f4d3e; color: #fff; }
-.roadmap-milestone.availability-announced-target { background: #e8f2f0; border: 2px dashed #19715b; color: #123e34; }
-.roadmap-milestone.availability-timing-undisclosed { background: #eef1f1; border-color: #87979a; color: #263a3f; }
-.legend-item.availability-confirmed::before { background: #145f4c; border-color: #0f4d3e; }
-.legend-item.availability-announced-target::before { background: #e8f2f0; border: 2px dashed #19715b; }
-.legend-item.availability-timing-undisclosed::before { background: #eef1f1; border-color: #87979a; }
-.summary-status.availability-confirmed { background: #145f4c; color: #fff; }
-.summary-status.availability-announced-target { background: #e8f2f0; color: #123e34; }
-.summary-status.availability-timing-undisclosed { background: #eef1f1; color: #263a3f; }
+.roadmap-milestone.outcome-attained { background: var(--outcome-color); border-color: var(--outcome-border); color: #fff; }
+.roadmap-milestone.outcome-official-plan { background: var(--outcome-soft); border: 2px dashed var(--outcome-border); color: #123e34; }
+.roadmap-milestone.outcome-provisional { background: var(--outcome-soft); border: 2px dotted var(--outcome-border); color: #5c4300; }
+.roadmap-milestone.outcome-timing-unconfirmed { background: var(--outcome-soft); border-color: var(--outcome-border); color: #263a3f; }
+.summary-status.outcome-attained { background: var(--outcome-color); color: #fff; }
+.summary-status.outcome-official-plan { background: var(--outcome-soft); color: #123e34; }
+.summary-status.outcome-provisional { background: var(--outcome-soft); color: #5c4300; }
+.summary-status.outcome-timing-unconfirmed { background: var(--outcome-soft); color: #263a3f; }
 .roadmap-milestone.after-planning-year { opacity: .38; }
 .roadmap-milestone.timing-uncertain-for-planning { box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #87979a; }
 .roadmap-lifecycle-list { display: grid; gap: 10px; padding: 0; list-style: none; }
