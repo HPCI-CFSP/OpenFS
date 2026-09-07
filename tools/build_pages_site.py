@@ -1559,6 +1559,12 @@ GPU_PLANNER_SOURCE_ROLES = {
         "assessment_id",
         "availability.json",
     ),
+    "what-if-template": (
+        "proposals",
+        "component-cost-inputs",
+        "cost_input_id",
+        "what-if-template.json",
+    ),
 }
 
 
@@ -1650,6 +1656,9 @@ def build_candidate_gpu_planner(
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "index.html").write_text(value, encoding="utf-8")
     shutil.copy2(source / "gpu-planner-engine.js", output / "gpu-planner-engine.js")
+    shutil.copy2(
+        source / "gpu-planner-candidate.js", output / "gpu-planner-candidate.js"
+    )
     data_dir = destination / "data"
     data_dir.mkdir()
     for role, (_first, _second, _id_field, filename) in GPU_PLANNER_SOURCE_ROLES.items():

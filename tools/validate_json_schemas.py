@@ -58,6 +58,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "procurement-availability-assessment.schema.json"
     if ref.startswith("proposals/planning-requests/"):
         return "planning-request.schema.json"
+    if ref.startswith("proposals/component-cost-inputs/"):
+        return "component-cost-input.schema.json"
     if ref.startswith("proposals/configuration-results/"):
         return "configuration-estimate.schema.json"
     if ref == "tests/fixtures/gpu-planner-priced-components.json":

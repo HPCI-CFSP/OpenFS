@@ -1,12 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/planning-request.schema.json",
-  "title": "GPU-centric Configuration Planning Request",
+  "title": "GPU-centric Configuration Planning Request v0.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "request_id", "status", "information_classification", "policy_id", "architecture_id", "as_of", "input_notes_ja", "input_notes_en", "budget", "schedule", "vendor_mode", "deployment_mode", "facility", "workloads", "storage", "inference", "objectives", "catalog_snapshot"],
+  "required": [
+    "schema_version", "request_id", "status", "information_classification",
+    "policy_id", "architecture_id", "as_of", "input_notes_ja", "input_notes_en",
+    "budget", "schedule", "run_mode", "vendor_mode", "product_selection",
+    "deployment_mode", "facility", "workloads", "storage", "inference",
+    "performance_model", "objectives", "catalog_snapshot"
+  ],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
+    "schema_version": {"const": "0.2.0"},
     "request_id": {"type": "string", "pattern": "^PLANREQ-[A-Z0-9-]+$"},
     "status": {"const": "candidate"},
     "information_classification": {"const": "public"},
@@ -27,7 +33,7 @@
         "contingency_percent": {"type": "number", "minimum": 0, "maximum": 50},
         "contingency_basis": {"const": "configuration-cost"},
         "tco_years": {"type": "integer", "minimum": 1, "maximum": 20},
-        "tco_ceiling_oku_jpy": {"type": ["number", "null"], "exclusiveMinimum": 0}
+        "tco_ceiling_oku_jpy": {"$ref": "#/$defs/numberOrNull"}
       }
     },
     "schedule": {
@@ -40,23 +46,35 @@
         "procurement_jurisdiction": {"type": "string", "minLength": 2}
       }
     },
+    "run_mode": {"enum": ["public-evidence", "what-if"]},
     "vendor_mode": {"enum": ["NVIDIA", "AMD", "compare", "auto-pareto"]},
+    "product_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nvidia", "amd"],
+      "properties": {
+        "nvidia": {"type": "string", "minLength": 1},
+        "amd": {"type": "string", "minLength": 1}
+      }
+    },
     "deployment_mode": {"enum": ["on-premises", "external-hosting", "hybrid"]},
     "facility": {"$ref": "#/$defs/facility"},
     "workloads": {"$ref": "#/$defs/workloads"},
     "storage": {"$ref": "#/$defs/storage"},
     "inference": {"$ref": "#/$defs/inference"},
+    "performance_model": {"$ref": "#/$defs/performanceModel"},
     "objectives": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["metric", "direction", "weight"],
         "properties": {
-          "metric": {"enum": ["validated-workload-throughput", "total-hbm-gib", "capex-jpy", "it-power-kw", "delivery-risk", "portability-risk"]},
+          "metric": {"enum": ["validated-workload-throughput", "capex-jpy", "tco-jpy", "it-power-kw", "delivery-risk", "portability-risk"]},
           "direction": {"enum": ["maximize", "minimize"]},
-          "weight": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+          "weight": {"type": "null"}
         }
       }
     },
@@ -73,25 +91,37 @@
   },
   "$defs": {
     "numberOrNull": {"type": ["number", "null"], "minimum": 0},
+    "integerOrNull": {"type": ["integer", "null"], "minimum": 0},
+    "stringOrNull": {"type": ["string", "null"]},
     "facility": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["it_power_limit_mw", "it_power_limit_status", "cooling_method", "cooling_capacity_mw", "cooling_capacity_status", "rack_limit", "floor_area_m2", "floor_loading_kg_m2"],
+      "required": [
+        "it_power_limit_mw", "it_power_limit_status", "cooling_method",
+        "cooling_capacity_mw", "cooling_capacity_status", "rack_limit",
+        "floor_area_m2", "floor_loading_kg_m2", "rack_density_kw", "pue",
+        "power_redundancy", "cooling_redundancy", "facility_work_in_capex"
+      ],
       "properties": {
         "it_power_limit_mw": {"$ref": "#/$defs/numberOrNull"},
-        "it_power_limit_status": {"enum": ["confirmed", "unconfirmed", "unknown"]},
-        "cooling_method": {"enum": ["direct-liquid", "air", "hybrid", "external-service", "unknown"]},
+        "it_power_limit_status": {"enum": ["confirmed", "user-input", "unconfirmed", "unknown"]},
+        "cooling_method": {"enum": ["direct-liquid", "rear-door", "air", "hybrid", "external-service", "unknown"]},
         "cooling_capacity_mw": {"$ref": "#/$defs/numberOrNull"},
-        "cooling_capacity_status": {"enum": ["confirmed", "unconfirmed", "unknown"]},
-        "rack_limit": {"type": ["integer", "null"], "minimum": 1},
+        "cooling_capacity_status": {"enum": ["confirmed", "user-input", "unconfirmed", "unknown"]},
+        "rack_limit": {"$ref": "#/$defs/integerOrNull"},
         "floor_area_m2": {"$ref": "#/$defs/numberOrNull"},
-        "floor_loading_kg_m2": {"$ref": "#/$defs/numberOrNull"}
+        "floor_loading_kg_m2": {"$ref": "#/$defs/numberOrNull"},
+        "rack_density_kw": {"$ref": "#/$defs/numberOrNull"},
+        "pue": {"$ref": "#/$defs/numberOrNull"},
+        "power_redundancy": {"type": "string", "minLength": 1},
+        "cooling_redundancy": {"type": "string", "minLength": 1},
+        "facility_work_in_capex": {"type": ["boolean", "null"]}
       }
     },
     "workloads": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mix_percent", "absolute_demand"],
+      "required": ["mix_percent", "utilization_target_percent", "headroom_percent", "absolute_demand"],
       "properties": {
         "mix_percent": {
           "type": "object",
@@ -104,16 +134,32 @@
             "data_analytics": {"type": "number", "minimum": 0, "maximum": 100}
           }
         },
+        "utilization_target_percent": {"$ref": "#/$defs/numberOrNull"},
+        "headroom_percent": {"$ref": "#/$defs/numberOrNull"},
         "absolute_demand": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["training_accelerator_hours_per_year", "training_tokens_per_year", "hpc_jobs_per_year", "hpc_accelerator_hours_per_year", "data_ingest_pb_per_year"],
+          "required": [
+            "annual_accelerator_hours", "training_accelerator_hours_per_year",
+            "training_tokens_per_year", "training_jobs_per_year",
+            "hpc_jobs_per_year", "hpc_accelerator_hours_per_year",
+            "hpc_accelerators_per_job", "hpc_mean_runtime_hours",
+            "inference_requests_per_year", "peak_requests_per_second",
+            "data_ingest_pb_per_year", "concurrent_users"
+          ],
           "properties": {
+            "annual_accelerator_hours": {"$ref": "#/$defs/numberOrNull"},
             "training_accelerator_hours_per_year": {"$ref": "#/$defs/numberOrNull"},
             "training_tokens_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "training_jobs_per_year": {"$ref": "#/$defs/numberOrNull"},
             "hpc_jobs_per_year": {"$ref": "#/$defs/numberOrNull"},
             "hpc_accelerator_hours_per_year": {"$ref": "#/$defs/numberOrNull"},
-            "data_ingest_pb_per_year": {"$ref": "#/$defs/numberOrNull"}
+            "hpc_accelerators_per_job": {"$ref": "#/$defs/numberOrNull"},
+            "hpc_mean_runtime_hours": {"$ref": "#/$defs/numberOrNull"},
+            "inference_requests_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "peak_requests_per_second": {"$ref": "#/$defs/numberOrNull"},
+            "data_ingest_pb_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "concurrent_users": {"$ref": "#/$defs/integerOrNull"}
           }
         }
       }
@@ -121,24 +167,109 @@
     "storage": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["shared_fast_capacity_pb", "archive_capacity_pb", "checkpoint_write_gb_s", "training_read_gb_s"],
+      "required": [
+        "shared_fast_capacity_pb", "archive_capacity_pb", "checkpoint_write_gb_s",
+        "training_read_gb_s", "metadata_million_inodes", "backup_copies",
+        "retention_years", "rto_hours", "local_nvme_tb_per_compute_unit"
+      ],
       "properties": {
         "shared_fast_capacity_pb": {"$ref": "#/$defs/numberOrNull"},
         "archive_capacity_pb": {"$ref": "#/$defs/numberOrNull"},
         "checkpoint_write_gb_s": {"$ref": "#/$defs/numberOrNull"},
-        "training_read_gb_s": {"$ref": "#/$defs/numberOrNull"}
+        "training_read_gb_s": {"$ref": "#/$defs/numberOrNull"},
+        "metadata_million_inodes": {"$ref": "#/$defs/numberOrNull"},
+        "backup_copies": {"$ref": "#/$defs/integerOrNull"},
+        "retention_years": {"$ref": "#/$defs/numberOrNull"},
+        "rto_hours": {"$ref": "#/$defs/numberOrNull"},
+        "local_nvme_tb_per_compute_unit": {"$ref": "#/$defs/numberOrNull"}
       }
     },
     "inference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["concurrent_users", "request_rate_per_second", "ttft_p95_ms", "tpot_p95_ms", "quality_target_id"],
+      "required": [
+        "model_name", "parameter_count_billion", "quantization", "input_tokens",
+        "output_tokens", "context_tokens", "concurrent_users",
+        "request_rate_per_second", "ttft_p50_ms", "ttft_p95_ms", "ttft_p99_ms",
+        "tpot_p50_ms", "tpot_p95_ms", "tpot_p99_ms",
+        "offline_throughput_target", "server_throughput_target", "quality_target_id"
+      ],
       "properties": {
-        "concurrent_users": {"type": ["integer", "null"], "minimum": 0},
+        "model_name": {"$ref": "#/$defs/stringOrNull"},
+        "parameter_count_billion": {"$ref": "#/$defs/numberOrNull"},
+        "quantization": {"$ref": "#/$defs/stringOrNull"},
+        "input_tokens": {"$ref": "#/$defs/integerOrNull"},
+        "output_tokens": {"$ref": "#/$defs/integerOrNull"},
+        "context_tokens": {"$ref": "#/$defs/integerOrNull"},
+        "concurrent_users": {"$ref": "#/$defs/integerOrNull"},
         "request_rate_per_second": {"$ref": "#/$defs/numberOrNull"},
+        "ttft_p50_ms": {"$ref": "#/$defs/numberOrNull"},
         "ttft_p95_ms": {"$ref": "#/$defs/numberOrNull"},
+        "ttft_p99_ms": {"$ref": "#/$defs/numberOrNull"},
+        "tpot_p50_ms": {"$ref": "#/$defs/numberOrNull"},
         "tpot_p95_ms": {"$ref": "#/$defs/numberOrNull"},
-        "quality_target_id": {"type": ["string", "null"], "minLength": 1}
+        "tpot_p99_ms": {"$ref": "#/$defs/numberOrNull"},
+        "offline_throughput_target": {"$ref": "#/$defs/numberOrNull"},
+        "server_throughput_target": {"$ref": "#/$defs/numberOrNull"},
+        "quality_target_id": {"$ref": "#/$defs/stringOrNull"}
+      }
+    },
+    "performanceModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase_baseline", "inference_baseline"],
+      "properties": {
+        "phase_baseline": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/phaseBaseline"}]},
+        "inference_baseline": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/inferenceBaseline"}]}
+      }
+    },
+    "caseValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["optimistic", "baseline", "conservative"],
+      "properties": {
+        "optimistic": {"type": "number", "exclusiveMinimum": 0},
+        "baseline": {"type": "number", "exclusiveMinimum": 0},
+        "conservative": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "phaseBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "benchmark", "measured_compute_units", "compute_time_s",
+        "memory_time_s", "communication_time_s", "io_time_s",
+        "non_overlappable_time_s", "synchronization_time_s",
+        "scaling_efficiency", "error_percent", "measured_configuration",
+        "software_stack", "source_kind", "source_ids"
+      ],
+      "properties": {
+        "status": {"enum": ["provisional", "validated"]},
+        "benchmark": {"type": "string", "minLength": 1},
+        "measured_compute_units": {"type": "integer", "minimum": 1},
+        "compute_time_s": {"type": "number", "minimum": 0},
+        "memory_time_s": {"type": "number", "minimum": 0},
+        "communication_time_s": {"type": "number", "minimum": 0},
+        "io_time_s": {"type": "number", "minimum": 0},
+        "non_overlappable_time_s": {"type": "number", "minimum": 0},
+        "synchronization_time_s": {"type": "number", "minimum": 0},
+        "scaling_efficiency": {"$ref": "#/$defs/caseValues"},
+        "error_percent": {"$ref": "#/$defs/caseValues"},
+        "measured_configuration": {"type": "string", "minLength": 1},
+        "software_stack": {"type": "array", "items": {"type": "string"}},
+        "source_kind": {"enum": ["public-measurement", "user-assumption"]},
+        "source_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "inferenceBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "service_rate_rps_per_gpu", "base_ttft_ms", "base_tpot_ms"],
+      "properties": {
+        "status": {"enum": ["provisional", "validated"]},
+        "service_rate_rps_per_gpu": {"type": "number", "exclusiveMinimum": 0},
+        "base_ttft_ms": {"type": "number", "minimum": 0},
+        "base_tpot_ms": {"type": "number", "minimum": 0}
       }
     }
   }

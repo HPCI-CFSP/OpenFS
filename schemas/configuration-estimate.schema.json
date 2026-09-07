@@ -1,148 +1,629 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/configuration-estimate.schema.json",
-  "title": "Candidate GPU-centric Configuration Estimate",
+  "title": "Candidate GPU-centric Configuration Estimate v0.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "result_id", "status", "research_status", "consensus_status", "procurement_use", "request_id", "architecture_id", "product_catalog_id", "availability_assessment_id", "cost_input_id", "generated_at", "engine_version", "input_digest", "vendor_candidates", "pareto_result", "messages_ja", "messages_en"],
+  "required": [
+    "schema_version",
+    "result_id",
+    "status",
+    "research_status",
+    "consensus_status",
+    "procurement_use",
+    "calculation_mode",
+    "request_id",
+    "architecture_id",
+    "product_catalog_id",
+    "availability_assessment_id",
+    "cost_input_id",
+    "generated_at",
+    "engine_version",
+    "vendor_candidates",
+    "pareto_result",
+    "benchmark_candidates",
+    "messages_ja",
+    "messages_en"
+  ],
   "properties": {
-    "schema_version": {"const": "0.1.0"},
-    "result_id": {"type": "string", "pattern": "^CFGRESULT-[A-Z0-9-]+$"},
-    "status": {"enum": ["blocked", "partial", "feasible"]},
-    "research_status": {"const": "provisional"},
-    "consensus_status": {"const": "incomplete"},
-    "procurement_use": {"const": "prohibited"},
-    "request_id": {"type": "string", "pattern": "^PLANREQ-[A-Z0-9-]+$"},
-    "architecture_id": {"const": "ARCH-GPU-CENTRIC-AI4S-001"},
-    "product_catalog_id": {"type": "string", "pattern": "^GPUCAT-[A-Z0-9-]+$"},
-    "availability_assessment_id": {"type": "string", "pattern": "^AVAIL-[A-Z0-9-]+$"},
-    "cost_input_id": {"type": ["string", "null"], "pattern": "^COSTINPUT-[A-Z0-9-]+$"},
-    "generated_at": {"type": "string", "format": "date-time"},
-    "engine_version": {"const": "0.1.0"},
-    "input_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^CFGRESULT-[A-Z0-9-]+$"
+    },
+    "status": {
+      "enum": [
+        "blocked",
+        "partial",
+        "feasible"
+      ]
+    },
+    "research_status": {
+      "const": "provisional"
+    },
+    "consensus_status": {
+      "const": "incomplete"
+    },
+    "procurement_use": {
+      "const": "prohibited"
+    },
+    "calculation_mode": {
+      "enum": [
+        "public-evidence",
+        "what-if"
+      ]
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^PLANREQ-[A-Z0-9-]+$"
+    },
+    "architecture_id": {
+      "const": "ARCH-GPU-CENTRIC-AI4S-001"
+    },
+    "product_catalog_id": {
+      "type": "string",
+      "pattern": "^GPUCAT-[A-Z0-9-]+$"
+    },
+    "availability_assessment_id": {
+      "type": "string",
+      "pattern": "^AVAIL-[A-Z0-9-]+$"
+    },
+    "cost_input_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^COSTINPUT-[A-Z0-9-]+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "engine_version": {
+      "const": "0.2.0"
+    },
     "vendor_candidates": {
       "type": "array",
       "minItems": 1,
-      "items": {"$ref": "#/$defs/vendorCandidate"}
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "vendor",
+          "product_id",
+          "product_name",
+          "availability_status",
+          "status",
+          "software_profile",
+          "portability_risk_score",
+          "cases",
+          "gaps"
+        ],
+        "properties": {
+          "vendor": {
+            "enum": [
+              "NVIDIA",
+              "AMD"
+            ]
+          },
+          "product_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "product_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "availability_status": {
+            "enum": [
+              "eligible",
+              "conditional",
+              "ineligible",
+              "unknown",
+              "not-assessed",
+              "user-assumption"
+            ]
+          },
+          "status": {
+            "enum": [
+              "blocked",
+              "partial",
+              "feasible"
+            ]
+          },
+          "software_profile": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "portability_risk_score": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "cases": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "case_ref",
+                "price_case",
+                "status",
+                "blocking_reason",
+                "unit_type",
+                "quantities",
+                "power",
+                "costs",
+                "tco",
+                "constraints",
+                "performance",
+                "gap_ids"
+              ],
+              "properties": {
+                "case_ref": {
+                  "type": "string"
+                },
+                "price_case": {
+                  "enum": [
+                    "optimistic",
+                    "baseline",
+                    "conservative"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "blocked",
+                    "partial",
+                    "feasible"
+                  ]
+                },
+                "blocking_reason": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "unit_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "node",
+                    "tray",
+                    "rack",
+                    null
+                  ]
+                },
+                "quantities": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "additionalProperties": {
+                    "type": [
+                      "number",
+                      "integer",
+                      "null"
+                    ]
+                  }
+                },
+                "power": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "additionalProperties": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0
+                  }
+                },
+                "costs": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "configuration_cost_jpy",
+                    "contingency_jpy",
+                    "unused_budget_jpy",
+                    "budget_ceiling_jpy",
+                    "identity_verified",
+                    "line_items"
+                  ],
+                  "properties": {
+                    "configuration_cost_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "contingency_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "unused_budget_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "budget_ceiling_jpy": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "identity_verified": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "line_items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "scope_id",
+                          "category",
+                          "basis",
+                          "quantity",
+                          "unit_price_jpy",
+                          "subtotal_jpy",
+                          "evidence_status",
+                          "source_ids"
+                        ],
+                        "properties": {
+                          "scope_id": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "basis": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "unit_price_jpy": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "subtotal_jpy": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "evidence_status": {
+                            "type": "string"
+                          },
+                          "source_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "tco": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "years",
+                    "initial_capex_jpy",
+                    "recurring_cost_jpy",
+                    "end_of_horizon_cost_jpy",
+                    "total_tco_jpy",
+                    "complete",
+                    "annual_breakdown"
+                  ],
+                  "properties": {
+                    "years": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "initial_capex_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "recurring_cost_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "end_of_horizon_cost_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "total_tco_jpy": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "complete": {
+                      "type": "boolean"
+                    },
+                    "annual_breakdown": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "scope_id",
+                          "category",
+                          "basis",
+                          "quantity",
+                          "unit_price_jpy",
+                          "subtotal_jpy",
+                          "evidence_status",
+                          "source_ids"
+                        ],
+                        "properties": {
+                          "scope_id": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "basis": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "unit_price_jpy": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "subtotal_jpy": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          },
+                          "evidence_status": {
+                            "type": "string"
+                          },
+                          "source_ids": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "constraints": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "actual",
+                      "limit",
+                      "unit",
+                      "shortfall",
+                      "detail"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "unknown"
+                        ]
+                      },
+                      "actual": {
+                        "type": [
+                          "number",
+                          "integer",
+                          "string",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "limit": {
+                        "type": [
+                          "number",
+                          "integer",
+                          "string",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "shortfall": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "detail": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "performance": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "procurement_use"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "procurement_use": {
+                      "const": "prohibited"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                "gap_ids": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^GAP-GPUCFG-[0-9]{3}$"
+                  }
+                }
+              }
+            }
+          },
+          "gaps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "gap_id",
+                "scope",
+                "statement_ja",
+                "statement_en",
+                "missing_items"
+              ],
+              "properties": {
+                "gap_id": {
+                  "type": "string",
+                  "pattern": "^GAP-GPUCFG-[0-9]{3}$"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "statement_ja": {
+                  "type": "string"
+                },
+                "statement_en": {
+                  "type": "string"
+                },
+                "missing_items": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "pareto_result": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["status", "candidate_refs", "reason_ja", "reason_en"],
+      "required": [
+        "status",
+        "objectives",
+        "candidate_refs",
+        "reason_ja",
+        "reason_en"
+      ],
       "properties": {
-        "status": {"enum": ["computed", "not-evaluable"]},
-        "candidate_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "reason_ja": {"type": "string", "minLength": 1},
-        "reason_en": {"type": "string", "minLength": 1}
-      }
-    },
-    "messages_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-    "messages_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
-  },
-  "$defs": {
-    "numberOrNull": {"type": ["number", "null"], "minimum": 0},
-    "integerOrNull": {"type": ["integer", "null"], "minimum": 0},
-    "costs": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["configuration_cost_jpy", "contingency_jpy", "unused_budget_jpy", "budget_ceiling_jpy", "identity_verified"],
-      "properties": {
-        "configuration_cost_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "contingency_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "unused_budget_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "budget_ceiling_jpy": {"type": "number", "exclusiveMinimum": 0},
-        "identity_verified": {"type": ["boolean", "null"]}
-      }
-    },
-    "tco": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["years", "initial_capex_jpy", "recurring_cost_jpy", "end_of_horizon_cost_jpy", "total_tco_jpy", "complete"],
-      "properties": {
-        "years": {"type": "integer", "minimum": 1},
-        "initial_capex_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "recurring_cost_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "end_of_horizon_cost_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "total_tco_jpy": {"$ref": "#/$defs/numberOrNull"},
-        "complete": {"type": "boolean"}
-      }
-    },
-    "constraints": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["budget", "it_power", "cooling", "rack_count", "delivery"],
-      "properties": {
-        "budget": {"enum": ["pass", "fail", "unknown"]},
-        "it_power": {"enum": ["pass", "fail", "unknown"]},
-        "cooling": {"enum": ["pass", "fail", "unknown"]},
-        "rack_count": {"enum": ["pass", "fail", "unknown"]},
-        "delivery": {"enum": ["pass", "fail", "unknown"]}
-      }
-    },
-    "performance": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "compute_time_s", "memory_time_s", "communication_time_s", "io_time_s", "overlappable_time_s", "non_overlappable_time_s", "synchronization_time_s", "predicted_time_s", "inference_queue", "benchmark_candidates", "procurement_use"],
-      "properties": {
-        "status": {"enum": ["not-computable", "provisional", "validated"]},
-        "compute_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "memory_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "communication_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "io_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "overlappable_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "non_overlappable_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "synchronization_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "predicted_time_s": {"$ref": "#/$defs/numberOrNull"},
-        "inference_queue": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["status", "concurrent_users", "ttft_p95_ms", "tpot_p95_ms"],
-          "properties": {
-            "status": {"enum": ["not-computable", "provisional", "validated"]},
-            "concurrent_users": {"$ref": "#/$defs/integerOrNull"},
-            "ttft_p95_ms": {"$ref": "#/$defs/numberOrNull"},
-            "tpot_p95_ms": {"$ref": "#/$defs/numberOrNull"}
+        "status": {
+          "enum": [
+            "computed",
+            "not-evaluable",
+            "not-requested"
+          ]
+        },
+        "objectives": {
+          "type": "array",
+          "items": {
+            "type": "object"
           }
         },
-        "benchmark_candidates": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["HPL", "HPL-MxP", "HPCG", "Graph500", "OSU Micro-Benchmarks", "GROMACS", "OpenFOAM", "MLPerf Training", "MLPerf Inference Datacenter", "MLPerf Storage"]}},
-        "procurement_use": {"enum": ["prohibited", "eligible-after-validation"]}
+        "candidate_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason_ja": {
+          "type": "string"
+        },
+        "reason_en": {
+          "type": "string"
+        }
       }
     },
-    "case": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["case_ref", "price_case", "status", "unit_type", "compute_units", "gpu_count", "host_cpu_count", "rack_count", "total_hbm_gib", "it_power_kw", "costs", "tco", "constraints", "performance", "gap_ids"],
-      "properties": {
-        "case_ref": {"type": "string", "minLength": 1},
-        "price_case": {"enum": ["optimistic", "reference", "conservative"]},
-        "status": {"enum": ["blocked", "partial", "feasible"]},
-        "unit_type": {"type": ["string", "null"], "enum": ["node", "tray", "rack", null]},
-        "compute_units": {"$ref": "#/$defs/integerOrNull"},
-        "gpu_count": {"$ref": "#/$defs/integerOrNull"},
-        "host_cpu_count": {"$ref": "#/$defs/integerOrNull"},
-        "rack_count": {"$ref": "#/$defs/integerOrNull"},
-        "total_hbm_gib": {"$ref": "#/$defs/numberOrNull"},
-        "it_power_kw": {"$ref": "#/$defs/numberOrNull"},
-        "costs": {"$ref": "#/$defs/costs"},
-        "tco": {"$ref": "#/$defs/tco"},
-        "constraints": {"$ref": "#/$defs/constraints"},
-        "performance": {"$ref": "#/$defs/performance"},
-        "gap_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-GPUCFG-[0-9]{3}$"}}
+    "benchmark_candidates": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
       }
     },
-    "vendorCandidate": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["vendor", "product_id", "availability_status", "status", "cases", "warnings_ja", "warnings_en", "gap_ids"],
-      "properties": {
-        "vendor": {"enum": ["NVIDIA", "AMD"]},
-        "product_id": {"type": ["string", "null"], "pattern": "^GPU-[A-Z0-9-]+$"},
-        "availability_status": {"enum": ["eligible", "conditional", "unknown", "ineligible", "not-assessed"]},
-        "status": {"enum": ["blocked", "partial", "feasible"]},
-        "cases": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/case"}},
-        "warnings_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "warnings_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "gap_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^GAP-GPUCFG-[0-9]{3}$"}}
+    "messages_ja": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string"
+      }
+    },
+    "messages_en": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string"
       }
     }
   }
