@@ -26,6 +26,7 @@ on:
       - "schemas/public-hpci-system-inventory.schema.json"
       - "schemas/public-application-performance-forecast.schema.json"
       - "schemas/planning-evidence-readiness.schema.json"
+      - "schemas/gpu-planner-publication.schema.json"
       - "tools/build_pages_site.py"
       - "tools/roadmap_timing.py"
       - "schemas/public-roadmap.schema.json"
@@ -85,7 +86,7 @@ jobs:
       - name: Run Pages tests
         run: python3 -m unittest tests.test_pages_site tests.test_analytics_ui tests.test_gpu_centric_planner -v
       - name: Build static preview
-        run: python3 tools/build_pages_site.py --include-candidate-gpu-planner --output _site
+        run: python3 tools/build_pages_site.py --output _site
       - name: Add preview instructions
         run: |
           cat > _site/OPEN_PREVIEW.txt <<'EOF'
@@ -95,10 +96,10 @@ jobs:
           2. Open index.html in a browser, or run:
              python3 -m http.server 8000 --directory .
           3. Visit http://localhost:8000/.
-          4. Open the unpublished GPU planner Candidate at:
+          4. Open the GPU planner Candidate proposed for production publication at:
              http://localhost:8000/candidate/gpu-centric-ai4s/
 
-          This artifact is not deployed and cannot modify the production Pages site.
+          This PR artifact is not deployed and cannot modify the production Pages site.
           The Candidate route contains no GA4 loader and must not be used for procurement.
           EOF
       - name: Upload preview artifact

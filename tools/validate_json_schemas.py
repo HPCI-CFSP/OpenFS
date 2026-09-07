@@ -112,6 +112,8 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "planning-evidence-readiness.schema.json"
     if ref == "knowledge/public/fs3-decision-evidence.json":
         return "fs3-decision-evidence.schema.json"
+    if ref == "knowledge/public/gpu-planner-publication.json":
+        return "gpu-planner-publication.schema.json"
     if ref == "knowledge/public/source-catalog-map.json":
         return "source-catalog-map.schema.json"
     if ref.startswith("knowledge/public/roadmaps/"):
