@@ -7,6 +7,11 @@
 - [ ] Implement universal corrections in the deterministic layout builder instead of repeating manual page edits, while preserving evidence and provisional/Consensus status.
 - [ ] Add fail-closed data, link, rendering, and regression checks; complete this P0 item only when every active Topic passes the shared policy or its declared exception.
 
+## P0: catalog source-date semantics and global glossary
+
+- [ ] Separate source publication date, described-event timing, and OpenFS verification date throughout the public catalog. Display each source's publication date next to its URL; preserve date-only precision, record a publication time and timezone only when the source states them, and never infer a timezone or convert an undated source into a dated one. Update the schema, bilingual rendering, existing records, validation, and regression tests together.
+- [ ] Publish a standalone bilingual glossary generated solely from the centralized glossary data. Add a `Glossary` / `専門用語` navigation item between `Reports` / `報告書` and `Feedback` on every Pages view, make terms throughout the catalog and roadmaps link to stable glossary entries, remove page-specific definition duplication, and add link, accessibility, responsive-layout, and Pages-build tests.
+
 ## Phase 0: design contracts
 
 - [x] Define the architecture and trust boundaries.
