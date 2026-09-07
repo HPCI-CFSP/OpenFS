@@ -1538,7 +1538,36 @@ def copy_brand_assets(root: Path, output: Path) -> None:
         shutil.copy2(source / filename, destination / filename)
 
 
-def build(root: Path, output: Path) -> dict[str, Any]:
+def build_candidate_gpu_planner(
+    root: Path, source: Path, output: Path, asset_version: str
+) -> None:
+    """Build an explicitly requested, analytics-free Candidate preview."""
+    root_prefix = "../../"
+    value = (source / "gpu-planner-candidate.html").read_text(encoding="utf-8")
+    identity = (source / "partials" / "identity.html").read_text(encoding="utf-8")
+    value = value.replace("{{SITE_IDENTITY}}", identity.rstrip())
+    value = value.replace("{{ROOT_PREFIX}}", root_prefix)
+    value = value.replace("{{HOME_HREF}}", root_prefix)
+    value = value.replace("{{ASSET_VERSION}}", asset_version)
+    destination = output / "candidate" / "gpu-centric-ai4s"
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / "index.html").write_text(value, encoding="utf-8")
+    shutil.copy2(source / "gpu-planner-engine.js", output / "gpu-planner-engine.js")
+    data_dir = destination / "data"
+    data_dir.mkdir()
+    candidates = {
+        "request.json": root / "proposals" / "planning-requests" / "PLANREQ-GPUAI4S-2027-ONPREM-001.json",
+        "architecture.json": root / "proposals" / "reference-architectures" / "ARCH-GPU-CENTRIC-AI4S-001.json",
+        "product-catalog.json": root / "proposals" / "gpu-product-catalogs" / "GPUCAT-001.json",
+        "availability.json": root / "proposals" / "procurement-availability" / "AVAIL-2027-JP-001.json",
+    }
+    for filename, path in candidates.items():
+        shutil.copy2(path, data_dir / filename)
+
+
+def build(
+    root: Path, output: Path, include_candidate_gpu_planner: bool = False
+) -> dict[str, Any]:
     policy = load_json(root / "config" / "publication-policy.json")
     source = root / policy["site_source"]
     if output.exists():
@@ -1692,6 +1721,8 @@ def build(root: Path, output: Path) -> dict[str, Any]:
             ),
             encoding="utf-8",
         )
+    if include_candidate_gpu_planner:
+        build_candidate_gpu_planner(root, source, output, asset_version)
     (output / ".nojekyll").write_text("", encoding="utf-8")
     return public_data
 
@@ -1699,8 +1730,13 @@ def build(root: Path, output: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "_site")
+    parser.add_argument(
+        "--include-candidate-gpu-planner",
+        action="store_true",
+        help="include the unpublished, analytics-free GPU planner Candidate preview",
+    )
     args = parser.parse_args()
-    result = build(ROOT, args.output)
+    result = build(ROOT, args.output, args.include_candidate_gpu_planner)
     print(
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "

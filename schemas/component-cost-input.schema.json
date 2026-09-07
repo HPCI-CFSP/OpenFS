@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/component-cost-input.schema.json",
+  "title": "Traceable Component Cost Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "cost_input_id", "status", "as_of", "currency", "tax_basis", "price_basis_year", "packages"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "cost_input_id": {"type": "string", "pattern": "^COSTINPUT-[A-Z0-9-]+$"},
+    "status": {"enum": ["candidate", "synthetic-test-only"]},
+    "as_of": {"type": "string", "format": "date"},
+    "currency": {"const": "JPY"},
+    "tax_basis": {"const": "excluding-tax"},
+    "price_basis_year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["package_id", "vendor", "product_id", "unit_type", "gpus_per_unit", "host_cpus_per_unit", "units_per_rack", "power_kw_per_unit", "hbm_gib_per_gpu", "cost_lines", "source_ids"],
+        "properties": {
+          "package_id": {"type": "string", "pattern": "^PKG-[A-Z0-9-]+$"},
+          "vendor": {"enum": ["NVIDIA", "AMD"]},
+          "product_id": {"type": "string", "pattern": "^GPU-[A-Z0-9-]+$"},
+          "unit_type": {"enum": ["node", "tray", "rack"]},
+          "gpus_per_unit": {"type": "integer", "minimum": 1},
+          "host_cpus_per_unit": {"type": "integer", "minimum": 0},
+          "units_per_rack": {"type": "integer", "minimum": 1},
+          "power_kw_per_unit": {"type": "number", "exclusiveMinimum": 0},
+          "hbm_gib_per_gpu": {"type": "number", "exclusiveMinimum": 0},
+          "cost_lines": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["scope_id", "category", "basis", "period", "optimistic_jpy", "reference_jpy", "conservative_jpy", "evidence_status", "source_ids"],
+              "properties": {
+                "scope_id": {"type": "string", "pattern": "^COSTSCOPE-[A-Z0-9-]+$"},
+                "category": {"enum": ["compute", "network", "storage", "management", "facility", "integration", "maintenance", "software", "hosting", "energy", "staffing", "decommissioning"]},
+                "basis": {"enum": ["fixed", "per-compute-unit", "per-rack", "per-fast-storage-pb", "per-archive-storage-pb"]},
+                "period": {"enum": ["initial", "annual", "end-of-horizon"]},
+                "optimistic_jpy": {"type": "number", "minimum": 0},
+                "reference_jpy": {"type": "number", "minimum": 0},
+                "conservative_jpy": {"type": "number", "minimum": 0},
+                "evidence_status": {"enum": ["observed-itemized", "vendor-quote", "validated-estimate", "synthetic-test-only"]},
+                "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+              }
+            }
+          },
+          "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}

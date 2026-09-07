@@ -48,6 +48,20 @@ def contract_schema(path: Path, root: Path, payload: dict[str, Any]) -> str | No
         return "conference-coverage.schema.json"
     if ref.startswith("proposals/research-unit-updates/"):
         return "research-unit-update.schema.json"
+    if ref.startswith("proposals/system-planning-policies/"):
+        return "system-planning-policy-set.schema.json"
+    if ref.startswith("proposals/reference-architectures/"):
+        return "reference-architecture.schema.json"
+    if ref.startswith("proposals/gpu-product-catalogs/"):
+        return "gpu-product-catalog.schema.json"
+    if ref.startswith("proposals/procurement-availability/"):
+        return "procurement-availability-assessment.schema.json"
+    if ref.startswith("proposals/planning-requests/"):
+        return "planning-request.schema.json"
+    if ref.startswith("proposals/configuration-results/"):
+        return "configuration-estimate.schema.json"
+    if ref == "tests/fixtures/gpu-planner-priced-components.json":
+        return "component-cost-input.schema.json"
     if ref == "config/budget-planning.json":
         return "budget-planning.schema.json"
     if ref == "config/public-analytics.json":

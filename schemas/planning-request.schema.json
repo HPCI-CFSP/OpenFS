@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/planning-request.schema.json",
+  "title": "GPU-centric Configuration Planning Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "status", "information_classification", "policy_id", "architecture_id", "as_of", "input_notes_ja", "input_notes_en", "budget", "schedule", "vendor_mode", "deployment_mode", "facility", "workloads", "storage", "inference", "objectives", "catalog_snapshot"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "request_id": {"type": "string", "pattern": "^PLANREQ-[A-Z0-9-]+$"},
+    "status": {"const": "candidate"},
+    "information_classification": {"const": "public"},
+    "policy_id": {"type": "string", "pattern": "^POL-SYS-[A-Z0-9-]+$"},
+    "architecture_id": {"const": "ARCH-GPU-CENTRIC-AI4S-001"},
+    "as_of": {"type": "string", "format": "date"},
+    "input_notes_ja": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "input_notes_en": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capex_ceiling_oku_jpy", "currency", "tax_basis", "price_basis_year", "contingency_percent", "contingency_basis", "tco_years", "tco_ceiling_oku_jpy"],
+      "properties": {
+        "capex_ceiling_oku_jpy": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+        "currency": {"const": "JPY"},
+        "tax_basis": {"enum": ["excluding-tax", "including-tax", "unknown"]},
+        "price_basis_year": {"type": "integer", "minimum": 2020, "maximum": 2100},
+        "contingency_percent": {"type": "number", "minimum": 0, "maximum": 50},
+        "contingency_basis": {"const": "configuration-cost"},
+        "tco_years": {"type": "integer", "minimum": 1, "maximum": 20},
+        "tco_ceiling_oku_jpy": {"type": ["number", "null"], "exclusiveMinimum": 0}
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptance_year", "required_acceptance_date", "procurement_jurisdiction"],
+      "properties": {
+        "acceptance_year": {"type": "integer", "minimum": 2026, "maximum": 2032},
+        "required_acceptance_date": {"type": "string", "format": "date"},
+        "procurement_jurisdiction": {"type": "string", "minLength": 2}
+      }
+    },
+    "vendor_mode": {"enum": ["NVIDIA", "AMD", "compare", "auto-pareto"]},
+    "deployment_mode": {"enum": ["on-premises", "external-hosting", "hybrid"]},
+    "facility": {"$ref": "#/$defs/facility"},
+    "workloads": {"$ref": "#/$defs/workloads"},
+    "storage": {"$ref": "#/$defs/storage"},
+    "inference": {"$ref": "#/$defs/inference"},
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "direction", "weight"],
+        "properties": {
+          "metric": {"enum": ["validated-workload-throughput", "total-hbm-gib", "capex-jpy", "it-power-kw", "delivery-risk", "portability-risk"]},
+          "direction": {"enum": ["maximize", "minimize"]},
+          "weight": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "catalog_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_catalog_id", "availability_assessment_id", "repository_commit"],
+      "properties": {
+        "product_catalog_id": {"type": "string", "pattern": "^GPUCAT-[A-Z0-9-]+$"},
+        "availability_assessment_id": {"type": "string", "pattern": "^AVAIL-[A-Z0-9-]+$"},
+        "repository_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    }
+  },
+  "$defs": {
+    "numberOrNull": {"type": ["number", "null"], "minimum": 0},
+    "facility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["it_power_limit_mw", "it_power_limit_status", "cooling_method", "cooling_capacity_mw", "cooling_capacity_status", "rack_limit", "floor_area_m2", "floor_loading_kg_m2"],
+      "properties": {
+        "it_power_limit_mw": {"$ref": "#/$defs/numberOrNull"},
+        "it_power_limit_status": {"enum": ["confirmed", "unconfirmed", "unknown"]},
+        "cooling_method": {"enum": ["direct-liquid", "air", "hybrid", "external-service", "unknown"]},
+        "cooling_capacity_mw": {"$ref": "#/$defs/numberOrNull"},
+        "cooling_capacity_status": {"enum": ["confirmed", "unconfirmed", "unknown"]},
+        "rack_limit": {"type": ["integer", "null"], "minimum": 1},
+        "floor_area_m2": {"$ref": "#/$defs/numberOrNull"},
+        "floor_loading_kg_m2": {"$ref": "#/$defs/numberOrNull"}
+      }
+    },
+    "workloads": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mix_percent", "absolute_demand"],
+      "properties": {
+        "mix_percent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ai_training", "ai_inference", "ai_for_science_hpc", "data_analytics"],
+          "properties": {
+            "ai_training": {"type": "number", "minimum": 0, "maximum": 100},
+            "ai_inference": {"type": "number", "minimum": 0, "maximum": 100},
+            "ai_for_science_hpc": {"type": "number", "minimum": 0, "maximum": 100},
+            "data_analytics": {"type": "number", "minimum": 0, "maximum": 100}
+          }
+        },
+        "absolute_demand": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["training_accelerator_hours_per_year", "training_tokens_per_year", "hpc_jobs_per_year", "hpc_accelerator_hours_per_year", "data_ingest_pb_per_year"],
+          "properties": {
+            "training_accelerator_hours_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "training_tokens_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "hpc_jobs_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "hpc_accelerator_hours_per_year": {"$ref": "#/$defs/numberOrNull"},
+            "data_ingest_pb_per_year": {"$ref": "#/$defs/numberOrNull"}
+          }
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shared_fast_capacity_pb", "archive_capacity_pb", "checkpoint_write_gb_s", "training_read_gb_s"],
+      "properties": {
+        "shared_fast_capacity_pb": {"$ref": "#/$defs/numberOrNull"},
+        "archive_capacity_pb": {"$ref": "#/$defs/numberOrNull"},
+        "checkpoint_write_gb_s": {"$ref": "#/$defs/numberOrNull"},
+        "training_read_gb_s": {"$ref": "#/$defs/numberOrNull"}
+      }
+    },
+    "inference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concurrent_users", "request_rate_per_second", "ttft_p95_ms", "tpot_p95_ms", "quality_target_id"],
+      "properties": {
+        "concurrent_users": {"type": ["integer", "null"], "minimum": 0},
+        "request_rate_per_second": {"$ref": "#/$defs/numberOrNull"},
+        "ttft_p95_ms": {"$ref": "#/$defs/numberOrNull"},
+        "tpot_p95_ms": {"$ref": "#/$defs/numberOrNull"},
+        "quality_target_id": {"type": ["string", "null"], "minLength": 1}
+      }
+    }
+  }
+}

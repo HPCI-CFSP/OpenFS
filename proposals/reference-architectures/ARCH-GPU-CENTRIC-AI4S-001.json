@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "architecture_id": "ARCH-GPU-CENTRIC-AI4S-001",
+  "status": "candidate",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "information_classification": "public",
+  "title_ja": "GPU集中型AI for Science基盤",
+  "title_en": "GPU-Centric AI for Science Infrastructure",
+  "definition_ja": "GPU主体の計算プールに、必要なホストCPU、ログイン・管理・サービスノード、ストレージ、スケールアップおよびスケールアウト接続、電源・冷却設備を組み合わせる汎用参照アーキテクチャです。CPUが存在しない構成を意味しません。",
+  "definition_en": "A reusable reference architecture combining a GPU-dominant compute pool with required host CPUs, login, management and service nodes, storage, scale-up and scale-out fabrics, and power and cooling facilities. It does not mean a system without CPUs.",
+  "compatible_policy_ids": ["POL-SYS-BALANCED-001", "POL-SYS-AI-DATA-001", "POL-SYS-STAGED-001"],
+  "procurement_unit_types": ["node", "tray", "rack"],
+  "component_roles": [
+    {"role_id": "ROLE-COMPUTE-PACKAGE", "category": "compute", "required": true, "sizing_basis": "integer procurement units constrained by budget, facility, demand, and delivery", "redundancy_basis_ja": "計算単位はnode、trayまたはrackの整数とし、予備品は価格根拠がある場合に別計上します。", "redundancy_basis_en": "Compute units are integer nodes, trays, or racks; spares are separate when supported by price evidence."},
+    {"role_id": "ROLE-SCALE-UP", "category": "scale-up", "required": true, "sizing_basis": "vendor-supported accelerator coherence domain", "redundancy_basis_ja": "製品の障害ドメインと対応トポロジーに基づきます。", "redundancy_basis_en": "Based on the product fault domain and supported topology."},
+    {"role_id": "ROLE-SCALE-OUT", "category": "scale-out", "required": true, "sizing_basis": "endpoint count, blocking ratio, topology, and required application bandwidth", "redundancy_basis_ja": "スイッチ段数、予備ポート、経路冗長性を構成ごとに明示します。", "redundancy_basis_en": "Switch tiers, spare ports, and path redundancy are explicit per configuration."},
+    {"role_id": "ROLE-FAST-STORAGE", "category": "storage", "required": true, "sizing_basis": "capacity plus training-read and checkpoint-write bandwidth", "redundancy_basis_ja": "容量保護方式とコントローラ障害ドメインを根拠とします。", "redundancy_basis_en": "Based on data-protection mode and controller fault domains."},
+    {"role_id": "ROLE-ARCHIVE", "category": "storage", "required": true, "sizing_basis": "retained data volume and lifecycle policy", "redundancy_basis_ja": "保存方針と復旧要件に基づきます。", "redundancy_basis_en": "Based on retention policy and recovery requirements."},
+    {"role_id": "ROLE-LOGIN", "category": "service", "required": true, "sizing_basis": "concurrent users and availability target", "redundancy_basis_ja": "単一障害点を避けるため原則2台以上とし、最終数は利用要件から算定します。", "redundancy_basis_en": "Normally at least two to avoid a single point of failure; final count follows service demand."},
+    {"role_id": "ROLE-MANAGEMENT", "category": "management", "required": true, "sizing_basis": "management quorum, scheduler, authentication, monitoring, and provisioning load", "redundancy_basis_ja": "クォーラムと管理機能の障害ドメインを分離します。", "redundancy_basis_en": "Quorum and management-service fault domains are separated."},
+    {"role_id": "ROLE-FACILITY", "category": "facility", "required": true, "sizing_basis": "IT power, cooling capacity, rack density, floor area, and floor loading", "redundancy_basis_ja": "受電・配電・冷却の冗長度は施設条件として入力します。", "redundancy_basis_en": "Power and cooling redundancy are planning inputs."},
+    {"role_id": "ROLE-INTEGRATION", "category": "integration", "required": true, "sizing_basis": "installation, acceptance, migration, and application enablement scope", "redundancy_basis_ja": "重複計上を避けるため機器価格と役務範囲を分離します。", "redundancy_basis_en": "Equipment prices and service scope are separated to avoid double counting."},
+    {"role_id": "ROLE-MAINTENANCE", "category": "maintenance", "required": true, "sizing_basis": "support term, service level, and spares policy", "redundancy_basis_ja": "保守、予備品、製品寿命を複数年TCOへ分離計上します。", "redundancy_basis_en": "Support, spares, and product lifecycle are separately represented in multi-year TCO."}
+  ],
+  "connections": [
+    {"connection_id": "CONN-COMPUTE-SCALEUP", "from_role_id": "ROLE-COMPUTE-PACKAGE", "to_role_id": "ROLE-SCALE-UP", "purpose_ja": "計算単位内またはラック内のGPU間通信", "purpose_en": "GPU communication within a compute unit or rack"},
+    {"connection_id": "CONN-COMPUTE-SCALEOUT", "from_role_id": "ROLE-COMPUTE-PACKAGE", "to_role_id": "ROLE-SCALE-OUT", "purpose_ja": "計算単位間の分散学習・HPC通信", "purpose_en": "Distributed training and HPC communication across compute units"},
+    {"connection_id": "CONN-SCALEOUT-STORAGE", "from_role_id": "ROLE-SCALE-OUT", "to_role_id": "ROLE-FAST-STORAGE", "purpose_ja": "学習データ供給とチェックポイント入出力", "purpose_en": "Training-data delivery and checkpoint I/O"},
+    {"connection_id": "CONN-FAST-ARCHIVE", "from_role_id": "ROLE-FAST-STORAGE", "to_role_id": "ROLE-ARCHIVE", "purpose_ja": "データの階層化と長期保存", "purpose_en": "Data tiering and long-term retention"},
+    {"connection_id": "CONN-MANAGEMENT-COMPUTE", "from_role_id": "ROLE-MANAGEMENT", "to_role_id": "ROLE-COMPUTE-PACKAGE", "purpose_ja": "監視、プロビジョニング、スケジューリングおよび認証", "purpose_en": "Monitoring, provisioning, scheduling, and authentication"}
+  ],
+  "constraints": [
+    {"constraint_id": "CONSTRAINT-BUDGET", "metric": "initial-capex-jpy", "operator": "less-than-or-equal", "source": "planning-request"},
+    {"constraint_id": "CONSTRAINT-POWER", "metric": "it-power-kw", "operator": "less-than-or-equal", "source": "planning-request"},
+    {"constraint_id": "CONSTRAINT-COOLING", "metric": "cooling-load-kw", "operator": "less-than-or-equal", "source": "planning-request"},
+    {"constraint_id": "CONSTRAINT-RACKS", "metric": "rack-count", "operator": "less-than-or-equal", "source": "planning-request"},
+    {"constraint_id": "CONSTRAINT-INTEGER", "metric": "procurement-unit-count", "operator": "integer", "source": "product-catalog"},
+    {"constraint_id": "CONSTRAINT-DELIVERY", "metric": "latest-delivery-date", "operator": "available-by", "source": "availability-assessment"}
+  ],
+  "vendor_profiles": [
+    {"vendor": "NVIDIA", "compute_stack": ["CUDA"], "communication_stack": ["NCCL", "MPI", "UCX"], "software_stack": ["CUDA Toolkit", "container runtime", "scheduler integration"], "required_role_ids": ["ROLE-COMPUTE-PACKAGE", "ROLE-SCALE-UP", "ROLE-SCALE-OUT", "ROLE-FAST-STORAGE", "ROLE-LOGIN", "ROLE-MANAGEMENT", "ROLE-FACILITY"]},
+    {"vendor": "AMD", "compute_stack": ["ROCm"], "communication_stack": ["RCCL", "MPI", "UCX"], "software_stack": ["ROCm platform", "container runtime", "scheduler integration"], "required_role_ids": ["ROLE-COMPUTE-PACKAGE", "ROLE-SCALE-UP", "ROLE-SCALE-OUT", "ROLE-FAST-STORAGE", "ROLE-LOGIN", "ROLE-MANAGEMENT", "ROLE-FACILITY"]}
+  ],
+  "source_ids": ["SRC-HW1-RIKEN-AIFS", "SRC-COMP001", "SRC-COMP011", "SRC-COMP022", "PCS-RIKEN-CONTRACTS-2025", "PCS-RIKEN-WORKS-2025"],
+  "coverage_gaps": [
+    {"gap_id": "GAP-GPUCFG-001", "priority": "P0", "statement_ja": "構成要素別の重複のない価格区間", "statement_en": "Non-overlapping component price intervals", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-002", "priority": "P0", "statement_ja": "地域・時期別の調達可能性、納期および保守体制", "statement_en": "Jurisdiction- and date-specific eligibility, lead time, and support", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-003", "priority": "P0", "statement_ja": "ワークロードの絶対需要", "statement_en": "Absolute workload demand", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-004", "priority": "P0", "statement_ja": "確認済みIT電力上限", "statement_en": "Confirmed IT power limit", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-005", "priority": "P0", "statement_ja": "確認済み冷却能力", "statement_en": "Confirmed cooling capacity", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-006", "priority": "P0", "statement_ja": "ラック数、床面積および床荷重", "statement_en": "Rack count, floor area, and floor loading", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-007", "priority": "P0", "statement_ja": "ストレージ容量と実効帯域の要求", "statement_en": "Storage capacity and effective bandwidth requirements", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-008", "priority": "P0", "statement_ja": "推論同時利用数、TTFT、TPOTおよび品質条件", "statement_en": "Inference concurrency, TTFT, TPOT, and quality constraints", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-009", "priority": "P0", "statement_ja": "再現可能な実測値と検証済み性能モデル", "statement_en": "Reproducible measurements and validated performance models", "blocking": true},
+    {"gap_id": "GAP-GPUCFG-010", "priority": "P1", "statement_ja": "ソフトウェア移植性、保守およびベンダーロックインの定量評価", "statement_en": "Quantified software portability, support, and vendor lock-in", "blocking": false}
+  ]
+}
