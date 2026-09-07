@@ -1,17 +1,17 @@
-# GPU-Centric AI for Science Configuration Candidate
+# GPU-Centric AI for Science Configuration Candidate v0.2
 
 ## Status and boundary
 
-This document defines a Candidate implementation. It does not add a fourth
-accepted scenario, alter accepted planning data, or publish the planner on the
-production GitHub Pages site. The inputs and results are public-information-only,
-provisional, produced by one model and one agent, and have not passed the
-Consensus Gate. Procurement use is prohibited.
+This document defines the Candidate v0.2 implementation. It does not add a fourth
+accepted scenario or alter the accepted three-option portfolio. A human-approved
+manifest permits the visibly provisional planner to be published on GitHub Pages
+after an authorized merge. The results are produced by one model and one agent,
+have not passed the Consensus Gate, and are prohibited for procurement use.
 
-本書はCandidate実装の設計文書です。第4の採択済みシナリオは追加せず、採択済みの
-計画データも変更しません。算定画面は本番GitHub Pagesへ公開しません。入力と結果は
-公開情報のみを使用した単一のAIモデル・単一のAIエージェントによる暫定情報で、Consensus
-Gateは未完了です。調達判断には使用できません。
+本書はCandidate v0.2の設計・実装文書です。第4の採択済みシナリオは追加せず、既存3案も
+変更しません。人が承認したマニフェストにより、権限を持つ人がPRをマージした後に限り、
+暫定表示を維持した算定画面をGitHub Pagesへ公開できます。結果は単一のAIモデル・単一の
+AIエージェントによる暫定情報で、Consensus Gateは未完了かつ調達利用禁止です。
 
 ## Three-layer model / 3層モデル
 
@@ -49,7 +49,7 @@ cadences:
 - `procurement-availability-assessment.schema.json` stores jurisdiction- and
   acceptance-date-specific sales, support, minimum-order, and delivery findings.
 - `component-cost-input.schema.json` stores non-overlapping cost lines with
-  optimistic, reference, and conservative prices. Candidate production data must
+  optimistic, baseline, and conservative prices. Candidate production data must
   be itemized observations, vendor quotes, or validated estimates.
 - `planning-request.schema.json` stores CAPEX, a separate TCO horizon, deployment
   mode, facility constraints, workload ratios and absolute demand, storage and
@@ -115,12 +115,14 @@ scope. The current Candidate therefore sets `procurement_use` to `prohibited`.
 
 The default Pages build publishes the human-approved Candidate route at
 `candidate/gpu-centric-ai4s/` and links to it from the system-planning pages.
-`knowledge/public/gpu-planner-publication.json` pins the four approved public
+`knowledge/public/gpu-planner-publication.json` pins five approved public
 inputs by SHA-256; a source change therefore fails the build until it receives a
-new review and publication record. The view compares NVIDIA and AMD on the same
-axes, recalculates locally when budget, year, vendor, deployment mode, power, TCO
-horizon, or contingency changes, and exports JSON or CSV. It displays blocked
-inputs and Coverage Gaps instead of fabricated values.
+new review and publication record. The fifth input is an empty What-if template;
+it contains no estimate. The view separates public-evidence mode from browser-local
+What-if mode, compares independent NVIDIA and AMD BOMs, re-optimizes each of three
+price cases, and exports the explicit inputs and results as JSON or CSV. It displays
+blocked inputs, quantitative constraint shortfalls, and Coverage Gaps instead of
+fabricated values.
 
 The Candidate page deliberately contains no GA4 loader. Form values and computed
 budgets, estimates, and configurations remain in the browser and are not sent to
@@ -128,7 +130,8 @@ GA4 or another external service.
 
 ## Evidence currently available / 現時点の公開根拠
 
-- RIKEN's public RIKYU description establishes an operational reference with 400
+- RIKEN's public RIKYU description and July 24, 2026 announcement establish that
+  operation began on July 7, 2026, with an operational reference comprising 400
   water-cooled GB200 NVL4 compute nodes, four B200 GPUs and two Grace CPUs per
   node, XDR fabric, and all-NVMe Lustre storage.
 - RIKEN public contract records establish a package total and separate network
@@ -145,10 +148,11 @@ a false quantity.
 
 ## Staged implementation and acceptance / 段階実装と受入条件
 
-1. **Candidate contracts and blocked reference cases:** validate the three-layer
-   model, separation of product and procurement facts, missing-value propagation,
-   and production isolation. This change implements this stage.
-2. **Evidence-complete Candidate BOMs:** obtain itemized and non-overlapping price
+1. **Candidate contracts and dual-mode planner:** validate the three-layer model,
+   public-evidence/What-if separation, product/procurement separation, missing-value
+   propagation, integer sizing, browser privacy, and production isolation. Candidate
+   v0.2 implements this stage.
+2. **Evidence-complete public Candidate BOMs:** obtain itemized and non-overlapping price
    intervals, delivery and support evidence, facility limits, and absolute demand;
    then run 10/30/100/125/300-oku-JPY and 2026–2032 matrices.
 3. **Validated performance models:** pin benchmark versions and software, add
@@ -159,7 +163,10 @@ a false quantity.
    visibly provisional Pages publication.
 
 Automated acceptance checks cover schema validation, blocked output for absent
-evidence, integer procurement units, budget identity, monotonic GPU counts for an
-unchanged generation and constraint set, power/cooling caps, separate CAPEX and
-TCO, browser/Python calculation parity, absence of analytics on the Candidate
-route, digest-pinned publication inputs, and unchanged accepted scenario counts.
+evidence, the deterministic 125-oku-JPY/9-rack/648-GPU case, the 300-oku-JPY and
+2-MW caps, price-case re-optimization, integer procurement units, budget identity,
+monotonic GPU counts for an unchanged generation and constraint set, facility,
+network, storage, demand and delivery constraints, separate CAPEX and TCO,
+phase-overlap and inference-queue models, browser/Python parity, absence of
+analytics and browser persistence on the Candidate route, digest-pinned inputs,
+and unchanged accepted scenario counts.

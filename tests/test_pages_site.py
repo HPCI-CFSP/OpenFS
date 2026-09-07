@@ -376,6 +376,7 @@ class PagesSiteTests(unittest.TestCase):
             page = output / "candidate" / "gpu-centric-ai4s" / "index.html"
             self.assertTrue(page.is_file())
             self.assertTrue((output / "gpu-planner-engine.js").is_file())
+            self.assertTrue((output / "gpu-planner-candidate.js").is_file())
             self.assertIn(
                 "candidate/gpu-centric-ai4s/",
                 (output / "scenarios" / "index.html").read_text(encoding="utf-8"),
@@ -388,14 +389,24 @@ class PagesSiteTests(unittest.TestCase):
             page = output / "candidate" / "gpu-centric-ai4s" / "index.html"
             content = page.read_text(encoding="utf-8")
             self.assertTrue((output / "gpu-planner-engine.js").is_file())
+            script = (output / "gpu-planner-candidate.js").read_text(encoding="utf-8")
+            engine = (output / "gpu-planner-engine.js").read_text(encoding="utf-8")
             self.assertIn('data-language="ja"', content)
             self.assertIn('data-language="en"', content)
             self.assertIn("Consensus Gate", content)
             self.assertIn("procurement", content)
+            self.assertIn('id="mode-public"', content)
+            self.assertIn('id="mode-whatif"', content)
+            self.assertIn("M/M/c", script)
+            self.assertIn("Graph500", engine)
             self.assertNotIn("googletagmanager.com", content)
             self.assertNotIn("gtag(", content)
             self.assertNotIn("analytics.js", content)
-            for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json", "publication.json"):
+            self.assertNotIn("localStorage", script)
+            self.assertNotIn("sessionStorage", script)
+            self.assertNotIn("sendBeacon", script)
+            self.assertNotIn("XMLHttpRequest", script)
+            for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json", "what-if-template.json", "publication.json"):
                 self.assertTrue((page.parent / "data" / filename).is_file())
 
     def test_gpu_planner_publication_is_human_approved_and_digest_pinned(self):
@@ -406,7 +417,18 @@ class PagesSiteTests(unittest.TestCase):
         self.assertEqual("incomplete", publication["consensus_status"])
         self.assertEqual("prohibited", publication["procurement_use"])
         self.assertFalse(publication["analytics_external_transmission"])
-        self.assertEqual(set(inputs), {"request", "architecture", "product-catalog", "availability"})
+        self.assertEqual(set(inputs), {"request", "architecture", "product-catalog", "availability", "what-if-template"})
+
+    def test_ai_data_scenario_links_to_gpu_planner_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            build(ROOT, output)
+            page = output / "scenarios" / "scn-hpci-ai-data-001" / "index.html"
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('id="scenario-gpu-planner"', content)
+            planning = (output / "planning.js").read_text(encoding="utf-8")
+            self.assertIn('SCN-HPCI-AI-DATA-001', planning)
+            self.assertIn('candidate/gpu-centric-ai4s/', planning)
 
     def test_gpu_planner_publication_rejects_changed_approved_input(self):
         with tempfile.TemporaryDirectory() as directory:

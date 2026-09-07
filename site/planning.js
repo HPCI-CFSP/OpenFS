@@ -547,6 +547,12 @@
     const scenario = data.scenarios.find((item) => item.scenario_id === document.body.dataset.scenarioId); if (!scenario) { document.querySelector("main").textContent = "Scenario unavailable."; return; }
     document.title = `${localized(scenario, "title")} | OpenFS`; setText("scenario-breadcrumb-title", localized(scenario, "title")); setText("scenario-id", scenario.scenario_id); setText("scenario-title", localized(scenario, "title")); setText("scenario-objective", localized(scenario, "objective")); setText("scenario-horizon", scenario.planning_horizon); setText("scenario-research-status", tr(scenario.research_status)); setText("scenario-consensus-status", tr(scenario.consensus_status)); setText("scenario-caveat", localized(scenario, "caveat")); setText("scenario-artifact-id", scenario.scenario_id); setText("scenario-plan-version", scenario.plan_version); setText("scenario-effective-from", scenario.effective_from); setText("scenario-review-due", scenario.review_due); setText("scenario-supersedes", scenario.supersedes.length ? scenario.supersedes.join(" · ") : tr("noSupersededVersion")); setText("scenario-evidence-refs", scenario.evidence_refs.join(" · ")); setText("scenario-revision-updated", formatJst(scenario.updated_at)); const updated = document.getElementById("scenario-updated"); updated.href = scenario.source_commit_url; updated.textContent = formatJst(scenario.updated_at); const commit = document.getElementById("scenario-source-commit"); commit.href = scenario.source_commit_url; commit.textContent = scenario.source_commit;
     window.OpenFSFeedback.mount("scenario-feedback", {kind: "scenario", id: scenario.scenario_id, title: localized(scenario, "title"), path: scenario.path});
+    const planner = document.getElementById("scenario-gpu-planner");
+    if (planner) {
+      planner.hidden = scenario.scenario_id !== "SCN-HPCI-AI-DATA-001";
+      const plannerLink = document.getElementById("scenario-gpu-planner-link");
+      plannerLink.href = `${rootPrefix}candidate/gpu-centric-ai4s/?v=${encodeURIComponent(data.site.commit_sha)}&lang=${encodeURIComponent(language)}`;
+    }
     renderBudgetOptions(scenario);
     renderScenarioPlanningEvidence(scenario);
     const timelineDomains = ["compute", "memory", "interconnect", "storage-data", "system-software", "applications", "facility-operations", "procurement-governance"];
