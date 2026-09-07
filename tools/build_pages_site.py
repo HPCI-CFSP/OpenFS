@@ -170,6 +170,7 @@ def public_projection(
         or artifact.get("report_id")
         or artifact.get("export_id")
         or artifact.get("artifact_id")
+        or artifact.get("publication_id")
     )
     if not directive_id or artifact_id not in approved_directives.get(directive_id, set()):
         raise ValueError(f"{label} has no matching human publication Directive")
@@ -1538,10 +1539,106 @@ def copy_brand_assets(root: Path, output: Path) -> None:
         shutil.copy2(source / filename, destination / filename)
 
 
+GPU_PLANNER_SOURCE_ROLES = {
+    "request": ("proposals", "planning-requests", "request_id", "request.json"),
+    "architecture": (
+        "proposals",
+        "reference-architectures",
+        "architecture_id",
+        "architecture.json",
+    ),
+    "product-catalog": (
+        "proposals",
+        "gpu-product-catalogs",
+        "catalog_id",
+        "product-catalog.json",
+    ),
+    "availability": (
+        "proposals",
+        "procurement-availability",
+        "assessment_id",
+        "availability.json",
+    ),
+}
+
+
+def collect_gpu_planner_publication(
+    root: Path, policy: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    """Validate the approved Candidate manifest and its exact public inputs."""
+    manifest_path = root / policy["included_public_gpu_planner_publication"]
+    manifest = load_json(manifest_path)
+    if manifest.get("status") not in set(
+        policy["accepted_gpu_planner_publication_statuses"]
+    ):
+        raise ValueError("GPU planner publication manifest is not publishable")
+    if (
+        manifest.get("page_status") != "candidate"
+        or manifest.get("research_status") != "provisional"
+        or manifest.get("consensus_status") != "incomplete"
+        or manifest.get("procurement_use") != "prohibited"
+        or manifest.get("analytics_external_transmission") is not False
+    ):
+        raise ValueError("GPU planner publication safeguards are incomplete")
+    if manifest.get("route") != "candidate/gpu-centric-ai4s/":
+        raise ValueError("GPU planner publication route is not allowlisted")
+
+    approved_directives = approved_publication_directives(root, policy)
+    projected = public_projection(
+        manifest,
+        policy["gpu_planner_public_fields"],
+        policy["required_publication_metadata"],
+        policy["gpu_planner_required_bilingual_fields"],
+        approved_directives,
+        "GPU planner publication manifest",
+    )
+
+    entries = manifest.get("source_artifacts", [])
+    by_role = {entry.get("role"): entry for entry in entries}
+    if len(entries) != len(by_role) or set(by_role) != set(GPU_PLANNER_SOURCE_ROLES):
+        raise ValueError("GPU planner publication must name each source role exactly once")
+
+    public_inputs: dict[str, dict[str, Any]] = {}
+    for role, (first, second, id_field, _output_name) in GPU_PLANNER_SOURCE_ROLES.items():
+        entry = by_role[role]
+        relative = Path(entry["path"])
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError(f"GPU planner {role} path is unsafe")
+        if relative.parts[:2] != (first, second):
+            raise ValueError(f"GPU planner {role} path is outside its allowlisted directory")
+        path = root / relative
+        if not path.is_file():
+            raise ValueError(f"GPU planner {role} input does not exist: {relative}")
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != entry["sha256"]:
+            raise ValueError(f"GPU planner {role} input digest does not match approval")
+        payload = load_json(path)
+        if payload.get(id_field) != entry["artifact_id"]:
+            raise ValueError(f"GPU planner {role} artifact ID does not match approval")
+        if payload.get("status") != "candidate":
+            raise ValueError(f"GPU planner {role} input is not a Candidate")
+        if "information_classification" in payload and payload.get(
+            "information_classification"
+        ) != "public":
+            raise ValueError(f"GPU planner {role} input is not public")
+        if "consensus_status" in payload and payload.get("consensus_status") != "incomplete":
+            raise ValueError(f"GPU planner {role} input does not preserve incomplete Consensus")
+        public_inputs[role] = {
+            field: payload[field]
+            for field in policy["gpu_planner_source_public_fields"][role]
+            if field in payload
+        }
+    return projected, public_inputs
+
+
 def build_candidate_gpu_planner(
-    root: Path, source: Path, output: Path, asset_version: str
+    source: Path,
+    output: Path,
+    asset_version: str,
+    publication: dict[str, Any],
+    public_inputs: dict[str, dict[str, Any]],
 ) -> None:
-    """Build an explicitly requested, analytics-free Candidate preview."""
+    """Build the approved, analytics-free Candidate planning route."""
     root_prefix = "../../"
     value = (source / "gpu-planner-candidate.html").read_text(encoding="utf-8")
     identity = (source / "partials" / "identity.html").read_text(encoding="utf-8")
@@ -1555,19 +1652,18 @@ def build_candidate_gpu_planner(
     shutil.copy2(source / "gpu-planner-engine.js", output / "gpu-planner-engine.js")
     data_dir = destination / "data"
     data_dir.mkdir()
-    candidates = {
-        "request.json": root / "proposals" / "planning-requests" / "PLANREQ-GPUAI4S-2027-ONPREM-001.json",
-        "architecture.json": root / "proposals" / "reference-architectures" / "ARCH-GPU-CENTRIC-AI4S-001.json",
-        "product-catalog.json": root / "proposals" / "gpu-product-catalogs" / "GPUCAT-001.json",
-        "availability.json": root / "proposals" / "procurement-availability" / "AVAIL-2027-JP-001.json",
-    }
-    for filename, path in candidates.items():
-        shutil.copy2(path, data_dir / filename)
+    for role, (_first, _second, _id_field, filename) in GPU_PLANNER_SOURCE_ROLES.items():
+        (data_dir / filename).write_text(
+            json.dumps(public_inputs[role], ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    (data_dir / "publication.json").write_text(
+        json.dumps(publication, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
-def build(
-    root: Path, output: Path, include_candidate_gpu_planner: bool = False
-) -> dict[str, Any]:
+def build(root: Path, output: Path) -> dict[str, Any]:
     policy = load_json(root / "config" / "publication-policy.json")
     source = root / policy["site_source"]
     if output.exists():
@@ -1579,6 +1675,9 @@ def build(
     data_dir = output / "data"
     data_dir.mkdir()
     public_data = build_public_data(root, policy)
+    gpu_planner_publication, gpu_planner_inputs = collect_gpu_planner_publication(
+        root, policy
+    )
     asset_version = public_data["site"]["commit_sha"]
     (output / "index.html").write_text(
         render_template(
@@ -1721,8 +1820,13 @@ def build(
             ),
             encoding="utf-8",
         )
-    if include_candidate_gpu_planner:
-        build_candidate_gpu_planner(root, source, output, asset_version)
+    build_candidate_gpu_planner(
+        source,
+        output,
+        asset_version,
+        gpu_planner_publication,
+        gpu_planner_inputs,
+    )
     (output / ".nojekyll").write_text("", encoding="utf-8")
     return public_data
 
@@ -1730,13 +1834,8 @@ def build(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "_site")
-    parser.add_argument(
-        "--include-candidate-gpu-planner",
-        action="store_true",
-        help="include the unpublished, analytics-free GPU planner Candidate preview",
-    )
     args = parser.parse_args()
-    result = build(ROOT, args.output, args.include_candidate_gpu_planner)
+    result = build(ROOT, args.output)
     print(
         f"Built OpenFS Pages: topics={len(result['topics'])}, "
         f"summaries={len(result['research_summaries'])}, "

@@ -19,6 +19,7 @@ from build_pages_site import (  # noqa: E402
     build,
     collect_consensus_packages,
     collect_consensus_receipts,
+    collect_gpu_planner_publication,
     collect_roadmaps,
     collect_roadmap_reference_data,
     collect_scenarios,
@@ -258,10 +259,10 @@ class PagesSiteTests(unittest.TestCase):
         self.assertLess(workflow.index("Install pinned contract validators"), workflow.index("Build static preview"))
         self.assertIn('- "config/budget-planning.json"', workflow)
         self.assertIn('- "config/catalog-taxonomy.json"', workflow)
-        self.assertIn("--include-candidate-gpu-planner", workflow)
         self.assertIn("tests.test_gpu_centric_planner", workflow)
         production = (ROOT / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
         self.assertNotIn("--include-candidate-gpu-planner", production)
+        self.assertNotIn("--include-candidate-gpu-planner", workflow)
 
     def test_page_fragment_navigation_has_unique_existing_targets(self):
         parser = PageStructureParser()
@@ -368,19 +369,22 @@ class PagesSiteTests(unittest.TestCase):
             workflow = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
             self.assertIn('      - "assets/branding/**"', workflow)
 
-    def test_candidate_gpu_planner_is_excluded_from_default_pages_build(self):
+    def test_approved_candidate_gpu_planner_is_in_default_pages_build(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
             build(ROOT, output)
-            self.assertFalse((output / "candidate" / "gpu-centric-ai4s").exists())
-            self.assertFalse((output / "gpu-planner-engine.js").exists())
-            for page in output.rglob("*.html"):
-                self.assertNotIn("candidate/gpu-centric-ai4s", page.read_text(encoding="utf-8"))
+            page = output / "candidate" / "gpu-centric-ai4s" / "index.html"
+            self.assertTrue(page.is_file())
+            self.assertTrue((output / "gpu-planner-engine.js").is_file())
+            self.assertIn(
+                "candidate/gpu-centric-ai4s/",
+                (output / "scenarios" / "index.html").read_text(encoding="utf-8"),
+            )
 
-    def test_explicit_candidate_gpu_planner_build_is_bilingual_and_analytics_free(self):
+    def test_published_candidate_gpu_planner_is_bilingual_and_analytics_free(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "site"
-            build(ROOT, output, include_candidate_gpu_planner=True)
+            build(ROOT, output)
             page = output / "candidate" / "gpu-centric-ai4s" / "index.html"
             content = page.read_text(encoding="utf-8")
             self.assertTrue((output / "gpu-planner-engine.js").is_file())
@@ -391,8 +395,27 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("googletagmanager.com", content)
             self.assertNotIn("gtag(", content)
             self.assertNotIn("analytics.js", content)
-            for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json"):
+            for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json", "publication.json"):
                 self.assertTrue((page.parent / "data" / filename).is_file())
+
+    def test_gpu_planner_publication_is_human_approved_and_digest_pinned(self):
+        policy = self.publication_policy()
+        publication, inputs = collect_gpu_planner_publication(ROOT, policy)
+        self.assertEqual("published", publication["status"])
+        self.assertEqual("candidate", publication["page_status"])
+        self.assertEqual("incomplete", publication["consensus_status"])
+        self.assertEqual("prohibited", publication["procurement_use"])
+        self.assertFalse(publication["analytics_external_transmission"])
+        self.assertEqual(set(inputs), {"request", "architecture", "product-catalog", "availability"})
+
+    def test_gpu_planner_publication_rejects_changed_approved_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "input"
+            shutil.copytree(ROOT, root)
+            request = root / "proposals" / "planning-requests" / "PLANREQ-GPUAI4S-2027-ONPREM-001.json"
+            request.write_text(request.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "digest does not match approval"):
+                collect_gpu_planner_publication(root, self.publication_policy())
 
     def test_home_branding_does_not_replace_controls_or_publish_concept(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -849,6 +872,10 @@ class PagesSiteTests(unittest.TestCase):
             self.assertTrue((output / "analytics.js").is_file())
             for page in output.rglob("*.html"):
                 rendered = page.read_text(encoding="utf-8")
+                if page == output / "candidate" / "gpu-centric-ai4s" / "index.html":
+                    self.assertNotIn("analytics.js?v=", rendered, page)
+                    self.assertNotIn("G-7JB5N480MT", rendered, page)
+                    continue
                 self.assertIn("analytics.js?v=", rendered, page)
                 self.assertIn('data-measurement-id="G-7JB5N480MT"', rendered, page)
                 self.assertIn('data-production-hostname="hpci-cfsp.github.io"', rendered, page)

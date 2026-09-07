@@ -113,9 +113,11 @@ scope. The current Candidate therefore sets `procurement_use` to `prohibited`.
 
 ## Candidate Pages view / Candidate画面
 
-`python3 tools/build_pages_site.py --include-candidate-gpu-planner` builds an
-unpublished route at `candidate/gpu-centric-ai4s/`. The default Pages build omits
-the route and navigation link. The preview compares NVIDIA and AMD on the same
+The default Pages build publishes the human-approved Candidate route at
+`candidate/gpu-centric-ai4s/` and links to it from the system-planning pages.
+`knowledge/public/gpu-planner-publication.json` pins the four approved public
+inputs by SHA-256; a source change therefore fails the build until it receives a
+new review and publication record. The view compares NVIDIA and AMD on the same
 axes, recalculates locally when budget, year, vendor, deployment mode, power, TCO
 horizon, or contingency changes, and exports JSON or CSV. It displays blocked
 inputs and Coverage Gaps instead of fabricated values.
@@ -152,11 +154,12 @@ a false quantity.
 3. **Validated performance models:** pin benchmark versions and software, add
    reproducible measurements, scaling/error bounds, and inference queue tests.
 4. **Independent review and promotion:** run falsification and Consensus Gates,
-   obtain a human publication Directive naming the artifacts, and only then add a
-   production Pages route or save an `SCN-HPCI-*` plan.
+   obtain a separate human decision, and only then promote the Candidate status
+   or save an `SCN-HPCI-*` plan. The current human Directive authorizes only the
+   visibly provisional Pages publication.
 
 Automated acceptance checks cover schema validation, blocked output for absent
 evidence, integer procurement units, budget identity, monotonic GPU counts for an
 unchanged generation and constraint set, power/cooling caps, separate CAPEX and
 TCO, browser/Python calculation parity, absence of analytics on the Candidate
-route, and unchanged production Pages output.
+route, digest-pinned publication inputs, and unchanged accepted scenario counts.

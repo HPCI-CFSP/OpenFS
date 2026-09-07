@@ -353,7 +353,7 @@ Emerging-topic agents create additive Research Topic Proposals with Japanese/Eng
 
 ## Public projection
 
-`tools/build_pages_site.py` projects only approved public paths into a static GitHub Pages artifact. Candidate and illustrative scenarios, proposals, assessments, runs, reviews, and private/NDA paths are excluded. A published artifact also needs explicit public-classification metadata and a Publication Decision ID; only allowlisted fields are copied. Pages publication is a view over published artifacts, not a promotion mechanism.
+`tools/build_pages_site.py` projects only approved public paths into a static GitHub Pages artifact. Unapproved Candidate and illustrative scenarios, assessments, runs, raw reviews, and private/NDA paths are excluded. A Candidate planning interface may use only allowlisted fields from proposal inputs that are named and pinned by SHA-256 in a human-approved public publication manifest. A published artifact also needs explicit public-classification metadata and a Publication Decision ID; only allowlisted fields are copied. Pages publication is a view over approved publication artifacts, not a promotion or Consensus mechanism.
 
 The Pages cross-site search runs entirely in the browser over
 `data/openfs-public.js`. It indexes the already projected public topics,

@@ -10,6 +10,13 @@ the unresolved state to `GAP-BLUE-001` and `GAP-BLUE-003`.
 
 Each summary must retain its research, coverage, and Consensus status. Source links must be public, and publication requires a matching `publication-approval` Directive.
 
+`gpu-planner-publication.json` is the public publication manifest for the
+GPU-centric AI for Science configuration-planning Candidate. It does not promote
+the underlying proposals or create an accepted system plan. Instead, it pins the
+exact public Candidate inputs by SHA-256, constrains the browser route to
+allowlisted fields, records human approval for provisional publication, and
+requires incomplete Consensus and prohibited procurement use to remain visible.
+
 `planning-evidence-readiness.json` connects lifecycle, operational, cost,
 performance, and quantitative-requirement evidence to each public system
 planning option. It publishes coverage and blockers, not a readiness score.
