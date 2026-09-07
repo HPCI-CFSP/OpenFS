@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPU-centric AI for Science planner Candidate | OpenFS</title>
+  <link rel="stylesheet" href="{{ROOT_PREFIX}}styles.css?v={{ASSET_VERSION}}">
+  <style>
+    .candidate-banner { border-left: 4px solid #c45d18; background: #fff3e8; color: #542300; padding: 12px 16px; margin: 20px 0; }
+    .planner-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin: 24px 0; }
+    .planner-controls label { display: grid; gap: 6px; font-weight: 650; }
+    .planner-controls input, .planner-controls select { min-height: 42px; padding: 8px; border: 1px solid #77828c; background: #fff; color: #17212a; }
+    .planner-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+    .planner-result { border: 1px solid #c7d0d8; border-radius: 6px; padding: 16px; background: #fff; }
+    .planner-result h3 { margin-top: 0; }
+    .planner-status { font-weight: 700; color: #8a3100; }
+    .planner-result dt { font-weight: 650; margin-top: 8px; }
+    .planner-result dd { margin-left: 0; }
+    .planner-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  </style>
+</head>
+<body data-language="ja">
+  <header class="site-header"><div class="shell">{{SITE_IDENTITY}}</div></header>
+  <main class="shell">
+    <nav aria-label="Breadcrumb"><a href="{{ROOT_PREFIX}}">OpenFS</a> / <span data-i18n="breadcrumb">Candidate planner</span></nav>
+    <div class="language-control" aria-label="Language"><button type="button" data-language="ja">日本語</button><button type="button" data-language="en">English</button></div>
+    <h2 id="planner-title" data-i18n="title">GPU集中型AI for Science構成算定 Candidate</h2>
+    <p class="candidate-banner" id="candidate-banner" data-i18n="banner">公開前のCandidateです。単一のAIモデル・単一のAIエージェントによる暫定結果であり、Consensus Gateと公開承認は未完了です。調達判断には使用できません。</p>
+    <p data-i18n="privacy">入力値はブラウザ内だけで処理され、GA4その他の外部サービスへ送信されません。公開根拠がない値は補間せず、算定不能として表示します。</p>
+    <section aria-labelledby="inputs-title">
+      <h2 id="inputs-title" data-i18n="inputs">入力条件</h2>
+      <div class="planner-controls">
+        <label><span data-i18n="capex">初期整備費（億円）</span><input id="capex" type="number" min="1" step="1" value="125"></label>
+        <label><span data-i18n="year">導入・受入年</span><select id="year"></select></label>
+        <label><span data-i18n="vendor">GPUベンダー</span><select id="vendor"><option value="compare" data-i18n="vendorCompare">NVIDIA / AMD 比較</option><option value="NVIDIA">NVIDIA</option><option value="AMD">AMD</option><option value="auto-pareto" data-i18n="pareto">Pareto候補</option></select></label>
+        <label><span data-i18n="deployment">設置方式</span><select id="deployment"><option value="on-premises" data-i18n="onPrem">自前施設</option><option value="external-hosting" data-i18n="hosted">外部ホスティング</option><option value="hybrid" data-i18n="hybrid">ハイブリッド</option></select></label>
+        <label><span data-i18n="power">使用可能IT電力（MW、未確認）</span><input id="power" type="number" min="0.1" step="0.1" value="4"></label>
+        <label><span data-i18n="tco">TCO対象年数</span><input id="tco-years" type="number" min="1" max="20" value="5"></label>
+        <label><span data-i18n="contingency">予備費率（%）</span><input id="contingency" type="number" min="0" max="50" value="10"></label>
+      </div>
+    </section>
+    <section aria-labelledby="results-title">
+      <h2 id="results-title" data-i18n="results">NVIDIA / AMD 比較</h2>
+      <div id="planner-results" class="planner-results" aria-live="polite"></div>
+      <div class="planner-actions"><button id="download-json" type="button">JSON</button><button id="download-csv" type="button">CSV</button></div>
+    </section>
+    <section aria-labelledby="limits-title">
+      <h2 id="limits-title" data-i18n="limits">現在不足している根拠</h2>
+      <ul><li data-i18n="gapPrice">構成要素別の重複のない価格区間</li><li data-i18n="gapDelivery">2027年の日本の公共調達における納期・販売・保守条件</li><li data-i18n="gapFacility">確認済みの電力・冷却・ラック条件</li><li data-i18n="gapDemand">ワークロード絶対需要、ストレージ帯域、推論SLO</li><li data-i18n="gapPerformance">再現可能な実測値と検証済み性能モデル</li></ul>
+    </section>
+  </main>
+  <script src="{{ROOT_PREFIX}}gpu-planner-engine.js?v={{ASSET_VERSION}}"></script>
+  <script>
+    (() => {
+      const strings = {
+        ja: {breadcrumb: "Candidate構成算定", title: "GPU集中型AI for Science構成算定 Candidate", banner: "公開前のCandidateです。単一のAIモデル・単一のAIエージェントによる暫定結果であり、Consensus Gateと公開承認は未完了です。調達判断には使用できません。", privacy: "入力値はブラウザ内だけで処理され、GA4その他の外部サービスへ送信されません。公開根拠がない値は補間せず、算定不能として表示します。", inputs: "入力条件", capex: "初期整備費（億円）", year: "導入・受入年", vendor: "GPUベンダー", vendorCompare: "NVIDIA / AMD 比較", pareto: "Pareto候補", deployment: "設置方式", onPrem: "自前施設", hosted: "外部ホスティング", hybrid: "ハイブリッド", power: "使用可能IT電力（MW、未確認）", tco: "TCO対象年数", contingency: "予備費率（%）", results: "NVIDIA / AMD 比較", limits: "現在不足している根拠", gapPrice: "構成要素別の重複のない価格区間", gapDelivery: "2027年の日本の公共調達における納期・販売・保守条件", gapFacility: "確認済みの電力・冷却・ラック条件", gapDemand: "ワークロード絶対需要、ストレージ帯域、推論SLO", gapPerformance: "再現可能な実測値と検証済み性能モデル", unavailable: "算定不能", quote: "算定不能 / 要ベンダー見積", product: "候補製品", availability: "調達可能性", gpu: "GPU数（基準価格）", initial: "初期整備費", tcoValue: "TCO合計", unknown: "未確認", eligible: "調達可能", conditional: "条件付き", ineligible: "対象外", notAssessed: "未評価"},
+        en: {breadcrumb: "Candidate configuration planner", title: "GPU-Centric AI for Science Configuration Candidate", banner: "This unpublished Candidate is provisional work by one model and one agent. The Consensus Gate and publication approval are incomplete. Do not use it for procurement decisions.", privacy: "Inputs are processed only in the browser and are not sent to GA4 or any external service. Unsupported values are not interpolated and remain unavailable.", inputs: "Planning inputs", capex: "Initial CAPEX (JPY 100 million)", year: "Acceptance year", vendor: "GPU vendor", vendorCompare: "Compare NVIDIA / AMD", pareto: "Pareto candidates", deployment: "Deployment mode", onPrem: "On premises", hosted: "External hosting", hybrid: "Hybrid", power: "Available IT power (MW, unconfirmed)", tco: "TCO horizon (years)", contingency: "Contingency (%)", results: "NVIDIA / AMD comparison", limits: "Evidence currently missing", gapPrice: "Non-overlapping component price intervals", gapDelivery: "Delivery, sales, and support terms for Japanese public procurement in 2027", gapFacility: "Confirmed power, cooling, and rack constraints", gapDemand: "Absolute workload demand, storage bandwidth, and inference SLOs", gapPerformance: "Reproducible measurements and validated performance models", unavailable: "Unavailable", quote: "Unavailable / vendor quote required", product: "Candidate product", availability: "Procurement availability", gpu: "GPUs (reference price)", initial: "Initial CAPEX", tcoValue: "Total TCO", unknown: "Unknown", eligible: "Eligible", conditional: "Conditional", ineligible: "Ineligible", notAssessed: "Not assessed"}
+      };
+      const base = "data/";
+      const paths = ["request.json", "architecture.json", "product-catalog.json", "availability.json"];
+      let source;
+      let latest;
+      const clone = (value) => JSON.parse(JSON.stringify(value));
+      let language = "ja";
+      const t = (key) => strings[language][key];
+      const statusLabel = (value) => t(value === "not-assessed" ? "notAssessed" : value);
+      const fmt = (value) => value == null ? t("unavailable") : new Intl.NumberFormat(language === "ja" ? "ja-JP" : "en-US").format(value);
+      const setLanguage = (value) => {
+        language = value;
+        document.documentElement.lang = value;
+        document.body.dataset.language = value;
+        document.querySelectorAll("[data-i18n]").forEach((element) => { element.textContent = t(element.dataset.i18n); });
+        const url = new URL(location.href);
+        url.searchParams.set("lang", value);
+        history.replaceState(null, "", url);
+        document.querySelectorAll("[data-language]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === value)));
+        if (source) render();
+      };
+      const render = () => {
+        const request = clone(source[0]);
+        request.budget.capex_ceiling_oku_jpy = Number(document.getElementById("capex").value);
+        request.budget.tco_years = Number(document.getElementById("tco-years").value);
+        request.budget.contingency_percent = Number(document.getElementById("contingency").value);
+        request.schedule.acceptance_year = Number(document.getElementById("year").value);
+        request.schedule.required_acceptance_date = `${request.schedule.acceptance_year}-12-31`;
+        request.vendor_mode = document.getElementById("vendor").value;
+        request.deployment_mode = document.getElementById("deployment").value;
+        request.facility.it_power_limit_mw = Number(document.getElementById("power").value);
+        latest = OpenFSGpuPlanner.evaluate(request, source[1], source[2], source[3], null);
+        document.getElementById("planner-results").replaceChildren(...latest.vendor_candidates.map((candidate) => {
+          const section = document.createElement("section");
+          section.className = "planner-result";
+          const reference = candidate.cases[1];
+          section.innerHTML = `<h3>${candidate.vendor}</h3><p class="planner-status">${candidate.status === "blocked" ? t("quote") : candidate.status}</p><dl><dt>${t("product")}</dt><dd>${candidate.product_id || t("unavailable")}</dd><dt>${t("availability")}</dt><dd>${statusLabel(candidate.availability_status)}</dd><dt>${t("gpu")}</dt><dd>${fmt(reference.gpu_count)}</dd><dt>${t("initial")}</dt><dd>${fmt(reference.tco.initial_capex_jpy)}</dd><dt>${t("tcoValue")}</dt><dd>${fmt(reference.tco.total_tco_jpy)}</dd></dl><p>Coverage Gap: ${candidate.gap_ids.join(", ")}</p>`;
+          return section;
+        }));
+      };
+      const download = (name, type, body) => { const anchor = document.createElement("a"); anchor.href = URL.createObjectURL(new Blob([body], {type})); anchor.download = name; anchor.click(); URL.revokeObjectURL(anchor.href); };
+      Promise.all(paths.map((path) => fetch(base + path).then((response) => response.json()))).then((values) => {
+        source = values;
+        const year = document.getElementById("year");
+        for (let value = 2026; value <= 2032; value += 1) year.add(new Option(String(value), String(value), value === 2027, value === 2027));
+        ["capex", "year", "vendor", "deployment", "power", "tco-years", "contingency"].forEach((id) => document.getElementById(id).addEventListener("change", render));
+        document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => setLanguage(button.dataset.language)));
+        document.getElementById("download-json").addEventListener("click", () => download("openfs-gpu-plan-candidate.json", "application/json", JSON.stringify(latest, null, 2)));
+        document.getElementById("download-csv").addEventListener("click", () => download("openfs-gpu-plan-candidate.csv", "text/csv", "vendor,status,product_id,gpu_count,gap_ids\n" + latest.vendor_candidates.map((item) => [item.vendor, item.status, item.product_id || "", item.cases[1].gpu_count || "", item.gap_ids.join("|")].join(",")).join("\n")));
+        setLanguage(new URLSearchParams(location.search).get("lang") === "en" ? "en" : "ja");
+      }).catch((error) => { document.getElementById("planner-results").textContent = `Candidate data could not be loaded: ${error.message}`; });
+    })();
+  </script>
+</body>
+</html>

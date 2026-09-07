@@ -258,6 +258,10 @@ class PagesSiteTests(unittest.TestCase):
         self.assertLess(workflow.index("Install pinned contract validators"), workflow.index("Build static preview"))
         self.assertIn('- "config/budget-planning.json"', workflow)
         self.assertIn('- "config/catalog-taxonomy.json"', workflow)
+        self.assertIn("--include-candidate-gpu-planner", workflow)
+        self.assertIn("tests.test_gpu_centric_planner", workflow)
+        production = (ROOT / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8")
+        self.assertNotIn("--include-candidate-gpu-planner", production)
 
     def test_page_fragment_navigation_has_unique_existing_targets(self):
         parser = PageStructureParser()
@@ -363,6 +367,32 @@ class PagesSiteTests(unittest.TestCase):
         for name in ("pages.yml", "pages-preview.yml"):
             workflow = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
             self.assertIn('      - "assets/branding/**"', workflow)
+
+    def test_candidate_gpu_planner_is_excluded_from_default_pages_build(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            build(ROOT, output)
+            self.assertFalse((output / "candidate" / "gpu-centric-ai4s").exists())
+            self.assertFalse((output / "gpu-planner-engine.js").exists())
+            for page in output.rglob("*.html"):
+                self.assertNotIn("candidate/gpu-centric-ai4s", page.read_text(encoding="utf-8"))
+
+    def test_explicit_candidate_gpu_planner_build_is_bilingual_and_analytics_free(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "site"
+            build(ROOT, output, include_candidate_gpu_planner=True)
+            page = output / "candidate" / "gpu-centric-ai4s" / "index.html"
+            content = page.read_text(encoding="utf-8")
+            self.assertTrue((output / "gpu-planner-engine.js").is_file())
+            self.assertIn('data-language="ja"', content)
+            self.assertIn('data-language="en"', content)
+            self.assertIn("Consensus Gate", content)
+            self.assertIn("procurement", content)
+            self.assertNotIn("googletagmanager.com", content)
+            self.assertNotIn("gtag(", content)
+            self.assertNotIn("analytics.js", content)
+            for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json"):
+                self.assertTrue((page.parent / "data" / filename).is_file())
 
     def test_home_branding_does_not_replace_controls_or_publish_concept(self):
         with tempfile.TemporaryDirectory() as directory:

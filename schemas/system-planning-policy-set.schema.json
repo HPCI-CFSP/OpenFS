@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hpci-cfsp.github.io/OpenFS/schemas/system-planning-policy-set.schema.json",
+  "title": "Candidate System Planning Policy Set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "set_id", "status", "base_commit", "consensus_status", "policies"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "set_id": {"type": "string", "pattern": "^POLSET-[A-Z0-9-]+$"},
+    "status": {"const": "candidate"},
+    "base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "consensus_status": {"const": "incomplete"},
+    "policies": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["policy_id", "title_ja", "title_en", "objective_ja", "objective_en", "legacy_scenario_ids", "strategy_dimensions", "evaluation_criterion_ids", "status"],
+        "properties": {
+          "policy_id": {"type": "string", "pattern": "^POL-SYS-[A-Z0-9-]+$"},
+          "title_ja": {"type": "string", "minLength": 1},
+          "title_en": {"type": "string", "minLength": 1},
+          "objective_ja": {"type": "string", "minLength": 1},
+          "objective_en": {"type": "string", "minLength": 1},
+          "legacy_scenario_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^SCN-[A-Z0-9-]+$"}},
+          "strategy_dimensions": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["investment_focus", "deployment_strategy", "risk_posture"],
+            "properties": {
+              "investment_focus": {"type": "string", "minLength": 1},
+              "deployment_strategy": {"type": "string", "minLength": 1},
+              "risk_posture": {"type": "string", "minLength": 1}
+            }
+          },
+          "evaluation_criterion_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "status": {"const": "candidate"}
+        }
+      }
+    }
+  }
+}
