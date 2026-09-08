@@ -883,7 +883,7 @@
 
   function loadSyntheticExample() {
     const values = {
-      capex: 125, "acceptance-date": "2027-12-31", "vendor-mode": "compare", deployment: "on-premises",
+      capex: 100, "acceptance-date": "2027-12-31", "vendor-mode": "compare", deployment: "on-premises",
       "tco-years": 5, contingency: 10, "product-nvidia": "GPU-NVIDIA-VERA-RUBIN", "product-amd": "GPU-AMD-MI455X",
       "mix-training": 0, "mix-inference": 0, "mix-hpc": 100, "mix-data": 0,
       utilization: 80, headroom: 10, "annual-gpu-hours": 100000,

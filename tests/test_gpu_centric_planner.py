@@ -39,7 +39,7 @@ class GpuCentricPlannerV02Tests(unittest.TestCase):
         cls.costs = load("tests/fixtures/gpu-planner-priced-components.json")
 
     def what_if_request(
-        self, budget: float = 125, power: float = 4, rack_limit: int = 20
+        self, budget: float = 100, power: float = 4, rack_limit: int = 20
     ) -> dict:
         request = copy.deepcopy(self.request)
         request["run_mode"] = "what-if"
@@ -89,7 +89,7 @@ class GpuCentricPlannerV02Tests(unittest.TestCase):
 
     def run_what_if(
         self,
-        budget: float = 125,
+        budget: float = 100,
         power: float = 4,
         rack_limit: int = 20,
         costs: dict | None = None,
@@ -131,17 +131,20 @@ class GpuCentricPlannerV02Tests(unittest.TestCase):
             )
         self.assertNotIn("SCN-HPCI", json.dumps(result))
 
-    def test_exact_125_oku_acceptance_case(self):
+    def test_public_candidate_default_budget_is_100_oku_jpy(self):
+        self.assertEqual(100, self.request["budget"]["capex_ceiling_oku_jpy"])
+
+    def test_exact_100_oku_acceptance_case(self):
         result = self.run_what_if()
         for vendor in ("NVIDIA", "AMD"):
             case = self.case(result, vendor)
             self.assertEqual("partial", case["status"])
-            self.assertEqual(9, case["quantities"]["compute_units"])
-            self.assertEqual(9, case["quantities"]["rack_count"])
-            self.assertEqual(648, case["quantities"]["gpu_count"])
-            self.assertEqual(10_500_000_000, case["costs"]["configuration_cost_jpy"])
-            self.assertEqual(1_050_000_000, case["costs"]["contingency_jpy"])
-            self.assertEqual(950_000_000, case["costs"]["unused_budget_jpy"])
+            self.assertEqual(7, case["quantities"]["compute_units"])
+            self.assertEqual(7, case["quantities"]["rack_count"])
+            self.assertEqual(504, case["quantities"]["gpu_count"])
+            self.assertEqual(8_500_000_000, case["costs"]["configuration_cost_jpy"])
+            self.assertEqual(850_000_000, case["costs"]["contingency_jpy"])
+            self.assertEqual(650_000_000, case["costs"]["unused_budget_jpy"])
             self.assertTrue(case["costs"]["identity_verified"])
 
     def test_300_oku_is_power_limited_to_ten_racks(self):
@@ -164,7 +167,7 @@ class GpuCentricPlannerV02Tests(unittest.TestCase):
                 self.run_what_if(budget=value, power=20, rack_limit=100)
             )["quantities"]
             else 0
-            for value in (10, 30, 100, 125, 300)
+            for value in (10, 30, 100, 300)
         ]
         self.assertEqual(counts, sorted(counts))
 
@@ -383,7 +386,7 @@ class GpuCentricPlannerV02Tests(unittest.TestCase):
             check=True,
         )
         browser_values = json.loads(browser.stdout)
-        python_result = self.run_what_if()
+        python_result = self.run_what_if(budget=100)
         python_values = []
         for candidate in python_result["vendor_candidates"]:
             value = self.case(python_result, candidate["vendor"])

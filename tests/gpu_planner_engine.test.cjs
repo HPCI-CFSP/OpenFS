@@ -11,7 +11,7 @@ const catalog = load("proposals/gpu-product-catalogs/GPUCAT-001.json");
 const availability = load("proposals/procurement-availability/AVAIL-2027-JP-001.json");
 const costs = load("tests/fixtures/gpu-planner-priced-components.json");
 
-function complete(budget = 125, power = 4) {
+function complete(budget = 100, power = 4) {
   const request = clone(requestBase);
   request.run_mode = "what-if";
   request.vendor_mode = "compare";
@@ -53,16 +53,16 @@ test("public evidence mode leaves unsupported estimates blocked", () => {
   assert.ok(result.vendor_candidates.every((item) => item.cases.every((candidate) => candidate.quantities === null)));
 });
 
-test("125 oku deterministic case yields 9 racks and 648 GPUs", () => {
+test("100 oku deterministic case yields 7 racks and 504 GPUs", () => {
   const result = engine.evaluate(complete(), architecture, catalog, availability, costs, "2026-09-07T00:00:00Z");
   for (const candidate of result.vendor_candidates) {
     const value = candidate.cases.find((item) => item.price_case === "baseline");
-    assert.equal(value.quantities.compute_units, 9);
-    assert.equal(value.quantities.rack_count, 9);
-    assert.equal(value.quantities.gpu_count, 648);
-    assert.equal(value.costs.configuration_cost_jpy, 10500000000);
-    assert.equal(value.costs.contingency_jpy, 1050000000);
-    assert.equal(value.costs.unused_budget_jpy, 950000000);
+    assert.equal(value.quantities.compute_units, 7);
+    assert.equal(value.quantities.rack_count, 7);
+    assert.equal(value.quantities.gpu_count, 504);
+    assert.equal(value.costs.configuration_cost_jpy, 8500000000);
+    assert.equal(value.costs.contingency_jpy, 850000000);
+    assert.equal(value.costs.unused_budget_jpy, 650000000);
     assert.equal(value.costs.identity_verified, true);
   }
 });
@@ -85,7 +85,7 @@ test("price cases reoptimize integer procurement quantities", () => {
     const line = pkg.cost_lines.find((item) => item.category === "compute");
     Object.assign(line, {optimistic_jpy: 800000000, baseline_jpy: 1000000000, conservative_jpy: 1200000000});
   }
-  const request = complete(125, 20);
+  const request = complete(100, 20);
   request.facility.rack_limit = 100;
   const candidate = engine.evaluate(request, architecture, catalog, availability, priced).vendor_candidates[0];
   const values = Object.fromEntries(candidate.cases.map((item) => [item.price_case, item.quantities.compute_units]));

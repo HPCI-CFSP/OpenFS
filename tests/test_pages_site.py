@@ -408,6 +408,9 @@ class PagesSiteTests(unittest.TestCase):
             self.assertNotIn("XMLHttpRequest", script)
             for filename in ("request.json", "architecture.json", "product-catalog.json", "availability.json", "what-if-template.json", "publication.json"):
                 self.assertTrue((page.parent / "data" / filename).is_file())
+            request = json.loads((page.parent / "data" / "request.json").read_text(encoding="utf-8"))
+            self.assertEqual(100, request["budget"]["capex_ceiling_oku_jpy"])
+            self.assertIn('id="capex" type="number" min="1" step="1" value="100"', content)
 
     def test_gpu_planner_publication_is_human_approved_and_digest_pinned(self):
         policy = self.publication_policy()

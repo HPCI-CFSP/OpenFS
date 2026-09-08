@@ -142,7 +142,7 @@ GA4 or another external service.
   public-procurement eligibility, project prices, support terms, or delivery lead
   times for a 2027 acceptance.
 
-The representative 125-oku-JPY, 2027, 4-MW cases are therefore correctly blocked
+The default 100-oku-JPY, 2027, 4-MW public-evidence case is therefore correctly blocked
 for both NVIDIA and AMD. They identify what must be obtained rather than producing
 a false quantity.
 
@@ -154,7 +154,7 @@ a false quantity.
    v0.2 implements this stage.
 2. **Evidence-complete public Candidate BOMs:** obtain itemized and non-overlapping price
    intervals, delivery and support evidence, facility limits, and absolute demand;
-   then run 10/30/100/125/300-oku-JPY and 2026–2032 matrices.
+   then run 10/30/100/300-oku-JPY and 2026–2032 matrices.
 3. **Validated performance models:** pin benchmark versions and software, add
    reproducible measurements, scaling/error bounds, and inference queue tests.
 4. **Independent review and promotion:** run falsification and Consensus Gates,
@@ -163,7 +163,7 @@ a false quantity.
    visibly provisional Pages publication.
 
 Automated acceptance checks cover schema validation, blocked output for absent
-evidence, the deterministic 125-oku-JPY/9-rack/648-GPU case, the 300-oku-JPY and
+evidence, the deterministic 100-oku-JPY/7-rack/504-GPU case, the 300-oku-JPY and
 2-MW caps, price-case re-optimization, integer procurement units, budget identity,
 monotonic GPU counts for an unchanged generation and constraint set, facility,
 network, storage, demand and delivery constraints, separate CAPEX and TCO,
