@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="公開根拠またはブラウザ内の利用者入力に基づき、GPU集中型AI for ScienceシステムのNVIDIA案とAMD案を比較する暫定構成算定画面">
+  <title>GPU集中型AI for Science構成算定 Candidate | OpenFS</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../styles.css?v=281d046b5975fb0a2c5d88580028afdded4426db">
+</head>
+<body data-language="ja" data-root-prefix="../../">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="identity identity-branded">
+  <h1>
+    <a class="brand-link" href="../../">
+      <img class="brand-logo" src="../../assets/branding/openfs-logo-compact.svg?v=281d046b5975fb0a2c5d88580028afdded4426db" alt="OpenFS" width="344" height="128">
+    </a>
+  </h1>
+  <span class="organization">HPCI-CFSP</span>
+  <p data-i18n="tagline" data-feedback-copy="tagline">公開調査カタログとシステム整備計画案</p>
+</div>
+      <div class="header-controls">
+        <div class="header-status"><span class="status-dot" aria-hidden="true"></span><span data-ja="公開情報のみ" data-en="Public information only">公開情報のみ</span></div>
+        <div class="language-switcher" role="group" aria-label="表示言語"><button type="button" data-language="ja" aria-pressed="true">日本語</button><button type="button" data-language="en" aria-pressed="false">English</button></div>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="サイト内ナビゲーション">
+      <a href="../../#overview" data-i18n="navOverview" data-ja="概要" data-en="Overview">概要</a>
+      <a href="../../#catalog" data-i18n="navCatalog" data-ja="調査カタログ" data-en="Research catalog">調査カタログ</a>
+      <a href="../../roadmaps/" data-i18n="navRoadmaps" data-ja="ロードマップ" data-en="Roadmaps">ロードマップ</a>
+      <a href="../../scenarios/" class="active" data-i18n="navScenarios" data-ja="システム整備計画案" data-en="System planning options">システム整備計画案</a>
+      <a href="../../#reports" data-i18n="navReports" data-ja="報告書" data-en="Reports">報告書</a>
+      <a href="../../feedback/" data-feedback-nav data-feedback-copy="navFeedback">Feedback</a>
+      <a href="../../search/" data-i18n="navSearch" data-ja="検索" data-en="Search">検索</a>
+    </nav>
+  </header>
+
+  <main class="section gpu-planner-page">
+    <nav class="breadcrumb" aria-label="パンくずリスト"><a href="../../">OpenFS</a><span>/</span><a href="../../scenarios/" data-ja="システム整備計画案" data-en="System planning options">システム整備計画案</a><span>/</span><span data-ja="Candidate構成算定" data-en="Candidate configuration planner">Candidate構成算定</span></nav>
+
+    <header class="gpu-planner-intro">
+      <span class="eyebrow">ARCH-GPU-CENTRIC-AI4S-001</span>
+      <h2 data-ja="GPU集中型AI for Science構成算定 Candidate" data-en="GPU-Centric AI for Science Configuration Candidate">GPU集中型AI for Science構成算定 Candidate</h2>
+      <p data-ja="GPU主体の計算プールと、ホストCPU、ネットワーク、ストレージ、管理系、電源・冷却を一体として整数単位で構成します。NVIDIA案とAMD案は独立したBOMで比較します。" data-en="Build an integer-unit configuration that combines a GPU-dominant compute pool with host CPUs, networks, storage, services, power, and cooling. NVIDIA and AMD options use independent bills of materials.">GPU主体の計算プールと、ホストCPU、ネットワーク、ストレージ、管理系、電源・冷却を一体として整数単位で構成します。NVIDIA案とAMD案は独立したBOMで比較します。</p>
+    </header>
+
+    <aside class="candidate-banner" role="note">
+      <strong data-ja="暫定Candidate・調達利用禁止" data-en="Provisional Candidate; procurement use prohibited">暫定Candidate・調達利用禁止</strong>
+      <p data-ja="単一のAIモデル・単一のAIエージェントによる暫定結果で、Consensus Gateは未完了です。公開根拠の不足は推測で埋めません。" data-en="This is a provisional result from one model and one agent. The Consensus Gate is incomplete, and missing public evidence is never filled by inference.">単一のAIモデル・単一のAIエージェントによる暫定結果で、Consensus Gateは未完了です。公開根拠の不足は推測で埋めません。</p>
+    </aside>
+
+    <section class="gpu-mode-panel" aria-labelledby="mode-title">
+      <div>
+        <span class="eyebrow" data-ja="算定モード" data-en="Calculation mode">算定モード</span>
+        <h2 id="mode-title" data-ja="根拠と仮定を混ぜずに比較" data-en="Compare without mixing evidence and assumptions">根拠と仮定を混ぜずに比較</h2>
+      </div>
+      <div class="gpu-mode-switch" role="group" aria-label="算定モード">
+        <button id="mode-public" type="button" class="active" aria-pressed="true" data-ja="公開根拠" data-en="Public evidence">公開根拠</button>
+        <button id="mode-whatif" type="button" aria-pressed="false" data-ja="What-if（利用者入力）" data-en="What-if (user input)">What-if（利用者入力）</button>
+      </div>
+      <p id="mode-description" class="gpu-mode-description"></p>
+      <p class="gpu-privacy-note" data-ja="What-if入力はこのブラウザ内だけで処理されます。GA4その他の外部サービスへの送信、ブラウザ保存、自動アップロードは行いません。" data-en="What-if inputs are processed only in this browser. They are not sent to GA4 or another external service, persisted in browser storage, or uploaded automatically.">What-if入力はこのブラウザ内だけで処理されます。GA4その他の外部サービスへの送信、ブラウザ保存、自動アップロードは行いません。</p>
+      <a href="data/publication.json" data-ja="公開承認と固定入力を確認" data-en="Review publication approval and pinned inputs">公開承認と固定入力を確認</a>
+    </section>
+
+    <form id="planner-form" novalidate>
+      <fieldset class="planner-section" data-input-section>
+        <legend><span data-ja="[入力1] 基本条件" data-en="[Input 1] Planning basis">[入力1] 基本条件</span></legend>
+        <div class="planner-field-grid">
+          <label><span data-ja="初期整備費上限（億円）" data-en="Initial CAPEX ceiling (JPY 100m)">初期整備費上限（億円）</span><input id="capex" type="number" min="1" step="1" value="100" required></label>
+          <label><span data-ja="受入日" data-en="Required acceptance date">受入日</span><input id="acceptance-date" type="date" min="2026-01-01" max="2032-12-31" value="2027-12-31" required></label>
+          <label><span data-ja="GPUベンダー" data-en="GPU vendor">GPUベンダー</span><select id="vendor-mode"><option value="compare">NVIDIA / AMD</option><option value="NVIDIA">NVIDIA</option><option value="AMD">AMD</option><option value="auto-pareto" data-ja="Pareto候補" data-en="Pareto candidates">Pareto候補</option></select></label>
+          <label><span data-ja="設置方式" data-en="Deployment mode">設置方式</span><select id="deployment"><option value="on-premises" data-ja="自前施設" data-en="On premises">自前施設</option><option value="external-hosting" data-ja="外部ホスティング" data-en="External hosting">外部ホスティング</option><option value="hybrid" data-ja="ハイブリッド" data-en="Hybrid">ハイブリッド</option></select></label>
+          <label><span data-ja="TCO対象年数" data-en="TCO horizon (years)">TCO対象年数</span><input id="tco-years" type="number" min="1" max="20" step="1" value="5"></label>
+          <label><span data-ja="予備費率（%）" data-en="Contingency (%)">予備費率（%）</span><input id="contingency" type="number" min="0" max="50" step="0.1" value="10"></label>
+          <label><span data-ja="NVIDIA製品" data-en="NVIDIA product">NVIDIA製品</span><select id="product-nvidia"></select></label>
+          <label><span data-ja="AMD製品" data-en="AMD product">AMD製品</span><select id="product-amd"></select></label>
+        </div>
+      </fieldset>
+
+      <details class="planner-section" data-input-section open>
+        <summary data-ja="[入力2] ワークロード比率と絶対需要" data-en="[Input 2] Workload mix and absolute demand">[入力2] ワークロード比率と絶対需要</summary>
+        <div class="planner-subheading" data-ja="比率（合計100%）" data-en="Mix (must total 100%)">比率（合計100%）</div>
+        <div class="planner-field-grid">
+          <label><span data-ja="AI学習（%）" data-en="AI training (%)">AI学習（%）</span><input id="mix-training" type="number" min="0" max="100" value="0"></label>
+          <label><span data-ja="AI推論（%）" data-en="AI inference (%)">AI推論（%）</span><input id="mix-inference" type="number" min="0" max="100" value="0"></label>
+          <label><span data-ja="AI for Science / HPC（%）" data-en="AI for Science / HPC (%)">AI for Science / HPC（%）</span><input id="mix-hpc" type="number" min="0" max="100" value="100"></label>
+          <label><span data-ja="データ解析（%）" data-en="Data analytics (%)">データ解析（%）</span><input id="mix-data" type="number" min="0" max="100" value="0"></label>
+          <label><span data-ja="目標稼働率（%）" data-en="Target utilization (%)">目標稼働率（%）</span><input id="utilization" type="number" min="1" max="100" placeholder="unknown"></label>
+          <label><span data-ja="余裕率（%）" data-en="Headroom (%)">余裕率（%）</span><input id="headroom" type="number" min="0" max="99" placeholder="unknown"></label>
+          <label><span data-ja="年間アクセラレータ需要（GPU時間）" data-en="Annual accelerator demand (GPU-hours)">年間アクセラレータ需要（GPU時間）</span><input id="annual-gpu-hours" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="年間学習トークン数" data-en="Training tokens per year">年間学習トークン数</span><input id="training-tokens" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="年間学習ジョブ数" data-en="Training jobs per year">年間学習ジョブ数</span><input id="training-jobs" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="年間HPCジョブ数" data-en="HPC jobs per year">年間HPCジョブ数</span><input id="hpc-jobs" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="HPCジョブ当たりGPU数" data-en="GPUs per HPC job">HPCジョブ当たりGPU数</span><input id="hpc-gpus" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="HPC平均実行時間（時間）" data-en="Mean HPC runtime (hours)">HPC平均実行時間（時間）</span><input id="hpc-runtime" type="number" min="0" step="0.1" placeholder="unknown"></label>
+          <label><span data-ja="年間推論要求数" data-en="Inference requests per year">年間推論要求数</span><input id="inference-requests" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="ピーク推論要求（req/s）" data-en="Peak inference requests (req/s)">ピーク推論要求（req/s）</span><input id="peak-rps" type="number" min="0" step="0.01" placeholder="unknown"></label>
+          <label><span data-ja="年間データ取込量（PB）" data-en="Annual data ingest (PB)">年間データ取込量（PB）</span><input id="data-ingest" type="number" min="0" step="0.01" placeholder="unknown"></label>
+          <label><span data-ja="同時利用者数" data-en="Concurrent users">同時利用者数</span><input id="concurrent-users" type="number" min="0" placeholder="unknown"></label>
+        </div>
+      </details>
+
+      <details class="planner-section" data-input-section>
+        <summary data-ja="[入力3] 推論SLO" data-en="[Input 3] Inference SLO">[入力3] 推論SLO</summary>
+        <div class="planner-field-grid">
+          <label><span data-ja="モデル名" data-en="Model name">モデル名</span><input id="model-name" type="text" placeholder="unknown"></label>
+          <label><span data-ja="パラメータ数（十億）" data-en="Parameters (billions)">パラメータ数（十億）</span><input id="parameter-b" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="量子化" data-en="Quantization">量子化</span><input id="quantization" type="text" placeholder="unknown"></label>
+          <label><span data-ja="入力トークン" data-en="Input tokens">入力トークン</span><input id="input-tokens" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="出力トークン" data-en="Output tokens">出力トークン</span><input id="output-tokens" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="コンテキスト長" data-en="Context tokens">コンテキスト長</span><input id="context-tokens" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TTFT p50 (ms)</span><input id="ttft-p50" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TTFT p95 (ms)</span><input id="ttft-p95" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TTFT p99 (ms)</span><input id="ttft-p99" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TPOT p50 (ms)</span><input id="tpot-p50" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TPOT p95 (ms)</span><input id="tpot-p95" type="number" min="0" placeholder="unknown"></label>
+          <label><span>TPOT p99 (ms)</span><input id="tpot-p99" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="Offline throughput目標" data-en="Offline throughput target">Offline throughput目標</span><input id="offline-throughput" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="Server throughput目標" data-en="Server throughput target">Server throughput目標</span><input id="server-throughput" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="品質条件ID" data-en="Quality target ID">品質条件ID</span><input id="quality-id" type="text" placeholder="unknown"></label>
+        </div>
+      </details>
+
+      <details class="planner-section" data-input-section open>
+        <summary data-ja="[入力4] ストレージ要件" data-en="[Input 4] Storage requirements">[入力4] ストレージ要件</summary>
+        <div class="planner-field-grid">
+          <label><span data-ja="高速共有容量（PB）" data-en="Fast shared capacity (PB)">高速共有容量（PB）</span><input id="fast-pb" type="number" min="0" step="0.1" placeholder="unknown"></label>
+          <label><span data-ja="大容量・アーカイブ（PB）" data-en="Capacity/archive storage (PB)">大容量・アーカイブ（PB）</span><input id="archive-pb" type="number" min="0" step="0.1" placeholder="unknown"></label>
+          <label><span data-ja="学習読込帯域（GB/s）" data-en="Training read bandwidth (GB/s)">学習読込帯域（GB/s）</span><input id="read-gbs" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="チェックポイント書込帯域（GB/s）" data-en="Checkpoint write bandwidth (GB/s)">チェックポイント書込帯域（GB/s）</span><input id="write-gbs" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="メタデータ（百万inode）" data-en="Metadata (million inodes)">メタデータ（百万inode）</span><input id="metadata-m" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="バックアップ世代数" data-en="Backup copies">バックアップ世代数</span><input id="backup-copies" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="保持年数" data-en="Retention years">保持年数</span><input id="retention-years" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="RTO（時間）" data-en="RTO (hours)">RTO（時間）</span><input id="rto-hours" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="計算単位当たりローカルNVMe（TB）" data-en="Local NVMe per compute unit (TB)">計算単位当たりローカルNVMe（TB）</span><input id="local-nvme-required" type="number" min="0" placeholder="unknown"></label>
+        </div>
+      </details>
+
+      <details class="planner-section" data-input-section open>
+        <summary data-ja="[入力5] 設備制約" data-en="[Input 5] Facility constraints">[入力5] 設備制約</summary>
+        <div class="planner-field-grid">
+          <label><span data-ja="IT電力上限（MW）" data-en="IT power limit (MW)">IT電力上限（MW）</span><input id="power-mw" type="number" min="0" step="0.1" value="4"></label>
+          <label><span data-ja="冷却能力（MW）" data-en="Cooling capacity (MW)">冷却能力（MW）</span><input id="cooling-mw" type="number" min="0" step="0.1" placeholder="unknown"></label>
+          <label><span data-ja="冷却方式" data-en="Cooling method">冷却方式</span><select id="cooling-method"><option value="unknown" data-ja="未確認" data-en="Unknown">未確認</option><option value="direct-liquid" data-ja="直接液冷" data-en="Direct liquid">直接液冷</option><option value="rear-door" data-ja="リアドア熱交換器" data-en="Rear-door heat exchanger">リアドア熱交換器</option><option value="air" data-ja="空冷" data-en="Air cooling">空冷</option></select></label>
+          <label><span data-ja="ラック上限" data-en="Rack limit">ラック上限</span><input id="rack-limit" type="number" min="1" placeholder="unknown"></label>
+          <label><span data-ja="床面積（m²）" data-en="Floor area (m²)">床面積（m²）</span><input id="floor-area" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="床荷重上限（kg/m²）" data-en="Floor loading limit (kg/m²)">床荷重上限（kg/m²）</span><input id="floor-loading" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="ラック密度上限（kW）" data-en="Rack density limit (kW)">ラック密度上限（kW）</span><input id="rack-density" type="number" min="0" placeholder="unknown"></label>
+          <label><span>PUE</span><input id="pue" type="number" min="1" step="0.01" placeholder="unknown"></label>
+          <label><span data-ja="電源冗長度" data-en="Power redundancy">電源冗長度</span><input id="power-redundancy" type="text" placeholder="unknown"></label>
+          <label><span data-ja="冷却冗長度" data-en="Cooling redundancy">冷却冗長度</span><input id="cooling-redundancy" type="text" placeholder="unknown"></label>
+        </div>
+      </details>
+
+      <details id="whatif-package-section" class="planner-section whatif-only" data-input-section>
+        <summary data-ja="[入力6] 最小調達単位と付帯構成（利用者仮定）" data-en="[Input 6] Minimum procurement unit and auxiliaries (user assumptions)">[入力6] 最小調達単位と付帯構成（利用者仮定）</summary>
+        <p data-ja="値は公開根拠ではなく利用者仮定として扱われます。NVIDIAとAMDを別々に入力してください。" data-en="Values are treated as user assumptions, not public evidence. Enter NVIDIA and AMD packages independently.">値は公開根拠ではなく利用者仮定として扱われます。NVIDIAとAMDを別々に入力してください。</p>
+        <div id="package-inputs" class="planner-vendor-columns"></div>
+      </details>
+
+      <details id="whatif-cost-section" class="planner-section whatif-only" data-input-section>
+        <summary data-ja="[入力7] コンポーネント費用（億円、利用者仮定）" data-en="[Input 7] Component costs (JPY 100m, user assumptions)">[入力7] コンポーネント費用（億円、利用者仮定）</summary>
+        <p data-ja="楽観・基準・保守の各価格ケースで構成数量を再最適化します。0は費用に含まれることを確認した場合のみ入力し、不明は空欄にしてください。" data-en="The configuration is re-optimized for optimistic, baseline, and conservative prices. Enter zero only when the item is confirmed to be included; leave unknown values blank.">楽観・基準・保守の各価格ケースで構成数量を再最適化します。0は費用に含まれることを確認した場合のみ入力し、不明は空欄にしてください。</p>
+        <div id="cost-inputs" class="planner-vendor-columns"></div>
+      </details>
+
+      <details id="whatif-performance-section" class="planner-section whatif-only" data-input-section>
+        <summary data-ja="[入力8] 性能モデル（任意・利用者仮定）" data-en="[Input 8] Performance model (optional user assumption)">[入力8] 性能モデル（任意・利用者仮定）</summary>
+        <p data-ja="未検証の入力は調達評価へ使用できません。時間モデルはオーバーラップ可能部分、非オーバーラップ部分、同期時間を分離します。" data-en="Unvalidated inputs cannot be used for procurement evaluation. The time model separates overlappable phases, non-overlappable work, and synchronization.">未検証の入力は調達評価へ使用できません。時間モデルはオーバーラップ可能部分、非オーバーラップ部分、同期時間を分離します。</p>
+        <div class="planner-field-grid">
+          <label><span data-ja="ベンチマーク名" data-en="Benchmark">ベンチマーク名</span><input id="perf-benchmark" type="text" placeholder="e.g. GROMACS"></label>
+          <label><span data-ja="実測計算単位数" data-en="Measured compute units">実測計算単位数</span><input id="perf-units" type="number" min="1" placeholder="unknown"></label>
+          <label><span>T_compute (s)</span><input id="perf-compute" type="number" min="0" placeholder="unknown"></label>
+          <label><span>T_memory (s)</span><input id="perf-memory" type="number" min="0" placeholder="unknown"></label>
+          <label><span>T_communication (s)</span><input id="perf-communication" type="number" min="0" placeholder="unknown"></label>
+          <label><span>T_IO (s)</span><input id="perf-io" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="非オーバーラップ時間（s）" data-en="Non-overlappable time (s)">非オーバーラップ時間（s）</span><input id="perf-nonoverlap" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="同期時間（s）" data-en="Synchronization time (s)">同期時間（s）</span><input id="perf-sync" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="基準スケーリング効率" data-en="Baseline scaling efficiency">基準スケーリング効率</span><input id="perf-efficiency" type="number" min="0.01" max="1" step="0.01" placeholder="unknown"></label>
+          <label><span data-ja="予測誤差（%）" data-en="Prediction error (%)">予測誤差（%）</span><input id="perf-error" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="1 GPU当たりサービス率（req/s）" data-en="Service rate per GPU (req/s)">1 GPU当たりサービス率（req/s）</span><input id="queue-service-rate" type="number" min="0" step="0.01" placeholder="unknown"></label>
+          <label><span data-ja="基準TTFT（ms）" data-en="Base TTFT (ms)">基準TTFT（ms）</span><input id="queue-ttft" type="number" min="0" placeholder="unknown"></label>
+          <label><span data-ja="基準TPOT（ms）" data-en="Base TPOT (ms)">基準TPOT（ms）</span><input id="queue-tpot" type="number" min="0" placeholder="unknown"></label>
+        </div>
+      </details>
+
+      <div class="planner-actions">
+        <button id="calculate" type="submit" class="primary-action" data-ja="構成を算定" data-en="Calculate configurations">構成を算定</button>
+        <button id="load-test-example" type="button" class="whatif-only" data-ja="合成受入例を入力（TEST ONLY）" data-en="Load synthetic acceptance example (TEST ONLY)">合成受入例を入力（TEST ONLY）</button>
+        <label class="file-action whatif-only"><span data-ja="ローカルJSONを読込" data-en="Load local JSON">ローカルJSONを読込</span><input id="import-json" type="file" accept="application/json,.json"></label>
+        <button id="reset-inputs" type="button" data-ja="公開入力へ戻す" data-en="Restore public inputs">公開入力へ戻す</button>
+      </div>
+      <p id="form-error" class="planner-error" role="alert"></p>
+    </form>
+
+    <section class="planner-results-section" aria-labelledby="results-title">
+      <div class="section-heading">
+        <div><span class="eyebrow" data-ja="構成算定結果" data-en="Configuration results">構成算定結果</span><h2 id="results-title" data-ja="NVIDIA / AMD比較" data-en="NVIDIA / AMD comparison">NVIDIA / AMD比較</h2></div>
+        <div class="planner-actions"><button id="download-json" type="button">JSON</button><button id="download-csv" type="button">CSV</button></div>
+      </div>
+      <div id="result-notice" class="planner-result-notice" aria-live="polite"></div>
+      <div id="pareto-result"></div>
+      <div id="result-summary" class="planner-results"></div>
+      <div id="result-comparison" class="table-wrap"></div>
+      <div id="result-details" class="planner-vendor-columns"></div>
+    </section>
+
+    <section class="planner-section" aria-labelledby="evidence-title">
+      <span class="eyebrow" data-ja="根拠と不足情報" data-en="Evidence and missing information">根拠と不足情報</span>
+      <h2 id="evidence-title" data-ja="公開根拠・仮定・Coverage Gap" data-en="Public evidence, assumptions, and Coverage Gaps">公開根拠・仮定・Coverage Gap</h2>
+      <div id="evidence-status"></div>
+      <div id="product-evidence"></div>
+      <div id="gap-list"></div>
+      <details><summary data-ja="候補ベンチマーク" data-en="Candidate benchmarks">候補ベンチマーク</summary><p id="benchmark-list"></p></details>
+    </section>
+  </main>
+
+  <footer><div><strong>OpenFS</strong><span data-ja="HPCI-CFSP 公開調査ビュー" data-en="HPCI-CFSP public research view">HPCI-CFSP 公開調査ビュー</span></div><div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a></div></footer>
+  <script src="../../data/openfs-public.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../feedback.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../gpu-planner-engine.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../gpu-planner-candidate.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+</body>
+</html>

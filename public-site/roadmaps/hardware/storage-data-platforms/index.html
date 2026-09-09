@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OpenFS公開ロードマップの詳細、年表、根拠、HPCIシステム整備への示唆">
+  <title>ロードマップ | OpenFS</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../../styles.css?v=281d046b5975fb0a2c5d88580028afdded4426db">
+</head>
+<body data-page="roadmap-detail" data-root-prefix="../../../" data-roadmap-id="STORAGE-ROADMAP-EXPORT-001">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="identity identity-branded">
+  <h1>
+    <a class="brand-link" href="../../../">
+      <img class="brand-logo" src="../../../assets/branding/openfs-logo-compact.svg?v=281d046b5975fb0a2c5d88580028afdded4426db" alt="OpenFS" width="344" height="128">
+    </a>
+  </h1>
+  <span class="organization">HPCI-CFSP</span>
+  <p data-i18n="tagline" data-feedback-copy="tagline">公開調査カタログとシステム整備計画案</p>
+</div>
+      <div class="header-controls">
+        <div class="header-status" data-i18n-aria-label="publicStatus" aria-label="公開状態">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span data-i18n="publicOnly">公開情報のみ</span>
+          <a id="site-updated" class="site-updated" href="https://github.com/HPCI-CFSP/OpenFS" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+        <div class="language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+          <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+          <button type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
+      </div>
+    </div>
+    <nav class="tabs" data-i18n-aria-label="siteNavigation" aria-label="サイト内ナビゲーション">
+      <a href="../../../#overview" data-i18n="navOverview">概要</a>
+      <a href="../../../#catalog" data-i18n="navCatalog">調査カタログ</a>
+      <a href="../../../roadmaps/?v=281d046b5975fb0a2c5d88580028afdded4426db" class="active" data-i18n="navRoadmaps">ロードマップ</a>
+      <a href="../../../scenarios/" data-i18n="navScenarios">システム整備計画案</a>
+      <a href="../../../#reports" data-i18n="navReports">報告書</a>
+      <a href="../../../feedback/" data-feedback-nav data-feedback-copy="navFeedback">Feedback</a>
+      <a href="../../../search/" data-i18n="navSearch">検索</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section roadmap-detail-page">
+      <nav class="breadcrumb" data-i18n-aria-label="breadcrumbs" aria-label="パンくずリスト"><a href="../../../">OpenFS</a><span>/</span><a href="../../../roadmaps/?v=281d046b5975fb0a2c5d88580028afdded4426db" data-i18n="navRoadmaps">ロードマップ</a><span>/</span><span id="roadmap-breadcrumb-title"></span></nav>
+      <section id="roadmap" class="memory-roadmap">
+        <header class="memory-roadmap-header">
+          <div>
+            <span class="eyebrow" data-i18n="roadmapKicker">根拠付き暫定ロードマップ</span>
+            <h2 id="roadmap-title"></h2>
+            <div id="roadmap-feedback" class="feedback-actions"></div>
+            <p id="roadmap-summary"></p>
+          </div>
+          <dl class="roadmap-status" data-i18n-aria-label="roadmapValidation" aria-label="ロードマップの検証状況">
+            <div><dt data-i18n="researchAsOf">調査基準日</dt><dd id="roadmap-as-of"></dd></div>
+            <div><dt data-i18n="horizonColumn">対象期間</dt><dd id="roadmap-horizon"></dd></div>
+            <div><dt data-i18n="researchStatus">調査状況</dt><dd id="roadmap-research-status"></dd></div>
+            <div><dt data-i18n="coverageStatus">調査範囲</dt><dd id="roadmap-coverage-status"></dd></div>
+            <div><dt data-i18n="consensusStatus">合意判定状況</dt><dd id="roadmap-consensus-status"></dd></div>
+            <div><dt data-i18n="sourceCoverage">一次情報の登録比率</dt><dd id="roadmap-source-coverage"></dd></div>
+            <div><dt data-i18n="updatedColumn">更新日時</dt><dd><a id="roadmap-updated" target="_blank" rel="noopener noreferrer"></a></dd></div>
+          </dl>
+        </header>
+        <section class="roadmap-related-topics">
+          <h3 data-i18n="relatedCatalogTopics">関連する調査カタログ項目</h3>
+          <ul id="roadmap-related-topics"></ul>
+        </section>
+        <div class="roadmap-toolbar">
+          <div id="roadmap-group-filter" class="segmented roadmap-filter" role="group" data-i18n-aria-label="roadmapFilter" aria-label="項目群で絞り込む"></div>
+          <div id="roadmap-legend" class="roadmap-legend" data-i18n-aria-label="outcomeLegend" aria-label="主要到達点の状況"></div>
+        </div>
+        <div id="roadmap-availability-control" class="roadmap-availability-control" hidden></div>
+        <div id="roadmap-timeline" class="roadmap-table-wrap"></div>
+        <p id="roadmap-table-note" class="roadmap-table-note" data-i18n="roadmapTableNote">項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。</p>
+        <section id="hpci-system-inventory-section" class="roadmap-supplement" hidden>
+          <span class="eyebrow" data-i18n="hpciInventoryKicker">HPCI公開資源台帳</span>
+          <h3 data-i18n="hpciInventoryTitle">HPCIシステム構成と令和8年度提供期間</h3>
+          <p id="hpci-inventory-scope"></p>
+          <dl id="hpci-inventory-meta" class="supplement-meta"></dl>
+          <div id="hpci-inventory-table" class="supplement-table-wrap"></div>
+          <section class="forecast-baseline-section">
+            <h4 id="hpci-demand-title"></h4>
+            <p id="hpci-demand-lead"></p>
+            <div id="hpci-demand-observations" class="supplement-table-wrap"></div>
+          </section>
+          <section class="forecast-baseline-section">
+            <h4 id="hpci-operational-title"></h4>
+            <p id="hpci-operational-lead"></p>
+            <div id="hpci-operational-observations" class="supplement-table-wrap"></div>
+            <div id="hpci-operational-data-products"></div>
+          </section>
+          <p id="hpci-inventory-semantics" class="supplement-notice"></p>
+          <p id="hpci-inventory-caveat" class="supplement-caveat"></p>
+          <div class="supplement-foot">
+            <div><h4 data-i18n="publicSources">公開根拠資料</h4><ul id="hpci-inventory-sources" class="source-list"></ul></div>
+            <div><h4 data-i18n="coverageGapsTitle">未確認事項</h4><ul id="hpci-inventory-gaps" class="roadmap-gap-list compact-gap-list"></ul></div>
+          </div>
+        </section>
+        <section id="application-performance-section" class="roadmap-supplement" hidden>
+          <span class="eyebrow" data-i18n="performanceForecastKicker">EEA1アプリケーションの暫定性能予測</span>
+          <h3 id="application-performance-title"></h3>
+          <p id="application-performance-summary"></p>
+          <dl id="application-performance-meta" class="supplement-meta"></dl>
+          <div class="performance-contract">
+            <h4 data-i18n="modelContractTitle">分析モデル</h4>
+            <p id="application-performance-equation"></p>
+            <div id="application-performance-policies" class="policy-tag-list"></div>
+          </div>
+          <section class="forecast-method-section">
+            <h4 data-i18n="forecastMethodTitle">予測方法と候補構成</h4>
+            <div id="application-performance-method" class="forecast-method"></div>
+          </section>
+          <section class="forecast-code-section">
+            <h4 data-i18n="codeAvailabilityTitle">公開コードと再現条件</h4>
+            <p data-i18n="codeAvailabilityLead">公開コードの有無と、EEA1評価を再現するために残る確認事項を区別して示します。</p>
+            <div id="application-code-availability" class="supplement-table-wrap"></div>
+          </section>
+          <section class="forecast-code-section">
+            <h4 data-i18n="baselinePackageTitle">富岳基準測定パッケージの準備状況</h4>
+            <p data-i18n="baselinePackageLead">コードや入力の固定候補と、EEA1入力との一致を区別します。固定候補だけでは測定パッケージの完成を意味しません。</p>
+            <div id="application-baseline-package-readiness" class="supplement-table-wrap"></div>
+          </section>
+          <section class="forecast-baseline-section">
+            <h4 data-i18n="baselineObservationsTitle">公開された富岳実測値</h4>
+            <div id="application-performance-baselines" class="supplement-table-wrap"></div>
+          </section>
+          <section class="forecast-baseline-section">
+            <h4 id="application-cross-platform-title"></h4>
+            <p id="application-cross-platform-lead"></p>
+            <div id="application-cross-platform-observations"></div>
+          </section>
+          <section class="forecast-baseline-section">
+            <h4 id="application-quantitative-requirements-title"></h4>
+            <p id="application-quantitative-requirements-lead"></p>
+            <div id="application-quantitative-requirements" class="supplement-table-wrap"></div>
+          </section>
+          <section class="forecast-acceptance-section">
+            <h4 id="application-acceptance-title"></h4>
+            <p id="application-acceptance-lead"></p>
+            <dl id="application-acceptance-protocol" class="supplement-meta"></dl>
+            <div id="application-acceptance-metrics" class="supplement-table-wrap"></div>
+            <div id="application-acceptance-criteria"></div>
+          </section>
+          <section class="benchmark-campaign-section">
+            <h4 id="application-benchmark-campaign-title"></h4>
+            <p id="application-benchmark-campaign-lead"></p>
+            <dl id="application-benchmark-campaign-meta" class="supplement-meta"></dl>
+            <div id="application-benchmark-campaign-stages" class="benchmark-campaign-grid"></div>
+            <h5 id="application-benchmark-scenario-title"></h5>
+            <div id="application-benchmark-scenario-bindings" class="benchmark-scenario-grid"></div>
+            <p id="application-benchmark-campaign-caveat" class="supplement-caveat"></p>
+          </section>
+          <section class="forecast-calibration-section">
+            <h4 data-i18n="calibrationCandidatesTitle">実測に基づく校正候補</h4>
+            <p data-i18n="calibrationCandidatesLead">正式な予測モデルへ昇格する前の検証可能な候補と、残る要件を示します。</p>
+            <div id="application-calibration-candidates"></div>
+          </section>
+          <section class="forecast-infrastructure-section">
+            <h4 id="application-infrastructure-title"></h4>
+            <p id="application-infrastructure-summary"></p>
+            <div id="application-infrastructure-matrix" class="supplement-table-wrap"></div>
+            <p id="application-infrastructure-caveat" class="supplement-caveat"></p>
+          </section>
+          <section class="forecast-baseline-section">
+            <h4 id="application-external-requirements-title"></h4>
+            <p id="application-external-requirements-lead"></p>
+            <div id="application-external-requirements"></div>
+          </section>
+          <section class="forecast-legacy-section">
+            <h4 data-i18n="legacyCalculationsTitle">従来の未校正what-if試算</h4>
+            <div id="application-performance-table" class="supplement-table-wrap"></div>
+          </section>
+          <p id="application-performance-flops" class="supplement-notice"></p>
+          <p id="application-performance-caveat" class="supplement-caveat"></p>
+          <div class="supplement-foot">
+            <div><h4 data-i18n="publicSources">公開根拠資料</h4><ul id="application-performance-sources" class="source-list"></ul></div>
+            <div><h4 data-i18n="coverageGapsTitle">未確認事項</h4><ul id="application-performance-gaps" class="roadmap-gap-list compact-gap-list"></ul></div>
+          </div>
+        </section>
+        <section class="roadmap-reference-section">
+          <span class="eyebrow" data-i18n="comparisonsKicker">技術選択の比較</span>
+          <h3 data-i18n="comparisonsTitle">関連技術の比較表</h3>
+          <p data-i18n="comparisonsLead">役割、利点、制約、適用先を共通の軸で比較します。</p>
+          <div id="roadmap-comparisons"></div>
+        </section>
+        <div class="memory-detail-heading">
+          <span class="eyebrow" data-i18n="trackNotesKicker">項目別の注記</span>
+          <h3 data-i18n="trackNotesTitle">最新状況とHPCIシステム整備への示唆</h3>
+        </div>
+        <div id="roadmap-track-details" class="memory-technology-details"></div>
+        <section class="roadmap-reference-section roadmap-glossary-section">
+          <span class="eyebrow" data-i18n="glossaryKicker">共通用語集</span>
+          <h3 data-i18n="glossaryTitle">このロードマップの用語</h3>
+          <p data-i18n="glossaryLead">用語を選択すると、一元管理された説明と根拠資料を表示します。</p>
+          <div id="roadmap-glossary" class="roadmap-glossary"></div>
+          <p class="roadmap-reference-revision"><span data-i18n="referenceRevision">共通データ更新</span>: <a id="roadmap-reference-updated" target="_blank" rel="noopener noreferrer"></a></p>
+        </section>
+        <section class="roadmap-dependencies-section">
+          <span class="eyebrow" data-i18n="dependenciesKicker">相互依存</span>
+          <h3 data-i18n="dependenciesTitle">他ロードマップとの依存関係</h3>
+          <div id="roadmap-dependencies" class="roadmap-dependencies"></div>
+        </section>
+        <aside class="roadmap-caveat">
+          <strong data-i18n="roadmapCaveat">公開時の注意事項</strong>
+          <p id="roadmap-caveat-text"></p>
+          <h3 data-i18n="coverageGapsTitle">未確認事項</h3>
+          <ul id="roadmap-gaps" class="roadmap-gap-list"></ul>
+        </aside>
+        <section class="roadmap-revision">
+          <span class="eyebrow" data-i18n="revisionKicker">来歴</span>
+          <h3 data-i18n="revisionTitle">更新履歴と再現情報</h3>
+          <dl class="revision-meta">
+            <div><dt data-i18n="artifactId">成果物ID</dt><dd id="roadmap-artifact-id"></dd></div>
+            <div><dt data-i18n="sourceCommit">生成元コミット</dt><dd><a id="roadmap-source-commit" target="_blank" rel="noopener noreferrer"></a></dd></div>
+            <div><dt data-i18n="updatedColumn">更新日時</dt><dd id="roadmap-revision-updated"></dd></div>
+          </dl>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>OpenFS</strong><span data-i18n="footerDescription">HPCI-CFSP 公開調査ビュー</span></div>
+    <div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a><span id="license-status"></span></div>
+  </footer>
+
+  <dialog id="roadmap-dialog" class="topic-dialog roadmap-dialog" aria-labelledby="roadmap-dialog-title">
+    <div class="topic-dialog-shell">
+      <header class="topic-dialog-header">
+        <div><span id="roadmap-dialog-id" class="eyebrow"></span><h2 id="roadmap-dialog-title"></h2><p id="roadmap-dialog-meta"></p></div>
+        <div class="dialog-actions">
+          <div class="language-switcher dialog-language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+            <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+            <button type="button" data-language="en" aria-pressed="false">English</button>
+          </div>
+          <button id="roadmap-dialog-close" class="dialog-close" type="button" data-i18n-aria-label="closeDialog" aria-label="詳細を閉じる">&times;</button>
+        </div>
+      </header>
+      <div id="roadmap-dialog-content" class="topic-dialog-content"></div>
+    </div>
+  </dialog>
+  <dialog id="roadmap-term-dialog" class="topic-dialog roadmap-dialog" aria-labelledby="roadmap-term-dialog-title">
+    <div class="topic-dialog-shell">
+      <header class="topic-dialog-header">
+        <div><span id="roadmap-term-dialog-id" class="eyebrow"></span><h2 id="roadmap-term-dialog-title"></h2><p id="roadmap-term-dialog-meta"></p></div>
+        <div class="dialog-actions">
+          <div class="language-switcher dialog-language-switcher" role="group" data-i18n-aria-label="languageControl" aria-label="表示言語">
+            <button type="button" data-language="ja" aria-pressed="true">日本語</button>
+            <button type="button" data-language="en" aria-pressed="false">English</button>
+          </div>
+          <button id="roadmap-term-dialog-close" class="dialog-close" type="button" data-i18n-aria-label="closeDialog" aria-label="詳細を閉じる">&times;</button>
+        </div>
+      </header>
+      <div id="roadmap-term-dialog-content" class="topic-dialog-content"></div>
+    </div>
+  </dialog>
+  <script src="../../../data/openfs-public.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../../feedback.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../../roadmaps.js?v=281d046b5975fb0a2c5d88580028afdded4426db"></script>
+  <script src="../../../analytics.js?v=281d046b5975fb0a2c5d88580028afdded4426db" data-status="enabled" data-measurement-id="G-7JB5N480MT" data-production-hostname="hpci-cfsp.github.io" data-production-path-prefix="/OpenFS/" data-storage-key="openfs-analytics-consent-v1" data-privacy-path="../../../privacy/" data-root-prefix="../../../"></script>
+</body>
+</html>
