@@ -53524,6 +53524,154 @@
           }
         ]
       }
+    },
+    {
+      "topic_id": "CROSS-19",
+      "summary_ja": "認可された実運用データを月次・匿名集計し、ソフトウェアとアプリケーションの観測、ジョブ規模、性能・施設条件を次期システム要件へ結び付ける暫定分析です。公開値には開示制御を適用し、未観測を利用ゼロとみなしません。単一のAIモデルによる分析でConsensusは未完了です。",
+      "summary_en": "This provisional analysis aggregates authorized operational data monthly under privacy controls and links observed software, application signals, job scale, performance, and facility conditions to future-system requirements. Unobserved activity is not treated as zero use. The analysis is single-model and Consensus is incomplete.",
+      "sections": [
+        {
+          "section_id": "TDS-OPS-CROSS-19-U01",
+          "title_ja": "月次の実運用観測と要件化",
+          "title_en": "Monthly operational observations and requirements",
+          "summary_ja": "詳細な数値と月次推移は、開示制御済みの専用分析ページを正本として参照します。",
+          "summary_en": "The disclosure-controlled analysis page is authoritative for detailed values and monthly trends.",
+          "items": [
+            {
+              "item_id": "TDI-OPS-DISCLOSURE-CONTROLLED-ANALYSIS",
+              "name_ja": "実運用データに基づく公開分析",
+              "name_en": "Published analysis based on operational data",
+              "stage": "current",
+              "maturity": "prototype",
+              "timing_ja": "2026年9月10日時点の暫定実装",
+              "timing_en": "Provisional implementation as of September 10, 2026",
+              "statement_ja": "月次のジョブ母集団、共有ライブラリ、パッケージ・ISV情報、ジョブ規模、性能カウンタ、ストレージ、施設、RASを、個人・課題・ジョブを識別しない集計として扱います。公開ページでは小規模セルを抑制し、値を丸め、元DBの構造や行単位データを掲載しません。",
+              "statement_en": "Monthly job populations, shared libraries, package and ISV metadata, job scale, performance counters, storage, facility, and RAS are handled as aggregates without person, project, or job identification. The public page suppresses small cells, rounds released values, and excludes source-database structure and row-level data.",
+              "hpci_relevance_ja": "現在の利用規模だけでなく月次変化も追跡し、移植試験、ソフトウェア整備、資源構成、施設条件の優先順位を検討するための一つの根拠とします。単一センターの観測だけでHPCI全体の優先順位は決定しません。",
+              "hpci_relevance_en": "Monthly change as well as current scale informs candidate priorities for migration tests, software support, resource mix, and facility constraints. Observations from one center do not determine HPCI-wide priorities.",
+              "adoption_conditions_ja": [
+                "観測期間、対応率、欠損期間を数値と同時に確認する。",
+                "共有ライブラリ名をアプリケーション実行や特定ルーチンの呼出しと同一視しない。",
+                "他センター、利用者需要、公開ベンチマークによる独立した根拠と照合する。"
+              ],
+              "adoption_conditions_en": [
+                "Review observation periods, mapping coverage, and temporal gaps with every result.",
+                "Do not equate a shared-library name with application execution or a specific routine call.",
+                "Compare with independent evidence from other centers, user demand, and public benchmarks."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OPS001"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-OPS-COVERAGE-AND-COMPARABILITY-GAPS",
+              "name_ja": "観測範囲・単位・センター比較の未確認事項",
+              "name_en": "Unresolved coverage, unit, and cross-center comparability",
+              "stage": "contested",
+              "maturity": "uncertain",
+              "timing_ja": "解消時期未定",
+              "timing_en": "Resolution timing not established",
+              "statement_ja": "実行ファイル対応期間の欠損、静的リンク・実行時ロード・コンテナの未観測、性能・施設指標の単位、富岳以外との比較は未完了です。これらを推測で補わず、対応率と未確認事項を数値とともに表示します。",
+              "statement_en": "Gaps in executable-mapping periods, unobserved static links, runtime loading and containers, performance and facility units, and comparison beyond Fugaku remain unresolved. They are not inferred away; coverage and unresolved conditions accompany the released values.",
+              "hpci_relevance_ja": "観測範囲を超える一般化を避け、複数センターと公開ベンチマークを加えたときに初めてHPCI全体の整備優先度へ利用します。",
+              "hpci_relevance_en": "Avoid generalizing beyond observation scope; use the result for HPCI-wide priorities only after adding multiple centers and public benchmark evidence.",
+              "adoption_conditions_ja": [
+                "指標の単位、対象範囲、時刻基準を運用担当者と確認する。",
+                "理究等を追加する場合も同じ月次粒度と開示制御を維持する。",
+                "独立したモデルと根拠によるConsensus Gateを通過する。"
+              ],
+              "adoption_conditions_en": [
+                "Confirm units, scope, and time bases with operational owners.",
+                "Preserve the same monthly grain and disclosure controls when adding systems such as Rikyu.",
+                "Pass the Consensus Gate using independent models and evidence."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-OPS001"
+              ],
+              "confidence": "low",
+              "consensus_status": "incomplete"
+            }
+          ]
+        }
+      ],
+      "hpci_decision_dimensions": [
+        {
+          "dimension_id": "DIM-OPS-COVERAGE",
+          "label_ja": "観測範囲と代表性",
+          "label_en": "Observation coverage and representativeness",
+          "question_ja": "観測期間、対応率、未観測方式、センター範囲は判断対象を十分に代表しているか。",
+          "question_en": "Do the period, mapping coverage, unobserved mechanisms, and center scope adequately represent the decision population?"
+        },
+        {
+          "dimension_id": "DIM-OPS-TREND",
+          "label_ja": "利用規模と変化",
+          "label_en": "Use scale and change",
+          "question_ja": "現在の上位項目、増加項目、減少項目を同じ母数と期間で比較できるか。",
+          "question_en": "Can leading, expanding, and declining observations be compared under a common denominator and period?"
+        },
+        {
+          "dimension_id": "DIM-OPS-REQUIREMENT",
+          "label_ja": "要件への変換",
+          "label_en": "Translation into requirements",
+          "question_ja": "観測事実と設計判断を分離し、性能、容量、移植、施設の定量要件へ変換できるか。",
+          "question_en": "Can observations be separated from design decisions and translated into quantitative performance, capacity, migration, and facility requirements?"
+        }
+      ],
+      "archived_section_ids": [],
+      "related_surface_ids": [],
+      "coverage_gap_ids": [
+        "GAP-TDS-092",
+        "GAP-TDS-093",
+        "GAP-TDS-094"
+      ],
+      "page_layout": {
+        "layout_version": "1.0",
+        "layout_mode": "generated",
+        "components": [
+          {
+            "component_id": "TPC-CROSS19-OVERVIEW",
+            "type": "topic-overview"
+          },
+          {
+            "component_id": "TPC-CROSS19-UNIT-INDEX",
+            "type": "research-unit-index"
+          },
+          {
+            "component_id": "TPC-CROSS19-COMPARISONS",
+            "type": "topic-comparisons"
+          },
+          {
+            "component_id": "TPC-CROSS19-U01",
+            "type": "research-unit",
+            "unit_id": "CROSS-19-U01",
+            "section_ids": [
+              "TDS-OPS-CROSS-19-U01"
+            ],
+            "comparison_refs": [],
+            "term_item_refs": [],
+            "roadmap_ids": [
+              "RM-SSW-PERFORMANCE"
+            ]
+          },
+          {
+            "component_id": "TPC-CROSS19-GAPS",
+            "type": "coverage-gaps"
+          },
+          {
+            "component_id": "TPC-CROSS19-HISTORY",
+            "type": "research-history",
+            "open_by_default": false
+          },
+          {
+            "component_id": "TPC-CROSS19-RELATED",
+            "type": "related-topics"
+          }
+        ]
+      }
     }
   ],
   "presentation_overrides": {
@@ -64562,6 +64710,14 @@
       "url": "https://github.com/google-deepmind/weathernext/blob/main/README.md",
       "source_class": "official-vendor",
       "published_or_updated": "checked 2026-09-02"
+    },
+    {
+      "source_id": "SRC-OPS001",
+      "title": "OpenFS Operational Workload and System Requirements Analysis",
+      "publisher": "OpenFS",
+      "url": "https://hpci-cfsp.github.io/OpenFS/analytics/operational-workloads/",
+      "source_class": "research-artifact",
+      "published_or_updated": "provisional release prepared 2026-09-10"
     }
   ],
   "coverage_gaps": [
@@ -65690,6 +65846,42 @@
       "question_en": "Can Japanese-origin technologies be compared with international alternatives under matched performance, supply, support and total-cost conditions?",
       "next_action_ja": "共通ワークロードの試験、実納入・利用実績、保守契約、工程別依存を追加し、試作・予告と一般提供を区別する。",
       "next_action_en": "Add common-workload tests, actual delivery/use, support contracts and process dependencies, distinguishing prototypes/announcements from general access.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-092",
+      "topic_ids": [
+        "CROSS-19"
+      ],
+      "priority": "P0",
+      "question_ja": "実行ファイルとライブラリの対応期間、静的リンク、実行時ロード、コンテナを含む観測範囲を定量化できるか。",
+      "question_en": "Can observation coverage be quantified across executable mapping periods, static linking, runtime loading, and containers?",
+      "next_action_ja": "観測方式別の対応率と期間を検証し、未観測月を利用ゼロとして扱わない継続集計を行う。",
+      "next_action_en": "Validate coverage and periods by observation method and continue aggregation without treating unobserved months as zero use.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-093",
+      "topic_ids": [
+        "CROSS-19"
+      ],
+      "priority": "P0",
+      "question_ja": "性能、ストレージ、電力・冷却、RAS指標の単位と対象範囲を確認し、定量的な設備・性能要件へ変換できるか。",
+      "question_en": "Can units and scope for performance, storage, power/cooling, and RAS metrics be verified and translated into quantitative facility and performance requirements?",
+      "next_action_ja": "データ辞書と運用担当者の確認を得て、測定境界、欠損、集約方法を固定した後に数値を公開する。",
+      "next_action_en": "Confirm the data dictionary and operational interpretation, then publish values only after measurement boundaries, missingness, and aggregation are fixed.",
+      "status": "open"
+    },
+    {
+      "gap_id": "GAP-TDS-094",
+      "topic_ids": [
+        "CROSS-19"
+      ],
+      "priority": "P0",
+      "question_ja": "富岳の単一環境から得た傾向を、他のHPCIセンターと将来の理究データで比較可能にできるか。",
+      "question_en": "Can trends from one Fugaku environment be made comparable with other HPCI centers and future Rikyu data?",
+      "next_action_ja": "同じ公開契約と月次粒度を維持するシステム別アダプタを追加し、センター差を失わない比較方法を検証する。",
+      "next_action_en": "Add system-specific adapters that preserve the same disclosure contract and monthly grain, then validate comparisons without erasing center differences.",
       "status": "open"
     }
   ],

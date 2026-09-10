@@ -10,6 +10,13 @@ the unresolved state to `GAP-BLUE-001` and `GAP-BLUE-003`.
 
 Each summary must retain its research, coverage, and Consensus status. Source links must be public, and publication requires a matching `publication-approval` Directive.
 
+`operational-workload-analytics.json` is the disclosure-controlled projection
+of private monthly operational aggregates. It releases only cells meeting the
+approved threshold and rounding rules, contains no row-level records or direct
+identifiers, and keeps software observations, application signals, performance
+coverage, infrastructure availability, and candidate system requirements in
+six separate sections. A missing observation is never presented as zero use.
+
 `gpu-planner-publication.json` is the public publication manifest for the
 GPU-centric AI for Science configuration-planning Candidate. It does not promote
 the underlying proposals or create an accepted system plan. Instead, it pins the

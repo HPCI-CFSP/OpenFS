@@ -11,7 +11,7 @@
     ja: {
       scopeTitle: "調査項目", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照", researchUnit: "調査", researchDetails: "詳しい調査結果", topicOverview: "調査結果の概要", unitRoadmaps: "対応するロードマップ", stageCurrentBadge: "実用化・市場導入済み", stageNearTermBadge: "導入初期・近い将来", stageResearchBadge: "中長期の研究開発候補", stageContestedBadge: "見解不一致・未確定",
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
-      navOverview: "概要", navCatalog: "調査カタログ", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
       aboutKicker: "OpenFSについて",
       aboutLead: "OpenFSは、将来の計算・データ基盤の整備計画を検討するため、計算機アーキテクチャ、メモリ、ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠をたどれる技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、各情報の更新日と確認状況、合意判定の状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の進捗状況",
@@ -56,7 +56,7 @@
     en: {
       scopeTitle: "Research topics", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence", researchUnit: "Study", researchDetails: "Detailed findings", topicOverview: "Research summary", unitRoadmaps: "Related roadmaps", stageCurrentBadge: "Deployed or commercially available", stageNearTermBadge: "Early adoption or near-term direction", stageResearchBadge: "Mid- to long-term R&D candidate", stageContestedBadge: "Contested or unresolved",
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
-      navOverview: "Overview", navCatalog: "Research catalog", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
       aboutKicker: "ABOUT OPENFS",
       aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory, networks, system software, and applications. It publishes traceable technology assessments, roadmaps, and system planning options while clearly identifying unresolved questions, the date and verification status of each item, and its Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
@@ -1580,7 +1580,22 @@
     root.replaceChildren();
     const summaries = summariesForTopic(topic.topic_id);
     const profile = decisionProfileForTopic(topic.topic_id);
-    if (!summaries.length && !profile) {
+    if (topic.topic_id === "CROSS-19") {
+      const entry = document.createElement("section");
+      entry.className = "planner-publication-entry operational-catalog-entry";
+      const body = document.createElement("div");
+      const title = document.createElement("h3");
+      title.textContent = language === "ja" ? "実運用分析の公開結果" : "Published operational analysis";
+      const lead = document.createElement("p");
+      lead.textContent = language === "ja" ? "データ範囲、ソフトウェア、アプリケーション、性能、施設条件、次期システム要件の6章を表示します。" : "Open the six sections covering data scope, software, applications, performance, infrastructure, and future-system requirements.";
+      body.append(title, lead);
+      const link = document.createElement("a");
+      link.href = `analytics/operational-workloads/?lang=${language}`;
+      link.textContent = language === "ja" ? "分析結果を開く" : "Open analysis";
+      entry.append(body, link);
+      root.append(entry);
+    }
+    if (!summaries.length && !profile && topic.topic_id !== "CROSS-19") {
       const empty = document.createElement("div");
       empty.className = "dialog-empty";
       const title = document.createElement("strong");
