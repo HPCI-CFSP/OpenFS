@@ -39,6 +39,7 @@ PRIVATE_TOP_LEVEL = {
     "tools",
 }
 PRIVATE_REPOSITORY_MARKER = b"github.com/" + b"HPCI-CFSP/" + b"OpenFS" + b"-Control"
+LOCAL_PATH_MARKERS = (b"/Users/", b"C:\\Users\\")
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -77,6 +78,11 @@ def files_under_public_roots() -> set[str]:
 
 
 def verify() -> None:
+    manifest_payload = MANIFEST_PATH.read_bytes()
+    if PRIVATE_REPOSITORY_MARKER in manifest_payload:
+        fail("private repository URL found in publication manifest")
+    if any(marker in manifest_payload for marker in LOCAL_PATH_MARKERS):
+        fail("local filesystem path found in publication manifest")
     manifest = load_manifest()
     if manifest.get("information_classification") != "public":
         fail("manifest classification must be public")
