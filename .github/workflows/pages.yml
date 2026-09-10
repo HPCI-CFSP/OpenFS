@@ -4,59 +4,14 @@ on:
   push:
     branches: [main]
     paths:
+      - ".github/verify_publication.py"
       - ".github/workflows/pages.yml"
-      - "site/**"
-      - "proposals/reference-architectures/**"
-      - "proposals/gpu-product-catalogs/**"
-      - "proposals/procurement-availability/**"
-      - "proposals/planning-requests/**"
+      - "PUBLICATION_MANIFEST.json"
       - "assets/branding/**"
-      - "config/publication-policy.json"
-      - "config/publication-i18n.json"
-      - "config/public-analytics.json"
-      - "config/catalog-taxonomy.json"
-      - "config/budget-planning.json"
-      - "config/research-baseline.json"
-      - "config/global-technology-scope.json"
-      - "roadmaps/scenarios/accepted/**"
-      - "reports/exports/**"
-      - "reviews/directives/**"
       - "knowledge/public/**"
-      - "schemas/public-hpci-system-inventory.schema.json"
-      - "schemas/public-application-performance-forecast.schema.json"
-      - "schemas/planning-evidence-readiness.schema.json"
-      - "schemas/gpu-planner-publication.schema.json"
-      - "schemas/fs3-decision-evidence.schema.json"
-      - "tools/build_pages_site.py"
-      - "tools/build_fs3_decision_evidence.py"
-      - "tools/roadmap_timing.py"
-      - "schemas/public-roadmap.schema.json"
-      - "schemas/public-analytics.schema.json"
-      - "docs/publication/analytics.md"
-      - "tests/analytics_ui.test.cjs"
-      - "tests/test_analytics_ui.py"
-      - "tools/check_conference_coverage.py"
-      - "schemas/conference-coverage.schema.json"
-      - "tests/test_conference_coverage.py"
-      - "tests/test_conference_ui.js"
-      - "tools/check_public_planning_surfaces.py"
-      - "tools/check_procurement_costs.py"
-      - "tools/estimate_system_cost.py"
-      - "schemas/budget-planning.schema.json"
-      - "schemas/procurement-cost-register.schema.json"
-      - "schemas/system-scenario.schema.json"
-      - "tests/test_procurement_costs.py"
-      - "tests/test_budget_ui.js"
-      - "tests/test_planning_ui.js"
-      - "tests/test_public_planning_surfaces.py"
-      - "tests/test_gpu_centric_planner.py"
-      - "tests/gpu_planner_engine.test.cjs"
-      - "tests/gpu_planner_parity.cjs"
-      - "tests/test_fs3_decision_evidence.py"
-      - "requirements-validation.txt"
-      - "LICENSE"
-      - "NOTICE"
-      - "THIRD_PARTY_NOTICES.md"
+      - "public-site/**"
+      - "reports/exports/**"
+      - "roadmaps/scenarios/accepted/**"
   workflow_dispatch:
 
 permissions:
@@ -74,28 +29,18 @@ jobs:
       contents: read
       pages: write
     steps:
-      - name: Check out repository
+      - name: Check out publication repository
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
-          fetch-depth: 0
-      - name: Validate public inputs
-        run: |
-          python3 tools/validate_repository.py
-          python3 tools/check_public_planning_surfaces.py
-      - name: Install pinned contract validators
-        run: |
-          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
-      - name: Run unit tests
-        run: python3 -m unittest discover -s tests -v
-      - name: Build static site
-        run: python3 tools/build_pages_site.py --output _site
+      - name: Verify publication bundle
+        run: python3 .github/verify_publication.py
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: _site
+          path: public-site
 
   deploy:
     if: github.event_name == 'workflow_dispatch' || vars.OPENFS_PAGES_ENABLED == 'true'

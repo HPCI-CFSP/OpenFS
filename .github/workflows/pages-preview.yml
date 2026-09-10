@@ -1,63 +1,16 @@
-name: Build OpenFS Pages Preview
+name: Verify OpenFS Pages Preview
 
 on:
   pull_request:
     paths:
+      - ".github/verify_publication.py"
       - ".github/workflows/pages-preview.yml"
-      - "site/**"
-      - "proposals/system-planning-policies/**"
-      - "proposals/reference-architectures/**"
-      - "proposals/gpu-product-catalogs/**"
-      - "proposals/procurement-availability/**"
-      - "proposals/planning-requests/**"
-      - "proposals/configuration-results/**"
+      - "PUBLICATION_MANIFEST.json"
       - "assets/branding/**"
-      - "config/publication-policy.json"
-      - "config/publication-i18n.json"
-      - "config/public-analytics.json"
-      - "config/catalog-taxonomy.json"
-      - "config/budget-planning.json"
-      - "config/research-baseline.json"
-      - "config/global-technology-scope.json"
-      - "roadmaps/scenarios/accepted/**"
-      - "reports/exports/**"
-      - "reviews/directives/**"
       - "knowledge/public/**"
-      - "schemas/public-hpci-system-inventory.schema.json"
-      - "schemas/public-application-performance-forecast.schema.json"
-      - "schemas/planning-evidence-readiness.schema.json"
-      - "schemas/gpu-planner-publication.schema.json"
-      - "tools/build_pages_site.py"
-      - "tools/roadmap_timing.py"
-      - "schemas/public-roadmap.schema.json"
-      - "schemas/public-analytics.schema.json"
-      - "docs/publication/analytics.md"
-      - "tests/analytics_ui.test.cjs"
-      - "tests/test_analytics_ui.py"
-      - "tools/check_conference_coverage.py"
-      - "schemas/conference-coverage.schema.json"
-      - "tests/test_conference_coverage.py"
-      - "tests/test_conference_ui.js"
-      - "tools/check_public_planning_surfaces.py"
-      - "tools/check_procurement_costs.py"
-      - "tools/estimate_system_cost.py"
-      - "schemas/budget-planning.schema.json"
-      - "schemas/procurement-cost-register.schema.json"
-      - "schemas/system-scenario.schema.json"
-      - "tools/validate_repository.py"
-      - "tests/test_pages_site.py"
-      - "tests/test_gpu_centric_planner.py"
-      - "tests/gpu_planner_engine.test.cjs"
-      - "tests/gpu_planner_parity.cjs"
-      - "tests/fixtures/gpu-planner-priced-components.json"
-      - "tests/test_public_planning_surfaces.py"
-      - "tests/test_procurement_costs.py"
-      - "tests/test_budget_ui.js"
-      - "tests/test_planning_ui.js"
-      - "requirements-validation.txt"
-      - "LICENSE"
-      - "NOTICE"
-      - "THIRD_PARTY_NOTICES.md"
+      - "public-site/**"
+      - "reports/exports/**"
+      - "roadmaps/scenarios/accepted/**"
 
 permissions:
   contents: read
@@ -67,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-preview:
+  verify-preview:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
@@ -75,37 +28,12 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
-          fetch-depth: 0
-      - name: Validate public inputs
-        run: |
-          python3 tools/validate_repository.py
-          python3 tools/check_public_planning_surfaces.py
-      - name: Install pinned contract validators
-        run: |
-          python3 -m pip install --only-binary=:all: --requirement requirements-validation.txt
-      - name: Run Pages tests
-        run: python3 -m unittest tests.test_pages_site tests.test_analytics_ui tests.test_gpu_centric_planner -v
-      - name: Build static preview
-        run: python3 tools/build_pages_site.py --output _site
-      - name: Add preview instructions
-        run: |
-          cat > _site/OPEN_PREVIEW.txt <<'EOF'
-          OpenFS Pages pull-request preview
-
-          1. Extract this artifact.
-          2. Open index.html in a browser, or run:
-             python3 -m http.server 8000 --directory .
-          3. Visit http://localhost:8000/.
-          4. Open the GPU planner Candidate proposed for production publication at:
-             http://localhost:8000/candidate/gpu-centric-ai4s/
-
-          This PR artifact is not deployed and cannot modify the production Pages site.
-          The Candidate route contains no GA4 loader and must not be used for procurement.
-          EOF
-      - name: Upload preview artifact
+      - name: Verify publication bundle
+        run: python3 .github/verify_publication.py
+      - name: Upload reviewable Pages preview
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: openfs-pages-preview-pr-${{ github.event.pull_request.number }}
-          path: _site
+          path: public-site
           if-no-files-found: error
           retention-days: 14
