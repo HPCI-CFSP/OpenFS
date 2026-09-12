@@ -11,8 +11,12 @@
       footer: "HPCI-CFSP 公開調査ビュー", navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語", navSearch: "検索",
       inputTitle: "1. 公開調査入力", inputText: "Pages生成に使用した公開情報側の入力版です。",
       controlTitle: "2. Control生成", controlText: "検証とサイト生成を行った非公開Controlの版です。リポジトリURLは公開しません。",
-      publicTitle: "3. 公開リポジトリ", publicText: "現在のPages成果物を格納し、デプロイを起動した公開コミットです。",
-      deployTitle: "4. Pagesデプロイ", deployText: "公開コミットを配信したGitHub Actions実行です。ページが表示されている場合、この成果物の配信は完了しています。",
+      publicTitle: "3. 公開リポジトリ", publicText: "この成果物のPages配信元として指定された公開コミットです。",
+      deployTitle: "4. Pagesデプロイ", deployText: "この公開コミットのPages配信に対応するActions実行です。配信の成否はリンク先の実行結果で確認してください。",
+      previewPublicText: "PRプレビューの生成元コミットです。mainへの取り込みや本番公開を示すものではありません。",
+      previewTitle: "4. PRプレビュー", previewText: "レビュー用プレビュー成果物を生成したActions実行です。本番Pagesへのデプロイではありません。",
+      pendingPublicText: "公開コミットと配信状態の対応をまだ確認できません。",
+      pendingTitle: "4. 配信状態未確認", pendingText: "本番配信またはPRプレビューに対応する来歴が未確認です。ページが表示されることだけでは本番公開の根拠になりません。",
       commit: "コミット", workflow: "Actions実行", pending: "プレビューまたは未デプロイ", privateCommit: "非公開Controlのコミット（リンクなし）", bundleTitle: "公開バンドル", bundleId: "バンドルID", generatedAt: "生成日時", manifest: "公開マニフェスト", viewManifest: "マニフェストを表示", unavailable: "未記録"
     },
     en: {
@@ -23,8 +27,12 @@
       footer: "HPCI-CFSP public research view", navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary", navSearch: "Search",
       inputTitle: "1. Public research input", inputText: "The public-information revision used as the input to Pages generation.",
       controlTitle: "2. Control generation", controlText: "The private Control revision that validated inputs and generated the site. Its repository URL is not disclosed.",
-      publicTitle: "3. Public repository", publicText: "The public commit containing the Pages artifact and triggering deployment.",
-      deployTitle: "4. Pages deployment", deployText: "The GitHub Actions run that delivered the public commit. If this page is being served, delivery of this artifact completed.",
+      publicTitle: "3. Public repository", publicText: "The public commit selected as the source of this Pages publication artifact.",
+      deployTitle: "4. Pages deployment", deployText: "The Actions run associated with Pages publication of this source commit. Check the linked run for the deployment outcome.",
+      previewPublicText: "The source commit for a PR preview. This does not establish a merge into main or production publication.",
+      previewTitle: "4. PR preview", previewText: "The Actions run that generated a review preview artifact. This is not a production Pages deployment.",
+      pendingPublicText: "The relationship between the public commit and publication state is not yet verified.",
+      pendingTitle: "4. Publication state unverified", pendingText: "Provenance for production publication or a PR preview is unverified. Displaying this page alone does not establish production publication.",
       commit: "Commit", workflow: "Actions run", pending: "Preview or not yet deployed", privateCommit: "Private Control commit (no link)", bundleTitle: "Publication bundle", bundleId: "Bundle ID", generatedAt: "Generated", manifest: "Public manifest", viewManifest: "View manifest", unavailable: "Not recorded"
     }
   };
@@ -64,12 +72,19 @@
     const control = payload?.control_generation || {};
     const publicRepository = payload?.public_repository || {};
     const deployment = payload?.pages_deployment || {};
+    const preview = publicRepository.status === "preview-source" || deployment.status === "preview-artifact";
+    const production = publicRepository.status === "published-source"
+      && deployment.status === "serving-this-artifact" && publicRepository.commit
+      && publicRepository.commit === deployment.source_commit && deployment.workflow_run_id;
+    const publicText = preview ? "previewPublicText" : production ? "publicText" : "pendingPublicText";
+    const deployTitle = preview ? "previewTitle" : production ? "deployTitle" : "pendingTitle";
+    const deployText = preview ? "previewText" : production ? "deployText" : "pendingText";
     const stages = document.getElementById("provenance-stages");
     stages.replaceChildren(
       stage(text("inputTitle"), text("inputText"), input.commit, input.commit_url, text("commit")),
       stage(text("controlTitle"), text("controlText"), control.commit ? `${control.commit} · ${text("privateCommit")}` : null, null, text("commit")),
-      stage(text("publicTitle"), text("publicText"), publicRepository.commit || text("pending"), publicRepository.commit_url, text("commit")),
-      stage(text("deployTitle"), text("deployText"), deployment.workflow_run_id ? `#${deployment.workflow_run_id}` : text("pending"), deployment.workflow_run_url, text("workflow"))
+      stage(text("publicTitle"), text(publicText), publicRepository.commit || text("pending"), publicRepository.commit_url, text("commit")),
+      stage(text(deployTitle), text(deployText), deployment.workflow_run_id ? `#${deployment.workflow_run_id}` : text("pending"), deployment.workflow_run_url, text("workflow"))
     );
     const metadata = document.getElementById("bundle-metadata");
     metadata.replaceChildren();
