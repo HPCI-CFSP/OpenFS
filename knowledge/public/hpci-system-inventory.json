@@ -2,7 +2,7 @@
   "schema_version": "0.4.0",
   "export_id": "HPCI-SYSTEM-INVENTORY-001",
   "status": "published",
-  "as_of": "2026-09-06",
+  "as_of": "2026-09-12",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "scope_ja": "HPCIの令和8年度課題募集で公開された計算資源を、提供機関、アーキテクチャ、主要仕様、申請・利用対象期間の観点から比較する公開情報台帳です。",
@@ -2297,17 +2297,41 @@
       "period_end": "2025-03-04",
       "value": {
         "kind": "exact",
-        "value": 611,
+        "value": 626,
         "lower": null,
         "upper": null,
         "unit": "minutes"
       },
-      "basis_ja": "2025年3月4日10時19分から20時30分までの電源障害に伴うABCI全系停止時間です。復旧後もABCI 3.0は翌日14時42分まで219/766ノードに制限されましたが、その縮退期間は停止時間へ加算していません。",
-      "basis_en": "ABCI-wide downtime caused by a power failure from 10:19 to 20:30 on March 4, 2025. ABCI 3.0 then remained degraded at 219 of 766 nodes until 14:42 the next day; that degraded period is not added to the downtime value.",
+      "basis_ja": "2025年3月4日10時19分から20時45分までのABCI 3.0全停止、626分。20時30分に復旧したのはABCI 2.0のみです。その後のABCI 3.0の219/766ノードでの縮退運転は別期間として扱います。2026年9月12日に公式停止履歴で訂正確認しました。",
+      "basis_en": "ABCI 3.0 was fully stopped for 626 minutes, from 10:19 to 20:45 on March 4, 2025. The 20:30 recovery applied only to ABCI 2.0. Subsequent operation with 219/766 nodes is a separate degraded period. Corrected against official outage history on September 12, 2026.",
       "comparability": "period-specific",
       "source_ids": [
         "SRC-HPCI-SYS021"
       ]
+    },
+    {
+      "observation_id": "OP-HPCI-ABCI3-RACK-COOLING-CAPACITY",
+      "system_ids": ["HPCI-SYS-ABCI3"],
+      "metric": "rack-cooling-capacity",
+      "period_start": null,
+      "period_end": null,
+      "value": {"kind": "exact", "value": 70, "lower": null, "upper": null, "unit": "kW/rack"},
+      "basis_ja": "ABCI施設紹介で公表されたクーリングポッドのラックあたり冷却能力です。IT消費電力の実測値でも、新設ラックの利用可能な空き容量でもありません。施設全体の電力容量5.2 MWとは対象範囲が異なり、ラック数を掛けた値で置き換えません。2026年9月12日確認。",
+      "basis_en": "Published cooling-pod capacity per rack, not measured IT power or spare capacity for a new rack. Its boundary differs from the facility's 5.2 MW power capacity; multiplying by rack count cannot replace that limit. Checked September 12, 2026.",
+      "comparability": "system-specific",
+      "source_ids": ["SRC-HPCI-SYS037"]
+    },
+    {
+      "observation_id": "OP-HPCI-ABCI3-SCHEDULED-MAINT-202608",
+      "system_ids": ["HPCI-SYS-ABCI3"],
+      "metric": "scheduled-maintenance",
+      "period_start": "2026-08-21",
+      "period_end": "2026-08-28",
+      "value": {"kind": "exact", "value": 171, "lower": null, "upper": null, "unit": "hours"},
+      "basis_ja": "2026年8月21日10:00から28日13:00までの全サービス保守停止。電源・冷却設備点検とシステム保守を含みます。提供機関の日本国内時刻として差分を算出しました。年間停止時間や年間可用性ではありません。",
+      "basis_en": "Full-service maintenance from August 21, 2026 at 10:00 to August 28 at 13:00, including power/cooling inspections and system maintenance. Duration uses the provider's local Japan times; it is not annual downtime or availability.",
+      "comparability": "period-specific",
+      "source_ids": ["SRC-HPCI-SYS021"]
     },
     {
       "observation_id": "OP-HPCI-FUGAKU-UTILIZATION-FY2024",

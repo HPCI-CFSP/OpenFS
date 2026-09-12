@@ -120,8 +120,40 @@
     document.getElementById("report-caveat").textContent = local(report, "caveat");
     const updated = document.getElementById("site-updated"); updated.href = data.site.commit_url; updated.textContent = `${tr("siteUpdated")} ${formatJst(data.site.updated_at)} · ${data.site.commit_sha.slice(0, 7)}`;
     document.getElementById("license-status").textContent = `${data.publication.license} · ${tr("publicOnly")}`;
-    renderCoverage(); renderClaims(); renderMatrix();
+    renderCoverage(); renderClaims(); renderMatrix(); renderOperationalRequirements();
     const url = new URL(window.location.href); url.searchParams.set("lang", language); window.history.replaceState(null, "", url);
+  }
+
+  function renderOperationalRequirements() {
+    const analytics = data.operational_analytics;
+    const section = analytics?.sections.find((item) => item.section_id === "system-requirements");
+    document.getElementById("operational-requirements-title").textContent = language === "ja"
+      ? "実運用統計から導く検証要件" : "Validation requirements from operational evidence";
+    document.getElementById("operational-requirements-lead").textContent = language === "ja"
+      ? "公開承認済みの集計を再利用します。富岳の観測をHPCI全体の需要に置き換えず、仮説・評価項目・確定条件を区別します。調達仕様として承認済みの要件ではありません。"
+      : "Reuses disclosure-approved aggregates. Fugaku observations are not a substitute for HPCI-wide demand. Hypotheses, evaluation actions, and validation gates remain distinct; these are not approved procurement requirements.";
+    const wrap = document.getElementById("report-operational-requirements");
+    wrap.replaceChildren();
+    if (!section) {
+      wrap.textContent = language === "ja" ? "公開承認済みの集計は未取得です。" : "No disclosure-approved aggregates are available.";
+      return;
+    }
+    const table = element("table", undefined, "report-claim-table");
+    const head = element("thead"); const headRow = element("tr");
+    (language === "ja" ? ["要件候補", "観測・根拠", "評価すること", "確定前の確認"]
+      : ["Candidate requirement", "Observation and evidence", "Evaluation action", "Validation gate"])
+      .forEach((label) => { const cell = element("th", label); cell.scope = "col"; headRow.append(cell); });
+    head.append(headRow); const body = element("tbody");
+    section.data.requirements.forEach((item) => {
+      const row = element("tr"); const label = element("th"); label.scope = "row";
+      const link = element("a", local(item, "title"));
+      link.href = `${rootPrefix}analytics/operational-workloads/?lang=${language}#system-requirements`;
+      label.append(link, element("small", item.requirement_id));
+      row.append(label, element("td", local(item, "basis")), element("td", local(item, "planning_action")),
+        element("td", local(item, "validation_condition")));
+      body.append(row);
+    });
+    table.append(head, body); wrap.append(table);
   }
 
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => { language = button.dataset.language; localStorage.setItem("openfs-language", language); render(); }));
