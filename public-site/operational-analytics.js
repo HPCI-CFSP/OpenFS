@@ -11,19 +11,19 @@
   const copy = {
     ja: {
       publicOnly: "公開用集計のみ", siteUpdated: "更新", home: "OpenFS", breadcrumb: "実運用分析",
-      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navSearch: "検索",
+      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語", navSearch: "検索",
       kicker: "開示制御済みの実運用分析", provisional: "暫定結果", consensus: "Consensus未完了", scope: "富岳の単一環境", footer: "HPCI-CFSP 公開調査ビュー",
       boundary: "公開値は最小セル10件、5単位丸めを適用しています。個人・課題・ジョブの識別子、自由記述、実行パス、行単位データは含みません。",
-      gapKicker: "未確認事項", gapTitle: "未確認事項", details: "月次推移を表示", month: "月", jobs: "ジョブ数", windowJobs: "月別ユニークジョブ観測数の合計", share: "対応ジョブ比率", category: "分類", software: "ソフトウェア", trend: "傾向", prior: "直前期間", current: "直近期間", signal: "観測名", version: "版", confidence: "推定確度", nodeScale: "ノード規模", nodeSeconds: "割当ノード秒", counter: "カウンタ", coverage: "取得率", dataset: "集計領域", availableMonths: "利用可能な完全月", availablePeriod: "利用可能期間", valuesWithheld: "数値は定義確認中", requirement: "要件候補", basis: "根拠", noValue: "抑制／未確認", replacementTitle: "置換の可能性を示す信号", replacementNote: "同じ分類で減少傾向と増加傾向が同時に観測された組合せです。置換の因果関係を示すものではありません。", emergingApps: "増加・新規観測されたアプリケーション候補", decliningApps: "利用比率が低下したアプリケーション候補", appTrendNote: "観測メタデータの変化を示す信号であり、将来需要や他ソフトウェアへの置換を断定するものではありません。", aiNotObserved: "AI関連ソフトウェアは、この期間の動的リンク観測では確認できませんでした。未利用を意味するものではありません。",
-      expanding: "増加", newlyObserved: "新規観測", stable: "横ばい", declining: "減少", insufficient: "証拠不足", low: "低", medium: "中", high: "高", coverageGap: "要追加確認"
+      gapKicker: "未確認事項", gapTitle: "未確認事項", details: "月次推移を表示", month: "月", jobs: "ジョブ数", totalJobs: "全ジョブ数", mappedJobs: "対応ジョブ数", mappingCoverage: "対応率", mappingCoverageHistory: "共有ライブラリ観測の月次対応率", windowJobs: "月別ユニークジョブ観測数の合計", share: "対応ジョブ比率", category: "分類", software: "ソフトウェア", trend: "傾向", prior: "直前期間", current: "直近期間", signal: "観測名", version: "版", confidence: "推定確度", nodeScale: "ノード規模", nodeSeconds: "割当ノード秒", counter: "カウンタ", coverage: "取得率", dataset: "集計領域", availableMonths: "利用可能な完全月", availablePeriod: "利用可能期間", valuesWithheld: "数値は定義確認中", requirement: "要件候補", basis: "観測根拠", planningAction: "計画上の扱い", validationCondition: "検証条件", priority: "優先度", procurementUse: "調達判断での利用", relatedGaps: "関連する未確認事項", gapClosure: "解消に必要な根拠", nextAction: "次の行動", noValue: "抑制／未確認", replacementTitle: "置換の可能性を示す信号", replacementNote: "同じ分類で減少傾向と増加傾向が同時に観測された組合せです。置換の因果関係を示すものではありません。", emergingApps: "増加・新規観測されたアプリケーション候補", decliningApps: "利用比率が低下したアプリケーション候補", appTrendNote: "観測メタデータの変化を示す信号であり、将来需要や他ソフトウェアへの置換を断定するものではありません。", aiNotObserved: "AI関連ソフトウェアは、この期間の動的リンク観測では確認できませんでした。未利用を意味するものではありません。",
+      expanding: "増加", newlyObserved: "新規観測", stable: "横ばい", declining: "減少", insufficient: "証拠不足", low: "低", medium: "中", high: "高", coverageGap: "要追加確認", open: "未解消", candidateOnly: "要件候補としてのみ使用", notUntilValidated: "検証完了まで使用不可"
     },
     en: {
       publicOnly: "Public aggregates only", siteUpdated: "Updated", home: "OpenFS", breadcrumb: "Operational analysis",
-      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navSearch: "Search",
+      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary", navSearch: "Search",
       kicker: "PRIVACY-CONTROLLED OPERATIONAL ANALYSIS", provisional: "Provisional", consensus: "Consensus incomplete", scope: "One Fugaku environment", footer: "HPCI-CFSP public research view",
       boundary: "Published values apply a minimum cell size of 10 and rounding to 5. No person, project, or job identifiers, free text, execution paths, or row-level records are included.",
-      gapKicker: "LIMITATIONS", gapTitle: "Coverage Gaps", details: "Show monthly trend", month: "Month", jobs: "Jobs", windowJobs: "Sum of monthly unique-job observations", share: "Mapped-job share", category: "Category", software: "Software", trend: "Trend", prior: "Prior window", current: "Current window", signal: "Observed name", version: "Version", confidence: "Inference confidence", nodeScale: "Node scale", nodeSeconds: "Allocated node-seconds", counter: "Counter", coverage: "Coverage", dataset: "Aggregate area", availableMonths: "Complete months available", availablePeriod: "Available period", valuesWithheld: "Values withheld pending definition review", requirement: "Candidate requirement", basis: "Basis", noValue: "suppressed / unverified", replacementTitle: "Possible replacement signals", replacementNote: "Pairs combine a declining and an expanding family in the same category. They do not establish a causal replacement.",
-      expanding: "expanding", newlyObserved: "newly observed", stable: "stable", declining: "declining", insufficient: "insufficient evidence", low: "low", medium: "medium", high: "high", coverageGap: "coverage gap", emergingApps: "Expanding and newly observed application signals", decliningApps: "Application signals with declining use share", appTrendNote: "These are changes in observed metadata, not forecasts of future demand or proof of replacement by another package.", aiNotObserved: "No AI-related software was found in dynamic-link observations for this period. This does not establish non-use."
+      gapKicker: "LIMITATIONS", gapTitle: "Coverage Gaps", details: "Show monthly trend", month: "Month", jobs: "Jobs", totalJobs: "All jobs", mappedJobs: "Mapped jobs", mappingCoverage: "Coverage", mappingCoverageHistory: "Monthly shared-library observation coverage", windowJobs: "Sum of monthly unique-job observations", share: "Mapped-job share", category: "Category", software: "Software", trend: "Trend", prior: "Prior window", current: "Current window", signal: "Observed name", version: "Version", confidence: "Inference confidence", nodeScale: "Node scale", nodeSeconds: "Allocated node-seconds", counter: "Counter", coverage: "Coverage", dataset: "Aggregate area", availableMonths: "Complete months available", availablePeriod: "Available period", valuesWithheld: "Values withheld pending definition review", requirement: "Candidate requirement", basis: "Observed basis", planningAction: "Planning use", validationCondition: "Validation condition", priority: "Priority", procurementUse: "Procurement use", relatedGaps: "Related coverage gaps", gapClosure: "Evidence required for closure", nextAction: "Next action", noValue: "suppressed / unverified", replacementTitle: "Possible replacement signals", replacementNote: "Pairs combine a declining and an expanding family in the same category. They do not establish a causal replacement.",
+      expanding: "expanding", newlyObserved: "newly observed", stable: "stable", declining: "declining", insufficient: "insufficient evidence", low: "low", medium: "medium", high: "high", coverageGap: "coverage gap", open: "open", candidateOnly: "candidate requirements only", notUntilValidated: "not usable until validated", emergingApps: "Expanding and newly observed application signals", decliningApps: "Application signals with declining use share", appTrendNote: "These are changes in observed metadata, not forecasts of future demand or proof of replacement by another package.", aiNotObserved: "No AI-related software was found in dynamic-link observations for this period. This does not establish non-use."
     }
   };
   let language = new URLSearchParams(window.location.search).get("lang") === "en" ? "en" : "ja";
@@ -64,6 +64,10 @@
     return text({expanding: "expanding", "newly-observed": "newlyObserved", stable: "stable", declining: "declining", "insufficient-evidence": "insufficient"}[name] || "insufficient");
   }
 
+  function procurementUseLabel(name) {
+    return text({"candidate-only": "candidateOnly", "not-until-validated": "notUntilValidated"}[name] || "noValue");
+  }
+
   function renderDataScope(container, data) {
     const grid = element("div", "operational-metric-grid");
     const metrics = [
@@ -81,6 +85,20 @@
       grid.append(card);
     });
     container.append(grid);
+    if (data.mapping_coverage_monthly?.length) {
+      container.append(
+        element("h4", "", text("mappingCoverageHistory")),
+        table(
+          [text("month"), text("totalJobs"), text("mappedJobs"), text("mappingCoverage")],
+          data.mapping_coverage_monthly.map((row) => [
+            row.month,
+            value(row.total_jobs),
+            value(row.mapped_jobs),
+            `${row.coverage_pct}%`
+          ])
+        )
+      );
+    }
   }
 
   function renderSoftware(container, data) {
@@ -162,7 +180,20 @@
     const list = element("div", "operational-requirement-list");
     data.requirements.forEach((requirement) => {
       const item = element("article", "operational-requirement");
-      item.append(element("span", "eyebrow", requirement.requirement_id), element("h4", "", localized(requirement, "title")), element("p", "", localized(requirement, "basis")), element("span", "tag", requirement.status === "coverage-gap" ? text("coverageGap") : text("provisional")));
+      const metadata = element("p", "operational-note", `${text("priority")}: ${requirement.priority} | ${text("procurementUse")}: ${procurementUseLabel(requirement.procurement_use)}`);
+      item.append(
+        element("span", "eyebrow", requirement.requirement_id),
+        element("h4", "", localized(requirement, "title")),
+        metadata,
+        element("strong", "", text("basis")),
+        element("p", "", localized(requirement, "basis")),
+        element("strong", "", text("planningAction")),
+        element("p", "", localized(requirement, "planning_action")),
+        element("strong", "", text("validationCondition")),
+        element("p", "", localized(requirement, "validation_condition")),
+        element("p", "operational-note", `${text("relatedGaps")}: ${(requirement.coverage_gap_refs || []).join(", ") || "-"}`),
+        element("span", "tag", requirement.status === "coverage-gap" ? text("coverageGap") : text("provisional"))
+      );
       list.append(item);
     });
     container.append(list);
@@ -212,7 +243,15 @@
     gaps.replaceChildren();
     artifact.coverage_gaps.forEach((gap) => {
       const card = element("article", "operational-gap");
-      card.append(element("span", "eyebrow", gap.gap_id), element("h3", "", localized(gap, "title")), element("p", "", localized(gap, "effect")));
+      card.append(
+        element("span", "eyebrow", `${gap.gap_id} | ${text(gap.status)}`),
+        element("h3", "", localized(gap, "title")),
+        element("p", "", localized(gap, "effect")),
+        element("strong", "", text("gapClosure")),
+        element("p", "", localized(gap, "closure_evidence")),
+        element("strong", "", text("nextAction")),
+        element("p", "", localized(gap, "next_action"))
+      );
       gaps.append(card);
     });
     window.OpenFSFeedback?.mount("page-feedback", {kind: "operational-analytics", id: artifact.artifact_id, title: localized(artifact, "title"), path: "analytics/operational-workloads/"});

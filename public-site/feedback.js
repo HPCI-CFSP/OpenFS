@@ -10,7 +10,7 @@
       researchTitle: "追加調査のリクエスト", close: "閉じる", choose: "報告・調査依頼・改善提案",
       signIn: "投稿にはGitHubへのログインが必要です。", correctionTitle: "内容の誤り・表示の不具合", suggestionTitle: "使いやすさ・機能の改善",
       reportsTitle: "報告と対応状況", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ",
-      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navSearch: "検索",
+      navOverview: "概要", navCatalog: "調査カタログ", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語", navSearch: "検索",
       footerDescription: "HPCI-CFSP 公開調査ビュー", siteNavigation: "サイト内ナビゲーション", languageControl: "表示言語"
     },
     en: {
@@ -19,7 +19,7 @@
       request: "Request additional research", researchTitle: "Additional research", close: "Close", choose: "Report, request research, or suggest an improvement",
       signIn: "A GitHub sign-in is required to submit feedback.", correctionTitle: "Content errors and display problems", suggestionTitle: "Usability and feature improvements",
       reportsTitle: "Reports and resolution status", tagline: "Public research catalog and system planning options", publicOnly: "Public information only",
-      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navSearch: "Search",
+      navOverview: "Overview", navCatalog: "Research catalog", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary", navSearch: "Search",
       footerDescription: "HPCI-CFSP public research view", siteNavigation: "Site navigation", languageControl: "Display language"
     }
   };

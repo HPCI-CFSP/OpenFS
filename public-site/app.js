@@ -11,7 +11,7 @@
     ja: {
       scopeTitle: "調査項目", relatedTopics: "関連する調査項目", movedTopic: "再編前の調査項目", movedTopicNote: "この項目は統合・移管されました。現在の調査範囲は以下の項目・成果物から確認できます。", relatedOutput: "関連する公開ページ", evidenceSections: "収集済みの関連情報", sharedEvidence: "同一の記述・根拠を参照", researchUnit: "調査", researchDetails: "詳しい調査結果", topicOverview: "調査結果の概要", unitRoadmaps: "対応するロードマップ", stageCurrentBadge: "実用化・市場導入済み", stageNearTermBadge: "導入初期・近い将来", stageResearchBadge: "中長期の研究開発候補", stageContestedBadge: "見解不一致・未確定",
       languageControl: "表示言語", publicStatus: "公開状態", inPageNavigation: "ページ内ナビゲーション", openfsSummary: "OpenFSの集計", tagline: "公開調査カタログとシステム整備計画案", publicOnly: "公開情報のみ", siteUpdated: "サイト更新日時", catalogAsOf: "カタログ基準日", researchAsOf: "調査基準日", asOf: "情報確認日", licenseLabel: "ライセンス",
-      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書",
+      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navSearch: "検索", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語",
       aboutKicker: "OpenFSについて",
       aboutLead: "OpenFSは、将来の計算・データ基盤の整備計画を検討するため、計算機アーキテクチャ、メモリ、ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠をたどれる技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、各情報の更新日と確認状況、合意判定の状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の進捗状況",
@@ -35,7 +35,7 @@
       noReportText: "昇格ワークフローで受理され、人による公開承認を受けた報告書やデータをここに自動表示します。",
       footerDescription: "HPCI-CFSP 公開調査ビュー", statusNotStarted: "未着手", statusPartial: "一部完了",
       statusReviewed: "レビュー済み", statusRetired: "廃止", verificationPending: "独立検証待ち", verificationAccepted: "合意判定で受理済み", evidenceCollected: "根拠あり・検証待ち", notYetReviewed: "未検証", noPublicUpdate: "公開結果なし",
-      findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見を準備中", closeDialog: "詳細を閉じる", closeTermDialog: "用語の説明を閉じる",
+      findingAvailable: "公開知見", decisionAvailable: "技術整理", summaryPending: "公開知見を準備中", closeDialog: "詳細を閉じる",
       topicDetailMeta: "調査項目の詳細", canonicalTopicId: "正規Topic ID", relatedRoadmaps: "関連ロードマップ", roadmapPlanned: "（作成予定）", noSummaryTitle: "公開知見はまだありません",
       noSummaryText: "この調査項目に対応する調査結果は、まだ公開されていません。今後の調査で公開可能な結果が得られた時点で更新します。",
       topicResultsKicker: "調査項目別の結果", topicResultsLead: "この調査項目に直接対応する公開知見を、{runCount}回の調査実行から{findingCount}件表示しています。",
@@ -49,14 +49,14 @@
       memoryRoadmapKicker: "メモリ技術調査", roadmapFilter: "技術群フィルタ", memoryProducts: "メモリ製品", integration3d: "3D実装", systemEnablers: "システム技術",
       technologyColumn: "技術", vendorColumn: "ベンダー／対象", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。",
       technologyNotesKicker: "技術別ノート", technologyNotesTitle: "最新状況とHPCIシステム整備への示唆", currentState: "最新状況（調査基準日現在）", hpciImplications: "HPCIシステム整備への示唆", roadmapCaveat: "公開時の注意事項",
-      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料",
+      commercial: "製品・量産", sample: "サンプル", standard: "標準", target: "公表目標", concept: "構想・研究", undated: "時期未公表", timingBasis: "時期の根拠", milestoneDetail: "マイルストーン詳細", publicSources: "公開根拠資料", sourcePublicationDate: "公開日", sourceUpdateDate: "更新日", sourcePublicationOrUpdateDate: "発信日（公開・更新の区別未確認）", sourceEventDate: "内容上の事象日", sourceDateNotStated: "発信日（資料に記載なし）", sourceDateNotVerified: "発信日（未確認）", sourceVerifiedOn: "OpenFS確認日",
       observed: "確認済み", standardRelease: "標準公開", vendorTarget: "ベンダー目標", noPublicDate: "時期未公表", officialScanIncomplete: "一次情報の継続確認が必要",
-      provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", termDefinition: "用語の説明", relatedTerms: "関連用語", referenceSources: "用語・比較表の根拠資料", relatedTermRoadmaps: "用語に関連するロードマップ", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
+      provisionalNotice: "公開情報に基づく暫定整理です。独立したAIモデルによる合意判定（Consensus Gate）は完了していません。", currentStage: "最新状況（調査基準日現在）", nearTermStage: "近い将来の方向性", researchStage: "中長期の研究開発候補", contestedStage: "見解が分かれている論点・未確定事項", maturity: "成熟度", timing: "時期", confidence: "確度", hpciRelevance: "HPCIシステム整備との関係", adoptionConditions: "採用判断で確認する条件", actorsLabel: "関係主体", actorRoles: "役割", sourceEvidence: "公開根拠", decisionDimensions: "整備判断の評価軸", relatedTables: "関連する比較表", catalogComparisons: "関連技術の比較", catalogComparisonsLead: "調査結果に現れる競合・補完技術を、共通の判断軸で比較します。", decisionUse: "整備判断での使い方", comparisonCaveat: "注意事項", comparisonRoadmaps: "比較対象のロードマップ", platformMatrix: "主要CPU・GPUのソフトウェア対応表", numericalMatrix: "数値計算アルゴリズム・精度対応表", capabilitySoftware: "機能／ソフトウェア", supportLevel: "対応状況", optimizationLevel: "最適化状況", versionLicense: "版・ライセンス", methodSoftware: "アルゴリズム／ソフトウェア", targetPlatforms: "対象プラットフォーム", inputPrecision: "入力精度", computePrecision: "演算精度", accumulationPrecision: "累積精度", outputPrecision: "出力精度", mixedPrecision: "混合精度", precisionEmulation: "精度エミュレーション", distributedSupport: "分散実行", coverageGaps: "未確認事項", nextAction: "次の調査", researchHistory: "調査履歴・個別知見", researchHistoryLead: "調査実行ごとの来歴と抽出知見を確認できます。", high: "高", medium: "中", low: "低", deployed: "運用中", standardized: "標準化済み", sampling: "サンプル提供中", announced: "発表済み", prototype: "試作", research: "研究", uncertain: "不確定", production: "製品対応", partial: "部分対応", experimental: "実験的", community: "コミュニティ対応", notVerified: "未確認", vendorTuned: "ベンダー最適化", architectureTuned: "アーキテクチャ最適化", portable: "移植可能", generic: "汎用", researchArtifact: "研究成果", native: "ネイティブ対応", libraryDependent: "ライブラリ依存", singleNode: "単一ノード"
     },
     en: {
       scopeTitle: "Research topics", relatedTopics: "Related research topics", movedTopic: "Previous catalog entry", movedTopicNote: "This entry has been merged or transferred. Its current scope is available through the following topics or outputs.", relatedOutput: "Related public page", evidenceSections: "Related evidence collected", sharedEvidence: "Refer to the same statement and evidence", researchUnit: "Study", researchDetails: "Detailed findings", topicOverview: "Research summary", unitRoadmaps: "Related roadmaps", stageCurrentBadge: "Deployed or commercially available", stageNearTermBadge: "Early adoption or near-term direction", stageResearchBadge: "Mid- to long-term R&D candidate", stageContestedBadge: "Contested or unresolved",
       languageControl: "Display language", publicStatus: "Publication status", inPageNavigation: "Page navigation", openfsSummary: "OpenFS summary", tagline: "Public research catalog and system planning options", publicOnly: "Public information only", siteUpdated: "Site updated", catalogAsOf: "Catalog as of", researchAsOf: "Research as of", asOf: "As of", licenseLabel: "License",
-      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports",
+      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navSearch: "Search", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary",
       aboutKicker: "ABOUT OPENFS",
       aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory, networks, system software, and applications. It publishes traceable technology assessments, roadmaps, and system planning options while clearly identifying unresolved questions, the date and verification status of each item, and its Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
@@ -81,7 +81,7 @@
       noReportText: "Exports appear here after acceptance by the promotion workflow and explicit human publication approval.",
       footerDescription: "HPCI-CFSP public research view", statusNotStarted: "not started", statusPartial: "partial",
       statusReviewed: "reviewed", statusRetired: "retired", verificationPending: "independent review pending", verificationAccepted: "accepted through the Consensus Gate", evidenceCollected: "evidence available; review pending", notYetReviewed: "not reviewed", noPublicUpdate: "no public result",
-      findingAvailable: "public findings", decisionAvailable: "technology synthesis", summaryPending: "public findings in preparation", closeDialog: "Close details", closeTermDialog: "Close term definition",
+      findingAvailable: "public findings", decisionAvailable: "technology synthesis", summaryPending: "public findings in preparation", closeDialog: "Close details",
       topicDetailMeta: "Topic details", canonicalTopicId: "Canonical Topic ID", relatedRoadmaps: "Related roadmaps", roadmapPlanned: "(planned)", noSummaryTitle: "No public findings yet",
       noSummaryText: "No research result linked to this topic has been published yet. This page will be updated when a later research cycle produces a publishable result.",
       topicResultsKicker: "TOPIC-SPECIFIC RESULTS", topicResultsLead: "Showing {findingCount} public findings directly linked to this research topic from {runCount} research runs.",
@@ -95,9 +95,9 @@
       memoryRoadmapKicker: "MEMORY TECHNOLOGY RESEARCH", roadmapFilter: "Technology group filter", memoryProducts: "Memory products", integration3d: "3D integration", systemEnablers: "System enablers",
       technologyColumn: "Technology", vendorColumn: "Vendor / scope", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Blank cells indicate that no dated public milestone was confirmed, not that development has stopped.",
       technologyNotesKicker: "TECHNOLOGY NOTES", technologyNotesTitle: "Status as of the research date and implications for HPCI", currentState: "Status as of the research date", hpciImplications: "Implications for HPCI", roadmapCaveat: "Publication caveat",
-      commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources",
+      commercial: "product / volume", sample: "sample", standard: "standard", target: "published target", concept: "concept / research", undated: "timing not public", timingBasis: "Timing basis", milestoneDetail: "Milestone detail", publicSources: "Public supporting sources", sourcePublicationDate: "Published", sourceUpdateDate: "Updated", sourcePublicationOrUpdateDate: "Source date (publication/update not distinguished)", sourceEventDate: "Event described", sourceDateNotStated: "Source date: not stated", sourceDateNotVerified: "Source date: not verified", sourceVerifiedOn: "OpenFS verified",
       observed: "observed", standardRelease: "standard release", vendorTarget: "vendor target", noPublicDate: "no public date", officialScanIncomplete: "continued primary-source review required",
-      provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", catalogComparisons: "Related technology comparisons", catalogComparisonsLead: "Compare competing and complementary technologies in the findings using common planning criteria.", decisionUse: "Use in planning decisions", comparisonCaveat: "Caveat", termDefinition: "Term definition", relatedTerms: "Related terms", referenceSources: "Sources for this term or comparison", relatedTermRoadmaps: "Roadmaps related to this term", comparisonRoadmaps: "Roadmaps covered by this comparison", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
+      provisionalNotice: "This is a provisional synthesis of public information. Consensus review by independent models is incomplete.", currentStage: "Latest status confirmed as of the research date", nearTermStage: "Near-term direction", researchStage: "Mid- to long-term R&D candidates", contestedStage: "Competing or unresolved paths", maturity: "Maturity", timing: "Timing", confidence: "Confidence", hpciRelevance: "Relevance to HPCI planning", adoptionConditions: "Conditions to verify before adoption", actorsLabel: "Actors", actorRoles: "Roles", sourceEvidence: "Public evidence", decisionDimensions: "Planning evaluation dimensions", relatedTables: "Related comparison tables", catalogComparisons: "Related technology comparisons", catalogComparisonsLead: "Compare competing and complementary technologies in the findings using common planning criteria.", decisionUse: "Use in planning decisions", comparisonCaveat: "Caveat", comparisonRoadmaps: "Roadmaps covered by this comparison", platformMatrix: "Software support across major CPUs and GPUs", numericalMatrix: "Numerical algorithms and precision support", capabilitySoftware: "Capability / software", supportLevel: "Support", optimizationLevel: "Optimization", versionLicense: "Version and license", methodSoftware: "Algorithm / software", targetPlatforms: "Target platforms", inputPrecision: "Input precision", computePrecision: "Compute precision", accumulationPrecision: "Accumulation precision", outputPrecision: "Output precision", mixedPrecision: "Mixed precision", precisionEmulation: "Precision emulation", distributedSupport: "Distributed execution", coverageGaps: "Coverage gaps", nextAction: "Next research action", researchHistory: "Research history and individual findings", researchHistoryLead: "Inspect provenance and extracted findings for each research run.", high: "high", medium: "medium", low: "low", deployed: "deployed", standardized: "standardized", sampling: "sampling", announced: "announced", prototype: "prototype", research: "research", uncertain: "uncertain", production: "production", partial: "partial", experimental: "experimental", community: "community", notVerified: "not verified", vendorTuned: "vendor tuned", architectureTuned: "architecture tuned", portable: "portable", generic: "generic", researchArtifact: "research artifact", native: "native", libraryDependent: "library dependent", singleNode: "single node"
     }
   };
 
@@ -114,11 +114,13 @@
   const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
+  const sourceDateRecords = new Map(
+    (data.source_date_index?.records || []).map((record) => [record.source_id, record])
+  );
   let activeCategory = "all";
   let language = readLanguage();
   let activeTopicId = null;
   let activeRoadmapMilestoneId = null;
-  let activeTermId = null;
 
   function readLanguage() {
     const requested = new URLSearchParams(window.location.search).get("lang");
@@ -319,13 +321,12 @@
       const asciiEnd = /[A-Za-z0-9_]$/.test(alias);
       if ((asciiStart && /[A-Za-z0-9_]/.test(value[start - 1] || "")) || (asciiEnd && /[A-Za-z0-9_]/.test(value[end] || ""))) continue;
       root.append(document.createTextNode(value.slice(cursor, start)));
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "glossary-term-link";
-      button.textContent = alias;
-      button.setAttribute("aria-haspopup", "dialog");
-      button.addEventListener("click", () => openCatalogTerm(byAlias.get(alias.toLocaleLowerCase()).term_id));
-      root.append(button);
+      const termId = byAlias.get(alias.toLocaleLowerCase()).term_id;
+      const link = document.createElement("a");
+      link.className = "glossary-term-link";
+      link.href = `glossary/?term=${encodeURIComponent(termId)}&lang=${language}#${encodeURIComponent(termId)}`;
+      link.textContent = alias;
+      root.append(link);
       cursor = end;
     }
     root.append(document.createTextNode(value.slice(cursor)));
@@ -341,6 +342,35 @@
     return source ? {roadmap, source} : null;
   }
 
+  function sourceDateRecordMap() {
+    return sourceDateRecords;
+  }
+
+  function sourceDateMetadata(source, sourceId) {
+    const record = sourceDateRecordMap().get(sourceId);
+    if (!record) {
+      if (source.published_at) return [`${tr("sourcePublicationDate")}: ${source.published_at}`];
+      return [tr("sourceDateNotVerified")];
+    }
+    const labels = {
+      publication: "sourcePublicationDate",
+      update: "sourceUpdateDate",
+      "publication-or-update": "sourcePublicationOrUpdateDate"
+    };
+    const values = record.source_dates.map((entry) => `${tr(labels[entry.kind])}: ${entry.value}`);
+    if (!values.length) {
+      values.push(tr(record.source_date_status === "not-stated" ? "sourceDateNotStated" : "sourceDateNotVerified"));
+    }
+    record.event_dates.forEach((entry) => values.push(`${tr("sourceEventDate")}: ${entry.value}`));
+    if (record.openfs_verified_on) values.push(`${tr("sourceVerifiedOn")}: ${record.openfs_verified_on}`);
+    return values;
+  }
+
+  function sourceMetadataText(source, sourceId, prefix = []) {
+    return [...prefix, source.publisher, sourceId, ...sourceDateMetadata(source, sourceId)]
+      .filter(Boolean).join(" · ");
+  }
+
   function appendReferenceSourceList(root, sourceRefs) {
     sourceRefs.forEach((sourceRef) => {
       const match = referenceSource(sourceRef);
@@ -353,9 +383,11 @@
       link.textContent = match.source.title;
       const publisher = document.createElement("span");
       const sourceId = sourceRef.catalog_source_id || sourceRef.source_id;
-      publisher.textContent = match.roadmap
-        ? `${localized(match.roadmap, "title")} · ${match.source.publisher} · ${sourceId}`
-        : `${match.source.publisher} · ${sourceId}`;
+      publisher.textContent = sourceMetadataText(
+        match.source,
+        sourceId,
+        match.roadmap ? [localized(match.roadmap, "title")] : []
+      );
       item.append(link, publisher);
       root.append(item);
     });
@@ -477,7 +509,7 @@
       link.rel = "noopener noreferrer";
       link.textContent = source.title;
       const publisher = document.createElement("span");
-      publisher.textContent = source.publisher;
+      publisher.textContent = sourceMetadataText(source, sourceId);
       item.append(link, publisher);
       root.appendChild(item);
     });
@@ -810,7 +842,7 @@
       link.rel = "noopener noreferrer";
       link.textContent = source.title;
       const publisher = document.createElement("span");
-      publisher.textContent = source.publisher;
+      publisher.textContent = sourceMetadataText(source, sourceId);
       item.append(link, publisher);
       list.appendChild(item);
     });
@@ -1172,7 +1204,7 @@
           link.rel = "noopener noreferrer";
           link.textContent = source.title;
           const publisher = document.createElement("span");
-          publisher.textContent = source.publisher;
+          publisher.textContent = sourceMetadataText(source, source.source_id);
           sourceItem.append(link, publisher);
           sources.appendChild(sourceItem);
         });
@@ -1307,12 +1339,10 @@
         termCell.scope = "row";
         const term = terms.get(row.term_id);
         if (!term) return;
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "comparison-term-link";
-        button.textContent = localized(term, "label");
-        button.setAttribute("aria-haspopup", "dialog");
-        button.addEventListener("click", () => openCatalogTerm(row.term_id));
+        const termLink = document.createElement("a");
+        termLink.className = "comparison-term-link";
+        termLink.href = `glossary/?term=${encodeURIComponent(row.term_id)}&lang=${language}#${encodeURIComponent(row.term_id)}`;
+        termLink.textContent = localized(term, "label");
         const sources = document.createElement("div");
         sources.className = "comparison-row-sources";
         row.source_refs.forEach((sourceRef) => {
@@ -1323,7 +1353,10 @@
           link.target = "_blank";
           link.rel = "noopener noreferrer";
           link.textContent = match.source.title;
-          sources.append(link);
+          const meta = document.createElement("span");
+          const sourceId = sourceRef.catalog_source_id || sourceRef.source_id;
+          meta.textContent = sourceMetadataText(match.source, sourceId);
+          sources.append(link, meta);
         });
         const linkedItemIds = new Set(
           termItemRefs.find((reference) => reference.term_id === row.term_id)?.item_ids || []
@@ -1344,9 +1377,9 @@
             badge.textContent = tr(labels[stage]);
             stages.appendChild(badge);
           });
-          termCell.append(button, stages, sources);
+          termCell.append(termLink, stages, sources);
         } else {
-          termCell.append(button, sources);
+          termCell.append(termLink, sources);
         }
         item.append(termCell);
         comparison.columns.forEach((column) => {
@@ -1378,66 +1411,6 @@
       container.append(section);
     });
     root.append(container);
-  }
-
-  function renderCatalogTermDialog() {
-    if (!activeTermId) return;
-    const term = referenceTermMap().get(activeTermId);
-    if (!term) return;
-    setText("term-dialog-id", term.term_id);
-    setText("term-dialog-title", localized(term, "label"));
-    setText("term-dialog-meta", `${term.category} · ${referenceData().as_of}`);
-    const root = document.getElementById("term-dialog-content");
-    root.replaceChildren();
-    const section = document.createElement("section");
-    section.className = "roadmap-term-detail";
-    const title = document.createElement("h3");
-    title.textContent = tr("termDefinition");
-    const definition = document.createElement("p");
-    definition.textContent = localized(term, "definition");
-    const relatedTitle = document.createElement("h4");
-    relatedTitle.textContent = tr("relatedTerms");
-    const related = document.createElement("div");
-    related.className = "roadmap-related-terms";
-    term.related_term_ids.forEach((termId) => {
-      const relatedTerm = referenceTermMap().get(termId);
-      if (!relatedTerm) return;
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "related-term-link";
-      button.textContent = localized(relatedTerm, "label");
-      button.addEventListener("click", () => {
-        activeTermId = termId;
-        const url = new URL(window.location.href);
-        url.searchParams.set("term", termId);
-        window.history.replaceState(null, "", url);
-        renderCatalogTermDialog();
-      });
-      related.append(button);
-    });
-    const sourcesTitle = document.createElement("h4");
-    sourcesTitle.textContent = tr("referenceSources");
-    const sources = document.createElement("ul");
-    sources.className = "source-list roadmap-dialog-source-list";
-    appendReferenceSourceList(sources, term.source_refs);
-    const roadmapTitle = document.createElement("h4");
-    roadmapTitle.textContent = tr("relatedTermRoadmaps");
-    const roadmaps = document.createElement("ul");
-    roadmaps.className = "related-roadmap-list";
-    appendRoadmapLinks(roadmaps, term.roadmap_ids, term.term_id);
-    section.append(title, definition, relatedTitle, related, sourcesTitle, sources, roadmapTitle, roadmaps);
-    root.append(topicFeedbackLink("term", term.term_id, localized(term, "label")), section);
-  }
-
-  function openCatalogTerm(termId) {
-    if (!referenceTermMap().has(termId)) return;
-    activeTermId = termId;
-    const url = new URL(window.location.href);
-    url.searchParams.set("term", termId);
-    window.history.replaceState(null, "", url);
-    renderCatalogTermDialog();
-    const dialog = document.getElementById("term-dialog");
-    if (!dialog.open) dialog.showModal();
   }
 
   function renderTopicOverview(root, profile, topic) {
@@ -1870,7 +1843,6 @@
     renderReports();
     renderTopicDetail();
     renderRoadmapDialog();
-    renderCatalogTermDialog();
   }
 
   document.querySelectorAll("[data-language]").forEach((button) => {
@@ -1888,29 +1860,13 @@
     if (event.target === event.currentTarget) event.currentTarget.close();
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
-    const termDialog = document.getElementById("term-dialog");
-    if (termDialog.open) termDialog.close();
     activeTopicId = null;
     const url = new URL(window.location.href);
     url.searchParams.delete("topic");
-    window.history.replaceState(null, "", url);
-  });
-  document.getElementById("term-dialog-close").addEventListener("click", () => {
-    document.getElementById("term-dialog").close();
-  });
-  document.getElementById("term-dialog").addEventListener("click", (event) => {
-    if (event.target === event.currentTarget) event.currentTarget.close();
-  });
-  document.getElementById("term-dialog").addEventListener("close", () => {
-    activeTermId = null;
-    const url = new URL(window.location.href);
-    url.searchParams.delete("term");
     window.history.replaceState(null, "", url);
   });
   render();
   const initialParams = new URLSearchParams(window.location.search);
   const initialTopicId = initialParams.get("topic");
   if (initialTopicId) openTopicDetail(initialTopicId);
-  const initialTermId = initialParams.get("term");
-  if (initialTopicId && initialTermId) openCatalogTerm(initialTermId);
 })();
