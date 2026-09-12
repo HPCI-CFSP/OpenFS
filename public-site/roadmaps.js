@@ -488,7 +488,28 @@
     item.append(term, description); root.append(item);
   }
   function appendSupplementSources(root, supplement) {
-    root.replaceChildren(); supplement.sources.forEach((source) => { const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const meta = document.createElement("span"); meta.textContent = `${source.publisher} · ${sourceClassLabels[language][source.source_class] || source.source_class}`; item.append(link, meta); root.append(item); });
+    root.replaceChildren(); supplement.sources.forEach((source) => { const item = document.createElement("li"); const link = document.createElement("a"); link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = source.title; const meta = document.createElement("span"); meta.textContent = `${source.publisher} · ${sourceClassLabels[language][source.source_class] || source.source_class}`; item.append(link, meta); appendEvidenceDates(item, source); root.append(item); });
+  }
+  function appendEvidenceDates(root, source) {
+    const date = document.createElement("span");
+    const published = language === "ja" ? "発表日" : "Published";
+    const checked = language === "ja" ? "確認日" : "Checked";
+    date.textContent = ` · ${published}: ${source.published_at || (language === "ja" ? "未確認" : "Unknown")}`;
+    if (source.checked_on) date.textContent += ` · ${checked}: ${source.checked_on}`;
+    root.append(date);
+  }
+  function appendInventoryEvidence(root, sourceIds, inventory) {
+    const links = document.createElement("ul"); links.className = "inventory-evidence-links";
+    sourceIds.forEach((id) => {
+      const source = inventory.sources.find((item) => item.source_id === id);
+      if (!source) return;
+      const item = document.createElement("li"); const link = document.createElement("a");
+      link.href = source.url; link.target = "_blank"; link.rel = "noopener noreferrer";
+      link.textContent = source.title; item.append(link); appendEvidenceDates(item, source);
+      if (source.locator) { const locator = document.createElement("span"); locator.textContent = ` · ${source.locator}`; item.append(locator); }
+      links.append(item);
+    });
+    root.append(links);
   }
   function appendSupplementGaps(root, supplement) {
     root.replaceChildren(); supplement.coverage_gaps.forEach((gap) => { const item = document.createElement("li"); const scope = document.createElement("strong"); scope.textContent = `${gap.priority} · ${gap.gap_id} · ${localized(gap, "scope")}`; const impact = document.createElement("span"); impact.textContent = `${tr("gapImpact")}: ${localized(gap, "impact")}`; const action = document.createElement("span"); action.textContent = `${tr("gapNextAction")}: ${localized(gap, "next_action")}`; item.append(scope, impact, action); root.append(item); });
@@ -570,19 +591,83 @@
     demandTable.append(demandHead, demandBody); document.getElementById("hpci-demand-observations").replaceChildren(demandTable);
 
     const operationalLabels = language === "ja"
-      ? {title: "公開された運用実績", lead: "定義、集計期間、除外条件を保持し、異なる提供機関の値をそのまま順位付けしません。", system: "システム", metric: "指標", period: "期間", value: "公表値", basis: "定義・比較上の注意", designPower: "設計電力", operatingPower: "通常運用電力", utilization: "利用率", jobCount: "ジョブ件数", maximumJobDuration: "最大連続実行時間", systemAvailability: "システム稼働率", scheduledMaintenance: "予定保守", unplannedDowntime: "障害等による停止", serviceHours: "サービス時間", products: "公開運用データ", records: "項目数", dataset: "公開データセット", chart: "公開グラフ", table: "公表表"}
-      : {title: "Published operational evidence", lead: "Definitions, periods and exclusions are preserved; values from different providers are not used directly as a ranking.", system: "System", metric: "Metric", period: "Period", value: "Published value", basis: "Definition and comparability", designPower: "Design power", operatingPower: "Normal-operation power", utilization: "Utilization", jobCount: "Job count", maximumJobDuration: "Maximum continuous run time", systemAvailability: "System availability", scheduledMaintenance: "Scheduled maintenance", unplannedDowntime: "Outage due to failures", serviceHours: "Service hours", products: "Public operational data", records: "entries", dataset: "Public dataset", chart: "Published chart", table: "Published table"};
+      ? {title: "公開された運用・施設情報", lead: "実績、設備定格、入札条件を区別します。設備全体の容量を使用可能IT電力とみなさず、異なる定義・期間の数値を直接比較しません。", system: "システム", metric: "指標", period: "期間", value: "公表値", basis: "定義・比較上の注意", designPower: "設計電力", operatingPower: "通常運用電力", utilization: "利用率", jobCount: "ジョブ件数", maximumJobDuration: "最大連続実行時間", systemAvailability: "システム稼働率", scheduledMaintenance: "予定保守", unplannedDowntime: "障害等による停止", serviceHours: "サービス時間", products: "公開運用データ", records: "項目数", dataset: "公開データセット", chart: "公開グラフ", table: "公表表"}
+      : {title: "Published operation and facility evidence", lead: "Measured results, equipment ratings and tender conditions are distinct. Facility capacity is not available IT power; values with different definitions or periods are not directly comparable.", system: "System", metric: "Metric", period: "Period", value: "Published value", basis: "Definition and comparability", designPower: "Design power", operatingPower: "Normal-operation power", utilization: "Utilization", jobCount: "Job count", maximumJobDuration: "Maximum continuous run time", systemAvailability: "System availability", scheduledMaintenance: "Scheduled maintenance", unplannedDowntime: "Outage due to failures", serviceHours: "Service hours", products: "Public operational data", records: "entries", dataset: "Public dataset", chart: "Published chart", table: "Published table"};
     setText("hpci-operational-title", operationalLabels.title); setText("hpci-operational-lead", operationalLabels.lead);
     const operationalTable = document.createElement("table"); operationalTable.className = "supplement-table operational-evidence-table";
     const operationalHead = document.createElement("thead"); const operationalHeadRow = document.createElement("tr");
     [operationalLabels.system, operationalLabels.metric, operationalLabels.period, operationalLabels.value, operationalLabels.basis].forEach((label) => { const cell = document.createElement("th"); cell.textContent = label; operationalHeadRow.append(cell); }); operationalHead.append(operationalHeadRow);
     const operationalBody = document.createElement("tbody"); const metricLabels = {"design-power": operationalLabels.designPower, "operating-power": operationalLabels.operatingPower, utilization: operationalLabels.utilization, "job-count": operationalLabels.jobCount, "maximum-job-duration": operationalLabels.maximumJobDuration, "system-availability": operationalLabels.systemAvailability, "scheduled-maintenance": operationalLabels.scheduledMaintenance, "unplanned-downtime": operationalLabels.unplannedDowntime, "service-hours": operationalLabels.serviceHours};
     metricLabels["rack-cooling-capacity"] = language === "ja" ? "ラック冷却能力" : "Rack cooling capacity";
-    inventory.operational_observations.forEach((observation) => { const row = document.createElement("tr"); row.id = observation.observation_id; const names = observation.system_ids.map((id) => localized(inventory.systems.find((item) => item.system_id === id), "name")).join(" / "); const period = [observation.period_start, observation.period_end].filter(Boolean).join(" – ") || tr("notPublished"); const measured = observation.value; const value = measured.kind === "range" ? `${formatPublicNumber(measured.lower)}–${formatPublicNumber(measured.upper)} ${measured.unit}` : `${measured.kind === "approximate" ? (language === "ja" ? "約" : "approx. ") : ""}${formatPublicNumber(measured.value)} ${measured.unit}`; [names, metricLabels[observation.metric], period, value, localized(observation, "basis")].forEach((text, index) => { const cell = document.createElement(index === 0 ? "th" : "td"); if (index === 0) cell.scope = "row"; cell.textContent = text; row.append(cell); }); operationalBody.append(row); });
+    Object.assign(metricLabels, language === "ja" ? {
+      "apparent-power-capacity": "電源設備容量（皮相電力）",
+      "cooling-equipment-capacity": "冷却機器の定格能力",
+      "tender-power-limit": "入札条件の最大契約電力",
+      "planned-electricity-consumption": "入札条件の予定使用電力量"
+    } : {
+      "apparent-power-capacity": "Apparent electrical capacity",
+      "cooling-equipment-capacity": "Rated cooling equipment capacity",
+      "tender-power-limit": "Tender maximum contract demand",
+      "planned-electricity-consumption": "Tender planned electricity consumption"
+    });
+    inventory.operational_observations.forEach((observation) => {
+      const row = document.createElement("tr"); row.id = observation.observation_id;
+      const names = observation.system_ids.map((id) => localized(inventory.systems.find((item) => item.system_id === id), "name")).join(" / ");
+      const period = [observation.period_start, observation.period_end].filter(Boolean).join(" – ") || tr("notPublished");
+      const measured = observation.value;
+      const value = measured.kind === "range" ? `${formatPublicNumber(measured.lower)}–${formatPublicNumber(measured.upper)} ${measured.unit}` : `${measured.kind === "approximate" ? (language === "ja" ? "約" : "approx. ") : ""}${formatPublicNumber(measured.value)} ${measured.unit}`;
+      [names, metricLabels[observation.metric], period, value, localized(observation, "basis")].forEach((text, index) => {
+        const cell = document.createElement(index === 0 ? "th" : "td"); if (index === 0) cell.scope = "row";
+        cell.textContent = text;
+        if (index === 4) appendInventoryEvidence(cell, observation.source_ids, inventory);
+        row.append(cell);
+      });
+      operationalBody.append(row);
+    });
     operationalTable.append(operationalHead, operationalBody); document.getElementById("hpci-operational-observations").replaceChildren(operationalTable);
     const productRoot = document.getElementById("hpci-operational-data-products"); productRoot.replaceChildren(); const productHeading = document.createElement("h5"); productHeading.textContent = operationalLabels.products; productRoot.append(productHeading);
 inventory.operational_data_products.forEach((product) => { const details = document.createElement("details"); details.className = "forecast-calibration-card"; const summary = document.createElement("summary"); const names = product.system_ids.map((id) => localized(inventory.systems.find((item) => item.system_id === id), "name")).join(" / "); const productLabels = {"public-dataset": operationalLabels.dataset, "published-chart": operationalLabels.chart, "published-table": operationalLabels.table, "service-status-page": language === "ja" ? "稼働状況ページ" : "Service status page", "operational-notice-feed": language === "ja" ? "運用のお知らせ" : "Operational notices", "authenticated-usage-portal": language === "ja" ? "認証が必要な利用状況ポータル" : "Authenticated usage portal"}; summary.textContent = `${productLabels[product.product_type]}: ${names}`; const scope = document.createElement("p"); scope.textContent = localized(product, "scope"); const fields = document.createElement("p"); fields.textContent = product.fields.join(" · "); const caveat = document.createElement("p"); caveat.className = "supplement-caveat"; caveat.textContent = localized(product, "caveat"); details.append(summary, scope, fields); if (product.record_count) { const records = document.createElement("p"); records.textContent = `${operationalLabels.records}: ${formatPublicNumber(product.record_count)}`; details.append(records); } details.append(caveat); productRoot.append(details); });
+    renderInventoryBenchmarks(inventory);
     appendSupplementSources(document.getElementById("hpci-inventory-sources"), inventory); appendSupplementGaps(document.getElementById("hpci-inventory-gaps"), inventory);
+  }
+  function renderInventoryBenchmarks(inventory) {
+    const observations = inventory.benchmark_observations || [];
+    document.getElementById("hpci-benchmark-section").hidden = observations.length === 0;
+    const labels = language === "ja" ? {
+      title: "ベンチマーク性能・電力の参考値",
+      lead: "掲載版と実測日を区別します。異なる実行の性能と電力は組み合わせず、通常運用の電力やTCOには換算しません。",
+      system: "システム・実行", edition: "掲載版 / 実測日", performance: "HPL性能", power: "掲載電力", basis: "対応関係・測定範囲・根拠",
+      ranking: "ランキング掲載行", optimized: "省電力設定の別実行", row: "同じ掲載行の値（同一実行の詳細は未確認）", paired: "公開元が対応関係を明記", level: "公開ページ記載の電力測定レベル", unknown: "未確認", separator: "。"
+    } : {
+      title: "Benchmark performance and power references",
+      lead: "List editions are not measurement dates. Do not mix performance and power from different runs or convert these values into normal-operation power or TCO.",
+      system: "System / run", edition: "List edition / measured on", performance: "HPL performance", power: "Published power", basis: "Pairing, measurement scope and evidence",
+      ranking: "Ranking row", optimized: "Separate optimized run", row: "Same list row; run details unverified", paired: "Run pairing stated by publisher", level: "Page-reported power measurement level", unknown: "Not verified", separator: ". "
+    };
+    setText("hpci-benchmark-title", labels.title); setText("hpci-benchmark-lead", labels.lead);
+    const table = document.createElement("table"); table.className = "supplement-table operational-evidence-table";
+    const head = document.createElement("thead"); const header = document.createElement("tr");
+    [labels.system, labels.edition, labels.performance, labels.power, labels.basis].forEach((label) => {
+      const cell = document.createElement("th"); cell.scope = "col"; cell.textContent = label; header.append(cell);
+    });
+    head.append(header); const body = document.createElement("tbody");
+    observations.forEach((item) => {
+      const row = document.createElement("tr"); row.id = item.observation_id;
+      const names = item.system_ids.map((id) => localized(inventory.systems.find((system) => system.system_id === id), "name")).join(" / ");
+      const pairing = item.pairing_status === "publisher-paired-run" ? labels.paired : labels.row;
+      const values = [
+        `${names}: ${item.run_kind === "optimized-run" ? labels.optimized : labels.ranking}`,
+        `${item.list_edition || labels.unknown} / ${item.measurement_date || labels.unknown}`,
+        `${formatPublicNumber(item.performance_pf)} PFlop/s`, `${formatPublicNumber(item.power_kw)} kW`,
+        `${pairing}${labels.separator}${labels.level}: ${item.power_measurement_level ?? labels.unknown}${labels.separator}${localized(item, "basis")}`
+      ];
+      values.forEach((value, index) => {
+        const cell = document.createElement(index === 0 ? "th" : "td"); if (index === 0) cell.scope = "row";
+        cell.textContent = value; if (index === 4) appendInventoryEvidence(cell, item.source_ids, inventory); row.append(cell);
+      });
+      body.append(row);
+    });
+    table.append(head, body); document.getElementById("hpci-benchmark-observations").replaceChildren(table);
   }
   function renderApplicationPerformance(roadmap) {
     const section = document.getElementById("application-performance-section"); const performance = data.application_performance_forecasts; const visible = roadmap.roadmap_id === "RM-APP-WORKLOADS" && performance;

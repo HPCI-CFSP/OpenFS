@@ -1,7 +1,7 @@
 {
   "schema_version": "0.2.0",
   "artifact_id": "PROCUREMENT-COST-001",
-  "as_of": "2026-09-06",
+  "as_of": "2026-09-13",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "title_ja": "公開調達実績と仕様書の対応表",
@@ -9,6 +9,26 @@
   "caveat_ja": "契約額の公表と、仕様書・価格内訳の公開は別です。別契約の重複・共用関係、構成との対応、保守期間を確認するまで、合算や部品単価への換算を行いません。月額と60か月以上の期間を相互に対応付けられる公開資料で確認できる場合に限り、最初の60か月の契約上の既知費用下限を機械的に算出します。これは電力、施設共用費、人件費、契約変更、増設を含む5年間TCOではありません。単一のAIモデルによる確認であり、独立したAIモデルによる合意判定は未完了です。",
   "caveat_en": "A published contract amount does not imply public specifications or component prices. Do not aggregate contracts or derive component prices before checking overlap, shared facilities, configuration matching and maintenance terms. Only when corresponding public evidence establishes a monthly rate and at least 60 months does OpenFS calculate the contractual known-cost floor for the first 60 months. This is not five-year TCO including electricity, shared facilities, staffing, amendments or expansion. These single-model checks have not passed Consensus review by independent models.",
   "sources": [
+    {
+      "source_id": "PCS-RIKEN-RCCS-ELECTRICITY-TENDER-2026",
+      "title": "RIKEN R-CCS electricity supply FY2026: tender notice",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/369044/2025100900090001.html",
+      "publisher": "RIKEN / JETRO Government Procurement Database",
+      "origin_group": "riken-rccs-electricity-fy2026",
+      "checked_on": "2026-09-13",
+      "locator": "Published 2025-10-09; sections 1(2), 1(4), 1(5): tender quantities, supply period and site",
+      "retrieval_status": "read"
+    },
+    {
+      "source_id": "PCS-RIKEN-RCCS-ELECTRICITY-AWARD-2026",
+      "title": "RIKEN R-CCS electricity supply FY2026: award notice (not retrieved)",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/380672/2026020201370069.html",
+      "publisher": "RIKEN / JETRO Government Procurement Database",
+      "origin_group": "riken-rccs-electricity-fy2026",
+      "checked_on": "2026-09-13",
+      "locator": "Managed retrieval failed with cache miss; search preview is not accepted price evidence",
+      "retrieval_status": "failed"
+    },
     {
       "source_id": "PCS-RIKEN-CONTRACTS-2025",
       "title": "RIKEN competitive contract results, April-November 2025",
@@ -2707,9 +2727,137 @@
           {"scope_id": "decommission-and-migration", "evidence_status": "unknown", "source_refs": []}
         ]
       }
+    },
+    {
+      "case_id": "PROC-RIKEN-RCCS-ELECTRICITY-2026",
+      "title_ja": "理研R-CCS 2026年度電気調達（入札条件）",
+      "title_en": "RIKEN R-CCS FY2026 electricity procurement (tender conditions)",
+      "buyer": "RIKEN",
+      "supplier": null,
+      "contract_kind": "service",
+      "contract_date": null,
+      "award_date": null,
+      "amount": null,
+      "documents": [
+        {
+          "kind": "tender",
+          "source_id": "PCS-RIKEN-RCCS-ELECTRICITY-TENDER-2026",
+          "access_status": "public-read"
+        },
+        {
+          "kind": "final-specification",
+          "source_id": "PCS-RIKEN-RCCS-ELECTRICITY-TENDER-2026",
+          "access_status": "not-obtained"
+        },
+        {
+          "kind": "award",
+          "source_id": "PCS-RIKEN-RCCS-ELECTRICITY-AWARD-2026",
+          "access_status": "not-obtained"
+        }
+      ],
+      "contract_window": {
+        "start": "2026-04-01",
+        "end": "2027-03-31",
+        "basis": "tender-period",
+        "source_refs": [
+          "PCS-RIKEN-RCCS-ELECTRICITY-TENDER-2026"
+        ]
+      },
+      "linked_system_ids": [
+        "HPCI-SYS-FUGAKU"
+      ],
+      "configuration_match": "unconfirmed",
+      "component_category": "facility",
+      "itemized_costs": [],
+      "related_case_ids": [],
+      "aggregation_status": "shared-scope-unresolved",
+      "scope_ja": "R-CCS需要場所の電気供給に関する入札条件です。富岳とのリンクは関連施設を示すだけで、同機への全額配賦は認めません。入札数量と使用期間は確認済みですが、落札額・契約本文・実支払額は未確認です。",
+      "scope_en": "Electricity tender for the R-CCS demand site. Linking Fugaku identifies an associated facility, not a full cost allocation. Tender quantities and period were read; award amount, executed contract and actual payments remain unverified.",
+      "gap_ids": [
+        "PCG-008"
+      ],
+      "five_year_cost_assessment": {
+        "status": "not-computable",
+        "horizon_months": 60,
+        "known_cost_floor_jpy": null,
+        "tax_basis": null,
+        "complete_tco": false,
+        "basis_ja": "単年度の入札条件であり、契約範囲・料金内訳が未確認です。予定電力量を実績とせず、5年分の費用を外挿しません。",
+        "basis_en": "A single-year tender with unverified executed scope and tariff breakdown. Planned energy is not actual consumption and cannot establish five-year cost.",
+        "scope_coverage": [
+          {
+            "scope_id": "compute-and-accelerators",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "interconnect",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "storage",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "software-and-licenses",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "installation-and-integration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "maintenance-and-support",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "electricity",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "cooling",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "shared-facility",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "staffing",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "refresh-and-expansion",
+            "evidence_status": "unknown",
+            "source_refs": []
+          },
+          {
+            "scope_id": "decommission-and-migration",
+            "evidence_status": "unknown",
+            "source_refs": []
+          }
+        ]
+      }
     }
   ],
   "coverage_gaps": [
+    {
+      "gap_id": "PCG-008",
+      "priority": "P0",
+      "description_ja": "R-CCSの2026年度電気調達は入札条件のみ本文確認済みです。落札・契約資料は取得失敗で、金額、税区分、基本料金と従量料金、調整項目、対象設備への配賦は未確認です。",
+      "description_en": "Only the FY2026 R-CCS electricity tender was read. Award/contract retrieval failed; amount, tax treatment, fixed and variable charges, adjustments and equipment allocation remain unverified.",
+      "next_action_ja": "公開の落札・契約本文、仕様書と料金内訳を確認し、予定使用量と実績を区別する。検索結果の金額を転記せず、富岳単体や5年間の費用へ換算しない。",
+      "next_action_en": "Obtain public award/contract text, specifications and tariff breakdown; distinguish forecast consumption from actuals. Do not copy a search-preview amount or allocate it to Fugaku or five years."
+    },
     {
       "gap_id": "PCG-001",
       "priority": "P0",
@@ -2729,8 +2877,8 @@
     {
       "gap_id": "PCG-003",
       "priority": "P0",
-      "description_ja": "全16件を12区分の5年間TCO証拠マトリクスで監査しました。Siriusは最初の60か月の契約上の既知費用下限7億1,280万円（税込）、TSUBAME4.0は50億4,387万1,140円（税区分未確認）を再計算できますが、完全な5年間TCOは0件です。HBW2の概算年額は契約額や5年間費用へ外挿せず、価格付き一式契約、提供機関公表値、価格なし要求仕様を分けて保持します。",
-      "description_en": "All 16 cases are audited against a 12-scope five-year TCO evidence matrix. Sirius supports a JPY 712.8 million tax-inclusive contractual known-cost floor for the first 60 months, and TSUBAME4.0 supports JPY 5,043,871,140 with tax treatment unverified; complete five-year TCO remains available for zero cases. The approximate HBW2 annual payment is not extrapolated into a contract value or five-year cost; priced package awards, provider-reported values, and unpriced requirements remain distinct.",
+      "description_ja": "登録事例を12区分の5年間TCO証拠マトリクスで監査しました。Siriusは最初の60か月の契約上の既知費用下限7億1,280万円（税込）、TSUBAME4.0は50億4,387万1,140円（税区分未確認）を再計算できますが、完全な5年間TCOは0件です。HBW2の概算年額は契約額や5年間費用へ外挿せず、価格付き一式契約、提供機関公表値、価格なし要求仕様を分けて保持します。",
+      "description_en": "Registered cases are audited against a 12-scope five-year TCO evidence matrix. Sirius supports a JPY 712.8 million tax-inclusive contractual known-cost floor for the first 60 months, and TSUBAME4.0 supports JPY 5,043,871,140 with tax treatment unverified; complete five-year TCO remains available for zero cases. The approximate HBW2 annual payment is not extrapolated into a contract value or five-year cost; priced package awards, provider-reported values, and unpriced requirements remain distinct.",
       "next_action_ja": "各契約の機器、保守、ソフトウェア、設置、電力、冷却、共用施設、人件費、更新・増設の包含・除外を確認し、二重計上のない5年間TCOへ進めます。",
       "next_action_en": "Confirm inclusion and exclusion of equipment, maintenance, software, installation, electricity, cooling, shared facilities, staffing, refresh and expansion before producing a non-overlapping five-year TCO."
     },

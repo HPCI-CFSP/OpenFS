@@ -1,8 +1,8 @@
 # FS3.0システム整備計画の判断根拠パッケージ
 
-基準日: 2026-09-12 / Status: provisional / Consensus: incomplete
+基準日: 2026-09-13 / Status: provisional / Consensus: incomplete
 
-HPCI 27システム、公開調達16案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
+HPCI 27システム、公開調達17案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
 
 > 単一のAIモデル・単一エージェントによる公開情報ベースの暫定整理です。独立したAIモデルによるConsensus Gate、各責任者による要件・閾値・予算・調達判断は未完了です。充足数は調査範囲であり、案の点数や推奨順位を示すものではありません。
 
@@ -11,7 +11,7 @@ HPCI 27システム、公開調達16案件、EEA1 6アプリ、19ロードマッ
 | 対象 | 登録数 | 現在確認できる範囲 | 判断上の境界 |
 |---|---:|---|---|
 | HPCIシステム | 27 | 将来時期 22、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
-| 公開調達 | 16 | 契約・落札総額 12、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
+| 公開調達 | 17 | 契約・落札総額 12、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
 | ロードマップ | 19 | 398マイルストーン、30依存関係 | Consensus Gate未完了 |
 
@@ -37,9 +37,9 @@ flowchart LR
 
 | システム | センター | 将来時期 | 運用根拠 | 数値/集計/状態/認証 | 電力・施設根拠 | 次の確認 |
 |---|---|---|---|---|---|---|
-| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 将来時期の公開根拠あり | 数値実績あり | 9/2/0/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
+| スーパーコンピュータ 富岳 | `CENTER-RIKEN-RCCS` | 将来時期の公開根拠あり | 数値実績あり | 11/2/0/0 | 電力根拠登録済み (1) | 確認済みの範囲を維持する。 |
 | Wisteria/BDEC-01 Odyssey | `CENTER-UTOKYO-ITC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| SQUID 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| SQUID 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 3/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | OCTOPUS 汎用CPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | Camphor3 システムA | `CENTER-KYOTO-ACCMS` | 将来時期の公開根拠あり | 数値実績あり | 5/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | 玄界 ノードグループA | `CENTER-KYUSHU-RIIT` | 将来時期の公開根拠あり | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
@@ -57,15 +57,15 @@ flowchart LR
 | 玄界 ノードグループB | `CENTER-KYUSHU-RIIT` | 将来時期の公開根拠あり | 公開集計あり | 0/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | Pegasus | `CENTER-TSUKUBA-CCS` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | Wisteria/BDEC-01 Aquarius | `CENTER-UTOKYO-ITC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| SQUID GPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| SQUID GPUノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 3/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | Grand Chariot 2 GPUノード | `CENTER-HOKKAIDO-IIC` | 将来時期の公開根拠あり | 数値実績あり | 1/0/1/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | AOBA-A | `CENTER-TOHOKU-CSC` | 過去・現況のみ | 公開運用フィードのみ | 0/0/1/1 | 公開根拠未確認 (0) | 公開一次情報で更新・終了・増強の将来時期、稼働率・可用性・ジョブ履歴等の運用実績、同一境界の設計・運転電力と冷却条件を確認する。 |
 | AOBA-S | `CENTER-TOHOKU-CSC` | 将来時期の公開根拠あり | 数値実績あり | 3/0/0/1 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | 地球シミュレータ VE搭載ノード部 ES4VE | `CENTER-JAMSTEC-CEIST` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
-| SQUID ベクトルノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 1/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
+| SQUID ベクトルノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 3/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | ABCI 3.0 | `CENTER-AIST-IHF` | 過去・現況のみ | 数値実績あり | 4/0/0/0 | 電力根拠登録済み (1) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
 
-## 4. 公開調達16案件と5年間費用
+## 4. 公開調達17案件と5年間費用
 
 | 調達案件 | 公表額 | 金額区分 | 仕様書 | 費目根拠 | 60か月費用 | 未確認費目 | 判断への利用 |
 |---|---:|---|---|---:|---:|---:|---|
@@ -85,6 +85,7 @@ flowchart LR
 | JAXA JSS4 コンピュータ基盤システム要求要件 | 未確認 | 未確認 | 公開仕様書を確認済み | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
 | 東京工業大学 TSUBAME4.0スーパーコンピュータの借入 | 84,064,519円 | 落札総額 | 公開仕様書を未取得 | 3/12 | 5,043,871,140円 | 9/12 | 公表された契約範囲に限る60か月費用下限として利用できます。完全なTCOではありません。 |
 | HOKUSAI BigWaterfall2 提供機関公表の年間支払額 | 300,000,000円 | 提供機関公表の概算年額 | 仕様書なし | 4/12 | 未確認 | 8/12 | 提供機関公表の概算年額として費用境界の参考にできますが、落札額・契約総額・5年間TCOではありません。 |
+| 理研R-CCS 2026年度電気調達（入札条件） | 未確認 | 未確認 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
 
 ## 5. EEA1再現性と性能評価
 
@@ -163,13 +164,13 @@ flowchart LR
 
 ## English summary
 
-A provisional package connecting 27 HPCI systems, 16 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
+A provisional package connecting 27 HPCI systems, 17 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
 - Secure unattended Web research: **blocked**; 84 source-triage entries remain unresolved.
 - HPCI inventory: 27 systems; 22 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
-- Procurement: 16 cases; public contract or award totals: 12; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
+- Procurement: 17 cases; public contract or award totals: 12; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
 - Roadmaps: 19 provisional public roadmaps and 30 registered cross-roadmap dependencies.
 

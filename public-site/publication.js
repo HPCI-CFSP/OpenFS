@@ -3,6 +3,7 @@
 
   const scriptUrl = document.currentScript?.src || window.location.href;
   const siteRoot = new URL("./", scriptUrl);
+  let provenance = window.OPENFS_PUBLIC_DATA?.publication_provenance || null;
 
   function language() {
     const requested = new URLSearchParams(window.location.search).get("lang");
@@ -24,6 +25,23 @@
     if (link.target !== "_self") link.target = "_self";
     if (link.hasAttribute("rel")) link.removeAttribute("rel");
     link.title = language() === "ja" ? "公開来歴を表示" : "View publication provenance";
+    const generated = new Date(provenance?.generated_at || "");
+    const ja = language() === "ja";
+    const date = Number.isNaN(generated.getTime()) ? (ja ? "未記録" : "Not recorded") : new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+    }).format(generated).replace(" ", "-") + " JST";
+    const repository = provenance?.public_repository || {};
+    const deployment = provenance?.pages_deployment || {};
+    const matching = /^[0-9a-f]{40}$/.test(repository.commit || "")
+      && repository.commit === deployment.source_commit && deployment.workflow_run_id;
+    const production = matching && repository.status === "published-source" && deployment.status === "serving-this-artifact";
+    const preview = matching && repository.status === "preview-source" && deployment.status === "preview-artifact";
+    const revision = production ? `${ja ? "公開版" : "Public revision"} ${repository.commit.slice(0, 7)}`
+      : preview ? `PR ${ja ? "プレビュー" : "preview"} ${repository.commit.slice(0, 7)}`
+      : (ja ? "本番反映未確認" : "Production status unverified");
+    const label = `${ja ? "サイト生成日時" : "Site generated"} ${date} · ${revision}`;
+    if (link.textContent !== label) link.textContent = label;
   }
 
   function operationalNavigation() {
@@ -64,7 +82,8 @@
       const response = await fetch(url, {cache: "no-store"});
       if (!response.ok) return fallback;
       const payload = await response.json();
-      return payload?.schema_version === "0.1.0" ? payload : fallback;
+      const matchingBundle = !fallback?.bundle_id || payload?.bundle_id === fallback.bundle_id;
+      return payload?.schema_version === "0.1.0" && matchingBundle ? payload : fallback;
     } catch (_error) {
       return fallback;
     }
@@ -78,10 +97,11 @@
   });
   const observer = new MutationObserver(linkHeader);
   const updated = document.getElementById("site-updated");
-  if (updated) observer.observe(updated, {attributes: true, attributeFilter: ["href", "target", "rel"]});
+  if (updated) observer.observe(updated, {attributes: true, attributeFilter: ["href", "target", "rel"], childList: true, subtree: true});
   linkHeader();
   operationalNavigation();
   trackHeaderOffset();
+  deploymentProvenance().then((payload) => { provenance = payload; linkHeader(); });
 
   window.OpenFSPublication = {deploymentProvenance, linkHeader, provenanceUrl};
 })();
