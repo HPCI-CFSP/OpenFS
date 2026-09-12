@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/verify_publication.py"
+      - ".github/inject_deployment_provenance.py"
       - ".github/workflows/pages.yml"
       - "PUBLICATION_MANIFEST.json"
       - "assets/branding/**"
@@ -35,12 +36,17 @@ jobs:
           persist-credentials: false
       - name: Verify publication bundle
         run: python3 .github/verify_publication.py
+      - name: Prepare Pages artifact with deployment provenance
+        run: |
+          python3 .github/inject_deployment_provenance.py \
+            --mode production \
+            --output _site
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: public-site
+          path: _site
 
   deploy:
     if: github.event_name == 'workflow_dispatch' || vars.OPENFS_PAGES_ENABLED == 'true'

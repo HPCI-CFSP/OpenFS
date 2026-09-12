@@ -31,6 +31,12 @@ may contain legacy workflow artifacts that were already public.
 6. Merge only with explicit maintainer approval. Production Pages are deployed
    only after the commit reaches `main` and the Pages workflow succeeds.
 
+After bundle verification, the preview and production workflows copy the static
+site to a disposable deployment directory and add the public repository commit
+and Actions run to `data/openfs-deployment.json`. This deployment-time record is
+not part of the signed bundle contents and cannot alter the source bundle. Pages
+does not create a separate Git commit.
+
 A successful build or preview does not mean that the research has passed
 Consensus review, nor does it authorize publication.
 
@@ -75,5 +81,10 @@ verifiable.
 5. `.github/verify_publication.py`とPagesプレビューartifactを確認する。
 6. 保守担当者の明示的承認後にのみマージする。本番Pagesへの反映は、対象コミットが
    `main`へ入り、Pages Workflowが成功した後に成立する。
+
+プレビューと本番のWorkflowは、バンドル検証後に静的サイトを一時的な配信用
+ディレクトリへ複製し、公開リポジトリのコミットとActions実行を
+`data/openfs-deployment.json`へ付加します。この実行時記録は署名対象のバンドル内容を
+変更しません。GitHub Pagesが別のGitコミットを作成することもありません。
 
 ビルドやプレビューの成功だけでは、Consensus通過や公開承認を意味しません。
