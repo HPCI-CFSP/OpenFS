@@ -1,10 +1,10 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "artifact_id": "PUBLIC-OPERATIONAL-ANALYTICS-001",
   "status": "published",
   "information_classification": "public-aggregate",
   "system_id": "SYS-FUGAKU",
-  "as_of": "2026-09-10",
+  "as_of": "2026-09-12",
   "title_ja": "実運用データに基づくワークロード・システム要件分析",
   "title_en": "Operational Workload and System Requirements Analysis",
   "summary_ja": "富岳の認可済み運用データを匿名化・集計し、ソフトウェア利用、ワークロード、性能・施設条件を次期システム要件へ結び付ける暫定分析です。",
@@ -28,6 +28,395 @@
     "free_text": false,
     "full_paths": false
   },
+  "methodology": {
+    "contract_id": "OPENFS-OPERATIONAL-OBSERVATION-CONTRACT-001",
+    "contract_status": "provisional",
+    "consensus_status": "incomplete",
+    "interpretation_rule_ja": "未観測は利用ゼロを意味しません。観測方式ごとの対象範囲が異なるため、異なる方式の値を単純に加算しません。",
+    "interpretation_rule_en": "Not observed does not mean zero use. Observation channels have different coverage and their values must not be added without reconciliation.",
+    "observation_channels": [
+      {
+        "channel_id": "dynamic-link-metadata",
+        "status": "observed-partially",
+        "title_ja": "動的リンク情報",
+        "title_en": "Dynamic-link metadata",
+        "observes_ja": "実行ファイルに記録された共有ライブラリ依存関係",
+        "observes_en": "Shared-library dependencies recorded for executables",
+        "does_not_establish_ja": "ライブラリ内の関数が実際に呼ばれたこと、静的リンク、実行時ロード、コンテナ内部の依存関係",
+        "does_not_establish_en": "That a routine was called, or coverage of static links, runtime loading, or dependencies inside containers",
+        "evidence_scope_ja": "2024年9月から11月の対応済みジョブ。月次対応率は34.26%から47.74%。2024年12月以降は元データ未収録として区別しています。",
+        "evidence_scope_en": "Mapped jobs from September through November 2024; monthly mapping coverage ranges from 34.26% to 47.74%. Months from December 2024 onward are distinguished as unavailable source data.",
+        "closure_action_ja": "連続12か月以上へ期間を拡張し、他の観測方式と照合する。",
+        "closure_action_en": "Extend coverage to at least 12 consecutive months and reconcile it with other observation channels."
+      },
+      {
+        "channel_id": "package-isv-metadata",
+        "status": "observed-partially",
+        "title_ja": "パッケージ・ISVメタデータ",
+        "title_en": "Package and ISV metadata",
+        "observes_ja": "ジョブに対応付けられたパッケージレシピ名またはISVアプリケーション名",
+        "observes_en": "Package recipe or ISV application names associated with job steps",
+        "does_not_establish_ja": "完全なアプリケーション同定、実行された機能、コンテナやインタープリタ内部の全依存関係",
+        "does_not_establish_en": "Complete application identity, executed functions, or all dependencies inside containers and interpreters",
+        "evidence_scope_ja": "メタデータが存在するジョブに限定した月次観測。",
+        "evidence_scope_en": "Monthly observations limited to jobs carrying the relevant metadata.",
+        "closure_action_ja": "実行環境の別台帳と照合し、誤検出・未検出率を評価する。",
+        "closure_action_en": "Reconcile with an independent runtime inventory and measure false-positive and false-negative rates."
+      },
+      {
+        "channel_id": "static-link",
+        "status": "not-observed",
+        "title_ja": "静的リンク",
+        "title_en": "Static linking",
+        "observes_ja": "現行データでは直接観測しない",
+        "observes_en": "Not directly observed in the current data",
+        "does_not_establish_ja": "静的に組み込まれたライブラリの利用有無または利用頻度",
+        "does_not_establish_en": "Presence or frequency of statically linked libraries",
+        "evidence_scope_ja": "2024年9月から11月について実行形式の信号を確認しましたが、静的実行ファイルの公開閾値以上の信号はなく、対応済みジョブの約66%から79%には実行形式の分類がありません。静的ライブラリ名は直接観測できません。",
+        "evidence_scope_en": "Executable-format signals were checked from September through November 2024, but no static-executable signal met the publication threshold and approximately 66% to 79% of mapped jobs lacked file classification. Statically linked library identities are not directly observed.",
+        "closure_action_ja": "バイナリ特徴またはビルド来歴から、個人・課題・パスを含まない集計を設計する。",
+        "closure_action_en": "Design privacy-controlled aggregates from binary characteristics or build provenance without person, project, or path data."
+      },
+      {
+        "channel_id": "runtime-loading",
+        "status": "not-observed",
+        "title_ja": "実行時ロード",
+        "title_en": "Runtime loading",
+        "observes_ja": "現行データではdlopenやプラグイン読込みを直接観測しない",
+        "observes_en": "The current data does not directly observe dlopen or plug-in loading",
+        "does_not_establish_ja": "実行中に追加された共有ライブラリの利用有無または利用頻度",
+        "does_not_establish_en": "Presence or frequency of libraries added while a program is running",
+        "evidence_scope_ja": "2024年9月から11月にインタープリタまたはスクリプトの実行信号を確認しましたが、読み込まれた言語パッケージは観測できません。",
+        "evidence_scope_en": "Interpreter or script execution signals were observed from September through November 2024, but imported language packages are not observed.",
+        "closure_action_ja": "実行時モジュール情報を短期保持し、ソフトウェア族単位に匿名集計する方式を評価する。",
+        "closure_action_en": "Evaluate short-lived runtime module capture followed by anonymous software-family aggregation."
+      },
+      {
+        "channel_id": "container-content",
+        "status": "not-observed",
+        "title_ja": "コンテナ内部",
+        "title_en": "Container contents",
+        "observes_ja": "現行データではコンテナイメージ内部の依存関係を直接観測しない",
+        "observes_en": "The current data does not directly observe dependencies inside container images",
+        "does_not_establish_ja": "コンテナ内のライブラリ、フレームワーク、アプリケーションの利用状況",
+        "does_not_establish_en": "Use of libraries, frameworks, or applications inside containers",
+        "evidence_scope_ja": "利用可能な集計なし。",
+        "evidence_scope_en": "No usable aggregate is available.",
+        "closure_action_ja": "許可済みイメージ台帳または署名済みSBOMを、開示制御したソフトウェア族へ集約する。",
+        "closure_action_en": "Aggregate an approved image inventory or signed SBOMs into disclosure-controlled software families."
+      },
+      {
+        "channel_id": "interpreter-import",
+        "status": "not-observed",
+        "title_ja": "インタープリタ・言語パッケージ",
+        "title_en": "Interpreter and language packages",
+        "observes_ja": "現行データではPython等が読み込むパッケージを直接観測しない",
+        "observes_en": "The current data does not directly observe packages imported by Python or other interpreters",
+        "does_not_establish_ja": "Python、Julia、R等のパッケージおよび純粋なスクリプトの利用状況",
+        "does_not_establish_en": "Use of Python, Julia, R, or other language packages and pure scripts",
+        "evidence_scope_ja": "利用可能な集計なし。",
+        "evidence_scope_en": "No usable aggregate is available.",
+        "closure_action_ja": "環境ロックファイルまたはモジュール台帳を、バージョンを含むパッケージ族へ匿名集計する。",
+        "closure_action_en": "Aggregate environment lock files or module inventories anonymously by versioned package family."
+      }
+    ],
+    "channel_coverage": {
+      "period_start": "2024-09-01",
+      "period_end_exclusive": "2025-09-01",
+      "month_count": 12,
+      "observed_month_count": 3,
+      "latest_observed_month": "2024-11-01",
+      "monthly": [
+        {
+          "month": "2024-09-01",
+          "observation_status": "available",
+          "total_jobs": 350765,
+          "executable_mapped_jobs": 120160,
+          "mapping_coverage_pct": 34.26,
+          "jobs_with_dynamic_link_metadata": 25835,
+          "jobs_with_file_classification": 25835,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": 23940,
+          "jobs_with_interpreter_or_script_signal": 760,
+          "jobs_with_unclassified_executable": 95315
+        },
+        {
+          "month": "2024-10-01",
+          "observation_status": "available",
+          "total_jobs": 430550,
+          "executable_mapped_jobs": 205550,
+          "mapping_coverage_pct": 47.74,
+          "jobs_with_dynamic_link_metadata": 69985,
+          "jobs_with_file_classification": 69985,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": 69450,
+          "jobs_with_interpreter_or_script_signal": 360,
+          "jobs_with_unclassified_executable": 135765
+        },
+        {
+          "month": "2024-11-01",
+          "observation_status": "available",
+          "total_jobs": 434285,
+          "executable_mapped_jobs": 197345,
+          "mapping_coverage_pct": 45.44,
+          "jobs_with_dynamic_link_metadata": 67805,
+          "jobs_with_file_classification": 67805,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": 67500,
+          "jobs_with_interpreter_or_script_signal": 240,
+          "jobs_with_unclassified_executable": 130120
+        },
+        {
+          "month": "2024-12-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 609790,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-01-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 834995,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-02-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 840260,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-03-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 545235,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-04-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 278045,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-05-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 287255,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-06-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 340440,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-07-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 357450,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        },
+        {
+          "month": "2025-08-01",
+          "observation_status": "source-data-unavailable",
+          "total_jobs": 402580,
+          "executable_mapped_jobs": null,
+          "mapping_coverage_pct": null,
+          "jobs_with_dynamic_link_metadata": null,
+          "jobs_with_file_classification": null,
+          "jobs_with_static_executable_signal": null,
+          "jobs_with_dynamic_executable_signal": null,
+          "jobs_with_interpreter_or_script_signal": null,
+          "jobs_with_unclassified_executable": null
+        }
+      ],
+      "interpretation_ja": "実行ファイル対応が0件の月は、利用ゼロではなく元データ未収録として扱います。分類別の件数は同一ジョブ内で重複し得るため、相互に加算しません。静的実行ファイルの信号は、静的に組み込まれたライブラリ名を示しません。",
+      "interpretation_en": "Months with no executable mappings are treated as unavailable source data, not zero use. Channel counts may overlap within a job and must not be added. A static-executable signal does not identify statically embedded libraries."
+    },
+    "metric_definitions": [
+      {
+        "metric_id": "monthly-total-jobs",
+        "title_ja": "月次ユニークジョブ数",
+        "title_en": "Monthly unique jobs",
+        "status": "defined",
+        "population_ja": "有効な完了日時を持ち、対象月に完了したジョブ",
+        "population_en": "Jobs with a valid completion timestamp that completed in the month",
+        "numerator_ja": "ジョブIDの重複を除いた件数",
+        "numerator_en": "Count of distinct job identifiers",
+        "denominator_ja": "該当なし。基準母集団として使用する。",
+        "denominator_en": "Not applicable; this metric is used as a reference population.",
+        "deduplication_ja": "ジョブID単位。ステップや観測行の重複を除く。",
+        "deduplication_en": "By job identifier, removing duplicate steps and observation rows.",
+        "time_basis_ja": "ジョブ完了月",
+        "time_basis_en": "Job completion month",
+        "exclusions_ja": "2000年1月1日より前の無効・番兵日時を除外。",
+        "exclusions_en": "Excludes invalid or sentinel timestamps before 1 January 2000.",
+        "overlap_rule_ja": "月をまたいで重複しない。",
+        "overlap_rule_en": "A job is assigned to one completion month."
+      },
+      {
+        "metric_id": "executable-mapping-coverage",
+        "title_ja": "実行ファイル対応率",
+        "title_en": "Executable-mapping coverage",
+        "status": "defined",
+        "population_ja": "月次ユニークジョブ数",
+        "population_en": "Monthly unique jobs",
+        "numerator_ja": "1件以上の実行ファイル情報に対応したユニークジョブ数",
+        "numerator_en": "Unique jobs mapped to at least one executable observation",
+        "denominator_ja": "同じ月の月次ユニークジョブ数",
+        "denominator_en": "Monthly unique jobs for the same month",
+        "deduplication_ja": "ジョブ、ステップ、実行ファイルの対応を重複排除した後、ジョブ単位で数える。",
+        "deduplication_en": "Deduplicate job-step-executable mappings, then count by job.",
+        "time_basis_ja": "ジョブ完了月",
+        "time_basis_en": "Job completion month",
+        "exclusions_ja": "実行ファイル対応がないジョブは分子から除くが、分母には残す。",
+        "exclusions_en": "Jobs without executable mapping are excluded from the numerator but retained in the denominator.",
+        "overlap_rule_ja": "1ジョブに複数実行ファイルがあっても分子では1件。",
+        "overlap_rule_en": "A job contributes once even if several executables are mapped."
+      },
+      {
+        "metric_id": "software-family-job-share",
+        "title_ja": "ソフトウェア族別の対応ジョブ比率",
+        "title_en": "Mapped-job share by software family",
+        "status": "defined",
+        "population_ja": "実行ファイル情報に対応したジョブ",
+        "population_en": "Jobs with executable mapping",
+        "numerator_ja": "対象ソフトウェア族の動的リンク情報が観測されたユニークジョブ数",
+        "numerator_en": "Unique jobs with an observed dynamic-link dependency in the software family",
+        "denominator_ja": "同じ月の実行ファイル対応済みユニークジョブ数",
+        "denominator_en": "Unique jobs with executable mapping in the same month",
+        "deduplication_ja": "ジョブ、ステップ、ソフトウェア族単位で重複排除し、最終的にジョブ単位で数える。",
+        "deduplication_en": "Deduplicate by job, step, and software family, then count by job.",
+        "time_basis_ja": "ジョブ完了月",
+        "time_basis_en": "Job completion month",
+        "exclusions_ja": "分類規則に該当しない共有ライブラリは族別集計から除外。",
+        "exclusions_en": "Shared libraries not matched by the taxonomy are excluded from family totals.",
+        "overlap_rule_ja": "同一ジョブが複数の族へ属し得るため、比率の合計は100%にならない。",
+        "overlap_rule_en": "A job may belong to several families, so shares do not sum to 100%."
+      },
+      {
+        "metric_id": "application-signal-job-share",
+        "title_ja": "アプリケーション信号別の対応ジョブ比率",
+        "title_en": "Mapped-job share by application signal",
+        "status": "defined",
+        "population_ja": "パッケージまたはISVメタデータを持つジョブ",
+        "population_en": "Jobs with package or ISV metadata",
+        "numerator_ja": "対象名と版が観測されたユニークジョブ数",
+        "numerator_en": "Unique jobs with the observed name and version",
+        "denominator_ja": "同じ月にパッケージまたはISVメタデータを持つユニークジョブ数",
+        "denominator_en": "Unique jobs with package or ISV metadata in the same month",
+        "deduplication_ja": "ジョブ、ステップ、信号種別、名前、版で重複排除し、最終的にジョブ単位で数える。",
+        "deduplication_en": "Deduplicate by job, step, signal type, name, and version, then count by job.",
+        "time_basis_ja": "ジョブ完了月",
+        "time_basis_en": "Job completion month",
+        "exclusions_ja": "空名、パス区切りを含む名前、100文字を超える名前を除外。",
+        "exclusions_en": "Excludes empty names, names containing path separators, and names longer than 100 characters.",
+        "overlap_rule_ja": "同一ジョブが複数信号へ属し得るため、比率の合計は100%にならない。",
+        "overlap_rule_en": "A job may contribute to several signals, so shares do not sum to 100%."
+      },
+      {
+        "metric_id": "performance-counter-coverage",
+        "title_ja": "性能カウンタ取得率",
+        "title_en": "Performance-counter coverage",
+        "status": "definition-review",
+        "population_ja": "対象期間のユニークジョブステップ",
+        "population_en": "Unique job steps in the analysis window",
+        "numerator_ja": "対象カウンタに有効値があるユニークジョブステップ数",
+        "numerator_en": "Unique job steps with a valid value for the counter",
+        "denominator_ja": "同じ期間のユニークジョブステップ数",
+        "denominator_en": "Unique job steps in the same period",
+        "deduplication_ja": "ジョブIDとステップ番号単位。複数行は先にステップへ集約する。",
+        "deduplication_en": "By job identifier and step number; repeated rows are reduced to the step first.",
+        "time_basis_ja": "ジョブ完了月。直近12完全月を表示。",
+        "time_basis_en": "Job completion month; the latest 12 complete months are shown.",
+        "exclusions_ja": "負値、無限大、欠測値を分子から除外。物理単位はデータ所有者の確認待ち。",
+        "exclusions_en": "Negative, infinite, and missing values are excluded from the numerator; physical units await data-owner confirmation.",
+        "overlap_rule_ja": "カウンタごとに取得率を算出し、相互に加算しない。",
+        "overlap_rule_en": "Coverage is calculated independently per counter and is not additive."
+      }
+    ],
+    "system_comparison": {
+      "status": "single-system-only",
+      "minimum_system_count": 2,
+      "available_systems": [
+        {
+          "system_id": "SYS-FUGAKU",
+          "coverage_status": "partial",
+          "note_ja": "動的リンク情報は3か月のみ。性能・施設指標の単位確認は未完了。",
+          "note_en": "Dynamic-link metadata covers only three months; performance and facility units are not fully verified."
+        }
+      ],
+      "required_dimensions": [
+        "metric-definition-version",
+        "observation-period",
+        "time-basis",
+        "population-and-denominator",
+        "deduplication-key",
+        "exclusion-rules",
+        "late-arrival-policy",
+        "privacy-thresholds",
+        "observation-channel-coverage"
+      ],
+      "comparison_rule_ja": "全必須項目が一致する指標だけを横比較し、基盤固有の指標は別表にする。現在は富岳1基盤のみのため、HPCI基盤間ランキングは作成しない。",
+      "comparison_rule_en": "Compare only metrics whose required dimensions agree and report system-specific metrics separately. No cross-HPCI ranking is produced while only Fugaku is available.",
+      "adapter_requirement_ja": "追加基盤は共通の2次データ形式へ変換する基盤別アダプターを用意する。",
+      "adapter_requirement_en": "Each additional system requires a system-specific adapter that emits the common secondary-data format."
+    }
+  },
   "sections": [
     {
       "section_id": "data-scope",
@@ -46,21 +435,87 @@
         "mapping_coverage_monthly": [
           {
             "month": "2024-09-01",
+            "observation_status": "available",
             "total_jobs": 350765,
             "mapped_jobs": 120160,
             "coverage_pct": 34.26
           },
           {
             "month": "2024-10-01",
+            "observation_status": "available",
             "total_jobs": 430550,
             "mapped_jobs": 205550,
             "coverage_pct": 47.74
           },
           {
             "month": "2024-11-01",
+            "observation_status": "available",
             "total_jobs": 434285,
             "mapped_jobs": 197345,
             "coverage_pct": 45.44
+          },
+          {
+            "month": "2024-12-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 609790,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-01-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 834995,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-02-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 840260,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-03-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 545235,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-04-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 278045,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-05-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 287255,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-06-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 340440,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-07-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 357450,
+            "mapped_jobs": null,
+            "coverage_pct": null
+          },
+          {
+            "month": "2025-08-01",
+            "observation_status": "source-data-unavailable",
+            "total_jobs": 402580,
+            "mapped_jobs": null,
+            "coverage_pct": null
           }
         ],
         "software_observation_end": "2024-11-01"
@@ -10853,7 +11308,6 @@
   "coverage_gaps": [
     {
       "gap_id": "GAP-OPS-001",
-      "status": "open",
       "affected_sections": [
         "data-scope",
         "system-software",
@@ -10866,11 +11320,13 @@
       "closure_evidence_ja": "連続12か月以上の月次対応率と、欠測・遅延到着を説明する再現可能な集計。",
       "closure_evidence_en": "Reproducible monthly coverage for at least 12 consecutive months, with missing and late-arriving data explained.",
       "next_action_ja": "読み取り専用データソースの名称確認権限を復旧後、遅延到着2か月を含む増分集計を実行します。",
-      "next_action_en": "After restoring permission to verify the read-only data-source name, run an incremental aggregate including the two-month late-arrival window."
+      "next_action_en": "After restoring permission to verify the read-only data-source name, run an incremental aggregate including the two-month late-arrival window.",
+      "status": "open",
+      "progress_ja": "3か月分の対応率を定量化済み。連続12か月の観測は未取得。",
+      "progress_en": "Three monthly coverage values are quantified; 12 consecutive months remain unavailable."
     },
     {
       "gap_id": "GAP-OPS-002",
-      "status": "open",
       "affected_sections": [
         "system-software",
         "system-requirements"
@@ -10881,12 +11337,14 @@
       "effect_en": "Library use may be undercounted.",
       "closure_evidence_ja": "動的リンク以外を含む独立したソフトウェア台帳との対応率・差分評価。",
       "closure_evidence_en": "Coverage and difference assessment against an independent software inventory that includes non-dynamic-link methods.",
-      "next_action_ja": "モジュール、コンテナ、実行時ロード、静的リンクを開示制御付きで集計できる観測方式を設計し、動的リンク集計と照合します。",
-      "next_action_en": "Design privacy-controlled aggregation for modules, containers, runtime loading, and static links, then reconcile it with dynamic-link observations."
+      "next_action_ja": "静的リンク、実行時ロード、コンテナ、インタープリタを開示制御付きで集計し、動的リンク集計と照合します。",
+      "next_action_en": "Aggregate static links, runtime loading, containers, and interpreters under disclosure controls, then reconcile them with dynamic-link observations.",
+      "status": "partially-addressed",
+      "progress_ja": "6つの観測チャネルと検出限界を定義し、実行形式およびインタープリタ・スクリプトの月次信号を定量化済み。静的ライブラリ、実行時ロード、コンテナ内部、言語パッケージは未観測です。",
+      "progress_en": "Six observation channels and detection limits are defined, and monthly executable-format and interpreter/script signals are quantified. Static-library identities, runtime loading, container contents, and language packages remain unobserved."
     },
     {
       "gap_id": "GAP-OPS-003",
-      "status": "open",
       "affected_sections": [
         "performance",
         "infrastructure",
@@ -10899,11 +11357,13 @@
       "closure_evidence_ja": "各指標の単位、対象設備、集計範囲、欠測、サンプリング方法についてデータ所有者が確認した定義表。",
       "closure_evidence_en": "A data-owner-verified definition table for units, covered equipment, aggregation scope, missingness, and sampling of every metric.",
       "next_action_ja": "性能、電力、冷却、ストレージ、RASの項目を定義表へ割り当て、未確認の値を要件算定へ使用しない検証を追加します。",
-      "next_action_en": "Map performance, power, cooling, storage, and RAS fields to the definition table and validate that unverified values cannot enter requirement calculations."
+      "next_action_en": "Map performance, power, cooling, storage, and RAS fields to the definition table and validate that unverified values cannot enter requirement calculations.",
+      "status": "partially-addressed",
+      "progress_ja": "公開済み集計の分母・重複排除・除外規則を定義済み。物理単位と設備境界はデータ所有者の確認待ち。",
+      "progress_en": "Denominators, deduplication, and exclusions are defined for published aggregates; physical units and facility boundaries await data-owner review."
     },
     {
       "gap_id": "GAP-OPS-004",
-      "status": "open",
       "affected_sections": [
         "applications",
         "performance",
@@ -10916,8 +11376,11 @@
       "effect_en": "HPCI-wide prioritization requires comparable data from other centers.",
       "closure_evidence_ja": "複数のHPCI基盤について同じ期間、分母、除外条件で作成した開示制御済み集計。",
       "closure_evidence_en": "Disclosure-controlled aggregates for multiple HPCI systems using the same period, denominator, and exclusions.",
-      "next_action_ja": "共通の最小データ契約を定め、理究を含む追加基盤では個別アダプターから同じ2次データ形式を生成します。",
-      "next_action_en": "Define a common minimum data contract and generate the same secondary-data format through system-specific adapters for additional platforms, including Rikyu."
+      "next_action_ja": "共通の最小データ契約に従い、追加基盤では基盤別アダプターから同じ2次データ形式を生成します。",
+      "next_action_en": "Under the common minimum data contract, generate the same secondary-data format through system-specific adapters for additional platforms.",
+      "status": "partially-addressed",
+      "progress_ja": "基盤間比較の最小契約を定義済み。富岳以外の同等集計は未取得。",
+      "progress_en": "A minimum cross-system comparison contract is defined; equivalent aggregates beyond Fugaku are unavailable."
     }
   ],
   "caveat_ja": "単一のAIモデル・単一のAIエージェントによる暫定分析であり、独立したAIモデルによるConsensus Gateは未完了です。ランキングは動的リンク等の観測範囲に限定され、人気度や重要度を直接示しません。",

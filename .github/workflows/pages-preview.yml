@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/verify_publication.py"
+      - ".github/inject_deployment_provenance.py"
       - ".github/workflows/pages-preview.yml"
       - "PUBLICATION_MANIFEST.json"
       - "assets/branding/**"
@@ -30,10 +31,18 @@ jobs:
           persist-credentials: false
       - name: Verify publication bundle
         run: python3 .github/verify_publication.py
+      - name: Prepare preview artifact with run provenance
+        env:
+          PREVIEW_COMMIT: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 .github/inject_deployment_provenance.py \
+            --mode preview \
+            --public-commit "$PREVIEW_COMMIT" \
+            --output _preview-site
       - name: Upload reviewable Pages preview
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: openfs-pages-preview-pr-${{ github.event.pull_request.number }}
-          path: public-site
+          path: _preview-site
           if-no-files-found: error
           retention-days: 14
