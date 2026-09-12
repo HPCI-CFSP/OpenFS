@@ -43,6 +43,26 @@
         "mapping_reference_total_jobs": 434285,
         "mapping_reference_mapped_jobs": 197345,
         "mapping_reference_coverage_pct": 45.44,
+        "mapping_coverage_monthly": [
+          {
+            "month": "2024-09-01",
+            "total_jobs": 350765,
+            "mapped_jobs": 120160,
+            "coverage_pct": 34.26
+          },
+          {
+            "month": "2024-10-01",
+            "total_jobs": 430550,
+            "mapped_jobs": 205550,
+            "coverage_pct": 47.74
+          },
+          {
+            "month": "2024-11-01",
+            "total_jobs": 434285,
+            "mapped_jobs": 197345,
+            "coverage_pct": 45.44
+          }
+        ],
         "software_observation_end": "2024-11-01"
       }
     },
@@ -10703,6 +10723,17 @@
             "title_en": "Migration validation for prevalent runtimes and libraries",
             "basis_ja": "動的リンク観測で上位だったPMIx runtime, MPI, FFTW, BLAS implementationsを、次期システムの移行試験対象候補とする。観測期間の制約があるため、全利用ソフトウェアの順位とはみなしません。",
             "basis_en": "Treat PMIx runtime, MPI, FFTW, BLAS implementations, the leading dynamically linked families in the observation window, as migration-test candidates. The limited observation period prevents interpreting this as a ranking of all software use.",
+            "planning_action_ja": "候補プラットフォームごとにビルド、機能、性能、数値結果の一致を確認する移行試験群を定義します。",
+            "planning_action_en": "Define migration tests for buildability, function, performance, and numerical-result agreement on every candidate platform.",
+            "validation_condition_ja": "観測期間を拡張し、静的リンク、実行時ロード、コンテナを含む別のソフトウェア台帳と照合した後に対象を確定します。",
+            "validation_condition_en": "Finalize the set only after extending the observation period and reconciling it with another inventory that covers static links, runtime loading, and containers.",
+            "priority": "P0",
+            "planning_use": "evaluation-input",
+            "procurement_use": "candidate-only",
+            "coverage_gap_refs": [
+              "GAP-OPS-001",
+              "GAP-OPS-002"
+            ],
             "status": "provisional"
           },
           {
@@ -10711,6 +10742,17 @@
             "title_en": "Early evaluation of expanding software",
             "basis_ja": "netcdf-fortran, gromacs, python, gaussian, netcdf-cでは直近3か月の観測比率に増加または新規観測の信号があるため、移植性・性能評価の候補とする。将来需要の予測ではありません。",
             "basis_en": "netcdf-fortran, gromacs, python, gaussian, netcdf-c show expanding or newly observed shares in the latest three-month window and are candidates for portability and performance evaluation. This is not a forecast of future demand.",
+            "planning_action_ja": "増加・新規観測の信号を継続監視し、主要版について移植性と代表入力での性能を先行評価します。",
+            "planning_action_en": "Continue monitoring expanding and newly observed signals, then evaluate portability and representative-input performance for material versions.",
+            "validation_condition_ja": "少なくとも連続する2つの比較期間で傾向を再確認し、パッケージ情報以外の根拠と照合します。",
+            "validation_condition_en": "Reconfirm the trend across at least two consecutive comparison windows and corroborate it with evidence beyond package metadata.",
+            "priority": "P1",
+            "planning_use": "evaluation-input",
+            "procurement_use": "candidate-only",
+            "coverage_gap_refs": [
+              "GAP-OPS-001",
+              "GAP-OPS-004"
+            ],
             "status": "provisional"
           },
           {
@@ -10719,7 +10761,54 @@
             "title_en": "Resource mix aligned with observed job scales",
             "basis_ja": "直近12完全月ではジョブ数は1ノード帯、割当ノード秒は129-1024ノード帯が最大でした。小規模ジョブの処理能力と大規模並列資源を別の要件として評価します。",
             "basis_en": "Across the latest 12 complete months, the 1-node band led by job count, while the 129-1024-node band led by allocated node-seconds. Evaluate small-job throughput and large parallel capacity as separate requirements.",
+            "planning_action_ja": "小規模ジョブの処理率と大規模並列ジョブへ供給できる連続資源量を、別々の容量指標としてシナリオ比較に含めます。",
+            "planning_action_en": "Compare small-job throughput and contiguous capacity available to large parallel jobs as separate scenario metrics.",
+            "validation_condition_ja": "待ち時間、実行時間、ノード時間、ジョブ完了率を同じ期間・定義で検証し、他センターの需要分布と比較します。",
+            "validation_condition_en": "Validate wait time, run time, node-time, and completion rate over the same period and definitions, then compare demand distributions across centers.",
+            "priority": "P0",
+            "planning_use": "scenario-input",
+            "procurement_use": "candidate-only",
+            "coverage_gap_refs": [
+              "GAP-OPS-004"
+            ],
             "status": "provisional"
+          },
+          {
+            "requirement_id": "REQ-OPS-SOFTWARE-OBSERVABILITY",
+            "title_ja": "ソフトウェア利用状況を継続把握できる観測設計",
+            "title_en": "Observability for continued software-usage assessment",
+            "basis_ja": "共有ライブラリ観測は2024年9月から11月に限られ、静的リンク、実行時ロード、コンテナを捕捉しません。未観測を未利用と判断できないため、次期基盤でも開示制御付きの継続観測が必要です。",
+            "basis_en": "Shared-library observations cover only September-November 2024 and omit static links, runtime loading, and containers. Because non-observation is not non-use, the future platform needs privacy-controlled continuing observation.",
+            "planning_action_ja": "目的、保持期間、最小集計単位、抑制規則を定めたうえで、複数の観測方式を突き合わせられる運用テレメトリを設計します。",
+            "planning_action_en": "Design operational telemetry that can reconcile multiple observation methods under declared purpose, retention, minimum aggregation, and suppression rules.",
+            "validation_condition_ja": "連続12か月以上について対応率を示し、動的リンク以外の方式を含む独立したソフトウェア台帳との再現可能な照合を行います。",
+            "validation_condition_en": "Report coverage for at least 12 consecutive months and reproducibly reconcile it with an independent software inventory that includes non-dynamic-link methods.",
+            "priority": "P0",
+            "planning_use": "design-requirement",
+            "procurement_use": "candidate-only",
+            "coverage_gap_refs": [
+              "GAP-OPS-001",
+              "GAP-OPS-002"
+            ],
+            "status": "provisional"
+          },
+          {
+            "requirement_id": "REQ-OPS-PERFORMANCE-TELEMETRY",
+            "title_ja": "性能律速を再現可能に判定する共通テレメトリ",
+            "title_en": "Common telemetry for reproducible bottleneck classification",
+            "basis_ja": "計算、メモリ、同期、I/O、電力に関するカウンタの記録はありますが、単位と対象範囲の確認が未完了です。",
+            "basis_en": "Compute, memory, synchronization, I/O, and power counters are recorded, but their units and scope have not been fully verified.",
+            "planning_action_ja": "計算・メモリ・通信・I/O・同期・電力を同一ジョブへ結び付け、定義と欠測率を版管理する測定仕様を策定します。",
+            "planning_action_en": "Specify versioned measurements that bind compute, memory, communication, I/O, synchronization, and power to the same job with definitions and missingness rates.",
+            "validation_condition_ja": "単位、集計範囲、サンプリング、オーバーフロー処理を確認し、代表ジョブで独立計測と照合します。",
+            "validation_condition_en": "Verify units, aggregation scope, sampling, and overflow handling, then reconcile the counters with independent measurements on representative jobs.",
+            "priority": "P0",
+            "planning_use": "evidence-gate",
+            "procurement_use": "not-until-validated",
+            "coverage_gap_refs": [
+              "GAP-OPS-003"
+            ],
+            "status": "coverage-gap"
           },
           {
             "requirement_id": "REQ-OPS-INFRASTRUCTURE-CALIBRATION",
@@ -10727,6 +10816,34 @@
             "title_en": "Definition review for storage, power, and RAS metrics",
             "basis_ja": "単位と対象範囲が確認できるまで、数値を設備容量や信頼性要件へ直接変換しない。",
             "basis_en": "Do not convert values directly into facility-capacity or reliability requirements until units and scope are verified.",
+            "planning_action_ja": "IT電力、施設電力、冷却、ストレージ容量・帯域、障害・保守時間を共通境界で定義し、システム規模と5年間TCOの入力へ接続します。",
+            "planning_action_en": "Define IT power, facility power, cooling, storage capacity and bandwidth, failure, and maintenance time under common boundaries and connect them to system sizing and five-year TCO inputs.",
+            "validation_condition_ja": "センサー・会計項目ごとに単位、対象設備、欠測、集計方法、公開可否をデータ所有者が確認します。",
+            "validation_condition_en": "The data owner verifies units, covered equipment, missingness, aggregation method, and publication eligibility for every sensor or accounting field.",
+            "priority": "P0",
+            "planning_use": "evidence-gate",
+            "procurement_use": "not-until-validated",
+            "coverage_gap_refs": [
+              "GAP-OPS-003"
+            ],
+            "status": "coverage-gap"
+          },
+          {
+            "requirement_id": "REQ-OPS-HPCI-COMPARABILITY",
+            "title_ja": "HPCI基盤間で比較可能な需要・運用指標",
+            "title_en": "Comparable demand and operations metrics across HPCI systems",
+            "basis_ja": "現在の詳細な実運用集計は富岳の単一環境に限られ、HPCI全体の需要分布を代表しません。",
+            "basis_en": "The current detailed operational aggregate covers only one Fugaku environment and does not represent demand across HPCI.",
+            "planning_action_ja": "各基盤で共通定義のジョブ規模、資源時間、ソフトウェア、I/O、電力、可用性を集計し、基盤固有指標は分離して比較します。",
+            "planning_action_en": "Aggregate consistently defined job scale, resource time, software, I/O, power, and availability at each system while keeping site-specific metrics separate.",
+            "validation_condition_ja": "複数のHPCI基盤で同一期間・分母・除外条件の集計を取得し、定義差を明記した比較表を作成します。",
+            "validation_condition_en": "Obtain aggregates from multiple HPCI systems using the same period, denominator, and exclusions, and publish a comparison that states remaining definition differences.",
+            "priority": "P0",
+            "planning_use": "evidence-gate",
+            "procurement_use": "not-until-validated",
+            "coverage_gap_refs": [
+              "GAP-OPS-004"
+            ],
             "status": "coverage-gap"
           }
         ]
@@ -10736,31 +10853,71 @@
   "coverage_gaps": [
     {
       "gap_id": "GAP-OPS-001",
+      "status": "open",
+      "affected_sections": [
+        "data-scope",
+        "system-software",
+        "system-requirements"
+      ],
       "title_ja": "実行ファイル対応データの期間欠損",
       "title_en": "Temporal gaps in executable mapping",
       "effect_ja": "未観測月を利用ゼロとみなせません。",
-      "effect_en": "Unobserved months cannot be interpreted as zero use."
+      "effect_en": "Unobserved months cannot be interpreted as zero use.",
+      "closure_evidence_ja": "連続12か月以上の月次対応率と、欠測・遅延到着を説明する再現可能な集計。",
+      "closure_evidence_en": "Reproducible monthly coverage for at least 12 consecutive months, with missing and late-arriving data explained.",
+      "next_action_ja": "読み取り専用データソースの名称確認権限を復旧後、遅延到着2か月を含む増分集計を実行します。",
+      "next_action_en": "After restoring permission to verify the read-only data-source name, run an incremental aggregate including the two-month late-arrival window."
     },
     {
       "gap_id": "GAP-OPS-002",
+      "status": "open",
+      "affected_sections": [
+        "system-software",
+        "system-requirements"
+      ],
       "title_ja": "静的リンク・実行時ロード・コンテナの未観測",
       "title_en": "Static, runtime-loaded, and container dependencies are not observed",
       "effect_ja": "ライブラリ利用を過少推定する可能性があります。",
-      "effect_en": "Library use may be undercounted."
+      "effect_en": "Library use may be undercounted.",
+      "closure_evidence_ja": "動的リンク以外を含む独立したソフトウェア台帳との対応率・差分評価。",
+      "closure_evidence_en": "Coverage and difference assessment against an independent software inventory that includes non-dynamic-link methods.",
+      "next_action_ja": "モジュール、コンテナ、実行時ロード、静的リンクを開示制御付きで集計できる観測方式を設計し、動的リンク集計と照合します。",
+      "next_action_en": "Design privacy-controlled aggregation for modules, containers, runtime loading, and static links, then reconcile it with dynamic-link observations."
     },
     {
       "gap_id": "GAP-OPS-003",
+      "status": "open",
+      "affected_sections": [
+        "performance",
+        "infrastructure",
+        "system-requirements"
+      ],
       "title_ja": "性能・施設指標の単位と対象範囲",
       "title_en": "Units and scope of performance and facility metrics",
       "effect_ja": "設備容量・性能要件への定量変換は未完了です。",
-      "effect_en": "Quantitative translation into capacity and performance requirements is incomplete."
+      "effect_en": "Quantitative translation into capacity and performance requirements is incomplete.",
+      "closure_evidence_ja": "各指標の単位、対象設備、集計範囲、欠測、サンプリング方法についてデータ所有者が確認した定義表。",
+      "closure_evidence_en": "A data-owner-verified definition table for units, covered equipment, aggregation scope, missingness, and sampling of every metric.",
+      "next_action_ja": "性能、電力、冷却、ストレージ、RASの項目を定義表へ割り当て、未確認の値を要件算定へ使用しない検証を追加します。",
+      "next_action_en": "Map performance, power, cooling, storage, and RAS fields to the definition table and validate that unverified values cannot enter requirement calculations."
     },
     {
       "gap_id": "GAP-OPS-004",
+      "status": "open",
+      "affected_sections": [
+        "applications",
+        "performance",
+        "infrastructure",
+        "system-requirements"
+      ],
       "title_ja": "富岳以外のセンターとの比較",
       "title_en": "Comparison with systems beyond Fugaku",
       "effect_ja": "HPCI全体の優先順位には他センターの同等データが必要です。",
-      "effect_en": "HPCI-wide prioritization requires comparable data from other centers."
+      "effect_en": "HPCI-wide prioritization requires comparable data from other centers.",
+      "closure_evidence_ja": "複数のHPCI基盤について同じ期間、分母、除外条件で作成した開示制御済み集計。",
+      "closure_evidence_en": "Disclosure-controlled aggregates for multiple HPCI systems using the same period, denominator, and exclusions.",
+      "next_action_ja": "共通の最小データ契約を定め、理究を含む追加基盤では個別アダプターから同じ2次データ形式を生成します。",
+      "next_action_en": "Define a common minimum data contract and generate the same secondary-data format through system-specific adapters for additional platforms, including Rikyu."
     }
   ],
   "caveat_ja": "単一のAIモデル・単一のAIエージェントによる暫定分析であり、独立したAIモデルによるConsensus Gateは未完了です。ランキングは動的リンク等の観測範囲に限定され、人気度や重要度を直接示しません。",
