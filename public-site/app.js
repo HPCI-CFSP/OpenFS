@@ -1708,7 +1708,7 @@
       item.append(title, status, question);
       if (!numbered && unit.latest_update_id) {
         const provenance = document.createElement("a");
-        provenance.href = `https://github.com/HPCI-CFSP/OpenFS/blob/${data.site.commit_sha}/proposals/research-unit-updates/${unit.latest_update_id}.json`;
+        provenance.href = "knowledge/public/topic-decision-support.json";
         provenance.textContent = language === "ja" ? "暫定調査の根拠・履歴" : "Provisional research provenance";
         item.appendChild(provenance);
       }

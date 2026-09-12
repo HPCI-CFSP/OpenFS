@@ -49,7 +49,11 @@
     const node = document.createElement("table");
     const head = document.createElement("thead");
     const headRow = document.createElement("tr");
-    headers.forEach((header) => headRow.append(td(header, false)));
+    headers.forEach((header) => {
+      const cell = td(header, true);
+      cell.scope = "col";
+      headRow.append(cell);
+    });
     head.append(headRow);
     const body = document.createElement("tbody");
     rows.forEach((cells) => {
@@ -163,14 +167,36 @@
       if (!visible.length) return;
       const details = document.createElement("details");
       details.className = "operational-trend-detail";
-      details.append(element("summary", "", `${signal.name}: ${text("details")}`));
+      const signalLabel = [signal.name, signal.version].filter(Boolean).join(" ");
+      details.append(element("summary", "", `${signalLabel}: ${text("details")}`));
       details.append(table([text("month"), text("jobs"), text("share")], visible.map((row) => [row.month, value(row.unique_jobs), row.mapped_job_share_pct === null ? text("noValue") : `${row.mapped_job_share_pct}%`])));
       container.append(details);
     });
   }
 
   function renderPerformance(container, data) {
-    container.append(table([text("nodeScale"), text("jobs"), text("nodeSeconds")], data.node_scale_distribution.map((row) => [row.node_count_bin, value(row.unique_jobs), value(row.allocated_node_seconds)])));
+    const percentage = (number) => number == null ? text("noValue") : `${number}%`;
+    const months = data.window_months;
+    const period = months.length ? `${months[0].slice(0, 7)} - ${months[months.length - 1].slice(0, 7)} (${months.length}${language === "ja" ? "か月" : " months"})` : text("noValue");
+    container.append(element("p", "operational-window", period));
+    if (data.missing_months?.length) {
+      container.append(element("p", "operational-note", `${language === "ja" ? "欠測月" : "Missing months"}: ${data.missing_months.join(", ")}`));
+    }
+    container.append(element("p", "operational-note", localized(data, "interpretation")));
+    container.append(table(
+      [text("nodeScale"), text("windowJobs"), language === "ja" ? "ステップ構成比" : "Step share", text("nodeSeconds"), language === "ja" ? "割当ノード時間構成比" : "Allocated node-time share"],
+      data.node_scale_distribution.map((row) => [row.node_count_bin, value(row.monthly_bin_job_observations ?? row.unique_jobs), percentage(row.step_share_pct), value(row.allocated_node_seconds), percentage(row.node_time_share_pct)])
+    ));
+    if (data.queue_wait_monthly?.length) {
+      container.append(element("h4", "", language === "ja" ? "ノード規模別の月次待ち時間" : "Monthly wait times by node scale"), element("p", "operational-note", localized(data, "queue_interpretation")));
+      const details = document.createElement("details");
+      details.append(element("summary", "", text("details")));
+      details.append(table(
+        [text("month"), text("nodeScale"), language === "ja" ? "有効標本数" : "Valid samples", "p50 (s)", "p95 (s)"],
+        data.queue_wait_monthly.map((row) => [row.month, row.node_count_bin, value(row.valid_wait_samples), value(row.wait_p50_seconds), value(row.wait_p95_seconds)])
+      ));
+      container.append(details);
+    }
     const coverageRows = Object.entries(data.counter_coverage_pct).map(([name, coverage]) => [name, coverage === null ? text("noValue") : `${coverage}%`]);
     container.append(element("h4", "", language === "ja" ? "性能カウンタ取得率" : "Performance-counter coverage"), table([text("counter"), text("coverage")], coverageRows));
   }

@@ -5,7 +5,9 @@
   const siteRoot = new URL("./", scriptUrl);
 
   function language() {
-    return new URLSearchParams(window.location.search).get("lang") === "en" ? "en" : "ja";
+    const requested = new URLSearchParams(window.location.search).get("lang");
+    if (requested === "ja" || requested === "en") return requested;
+    return document.documentElement.lang === "en" ? "en" : "ja";
   }
 
   function provenanceUrl() {
@@ -24,6 +26,36 @@
     link.title = language() === "ja" ? "公開来歴を表示" : "View publication provenance";
   }
 
+  function operationalNavigation() {
+    const nav = document.querySelector("nav.tabs");
+    if (!nav) return;
+    const target = new URL("analytics/operational-workloads/", siteRoot);
+    target.searchParams.set("lang", language());
+    let link = [...nav.querySelectorAll("a")].find((item) => new URL(item.href).pathname === target.pathname);
+    if (!link) {
+      link = document.createElement("a");
+      const catalog = [...nav.querySelectorAll("a")].find((item) => new URL(item.href).hash === "#catalog");
+      if (catalog) catalog.after(link);
+      else nav.prepend(link);
+    }
+    link.href = target.href;
+    link.textContent = language() === "ja" ? "実運用分析" : "Operational analysis";
+    if (window.location.pathname === target.pathname) {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "page");
+    }
+  }
+
+  function trackHeaderOffset() {
+    const header = document.querySelector(".app-header");
+    if (!header || typeof ResizeObserver === "undefined") return;
+    const update = () => document.documentElement.style.setProperty(
+      "--openfs-header-offset", `${Math.ceil(header.getBoundingClientRect().height) + 12}px`
+    );
+    update();
+    new ResizeObserver(update).observe(header);
+  }
+
   async function deploymentProvenance() {
     const fallback = window.OPENFS_PUBLIC_DATA?.publication_provenance || null;
     try {
@@ -39,12 +71,17 @@
   }
 
   document.addEventListener("click", (event) => {
-    if (event.target.closest?.("[data-language]")) window.setTimeout(linkHeader, 0);
+    if (event.target.closest?.("[data-language]")) window.setTimeout(() => {
+      linkHeader();
+      operationalNavigation();
+    }, 0);
   });
   const observer = new MutationObserver(linkHeader);
   const updated = document.getElementById("site-updated");
   if (updated) observer.observe(updated, {attributes: true, attributeFilter: ["href", "target", "rel"]});
   linkHeader();
+  operationalNavigation();
+  trackHeaderOffset();
 
   window.OpenFSPublication = {deploymentProvenance, linkHeader, provenanceUrl};
 })();
