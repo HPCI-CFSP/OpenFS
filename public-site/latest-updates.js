@@ -55,21 +55,21 @@
     });
     parent.append(group);
   }
-  function renderUpdate(update) {
-    const article = document.createElement("article"); article.className = "latest-update-item"; article.id = update.update_id; article.tabIndex = -1;
-    const date = document.createElement("time"); date.dateTime = update.published_at; date.className = "latest-update-date";
-    const dateLabel = document.createElement("span"); dateLabel.textContent = tr("publicationDate");
-    const dateValue = document.createElement("strong"); dateValue.textContent = update.published_at; date.append(dateLabel, dateValue);
+  function renderUpdateContent(update, {includeTitle = true} = {}) {
     const content = document.createElement("div"); content.className = "latest-update-content";
     const meta = document.createElement("div"); meta.className = "latest-update-meta";
     const category = document.createElement("span"); category.className = "latest-update-category"; category.textContent = localized(categoryMap.get(update.category_id), "title");
     const provisional = document.createElement("span"); provisional.className = "latest-update-status"; provisional.textContent = tr("provisional");
     const consensus = document.createElement("span"); consensus.className = "latest-update-status"; consensus.textContent = tr("consensusIncomplete");
     meta.append(category, provisional, consensus);
-    const title = document.createElement("h3");
-    const self = document.createElement("a"); self.href = withLanguage(`${rootPrefix}updates/#${update.update_id}`); self.textContent = localized(update, "title"); title.append(self);
     const summary = document.createElement("p"); summary.textContent = localized(update, "summary");
-    content.append(meta, title, summary);
+    content.append(meta);
+    if (includeTitle) {
+      const title = document.createElement("h3");
+      const self = document.createElement("a"); self.href = withLanguage(`${rootPrefix}updates/#${update.update_id}`); self.textContent = localized(update, "title"); title.append(self);
+      content.append(title);
+    }
+    content.append(summary);
     const source = sourceMap.get(update.primary_source_id);
     if (source) appendLinks(content, tr("source"), [{href: source.url, text: `${source.publisher}: ${source.title}`}]);
     appendLinks(content, tr("relatedTopics"), update.related_topic_ids.map((id) => {
@@ -82,7 +82,40 @@
     }));
     const checked = document.createElement("small"); checked.className = "latest-update-checked"; checked.textContent = `${tr("checkedDate")}: ${update.checked_at}`; content.append(checked);
     if (window.OpenFSFeedback) content.append(window.OpenFSFeedback.link({kind: "latest-update", id: update.update_id, title: localized(update, "title"), path: `updates/?lang=${language}#${update.update_id}`}));
+    return content;
+  }
+  function renderArchiveUpdate(update) {
+    const article = document.createElement("article"); article.className = "latest-update-item"; article.id = update.update_id; article.tabIndex = -1;
+    const date = document.createElement("time"); date.dateTime = update.published_at; date.className = "latest-update-date";
+    const dateLabel = document.createElement("span"); dateLabel.textContent = tr("publicationDate");
+    const dateValue = document.createElement("strong"); dateValue.textContent = update.published_at; date.append(dateLabel, dateValue);
+    const content = renderUpdateContent(update);
     article.append(date, content);
+    return article;
+  }
+  let expandedHomeUpdateId = null;
+  function setExpandedHomeUpdate(updateId) {
+    expandedHomeUpdateId = updateId;
+    document.querySelectorAll("#latest-updates-home .latest-update-summary").forEach((control) => {
+      const expanded = control.dataset.updateId === updateId;
+      control.setAttribute("aria-expanded", String(expanded));
+      const detail = document.getElementById(control.getAttribute("aria-controls"));
+      if (detail) detail.hidden = !expanded;
+    });
+  }
+  function renderHomeUpdate(update) {
+    const article = document.createElement("article"); article.className = "latest-update-row";
+    const detailId = `${update.update_id}-home-detail`;
+    const control = document.createElement("button"); control.type = "button"; control.className = "latest-update-summary";
+    control.dataset.updateId = update.update_id; control.setAttribute("aria-controls", detailId);
+    control.setAttribute("aria-expanded", String(expandedHomeUpdateId === update.update_id));
+    const date = document.createElement("time"); date.dateTime = update.published_at; date.className = "latest-update-row-date"; date.textContent = update.published_at;
+    const headline = document.createElement("span"); headline.className = "latest-update-headline"; headline.textContent = localized(update, "title"); headline.title = localized(update, "title");
+    const toggle = document.createElement("span"); toggle.className = "latest-update-toggle"; toggle.setAttribute("aria-hidden", "true");
+    control.append(date, headline, toggle);
+    const detail = renderUpdateContent(update, {includeTitle: false}); detail.classList.add("latest-update-home-detail"); detail.id = detailId; detail.hidden = expandedHomeUpdateId !== update.update_id;
+    control.addEventListener("click", () => setExpandedHomeUpdate(control.getAttribute("aria-expanded") === "true" ? null : update.update_id));
+    article.append(control, detail);
     return article;
   }
   function updateCategoryOptions() {
@@ -113,10 +146,10 @@
   function render() {
     applyCopy();
     const home = document.getElementById("latest-updates-home");
-    if (home) home.replaceChildren(...latest.updates.slice(0, latest.featured_limit).map(renderUpdate));
+    if (home) home.replaceChildren(...latest.updates.slice(0, latest.featured_limit).map(renderHomeUpdate));
     const list = document.getElementById("latest-updates-archive");
     if (list) {
-      const visible = archiveFilters(); list.replaceChildren(...visible.map(renderUpdate));
+      const visible = archiveFilters(); list.replaceChildren(...visible.map(renderArchiveUpdate));
       document.getElementById("latest-updates-count").textContent = `${visible.length} ${tr("results")}`;
       document.getElementById("latest-updates-empty").hidden = visible.length !== 0;
     }
