@@ -502,8 +502,14 @@
     let last = null;
     const computeLine = (packageInfo.cost_lines || []).find((line) => line.category === "compute" && line.period === "initial");
     const perUnit = number(computeLine?.[priceCase + "_jpy"]) || budget;
+    const fixedUnits = number(request.manual_overrides?.compute_units);
+    if (fixedUnits != null && (!Number.isInteger(fixedUnits) || fixedUnits < 1)) {
+      return blocked("manual-compute-unit-override-invalid");
+    }
     const hardUpper = Math.min(100000, Math.max(1, Math.floor(budget / Math.max(1, perUnit)) + 100));
-    for (let units = 1; units <= hardUpper; units += 1) {
+    const startUnits = fixedUnits == null ? 1 : fixedUnits;
+    const endUnits = fixedUnits == null ? hardUpper : fixedUnits;
+    for (let units = startUnits; units <= endUnits; units += 1) {
       const quantities = quantitiesForUnits(request, packageInfo, units);
       const evaluated = constraintsFor(request, packageInfo, quantities, assessment);
       const initial = itemizedCost(packageInfo, quantities, request, priceCase, "initial");

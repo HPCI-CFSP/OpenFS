@@ -15,21 +15,21 @@
       aboutKicker: "OpenFSについて",
       aboutLead: "OpenFSは、将来の計算・データ基盤の整備計画を検討するため、計算機アーキテクチャ、メモリ、ネットワーク、システムソフトウェア、アプリケーションなどの公開情報を継続的に調査・比較する基盤です。根拠をたどれる技術動向、ロードマップ、システム整備計画案を公開し、未確認事項、各情報の更新日と確認状況、合意判定の状況も明示します。",
       overviewKicker: "現在の公開状況", overviewTitle: "継続調査の進捗状況",
-      overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示します。システム整備計画案と報告書は、人による公開承認を受けた成果だけを掲載します。",
+      overviewLead: "公開情報から作成した調査サマリーは検証状況とともに表示します。構成算定は根拠が確認できる範囲だけを提示し、不足情報を明示します。",
       topicsMetric: "調査項目", topicsMetricNote: "調査カタログに登録済み", roadmapMetric: "公開ロードマップ", roadmapMetricNote: "専用ページで公開中", scenarioMetric: "公開計画案", scenarioMetricNote: "人による公開承認済み",
-      reportMetric: "公開報告書", reportMetricNote: "来歴を確認できる出力", revision: "改訂", officialSources: "登録済みの公開資料",
+      plannerMetric: "構成算定", plannerMetricNote: "暫定Candidate", revision: "改訂", officialSources: "登録済みの公開資料",
       openGaps: "未確認事項", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各調査項目では、調査基準日現在の最新状況、近い将来の方向性、中長期の研究開発候補、見解が分かれている論点を区別して示します。システム整備との関係、公開根拠、未確認事項、調査履歴、関連ロードマップも確認できます。",
       domainFilter: "分類で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "表示コード、正規ID、名称または分類",
-      tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
+      tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableVerification: "検証状況", tableUpdated: "内容更新", tableGaps: "未確認事項",
       noTopics: "条件に一致する調査項目はありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分類別のロードマップを一覧から選び、年表、根拠、HPCIシステム整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分類", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開中のロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
       scenarioKicker: "計画の選択肢", scenarioTitle: "システム整備計画案",
-      scenarioLead: "アーキテクチャ、システムソフトウェア、アプリケーション、運用主体への影響、技術動向、不確実性を一体として比較します。HPCI固有の条件は各計画案で注記します。",
+      scenarioLead: "予算と受入時期から、CPU・GPU複合計算基盤の候補を公開根拠の範囲で算定します。",
       noScenarioTitle: "公開済みの計画案はまだありません",
       noScenarioText: "根拠と評価を確認し、人による公開承認を受けた計画案をここに表示します。",
-      openScenarioComparison: "3つの計画案を比較する",
-      plannerCandidateKicker: "暫定構成算定", plannerCandidateTitle: "GPU集中型AI for Science構成算定 Candidate", plannerCandidateLead: "予算、導入年、GPUベンダー、設置方式などを入力し、公開根拠が不足する条件を明示しながらNVIDIA案とAMD案を比較します。", openPlannerCandidate: "構成算定を開く",
+      openScenarioComparison: "計画案を比較する", openPlanningPage: "構成算定の説明を開く",
+      plannerCandidateKicker: "暫定構成算定", plannerCandidateTitle: "CPU・GPU複合計算基盤 構成算定", plannerCandidateLead: "調達実績を確認できる候補と、公式ロードマップに基づく先行候補を分け、算定不能な条件は推測で埋めずに示します。", openPlannerCandidate: "構成算定を開く",
       reportKicker: "報告書", reportTitle: "報告書・公開データ", reportLead: "公開版にはバージョン、情報確認日、根拠への参照、旧版との関係を記録します。",
       noReportTitle: "公開済み報告書はまだありません",
       noReportText: "昇格ワークフローで受理され、人による公開承認を受けた報告書やデータをここに自動表示します。",
@@ -61,21 +61,21 @@
       aboutKicker: "ABOUT OPENFS",
       aboutLead: "OpenFS is a public research platform for planning future computing and data infrastructure. It continuously surveys public evidence on computer architecture, memory, networks, system software, and applications. It publishes traceable technology assessments, roadmaps, and system planning options while clearly identifying unresolved questions, the date and verification status of each item, and its Consensus status.",
       overviewKicker: "CURRENT PUBLIC STATE", overviewTitle: "Continuous research status",
-      overviewLead: "Research summaries derived from public information are shown with their validation status. System planning options and reports are limited to explicitly human-approved outputs.",
+      overviewLead: "Research summaries derived from public information are shown with their validation status. Configuration planning presents only what the evidence supports and keeps missing inputs explicit.",
       topicsMetric: "Research topics", topicsMetricNote: "Registered in the research catalog", roadmapMetric: "Published roadmaps", roadmapMetricNote: "Available on dedicated pages", scenarioMetric: "Published planning options", scenarioMetricNote: "Human-approved for publication",
-      reportMetric: "Published reports", reportMetricNote: "Traceable exports", revision: "revision", officialSources: "registered public sources",
+      plannerMetric: "Configuration planner", plannerMetricNote: "Provisional Candidate", revision: "revision", officialSources: "registered public sources",
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each research topic distinguishes the latest status confirmed as of the research date, near-term direction, mid- to long-term R&D candidates, and unresolved questions. It also presents relevance to system planning, public evidence, coverage gaps, research history, and related roadmaps.",
       domainFilter: "Category filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Display code, canonical ID, title, or category",
-      tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
+      tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableVerification: "Verification", tableUpdated: "Content updated", tableGaps: "Gaps",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "OpenFS continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
       roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a roadmap by category and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Category", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
       scenarioTitle: "System planning options",
-      scenarioLead: "Compare architecture, system software, applications, operator impacts, technology trends, and uncertainties as a coherent whole. HPCI-specific constraints are noted within each option.",
+      scenarioLead: "Estimate CPU-GPU accelerated infrastructure candidates from the budget and acceptance date, within the limits of public evidence.",
       noScenarioTitle: "No planning options have been published",
       noScenarioText: "Evidence-backed, evaluated, and human-approved planning options will appear here.",
-      openScenarioComparison: "Compare the three planning options",
-      plannerCandidateKicker: "PROVISIONAL CONFIGURATION PLANNING", plannerCandidateTitle: "GPU-Centric AI for Science Configuration Candidate", plannerCandidateLead: "Compare NVIDIA and AMD options by entering a budget, acceptance year, GPU vendor, deployment mode, and other conditions while keeping unsupported inputs explicit.", openPlannerCandidate: "Open the configuration planner",
+      openScenarioComparison: "Compare planning options", openPlanningPage: "Open the configuration-planning overview",
+      plannerCandidateKicker: "PROVISIONAL CONFIGURATION PLANNING", plannerCandidateTitle: "CPU-GPU Accelerated Computing Infrastructure Planner", plannerCandidateLead: "Separate candidates supported by procurement evidence from forward-looking candidates based on official roadmaps, without filling evidence gaps by assumption.", openPlannerCandidate: "Open the configuration planner",
       reportKicker: "REPORTS", reportTitle: "Reports and exports",
       reportLead: "Each published report records its version, as-of date, evidence provenance, and relationship to earlier versions.",
       noReportTitle: "No reports have been published",
@@ -197,8 +197,7 @@
     siteUpdated.textContent = `${tr("siteUpdated")} ${formatJst(data.site.updated_at)} · ${data.site.commit_sha.slice(0, 7)}`;
     setText("metric-topics", data.baseline.topic_count);
     setText("metric-roadmaps", data.roadmaps.length);
-    setText("metric-scenarios", data.scenarios.length);
-    setText("metric-reports", data.reports.length);
+    setText("metric-planners", 1);
     setText("catalog-as-of", data.catalog_as_of);
     setText("baseline-id", data.baseline.baseline_id);
     setText("baseline-detail", `${tr("revision")} ${data.baseline.catalog_revision} / ${tr("officialSources")} ${data.baseline.official_source_count}`);
@@ -627,13 +626,17 @@
       verification.addEventListener("click", () => openTopicDetail(topic.topic_id, "verification"));
       verificationCell.appendChild(verification);
       const updatedCell = document.createElement("td");
-      if (topic.last_updated_at && topic.last_updated_commit_url) {
-        const updatedLink = document.createElement("a");
-        updatedLink.href = topic.last_updated_commit_url;
-        updatedLink.target = "_blank";
-        updatedLink.rel = "noopener noreferrer";
-        updatedLink.textContent = formatJst(topic.last_updated_at);
-        updatedCell.appendChild(updatedLink);
+      if (topic.last_updated_at) {
+        const updatedButton = document.createElement("button");
+        updatedButton.type = "button";
+        updatedButton.className = "topic-update-button";
+        updatedButton.textContent = formatJst(topic.last_updated_at);
+        updatedButton.setAttribute("aria-haspopup", "dialog");
+        updatedButton.title = language === "ja"
+          ? "技術内容を更新した調査履歴を表示"
+          : "Show the research history that updated the technical content";
+        updatedButton.addEventListener("click", () => openTopicDetail(topic.topic_id, "research-history"));
+        updatedCell.appendChild(updatedButton);
       } else {
         updatedCell.textContent = tr("noPublicUpdate");
       }
@@ -1334,6 +1337,7 @@
   function renderResearchHistory(root, summaries, openByDefault = false) {
     if (!summaries.length) return;
     const history = document.createElement("details");
+    history.id = "topic-section-research-history";
     history.className = "research-history";
     history.open = openByDefault;
     const toggle = document.createElement("summary");
@@ -1983,6 +1987,7 @@
 
   function renderScenarios() {
     const root = document.getElementById("scenario-list");
+    if (!root) return;
     root.replaceChildren();
     data.scenarios.forEach((scenario) => {
       const item = document.createElement("article");
@@ -2005,6 +2010,7 @@
 
   function renderReports() {
     const root = document.getElementById("report-list");
+    if (!root) return;
     root.replaceChildren();
     data.reports.forEach((report) => {
       const item = document.createElement("article");

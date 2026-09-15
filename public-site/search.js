@@ -10,11 +10,13 @@
   };
   copy.ja.navGlossary = "専門用語";
   copy.en.navGlossary = "Glossary";
+  copy.ja.searchLead = "最新動向、調査項目、ロードマップ、技術用語、アプリケーション、HPCIシステム、比較表、システム整備計画案、分析、公開根拠を一度に検索します。";
+  copy.en.searchLead = "Search latest updates, research topics, roadmaps, technical terms, applications, HPCI systems, comparisons, system planning options, analyses, and public sources together.";
   copy.ja.sourceResearch = "研究資料";
   copy.en.sourceResearch = "Research artifact";
   copy.ja.sourcePeerReviewed = "査読付き文献";
   copy.en.sourcePeerReviewed = "Peer-reviewed publication";
-  const typeKeys = {update: "typeUpdate", topic: "typeTopic", roadmap: "typeRoadmap", track: "typeTrack", application: "typeApplication", system: "typeSystem", term: "typeTerm", comparison: "typeComparison", scenario: "typeScenario", analysis: "typeAnalysis", report: "typeReport", source: "typeSource"};
+  const typeKeys = {update: "typeUpdate", topic: "typeTopic", roadmap: "typeRoadmap", track: "typeTrack", application: "typeApplication", system: "typeSystem", term: "typeTerm", comparison: "typeComparison", scenario: "typeScenario", analysis: "typeAnalysis", source: "typeSource"};
   let language = readLanguage();
 
   function readLanguage() {
@@ -110,7 +112,6 @@
       const analysis = data.operational_analytics;
       items.push({type: "analysis", id: analysis.artifact_id, title_ja: analysis.title_ja, title_en: analysis.title_en, body_ja: analysis.summary_ja, body_en: analysis.summary_en, search: flatten(analysis), href: `${rootPrefix}analytics/operational-workloads/`, status: analysis.consensus_status});
     }
-    data.reports.forEach((report) => items.push({type: "report", id: report.report_id, title_ja: report.title, title_en: report.title_en, body_ja: report.summary, body_en: report.summary_en, search: flatten(report), href: report.download_url, external: true, status: "provisional"}));
     return items;
   }
   const items = searchItems();
