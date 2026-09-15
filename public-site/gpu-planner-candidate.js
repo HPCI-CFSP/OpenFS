@@ -4,7 +4,7 @@
   const DATA_PATHS = ["request.json", "architecture.json", "product-catalog.json", "availability.json", "what-if-template.json", "planning-estimate.json"];
   const QUARTER_END = {"1": "03-31", "2": "06-30", "3": "09-30", "4": "12-31"};
   const PROCUREMENT_EVENTS = new Set(["procurement-observed", "operation-start"]);
-  const FORWARD_EVENTS = new Set(["sampling", "volume-shipment", "sale-publication", "partner-availability", "support-start", "roadmap-target"]);
+  const FORWARD_EVENTS = new Set(["sampling", "volume-shipment", "sale-publication", "price-observation", "partner-availability", "support-start", "roadmap-target"]);
   const state = {language: "ja", source: null, latest: null, latestRequest: null};
 
   const copy = {
@@ -30,7 +30,7 @@
     timing: {ja: "時期の根拠", en: "Timing evidence"},
     computeUnits: {ja: "計算単位数", en: "Compute units"},
     gpuCount: {ja: "総GPU数", en: "Total GPUs"},
-    rackCount: {ja: "計算ラック数", en: "Compute rack count"},
+    rackCount: {ja: "ラック数（補助機器を含む）", en: "Rack count including auxiliary equipment"},
     power: {ja: "IT電力", en: "IT power"},
     configCost: {ja: "構成費用", en: "Configuration cost"},
     contingency: {ja: "予備費", en: "Contingency"},
@@ -105,7 +105,7 @@
     document.querySelectorAll("[data-ja][data-en]").forEach((node) => {
       node.textContent = node.dataset[language];
     });
-    document.querySelectorAll("[data-language]").forEach((button) => {
+    document.querySelectorAll("button[data-language]").forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.language === language));
     });
     document.title = (language === "ja"
@@ -267,7 +267,7 @@
     const product = selection.product;
     request.vendor_mode = product.vendor;
     request.product_selection[product.vendor.toLowerCase()] = product.product_id;
-    const candidate = OpenFSGpuEstimates.evaluate(request, product, state.source[5]);
+    const candidate = OpenFSGpuEstimates.evaluate(request, product, state.source[5], state.source[1]);
     candidate.availability_status = state.source[3].assessments.find(a => a.product_id === product.product_id)?.availability_status || "unknown";
     candidate.proposal_class = selection.proposal_class;
     candidate.track_note_ja = copy[selection.proposal_class + "Note"].ja;
@@ -325,7 +325,24 @@
     const types = product && observedProcurement(product, target) ? PROCUREMENT_EVENTS : FORWARD_EVENTS;
     const event = product ? relevantEvent(product, target, types) : null;
     if (!event) return text("unknown");
-    return event.event_type + " / " + event.date.value + " (" + event.date.precision + ", " + event.claim_status + ")";
+    const labels = {
+      announcement: ["発表", "Announcement"], sampling: ["サンプル出荷", "Sampling"],
+      "volume-shipment": ["量産出荷", "Volume shipment"], "sale-publication": ["販売の公表", "Sale publication"],
+      "price-observation": ["公開価格の確認", "Public price checked"],
+      "partner-availability": ["パートナー経由の提供", "Partner availability"],
+      "procurement-observed": ["調達実績", "Observed procurement"],
+      "support-start": ["サポート開始", "Support start"], "operation-start": ["運用開始", "Operation start"],
+      "roadmap-target": ["ロードマップ上の目標", "Roadmap target"], "end-of-support": ["サポート終了", "End of support"]
+    };
+    const statuses = {observed: ["公開情報で確認", "Publicly documented"],
+      "official-plan": ["公表計画", "Announced plan"], "provisional-outlook": ["暫定見通し", "Provisional outlook"]};
+    const {value, precision} = event.date, year = value.slice(0, 4), month = Number(value.slice(5, 7));
+    const date = precision === "year" ? year : precision === "month" ? value.slice(0, 7)
+      : precision === "quarter" ? year + " Q" + Math.ceil(month / 3)
+      : precision === "half-year" ? year + " H" + Math.ceil(month / 6) : value;
+    const language = state.language === "ja" ? 0 : 1;
+    return (labels[event.event_type]?.[language] || event.event_type) + " / " + date
+      + " (" + (statuses[event.claim_status]?.[language] || event.claim_status) + ")";
   }
 
   function summaryCard(candidate) {
@@ -449,12 +466,59 @@
       const scroll = element("div", "table-wrap"); scroll.append(table); bom.append(scroll);
       bom.append(element("p", null, (state.language === "ja" ? "換算式：提示価格 × 為替 × 価格係数 × (1＋年率)^経過年数 × (1＋税率)。構成費用＋予備費＋未使用予算＝予算上限。基準日の価格を固定した基準ケースでは、年だけを変えてもGPU数が変わらない場合があります。" : "Conversion: asking price × FX × price factor × (1 + annual change)^elapsed years × (1 + tax rate). Configuration + contingency + unused budget = ceiling. GPU counts can stay unchanged across years in the constant-price baseline.")));
       bom.append(sourceList(candidate.source_ids)); article.append(bom);
+      if (q.physical_bom) {
+        const physical = element("details");
+        physical.append(element("summary", null, state.language === "ja" ? "参照BOMの数量と制約" : "Reference BOM quantities and constraints"));
+        physical.append(element("p", null, state.language === "ja"
+          ? "数量は計画用仮定です。NIC・スイッチ・配線はネットワーク費、コントローラーはストレージ費、管理サーバーは管理基盤費に含め、再加算しません。接続部品・保守・障害時動作は未検証です。"
+          : "Quantities are planning assumptions. Network devices are covered by the fabric allowance, controllers by storage, and service nodes by management; they are not added again. Components, support and failure behavior remain unqualified."));
+        const labels = {
+          compute_nic_ports: ["計算網NICポート", "Compute NIC ports"],
+          compute_leaf_switches: ["計算網Leafスイッチ", "Compute leaf switches"],
+          compute_spine_switches: ["計算網Spineスイッチ", "Compute spine switches"],
+          compute_fabric_cables: ["計算網ケーブル", "Compute fabric cables"],
+          compute_fabric_optics: ["計算網光モジュール（両端）", "Compute optics (both ends)"],
+          converged_access_switches: ["収束網アクセススイッチ", "Converged access switches"],
+          oob_access_switches: ["管理網アクセススイッチ", "OOB access switches"],
+          login_nodes: ["ログインノード", "Login nodes"], management_nodes: ["管理・監視・プロビジョニング", "Management, monitoring and provisioning"],
+          scheduler_nodes: ["スケジューラ", "Scheduler nodes"], authentication_nodes: ["認証", "Authentication nodes"],
+          storage_controllers: ["内蔵ストレージコントローラー", "Bundled storage controllers"],
+          compute_racks: ["計算ラック", "Compute racks"], storage_racks: ["ストレージラック", "Storage racks"],
+          service_racks: ["サービスラック", "Service racks"], network_racks: ["ネットワークラック", "Network racks"],
+          floor_area_m2: ["通路込み面積（m²・仮定）", "Area including aisles (m², assumed)"]
+        };
+        physical.append(definitionList(Object.entries(labels).map(([key, names]) =>
+          [names[state.language === "ja" ? 0 : 1], formatNumber(q.physical_bom[key], 1)])));
+        article.append(physical);
+      }
+      const tco = element("details");
+      tco.append(element("summary", null, state.language === "ja" ? "電力・複数年費用の範囲" : "Power and multi-year cost scope"));
+      tco.append(definitionList([
+        [state.language === "ja" ? "計算機電力 (kW)" : "Compute power (kW)", formatNumber(base.power.compute_kw, 1)],
+        [state.language === "ja" ? "補助機器電力 (kW・仮定)" : "Auxiliary power (kW, assumed)", formatNumber(base.power.auxiliary_kw, 1)],
+        ["PUE", formatNumber(base.tco.pue, 2)],
+        [state.language === "ja" ? "年間電力量料金（仮定）" : "Annual energy charges (assumed)", formatOku(base.tco.annual_energy_jpy)]
+      ]));
+      tco.append(element("p", null, state.language === "ja"
+        ? "総IT電力には仮定の余裕率を加えます。電力量料金は一定負荷・一定単価の感度計算です。基本料金、人件費、保守、ホスティング、大規模施設改修、撤去費は未確認で、年間OPEXと完全TCOは算出しません。外部ホスティングの電力込み料金との二重加算も行いません。"
+        : "Total IT power adds an assumed margin. Energy charges use constant-load/constant-price sensitivity assumptions. Demand charges, staffing, support, hosting, major facility works and decommissioning are unknown, so annual OPEX and full TCO remain uncomputed. An energy-inclusive hosting quote must not be added again."));
+      article.append(tco);
     }
     const software = candidate.software_profile;
+    if (candidate.demand_requirements) {
+      const demand = candidate.demand_requirements;
+      article.append(definitionList([
+        [state.language === "ja" ? "絶対需要から求めた最低ノード数" : "Minimum nodes from absolute demand", formatNumber(demand.minimum_compute_units)],
+        [state.language === "ja" ? "チェックポイント帯域要件 (GB/s)" : "Required checkpoint bandwidth (GB/s)", formatNumber(demand.checkpoint_write_gb_s)],
+        [state.language === "ja" ? "需要・性能適合" : "Demand/performance qualification", state.language === "ja" ? "帯域・推論SLO・アプリ性能は未検証" : "Bandwidth, inference SLOs and application performance unverified"]
+      ]));
+    }
     if (software) article.append(definitionList([
       [state.language === "ja" ? "計算スタック" : "Compute stack", software.compute_stack.join(", ")],
       [state.language === "ja" ? "通信スタック" : "Communication stack", software.communication_stack.join(", ")],
-      [state.language === "ja" ? "ソフトウェア" : "Software", software.software_stack.join(", ")]
+      [state.language === "ja" ? "ソフトウェア" : "Software", software.software_stack.join(", ")],
+      [state.language === "ja" ? "構成別の対応版・移植工数・支援費" : "Configuration-specific versions, porting effort and support cost",
+        state.language === "ja" ? "未検証・要見積（上記は参照スタック）" : "Unverified; quote required (reference stacks above)"]
     ]));
     return article;
   }
@@ -501,6 +565,8 @@
       [state.language === "ja" ? "調達評価基準日" : "Procurement assessment as of", state.source[3].as_of],
       [state.language === "ja" ? "調達利用" : "Procurement use", text("procurementProhibited")],
       ["Consensus Gate", text("incomplete")],
+      [state.language === "ja" ? "独立した価格検証事例" : "Independent price-validation cases", formatNumber(state.source[5].validation.held_out_cases)],
+      [state.language === "ja" ? "価格予測誤差 (%)" : "Price prediction error (%)", formatNumber(state.source[5].validation.error_percent)],
       [state.language === "ja" ? "処理場所" : "Processing location", state.language === "ja" ? "ブラウザ内のみ" : "Browser only"]
     ]));
 
@@ -628,7 +694,7 @@
   }
 
   function bind() {
-    document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
+    document.querySelectorAll("button[data-language]").forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
     byId("accelerator-vendor").addEventListener("change", () => renderProductOptions(false));
     let timer;
     document.querySelectorAll("#planner-form input, #planner-form select, #manual-adjustments input, #estimate-assumptions input").forEach(input => {

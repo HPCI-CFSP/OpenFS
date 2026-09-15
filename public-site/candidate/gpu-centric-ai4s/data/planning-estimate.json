@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "model_id": "ESTMODEL-001",
   "status": "candidate",
   "information_classification": "public",
@@ -9,8 +9,8 @@
   "as_of": "2026-09-15",
   "method_ja": "計算サーバー一式の公開提示価格に、別途必要なネットワーク・ストレージ・施設等の計画用仮定を積み上げる概算です。学術調達の実績単価や統計的な予測区間ではありません。GPU単体価格への逆算は行いません。",
   "method_en": "A planning estimate combining published complete-server asking prices with explicit allowances for network, storage and facilities. These are neither academic award unit prices nor statistical prediction intervals. Whole-system prices are not converted into GPU prices.",
-  "assumptions_ja": "為替150円/USD、税10%、価格係数0.8/1.0/1.25、年率-10%/0%/+10%は感度分析用の仮定であり、市場予測ではありません。ABCIと理究のストレージ構成は用途が異なるため平均せず、初期値は理究の有効容量/ノードを丸めた2.7 TB/ノードとします。施設・保守・納期・需要への適合は未確認です。",
-  "assumptions_en": "JPY150/USD, 10% tax, price factors 0.8/1/1.25 and annual changes -10%/0%/+10% are sensitivity assumptions, not market forecasts. ABCI and Rikyu have different storage objectives; their ratios are not averaged. The initial 2.7 TB/node is a rounded Rikyu usable-capacity ratio. Facility, maintenance, delivery and workload fit remain unverified.",
+  "assumptions_ja": "為替150円/USD、税10%、価格係数0.8/1.0/1.25、年率-10%/0%/+10%は感度分析用の仮定であり、市場予測ではありません。ABCIと理究のストレージ構成は用途が異なるため平均せず、初期値は理究の有効容量/ノードを丸めた2.7 TB/ノードとします。施設・保守・納期・需要への適合は未確認です。 NIC・スイッチ・サービスノード・ラックの数量は明示した参照構成仮定で、機器選定済みBOMではありません。 補助機器電力も機器数×仮定値で算定し、電力量料金20円/kWhは税込の計画用仮定とします。",
+  "assumptions_en": "JPY150/USD, 10% tax, price factors 0.8/1/1.25 and annual changes -10%/0%/+10% are sensitivity assumptions, not market forecasts. ABCI and Rikyu have different storage objectives; their ratios are not averaged. The initial 2.7 TB/node is a rounded Rikyu usable-capacity ratio. Facility, maintenance, delivery and workload fit remain unverified. NIC, switch, service-node and rack quantities use explicit reference assumptions, not a qualified vendor BOM. Auxiliary power is counted per assumed device; JPY20/kWh is a tax-inclusive planning assumption.",
   "defaults": {
     "fx_jpy_per_usd": 150,
     "tax_rate": 0.1,
@@ -99,7 +99,44 @@
         "RoCE"
       ],
       "included_ja": "CPU・GPU・HBM・ホストメモリ・筐体・3年保証を含む提示価格。既定ではローカルNVMeなし。電力は構成ツールの表示値で実測ではありません。",
-      "included_en": "Asking price includes CPUs, GPUs, HBM, host memory, chassis and three-year warranty. No local NVMe is selected by default. Power is a configurator estimate, not a measurement."
+      "included_en": "Asking price includes CPUs, GPUs, HBM, host memory, chassis and three-year warranty. No local NVMe is selected by default. Power is a configurator estimate, not a measurement.",
+      "qualification_notes": [
+        {
+          "gap_id": "GAP-EST-MI350-ACCEPTANCE",
+          "statement_ja": "価格参照構成のホストメモリ1,536 GBは、AMD受入ガイドの3 TB以上とは異なります。追加メモリ・NIC・対応ソフトウェアの価格と適合は未確認です。この価格例は当該受入条件を満たす完成構成ではありません。",
+          "statement_en": "The priced reference has 1,536 GB host memory, below the AMD acceptance guide's 3 TB. Additional memory, NICs and compatible software need qualification and quotes. This is not a complete configuration satisfying that acceptance recipe.",
+          "source_ids": [
+            "SRC-PS-MI350-ACCEPTANCE"
+          ]
+        }
+      ]
+    },
+    {
+      "package_id": "PKG-B200-EXXACT",
+      "product_id": "GPU-NVIDIA-B200-HGX",
+      "vendor": "NVIDIA",
+      "model": "HGX B200 / Exxact TS4-128275176",
+      "cpu_architecture": "x86_64",
+      "cpu_model": "Xeon Platinum 8558P",
+      "cpus_per_node": 2,
+      "gpus_per_node": 8,
+      "hbm_gb_per_gpu": 180,
+      "host_memory_gb": 2048,
+      "local_nvme_tb": 3.84,
+      "local_nvme_bays": 8,
+      "bundled_nvme_drives": 1,
+      "node_kw": 14.247,
+      "price_usd": 423857.5,
+      "price_basis_date": "2026-09-15",
+      "source_ids": [
+        "SRC-EST-B200"
+      ],
+      "fabrics": [
+        "InfiniBand",
+        "RoCE"
+      ],
+      "included_ja": "CPU・8 GPU・HBM・ホストメモリ・既定NVMe・筐体・3年保証の公開提示額。選択済みNVMeを1台・3.84 TBの最低構成として扱い、最終台数を要確認とします。追加NIC・共有ストレージ・国内納入は別。電力は構成ツールの表示値で実測ではありません。",
+      "included_en": "Public asking price for CPUs, eight GPUs, HBM, host memory, default NVMe, chassis and three-year warranty. The selected NVMe is treated as a one-drive/3.84 TB minimum pending final quantity confirmation. Added NICs, shared storage and Japan delivery are separate. Power is displayed by the configurator, not measured."
     }
   ],
   "reference_systems": [
@@ -180,6 +217,22 @@
       "url": "https://docs.lumi-supercomputer.eu/hardware/lumig/",
       "published_date": null,
       "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-EST-B200",
+      "title": "Exxact TS4-128275176 configured B200 server",
+      "publisher": "Exxact",
+      "url": "https://configurator.exxactcorp.com/configure/TS4-128275176",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-PS-MI350-ACCEPTANCE",
+      "title": "AMD Instinct MI350X Customer Acceptance Guide",
+      "publisher": "AMD",
+      "published_date": null,
+      "checked_date": "2026-09-15",
+      "url": "https://instinct.docs.amd.com/projects/system-acceptance/en/latest/gpus/mi350x.html"
     }
   ],
   "validation": {
@@ -197,5 +250,30 @@
     "Demand charges, staffing, software contracts, out-of-warranty repairs and maintenance after year three",
     "External hosting fees, decommissioning and major facility works",
     "Verification of floor load, cooling and electrical works"
-  ]
+  ],
+  "bom_assumptions": {
+    "switch_ports": 64,
+    "leaf_down_ports": 32,
+    "leaf_up_ports": 32,
+    "nic_ports_per_compute_unit": 8,
+    "service_nodes_per_rack": 20,
+    "storage_blocks_per_rack": 4,
+    "switches_per_rack": 32,
+    "login_nodes": 2,
+    "management_quorum_nodes": 3,
+    "scheduler_nodes": 2,
+    "authentication_nodes": 2,
+    "compute_units_per_service_group": 256,
+    "controllers_per_storage_block": 2,
+    "converged_ports_per_endpoint": 2,
+    "oob_ports_per_compute_unit": 12,
+    "rack_footprint_m2": 2.4,
+    "aisle_multiplier": 2
+  },
+  "power_assumptions": {
+    "compute_nic_port_kw": 0.03,
+    "switch_kw": 0.8,
+    "storage_block_kw": 1,
+    "service_node_kw": 0.6
+  }
 }

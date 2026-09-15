@@ -528,8 +528,8 @@
   "topic_profiles": [
     {
       "topic_id": "ARCH-01",
-      "summary_ja": "Agentic workload向けCPUを、Veraのloaded per-core性能重視とEPYCの高thread密度・高周波数SKUの役割分担として比較しました。高周波数対多coreの普遍的勝者は決めず、agent段階、同時実行数、memory帯域、V/f、GPU待ちを揃えた測定課題へ変換します。単一のAIモデルによる暫定調査で、Consensusは未完了です。",
-      "summary_en": "This update compares Vera's emphasis on loaded per-core performance with EPYC's role-specific use of dense-thread and high-frequency SKUs. It does not select a universal frequency-versus-core-count winner; instead it defines measurements aligned by agent stage, concurrency, memory bandwidth, voltage-frequency settings, and GPU wait time. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "B200の公開提示価格とRubinの量産出荷報告を追加し、日本向け価格・納期とは区別します。",
+      "summary_en": "Adds a B200 asking-price reference and Rubin shipment report, separately from Japan procurement and delivery.",
       "sections": [
         {
           "section_id": "TDS-ARCH01-CURRENT",
@@ -1676,6 +1676,65 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-PS-GPU-20260916",
+          "title_ja": "価格付き構成と量産出荷の確認",
+          "title_en": "Priced configurations and production-shipment evidence",
+          "summary_ja": "B200の公開提示価格とRubinの量産出荷報告を追加し、日本向け価格・納期とは区別します。",
+          "summary_en": "Adds a B200 asking-price reference and Rubin shipment report, separately from Japan procurement and delivery.",
+          "items": [
+            {
+              "item_id": "TDI-PS-GPU-B200",
+              "stage": "current",
+              "maturity": "commercial",
+              "source_ids": [
+                "SRC-EST-B200"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "HGX B200価格付き参照構成",
+              "name_en": "Priced HGX B200 reference",
+              "timing_ja": "価格確認日であり販売開始日ではありません。",
+              "timing_en": "Price observation, not a product-launch date.",
+              "statement_ja": "公開構成は8基のB200（各180 GB）、Xeon Platinum 8558P×2、ホストメモリ2,048 GB、選択済み3.84 TB NVMeを含み、提示額は423,857.50 USDです。表示電力14.247 kWは構成ツールの値で実測ではありません。3年保証を内包しますが、学術割引率、国内納入・施設適合は未確認です。",
+              "statement_en": "The selected package lists eight B200 GPUs (180 GB each), two Xeon Platinum 8558P CPUs, 2,048 GB host memory and selected 3.84 TB NVMe at USD423,857.50. Its displayed 14.247 kW is a configurator value, not measured power. Three-year warranty is included; academic discount, Japan delivery and facility fit remain unknown.",
+              "hpci_relevance_ja": "H200と同じ8 GPU構成でも、価格・電力・HBMが異なる比較対象です。性能向上率は単価から推定しません。",
+              "hpci_relevance_en": "Provides an eight-GPU alternative with different price, power and HBM from H200; price does not imply workload speedup.",
+              "adoption_conditions_ja": [
+                "最終構成、NVMe数量、NIC搭載、保守範囲、国内納期を見積で確定する。"
+              ],
+              "adoption_conditions_en": [
+                "Confirm the final BOM, NVMe quantity, NIC fit, support and Japan delivery in a quote."
+              ]
+            },
+            {
+              "item_id": "TDI-PS-GPU-RUBIN-SHIPMENT",
+              "stage": "current",
+              "maturity": "commercial",
+              "source_ids": [
+                "SRC-PS-NVIDIA-EARNINGS-20260826"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "Vera Rubinの2026年8月量産出荷報告",
+              "name_en": "Vera Rubin production shipments reported in August 2026",
+              "timing_ja": "2026年8月、日付未特定。発表は8月26日。",
+              "timing_en": "August 2026, day unspecified; reported August 26.",
+              "statement_ja": "NVIDIAの8月26日の決算説明は、Vera Rubinの量産出荷を同月に開始したと説明しています。5月の量産移行発表より出荷段階が具体化しましたが、HPC向けNVL4等の個別構成、日本の公共調達条件、価格、受入時期は別途確認が必要です。",
+              "statement_en": "NVIDIA's August 26 earnings call says Vera Rubin production shipments started that month. This adds shipment evidence beyond May's production-ramp announcement, but individual configurations such as HPC NVL4, Japan public-procurement terms, price and acceptance timing still need separate evidence.",
+              "hpci_relevance_ja": "プラットフォーム出荷と、計画する構成の納入可能性を分けて候補判定します。",
+              "hpci_relevance_en": "Separate platform shipments from deliverability of the planned configuration.",
+              "adoption_conditions_ja": [
+                "価格付きArm構成と国内納期を補完するまで、ノード数・費用を他世代から転用しない。"
+              ],
+              "adoption_conditions_en": [
+                "Do not transfer another generation's quantities or cost before obtaining a priced Arm configuration and Japan delivery terms."
+              ]
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -1776,6 +1835,16 @@
           ],
           "created_at": "2026-09-02T10:55:00+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000409",
+          "bundle_sha256": "dd85974a1579d16cd0fe52c994389fc8fb1760e66a4891a6a6a1083f5ceb830b",
+          "base_commit": "716108a1edf1b67e9913f6835d8304f7a1c22a3c",
+          "unit_ids": [
+            "ARCH-01-U01"
+          ],
+          "created_at": "2026-09-15T16:20:05+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -1798,7 +1867,8 @@
               "TDS-ARCH01-FUTURE",
               "TDS-HC26-ARCH-01-U1",
               "TDS-HW1-ARCH-01-U01",
-              "TDS-CD15-ARCH-01-LINESHINE"
+              "TDS-CD15-ARCH-01-LINESHINE",
+              "TDS-PS-GPU-20260916"
             ],
             "comparison_refs": [
               {
@@ -3358,10 +3428,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-ARCH12-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-ARCH12-U01",
             "type": "research-unit",
             "unit_id": "ARCH-12-U01",
@@ -4349,7 +4415,7 @@
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-ARCH02-OVERVIEW",
@@ -4358,10 +4424,6 @@
           {
             "component_id": "TPC-ARCH02-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-ARCH02-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-ARCH02-U01",
@@ -4392,8 +4454,40 @@
               "TDS-HW1-ARCH-02-U02",
               "TDS-CD39-ARCH-02-SAMSUNG-BONDED-3D-MEMORY"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-ADVANCED-INTEGRATION",
+                "term_ids": [
+                  "TERM-W2W",
+                  "TERM-D2W",
+                  "TERM-TSV"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-D2W",
+                "item_ids": [
+                  "TDI-D2W-CURRENT",
+                  "TDI-HYBRID-NEAR",
+                  "TDI-HW1-BONDING-D2W"
+                ]
+              },
+              {
+                "term_id": "TERM-TSV",
+                "item_ids": [
+                  "TDI-TSV-CURRENT"
+                ]
+              },
+              {
+                "term_id": "TERM-W2W",
+                "item_ids": [
+                  "TDI-W2W-RESEARCH",
+                  "TDI-3D-RESEARCH",
+                  "TDI-HW1-BONDING-W2W"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-HW-COMPUTE",
               "RM-HW-MEMORY",
@@ -8753,7 +8847,7 @@
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-ARCH05-OVERVIEW",
@@ -8762,10 +8856,6 @@
           {
             "component_id": "TPC-ARCH05-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-ARCH05-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-ARCH05-U01",
@@ -8786,8 +8876,35 @@
               "TDS-CD49-ARCH-05-OLCF-LUX-CURRENT-SPEC",
               "TDS-WC371-ARCH-05-01"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-COMPUTE-PLATFORMS",
+                "term_ids": [
+                  "TERM-CPU",
+                  "TERM-GPU"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-CPU",
+                "item_ids": [
+                  "TDI-CD10-TSUKUBA-COHERENT-SYSTEM",
+                  "TDI-CD13-FLOW2-CPU-GPU-COMPOSITION",
+                  "TDI-CD94-LANL-MISSION-VISION"
+                ]
+              },
+              {
+                "term_id": "TERM-GPU",
+                "item_ids": [
+                  "TDI-CD10-TSUKUBA-COHERENT-SYSTEM",
+                  "TDI-CD11-RIKYU-SYSTEM-CONFIG",
+                  "TDI-CD13-FLOW2-CPU-GPU-COMPOSITION",
+                  "TDI-CD116-RIKYU-SYSTEM-VS-JOB-SCALE",
+                  "TDI-CD126-AWS-TWO-MILLION-GPU-PLAN"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-HW-INTERCONNECT",
               "RM-X-BLUEPRINT"
@@ -10011,10 +10128,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-ARCH06-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-ARCH06-U01",
             "type": "research-unit",
             "unit_id": "ARCH-06-U01",
@@ -10054,8 +10167,8 @@
     },
     {
       "topic_id": "SSW-01",
-      "summary_ja": "Kokkos 5.2.0は2026年7月24日に、5.2.1は8月18日に公開されました。5.2では4.x互換経路の大半が削除され、5.3ではMemoryManaged、View::HostMirror、legacy Viewが削除予定です。一方、mdspan形式のView、自己相似RangePolicy、SFC64乱数、rank-1 MDRangePolicy、CUDA 13.3のC++23、AMD gfx1151/1152、初期的なNextSilicon対応、Kokkos Tools 5.2が追加・更新されています。HPCIでは新機能だけでなく、5.3移行前のコード監査とバックエンド別回帰試験が必要です。Consensusは未完了です。",
-      "summary_en": "Kokkos 5.2.0 was released on July 24, 2026, followed by 5.2.1 on August 18. Version 5.2 removes most 4.x compatibility paths, while 5.3 is scheduled to remove MemoryManaged, View::HostMirror, and the legacy View. New or updated capabilities include mdspan-style View arguments, a self-similar RangePolicy, the SFC64 generator, rank-1 MDRangePolicy, C++23 with CUDA 13.3, AMD gfx1151/1152 support, preliminary NextSilicon support, and Kokkos Tools 5.2. HPCI needs code audits before 5.3 and backend-specific regression tests, not only feature tracking. Consensus is incomplete.",
+      "summary_ja": "バイナリ互換性、性能維持、クラスタ受入を分け、工数を未測定のまま価格へ埋め込みません。",
+      "summary_en": "Separate binary compatibility, retained performance and cluster acceptance; do not hide unmeasured effort in prices.",
       "sections": [
         {
           "section_id": "TDS-SSW01-PORTABILITY",
@@ -11949,6 +12062,65 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-PS-PORTING-20260916",
+          "title_ja": "GPU世代移行と受入検証の作業範囲",
+          "title_en": "GPU migration and acceptance-validation scope",
+          "summary_ja": "バイナリ互換性、性能維持、クラスタ受入を分け、工数を未測定のまま価格へ埋め込みません。",
+          "summary_en": "Separate binary compatibility, retained performance and cluster acceptance; do not hide unmeasured effort in prices.",
+          "items": [
+            {
+              "item_id": "TDI-PS-BLACKWELL-PORTING",
+              "stage": "current",
+              "maturity": "commercial",
+              "source_ids": [
+                "SRC-PS-BLACKWELL-PORTING"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "Blackwell移行時のバイナリ確認",
+              "name_en": "Binary checks when moving to Blackwell",
+              "timing_ja": "CUDA 12.8.2の版固定資料。最新版の保証ではありません。",
+              "timing_en": "Version-pinned CUDA 12.8.2 guidance, not a guarantee for every later release.",
+              "statement_ja": "公式ガイドは、対応するcubinまたはPTXの有無を確認し、PTXのJITコンパイルを強制して互換性を試す方法を示します。一方、compute_90a等のアーキテクチャ固有機能を使うPTXは、一般的な前方互換性の対象外です。実行可能であることと、性能・数値結果が維持されることは別に検証します。",
+              "statement_en": "The guide checks for compatible cubin or PTX and describes forcing PTX JIT compilation. PTX using architecture-specific features such as compute_90a is an exception to general forward compatibility. Successful execution does not establish retained performance or numerical correctness.",
+              "hpci_relevance_ja": "ソース修正、再ビルド、依存ライブラリ、数値比較、性能再測定を分けて工数を記録します。",
+              "hpci_relevance_en": "Record source changes, rebuilds, dependencies, numerical checks and performance remeasurement separately.",
+              "adoption_conditions_ja": [
+                "対象アプリ・入力・ドライバ・ライブラリ版を固定し、移植工数は実測する。"
+              ],
+              "adoption_conditions_en": [
+                "Pin application, input, driver and library versions; measure porting effort."
+              ]
+            },
+            {
+              "item_id": "TDI-PS-MI350-ACCEPTANCE",
+              "stage": "current",
+              "maturity": "commercial",
+              "source_ids": [
+                "SRC-PS-MI350-ACCEPTANCE"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "MI350Xのソフトウェア・構成・受入条件",
+              "name_en": "MI350X software, configuration and acceptance conditions",
+              "timing_ja": "確認時点の受入ガイド。発表日未記載。",
+              "timing_en": "Acceptance guide as checked; publication date not stated.",
+              "statement_ja": "AMDのガイドは、対応OS、ROCm 7.0.1以降、整合したファームウェアに加え、3 TB以上のホストメモリと8本の400GバックエンドNICを示します。HBMストレス8時間、多ノードRCCL10時間等の試験も含みます。公開価格例のホストメモリ1,536 GBとは条件が異なるため、その価格例を受入済み構成とはみなしません。",
+              "statement_en": "AMD's guide specifies a supported OS, ROCm 7.0.1 or later, consistent firmware, at least 3 TB host memory and eight 400G backend NICs. It includes eight-hour HBM stress and ten-hour multi-node RCCL tests. The priced reference has 1,536 GB host memory, so it is not treated as an accepted configuration.",
+              "hpci_relevance_ja": "受入試験の計算資源・担当者時間を確保し、追加メモリ・NIC・調整費用を別見積にします。試験時間は移植人時ではありません。",
+              "hpci_relevance_en": "Budget validation resources and staff, and quote additional memory, NICs and tuning separately. Test duration is not porting labor.",
+              "adoption_conditions_ja": [
+                "最終BOM、対応版表、試験ログ、アプリ性能、保守見積をそろえて評価する。"
+              ],
+              "adoption_conditions_en": [
+                "Assess the final BOM, compatibility matrix, test logs, application performance and support quote together."
+              ]
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -12183,11 +12355,21 @@
           ],
           "created_at": "2026-09-02T07:43:40+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000411",
+          "bundle_sha256": "efd16a818885bcf122733a8f1a7a5a7ba0c945698f174d51394ef0122daeec05",
+          "base_commit": "716108a1edf1b67e9913f6835d8304f7a1c22a3c",
+          "unit_ids": [
+            "SSW-01-U04"
+          ],
+          "created_at": "2026-09-15T16:30:05+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-SSW01-OVERVIEW",
@@ -12196,10 +12378,6 @@
           {
             "component_id": "TPC-SSW01-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW01-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW01-U01",
@@ -12211,8 +12389,40 @@
               "TDS-CD14-SSW-01-PORTABILITY",
               "TDS-CD20-SSW-01-OPENMP-STANDARDS"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-PORTABILITY-MODELS",
+                "term_ids": [
+                  "TERM-OPENMP",
+                  "TERM-SYCL",
+                  "TERM-KOKKOS"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-KOKKOS",
+                "item_ids": [
+                  "TDI-PORTABLE-LAYERS",
+                  "TDI-CD1-KOKKOS5-TOOLCHAIN-FLOOR"
+                ]
+              },
+              {
+                "term_id": "TERM-OPENMP",
+                "item_ids": [
+                  "TDI-PORTABLE-LAYERS",
+                  "TDI-CD1-OPENMP-RELEASE-VS-IMPLEMENTATION",
+                  "TDI-CD20-OPENMP-6-CURRENT-IMPLEMENTATION",
+                  "TDI-CD20-OPENMP-61-DRAFT"
+                ]
+              },
+              {
+                "term_id": "TERM-SYCL",
+                "item_ids": [
+                  "TDI-PORTABLE-LAYERS"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-SSW-PORTABILITY",
               "RM-SSW-PERFORMANCE"
@@ -12233,8 +12443,36 @@
               "TDS-CD52-SSW-01-HPCI-COMPILERS",
               "TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-PORTABILITY-MODELS",
+                "term_ids": [
+                  "TERM-OPENMP",
+                  "TERM-SYCL",
+                  "TERM-ROCM"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-OPENMP",
+                "item_ids": [
+                  "TDI-CD61-FUGAKU-WRONG-RESULT-DEFECTS"
+                ]
+              },
+              {
+                "term_id": "TERM-ROCM",
+                "item_ids": [
+                  "TDI-CD1-ROCM-THEROCK-MIGRATION"
+                ]
+              },
+              {
+                "term_id": "TERM-SYCL",
+                "item_ids": [
+                  "TDI-CD1-INTEL2026-SYCL-NUMERICS"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-SSW-PORTABILITY",
               "RM-SSW-PERFORMANCE"
@@ -12267,10 +12505,35 @@
               "TDS-CD9-SSW-01-U04",
               "TDS-CD10-SSW-01-U04",
               "TDS-CD18-SSW-01-SOLOMON-STDEXEC",
-              "TDS-CD18-SSW-01-KOKKOS-52-MIGRATION"
+              "TDS-CD18-SSW-01-KOKKOS-52-MIGRATION",
+              "TDS-PS-PORTING-20260916"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-PORTABILITY-MODELS",
+                "term_ids": [
+                  "TERM-OPENMP",
+                  "TERM-KOKKOS"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-KOKKOS",
+                "item_ids": [
+                  "TDI-CD9-NICAM-KOKKOS-CODE-LINEAGE",
+                  "TDI-CD88-KOKKOS-TOOLS-52"
+                ]
+              },
+              {
+                "term_id": "TERM-OPENMP",
+                "item_ids": [
+                  "TDI-CD1-OPENMP-VV-FEATURE-TESTS",
+                  "TDI-CD8-SSW01-OPENMPVV-CORRECTNESS-BOUNDARY",
+                  "TDI-CD83-SOLOMON-OFFLOAD-MACROS"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-SSW-PORTABILITY",
               "RM-SSW-PERFORMANCE"
@@ -13490,10 +13753,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-SSW03-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-SSW03-U01",
             "type": "research-unit",
             "unit_id": "SSW-03-U01",
@@ -14338,10 +14597,6 @@
           {
             "component_id": "TPC-SSW04-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW04-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW04-U01",
@@ -19588,10 +19843,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-SSW06-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-SSW06-U01",
             "type": "research-unit",
             "unit_id": "SSW-06-U01",
@@ -23217,10 +23468,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-SSW08-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-SSW08-U01",
             "type": "research-unit",
             "unit_id": "SSW-08-U01",
@@ -25436,7 +25683,7 @@
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-SSW09-OVERVIEW",
@@ -25445,10 +25692,6 @@
           {
             "component_id": "TPC-SSW09-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW09-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW09-U01",
@@ -25460,8 +25703,29 @@
               "TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS",
               "TDS-UPD-SSW-09-20260916"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-AI-TRAINING-FRAMEWORKS",
+                "term_ids": [
+                  "TERM-MEGATRON-LM",
+                  "TERM-MEGATRON-DEEPSPEED"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-MEGATRON-DEEPSPEED",
+                "item_ids": [
+                  "TDI-CD6-MEGATRON-PARTITIONING"
+                ]
+              },
+              {
+                "term_id": "TERM-MEGATRON-LM",
+                "item_ids": [
+                  "TDI-CD6-MEGATRON-PARTITIONING"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-SSW-PORTABILITY",
               "RM-SSW-WORKFLOW",
@@ -27296,10 +27560,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-APP01-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-APP01-U01",
             "type": "research-unit",
             "unit_id": "APP-01-U01",
@@ -28932,10 +29192,6 @@
           {
             "component_id": "TPC-APP12-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP12-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP12-U01",
@@ -32031,7 +32287,7 @@
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-APP13-OVERVIEW",
@@ -32040,10 +32296,6 @@
           {
             "component_id": "TPC-APP13-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP13-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP13-U01",
@@ -32085,8 +32337,63 @@
               "TDS-CD27-APP-13-SCIENTIFIC-AGENT-BENCHMARKS-2026",
               "TDS-CD28-APP-13-SGI-ASTABENCH-CONTRACTS"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-AGENT-BENCHMARKS",
+                "term_ids": [
+                  "TERM-TERMINAL-BENCH",
+                  "TERM-TERMINAL-BENCH-SCIENCE",
+                  "TERM-SWE-BENCH",
+                  "TERM-TAU-BENCH"
+                ]
+              },
+              {
+                "comparison_id": "CMP-AGENT-EVALUATION-CONTROLS",
+                "term_ids": [
+                  "TERM-TERMINAL-BENCH",
+                  "TERM-TERMINAL-BENCH-SCIENCE",
+                  "TERM-SWE-BENCH",
+                  "TERM-TAU-BENCH"
+                ]
+              },
+              {
+                "comparison_id": "CMP-AGENT-BENCHMARK-IMPORTANCE",
+                "term_ids": [
+                  "TERM-TERMINAL-BENCH",
+                  "TERM-TERMINAL-BENCH-SCIENCE",
+                  "TERM-SWE-BENCH",
+                  "TERM-TAU-BENCH"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-SWE-BENCH",
+                "item_ids": [
+                  "TDI-AIP-SWEBENCH"
+                ]
+              },
+              {
+                "term_id": "TERM-TAU-BENCH",
+                "item_ids": [
+                  "TDI-AIP-TAU",
+                  "TDI-CD2-TAU-RELIABILITY-CONDITIONS"
+                ]
+              },
+              {
+                "term_id": "TERM-TERMINAL-BENCH",
+                "item_ids": [
+                  "TDI-AIP-HARBOR",
+                  "TDI-CD2-TERMINAL4-RESOURCE-CALIBRATION"
+                ]
+              },
+              {
+                "term_id": "TERM-TERMINAL-BENCH-SCIENCE",
+                "item_ids": [
+                  "TDI-CD2-TERMINAL-SCIENCE-RELEASE"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-HW-COMPUTE",
               "RM-HW-MEMORY",
@@ -32981,10 +33288,6 @@
           {
             "component_id": "TPC-APP05-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP05-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP05-U01",
@@ -34331,10 +34634,6 @@
           {
             "component_id": "TPC-APP14-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP14-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP14-U01",
@@ -36086,10 +36385,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-CROSS03-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-CROSS03-U01",
             "type": "research-unit",
             "unit_id": "CROSS-03-U01",
@@ -36130,8 +36425,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "既存の調査を維持し、今回は「電力契約の金額と費用配賦を確認する」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Verify electricity contract amounts and cost allocation. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "調達資料4事例の照合結果を追加しました。価格と数量の対応が確認できない事例は校正対象にしません。",
+      "summary_en": "Adds four procurement evidence checks; unmatched price/quantity cases remain excluded from calibration.",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -38137,6 +38432,117 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-PS-PROCUREMENT-20260916",
+          "title_ja": "公告・仕様・落札の照合結果",
+          "title_en": "Matched notices, specifications and awards",
+          "summary_ja": "確認できた費用条件と、価格推定に不足する情報を分けます。",
+          "summary_en": "Separate verified cost terms from the evidence still needed for price estimation.",
+          "items": [
+            {
+              "item_id": "TDI-PS-PROC-ROIS",
+              "name_ja": "ROISの落札額と税区分",
+              "name_en": "ROIS award and tax basis",
+              "stage": "current",
+              "maturity": "uncertain",
+              "source_ids": [
+                "SRC-PS-ROIS-GPU-TENDER-2025",
+                "SRC-PS-ROIS-GPU-AWARD-2025"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "timing_ja": "公告・仕様書の公表日は出典に記載。調達実績と導入予定を区別します。",
+              "timing_en": "Source dates identify the notices/specification, not assumed delivery.",
+              "statement_ja": "2025年3月21日公告と5月30日落札を件名・機関・日付で照合し、落札額7,997万円は公告の10%加算規則による税込額と整理しました。納入期限は同年10月20日ですが納入実績ではありません。GPU型式・数量・保守等の内訳は未確認で、GPU単価や価格校正には使いません。",
+              "statement_en": "The title, agency and dates match the March 21 notice to the May 30 award. Its JPY 79.97 million amount includes tax under the tender's 10% addition rule. October 20 is a delivery deadline, not actual delivery evidence. GPU model/count and support scope remain unknown; no unit-price calibration is permitted.",
+              "hpci_relevance_ja": "税込・期間・対象範囲をそろえて費用を比較し、一式総額をGPU単価へ逆算しないための事例です。",
+              "hpci_relevance_en": "Compare tax, duration and scope consistently; do not divide a package total into a GPU unit price.",
+              "adoption_conditions_ja": [
+                "最終仕様、納入構成、費用内訳、保守・施設範囲を照合するまで価格校正に使わない。"
+              ],
+              "adoption_conditions_en": [
+                "Do not calibrate prices until final specifications, delivered BOM, itemization and support/facility scope are matched."
+              ]
+            },
+            {
+              "item_id": "TDI-PS-PROC-KYOTO",
+              "name_ja": "京都大学化学研究所の借入期間と費用",
+              "name_en": "Kyoto ICR lease term and cost",
+              "stage": "current",
+              "maturity": "uncertain",
+              "source_ids": [
+                "SRC-PS-KYOTO-ICR-TENDER-2023",
+                "SRC-PS-KYOTO-ICR-AWARD-2023"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "timing_ja": "公告・仕様書の公表日は出典に記載。調達実績と導入予定を区別します。",
+              "timing_en": "Source dates identify the notices/specification, not assumed delivery.",
+              "statement_ja": "公告と落札結果を照合した化学研究所の48か月借入です。税込月額3,190万円×48か月＝15億3,120万円は期間総額の算術値で、購入額や5年間TCOではありません。ACCMSのCamphor3とは同一視しません。最終仕様・納入構成・保守と施設の内包範囲は未確認です。",
+              "statement_en": "Matched ICR 48-month lease: JPY 31.9 million/month including tax gives JPY 1,531.2 million over the tender period. This is arithmetic, not a purchase price or five-year TCO. It is not identified as ACCMS Camphor3. Final specifications, delivered BOM and support/facility inclusion remain unverified.",
+              "hpci_relevance_ja": "税込・期間・対象範囲をそろえて費用を比較し、一式総額をGPU単価へ逆算しないための事例です。",
+              "hpci_relevance_en": "Compare tax, duration and scope consistently; do not divide a package total into a GPU unit price.",
+              "adoption_conditions_ja": [
+                "最終仕様、納入構成、費用内訳、保守・施設範囲を照合するまで価格校正に使わない。"
+              ],
+              "adoption_conditions_en": [
+                "Do not calibrate prices until final specifications, delivered BOM, itemization and support/facility scope are matched."
+              ]
+            },
+            {
+              "item_id": "TDI-PS-PROC-NAIST",
+              "name_ja": "要求仕様と納入構成を区別する事例",
+              "name_en": "Distinguishing minimum requirements from delivered hardware",
+              "stage": "current",
+              "maturity": "uncertain",
+              "source_ids": [
+                "SRC-PS-NAIST-GPU-SPEC-2024"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "timing_ja": "公告・仕様書の公表日は出典に記載。調達実績と導入予定を区別します。",
+              "timing_en": "Source dates identify the notices/specification, not assumed delivery.",
+              "statement_ja": "奈良先端大の2024年8月仕様書はCPU 2基以上、メモリ512 GB以上、H100 NVL 94 GB相当以上のGPU 2基以上、NVMe 3.8 TB以上、HDD 8 TB以上を要求します。GPUを4基搭載可能な筐体は4基納入を意味しません。搬入・設定と1年以上の保証を含みますが、今回落札資料の本文を取得できず、価格との対応は未確認です。",
+              "statement_en": "NAIST's August 2024 specification requires at least two CPUs, 512 GB host memory, two H100 NVL 94 GB-equivalent GPUs, 3.8 TB NVMe and 8 TB HDD. A four-GPU-capable chassis does not establish four delivered GPUs. Installation/configuration and at least one-year warranty are included. The award document could not be retrieved, so no matched price is asserted.",
+              "hpci_relevance_ja": "税込・期間・対象範囲をそろえて費用を比較し、一式総額をGPU単価へ逆算しないための事例です。",
+              "hpci_relevance_en": "Compare tax, duration and scope consistently; do not divide a package total into a GPU unit price.",
+              "adoption_conditions_ja": [
+                "最終仕様、納入構成、費用内訳、保守・施設範囲を照合するまで価格校正に使わない。"
+              ],
+              "adoption_conditions_en": [
+                "Do not calibrate prices until final specifications, delivered BOM, itemization and support/facility scope are matched."
+              ]
+            },
+            {
+              "item_id": "TDI-PS-PROC-NAGOYA",
+              "name_ja": "GPU増設の費用範囲",
+              "name_en": "Cost scope of a GPU expansion",
+              "stage": "current",
+              "maturity": "uncertain",
+              "source_ids": [
+                "SRC-PS-NAGOYA-H100-EXPANSION-2025"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "timing_ja": "公告・仕様書の公表日は出典に記載。調達実績と導入予定を区別します。",
+              "timing_en": "Source dates identify the notices/specification, not assumed delivery.",
+              "statement_ja": "名古屋大学の2025年9月公告はH100 NVL 94 GBの二式に、既存サーバーへの取付・設定・動作確認を含めています。GPU単体の店頭価格とは範囲が異なります。落札額、二式に対応する物理GPU枚数と最終納入構成は未確認です。",
+              "statement_en": "Nagoya's September 2025 notice covers two H100 NVL 94 GB sets plus installation in an existing server, configuration and testing. Its scope is not a bare-GPU retail price. Award amount, physical GPU count per set and delivered BOM remain unverified.",
+              "hpci_relevance_ja": "税込・期間・対象範囲をそろえて費用を比較し、一式総額をGPU単価へ逆算しないための事例です。",
+              "hpci_relevance_en": "Compare tax, duration and scope consistently; do not divide a package total into a GPU unit price.",
+              "adoption_conditions_ja": [
+                "最終仕様、納入構成、費用内訳、保守・施設範囲を照合するまで価格校正に使わない。"
+              ],
+              "adoption_conditions_en": [
+                "Do not calibrate prices until final specifications, delivered BOM, itemization and support/facility scope are matched."
+              ]
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -38388,11 +38794,21 @@
           ],
           "created_at": "2026-09-12T17:10:57+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000408",
+          "bundle_sha256": "84b6e1e2570bbb2a9bc7d2f245138c79f9d588deb36a93b454ba070f38be1ef1",
+          "base_commit": "21b016467bde611df2558c64a20a63f26cedb509",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-09-15T16:05:00+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
         "layout_version": "1.0",
-        "layout_mode": "generated",
+        "layout_mode": "curated",
         "components": [
           {
             "component_id": "TPC-CROSS06-OVERVIEW",
@@ -38401,10 +38817,6 @@
           {
             "component_id": "TPC-CROSS06-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-CROSS06-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-CROSS06-U01",
@@ -38428,7 +38840,8 @@
               "TDS-WC385-CROSS-06-01",
               "TDS-CD72-CROSS-06-FUGAKUNEXT-DESIGN-CONTRACTS",
               "TDS-CD78-CROSS-06-RIKYU-ROQUO-PACKAGE-COSTS",
-              "TDS-FP-CROSS-06-01-V2"
+              "TDS-FP-CROSS-06-01-V2",
+              "TDS-PS-PROCUREMENT-20260916"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -38447,8 +38860,43 @@
               "TDS-CD11-CROSS-06-U02",
               "TDS-CD13-CROSS-06-U02"
             ],
-            "comparison_refs": [],
-            "term_item_refs": [],
+            "comparison_refs": [
+              {
+                "comparison_id": "CMP-NATIONAL-COMPUTE-PROCUREMENT-MODES",
+                "term_ids": [
+                  "TERM-DEDICATED-SUPERCOMPUTER",
+                  "TERM-CLOUD-COMPUTE",
+                  "TERM-PUBLIC-PRIVATE-COINVESTMENT",
+                  "TERM-ACCESS-TIME-PROCUREMENT"
+                ]
+              }
+            ],
+            "term_item_refs": [
+              {
+                "term_id": "TERM-CLOUD-COMPUTE",
+                "item_ids": [
+                  "TDI-CD13-UK-AIRR-BLENDED-PORTFOLIO"
+                ]
+              },
+              {
+                "term_id": "TERM-DEDICATED-SUPERCOMPUTER",
+                "item_ids": [
+                  "TDI-CD13-UK-AIRR-BLENDED-PORTFOLIO"
+                ]
+              },
+              {
+                "term_id": "TERM-PUBLIC-PRIVATE-COINVESTMENT",
+                "item_ids": [
+                  "TDI-CD13-DOE-LUX-DISCOVERY-PROCUREMENT"
+                ]
+              },
+              {
+                "term_id": "TERM-ACCESS-TIME-PROCUREMENT",
+                "item_ids": [
+                  "TDI-CD13-EUROHPC-AIGF-ANCHOR-CUSTOMER"
+                ]
+              }
+            ],
             "roadmap_ids": [
               "RM-HW-SOVEREIGNTY",
               "RM-X-BLUEPRINT",
@@ -39735,10 +40183,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-CROSS10-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-CROSS10-U01",
             "type": "research-unit",
             "unit_id": "CROSS-10-U01",
@@ -39779,8 +40223,8 @@
     },
     {
       "topic_id": "CROSS-08",
-      "summary_ja": "統計数理研究所のHPCIデータ同化スーパーコンピュータについて、48 TB ccNUMA、880 TB SSD、最大8 chassis、2026年度8,640 node-hour、1,080 node-hour単位の申請、直接利用の14日前申請と114円/chassis-hourを追加しました。HPCI配分と直接利用料金は区別しています。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "This update adds the ISM HPCI data-assimilation system: 48 TB ccNUMA, 880 TB SSD, jobs up to eight chassis, an FY2026 envelope of 8,640 node-hours, requests in multiples of 1,080 node-hours, and direct-use conditions of a 14-day lead time and JPY114 per chassis-hour. HPCI allocation and direct-use charges are kept distinct. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "公称ノード数に加え、施設点検、ストレージ停止、予約運用による利用条件を確認します。",
+      "summary_en": "Complement nominal node counts with facility maintenance, storage suspension and reserved-operation constraints.",
       "sections": [
         {
           "section_id": "TDS-CBL-BASELINE",
@@ -41616,6 +42060,40 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-PS-CENTERS-20260916",
+          "title_ja": "施設保守と提供可能時間の境界",
+          "title_en": "Facility maintenance and usable service time",
+          "summary_ja": "公称ノード数に加え、施設点検、ストレージ停止、予約運用による利用条件を確認します。",
+          "summary_en": "Complement nominal node counts with facility maintenance, storage suspension and reserved-operation constraints.",
+          "items": [
+            {
+              "item_id": "TDI-PS-MIYABI-PLANNED-STOP",
+              "stage": "current",
+              "maturity": "deployed",
+              "source_ids": [
+                "SRC-PS-UTOKYO-SCHEDULE"
+              ],
+              "actor_ids": [],
+              "confidence": "medium",
+              "consensus_status": "incomplete",
+              "name_ja": "Miyabiと共有ストレージの計画停止",
+              "name_en": "Planned Miyabi and shared-storage suspension",
+              "timing_ja": "2026年9月25日～28日の予定。実施結果は未確認。",
+              "timing_en": "Scheduled September 25-28, 2026; actual execution not yet verified.",
+              "statement_ja": "大学の運用予定は、空調機と柏キャンパスの受変電設備点検等に伴い、Miyabiを9月25日9時から28日20時まで、Ipomoea-01を同日17時まで休止すると示しています。大規模HPCチャレンジによる通常キューの休止は別の運用区分で、ログインノードは利用可能とされています。ここでの時刻は国内施設の運用案内の表記に従います。",
+              "statement_en": "The published schedule suspends Miyabi from September 25 at 09:00 until September 28 at 20:00, and Ipomoea-01 until 17:00 that day, for air-conditioning and campus electrical-equipment inspections among other maintenance. Regular-queue suspension during the separate large-scale HPC challenge is a different operating category; login nodes remain available. Times follow the domestic facility's schedule notation.",
+              "hpci_relevance_ja": "年間供給量の推定では計画保守、障害、予約運用を分離し、計算と共有データの復旧時刻も分けます。この予定だけから年間可用性、余剰電力、移行費用は算定しません。",
+              "hpci_relevance_en": "Separate planned maintenance, failures and reserved operation when estimating annual capacity, and distinguish compute from shared-data restoration. This schedule does not establish annual availability, spare electrical capacity or migration cost.",
+              "adoption_conditions_ja": [
+                "実績ログ、時間帯、影響キュー、電力・冷却の余裕、代替資源を別途確認する。"
+              ],
+              "adoption_conditions_en": [
+                "Verify actual logs, time zone, affected queues, spare power/cooling and alternative resources separately."
+              ]
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -41858,6 +42336,16 @@
           ],
           "created_at": "2026-09-02T10:55:20+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000410",
+          "bundle_sha256": "c3ab1161f3656b965b3e412ab6d7fd08f590bae53d684fc8c55de87ef952906b",
+          "base_commit": "716108a1edf1b67e9913f6835d8304f7a1c22a3c",
+          "unit_ids": [
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-09-15T16:28:23+00:00",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -41908,7 +42396,8 @@
               "TDS-CBL-MIGRATION",
               "TDS-CD1-CROSS-08-U02",
               "TDS-CD2-CROSS-08-U02",
-              "TDS-CD33-CROSS-08-GENKAI-MIGRATION"
+              "TDS-CD33-CROSS-08-GENKAI-MIGRATION",
+              "TDS-PS-CENTERS-20260916"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -42258,10 +42747,6 @@
           {
             "component_id": "TPC-SSW10-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW10-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW10-U01",
@@ -42884,10 +43369,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-SSW16-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-SSW16-U01",
             "type": "research-unit",
             "unit_id": "SSW-16-U01",
@@ -43407,10 +43888,6 @@
           {
             "component_id": "TPC-APP11-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP11-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP11-U01",
@@ -43960,10 +44437,6 @@
           {
             "component_id": "TPC-ARCH13-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-ARCH13-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-ARCH13-U01",
@@ -45090,10 +45563,6 @@
           {
             "component_id": "TPC-APP15-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-APP15-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-APP15-U01",
@@ -46254,10 +46723,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-ARCH10-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-ARCH10-U01",
             "type": "research-unit",
             "unit_id": "ARCH-10-U01",
@@ -46874,10 +47339,6 @@
           {
             "component_id": "TPC-SSW11-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW11-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW11-U01",
@@ -47723,10 +48184,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-SSW12-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-SSW12-U01",
             "type": "research-unit",
             "unit_id": "SSW-12-U01",
@@ -48274,10 +48731,6 @@
           {
             "component_id": "TPC-SSW14-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW14-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW14-U01",
@@ -48916,10 +49369,6 @@
           {
             "component_id": "TPC-SSW15-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-SSW15-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-SSW15-U01",
@@ -49718,10 +50167,6 @@
           {
             "component_id": "TPC-CROSS05-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-CROSS05-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-CROSS05-U01",
@@ -50802,10 +51247,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-CROSS14-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-CROSS14-U01",
             "type": "research-unit",
             "unit_id": "CROSS-14-U01",
@@ -51391,10 +51832,6 @@
           {
             "component_id": "TPC-CROSS16-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-CROSS16-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-CROSS16-U01",
@@ -53195,10 +53632,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-CROSS15-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-CROSS15-U01",
             "type": "research-unit",
             "unit_id": "CROSS-15-U01",
@@ -53607,10 +54040,6 @@
           {
             "component_id": "TPC-ARCH07-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-ARCH07-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-ARCH07-U01",
@@ -54169,10 +54598,6 @@
             "type": "research-unit-index"
           },
           {
-            "component_id": "TPC-CROSS11-COMPARISONS",
-            "type": "topic-comparisons"
-          },
-          {
             "component_id": "TPC-CROSS11-U01",
             "type": "research-unit",
             "unit_id": "CROSS-11-U01",
@@ -54336,10 +54761,6 @@
           {
             "component_id": "TPC-CROSS19-UNIT-INDEX",
             "type": "research-unit-index"
-          },
-          {
-            "component_id": "TPC-CROSS19-COMPARISONS",
-            "type": "topic-comparisons"
           },
           {
             "component_id": "TPC-CROSS19-U01",
@@ -65527,6 +65948,94 @@
       "url": "https://docs.cerebras.ai/",
       "published_or_updated": "unknown",
       "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-PS-KYOTO-ICR-AWARD-2023",
+      "title": "Kyoto ICR supercomputer lease award",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/281874/2023080101300116.html",
+      "publisher": "Kyoto University via JETRO",
+      "source_class": "official-project",
+      "published_or_updated": "2023-08-01"
+    },
+    {
+      "source_id": "SRC-PS-KYOTO-ICR-TENDER-2023",
+      "title": "Kyoto ICR supercomputer lease tender",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/264303/2023022100240001.html",
+      "publisher": "Kyoto University via JETRO",
+      "source_class": "official-project",
+      "published_or_updated": "2023-02-21"
+    },
+    {
+      "source_id": "SRC-PS-NAGOYA-H100-EXPANSION-2025",
+      "title": "Nagoya H100 NVL expansion tender",
+      "url": "https://kanpo.adm.nagoya-u.ac.jp/detail_ippan.php?no=1323",
+      "publisher": "Tokai National Higher Education and Research System",
+      "source_class": "official-project",
+      "published_or_updated": "2025-09-10"
+    },
+    {
+      "source_id": "SRC-PS-NAIST-GPU-SPEC-2024",
+      "title": "NAIST GPU computer specification",
+      "url": "https://www.naist.jp/specification/jyutaku-hojo20240823.pdf",
+      "publisher": "NAIST",
+      "source_class": "official-project",
+      "published_or_updated": "2024-08; month precision"
+    },
+    {
+      "source_id": "SRC-PS-ROIS-GPU-AWARD-2025",
+      "title": "AI technology development GPU server award notice",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/361858/2025071100820118.html",
+      "publisher": "JETRO (Research Organization of Information and Systems announcement)",
+      "source_class": "official-project",
+      "published_or_updated": "2025-07-11"
+    },
+    {
+      "source_id": "SRC-PS-ROIS-GPU-TENDER-2025",
+      "title": "ROIS AI GPU server tender",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/347840/2025032100380001.html",
+      "publisher": "ROIS via JETRO",
+      "source_class": "official-project",
+      "published_or_updated": "2025-03-21"
+    },
+    {
+      "source_id": "SRC-EST-B200",
+      "title": "Exxact TS4-128275176 configured B200 server",
+      "publisher": "Exxact",
+      "url": "https://configurator.exxactcorp.com/configure/TS4-128275176",
+      "source_class": "official-vendor",
+      "published_or_updated": "Publication date not stated; configured price checked 2026-09-15 UTC"
+    },
+    {
+      "source_id": "SRC-PS-NVIDIA-EARNINGS-20260826",
+      "title": "NVIDIA fiscal Q2 2027 earnings call transcript, 26 August 2026",
+      "publisher": "NVIDIA",
+      "url": "https://investor.nvidia.com/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-08-26"
+    },
+    {
+      "source_id": "SRC-PS-UTOKYO-SCHEDULE",
+      "title": "University of Tokyo supercomputer operation schedule",
+      "publisher": "University of Tokyo Information Technology Center",
+      "url": "https://www.cc.u-tokyo.ac.jp/supercomputer/schedule.php",
+      "source_class": "official-project",
+      "published_or_updated": "Publication date not stated; schedule checked 2026-09-15 UTC"
+    },
+    {
+      "source_id": "SRC-PS-BLACKWELL-PORTING",
+      "title": "Blackwell Compatibility Guide, CUDA 12.8.2 archive",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/cuda/archive/12.8.2/blackwell-compatibility-guide/index.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "CUDA 12.8.2 archived documentation; page publication date not stated"
+    },
+    {
+      "source_id": "SRC-PS-MI350-ACCEPTANCE",
+      "title": "AMD Instinct MI350X Customer Acceptance Guide",
+      "publisher": "AMD",
+      "url": "https://instinct.docs.amd.com/projects/system-acceptance/en/latest/gpus/mi350x.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "Publication date not stated; checked 2026-09-15 UTC"
     }
   ],
   "coverage_gaps": [
@@ -66699,7 +67208,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PLANNER-RESEARCH-20260916-2",
-    "human_approval_directive_id": "DIR-900119"
+    "publication_decision_id": "PUBDEC-PRIORITY-SERIES-20260916",
+    "human_approval_directive_id": "DIR-900120"
   }
 }
