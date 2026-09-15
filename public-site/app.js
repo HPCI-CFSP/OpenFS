@@ -21,7 +21,7 @@
       openGaps: "未確認事項", none: "なし", catalogKicker: "調査項目一覧", catalogTitle: "調査カタログ",
       catalogLead: "各調査項目では、調査基準日現在の最新状況、近い将来の方向性、中長期の研究開発候補、見解が分かれている論点を区別して示します。システム整備との関係、公開根拠、未確認事項、調査履歴、関連ロードマップも確認できます。",
       domainFilter: "分類で絞り込む", all: "すべて", domainArchitecture: "アーキテクチャ", domainSystemSoftware: "システムソフトウェア", domainApplications: "アプリケーション", domainCrossCutting: "分野横断", search: "検索", searchPlaceholder: "表示コード、正規ID、名称または分類",
-      tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableStatus: "調査状況", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
+      tableId: "ID", tableTopic: "調査項目", tableDomain: "分類", tableVerification: "検証状況", tableUpdated: "最終更新日時", tableGaps: "未確認事項",
       noTopics: "条件に一致する調査項目はありません。", technologyKicker: "継続調査対象", technologyTitle: "技術動向", technologyLead: "HPCI整備計画に関係する技術分野を継続的に調査します。", area: "領域",
       roadmapKicker: "技術・ソフトウェア・応用の見通し", roadmapTitle: "ロードマップ", roadmapLead: "分類別のロードマップを一覧から選び、年表、根拠、HPCIシステム整備への示唆を専用ページで確認できます。", roadmapColumn: "ロードマップ", domainColumn: "分類", horizonColumn: "対象期間", updatedColumn: "更新日時", noRoadmaps: "公開中のロードマップはまだありません。", openRoadmapLibrary: "ロードマップ一覧を開く",
       scenarioKicker: "計画の選択肢", scenarioTitle: "システム整備計画案",
@@ -45,6 +45,7 @@
       consensusReceipt: "合意判定の記録", decision: "判定ID", decidedAt: "判定日時", policy: "適用方針",
       participants: "参加したモデルとエージェント", harnesses: "AIハーネス", agentRole: "役割", independenceGroup: "独立性グループ",
       promptProfile: "プロンプト設定", contribution: "検証上の担当", assessment: "評価ID", commit: "コミット", run: "実行ID",
+      independentAIReviews: "独立AI検証: {count}件", verificationDetails: "AIによる作成・検証の来歴", verificationDetailsLead: "件数は、現在の公開結果に結び付いた独立検証グループを重複なく数えたものです。調査を作成・更新したAIは独立検証数に含めません。", researchContributors: "調査を作成・更新したAI", independentReviewers: "独立検証を行ったAI", noResearchProvenance: "現在の調査範囲に対応するAI実行記録はありません。", noIndependentReviews: "現在の公開結果に結び付いた独立AI検証はありません。", modelLabel: "モデル", modelIdLabel: "モデルID", modelDeveloper: "モデル開発・提供組織", providerLabel: "サービス提供元", runtimeRevision: "実行モデルのリビジョン", reasoningEffort: "推論設定", researchUpdate: "調査更新", researchUnitsLabel: "対象調査", executionMode: "実行形態", agentCount: "エージェント数", modelCount: "モデル数", retrievalCapability: "情報取得機能", securityProfile: "セキュリティ設定", harnessRecord: "AIハーネス", notRecorded: "記録なし", verificationIncompleteNote: "独立検証が2件以上でも、現在の調査範囲に対する合意判定が未完了の場合は受理済みとして表示しません。", receiptRecords: "Consensus Receipt", coverageGapButtonLabel: "{count}件の未確認事項を表示",
       provisional: "暫定", accepted: "受理済み", coverageMet: "設定した調査範囲を確認済み", profileIncomplete: "一次情報の継続確認が必要", consensusIncomplete: "合意判定未完了",
       memoryRoadmapKicker: "メモリ技術調査", roadmapFilter: "技術群フィルタ", memoryProducts: "メモリ製品", integration3d: "3D実装", systemEnablers: "システム技術",
       technologyColumn: "技術", vendorColumn: "ベンダー／対象", undatedColumn: "時期未公表", roadmapTableNote: "項目を選択すると根拠と詳細を表示します。空欄は開発停止ではなく、確認できる公開日程がないことを示します。",
@@ -66,7 +67,7 @@
       openGaps: "Open gaps", none: "none", catalogKicker: "RESEARCH INVENTORY", catalogTitle: "Research catalog",
       catalogLead: "Each research topic distinguishes the latest status confirmed as of the research date, near-term direction, mid- to long-term R&D candidates, and unresolved questions. It also presents relevance to system planning, public evidence, coverage gaps, research history, and related roadmaps.",
       domainFilter: "Category filter", all: "All", domainArchitecture: "Architecture", domainSystemSoftware: "System software", domainApplications: "Applications", domainCrossCutting: "Cross-cutting", search: "Search", searchPlaceholder: "Display code, canonical ID, title, or category",
-      tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableStatus: "Research status", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
+      tableId: "ID", tableTopic: "Research topic", tableDomain: "Category", tableVerification: "Verification", tableUpdated: "Last updated", tableGaps: "Gaps",
       noTopics: "No topics match the current filters.", technologyKicker: "CONTINUOUS RESEARCH SCOPE", technologyTitle: "Technology landscape", technologyLead: "OpenFS continuously surveys technology areas relevant to HPCI infrastructure planning.", area: "AREA",
       roadmapKicker: "HARDWARE, SOFTWARE, AND APPLICATION OUTLOOKS", roadmapTitle: "Roadmaps", roadmapLead: "Choose a roadmap by category and open its dedicated timeline, supporting evidence, and implications for HPCI planning.", roadmapColumn: "Roadmap", domainColumn: "Category", horizonColumn: "Horizon", updatedColumn: "Updated", noRoadmaps: "No roadmaps have been published.", openRoadmapLibrary: "Open the roadmap library", scenarioKicker: "PLANNING OPTIONS",
       scenarioTitle: "System planning options",
@@ -91,6 +92,7 @@
       consensusReceipt: "Consensus record", decision: "Decision", decidedAt: "Decided", policy: "Policy",
       participants: "Participating models and agents", harnesses: "AI harnesses", agentRole: "Role", independenceGroup: "Independence group",
       promptProfile: "Prompt profile", contribution: "Consensus contribution", assessment: "Assessment", commit: "Commit", run: "Run",
+      independentAIReviews: "Independent AI reviews: {count}", verificationDetails: "AI authorship and review provenance", verificationDetailsLead: "The count is the number of unique independent review groups linked to the current public result. AI systems that authored or updated the research are not counted as independent reviewers.", researchContributors: "AI systems that authored or updated the research", independentReviewers: "AI systems that performed independent review", noResearchProvenance: "No AI execution record is linked to the current research scope.", noIndependentReviews: "No independent AI review is linked to the current public result.", modelLabel: "Model", modelIdLabel: "Model ID", modelDeveloper: "Model developer or provider", providerLabel: "Service provider", runtimeRevision: "Runtime model revision", reasoningEffort: "Reasoning setting", researchUpdate: "Research update", researchUnitsLabel: "Research units", executionMode: "Execution mode", agentCount: "Agent count", modelCount: "Model count", retrievalCapability: "Retrieval capability", securityProfile: "Security profile", harnessRecord: "AI harness", notRecorded: "not recorded", verificationIncompleteNote: "Even with two or more independent reviews, OpenFS does not show the scope as accepted while its Consensus decision remains incomplete.", receiptRecords: "Consensus Receipts", coverageGapButtonLabel: "Show {count} coverage gaps",
       provisional: "provisional", accepted: "accepted", coverageMet: "declared research scope covered", profileIncomplete: "primary-source review incomplete", consensusIncomplete: "Consensus review incomplete",
       memoryRoadmapKicker: "MEMORY TECHNOLOGY RESEARCH", roadmapFilter: "Technology group filter", memoryProducts: "Memory products", integration3d: "3D integration", systemEnablers: "System enablers",
       technologyColumn: "Technology", vendorColumn: "Vendor / scope", undatedColumn: "Timing not public", roadmapTableNote: "Select a milestone to view its details and sources. Blank cells indicate that no dated public milestone was confirmed, not that development has stopped.",
@@ -110,7 +112,6 @@
     en: {hardware: "Hardware", "system-software": "System software", applications: "Applications", "cross-cutting": "Cross-cutting"}
   };
   const statusKeys = {"not-started": "statusNotStarted", partial: "statusPartial", reviewed: "statusReviewed", retired: "statusRetired"};
-  const verificationKeys = {"independent-review-pending": "verificationPending", "consensus-verified": "verificationAccepted", "evidence-collected": "evidenceCollected", "not-yet-reviewed": "notYetReviewed"};
   const roadmapGroupKeys = {"memory-products": "memoryProducts", "3d-integration": "integration3d", "system-enablers": "systemEnablers"};
   const maturityKeys = {commercial: "commercial", sample: "sample", standard: "standard", target: "target", concept: "concept", undated: "undated"};
   const timingBasisKeys = {observed: "observed", "standard-release": "standardRelease", "vendor-target": "vendorTarget", "no-public-date": "noPublicDate"};
@@ -120,6 +121,7 @@
   let activeCategory = "all";
   let language = readLanguage();
   let activeTopicId = null;
+  let activeTopicSection = null;
   let activeRoadmapMilestoneId = null;
 
   function readLanguage() {
@@ -615,12 +617,14 @@
       titleCell.appendChild(titleButton);
       const domainCell = document.createElement("td");
       domainCell.textContent = categoryLabel(topic.catalog_category_id);
-      const statusCell = document.createElement("td");
-      statusCell.textContent = tr(statusKeys[topic.status] || topic.status);
       const verificationCell = document.createElement("td");
-      const verification = document.createElement("span");
-      verification.className = `tag verification-${topic.verification_status}`;
-      verification.textContent = tr(verificationKeys[topic.verification_status] || topic.verification_status);
+      const verification = document.createElement("button");
+      const verificationCount = topic.ai_verification?.independent_review_count || 0;
+      verification.type = "button";
+      verification.className = `tag topic-verification-button verification-${topic.ai_verification?.verification_state || "unverified"}`;
+      verification.textContent = tr("independentAIReviews").replace("{count}", String(verificationCount));
+      verification.setAttribute("aria-haspopup", "dialog");
+      verification.addEventListener("click", () => openTopicDetail(topic.topic_id, "verification"));
       verificationCell.appendChild(verification);
       const updatedCell = document.createElement("td");
       if (topic.last_updated_at && topic.last_updated_commit_url) {
@@ -635,8 +639,19 @@
       }
       const gapCell = document.createElement("td");
       gapCell.className = "topic-gap-count";
-      gapCell.textContent = String(topic.coverage_gap_count);
-      row.append(idCell, titleCell, domainCell, statusCell, verificationCell, updatedCell, gapCell);
+      if (topic.coverage_gap_count > 0) {
+        const gapButton = document.createElement("button");
+        gapButton.type = "button";
+        gapButton.className = "topic-gap-button";
+        gapButton.textContent = String(topic.coverage_gap_count);
+        gapButton.setAttribute("aria-haspopup", "dialog");
+        gapButton.setAttribute("aria-label", tr("coverageGapButtonLabel").replace("{count}", String(topic.coverage_gap_count)));
+        gapButton.addEventListener("click", () => openTopicDetail(topic.topic_id, "coverage-gaps"));
+        gapCell.appendChild(gapButton);
+      } else {
+        gapCell.textContent = "0";
+      }
+      row.append(idCell, titleCell, domainCell, verificationCell, updatedCell, gapCell);
       root.appendChild(row);
     });
     document.getElementById("topic-empty").hidden = filtered.length !== 0;
@@ -786,6 +801,167 @@
     body.append(title, meta, participantsTitle, participants, harnessesTitle, harnesses);
     details.append(toggle, body);
     return details;
+  }
+
+  function appendDeveloperIdentity(root, record) {
+    const line = document.createElement("p");
+    line.className = "provenance-developer";
+    const label = document.createElement("span");
+    label.textContent = `${tr("modelDeveloper")}: `;
+    line.appendChild(label);
+    if (record.developer_organization && record.developer_url) {
+      const link = document.createElement("a");
+      link.href = record.developer_url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = record.developer_organization;
+      line.appendChild(link);
+    } else {
+      line.appendChild(document.createTextNode(record.developer_organization || tr("notRecorded")));
+    }
+    root.appendChild(line);
+  }
+
+  function renderTopicVerification(root, topic) {
+    const provenance = topic.ai_verification || {
+      independent_review_count: 0,
+      verification_state: "unverified",
+      scope_consensus_status: "incomplete",
+      research_records: [],
+      independent_reviewers: [],
+      harnesses: [],
+      receipt_ids: []
+    };
+    const details = document.createElement("details");
+    details.id = "topic-section-verification";
+    details.className = `topic-ai-provenance verification-${provenance.verification_state}`;
+    details.open = activeTopicSection === "verification";
+    details.setAttribute("tabindex", "-1");
+    const toggle = document.createElement("summary");
+    toggle.textContent = `${tr("verificationDetails")} · ${tr("independentAIReviews").replace("{count}", String(provenance.independent_review_count))}`;
+    const body = document.createElement("div");
+    body.className = "topic-ai-provenance-body";
+    const lead = document.createElement("p");
+    lead.className = "topic-ai-provenance-lead";
+    lead.textContent = tr("verificationDetailsLead");
+    body.appendChild(lead);
+
+    const authorHeading = document.createElement("h4");
+    authorHeading.textContent = tr("researchContributors");
+    body.appendChild(authorHeading);
+    if (!provenance.research_records.length) {
+      const empty = document.createElement("p");
+      empty.className = "provenance-empty";
+      empty.textContent = tr("noResearchProvenance");
+      body.appendChild(empty);
+    } else {
+      const records = document.createElement("div");
+      records.className = "topic-provenance-records";
+      provenance.research_records.forEach((record) => {
+        const item = document.createElement("article");
+        const model = document.createElement("strong");
+        model.textContent = `${tr("modelLabel")}: ${record.model_identity || tr("notRecorded")}`;
+        item.appendChild(model);
+        appendDeveloperIdentity(item, record);
+        const meta = document.createElement("dl");
+        meta.className = "consensus-receipt-meta";
+        appendReceiptMeta(meta, tr("researchUpdate"), record.update_id || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("researchUnitsLabel"), (record.research_unit_ids || []).join(", ") || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("generatedAt"), record.created_at ? formatJst(record.created_at) : tr("notRecorded"));
+        appendReceiptMeta(meta, tr("providerLabel"), record.provider || tr("notRecorded"));
+        if (record.model_id) appendReceiptMeta(meta, tr("modelIdLabel"), record.model_id);
+        if (record.runtime_revision) appendReceiptMeta(meta, tr("runtimeRevision"), record.runtime_revision);
+        if (record.reasoning_effort) appendReceiptMeta(meta, tr("reasoningEffort"), record.reasoning_effort);
+        appendReceiptMeta(meta, tr("executionMode"), record.execution_mode || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("agentCount"), record.agent_count ?? tr("notRecorded"));
+        appendReceiptMeta(meta, tr("modelCount"), record.model_count ?? tr("notRecorded"));
+        appendReceiptMeta(meta, tr("retrievalCapability"), record.retrieval_capability || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("securityProfile"), record.security_profile_id || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("harnessRecord"), record.harness_id || tr("notRecorded"));
+        item.appendChild(meta);
+        if (record.base_commit && record.base_commit_url) {
+          const commit = document.createElement("a");
+          commit.href = record.base_commit_url;
+          commit.target = "_blank";
+          commit.rel = "noopener noreferrer";
+          commit.textContent = `${tr("commit")}: ${record.base_commit}`;
+          item.appendChild(commit);
+        }
+        records.appendChild(item);
+      });
+      body.appendChild(records);
+    }
+
+    const reviewerHeading = document.createElement("h4");
+    reviewerHeading.textContent = tr("independentReviewers");
+    body.appendChild(reviewerHeading);
+    if (!provenance.independent_reviewers.length) {
+      const empty = document.createElement("p");
+      empty.className = "provenance-empty";
+      empty.textContent = tr("noIndependentReviews");
+      body.appendChild(empty);
+    } else {
+      const reviewers = document.createElement("div");
+      reviewers.className = "topic-provenance-records";
+      provenance.independent_reviewers.forEach((record) => {
+        const item = document.createElement("article");
+        const model = document.createElement("strong");
+        model.textContent = `${tr("modelLabel")}: ${record.model_family || tr("notRecorded")}`;
+        item.appendChild(model);
+        appendDeveloperIdentity(item, record);
+        const meta = document.createElement("dl");
+        meta.className = "consensus-receipt-meta";
+        appendReceiptMeta(meta, tr("providerLabel"), record.provider || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("agentRole"), record.role || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("independenceGroup"), record.independence_group || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("promptProfile"), record.prompt_profile || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("contribution"), record.contribution || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("assessment"), record.assessment_id || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("receiptRecords"), (record.receipt_ids || []).join(", ") || tr("notRecorded"));
+        item.appendChild(meta);
+        reviewers.appendChild(item);
+      });
+      body.appendChild(reviewers);
+    }
+    if (provenance.harnesses.length) {
+      const harnessHeading = document.createElement("h4");
+      harnessHeading.textContent = tr("harnesses");
+      const harnesses = document.createElement("div");
+      harnesses.className = "topic-provenance-records";
+      provenance.harnesses.forEach((record) => {
+        const item = document.createElement("article");
+        const name = document.createElement("strong");
+        name.textContent = record.name || record.harness_id;
+        const repository = document.createElement("a");
+        repository.href = record.repository_url;
+        repository.target = "_blank";
+        repository.rel = "noopener noreferrer";
+        repository.textContent = record.repository_url;
+        const meta = document.createElement("dl");
+        meta.className = "consensus-receipt-meta";
+        appendReceiptMeta(meta, tr("run"), record.run_id || tr("notRecorded"));
+        appendReceiptMeta(meta, tr("commit"), record.commit_sha || tr("notRecorded"));
+        item.append(name, repository, meta);
+        if (record.commit_url) {
+          const commit = document.createElement("a");
+          commit.href = record.commit_url;
+          commit.target = "_blank";
+          commit.rel = "noopener noreferrer";
+          commit.textContent = `${tr("commit")}: ${record.commit_sha}`;
+          item.appendChild(commit);
+        }
+        harnesses.appendChild(item);
+      });
+      body.append(harnessHeading, harnesses);
+    }
+    if (provenance.independent_review_count >= 2 && provenance.scope_consensus_status !== "accepted") {
+      const note = document.createElement("p");
+      note.className = "provenance-warning";
+      note.textContent = tr("verificationIncompleteNote");
+      body.appendChild(note);
+    }
+    details.append(toggle, body);
+    root.appendChild(details);
   }
 
   function appendMetaItem(root, label, value) {
@@ -1132,7 +1308,10 @@
     const gaps = profile.coverage_gap_ids.map((gapId) => gapMap.get(gapId)).filter(Boolean);
     if (!gaps.length) return;
     const details = document.createElement("details");
+    details.id = "topic-section-coverage-gaps";
     details.className = "decision-gaps";
+    details.open = activeTopicSection === "coverage-gaps";
+    details.setAttribute("tabindex", "-1");
     const toggle = document.createElement("summary");
     toggle.textContent = `${tr("coverageGaps")} (${gaps.length})`;
     const list = document.createElement("div");
@@ -1553,6 +1732,7 @@
     root.replaceChildren();
     const summaries = summariesForTopic(topic.topic_id);
     const profile = decisionProfileForTopic(topic.topic_id);
+    renderTopicVerification(root, topic);
     if (topic.topic_id === "CROSS-19") {
       const entry = document.createElement("section");
       entry.className = "planner-publication-entry operational-catalog-entry";
@@ -1624,18 +1804,31 @@
     renderRelatedTopics(root, topic);
   }
 
-  function openTopicDetail(topicId) {
+  function focusTopicSection(sectionId) {
+    if (!sectionId) return;
+    const target = document.getElementById(`topic-section-${sectionId}`);
+    if (!target) return;
+    if (String(target.tagName).toLowerCase() === "details") target.open = true;
+    target.scrollIntoView({block: "start"});
+    if (typeof target.focus === "function") target.focus({preventScroll: true});
+  }
+
+  function openTopicDetail(topicId, sectionId = null) {
     const current = data.topics.find((topic) => topic.topic_id === topicId || topic.catalog_code === topicId);
     const alias = (data.catalog_aliases || []).find((item) => item.topic_id === topicId || item.legacy_code === topicId);
     if (!current && !alias) return;
     topicId = current ? current.topic_id : topicId;
     activeTopicId = topicId;
+    activeTopicSection = sectionId;
     const url = new URL(window.location.href);
     url.searchParams.set("topic", topicId);
+    if (sectionId) url.searchParams.set("section", sectionId);
+    else url.searchParams.delete("section");
     window.history.replaceState(null, "", url);
     renderTopicDetail();
     const dialog = document.getElementById("topic-dialog");
     if (!dialog.open) dialog.showModal();
+    focusTopicSection(sectionId);
   }
 
   function topicLinks(ids) {
@@ -1861,12 +2054,15 @@
   });
   document.getElementById("topic-dialog").addEventListener("close", () => {
     activeTopicId = null;
+    activeTopicSection = null;
     const url = new URL(window.location.href);
     url.searchParams.delete("topic");
+    url.searchParams.delete("section");
     window.history.replaceState(null, "", url);
   });
   render();
   const initialParams = new URLSearchParams(window.location.search);
   const initialTopicId = initialParams.get("topic");
-  if (initialTopicId) openTopicDetail(initialTopicId);
+  const initialTopicSection = initialParams.get("section");
+  if (initialTopicId) openTopicDetail(initialTopicId, initialTopicSection);
 })();
