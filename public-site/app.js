@@ -1115,9 +1115,10 @@
     sourcesTitle.textContent = tr("sourceEvidence");
     article.append(
       header, timing, statement, relevanceTitle, relevance,
-      conditionsTitle, conditions, actorsTitle, renderActorDetails(item.actor_ids, actorMap),
-      sourcesTitle, renderDecisionSources(item.source_ids)
+      conditionsTitle, conditions
     );
+    if (item.actor_ids.some((id) => actorMap.has(id))) article.append(actorsTitle, renderActorDetails(item.actor_ids, actorMap));
+    article.append(sourcesTitle, renderDecisionSources(item.source_ids));
     article.append(topicFeedbackLink("technology", item.item_id, localized(item, "name")));
     return article;
   }
@@ -1476,15 +1477,12 @@
     const container = document.createElement("section");
     container.className = `topic-reference-section${embedded ? " topic-reference-embedded" : ""}`;
     if (!embedded) {
-      const kicker = document.createElement("span");
-      kicker.className = "eyebrow";
-      kicker.textContent = tr("catalogComparisons");
       const heading = document.createElement("h3");
       heading.textContent = tr("catalogComparisons");
       const lead = document.createElement("p");
       lead.className = "topic-reference-lead";
       lead.textContent = tr("catalogComparisonsLead");
-      container.append(kicker, heading, lead);
+      container.append(heading, lead);
     }
     comparisons.forEach(({comparison, termIds}) => {
       const section = document.createElement("section");
@@ -1580,7 +1578,7 @@
       const caveatLabel = document.createElement("strong");
       caveatLabel.textContent = `${tr("comparisonCaveat")}: `;
       caveat.append(caveatLabel, document.createTextNode(localized(comparison, "caveat")));
-      if (embedded) section.append(title, wrap);
+      if (embedded) section.append(title, wrap, caveat);
       else section.append(title, summary, use, wrap, caveat);
       if (!embedded) {
         const roadmapTitle = document.createElement("strong");
@@ -1643,7 +1641,7 @@
     root.appendChild(section);
   }
 
-  function renderStructuredDecisionSection(root, profileSection, actorMap, topic) {
+  function renderStructuredDecisionSection(root, profileSection, actorMap, topic, unit) {
     const section = document.createElement("section");
     section.className = "structured-unit-section decision-technology-section";
     section.id = profileSection.section_id;
@@ -1655,13 +1653,58 @@
     const list = document.createElement("div");
     list.className = "decision-item-list";
     profileSection.items.forEach((item) => list.appendChild(renderTechnologyItem(item, actorMap, topic)));
-    section.append(title, summary, list);
+    const redundantTitle = localized(profileSection, "title") === localized(unit, "title") ||
+      (profileSection.items.length === 1 && localized(profileSection, "title") === localized(profileSection.items[0], "name"));
+    if (!redundantTitle) section.append(title);
+    section.append(summary, list);
     root.appendChild(section);
   }
 
   function researchUnitLabel(topic, unit) {
     const index = topic.research_units.findIndex((entry) => entry.unit_id === unit.unit_id) + 1;
     return `[${tr("researchUnit")}${index}] ${localized(unit, "title")}`;
+  }
+
+  function renderUnitFindingIndex(root, items) {
+    const wrap = document.createElement("div");
+    wrap.className = "unit-finding-index";
+    const table = document.createElement("table");
+    const caption = document.createElement("caption");
+    caption.textContent = language === "ja" ? "調査対象と詳細" : "Research subjects and details";
+    const head = document.createElement("thead");
+    const heading = document.createElement("tr");
+    (language === "ja" ? ["技術・論点", "実用化・研究開発の状況"] : ["Technology or question", "Adoption / research stage"]).forEach((text) => {
+      const th = document.createElement("th");
+      th.scope = "col";
+      th.textContent = text;
+      heading.append(th);
+    });
+    head.append(heading);
+    const body = document.createElement("tbody");
+    const stages = {current: "stageCurrentBadge", "near-term": "stageNearTermBadge", research: "stageResearchBadge", contested: "stageContestedBadge"};
+    items.forEach((item) => {
+      const row = document.createElement("tr");
+      const name = document.createElement("th");
+      name.scope = "row";
+      const link = document.createElement("a");
+      link.href = `#${item.item_id}`;
+      link.textContent = localized(item, "name");
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        document.getElementById(item.item_id)?.scrollIntoView({block: "start"});
+      });
+      name.append(link);
+      const stage = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = `comparison-stage-badge comparison-stage-${item.stage}`;
+      badge.textContent = tr(stages[item.stage]);
+      stage.append(badge);
+      row.append(name, stage);
+      body.append(row);
+    });
+    table.append(caption, head, body);
+    wrap.append(table);
+    root.append(wrap);
   }
 
   function renderResearchUnitComponent(root, component, topic, profile, actorMap) {
@@ -1685,6 +1728,7 @@
     appendGlossaryText(question, localized(unit, "question"), topic);
     header.append(heading, status, question);
     section.appendChild(header);
+    renderUnitFindingIndex(section, profileItems);
     renderTopicComparisons(section, topic, profile, {
       comparisonRefs: component.comparison_refs,
       embedded: true,
@@ -1693,11 +1737,7 @@
       termItemRefs: component.term_item_refs
     });
     if (profileSections.length) {
-      const detailHeading = document.createElement("h4");
-      detailHeading.className = "structured-details-heading";
-      detailHeading.textContent = tr("researchDetails");
-      section.appendChild(detailHeading);
-      profileSections.forEach((profileSection) => renderStructuredDecisionSection(section, profileSection, actorMap, topic));
+      profileSections.forEach((profileSection) => renderStructuredDecisionSection(section, profileSection, actorMap, topic, unit));
     }
     renderRoadmapReferences(section, component.roadmap_ids, true);
     root.appendChild(section);
