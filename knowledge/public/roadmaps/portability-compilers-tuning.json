@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/portability-compilers-tuning",
-  "as_of": "2026-09-01",
+  "as_of": "2026-09-15",
   "title_ja": "性能可搬性・コンパイラ・自動最適化",
   "title_en": "Performance portability, compilers, and automated optimization",
   "summary_ja": "並列API、通信ランタイム、コンパイラ基盤、性能可搬性レイヤー、ベンダー提供のソフトウェアスタック、自動移植・最適化を、HPCIの世代移行に向けた評価ゲートとともに比較する暫定ロードマップです。",
@@ -16,6 +16,11 @@
   "coverage_status": "official-source-scan-incomplete",
   "consensus_status": "incomplete",
   "groups": [
+    {
+      "group_id": "specialized-sdk",
+      "name_ja": "専用アクセラレータ開発環境",
+      "name_en": "Specialized accelerator development"
+    },
     {"group_id": "standards", "name_ja": "並列API・標準", "name_en": "Parallel APIs and standards"},
     {"group_id": "compilers", "name_ja": "コンパイラ基盤", "name_en": "Compiler infrastructure"},
     {"group_id": "portability", "name_ja": "性能可搬層", "name_en": "Portability layers"},
@@ -27,13 +32,54 @@
     {"group_id": "runtime-lifecycle", "name_ja": "実行基盤・保守期間", "name_en": "Runtimes and support lifecycles"}
   ],
   "tracks": [
+    {
+      "track_id": "PORT-CEREBRAS",
+      "group": "specialized-sdk",
+      "name_ja": "Cerebras Training・Inference・CSL",
+      "name_en": "Cerebras Training, Inference and CSL",
+      "summary_ja": "学習、APIサービング、低水準HPC開発を区別して版と互換性を追跡します。",
+      "summary_en": "Tracks versions and compatibility separately for training, API serving and low-level HPC development.",
+      "current_state_ja": "Training 2.5とCSL SDKを公開。推論API v2は2026年7月から既定化への段階移行を開始しました。将来ハードウェア向けの対応日は未確認です。",
+      "current_state_en": "Training 2.5 and CSL SDK documentation are public. Phased default rollout of inference API v2 began in July 2026; future-hardware support dates remain unconfirmed.",
+      "hpci_implications_ja": "CUDAの無変更移植を前提とせず、学習チェックポイント、推論API、科学計算カーネルを別々に検証します。",
+      "hpci_implications_en": "Do not assume unmodified CUDA portability; qualify training checkpoints, inference APIs and scientific kernels separately.",
+      "source_ids": [
+        "SRC-UPD-CSL",
+        "SRC-UPD-CSTRAIN",
+        "SRC-UPD-CS-DOCS",
+        "SRC-UPD-CS-API"
+      ]
+    },
     {"track_id": "PORT-APIS", "group": "standards", "name_ja": "OpenMP・SYCL", "name_en": "OpenMP and SYCL", "summary_ja": "ベンダー横断で利用できる指示文ベースのAPIと、C++による異種プログラミングAPIについて、各実装の対応状況を追跡する。", "summary_en": "Tracks cross-vendor directive-based and C++ heterogeneous-programming APIs together with implementation support.", "current_state_ja": "OpenMP 6.0は公開済みで、6.1は2026年11月に公開される予定である。2026年Q3の公式資料では、GCCとLLVMが機能単位の実装表を公開している。Intel oneAPIは5.2と6.0の一部、NVIDIA HPC SDK 26.5はGPU向け5.0の一部、AMD AOCC 5.2はC/C++で5.0、Fortranで4.5、Fujitsu Technical Computing Suiteは4.5と5.0の一部への対応を掲げる。AOCCとROCmは別のソフトウェアスタックであり、言語、バックエンド、機能を横断して比較するには共通試験が必要である。SYCL 2020 Revision 12は2026年Q3に公開された。Khronosの公式適合製品一覧でSYCL 2020として掲載されているのは、Intel oneAPI DPC++をIntel製CPUまたはGPUで使用する構成に限られる。", "current_state_en": "OpenMP 6.0 is current, and 6.1 is scheduled for November 2026. Official Q3 2026 sources provide feature-level implementation tables for GCC and LLVM. Intel oneAPI declares support for 5.2 and selected 6.0 features; NVIDIA HPC SDK 26.5 documents a GPU-oriented subset of 5.0; AMD AOCC 5.2 declares 5.0 support for C/C++ and 4.5 for Fortran; and the Fujitsu Technical Computing Suite declares support for 4.5 and part of 5.0. AOCC and ROCm are distinct software stacks, so a common test is still required for comparisons across languages, backends, and features. SYCL 2020 Revision 12 was published in Q3 2026. The SYCL 2020 entries in Khronos's official conformant-products list are limited to Intel oneAPI DPC++ configurations on Intel CPUs and GPUs.", "hpci_implications_ja": "仕様公開とCPU/GPU実装範囲を分け、Fortran、デバイス機能、デバッグ、性能差をコンパイラ別に検証する。", "hpci_implications_en": "Separate specification publication from CPU/GPU implementation coverage and test Fortran, device features, debugging, and performance per compiler.", "source_ids": ["SRC-PORT001", "SRC-PORT002", "SRC-PORT003", "SRC-PORT013", "SRC-PORT018", "SRC-PORT019", "SRC-PORT020", "SRC-PORT021", "SRC-PORT022", "SRC-PORT023", "SRC-PORT024", "SRC-PORT025"]},
     {"track_id": "PORT-COMMS", "group": "standards", "name_ja": "MPI・PGAS・通信基盤", "name_en": "MPI, PGAS and communication infrastructure", "summary_ja": "MPI ABI、MPI実装、通信ファブリックのプロバイダー、異種メモリ間転送に加え、GPU向けPGASの仕様提案を追跡します。提案の公開と規格採択は区別します。", "summary_en": "Tracks the MPI ABI, implementations, fabric providers, heterogeneous-memory transport and GPU-aware PGAS proposals. Publication of a proposal is distinct from ratification.", "current_state_ja": "MPI 5.0は標準ABIを導入済み。MPICH 5.0.0はMPI-5と新ABIの完全対応を公称する一方、MPI Forumの2026年Q3実装状況はMPICHを部分対応（FortranはMPICH ABIのみ）、Open MPIを未記載とし、MPICH側も2026年4月にmpifort_abi未提供を確認した。したがって、実装のリリース番号や包括的な対応表明だけでは、言語別の実装間互換性を判断できない。", "current_state_en": "MPI 5.0 introduced a standard ABI. MPICH 5.0.0 declares full MPI-5 and new-ABI support, while the MPI Forum's Q3 2026 implementation table marks MPICH as partial because Fortran still uses the MPICH ABI, leaves Open MPI unmarked, and an April 2026 MPICH project response confirms that mpifort_abi is not provided. Release numbers and broad conformance statements therefore do not establish language-specific interoperability across implementations.", "hpci_implications_ja": "実装の交換可能性だけでなく、GPUDirect経路、通信の進捗保証、集合通信、障害時の挙動、HPCIアプリケーションの性能を通信ファブリック別に継続測定する。", "hpci_implications_en": "For each communication fabric, continuously measure implementation interchangeability, GPUDirect paths, progress guarantees, collective operations, failure behavior, and HPCI application performance.", "source_ids": ["SRC-PORT014", "SRC-PORT015", "SRC-PORT016", "SRC-PORT017", "SRC-PORT026", "SRC-PORT027", "SRC-PORT056"]},
     {"track_id": "PORT-LLVM", "group": "compilers", "name_ja": "LLVM/Clang・MLIR", "name_en": "LLVM/Clang and MLIR", "summary_ja": "複数アーキテクチャと高水準最適化を支える共通コンパイラ基盤の更新を追跡する。", "summary_en": "Tracks the common compiler infrastructure supporting multiple architectures and high-level optimization.", "current_state_ja": "LLVM 22.1は2026年Q1に公開され、LLVM 23.1.0の最終版はQ3に公開された。", "current_state_en": "LLVM 22.1 was released in Q1 2026, followed by the final LLVM 23.1.0 release in Q3.", "hpci_implications_ja": "最新リリースへの追随だけでなく、AArch64、x86、GPUの各バックエンド、OpenMPオフロード、数値再現性、長期サポート版を評価する。", "hpci_implications_en": "Assess AArch64, x86, and GPU backends, OpenMP offload, numerical reproducibility, and long-term-support releases rather than merely following the latest releases.", "source_ids": ["SRC-PORT004", "SRC-PORT005"]},
     {"track_id": "PORT-KOKKOS", "group": "portability", "name_ja": "Kokkosなどの性能可搬層", "name_en": "Kokkos and portability layers", "summary_ja": "アプリケーションとベンダーAPIの間で利用する、C++の性能可搬性を支える抽象化層と数値計算ライブラリを追跡する。", "summary_en": "Tracks C++ performance-portability abstractions and numerical libraries between applications and vendor APIs.", "current_state_ja": "Kokkos 5系はC++20を基盤に2026年も更新され、Kokkos-FFT 1.0がQ1に本番運用可能となった。", "current_state_en": "Kokkos 5.x continues on a C++20 baseline in 2026, and Kokkos-FFT 1.0 became production-ready in Q1.", "hpci_implications_ja": "性能可搬層の採用率、バックエンド間の性能差、依存ライブラリ、教育・保守コストを、アプリケーション群全体で測定する。", "hpci_implications_en": "Measure adoption, backend performance gaps, dependencies, training, and maintenance costs across the application portfolio.", "source_ids": ["SRC-PORT006", "SRC-PORT007"]},
     {"track_id": "PORT-VENDOR", "group": "vendor-stacks", "name_ja": "ROCm・NVIDIA HPC SDK", "name_en": "ROCm and NVIDIA HPC SDK", "summary_ja": "アクセラレータの利用に必要なコンパイラ、ライブラリ、プロファイラを一体として提供するソフトウェアスタックを追跡する。", "summary_en": "Tracks product compiler, library, and profiler stacks needed for accelerators.", "current_state_ja": "AMDは2026年8月27日にROCm 10を公開し、ROCm.AIを一般提供した。ROCm.AIはHyperloom、AMD Skills、ROCm CLIを統合するが、ROCm CLIはTechnology Previewであり、ROCm 10への正式対応は今後とされる。NVIDIA HPC SDK 26.5は2026年Q2に提供された。将来のサポート期間に関する公開情報は限られている。", "current_state_en": "AMD released ROCm 10 on August 27, 2026 and made ROCm.AI generally available. ROCm.AI combines Hyperloom, AMD Skills, and the ROCm CLI, while the CLI remains a Technology Preview whose official ROCm 10 support is still forthcoming. NVIDIA HPC SDK 26.5 arrived in Q2 2026. Public information about long-term support is limited.", "hpci_implications_ja": "最新版性能と調達後の固定版保守を両立し、コンテナ、Spack、セキュリティ修正、旧GPU互換を検証する。", "hpci_implications_en": "Balance current performance with post-procurement support, testing containers, Spack, security fixes, and older-GPU compatibility.", "source_ids": ["SRC-PORT008", "SRC-PORT009", "SRC-PORT037"]},
     {"track_id": "PORT-AUTO", "group": "automation", "name_ja": "AI支援移植・自動最適化", "name_en": "AI-assisted migration and automated optimization", "summary_ja": "AIによるコード移植、性能予測、ボトルネック分析、最適化、回帰評価を自動的に反復する仕組みを追跡する。", "summary_en": "Tracks closed-loop AI code migration, performance prediction, bottleneck analysis, optimization, and regression evaluation.", "current_state_ja": "富岳NEXTはBenchpark/BenchKit、オンプレミスAI、商用AI、テストベッドを組み合わせた試作を2026年度中頃に公開予定としている。", "current_state_en": "FugakuNEXT plans a prototype around mid-FY2026 combining Benchpark/BenchKit, on-premises AI, commercial AI, and testbeds.", "hpci_implications_ja": "生成コードを自動採用せず、テスト、性能、数値差、ライセンス、来歴を機械的に検証したうえで、判断責任者による確認へ渡す。", "hpci_implications_en": "Do not automatically accept generated code; mechanically verify tests, performance, numerical differences, licenses, and provenance before review by the accountable decision maker.", "source_ids": ["SRC-PORT010", "SRC-PORT011"]},
-    {"track_id": "PORT-AI-TRAINING", "group": "ai-training", "name_ja": "Megatron Core・Megatron Bridge・Megatron-DeepSpeed", "name_en": "Megatron Core, Megatron Bridge, and Megatron-DeepSpeed", "summary_ja": "大規模Transformer学習の並列化、メモリ分散、チェックポイント、低精度演算を担うフレームワークと統合フォークを追跡する。", "summary_en": "Tracks frameworks and integration forks for large-scale Transformer parallelism, memory sharding, checkpointing, and low-precision training.", "current_state_ja": "正式名称はMegatron-MLではなくMegatron-LMである。NVIDIAのMegatron-LMには構成可能なライブラリMegatron Coreが含まれ、2026年8月19日に0.19.0が公開された。Megatron Bridge 0.5.0は2026年6月に公開され、Megatron Coreを基盤にHugging Faceとのチェックポイント変換、検証、学習レシピを提供する。NeMo Framework 26.06はMegatron Core 0.18.0とMegatron Bridge 0.5.0を組み合わせており、最新版同士が常に同一ではない。Megatron-DeepSpeedはDeepSpeed機能を統合したフォークで、公式READMEが明示するNVIDIA/Megatron-LMとの大規模同期は2023年7月である。DeepSpeed-Ulyssesの公式チュートリアルでは現在も利用例が示されるが、最新Megatron Coreとの機能同等性は確認できない。", "current_state_en": "The official name is Megatron-LM, not Megatron-ML. NVIDIA's Megatron-LM includes the composable Megatron Core library, whose 0.19.0 release was published on August 19, 2026. Megatron Bridge 0.5.0 was released in June 2026 and builds on Megatron Core to provide Hugging Face checkpoint conversion, verification, and training recipes. NeMo Framework 26.06 combines Megatron Core 0.18.0 with Megatron Bridge 0.5.0, so the latest releases are not necessarily paired. Megatron-DeepSpeed is a fork integrating DeepSpeed features; its README identifies July 2023 as the last large synchronization with NVIDIA/Megatron-LM. A current DeepSpeed-Ulysses tutorial still uses it, but feature parity with current Megatron Core is not established.", "hpci_implications_ja": "モデル規模だけでなく、対象GPU、並列方式の組合せ、通信ライブラリ、チェックポイント互換性、障害回復、数値精度、更新頻度を同一モデル・データで比較する。フォーク名だけから保守継続性やベンダー横断性を推定しない。", "hpci_implications_en": "Compare supported GPUs, combinations of parallelism, communication libraries, checkpoint compatibility, recovery, numerical precision, and update cadence on the same model and data rather than model size alone. Do not infer maintenance continuity or cross-vendor portability from a fork name.", "source_ids": ["SRC-PORT029", "SRC-PORT030", "SRC-PORT031", "SRC-PORT032", "SRC-PORT033", "SRC-PORT034", "SRC-PORT035", "SRC-PORT036"]},
+    {
+      "track_id": "PORT-AI-TRAINING",
+      "group": "ai-training",
+      "name_ja": "Megatron Core・Megatron Bridge・Megatron-DeepSpeed",
+      "name_en": "Megatron Core, Megatron Bridge, and Megatron-DeepSpeed",
+      "summary_ja": "大規模Transformer学習の並列化、メモリ分散、チェックポイント、低精度演算を担うフレームワークと統合フォークを追跡する。",
+      "summary_en": "Tracks frameworks and integration forks for large-scale Transformer parallelism, memory sharding, checkpointing, and low-precision training.",
+      "current_state_ja": "正式名称はMegatron-MLではなくMegatron-LMである。NVIDIAのMegatron-LMには構成可能なライブラリMegatron Coreが含まれ、2026年8月19日に0.19.0が公開された。Megatron Bridge 0.5.0は2026年6月に公開され、Megatron Coreを基盤にHugging Faceとのチェックポイント変換、検証、学習レシピを提供する。NeMo Framework 26.06はMegatron Core 0.18.0とMegatron Bridge 0.5.0を組み合わせており、最新版同士が常に同一ではない。Megatron-DeepSpeedはDeepSpeed機能を統合したフォークで、公式READMEが明示するNVIDIA/Megatron-LMとの大規模同期は2023年7月である。DeepSpeed-Ulyssesの公式チュートリアルでは現在も利用例が示されるが、最新Megatron Coreとの機能同等性は確認できない。",
+      "current_state_en": "The official name is Megatron-LM, not Megatron-ML. NVIDIA's Megatron-LM includes the composable Megatron Core library, whose 0.19.0 release was published on August 19, 2026. Megatron Bridge 0.5.0 was released in June 2026 and builds on Megatron Core to provide Hugging Face checkpoint conversion, verification, and training recipes. NeMo Framework 26.06 combines Megatron Core 0.18.0 with Megatron Bridge 0.5.0, so the latest releases are not necessarily paired. Megatron-DeepSpeed is a fork integrating DeepSpeed features; its README identifies July 2023 as the last large synchronization with NVIDIA/Megatron-LM. A current DeepSpeed-Ulysses tutorial still uses it, but feature parity with current Megatron Core is not established.",
+      "hpci_implications_ja": "モデル規模だけでなく、対象GPU、並列方式の組合せ、通信ライブラリ、チェックポイント互換性、障害回復、数値精度、更新頻度を同一モデル・データで比較する。フォーク名だけから保守継続性やベンダー横断性を推定しない。",
+      "hpci_implications_en": "Compare supported GPUs, combinations of parallelism, communication libraries, checkpoint compatibility, recovery, numerical precision, and update cadence on the same model and data rather than model size alone. Do not infer maintenance continuity or cross-vendor portability from a fork name.",
+      "source_ids": [
+        "SRC-PORT029",
+        "SRC-PORT030",
+        "SRC-PORT031",
+        "SRC-PORT032",
+        "SRC-PORT033",
+        "SRC-PORT034",
+        "SRC-PORT035",
+        "SRC-PORT036",
+        "SRC-UPD-CSTRAIN",
+        "SRC-UPD-CSL"
+      ]
+    },
     {"track_id": "PORT-AI-INFERENCE", "group": "ai-inference", "name_ja": "LLM推論サービング・エージェント実行基盤", "name_en": "LLM inference serving and agent runtimes", "summary_ja": "vLLM、llama.cpp、SGLang、TensorRT-LLM、TGI、ONNX Runtime GenAIについて、対応ハードウェア、モデル形式、量子化、バッチ処理、KVキャッシュ、分散推論、Agent API、運用性を追跡する。", "summary_en": "Tracks vLLM, llama.cpp, SGLang, TensorRT-LLM, TGI, and ONNX Runtime GenAI across hardware and model support, quantization, batching, KV cache, distributed inference, agent APIs, and operations.", "current_state_ja": "vLLM 0.28.0が公開されましたが、確認したROCm Core SDK 10.0.0のdevelop資料はvLLM 0.27.0対応を記載しています。公開版と検証対象版を区別し、GPU・backend・機能併用条件を固定して比較します。llama.cppはGGUFとCPUを含む実行環境、SGLangは分散サービング、TensorRT LLMはNVIDIA向け最適化を提供します。TGIの保守モード、ONNX Runtime GenAIのPreviewも、すべて同じ成熟度とは扱いません。", "current_state_en": "vLLM 0.28.0 is released, while the inspected ROCm Core SDK 10.0.0 develop page lists support for 0.27.0. Separate public releases from qualified versions and pin GPU, backend and feature combinations. llama.cpp supplies GGUF and CPU-capable deployment, SGLang distributed serving and TensorRT LLM NVIDIA-focused optimization. TGI maintenance mode and ONNX Runtime GenAI Preview are also distinct maturity states.", "hpci_implications_ja": "同一モデル、精度、ハードウェア、到着過程、SLAでTTFT、ITL、p95・p99、スループット、メモリ、電力、回復時間を測定し、構造化出力、ツール呼び出し、監視、保守を別々に確認する。", "hpci_implications_en": "Measure TTFT, ITL, p95 and p99 latency, throughput, memory, power, and recovery time using the same model, precision, hardware, arrival process, and SLA, while verifying structured output, tool calling, observability, and maintenance separately.", "source_ids": ["SRC-PORT038", "SRC-PORT039", "SRC-PORT040", "SRC-PORT041", "SRC-PORT042", "SRC-PORT043", "SRC-PORT044", "SRC-PORT048", "SRC-PORT049", "SRC-PORT050", "SRC-PORT051"]},
     {"track_id": "PORT-HPCI-EVAL", "group": "hpci-gates", "name_ja": "HPCI移植性評価", "name_en": "HPCI portability evaluation", "summary_ja": "複数のISAとGPUを継続的に評価し、アプリケーション移行と受入基準に結び付けるOpenFSの暫定判断ゲート。", "summary_en": "Provisional OpenFS decision gates that connect continuous evaluation across multiple ISAs and GPUs to application migration and acceptance criteria.", "current_state_ja": "コンパイラに関する公開情報は多いが、HPCIアプリケーション群の移植性を同一条件で比較した台帳は整備されていない。", "current_state_en": "Substantial compiler information is public, but no common portability inventory compares the HPCI application portfolio under identical conditions.", "hpci_implications_ja": "ビルド可否、計算結果の妥当性、性能、移植工数、保守性を別々の指標で評価し、センターごとに必要なバックエンドを維持する。", "hpci_implications_en": "Track buildability, numerical correctness, performance, porting effort, and maintainability separately while retaining the backends required by each center.", "source_ids": ["SRC-PORT011", "SRC-PORT012"]},
     {"track_id": "PORT-RUNTIME", "group": "runtime-lifecycle", "name_ja": "Kubernetes・Slurmの更新と採用条件", "name_en": "Kubernetes and Slurm release qualification", "summary_ja": "公開版、機能ごとの成熟度、保守終了と実サイトの移行を区別します。", "summary_en": "Separate releases, feature maturity, support expiry and site migration.", "current_state_ja": "Kubernetes 1.37は公開済みですが、Workload APIとJob・階層配置では成熟度が異なります。Slurmの保守表は25.05・25.11の終了時期を示す一方、26系では終了年月と期間の表記が一致しません。", "current_state_en": "Kubernetes 1.37 is released, but Workload API maturity differs from Job and hierarchical integration. Slurm lists expiry dates for 25.05/25.11, while its 26.x dates and duration labels conflict.", "hpci_implications_ja": "共同利用環境では、機能の存在だけでなく、実装版、既定設定、復旧、移行停止時間を受入条件として確認します。", "hpci_implications_en": "Shared facilities need version, default-setting, recovery and migration-downtime qualification beyond feature availability.", "source_ids": ["SRC-PORT045", "SRC-PORT046", "SRC-PORT047"]},
@@ -311,6 +357,71 @@
       "milestones": [
         {"milestone_id": "MS-PORT-GPU-OPENSHMEM-PROPOSAL-2026Q3", "year": 2026, "quarter": "Q3", "timing_precision": "quarter", "maturity": "published", "event_type": "research", "timing_basis": "observed", "comparison_priority": "supporting", "label_ja": "GPU向け補助仕様の論文公開", "label_en": "GPU auxiliary-specification paper", "detail_ja": "7月9日公開の論文はGPUメモリ・順序・完了規則の共通化を提案します。この線表は論文公開の時期で、規格採択や各ベンダーの対応開始を示しません。参照先の仕様案は取得できず、適合性・導入時期・性能は未確認です。", "detail_en": "The July 9 paper proposes common GPU-memory, ordering and completion rules. This dates paper publication, not ratification or vendor availability. The referenced draft was not retrievable; conformance, adoption dates and performance remain unverified.", "source_ids": ["SRC-PORT056"], "dependency_refs": ["DEP-PORT-NET-001", "DEP-PORT-WORKLOAD-001"]}
       ]
+    },
+    {
+      "lane_id": "LANE-PORT-CEREBRAS",
+      "track_id": "PORT-CEREBRAS",
+      "owner": "Cerebras",
+      "scope_ja": "Training・Inference・CSL SDKの独立した対応計画",
+      "scope_en": "Separate Training, Inference and CSL SDK support schedules",
+      "milestones": [
+        {
+          "milestone_id": "MS-PORT-CEREBRAS-API-V2-TEST",
+          "year": 2026,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "supporting",
+          "label_ja": "推論API v2の試用開始",
+          "label_en": "Inference API v2 available for testing",
+          "detail_ja": "公式移行表は2026年1月21日にヘッダー指定によるv2試用開始としています。SDKやハードウェアの発売日ではありません。",
+          "detail_en": "The official rollout table dates header-selected v2 testing to January 21, 2026. This is not an SDK or hardware launch.",
+          "source_ids": [
+            "SRC-UPD-CS-API"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-PORT-CEREBRAS-API-V2-DEFAULT",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "product",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "推論API v2への段階移行",
+          "label_en": "Phased rollout of inference API v2",
+          "detail_ja": "2026年7月22日にv2の既定化への段階移行を開始し、旧版は保守終了。構造化出力やツール呼び出しの検証ルールを更新します。CS-5/CS-6のSDK対応時期を示すものではありません。",
+          "detail_en": "Phased default rollout began July 22, 2026, with older versions reaching end of life. Validation rules for structured outputs and tool calling change; this does not date SDK support for CS-5/CS-6.",
+          "source_ids": [
+            "SRC-UPD-CS-API"
+          ],
+          "dependency_refs": []
+        },
+        {
+          "milestone_id": "MS-PORT-CEREBRAS-SDK-UNDATED",
+          "year": null,
+          "quarter": null,
+          "timing_precision": "undated",
+          "maturity": "undated",
+          "event_type": "product",
+          "timing_basis": "no-public-date",
+          "comparison_priority": "key",
+          "label_ja": "将来世代向けSDK対応日未確認",
+          "label_en": "Future-hardware SDK dates unconfirmed",
+          "detail_ja": "Training 2.5、Inference SDK、CSL SDKの文書は公開されていますが、CS-5/CS-6との互換性と日付付き長期ソフトウェア計画は未確認です。",
+          "detail_en": "Training 2.5, Inference SDK and CSL documentation are public. CS-5/CS-6 compatibility and a dated long-term software schedule remain unconfirmed.",
+          "source_ids": [
+            "SRC-UPD-CSL",
+            "SRC-UPD-CSTRAIN",
+            "SRC-UPD-CS-DOCS"
+          ],
+          "dependency_refs": []
+        }
+      ]
     }
   ],
   "dependencies": [
@@ -320,6 +431,13 @@
     {"dependency_id": "DEP-PORT-BLUEPRINT-001", "relationship": "informs", "upstream_roadmap_id": "RM-SSW-PORTABILITY", "downstream_roadmap_id": "RM-X-BLUEPRINT", "statement_ja": "移植性台帳と受入基準はセンター別構成と移行費用の主要入力になる。", "statement_en": "The portability ledger and acceptance criteria inform center configurations and migration cost.", "basis": "openfs-assessment", "source_ids": ["SRC-PORT012"]}
   ],
   "sources": [
+    {
+      "source_id": "SRC-UPD-CS-API",
+      "title": "Cerebras Inference API Version 2 rollout",
+      "publisher": "Cerebras",
+      "url": "https://inference-docs.cerebras.ai/api-reference/versions",
+      "source_class": "vendor-official"
+    },
     {"source_id": "SRC-PORT001", "title": "OpenMP ARB Releases Public Comment Draft of OpenMP 6.1", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/home-news/public-comment-draft-6-1/", "published_at": "2026-07-09", "source_class": "standards-body"},
     {"source_id": "SRC-PORT002", "title": "OpenMP ARB Releases Technical Report 14", "publisher": "OpenMP ARB", "url": "https://www.openmp.org/press-release/openmp-arb-releases-tr14/", "published_at": "2025-11-13", "source_class": "standards-body"},
     {"source_id": "SRC-PORT003", "title": "Khronos SYCL Registry", "publisher": "Khronos Group", "url": "https://registry.khronos.org/SYCL/", "source_class": "standards-body"},
@@ -375,7 +493,28 @@
     {"source_id": "SRC-PORT053", "title": "EESSI roadmap revised May 27, 2026", "publisher": "EESSI Steering Committee", "url": "https://www.eessi.io/docs/roadmap/", "source_class": "project-official", "published_at": "2026-05-27"},
     {"source_id": "SRC-PORT054", "title": "EPICURE project duration and funding", "publisher": "EuroHPC JU", "url": "https://www.eurohpc-ju.europa.eu/research-innovation/our-projects/epicure_en", "source_class": "government-official"},
     {"source_id": "SRC-PORT055", "title": "EESSI GPU support and host-specific configuration", "publisher": "EESSI", "url": "https://www.eessi.io/docs/site_specific_config/gpu/", "source_class": "project-official"},
-    {"source_id": "SRC-PORT056", "title": "Toward a Unified GPU-Aware OpenSHMEM Specification, arXiv:2607.08006v1", "publisher": "Ravi et al. / arXiv", "url": "https://arxiv.org/html/2607.08006v1", "source_class": "academic-primary", "published_at": "2026-07-09"}
+    {"source_id": "SRC-PORT056", "title": "Toward a Unified GPU-Aware OpenSHMEM Specification, arXiv:2607.08006v1", "publisher": "Ravi et al. / arXiv", "url": "https://arxiv.org/html/2607.08006v1", "source_class": "academic-primary", "published_at": "2026-07-09"},
+    {
+      "source_id": "SRC-UPD-CSL",
+      "title": "Cerebras SDK documentation",
+      "publisher": "Cerebras",
+      "url": "https://sdk.cerebras.ai/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-UPD-CSTRAIN",
+      "title": "Cerebras Training 2.5 documentation",
+      "publisher": "Cerebras",
+      "url": "https://training-docs.cerebras.ai/rel-2.5.0/getting-started/overview",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-UPD-CS-DOCS",
+      "title": "Cerebras developer documentation",
+      "publisher": "Cerebras",
+      "url": "https://docs.cerebras.ai/",
+      "source_class": "vendor-official"
+    }
   ],
   "coverage_gaps": [
     {"gap_id": "GAP-PORT-001", "priority": "P0", "scope_ja": "OpenMP 6.1/SYCL機能の各コンパイラ・GPU実装率", "scope_en": "Per-compiler and per-GPU implementation coverage for OpenMP 6.1 and SYCL", "impact_ja": "仕様年表を実用的な移植経路へ直接変換できない。", "impact_en": "Prevents translating specification dates directly into practical migration paths.", "next_action_ja": "GCC、LLVM、Fujitsu、Intel、NVIDIA、AMDの適合表を四半期ごとに更新する。", "next_action_en": "Update GCC, LLVM, Fujitsu, Intel, NVIDIA, and AMD implementation matrices quarterly.", "status": "open"},
@@ -391,5 +530,10 @@
   ],
   "caveat_ja": "本ロードマップは、公開一次情報に基づくマイルストーンとOpenFSの暫定評価ゲートを区別して、単一のAIモデルが作成した作業版です。独立したAIモデルによる合意判定は完了していません。リリース番号は、HPCIアプリケーションの動作、性能、長期保守を保証するものではありません。",
   "caveat_en": "This is a working draft produced by a single model. It distinguishes public primary-source milestones from OpenFS provisional evaluation gates. Consensus review by independent models is incomplete. Release numbers do not guarantee correct operation of HPCI applications, application performance, or long-term support.",
-  "publication": {"information_classification": "public", "publication_approved": true, "publication_decision_id": "PUBDEC-CROSS-DOMAIN-RESEARCH-20260901", "human_approval_directive_id": "DIR-900019"}
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-PLANNER-RESEARCH-20260916-2",
+    "human_approval_directive_id": "DIR-900119"
+  }
 }

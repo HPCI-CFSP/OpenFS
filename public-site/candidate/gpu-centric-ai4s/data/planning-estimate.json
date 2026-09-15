@@ -1,0 +1,201 @@
+{
+  "schema_version": "0.1.0",
+  "model_id": "ESTMODEL-001",
+  "status": "candidate",
+  "information_classification": "public",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "procurement_use": "prohibited",
+  "as_of": "2026-09-15",
+  "method_ja": "計算サーバー一式の公開提示価格に、別途必要なネットワーク・ストレージ・施設等の計画用仮定を積み上げる概算です。学術調達の実績単価や統計的な予測区間ではありません。GPU単体価格への逆算は行いません。",
+  "method_en": "A planning estimate combining published complete-server asking prices with explicit allowances for network, storage and facilities. These are neither academic award unit prices nor statistical prediction intervals. Whole-system prices are not converted into GPU prices.",
+  "assumptions_ja": "為替150円/USD、税10%、価格係数0.8/1.0/1.25、年率-10%/0%/+10%は感度分析用の仮定であり、市場予測ではありません。ABCIと理究のストレージ構成は用途が異なるため平均せず、初期値は理究の有効容量/ノードを丸めた2.7 TB/ノードとします。施設・保守・納期・需要への適合は未確認です。",
+  "assumptions_en": "JPY150/USD, 10% tax, price factors 0.8/1/1.25 and annual changes -10%/0%/+10% are sensitivity assumptions, not market forecasts. ABCI and Rikyu have different storage objectives; their ratios are not averaged. The initial 2.7 TB/node is a rounded Rikyu usable-capacity ratio. Facility, maintenance, delivery and workload fit remain unverified.",
+  "defaults": {
+    "fx_jpy_per_usd": 150,
+    "tax_rate": 0.1,
+    "price_factor": {
+      "optimistic": 0.8,
+      "baseline": 1,
+      "conservative": 1.25
+    },
+    "annual_change": {
+      "optimistic": -0.1,
+      "baseline": 0,
+      "conservative": 0.1
+    },
+    "compute_units_per_rack": 2,
+    "management_fixed_jpy": 50000000,
+    "installation_fixed_jpy": 30000000,
+    "network_per_node_jpy": {
+      "InfiniBand": 2000000,
+      "RoCE": 1500000
+    },
+    "storage_block_tb": 100,
+    "storage_block_jpy": 8000000,
+    "storage_tb_per_node": 2.7,
+    "local_nvme_module_tb": 7.68,
+    "local_nvme_module_usd": 3300,
+    "rack_initial_jpy": {
+      "on-premises": 3000000,
+      "external-hosting": 500000,
+      "hybrid": 1750000
+    },
+    "extra_it_power_fraction": 0.15,
+    "pue": 1.3,
+    "load_factor": 0.7,
+    "electricity_jpy_per_kwh": 20
+  },
+  "packages": [
+    {
+      "package_id": "PKG-H200-EXXACT",
+      "product_id": "GPU-NVIDIA-H200-HGX",
+      "vendor": "NVIDIA",
+      "model": "HGX H200 / Exxact TS4-181733724",
+      "cpu_architecture": "x86_64",
+      "cpu_model": "Xeon Platinum 8558P",
+      "cpus_per_node": 2,
+      "gpus_per_node": 8,
+      "hbm_gb_per_gpu": 141,
+      "host_memory_gb": 1024,
+      "local_nvme_tb": 3.84,
+      "local_nvme_bays": 8,
+      "bundled_nvme_drives": 1,
+      "node_kw": 6.941,
+      "price_usd": 325039,
+      "price_basis_date": "2026-09-15",
+      "source_ids": [
+        "SRC-EST-H200"
+      ],
+      "fabrics": [
+        "InfiniBand",
+        "RoCE"
+      ],
+      "included_ja": "CPU・GPU・HBM・ホストメモリ・筐体・既定SSD・3年保証を含む提示価格。外部高速ネットワーク、共有ストレージ、国内納入費用は別。電力は構成ツールの表示値で実測ではありません。",
+      "included_en": "Asking price includes CPUs, GPUs, HBM, host memory, chassis, default SSD and three-year warranty; external fabric, shared storage and Japan delivery are separate. Power is a configurator estimate, not a measurement."
+    },
+    {
+      "package_id": "PKG-MI350X-EXXACT",
+      "product_id": "GPU-AMD-MI350X",
+      "vendor": "AMD",
+      "model": "MI350X / Exxact TS4-149591758",
+      "cpu_architecture": "x86_64",
+      "cpu_model": "EPYC 9454",
+      "cpus_per_node": 2,
+      "gpus_per_node": 8,
+      "hbm_gb_per_gpu": 288,
+      "host_memory_gb": 1536,
+      "local_nvme_tb": 0,
+      "local_nvme_bays": 12,
+      "bundled_nvme_drives": 0,
+      "node_kw": 9.19,
+      "price_usd": 307362,
+      "price_basis_date": "2026-09-15",
+      "source_ids": [
+        "SRC-EST-MI350X"
+      ],
+      "fabrics": [
+        "InfiniBand",
+        "RoCE"
+      ],
+      "included_ja": "CPU・GPU・HBM・ホストメモリ・筐体・3年保証を含む提示価格。既定ではローカルNVMeなし。電力は構成ツールの表示値で実測ではありません。",
+      "included_en": "Asking price includes CPUs, GPUs, HBM, host memory, chassis and three-year warranty. No local NVMe is selected by default. Power is a configurator estimate, not a measurement."
+    }
+  ],
+  "reference_systems": [
+    {
+      "name": "Rikyu",
+      "nodes": 400,
+      "gpus_per_node": 4,
+      "cpus_per_node": 2,
+      "usable_shared_storage_tb": 1081.34,
+      "source_ids": [
+        "SRC-EST-RIKYU"
+      ],
+      "use_ja": "ストレージ比率の小容量側の参照。落札額と構成の対応が未確定のため価格学習には使用しません。",
+      "use_en": "Low-capacity storage-ratio reference. Not a price training case because award-to-configuration scope is unconfirmed."
+    },
+    {
+      "name": "ABCI 3.0",
+      "nodes": 766,
+      "gpus_per_node": 8,
+      "cpus_per_node": 2,
+      "usable_shared_storage_tb": 73000,
+      "source_ids": [
+        "SRC-EST-ABCI"
+      ],
+      "use_ja": "大規模データ向けの比較参照。73 PBは概数で、理究の全NVMe領域と同等の媒体・性能とは扱いません。",
+      "use_en": "Data-intensive comparison reference. Approximately 73 PB is not treated as equivalent in media or performance to Rikyu's all-NVMe tier."
+    },
+    {
+      "name": "LUMI-G",
+      "nodes": 2978,
+      "gpus_per_node": 4,
+      "cpus_per_node": 1,
+      "usable_shared_storage_tb": null,
+      "source_ids": [
+        "SRC-EST-LUMI"
+      ],
+      "use_ja": "CPU/GPU比率の比較。MI250Xの1パッケージに2 GCDを含むため論理GPU数と区別します。",
+      "use_en": "CPU/GPU-ratio comparison. One MI250X package contains two GCDs; package counts are not logical GPU counts."
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-EST-H200",
+      "title": "Exxact TS4-181733724 configured server",
+      "publisher": "Exxact",
+      "url": "https://configurator.exxactcorp.com/configure/TS4-181733724",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-EST-MI350X",
+      "title": "Exxact TS4-149591758 configured server",
+      "publisher": "Exxact",
+      "url": "https://configurator.exxactcorp.com/configure/TS4-149591758",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-EST-RIKYU",
+      "title": "Rikyu public system configuration",
+      "publisher": "RIKEN",
+      "url": "https://github.com/RIKEN-RCCS/AI-for-Science-Supercomputer",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-EST-ABCI",
+      "title": "ABCI computing resource",
+      "publisher": "AIST",
+      "url": "https://abci.ai/en/about_abci/computing_resource.html",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-EST-LUMI",
+      "title": "LUMI-G hardware",
+      "publisher": "LUMI",
+      "url": "https://docs.lumi-supercomputer.eu/hardware/lumig/",
+      "published_date": null,
+      "checked_date": "2026-09-15"
+    }
+  ],
+  "validation": {
+    "independent_price_cases": 0,
+    "held_out_cases": 0,
+    "error_percent": null,
+    "interval_type": "scenario-sensitivity-not-confidence-interval"
+  },
+  "excluded_costs_ja": [
+    "電力基本料金・人件費・ソフトウェア契約・保証対象外修理・4年目以降の保守",
+    "外部ホスティング利用料・撤去費用・施設大規模改修",
+    "既存施設の床荷重、冷却、電源工事の適合確認"
+  ],
+  "excluded_costs_en": [
+    "Demand charges, staffing, software contracts, out-of-warranty repairs and maintenance after year three",
+    "External hosting fees, decommissioning and major facility works",
+    "Verification of floor load, cooling and electrical works"
+  ]
+}

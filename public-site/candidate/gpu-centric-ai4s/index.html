@@ -6,7 +6,7 @@
   <meta name="description" content="予算、受入時期、基本的な技術選択からCPU・GPU複合計算基盤の候補と公開根拠の不足を確認する暫定構成算定画面">
   <title>CPU・GPU複合計算基盤 構成算定 | OpenFS</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="../../styles.css?v=1c347500070077978bc43a869261b6f81ca48306">
+  <link rel="stylesheet" href="../../styles.css?v=74fc93ca468cd2ca21a13595c563888ce1992ee1">
 </head>
 <body data-language="ja" data-root-prefix="../../">
   <header class="app-header">
@@ -14,7 +14,7 @@
       <div class="identity identity-branded">
   <h1>
     <a class="brand-link" href="../../">
-      <img class="brand-logo" src="../../assets/branding/openfs-logo-compact.svg?v=1c347500070077978bc43a869261b6f81ca48306" alt="OpenFS" width="344" height="128">
+      <img class="brand-logo" src="../../assets/branding/openfs-logo-compact.svg?v=74fc93ca468cd2ca21a13595c563888ce1992ee1" alt="OpenFS" width="344" height="128">
     </a>
   </h1>
   <span class="organization">HPCI-CFSP</span>
@@ -43,12 +43,12 @@
     <header class="gpu-planner-intro">
       <span class="eyebrow">ARCH-CPU-GPU-ACCEL-001</span>
       <h2 data-ja="CPU・GPU複合計算基盤 構成算定" data-en="CPU-GPU Accelerated Computing Infrastructure Planner">CPU・GPU複合計算基盤 構成算定</h2>
-      <p data-ja="CPUとGPUを組み合わせた計算基盤について、予算と受入時期に対応する候補を公開根拠から提示します。調達実績を確認できる候補と、公式ロードマップ上の先行候補を混同せずに表示します。" data-en="Explore CPU-GPU infrastructure candidates for a budget and acceptance date using public evidence. Candidates backed by observed procurement are shown separately from forward-looking candidates on official roadmaps.">CPUとGPUを組み合わせた計算基盤について、予算と受入時期に対応する候補を公開根拠から提示します。調達実績を確認できる候補と、公式ロードマップ上の先行候補を混同せずに表示します。</p>
+      <p data-ja="公開提示価格と計画用仮定から概算する参照構成と、公式ロードマップ上の先行候補を分けて検討します。" data-en="Compare reference configurations estimated from public asking prices and explicit planning assumptions with forward-looking candidates on official roadmaps.">公開提示価格と計画用仮定から概算する参照構成と、公式ロードマップ上の先行候補を分けて検討します。</p>
     </header>
 
     <aside class="candidate-banner" role="note">
       <strong data-ja="暫定Candidate・調達利用禁止" data-en="Provisional Candidate; procurement use prohibited">暫定Candidate・調達利用禁止</strong>
-      <p data-ja="単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。公開根拠がない価格、納期、性能、構成数量は推測で補いません。" data-en="This is a provisional result from one AI model and agent. The Consensus Gate is incomplete; prices, delivery dates, performance, and quantities unsupported by public evidence are not inferred.">単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。公開根拠がない価格、納期、性能、構成数量は推測で補いません。</p>
+      <p data-ja="単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。将来製品の未公表価格・納期・性能は補完しません。" data-en="This is a provisional result from one AI model and agent; the Consensus Gate is incomplete. Priced reference configurations use public asking prices and explicit planning assumptions. Unpublished future-product prices, delivery dates and performance remain unknown.">単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。将来製品の未公表価格・納期・性能は補完しません。</p>
     </aside>
 
     <form id="planner-form" novalidate>
@@ -76,13 +76,22 @@
 
     <section class="planner-results-section" aria-labelledby="results-title">
       <div class="section-heading">
-        <div><span class="eyebrow" data-ja="構成算定結果" data-en="Configuration results">構成算定結果</span><h2 id="results-title" data-ja="調達根拠のある候補と先行候補" data-en="Procurement-evidenced and forward-looking candidates">調達根拠のある候補と先行候補</h2></div>
+        <div><span class="eyebrow" data-ja="構成算定結果" data-en="Configuration results">構成算定結果</span><h2 id="results-title" data-ja="価格付き参照構成と先行候補" data-en="Priced reference configurations and forward-looking candidates">価格付き参照構成と先行候補</h2></div>
         <div class="planner-actions"><button id="download-json" type="button">JSON</button><button id="download-csv" type="button">CSV</button></div>
       </div>
       <div id="result-notice" class="planner-result-notice" aria-live="polite"></div>
       <div id="result-summary" class="planner-results"></div>
       <div id="result-comparison" class="table-wrap"></div>
       <div id="result-details" class="planner-vendor-columns"></div>
+      <details class="planner-section" id="estimate-assumptions">
+        <summary data-ja="概算の仮定・感度分析" data-en="Estimate assumptions and sensitivity">概算の仮定・感度分析</summary>
+        <div class="planner-field-grid">
+          <label><span data-ja="仮定為替（円/USD）" data-en="Assumed FX (JPY/USD)">仮定為替（円/USD）</span><input id="estimate-fx" type="number" min="1" step="1"></label>
+          <label><span data-ja="基準ケースの年率（%、予測ではなく仮定）" data-en="Baseline annual change (%, assumption not forecast)">基準ケースの年率（%、予測ではなく仮定）</span><input id="estimate-annual" type="number" min="-50" max="50" step="1"></label>
+          <label><span data-ja="共有ストレージ比率（TB/ノード）" data-en="Shared storage ratio (TB/node)">共有ストレージ比率（TB/ノード）</span><input id="estimate-storage-ratio" type="number" min="0" step="0.1"></label>
+          <label><span data-ja="共有ストレージ概算（万円/有効100 TB）" data-en="Storage allowance (JPY 10k / usable 100 TB)">共有ストレージ概算（万円/有効100 TB）</span><input id="estimate-storage-cost" type="number" min="1" step="1"></label>
+        </div>
+      </details>
 
       <details class="planner-section" id="manual-adjustments">
         <summary data-ja="算定結果を手動調整" data-en="Adjust the calculated configuration">算定結果を手動調整</summary>
@@ -107,10 +116,11 @@
   </main>
 
   <footer><div><strong>OpenFS</strong><span data-ja="HPCI-CFSP 公開調査ビュー" data-en="HPCI-CFSP public research view">HPCI-CFSP 公開調査ビュー</span></div><div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a></div></footer>
-  <script src="../../data/openfs-public.js?v=1c347500070077978bc43a869261b6f81ca48306"></script>
-  <script src="../../feedback.js?v=1c347500070077978bc43a869261b6f81ca48306"></script>
-  <script src="../../navigation.js?v=1c347500070077978bc43a869261b6f81ca48306"></script>
-  <script src="../../gpu-planner-engine.js?v=1c347500070077978bc43a869261b6f81ca48306"></script>
-  <script src="../../gpu-planner-candidate.js?v=1c347500070077978bc43a869261b6f81ca48306"></script>
+  <script src="../../data/openfs-public.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
+  <script src="../../feedback.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
+  <script src="../../navigation.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
+  <script src="../../gpu-planner-engine.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
+  <script src="../../gpu-planner-estimates.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
+  <script src="../../gpu-planner-candidate.js?v=74fc93ca468cd2ca21a13595c563888ce1992ee1"></script>
 </body>
 </html>

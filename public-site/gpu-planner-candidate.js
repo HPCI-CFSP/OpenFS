@@ -1,13 +1,15 @@
 (() => {
   "use strict";
 
-  const DATA_PATHS = ["request.json", "architecture.json", "product-catalog.json", "availability.json", "what-if-template.json"];
+  const DATA_PATHS = ["request.json", "architecture.json", "product-catalog.json", "availability.json", "what-if-template.json", "planning-estimate.json"];
   const QUARTER_END = {"1": "03-31", "2": "06-30", "3": "09-30", "4": "12-31"};
   const PROCUREMENT_EVENTS = new Set(["procurement-observed", "operation-start"]);
   const FORWARD_EVENTS = new Set(["sampling", "volume-shipment", "sale-publication", "partner-availability", "support-start", "roadmap-target"]);
   const state = {language: "ja", source: null, latest: null, latestRequest: null};
 
   const copy = {
+    reference: {ja: "公開価格付きの参照構成", en: "Reference configuration with a public asking price"},
+    referenceNote: {ja: "公開サーバー価格と明示した仮定による概算です。実際の学術向け見積、納期、施設適合を保証しません。", en: "Conceptual estimate using a published server price and explicit assumptions, not an academic quote, delivery guarantee or facility qualification."},
     auto: {ja: "AI提案", en: "AI proposal"},
     allVendors: {ja: "AI提案（公開カタログ全体）", en: "AI proposal (all catalog vendors)"},
     allProducts: {ja: "AI提案（受入時期から選択）", en: "AI proposal (select by acceptance date)"},
@@ -28,7 +30,7 @@
     timing: {ja: "時期の根拠", en: "Timing evidence"},
     computeUnits: {ja: "計算単位数", en: "Compute units"},
     gpuCount: {ja: "総GPU数", en: "Total GPUs"},
-    rackCount: {ja: "ラック数", en: "Rack count"},
+    rackCount: {ja: "計算ラック数", en: "Compute rack count"},
     power: {ja: "IT電力", en: "IT power"},
     configCost: {ja: "構成費用", en: "Configuration cost"},
     contingency: {ja: "予備費", en: "Contingency"},
@@ -52,8 +54,8 @@
       en: "Candidates are separated by evidence stage. Past procurement does not guarantee future delivery, and roadmap candidates are not treated as procurement-ready."
     },
     adjustedNotice: {
-      ja: "手動調整を含むブラウザ内試算です。公開根拠が不足する数量は算定せず、調達判断には使用できません。",
-      en: "This browser-local calculation includes manual adjustments. Quantities unsupported by public evidence remain unavailable and must not be used for procurement."
+      ja: "手動調整を含むブラウザ内の概算です。公開提示価格と計画用仮定を区別し、価格付き参照構成のない製品は算定しません。調達判断には使用できません。",
+      en: "This browser-local estimate includes manual adjustments. Public asking prices and planning assumptions are distinguished; products without a priced reference package are not costed. Not for procurement."
     },
     requiredEvidence: {ja: "不足している公開根拠", en: "Missing public evidence"},
     priceCases: {ja: "価格区間別の算定", en: "Calculations by price interval"},
@@ -123,7 +125,7 @@
 
   function relevantEvent(product, targetDate, types) {
     return (product.events || [])
-      .filter((event) => event.date.value <= targetDate && types.has(event.event_type))
+      .filter((event) => OpenFSGpuEstimates.dateWindow(event.date).start <= targetDate && types.has(event.event_type))
       .sort((left, right) => right.date.value.localeCompare(left.date.value))[0] || null;
   }
 
@@ -131,14 +133,14 @@
     return (product.events || []).some((event) =>
       event.claim_status === "observed" &&
       PROCUREMENT_EVENTS.has(event.event_type) &&
-      event.date.value <= targetDate
+      OpenFSGpuEstimates.dateWindow(event.date).end <= targetDate
     );
   }
 
   function forwardEvidence(product, targetDate) {
     return (product.events || []).some((event) =>
       FORWARD_EVENTS.has(event.event_type) &&
-      event.date.value <= targetDate &&
+      OpenFSGpuEstimates.dateWindow(event.date).start <= targetDate &&
       (event.claim_status === "official-plan" || event.claim_status === "observed")
     );
   }
@@ -150,27 +152,32 @@
   }
 
   function selectedProducts() {
+    const compatible = (product) => OpenFSGpuEstimates.compatible(product, {cpu_architecture: byId("cpu-mode").value}, state.source[5]);
+    const reference = (product) => state.source[5].packages.some(p => p.product_id === product.product_id);
     const exact = byId("accelerator-product").value;
     if (exact !== "auto") {
       return state.source[2].products.filter((product) => product.product_id === exact)
+        .filter(compatible)
         .filter((product) => observedProcurement(product, acceptanceDate()) || forwardEvidence(product, acceptanceDate()))
-        .map((product) => ({product, proposal_class: observedProcurement(product, acceptanceDate()) ? "evidenced" : "forward"}));
+        .map((product) => ({product, proposal_class: reference(product) ? "reference" : observedProcurement(product, acceptanceDate()) ? "evidenced" : "forward"}));
     }
     const target = acceptanceDate();
     const selected = [];
     selectedVendors().forEach((vendor) => {
-      const products = state.source[2].products.filter((product) => product.vendor === vendor);
+      const products = state.source[2].products.filter((product) => product.vendor === vendor && compatible(product));
       const choose = (predicate) => products
         .filter((product) => predicate(product, target))
         .sort((left, right) => (right.generation_rank - left.generation_rank) ||
           ((right.events.at(-1)?.date.value || "").localeCompare(left.events.at(-1)?.date.value || "")))[0];
-      const evidenced = choose(observedProcurement);
-      const forward = choose((product, date) => !observedProcurement(product, date) && forwardEvidence(product, date));
+      const priced = choose((product, date) => reference(product) && forwardEvidence(product, date));
+      const evidenced = priced ? null : choose(observedProcurement);
+      const forward = choose((product, date) => !reference(product) && !observedProcurement(product, date) && forwardEvidence(product, date));
+      if (priced) selected.push({product: priced, proposal_class: "reference"});
       if (evidenced) selected.push({product: evidenced, proposal_class: "evidenced"});
       if (forward) selected.push({product: forward, proposal_class: "forward"});
     });
     return selected.sort((left, right) => {
-      const classOrder = {evidenced: 0, forward: 1};
+      const classOrder = {reference: 0, evidenced: 1, forward: 2};
       return classOrder[left.proposal_class] - classOrder[right.proposal_class] ||
         left.product.vendor.localeCompare(right.product.vendor);
     });
@@ -233,6 +240,12 @@
       accelerator_product: byId("accelerator-product").value,
       scale_out_fabric: byId("network-mode").value
     };
+    request.estimate_assumptions = {
+      fx_jpy_per_usd: inputNumber("estimate-fx"),
+      baseline_annual_change: inputNumber("estimate-annual") / 100,
+      storage_tb_per_node: inputNumber("estimate-storage-ratio"),
+      storage_block_jpy: inputNumber("estimate-storage-cost") * 10000
+    };
     const computeUnits = inputNumber("override-compute-units");
     const fastStorage = inputNumber("override-fast-pb");
     const localNvme = inputNumber("override-local-nvme");
@@ -254,14 +267,8 @@
     const product = selection.product;
     request.vendor_mode = product.vendor;
     request.product_selection[product.vendor.toLowerCase()] = product.product_id;
-    const result = OpenFSGpuPlanner.evaluate(
-      request,
-      state.source[1],
-      state.source[2],
-      state.source[3],
-      null
-    );
-    const candidate = result.vendor_candidates[0];
+    const candidate = OpenFSGpuEstimates.evaluate(request, product, state.source[5]);
+    candidate.availability_status = state.source[3].assessments.find(a => a.product_id === product.product_id)?.availability_status || "unknown";
     candidate.proposal_class = selection.proposal_class;
     candidate.track_note_ja = copy[selection.proposal_class + "Note"].ja;
     candidate.track_note_en = copy[selection.proposal_class + "Note"].en;
@@ -271,6 +278,9 @@
   function calculate() {
     try {
       byId("form-error").textContent = "";
+      for (const id of ["estimate-fx", "estimate-annual", "estimate-storage-ratio", "estimate-storage-cost"]) {
+        if (inputNumber(id) == null) throw new Error(state.language === "ja" ? "概算の仮定に数値を入力してください。" : "Enter numeric values for the estimate assumptions.");
+      }
       const request = buildRequest();
       if (request.budget.capex_ceiling_oku_jpy == null || request.budget.capex_ceiling_oku_jpy <= 0) {
         throw new Error(state.language === "ja" ? "初期整備費上限を入力してください。" : "Enter a positive initial CAPEX ceiling.");
@@ -291,12 +301,17 @@
         product_catalog_id: state.source[2].catalog_id,
         availability_assessment_id: state.source[3].assessment_id,
         generated_at: new Date().toISOString(),
-        engine_version: OpenFSGpuPlanner.ENGINE_VERSION,
+        engine_version: OpenFSGpuEstimates.ENGINE_VERSION,
+        estimate_model_id: state.source[5].model_id,
+        estimate_model_as_of: state.source[5].as_of,
         vendor_candidates: candidates,
         benchmark_candidates: OpenFSGpuPlanner.BENCHMARKS
       };
       renderResult(state.latest);
     } catch (error) {
+      state.latest = null;
+      state.latestRequest = null;
+      ["result-summary", "result-comparison", "result-details", "evidence-status", "product-evidence", "gap-list", "benchmark-list", "result-notice"].forEach(id => byId(id)?.replaceChildren());
       byId("form-error").textContent = error.message;
     }
   }
@@ -333,6 +348,8 @@
       [text("tco"), formatOku(value?.tco.total_tco_jpy)]
     ]));
     if (!value || value.status === "blocked") card.append(element("p", "planner-blocking", text("vendorQuote")));
+    if (value?.tco.capex_plus_energy_jpy != null) card.append(element("p", null,
+      (state.language === "ja" ? "部分集計：CAPEX＋5年間の電力量料金 " : "Partial subtotal: CAPEX + five-year energy charges ") + formatOku(value.tco.capex_plus_energy_jpy)));
     return card;
   }
 
@@ -395,6 +412,44 @@
     wrap.append(table);
     details.append(wrap);
     article.append(details);
+    const base = baselineCase(candidate);
+    if (base.quantities) {
+      const q = base.quantities;
+      article.append(definitionList([
+        [state.language === "ja" ? "ホストCPU" : "Host CPUs", q.cpu_model + " × " + q.host_cpu_count],
+        ["HBM (GB)", formatNumber(q.hbm_capacity_gb)],
+        [state.language === "ja" ? "ホストメモリ (GB)" : "Host memory (GB)", formatNumber(q.host_memory_gb)],
+        ["NVMe (TB)", formatNumber(q.local_nvme_tb, 2)],
+        [state.language === "ja" ? "高速共有ストレージ (PB)" : "Fast shared storage (PB)", formatNumber(q.shared_fast_capacity_pb, 2)],
+        [state.language === "ja" ? "スケールアウト接続" : "Scale-out fabric", q.fabric]
+      ]));
+      const bom = element("details");
+      bom.append(element("summary", null, state.language === "ja" ? "費用内訳・算定根拠" : "Cost breakdown and calculation basis"));
+      bom.append(element("p", null, candidate["package_scope_" + state.language]));
+      const table = element("table");
+      const heading = element("tr");
+      (state.language === "ja" ? ["費用範囲", "数量", "単価（円）", "合計（円）", "根拠の区分"] : ["Cost scope", "Quantity", "Unit price (JPY)", "Total (JPY)", "Evidence class"])
+        .forEach(v => heading.append(element("th", null, v)));
+      table.append(heading);
+      const labels = {
+        "compute-package": ["計算サーバー一式", "Compute server package"],
+        "local-nvme-additions": ["追加NVMe", "Additional NVMe"],
+        "scale-out-fabric": ["NIC・スイッチ・配線", "NICs, switches and cabling"],
+        "shared-storage-100TB": ["有効容量100 TB単位の共有ストレージ", "Shared storage per 100 TB usable"],
+        "management-and-installation": ["管理基盤・導入", "Management and installation"],
+        "racks-and-facility": ["ラック・施設", "Racks and facility"]
+      };
+      base.costs.line_items.forEach(line => {
+        const row = element("tr");
+        [labels[line.component_id][state.language === "ja" ? 0 : 1], line.quantity, formatNumber(line.unit_price_jpy), formatNumber(line.total_jpy),
+          line.evidence_status === "planning-assumption" ? (state.language === "ja" ? "計画用仮定" : "Planning assumption") : (state.language === "ja" ? "公開提示価格を換算" : "Converted public asking price")]
+          .forEach(v => row.append(element("td", null, v)));
+        table.append(row);
+      });
+      const scroll = element("div", "table-wrap"); scroll.append(table); bom.append(scroll);
+      bom.append(element("p", null, (state.language === "ja" ? "換算式：提示価格 × 為替 × 価格係数 × (1＋年率)^経過年数 × (1＋税率)。構成費用＋予備費＋未使用予算＝予算上限。基準日の価格を固定した基準ケースでは、年だけを変えてもGPU数が変わらない場合があります。" : "Conversion: asking price × FX × price factor × (1 + annual change)^elapsed years × (1 + tax rate). Configuration + contingency + unused budget = ceiling. GPU counts can stay unchanged across years in the constant-price baseline.")));
+      bom.append(sourceList(candidate.source_ids)); article.append(bom);
+    }
     const software = candidate.software_profile;
     if (software) article.append(definitionList([
       [state.language === "ja" ? "計算スタック" : "Compute stack", software.compute_stack.join(", ")],
@@ -414,6 +469,7 @@
       Object.values(value).forEach(visit);
     };
     visit(window.OPENFS_PUBLIC_DATA);
+    visit(state.source[5]);
     return index;
   }
 
@@ -476,6 +532,21 @@
     wrap.append(table);
     details.append(wrap);
     byId("product-evidence").replaceChildren(details);
+    const model = state.source[5];
+    byId("product-evidence").append(element("p", null, model["method_" + state.language]), element("p", null, model["assumptions_" + state.language]));
+    const exclusions = element("ul");
+    model["excluded_costs_" + state.language].forEach(v => exclusions.append(element("li", null, v)));
+    byId("product-evidence").append(exclusions);
+    const references = element("details");
+    references.append(element("summary", null, state.language === "ja" ? "構成比率の参照システム" : "Reference systems for component ratios"));
+    model.reference_systems.forEach(r => {
+      references.append(element("p", null, r.name + ": " + r.nodes + " nodes; " + r.cpus_per_node + " CPU / " + r.gpus_per_node + " GPU per node. " + r["use_" + state.language]), sourceList(r.source_ids));
+    });
+    byId("product-evidence").append(references);
+    const assumptions = element("details");
+    assumptions.append(element("summary", null, state.language === "ja" ? "全計算係数（計画用仮定）" : "All calculation coefficients (planning assumptions)"));
+    assumptions.append(element("pre", "planner-coefficients", JSON.stringify(result.vendor_candidates.find(c => c.assumptions)?.assumptions || model.defaults, null, 2)));
+    byId("product-evidence").append(assumptions);
 
     const gaps = new Map();
     result.vendor_candidates.forEach((candidate) => {
@@ -548,6 +619,10 @@
     byId("accelerator-product").value = "auto";
     byId("network-mode").value = "auto";
     byId("deployment").value = state.source[0].deployment_mode;
+    byId("estimate-fx").value = state.source[5].defaults.fx_jpy_per_usd;
+    byId("estimate-annual").value = state.source[5].defaults.annual_change.baseline * 100;
+    byId("estimate-storage-ratio").value = state.source[5].defaults.storage_tb_per_node;
+    byId("estimate-storage-cost").value = state.source[5].defaults.storage_block_jpy / 10000;
     ["override-compute-units", "override-fast-pb", "override-local-nvme"].forEach((id) => { byId(id).value = ""; });
     calculate();
   }
@@ -555,6 +630,11 @@
   function bind() {
     document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => applyLanguage(button.dataset.language)));
     byId("accelerator-vendor").addEventListener("change", () => renderProductOptions(false));
+    let timer;
+    document.querySelectorAll("#planner-form input, #planner-form select, #manual-adjustments input, #estimate-assumptions input").forEach(input => {
+      input.addEventListener("change", calculate);
+      input.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(calculate, 250); });
+    });
     byId("planner-form").addEventListener("submit", (event) => {
       event.preventDefault();
       calculate();
