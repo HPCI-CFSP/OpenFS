@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-09-12",
+  "as_of": "2026-09-15",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -1896,8 +1896,8 @@
     },
     {
       "topic_id": "ARCH-12",
-      "summary_ja": "ALCFの4台Cerebras CS-3 clusterについて、90万core・44 GB on-chip、24 MemoryX、8 SwarmX、約200B modelの構成と、strict scheduler未実装、24時間推奨、checkpoint約60秒/10億parameterという実運用条件を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "This update adds ALCF's four-system Cerebras CS-3 cluster, including 900,000 cores and 44 GB on chip per engine, 24 MemoryX nodes, eight SwarmX nodes, approximate 200B-model support, and operational conditions including no strict scheduler, 24-hour guidance, and checkpoint time of about 60 seconds per billion parameters. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "ALCFの4台Cerebras CS-3 clusterについて、90万core・44 GB on-chip、24 MemoryX、8 SwarmX、約200B modelの構成と、strict scheduler未実装、24時間推奨、checkpoint約60秒/10億parameterという実運用条件を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。 CerebrasとLoihi：構成・提供段階・開発環境を追加しました。",
+      "summary_en": "This update adds ALCF's four-system Cerebras CS-3 cluster, including 900,000 cores and 44 GB on chip per engine, 24 MemoryX nodes, eight SwarmX nodes, approximate 200B-model support, and operational conditions including no strict scheduler, 24-hour guidance, and checkpoint time of about 60 seconds per billion parameters. This is provisional single-model research with Consensus incomplete. Adds Cerebras and Loihi: architecture, readiness and development.",
       "sections": [
         {
           "section_id": "TDS-ARCH02-DOMESTIC",
@@ -3129,6 +3129,90 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-UPD-ARCH-12-20260916",
+          "title_ja": "CerebrasとLoihi：構成・提供段階・開発環境",
+          "title_en": "Cerebras and Loihi: architecture, readiness and development",
+          "summary_ja": "以下の一次情報に基づく単一のAIモデルによる暫定調査です。",
+          "summary_en": "Adds the following primary evidence while retaining prior research. Provisional single-model research.",
+          "items": [
+            {
+              "item_id": "TDI-UPD-CSROADMAP",
+              "name_ja": "Cerebras：CS-4／CS-5／CS-6とNexus",
+              "name_en": "Cerebras: CS-4, CS-5, CS-6 and Nexus",
+              "stage": "near-term",
+              "maturity": "announced",
+              "timing_ja": "発表日は各出典を参照。文書に日付がない場合は未確認とします。",
+              "timing_en": "See each source for publication dates; undated documentation remains undated.",
+              "statement_ja": "2026年8月25日の公式説明では、CS-4はNexusラック基盤を採用し、1ラックに3基のWSE用モジュールを搭載します。CS-5は2027年目標で四半期未公表です。CS-6はウェハースケールのSRAM・演算と3D積層DRAMの統合構想ですが、本文に提供日はありません。これらの発表を学術向け受入・納入の保証とは扱いません。",
+              "statement_en": "The August 25, 2026 official account describes CS-4 on the Nexus rack platform with three WSE modules per rack. CS-5 targets 2027 without a quarter. CS-6 proposes integrating wafer-scale SRAM/compute and 3D DRAM, with no delivery date in the text. Announcements do not establish academic procurement or delivery guarantees.",
+              "hpci_relevance_ja": "価格、移植・運用負担、同一ワークロードでの性能と電力を確認し、導入の可否を判断します。",
+              "hpci_relevance_en": "Evaluate price, porting and operations, and performance and power on matched workloads before adoption.",
+              "adoption_conditions_ja": [
+                "製品・ソフトウェア版・利用条件を固定した実測と独立検証が必要。"
+              ],
+              "adoption_conditions_en": [
+                "Pin products, software versions and access conditions for measurement and independent verification."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-UPD-CEREBRAS"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-UPD-LOIHI",
+              "name_ja": "Intel Loihi 2／Hala Point：ニューロモーフィック計算",
+              "name_en": "Intel Loihi 2 / Hala Point: neuromorphic computing",
+              "stage": "contested",
+              "maturity": "research",
+              "timing_ja": "発表日は各出典を参照。文書に日付がない場合は未確認とします。",
+              "timing_en": "See each source for publication dates; undated documentation remains undated.",
+              "statement_ja": "Intelが2024年4月17日に公表したHala Pointは、Loihi 2を1,152個搭載する研究試作システムで、最大消費電力は2,600 Wです。イベント駆動の疎な処理、リアルタイム推論、最適化問題が評価候補です。GPUの汎用置換やFP64科学計算の同等性能は示していません。特定条件での効率向上を全アプリケーションへ外挿しません。",
+              "statement_en": "Intel's April 17, 2024 announcement describes Hala Point as a research prototype containing 1,152 Loihi 2 chips with maximum power of 2,600 W. Candidate uses include sparse event-driven processing, real-time inference and optimization. It does not establish general GPU replacement or equivalent FP64 performance; workload-specific efficiency claims must not be generalized.",
+              "hpci_relevance_ja": "価格、移植・運用負担、同一ワークロードでの性能と電力を確認し、導入の可否を判断します。",
+              "hpci_relevance_en": "Evaluate price, porting and operations, and performance and power on matched workloads before adoption.",
+              "adoption_conditions_ja": [
+                "製品・ソフトウェア版・利用条件を固定した実測と独立検証が必要。"
+              ],
+              "adoption_conditions_en": [
+                "Pin products, software versions and access conditions for measurement and independent verification."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-UPD-LOIHI"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-UPD-LAVA",
+              "name_ja": "Lava：公開フレームワークと実機利用の境界",
+              "name_en": "Lava: public framework versus hardware access",
+              "stage": "contested",
+              "maturity": "research",
+              "timing_ja": "発表日は各出典を参照。文書に日付がない場合は未確認とします。",
+              "timing_en": "See each source for publication dates; undated documentation remains undated.",
+              "statement_ja": "LavaはPythonを用いたプロセス・メッセージ通信の抽象化を提供し、CPU上の試作からニューロモーフィック実装へつなげます。ただしLoihi向けコンパイルに必要なMagmaの一部はIntelの非公開実装です。OSSの取得だけでは実機実行環境まで揃わず、アクセス条件、対応版、学習・変換方法を確認する必要があります。商用提供や後継機の確定日程は未確認です。",
+              "statement_en": "Lava provides Python process and message-passing abstractions for prototyping and neuromorphic execution. Some Magma components required for Loihi compilation remain proprietary to Intel. Downloading the OSS alone does not establish hardware access; access terms, versions, training and conversion must be checked. Confirmed commercial or successor-system dates remain unknown.",
+              "hpci_relevance_ja": "価格、移植・運用負担、同一ワークロードでの性能と電力を確認し、導入の可否を判断します。",
+              "hpci_relevance_en": "Evaluate price, porting and operations, and performance and power on matched workloads before adoption.",
+              "adoption_conditions_ja": [
+                "製品・ソフトウェア版・利用条件を固定した実測と独立検証が必要。"
+              ],
+              "adoption_conditions_en": [
+                "Pin products, software versions and access conditions for measurement and independent verification."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-UPD-LAVA"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -3248,6 +3332,17 @@
           ],
           "created_at": "2026-09-02T10:55:01+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000406",
+          "bundle_sha256": "196999d32a512411b2d9e5b8722fbb5fa93e96f57517679295218c3d8819e9bc",
+          "base_commit": "f997d5f701cd354c96c7c2ab1aa2dee42f51724b",
+          "unit_ids": [
+            "ARCH-12-U01",
+            "ARCH-12-U03"
+          ],
+          "created_at": "2026-09-15T14:25:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -3277,7 +3372,8 @@
               "TDS-HW2-ARCH-12-U01",
               "TDS-CD43-ARCH-12-SILICON-PHOTONIC-LEARNING",
               "TDS-CD47-ARCH-12-MAGNETIC-MEMRISTOR",
-              "TDS-WC368-ARCH-12-01"
+              "TDS-WC368-ARCH-12-01",
+              "TDS-UPD-ARCH-12-20260916"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -5430,8 +5526,8 @@
     },
     {
       "topic_id": "ARCH-04",
-      "summary_ja": "既存の調査を維持し、今回は「CXL 4.0規格と調達可能なシステムを分ける」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Separate CXL 4.0 specification from procurable systems. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "既存の調査を維持し、今回は「CXL 4.0規格と調達可能なシステムを分ける」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。 ESUNの規格・適用範囲を追加しました。",
+      "summary_en": "Retains prior research and adds the validation contract: Separate CXL 4.0 specification from procurable systems. Public facts and OpenFS test proposals are separated; this is provisional single-model research. Adds ESUN specification and scope.",
       "sections": [
         {
           "section_id": "TDS-ARCH03-TIERING",
@@ -6711,6 +6807,45 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-UPD-ARCH-04-20260916",
+          "title_ja": "ESUNの規格・適用範囲",
+          "title_en": "ESUN specification and scope",
+          "summary_ja": "以下の一次情報に基づく単一のAIモデルによる暫定調査です。",
+          "summary_en": "Adds the following primary evidence while retaining prior research. Provisional single-model research.",
+          "items": [
+            {
+              "item_id": "TDI-UPD-ESUN",
+              "name_ja": "ESUN：Ethernetを用いるスケールアップ網",
+              "name_en": "ESUN: Ethernet-based scale-up fabric",
+              "stage": "near-term",
+              "maturity": "standardized",
+              "timing_ja": "発表日は各出典を参照。文書に日付がない場合は未確認とします。",
+              "timing_en": "See each source for publication dates; undated documentation remains undated.",
+              "statement_ja": "OCPは2026年3月10日にESUN Network Operator Requirements Base Specification 1.0を公開しました。PFCとクレジット方式のフロー制御、リンク単位の再送、4バイトのヘッダー、マルチホップを扱います。ESUNはネットワーク側の仕様で、XPU側のメモリ順序や実行モデルを含むSUE-Tとは範囲が異なります。NVLink、UALink、RoCEをそのまま置換できるとは限りません。",
+              "statement_en": "OCP released ESUN Network Operator Requirements Base Specification 1.0 on March 10, 2026. It covers PFC and credit-based flow control, link-level retry, a four-byte header and multi-hop networking. ESUN concerns the network; SUE-T covers endpoint functions. It is not automatically a drop-in replacement for NVLink, UALink or RoCE.",
+              "hpci_relevance_ja": "価格、移植・運用負担、同一ワークロードでの性能と電力を確認し、導入の可否を判断します。",
+              "hpci_relevance_en": "Evaluate price, porting and operations, and performance and power on matched workloads before adoption.",
+              "adoption_conditions_ja": [
+                "対応XPU・スイッチ・トランスポート・集合通信の組合せを確認する。",
+                "小メッセージ遅延、輻輳、障害回復、相互運用性を測定する。",
+                "規格公開と、量産機器の納入可能日・価格を分ける。"
+              ],
+              "adoption_conditions_en": [
+                "Verify XPU, switch, transport and collective-library combinations.",
+                "Measure small-message latency, congestion, recovery and interoperability.",
+                "Separate specification publication from shipping hardware, delivery dates and prices."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-UPD-ESUN",
+                "SRC-UPD-ESUN-SCOPE"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -6840,6 +6975,16 @@
           ],
           "created_at": "2026-09-12T14:17:43+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000405",
+          "bundle_sha256": "e3a880f659c808e2687c063641bd09814781218b200012256d28ed55d3314b3a",
+          "base_commit": "f997d5f701cd354c96c7c2ab1aa2dee42f51724b",
+          "unit_ids": [
+            "ARCH-04-U01"
+          ],
+          "created_at": "2026-09-15T14:25:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -6862,7 +7007,8 @@
               "TDS-ARCH03-FABRIC",
               "TDS-HW1-ARCH-04-U01",
               "TDS-CD3-ARCH-04-OPEN-AI-INTERCONNECTS",
-              "TDS-PW-ARCH-04-01"
+              "TDS-PW-ARCH-04-01",
+              "TDS-UPD-ARCH-04-20260916"
             ],
             "comparison_refs": [
               {
@@ -23133,8 +23279,8 @@
     },
     {
       "topic_id": "SSW-09",
-      "summary_ja": "ALCF FIRSTのGlobus Auth/Compute、Django gateway、vLLM backend、直接・連合routingと、本番Inference Endpointsのmodel状態、最大15万request batch、data path、Metisの機能制約を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "This update adds ALCF FIRST's Globus Auth and Compute, Django gateway, vLLM backends, direct and federated routing, plus production Inference Endpoint model states, batches of up to 150,000 requests, data paths, and Metis capability limits. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "ALCF FIRSTのGlobus Auth/Compute、Django gateway、vLLM backend、直接・連合routingと、本番Inference Endpointsのmodel状態、最大15万request batch、data path、Metisの機能制約を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。 Cerebrasの学習・推論・HPC開発環境を追加しました。",
+      "summary_en": "This update adds ALCF FIRST's Globus Auth and Compute, Django gateway, vLLM backends, direct and federated routing, plus production Inference Endpoint model states, batches of up to 150,000 requests, data paths, and Metis capability limits. This is provisional single-model research with Consensus incomplete. Adds Cerebras training, inference and HPC development.",
       "sections": [
         {
           "section_id": "TDS-SSW09-CURRENT",
@@ -25016,6 +25162,47 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-UPD-SSW-09-20260916",
+          "title_ja": "Cerebrasの学習・推論・HPC開発環境",
+          "title_en": "Cerebras training, inference and HPC development",
+          "summary_ja": "以下の一次情報に基づく単一のAIモデルによる暫定調査です。",
+          "summary_en": "Adds the following primary evidence while retaining prior research. Provisional single-model research.",
+          "items": [
+            {
+              "item_id": "TDI-UPD-CSDEV",
+              "name_ja": "Cerebrasの開発環境：学習・推論・HPCを区別",
+              "name_en": "Cerebras development: separate training, inference and HPC",
+              "stage": "current",
+              "maturity": "deployed",
+              "timing_ja": "発表日は各出典を参照。文書に日付がない場合は未確認とします。",
+              "timing_en": "See each source for publication dates; undated documentation remains undated.",
+              "statement_ja": "公式入口は、Inference SDK、Cerebras PyTorch／ModelZoo、低水準HPC SDKの3系統です。HPC SDKはCSL、Python SdkRuntime・SdkLayout、クラスタ実行APIを提供します。Training 2.5文書はDINOv2、S3チェックポイント、自動ジョブ再開を説明しています。CUDAソースの無変更実行を意味せず、モデル変換と独自カーネル移植を分けて評価します。ハードウェアのCS-5計画からSDKの対応日を推定しません。 推論API Version 2は2026年1月21日にヘッダー指定で試用開始、7月22日に既定版への段階移行が開始され、旧版は保守終了です。これはAPI検証ルールの移行であり、SDK版やCS-5対応時期とは区別します。",
+              "statement_en": "The official entry point separates Inference SDK, Cerebras PyTorch/ModelZoo and the low-level HPC SDK. The HPC SDK provides CSL, Python SdkRuntime/SdkLayout and cluster APIs. Training 2.5 documents DINOv2, S3 checkpoints and automatic job restart. This does not imply unmodified CUDA execution; model conversion and custom-kernel porting need separate evaluation. The CS-5 hardware target does not date SDK support. Inference API Version 2 became available for header-selected testing on January 21, 2026; phased default rollout began July 22 with older versions reaching end of life. This concerns API validation behavior, not an SDK release or CS-5 support date.",
+              "hpci_relevance_ja": "価格、移植・運用負担、同一ワークロードでの性能と電力を確認し、導入の可否を判断します。",
+              "hpci_relevance_en": "Evaluate price, porting and operations, and performance and power on matched workloads before adoption.",
+              "adoption_conditions_ja": [
+                "代表HPCカーネルの移植工数、精度、ホストI/Oを測る。",
+                "Training／Inference／CSLごとに公開版と対象ハードウェアの互換表を確認する。",
+                "日付付き長期ソフトウェア計画は未確認として追跡する。"
+              ],
+              "adoption_conditions_en": [
+                "Measure porting effort, correctness and host I/O on representative HPC kernels.",
+                "Check release-to-hardware compatibility separately for Training, Inference and CSL.",
+                "Track the missing dated long-term software roadmap explicitly."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-UPD-CS-DOCS",
+                "SRC-UPD-CS-API",
+                "SRC-UPD-CSL",
+                "SRC-UPD-CSTRAIN"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -25234,6 +25421,17 @@
           ],
           "created_at": "2026-09-02T10:55:11+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000407",
+          "bundle_sha256": "a2cf88d3e7cca35d56990f07ad1535fe187893c4d7dd6c9dc58fc43acaa31401",
+          "base_commit": "f997d5f701cd354c96c7c2ab1aa2dee42f51724b",
+          "unit_ids": [
+            "SSW-09-U01",
+            "SSW-09-U02"
+          ],
+          "created_at": "2026-09-15T14:25:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -25259,7 +25457,8 @@
             "section_ids": [
               "TDS-CD6-SSW-09-U01",
               "TDS-CD7-SSW-09-U01",
-              "TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS"
+              "TDS-CD54-SSW-09-HPCI-AI-FRAMEWORKS",
+              "TDS-UPD-SSW-09-20260916"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -55942,6 +56141,14 @@
   },
   "sources": [
     {
+      "source_id": "SRC-UPD-CS-API",
+      "title": "Cerebras Inference API Version 2 rollout",
+      "publisher": "Cerebras",
+      "url": "https://inference-docs.cerebras.ai/api-reference/versions",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
       "source_id": "SRC-BLUE001",
       "title": "AI for Science Strategy: Reference Materials",
       "publisher": "MEXT",
@@ -65256,6 +65463,70 @@
       "url": "https://www.jetro.go.jp/gov_procurement/national/articles/369044/2025100900090001.html",
       "source_class": "official-project",
       "published_or_updated": "2025-10-09"
+    },
+    {
+      "source_id": "SRC-UPD-ESUN",
+      "title": "OCP ESUN 1.0 specification release",
+      "publisher": "Open Compute Project",
+      "url": "https://www.opencompute.org/blog/the-ocp-esun-10-specification-has-been-released",
+      "published_or_updated": "2026-03-10",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-ESUN-SCOPE",
+      "title": "ESUN workstream and SUE-T separation",
+      "publisher": "Open Compute Project",
+      "url": "https://www.opencompute.org/wiki/Networking/ESUN",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-CEREBRAS",
+      "title": "CS-4, CS-5 and CS-6 hardware roadmap",
+      "publisher": "Cerebras",
+      "url": "https://www.cerebras.ai/blog/ultrafast-frontier-inference-cerebras-deep-dive-at-hot-chips-2026",
+      "published_or_updated": "2026-08-25",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-LOIHI",
+      "title": "Hala Point neuromorphic research system",
+      "publisher": "Intel",
+      "url": "https://www.intel.com/content/www/us/en/newsroom/news/intel-builds-worlds-largest-neuromorphic-system.html",
+      "published_or_updated": "2024-04-17",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-LAVA",
+      "title": "Lava framework and backend access",
+      "publisher": "Lava",
+      "url": "https://lava-nc.org/",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-CSL",
+      "title": "Cerebras SDK documentation",
+      "publisher": "Cerebras",
+      "url": "https://sdk.cerebras.ai/",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-CSTRAIN",
+      "title": "Cerebras Training 2.5 documentation",
+      "publisher": "Cerebras",
+      "url": "https://training-docs.cerebras.ai/rel-2.5.0/getting-started/overview",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
+    },
+    {
+      "source_id": "SRC-UPD-CS-DOCS",
+      "title": "Cerebras developer documentation",
+      "publisher": "Cerebras",
+      "url": "https://docs.cerebras.ai/",
+      "published_or_updated": "unknown",
+      "source_class": "official-project"
     }
   ],
   "coverage_gaps": [
@@ -66428,7 +66699,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-FACILITY-EDITORIAL-20260913",
-    "human_approval_directive_id": "DIR-900115"
+    "publication_decision_id": "PUBDEC-PLANNER-RESEARCH-20260916-2",
+    "human_approval_directive_id": "DIR-900119"
   }
 }
