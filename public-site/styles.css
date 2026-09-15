@@ -71,6 +71,69 @@ button, input { font: inherit; letter-spacing: 0; }
 .tabs a { padding: 9px 0 10px; color: var(--muted); font-size: 13px; font-weight: 650; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
 .tabs a:hover, .tabs a:focus-visible { color: var(--navy); border-color: var(--green); outline: none; }
 .tabs a.active { color: var(--navy); border-color: var(--green); }
+.nav-more { flex: 0 0 auto; }
+.nav-more > summary {
+  list-style: none;
+  padding: 9px 18px 10px 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+}
+.nav-more > summary::-webkit-details-marker { display: none; }
+.nav-more > summary::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+.nav-more[open] > summary,
+.nav-more.active > summary,
+.nav-more > summary:hover,
+.nav-more > summary:focus-visible { color: var(--navy); border-color: var(--green); outline: none; }
+.nav-more-menu {
+  position: fixed;
+  z-index: 100;
+  left: var(--nav-menu-left, 12px);
+  top: var(--nav-menu-top, 96px);
+  width: min(220px, calc(100vw - 24px));
+  padding: 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(21, 34, 48, 0.16);
+}
+.tabs .nav-more-menu a {
+  display: block;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 4px;
+}
+.tabs .nav-more-menu a:hover,
+.tabs .nav-more-menu a:focus-visible,
+.tabs .nav-more-menu a.active { background: var(--soft); color: var(--navy); border: 0; }
+.topic-update-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--navy) 35%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.topic-update-button:hover,
+.topic-update-button:focus-visible { color: var(--green-dark); outline-offset: 3px; }
 
 main { min-height: 70vh; }
 .section { max-width: 1240px; margin: 0 auto; padding: 54px 28px; scroll-margin-top: var(--openfs-header-offset, 122px); }
@@ -283,7 +346,7 @@ tbody tr:hover { background: #fafbfb; }
   .provenance-stage:last-child { border-bottom: 0; }
 }
 
-/* GPU-centric AI for Science Candidate planner */
+/* CPU-GPU accelerated infrastructure Candidate planner */
 .gpu-planner-page { max-width: 1440px; }
 .gpu-planner-intro { max-width: 1040px; margin: 22px 0 18px; }
 .gpu-planner-intro h2 { max-width: 900px; margin: 5px 0 10px; font-size: clamp(28px, 3.2vw, 46px); line-height: 1.13; }
@@ -326,6 +389,9 @@ fieldset.planner-section { min-width: 0; }
 .planner-result-notice { margin: 16px 0; padding: 12px 15px; border-left: 4px solid #c45d18; background: #fff4e8; }
 .planner-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
 .planner-result { padding: 17px; border: 1px solid var(--line); border-radius: 5px; background: white; }
+.planner-result.planner-track-evidenced { border-top: 4px solid var(--green); }
+.planner-result.planner-track-forward { border-top: 4px solid #c45d18; }
+.planner-track-note { min-height: 4.8em; color: var(--muted); font-size: 12px; }
 .planner-result-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .planner-result-head h3 { margin: 0; }
 .planner-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; margin: 15px 0 0; }
@@ -358,6 +424,7 @@ fieldset.planner-section { min-width: 0; }
 .planner-json { max-height: 300px; overflow: auto; padding: 10px; background: #17212a; color: #f3f5f7; font-size: 11px; }
 .planner-gap { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--line); border-left: 4px solid #c45d18; background: white; }
 .planner-gap p { margin: 4px 0 0; }
+.planner-actions > a { display: inline-flex; min-height: 42px; align-items: center; padding: 8px 4px; font-weight: 750; }
 
 @media (max-width: 860px) {
   .gpu-mode-panel { grid-template-columns: 1fr; }
