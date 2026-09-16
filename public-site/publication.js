@@ -47,6 +47,7 @@
   function operationalNavigation() {
     const nav = document.querySelector("nav.tabs");
     if (!nav) return;
+    if (nav.hasAttribute("data-shared-navigation")) return;
     const target = new URL("analytics/operational-workloads/", siteRoot);
     target.searchParams.set("lang", language());
     let link = [...nav.querySelectorAll("a")].find((item) => new URL(item.href).pathname === target.pathname);
