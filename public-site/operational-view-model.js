@@ -41,6 +41,52 @@
       trend: "insufficient-evidence"
     };
   }
+  function periodSelection(data, mode = "all", start = "", end = "") {
+    const observed = [...new Set(data.observed_months || [])].sort();
+    if (mode === "all") [start, end] = [observed[0]?.slice(0, 7), observed.at(-1)?.slice(0, 7)];
+    if (mode === "current") [start, end] = [data.window?.current_months?.[0]?.slice(0, 7), data.window?.current_months?.at(-1)?.slice(0, 7)];
+    const valid = (value) => typeof value === "string" && /^[1-9][0-9]{3}-(0[1-9]|1[0-2])$/.test(value);
+    if (!valid(start) || !valid(end) || start > end) return {months: [], error: "invalid-period"};
+    const ordinal = (value) => Number(value.slice(0, 4)) * 12 + Number(value.slice(5)) - 1;
+    if (ordinal(end) - ordinal(start) > 1200) return {months: [], error: "invalid-period"};
+    const months = [];
+    for (let i = ordinal(start); i <= ordinal(end); i++) months.push(`${Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, "0")}-01`);
+    return {months, error: null};
+  }
+  function atPeriod(row, data, months, mode = "all") {
+    const byMonth = new Map((row.monthly || []).map((point) => [point.month, point]));
+    const population = new Map((data.population_monthly || []).map((point) => [point.month, point.unique_jobs]));
+    const observed = new Set(data.observed_months || []);
+    const states = months.map((month) => {
+      if (!observed.has(month)) return "no-coverage";
+      const point = byMonth.get(month);
+      return Number.isFinite(point?.unique_jobs) ? "disclosed" : point?.value_status || "unavailable";
+    });
+    const values = months.filter((month) => observed.has(month)).map((month) => byMonth.get(month)?.unique_jobs).filter(Number.isFinite);
+    const count = values.length ? values.reduce((sum, value) => sum + value, 0) : null;
+    const covered = months.filter((month) => observed.has(month));
+    const denominators = covered.map((month) => population.get(month));
+    const denominator = denominators.length && denominators.every(Number.isFinite) ? denominators.reduce((sum, n) => sum + n, 0) : null;
+    const released = (row.monthly || []).filter((point) => Number.isFinite(point.unique_jobs)).map((point) => point.month).sort();
+    let status = "unavailable";
+    if (values.length) status = values.length === months.length ? "disclosed" : "partial";
+    else if (states.length && states.every((state) => state === "no-coverage")) status = "no-coverage";
+    else if (states.includes("below-threshold")) status = "below-threshold";
+    else if (states.includes("not-observed") && !states.includes("unavailable")) status = "not-observed";
+    return {...row,
+      current_monthly_unique_job_observations: count,
+      current_mapped_job_share_pct: count !== null && denominator > 0 ? Math.round(count / denominator * 1000) / 10 : null,
+      trend: mode === "current" ? row.trend : "not-comparable",
+      period_status: status,
+      period_month_count: months.length,
+      disclosed_month_count: values.length,
+      covered_month_count: covered.length,
+      suppressed_month_count: states.filter((state) => state === "below-threshold").length,
+      unobserved_month_count: states.filter((state) => state === "not-observed").length,
+      historical_first_month: released[0] || null,
+      historical_last_month: released.at(-1) || null
+    };
+  }
   function systems(data) {
     const artifacts = [data.operational_analytics, ...(data.additional_operational_analytics || [])].filter(Boolean);
     const items = artifacts.map((artifact) => ({
@@ -76,5 +122,5 @@
     if (current.length) result.push(current);
     return result;
   }
-  return {categories, classify, label, atMonth, systems, monthlySeries, segments};
+  return {categories, classify, label, atMonth, periodSelection, atPeriod, systems, monthlySeries, segments};
 });
