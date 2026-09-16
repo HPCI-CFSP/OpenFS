@@ -2,7 +2,7 @@
   "use strict";
 
   const rootData = window.OPENFS_PUBLIC_DATA;
-  const artifact = rootData?.operational_analytics;
+  let artifact = rootData?.operational_analytics;
   if (!artifact) {
     document.body.textContent = "OpenFS operational analytics are unavailable.";
     return;
@@ -29,6 +29,9 @@
     }
   };
   let language = new URLSearchParams(window.location.search).get("lang") === "en" ? "en" : "ja";
+  const systems = window.OpenFSOperationalModel.systems(rootData);
+  let systemId = new URLSearchParams(location.search).get("system") || (location.hash ? artifact.system_id : "overview");
+  if (systemId !== "overview" && !systems.some((item) => item.id === systemId)) systemId = "overview";
   const text = (key) => copy[language][key] || key;
   const localized = (item, field) => item[`${field}_${language}`] || item[`${field}_ja`] || "";
   const value = (input) => input === null || input === undefined ? text("noValue") : Number(input).toLocaleString(language === "ja" ? "ja-JP" : "en-US");
@@ -102,8 +105,9 @@
     });
     container.append(grid);
     if (data.mapping_coverage_monthly?.length) {
-      container.append(
-        element("h4", "", text("mappingCoverageHistory")),
+      const details = element("details", "operational-trend-detail");
+      details.append(
+        element("summary", "", text("mappingCoverageHistory")),
         table(
           [text("month"), text("totalJobs"), text("mappedJobs"), text("mappingCoverage")],
           data.mapping_coverage_monthly.map((row) => [
@@ -114,32 +118,17 @@
           ])
         )
       );
+      container.append(details);
     }
   }
 
   function renderSoftware(container, data) {
     const windows = element("p", "operational-window", `${text("current")}: ${data.window.current_months.join(" / ") || text("noValue")} | ${text("prior")}: ${data.window.prior_months.join(" / ") || text("noValue")}`);
     container.append(windows);
-    const rows = data.families.map((family) => [
-      family.title,
-      family.category,
-      value(family.current_monthly_unique_job_observations),
-      `${family.current_mapped_job_share_pct}%`,
-      trendLabel(family.trend)
-    ]);
-    container.append(table([text("software"), text("category"), text("windowJobs"), text("share"), text("trend")], rows));
+    window.OpenFSOperationalExplorer.mount(container, data, "software", language);
     if (data.ai_observation_status === "not-observed-within-coverage") {
       container.append(element("p", "operational-note", text("aiNotObserved")));
     }
-    data.families.forEach((family) => {
-      const visible = family.monthly.filter((row) => row.unique_jobs !== null);
-      if (!visible.length) return;
-      const details = document.createElement("details");
-      details.className = "operational-trend-detail";
-      details.append(element("summary", "", `${family.title}: ${text("details")}`));
-      details.append(table([text("month"), text("jobs"), text("share")], visible.map((row) => [row.month, value(row.unique_jobs), row.mapped_job_share_pct === null ? text("noValue") : `${row.mapped_job_share_pct}%`])));
-      container.append(details);
-    });
     if (data.replacement_signals.length) {
       container.append(element("h4", "", text("replacementTitle")), element("p", "operational-note", text("replacementNote")));
       container.append(table([text("category"), language === "ja" ? "減少側" : "Declining", language === "ja" ? "増加側" : "Expanding"], data.replacement_signals.map((row) => [row.category, row.declining_family_id, row.rising_family_id])));
@@ -148,30 +137,8 @@
 
   function renderApplications(container, data) {
     container.append(element("p", "operational-window", `${text("current")}: ${data.window.current_months.join(" / ") || text("noValue")} | ${text("prior")}: ${data.window.prior_months.join(" / ") || text("noValue")}`));
-    container.append(table(
-      [text("signal"), text("version"), text("windowJobs"), text("share"), text("trend"), text("confidence")],
-      data.signals.map((row) => [row.name, row.version || "-", value(row.current_monthly_unique_job_observations), `${row.current_mapped_job_share_pct}%`, trendLabel(row.trend), text(row.inference_confidence)])
-    ));
-    const trendSummary = (titleKey, rows) => {
-      if (!rows.length) return;
-      container.append(element("h4", "", text(titleKey)), element("p", "operational-note", text("appTrendNote")));
-      container.append(table(
-        [text("signal"), text("version"), text("windowJobs"), text("share"), text("trend")],
-        rows.map((row) => [row.name, row.version || "-", value(row.current_monthly_unique_job_observations), `${row.current_mapped_job_share_pct}%`, trendLabel(row.trend)])
-      ));
-    };
-    trendSummary("emergingApps", data.emerging_signals);
-    trendSummary("decliningApps", data.declining_signals);
-    data.signals.forEach((signal) => {
-      const visible = signal.monthly.filter((row) => row.unique_jobs !== null);
-      if (!visible.length) return;
-      const details = document.createElement("details");
-      details.className = "operational-trend-detail";
-      const signalLabel = [signal.name, signal.version].filter(Boolean).join(" ");
-      details.append(element("summary", "", `${signalLabel}: ${text("details")}`));
-      details.append(table([text("month"), text("jobs"), text("share")], visible.map((row) => [row.month, value(row.unique_jobs), row.mapped_job_share_pct === null ? text("noValue") : `${row.mapped_job_share_pct}%`])));
-      container.append(details);
-    });
+    container.append(element("p", "operational-note", text("appTrendNote")));
+    window.OpenFSOperationalExplorer.mount(container, data, "application", language);
   }
 
   function renderPerformance(container, data) {
@@ -250,8 +217,9 @@
     ));
 
     const coverage = methodology.channel_coverage;
-    channels.append(
-      element("h4", "", text("channelEvidenceTitle")),
+    const coverageDetails = element("details", "operational-trend-detail");
+    coverageDetails.append(
+      element("summary", "", text("channelEvidenceTitle")),
       element("p", "operational-note", localized(coverage, "interpretation")),
       table(
         [text("month"), text("status"), text("totalJobs"), text("mappedJobs"), text("mappingCoverage"), text("dynamicLinkMetadata"), text("fileClassified"), text("staticSignal"), text("dynamicSignal"), text("interpreterSignal"), text("unclassifiedSignal")],
@@ -264,6 +232,7 @@
         ])
       )
     );
+    channels.append(coverageDetails);
 
     const definitions = document.getElementById("metric-definitions");
     definitions.replaceChildren();
@@ -317,9 +286,11 @@
   }
 
   function render() {
+    const selected = systems.find((item) => item.id === systemId);
+    artifact = selected?.artifact || null;
     document.documentElement.lang = language;
     document.querySelectorAll("[data-copy]").forEach((node) => { node.textContent = text(node.dataset.copy); });
-    document.querySelectorAll("[data-language]").forEach((button) => {
+    document.querySelectorAll("button[data-language]").forEach((button) => {
       const active = button.dataset.language === language;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
@@ -328,16 +299,93 @@
     const updated = document.getElementById("site-updated");
     updated.textContent = `${text("siteUpdated")} ${rootData.site.updated_at.replace("T", " ").slice(0, 19)}`;
     updated.href = rootData.site.commit_url;
-    document.getElementById("page-title").textContent = localized(artifact, "title");
-    document.getElementById("page-summary").textContent = localized(artifact, "summary");
+    document.getElementById("page-title").textContent = language === "ja" ? "実運用分析" : "Operational analysis";
+    document.getElementById("page-summary").textContent = language === "ja" ? "公開用集計に基づき、ソフトウェア利用の手掛かりとシステム整備上の課題を整理します。" : "Published aggregates describe software-use signals and implications for system planning.";
     document.getElementById("research-status").textContent = text("provisional");
     document.getElementById("consensus-status").textContent = text("consensus");
-    document.getElementById("scope-status").textContent = text("scope");
+    document.getElementById("scope-status").textContent = selected ? selected.names[language === "ja" ? 0 : 1] : (language === "ja" ? "基盤別の概要" : "Overview by system");
     document.getElementById("boundary-note").textContent = text("boundary");
-    document.getElementById("page-caveat").textContent = localized(artifact, "caveat");
+    if (artifact) {
+      document.getElementById("boundary-note").textContent = language === "ja"
+        ? "公開値は最小セル" + artifact.disclosure.minimum_cell_count + "件、" + artifact.disclosure.rounding_base + "単位丸めを適用しています。個人・課題・ジョブの識別子、自由記述、実行パス、行単位データは含みません。"
+        : "Published values apply a minimum cell size of " + artifact.disclosure.minimum_cell_count + " and rounding to " + artifact.disclosure.rounding_base + ". No person, project, or job identifiers, free text, execution paths, or row-level records are included.";
+    } else {
+      document.getElementById("boundary-note").textContent = language === "ja"
+        ? "公開承認済みの集計のみを使用します。開示条件と観測範囲は基盤別に確認します。個人・課題・ジョブの識別子や行単位データは含みません。"
+        : "Only publication-approved aggregates are used. Disclosure conditions and observation coverage are checked per system. No person, project, or job identifiers or row-level records are included.";
+    }
+    document.getElementById("page-caveat").textContent = artifact ? localized(artifact, "caveat") : "";
+    document.getElementById("page-caveat").hidden = !artifact;
+    const selector = document.getElementById("system-selector");
+    selector.setAttribute("aria-label", language === "ja" ? "分析対象" : "Analysis scope");
+    selector.replaceChildren();
+    const choices = [{id: "overview", names: ["概要", "Overview"]}, ...systems];
+    choices.forEach((system) => {
+      const button = element("button", "", system.names[language === "ja" ? 0 : 1]);
+      button.type = "button";
+      button.dataset.system = system.id;
+      button.setAttribute("aria-pressed", String(system.id === systemId));
+      button.addEventListener("click", () => {
+        systemId = system.id;
+        const url = new URL(location.href); url.searchParams.set("system", systemId); url.hash = "";
+        history.replaceState(null, "", url); render();
+      });
+      selector.append(button);
+    });
+    const overview = document.getElementById("system-overview");
+    overview.replaceChildren();
+    overview.hidden = Boolean(artifact);
+    document.querySelector(".operational-methodology").hidden = !artifact;
+    document.querySelector(".operational-gaps").hidden = !artifact;
+    document.getElementById("section-index").hidden = !artifact;
     const index = document.getElementById("section-index");
     const sections = document.getElementById("operational-sections");
     index.replaceChildren(); sections.replaceChildren();
+    document.getElementById("page-feedback").replaceChildren();
+    if (!artifact) {
+      const note = language === "ja"
+        ? "公開集計がある基盤は現在" + systems.filter((item) => item.artifact).length + "基盤です。観測期間・方式・分母が異なるため、基盤をまたいだ合算や順位付けは行いません。"
+        : "Published aggregates are available for " + systems.filter((item) => item.artifact).length + " system(s). Different periods, observation methods and denominators are not pooled or ranked across systems.";
+      overview.append(element("p", "operational-note", note));
+      (selected ? [selected] : systems).forEach((system) => {
+        const section = element("section", "operational-overview-system");
+        section.append(element("h2", "", system.names[language === "ja" ? 0 : 1]));
+        if (!system.artifact) {
+          section.append(element("p", "operational-empty", language === "ja" ? "公開用集計は未登録です。利用ゼロではありません。分析結果は、観測・開示条件の確認と公開承認後に追加します。" : "No public aggregate is registered. This is not zero use. Results require observation/disclosure checks and publication approval."));
+        } else {
+          const source = system.artifact;
+          section.append(element("p", "", localized(source, "summary")), element("p", "operational-note", localized(source.scope, "source_scope")));
+          section.append(element("p", "operational-note", (language === "ja" ? "最新の完全月 / ソフトウェア観測最終月: " : "Latest complete month / last software observation: ") + (source.scope.latest_complete_month || text("noValue")) + " / " + (source.scope.software_observation_end || text("noValue"))));
+          source.sections.filter((item) => ["system-software", "applications", "system-requirements"].includes(item.section_id)).forEach((item) => {
+            section.append(element("h3", "", localized(item, "title").replace(/^\d+[.]\s*/, "")), element("p", "", localized(item, "summary")));
+            if (item.section_id === "system-requirements") {
+              const list = element("ul", "");
+              item.data.requirements.slice(0, 3).forEach((requirement) => {
+                const entry = element("li", "");
+                entry.append(element("strong", "", localized(requirement, "title")), element("p", "", localized(requirement, "basis")));
+                list.append(entry);
+              });
+              section.append(list);
+            } else {
+              const kind = item.section_id === "system-software" ? "software" : "application";
+              const observations = kind === "software" ? item.data.families : item.data.signals.filter((row) => !["support", "unclassified"].includes(window.OpenFSOperationalModel.classify(row, kind).category));
+              const top = [...observations].sort((a, b) => (b.current_monthly_unique_job_observations ?? -1) - (a.current_monthly_unique_job_observations ?? -1)).slice(0, 3);
+              section.append(element("p", "operational-window", text("current") + ": " + (item.data.window.current_months.join(" / ") || text("noValue"))));
+              section.append(table(
+                [text("signal"), text("windowJobs"), text("share"), ...(kind === "application" ? [text("confidence")] : [])],
+                top.map((row) => [window.OpenFSOperationalModel.label(row, kind), value(row.current_monthly_unique_job_observations), row.current_mapped_job_share_pct == null ? text("noValue") : row.current_mapped_job_share_pct + "%", ...(kind === "application" ? [text(row.inference_confidence)] : [])])
+              ));
+              section.append(element("p", "operational-note", language === "ja" ? "公開観測値の上位3件。同一ジョブを重複して含む場合があり、全ジョブの利用順位ではありません。" : "Top three published observations. Rows can overlap and do not rank use across all jobs."));
+            }
+          });
+          const button = element("button", "", language === "ja" ? "基盤別の分析結果" : "System analysis");
+          button.type = "button"; button.addEventListener("click", () => selector.querySelector('[data-system="' + system.id + '"]').click()); section.append(button);
+        }
+        overview.append(section);
+      });
+      return;
+    }
+    document.getElementById("page-summary").textContent = localized(artifact, "summary");
     artifact.sections.forEach((section) => {
       const link = document.createElement("a");
       link.href = `#${section.section_id}`;
@@ -366,7 +414,7 @@
     window.OpenFSFeedback?.mount("page-feedback", {kind: "operational-analytics", id: artifact.artifact_id, title: localized(artifact, "title"), path: "analytics/operational-workloads/"});
   }
 
-  document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => {
+  document.querySelectorAll("button[data-language]").forEach((button) => button.addEventListener("click", () => {
     language = button.dataset.language;
     const url = new URL(window.location.href);
     url.searchParams.set("lang", language);
