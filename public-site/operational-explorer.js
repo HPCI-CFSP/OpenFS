@@ -13,12 +13,13 @@
     const button = (label, action, cls) => {const b = node("button",label,cls); b.type="button"; b.addEventListener("click",action); return b;};
     const rows = kind === "software" ? data.families : data.signals;
     const controls = node("div",undefined,"operational-controls");
-    const output = node("div");
+    const output = node("div",undefined,"operational-explorer-output");
     const notice = node("p","","operational-note");
     notice.setAttribute("role","status");
     const categoryLabel = (key) => model.categories[key]?.[language === "ja" ? 0 : 1] || key;
     let mode = "table";
     const selected = new Set();
+    const monthRows = new Map();
     const select = (key, options) => {
       const label = node("label", t(key));
       const control = node("select");
@@ -26,8 +27,10 @@
       options.forEach(([value,title]) => {const option=node("option",title); option.value=value; control.append(option);});
       label.append(control); controls.append(label); return control;
     };
-    const categories = kind === "software" ? ["programming","numerical","communication","ai","runtime","unclassified"] : ["molecular","electronic","chemistry","support","unclassified"];
+    const categories = kind === "software" ? ["programming","numerical","communication","ai","runtime","data-io","application-library","unclassified"] : ["molecular","electronic","chemistry","fluid","ai","support","unclassified"];
     const category = select("category", [["all",t("all")],...categories.map((key)=>[key,categoryLabel(key)])]);
+    const period = select("period", [["current", language==="ja"?"直近の比較期間":"Latest comparison window"],...(data.observed_months || []).slice().reverse().map((month)=>[month,month.slice(0,7)])]);
+    if(period) period.parentElement.firstChild.textContent = language==="ja"?"集計期間":"Observation period";
     const group = select("group", [["all",t("all")],...[...new Set(rows.map((row)=>model.classify(row,kind).group))].sort().map((key)=>[key,key==="unclassified"?categoryLabel(key):key])]);
     const trend = select("trend", [["all",t("all")],...["expanding","declining","newly-observed","stable","insufficient-evidence"].map((key)=>[key,t(key)])]);
     const confidence = kind === "application" ? select("confidence", [["all",t("all")],...["high","medium","low"].map((key)=>[key,t(key)])]) : null;
@@ -40,15 +43,23 @@
     const compare = button(t("monthly"),()=>showDetail([...selected]));
     controls.append(modes,compare);
     container.append(node("p",t("note"),"operational-note"));
+    if(kind==="software" && data["classification_note_"+language]) container.append(node("p",data["classification_note_"+language],"operational-note"));
     if(kind==="application") container.append(node("p",t("appNote"),"operational-note"));
     container.append(controls,notice,output);
     const table = (headers,body) => {
       const wrap=node("div",undefined,"table-wrap operational-table-wrap"), tbl=node("table"), head=node("thead"), tr=node("tr"), tbody=node("tbody");
+      wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label",t("table"));
       headers.forEach((title)=>{const cell=node("th",title);cell.scope="col";tr.append(cell);});head.append(tr);
       body.forEach((cells)=>{const tr=node("tr");cells.forEach((content)=>{const cell=node("td");if(content instanceof Node)cell.append(content);else cell.textContent=content;tr.append(cell);});tbody.append(tr);});
       tbl.append(head,tbody);wrap.append(tbl);return wrap;
     };
-    const visibleRows = () => rows.filter((row)=>{
+    function displayedRow(row) {
+      if(!period || period.value==="current") return row;
+      const key=JSON.stringify([row.family_id,row.signal_type,row.name,row.version,period.value]);
+      if(!monthRows.has(key)) monthRows.set(key,model.atMonth(row,period.value));
+      return monthRows.get(key);
+    }
+    const visibleRows = () => rows.map(displayedRow).filter((row)=>{
       const cls=model.classify(row,kind);
       return (category.value==="all"||cls.category===category.value) && (group.value==="all"||cls.group===group.value) && (trend.value==="all"||row.trend===trend.value) && (!confidence||confidence.value==="all"||row.inference_confidence===confidence.value);
     }).sort((a,b)=>(b[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1)-(a[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1));
@@ -78,6 +89,7 @@
         const key=metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations";
         const max=Math.max(1,...filtered.map((row)=>Number.isFinite(row[key])?row[key]:0));
         const chart=node("div",undefined,"operational-bars");chart.setAttribute("aria-label",t(metric.value));
+        chart.tabIndex=0;chart.setAttribute("role","region");
         filtered.forEach((row)=>{
           const item=node("div",undefined,"operational-bar-row"),track=node("span",undefined,"operational-bar-track"),bar=node("span",undefined,"operational-bar");
           bar.style.width=Number.isFinite(row[key])?String(row[key]/max*100)+"%":"0%";track.append(bar);
@@ -134,6 +146,7 @@
       container.append(dialog);dialog.showModal();draw();close.focus();
     }
     controls.querySelectorAll("select").forEach((control)=>control.addEventListener("change",()=>{
+      if(period){trend.disabled=period.value!=="current";if(trend.disabled)trend.value="all";}
       selected.clear();notice.textContent="";render();
     }));
     render();

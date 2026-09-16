@@ -10,22 +10,37 @@
     communication: ["通信ライブラリ", "Communication libraries"],
     ai: ["AI関連ソフトウェア", "AI software"],
     runtime: ["ランタイム・ツール", "Runtimes and tools"],
+    "data-io": ["データI/O", "Data I/O"],
+    "application-library": ["アプリケーションのライブラリ", "Application libraries"],
     molecular: ["分子動力学", "Molecular dynamics"],
     electronic: ["電子状態・量子化学", "Electronic structure and quantum chemistry"],
     chemistry: ["ケモインフォマティクス", "Cheminformatics"],
+    fluid: ["流体・連続体解析", "Fluid and continuum simulation"],
     support: ["基盤ソフトウェア・依存パッケージ", "Supporting software and dependencies"],
     unclassified: ["未分類", "Unclassified"]
   };
   // Exact identifiers, not guesses from arbitrary library substrings.
   const familyGroups = {MPI: "MPI", PMIX: "Process management", FFTW: "FFT", BLAS: "BLAS"};
   const familyCategories = {communication: "communication", "communication-runtime": "communication", numerical: "numerical", ai: "ai", programming: "programming", runtime: "runtime"};
-  const appDomains = {gromacs: "molecular", gaussian: "electronic", abinitmp: "electronic", vasp6: "electronic", "quantum-espresso": "electronic", rdkit: "chemistry"};
+  const appDomains = {gromacs: "molecular", lammps: "molecular", genesis: "molecular", gaussian: "electronic", abinitmp: "electronic", vasp6: "electronic", cp2k: "electronic", abinit: "electronic", "quantum-espresso": "electronic", rdkit: "chemistry", openfoam: "fluid", "openfoam-org": "fluid", fds: "fluid", "py-torch": "ai", "py-tensorflow": "ai", "py-scikit-learn": "ai"};
   const supportPackages = new Set(["netcdf-fortran", "netcdf-c", "parallel-netcdf", "hdf5", "python", "py-scipy", "py-pandas", "py-python-dateutil", "py-cycler", "py-kiwisolver", "py-pillow", "py-pyparsing", "py-pytz", "py-matplotlib", "py-numpy", "py-psutil", "fftw", "flex", "libpng", "zlib", "jasper", "ncview", "nco"]);
   function classify(row, kind) {
-    if (kind === "software") return {category: familyCategories[row.category] || "unclassified", group: familyGroups[row.family_id] || "unclassified"};
+    if (kind === "software") return {
+      category: row.category?.startsWith("ai-") ? "ai" : familyCategories[row.category] || (categories[row.category] ? row.category : "unclassified"),
+      group: row.comparison_group || familyGroups[row.family_id] || row.family_id || "unclassified"
+    };
     return {category: appDomains[row.name] || (supportPackages.has(row.name) ? "support" : "unclassified"), group: row.name};
   }
   function label(row, kind) { return kind === "software" ? row.title : [row.name, row.version].filter(Boolean).join(" "); }
+  function atMonth(row, month) {
+    if (month === "current") return row;
+    const point = (row.monthly || []).find((item) => item.month === month);
+    return {...row,
+      current_monthly_unique_job_observations: point?.unique_jobs ?? null,
+      current_mapped_job_share_pct: point?.mapped_job_share_pct ?? null,
+      trend: "insufficient-evidence"
+    };
+  }
   function systems(data) {
     const artifacts = [data.operational_analytics, ...(data.additional_operational_analytics || [])].filter(Boolean);
     const items = artifacts.map((artifact) => ({
@@ -61,5 +76,5 @@
     if (current.length) result.push(current);
     return result;
   }
-  return {categories, classify, label, systems, monthlySeries, segments};
+  return {categories, classify, label, atMonth, systems, monthlySeries, segments};
 });
