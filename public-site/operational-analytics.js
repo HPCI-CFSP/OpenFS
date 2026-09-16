@@ -124,20 +124,18 @@
   }
 
   function renderSoftware(container, data) {
-    const windows = element("p", "operational-window", `${text("current")}: ${data.window.current_months.join(" / ") || text("noValue")} | ${text("prior")}: ${data.window.prior_months.join(" / ") || text("noValue")}`);
-    container.append(windows);
     window.OpenFSOperationalExplorer.mount(container, data, "software", language);
     if (data.ai_observation_status === "not-observed-within-coverage") {
       container.append(element("p", "operational-note", text("aiNotObserved")));
     }
     if (data.replacement_signals.length) {
       container.append(element("h4", "", text("replacementTitle")), element("p", "operational-note", text("replacementNote")));
+      container.append(element("p", "operational-window", `${text("current")}: ${data.window.current_months.join(" / ")} | ${text("prior")}: ${data.window.prior_months.join(" / ")}`));
       container.append(table([text("category"), language === "ja" ? "減少側" : "Declining", language === "ja" ? "増加側" : "Expanding"], data.replacement_signals.map((row) => [row.category, row.declining_family_id, row.rising_family_id])));
     }
   }
 
   function renderApplications(container, data) {
-    container.append(element("p", "operational-window", `${text("current")}: ${data.window.current_months.join(" / ") || text("noValue")} | ${text("prior")}: ${data.window.prior_months.join(" / ") || text("noValue")}`));
     container.append(element("p", "operational-note", text("appTrendNote")));
     window.OpenFSOperationalExplorer.mount(container, data, "application", language);
   }
@@ -370,13 +368,14 @@
             } else {
               const kind = item.section_id === "system-software" ? "software" : "application";
               const observations = kind === "software" ? item.data.families.filter((row) => row.family_id !== "_unclassified") : item.data.signals.filter((row) => !["support", "unclassified"].includes(window.OpenFSOperationalModel.classify(row, kind).category));
-              const top = [...observations].sort((a, b) => (b.current_monthly_unique_job_observations ?? -1) - (a.current_monthly_unique_job_observations ?? -1)).slice(0, 3);
-              section.append(element("p", "operational-window", text("current") + ": " + (item.data.window.current_months.join(" / ") || text("noValue"))));
+              const months = window.OpenFSOperationalModel.periodSelection(item.data).months;
+              const top = observations.map((row) => window.OpenFSOperationalModel.atPeriod(row, item.data, months)).sort((a, b) => (b.current_monthly_unique_job_observations ?? -1) - (a.current_monthly_unique_job_observations ?? -1)).slice(0, 3);
+              section.append(element("p", "operational-window", (language === "ja" ? "全観測期間: " : "Full observation period: ") + (months[0]?.slice(0, 7) || "-") + "–" + (months.at(-1)?.slice(0, 7) || "-")));
               section.append(table(
                 [text("signal"), text("windowJobs"), text("share"), ...(kind === "application" ? [text("confidence")] : [])],
                 top.map((row) => [window.OpenFSOperationalModel.label(row, kind), value(row.current_monthly_unique_job_observations), row.current_mapped_job_share_pct == null ? text("noValue") : row.current_mapped_job_share_pct + "%", ...(kind === "application" ? [text(row.inference_confidence)] : [])])
               ));
-              section.append(element("p", "operational-note", language === "ja" ? "公開観測値の上位3件。同一ジョブを重複して含む場合があり、全ジョブの利用順位ではありません。" : "Top three published observations. Rows can overlap and do not rank use across all jobs."));
+              section.append(element("p", "operational-note", language === "ja" ? "全観測期間の公開済み月別値を合計した上位3件。少件数・欠測は補完しません。同一ジョブが複数月・複数行に含まれ得るため、期間全体のユニークジョブ数ではありません。" : "Top three sums of released monthly values across the full history. Small cells and missing values are not imputed. Jobs can recur across months and rows; these are not period-wide distinct jobs."));
             }
           });
           const button = element("button", "", language === "ja" ? "基盤別の分析結果" : "System analysis");

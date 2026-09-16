@@ -2,13 +2,16 @@
   "use strict";
   const model = window.OpenFSOperationalModel;
   const colors = ["#087e8b", "#ae4671", "#b66b00", "#365fbc", "#52772c", "#8645a3"];
+  const periodMemory = new WeakMap();
   const words = {
     ja: {all:"すべて", category:"分類", group:"機能・比較対象", trend:"傾向", confidence:"推定確度", count:"月別ユニークジョブ観測数の合計", share:"対応ジョブ比率 (%)", graph:"グラフ", table:"表", monthly:"月次比較", compare:"比較", name:"名称", empty:"この条件に合う公開観測値はありません。未利用を意味しません。", missing:"抑制／未観測", close:"閉じる", month:"月", jobs:"月別ユニークジョブ数", limit:"比較は最大6系列です。", note:"分類は用途の整理であり、互換性を保証しません。同一ジョブが複数の行に含まれるため、比率は合計できません。", appNote:"パッケージ名は実行アプリケーションを確定する情報ではありません。基盤ソフトウェアと科学アプリケーションの手掛かりを区別しています。", monthlyNote:"欠測・抑制値はゼロにせず、線をつなぎません。系列間の差から非公開値を逆算しません。", expanding:"増加", declining:"減少", stable:"横ばい", "newly-observed":"新規観測", "insufficient-evidence":"証拠不足", low:"低", medium:"中", high:"高", unknown:"未確認"},
     en: {all:"All", category:"Category", group:"Function / comparison group", trend:"Trend", confidence:"Inference confidence", count:"Sum of monthly unique-job observations", share:"Mapped-job share (%)", graph:"Chart", table:"Table", monthly:"Compare monthly trends", compare:"Compare", name:"Name", empty:"No published observations match these filters. This does not establish non-use.", missing:"suppressed / unobserved", close:"Close", month:"Month", jobs:"Monthly unique jobs", limit:"Compare up to six series.", note:"Categories describe function, not interchangeability. Jobs may appear in multiple rows, so shares must not be added.", appNote:"Package names do not establish which application ran. Supporting software is distinguished from scientific-application signals.", monthlyNote:"Missing or suppressed values are not zero; lines break across gaps. Differences are not used to reconstruct withheld values.", expanding:"expanding", declining:"declining", stable:"stable", "newly-observed":"newly observed", "insufficient-evidence":"insufficient evidence", low:"low", medium:"medium", high:"high", unknown:"unverified"}
   };
+  Object.assign(words.ja, {period:"集計期間", allPeriod:"全期間", range:"期間指定", latest:"直近の比較期間", start:"開始月", end:"終了月", count:"公開済み月別ジョブ観測数の合計", share:"公開値による対応ジョブ比率 (%)", status:"集計状態", disclosed:"公開値あり", partial:"公開値のみの部分集計", "below-threshold":"少件数のため非公開", "not-observed":"対象期間の記録なし", "no-coverage":"観測データ不足", unavailable:"公開値なし（理由未区分）", "not-comparable":"比較期間の対象外", invalid:"開始月と終了月を正しく指定してください。", history:"過去の公開観測", rangeNote:"月内で重複除去した公開値の合計です。期間全体のユニークジョブ数ではありません。少件数・欠測は補完せず、比率も公開値に基づく参考値です。", monthsCovered:"観測データのある月", monthsReleased:"数値を公開できる月"});
+  Object.assign(words.en, {period:"Observation period", allPeriod:"All periods", range:"Custom range", latest:"Latest comparison window", start:"Start month", end:"End month", count:"Sum of released monthly job observations", share:"Mapped-job share from released values (%)", status:"Aggregation status", disclosed:"Released values", partial:"Partial sum of released values", "below-threshold":"Withheld: small count", "not-observed":"No records in selected period", "no-coverage":"Observation coverage unavailable", unavailable:"No released value (reason unspecified)", "not-comparable":"Outside comparison window", invalid:"Enter a valid start and end month in chronological order.", history:"Historical released observations", rangeNote:"Totals sum released within-month distinct counts, not period-wide distinct jobs. Small cells and missing values are not imputed; shares are approximate and based on released values only.", monthsCovered:"Months with observation coverage", monthsReleased:"Months with released values"});
   function mount(container, data, kind, language) {
     const t = (key) => words[language][key] || key;
-    const format = (n) => Number.isFinite(n) ? n.toLocaleString(language === "ja" ? "ja-JP" : "en-US") : t("missing");
+    const format = (n) => Number.isFinite(n) ? n.toLocaleString(language === "ja" ? "ja-JP" : "en-US") : (language === "ja" ? "算定不可" : "Not calculable");
     const node = (tag, content, cls) => { const n = document.createElement(tag); if(content !== undefined) n.textContent = content; if(cls) n.className = cls; return n; };
     const button = (label, action, cls) => {const b = node("button",label,cls); b.type="button"; b.addEventListener("click",action); return b;};
     const rows = kind === "software" ? data.families : data.signals;
@@ -19,7 +22,7 @@
     const categoryLabel = (key) => model.categories[key]?.[language === "ja" ? 0 : 1] || key;
     let mode = "table";
     const selected = new Set();
-    const monthRows = new Map();
+    const periodRows = new Map();
     const select = (key, options) => {
       const label = node("label", t(key));
       const control = node("select");
@@ -29,8 +32,17 @@
     };
     const categories = kind === "software" ? ["programming","numerical","communication","ai","runtime","data-io","application-library","unclassified"] : ["molecular","electronic","chemistry","fluid","ai","support","unclassified"];
     const category = select("category", [["all",t("all")],...categories.map((key)=>[key,categoryLabel(key)])]);
-    const period = select("period", [["current", language==="ja"?"直近の比較期間":"Latest comparison window"],...(data.observed_months || []).slice().reverse().map((month)=>[month,month.slice(0,7)])]);
-    if(period) period.parentElement.firstChild.textContent = language==="ja"?"集計期間":"Observation period";
+    const period = select("period", [["all",t("allPeriod")],["range",t("range")],["current",t("latest")]]);
+    const monthInput = (key) => {
+      const label=node("label",t(key)), input=node("input");input.type="month";input.dataset.filter=key;
+      label.append(input);controls.append(label);return input;
+    };
+    const start = monthInput("start"), end = monthInput("end");
+    const remembered = periodMemory.get(data);
+    period.value=remembered?.mode || "all";
+    start.value=remembered?.start || data.observed_months?.[0]?.slice(0,7) || "";
+    end.value=remembered?.end || data.observed_months?.at(-1)?.slice(0,7) || "";
+    const periodInfo=node("p","","operational-period-summary");periodInfo.setAttribute("role","status");
     const group = select("group", [["all",t("all")],...[...new Set(rows.map((row)=>model.classify(row,kind).group))].sort().map((key)=>[key,key==="unclassified"?categoryLabel(key):key])]);
     const trend = select("trend", [["all",t("all")],...["expanding","declining","newly-observed","stable","insufficient-evidence"].map((key)=>[key,t(key)])]);
     const confidence = kind === "application" ? select("confidence", [["all",t("all")],...["high","medium","low"].map((key)=>[key,t(key)])]) : null;
@@ -45,7 +57,7 @@
     container.append(node("p",t("note"),"operational-note"));
     if(kind==="software" && data["classification_note_"+language]) container.append(node("p",data["classification_note_"+language],"operational-note"));
     if(kind==="application") container.append(node("p",t("appNote"),"operational-note"));
-    container.append(controls,notice,output);
+    container.append(node("p",t("rangeNote"),"operational-note"),controls,periodInfo,notice,output);
     const table = (headers,body) => {
       const wrap=node("div",undefined,"table-wrap operational-table-wrap"), tbl=node("table"), head=node("thead"), tr=node("tr"), tbody=node("tbody");
       wrap.tabIndex=0;wrap.setAttribute("role","region");wrap.setAttribute("aria-label",t("table"));
@@ -54,15 +66,20 @@
       tbl.append(head,tbody);wrap.append(tbl);return wrap;
     };
     function displayedRow(row) {
-      if(!period || period.value==="current") return row;
-      const key=JSON.stringify([row.family_id,row.signal_type,row.name,row.version,period.value]);
-      if(!monthRows.has(key)) monthRows.set(key,model.atMonth(row,period.value));
-      return monthRows.get(key);
+      const selection=model.periodSelection(data,period.value,start.value,end.value);
+      const key=JSON.stringify([row.family_id,row.signal_type,row.name,row.version,period.value,start.value,end.value]);
+      if(!periodRows.has(key)) periodRows.set(key,model.atPeriod(row,data,selection.months,period.value));
+      return periodRows.get(key);
     }
     const visibleRows = () => rows.map(displayedRow).filter((row)=>{
       const cls=model.classify(row,kind);
       return (category.value==="all"||cls.category===category.value) && (group.value==="all"||cls.group===group.value) && (trend.value==="all"||row.trend===trend.value) && (!confidence||confidence.value==="all"||row.inference_confidence===confidence.value);
-    }).sort((a,b)=>(b[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1)-(a[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1));
+    }).sort((a,b)=>(b[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1)-(a[metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations"] ?? -1)||model.label(a,kind).localeCompare(model.label(b,kind)));
+    function observationLabel(row) {
+      let label=t(row.period_status)+" · "+t("monthsReleased")+": "+row.disclosed_month_count+"/"+row.period_month_count;
+      if(!row.disclosed_month_count && row.historical_first_month) label+=" · "+t("history")+": "+row.historical_first_month.slice(0,7)+"–"+row.historical_last_month.slice(0,7);
+      return label;
+    }
     function nameButton(row) {return button(model.label(row,kind),()=>showDetail([row]),"operational-name");}
     function choose(row) {
       const label=node("label",undefined,"operational-compare-check"), input=node("input");input.type="checkbox";input.checked=selected.has(row);
@@ -76,14 +93,22 @@
     }
     function render() {
       output.replaceChildren();
+      const selection=model.periodSelection(data,period.value,start.value,end.value);
+      start.disabled=end.disabled=period.value!=="range";
+      trend.disabled=period.value!=="current";if(trend.disabled)trend.value="all";
+      if(period.value!=="range" && selection.months.length){start.value=selection.months[0].slice(0,7);end.value=selection.months.at(-1).slice(0,7);}
+      periodMemory.set(data,{mode:period.value,start:start.value,end:end.value});
       buttons.forEach((b,i)=>b.setAttribute("aria-pressed",String(mode===["table","graph"][i])));
       compare.disabled=!selected.size;
+      if(selection.error){selected.clear();compare.disabled=true;periodInfo.textContent=t("invalid");output.append(node("p",t("invalid"),"operational-empty"));return;}
+      const covered=selection.months.filter((month)=>(data.observed_months||[]).includes(month)).length;
+      periodInfo.textContent=t("period")+": "+start.value+"–"+end.value+" · "+t("monthsCovered")+": "+covered+"/"+selection.months.length;
       const filtered=visibleRows();
       if(!filtered.length){output.append(node("p",t("empty"),"operational-empty"));return;}
       if(mode==="table"){
-        output.append(table([t("compare"),t("name"),t("category"),t("count"),t("share"),t("trend"),...(confidence?[t("confidence")]:[])],filtered.map((row)=>[
+        output.append(table([t("compare"),t("name"),t("category"),t("count"),t("share"),t("status"),...(period.value==="current"?[t("trend")]:[]),...(confidence?[t("confidence")]:[])],filtered.map((row)=>[
           choose(row),nameButton(row),categoryLabel(model.classify(row,kind).category),
-          format(row.current_monthly_unique_job_observations),format(row.current_mapped_job_share_pct),t(row.trend),...(confidence?[t(row.inference_confidence||"unknown")]:[])
+          Number.isFinite(row.current_monthly_unique_job_observations)?format(row.current_monthly_unique_job_observations):t(row.period_status),format(row.current_mapped_job_share_pct),observationLabel(row),...(period.value==="current"?[t(row.trend)]:[]),...(confidence?[t(row.inference_confidence||"unknown")]:[])
         ])));
       } else {
         const key=metric.value==="share"?"current_mapped_job_share_pct":"current_monthly_unique_job_observations";
@@ -94,7 +119,8 @@
           const item=node("div",undefined,"operational-bar-row"),track=node("span",undefined,"operational-bar-track"),bar=node("span",undefined,"operational-bar");
           bar.style.width=Number.isFinite(row[key])?String(row[key]/max*100)+"%":"0%";track.append(bar);
           track.setAttribute("aria-hidden","true");
-          item.append(choose(row),nameButton(row),track,node("span",format(row[key])));
+          const number=node("span",Number.isFinite(row[key])?format(row[key]):t(row.period_status));number.title=observationLabel(row);
+          item.append(choose(row),nameButton(row),track,number);
           chart.append(item);
         });output.append(chart);
       }
@@ -119,7 +145,7 @@
         const monthly=model.monthlySeries(detailRows,detailMetric.value);
         if(!monthly.months.length){plot.append(node("p",t("empty")));return;}
         if(view==="table"){
-          plot.append(table([t("month"),...detailRows.map((row)=>model.label(row,kind))],monthly.months.map((month,i)=>[month.slice(0,7),...monthly.series.map((values)=>format(values[i]))])));
+          plot.append(table([t("month"),...detailRows.map((row)=>model.label(row,kind))],monthly.months.map((month,i)=>[month.slice(0,7),...monthly.series.map((values,j)=>Number.isFinite(values[i])?format(values[i]):t(detailRows[j].monthly?.find((point)=>point.month===month)?.value_status||"no-coverage"))])));
           return;
         }
         const legend=node("ul",undefined,"operational-chart-legend");
@@ -145,9 +171,8 @@
       dialog.addEventListener("click",(event)=>{if(event.target===dialog){const b=dialog.getBoundingClientRect();if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom)dialog.close();}});
       container.append(dialog);dialog.showModal();draw();close.focus();
     }
-    controls.querySelectorAll("select").forEach((control)=>control.addEventListener("change",()=>{
-      if(period){trend.disabled=period.value!=="current";if(trend.disabled)trend.value="all";}
-      selected.clear();notice.textContent="";render();
+    controls.querySelectorAll("select, input[type=month]").forEach((control)=>control.addEventListener("change",()=>{
+      selected.clear();periodRows.clear();notice.textContent="";render();
     }));
     render();
   }

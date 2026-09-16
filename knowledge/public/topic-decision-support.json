@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-09-15",
+  "as_of": "2026-09-16",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -8942,8 +8942,8 @@
     },
     {
       "topic_id": "ARCH-06",
-      "summary_ja": "既存の調査を維持し、今回は「設備定格と電力調達条件を区別する」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Distinguish equipment ratings from electricity tender conditions. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "Frontierの公開説明を、受電設備の能力、計算機の最大消費、冷却水循環に分けて追記しました。運用平均値や国内TCOへそのまま換算しません。",
+      "summary_en": "Separate Frontier's facility supply capacity, stated computer maximum and cooling circulation; do not transplant them into average demand or domestic TCO.",
       "sections": [
         {
           "section_id": "TDS-ARCH06-CURRENT",
@@ -9967,6 +9967,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-RP-FRONTIER-FACILITY",
+          "title_ja": "Frontierの設備境界と電力・冷却条件",
+          "title_en": "Frontier facility boundaries, power and cooling",
+          "summary_ja": "Frontierの公開説明を、受電設備の能力、計算機の最大消費、冷却水循環に分けて追記しました。運用平均値や国内TCOへそのまま換算しません。",
+          "summary_en": "Separate Frontier's facility supply capacity, stated computer maximum and cooling circulation; do not transplant them into average demand or domestic TCO.",
+          "items": [
+            {
+              "item_id": "TDI-RP-FRONTIER-FACILITY-BOUNDARY",
+              "name_ja": "設備容量と計算機消費電力の区別",
+              "name_en": "Facility capacity versus computer consumption",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "出典の発表日・対象時期を参照。確認日を発表日とは扱いません。",
+              "timing_en": "See each source's publication date and period; the check date is not the announcement date.",
+              "statement_ja": "ORNLの公式解説は計算機室への40 MW超の供給能力と、Frontierの最大29 MWの消費を別に述べ、冷却水循環を毎分6,000ガロンと説明しています。これらは年間平均電力、年間取水量、PUEではありません。",
+              "statement_en": "ORNL's transcript separately describes over 40 MW supplied to the computer room, up to 29 MW consumption by Frontier, and 6,000 gallons/minute of cooling circulation. These are not annual average demand, annual water withdrawal or PUE.",
+              "hpci_relevance_ja": "国内の構成算定ではIT側と施設側の境界、負荷曲線、冷却温度差、冗長性、電気料金を別入力にします。流量のみから冷却能力や水道費を確定しません。",
+              "hpci_relevance_en": "Domestic sizing needs separate IT/facility boundaries, load curves, coolant temperature difference, redundancy and tariffs; circulation flow alone does not establish cooling capacity or water charges.",
+              "adoption_conditions_ja": [
+                "施設側を含む実測負荷曲線、温度・圧力、冗長化時の利用可能容量、契約料金、保守・改修費が必要です。完全な5年間TCOは未算定です。"
+              ],
+              "adoption_conditions_en": [
+                "Measured facility load curves, temperature/pressure, available capacity under redundancy, tariffs and maintenance/retrofit costs remain necessary. Complete five-year TCO is not established."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-RP-ORNL"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -10113,6 +10147,16 @@
           ],
           "created_at": "2026-09-12T17:10:57+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000414",
+          "bundle_sha256": "d85670040a46ff593cb8ac65b4468882197f9487a9fcaf97d2f047cd982e231f",
+          "base_commit": "fe69dfc03dbeeacfcc76140824e5f833008795a2",
+          "unit_ids": [
+            "ARCH-06-U01"
+          ],
+          "created_at": "2026-09-16T14:00:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -10140,7 +10184,8 @@
               "TDS-CD45-ARCH-06-AIFS-FACILITY-CONTRACTS",
               "TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025",
               "TDS-PW-ARCH-06-01",
-              "TDS-FP-ARCH-06-01-V2"
+              "TDS-FP-ARCH-06-01-V2",
+              "TDS-RP-FRONTIER-FACILITY"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -13798,8 +13843,8 @@
     },
     {
       "topic_id": "SSW-04",
-      "summary_ja": "Kokkos Kernels 5.2.0は、QR分解後のQ適用・生成、Cholesky分解・求解、batched回転・norm・swap・Iamax、疎行列転置の共役mode、merge-path load balancing、cuSPARSE SpMV前処理を追加・拡張しました。BLAS1 benchmarkの範囲と複数の不具合も改善されています。ただしAPI追加は、各CPU・GPUでvendor libraryと同等の性能・精度・規模を保証しません。HPCIでは代表行列群による正解性・性能・memory・fallback試験が必要です。Consensusは未完了です。",
-      "summary_en": "Kokkos Kernels 5.2.0 adds or extends application and generation of Q after QR factorization, Cholesky factorization and solves, batched rotations, norms, swap and Iamax, conjugate sparse transpose, merge-path load balancing, and cuSPARSE SpMV preprocessing. It also expands BLAS1 benchmarks and fixes multiple defects. API availability does not establish vendor-library-equivalent performance, accuracy, or scale on every CPU and GPU. HPCI needs correctness, performance, memory, and fallback tests on representative matrix suites. Consensus is incomplete.",
+      "summary_ja": "数値ライブラリの機能比較に加え、依存ライブラリ名から実行アプリケーションを断定しない識別条件を整理しました。",
+      "summary_en": "Alongside numerical-library capabilities, distinguish dependency roles from identification of the application that actually ran.",
       "sections": [
         {
           "section_id": "TDS-SSW04-LIBRARIES",
@@ -14486,6 +14531,66 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-RP-LIBRARY-IDENTITY",
+          "title_ja": "数値計算を支える依存ライブラリの識別",
+          "title_en": "Identify dependencies supporting numerical computing",
+          "summary_ja": "数値ライブラリの機能比較に加え、依存ライブラリ名から実行アプリケーションを断定しない識別条件を整理しました。",
+          "summary_en": "Alongside numerical-library capabilities, distinguish dependency roles from identification of the application that actually ran.",
+          "items": [
+            {
+              "item_id": "TDI-RP-LIBRARY-IDENTITY-PORD",
+              "name_ja": "PORDはソルバー本体ではなく順序付けの部品",
+              "name_en": "PORD is an ordering component, not the solver itself",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "出典の発表日・対象時期を参照。確認日を発表日とは扱いません。",
+              "timing_en": "See each source's publication date and period; the check date is not the announcement date.",
+              "statement_ja": "MUMPSの公式FAQはPORDの既定利用と、METIS・Scotchへの切替を説明しています。PORDの依存関係だけではMUMPSの実行や計算時間の支配率は確定しません。",
+              "statement_en": "The MUMPS FAQ documents default PORD support and alternatives using METIS or Scotch. A PORD dependency alone establishes neither MUMPS execution nor its share of run time.",
+              "hpci_relevance_ja": "ソルバーと前処理・順序付けを別の機能として評価します。",
+              "hpci_relevance_en": "Evaluate solvers and ordering/preprocessing as separate capabilities.",
+              "adoption_conditions_ja": [
+                "同名ライブラリの実装元、正確な版、実行アプリケーション、動的ロードの観測は未確定です。新分類の利用件数を推測で作りません。"
+              ],
+              "adoption_conditions_en": [
+                "Implementation origin, exact versions, executed applications and runtime loading remain unresolved; no usage counts are invented for new classifications."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-RP-MUMPS"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-RP-LIBRARY-IDENTITY-SUPPORT",
+              "name_ja": "libsc・muparserを数値カーネルと区別",
+              "name_en": "Distinguish libsc and muparser from numerical kernels",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "出典の発表日・対象時期を参照。確認日を発表日とは扱いません。",
+              "timing_en": "See each source's publication date and period; the check date is not the announcement date.",
+              "statement_ja": "p4estのlibscはログ、データ構造、並列統計などの補助機能を提供します。muparserは数式評価用です。これらをBLAS・FFTと同種の演算実装として順位比較せず、汎用的なライブラリ名にはパッケージ由来の確認を求めます。",
+              "statement_en": "p4est's libsc supplies logging, data structures and parallel statistics; muparser evaluates mathematical expressions. Neither is interchangeable with BLAS or FFT kernels. Generic library names require package-origin evidence.",
+              "hpci_relevance_ja": "依存部品、演算カーネル、実行アプリケーションの3層を区別して移行試験を設計します。",
+              "hpci_relevance_en": "Separate dependencies, numerical kernels and executed applications in migration tests.",
+              "adoption_conditions_ja": [
+                "同名ライブラリの実装元、正確な版、実行アプリケーション、動的ロードの観測は未確定です。新分類の利用件数を推測で作りません。"
+              ],
+              "adoption_conditions_en": [
+                "Implementation origin, exact versions, executed applications and runtime loading remain unresolved; no usage counts are invented for new classifications."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-RP-P4EST",
+                "SRC-RP-MUPARSER"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -14584,6 +14689,16 @@
           ],
           "created_at": "2026-09-02T07:43:50+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000412",
+          "bundle_sha256": "96dcf1831acb158aa920e8be42a133a991e1ab3ae89f128d8656353d70f4fdc1",
+          "base_commit": "fe69dfc03dbeeacfcc76140824e5f833008795a2",
+          "unit_ids": [
+            "SSW-04-U01"
+          ],
+          "created_at": "2026-09-16T14:00:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -14609,7 +14724,8 @@
               "TDS-CD3-SSW-04-U01",
               "TDS-CD51-SSW-04-HPCI-NUMERICAL-LIBRARIES",
               "TDS-CD52-SSW-04-CHASE-BSE-GPU",
-              "TDS-CD20-SSW-04-KOKKOS-KERNELS-52"
+              "TDS-CD20-SSW-04-KOKKOS-KERNELS-52",
+              "TDS-RP-LIBRARY-IDENTITY"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -19888,8 +20004,8 @@
     },
     {
       "topic_id": "APP-02",
-      "summary_ja": "既存の調査を維持し、今回は「SALMONの測定条件を計算段階別に固定する」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Pin SALMON measurements by computational stage. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "SALMONの富岳向け公開評価例を再確認し、強・弱スケーリングと本計算の用途を分離しました。固定コミットの実ファイル取得とEEA1同一性の確認は未完了です。",
+      "summary_en": "Recheck public Fugaku evaluation examples, separating strong scaling, weak scaling and production use. Pinned artifact retrieval and identity with EEA1 remain incomplete.",
       "sections": [
         {
           "section_id": "TDS-SSW07-CURRENT",
@@ -22039,6 +22155,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-RP-SALMON-PROXY-BOUNDARY",
+          "title_ja": "SALMON公開評価例とEEA1再現条件の区別",
+          "title_en": "SALMON public examples versus EEA1 reproduction",
+          "summary_ja": "SALMONの富岳向け公開評価例を再確認し、強・弱スケーリングと本計算の用途を分離しました。固定コミットの実ファイル取得とEEA1同一性の確認は未完了です。",
+          "summary_en": "Recheck public Fugaku evaluation examples, separating strong scaling, weak scaling and production use. Pinned artifact retrieval and identity with EEA1 remain incomplete.",
+          "items": [
+            {
+              "item_id": "TDI-RP-SALMON-PROXY-BOUNDARY-PROXY",
+              "name_ja": "公開性能評価例はEEA1基準測定とは限らない",
+              "name_en": "Public performance examples are not necessarily an EEA1 baseline",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "出典の発表日・対象時期を参照。確認日を発表日とは扱いません。",
+              "timing_en": "See each source's publication date and period; the check date is not the announcement date.",
+              "statement_ja": "公開READMEは弱スケーリング432～27,648ノード、強スケーリング6,912～27,648ノードを示し、強スケーリング前に弱スケーリング側の6,912ノード条件で基底状態を計算する手順を記載します。別に10,224原子の本計算例があり、性能評価では基底状態を粗く計算する注意もあります。",
+              "statement_en": "The README lists weak scaling at 432–27,648 nodes and strong scaling at 6,912–27,648, with ground-state preparation from the weak-scaling 6,912-node case. A separate production example has 10,224 atoms; the scaling tests warn that ground-state preparation is approximate.",
+              "hpci_relevance_ja": "これらは代理試験の候補です。EEA1入力との同一性、科学的収束、計時区間を確認せず性能予測の基準値へ転用しません。",
+              "hpci_relevance_en": "Treat these as proxy candidates, not forecasting baselines without EEA1 input identity, scientific convergence and timing-boundary checks.",
+              "adoption_conditions_ja": [
+                "固定コミットの入力・擬ポテンシャル・参照出力とEEA1との一致、許容誤差、ビルド条件、実測が不足しています。取得失敗を別経路で迂回せず、既存の固定候補は維持しました。"
+              ],
+              "adoption_conditions_en": [
+                "Pinned inputs, pseudopotentials, reference outputs, EEA1 identity, tolerances, build conditions and measurements are still missing. Failed retrieval was not bypassed and existing pinned candidates remain unchanged."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-RP-SALMON"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -22261,6 +22411,16 @@
           ],
           "created_at": "2026-09-12T14:17:43+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000415",
+          "bundle_sha256": "ff9b999ea826bdd06b51373141461225f048f50bba0a935d09ed42b0e0d5dfab",
+          "base_commit": "fe69dfc03dbeeacfcc76140824e5f833008795a2",
+          "unit_ids": [
+            "APP-02-U03"
+          ],
+          "created_at": "2026-09-16T14:00:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -22357,7 +22517,8 @@
               "TDS-CD2-APP-02-U03",
               "TDS-CD3-APP-02-U03",
               "TDS-CD4-APP-02-U03",
-              "TDS-CD34-APP-02-GENKAI-WHOLE-SYSTEM-MEASUREMENT"
+              "TDS-CD34-APP-02-GENKAI-WHOLE-SYSTEM-MEASUREMENT",
+              "TDS-RP-SALMON-PROXY-BOUNDARY"
             ],
             "comparison_refs": [
               {
@@ -36425,8 +36586,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "調達資料4事例の照合結果を追加しました。価格と数量の対応が確認できない事例は校正対象にしません。",
-      "summary_en": "Adds four procurement evidence checks; unmatched price/quantity cases remain excluded from calibration.",
+      "summary_ja": "既存の国内調達事例に加え、LUMIの取得契約額と生涯費用を区別しました。総額を部品単価へ換算せず、比較範囲の検証に用います。",
+      "summary_en": "Add a LUMI acquisition/lifecycle scope comparison to the domestic cases without converting package totals into component prices.",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -38543,6 +38704,41 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-RP-LUMI-COST-SCOPE",
+          "title_ja": "LUMIの取得契約額と生涯費用の範囲",
+          "title_en": "LUMI acquisition contract versus lifecycle investment",
+          "summary_ja": "既存の国内調達事例に加え、LUMIの取得契約額と生涯費用を区別しました。総額を部品単価へ換算せず、比較範囲の検証に用います。",
+          "summary_en": "Add a LUMI acquisition/lifecycle scope comparison to the domestic cases without converting package totals into component prices.",
+          "items": [
+            {
+              "item_id": "TDI-RP-LUMI-COST-SCOPE-CONTRACT",
+              "name_ja": "同じシステムでも取得額と生涯費用は異なる",
+              "name_en": "Acquisition and lifecycle costs differ for the same system",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "出典の発表日・対象時期を参照。確認日を発表日とは扱いません。",
+              "timing_en": "See each source's publication date and period; the check date is not the announcement date.",
+              "statement_ja": "欧州委員会は2020年10月21日にLUMIの取得契約を1億4,450万ユーロと発表しています。同日のLUMI公式発表は全ライフサイクル投資を2億ユーロ超と記載します。範囲と期間が異なるため、差額を5年間の電力・保守費と解釈せず、GPU単価も逆算しません。",
+              "statement_en": "On 21 October 2020 the Commission announced a EUR 144.5 million acquisition contract; LUMI reported over EUR 200 million of lifecycle investment. Different scopes and durations prevent interpreting the difference as five-year energy/support cost or inferring GPU unit prices.",
+              "hpci_relevance_ja": "初期整備費、保守、施設、電力、契約期間をそろえる比較事例として扱い、価格モデルの学習・検証点にはまだ加えません。",
+              "hpci_relevance_en": "Use this to qualify CAPEX, support, facilities, energy and term; do not yet admit it as a price-model calibration or holdout case.",
+              "adoption_conditions_ja": [
+                "税、保守年数、施設工事、電力費、最終納入BOM、部品別価格が未分離です。検証用の独立価格事例は増えていません。"
+              ],
+              "adoption_conditions_en": [
+                "Tax, support duration, facility work, energy, delivered BOM and itemized prices remain unresolved. No independent price-validation case was added."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-RP-EC-LUMI",
+                "SRC-RP-LUMI"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -38804,6 +39000,16 @@
           ],
           "created_at": "2026-09-15T16:05:00+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000413",
+          "bundle_sha256": "1496061e739803d50e91bb162d16a5c75034d2e813e7ae2d7f106ea24a268330",
+          "base_commit": "fe69dfc03dbeeacfcc76140824e5f833008795a2",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-09-16T14:00:18Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -38841,7 +39047,8 @@
               "TDS-CD72-CROSS-06-FUGAKUNEXT-DESIGN-CONTRACTS",
               "TDS-CD78-CROSS-06-RIKYU-ROQUO-PACKAGE-COSTS",
               "TDS-FP-CROSS-06-01-V2",
-              "TDS-PS-PROCUREMENT-20260916"
+              "TDS-PS-PROCUREMENT-20260916",
+              "TDS-RP-LUMI-COST-SCOPE"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -66036,6 +66243,62 @@
       "url": "https://instinct.docs.amd.com/projects/system-acceptance/en/latest/gpus/mi350x.html",
       "source_class": "official-vendor",
       "published_or_updated": "Publication date not stated; checked 2026-09-15 UTC"
+    },
+    {
+      "source_id": "SRC-RP-MUMPS",
+      "title": "MUMPS Frequently Asked Questions",
+      "publisher": "MUMPS developers",
+      "url": "https://www.mumps-solver.org/index.php?page=faq",
+      "source_class": "official-project",
+      "published_or_updated": "Undated FAQ; checked 2026-09-16 UTC"
+    },
+    {
+      "source_id": "SRC-RP-P4EST",
+      "title": "p4est: Parallel AMR on Forests of Octrees",
+      "publisher": "p4est developers",
+      "url": "https://p4est.github.io/",
+      "source_class": "official-project",
+      "published_or_updated": "Undated project page; checked 2026-09-16 UTC"
+    },
+    {
+      "source_id": "SRC-RP-MUPARSER",
+      "title": "muparser feature overview",
+      "publisher": "muparser author",
+      "url": "https://beltoforion.de/en/muparser/features.php",
+      "source_class": "official-project",
+      "published_or_updated": "Undated feature page; checked 2026-09-16 UTC"
+    },
+    {
+      "source_id": "SRC-RP-EC-LUMI",
+      "title": "EU steps up investment in world-class supercomputers",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/news/eu-steps-investment-world-class-supercomputers-researchers-and-businesses",
+      "source_class": "official-project",
+      "published_or_updated": "2020-10-21; page last updated 2025-08-13"
+    },
+    {
+      "source_id": "SRC-RP-LUMI",
+      "title": "LUMI procurement and lifecycle investment announcement",
+      "publisher": "LUMI consortium / CSC",
+      "url": "https://lumi-supercomputer.eu/lumi-one-of-the-worlds-mightiest-supercomputers/",
+      "source_class": "official-project",
+      "published_or_updated": "2020-10-21"
+    },
+    {
+      "source_id": "SRC-RP-ORNL",
+      "title": "Exascale: The New Frontier of Computing",
+      "publisher": "Oak Ridge National Laboratory",
+      "url": "https://www.ornl.gov/media/80821",
+      "source_class": "official-project",
+      "published_or_updated": "Publication date not stated on retrieved page; describes May 2022 milestone"
+    },
+    {
+      "source_id": "SRC-RP-SALMON",
+      "title": "SALMON2 evaluation scripts: Fugaku README",
+      "publisher": "SALMON developers",
+      "url": "https://github.com/SALMON-TDDFT/SALMON2-evaluation-scripts/tree/master/fugaku",
+      "source_class": "official-project",
+      "published_or_updated": "Undated moving-branch README; checked 2026-09-16 UTC"
     }
   ],
   "coverage_gaps": [
@@ -67208,7 +67471,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PRIORITY-SERIES-20260916",
-    "human_approval_directive_id": "DIR-900120"
+    "publication_decision_id": "PUBDEC-RANKING-EVIDENCE-20260916",
+    "human_approval_directive_id": "DIR-900124"
   }
 }
