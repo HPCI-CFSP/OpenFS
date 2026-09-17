@@ -1,8 +1,8 @@
 # FS3.0システム整備計画の判断根拠パッケージ
 
-基準日: 2026-09-16 / Status: provisional / Consensus: incomplete
+基準日: 2026-09-17 / Status: provisional / Consensus: incomplete
 
-HPCI 27システム、公開調達19案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
+HPCI 27システム、公開調達20案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
 
 > 単一のAIモデル・単一エージェントによる公開情報ベースの暫定整理です。独立したAIモデルによるConsensus Gate、各責任者による要件・閾値・予算・調達判断は未完了です。充足数は調査範囲であり、案の点数や推奨順位を示すものではありません。
 
@@ -11,9 +11,9 @@ HPCI 27システム、公開調達19案件、EEA1 6アプリ、19ロードマッ
 | 対象 | 登録数 | 現在確認できる範囲 | 判断上の境界 |
 |---|---:|---|---|
 | HPCIシステム | 27 | 将来時期 22、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
-| 公開調達 | 19 | 契約・落札総額 14、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
+| 公開調達 | 20 | 契約・落札総額 15、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
-| ロードマップ | 19 | 408マイルストーン、30依存関係 | Consensus Gate未完了 |
+| ロードマップ | 19 | 409マイルストーン、30依存関係 | Consensus Gate未完了 |
 
 ```mermaid
 flowchart LR
@@ -65,7 +65,7 @@ flowchart LR
 | SQUID ベクトルノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 3/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | ABCI 3.0 | `CENTER-AIST-IHF` | 過去・現況のみ | 数値実績あり | 4/0/0/0 | 電力根拠登録済み (1) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
 
-## 4. 公開調達19案件と5年間費用
+## 4. 公開調達20案件と5年間費用
 
 | 調達案件 | 公表額 | 金額区分 | 仕様書 | 費目根拠 | 60か月費用 | 未確認費目 | 判断への利用 |
 |---|---:|---|---|---:|---:|---:|---|
@@ -88,6 +88,7 @@ flowchart LR
 | 理研R-CCS 2026年度電気調達（入札条件） | 未確認 | 未確認 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
 | 京都大学化学研究所 スーパーコンピュータ借入（2024-2027年） | 31,900,000円 | 落札総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
 | 理研2024年度AI for Science用GPU計算機 | 119,680,000円 | 落札総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
+| 産総研GPUクラウド環境・技術相談 | 68,475,000円 | 契約総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
 
 ## 5. EEA1再現性と性能評価
 
@@ -124,7 +125,7 @@ flowchart LR
 | [緊急・リアルタイム・実験連携・量子応用](https://hpci-cfsp.github.io/OpenFS/roadmaps/applications/realtime-experiment-quantum/?lang=ja) | 8 | 1 | 0/2/0 |
 | [科学ワークロード・ベンチマーク・性能モデル](https://hpci-cfsp.github.io/OpenFS/roadmaps/applications/workloads-benchmarks-models/?lang=ja) | 38 | 5 | 4/4/1 |
 | [計算ノード・プロセッサ・アクセラレータ](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/compute-nodes-accelerators/?lang=ja) | 60 | 3 | 3/5/1 |
-| [施設・電力・冷却](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/facility-power-cooling/?lang=ja) | 5 | 1 | 0/1/1 |
+| [施設・電力・冷却](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/facility-power-cooling/?lang=ja) | 6 | 1 | 0/1/1 |
 | [インターコネクト・光・資源分離](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/interconnect-optics-disaggregation/?lang=ja) | 36 | 3 | 2/4/1 |
 | [メモリ・データ移動技術ロードマップ（2026年以降）](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/memory-data-movement/?lang=ja) | 64 | 13 | 1/3/2 |
 | [供給網・技術主権・ライフサイクル](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/supply-sovereignty-lifecycle/?lang=ja) | 7 | 0 | 0/2/0 |
@@ -166,13 +167,13 @@ flowchart LR
 
 ## English summary
 
-A provisional package connecting 27 HPCI systems, 19 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
+A provisional package connecting 27 HPCI systems, 20 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
 - Secure unattended Web research: **blocked**; 85 source-triage entries remain unresolved.
 - HPCI inventory: 27 systems; 22 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
-- Procurement: 19 cases; public contract or award totals: 14; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
+- Procurement: 20 cases; public contract or award totals: 15; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
 - Roadmaps: 19 provisional public roadmaps and 30 registered cross-roadmap dependencies.
 

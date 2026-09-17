@@ -4586,8 +4586,8 @@
     },
     {
       "topic_id": "ARCH-03",
-      "summary_ja": "DRAMの規格・モジュール・カスタム実装と、メモリ階層の容量・帯域・遅延・ソフトウェア条件を比較します。追加調査ではNANDベースのHBFをHBMとは区別し、仕様発表、サンプル目標、シミュレーション結果の適用範囲を整理しました。単一のAIモデルによる暫定結果です。",
-      "summary_en": "Compare DRAM standards, modules/custom implementations and hierarchy capacity, bandwidth, latency and software conditions. Follow-up distinguishes NAND-based HBF from HBM and separates specification announcements, sample targets and simulation scope. Results remain provisional and single-model.",
+      "summary_ja": "メモリ拡張に必要なOS・BIOS条件",
+      "summary_en": "OS and BIOS requirements for memory expansion",
       "page_layout": {
         "layout_version": "1.0",
         "components": [
@@ -4706,7 +4706,8 @@
             "unit_id": "ARCH-03-U03",
             "section_ids": [
               "TDS-HW1-ARCH-03-U03",
-              "TDS-HW2-ARCH-03-U03"
+              "TDS-HW2-ARCH-03-U03",
+              "TDS-P30-CXL-OS"
             ],
             "comparison_refs": [
               {
@@ -5597,6 +5598,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-CXL-OS",
+          "title_ja": "メモリ階層のOS・BIOS条件",
+          "title_en": "Memory hierarchy OS/BIOS requirements",
+          "summary_ja": "接続規格、メモリデバイス、OSの配置方針を区別します。",
+          "summary_en": "Separate the interconnect, memory device and OS placement policy.",
+          "items": [
+            {
+              "item_id": "TDI-P30-CXL-OS",
+              "name_ja": "CXLメモリの容量と利用可能性",
+              "name_en": "CXL memory capacity and usability",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "LinuxではBIOS/EFIとkernelの設定により、CXLメモリをDAXデバイス、通常のSystem RAM、移動可能なページ用の領域として扱い分けます。NUMA情報やHMAT/CDATの性能情報も階層管理に影響します。",
+              "statement_en": "Linux BIOS/EFI and kernel settings determine whether CXL memory is exposed as DAX, ordinary System RAM or movable pages. NUMA and HMAT/CDAT performance information also affect tiering.",
+              "hpci_relevance_ja": "容量を増設できることと、要求帯域・遅延・巨大ページ・障害時動作を満たすことは別に確認します。CXLをDDR/HBMと同種のメモリ方式として順位付けしません。",
+              "hpci_relevance_en": "Qualify capacity expansion separately from bandwidth, latency, huge pages and fault behavior. Do not rank the CXL interface as another DDR/HBM memory technology.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-CXL-LINUX"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -5684,6 +5719,16 @@
             "ARCH-03-U01"
           ],
           "created_at": "2026-08-31T22:29:17+09:00",
+          "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000430",
+          "bundle_sha256": "959d1cd70fbfc3512eb16068c7e064f83445fc9712eecc237c68dfa06a1dbb76",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "ARCH-03-U03"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
           "consensus_status": "incomplete"
         }
       ]
@@ -9012,8 +9057,8 @@
     },
     {
       "topic_id": "ARCH-06",
-      "summary_ja": "Frontierの公開説明を、受電設備の能力、計算機の最大消費、冷却水循環に分けて追記しました。運用平均値や国内TCOへそのまま換算しません。",
-      "summary_en": "Separate Frontier's facility supply capacity, stated computer maximum and cooling circulation; do not transplant them into average demand or domestic TCO.",
+      "summary_ja": "電力・冷却・施設の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for ARCH-06",
       "sections": [
         {
           "section_id": "TDS-ARCH06-CURRENT",
@@ -10071,6 +10116,67 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-420-ARCH-06-U01",
+          "title_ja": "設備設計と制約の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-POWER-BOUNDARY",
+              "name_ja": "動作条件で変わる電力と冷却指標",
+              "name_en": "Power and cooling depend on operating conditions",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "LRZはSuperMUC-NGについてPUE 1.06、最大50℃の温水冷却、2.7 GHzから2.3 GHzへの周波数変更を説明しています。別のインタビューの最適化後2.5 MWと、従前の3.4 MWは同一条件の年間平均として扱えません。",
+              "statement_en": "LRZ describes SuperMUC-NG PUE 1.06, water up to 50 C and frequency reduction from 2.7 to 2.3 GHz. Its separate interview's optimized 2.5 MW and earlier 3.4 MW are not interchangeable annual averages.",
+              "hpci_relevance_ja": "将来システムへ同じPUEや削減率を一律適用せず、負荷・周波数・計測境界・期間を付けて設備上限と年間電気代を分けます。",
+              "hpci_relevance_en": "Do not transfer PUE or savings wholesale to future systems. Separate facility limits from annual costs using workload, clock, meter boundary and measurement period.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-LRZ-POWER",
+                "SRC-P30-LRZ-OPTIMIZATION"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-P30-FACILITY-TIMING",
+              "name_ja": "LUMI-AIの設備試運転とシステム配備",
+              "name_en": "LUMI-AI facility commissioning and system deployment",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "CSCは2027年前半から設備の試運転・試験を6か月行い、施設運用は2027年末を予定しています。システム配備の2027年後半という公表予定とは対象が異なり、GPU出荷だけで利用開始を決められません。",
+              "statement_en": "CSC plans six months of building-system commissioning from early 2027 and facility operation at end-2027. This differs in scope from second-half 2027 system deployment; GPU shipment alone does not establish service readiness.",
+              "hpci_relevance_ja": "調達線表に受電・冷却・試運転・受入・利用開始の依存関係を設けます。正確な四半期・受入日は未確認のまま残します。",
+              "hpci_relevance_en": "Track dependencies from power/cooling readiness through commissioning, acceptance and service. Keep an exact acceptance quarter/date unknown where not stated.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-LUMIAI-FACILITY",
+                "SRC-P30-LUMIAI-CONTRACT"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -10227,6 +10333,16 @@
           ],
           "created_at": "2026-09-16T14:00:18Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000420",
+          "bundle_sha256": "a1b6fc90bbeae4896a258c20ed8f6e262a2eede758501f1ae3077c99d991b76e",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "ARCH-06-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -10255,7 +10371,8 @@
               "TDS-CD74-ARCH-06-RCCS-UTILITY-OPERATIONS-2025",
               "TDS-PW-ARCH-06-01",
               "TDS-FP-ARCH-06-01-V2",
-              "TDS-RP-FRONTIER-FACILITY"
+              "TDS-RP-FRONTIER-FACILITY",
+              "TDS-P30-420-ARCH-06-U01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -10282,8 +10399,8 @@
     },
     {
       "topic_id": "SSW-01",
-      "summary_ja": "GPUソフトウェアの配備時期と言語別対応",
-      "summary_en": "GPU software deployment and language-specific support",
+      "summary_ja": "プログラミング環境・性能可搬性の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-01",
       "sections": [
         {
           "section_id": "TDS-SSW01-PORTABILITY",
@@ -12270,6 +12387,41 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-422-SSW-01-U01",
+          "title_ja": "モデル・API・抽象化の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-OPENMP-DRAFT",
+              "name_ja": "OpenMP 6.1の公開草案と実装確認",
+              "name_en": "OpenMP 6.1 draft and implementation qualification",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "2026年7月9日にTR15の公開意見募集版が発表されています。GCCの対応状況は別に管理されており、草案公開だけでは各言語・GPUでの実装完了を意味しません。",
+              "statement_en": "TR15 was announced as a public-comment draft on 9 July 2026. GCC tracks implementation separately; draft publication does not establish complete support across languages and GPUs.",
+              "hpci_relevance_ja": "使う構文、コンパイラ版、対象GPUを固定した小規模試験と実アプリ試験を受入条件にします。移植工数は未測定です。",
+              "hpci_relevance_en": "Freeze constructs, compiler version and target GPU for feature and application acceptance tests. Porting effort is not measured.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-OPENMP-TR15",
+                "SRC-P30-GCC-GOMP"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -12524,6 +12676,16 @@
           ],
           "created_at": "2026-09-17T09:55:27Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000422",
+          "bundle_sha256": "5d52657db4b761fe28f6258b36c77a7ceac7391213d165b6bf30bc22bdc87d44",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-01-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -12546,7 +12708,8 @@
               "TDS-SSW01-PORTABILITY",
               "TDS-CD1-SSW-01-U01",
               "TDS-CD14-SSW-01-PORTABILITY",
-              "TDS-CD20-SSW-01-OPENMP-STANDARDS"
+              "TDS-CD20-SSW-01-OPENMP-STANDARDS",
+              "TDS-P30-422-SSW-01-U01"
             ],
             "comparison_refs": [
               {
@@ -12721,8 +12884,8 @@
     },
     {
       "topic_id": "SSW-03",
-      "summary_ja": "Auroraについて、MPI reductionの不正値、OpenMP GPU kernelの解放済みmemory参照、公開reproducer、最大2,112 nodeのnext-eval queueによるmajor imageの段階展開を追加しました。解決版や合格基準は未確認です。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "For Aurora, this update adds incorrect MPI reduction values, freed-memory access by an OpenMP GPU kernel, public reproducers, and staged rollout of a major image through a next-eval queue of up to 2,112 nodes. Fixed releases and acceptance criteria remain unverified. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "通信ライブラリの根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-03",
       "sections": [
         {
           "section_id": "TDS-SSW03-CURRENT",
@@ -13742,6 +13905,40 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-427-SSW-03-U01",
+          "title_ja": "通信と集合通信の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-OMPI-CUDA",
+              "name_ja": "GPUバッファ対応と直接転送を区別",
+              "name_en": "GPU-buffer support is not proof of direct transfer",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "Open MPI 5.0.8ではCUDA対応UCXのビルド確認が必要です。OFI経路はGPU対応providerがない場合、ホストバッファ経由へ退避します。CUDA-awareという表示だけではGPUDirect転送の成立を確認できません。",
+              "statement_en": "Open MPI 5.0.8 requires verification of CUDA-enabled UCX. OFI falls back through host buffers if no GPU-capable provider is available. CUDA-aware labeling alone does not prove GPUDirect transfer.",
+              "hpci_relevance_ja": "MPI/UCX/libfabric・driver・NICを固定し、転送経路とOSU等の実測を確認します。ピーク帯域を実アプリ帯域としません。",
+              "hpci_relevance_en": "Pin MPI/UCX/libfabric, drivers and NIC; inspect transfer paths and run microbenchmarks such as OSU. Peak links are not application bandwidth.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-OMPI-CUDA"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -13898,6 +14095,16 @@
           ],
           "created_at": "2026-09-02T10:55:06+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000427",
+          "bundle_sha256": "74d12872949b7adcdb91e310fbe2e6994e733c94d71161670ed974fab08ca3b1",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-03-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -13928,7 +14135,8 @@
               "TDS-WC373-SSW-03-01",
               "TDS-CD52-SSW-03-H3-OPEN-BDEC-2025",
               "TDS-CD14-SSW-03-WAITIO-ROUTER-IMPLEMENTATION",
-              "TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE"
+              "TDS-CD52-SSW-03-AURORA-CORRECTNESS-GATE",
+              "TDS-P30-427-SSW-03-U01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -13958,8 +14166,8 @@
     },
     {
       "topic_id": "SSW-04",
-      "summary_ja": "数値ライブラリの機能比較に加え、依存ライブラリ名から実行アプリケーションを断定しない識別条件を整理しました。",
-      "summary_en": "Alongside numerical-library capabilities, distinguish dependency roles from identification of the application that actually ran.",
+      "summary_ja": "数値計算ライブラリとアルゴリズムの根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-04",
       "sections": [
         {
           "section_id": "TDS-SSW04-LIBRARIES",
@@ -14706,6 +14914,40 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-426-SSW-04-U02",
+          "title_ja": "演算精度とエミュレーションの公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-ROCBLAS-NUMERICS",
+              "name_ja": "演算精度とビット単位再現性を分ける",
+              "name_en": "Separate numerical accuracy from bitwise reproducibility",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "rocBLASは同じGFX ISA・ROCm版、ハンドル当たり単一ストリーム、atomic無効などの再現条件を示します。MI200の一部FP16演算は非正規化数をゼロ化し、代替実装にも精度上の条件があります。",
+              "statement_en": "rocBLAS documents reproducibility conditions including the same GFX ISA/ROCm, one stream per handle and no atomics. Some MI200 FP16 operations flush denormals to zero; alternate implementations also have accuracy conditions.",
+              "hpci_relevance_ja": "関数・入出力型・累積型・許容誤差を固定します。ライブラリ対応だけでOzaki等による高精度再現を保証しません。",
+              "hpci_relevance_en": "Pin routine, input/output and accumulation types plus tolerances. Library support alone does not establish Ozaki-style high-precision emulation.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-ROCBLAS-NUMERICS"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -14814,6 +15056,16 @@
           ],
           "created_at": "2026-09-16T14:00:18Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000426",
+          "bundle_sha256": "9a6de656bcc2696dbfd7a2f2f7e9784a0166703c0a190fb2d430cae3bed936e4",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-04-U02"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -14853,7 +15105,8 @@
             "type": "research-unit",
             "unit_id": "SSW-04-U02",
             "section_ids": [
-              "TDS-CD1-SSW-04-U02"
+              "TDS-CD1-SSW-04-U02",
+              "TDS-P30-426-SSW-04-U02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -14883,8 +15136,8 @@
     },
     {
       "topic_id": "SSW-05",
-      "summary_ja": "既存の調査を維持し、今回は「ストレージの公表帯域とチェックポイント要件を区別する」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Separate published storage bandwidth from checkpoint requirements. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "ストレージシステム・データ管理の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-05",
       "sections": [
         {
           "section_id": "TDS-SSW05-CURRENT",
@@ -17239,6 +17492,41 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-428-SSW-05-U03",
+          "title_ja": "保存方式・統合製品の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-STORAGE-CKPT",
+              "name_ja": "チェックポイント保存と復旧を別々に検証",
+              "name_en": "Validate checkpoint save and recovery separately",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "MLPerf Storageのチェックポイント評価は保存・復旧帯域に加え、別ホストから読めるまでの待ち時間を扱います。全プロセスの完了が必要で、単一クライアントの最大書込速度だけでは復旧を評価できません。",
+              "statement_en": "MLPerf Storage checkpointing evaluates save/recovery bandwidth and delay before another host can read. All processes must finish; peak single-client writes do not establish recovery performance.",
+              "hpci_relevance_ja": "状態サイズ÷許容停止時間を必要帯域の出発点とし、同時ジョブ、保持世代、冗長性、復旧経路を加味します。試験版と提出区分を固定します。",
+              "hpci_relevance_en": "Start from state size divided by tolerated pause, then account for concurrent jobs, retention, redundancy and recovery paths. Freeze benchmark version and division.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-MLPERF-CKPT",
+                "SRC-P30-MLPERF-CKPT-RULES"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -17503,6 +17791,16 @@
           ],
           "created_at": "2026-09-12T14:17:43+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000428",
+          "bundle_sha256": "3cb5a7a66fceca97be864ea0d5f6a6d23027428a678ba0cff42e8bf3e2da5594",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-05-U03"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -17587,7 +17885,8 @@
               "TDS-CD41-SSW-05-AOBA-MULTIACCESS-STORAGE",
               "TDS-HW1-SSW-05-DAOS-28-MDONSSD",
               "TDS-CD43-SSW-05-RIKYU-STORAGE-LIFECYCLE",
-              "TDS-PW-SSW-05-01"
+              "TDS-PW-SSW-05-01",
+              "TDS-P30-428-SSW-05-U03"
             ],
             "comparison_refs": [
               {
@@ -20119,8 +20418,8 @@
     },
     {
       "topic_id": "APP-02",
-      "summary_ja": "SALMONの富岳向け公開評価例を再確認し、強・弱スケーリングと本計算の用途を分離しました。固定コミットの実ファイル取得とEEA1同一性の確認は未完了です。",
-      "summary_en": "Recheck public Fugaku evaluation examples, separating strong scaling, weak scaling and production use. Pinned artifact retrieval and identity with EEA1 remain incomplete.",
+      "summary_ja": "ベンチマーク・プロキシ・性能モデル（科学シミュレーション）の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for APP-02",
       "sections": [
         {
           "section_id": "TDS-SSW07-CURRENT",
@@ -22304,6 +22603,40 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-423-APP-02-U01",
+          "title_ja": "代表アプリとベンチマークの公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-SCIENCE-ENERGY",
+              "name_ja": "科学アプリの性能と電力量を同条件で評価",
+              "name_en": "Evaluate science throughput and energy under matched conditions",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "LRZの単一ノード研究はXeon 8480+とMax 1550を用い、GROMACS等5コードを評価しています。GROMACSは大規模条件でGPUが有利でも小規模ではCPUの電力効率が有利になり得ます。EARとp3emでは測定区間・対象部品が異なります。",
+              "statement_en": "A single-node LRZ study evaluates five codes on Xeon 8480+ and Max 1550. GROMACS can favor CPUs in energy efficiency for small problems despite GPU throughput gains. EAR and p3em cover different intervals/components.",
+              "hpci_relevance_ja": "入力規模、450 WのGPU電力制限、ソフトウェア版、計時区間をそろえて比較します。この研究からHPCI全体の倍率や将来性能は算定しません。",
+              "hpci_relevance_en": "Match problem size, the 450 W GPU cap, software and timing boundaries. Do not infer HPCI-wide speedups or future performance.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-SCIENCE-ENERGY"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -22536,6 +22869,16 @@
           ],
           "created_at": "2026-09-16T14:00:18Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000423",
+          "bundle_sha256": "acce8b60b33931585231df26e443880b0d71b3c2e028fed466b82a70acac9b79",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "APP-02-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -22561,7 +22904,8 @@
               "TDS-CD47-APP-02-GREEN500-INTERPRETATION",
               "TDS-CD65-APP-02-MD-PORTABILITY-2026",
               "TDS-CD66-APP-02-ELECTRONIC-STRUCTURE-PORTABILITY",
-              "TDS-CD67-APP-02-OPENFOAM-GPU-2026"
+              "TDS-CD67-APP-02-OPENFOAM-GPU-2026",
+              "TDS-P30-423-APP-02-U01"
             ],
             "comparison_refs": [
               {
@@ -22686,8 +23030,8 @@
     },
     {
       "topic_id": "SSW-08",
-      "summary_ja": "富岳向けPyTorchの更新・性能評価が、A64FX、FEFS、compiler、通信・数学library、oneDNNに依存する個別役務として税込332.2万円で契約された実例を追加しました。AI frameworkの機種対応を一度限りではなく継続費用と供給者依存で評価します。単一のAIモデルによる暫定調査でConsensusは未完了です。",
-      "summary_en": "This update adds a JPY 3.322 million contract example for Fugaku PyTorch updates and performance evaluation that depends on A64FX, FEFS, compiler, communication and mathematics libraries, and oneDNN. It evaluates platform support as a lifecycle cost and supplier dependency rather than a one-time feature. This is provisional single-model research with Consensus incomplete.",
+      "summary_ja": "ソフトウェアの保守継続性・開発体制の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-08",
       "sections": [
         {
           "section_id": "TDS-SSW08-CURRENT",
@@ -23584,6 +23928,40 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-425-SSW-08-U01",
+          "title_ja": "長期保守と依存リスクの公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-METRIC-LIFECYCLE",
+              "name_ja": "推論監視メトリクスの更新リスク",
+              "name_en": "Inference metric lifecycle risk",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "vLLMではX.Yで非推奨となったメトリクスはX.Y+1で非表示、X.Y+2で削除する方針です。監視名を固定したままサーバーだけ更新すると、時系列が途切れる可能性があります。",
+              "statement_en": "vLLM metrics deprecated in X.Y are hidden in X.Y+1 and removed in X.Y+2. Upgrading only the server can break monitoring continuity.",
+              "hpci_relevance_ja": "配備版・メトリクス定義・ダッシュボードを一体で版管理し、更新前後の意味と欠測を試験します。",
+              "hpci_relevance_en": "Version deployed software, metric definitions and dashboards together; test semantics and missing observations across upgrades.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-VLLM-METRICS"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -23729,6 +24107,16 @@
           ],
           "created_at": "2026-09-02T10:55:10+09:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000425",
+          "bundle_sha256": "087863cd29c66f1d5ce1b9912f8929aa98d4ab6189aa2a36fdef28ee9e86a44e",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-08-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -23756,7 +24144,8 @@
               "TDS-CD19-SSW-08-HPCI-APPLICATION-CONTINUITY",
               "TDS-CD20-SSW-08-FUGAKU-COMMERCIAL-SOFTWARE",
               "TDS-CD68-SSW-08-OPENFOAM-MAINTENANCE",
-              "TDS-WC377-SSW-08-01"
+              "TDS-WC377-SSW-08-01",
+              "TDS-P30-425-SSW-08-U01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -23802,8 +24191,8 @@
     },
     {
       "topic_id": "SSW-09",
-      "summary_ja": "ALCF FIRSTのGlobus Auth/Compute、Django gateway、vLLM backend、直接・連合routingと、本番Inference Endpointsのmodel状態、最大15万request batch、data path、Metisの機能制約を追加しました。単一のAIモデルによる暫定調査でConsensusは未完了です。 Cerebrasの学習・推論・HPC開発環境を追加しました。",
-      "summary_en": "This update adds ALCF FIRST's Globus Auth and Compute, Django gateway, vLLM backends, direct and federated routing, plus production Inference Endpoint model states, batches of up to 150,000 requests, data paths, and Metis capability limits. This is provisional single-model research with Consensus incomplete. Adds Cerebras training, inference and HPC development.",
+      "summary_ja": "AI学習・推論・エージェント実行基盤の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for SSW-09",
       "sections": [
         {
           "section_id": "TDS-SSW09-CURRENT",
@@ -25726,6 +26115,41 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-424-SSW-09-U02",
+          "title_ja": "推論サービングの公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-SERVING-METRICS",
+              "name_ja": "推論サーバーの計測値は同じ定義で比較",
+              "name_en": "Compare inference servers using matched metric definitions",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "vLLMはTTFT・待ち時間等のヒストグラムを公開します。llama.cppの/metricsは--metricsで有効化し、平均生成速度や待機要求数を得られます。平均tokens/sをTTFTのp95と同等に比較することはできません。",
+              "statement_en": "vLLM exposes latency and queue histograms. llama.cpp enables /metrics with --metrics and exposes average generation throughput and deferred requests. Mean tokens/s is not comparable to TTFT p95.",
+              "hpci_relevance_ja": "モデル、量子化、入力・出力長、同時数を固定し、クライアント側でTTFT/TPOTと品質を測ります。両者の速度順位は未測定です。",
+              "hpci_relevance_en": "Fix model, quantization, prompt/output lengths and concurrency; measure client TTFT/TPOT and quality. Relative speed is not measured.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-VLLM-METRICS",
+                "SRC-P30-LLAMA-METRICS"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -25955,6 +26379,16 @@
           ],
           "created_at": "2026-09-15T14:25:18Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000424",
+          "bundle_sha256": "9e192ee135a7b6e93ff75f3787c96684232a192ee36f27adf7e98dec6969764e",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "SSW-09-U02"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -26019,7 +26453,8 @@
               "TDS-CD12-SSW-09-U02-U03",
               "TDS-CD55-SSW-09-RIKYU-GENAI-SERVICE",
               "TDS-CD56-SSW-09-OLCF-INFERENCE-SERVICE",
-              "TDS-WC378-SSW-09-01"
+              "TDS-WC378-SSW-09-01",
+              "TDS-P30-424-SSW-09-U02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -36701,8 +37136,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "調達総額と部品単価を区別する照合事例",
-      "summary_en": "Matched procurement: package total is not a component price",
+      "summary_ja": "調達・段階整備・ロードマップの根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for CROSS-06",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -38889,6 +39324,93 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-419-CROSS-06-U01",
+          "title_ja": "調達条件と費用の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-CLOUD-SCOPE",
+              "name_ja": "GPUクラウド契約と購入単価の区別",
+              "name_en": "Cloud contract versus equipment price",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "産総研は2025年12月25日、GMOインターネットと税込6,847万5,000円で契約。提供側はH200計算資源と技術支援、2026年2〜3月の履行期間を公表しています。GPU数量・利用時間・費用内訳は未確認です。",
+              "statement_en": "AIST signed a JPY68.475 million tax-inclusive contract with GMO Internet on 25 December 2025. The supplier identifies H200 resources and technical support for February-March 2026. GPU quantity, usage hours and cost itemization are unverified.",
+              "hpci_relevance_ja": "サービス費を機器購入費やGPU単価へ換算しません。国内サービス提供の事例であり、任意の構成・時期の納入保証ではありません。",
+              "hpci_relevance_en": "Do not convert the service amount to equipment or per-GPU purchase cost. This is a domestic service example, not delivery assurance for arbitrary configurations or dates.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-AIST-CLOUD",
+                "SRC-P30-GMO-CLOUD",
+                "SRC-P30-AIST-TENDER"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-P30-TSUBAME-BOUNDARY",
+              "name_ja": "TSUBAME4.0の設備・計算機の費用境界",
+              "name_en": "TSUBAME4.0 facility and computer cost boundaries",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "大学の発表はHPE落札と240ノード、各4 GPU、共有ストレージの構成を示し、別途建屋を先行整備したと説明しています。後続発表で2024年4月1日の運用開始を確認できます。",
+              "statement_en": "The university identifies HPE as the winner and describes 240 nodes, four GPUs per node and shared storage, while noting that a building was prepared beforehand. A later announcement confirms operation from 1 April 2024.",
+              "hpci_relevance_ja": "落札月額に建屋・電力・保守の全費用が含まれるとは判定しません。最終仕様・契約内訳がそろうまで完全TCOや部品単価の校正対象から除外します。",
+              "hpci_relevance_en": "The monthly award does not establish inclusion of buildings, electricity or all support. Exclude it from complete TCO/component calibration until final scope and itemization are obtained.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-TSUBAME-PLAN",
+                "SRC-P30-TSUBAME-START"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-P30-LUMIAI-COST",
+              "name_ja": "LUMI-AI契約の費用範囲",
+              "name_en": "LUMI-AI contract cost scope",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "CSCの2026年8月31日発表は、取得・配送・設置・保守を含む契約額を3億8,780万ユーロとしています。部品内訳、税、保守年数、電力・建屋費の包含はこの発表だけでは確定できません。",
+              "statement_en": "CSC's 31 August 2026 release gives EUR387.8 million including acquisition, delivery, installation and maintenance. It does not settle itemization, tax, support duration or electricity/building inclusion.",
+              "hpci_relevance_ja": "円換算やGPU単価への配賦は行わず、国際事例の契約範囲として比較します。旧LUMIの総額と混同しません。",
+              "hpci_relevance_en": "Compare contract boundaries without an unsupported yen conversion or allocation to GPU unit prices. Do not conflate LUMI-AI with the original LUMI.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-LUMIAI-CONTRACT"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -39170,6 +39692,16 @@
           ],
           "created_at": "2026-09-17T09:55:27Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000419",
+          "bundle_sha256": "5ba2056ea60314aed1c19ee945fcfb84ee0f6ce505b51ccb2208c0efcb80e1e2",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -39209,7 +39741,8 @@
               "TDS-FP-CROSS-06-01-V2",
               "TDS-PS-PROCUREMENT-20260916",
               "TDS-RP-LUMI-COST-SCOPE",
-              "TDS-EP-416"
+              "TDS-EP-416",
+              "TDS-P30-419-CROSS-06-U01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -40591,8 +41124,8 @@
     },
     {
       "topic_id": "CROSS-08",
-      "summary_ja": "公称ノード数に加え、施設点検、ストレージ停止、予約運用による利用条件を確認します。",
-      "summary_en": "Complement nominal node counts with facility maintenance, storage suspension and reserved-operation constraints.",
+      "summary_ja": "HPCI基盤センター現況・更新計画・制約の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for CROSS-08",
       "sections": [
         {
           "section_id": "TDS-CBL-BASELINE",
@@ -42462,6 +42995,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-421-CROSS-08-U02",
+          "title_ja": "移行・採用条件の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-FURO-MIGRATION",
+              "name_ja": "不老の更新に伴う移行・停止条件",
+              "name_en": "FURO transition and service interruption",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "2026年1月22日の案内では旧不老は3月31日正午終了、新システムは10月開始予定です。4〜9月のファイルアクセス停止、group領域の利用者による移行を明記しています。実際の再開完了を確認したものではありません。",
+              "statement_en": "The 22 January notice schedules old FURO closure at noon on 31 March and the new service in October. It specifies April-September file inaccessibility and user-managed group-data migration; actual reopening is not verified.",
+              "hpci_relevance_ja": "移行費用には転送先容量・回線・検証工数と停止期間を含めます。年月の予定を確定した納入日へ変換しません。",
+              "hpci_relevance_en": "Include destination capacity, transfer links, validation effort and downtime in migration planning. A planned month is not a guaranteed delivery date.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-FURO-MIGRATION"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -42714,6 +43281,16 @@
           ],
           "created_at": "2026-09-15T16:28:23+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000421",
+          "bundle_sha256": "e1d716dc1235cf91e6fd18bb2f9bc2b4e4ba5f3edf59944fc1b9307124ee0b37",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "CROSS-08-U02"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -42765,7 +43342,8 @@
               "TDS-CD1-CROSS-08-U02",
               "TDS-CD2-CROSS-08-U02",
               "TDS-CD33-CROSS-08-GENKAI-MIGRATION",
-              "TDS-PS-CENTERS-20260916"
+              "TDS-PS-CENTERS-20260916",
+              "TDS-P30-421-CROSS-08-U02"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -54442,8 +55020,8 @@
     },
     {
       "topic_id": "CROSS-11",
-      "summary_ja": "既存の調査を維持し、今回は「国内外の候補を同じ導入準備度で比較する」を評価要件として追加しました。公開事実とOpenFSの評価提案を分け、単一のAIモデルによる暫定結果として扱います。",
-      "summary_en": "Retains prior research and adds the validation contract: Compare domestic and international candidates using common readiness criteria. Public facts and OpenFS test proposals are separated; this is provisional single-model research.",
+      "summary_ja": "日本発技術の実用化・供給自立性・産業波及の根拠・導入条件を補完",
+      "summary_en": "Additional evidence and deployment conditions for CROSS-11",
       "sections": [
         {
           "section_id": "TDS-CD1-CROSS-11-U01",
@@ -54879,6 +55457,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-P30-429-CROSS-11-U01",
+          "title_ja": "技術分野横断の実用化の公開根拠と適用条件",
+          "title_en": "Public evidence and qualification conditions",
+          "summary_ja": "調査事例と適用範囲を分け、確認できない条件を残します。",
+          "summary_en": "Distinguish reported examples from their applicability and retain unresolved conditions.",
+          "items": [
+            {
+              "item_id": "TDI-P30-MNCORE-AVAILABILITY",
+              "name_ja": "MN-Coreの製品世代と提供形態を区別",
+              "name_en": "Distinguish MN-Core generations and delivery models",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "2024年11月の発表はL1000の開発目標を示す一方、MN-Core 2のサーバー、Devkit、クラウド提供を別に説明しています。2026年という目標だけでL1000の量産・納入可能を確定しません。",
+              "statement_en": "The November 2024 announcement states the L1000 development target separately from MN-Core 2 servers, Devkit and cloud access. A 2026 target alone does not prove L1000 volume shipment or delivery eligibility.",
+              "hpci_relevance_ja": "最新の注文可能構成、SDK対応、保守、納期を確認し、国内開発であることと調達可能性を別軸で評価します。",
+              "hpci_relevance_en": "Verify orderable configurations, SDK support, maintenance and delivery separately from domestic development.",
+              "adoption_conditions_ja": [
+                "単一のAIモデルによる公開根拠の整理です。適用環境での実測・納入条件・独立検証は別途必要です。"
+              ],
+              "adoption_conditions_en": [
+                "This is a single-model synthesis of public evidence; deployment measurements, delivery conditions and independent review remain necessary."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-P30-MNCORE-L1000"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "coverage_gap_ids": [
@@ -54951,6 +55563,16 @@
           ],
           "created_at": "2026-09-12T14:17:43+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000429",
+          "bundle_sha256": "4a4209fcdbd5e153c5f4378f0a823e41705236471597aa0ed1bf2c581a5e4afb",
+          "base_commit": "6582e57a0f1d3437e612979cebc61adb8fb01915",
+          "unit_ids": [
+            "CROSS-11-U01"
+          ],
+          "created_at": "2026-09-17T15:01:14Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -54972,7 +55594,8 @@
             "section_ids": [
               "TDS-CD1-CROSS-11-U01",
               "TDS-CD2-CROSS-11-U01",
-              "TDS-CD3-CROSS-11-PRODUCT-ACCESS"
+              "TDS-CD3-CROSS-11-PRODUCT-ACCESS",
+              "TDS-P30-429-CROSS-11-U01"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -66500,6 +67123,174 @@
       "url": "https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates",
       "source_class": "official-project",
       "published_or_updated": "2026-09-15"
+    },
+    {
+      "source_id": "SRC-P30-AIST-CLOUD",
+      "title": "AIST GPU cloud contract award",
+      "publisher": "AIST",
+      "url": "https://www.aist.go.jp/aist_j/procure/supplyinfo/pub/detail/ACYX49PA",
+      "source_class": "official-project",
+      "published_or_updated": "2026-01-23"
+    },
+    {
+      "source_id": "SRC-P30-AIST-TENDER",
+      "title": "GPU cloud and technical consultation tender",
+      "publisher": "AIST / JETRO",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/370743/2025102900310002.html",
+      "source_class": "official-project",
+      "published_or_updated": "2025-10-29"
+    },
+    {
+      "source_id": "SRC-P30-GMO-CLOUD",
+      "title": "AIST H200 cloud service and technical support",
+      "publisher": "GMO Internet",
+      "url": "https://gpucloud.gmo/news/811/",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-02-03"
+    },
+    {
+      "source_id": "SRC-P30-LUMIAI-CONTRACT",
+      "title": "Bull selected to deliver LUMI-AI",
+      "publisher": "CSC",
+      "url": "https://csc.fi/en/media-release/bull-selected-to-deliver-lumi-ai-supercomputer-powering-next-generation-ai-workloads/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-08-31"
+    },
+    {
+      "source_id": "SRC-P30-TSUBAME-PLAN",
+      "title": "TSUBAME4.0 procurement and planned configuration",
+      "publisher": "Tokyo Institute of Technology",
+      "url": "https://www.titech.ac.jp/news/2023/066782",
+      "source_class": "official-project",
+      "published_or_updated": "2023-05-18"
+    },
+    {
+      "source_id": "SRC-P30-TSUBAME-START",
+      "title": "TSUBAME4.0 operational announcement",
+      "publisher": "Tokyo Institute of Technology",
+      "url": "https://www.titech.ac.jp/english/news/2024/069452",
+      "source_class": "official-project",
+      "published_or_updated": "2024-06-26"
+    },
+    {
+      "source_id": "SRC-P30-LRZ-OPTIMIZATION",
+      "title": "Performing simulations faster saves power",
+      "publisher": "LRZ",
+      "url": "https://www.lrz.de/en/news/detail/2023-05-15-energy-efficiency",
+      "source_class": "official-project",
+      "published_or_updated": "Undated interview; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-P30-LRZ-POWER",
+      "title": "SuperMUC-NG power, frequency and warm-water cooling",
+      "publisher": "LRZ",
+      "url": "https://www.lrz.de/news/detail/2022-12-16-supercomputer-energieverbrauch",
+      "source_class": "official-project",
+      "published_or_updated": "2024-01-22"
+    },
+    {
+      "source_id": "SRC-P30-LUMIAI-FACILITY",
+      "title": "LUMI AI Factory construction progress",
+      "publisher": "CSC",
+      "url": "https://csc.fi/en/news/lumi-ai-factory-data-center-construction-progresses-in-kajaani/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-09-03"
+    },
+    {
+      "source_id": "SRC-P30-FURO-MIGRATION",
+      "title": "FURO transition and continuity application",
+      "publisher": "Nagoya University",
+      "url": "https://icts.nagoya-u.ac.jp/ja/sc/news/general/supercomputer_announcement20260109_-1.pdf",
+      "source_class": "official-project",
+      "published_or_updated": "2026-01-22"
+    },
+    {
+      "source_id": "SRC-P30-GCC-GOMP",
+      "title": "GNU OpenMP implementation status",
+      "publisher": "GCC project",
+      "url": "https://gcc.gnu.org/projects/gomp/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-07-30"
+    },
+    {
+      "source_id": "SRC-P30-OPENMP-TR15",
+      "title": "OpenMP 6.1 public comment draft",
+      "publisher": "OpenMP ARB",
+      "url": "https://www.openmp.org/home-news/public-comment-draft-6-1/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-07-09"
+    },
+    {
+      "source_id": "SRC-P30-SCIENCE-ENERGY",
+      "title": "Single-node science performance and energy study",
+      "publisher": "Cielo et al. / LRZ",
+      "url": "https://arxiv.org/html/2606.23265v1",
+      "source_class": "research-artifact",
+      "published_or_updated": "2026-06-22"
+    },
+    {
+      "source_id": "SRC-P30-LLAMA-METRICS",
+      "title": "llama.cpp server metrics",
+      "publisher": "ggml-org",
+      "url": "https://github.com/ggml-org/llama.cpp/tree/master/tools/server",
+      "source_class": "official-project",
+      "published_or_updated": "Undated moving documentation; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-P30-VLLM-METRICS",
+      "title": "vLLM production metrics",
+      "publisher": "vLLM project",
+      "url": "https://docs.vllm.ai/en/stable/usage/metrics/",
+      "source_class": "official-project",
+      "published_or_updated": "2026-09-09"
+    },
+    {
+      "source_id": "SRC-P30-ROCBLAS-NUMERICS",
+      "title": "rocBLAS design and reproducibility notes",
+      "publisher": "AMD",
+      "url": "https://rocm.docs.amd.com/projects/rocBLAS/en/latest/conceptual/rocblas-design-notes.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated rocBLAS 5.6.0 documentation; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-P30-OMPI-CUDA",
+      "title": "Open MPI 5.0.8 CUDA support",
+      "publisher": "Open MPI project",
+      "url": "https://docs.open-mpi.org/en/v5.0.8/tuning-apps/networking/cuda.html",
+      "source_class": "official-project",
+      "published_or_updated": "Undated versioned documentation; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-P30-MLPERF-CKPT",
+      "title": "MLPerf Storage checkpoint methodology",
+      "publisher": "MLCommons",
+      "url": "https://mlcommons.org/2025/08/storage-2-checkpointing/",
+      "source_class": "official-project",
+      "published_or_updated": "2025-08-04"
+    },
+    {
+      "source_id": "SRC-P30-MLPERF-CKPT-RULES",
+      "title": "MLPerf Storage checkpoint rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/storage/blob/main/checkpointing/README.md",
+      "source_class": "official-project",
+      "published_or_updated": "Undated moving rules; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-P30-MNCORE-L1000",
+      "title": "MN-Core L1000 development announcement",
+      "publisher": "Preferred Networks",
+      "url": "https://www.preferred.jp/en/news/pr20241115",
+      "source_class": "official-vendor",
+      "published_or_updated": "2024-11-15"
+    },
+    {
+      "source_id": "SRC-P30-CXL-LINUX",
+      "title": "Linux CXL early boot and memory tiers",
+      "publisher": "Linux kernel community",
+      "url": "https://www.kernel.org/doc/html/latest/driver-api/cxl/linux/early-boot.html",
+      "source_class": "official-project",
+      "published_or_updated": "Undated moving documentation; checked 2026-09-17 UTC"
     }
   ],
   "coverage_gaps": [
@@ -67672,7 +68463,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-EVIDENCE-PRIORITIES-20260917",
-    "human_approval_directive_id": "DIR-900126"
+    "publication_decision_id": "PUBDEC-PRIORITY30-20260917",
+    "human_approval_directive_id": "DIR-900127"
   }
 }
