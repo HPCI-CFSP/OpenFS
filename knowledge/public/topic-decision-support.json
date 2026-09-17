@@ -2,7 +2,7 @@
   "schema_version": "0.2.0",
   "export_id": "TOPIC-DECISION-SUPPORT-001",
   "status": "published",
-  "as_of": "2026-09-16",
+  "as_of": "2026-09-17",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "regions": [
@@ -528,8 +528,8 @@
   "topic_profiles": [
     {
       "topic_id": "ARCH-01",
-      "summary_ja": "B200の公開提示価格とRubinの量産出荷報告を追加し、日本向け価格・納期とは区別します。",
-      "summary_en": "Adds a B200 asking-price reference and Rubin shipment report, separately from Japan procurement and delivery.",
+      "summary_ja": "GPUサーバーのBOM・施設条件の照合",
+      "summary_en": "GPU-server BOM and facility qualification",
       "sections": [
         {
           "section_id": "TDS-ARCH01-CURRENT",
@@ -1735,6 +1735,65 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-EP-417",
+          "title_ja": "GPUサーバーのBOM・施設条件の照合",
+          "title_en": "GPU-server BOM and facility qualification",
+          "summary_ja": "GPUサーバーのBOM・施設条件の照合",
+          "summary_en": "GPU-server BOM and facility qualification",
+          "items": [
+            {
+              "item_id": "TDI-EP-DGX",
+              "name_ja": "DGX B200の構成境界",
+              "name_en": "DGX B200 configuration boundary",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "8 GPU、2 CPU、標準2 TBホストメモリ、8枚の400 Gb/s ConnectX-7を搭載。ネットワークケーブルは別途必要です。10U、最大14.3 kW、風量1,550 CFMであり、電源6基の定格合計を運用電力に置き換えません。",
+              "statement_en": "Eight GPUs, two CPUs, 2 TB standard host memory and eight 400 Gb/s ConnectX-7 cards; network cables are separate. The 10U system specifies 14.3 kW maximum and 1,550 CFM airflow. Summed PSU ratings are not operating power.",
+              "hpci_relevance_ja": "同じGPU名でも別メーカーの提示価格へこのBOMを転用しません。最大電力は設備検討用で、電気代には負荷別実測が必要です。",
+              "hpci_relevance_en": "Do not attach this BOM to another vendor quotation. Maximum power supports facility screening; energy costs require load-specific measurements.",
+              "adoption_conditions_ja": [
+                "国内納入条件、対象構成の適合、独立検証は未完了です。"
+              ],
+              "adoption_conditions_en": [
+                "Japan delivery, configuration qualification and independent review remain incomplete."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-EP-DGX-B200"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            },
+            {
+              "item_id": "TDI-EP-MI350",
+              "name_ja": "MI350X対応サーバーの選択仕様",
+              "name_en": "MI350X server options",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "AS-8126GS-TNMRは8 GPU、EPYC 9004/9005の2ソケット、最大6 TB DDR5、8台の前面NVMeベイに対応します。3+3冗長の5,250 W電源6基は実消費電力ではなく、メモリ最大値やベイ数も納入容量ではありません。",
+              "statement_en": "AS-8126GS-TNMR supports eight GPUs, dual EPYC 9004/9005, up to 6 TB DDR5 and eight front NVMe bays. Six 5,250 W supplies with 3+3 redundancy do not specify actual draw; maxima and bays are not delivered capacity.",
+              "hpci_relevance_ja": "メモリ、NIC、SSD、対応ソフトウェアを型番付きで見積に含め、負荷・冗長条件を確認します。",
+              "hpci_relevance_en": "Obtain a configured quote for memory, NICs, SSDs and software, including load and redundancy conditions.",
+              "adoption_conditions_ja": [
+                "国内納入条件、対象構成の適合、独立検証は未完了です。"
+              ],
+              "adoption_conditions_en": [
+                "Japan delivery, configuration qualification and independent review remain incomplete."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-EP-SM-MI350"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -1845,6 +1904,16 @@
           ],
           "created_at": "2026-09-15T16:20:05+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000417",
+          "bundle_sha256": "62c31cd0204e37909d684d12274e8327009cf5156aaa8e149b4c333a9a5fe3e7",
+          "base_commit": "035665aef3ee147a5513c963b1eff13fedda55a1",
+          "unit_ids": [
+            "ARCH-01-U02"
+          ],
+          "created_at": "2026-09-17T09:55:27Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -1922,7 +1991,8 @@
             "type": "research-unit",
             "unit_id": "ARCH-01-U02",
             "section_ids": [
-              "TDS-HW1-ARCH-01-U02"
+              "TDS-HW1-ARCH-01-U02",
+              "TDS-EP-417"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -10212,8 +10282,8 @@
     },
     {
       "topic_id": "SSW-01",
-      "summary_ja": "バイナリ互換性、性能維持、クラスタ受入を分け、工数を未測定のまま価格へ埋め込みません。",
-      "summary_en": "Separate binary compatibility, retained performance and cluster acceptance; do not hide unmeasured effort in prices.",
+      "summary_ja": "GPUソフトウェアの配備時期と言語別対応",
+      "summary_en": "GPU software deployment and language-specific support",
       "sections": [
         {
           "section_id": "TDS-SSW01-PORTABILITY",
@@ -12166,6 +12236,40 @@
               ]
             }
           ]
+        },
+        {
+          "section_id": "TDS-EP-418",
+          "title_ja": "GPUソフトウェアの配備時期と言語別対応",
+          "title_en": "GPU software deployment and language-specific support",
+          "summary_ja": "GPUソフトウェアの配備時期と言語別対応",
+          "summary_en": "GPU software deployment and language-specific support",
+          "items": [
+            {
+              "item_id": "TDI-EP-FRONTIER-ROCM",
+              "name_ja": "FrontierのROCm更新とFortranの制約",
+              "name_en": "Frontier ROCm update and Fortran limitation",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "2026年9月15日の更新でROCm 7.14.1/10.0.0を追加。CPE 26.03のcray-mpich 9.2.0とC/C++で利用できる見込みとする一方、既存CPEのFortranは新ROCmを利用できないと運用元が明記しています。",
+              "statement_en": "The 15 September 2026 update adds ROCm 7.14.1/10.0.0. OLCF expects C/C++ use with cray-mpich 9.2.0 in CPE 26.03, while explicitly excluding Fortran use of the new ROCm versions in the existing CPE.",
+              "hpci_relevance_ja": "GPUの出荷時期だけで移行可能と判断せず、対象言語・MPI・コンパイラ・GPUの組合せを試験します。",
+              "hpci_relevance_en": "GPU availability does not establish migration readiness: test the application language, MPI, compiler and GPU combination.",
+              "adoption_conditions_ja": [
+                "国内納入条件、対象構成の適合、独立検証は未完了です。"
+              ],
+              "adoption_conditions_en": [
+                "Japan delivery, configuration qualification and independent review remain incomplete."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-EP-FRONTIER-SW"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -12410,6 +12514,16 @@
           ],
           "created_at": "2026-09-15T16:30:05+00:00",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000418",
+          "bundle_sha256": "b04af4463be506a8c03c57cc6e3d6322c5b606b194d81da58531cee635c39349",
+          "base_commit": "035665aef3ee147a5513c963b1eff13fedda55a1",
+          "unit_ids": [
+            "SSW-01-U02"
+          ],
+          "created_at": "2026-09-17T09:55:27Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -12486,7 +12600,8 @@
               "TDS-CD4-SSW-01-U02",
               "TDS-CD11-SSW-01-U02",
               "TDS-CD52-SSW-01-HPCI-COMPILERS",
-              "TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS"
+              "TDS-CD18-SSW-01-FUGAKU-CORRECTNESS-DEFECTS",
+              "TDS-EP-418"
             ],
             "comparison_refs": [
               {
@@ -36586,8 +36701,8 @@
     },
     {
       "topic_id": "CROSS-06",
-      "summary_ja": "既存の国内調達事例に加え、LUMIの取得契約額と生涯費用を区別しました。総額を部品単価へ換算せず、比較範囲の検証に用います。",
-      "summary_en": "Add a LUMI acquisition/lifecycle scope comparison to the domestic cases without converting package totals into component prices.",
+      "summary_ja": "調達総額と部品単価を区別する照合事例",
+      "summary_en": "Matched procurement: package total is not a component price",
       "sections": [
         {
           "section_id": "TDS-CROSS06-CURRENT",
@@ -38739,6 +38854,41 @@
               "consensus_status": "incomplete"
             }
           ]
+        },
+        {
+          "section_id": "TDS-EP-416",
+          "title_ja": "調達総額と部品単価を区別する照合事例",
+          "title_en": "Matched procurement: package total is not a component price",
+          "summary_ja": "調達総額と部品単価を区別する照合事例",
+          "summary_en": "Matched procurement: package total is not a component price",
+          "items": [
+            {
+              "item_id": "TDI-EP-RIKEN-AWARD",
+              "name_ja": "理研2024年度GPU計算機の落札",
+              "name_en": "RIKEN FY2024 GPU award",
+              "stage": "current",
+              "maturity": "uncertain",
+              "timing_ja": "発表・更新日は出典ごとに記載。",
+              "timing_en": "Publication/update dates are recorded per source.",
+              "statement_ja": "2024年12月27日落札、税込1億1,968万円の一式調達を公告と照合しました。GPU型式・数量、納入構成、保守内訳は未確認です。理究の調達とは別案件として扱います。",
+              "statement_en": "The 27 December 2024 package award is JPY119.68 million including tax. GPU model/count, delivered BOM and support itemization remain unverified. It is not identified as the Rikyu procurement.",
+              "hpci_relevance_ja": "校正用・検証用のどちらにも採用せず、内訳・納入資料の取得対象にします。",
+              "hpci_relevance_en": "Exclude it from calibration and holdout until itemization and delivered configuration are evidenced.",
+              "adoption_conditions_ja": [
+                "国内納入条件、対象構成の適合、独立検証は未完了です。"
+              ],
+              "adoption_conditions_en": [
+                "Japan delivery, configuration qualification and independent review remain incomplete."
+              ],
+              "actor_ids": [],
+              "source_ids": [
+                "SRC-EP-RIKEN-GPU-TENDER",
+                "SRC-EP-RIKEN-GPU-AWARD"
+              ],
+              "confidence": "medium",
+              "consensus_status": "incomplete"
+            }
+          ]
         }
       ],
       "hpci_decision_dimensions": [
@@ -39010,6 +39160,16 @@
           ],
           "created_at": "2026-09-16T14:00:18Z",
           "consensus_status": "incomplete"
+        },
+        {
+          "update_id": "RUP-000416",
+          "bundle_sha256": "e2fcb711cdcb0eade5bf1d12dee8c67f27fd383c39c578916b64e48fa20d0d22",
+          "base_commit": "035665aef3ee147a5513c963b1eff13fedda55a1",
+          "unit_ids": [
+            "CROSS-06-U01"
+          ],
+          "created_at": "2026-09-17T09:55:27Z",
+          "consensus_status": "incomplete"
         }
       ],
       "page_layout": {
@@ -39048,7 +39208,8 @@
               "TDS-CD78-CROSS-06-RIKYU-ROQUO-PACKAGE-COSTS",
               "TDS-FP-CROSS-06-01-V2",
               "TDS-PS-PROCUREMENT-20260916",
-              "TDS-RP-LUMI-COST-SCOPE"
+              "TDS-RP-LUMI-COST-SCOPE",
+              "TDS-EP-416"
             ],
             "comparison_refs": [],
             "term_item_refs": [],
@@ -66299,6 +66460,46 @@
       "url": "https://github.com/SALMON-TDDFT/SALMON2-evaluation-scripts/tree/master/fugaku",
       "source_class": "official-project",
       "published_or_updated": "Undated moving-branch README; checked 2026-09-16 UTC"
+    },
+    {
+      "source_id": "SRC-EP-RIKEN-GPU-TENDER",
+      "title": "FY2024 AI for Science GPU tender",
+      "publisher": "RIKEN / JETRO",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/331544/2024103000110001.html",
+      "source_class": "official-project",
+      "published_or_updated": "2024-10-30"
+    },
+    {
+      "source_id": "SRC-EP-RIKEN-GPU-AWARD",
+      "title": "FY2024 AI for Science GPU award",
+      "publisher": "RIKEN / JETRO",
+      "url": "https://www.jetro.go.jp/gov_procurement/national/articles/342590/2025020301410069.html",
+      "source_class": "official-project",
+      "published_or_updated": "2025-02-03"
+    },
+    {
+      "source_id": "SRC-EP-DGX-B200",
+      "title": "DGX B200 hardware and environment",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/dgx/dgxb200-user-guide/introduction-to-dgxb200.html",
+      "source_class": "official-vendor",
+      "published_or_updated": "2026-09-08"
+    },
+    {
+      "source_id": "SRC-EP-SM-MI350",
+      "title": "AS-8126GS-TNMR specifications",
+      "publisher": "Supermicro",
+      "url": "https://www.supermicro.com/en/products/system/gpu/8u/as-8126gs-tnmr",
+      "source_class": "official-vendor",
+      "published_or_updated": "Undated specification; checked 2026-09-17 UTC"
+    },
+    {
+      "source_id": "SRC-EP-FRONTIER-SW",
+      "title": "Frontier software update 2026-09-15",
+      "publisher": "ORNL OLCF",
+      "url": "https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#system-updates",
+      "source_class": "official-project",
+      "published_or_updated": "2026-09-15"
     }
   ],
   "coverage_gaps": [
@@ -67471,7 +67672,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-RANKING-EVIDENCE-20260916",
-    "human_approval_directive_id": "DIR-900124"
+    "publication_decision_id": "PUBDEC-EVIDENCE-PRIORITIES-20260917",
+    "human_approval_directive_id": "DIR-900126"
   }
 }

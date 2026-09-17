@@ -2,7 +2,7 @@
 
 基準日: 2026-09-16 / Status: provisional / Consensus: incomplete
 
-HPCI 27システム、公開調達18案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
+HPCI 27システム、公開調達19案件、EEA1 6アプリ、19ロードマップを、報告書の章構成と追跡可能な形で接続した暫定資料です。未公表値、未校正予測、未承認の閾値は埋めていません。
 
 > 単一のAIモデル・単一エージェントによる公開情報ベースの暫定整理です。独立したAIモデルによるConsensus Gate、各責任者による要件・閾値・予算・調達判断は未完了です。充足数は調査範囲であり、案の点数や推奨順位を示すものではありません。
 
@@ -11,9 +11,9 @@ HPCI 27システム、公開調達18案件、EEA1 6アプリ、19ロードマッ
 | 対象 | 登録数 | 現在確認できる範囲 | 判断上の境界 |
 |---|---:|---|---|
 | HPCIシステム | 27 | 将来時期 22、数値運用実績 16、公開集計 8、公開運用フィード 11、電力根拠 5 | 状態フィードと集計値を区別し、未確認を更新予定・ゼロ値として扱わない |
-| 公開調達 | 18 | 契約・落札総額 13、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
+| 公開調達 | 19 | 契約・落札総額 14、概算年額 1、公開仕様 5、60か月費用下限 2 | 費目別の価格内訳 0件、完全なTCO 0件 |
 | EEA1 | 6 | コード版固定 4、入力版固定 1、公開プロキシ 2 | 完全な再現パッケージ 0件、承認済み閾値 0件、検証済み予測 0件 |
-| ロードマップ | 19 | 407マイルストーン、30依存関係 | Consensus Gate未完了 |
+| ロードマップ | 19 | 408マイルストーン、30依存関係 | Consensus Gate未完了 |
 
 ```mermaid
 flowchart LR
@@ -65,7 +65,7 @@ flowchart LR
 | SQUID ベクトルノード群 | `CENTER-OSAKA-D3` | 将来時期の公開根拠あり | 数値実績あり | 3/1/0/0 | 公開根拠未確認 (0) | 公開一次情報で同一境界の設計・運転電力と冷却条件を確認する。 |
 | ABCI 3.0 | `CENTER-AIST-IHF` | 過去・現況のみ | 数値実績あり | 4/0/0/0 | 電力根拠登録済み (1) | 公開一次情報で更新・終了・増強の将来時期を確認する。 |
 
-## 4. 公開調達18案件と5年間費用
+## 4. 公開調達19案件と5年間費用
 
 | 調達案件 | 公表額 | 金額区分 | 仕様書 | 費目根拠 | 60か月費用 | 未確認費目 | 判断への利用 |
 |---|---:|---|---|---:|---:|---:|---|
@@ -87,6 +87,7 @@ flowchart LR
 | HOKUSAI BigWaterfall2 提供機関公表の年間支払額 | 300,000,000円 | 提供機関公表の概算年額 | 仕様書なし | 4/12 | 未確認 | 8/12 | 提供機関公表の概算年額として費用境界の参考にできますが、落札額・契約総額・5年間TCOではありません。 |
 | 理研R-CCS 2026年度電気調達（入札条件） | 未確認 | 未確認 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 価格根拠がないため費用比較には使用できません。 |
 | 京都大学化学研究所 スーパーコンピュータ借入（2024-2027年） | 31,900,000円 | 落札総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
+| 理研2024年度AI for Science用GPU計算機 | 119,680,000円 | 落札総額 | 公開仕様書を未取得 | 0/12 | 未確認 | 12/12 | 公表総額の比較には使えますが、部品単価や5年間TCOへ分解しません。 |
 
 ## 5. EEA1再現性と性能評価
 
@@ -129,7 +130,7 @@ flowchart LR
 | [供給網・技術主権・ライフサイクル](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/supply-sovereignty-lifecycle/?lang=ja) | 7 | 0 | 0/2/0 |
 | [ストレージ・データ基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/hardware/storage-data-platforms/?lang=ja) | 19 | 5 | 1/1/1 |
 | [可観測性・性能工学・電力適応運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/observability-performance-power/?lang=ja) | 5 | 1 | 0/2/0 |
-| [性能可搬性・コンパイラ・自動最適化](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/portability-compilers-tuning/?lang=ja) | 50 | 6 | 4/5/1 |
+| [性能可搬性・コンパイラ・自動最適化](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/portability-compilers-tuning/?lang=ja) | 51 | 6 | 4/5/1 |
 | [通信・ランタイム・スケジューリング・OS](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/runtime-scheduling-os/?lang=ja) | 4 | 2 | 0/1/1 |
 | [認証・セキュリティ・連合運用](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/identity-security-federation/?lang=ja) | 4 | 2 | 0/1/1 |
 | [データ・AI・実験ワークフロー基盤](https://hpci-cfsp.github.io/OpenFS/roadmaps/system-software/data-workflow-platform/?lang=ja) | 4 | 2 | 0/1/1 |
@@ -165,13 +166,13 @@ flowchart LR
 
 ## English summary
 
-A provisional package connecting 27 HPCI systems, 18 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
+A provisional package connecting 27 HPCI systems, 19 public procurement cases, 6 EEA1 applications, and 19 roadmaps to a report structure with traceable evidence. Undisclosed values, uncalibrated forecasts, and unapproved thresholds remain unset.
 
 > A provisional public-information synthesis by one model and one agent. The Consensus Gate using independent models and accountable approval of requirements, thresholds, budgets, and procurement decisions are incomplete. Coverage counts are research scope, not scores or rankings.
 
 - Secure unattended Web research: **blocked**; 85 source-triage entries remain unresolved.
 - HPCI inventory: 27 systems; 22 have public future lifecycle timing, 16 have quantitative operational observations, 8 have public aggregate products, 11 have public status or notice feeds; systems with registered power evidence: 5.
-- Procurement: 18 cases; public contract or award totals: 13; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
+- Procurement: 19 cases; public contract or award totals: 14; provider-reported approximate annual payment records: 1; itemized cases: 0; complete five-year TCO cases: 0.
 - EEA1: 6 applications; 2 public proxy assets, 0 complete reproducibility packages, 0 approved thresholds, and 0 validated forecasts.
 - Roadmaps: 19 provisional public roadmaps and 30 registered cross-roadmap dependencies.
 
@@ -186,20 +187,24 @@ Provisional requirements reuse disclosure-approved aggregates. Fugaku observatio
 
 | ID | 要件候補 | 根拠 | 評価 | 確定条件 |
 |---|---|---|---|---|
-| REQ-OPS-SOFTWARE-COMPATIBILITY | 主要ランタイムとライブラリの移行検証 | 動的リンク観測で上位だったPMIx runtime, MPI, FFTW, BLAS implementationsを、次期システムの移行試験対象候補とする。観測期間の制約があるため、全利用ソフトウェアの順位とはみなしません。 | 候補プラットフォームごとにビルド、機能、性能、数値結果の一致を確認する移行試験群を定義します。 | 観測期間を拡張し、静的リンク、実行時ロード、コンテナを含む別のソフトウェア台帳と照合した後に対象を確定します。 |
-| REQ-OPS-EMERGING-SOFTWARE | 増加傾向にあるソフトウェアの先行評価 | netcdf-fortran, gromacs, python, gaussian, netcdf-cでは直近3か月の観測比率に増加または新規観測の信号があるため、移植性・性能評価の候補とします。将来需要の予測ではありません。 | 増加・新規観測の信号を継続監視し、主要版について移植性と代表入力での性能を先行評価します。 | 少なくとも連続する2つの比較期間で傾向を再確認し、パッケージ情報以外の根拠と照合します。 |
+| REQ-OPS-MEMORY-IO-MEASUREMENT | メモリ容量・チェックポイント帯域の算定条件 | 利用頻度の観測から、ワーキングセット容量、同時実行数、チェックポイント量は求められません。割当ノード時間もGPUでの処理量へ直接換算できません。 | メモリは配置単位ごとのピーク常駐量×同時実行数×明示した余裕率、共有ストレージの書込帯域は同時に保存するチェックポイント総量÷許容保存時間を出発点にします。単位、CPU/GPU間の配置、競合I/O、圧縮、冗長化後の実効容量を併記し、実効帯域の試験で検証します。 | 入力、精度、対象期間、配置、計時境界を固定した代表実行で各入力を測定します。不足値をゼロやランキング比率で補わず、算定は保留します。これは実測済み要求値ではなく測定仕様です。 |
+| REQ-OPS-DEMAND-BEFORE-SIZING | 利用頻度と設備容量を分けた要件化 | 共有ライブラリは実行時の呼出しや消費資源を確定しません。別々に集計したソフトウェアと性能指標は、ジョブ単位で結び付けた測定値ではありません。 | 候補ワークロードごとに科学的重要度、ジョブ量、ピークメモリ、通信時間、チェックポイント量、移植工数を整理します。計算規模・HBM容量・I/O帯域の算定には対応する実測値を使います。 | 代表入力・規模・版・精度条件を固定し、資源時間と待ち時間を測定するまで、ランキングを予算配分や調達配点へ直接変換しません。 |
+| REQ-OPS-SOFTWARE-COMPATIBILITY | 主要ランタイムとライブラリの移行検証 | 全観測期間の公開済み月別件数の合計が上位のPMIx runtime, MPI, hwloc, Fortran runtimesを、移行試験の候補とします。期間全体のユニークジョブ数でも、現在の全ソフトウェア利用の順位でもありません。 | 候補プラットフォームごとにビルド、機能、性能、数値結果の一致を確認する移行試験群を定義します。 | 観測期間を拡張し、静的リンク、実行時ロード、コンテナを含む別のソフトウェア台帳と照合した後に対象を確定します。 |
+| REQ-OPS-EMERGING-SOFTWARE | 増加傾向にあるソフトウェアの先行評価 | netcdf-fortran, gromacs, python, gaussian, abinitmpでは直近3か月の観測比率に増加または新規観測の信号があるため、移植性・性能評価の候補とします。将来需要の予測ではありません。 | 増加・新規観測の信号を継続監視し、主要版について移植性と代表入力での性能を先行評価します。 | 少なくとも連続する2つの比較期間で傾向を再確認し、パッケージ情報以外の根拠と照合します。 |
 | REQ-OPS-CAPACITY-MIX | ジョブ規模分布に対応する資源構成 | 直近12暦月の公開対象データでは、月・規模帯別ジョブ観測件数は1ノード帯、割当ノード秒は129-1024ノード帯が最大でした。ジョブ観測件数は月・規模帯をまたぐ重複を含み、割当時間は実際の資源利用率ではありません。欠測月と抑制された小集計は別途確認します。 | 小規模ジョブの処理率と大規模並列ジョブへ供給できる連続資源量を、別々の容量指標としてシナリオ比較に含めます。 | 待ち時間、実行時間、ノード時間、ジョブ完了率を同じ期間・定義で検証し、他センターの需要分布と比較します。 |
-| REQ-OPS-SOFTWARE-OBSERVABILITY | ソフトウェア利用状況を継続把握できる観測設計 | 共有ライブラリ観測は2024年9月から11月に限られ、静的リンク、実行時ロード、コンテナを捕捉しません。未観測を未利用と判断できないため、次期基盤でも開示制御付きの継続観測が必要です。 | 目的、保持期間、最小集計単位、抑制規則を定めたうえで、複数の観測方式を突き合わせられる運用テレメトリを設計します。 | 連続12か月以上について対応率を示し、動的リンク以外の方式を含む独立したソフトウェア台帳との再現可能な照合を行います。 |
+| REQ-OPS-SOFTWARE-OBSERVABILITY | ソフトウェア利用状況を継続把握できる観測設計 | 共有ライブラリの観測期間と対応率はデータ範囲に示しています。静的リンク、実行時ロード、コンテナの利用はこの集計だけでは把握できません。未観測を未利用と判断できないため、次期基盤でも開示制御付きの継続観測が必要です。 | 目的、保持期間、最小集計単位、抑制規則を定めたうえで、複数の観測方式を突き合わせられる運用テレメトリを設計します。 | 連続12か月以上について対応率を示し、動的リンク以外の方式を含む独立したソフトウェア台帳との再現可能な照合を行います。 |
 | REQ-OPS-PERFORMANCE-TELEMETRY | 性能律速を再現可能に判定する共通テレメトリ | 計算、メモリ、同期、I/O、電力に関するカウンタの記録はありますが、単位と対象範囲の確認が未完了です。 | 計算・メモリ・通信・I/O・同期・電力を同一ジョブへ結び付け、定義と欠測率を版管理する測定仕様を策定します。 | 単位、集計範囲、サンプリング、オーバーフロー処理を確認し、代表ジョブで独立計測と照合します。 |
 | REQ-OPS-INFRASTRUCTURE-CALIBRATION | ストレージ・電力・RAS指標の定義確認 | 単位と対象範囲が確認できるまで、数値を設備容量や信頼性要件へ直接変換しない。 | IT電力、施設電力、冷却、ストレージ容量・帯域、障害・保守時間を共通境界で定義し、システム規模と5年間TCOの入力へ接続します。 | センサー・会計項目ごとに単位、対象設備、欠測、集計方法、公開可否をデータ所有者が確認します。 |
 | REQ-OPS-HPCI-COMPARABILITY | HPCI基盤間で比較可能な需要・運用指標 | 現在の詳細な実運用集計は富岳の単一環境に限られ、HPCI全体の需要分布を代表しません。 | 各基盤で共通定義のジョブ規模、資源時間、ソフトウェア、I/O、電力、可用性を集計し、基盤固有指標は分離して比較します。 | 複数のHPCI基盤で同一期間・分母・除外条件の集計を取得し、定義差を明記した比較表を作成します。 |
 
 | ID | Candidate requirement | Evidence | Evaluation | Validation gate |
 |---|---|---|---|---|
-| REQ-OPS-SOFTWARE-COMPATIBILITY | Migration validation for prevalent runtimes and libraries | Treat PMIx runtime, MPI, FFTW, BLAS implementations, the leading dynamically linked families in the observation window, as migration-test candidates. The limited observation period prevents interpreting this as a ranking of all software use. | Define migration tests for buildability, function, performance, and numerical-result agreement on every candidate platform. | Finalize the set only after extending the observation period and reconciling it with another inventory that covers static links, runtime loading, and containers. |
-| REQ-OPS-EMERGING-SOFTWARE | Early evaluation of expanding software | netcdf-fortran, gromacs, python, gaussian, netcdf-c show expanding or newly observed shares in the latest three-month window and are candidates for portability and performance evaluation. This is not a forecast of future demand. | Continue monitoring expanding and newly observed signals, then evaluate portability and representative-input performance for material versions. | Reconfirm the trend across at least two consecutive comparison windows and corroborate it with evidence beyond package metadata. |
+| REQ-OPS-MEMORY-IO-MEASUREMENT | Measurements required for memory and checkpoint sizing | Usage frequency does not establish working-set size, concurrency or checkpoint volume. Allocated node-time cannot be converted directly into GPU throughput. | Start from peak resident bytes per placement unit times concurrency times an explicit headroom factor; checkpoint bandwidth starts from bytes written concurrently divided by the allowed write time. Record units, CPU/GPU placement, competing I/O, compression and usable capacity after redundancy, then validate sustained bandwidth experimentally. | Measure every input on representative runs with fixed input, accuracy, period, placement and timing boundaries. Missing values are neither zero nor ranking shares; sizing remains blocked. This is a measurement specification, not a measured demand value. |
+| REQ-OPS-DEMAND-BEFORE-SIZING | Separate usage frequency from capacity requirements | Shared-library observations establish neither routine execution nor resource demand. Separately aggregated software and performance metrics are not job-linked measurements. | For each candidate workload, collect scientific importance, job demand, peak memory, communication time, checkpoint size and porting effort. Use corresponding measurements to size compute, HBM and I/O. | Pin representative inputs, scale, versions and accuracy, and measure resource time and waiting time before translating rankings into budgets or procurement scores. |
+| REQ-OPS-SOFTWARE-COMPATIBILITY | Migration validation for prevalent runtimes and libraries | Treat PMIx runtime, MPI, hwloc, Fortran runtimes, leading by summed released monthly counts across the observed history, as migration-test candidates. These are neither period-wide distinct jobs nor a current ranking of all software use. | Define migration tests for buildability, function, performance, and numerical-result agreement on every candidate platform. | Finalize the set only after extending the observation period and reconciling it with another inventory that covers static links, runtime loading, and containers. |
+| REQ-OPS-EMERGING-SOFTWARE | Early evaluation of expanding software | netcdf-fortran, gromacs, python, gaussian, abinitmp show expanding or newly observed shares in the latest three-month window and are candidates for portability and performance evaluation. This is not a forecast of future demand. | Continue monitoring expanding and newly observed signals, then evaluate portability and representative-input performance for material versions. | Reconfirm the trend across at least two consecutive comparison windows and corroborate it with evidence beyond package metadata. |
 | REQ-OPS-CAPACITY-MIX | Resource mix aligned with observed job scales | In the released observations from the latest 12 calendar months, the 1-node band led by monthly/bin job observations, while the 129-1024-node band led by allocated node-seconds. Jobs can recur across months/bins, and allocated time is not actual resource utilization. Check missing months and suppressed small cells separately. | Compare small-job throughput and contiguous capacity available to large parallel jobs as separate scenario metrics. | Validate wait time, run time, node-time, and completion rate over the same period and definitions, then compare demand distributions across centers. |
-| REQ-OPS-SOFTWARE-OBSERVABILITY | Observability for continued software-usage assessment | Shared-library observations cover only September-November 2024 and omit static links, runtime loading, and containers. Because non-observation is not non-use, the future platform needs privacy-controlled continuing observation. | Design operational telemetry that can reconcile multiple observation methods under declared purpose, retention, minimum aggregation, and suppression rules. | Report coverage for at least 12 consecutive months and reproducibly reconcile it with an independent software inventory that includes non-dynamic-link methods. |
+| REQ-OPS-SOFTWARE-OBSERVABILITY | Observability for continued software-usage assessment | The data-scope section reports the observation period and mapping coverage. These aggregates alone do not capture static links, runtime loading, or containers. Because non-observation is not non-use, the future platform needs privacy-controlled continuing observation. | Design operational telemetry that can reconcile multiple observation methods under declared purpose, retention, minimum aggregation, and suppression rules. | Report coverage for at least 12 consecutive months and reproducibly reconcile it with an independent software inventory that includes non-dynamic-link methods. |
 | REQ-OPS-PERFORMANCE-TELEMETRY | Common telemetry for reproducible bottleneck classification | Compute, memory, synchronization, I/O, and power counters are recorded, but their units and scope have not been fully verified. | Specify versioned measurements that bind compute, memory, communication, I/O, synchronization, and power to the same job with definitions and missingness rates. | Verify units, aggregation scope, sampling, and overflow handling, then reconcile the counters with independent measurements on representative jobs. |
 | REQ-OPS-INFRASTRUCTURE-CALIBRATION | Definition review for storage, power, and RAS metrics | Do not convert values directly into facility-capacity or reliability requirements until units and scope are verified. | Define IT power, facility power, cooling, storage capacity and bandwidth, failure, and maintenance time under common boundaries and connect them to system sizing and five-year TCO inputs. | The data owner verifies units, covered equipment, missingness, aggregation method, and publication eligibility for every sensor or accounting field. |
 | REQ-OPS-HPCI-COMPARABILITY | Comparable demand and operations metrics across HPCI systems | The current detailed operational aggregate covers only one Fugaku environment and does not represent demand across HPCI. | Aggregate consistently defined job scale, resource time, software, I/O, power, and availability at each system while keeping site-specific metrics separate. | Obtain aggregates from multiple HPCI systems using the same period, denominator, and exclusions, and publish a comparison that states remaining definition differences. |

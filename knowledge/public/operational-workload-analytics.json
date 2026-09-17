@@ -182965,6 +182965,25 @@
       "data": {
         "requirements": [
           {
+            "requirement_id": "REQ-OPS-MEMORY-IO-MEASUREMENT",
+            "title_ja": "メモリ容量・チェックポイント帯域の算定条件",
+            "title_en": "Measurements required for memory and checkpoint sizing",
+            "basis_ja": "利用頻度の観測から、ワーキングセット容量、同時実行数、チェックポイント量は求められません。割当ノード時間もGPUでの処理量へ直接換算できません。",
+            "basis_en": "Usage frequency does not establish working-set size, concurrency or checkpoint volume. Allocated node-time cannot be converted directly into GPU throughput.",
+            "planning_action_ja": "メモリは配置単位ごとのピーク常駐量×同時実行数×明示した余裕率、共有ストレージの書込帯域は同時に保存するチェックポイント総量÷許容保存時間を出発点にします。単位、CPU/GPU間の配置、競合I/O、圧縮、冗長化後の実効容量を併記し、実効帯域の試験で検証します。",
+            "planning_action_en": "Start from peak resident bytes per placement unit times concurrency times an explicit headroom factor; checkpoint bandwidth starts from bytes written concurrently divided by the allowed write time. Record units, CPU/GPU placement, competing I/O, compression and usable capacity after redundancy, then validate sustained bandwidth experimentally.",
+            "validation_condition_ja": "入力、精度、対象期間、配置、計時境界を固定した代表実行で各入力を測定します。不足値をゼロやランキング比率で補わず、算定は保留します。これは実測済み要求値ではなく測定仕様です。",
+            "validation_condition_en": "Measure every input on representative runs with fixed input, accuracy, period, placement and timing boundaries. Missing values are neither zero nor ranking shares; sizing remains blocked. This is a measurement specification, not a measured demand value.",
+            "priority": "P0",
+            "planning_use": "evidence-gate",
+            "procurement_use": "not-until-validated",
+            "coverage_gap_refs": [
+              "GAP-OPS-003",
+              "GAP-OPS-004"
+            ],
+            "status": "coverage-gap"
+          },
+          {
             "requirement_id": "REQ-OPS-DEMAND-BEFORE-SIZING",
             "title_ja": "利用頻度と設備容量を分けた要件化",
             "title_en": "Separate usage frequency from capacity requirements",
@@ -183219,7 +183238,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-RANKING-PRIORITIES-20260916",
-    "human_approval_directive_id": "DIR-900123"
+    "publication_decision_id": "PUBDEC-EVIDENCE-PRIORITIES-20260917",
+    "human_approval_directive_id": "DIR-900126"
   }
 }
