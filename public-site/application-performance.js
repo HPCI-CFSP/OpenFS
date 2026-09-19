@@ -7,7 +7,7 @@
     ja: {
       publicOnly: "公開情報のみ", languageControl: "表示言語", breadcrumbs: "パンくずリスト",
       tagline: "公開調査カタログとシステム整備計画案", analysis: "分析",
-      pageTitle: "アプリケーション性能予測", lead: "EEA1アプリケーションの公開実測値と、予測元別の外挿に必要な条件を整理しています。根拠不足の予測値は未掲載です。",
+      pageTitle: "アプリケーション性能予測", lead: "EEA1対象アプリの公開実測値と、基準機別の条件付き参考試算をまとめています。検証済みの数値予測は未掲載です。",
       tableTitle: "EEA1評価対象アプリケーション", name: "アプリケーション", domain: "分野・計算内容",
       code: "公開コード・公式情報", conditions: "評価条件", sources: "根拠",
       publicCode: "公開コードあり", unreleased: "EEA1参照資料では非公開", unknown: "未確認",
@@ -20,7 +20,7 @@
     en: {
       publicOnly: "Public information only", languageControl: "Display language", breadcrumbs: "Breadcrumbs",
       tagline: "Public research catalog and system planning options", analysis: "Analysis",
-      pageTitle: "Application performance forecasting", lead: "Reported EEA1 application measurements and requirements for baseline-specific extrapolation. Unsupported numerical forecasts are not published.",
+      pageTitle: "Application performance forecasting", lead: "Public measurements of EEA1 applications and conditional reference calculations by baseline. Validated numerical forecasts are not yet available.",
       tableTitle: "EEA1 evaluation applications", name: "Application", domain: "Domain / computation",
       code: "Public code / official information", conditions: "Evaluation conditions", sources: "Evidence",
       publicCode: "Public source available", unreleased: "Unreleased in the EEA1 reference", unknown: "Not verified",

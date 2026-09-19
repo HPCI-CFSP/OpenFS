@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "export_id": "APP-DEVICE-COMPARISON-001",
   "as_of": "2026-09-19",
   "research_status": "provisional",
@@ -12,8 +12,8 @@
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
-  "summary_ja": "公開報告の実測値を条件付きで比較します。将来予測の数値は、入力条件・プロファイル・対象製品仕様の確認後に追加します。",
-  "summary_en": "Compare reported measurements with their conditions. Numerical forecasts require verified inputs, profiles and target specifications.",
+  "summary_ja": "公開報告の実測値と、LQCDの帯域比例による条件付き参考試算を分けて表示します。校正済み予測には入力・プロファイル・型番の確認が必要です。",
+  "summary_en": "Separate reported measurements from conditional LQCD bandwidth-proportional calculations. Calibrated forecasts still require verified inputs, profiles and product variants.",
   "caveat_ja": "1 CPUは1ソケット、1 GPUは1製品です。GPUのホストCPUは含めて記載し、同一資源量とは見なしません。GH200のGPU詳細は原資料に表記の曖昧さがあり、型番・HBM仕様を推定で補いません。SALMONの基底状態はGPU最適化が不十分、FrontFlow/blueはMPS無効の測定であり、製品の優劣を断定できません。",
   "caveat_en": "One CPU means one socket; one GPU means one product, with its host CPUs disclosed. These are not equal-resource configurations. The report's GH200 GPU designation is ambiguous; its exact variant and HBM are not inferred. SALMON ground-state optimization was incomplete and FrontFlow/blue had MPS disabled; neither establishes hardware superiority.",
   "groups": [
@@ -370,6 +370,12 @@
       "note_ja": "対象機の実測値を校正に使わず予測し、同一条件の実測との差を評価します。基準機による予測のばらつきは予測精度ではありません。幅は感度範囲か統計的区間かを明示し、世代の近さだけで精度を保証しません。",
       "note_en": "Hold target measurements out of calibration and compare predictions against matching measurements. Variation across baselines is not accuracy. Label sensitivity ranges separately from statistical intervals; adjacent generations do not guarantee accuracy.",
       "source_id": "ROOFLINE"
+    },
+    {
+      "name": "Bandwidth-proportional what-if",
+      "note_ja": "帯域律速を仮定した場合に限り、対象機のカーネル性能 = 基準機の報告値 × 対象機の仕様帯域 / 基準機の仮定仕様帯域、と計算します。DWカーネルの帯域律速化を扱う文献はGridの別実装であり、この報告のLQCDが帯域律速だと証明するものではありません。",
+      "note_en": "Only under the bandwidth-bound hypothesis, target kernel throughput = reported baseline throughput times target specification bandwidth / assumed baseline specification bandwidth. The cited DW study uses a different Grid implementation; it does not prove that this report's LQCD kernel is bandwidth-bound.",
+      "source_id": "DW-ECM"
     }
   ],
   "sources": [
@@ -393,6 +399,185 @@
       "url": "https://hpc.fau.de/research/ecm/",
       "published_at": null,
       "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "A100-SPEC",
+      "title": "NVIDIA A100 datasheet (January 2021)",
+      "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "H100-SPEC",
+      "title": "NVIDIA H100 product specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/h100/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "B200-SPEC",
+      "title": "NVIDIA Blackwell datasheet (October 2025)",
+      "url": "https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "H200-SPEC",
+      "title": "NVIDIA H200 product specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/h200/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "RUBIN-SPEC",
+      "title": "NVIDIA HGX: individual Rubin GPU preliminary specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/hgx/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "DW-ECM",
+      "title": "Alappat et al.: ECM modeling and performance tuning of SpMV and Lattice QCD on A64FX, v2",
+      "url": "https://arxiv.org/html/2103.03013",
+      "published_at": "2021-07-30",
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "LQCD-CODE",
+      "title": "LQCD-DWF-HMC README: precision modes and FLOP-count caveat",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "published_at": null,
+      "checked_at": "2026-09-19"
     }
-  ]
+  ],
+  "bandwidth_scenario": {
+    "status": "conditional-reference",
+    "model": "constant-bandwidth-efficiency-v1",
+    "procurement_eligible": false,
+    "scope_ja": "LQCDのカーネルに限る条件付き参考試算です。実測値・校正済み予測ではなく、アプリ全体の実行時間も表しません。",
+    "scope_en": "Conditional reference calculation for the LQCD kernel only. Not a measurement or calibrated forecast, and not whole-application runtime.",
+    "assumptions_ja": [
+      "基準機と対象機の両方がHBM帯域律速で、演算性能・キャッシュ・命令実行が新たな律速にならないと仮定します。",
+      "入力・演算精度・カーネルの仕事量・HBM転送量が同じで、仕様帯域に対する実効帯域の割合が維持されると仮定します。これらの一致は未検証です。",
+      "公開報告にGPUの製品形態がないため、A100は80 GB SXM/NVLink、H100は80 GB SXMと仮定しています。実機の同定結果ではありません。",
+      "対象機で同じコードが動作し、作業データがHBMに収まることを仮定します。CPU処理・転送・同期・I/Oの予測は含みません。",
+      "基準機ごとの値の幅は仮定への感度であり、信頼区間ではありません。世代の近さだけでは予測精度を保証できません。",
+      "LQCD-DWF-HMCの現行READMEにはログのFLOP計数に注意書きがあります。本図は報告書の数値を再掲したもので、計数方法を独立に検証した結果ではありません。"
+    ],
+    "assumptions_en": [
+      "Both devices are assumed to remain HBM-bandwidth-bound, without new compute, cache or instruction-throughput bottlenecks.",
+      "Input, precision, kernel work and HBM traffic are assumed unchanged, with the same fraction of specification bandwidth achieved. These equivalences are unverified.",
+      "The report does not identify GPU form factors. A100 is assumed to be 80 GB SXM/NVLink and H100 80 GB SXM; these are not identifications of the actual machines.",
+      "The same code is assumed to run and fit in target HBM. Host work, transfers, synchronization and I/O are not predicted.",
+      "The spread across baselines is sensitivity to assumptions, not a confidence interval. A newer baseline does not by itself establish better accuracy.",
+      "The current LQCD-DWF-HMC README cautions about log FLOP counting. These values are transcribed from the report, not an independent validation of its counting method."
+    ],
+    "source_ids": [
+      "FS2024",
+      "ROOFLINE",
+      "DW-ECM",
+      "LQCD-CODE"
+    ],
+    "hardware": [
+      {
+        "id": "a100-sxm-80",
+        "name": "A100 80 GB SXM/NVLink",
+        "bandwidth_gbs": 2039,
+        "source_id": "A100-SPEC",
+        "specification_status": "published",
+        "locator": "Page 1: A100 for NVLink, 80 GB"
+      },
+      {
+        "id": "h100-sxm-80",
+        "name": "H100 80 GB SXM",
+        "bandwidth_gbs": 3350,
+        "source_id": "H100-SPEC",
+        "specification_status": "published",
+        "locator": "Product specifications: H100 SXM, 3.35 TB/s"
+      },
+      {
+        "id": "b200-hgx",
+        "name": "B200 (HGX, 180 GB)",
+        "bandwidth_gbs": 7700,
+        "source_id": "B200-SPEC",
+        "specification_status": "published",
+        "locator": "October 2025 datasheet, page 8: Individual Blackwell GPU / HGX B200, 7.7 TB/s"
+      },
+      {
+        "id": "h200-sxm",
+        "name": "H200 141 GB SXM",
+        "bandwidth_gbs": 4800,
+        "source_id": "H200-SPEC",
+        "specification_status": "preliminary",
+        "locator": "Specifications: H200 SXM, 4.8 TB/s; source footnote marks specifications preliminary"
+      },
+      {
+        "id": "rubin",
+        "name": "Rubin 288 GB",
+        "bandwidth_gbs": 22000,
+        "source_id": "RUBIN-SPEC",
+        "specification_status": "preliminary",
+        "locator": "Individual Rubin GPU: 22 TB/s; preliminary, up to, subject to change"
+      }
+    ],
+    "baselines": [
+      {
+        "measurement_id": "lqcd-small-2",
+        "hardware_id": "a100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-small-4",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-small-5",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-2",
+        "hardware_id": "a100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-4",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-5",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      }
+    ],
+    "target_ids": [
+      "b200-hgx",
+      "h200-sxm",
+      "rubin"
+    ],
+    "diagnostics": [
+      {
+        "group_id": "lqcd-small",
+        "baseline_measurement_id": "lqcd-small-2",
+        "reference_measurement_id": "lqcd-small-4"
+      },
+      {
+        "group_id": "lqcd-small",
+        "baseline_measurement_id": "lqcd-small-2",
+        "reference_measurement_id": "lqcd-small-5"
+      },
+      {
+        "group_id": "lqcd-large",
+        "baseline_measurement_id": "lqcd-large-2",
+        "reference_measurement_id": "lqcd-large-4"
+      },
+      {
+        "group_id": "lqcd-large",
+        "baseline_measurement_id": "lqcd-large-2",
+        "reference_measurement_id": "lqcd-large-5"
+      }
+    ]
+  }
 }
