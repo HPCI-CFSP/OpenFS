@@ -1,0 +1,583 @@
+{
+  "schema_version": "1.1.0",
+  "export_id": "APP-DEVICE-COMPARISON-001",
+  "as_of": "2026-09-19",
+  "research_status": "provisional",
+  "consensus_status": "incomplete",
+  "publication": {
+    "information_classification": "public",
+    "publication_approved": true,
+    "publication_decision_id": "PUBDEC-EEA1-DEVICE-20260919",
+    "human_approval_directive_id": "DIR-900128"
+  },
+  "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
+  "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
+  "summary_ja": "公開報告の実測値と、LQCDの帯域比例による条件付き参考試算を分けて表示します。校正済み予測には入力・プロファイル・型番の確認が必要です。",
+  "summary_en": "Separate reported measurements from conditional LQCD bandwidth-proportional calculations. Calibrated forecasts still require verified inputs, profiles and product variants.",
+  "caveat_ja": "1 CPUは1ソケット、1 GPUは1製品です。GPUのホストCPUは含めて記載し、同一資源量とは見なしません。GH200のGPU詳細は原資料に表記の曖昧さがあり、型番・HBM仕様を推定で補いません。SALMONの基底状態はGPU最適化が不十分、FrontFlow/blueはMPS無効の測定であり、製品の優劣を断定できません。",
+  "caveat_en": "One CPU means one socket; one GPU means one product, with its host CPUs disclosed. These are not equal-resource configurations. The report's GH200 GPU designation is ambiguous; its exact variant and HBM are not inferred. SALMON ground-state optimization was incomplete and FrontFlow/blue had MPS disabled; neither establishes hardware superiority.",
+  "groups": [
+    {
+      "id": "genesis",
+      "application_id": "APP-EEA1-GENESIS",
+      "title_ja": "GENESIS：実行時間",
+      "title_en": "GENESIS: elapsed time",
+      "unit": "s",
+      "direction": "lower",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.2; PDF page 54 (printed 324)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=54",
+      "scope_ja": "同じ報告表の入力。EEA1指定入力との一致、コードの厳密な版、精度、計測区間の詳細は未確認です。",
+      "scope_en": "Input from the same reported table. Exact code version, precision, detailed timing boundary and equivalence to the EEA1 input are unverified.",
+      "measurements": [
+        {
+          "id": "genesis-1",
+          "device": "A64FX / Fugaku",
+          "value": 124.4,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 16 / OMP 3",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "genesis-2",
+          "device": "GH200 / qc-gh200",
+          "value": 25.5,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; GNU+CUDA; MPI 4 / OMP 18",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    },
+    {
+      "id": "salmon-ground",
+      "application_id": "APP-EEA1-SALMON",
+      "title_ja": "SALMON：基底状態",
+      "title_en": "SALMON: ground state",
+      "unit": "s",
+      "direction": "lower",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.3; PDF page 55 (printed 325)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=55",
+      "scope_ja": "同じ報告表の入力。EEA1指定入力との一致、コードの厳密な版、精度、計測区間の詳細は未確認です。",
+      "scope_en": "Input from the same reported table. Exact code version, precision, detailed timing boundary and equivalence to the EEA1 input are unverified.",
+      "measurements": [
+        {
+          "id": "salmon-ground-1",
+          "device": "A64FX / Fugaku",
+          "value": 133.93,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 4 / OMP 12",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "salmon-ground-2",
+          "device": "GH200 / qc-gh200",
+          "value": 319.059,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; nvfortran; MPI 1 / OMP 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    },
+    {
+      "id": "salmon-time",
+      "application_id": "APP-EEA1-SALMON",
+      "title_ja": "SALMON：時間発展",
+      "title_en": "SALMON: time evolution",
+      "unit": "s",
+      "direction": "lower",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.3; PDF page 55 (printed 325)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=55",
+      "scope_ja": "同じ報告表の入力。EEA1指定入力との一致、コードの厳密な版、精度、計測区間の詳細は未確認です。",
+      "scope_en": "Input from the same reported table. Exact code version, precision, detailed timing boundary and equivalence to the EEA1 input are unverified.",
+      "measurements": [
+        {
+          "id": "salmon-time-1",
+          "device": "A64FX / Fugaku",
+          "value": 13.982,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 4 / OMP 12",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "salmon-time-2",
+          "device": "GH200 / qc-gh200",
+          "value": 2.405,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; nvfortran; MPI 1 / OMP 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    },
+    {
+      "id": "frontflow",
+      "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+      "title_ja": "FrontFlow/blue：実行時間",
+      "title_en": "FrontFlow/blue: elapsed time",
+      "unit": "s",
+      "direction": "lower",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.6; PDF page 56 (printed 326)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=56",
+      "scope_ja": "同じ報告表の入力。EEA1指定入力との一致、コードの厳密な版、精度、計測区間の詳細は未確認です。",
+      "scope_en": "Input from the same reported table. Exact code version, precision, detailed timing boundary and equivalence to the EEA1 input are unverified.",
+      "measurements": [
+        {
+          "id": "frontflow-1",
+          "device": "A64FX / Fugaku",
+          "value": 28.5,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 4 / OMP 48 (as reported)",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "frontflow-2",
+          "device": "GH200 / qc-gh200",
+          "value": 89.8,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; nvfortran; MPI 4 / OMP 4; MPS disabled",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    },
+    {
+      "id": "lqcd-small",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "title_ja": "LQCD：32×8×8×12 格子",
+      "title_en": "LQCD: 32×8×8×12 lattice",
+      "unit": "GFLOP/s",
+      "direction": "higher",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.7; PDF page 56 (printed 326)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=56",
+      "scope_ja": "報告表の局所格子・カーネル性能。アプリ全体の性能ではなく、EEA1指定入力との一致は未確認です。",
+      "scope_en": "Reported local lattice and kernel throughput, not end-to-end application performance. Equivalence to the EEA1 input is unverified.",
+      "measurements": [
+        {
+          "id": "lqcd-small-1",
+          "device": "A64FX / Fugaku",
+          "value": 397,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 4 / OMP 12",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-small-2",
+          "device": "A100 / qc-a100",
+          "value": 699,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "EPYC 7713 × 2; 128 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-small-3",
+          "device": "GH200 / qc-gh200",
+          "value": 1123,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-small-4",
+          "device": "H100 / qc-h100",
+          "value": 983,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "EPYC 9534 × 2; 128 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-small-5",
+          "device": "H100 / HBW2",
+          "value": 915,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Xeon Platinum 8480+ × 2; 112 cores; NVHPC 24.3; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    },
+    {
+      "id": "lqcd-large",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "title_ja": "LQCD：64×32×16×12 格子",
+      "title_en": "LQCD: 64×32×16×12 lattice",
+      "unit": "GFLOP/s",
+      "direction": "higher",
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.7; PDF page 56 (printed 326)",
+      "source_url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf#page=56",
+      "scope_ja": "報告表の局所格子・カーネル性能。アプリ全体の性能ではなく、EEA1指定入力との一致は未確認です。",
+      "scope_en": "Reported local lattice and kernel throughput, not end-to-end application performance. Equivalence to the EEA1 input is unverified.",
+      "measurements": [
+        {
+          "id": "lqcd-large-1",
+          "device": "A64FX / Fugaku",
+          "value": 422,
+          "kind": "cpu",
+          "device_count": 1,
+          "environment": "A64FX × 1; 48 cores; FJ; MPI 4 / OMP 12",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-large-2",
+          "device": "A100 / qc-a100",
+          "value": 1831,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "EPYC 7713 × 2; 128 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-large-3",
+          "device": "GH200 / qc-gh200",
+          "value": 4077,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Grace × 1; 72 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-large-4",
+          "device": "H100 / qc-h100",
+          "value": 2287,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "EPYC 9534 × 2; 128 cores; NVHPC-HPCX 24.9; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        },
+        {
+          "id": "lqcd-large-5",
+          "device": "H100 / HBW2",
+          "value": 3303,
+          "kind": "gpu",
+          "device_count": 1,
+          "environment": "Xeon Platinum 8480+ × 2; 112 cores; NVHPC 24.3; MPI 1",
+          "status": "reported-measurement",
+          "prediction_eligible": false
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "application_id": "APP-EEA1-SCALE-LETKF",
+      "note_ja": "確認した報告表は2ノード以上。1 CPU／1 GPUの実測とEEA1入力・版を要確認。",
+      "note_en": "The reviewed tables start at two nodes. Single-device measurements and EEA1 input/version remain unverified."
+    },
+    {
+      "application_id": "APP-EEA1-E-WAVE",
+      "note_ja": "今回確認した公開報告に1 CPU／1 GPUの比較可能な実測表なし。実行入力・版・精度・計測条件が必要。",
+      "note_en": "No comparable single-device measurement table in the report reviewed here. Input, version, precision and timing conditions are needed."
+    }
+  ],
+  "forecast_pairs": [
+    {
+      "id": "b200-a100",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "target": "B200",
+      "baseline": "A100 / qc-a100",
+      "baseline_measurement_ids": [
+        "lqcd-small-2",
+        "lqcd-large-2"
+      ],
+      "status": "unavailable",
+      "missing_ja": [
+        "入力・版・精度・計測区間の固定",
+        "A100の製品形態・HBM仕様",
+        "カーネル別の計算量・転送量・実測時間",
+        "B200の該当精度の実効演算性能・帯域・容量条件",
+        "独立した対象機での誤差検証"
+      ],
+      "missing_en": [
+        "Frozen input, version, precision and timing boundary",
+        "Exact A100 form factor and HBM specification",
+        "Per-kernel FLOPs, bytes and measured times",
+        "B200 effective compute, bandwidth and capacity at matching precision",
+        "Held-out target measurements for error evaluation"
+      ]
+    },
+    {
+      "id": "b200-h100",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "target": "B200",
+      "baseline": "H100 / qc-h100",
+      "baseline_measurement_ids": [
+        "lqcd-small-4",
+        "lqcd-large-4"
+      ],
+      "status": "unavailable",
+      "missing_ja": [
+        "入力・版・精度・計測区間の固定",
+        "H100の製品形態・HBM仕様",
+        "カーネル別の計算量・転送量・実測時間",
+        "B200の該当精度の実効演算性能・帯域・容量条件",
+        "独立した対象機での誤差検証"
+      ],
+      "missing_en": [
+        "Frozen input, version, precision and timing boundary",
+        "Exact H100 form factor and HBM specification",
+        "Per-kernel FLOPs, bytes and measured times",
+        "B200 effective compute, bandwidth and capacity at matching precision",
+        "Held-out target measurements for error evaluation"
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "name": "Calibrated Roofline",
+      "note_ja": "カーネルごとの演算量・メモリ転送量と基準機の実測から校正します。ホスト処理、転送、同期、I/Oは分け、重複計上を避けます。ピークFLOPS比だけでは外挿しません。",
+      "note_en": "Calibrate each kernel with FLOPs, memory traffic and measured baseline time. Separate host work, transfers, synchronization and I/O, without double-counting overlap. Peak-FLOPS ratios alone are insufficient.",
+      "source_id": "ROOFLINE"
+    },
+    {
+      "name": "CPU ECM",
+      "note_ja": "CPUではキャッシュ階層、命令実行、データ転送の重なりを扱うECMも候補です。未校正のCPU/GPU間外挿は行いません。",
+      "note_en": "ECM is an option for CPU cache hierarchies, in-core execution and transfer overlap. No uncalibrated CPU-to-GPU extrapolation.",
+      "source_id": "ECM"
+    },
+    {
+      "name": "Backtesting",
+      "note_ja": "対象機の実測値を校正に使わず予測し、同一条件の実測との差を評価します。基準機による予測のばらつきは予測精度ではありません。幅は感度範囲か統計的区間かを明示し、世代の近さだけで精度を保証しません。",
+      "note_en": "Hold target measurements out of calibration and compare predictions against matching measurements. Variation across baselines is not accuracy. Label sensitivity ranges separately from statistical intervals; adjacent generations do not guarantee accuracy.",
+      "source_id": "ROOFLINE"
+    },
+    {
+      "name": "Bandwidth-proportional what-if",
+      "note_ja": "帯域律速を仮定した場合に限り、対象機のカーネル性能 = 基準機の報告値 × 対象機の仕様帯域 / 基準機の仮定仕様帯域、と計算します。DWカーネルの帯域律速化を扱う文献はGridの別実装であり、この報告のLQCDが帯域律速だと証明するものではありません。",
+      "note_en": "Only under the bandwidth-bound hypothesis, target kernel throughput = reported baseline throughput times target specification bandwidth / assumed baseline specification bandwidth. The cited DW study uses a different Grid implementation; it does not prove that this report's LQCD kernel is bandwidth-bound.",
+      "source_id": "DW-ECM"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "FS2024",
+      "title": "FY2024 system feasibility report, section 4.11",
+      "url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf",
+      "published_at": "2025-06-30",
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "ROOFLINE",
+      "title": "NERSC: Roofline Performance Model",
+      "url": "https://docs.nersc.gov/tools/performance/roofline/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "ECM",
+      "title": "NHR@FAU: ECM Performance Model",
+      "url": "https://hpc.fau.de/research/ecm/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "A100-SPEC",
+      "title": "NVIDIA A100 datasheet (January 2021)",
+      "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "H100-SPEC",
+      "title": "NVIDIA H100 product specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/h100/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "B200-SPEC",
+      "title": "NVIDIA Blackwell datasheet (October 2025)",
+      "url": "https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "H200-SPEC",
+      "title": "NVIDIA H200 product specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/h200/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "RUBIN-SPEC",
+      "title": "NVIDIA HGX: individual Rubin GPU preliminary specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/hgx/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "DW-ECM",
+      "title": "Alappat et al.: ECM modeling and performance tuning of SpMV and Lattice QCD on A64FX, v2",
+      "url": "https://arxiv.org/html/2103.03013",
+      "published_at": "2021-07-30",
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "LQCD-CODE",
+      "title": "LQCD-DWF-HMC README: precision modes and FLOP-count caveat",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    }
+  ],
+  "bandwidth_scenario": {
+    "status": "conditional-reference",
+    "model": "constant-bandwidth-efficiency-v1",
+    "procurement_eligible": false,
+    "scope_ja": "LQCDのカーネルに限る条件付き参考試算です。実測値・校正済み予測ではなく、アプリ全体の実行時間も表しません。",
+    "scope_en": "Conditional reference calculation for the LQCD kernel only. Not a measurement or calibrated forecast, and not whole-application runtime.",
+    "assumptions_ja": [
+      "基準機と対象機の両方がHBM帯域律速で、演算性能・キャッシュ・命令実行が新たな律速にならないと仮定します。",
+      "入力・演算精度・カーネルの仕事量・HBM転送量が同じで、仕様帯域に対する実効帯域の割合が維持されると仮定します。これらの一致は未検証です。",
+      "公開報告にGPUの製品形態がないため、A100は80 GB SXM/NVLink、H100は80 GB SXMと仮定しています。実機の同定結果ではありません。",
+      "対象機で同じコードが動作し、作業データがHBMに収まることを仮定します。CPU処理・転送・同期・I/Oの予測は含みません。",
+      "基準機ごとの値の幅は仮定への感度であり、信頼区間ではありません。世代の近さだけでは予測精度を保証できません。",
+      "LQCD-DWF-HMCの現行READMEにはログのFLOP計数に注意書きがあります。本図は報告書の数値を再掲したもので、計数方法を独立に検証した結果ではありません。"
+    ],
+    "assumptions_en": [
+      "Both devices are assumed to remain HBM-bandwidth-bound, without new compute, cache or instruction-throughput bottlenecks.",
+      "Input, precision, kernel work and HBM traffic are assumed unchanged, with the same fraction of specification bandwidth achieved. These equivalences are unverified.",
+      "The report does not identify GPU form factors. A100 is assumed to be 80 GB SXM/NVLink and H100 80 GB SXM; these are not identifications of the actual machines.",
+      "The same code is assumed to run and fit in target HBM. Host work, transfers, synchronization and I/O are not predicted.",
+      "The spread across baselines is sensitivity to assumptions, not a confidence interval. A newer baseline does not by itself establish better accuracy.",
+      "The current LQCD-DWF-HMC README cautions about log FLOP counting. These values are transcribed from the report, not an independent validation of its counting method."
+    ],
+    "source_ids": [
+      "FS2024",
+      "ROOFLINE",
+      "DW-ECM",
+      "LQCD-CODE"
+    ],
+    "hardware": [
+      {
+        "id": "a100-sxm-80",
+        "name": "A100 80 GB SXM/NVLink",
+        "bandwidth_gbs": 2039,
+        "source_id": "A100-SPEC",
+        "specification_status": "published",
+        "locator": "Page 1: A100 for NVLink, 80 GB"
+      },
+      {
+        "id": "h100-sxm-80",
+        "name": "H100 80 GB SXM",
+        "bandwidth_gbs": 3350,
+        "source_id": "H100-SPEC",
+        "specification_status": "published",
+        "locator": "Product specifications: H100 SXM, 3.35 TB/s"
+      },
+      {
+        "id": "b200-hgx",
+        "name": "B200 (HGX, 180 GB)",
+        "bandwidth_gbs": 7700,
+        "source_id": "B200-SPEC",
+        "specification_status": "published",
+        "locator": "October 2025 datasheet, page 8: Individual Blackwell GPU / HGX B200, 7.7 TB/s"
+      },
+      {
+        "id": "h200-sxm",
+        "name": "H200 141 GB SXM",
+        "bandwidth_gbs": 4800,
+        "source_id": "H200-SPEC",
+        "specification_status": "preliminary",
+        "locator": "Specifications: H200 SXM, 4.8 TB/s; source footnote marks specifications preliminary"
+      },
+      {
+        "id": "rubin",
+        "name": "Rubin 288 GB",
+        "bandwidth_gbs": 22000,
+        "source_id": "RUBIN-SPEC",
+        "specification_status": "preliminary",
+        "locator": "Individual Rubin GPU: 22 TB/s; preliminary, up to, subject to change"
+      }
+    ],
+    "baselines": [
+      {
+        "measurement_id": "lqcd-small-2",
+        "hardware_id": "a100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-small-4",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-small-5",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-2",
+        "hardware_id": "a100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-4",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      },
+      {
+        "measurement_id": "lqcd-large-5",
+        "hardware_id": "h100-sxm-80",
+        "match_status": "assumed"
+      }
+    ],
+    "target_ids": [
+      "b200-hgx",
+      "h200-sxm",
+      "rubin"
+    ],
+    "diagnostics": [
+      {
+        "group_id": "lqcd-small",
+        "baseline_measurement_id": "lqcd-small-2",
+        "reference_measurement_id": "lqcd-small-4"
+      },
+      {
+        "group_id": "lqcd-small",
+        "baseline_measurement_id": "lqcd-small-2",
+        "reference_measurement_id": "lqcd-small-5"
+      },
+      {
+        "group_id": "lqcd-large",
+        "baseline_measurement_id": "lqcd-large-2",
+        "reference_measurement_id": "lqcd-large-4"
+      },
+      {
+        "group_id": "lqcd-large",
+        "baseline_measurement_id": "lqcd-large-2",
+        "reference_measurement_id": "lqcd-large-5"
+      }
+    ]
+  }
+}
