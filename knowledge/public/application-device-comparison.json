@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "export_id": "APP-DEVICE-COMPARISON-001",
   "as_of": "2026-09-19",
   "research_status": "provisional",
@@ -7,8 +7,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-LQCD-A100-TARGETS-20260919",
-    "human_approval_directive_id": "DIR-900130"
+    "publication_decision_id": "PUBDEC-DEVICE-IDENTITY-20260919",
+    "human_approval_directive_id": "DIR-900132"
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
@@ -16,6 +16,83 @@
   "summary_en": "Separate reported measurements from conditional LQCD bandwidth-proportional calculations. Calibrated forecasts still require verified inputs, profiles and product variants.",
   "caveat_ja": "1 CPUは1ソケット、1 GPUは1製品です。GPUのホストCPUは含めて記載し、同一資源量とは見なしません。GH200のGPU詳細は原資料に表記の曖昧さがあり、型番・HBM仕様を推定で補いません。SALMONの基底状態はGPU最適化が不十分、FrontFlow/blueはMPS無効の測定であり、製品の優劣を断定できません。",
   "caveat_en": "One CPU means one socket; one GPU means one product, with its host CPUs disclosed. These are not equal-resource configurations. The report's GH200 GPU designation is ambiguous; its exact variant and HBM are not inferred. SALMON ground-state optimization was incomplete and FrontFlow/blue had MPS disabled; neither establishes hardware superiority.",
+  "device_profiles": [
+    {
+      "id": "report-a64fx",
+      "name": "A64FX-Fugaku",
+      "cpu_model": "A64FX",
+      "cpu_sockets": 1,
+      "cpu_cores": 48,
+      "accelerator_model": null,
+      "installed_accelerators": 0,
+      "accelerator_variant": null,
+      "accelerator_memory_gb": null,
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
+      "note_ja": "富岳の1ソケットを使用した報告値です。GPUとの比較は同一資源量の比較ではありません。",
+      "note_en": "The reported run used one Fugaku CPU socket. Comparisons with GPUs do not represent equal-resource configurations."
+    },
+    {
+      "id": "report-a100",
+      "name": "A100-EPYC7713",
+      "cpu_model": "AMD EPYC 7713",
+      "cpu_sockets": 2,
+      "cpu_cores": 128,
+      "accelerator_model": "NVIDIA A100",
+      "installed_accelerators": 8,
+      "accelerator_variant": null,
+      "accelerator_memory_gb": null,
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
+      "note_ja": "表示名は比較用の識別名であり、製品の正式な型番ではありません。GPU版・HBM容量は報告から同定できません。搭載GPU数と測定に使用したGPU数を区別します。",
+      "note_en": "Display aliases identify reported environments, not official product variants. The report does not identify the exact GPU variant or HBM capacity. Installed GPU count is distinct from the number used in the measurement."
+    },
+    {
+      "id": "report-gh200",
+      "name": "GH200-Grace",
+      "cpu_model": "NVIDIA Grace",
+      "cpu_sockets": 1,
+      "cpu_cores": 72,
+      "accelerator_model": "NVIDIA Hopper (GH200)",
+      "installed_accelerators": 1,
+      "accelerator_variant": null,
+      "accelerator_memory_gb": null,
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
+      "note_ja": "表示名は比較用の識別名であり、製品の正式な型番ではありません。GPU版・HBM容量は報告から同定できません。搭載GPU数と測定に使用したGPU数を区別します。",
+      "note_en": "Display aliases identify reported environments, not official product variants. The report does not identify the exact GPU variant or HBM capacity. Installed GPU count is distinct from the number used in the measurement."
+    },
+    {
+      "id": "report-h100-amd",
+      "name": "H100-EPYC9534",
+      "cpu_model": "AMD EPYC 9534",
+      "cpu_sockets": 2,
+      "cpu_cores": 128,
+      "accelerator_model": "NVIDIA H100",
+      "installed_accelerators": 4,
+      "accelerator_variant": null,
+      "accelerator_memory_gb": null,
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
+      "note_ja": "表示名は比較用の識別名であり、製品の正式な型番ではありません。GPU版・HBM容量は報告から同定できません。搭載GPU数と測定に使用したGPU数を区別します。",
+      "note_en": "Display aliases identify reported environments, not official product variants. The report does not identify the exact GPU variant or HBM capacity. Installed GPU count is distinct from the number used in the measurement."
+    },
+    {
+      "id": "report-h100-intel",
+      "name": "H100-Xeon8480+",
+      "cpu_model": "Intel Xeon Platinum 8480+",
+      "cpu_sockets": 2,
+      "cpu_cores": 112,
+      "accelerator_model": "NVIDIA H100",
+      "installed_accelerators": 4,
+      "accelerator_variant": null,
+      "accelerator_memory_gb": null,
+      "source_id": "FS2024",
+      "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
+      "note_ja": "表示名は比較用の識別名であり、製品の正式な型番ではありません。GPU版・HBM容量は報告から同定できません。搭載GPU数と測定に使用したGPU数を区別します。",
+      "note_en": "Display aliases identify reported environments, not official product variants. The report does not identify the exact GPU variant or HBM capacity. Installed GPU count is distinct from the number used in the measurement."
+    }
+  ],
   "groups": [
     {
       "id": "genesis",
@@ -32,7 +109,8 @@
       "measurements": [
         {
           "id": "genesis-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 124.4,
           "kind": "cpu",
           "device_count": 1,
@@ -42,7 +120,8 @@
         },
         {
           "id": "genesis-2",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 25.5,
           "kind": "gpu",
           "device_count": 1,
@@ -67,7 +146,8 @@
       "measurements": [
         {
           "id": "salmon-ground-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 133.93,
           "kind": "cpu",
           "device_count": 1,
@@ -77,7 +157,8 @@
         },
         {
           "id": "salmon-ground-2",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 319.059,
           "kind": "gpu",
           "device_count": 1,
@@ -102,7 +183,8 @@
       "measurements": [
         {
           "id": "salmon-time-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 13.982,
           "kind": "cpu",
           "device_count": 1,
@@ -112,7 +194,8 @@
         },
         {
           "id": "salmon-time-2",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 2.405,
           "kind": "gpu",
           "device_count": 1,
@@ -137,7 +220,8 @@
       "measurements": [
         {
           "id": "frontflow-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 28.5,
           "kind": "cpu",
           "device_count": 1,
@@ -147,7 +231,8 @@
         },
         {
           "id": "frontflow-2",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 89.8,
           "kind": "gpu",
           "device_count": 1,
@@ -172,7 +257,8 @@
       "measurements": [
         {
           "id": "lqcd-small-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 397,
           "kind": "cpu",
           "device_count": 1,
@@ -182,7 +268,8 @@
         },
         {
           "id": "lqcd-small-2",
-          "device": "A100 / qc-a100",
+          "device": "A100-EPYC7713",
+          "device_profile_id": "report-a100",
           "value": 699,
           "kind": "gpu",
           "device_count": 1,
@@ -192,7 +279,8 @@
         },
         {
           "id": "lqcd-small-3",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 1123,
           "kind": "gpu",
           "device_count": 1,
@@ -202,7 +290,8 @@
         },
         {
           "id": "lqcd-small-4",
-          "device": "H100 / qc-h100",
+          "device": "H100-EPYC9534",
+          "device_profile_id": "report-h100-amd",
           "value": 983,
           "kind": "gpu",
           "device_count": 1,
@@ -212,7 +301,8 @@
         },
         {
           "id": "lqcd-small-5",
-          "device": "H100 / HBW2",
+          "device": "H100-Xeon8480+",
+          "device_profile_id": "report-h100-intel",
           "value": 915,
           "kind": "gpu",
           "device_count": 1,
@@ -237,7 +327,8 @@
       "measurements": [
         {
           "id": "lqcd-large-1",
-          "device": "A64FX / Fugaku",
+          "device": "A64FX-Fugaku",
+          "device_profile_id": "report-a64fx",
           "value": 422,
           "kind": "cpu",
           "device_count": 1,
@@ -247,7 +338,8 @@
         },
         {
           "id": "lqcd-large-2",
-          "device": "A100 / qc-a100",
+          "device": "A100-EPYC7713",
+          "device_profile_id": "report-a100",
           "value": 1831,
           "kind": "gpu",
           "device_count": 1,
@@ -257,7 +349,8 @@
         },
         {
           "id": "lqcd-large-3",
-          "device": "GH200 / qc-gh200",
+          "device": "GH200-Grace",
+          "device_profile_id": "report-gh200",
           "value": 4077,
           "kind": "gpu",
           "device_count": 1,
@@ -267,7 +360,8 @@
         },
         {
           "id": "lqcd-large-4",
-          "device": "H100 / qc-h100",
+          "device": "H100-EPYC9534",
+          "device_profile_id": "report-h100-amd",
           "value": 2287,
           "kind": "gpu",
           "device_count": 1,
@@ -277,7 +371,8 @@
         },
         {
           "id": "lqcd-large-5",
-          "device": "H100 / HBW2",
+          "device": "H100-Xeon8480+",
+          "device_profile_id": "report-h100-intel",
           "value": 3303,
           "kind": "gpu",
           "device_count": 1,
@@ -305,7 +400,7 @@
       "id": "b200-a100",
       "application_id": "APP-EEA1-LQCD-DWF-HMC",
       "target": "B200",
-      "baseline": "A100 / qc-a100",
+      "baseline": "A100-EPYC7713",
       "baseline_measurement_ids": [
         "lqcd-small-2",
         "lqcd-large-2"
@@ -330,7 +425,7 @@
       "id": "b200-h100",
       "application_id": "APP-EEA1-LQCD-DWF-HMC",
       "target": "B200",
-      "baseline": "H100 / qc-h100",
+      "baseline": "H100-EPYC9534",
       "baseline_measurement_ids": [
         "lqcd-small-4",
         "lqcd-large-4"
@@ -467,7 +562,7 @@
       "基準機と対象機の両方がHBM帯域律速で、演算性能・キャッシュ・命令実行が新たな律速にならないと仮定します。",
       "入力・演算精度・カーネルの仕事量・HBM転送量が同じで、仕様帯域に対する実効帯域の割合が維持されると仮定します。これらの一致は未検証です。",
       "公開報告にGPUの製品形態がないため、A100は80 GB SXM/NVLink、H100は80 GB SXMと仮定しています。実機の同定結果ではありません。",
-      "GH200はHBM3 96 GB（最大4000 GB/s）とHBM3e 144 GB（最大4900 GB/s）の2仕様を別の予測対象とします。報告中のqc-gh200がどちらかは未確認です。単一GPUのHBM帯域だけを使い、CPUのLPDDR帯域やNVL2の2 GPU合計帯域は加えません。",
+      "GH200はHBM3 96 GB（最大4000 GB/s）とHBM3e 144 GB（最大4900 GB/s）の2仕様を別の予測対象とします。過去の報告中のGH200がどちらかは未確認です。単一GPUのHBM帯域だけを使い、CPUのLPDDR帯域やNVL2の2 GPU合計帯域は加えません。",
       "H100・GH200への予測はA100の報告値だけを基準とし、予測先の実測値を用いた補正や当てはめは行いません。",
       "対象機で同じコードが動作し、作業データがHBMに収まることを仮定します。CPU処理・転送・同期・I/Oの予測は含みません。",
       "基準機ごとの値の幅は仮定への感度であり、信頼区間ではありません。世代の近さだけでは予測精度を保証できません。",
@@ -477,7 +572,7 @@
       "Both devices are assumed to remain HBM-bandwidth-bound, without new compute, cache or instruction-throughput bottlenecks.",
       "Input, precision, kernel work and HBM traffic are assumed unchanged, with the same fraction of specification bandwidth achieved. These equivalences are unverified.",
       "The report does not identify GPU form factors. A100 is assumed to be 80 GB SXM/NVLink and H100 80 GB SXM; these are not identifications of the actual machines.",
-      "GH200 HBM3 96 GB (up to 4000 GB/s) and HBM3e 144 GB (up to 4900 GB/s) are separate target hypotheses. Neither identifies the reported qc-gh200 machine. Only single-GPU HBM bandwidth is used, excluding CPU LPDDR bandwidth and NVL2 two-GPU totals.",
+      "GH200 HBM3 96 GB (up to 4000 GB/s) and HBM3e 144 GB (up to 4900 GB/s) are separate target hypotheses. Neither identifies the historical reported GH200 variant. Only single-GPU HBM bandwidth is used, excluding CPU LPDDR bandwidth and NVL2 two-GPU totals.",
       "Forecasts for H100 and GH200 use only the reported A100 baseline; target measurements are not used for fitting or correction.",
       "The same code is assumed to run and fit in target HBM. Host work, transfers, synchronization and I/O are not predicted.",
       "The spread across baselines is sensitivity to assumptions, not a confidence interval. A newer baseline does not by itself establish better accuracy.",
