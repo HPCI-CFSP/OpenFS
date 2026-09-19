@@ -7,8 +7,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-DEVICE-IDENTITY-20260919",
-    "human_approval_directive_id": "DIR-900132"
+    "publication_decision_id": "PUBDEC-RUNTIME-SPECS-20260919",
+    "human_approval_directive_id": "DIR-900134"
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
@@ -91,6 +91,36 @@
       "locator": "Table 4.11.1.1; PDF page 54 (printed 324)",
       "note_ja": "表示名は比較用の識別名であり、製品の正式な型番ではありません。GPU版・HBM容量は報告から同定できません。搭載GPU数と測定に使用したGPU数を区別します。",
       "note_en": "Display aliases identify reported environments, not official product variants. The report does not identify the exact GPU variant or HBM capacity. Installed GPU count is distinct from the number used in the measurement."
+    },
+    {
+      "id": "cloud-gh200-20260919",
+      "name": "GH200-Grace-96GB",
+      "cpu_model": "NVIDIA Grace (Neoverse V2)",
+      "cpu_sockets": 1,
+      "cpu_cores": 72,
+      "accelerator_model": "NVIDIA GH200",
+      "installed_accelerators": 1,
+      "accelerator_variant": "GH200 HBM3",
+      "accelerator_memory_gb": 96,
+      "source_id": "SRC-CLOUD-LQCD-20260919",
+      "locator": "2026-09-19 experiment; one allocated GPU",
+      "note_ja": "今回の計測環境。GPUメモリは公称96 GB、実行時表示97871 MiB。公開報告のGH200と同一個体・設定とは確認していません。全72コアを使った評価ではなく、1 MPIランク・1 OpenMPスレッドです。",
+      "note_en": "This experiment only: nominal 96 GB GPU memory, 97871 MiB runtime report. Not identified with the historical report's GH200. Uses one MPI rank / one OpenMP thread, not all 72 CPU cores."
+    },
+    {
+      "id": "cloud-b300-20260919",
+      "name": "B300-SXM6-Xeon6767P",
+      "cpu_model": "Intel Xeon 6767P",
+      "cpu_sockets": 2,
+      "cpu_cores": 128,
+      "accelerator_model": "NVIDIA B300 SXM6 AC",
+      "installed_accelerators": 8,
+      "accelerator_variant": "B300 SXM6",
+      "accelerator_memory_gb": 288,
+      "source_id": "SRC-CLOUD-LQCD-20260919",
+      "locator": "2026-09-19 experiment; one allocated GPU",
+      "note_ja": "今回の計測環境。GPUメモリは公称288 GB、実行時表示275040 MiB。8 GPU搭載ノードから1 GPUを割り当て、1 MPIランク・1 OpenMPスレッドで実行。ホストを占有していないため他の利用の影響を排除していません。",
+      "note_en": "This experiment only: nominal 288 GB GPU memory, 275040 MiB runtime report. One GPU allocated from an eight-GPU node, one MPI rank / one OpenMP thread. The host was shared; effects of other users have not been excluded."
     }
   ],
   "groups": [
@@ -475,6 +505,20 @@
   ],
   "sources": [
     {
+      "source_id": "A64FX-SPEC",
+      "title": "Fujitsu: Fugaku node specifications (normal and boost modes)",
+      "url": "https://global.fujitsu/en-global/technology/research/fugaku/specifications",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "GH200-DATASHEET",
+      "title": "NVIDIA GH200 Grace Hopper Superchip datasheet (March 2025)",
+      "url": "https://dam-cdn.nvd.orangelogic.com/AssetLink/tkno03fa645gb7f33w60rf200d330420.pdf",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
       "source_id": "FS2024",
       "title": "FY2024 system feasibility report, section 4.11",
       "url": "https://www.mext.go.jp/content/20250630-mxt-jyohoka01-000042023_03.pdf",
@@ -548,6 +592,41 @@
       "source_id": "LQCD-CODE",
       "title": "LQCD-DWF-HMC README: precision modes and FLOP-count caveat",
       "url": "https://github.com/i-kanamori/LQCD-DWF-HMC",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-CLOUD-LQCD-20260919",
+      "title": "OpenFS: LQCD sample_1gpu measured-profile experiment, 2026-09-19",
+      "url": "https://github.com/HPCI-CFSP/OpenFS/blob/main/knowledge/public/application-device-comparison.json",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-LQCD-PINNED",
+      "title": "i-kanamori/LQCD-DWF-HMC: pinned public source and sample_1gpu",
+      "url": "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-HGX-RA-B300",
+      "title": "NVIDIA HGX AI Factory: components, GPU specifications",
+      "url": "https://docs.nvidia.com/enterprise-reference-architectures/hgx-ai-factory/latest/components.html",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-HGX-FP64",
+      "title": "NVIDIA HGX: Blackwell / Blackwell Ultra specifications",
+      "url": "https://www.nvidia.com/en-us/data-center/hgx/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-GRACE-STUDY",
+      "title": "NVIDIA Grace Performance Tuning Guide: GH200 memory",
+      "url": "https://docs.nvidia.com/dccpu/grace-perf-tuning-guide/",
       "published_at": null,
       "checked_at": "2026-09-19"
     }
@@ -640,6 +719,14 @@
         "source_id": "RUBIN-SPEC",
         "specification_status": "preliminary",
         "locator": "Individual Rubin GPU: 22 TB/s; preliminary, up to, subject to change"
+      },
+      {
+        "id": "b300-sxm6",
+        "name": "B300 SXM6 288 GB",
+        "bandwidth_gbs": 8000,
+        "source_id": "SRC-HGX-RA-B300",
+        "specification_status": "published",
+        "locator": "HGX B300: per GPU up to 8 TB/s; 288 GB"
       }
     ],
     "baselines": [
@@ -683,12 +770,42 @@
       "gh200-hbm3e-144"
     ],
     "target_baseline_ids": {
-      "b200-hgx": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
-      "h200-sxm": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
-      "rubin": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
-      "h100-sxm-80": ["lqcd-small-2", "lqcd-large-2"],
-      "gh200-hbm3-96": ["lqcd-small-2", "lqcd-large-2"],
-      "gh200-hbm3e-144": ["lqcd-small-2", "lqcd-large-2"]
+      "b200-hgx": [
+        "lqcd-small-2",
+        "lqcd-small-4",
+        "lqcd-small-5",
+        "lqcd-large-2",
+        "lqcd-large-4",
+        "lqcd-large-5"
+      ],
+      "h200-sxm": [
+        "lqcd-small-2",
+        "lqcd-small-4",
+        "lqcd-small-5",
+        "lqcd-large-2",
+        "lqcd-large-4",
+        "lqcd-large-5"
+      ],
+      "rubin": [
+        "lqcd-small-2",
+        "lqcd-small-4",
+        "lqcd-small-5",
+        "lqcd-large-2",
+        "lqcd-large-4",
+        "lqcd-large-5"
+      ],
+      "h100-sxm-80": [
+        "lqcd-small-2",
+        "lqcd-large-2"
+      ],
+      "gh200-hbm3-96": [
+        "lqcd-small-2",
+        "lqcd-large-2"
+      ],
+      "gh200-hbm3e-144": [
+        "lqcd-small-2",
+        "lqcd-large-2"
+      ]
     },
     "diagnostics": [
       {
@@ -712,5 +829,1597 @@
         "reference_measurement_id": "lqcd-large-5"
       }
     ]
-  }
+  },
+  "runtime_view": {
+    "specification_comparison": {
+      "metrics": [
+        {
+          "id": "fp64",
+          "name_ja": "FP64（通常演算）",
+          "name_en": "FP64 (vector / CUDA cores)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "fp32",
+          "name_ja": "FP32（通常演算）",
+          "name_en": "FP32 (vector / CUDA cores)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "fp64_tensor",
+          "name_ja": "FP64 Tensor Core",
+          "name_en": "FP64 Tensor Core",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "fp64_combined",
+          "name_ja": "FP64 / Tensor Core（メーカー併記）",
+          "name_en": "FP64 / Tensor Core (combined vendor label)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "bf16_dense",
+          "name_ja": "BF16 Tensor Core（Dense）",
+          "name_en": "BF16 Tensor Core (dense)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "bf16_sparse",
+          "name_ja": "BF16 Tensor Core（Sparsity使用）",
+          "name_en": "BF16 Tensor Core (with sparsity)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "fp64_emulated",
+          "name_ja": "FP64 DGEMM（エミュレーション）",
+          "name_en": "FP64 DGEMM (emulated)",
+          "unit": "TFLOP/s"
+        },
+        {
+          "id": "memory_capacity",
+          "name_ja": "主メモリ / GPU HBM容量",
+          "name_en": "Main memory / GPU HBM capacity",
+          "unit": "GB"
+        },
+        {
+          "id": "memory_bandwidth",
+          "name_ja": "主メモリ / GPU HBM帯域",
+          "name_en": "Main memory / GPU HBM bandwidth",
+          "unit": "GB/s"
+        },
+        {
+          "id": "nvlink",
+          "name_ja": "GPU間NVLink（公称合計）",
+          "name_en": "GPU NVLink (advertised aggregate)",
+          "unit": "GB/s"
+        },
+        {
+          "id": "c2c",
+          "name_ja": "CPU-GPU間NVLink-C2C（公称合計）",
+          "name_en": "CPU-GPU NVLink-C2C (advertised aggregate)",
+          "unit": "GB/s"
+        }
+      ],
+      "records": [
+        {
+          "machine_id": "a64fx",
+          "unit_ja": "1 CPUソケット（48演算コア）",
+          "unit_en": "One CPU socket (48 compute cores)",
+          "note_ja": "Fugakuの公称Normal Mode 2.0 GHz。Boost Mode 2.2 GHzではFP64 3.3792、FP32 6.7584 TFLOP/s。過去の個別測定時のクロックを同定するものではありません。",
+          "note_en": "Fugaku nominal Normal Mode at 2.0 GHz. Boost Mode at 2.2 GHz provides FP64 3.3792 and FP32 6.7584 TFLOP/s. This does not identify the clock used in historical runs.",
+          "values": {
+            "fp64": {
+              "value": 3.072,
+              "source_id": "A64FX-SPEC",
+              "locator": "Node: normal mode, memory",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 6.144,
+              "source_id": "A64FX-SPEC",
+              "locator": "Node: normal mode, memory",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 32,
+              "source_id": "A64FX-SPEC",
+              "locator": "Node: normal mode, memory",
+              "status": "published",
+              "unit": "GiB"
+            },
+            "memory_bandwidth": {
+              "value": 1024,
+              "source_id": "A64FX-SPEC",
+              "locator": "Node: normal mode, memory",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "a100",
+          "unit_ja": "1 GPU（80 GB SXM）",
+          "unit_en": "One GPU (80 GB SXM)",
+          "note_ja": "予測対象として選んだ仕様です。過去のA100実測環境の製品版・容量を確定するものではありません。",
+          "note_en": "The variant selected for forecasts, not an identification of the historical A100 measurement environment.",
+          "values": {
+            "fp64": {
+              "value": 9.7,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 19.5,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "fp64_tensor": {
+              "value": 19.5,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "bf16_dense": {
+              "value": 312,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "bf16_sparse": {
+              "value": 624,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 80,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            },
+            "nvlink": {
+              "value": 600,
+              "source_id": "A100-SPEC",
+              "locator": "Page 1: NVLink 80 GB; dense/sparse footnote",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "h100",
+          "unit_ja": "1 GPU（80 GB SXM）",
+          "unit_en": "One GPU (80 GB SXM)",
+          "note_ja": "SXM版のカタログ仕様。過去のH100実測環境の版を同定せず、NVL/PCIeの仕様を混ぜません。",
+          "note_en": "Catalog specifications for SXM; not an identification of historical H100 variants. NVL/PCIe values are not mixed in.",
+          "values": {
+            "fp64": {
+              "value": 34,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 67,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            },
+            "fp64_tensor": {
+              "value": 67,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            },
+            "bf16_sparse": {
+              "value": 1979,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 80,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            },
+            "nvlink": {
+              "value": 900,
+              "source_id": "H100-SPEC",
+              "locator": "Product Specifications: H100 SXM; with sparsity footnote",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "gh200",
+          "unit_ja": "1 Superchip中の1 GPU（CPU性能・LPDDRを加算しない）",
+          "unit_en": "One GPU in one Superchip (CPU performance / LPDDR excluded)",
+          "note_ja": "GPU演算性能とHBMのみ。CPU-GPU接続は別行です。公称仕様は実験時のクロックや達成性能を表しません。",
+          "note_en": "GPU compute and HBM only; CPU-GPU connectivity is separate. Catalog peaks do not describe measured clocks or achieved performance.",
+          "values": {
+            "fp64": {
+              "value": 34,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 67,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "fp64_tensor": {
+              "value": 67,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "bf16_dense": {
+              "value": 990,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "bf16_sparse": {
+              "value": 1979,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 96,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "c2c": {
+              "value": 900,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "gh200e",
+          "unit_ja": "1 Superchip中の1 GPU（CPU性能・LPDDRを加算しない）",
+          "unit_en": "One GPU in one Superchip (CPU performance / LPDDR excluded)",
+          "note_ja": "GPU演算性能とHBMのみ。CPU-GPU接続は別行です。公称仕様は実験時のクロックや達成性能を表しません。",
+          "note_en": "GPU compute and HBM only; CPU-GPU connectivity is separate. Catalog peaks do not describe measured clocks or achieved performance.",
+          "values": {
+            "fp64": {
+              "value": 34,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 67,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "fp64_tensor": {
+              "value": 67,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "bf16_dense": {
+              "value": 990,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "bf16_sparse": {
+              "value": 1979,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 144,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            },
+            "c2c": {
+              "value": 900,
+              "source_id": "GH200-DATASHEET",
+              "locator": "Page 4: GH200 column, not NVL2",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "h200",
+          "unit_ja": "1 GPU（141 GB SXM）",
+          "unit_en": "One GPU (141 GB SXM)",
+          "note_ja": "公式表の注記に従い暫定仕様と表示。公称値であり実測ではありません。",
+          "note_en": "Marked preliminary according to the official table footnote; catalog values, not measurements.",
+          "values": {
+            "fp64": {
+              "value": 34,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            },
+            "fp32": {
+              "value": 67,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            },
+            "fp64_tensor": {
+              "value": 67,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            },
+            "bf16_sparse": {
+              "value": 1979,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            },
+            "memory_capacity": {
+              "value": 141,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            },
+            "nvlink": {
+              "value": 900,
+              "source_id": "H200-SPEC",
+              "locator": "Specifications: H200 SXM; footnotes 1 and 2",
+              "status": "preliminary"
+            }
+          }
+        },
+        {
+          "machine_id": "b200",
+          "unit_ja": "1 GPU（HGX B200、180 GB）",
+          "unit_en": "One GPU (HGX B200, 180 GB)",
+          "note_ja": "2025年10月データシートの個別GPU列。帯域7.7 TB/sを維持します。別の公式Reference Architectureは最大8 TB/sと記載しています。FP64併記値を通常演算とTensor Coreへ分解しません。",
+          "note_en": "Individual GPU column in the October 2025 datasheet. Retains 7.7 TB/s; another official reference architecture says up to 8 TB/s. The combined FP64 entry is not split into native and Tensor Core values.",
+          "values": {
+            "fp32": {
+              "value": 75,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8: Individual Blackwell GPU / HGX B200",
+              "status": "published"
+            },
+            "fp64_combined": {
+              "value": 37,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8: Individual Blackwell GPU / HGX B200",
+              "status": "published"
+            },
+            "bf16_sparse": {
+              "value": 4500,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8: Individual Blackwell GPU / HGX B200",
+              "status": "published"
+            },
+            "memory_capacity": {
+              "value": 180,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8: Individual Blackwell GPU / HGX B200",
+              "status": "published"
+            },
+            "nvlink": {
+              "value": 1800,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8: Individual Blackwell GPU / HGX B200",
+              "status": "published"
+            },
+            "bf16_dense": {
+              "value": 2250,
+              "source_id": "B200-SPEC",
+              "locator": "Page 8, footnote 2",
+              "status": "derived",
+              "note_ja": "4500 / 2。DenseはSparsity使用値の半分という原資料の注記から換算。",
+              "note_en": "4500 / 2, using the source footnote that dense is half of sparse."
+            }
+          }
+        },
+        {
+          "machine_id": "b300",
+          "unit_ja": "1 GPU（SXM6、288 GB）",
+          "unit_en": "One GPU (SXM6, 288 GB)",
+          "note_ja": "FP32とFP64併記値はHGX 8 GPU合計を8で除した換算値です。丸めを含む公称値であり、個別実機の測定値ではありません。",
+          "note_en": "FP32 and combined FP64 are normalized from the eight-GPU HGX totals. Rounded nominal values, not measurements of this device.",
+          "values": {
+            "memory_capacity": {
+              "value": 288,
+              "source_id": "SRC-HGX-RA-B300",
+              "locator": "Table 1: per-GPU memory",
+              "status": "published"
+            },
+            "fp32": {
+              "value": 75,
+              "source_id": "SRC-HGX-FP64",
+              "locator": "HGX B300: eight GPUs; sparsity footnote",
+              "status": "derived",
+              "note_ja": "600 / 8。8 GPU合計から1 GPUへ換算。Dense値はさらに2で除算。",
+              "note_en": "600 / 8. Normalize the eight-GPU total to one GPU; dense additionally divides by two."
+            },
+            "fp64_combined": {
+              "value": 1.25,
+              "source_id": "SRC-HGX-FP64",
+              "locator": "HGX B300: eight GPUs; sparsity footnote",
+              "status": "derived",
+              "note_ja": "10 / 8。8 GPU合計から1 GPUへ換算。Dense値はさらに2で除算。",
+              "note_en": "10 / 8. Normalize the eight-GPU total to one GPU; dense additionally divides by two."
+            },
+            "bf16_sparse": {
+              "value": 4500,
+              "source_id": "SRC-HGX-FP64",
+              "locator": "HGX B300: eight GPUs; sparsity footnote",
+              "status": "derived",
+              "note_ja": "36000 / 8。8 GPU合計から1 GPUへ換算。Dense値はさらに2で除算。",
+              "note_en": "36000 / 8. Normalize the eight-GPU total to one GPU; dense additionally divides by two."
+            },
+            "bf16_dense": {
+              "value": 2250,
+              "source_id": "SRC-HGX-FP64",
+              "locator": "HGX B300: eight GPUs; sparsity footnote",
+              "status": "derived",
+              "note_ja": "36000 / 8 / 2。8 GPU合計から1 GPUへ換算。Dense値はさらに2で除算。",
+              "note_en": "36000 / 8 / 2. Normalize the eight-GPU total to one GPU; dense additionally divides by two."
+            },
+            "nvlink": {
+              "value": 1800,
+              "source_id": "SRC-HGX-FP64",
+              "locator": "HGX B300 GPU-to-GPU bandwidth; not total NVLink",
+              "status": "published"
+            }
+          }
+        },
+        {
+          "machine_id": "rubin",
+          "unit_ja": "1 GPU（288 GB、公表暫定仕様）",
+          "unit_en": "One GPU (288 GB, announced preliminary specification)",
+          "note_ja": "全数値は公表上限・変更可能。FP64 DGEMMのエミュレーション値を通常のFP64演算やTensor CoreのFP64命令性能とは区別します。",
+          "note_en": "All values are announced upper bounds and subject to change. Emulated FP64 DGEMM is distinct from native FP64 arithmetic or FP64 Tensor Core instructions.",
+          "values": {
+            "fp64": {
+              "value": 33,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            },
+            "fp32": {
+              "value": 130,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            },
+            "bf16_dense": {
+              "value": 4000,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            },
+            "fp64_emulated": {
+              "value": 200,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            },
+            "memory_capacity": {
+              "value": 288,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            },
+            "nvlink": {
+              "value": 3600,
+              "source_id": "RUBIN-SPEC",
+              "locator": "Individual Rubin GPU; preliminary/dense/emulation footnotes",
+              "status": "preliminary"
+            }
+          }
+        }
+      ]
+    },
+    "methods": [
+      {
+        "id": "bandwidth-proportional",
+        "name_ja": "予測手法：帯域比例",
+        "name_en": "Prediction method: bandwidth scaling",
+        "formula": "T = T0 × B0 / B1",
+        "note_ja": "同一の入力・計測区間を保ち、対象区間全体がメモリ帯域に比例して短縮すると仮定します。演算性能、キャッシュ、ホストCPU、起動・同期の変化は表現しません。今回のB300実測を大きく過小評価しており、未校正です。",
+        "note_en": "Assumes the same input and timing boundary, with the whole timed region scaling inversely with memory bandwidth. Does not model compute capability, cache, host CPU, launch or synchronization changes. Substantially underestimates the held-out B300 runtime; uncalibrated.",
+        "source_ids": [
+          "SRC-GRACE-STUDY",
+          "SRC-HGX-RA-B300"
+        ]
+      },
+      {
+        "id": "profile-assisted",
+        "name_ja": "予測手法：実測プロファイル併用",
+        "name_en": "Prediction method: measured-profile assisted",
+        "formula": "T = T0 × [(1 − f) + f × B0 / B1]; f = profiled GPU-active union / profiled window",
+        "note_ja": "通常実行の時間T0と、別のプロファイル実行で得たGPU稼働時間比fを使用します。GPU区間を一様に帯域比例、残りを一定と仮定します。f×T0は通常実行の実測内訳ではありません。トレースの影響や律速の変化は未校正で、幅は仮定感度であり信頼区間ではありません。",
+        "note_en": "Uses normal runtime T0 and GPU-active fraction f from a separate profiled run. Scales all GPU activity by bandwidth and holds the remainder constant. f×T0 is not a measured normal-run decomposition. Tracing effects and bottleneck changes are uncalibrated; ranges are scenario sensitivities, not confidence intervals.",
+        "source_ids": [
+          "SRC-GRACE-STUDY",
+          "SRC-HGX-RA-B300"
+        ]
+      }
+    ],
+    "machines": [
+      {
+        "id": "a64fx",
+        "name": "A64FX-Fugaku",
+        "profile_id": "report-a64fx",
+        "spec_id": null
+      },
+      {
+        "id": "a100",
+        "name": "A100 80 GB SXM",
+        "profile_id": null,
+        "spec_id": "a100-sxm-80"
+      },
+      {
+        "id": "h100",
+        "name": "H100 80 GB SXM",
+        "profile_id": null,
+        "spec_id": "h100-sxm-80"
+      },
+      {
+        "id": "gh200",
+        "name": "GH200-Grace-96GB",
+        "profile_id": "cloud-gh200-20260919",
+        "spec_id": "gh200-hbm3-96"
+      },
+      {
+        "id": "gh200e",
+        "name": "GH200 HBM3e 144 GB",
+        "profile_id": null,
+        "spec_id": "gh200-hbm3e-144"
+      },
+      {
+        "id": "h200",
+        "name": "H200 141 GB SXM",
+        "profile_id": null,
+        "spec_id": "h200-sxm"
+      },
+      {
+        "id": "b200",
+        "name": "B200 HGX 180 GB",
+        "profile_id": null,
+        "spec_id": "b200-hgx"
+      },
+      {
+        "id": "b300",
+        "name": "B300-SXM6-Xeon6767P",
+        "profile_id": "cloud-b300-20260919",
+        "spec_id": "b300-sxm6"
+      },
+      {
+        "id": "rubin",
+        "name": "Rubin 288 GB",
+        "profile_id": null,
+        "spec_id": "rubin"
+      }
+    ],
+    "cases": [
+      {
+        "id": "genesis",
+        "application_id": "APP-EEA1-GENESIS",
+        "title_ja": "GENESIS：実行時間",
+        "title_en": "GENESIS: elapsed time",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "genesis",
+        "study_id": null
+      },
+      {
+        "id": "salmon-ground",
+        "application_id": "APP-EEA1-SALMON",
+        "title_ja": "SALMON：基底状態",
+        "title_en": "SALMON: ground state",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "salmon-ground",
+        "study_id": null
+      },
+      {
+        "id": "salmon-time",
+        "application_id": "APP-EEA1-SALMON",
+        "title_ja": "SALMON：時間発展",
+        "title_en": "SALMON: time evolution",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "salmon-time",
+        "study_id": null
+      },
+      {
+        "id": "frontflow",
+        "application_id": "APP-EEA1-FRONTFLOW-BLUE",
+        "title_ja": "FrontFlow/blue：実行時間",
+        "title_en": "FrontFlow/blue: elapsed time",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "frontflow",
+        "study_id": null
+      },
+      {
+        "id": "lqcd-small",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD：32×8×8×12 格子",
+        "title_en": "LQCD: 32×8×8×12 lattice",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "lqcd-small",
+        "study_id": null
+      },
+      {
+        "id": "lqcd-large",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD：64×32×16×12 格子",
+        "title_en": "LQCD: 64×32×16×12 lattice",
+        "scope_ja": "独自測定の入力・コード・精度・計測区間は未確定です。公開報告値は参考資料に保持し、独自の実行時間に換算しません。",
+        "scope_en": "Locally measured input, code, precision and timing boundary are not yet fixed. Published reports remain references and are not converted to locally measured runtime.",
+        "kind": "unmeasured",
+        "reference_group_id": "lqcd-large",
+        "study_id": null
+      },
+      {
+        "id": "scale-letkf",
+        "application_id": "APP-EEA1-SCALE-LETKF",
+        "title_ja": "SCALE-LETKF（評価条件未確定）",
+        "title_en": "SCALE-LETKF (case not yet frozen)",
+        "scope_ja": "比較可能な単体実行の測定条件とコード利用可否の確認が必要です。",
+        "scope_en": "Comparable single-device inputs and code availability must be established.",
+        "kind": "unmeasured",
+        "reference_group_id": null,
+        "study_id": null
+      },
+      {
+        "id": "e-wave",
+        "application_id": "APP-EEA1-E-WAVE",
+        "title_ja": "E-Wave（評価条件未確定）",
+        "title_en": "E-WAVE (case not yet frozen)",
+        "scope_ja": "比較可能な単体実行の測定条件とコード利用可否の確認が必要です。",
+        "scope_en": "Comparable single-device inputs and code availability must be established.",
+        "kind": "unmeasured",
+        "reference_group_id": null,
+        "study_id": null
+      },
+      {
+        "id": "lqcd-8x4-update",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD（8×8×8×8格子・HMC更新・1軌道）",
+        "title_en": "LQCD (8×8×8×8 / HMC update / 1 trajectory)",
+        "scope_ja": "公開コードのsample_1gpuを変更せず使用。8×8×8×8、乱数シード1234567、1軌道。EEA1指定入力の再現ではなく、従来のGFLOP/s表とは別の計測区間です。実測値はウォームアップ1回を除く3回の中央値。",
+        "scope_en": "Unchanged public sample_1gpu: 8×8×8×8, seed 1234567, one trajectory. Not a reproduction of the prescribed EEA1 input or the historical GFLOP/s kernel metric. Measurements are medians of three repetitions after one excluded warm-up.",
+        "kind": "profile-study",
+        "reference_group_id": null,
+        "study_id": "lqcd-sample-20260919"
+      },
+      {
+        "id": "lqcd-8x4-main",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD（8×8×8×8格子・main全体・1軌道）",
+        "title_en": "LQCD (8×8×8×8 / main / 1 trajectory)",
+        "scope_ja": "main入口からreturn直前まで。起動・動的ローダー・main終了後の破棄処理は含みません。主要計算は軌道ループ全体で周期的な出力を含み、最終出力は終了処理です。更新区間だけの予測とは比較しません。",
+        "scope_en": "From main entry to just before return; excludes launch, dynamic loading and destruction after main. Computation includes the trajectory loop and periodic output; final output belongs to finalization. Not compared with update-only predictions.",
+        "kind": "normal-phases",
+        "reference_group_id": null,
+        "study_id": "lqcd-sample-20260919"
+      }
+    ],
+    "phase_runs": [
+      {
+        "case_id": "lqcd-8x4-main",
+        "machine_id": "gh200",
+        "profiler_enabled": false,
+        "header_sha256": "96d6b5bd9f22d13262ca0f6748486abac5655aff71c698ac402b2437da8b0aa4",
+        "measured_on": "2026-09-19",
+        "rows": [
+          {
+            "initialization": 0.484609923,
+            "compute": 13.191713291,
+            "finalization": 0.01062805,
+            "total": 13.686951264,
+            "warmup": true,
+            "normal_wall_seconds": 14.221,
+            "original_wall_seconds": 14.306,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "b28281a7a6008b78f205f5372c000b1dca4b3860bc87a04821f7a88bf6ee78fd"
+          },
+          {
+            "initialization": 0.475507361,
+            "compute": 13.26398682,
+            "finalization": 0.010561077,
+            "total": 13.750055258,
+            "warmup": false,
+            "normal_wall_seconds": 14.278,
+            "original_wall_seconds": 14.324,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "eff45d5058fd0c09172d52242b249079618bf652fb8bee6a468e87139f248c31"
+          },
+          {
+            "initialization": 0.47950674,
+            "compute": 13.324138847,
+            "finalization": 0.010637235,
+            "total": 13.814282822,
+            "warmup": false,
+            "normal_wall_seconds": 14.336,
+            "original_wall_seconds": 14.522,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "d2b65ba92c0191ecc928ba9aa349324ea7cc62ce2671f9952218b2df1d853b7e"
+          },
+          {
+            "initialization": 0.468665565,
+            "compute": 13.241662605,
+            "finalization": 0.010481044,
+            "total": 13.720809214,
+            "warmup": false,
+            "normal_wall_seconds": 14.241,
+            "original_wall_seconds": 14.342,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "071377558081986bf15d3b63a2bd0dff7fa387b0241170004997dadaa81bc5e1"
+          }
+        ]
+      },
+      {
+        "case_id": "lqcd-8x4-main",
+        "machine_id": "b300",
+        "profiler_enabled": false,
+        "header_sha256": "96d6b5bd9f22d13262ca0f6748486abac5655aff71c698ac402b2437da8b0aa4",
+        "measured_on": "2026-09-19",
+        "rows": [
+          {
+            "initialization": 1.050982322,
+            "compute": 25.775748721,
+            "finalization": 0.008706729,
+            "total": 26.835437772,
+            "warmup": true,
+            "normal_wall_seconds": 27.613,
+            "original_wall_seconds": 27.87,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "365a7a452fad906cea70af043060677c22d447b86105c7912914f0b70dc9a833"
+          },
+          {
+            "initialization": 0.866229591,
+            "compute": 25.778109926,
+            "finalization": 0.009161604,
+            "total": 26.653501121,
+            "warmup": false,
+            "normal_wall_seconds": 27.43,
+            "original_wall_seconds": 27.353,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "bd4ec55271c453cf28c83f226ef0dcb6b114bdf3ceb98128421cd5f89dc78372"
+          },
+          {
+            "initialization": 0.867820369,
+            "compute": 25.742533405,
+            "finalization": 0.009319574,
+            "total": 26.619673348,
+            "warmup": false,
+            "normal_wall_seconds": 27.396,
+            "original_wall_seconds": 27.376,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "ee60dd73dc82bc7550b0a4a4030bcbb4d718bcbaa9509ecc6b62d6afd3e28565"
+          },
+          {
+            "initialization": 0.862320938,
+            "compute": 25.761403674,
+            "finalization": 0.009138921,
+            "total": 26.632863533,
+            "warmup": false,
+            "normal_wall_seconds": 27.422,
+            "original_wall_seconds": 27.393,
+            "h_diff": 0.00083995,
+            "original_h_diff": 0.00083995,
+            "log_sha256": "cb2cb4eed3d264a938edd72679755b43c975fefc1e64a3b132cb964f7ab69d54"
+          }
+        ]
+      }
+    ]
+  },
+  "profile_studies": [
+    {
+      "id": "lqcd-sample-20260919",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "title_ja": "追加実験：LQCD 8⁴・1 GPU・HMC更新時間",
+      "title_en": "Measured-profile study: LQCD 8⁴ / one GPU / HMC update time",
+      "scope_ja": "公開コードのsample_1gpuを変更せず使用。8×8×8×8、乱数シード1234567、1軌道。EEA1指定入力の再現ではなく、従来のGFLOP/s表とは別の計測区間です。実測値はウォームアップ1回を除く3回の中央値。",
+      "scope_en": "Unchanged public sample_1gpu: 8×8×8×8, seed 1234567, one trajectory. Not a reproduction of the prescribed EEA1 input or the historical GFLOP/s kernel metric. Measurements are medians of three repetitions after one excluded warm-up.",
+      "precision_ja": "Nf1: FP64マルチシフトCG、Nf2: FP32/FP64混合精度Richardson。全計算を低精度Tensor演算とはみなさない。",
+      "precision_en": "Nf1: FP64 multi-shift CG; Nf2: mixed FP32/FP64 Richardson. The workload is not treated as low-precision Tensor arithmetic.",
+      "compiler": "NVHPC 26.5; OpenACC; OMP_NUM_THREADS=1; MPI ranks=1",
+      "code_url": "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "source_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "input_files": [
+        {
+          "name": "HMC_DWF_Nf2p1_eo.yaml",
+          "sha256": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0"
+        },
+        {
+          "name": "main.yaml",
+          "sha256": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87"
+        },
+        {
+          "name": "conf_04040408.txt",
+          "sha256": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+        }
+      ],
+      "timing_boundary": "hmc.update(U); OpenACC waits at NVTX update boundaries",
+      "protocol_sha256": "715ce684f104422bfd622cd3a4ab1f1aed24a04fa1610534073afce63924bdac",
+      "forecast_freeze_sha256": "c90d6964201e05e9915d698e6f26fe7e3e3461e528f08ee6498cd5edfd504999",
+      "frozen_at": "2026-09-19T06:16:57.322247+00:00",
+      "target_read_at": "2026-09-19T06:21:52Z",
+      "frozen_profile_seconds": 12.58552834811036,
+      "frozen_bandwidth_seconds": 6.786249327,
+      "baseline_bandwidth_gbs": 4000,
+      "target_bandwidth_gbs": 8000,
+      "baseline": {
+        "device_profile_id": "cloud-gh200-20260919",
+        "repeat_seconds": [
+          13.764342596,
+          13.291617316,
+          13.572498654
+        ],
+        "original_main_seconds": [
+          13.68,
+          13.86,
+          13.94
+        ],
+        "instrumented_main_seconds": [
+          14,
+          13.51,
+          13.79
+        ],
+        "h_diff": [
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995
+        ],
+        "log_sha256": [
+          "135d320efff501bd5d9932beb7f9e69df3371800c160579ce23168164a3cf32a",
+          "93d8cbd03b314604fbf38183cf24659f2a4ee3c5933f9c87b8701a26962e1245",
+          "fbe252eb741c22b85dc827577bec1118aacc4ee073360ccacef57ea7638a7069",
+          "6edb9645d70f619d802d47a005b67ed8aa972e117b1888c6116d0e4e6c098cda",
+          "47f80db21b6d7580886751cabcfe57a7a6b863e93f8a54a88ab36ef89b212b8a",
+          "9d6df75fdc4f1137282affdbbfbc652976d6d57f9925fc1d3937be8e05de8209",
+          "4553e5a700eea62e61073e716ce6aa600656060bbbc7633edd763b47d7eb381e",
+          "a5af44850a82d86b24d0e1fceca273696a26c426714ef9ddf238e5b5bf6097e1"
+        ],
+        "window_seconds": 17.519102752,
+        "kernel_union_seconds": 2.547922036,
+        "kernel_overlap_seconds": 0,
+        "kernels": [
+          {
+            "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+            "seconds": 0.804649056,
+            "count": 51290
+          },
+          {
+            "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+            "seconds": 0.245678077,
+            "count": 22436
+          },
+          {
+            "name": "BridgeACC::norm2_344(double *, int, int)",
+            "seconds": 0.167223872,
+            "count": 39538
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+            "seconds": 0.157469374,
+            "count": 22516
+          },
+          {
+            "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+            "seconds": 0.130076031,
+            "count": 18564
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+            "seconds": 0.096926143,
+            "count": 10224
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+            "seconds": 0.084442238,
+            "count": 11258
+          },
+          {
+            "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+            "seconds": 0.07647456,
+            "count": 2144
+          },
+          {
+            "name": "BridgeACC::copy_137(float *, float *, int, int)",
+            "seconds": 0.07439795,
+            "count": 11578
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+            "seconds": 0.074170368,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::dot_321(float *, float *, int, int)",
+            "seconds": 0.064920161,
+            "count": 11098
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+            "seconds": 0.058338176,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::norm2_344(float *, int, int)",
+            "seconds": 0.053018593,
+            "count": 11578
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+            "seconds": 0.052779776,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+            "seconds": 0.045758784,
+            "count": 5348
+          },
+          {
+            "name": "BridgeACC::copy_137(double *, double *, int, int)",
+            "seconds": 0.041642623,
+            "count": 5376
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+            "seconds": 0.037221344,
+            "count": 4876
+          },
+          {
+            "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+            "seconds": 0.03598432,
+            "count": 5549
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+            "seconds": 0.032332928,
+            "count": 5412
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+            "seconds": 0.032293887,
+            "count": 5348
+          },
+          {
+            "name": "BridgeACC::dot_321(double *, double *, int, int)",
+            "seconds": 0.019403167,
+            "count": 3438
+          },
+          {
+            "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+            "seconds": 0.016152416,
+            "count": 1714
+          },
+          {
+            "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+            "seconds": 0.014803583,
+            "count": 1072
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+            "seconds": 0.012949984,
+            "count": 1574
+          },
+          {
+            "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+            "seconds": 0.00994944,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+            "seconds": 0.009679488,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+            "seconds": 0.00962832,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+            "seconds": 0.009557569,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.009158912,
+            "count": 3780
+          },
+          {
+            "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.007433376,
+            "count": 3096
+          },
+          {
+            "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.006910688,
+            "count": 2848
+          },
+          {
+            "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+            "seconds": 0.0043496,
+            "count": 2052
+          },
+          {
+            "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+            "seconds": 0.004275936,
+            "count": 1087
+          },
+          {
+            "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+            "seconds": 0.00348784,
+            "count": 892
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.00312464,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+            "seconds": 0.00300944,
+            "count": 772
+          },
+          {
+            "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+            "seconds": 0.00291648,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+            "seconds": 0.002914656,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+            "seconds": 0.002901696,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+            "seconds": 0.002897984,
+            "count": 774
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.002150368,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.00167824,
+            "count": 684
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001476832,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::afield_init_20(double *, int)",
+            "seconds": 0.001475744,
+            "count": 333
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001308768,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001290656,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001186848,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001178816,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.00117616,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001172352,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.0011712,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.0011704,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001162464,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.00116176,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001161088,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001159904,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001152416,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001149632,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001145504,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+            "seconds": 0.000628128,
+            "count": 160
+          },
+          {
+            "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+            "seconds": 0.000592256,
+            "count": 80
+          },
+          {
+            "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+            "seconds": 0.000588224,
+            "count": 80
+          },
+          {
+            "name": "BridgeACC::at_G_714(double *, int, int)",
+            "seconds": 0.0002808,
+            "count": 76
+          }
+        ],
+        "counter_scope": "first-three-initialization-kernels-only"
+      },
+      "target": {
+        "device_profile_id": "cloud-b300-20260919",
+        "repeat_seconds": [
+          25.746260488,
+          25.660589591,
+          25.626494365
+        ],
+        "original_main_seconds": [
+          26.1,
+          26.09,
+          26.16
+        ],
+        "instrumented_main_seconds": [
+          26.18,
+          26.09,
+          26.05
+        ],
+        "h_diff": [
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995,
+          0.00083995
+        ],
+        "log_sha256": [
+          "25b42640609ed6a7dbcff80236745ddad2a62fbd50f88ee1133d13f978cec268",
+          "0d3f00a0cf672c62b7851171301c5ccbc5048fc26fab4ceda0b57a4949bb6813",
+          "366a107d1c1c8f1884f38ef70af18585b4c86bd898ac0e4280e5a974852bf8f1",
+          "a232a558e01232eca2ca5203af778e7ea843ee1f7c4d285819fe6c9f61c8441c",
+          "b42f29bc52758db5c98a8aec71190fd1d8b81338715a16e7b0de4154647b72fb",
+          "472e5c38767918713e862f2ed83e6a800c11d475aeaed51c665d8df979b47fc2",
+          "83b55b22c4f7146553202ce94e04fd0191b2f0e57fde3504be7ade6ff6dbaa75",
+          "0f6d6fbab8e883d11b72c80604c129201370abf9ca8a99f239c71a396388a6ef"
+        ],
+        "window_seconds": 30.303529004,
+        "kernel_union_seconds": 9.842978699,
+        "kernel_overlap_seconds": 0,
+        "kernels": [
+          {
+            "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+            "seconds": 4.2820145,
+            "count": 51290
+          },
+          {
+            "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+            "seconds": 1.20462513,
+            "count": 22436
+          },
+          {
+            "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+            "seconds": 1.038776719,
+            "count": 18564
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+            "seconds": 0.657048624,
+            "count": 10224
+          },
+          {
+            "name": "BridgeACC::norm2_344(double *, int, int)",
+            "seconds": 0.32381506,
+            "count": 39538
+          },
+          {
+            "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+            "seconds": 0.269468918,
+            "count": 5549
+          },
+          {
+            "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+            "seconds": 0.193492698,
+            "count": 2144
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+            "seconds": 0.192754611,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+            "seconds": 0.180756091,
+            "count": 22516
+          },
+          {
+            "name": "BridgeACC::norm2_344(float *, int, int)",
+            "seconds": 0.156260176,
+            "count": 11578
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+            "seconds": 0.150587846,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+            "seconds": 0.139612656,
+            "count": 1714
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+            "seconds": 0.136026141,
+            "count": 4876
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+            "seconds": 0.119031837,
+            "count": 5348
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+            "seconds": 0.107395346,
+            "count": 5348
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+            "seconds": 0.08909487,
+            "count": 5412
+          },
+          {
+            "name": "BridgeACC::copy_137(float *, float *, int, int)",
+            "seconds": 0.084571531,
+            "count": 11578
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+            "seconds": 0.081982658,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+            "seconds": 0.071481735,
+            "count": 11258
+          },
+          {
+            "name": "BridgeACC::dot_321(float *, float *, int, int)",
+            "seconds": 0.057710882,
+            "count": 11098
+          },
+          {
+            "name": "BridgeACC::copy_137(double *, double *, int, int)",
+            "seconds": 0.043571802,
+            "count": 5376
+          },
+          {
+            "name": "BridgeACC::dot_321(double *, double *, int, int)",
+            "seconds": 0.032444832,
+            "count": 3438
+          },
+          {
+            "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+            "seconds": 0.026000234,
+            "count": 1072
+          },
+          {
+            "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.020814684,
+            "count": 3780
+          },
+          {
+            "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.017043076,
+            "count": 3096
+          },
+          {
+            "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.015893284,
+            "count": 2848
+          },
+          {
+            "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+            "seconds": 0.015392626,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+            "seconds": 0.015265577,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+            "seconds": 0.015207363,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+            "seconds": 0.014500464,
+            "count": 2345
+          },
+          {
+            "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+            "seconds": 0.013945459,
+            "count": 2052
+          },
+          {
+            "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+            "seconds": 0.013723696,
+            "count": 1574
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.006152929,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.006136892,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+            "seconds": 0.004036582,
+            "count": 1087
+          },
+          {
+            "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+            "seconds": 0.003780124,
+            "count": 684
+          },
+          {
+            "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+            "seconds": 0.003394547,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+            "seconds": 0.003301885,
+            "count": 892
+          },
+          {
+            "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+            "seconds": 0.003269121,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+            "seconds": 0.00302406,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+            "seconds": 0.002869823,
+            "count": 772
+          },
+          {
+            "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+            "seconds": 0.002825688,
+            "count": 774
+          },
+          {
+            "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+            "seconds": 0.002512149,
+            "count": 80
+          },
+          {
+            "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+            "seconds": 0.001785232,
+            "count": 80
+          },
+          {
+            "name": "BridgeACC::afield_init_20(double *, int)",
+            "seconds": 0.001319531,
+            "count": 333
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001154445,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001150855,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.00114938,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001148359,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001146478,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001144428,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001135178,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001108104,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001061389,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.00106052,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001032135,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001032105,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001030961,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001030887,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001029229,
+            "count": 268
+          },
+          {
+            "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+            "seconds": 0.001025606,
+            "count": 268
+          },
+          {
+            "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+            "seconds": 0.000600356,
+            "count": 160
+          },
+          {
+            "name": "BridgeACC::at_G_714(double *, int, int)",
+            "seconds": 0.000218595,
+            "count": 76
+          }
+        ],
+        "counter_scope": "first-three-initialization-kernels-only"
+      },
+      "reference_h_diff": 0.00083995,
+      "h_diff_tolerance": 1e-8,
+      "source_ids": [
+        "SRC-CLOUD-LQCD-20260919",
+        "SRC-LQCD-PINNED",
+        "SRC-HGX-RA-B300",
+        "SRC-HGX-FP64",
+        "SRC-GRACE-STUDY"
+      ],
+      "caveats_ja": [
+        "両予測はB300の結果を見る前に固定しました。帯域比だけの予測も今回のGH200実測を基準としており、文献のみを使う既存の予測とは根拠が異なります。",
+        "両予測ともB300の実測より速く見積もりました。プロファイル併用で差は縮まりましたが、この1事例から予測精度の一般的な向上は主張しません。B300の結果を使った係数調整はしていません。",
+        "GPUカーネル時間を一様に帯域比例させる仮定は未検証です。FP64能力、キャッシュ、起動遅延、ホストCPUの違い、共有ノード上の競合を分離できていません。B300とHopperの演算能力は同一ではありません。",
+        "Nsight Systemsのトレース中はGH200で約29%、B300で約18%遅くなりました。GPU時間比にも計測の影響があり、通常実行の正確な時間内訳とは扱いません。",
+        "H(diff)が上流サンプルの表示値と一致したことは数値のスモークテストに限ります。全出力・全入力の科学的妥当性を証明するものではありません。",
+        "示す幅は高速化される割合を0から観測比率まで変えた仮定の範囲であり、信頼区間ではありません。今回の実測はその範囲外です。",
+        "小さな入力の暫定結果です。実用格子サイズ、他GPU、複数反復プロファイル、主要カーネルの演算量・DRAM量による再検証が必要です。調達評価不可、独立検証未完了。"
+      ],
+      "caveats_en": [
+        "Both predictions were frozen before reading B300 results. The bandwidth-only comparator also uses the new GH200 measurement; it is not the existing literature-only prediction.",
+        "Both predictions underestimate B300 runtime. Profiling narrows the difference in this one case but does not establish generally improved accuracy. No coefficient was fitted to B300.",
+        "Uniform bandwidth scaling of GPU-kernel time is unverified. FP64 capability, cache, launch latency, host CPU differences and shared-host contention are not disentangled. B300 and Hopper have different compute capabilities.",
+        "Nsight Systems tracing increased runtime by about 29% on GH200 and 18% on B300. Traced activity fractions may be perturbed and are not an exact breakdown of normal runtime.",
+        "Agreement of printed H(diff) with the upstream sample is only a numerical smoke check, not proof of scientific correctness for all outputs or inputs.",
+        "The displayed range varies the scalable fraction from zero to its observed value; it is not a confidence interval. The held-out measurement is outside this range.",
+        "Provisional small-input result. Realistic lattices, other GPUs, repeated profiles and dominant-kernel FLOP/DRAM measurements remain necessary. Not for procurement; independent verification incomplete."
+      ],
+      "status": "conditional-experimental",
+      "procurement_eligible": false,
+      "independent_validation": false
+    }
+  ]
 }

@@ -7,7 +7,8 @@
     ja: {
       publicOnly: "公開情報のみ", languageControl: "表示言語", breadcrumbs: "パンくずリスト",
       tagline: "公開調査カタログとシステム整備計画案", analysis: "分析",
-      pageTitle: "アプリケーション性能予測", lead: "EEA1対象アプリの公開実測値と、基準機別の条件付き参考試算をまとめています。検証済みの数値予測は未掲載です。",
+      pageTitle: "アプリケーション性能予測", lead: "評価条件ごとに、独自に測定した通常実行の時間と予測を比較します。プロファイル取得時の時間は別に表示します。",
+      legacyReference: "公開報告の参考値（独自の実行時間とは別の評価）",
       tableTitle: "EEA1評価対象アプリケーション", name: "アプリケーション", domain: "分野・計算内容",
       code: "公開コード・公式情報", conditions: "評価条件", sources: "根拠",
       publicCode: "公開コードあり", unreleased: "EEA1参照資料では非公開", unknown: "未確認",
@@ -20,7 +21,8 @@
     en: {
       publicOnly: "Public information only", languageControl: "Display language", breadcrumbs: "Breadcrumbs",
       tagline: "Public research catalog and system planning options", analysis: "Analysis",
-      pageTitle: "Application performance forecasting", lead: "Public measurements of EEA1 applications and conditional reference calculations by baseline. Validated numerical forecasts are not yet available.",
+      pageTitle: "Application performance forecasting", lead: "Compare our own normal-run measurements and forecasts for each evaluation case. Profiled-run times are shown separately.",
+      legacyReference: "Published reference values (separate from our runtime measurements)",
       tableTitle: "EEA1 evaluation applications", name: "Application", domain: "Domain / computation",
       code: "Public code / official information", conditions: "Evaluation conditions", sources: "Evidence",
       publicCode: "Public source available", unreleased: "Unreleased in the EEA1 reference", unknown: "Not verified",
@@ -100,12 +102,11 @@
     });
     table.append(caption, head, body);
     document.getElementById("application-overview-table").replaceChildren(table);
-    window.OpenFSDeviceComparison.render(language);
+    window.OpenFSRuntime.render(language);
+    if (!document.getElementById("legacy-device-reference").hidden) window.OpenFSDeviceComparison.render(language);
   }
   function focusApplication() {
-    const id = new URLSearchParams(window.location.search).get("app") || window.location.hash.slice(1);
-    if (!overview.applications.some((app) => app.application_id === id)) return;
-    const row = document.getElementById(id); row?.scrollIntoView({block: "center"}); row?.focus({preventScroll: true});
+    window.OpenFSRuntime.focusAnchor();
   }
   document.querySelectorAll("[data-language]").forEach((button) => button.addEventListener("click", () => {
     language = button.dataset.language;
