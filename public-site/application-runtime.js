@@ -72,7 +72,9 @@
       [t("搭載GPU数", "Installed GPUs"), String(p.installed_accelerators)],
       [t("GPU当たりHBM容量", "HBM per GPU"), p.accelerator_memory_gb === null ? t("未確認", "Unverified") : p.accelerator_memory_gb+" GB"]
     ]), el("p", local(p,"note")), source(p.source_id));
-    else parts.push(el("p", t("予測対象のカタログ仕様です。ホストCPU・実装・ソフトウェア互換性は同定していません。", "Catalog specification for prediction only. Host CPU, implementation and software compatibility are not identified.")));
+    else parts.push(el("p", data.kernel_study?.runs.some(r=>r.machine_id===m.id) ?
+      t("このGPUで独自測定を取得しています。ホストCPU・ノード構成の詳細は未登録です。以下の理論値はカタログ仕様です。","Own measurements are available for this GPU. Host CPU and node configuration details are not yet registered. The theoretical values below are catalog specifications.") :
+      t("予測対象のカタログ仕様です。ホストCPU・実装・ソフトウェア互換性は同定していません。", "Catalog specification for prediction only. Host CPU, implementation and software compatibility are not identified.")));
     const record = specification(m.id);
     parts.push(el("p",local(record,"unit")),el("p",local(record,"note")));
     const specRows = comparison.metrics.map(metric => {
@@ -178,6 +180,19 @@
       const observed = view.results.find(v => v.case_id === c.id && v.machine_id === r.machine_id && v.kind === "measured");
       if (observed) contents.push(el("p", t("同じ評価ケースの実測との差：", "Difference from the measured matching case: ")+((r.seconds/observed.seconds-1)*100).toFixed(1)+"%"));
       contents.push(el("p", t("対象実測値による係数調整なし。未校正・調達評価不可。", "No coefficient fitted to the target measurement. Uncalibrated; not for procurement.")));
+      if(r.method_id==="kernel-roofline") {
+        const frozen=data.kernel_study.frozen,base=frozen.baseline_spec,target=frozen.targets[r.machine_id];
+        contents.push(table([t("モデル入力","Model input"),t("予測元","Baseline"),t("予測先","Target")],[
+          ["FP64 TFLOP/s",fmt(base.fp64),fmt(target.fp64)],
+          ["FP32 TFLOP/s",fmt(base.fp32),fmt(target.fp32)],
+          ["HBM GB/s",fmt(base.bandwidth),fmt(target.bandwidth)]
+        ]),el("p",t("B300のFP64はメーカー併記値から換算した条件付き上限です。通常FP64の実効値ではありません。","B300 FP64 is a conditional ceiling normalized from the combined vendor label, not an achieved native-FP64 rate.")));
+        contents.push(el("p",t("仮定感度の範囲（信頼区間ではありません）：","Assumption sensitivity, not a confidence interval: ")+fmt(r.minimum)+"–"+fmt(r.maximum)+" s"),
+          el("p",t("カウンタ対応率（基準機GPU時間）：","Counter coverage of baseline GPU time: ")+(100*r.coverage_fraction).toFixed(1)+"%"),
+          el("p",t("予測固定日時：","Forecast frozen at: ")+r.frozen_at),
+          el("p",r.prior_target_seen ? t("この対象の旧実測は開発時に既知です。盲検検証ではありません。","Earlier measurements of this target were known during development; not blind validation.") : t("この対象の実測結果を確認する前に予測を固定しました。","Forecast frozen before inspecting this target's measurements.")),
+          link(t("カーネルカウンタ・時間区分・限界","Kernel counters, timeline and limitations"),href(c,"runtime-kernel-study")));
+      }
     } else {
       contents.push(el("p", t("通常実行。プロファイラ無効。初回を除く3回の中央値。", "Normal execution with profiler disabled. Median of three retained repetitions after excluding the first process.")),
         el("p", t("観測範囲：", "Observed range: ")+fmt(r.minimum)+"–"+fmt(r.maximum)+" s"));
@@ -230,7 +245,7 @@
             if(r.kind==="measured") column.append(el("small",t("実測","Measured")));
             else {
               const a=methodLink(r.method_id,c);a.className="runtime-method-label";a.title=a.textContent;
-              a.textContent=r.method_id==="bandwidth-proportional" ? t("帯域比例","Bandwidth") : t("プロファイル併用","Profile-assisted");
+              a.textContent=({"bandwidth-proportional":t("帯域比例","Bandwidth"),"profile-assisted":t("時間比併用","Time-share"),"kernel-roofline":t("カーネル別","Per-kernel")})[r.method_id];
               column.append(a,el("small","← "+machine(r.baseline_id).name.split("-")[0]));
             }
             group.append(column);
@@ -268,6 +283,36 @@
     }
     return outer;
   }
+  function kernelDetails(study) {
+    const outer=el("details");outer.id="runtime-kernel-study";outer.open=true;
+    outer.append(el("summary",t("カーネル別モデル：計測根拠と検証","Per-kernel model: measurements and validation")),el("p",local(study,"note")),el("p",study.compiler),
+      link(study.source_commit,"https://github.com/i-kanamori/LQCD-DWF-HMC/tree/"+study.source_commit));
+    const names={gpu:t("GPUカーネル","GPU kernels"),copy:t("GPU転送","GPU copies"),sync_api:t("同期API（GPU等との重複除外）","Sync APIs, excluding higher-priority overlap"),launch_api:t("起動API（重複除外）","Launch APIs, excluding overlap"),unclassified:t("未分類：CPU処理・I/O等","Unclassified: CPU work, I/O, etc.")};
+    for(const run of study.runs) {
+      const detail=el("details"),r=run.data;detail.append(el("summary",machine(run.machine_id).name));
+      detail.append(el("p",run.receipt.measurement_started_at+" → "+run.receipt.completed_at),
+        el("p","Nsight Systems "+run.receipt.nsys_version+" / Nsight Compute "+run.receipt.ncu_version),
+        el("p","Binary SHA-256: "+run.receipt.binary_sha256));
+      detail.append(table([t("通常実行","Normal run"),t("更新区間（秒）","Update (seconds)"),"H(diff)"],r.runs.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),fmt(v.seconds),String(v.h_diff)])),
+        el("h4",t("別実行のトレース内訳","Separate-run trace partition")),
+        el("p",t("以下はプロファイル実行の時間です。通常実行の実測内訳ではありません。","These are profiled-run times, not measured decompositions of normal execution.")),
+        table([t("重複を除いた時間区分","Disjoint time partition"),"s"],Object.entries(r.timeline).map(([k,v])=>[names[k],fmt(v)])));
+      const graph=el("div");graph.className="runtime-kernels";
+      const max=Math.max(...Object.values(r.timeline));
+      for(const [key,seconds] of Object.entries(r.timeline)) {
+        const row=el("div"),bar=el("span",fmt(seconds)+" s");bar.className="runtime-kernel-bar";bar.style.width=(seconds/max*100)+"%";
+        row.append(el("span",names[key]),bar);graph.append(row);
+      }detail.append(graph);
+      const counter=el("details");counter.append(el("summary",t("起動形状別カウンタ（1呼出し当たり）","Counters by launch shape, per invocation")));
+      const median=(samples,key)=>{const values=samples.map(v=>v[key]).filter(v=>v!==null).sort((a,b)=>a-b);return values.length?fmt((values[Math.floor((values.length-1)/2)]+values[Math.floor(values.length/2)])/2):t("未取得","Not captured");};
+      counter.append(table([t("カーネル・起動形状","Kernel / grid / block"),t("累積秒 / 回数","Cumulative seconds / calls"),t("サンプル数","Samples"),"FP64 FLOPs","FP32 FLOPs","HBM bytes","L2 bytes"],r.kernels.map(k=>[
+        k.name+" / "+k.grid.join("×")+" / "+k.block.join("×"),fmt(k.seconds)+" / "+k.count,String(k.samples.length),
+        ...["fp64_ops","fp32_ops","hbm_bytes","l2_bytes"].map(key=>median(k.samples,key))])));
+      detail.append(counter);outer.append(detail);
+    }
+    const ul=el("ul");study["limitations_"+language].forEach(note=>ul.append(el("li",note)));outer.append(ul);
+    return outer;
+  }
   function detail(c) {
     root.append(link(t("← すべての評価ケース","← All evaluation cases"),href(null)));
     const label=el("label",t("評価ケース","Evaluation case")),select=el("select");select.id="runtime-case-select";
@@ -297,6 +342,7 @@
       const limits=el("details");limits.append(el("summary",t("予測の限界・未確認事項","Prediction limitations and gaps")));
       const ul=el("ul");study["caveats_"+language].forEach(v=>ul.append(el("li",v)));limits.append(ul);root.append(limits);
     }
+    if(c.kind==="kernel-study")root.append(kernelDetails(data.kernel_study));
     for(const method of view.methods) {
       const section=el("details");section.id="method-"+method.id;section.className="runtime-method";
       section.append(el("summary",local(method,"name")),el("p",method.formula),el("p",local(method,"note")));

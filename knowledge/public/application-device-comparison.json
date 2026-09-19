@@ -7,8 +7,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-RUNTIME-SPECS-20260919",
-    "human_approval_directive_id": "DIR-900134"
+    "publication_decision_id": "PUBDEC-KERNEL-MODEL-20260919",
+    "human_approval_directive_id": "DIR-900137"
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
@@ -627,6 +627,20 @@
       "source_id": "SRC-GRACE-STUDY",
       "title": "NVIDIA Grace Performance Tuning Guide: GH200 memory",
       "url": "https://docs.nvidia.com/dccpu/grace-perf-tuning-guide/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-NERSC-ROOFLINE",
+      "title": "NERSC: Roofline Performance Model",
+      "url": "https://docs.nersc.gov/tools/performance/roofline/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-NSIGHT-PROFILING",
+      "title": "NVIDIA Nsight Compute Profiling Guide",
+      "url": "https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html",
       "published_at": null,
       "checked_at": "2026-09-19"
     }
@@ -1349,6 +1363,19 @@
           "SRC-GRACE-STUDY",
           "SRC-HGX-RA-B300"
         ]
+      },
+      {
+        "id": "kernel-roofline",
+        "name_ja": "予測手法：カーネル別Roofline・残差保持",
+        "name_en": "Prediction method: per-kernel roofline with residual preservation",
+        "formula": "R = max(F64/P64 + F32/P32, bytesHBM/B); t1 = max(0,t0 − R0) + R1; T1 = Tnormal × (Σ traced_kernel_time × t1/t0 + nonGPU) / trace_window",
+        "note_ja": "FMAを2演算としてFP64/FP32を分離。通常実行時間を基準とし、別実行のカウンタとトレースを使用します。未取得カーネル・CPU/起動/同期/転送/未分類は一定という仮定で保持します。推定した内訳を通常実行の実測内訳とは呼びません。全体への配分にはトレース時間比を使うため、その摂動は未校正です。",
+        "note_en": "Counts each FMA as two operations and separates FP64/FP32. Normal runtime is the timing anchor; counters and traces come from separate runs. Unsampled kernels and CPU/launch/sync/copy/unclassified portions are held constant as assumptions, not measured normal-run decompositions. Trace shares allocate time, so trace perturbation remains uncalibrated.",
+        "source_ids": [
+          "SRC-NERSC-ROOFLINE",
+          "SRC-NSIGHT-PROFILING",
+          "SRC-HGX-FP64"
+        ]
       }
     ],
     "machines": [
@@ -1517,6 +1544,17 @@
         "kind": "normal-phases",
         "reference_group_id": null,
         "study_id": "lqcd-sample-20260919"
+      },
+      {
+        "id": "lqcd-8x4-kernel",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD（8×8×8×8・カーネル別モデル検証）",
+        "title_en": "LQCD (8×8×8×8 / kernel-model validation)",
+        "scope_ja": "1軌道のHMC更新区間。同一公開入力・乱数シードの通常実行を再測定し、別実行のカーネルカウンタから予測します。初期化・終了処理を含まないためmain全体の行とは比較しません。",
+        "scope_en": "One-trajectory HMC update, remeasured in normal runs with identical public input and seed. Predictions use counters from separate executions. Excludes initialization/finalization; do not compare to main-runtime rows.",
+        "kind": "kernel-study",
+        "reference_group_id": null,
+        "study_id": "lqcd-kernel-20260919"
       }
     ],
     "phase_runs": [
@@ -2391,7 +2429,7 @@
         "counter_scope": "first-three-initialization-kernels-only"
       },
       "reference_h_diff": 0.00083995,
-      "h_diff_tolerance": 1e-8,
+      "h_diff_tolerance": 1e-08,
       "source_ids": [
         "SRC-CLOUD-LQCD-20260919",
         "SRC-LQCD-PINNED",
@@ -2421,5 +2459,4271 @@
       "procurement_eligible": false,
       "independent_validation": false
     }
-  ]
+  ],
+  "kernel_study": {
+    "id": "lqcd-kernel-20260919",
+    "application_id": "APP-EEA1-LQCD-DWF-HMC",
+    "baseline_machine_id": "gh200",
+    "reference_h_diff": 0.00083995,
+    "h_diff_tolerance": 1e-08,
+    "source_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+    "compiler": "NVHPC 26.5 / OpenACC / MPI=1 / OMP=1 / GPU=1",
+    "frozen": {
+      "frozen_at": "2026-09-19T14:20:48.650903+00:00",
+      "model_sha256": "9263a1a91a5469b8c9624a93249644da85be60b052cc15dfbe3657451cf41347",
+      "baseline_sha256": "1dbcaa0ecb48d72ca78dfefd2c6d168587832adffea5ecd38ae7d228412dd75c",
+      "baseline_spec": {
+        "fp64": 34,
+        "fp32": 67,
+        "bandwidth": 4000
+      },
+      "targets": {
+        "a100": {
+          "fp64": 9.7,
+          "fp32": 19.5,
+          "bandwidth": 2039
+        },
+        "h100": {
+          "fp64": 34,
+          "fp32": 67,
+          "bandwidth": 3350
+        },
+        "h200": {
+          "fp64": 34,
+          "fp32": 67,
+          "bandwidth": 4800
+        },
+        "b300": {
+          "fp64": 1.25,
+          "fp32": 75,
+          "bandwidth": 8000
+        }
+      },
+      "target_observations_used": false,
+      "prior_target_seen": [
+        "b300"
+      ],
+      "results": {
+        "a100": {
+          "seconds": 13.337863090524348,
+          "minimum": 7.69347007485388,
+          "maximum": 27.308819755357224
+        },
+        "h100": {
+          "seconds": 13.260947729952708,
+          "minimum": 7.61655471428224,
+          "maximum": 24.747060968121662
+        },
+        "h200": {
+          "seconds": 13.23331661369446,
+          "minimum": 7.419424587030695,
+          "maximum": 24.522102645035396
+        },
+        "b300": {
+          "seconds": 13.457622485392704,
+          "minimum": 7.813229469722236,
+          "maximum": 42.191684111977324
+        }
+      }
+    },
+    "runs": [
+      {
+        "machine_id": "gh200",
+        "data": {
+          "runs": [
+            {
+              "warmup": true,
+              "seconds": 13.2538114,
+              "h_diff": 0.00083995,
+              "outer_seconds": 14.406
+            },
+            {
+              "warmup": false,
+              "seconds": 13.178659778,
+              "h_diff": 0.00083995,
+              "outer_seconds": 14.207
+            },
+            {
+              "warmup": false,
+              "seconds": 13.328857077,
+              "h_diff": 0.00083995,
+              "outer_seconds": 14.348
+            },
+            {
+              "warmup": false,
+              "seconds": 13.246084095,
+              "h_diff": 0.00083995,
+              "outer_seconds": 14.251
+            }
+          ],
+          "window_seconds": 17.262112096,
+          "timeline": {
+            "gpu": 2.550723545,
+            "copy": 0.438370334,
+            "sync_api": 3.677920863,
+            "launch_api": 0.908629541,
+            "unclassified": 9.686467813
+          },
+          "api_counts": {
+            "sync_api": 640493,
+            "launch_api": 318945
+          },
+          "kernels": [
+            {
+              "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.8052241579999775,
+              "count": 51290,
+              "samples": [
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 8960.0,
+                  "l2_bytes": 4099776.0,
+                  "profiled_nanoseconds": 5184.0
+                },
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 8704.0,
+                  "l2_bytes": 4105312.0,
+                  "profiled_nanoseconds": 5216.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.24592867100001134,
+              "count": 22436,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2371840.0,
+                  "l2_bytes": 11854624.0,
+                  "profiled_nanoseconds": 19328.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2369536.0,
+                  "l2_bytes": 11842944.0,
+                  "profiled_nanoseconds": 19264.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                2640,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.15781795400000834,
+              "count": 22516,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3183872.0,
+                  "l2_bytes": 20408224.0,
+                  "profiled_nanoseconds": 10112.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3182848.0,
+                  "l2_bytes": 20405888.0,
+                  "profiled_nanoseconds": 10144.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.13647065199998895,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 1181632.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4730112.0,
+                  "l2_bytes": 8843200.0,
+                  "profiled_nanoseconds": 12544.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.130365888000001,
+              "count": 18564,
+              "samples": [
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4728576.0,
+                  "l2_bytes": 15902080.0,
+                  "profiled_nanoseconds": 12704.0
+                },
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4727808.0,
+                  "l2_bytes": 15899360.0,
+                  "profiled_nanoseconds": 12832.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                1584,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.09708246399999937,
+              "count": 10224,
+              "samples": [
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6330880.0,
+                  "l2_bytes": 39679200.0,
+                  "profiled_nanoseconds": 12768.0
+                },
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6330880.0,
+                  "l2_bytes": 39673248.0,
+                  "profiled_nanoseconds": 12640.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08449881600000092,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2367488.0,
+                  "l2_bytes": 9012320.0,
+                  "profiled_nanoseconds": 10976.0
+                },
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2366976.0,
+                  "l2_bytes": 9009312.0,
+                  "profiled_nanoseconds": 11072.0
+                }
+              ]
+            },
+            {
+              "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.07666953500000004,
+              "count": 2144,
+              "samples": [
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18894336.0,
+                  "l2_bytes": 35315840.0,
+                  "profiled_nanoseconds": 46240.0
+                },
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18890240.0,
+                  "l2_bytes": 35326752.0,
+                  "profiled_nanoseconds": 45888.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::copy_137(float *, float *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.07448678400000028,
+              "count": 11578,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2368000.0,
+                  "l2_bytes": 8941664.0,
+                  "profiled_nanoseconds": 11840.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2368768.0,
+                  "l2_bytes": 8944704.0,
+                  "profiled_nanoseconds": 11904.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0742020160000012,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 466944.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2367744.0,
+                  "l2_bytes": 9011520.0,
+                  "profiled_nanoseconds": 10656.0
+                },
+                {
+                  "fp64_ops": 466944.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2367744.0,
+                  "l2_bytes": 9007328.0,
+                  "profiled_nanoseconds": 10720.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.058360575000000255,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2368256.0,
+                  "l2_bytes": 12233376.0,
+                  "profiled_nanoseconds": 7936.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2368000.0,
+                  "l2_bytes": 12250656.0,
+                  "profiled_nanoseconds": 7968.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.052881600000002096,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2369280.0,
+                  "l2_bytes": 12250752.0,
+                  "profiled_nanoseconds": 7744.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2369536.0,
+                  "l2_bytes": 12282368.0,
+                  "profiled_nanoseconds": 7936.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.04574953599999963,
+              "count": 5348,
+              "samples": [
+                {
+                  "fp64_ops": 5210112.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4726528.0,
+                  "l2_bytes": 16218368.0,
+                  "profiled_nanoseconds": 10976.0
+                },
+                {
+                  "fp64_ops": 5210112.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4726784.0,
+                  "l2_bytes": 16225920.0,
+                  "profiled_nanoseconds": 11040.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.04392537599999974,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 591808.0,
+                  "fp32_ops": 589824.0,
+                  "hbm_bytes": 2371584.0,
+                  "l2_bytes": 5303232.0,
+                  "profiled_nanoseconds": 12576.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::copy_137(double *, double *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0417227840000001,
+              "count": 5376,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4728832.0,
+                  "l2_bytes": 16165536.0,
+                  "profiled_nanoseconds": 12704.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4786176.0,
+                  "l2_bytes": 16226048.0,
+                  "profiled_nanoseconds": 12928.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.037989857999999765,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1310592.0,
+                  "hbm_bytes": 4729344.0,
+                  "l2_bytes": 9044544.0,
+                  "profiled_nanoseconds": 13184.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.037237663999999705,
+              "count": 4876,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.035992991000002805,
+              "count": 5549,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3168,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03242956800000008,
+              "count": 5412,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3168,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03232630400000044,
+              "count": 5348,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.0309028149999999,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4864.0,
+                  "l2_bytes": 1696128.0,
+                  "profiled_nanoseconds": 2752.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.026978111999999926,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 4224.0,
+                  "hbm_bytes": 4608.0,
+                  "l2_bytes": 1714816.0,
+                  "profiled_nanoseconds": 5408.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.016146432000000027,
+              "count": 1714,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+              "grid": [
+                128,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.014825726999999995,
+              "count": 1072,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                2640,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.012992511999999918,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.01295932800000002,
+              "count": 1574,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009969823999999947,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009695487999999901,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009642335999999994,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009575167999999957,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00917436899999999,
+              "count": 3780,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.00912947199999966,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4864.0,
+                  "l2_bytes": 1694080.0,
+                  "profiled_nanoseconds": 2784.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0074479359999998435,
+              "count": 3096,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00692246399999994,
+              "count": 2848,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.006432095999999997,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+              "grid": [
+                1584,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.004355135999999932,
+              "count": 2052,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.004279103999999995,
+              "count": 1087,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0034969280000000024,
+              "count": 892,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0031232319999999984,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0030155519999999977,
+              "count": 772,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002923136000000001,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0029204800000000026,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0029069439999999916,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002903647999999992,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0021503360000000014,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001680991999999991,
+              "count": 684,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0014788479999999979,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_init_20(double *, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0014655999999999975,
+              "count": 333,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013059519999999991,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001291296,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011874880000000004,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011791039999999996,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011767999999999995,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011759679999999995,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001174432000000001,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011722560000000004,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011646720000000005,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011636160000000001,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011630720000000005,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001159840000000001,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011544640000000009,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001152800000000001,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011502720000000006,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0006304959999999992,
+              "count": 160,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0005931519999999998,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00058944,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::at_G_714(double *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00028121599999999993,
+              "count": 76,
+              "samples": []
+            }
+          ],
+          "counter_settings": {
+            "selection_basis": "prior-GH200-timeline",
+            "selected_kernel_time_fraction": 0.8744246293727644,
+            "metrics": [
+              "gpu__time_duration.sum",
+              "dram__bytes_read.sum",
+              "dram__bytes_write.sum",
+              "lts__t_bytes.sum",
+              "smsp__sass_thread_inst_executed_op_dfma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dadd_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_ffma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fadd_pred_on.sum"
+            ],
+            "cache_control": "none",
+            "clock_control": "none",
+            "launch_skip": 10,
+            "samples_per_kernel": 2,
+            "profiled_application_terminated_early": true
+          },
+          "input_sha256": {
+            "input/main.yaml": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+            "input/HMC_DWF_Nf2p1_eo.yaml": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+            "conf_04040408.txt": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+          }
+        },
+        "receipt": {
+          "measurement_started_at": "2026-09-19T14:12:58Z",
+          "completed_at": "2026-09-19T14:16:22Z",
+          "binary_sha256": "a5586b8ceea916b4c515e7d5adc37a666f90ada1fcfc1b32a20bcabe4e53f140",
+          "nsys_version": "2026.2.1.210-262137639646v0",
+          "ncu_version": "2026.1.0.0"
+        }
+      },
+      {
+        "machine_id": "b300",
+        "data": {
+          "runs": [
+            {
+              "warmup": true,
+              "seconds": 25.752767655,
+              "h_diff": 0.00083995,
+              "outer_seconds": 27.688
+            },
+            {
+              "warmup": false,
+              "seconds": 25.725591445,
+              "h_diff": 0.00083995,
+              "outer_seconds": 27.55
+            },
+            {
+              "warmup": false,
+              "seconds": 25.649724871,
+              "h_diff": 0.00083995,
+              "outer_seconds": 27.466
+            },
+            {
+              "warmup": false,
+              "seconds": 25.758274575,
+              "h_diff": 0.00083995,
+              "outer_seconds": 27.572
+            }
+          ],
+          "window_seconds": 30.744270852,
+          "timeline": {
+            "gpu": 9.844011861,
+            "copy": 0.901267768,
+            "sync_api": 6.385297894,
+            "launch_api": 1.154510804,
+            "unclassified": 12.459182525
+          },
+          "api_counts": {
+            "sync_api": 640493,
+            "launch_api": 318945
+          },
+          "kernels": [
+            {
+              "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 4.282459302000533,
+              "count": 51290,
+              "samples": [
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 9216.0,
+                  "l2_bytes": 2738560.0,
+                  "profiled_nanoseconds": 11008.0
+                },
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 9216.0,
+                  "l2_bytes": 2804416.0,
+                  "profiled_nanoseconds": 11456.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 1.2046871409999986,
+              "count": 22436,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2387200.0,
+                  "l2_bytes": 11023648.0,
+                  "profiled_nanoseconds": 106624.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2377728.0,
+                  "l2_bytes": 10929984.0,
+                  "profiled_nanoseconds": 98016.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 1.0389274350000046,
+              "count": 18564,
+              "samples": [
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4730624.0,
+                  "l2_bytes": 14733312.0,
+                  "profiled_nanoseconds": 138816.0
+                },
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4730624.0,
+                  "l2_bytes": 14732032.0,
+                  "profiled_nanoseconds": 138784.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                1776,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.6571073829999945,
+              "count": 10224,
+              "samples": [
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6409984.0,
+                  "l2_bytes": 41655296.0,
+                  "profiled_nanoseconds": 75360.0
+                },
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6409984.0,
+                  "l2_bytes": 41841600.0,
+                  "profiled_nanoseconds": 75616.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.2913821790000256,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 1181632.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4731392.0,
+                  "l2_bytes": 7650752.0,
+                  "profiled_nanoseconds": 22720.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.26947271000000544,
+              "count": 5549,
+              "samples": []
+            },
+            {
+              "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.19352046700000006,
+              "count": 2144,
+              "samples": [
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18881536.0,
+                  "l2_bytes": 31206208.0,
+                  "profiled_nanoseconds": 107168.0
+                },
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18881280.0,
+                  "l2_bytes": 31221024.0,
+                  "profiled_nanoseconds": 108192.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.19277627699999844,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2368768.0,
+                  "l2_bytes": 8425280.0,
+                  "profiled_nanoseconds": 22912.0
+                },
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2369280.0,
+                  "l2_bytes": 8547264.0,
+                  "profiled_nanoseconds": 23616.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.18077030699998586,
+              "count": 22516,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3200256.0,
+                  "l2_bytes": 20476160.0,
+                  "profiled_nanoseconds": 12352.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3197184.0,
+                  "l2_bytes": 20436160.0,
+                  "profiled_nanoseconds": 13408.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.1506081519999955,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 454656.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2370560.0,
+                  "l2_bytes": 8423616.0,
+                  "profiled_nanoseconds": 18720.0
+                },
+                {
+                  "fp64_ops": 454656.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2368512.0,
+                  "l2_bytes": 8425632.0,
+                  "profiled_nanoseconds": 18848.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.1466398499999938,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 591808.0,
+                  "fp32_ops": 589824.0,
+                  "hbm_bytes": 2374144.0,
+                  "l2_bytes": 3987040.0,
+                  "profiled_nanoseconds": 31904.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.1396238450000001,
+              "count": 1714,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.13604306699999993,
+              "count": 4876,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.11905135199999958,
+              "count": 5348,
+              "samples": [
+                {
+                  "fp64_ops": 5197824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4728832.0,
+                  "l2_bytes": 15578560.0,
+                  "profiled_nanoseconds": 28448.0
+                },
+                {
+                  "fp64_ops": 5197824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4732416.0,
+                  "l2_bytes": 15627648.0,
+                  "profiled_nanoseconds": 28448.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3552,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.10741386200000025,
+              "count": 5348,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3552,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08909709399999954,
+              "count": 5412,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_137(float *, float *, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08458432899999971,
+              "count": 11578,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2368768.0,
+                  "l2_bytes": 7783072.0,
+                  "profiled_nanoseconds": 14592.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2368768.0,
+                  "l2_bytes": 7743936.0,
+                  "profiled_nanoseconds": 15456.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08197960500000342,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2371584.0,
+                  "l2_bytes": 12027552.0,
+                  "profiled_nanoseconds": 11264.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2370304.0,
+                  "l2_bytes": 12013216.0,
+                  "profiled_nanoseconds": 11232.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4144,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.07148366499999884,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2371584.0,
+                  "l2_bytes": 12014336.0,
+                  "profiled_nanoseconds": 10784.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2373632.0,
+                  "l2_bytes": 12031616.0,
+                  "profiled_nanoseconds": 10624.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::copy_137(double *, double *, int, int)",
+              "grid": [
+                4144,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.04358023000000006,
+              "count": 5376,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4728064.0,
+                  "l2_bytes": 15108512.0,
+                  "profiled_nanoseconds": 15488.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4728320.0,
+                  "l2_bytes": 15109248.0,
+                  "profiled_nanoseconds": 15136.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.042199824999999795,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1326464.0,
+                  "hbm_bytes": 4728576.0,
+                  "l2_bytes": 7934368.0,
+                  "profiled_nanoseconds": 16128.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.03248659099999987,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 9984.0,
+                  "l2_bytes": 202432.0,
+                  "profiled_nanoseconds": 4480.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+              "grid": [
+                128,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.02600151100000001,
+              "count": 1072,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.025747021999999977,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.020815350999999656,
+              "count": 3780,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.017041082999999933,
+              "count": 3096,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.015894323999999894,
+              "count": 2848,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.01552108300000016,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 4736.0,
+                  "hbm_bytes": 8448.0,
+                  "l2_bytes": 208320.0,
+                  "profiled_nanoseconds": 5760.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.015396619999999974,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.015263177999999955,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.015200771999999918,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.014501196000000112,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+              "grid": [
+                4144,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.013943200000000076,
+              "count": 2052,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+              "grid": [
+                4144,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.013732249999999998,
+              "count": 1574,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.009666915999999777,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 9984.0,
+                  "l2_bytes": 206528.0,
+                  "profiled_nanoseconds": 4544.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.006713575999999975,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.006157107,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.006135929999999994,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0040388259999999876,
+              "count": 1087,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.003779919999999994,
+              "count": 684,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.003395873999999996,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0033016649999999905,
+              "count": 892,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0032695590000000013,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.003024888,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0028707839999999956,
+              "count": 772,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002827670000000001,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002514234,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001785738999999999,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_init_20(double *, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013204269999999999,
+              "count": 333,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001154889000000001,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001151078,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011508280000000013,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011469510000000009,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011458060000000012,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011448760000000004,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011330390000000013,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011083619999999999,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010612549999999997,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010610320000000004,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010321669999999994,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010317849999999995,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010316269999999994,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001029453000000002,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010290949999999996,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0010253249999999999,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+              "grid": [
+                4736,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0006002620000000001,
+              "count": 160,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::at_G_714(double *, int, int)",
+              "grid": [
+                2960,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.000218658,
+              "count": 76,
+              "samples": []
+            }
+          ],
+          "counter_settings": {
+            "selection_basis": "prior-GH200-timeline",
+            "selected_kernel_time_fraction": 0.8744246293727649,
+            "metrics": [
+              "gpu__time_duration.sum",
+              "dram__bytes_read.sum",
+              "dram__bytes_write.sum",
+              "lts__t_bytes.sum",
+              "smsp__sass_thread_inst_executed_op_dfma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dadd_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_ffma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fadd_pred_on.sum"
+            ],
+            "cache_control": "none",
+            "clock_control": "none",
+            "launch_skip": 10,
+            "samples_per_kernel": 2,
+            "profiled_application_terminated_early": true
+          },
+          "input_sha256": {
+            "input/main.yaml": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+            "input/HMC_DWF_Nf2p1_eo.yaml": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+            "conf_04040408.txt": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+          }
+        },
+        "receipt": {
+          "measurement_started_at": "2026-09-19T14:12:58Z",
+          "completed_at": "2026-09-19T14:17:45Z",
+          "binary_sha256": "c1907cef3716d8a19f3f41251f44cdad0800f6bc042b42304ca61e632e9b3312",
+          "nsys_version": "2026.2.1.210-262137639646v0",
+          "ncu_version": "2026.1.0.0"
+        }
+      },
+      {
+        "machine_id": "h200",
+        "data": {
+          "runs": [
+            {
+              "warmup": true,
+              "seconds": 16.439449666,
+              "h_diff": 0.00083995,
+              "outer_seconds": 17.974
+            },
+            {
+              "warmup": false,
+              "seconds": 16.406538141,
+              "h_diff": 0.00083995,
+              "outer_seconds": 17.778
+            },
+            {
+              "warmup": false,
+              "seconds": 16.463352463,
+              "h_diff": 0.00083995,
+              "outer_seconds": 17.824
+            },
+            {
+              "warmup": false,
+              "seconds": 16.40134154,
+              "h_diff": 0.00083995,
+              "outer_seconds": 17.764
+            }
+          ],
+          "window_seconds": 19.62823937,
+          "timeline": {
+            "gpu": 2.528931305,
+            "copy": 0.519716617,
+            "sync_api": 3.01313115,
+            "launch_api": 0.944886555,
+            "unclassified": 12.621573743
+          },
+          "api_counts": {
+            "sync_api": 640493,
+            "launch_api": 318945
+          },
+          "kernels": [
+            {
+              "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.8010893619999839,
+              "count": 51290,
+              "samples": [
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 8448.0,
+                  "l2_bytes": 2706080.0,
+                  "profiled_nanoseconds": 4832.0
+                },
+                {
+                  "fp64_ops": 147456.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 8704.0,
+                  "l2_bytes": 2711456.0,
+                  "profiled_nanoseconds": 4832.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.24451786100001194,
+              "count": 22436,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2370816.0,
+                  "l2_bytes": 10549184.0,
+                  "profiled_nanoseconds": 18944.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1179648.0,
+                  "hbm_bytes": 2371584.0,
+                  "l2_bytes": 10619360.0,
+                  "profiled_nanoseconds": 19488.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                2640,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.15706207000000236,
+              "count": 22516,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3187712.0,
+                  "l2_bytes": 19660224.0,
+                  "profiled_nanoseconds": 9664.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 44089344.0,
+                  "hbm_bytes": 3185408.0,
+                  "l2_bytes": 19658208.0,
+                  "profiled_nanoseconds": 9472.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.13440979900000008,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 1181632.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4734720.0,
+                  "l2_bytes": 7650080.0,
+                  "profiled_nanoseconds": 11936.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.12866278000000345,
+              "count": 18564,
+              "samples": [
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4729344.0,
+                  "l2_bytes": 14642816.0,
+                  "profiled_nanoseconds": 12384.0
+                },
+                {
+                  "fp64_ops": 589824.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4736768.0,
+                  "l2_bytes": 14639104.0,
+                  "profiled_nanoseconds": 12416.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+              "grid": [
+                1584,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.09678555799999977,
+              "count": 10224,
+              "samples": [
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6332416.0,
+                  "l2_bytes": 38835936.0,
+                  "profiled_nanoseconds": 11808.0
+                },
+                {
+                  "fp64_ops": 44089344.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 6332160.0,
+                  "l2_bytes": 39080736.0,
+                  "profiled_nanoseconds": 12032.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08450723400000038,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2368512.0,
+                  "l2_bytes": 8114208.0,
+                  "profiled_nanoseconds": 10656.0
+                },
+                {
+                  "fp64_ops": 1314816.0,
+                  "fp32_ops": 4534272.0,
+                  "hbm_bytes": 2368000.0,
+                  "l2_bytes": 8113792.0,
+                  "profiled_nanoseconds": 10880.0
+                }
+              ]
+            },
+            {
+              "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.08048221799999997,
+              "count": 2144,
+              "samples": [
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18890496.0,
+                  "l2_bytes": 34428416.0,
+                  "profiled_nanoseconds": 45568.0
+                },
+                {
+                  "fp64_ops": 14155776.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 18894336.0,
+                  "l2_bytes": 34401728.0,
+                  "profiled_nanoseconds": 45856.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.07411324600000126,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 466944.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2367488.0,
+                  "l2_bytes": 8077728.0,
+                  "profiled_nanoseconds": 10080.0
+                },
+                {
+                  "fp64_ops": 466944.0,
+                  "fp32_ops": 4988928.0,
+                  "hbm_bytes": 2367744.0,
+                  "l2_bytes": 8113088.0,
+                  "profiled_nanoseconds": 10368.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::copy_137(float *, float *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.07317301799999942,
+              "count": 11578,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2367232.0,
+                  "l2_bytes": 7677504.0,
+                  "profiled_nanoseconds": 11488.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 2368000.0,
+                  "l2_bytes": 7676480.0,
+                  "profiled_nanoseconds": 11456.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.058309138999999746,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2369536.0,
+                  "l2_bytes": 11393280.0,
+                  "profiled_nanoseconds": 7616.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2368512.0,
+                  "l2_bytes": 11393728.0,
+                  "profiled_nanoseconds": 7648.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.05234621900000158,
+              "count": 11258,
+              "samples": [
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2369536.0,
+                  "l2_bytes": 11383328.0,
+                  "profiled_nanoseconds": 7680.0
+                },
+                {
+                  "fp64_ops": 172032.0,
+                  "fp32_ops": 6610944.0,
+                  "hbm_bytes": 2369536.0,
+                  "l2_bytes": 11429920.0,
+                  "profiled_nanoseconds": 7264.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.045046256999999604,
+              "count": 5348,
+              "samples": [
+                {
+                  "fp64_ops": 5210112.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4727040.0,
+                  "l2_bytes": 15330496.0,
+                  "profiled_nanoseconds": 10560.0
+                },
+                {
+                  "fp64_ops": 5210112.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4727040.0,
+                  "l2_bytes": 15288160.0,
+                  "profiled_nanoseconds": 10624.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.04288905799999932,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 591808.0,
+                  "fp32_ops": 589824.0,
+                  "hbm_bytes": 2370560.0,
+                  "l2_bytes": 3994080.0,
+                  "profiled_nanoseconds": 12256.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::copy_137(double *, double *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.041729100999999935,
+              "count": 5376,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4729088.0,
+                  "l2_bytes": 14943872.0,
+                  "profiled_nanoseconds": 12128.0
+                },
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4727552.0,
+                  "l2_bytes": 14953536.0,
+                  "profiled_nanoseconds": 12384.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03755573699999934,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 1310592.0,
+                  "hbm_bytes": 4731136.0,
+                  "l2_bytes": 7864448.0,
+                  "profiled_nanoseconds": 12992.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03667903899999993,
+              "count": 4876,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03520662899999746,
+              "count": 5549,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3168,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03214569200000037,
+              "count": 5348,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+              "grid": [
+                3168,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.03193190100000014,
+              "count": 5412,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::norm2_344(double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.026119073999999402,
+              "count": 19769,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4864.0,
+                  "l2_bytes": 149760.0,
+                  "profiled_nanoseconds": 2144.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::dot_321(float *, float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.02551367399999918,
+              "count": 5549,
+              "samples": [
+                {
+                  "fp64_ops": 0.0,
+                  "fp32_ops": 4224.0,
+                  "hbm_bytes": 4864.0,
+                  "l2_bytes": 171200.0,
+                  "profiled_nanoseconds": 4992.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+              "grid": [
+                64,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.01711863800000008,
+              "count": 1714,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+              "grid": [
+                128,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.01495895900000001,
+              "count": 1072,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                2640,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.01292522299999992,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.012802575999999986,
+              "count": 1574,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009816998000000013,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009556551000000036,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009476134999999946,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.009473990999999984,
+              "count": 2345,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.008839848999999865,
+              "count": 3780,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::norm2_344(float *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.0077263709999998344,
+              "count": 5789,
+              "samples": [
+                {
+                  "fp64_ops": 64.0,
+                  "fp32_ops": 0.0,
+                  "hbm_bytes": 4864.0,
+                  "l2_bytes": 148448.0,
+                  "profiled_nanoseconds": 2176.0
+                }
+              ]
+            },
+            {
+              "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0072477500000000545,
+              "count": 3096,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0066323599999999735,
+              "count": 2848,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::dot_321(double *, double *, int, int)",
+              "grid": [
+                1,
+                1,
+                1
+              ],
+              "block": [
+                256,
+                1,
+                1
+              ],
+              "seconds": 0.006032072000000075,
+              "count": 1719,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+              "grid": [
+                1584,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.004209250000000029,
+              "count": 2052,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.004189090000000006,
+              "count": 1087,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.003402115000000004,
+              "count": 892,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0029918419999999993,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0029484499999999944,
+              "count": 772,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0028485799999999764,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002843363999999979,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.002837024999999987,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0028296659999999963,
+              "count": 774,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0022448650000000017,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+              "grid": [
+                2112,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0016219519999999949,
+              "count": 684,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_init_20(double *, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.001430592,
+              "count": 333,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0014289939999999988,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013920020000000013,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013550100000000007,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013158740000000007,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0013025309999999998,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011938259999999996,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011795839999999998,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011721620000000005,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011716810000000002,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00116861,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011658880000000006,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011557450000000006,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011532800000000009,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011497300000000016,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011465280000000013,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0011445130000000009,
+              "count": 268,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0006145600000000001,
+              "count": 160,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0005848329999999996,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.0005833919999999996,
+              "count": 80,
+              "samples": []
+            },
+            {
+              "name": "BridgeACC::at_G_714(double *, int, int)",
+              "grid": [
+                4224,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "seconds": 0.00027363199999999994,
+              "count": 76,
+              "samples": []
+            }
+          ],
+          "counter_settings": {
+            "selection_basis": "prior-GH200-timeline",
+            "selected_kernel_time_fraction": 0.8744246293727644,
+            "metrics": [
+              "gpu__time_duration.sum",
+              "dram__bytes_read.sum",
+              "dram__bytes_write.sum",
+              "lts__t_bytes.sum",
+              "smsp__sass_thread_inst_executed_op_dfma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_dadd_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_ffma_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fmul_pred_on.sum",
+              "smsp__sass_thread_inst_executed_op_fadd_pred_on.sum"
+            ],
+            "cache_control": "none",
+            "clock_control": "none",
+            "launch_skip": 10,
+            "samples_per_kernel": 2,
+            "profiled_application_terminated_early": true
+          },
+          "input_sha256": {
+            "input/main.yaml": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+            "input/HMC_DWF_Nf2p1_eo.yaml": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+            "conf_04040408.txt": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+          }
+        },
+        "receipt": {
+          "measurement_started_at": "2026-09-19T14:29:20Z",
+          "completed_at": "2026-09-19T14:33:11Z",
+          "binary_sha256": "53e84cb61f5b35967bee9ae00c84d61e9fbcf2a882a7d34ab4b8fa0a7cb96cda",
+          "nsys_version": "2026.2.1.210-262137639646v0",
+          "ncu_version": "2026.1.0.0"
+        }
+      }
+    ],
+    "note_ja": "公開sample_1gpuの再計測です。EEA1指定入力の再現ではありません。同名カーネルも起動形状別に分離。各対象名につき11・12回目の呼出しを別実行で採取した少数サンプルであり、全呼出しの代表性は未検証です。GPU、転送、同期API、起動API、未分類の優先順で重複を除外した時間区分はトレース上の分類で、因果的なCPU待ち時間の確定ではありません。CPU上の計算・I/O・ランタイム処理の詳細は未分類です。",
+    "note_en": "Remeasurement of public sample_1gpu, not the prescribed EEA1 input. Identically named kernels are split by launch shape. Calls 11 and 12 per selected name are sparse samples from separate runs; representativeness across all calls is unverified. The disjoint timeline prioritizes GPU, copies, sync APIs, launch APIs and unclassified time. This is a trace partition, not causal attribution of CPU stalls. CPU computation, I/O and runtime internals remain unclassified.",
+    "limitations_ja": [
+      "中心値はカーネルの基準機残差を一定とする仮定です。演算・HBMに加えL2転送量を記録しますが、対象のL2実効帯域が未確認なためL2律速を外挿しません。",
+      "範囲は効率一定の代替仮定と非GPU時間0.5〜2倍の感度分析であり、統計的な信頼区間ではありません。",
+      "GH200とB300の旧実測は開発前から既知です。B300の再計測を盲検検証とはしません。H200等の新規対象では実測を確認する前に予測を固定します。",
+      "B300のFP64はメーカー併記値を1GPUに換算した上限として使う条件付き試算です。通常のFP64命令の実効性能を確認した値ではありません。",
+      "同じGPUでもホストCPU、電力・クロック、ドライバー、混雑で結果は変わります。調達評価には使用できません。",
+      "今回の実測はGH200・B300・H200のLQCD公開サンプルです。A100・H100の追加測定は資源待ちです。その他のEEA1アプリは入力・ビルド・コード利用条件の固定が未完了で、測定済みとはしていません。"
+    ],
+    "limitations_en": [
+      "Central values preserve baseline per-kernel residuals. L2 traffic is recorded alongside operations and HBM bytes, but target L2 bandwidth is unverified and cache bottlenecks are not extrapolated.",
+      "Ranges combine the constant-efficiency alternative and 0.5–2x non-GPU time sensitivity; they are not statistical confidence intervals.",
+      "Earlier GH200 and B300 measurements were known during development; B300 remeasurement is not blind validation. Predictions for new targets such as H200 are frozen before inspecting their measurements.",
+      "B300 uses a per-GPU normalized combined vendor FP64 ceiling as a conditional assumption, not a verified achieved native-FP64 rate.",
+      "Host CPU, power/clocks, drivers and contention affect results even with the same GPU. Not suitable for procurement scoring.",
+      "New observations cover the public LQCD sample on GH200, B300 and H200. Additional A100/H100 measurements await resources. Inputs, builds and code-use conditions are not frozen for other EEA1 applications; they are not represented as measured."
+    ]
+  }
 }
