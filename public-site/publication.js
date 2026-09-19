@@ -58,7 +58,7 @@
       else nav.prepend(link);
     }
     link.href = target.href;
-    link.textContent = language() === "ja" ? "実運用分析" : "Operational analysis";
+    link.textContent = language() === "ja" ? "ソフトウェア利用調査" : "Software usage survey";
     if (window.location.pathname === target.pathname) {
       link.classList.add("active");
       link.setAttribute("aria-current", "page");

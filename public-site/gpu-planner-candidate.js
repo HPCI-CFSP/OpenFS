@@ -8,6 +8,8 @@
   const state = {language: "ja", source: null, latest: null, latestRequest: null};
 
   const copy = {
+    analogy: {ja: "類推による計画概算（未検証）", en: "Analogy-based planning estimate (unvalidated)"},
+    analogyNote: {ja: "メーカー公表のラック構成と、既存サーバー価格からの類推を組み合わせた感度分析です。Rubinの提示価格・確定見積ではなく、数量範囲も保証値ではありません。", en: "Sensitivity analysis combining manufacturer rack specifications with an analogy to existing server prices. Neither a Rubin asking price nor a firm quote; quantity ranges are not guarantees."},
     reference: {ja: "公開価格付きの参照構成", en: "Reference configuration with a public asking price"},
     referenceNote: {ja: "公開サーバー価格と明示した仮定による概算です。実際の学術向け見積、納期、施設適合を保証しません。", en: "Conceptual estimate using a published server price and explicit assumptions, not an academic quote, delivery guarantee or facility qualification."},
     auto: {ja: "AI提案", en: "AI proposal"},
@@ -54,8 +56,8 @@
       en: "Candidates are separated by evidence stage. Past procurement does not guarantee future delivery, and roadmap candidates are not treated as procurement-ready."
     },
     adjustedNotice: {
-      ja: "手動調整を含むブラウザ内の概算です。公開提示価格と計画用仮定を区別し、価格付き参照構成のない製品は算定しません。調達判断には使用できません。",
-      en: "This browser-local estimate includes manual adjustments. Public asking prices and planning assumptions are distinguished; products without a priced reference package are not costed. Not for procurement."
+      ja: "手動調整を含むブラウザ内の概算です。公開提示価格と計画用仮定を区別し、Rubinの類推価格は未検証と明記します。価格モデルのない製品は算定しません。調達判断には使用できません。",
+      en: "This browser-local estimate includes manual adjustments. Public asking prices and planning assumptions are distinguished; Rubin analogy prices are unvalidated. Products without a price model remain uncomputed. Not for procurement."
     },
     requiredEvidence: {ja: "不足している公開根拠", en: "Missing public evidence"},
     priceCases: {ja: "価格区間別の算定", en: "Calculations by price interval"},
@@ -154,12 +156,13 @@
   function selectedProducts() {
     const compatible = (product) => OpenFSGpuEstimates.compatible(product, {cpu_architecture: byId("cpu-mode").value}, state.source[5]);
     const reference = (product) => state.source[5].packages.some(p => p.product_id === product.product_id);
+    const analogy = (product) => (state.source[5].rack_analogies || []).some(p => p.product_id === product.product_id);
     const exact = byId("accelerator-product").value;
     if (exact !== "auto") {
       return state.source[2].products.filter((product) => product.product_id === exact)
         .filter(compatible)
         .filter((product) => observedProcurement(product, acceptanceDate()) || forwardEvidence(product, acceptanceDate()))
-        .map((product) => ({product, proposal_class: reference(product) ? "reference" : observedProcurement(product, acceptanceDate()) ? "evidenced" : "forward"}));
+        .map((product) => ({product, proposal_class: analogy(product) ? "analogy" : reference(product) ? "reference" : observedProcurement(product, acceptanceDate()) ? "evidenced" : "forward"}));
     }
     const target = acceptanceDate();
     const selected = [];
@@ -171,13 +174,15 @@
           ((right.events.at(-1)?.date.value || "").localeCompare(left.events.at(-1)?.date.value || "")))[0];
       const priced = choose((product, date) => reference(product) && forwardEvidence(product, date));
       const evidenced = priced ? null : choose(observedProcurement);
-      const forward = choose((product, date) => !reference(product) && !observedProcurement(product, date) && forwardEvidence(product, date));
+      const estimated = choose((product, date) => analogy(product) && forwardEvidence(product, date));
+      const forward = choose((product, date) => !reference(product) && !analogy(product) && !observedProcurement(product, date) && forwardEvidence(product, date));
+      if (estimated) selected.push({product: estimated, proposal_class: "analogy"});
       if (priced) selected.push({product: priced, proposal_class: "reference"});
       if (evidenced) selected.push({product: evidenced, proposal_class: "evidenced"});
       if (forward) selected.push({product: forward, proposal_class: "forward"});
     });
     return selected.sort((left, right) => {
-      const classOrder = {reference: 0, evidenced: 1, forward: 2};
+      const classOrder = {analogy: 0, reference: 1, evidenced: 2, forward: 3};
       return classOrder[left.proposal_class] - classOrder[right.proposal_class] ||
         left.product.vendor.localeCompare(right.product.vendor);
     });
@@ -320,6 +325,31 @@
     return candidate.cases.find((item) => item.price_case === "baseline") || candidate.cases[0];
   }
 
+  function quantityRange(candidate, key) {
+    const values = candidate.cases.map(c => c.quantities?.[key]).filter(Number.isFinite);
+    if (!values.length) return text("unavailable");
+    const min = Math.min(...values), max = Math.max(...values);
+    const base = baselineCase(candidate).quantities?.[key];
+    const range = min === max ? formatNumber(min) : formatNumber(min) + " ~ " + formatNumber(max);
+    return range + (base == null ? "" : (state.language === "ja" ? "（基準 " : " (baseline ") + formatNumber(base) + (state.language === "ja" ? "）" : ")"));
+  }
+
+  function unitLabel(candidate) {
+    return candidate.price_analogy
+      ? (state.language === "ja" ? "計算トレイ数（4 GPU/トレイ）" : "Compute trays (4 GPUs/tray)")
+      : (state.language === "ja" ? "計算ノード数" : "Compute nodes");
+  }
+
+  function failureLabel(reason) {
+    const labels = {
+      "assumed-lead-time-exceeds-acceptance": ["仮定した納期では受入四半期に間に合いません。", "Assumed lead time exceeds the acceptance quarter."],
+      "whole-rack-purchase-required": ["18トレイ単位のラック構成を指定してください。", "Use complete racks in increments of 18 trays."],
+      "absolute-demand-exceeds-budget-or-manual-lock": ["需要を満たす規模が予算または手動指定と両立しません。", "Demand is incompatible with the budget or manual locks."],
+      "budget-facility-drive-bay-or-manual-lock-conflict": ["予算・設備・ドライブ数・手動指定のいずれかが制約を超えています。", "Budget, facility, drive bays or manual locks prevent this configuration."]
+    };
+    return labels[reason]?.[state.language === "ja" ? 0 : 1] || text("vendorQuote");
+  }
+
   function eventLabel(product) {
     const target = acceptanceDate();
     const types = product && observedProcurement(product, target) ? PROCUREMENT_EVENTS : FORWARD_EVENTS;
@@ -357,14 +387,21 @@
     card.append(definitionList([
       [text("timing"), eventLabel(product)],
       [text("availability"), formatStatus(candidate.availability_status)],
-      [text("computeUnits"), formatNumber(quantities.compute_units)],
-      [text("gpuCount"), formatNumber(quantities.gpu_count)],
-      [text("rackCount"), formatNumber(quantities.rack_count)],
+      [unitLabel(candidate), quantityRange(candidate, "compute_units")],
+      [text("gpuCount"), quantityRange(candidate, "gpu_count")],
+      [state.language === "ja" ? "計算ラック数" : "Compute racks", candidate.cases.some(c => c.quantities) ? (() => {
+        const values = candidate.cases.filter(c => c.quantities).map(c => c.quantities.physical_bom.compute_racks);
+        return formatNumber(Math.min(...values)) + " ~ " + formatNumber(Math.max(...values));
+      })() : text("unavailable")],
+      [text("rackCount"), quantityRange(candidate, "rack_count")],
       [text("power"), value?.power ? formatNumber(value.power.total_kw, 1) + " kW" : text("unavailable")],
       [text("configCost"), formatOku(value?.costs.configuration_cost_jpy)],
       [text("tco"), formatOku(value?.tco.total_tco_jpy)]
     ]));
-    if (!value || value.status === "blocked") card.append(element("p", "planner-blocking", text("vendorQuote")));
+    if (!value || value.status === "blocked") card.append(element("p", "planner-blocking", failureLabel(value?.reason)));
+    card.append(element("p", "planner-track-note", state.language === "ja"
+      ? "範囲は算定できた価格ケースの最小〜最大です。下記に3ケースの内訳と成立しない条件を示します。"
+      : "Ranges cover calculated price cases only. All three cases and any unmet conditions are shown below."));
     if (value?.tco.capex_plus_energy_jpy != null) card.append(element("p", null,
       (state.language === "ja" ? "部分集計：CAPEX＋5年間の電力量料金 " : "Partial subtotal: CAPEX + five-year energy charges ") + formatOku(value.tco.capex_plus_energy_jpy)));
     return card;
@@ -382,9 +419,9 @@
     const rows = [
       [text("product"), (candidate) => candidate.product_name || text("unavailable")],
       [text("availability"), (candidate) => formatStatus(candidate.availability_status)],
-      [text("computeUnits"), (candidate) => formatNumber(baselineCase(candidate).quantities?.compute_units)],
-      [text("gpuCount"), (candidate) => formatNumber(baselineCase(candidate).quantities?.gpu_count)],
-      [text("rackCount"), (candidate) => formatNumber(baselineCase(candidate).quantities?.rack_count)],
+      [text("computeUnits"), (candidate) => unitLabel(candidate) + ": " + quantityRange(candidate, "compute_units")],
+      [text("gpuCount"), (candidate) => quantityRange(candidate, "gpu_count")],
+      [text("rackCount"), (candidate) => quantityRange(candidate, "rack_count")],
       [text("configCost"), (candidate) => formatOku(baselineCase(candidate).costs.configuration_cost_jpy)],
       [text("contingency"), (candidate) => formatOku(baselineCase(candidate).costs.contingency_jpy)],
       [text("unused"), (candidate) => formatOku(baselineCase(candidate).costs.unused_budget_jpy)]
@@ -404,12 +441,13 @@
     const article = element("article", "planner-vendor-result");
     article.append(element("h3", null, text(candidate.proposal_class) + ": " + candidate.vendor + " " + (candidate.product_name || "")));
     const details = element("details");
+    details.open = true;
     details.append(element("summary", null, text("priceCases")));
     const wrap = element("div", "table-wrap");
     const table = element("table", "planner-price-case-table");
     const head = element("thead");
     const hr = element("tr");
-    ["price", "status", "compute", "GPU", "rack", "CAPEX", "TCO"].forEach((label) => hr.append(element("th", null, label)));
+    [text("priceCases"), text("availability"), unitLabel(candidate), "GPU", text("rackCount"), text("configCost"), "TCO"].forEach((label) => hr.append(element("th", null, label)));
     head.append(hr);
     const body = element("tbody");
     candidate.cases.forEach((value) => {
@@ -424,11 +462,27 @@
         element("td", null, formatOku(value.tco.total_tco_jpy))
       );
       body.append(row);
+      if (value.status === "blocked") {
+        const reason = element("tr"), cell = element("td", "planner-blocking", failureLabel(value.reason));
+        cell.colSpan = 7; reason.append(cell); body.append(reason);
+      }
     });
     table.append(head, body);
     wrap.append(table);
     details.append(wrap);
     article.append(details);
+    if (candidate.price_analogy) {
+      const a = candidate.price_analogy;
+      const basis = element("details");
+      basis.append(element("summary", null, state.language === "ja" ? "Rubinの価格範囲・納期仮定の計算根拠" : "Rubin price-range and lead-time assumptions"));
+      basis.append(element("p", null, a["explanation_" + state.language]));
+      const anchor = state.source[5].packages.find(p => p.package_id === a.anchor_package_id);
+      basis.append(element("p", null, state.language === "ja"
+        ? "ラック価格の基準：USD " + formatNumber(anchor.price_usd, 2) + " × " + a.anchor_packages_per_rack + " × 倍率 " + Object.values(a.rack_price_multiplier).join(" / ") + "。年率・為替・税は別途適用。"
+        : "Rack-price anchor: USD " + formatNumber(anchor.price_usd, 2) + " × " + a.anchor_packages_per_rack + " × multipliers " + Object.values(a.rack_price_multiplier).join(" / ") + ". Annual sensitivity, FX and tax are applied separately."));
+      basis.append(element("p", null, (state.language === "ja" ? "納期は価格基準日から4/6/9か月と仮定。正式発注・施設準備・検収に要する期間は未確認です。価格・納期は要ベンダー見積。基準日：" : "Assume 4/6/9 months from the price-basis date. Formal ordering, facility preparation and acceptance duration are unconfirmed. Vendor price/delivery quotes required. Basis date: ") + a.price_basis_date));
+      basis.append(sourceList(a.source_ids)); article.append(basis);
+    }
     const base = baselineCase(candidate);
     if (base.quantities) {
       const q = base.quantities;
@@ -449,7 +503,7 @@
         .forEach(v => heading.append(element("th", null, v)));
       table.append(heading);
       const labels = {
-        "compute-package": ["計算サーバー一式", "Compute server package"],
+        "compute-package": ["計算パッケージ（ノード／トレイ）", "Compute package (node/tray)"],
         "local-nvme-additions": ["追加NVMe", "Additional NVMe"],
         "scale-out-fabric": ["NIC・スイッチ・配線", "NICs, switches and cabling"],
         "shared-storage-100TB": ["有効容量100 TB単位の共有ストレージ", "Shared storage per 100 TB usable"],
@@ -508,7 +562,7 @@
     if (candidate.demand_requirements) {
       const demand = candidate.demand_requirements;
       article.append(definitionList([
-        [state.language === "ja" ? "絶対需要から求めた最低ノード数" : "Minimum nodes from absolute demand", formatNumber(demand.minimum_compute_units)],
+        [(state.language === "ja" ? "絶対需要による下限：" : "Absolute-demand minimum: ") + unitLabel(candidate), formatNumber(demand.minimum_compute_units)],
         [state.language === "ja" ? "チェックポイント帯域要件 (GB/s)" : "Required checkpoint bandwidth (GB/s)", formatNumber(demand.checkpoint_write_gb_s)],
         [state.language === "ja" ? "需要・性能適合" : "Demand/performance qualification", state.language === "ja" ? "帯域・推論SLO・アプリ性能は未検証" : "Bandwidth, inference SLOs and application performance unverified"]
       ]));
@@ -647,7 +701,7 @@
   }
 
   function csvExport() {
-    const rows = [["proposal_class", "vendor", "product_id", "price_case", "status", "compute_units", "gpu_count", "rack_count", "configuration_cost_jpy", "contingency_jpy", "unused_budget_jpy", "tco_jpy", "gap_ids"]];
+    const rows = [["proposal_class", "vendor", "product_id", "price_case", "status", "compute_units", "gpu_count", "rack_count", "configuration_cost_jpy", "contingency_jpy", "unused_budget_jpy", "tco_jpy", "gap_ids", "compute_unit_type", "procurement_unit_type", "procurement_units", "reason"]];
     state.latest.vendor_candidates.forEach((candidate) => candidate.cases.forEach((value) => rows.push([
       candidate.proposal_class,
       candidate.vendor,
@@ -661,7 +715,11 @@
       value.costs.contingency_jpy ?? "",
       value.costs.unused_budget_jpy ?? "",
       value.tco.total_tco_jpy ?? "",
-      value.gap_ids.join("|")
+      value.gap_ids.join("|"),
+      value.quantities?.compute_unit_type ?? "",
+      value.quantities?.procurement_unit_type ?? "",
+      value.quantities?.procurement_units ?? "",
+      value.reason || ""
     ])));
     return rows.map((row) => row.map((value) => '"' + String(value).replaceAll('"', '""') + '"').join(",")).join("\n");
   }
