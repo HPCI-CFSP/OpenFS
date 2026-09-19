@@ -44,7 +44,9 @@
     const a = el("table"); const head = el("thead"), hr = el("tr");
     headers.forEach(s => { const th = el("th", s); th.scope = "col"; hr.append(th); }); head.append(hr);
     const body = el("tbody");
-    rows.forEach(row => { const tr = el("tr"); row.forEach(s => tr.append(el("td", s))); body.append(tr); });
+    rows.forEach(row => { const tr = el("tr"); row.forEach(s => {
+      const cell=el("td");if(s instanceof Node)cell.append(s);else cell.textContent=s;tr.append(cell);
+    }); body.append(tr); });
     a.append(head, body); const wrap = el("div"); wrap.className = "table-wrap"; wrap.append(a); return wrap;
   }
   function dialog(title, children, restoreFocus = null) {
@@ -489,7 +491,7 @@
         const label=local(method,"name")+": "+fmt(value.seconds)+" s ("+value.error_percent.toFixed(1)+"%)";
         const bar=button(label,()=>explain(row,value));bar.className="analytical-bar predicted model-"+index;
         bar.style.height=(value.seconds/max*100)+"%";bar.title=label;bar.setAttribute("aria-label",label);
-        bar.replaceChildren(el("span",index===0?t("従来","Control"):index===1?t("資源比","Ratio"):t("階層","Hierarchy")));
+        bar.replaceChildren(el("span",[t("従来","Control"),t("資源比","Ratio"),t("階層","Hierarchy"),t("残余保持","Residual")][index]));
         plot.append(bar);const line=el("div");line.append(button(label,()=>explain(row,value)));values.append(line);
       });
       plotCell.append(plot);tr.append(title,plotCell,values);body.append(tr);
@@ -509,6 +511,7 @@
       const entry=el("details"),pre=el("pre");pre.append(el("code",recipe.content));
       entry.append(el("summary",recipe.name),el("p","SHA-256: "+recipe.sha256),pre);calibration.append(entry);
     }panel.append(calibration);
+    const transfer=transferPanel(c,explain);if(transfer)panel.append(transfer);
     const future=el("details");future.append(el("summary",t("1・2世代前からの予測：公表仕様によるリソース比","One-/two-prior-generation predictions: catalog resource ratio")),
       el("p",t("下表は階層実測校正ではなく、公表仕様のみを使う式です。対象機の実効値を測れない場合にも算定できますが、CPU・キャッシュ等の不確実性は残ります。",
                  "These use catalog specifications, not target-hardware calibration. They can be evaluated without target probes but leave CPU/cache and other uncertainty unresolved.")),
@@ -517,7 +520,64 @@
           local(rows.find(x=>x.case_id===r.case_id),"name"),machine(r.target).name,
           String(r.generation_offset)+t("世代前："," generation(s) prior: ")+(r.baseline?machine(r.baseline).name:t("データ待ち","Awaiting data")),
           r.seconds===null?t("未算定","Unavailable"):fmt(r.seconds)
-        ])));panel.append(future);return panel;
+    ])));panel.append(future);return panel;
+  }
+  function transferPanel(c,explain) {
+    const study=data.transfer_study;if(!study)return null;
+    const rows=study.results.filter(r=>!c||r.case_id===c.id);
+    const panel=el("section");panel.id="runtime-transfer-validation";
+    panel.append(el("h4",t("CPU・接続条件を考慮した予測元の比較","Source comparison accounting for CPU and host-link conditions")),
+      el("p",t("全ケースで同じ階層リソース比・通常時間基準の残余保持式を比較。CPU命令体系とCPU–GPU接続方式が一致する予測元を明示し、異なる構成からの予測も残します。誤差を使って式や予測元を選びません。",
+        "Every case compares the same hierarchical ratio and normal-time residual formulas. Sources matching CPU ISA and host-to-GPU link class are identified; other configurations remain visible. Target error does not select formulas or sources.")));
+    const results=table([t("ケース・予測元","Case / source"),t("実測と予測（秒）","Measured / predicted seconds"),t("結果・構成条件","Result / configuration")],rows.flatMap(row=>{
+      if(!row.candidates.length)return [[local(row,"name")+" / "+row.generation_offset+t("世代前"," generations prior"),t("未算定","Unavailable"),t("対応する実測・プロファイル待ち","Awaiting matched measurements and profiles")]];
+      const max=Math.max(row.observed_seconds,...row.candidates.flatMap(v=>[v.seconds,v.residual_prediction.seconds]))*1.1;
+      return row.candidates.map(v=>{
+        const title=el("div");title.append(link(local(row,"name"),href(view.cases.find(x=>x.id===row.case_id))),
+          el("small",machine(v.baseline).name+" → "+machine(row.target).name));
+        const plot=el("div");plot.className="analytical-bars";
+        const observed=button(t("実測","Measured")+": "+fmt(row.observed_seconds)+" s",()=>{
+          const r=view.results.find(x=>x.case_id===row.case_id&&x.machine_id===row.target&&x.kind==="measured");
+          if(r)evidence(r,view.cases.find(x=>x.id===row.case_id));
+        });observed.className="analytical-bar transfer-measured";observed.style.height=(row.observed_seconds/max*100)+"%";
+        observed.title=observed.textContent;observed.setAttribute("aria-label",observed.textContent);observed.replaceChildren(el("span",t("実測","Measured")));plot.append(observed);
+        const value={...v,model:"hierarchical-resource-ratio"};
+        const open=()=>explain({...row,baseline:v.baseline},value);
+        const predicted=button(t("予測","Predicted")+": "+fmt(v.seconds)+" s",open);
+        predicted.className="analytical-bar transfer-predicted";predicted.style.height=(v.seconds/max*100)+"%";
+        predicted.title=predicted.textContent;predicted.setAttribute("aria-label",predicted.textContent);predicted.replaceChildren(el("span",t("階層比","Ratio")));plot.append(predicted);
+        const residual={...v.residual_prediction,model:"normal-residual-hierarchy",source_spec:v.source_spec,target_spec:v.target_spec};
+        const openResidual=()=>explain({...row,baseline:v.baseline},residual);
+        const rb=button(t("残余保持","Residual")+": "+fmt(residual.seconds)+" s",openResidual);
+        rb.className="analytical-bar transfer-predicted model-3";rb.style.height=(residual.seconds/max*100)+"%";
+        rb.title=rb.textContent;rb.setAttribute("aria-label",rb.textContent);rb.replaceChildren(el("span",t("残余保持","Residual")));plot.append(rb);
+        const details=el("div");details.append(button(t("階層比：","Ratio: ")+fmt(v.seconds)+" s / "+v.error_percent.toFixed(1)+"%",open),
+          button(t("残余保持：","Residual: ")+fmt(residual.seconds)+" s / "+residual.error_percent.toFixed(1)+"%",openResidual),
+          el("small",v.configuration_match?t("CPU命令体系・接続方式が一致","CPU ISA / host-link match"):t("CPU命令体系・接続方式が異なる","CPU ISA / host-link mismatch")),
+          el("small",t("据え置き時間率：","Fixed-time share: ")+(100*v.fixed_fraction).toFixed(1)+"%"));
+        return [title,plot,details];
+      });
+    }));results.classList.add("transfer-results");panel.append(results);
+    const diagnostic=el("details");diagnostic.append(el("summary",t("メモリ移動の診断と通常実行の内訳","Memory-movement diagnostics and native normal-run timers")),
+      el("p",t("診断の件数・転送量は別のプロファイル実行のcompute区間です。CPUイベント数とGPUフォールト数は異なる指標で、通常実行時間への加算はできません。欠測は0として扱いません。",
+        "Counts and bytes cover the compute range in separate diagnostic processes. CPU events and GPU fault counts are different metrics, not additive normal-runtime components. Missing observations are not zero.")));
+    const selected=study.diagnostics.filter(d=>!c||d.case_id===c.id);
+    diagnostic.append(table([t("ケース / 機器","Case / device"),t("通常の主要計算（秒）","Normal compute (s)"),t("診断 / 通常時間比","Diagnostic / normal"),t("CPU faultイベント","CPU fault events"),t("GPU faults","GPU faults"),t("移動量（MB）","Migration (MB)")],selected.map(d=>[
+      local(view.cases.find(x=>x.id===d.case_id),"title")+" / "+machine(d.machine_id).name,fmt(d.normal_compute_seconds),fmt(d.window_seconds/d.normal_compute_seconds)+"×",
+      d.cpu_fault_events===null?t("未取得","Missing"):String(d.cpu_fault_events),d.gpu_faults===null?t("未取得","Missing"):String(d.gpu_faults),fmt(d.migration_bytes/1e6)
+    ])));
+    diagnostic.append(el("p",t("内蔵タイマーは通常実行の値です。入れ子を含むため合計せず、原因を調べる手掛かりとして使います。",
+      "Native timers below come from normal execution. They can be nested: do not sum them; use them as diagnostic evidence.")),
+      table([t("機器","Device"),t("最小化（秒）","Minimization (s)"),t("直交化（秒）","Gram-Schmidt (s)"),t("部分空間対角化（秒）","Subspace diagonalization (s)")],selected.filter(d=>Object.keys(d.native_timers).length).map(d=>[
+        machine(d.machine_id).name,...["Minimization","Gram Schmidt","subspace-diag."].map(k=>d.native_timers[k]===undefined?t("未取得","Missing"):fmt(d.native_timers[k]))
+      ])));
+    panel.append(diagnostic);
+    const limitations=el("details");limitations.append(el("summary",t("構成条件・限界・診断レシピ","Configuration, limitations and diagnostic recipes")),
+      table([t("機器","Device"),"CPU","ISA",t("CPU–GPU接続","Host-to-GPU link")],Object.entries(study.hosts).map(([mid,h])=>[machine(mid).name,h.cpu_model,h.cpu_isa,h.host_gpu_link])));
+    const list=el("ul");study["limitations_"+language].forEach(l=>list.append(el("li",l)));limitations.append(list);
+    study.source_urls.forEach(url=>limitations.append(el("p"),link(new URL(url).hostname+new URL(url).pathname,url)));
+    for(const r of study.recipes){const entry=el("details"),pre=el("pre");pre.append(el("code",r.content));entry.append(el("summary",r.name),el("p","SHA-256: "+r.sha256),pre);limitations.append(entry);}
+    panel.append(limitations);return panel;
   }
   function render(lang) {
     language=lang;root.replaceChildren();
