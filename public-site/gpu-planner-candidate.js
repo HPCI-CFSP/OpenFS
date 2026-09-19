@@ -316,7 +316,7 @@
     } catch (error) {
       state.latest = null;
       state.latestRequest = null;
-      ["result-summary", "result-comparison", "result-details", "evidence-status", "product-evidence", "gap-list", "benchmark-list", "result-notice"].forEach(id => byId(id)?.replaceChildren());
+      ["result-summary", "result-comparison", "result-details", "evidence-status", "product-evidence", "gap-list", "benchmark-list", "result-notice", "result-fx"].forEach(id => byId(id)?.replaceChildren());
       byId("form-error").textContent = error.message;
     }
   }
@@ -653,7 +653,8 @@
     details.append(wrap);
     byId("product-evidence").replaceChildren(details);
     const model = state.source[5];
-    byId("product-evidence").append(element("p", null, model["method_" + state.language]), element("p", null, model["assumptions_" + state.language]));
+    byId("product-evidence").append(element("p", null, model["method_" + state.language]), element("p", null,
+      (state.language === "ja" ? "モデル初期値（現在の入力とは異なる場合があります）：" : "Model defaults (may differ from current inputs): ") + model["assumptions_" + state.language]));
     const exclusions = element("ul");
     model["excluded_costs_" + state.language].forEach(v => exclusions.append(element("li", null, v)));
     byId("product-evidence").append(exclusions);
@@ -691,6 +692,15 @@
     byId("result-notice").textContent = result.calculation_mode === "what-if"
       ? text("adjustedNotice")
       : text("resultNotice");
+    const fx = state.latestRequest.estimate_assumptions.fx_jpy_per_usd;
+    const changeFx = element("a", null, state.language === "ja" ? "為替を変更" : "Change FX assumption");
+    changeFx.href = "#estimate-assumptions";
+    changeFx.addEventListener("click", () => { byId("estimate-assumptions").open = true; });
+    byId("result-fx").replaceChildren(element("strong", null,
+      state.language === "ja" ? "円換算の仮定：1 USD = " + fx + " 円。" : "Assumed exchange rate: 1 USD = JPY " + fx + ". "),
+      element("span", null, state.language === "ja"
+        ? "全価格ケース共通。USD建て費目に適用し、円建て費目は再換算しません。市場レートの自動取得は行いません。 "
+        : "Shared by all price cases. Applies to USD-denominated items; JPY items are not reconverted. No live market-rate feed. "), changeFx);
     const summary = byId("result-summary");
     summary.replaceChildren();
     if (!result.vendor_candidates.length) summary.append(element("p", "planner-blocking", text("noCandidate")));
@@ -701,7 +711,7 @@
   }
 
   function csvExport() {
-    const rows = [["proposal_class", "vendor", "product_id", "price_case", "status", "compute_units", "gpu_count", "rack_count", "configuration_cost_jpy", "contingency_jpy", "unused_budget_jpy", "tco_jpy", "gap_ids", "compute_unit_type", "procurement_unit_type", "procurement_units", "reason"]];
+    const rows = [["proposal_class", "vendor", "product_id", "price_case", "status", "compute_units", "gpu_count", "rack_count", "configuration_cost_jpy", "contingency_jpy", "unused_budget_jpy", "tco_jpy", "gap_ids", "compute_unit_type", "procurement_unit_type", "procurement_units", "reason", "fx_jpy_per_usd"]];
     state.latest.vendor_candidates.forEach((candidate) => candidate.cases.forEach((value) => rows.push([
       candidate.proposal_class,
       candidate.vendor,
@@ -719,7 +729,8 @@
       value.quantities?.compute_unit_type ?? "",
       value.quantities?.procurement_unit_type ?? "",
       value.quantities?.procurement_units ?? "",
-      value.reason || ""
+      value.reason || "",
+      state.latestRequest.estimate_assumptions.fx_jpy_per_usd
     ])));
     return rows.map((row) => row.map((value) => '"' + String(value).replaceAll('"', '""') + '"').join(",")).join("\n");
   }
