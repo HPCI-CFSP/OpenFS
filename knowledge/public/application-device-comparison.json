@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "export_id": "APP-DEVICE-COMPARISON-001",
   "as_of": "2026-09-19",
   "research_status": "provisional",
@@ -7,8 +7,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-EEA1-DEVICE-20260919",
-    "human_approval_directive_id": "DIR-900128"
+    "publication_decision_id": "PUBDEC-LQCD-A100-TARGETS-20260919",
+    "human_approval_directive_id": "DIR-900130"
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
@@ -415,6 +415,13 @@
       "checked_at": "2026-09-19"
     },
     {
+      "source_id": "GH200-SPEC",
+      "title": "NVIDIA Grace Performance Tuning Guide: single GH200 Superchip specifications",
+      "url": "https://docs.nvidia.com/dccpu/grace-perf-tuning-guide/",
+      "published_at": null,
+      "checked_at": "2026-09-19"
+    },
+    {
       "source_id": "B200-SPEC",
       "title": "NVIDIA Blackwell datasheet (October 2025)",
       "url": "https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf",
@@ -460,6 +467,8 @@
       "基準機と対象機の両方がHBM帯域律速で、演算性能・キャッシュ・命令実行が新たな律速にならないと仮定します。",
       "入力・演算精度・カーネルの仕事量・HBM転送量が同じで、仕様帯域に対する実効帯域の割合が維持されると仮定します。これらの一致は未検証です。",
       "公開報告にGPUの製品形態がないため、A100は80 GB SXM/NVLink、H100は80 GB SXMと仮定しています。実機の同定結果ではありません。",
+      "GH200はHBM3 96 GB（最大4000 GB/s）とHBM3e 144 GB（最大4900 GB/s）の2仕様を別の予測対象とします。報告中のqc-gh200がどちらかは未確認です。単一GPUのHBM帯域だけを使い、CPUのLPDDR帯域やNVL2の2 GPU合計帯域は加えません。",
+      "H100・GH200への予測はA100の報告値だけを基準とし、予測先の実測値を用いた補正や当てはめは行いません。",
       "対象機で同じコードが動作し、作業データがHBMに収まることを仮定します。CPU処理・転送・同期・I/Oの予測は含みません。",
       "基準機ごとの値の幅は仮定への感度であり、信頼区間ではありません。世代の近さだけでは予測精度を保証できません。",
       "LQCD-DWF-HMCの現行READMEにはログのFLOP計数に注意書きがあります。本図は報告書の数値を再掲したもので、計数方法を独立に検証した結果ではありません。"
@@ -468,6 +477,8 @@
       "Both devices are assumed to remain HBM-bandwidth-bound, without new compute, cache or instruction-throughput bottlenecks.",
       "Input, precision, kernel work and HBM traffic are assumed unchanged, with the same fraction of specification bandwidth achieved. These equivalences are unverified.",
       "The report does not identify GPU form factors. A100 is assumed to be 80 GB SXM/NVLink and H100 80 GB SXM; these are not identifications of the actual machines.",
+      "GH200 HBM3 96 GB (up to 4000 GB/s) and HBM3e 144 GB (up to 4900 GB/s) are separate target hypotheses. Neither identifies the reported qc-gh200 machine. Only single-GPU HBM bandwidth is used, excluding CPU LPDDR bandwidth and NVL2 two-GPU totals.",
+      "Forecasts for H100 and GH200 use only the reported A100 baseline; target measurements are not used for fitting or correction.",
       "The same code is assumed to run and fit in target HBM. Host work, transfers, synchronization and I/O are not predicted.",
       "The spread across baselines is sensitivity to assumptions, not a confidence interval. A newer baseline does not by itself establish better accuracy.",
       "The current LQCD-DWF-HMC README cautions about log FLOP counting. These values are transcribed from the report, not an independent validation of its counting method."
@@ -494,6 +505,22 @@
         "source_id": "H100-SPEC",
         "specification_status": "published",
         "locator": "Product specifications: H100 SXM, 3.35 TB/s"
+      },
+      {
+        "id": "gh200-hbm3-96",
+        "name": "GH200 HBM3 96 GB",
+        "bandwidth_gbs": 4000,
+        "source_id": "GH200-SPEC",
+        "specification_status": "published",
+        "locator": "GH200 Grace Hopper Superchip column: 1 Hopper GPU, 96 GB HBM3, up to 4 TB/s; not NVL2"
+      },
+      {
+        "id": "gh200-hbm3e-144",
+        "name": "GH200 HBM3e 144 GB",
+        "bandwidth_gbs": 4900,
+        "source_id": "GH200-SPEC",
+        "specification_status": "published",
+        "locator": "GH200 Grace Hopper Superchip column: 1 Hopper GPU, 144 GB HBM3e, up to 4.9 TB/s; not NVL2"
       },
       {
         "id": "b200-hgx",
@@ -555,8 +582,19 @@
     "target_ids": [
       "b200-hgx",
       "h200-sxm",
-      "rubin"
+      "rubin",
+      "h100-sxm-80",
+      "gh200-hbm3-96",
+      "gh200-hbm3e-144"
     ],
+    "target_baseline_ids": {
+      "b200-hgx": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
+      "h200-sxm": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
+      "rubin": ["lqcd-small-2", "lqcd-small-4", "lqcd-small-5", "lqcd-large-2", "lqcd-large-4", "lqcd-large-5"],
+      "h100-sxm-80": ["lqcd-small-2", "lqcd-large-2"],
+      "gh200-hbm3-96": ["lqcd-small-2", "lqcd-large-2"],
+      "gh200-hbm3e-144": ["lqcd-small-2", "lqcd-large-2"]
+    },
     "diagnostics": [
       {
         "group_id": "lqcd-small",
