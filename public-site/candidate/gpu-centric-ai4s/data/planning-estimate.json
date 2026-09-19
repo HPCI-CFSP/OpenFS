@@ -1,12 +1,12 @@
 {
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "model_id": "ESTMODEL-001",
   "status": "candidate",
   "information_classification": "public",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "procurement_use": "prohibited",
-  "as_of": "2026-09-15",
+  "as_of": "2026-09-19",
   "method_ja": "計算サーバー一式の公開提示価格に、別途必要なネットワーク・ストレージ・施設等の計画用仮定を積み上げる概算です。学術調達の実績単価や統計的な予測区間ではありません。GPU単体価格への逆算は行いません。",
   "method_en": "A planning estimate combining published complete-server asking prices with explicit allowances for network, storage and facilities. These are neither academic award unit prices nor statistical prediction intervals. Whole-system prices are not converted into GPU prices.",
   "assumptions_ja": "為替150円/USD、税10%、価格係数0.8/1.0/1.25、年率-10%/0%/+10%は感度分析用の仮定であり、市場予測ではありません。ABCIと理究のストレージ構成は用途が異なるため平均せず、初期値は理究の有効容量/ノードを丸めた2.7 TB/ノードとします。施設・保守・納期・需要への適合は未確認です。 NIC・スイッチ・サービスノード・ラックの数量は明示した参照構成仮定で、機器選定済みBOMではありません。 補助機器電力も機器数×仮定値で算定し、電力量料金20円/kWhは税込の計画用仮定とします。",
@@ -139,6 +139,47 @@
       "included_en": "Public asking price for CPUs, eight GPUs, HBM, host memory, default NVMe, chassis and three-year warranty. The selected NVMe is treated as a one-drive/3.84 TB minimum pending final quantity confirmation. Added NICs, shared storage and Japan delivery are separate. Power is displayed by the configurator, not measured."
     }
   ],
+  "rack_analogies": [
+    {
+      "analogy_id": "ANALOGY-RUBIN-NVL72-001",
+      "product_id": "GPU-NVIDIA-VERA-RUBIN",
+      "vendor": "NVIDIA",
+      "cpu_architecture": "arm",
+      "cpu_model": "NVIDIA Vera",
+      "procurement_unit": "rack",
+      "trays_per_rack": 18,
+      "gpus_per_tray": 4,
+      "cpus_per_tray": 2,
+      "hbm_gb_per_gpu": 288,
+      "host_memory_gb_per_tray": 3000,
+      "local_nvme_bays_per_tray": 4,
+      "nic_ports_per_tray": 4,
+      "rack_power_kw": 228,
+      "price_basis_date": "2026-09-19",
+      "anchor_package_id": "PKG-B200-EXXACT",
+      "anchor_packages_per_rack": 9,
+      "rack_price_multiplier": {
+        "optimistic": 1.25,
+        "baseline": 1.75,
+        "conservative": 2.5
+      },
+      "assumed_lead_time_months": {
+        "optimistic": 4,
+        "baseline": 6,
+        "conservative": 9
+      },
+      "network_allowance_multiplier": 2,
+      "facility_allowance_multiplier": 3,
+      "source_ids": [
+        "SRC-EST-B200",
+        "SRC-EST-RUBIN-NVIDIA",
+        "SRC-EST-RUBIN-PEGATRON",
+        "SRC-EST-RUBIN-SEC"
+      ],
+      "explanation_ja": "Rubinの公開価格ではなく類推による計画概算です。B200 8GPUサーバー9台の提示総額を72GPU規模の費用基準とし、世代・HBM容量・ラック内接続・統合構成の差に対する未校正の倍率1.25/1.75/2.5を適用します。GPU単価や性能比ではありません。1ラック18トレイ単位で購入する仮定です。CPUメモリ3TB/トレイを選択し、NVMeは各トレイに別途追加します。228kW/ラックはOEMの最大TDP対応値で実消費電力ではありません。価格はラック・CPU・GPU・HBM・ホストメモリ・ラック内接続を含む仮定で、ラック内NICの費用と電力は再加算しません。外部ネットワーク予算はノード基準の2倍、計算ラックの設備準備費は3倍と仮定します。学術割引、保証、国内価格、納期、冷却・床荷重適合は未確認です。",
+      "explanation_en": "This is an analogy-based planning estimate, not a published Rubin price. Nine complete eight-GPU B200 servers provide a 72-GPU cost anchor; uncalibrated 1.25/1.75/2.5 multipliers represent generation, HBM, internal fabric and integration differences, not GPU unit prices or performance ratios. Purchase increments are full 18-tray racks. Select 3 TB host memory per tray and add NVMe separately. The OEM's 228 kW maximum TDP support is a design allowance, not measured draw. Assumed rack cost includes the rack, CPUs, GPUs, HBM, host memory and internal connectivity; internal NIC cost/power is not added twice. External fabric allowance is twice the node reference; compute-rack facility preparation is tripled. Academic discounts, warranty, Japan prices, delivery, cooling and floor load remain unconfirmed."
+    }
+  ],
   "reference_systems": [
     {
       "name": "Rikyu",
@@ -178,6 +219,30 @@
     }
   ],
   "sources": [
+    {
+      "source_id": "SRC-EST-RUBIN-NVIDIA",
+      "title": "NVIDIA Vera Rubin NVL72 specifications",
+      "publisher": "NVIDIA",
+      "url": "https://www.nvidia.com/en-us/data-center/vera-rubin-nvl72/",
+      "published_date": null,
+      "checked_date": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-EST-RUBIN-PEGATRON",
+      "title": "PEGATRON RA4803-72N3 / AS103-4N3 datasheet",
+      "publisher": "PEGATRON",
+      "url": "https://svr.pegatroncorp.com/SpecFile/PEGATRON_RA4803-72N3_DS_2026v1.pdf",
+      "published_date": null,
+      "checked_date": "2026-09-19"
+    },
+    {
+      "source_id": "SRC-EST-RUBIN-SEC",
+      "title": "NVIDIA FY2027 Q2 Form 10-Q: production shipments and supply constraints",
+      "publisher": "NVIDIA / SEC",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm",
+      "published_date": "2026-08-26",
+      "checked_date": "2026-09-19"
+    },
     {
       "source_id": "SRC-EST-H200",
       "title": "Exxact TS4-181733724 configured server",

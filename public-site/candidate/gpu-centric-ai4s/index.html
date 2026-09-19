@@ -6,7 +6,7 @@
   <meta name="description" content="予算、受入時期、基本的な技術選択からCPU・GPU複合計算基盤の候補と公開根拠の不足を確認する暫定構成算定画面">
   <title>CPU・GPU複合計算基盤 構成算定 | OpenFS</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="../../styles.css?v=5d5760b570105e1923b251d99f42da268d4a600a">
+  <link rel="stylesheet" href="../../styles.css?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf">
 </head>
 <body data-language="ja" data-root-prefix="../../">
   <header class="app-header">
@@ -14,7 +14,7 @@
       <div class="identity identity-branded">
   <h1>
     <a class="brand-link" href="../../">
-      <img class="brand-logo" src="../../assets/branding/openfs-logo-compact.svg?v=5d5760b570105e1923b251d99f42da268d4a600a" alt="OpenFS" width="344" height="128">
+      <img class="brand-logo" src="../../assets/branding/openfs-logo-compact.svg?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf" alt="OpenFS" width="344" height="128">
     </a>
   </h1>
   <span class="organization">HPCI-CFSP</span>
@@ -33,7 +33,7 @@
   <details class="nav-more nav-analysis">
     <summary data-ja="分析" data-en="Analysis">分析</summary>
     <div class="nav-more-menu">
-      <a href="../../analytics/operational-workloads/" data-nav-key="operational" data-ja="実運用分析" data-en="Operational analysis">実運用分析</a>
+      <a href="../../analytics/operational-workloads/" data-nav-key="operational" data-ja="ソフトウェア利用調査" data-en="Software usage survey">ソフトウェア利用調査</a>
       <a href="../../analytics/application-performance/" data-nav-key="application-performance" data-ja="アプリケーション性能予測" data-en="Application performance forecasting">アプリケーション性能予測</a>
     </div>
   </details>
@@ -59,7 +59,7 @@
 
     <aside class="candidate-banner" role="note">
       <strong data-ja="暫定Candidate・調達利用禁止" data-en="Provisional Candidate; procurement use prohibited">暫定Candidate・調達利用禁止</strong>
-      <p data-ja="単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。将来製品の未公表価格・納期・性能は補完しません。" data-en="This is a provisional result from one AI model and agent; the Consensus Gate is incomplete. Priced reference configurations use public asking prices and explicit planning assumptions. Unpublished future-product prices, delivery dates and performance remain unknown.">単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。将来製品の未公表価格・納期・性能は補完しません。</p>
+      <p data-ja="単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。Rubinは未検証の類推価格・納期仮定による数量範囲を示します。実価格・納期・性能を確認済みとは扱いません。" data-en="This is a provisional result from one AI model and agent; the Consensus Gate is incomplete. Priced reference configurations use public asking prices and explicit planning assumptions. Rubin quantity ranges use unvalidated price analogies and lead-time assumptions, not verified prices, delivery or performance.">単一のAIモデルとAIエージェントによる暫定結果で、Consensus Gateは未完了です。価格付き参照構成は公開提示価格と明示した計画用仮定から概算します。Rubinは未検証の類推価格・納期仮定による数量範囲を示します。実価格・納期・性能を確認済みとは扱いません。</p>
     </aside>
 
     <form id="planner-form" novalidate>
@@ -87,7 +87,7 @@
 
     <section class="planner-results-section" aria-labelledby="results-title">
       <div class="section-heading">
-        <div><span class="eyebrow" data-ja="構成算定結果" data-en="Configuration results">構成算定結果</span><h2 id="results-title" data-ja="価格付き参照構成と先行候補" data-en="Priced reference configurations and forward-looking candidates">価格付き参照構成と先行候補</h2></div>
+        <div><span class="eyebrow" data-ja="構成算定結果" data-en="Configuration results">構成算定結果</span><h2 id="results-title" data-ja="価格付き参照構成・類推概算・先行候補" data-en="Priced references, planning analogies and forward candidates">価格付き参照構成・類推概算・先行候補</h2></div>
         <div class="planner-actions"><button id="download-json" type="button">JSON</button><button id="download-csv" type="button">CSV</button></div>
       </div>
       <div id="result-notice" class="planner-result-notice" aria-live="polite"></div>
@@ -99,7 +99,7 @@
         <div class="planner-field-grid">
           <label><span data-ja="仮定為替（円/USD）" data-en="Assumed FX (JPY/USD)">仮定為替（円/USD）</span><input id="estimate-fx" type="number" min="1" step="1"></label>
           <label><span data-ja="基準ケースの年率（%、予測ではなく仮定）" data-en="Baseline annual change (%, assumption not forecast)">基準ケースの年率（%、予測ではなく仮定）</span><input id="estimate-annual" type="number" min="-50" max="50" step="1"></label>
-          <label><span data-ja="共有ストレージ比率（TB/ノード）" data-en="Shared storage ratio (TB/node)">共有ストレージ比率（TB/ノード）</span><input id="estimate-storage-ratio" type="number" min="0" step="0.1"></label>
+          <label><span data-ja="共有ストレージ比率（TB/ノード・トレイ）" data-en="Shared storage ratio (TB/node or tray)">共有ストレージ比率（TB/ノード・トレイ）</span><input id="estimate-storage-ratio" type="number" min="0" step="0.1"></label>
           <label><span data-ja="共有ストレージ概算（万円/有効100 TB）" data-en="Storage allowance (JPY 10k / usable 100 TB)">共有ストレージ概算（万円/有効100 TB）</span><input id="estimate-storage-cost" type="number" min="1" step="1"></label>
         </div>
       </details>
@@ -108,7 +108,7 @@
         <summary data-ja="算定結果を手動調整" data-en="Adjust the calculated configuration">算定結果を手動調整</summary>
         <p data-ja="数値を固定すると、未固定の項目を予算内で再算定します。必要な価格・構成根拠が不足する場合は再算定せず、要ベンダー見積と表示します。" data-en="Lock selected values and recalculate unlocked values within the budget. If required price or configuration evidence is missing, the planner reports that a vendor quote is required instead of estimating.">数値を固定すると、未固定の項目を予算内で再算定します。必要な価格・構成根拠が不足する場合は再算定せず、要ベンダー見積と表示します。</p>
         <div class="planner-field-grid">
-          <label><span data-ja="計算単位数（空欄はAI提案）" data-en="Compute units (blank for AI proposal)">計算単位数（空欄はAI提案）</span><input id="override-compute-units" type="number" min="1" step="1" placeholder="AI"></label>
+          <label><span data-ja="ノード・トレイ数（Rubinは18単位）" data-en="Nodes/trays (Rubin: increments of 18)">ノード・トレイ数（Rubinは18単位）</span><input id="override-compute-units" type="number" min="1" step="1" placeholder="AI"></label>
           <label><span data-ja="高速共有ストレージ（PB、空欄はAI提案）" data-en="Fast shared storage (PB; blank for AI proposal)">高速共有ストレージ（PB、空欄はAI提案）</span><input id="override-fast-pb" type="number" min="0" step="0.1" placeholder="AI"></label>
           <label><span data-ja="計算単位当たりローカルNVMe（TB、空欄はAI提案）" data-en="Local NVMe per compute unit (TB; blank for AI proposal)">計算単位当たりローカルNVMe（TB、空欄はAI提案）</span><input id="override-local-nvme" type="number" min="0" step="0.1" placeholder="AI"></label>
         </div>
@@ -127,11 +127,11 @@
   </main>
 
   <footer><div><strong>OpenFS</strong><span data-ja="HPCI-CFSP 公開調査ビュー" data-en="HPCI-CFSP public research view">HPCI-CFSP 公開調査ビュー</span></div><div><a href="https://github.com/HPCI-CFSP/OpenFS">GitHub Repository</a></div></footer>
-  <script src="../../data/openfs-public.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
-  <script src="../../feedback.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
-  <script src="../../navigation.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
-  <script src="../../gpu-planner-engine.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
-  <script src="../../gpu-planner-estimates.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
-  <script src="../../gpu-planner-candidate.js?v=5d5760b570105e1923b251d99f42da268d4a600a"></script>
+  <script src="../../data/openfs-public.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
+  <script src="../../feedback.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
+  <script src="../../navigation.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
+  <script src="../../gpu-planner-engine.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
+  <script src="../../gpu-planner-estimates.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
+  <script src="../../gpu-planner-candidate.js?v=45e62603b21a959770ef9c0a8f09ff09416eb5bf"></script>
 </body>
 </html>

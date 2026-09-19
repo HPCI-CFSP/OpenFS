@@ -10,17 +10,17 @@
 
   const copy = {
     ja: {
-      publicOnly: "公開用集計のみ", siteUpdated: "更新", home: "OpenFS", breadcrumb: "実運用分析",
-      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "実運用分析", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語", navSearch: "検索",
-      kicker: "開示制御済みの実運用分析", provisional: "暫定結果", consensus: "Consensus未完了", scope: "富岳の単一環境", footer: "HPCI-CFSP 公開調査ビュー",
+      publicOnly: "公開用集計のみ", siteUpdated: "更新", home: "OpenFS", breadcrumb: "ソフトウェア利用調査",
+      navOverview: "概要", navCatalog: "調査カタログ", navOperational: "ソフトウェア利用調査", navRoadmaps: "ロードマップ", navScenarios: "システム整備計画案", navReports: "報告書", navGlossary: "専門用語", navSearch: "検索",
+      kicker: "開示制御済みのソフトウェア利用調査", provisional: "暫定結果", consensus: "Consensus未完了", scope: "富岳の単一環境", footer: "HPCI-CFSP 公開調査ビュー",
       boundary: "公開値は最小セル10件、5単位丸めを適用しています。個人・課題・ジョブの識別子、自由記述、実行パス、行単位データは含みません。",
       methodologyKicker: "測定契約", methodologyTitle: "観測範囲と指標定義", channelTitle: "観測方式別の対象範囲", channelEvidenceTitle: "実行形式・依存情報の月次観測範囲", metricDefinitionTitle: "指標の定義", comparisonTitle: "基盤間比較の成立条件", channel: "観測方式", observedScope: "観測対象", detectionLimit: "この観測だけでは分からないこと", evidenceScope: "現在の根拠範囲", metricPopulation: "対象母集団", numerator: "分子", denominator: "分母", deduplication: "重複排除", timeBasis: "時間基準", exclusions: "除外規則", overlapRule: "重複の扱い", requiredDimensions: "比較時に一致させる項目", availableSystems: "現在の対象基盤", progress: "今回までの対応", status: "状態", dynamicLinkMetadata: "動的リンク情報あり", fileClassified: "実行形式分類あり", staticSignal: "静的実行形式信号", dynamicSignal: "動的実行形式信号", interpreterSignal: "インタープリタ／スクリプト信号", unclassifiedSignal: "実行形式未分類",
       gapKicker: "未確認事項", gapTitle: "未確認事項", details: "月次推移を表示", month: "月", jobs: "ジョブ数", totalJobs: "全ジョブ数", mappedJobs: "対応ジョブ数", mappingCoverage: "対応率", mappingCoverageHistory: "共有ライブラリ観測の月次対応率", windowJobs: "月別ユニークジョブ観測数の合計", share: "対応ジョブ比率", category: "分類", software: "ソフトウェア", trend: "傾向", prior: "直前期間", current: "直近の観測期間", signal: "観測名", version: "版", confidence: "推定確度", nodeScale: "ノード規模", nodeSeconds: "割当ノード秒", counter: "カウンタ", coverage: "取得率", dataset: "集計領域", availableMonths: "利用可能な完全月", availablePeriod: "利用可能期間", valuesWithheld: "数値は定義確認中", requirement: "要件候補", basis: "観測根拠", planningAction: "計画上の扱い", validationCondition: "検証条件", priority: "優先度", procurementUse: "調達判断での利用", relatedGaps: "関連する未確認事項", gapClosure: "解消に必要な根拠", nextAction: "次の行動", noValue: "抑制／未確認", replacementTitle: "置換の可能性を示す信号", replacementNote: "同じ分類で減少傾向と増加傾向が同時に観測された組合せです。置換の因果関係を示すものではありません。", emergingApps: "増加・新規観測されたアプリケーション候補", decliningApps: "利用比率が低下したアプリケーション候補", appTrendNote: "観測メタデータの変化を示す信号であり、将来需要や他ソフトウェアへの置換を断定するものではありません。", aiNotObserved: "AI関連ソフトウェアは、この期間の動的リンク観測では確認できませんでした。未利用を意味するものではありません。",
       expanding: "増加", newlyObserved: "新規観測", stable: "横ばい", declining: "減少", insufficient: "証拠不足", low: "低", medium: "中", high: "高", coverageGap: "要追加確認", open: "未解消", partiallyAddressed: "一部対応", resolved: "解消", observedPartially: "一部観測", observed: "観測済み", notObserved: "未観測", defined: "定義済み", definitionReview: "定義確認中", singleSystemOnly: "単一基盤のみ", partial: "一部", complete: "完了", available: "観測あり", sourceDataUnavailable: "元データ未収録", candidateOnly: "要件候補としてのみ使用", notUntilValidated: "検証完了まで使用不可"
     },
     en: {
-      publicOnly: "Public aggregates only", siteUpdated: "Updated", home: "OpenFS", breadcrumb: "Operational analysis",
-      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Operational analysis", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary", navSearch: "Search",
+      publicOnly: "Public aggregates only", siteUpdated: "Updated", home: "OpenFS", breadcrumb: "Software usage survey",
+      navOverview: "Overview", navCatalog: "Research catalog", navOperational: "Software usage survey", navRoadmaps: "Roadmaps", navScenarios: "System planning options", navReports: "Reports", navGlossary: "Glossary", navSearch: "Search",
       kicker: "PRIVACY-CONTROLLED OPERATIONAL ANALYSIS", provisional: "Provisional", consensus: "Consensus incomplete", scope: "One Fugaku environment", footer: "HPCI-CFSP public research view",
       boundary: "Published values apply a minimum cell size of 10 and rounding to 5. No person, project, or job identifiers, free text, execution paths, or row-level records are included.",
       methodologyKicker: "MEASUREMENT CONTRACT", methodologyTitle: "Observation coverage and metric definitions", channelTitle: "Coverage by observation channel", channelEvidenceTitle: "Monthly coverage of executable and dependency signals", metricDefinitionTitle: "Metric definitions", comparisonTitle: "Cross-system comparison requirements", channel: "Observation channel", observedScope: "What is observed", detectionLimit: "What this channel cannot establish", evidenceScope: "Current evidence scope", metricPopulation: "Population", numerator: "Numerator", denominator: "Denominator", deduplication: "Deduplication", timeBasis: "Time basis", exclusions: "Exclusions", overlapRule: "Overlap handling", requiredDimensions: "Dimensions that must agree", availableSystems: "Systems currently available", progress: "Progress to date", status: "Status", dynamicLinkMetadata: "Dynamic-link metadata", fileClassified: "File classification", staticSignal: "Static-executable signal", dynamicSignal: "Dynamic-executable signal", interpreterSignal: "Interpreter/script signal", unclassifiedSignal: "Unclassified executable",
@@ -298,7 +298,8 @@
     const updated = document.getElementById("site-updated");
     updated.textContent = `${text("siteUpdated")} ${rootData.site.updated_at.replace("T", " ").slice(0, 19)}`;
     updated.href = rootData.site.commit_url;
-    document.getElementById("page-title").textContent = language === "ja" ? "実運用分析" : "Operational analysis";
+    document.getElementById("page-title").textContent = language === "ja" ? "ソフトウェア利用調査" : "Software usage survey";
+    document.title = document.getElementById("page-title").textContent + " | OpenFS";
     document.getElementById("page-summary").textContent = language === "ja" ? "公開用集計に基づき、ソフトウェア利用の手掛かりとシステム整備上の課題を整理します。" : "Published aggregates describe software-use signals and implications for system planning.";
     document.getElementById("research-status").textContent = text("provisional");
     document.getElementById("consensus-status").textContent = text("consensus");
