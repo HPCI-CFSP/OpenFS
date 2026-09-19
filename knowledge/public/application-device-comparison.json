@@ -7,8 +7,8 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-KERNEL-MODEL-20260919",
-    "human_approval_directive_id": "DIR-900137"
+    "publication_decision_id": "PUBDEC-GENERATION-REPRO-20260920",
+    "human_approval_directive_id": "DIR-900138"
   },
   "title_ja": "EEA1アプリケーションの1 CPU・1 GPU比較",
   "title_en": "Single-CPU and single-GPU comparisons for EEA1 applications",
@@ -845,6 +845,186 @@
     ]
   },
   "runtime_view": {
+      "generation_policy": {
+        "lineages": [
+          {
+            "id": "nvidia-datacenter",
+            "generations": [
+              "Volta",
+              "Ampere",
+              "Hopper",
+              "Blackwell",
+              "Rubin"
+            ]
+          }
+        ],
+        "baseline_preference": [
+          "gh200",
+          "h200",
+          "h100",
+          "gh200e",
+          "a100",
+          "b300",
+          "b200",
+          "rubin",
+          "a64fx"
+        ],
+        "note_ja": "世代はデータセンター向けGPUアーキテクチャで区別します。H100・H200・GH200はHopper、B200・B300はBlackwellです。同世代の予測元が複数ある場合は事前の固定順で選び、実測との誤差が小さいものを選び直しません。",
+        "note_en": "Generations refer to datacenter GPU architectures. H100, H200 and GH200 are Hopper; B200 and B300 are Blackwell. When multiple baselines exist in one generation, a fixed preference is used, never selection by target error."
+      },
+      "reproducibility": [
+        {
+          "id": "lqcd-20260919-repro",
+          "case_ids": [
+            "lqcd-8x4-update",
+            "lqcd-8x4-main",
+            "lqcd-8x4-kernel"
+          ],
+          "source_url": "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+          "source_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+          "status": "partial",
+          "settings": [
+            {
+              "name_ja": "ソース・入力",
+              "name_en": "Source and input",
+              "value_ja": "固定コミットのsample_1gpu、8×8×8×8、1軌道、乱数シード1234567。入力ファイルは変更していません。",
+              "value_en": "Pinned sample_1gpu, 8×8×8×8, one trajectory, seed1234567. Input files unchanged.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "ビルド",
+              "name_en": "Build",
+              "value_ja": "NVHPC26.5、OpenACC、upstream Makefile_openaccの既定設定。GPUアーキテクチャはビルド時に自動検出。計測用ヘッダーをmainへpreinclude。",
+              "value_en": "NVHPC26.5, OpenACC, upstream Makefile_openacc defaults. GPU architecture auto-detected at build time. Timing header preincluded in main.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "ランク・スレッド",
+              "name_en": "Ranks and threads",
+              "value_ja": "1 MPIランク・1 OpenMPスレッド・1 GPU。OMP_PROC_BIND=true、OMP_PLACES=cores、BLASスレッド数1を指定。",
+              "value_en": "One MPI rank, one OpenMP thread, one GPU. Requested OMP_PROC_BIND=true, OMP_PLACES=cores, BLAS threads1.",
+              "status": "requested"
+            },
+            {
+              "name_ja": "通常実行",
+              "name_en": "Normal execution",
+              "value_ja": "プロファイラ無効。独立プロセス4回のうち初回を除外し、残り3回の中央値と最小・最大を表示。",
+              "value_en": "Profiler disabled. Four independent processes; exclude the first, show median/min/max of the other three.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "計測区間",
+              "name_en": "Timing boundaries",
+              "value_ja": "更新区間はNVTX updateの入口・出口でGPU完了を待つ。main全体の別ケースとは混ぜません。",
+              "value_en": "Update timing waits for GPU completion at the NVTX update boundaries. Not mixed with the separate full-main case.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "プロファイル",
+              "name_en": "Profiles",
+              "value_ja": "通常実行とは別プロセス。Nsight Systems2026.2.1.210-262137639646v0、Nsight Compute2026.1.0.0。NCUはカーネル当たり2サンプル、cache-control/clock-control=none。",
+              "value_en": "Separate processes from normal runs. Nsight Systems2026.2.1.210-262137639646v0, Nsight Compute2026.1.0.0. Two NCU samples per kernel; cache-control/clock-control=none.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "正当性の確認",
+              "name_en": "Numerical check",
+              "value_ja": "H(diff)を固定参照値と比較。これは数値的スモークテストであり、科学的精度の包括的保証ではありません。",
+              "value_en": "H(diff) checked against a fixed reference. Numerical smoke test, not comprehensive scientific-accuracy validation.",
+              "status": "recorded"
+            },
+            {
+              "name_ja": "NUMA・アフィニティ",
+              "name_en": "NUMA and affinity",
+              "value_ja": "旧測定では実際のCPU集合・メモリ配置を取得していません。OpenMPの指定だけでは実配置を保証できません。",
+              "value_en": "Actual CPU sets and memory placement were not captured in the old runs. OpenMP requests do not establish observed placement.",
+              "status": "not-recorded"
+            },
+            {
+              "name_ja": "OS・MPI・動的リンク",
+              "name_en": "OS, MPI and dynamic linkage",
+              "value_ja": "旧測定ではOSカーネル版、MPI実体の版、全動的依存ライブラリを保存していません。",
+              "value_en": "Old runs did not capture the OS kernel, underlying MPI version or complete dynamic dependency manifest.",
+              "status": "not-recorded"
+            }
+          ],
+          "artifacts": [
+            {
+              "name": "lqcd_kernel_job.sh",
+              "sha256": "5a449d11aae976beb6468bdb28df4567d454adbc6a2c2b69945cc83d1f96502d",
+              "content": "#!/bin/bash\nset -eo pipefail\ntest -n \"${SLURM_JOB_ID:-}\"\nsource /etc/profile\nmodule load \"system/${SLURM_JOB_PARTITION}\" nvhpc/26.5\nset -u\nexport OMP_NUM_THREADS=1 OMP_PROC_BIND=true OMP_PLACES=cores\nexport OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1\nulimit -f 4194304\nif [ \"${OPENFS_BUILD_SOURCE:-0}\" = 1 ]; then\n  mkdir source\n  tar -xzf ../source.tar.gz -C source\n  (cd source && make -f Makefile_openacc -j4 && make -C benchmark_hmc_dwf -j4) > build.log 2>&1\n  cp ../lqcd_range.h lqcd_range.h\n  make -B -C source/benchmark_hmc_dwf CXX='mpic++ -include ../../lqcd_range.h' LD='mpic++ -ldl' > range-build.log 2>&1\n  export OPENFS_PREVIOUS_DIR=\"$PWD\"\nfi\ntest -n \"${OPENFS_PREVIOUS_DIR:-}\"\ntest ! -e input\ncp -R \"$OPENFS_PREVIOUS_DIR/source/sample_1gpu\" input\ncp \"$OPENFS_PREVIOUS_DIR/source/benchmark_hmc_dwf/hmc_dwf_eo.elf\" hmc.elf\ncp \"$OPENFS_PREVIOUS_DIR/source/conf_04040408.txt\" conf_04040408.txt\ndate -u +%FT%TZ\nnvc++ --version\nnsys --version\nncu --version\nnvidia-smi --query-gpu=name,memory.total,compute_cap,driver_version,power.limit --format=csv,noheader\nsha256sum hmc.elf conf_04040408.txt input/main.yaml input/HMC_DWF_Nf2p1_eo.yaml\ncd input\nTIMEFORMAT='OPENFS_WALL_SECONDS=%R'\nfor run in 0 1 2 3; do\n  { time timeout 180 ../hmc.elf; } > \"../normal-${run}.log\" 2>&1\ndone\nnsys profile --trace=cuda,nvtx,osrt --sample=none --cpuctxsw=none --force-overwrite=false --output=../kernel-timeline timeout 180 ../hmc.elf > ../timeline-run.log 2>&1\nnsys export --type=sqlite --output=../kernel-timeline.sqlite ../kernel-timeline.nsys-rep > ../timeline-export.log 2>&1\ncd ..\npython3 ../capture_lqcd_counters.py ../public-reference.json .\ndate -u +%FT%TZ\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "lqcd_range.h",
+              "sha256": "c4b301fb76668c5deb30d7526b1ad8143ccfcce7124257a32fb56e7d969b7855",
+              "content": "#ifndef OPENFS_LQCD_RANGE_H\n#define OPENFS_LQCD_RANGE_H\n#include <chrono>\n#include <cstdio>\n#include <openacc.h>\n#include <nvtx3/nvToolsExt.h>\n\n// Use the upstream benchmark's existing instrumentation hooks without changing\n// the numerical code. Preinclude this header only for the benchmark main file.\n#define FAPP_MACROS_H_INCLUDED\nstatic std::chrono::steady_clock::time_point openfs_started;\nstatic void openfs_start(const char* name) {\n  acc_wait_all();\n  nvtxRangePushA(name);\n  openfs_started = std::chrono::steady_clock::now();\n}\nstatic void openfs_stop() {\n  acc_wait_all();\n  const auto end = std::chrono::steady_clock::now();\n  nvtxRangePop();\n  std::fprintf(stderr, \"OPENFS_TRAJECTORY_SECONDS=%.9f\\n\",\n    std::chrono::duration<double>(end - openfs_started).count());\n}\n#define START_FAPP(name, number, level) openfs_start(name)\n#define STOP_FAPP(name, number, level) openfs_stop()\n#endif\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "capture_lqcd_counters.py",
+              "sha256": "146bfb79e270accbc9ef352ec11f65b96a09c5659130b84a9dc8b0f98e38df7f",
+              "content": "\"\"\"Bounded diagnostic counter samples; never use these runs as normal runtimes.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport re\nimport subprocess\nimport time\n\n\nMETRICS = [\n    \"gpu__time_duration.sum\", \"dram__bytes_read.sum\", \"dram__bytes_write.sum\",\n    \"lts__t_bytes.sum\",\n    *[\"smsp__sass_thread_inst_executed_op_\" + op + \"_pred_on.sum\"\n      for op in (\"dfma\", \"dmul\", \"dadd\", \"ffma\", \"fmul\", \"fadd\")],\n]\n\n\ndef selected_kernels(data, coverage=.90, limit=16):\n    kernels = data[\"profile_studies\"][0][\"baseline\"][\"kernels\"]\n    selected, cumulative = [], 0\n    total = sum(k[\"seconds\"] for k in kernels)\n    for kernel in sorted(kernels, key=lambda k: -k[\"seconds\"]):\n        selected.append(kernel)\n        cumulative += kernel[\"seconds\"]\n        if cumulative >= coverage * total or len(selected) >= limit:\n            break\n    return selected, cumulative / total\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"reference\", type=Path)\n    parser.add_argument(\"directory\", type=Path)\n    args = parser.parse_args()\n    directory = args.directory.resolve()\n    kernels, coverage = selected_kernels(json.loads(args.reference.read_text()))\n    manifest = {\"schema_version\": \"1.0\", \"selection_basis\": \"prior-GH200-timeline\",\n                \"selected_kernel_time_fraction\": coverage, \"metrics\": METRICS,\n                \"cache_control\": \"none\", \"clock_control\": \"none\",\n                \"launch_skip\": 10, \"samples_per_kernel\": 2,\n                \"profiled_application_terminated_early\": True, \"samples\": []}\n    output = directory / \"counter-manifest.json\"\n    if output.exists():\n        raise FileExistsError(output)\n    for index, kernel in enumerate(kernels):\n        name = f\"counter-{index:02d}\"\n        args = [\"timeout\", \"--kill-after=5\", \"50\", \"ncu\", \"--target-processes\", \"all\", \"--nvtx\", \"--nvtx-include\", \"update/\",\n                \"--kernel-name-base\", \"demangled\", \"--kernel-name\", \"regex:^\" + re.escape(kernel[\"name\"]) + \"$\",\n                \"--launch-skip\", \"10\", \"--launch-count\", \"2\", \"--kill\", \"yes\",\n                \"--clock-control\", \"none\", \"--cache-control\", \"none\",\n                \"--metrics\", \",\".join(METRICS), \"--csv\", \"--page\", \"raw\",\n                \"--print-units\", \"base\", \"--log-file\", str(directory / (name + \".csv\")),\n                str(directory / \"hmc.elf\")]\n        started = time.monotonic()\n        with (directory / (name + \".log\")).open(\"x\") as log:\n            try:\n                result = subprocess.run(args, cwd=directory / \"input\", stdout=log,\n                                        stderr=subprocess.STDOUT, timeout=60, check=False)\n                status = result.returncode\n            except subprocess.TimeoutExpired:\n                status = \"timeout\"\n        manifest[\"samples\"].append({\"kernel\": kernel[\"name\"], \"file\": name + \".csv\",\n                                    \"status\": status, \"elapsed_seconds\": time.monotonic()-started})\n        output.write_text(json.dumps(manifest, indent=2) + \"\\n\")\n        print(name, status, flush=True)\n        if index == 0:\n            csv = directory / (name + \".csv\")\n            content = csv.read_text() if csv.exists() else \"\"\n            if \"ERR_NVGPUCTRPERM\" in content or \"Failed to find metric\" in content:\n                break\n\n\nif __name__ == \"__main__\":\n    main()\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "lqcd_phases_job.sh",
+              "sha256": "d69d2c6e3f9a861d9c51ecc092c016a36d85d1ab53f457456051b88d2ca4fb1c",
+              "content": "#!/bin/bash\n# Normal runs only. No profiler; keep output in the owned experiment directory.\nset -eo pipefail\ntest -n \"${SLURM_JOB_ID:-}\"\nsource /etc/profile\nmodule load \"system/${SLURM_JOB_PARTITION}\" nvhpc/26.5\nset -u\nexport OMP_NUM_THREADS=1 OMP_PROC_BIND=true OMP_PLACES=cores\nexport OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1\ntest ! -e source/benchmark_phases\ntest ! -e source/phases-input\ncp -R source/benchmark_hmc_dwf source/benchmark_phases\ncp -R source/sample_1gpu source/phases-input\npython3 ../instrument_lqcd_phases.py source/benchmark_phases/hmc_dwf_eo.cpp\nmake -B -C source/benchmark_phases CXX=\"mpic++ -include $PWD/../lqcd_phases.h\" > phases-build.log 2>&1\nsha256sum ../lqcd_phases.h source/benchmark_phases/hmc_dwf_eo.elf\ncd source/phases-input\nTIMEFORMAT='OPENFS_WALL_SECONDS=%R'\nfor run in 0 1 2 3; do\n  { time timeout 180 ../../original-hmc.elf; } > \"../../phases-original-${run}.log\" 2>&1\n  { time timeout 180 ../benchmark_phases/hmc_dwf_eo.elf; } > \"../../phases-normal-${run}.log\" 2>&1\ndone\ndate -u +%FT%TZ\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "lqcd_phases.h",
+              "sha256": "96d6b5bd9f22d13262ca0f6748486abac5655aff71c698ac402b2437da8b0aa4",
+              "content": "#ifndef OPENFS_LQCD_PHASES_H\n#define OPENFS_LQCD_PHASES_H\n#include <chrono>\n#include <cstdio>\n#include <openacc.h>\nnamespace openfs {\nusing Clock = std::chrono::steady_clock;\nstatic Clock::time_point started, previous;\nstatic double init_seconds, main_seconds;\nstatic void begin() { started = previous = Clock::now(); }\nstatic void compute() {\n  acc_wait_all();\n  auto now = Clock::now();\n  init_seconds = std::chrono::duration<double>(now - previous).count();\n  previous = now;\n}\nstatic void finish() {\n  acc_wait_all();\n  auto now = Clock::now();\n  main_seconds = std::chrono::duration<double>(now - previous).count();\n  previous = now;\n}\nstatic void end() {\n  auto now = Clock::now();\n  std::fprintf(stderr,\n    \"OPENFS_PHASES init=%.9f compute=%.9f final=%.9f total=%.9f\\n\",\n    init_seconds, main_seconds, std::chrono::duration<double>(now - previous).count(),\n    std::chrono::duration<double>(now - started).count());\n}\n}\n#endif\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "instrument_lqcd_phases.py",
+              "sha256": "ebd53fbe23fe6a55e254d95791668d389abb3e84416e954de6a44ffc5e23fdd8",
+              "content": "\"\"\"Instrument only the pinned public sample; fail closed on changed anchors.\"\"\"\nimport argparse\nfrom pathlib import Path\n\ndef instrument(text):\n    if \"openfs::\" in text:\n        raise ValueError(\"source is already instrumented\")\n    anchors = [\n        (\"int main(int argc, char *argv[])\\n{\", \"int main(int argc, char *argv[])\\n{\\n  openfs::begin();\"),\n        (\"    for (int traj = 0; traj < Ntraj; ++traj) {\",\n         \"    openfs::compute();\\n    for (int traj = 0; traj < Ntraj; ++traj) {\"),\n        (\"    gconf_write.write_file(U, writefile);\",\n         \"    openfs::finish();\\n    gconf_write.write_file(U, writefile);\"),\n        (\"  return EXIT_SUCCESS;\", \"  openfs::end();\\n  return EXIT_SUCCESS;\"),\n    ]\n    for old, new in anchors:\n        if text.count(old) != 1:\n            raise ValueError(\"pinned source anchor mismatch\")\n        text = text.replace(old, new)\n    return text\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"source\", type=Path)\n    args = parser.parse_args()\n    args.source.write_text(instrument(args.source.read_text()))\n",
+              "note_ja": "旧測定に対応する管理済みスクリプトの固定版。Slurmに保存された実ジョブ原本とのハッシュ照合は未実施。参照手順として公開します。",
+              "note_en": "Pinned managed script corresponding to the earlier study. Not digest-verified against the scheduler's submitted script; published as a reference recipe."
+            },
+            {
+              "name": "HMC_DWF_Nf2p1_eo.yaml",
+              "sha256": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+              "content": null,
+              "note_ja": "固定したアプリケーションのリビジョンに含まれる入力。上流リポジトリから取得してください。",
+              "note_en": "Input included in the pinned upstream source commit."
+            },
+            {
+              "name": "main.yaml",
+              "sha256": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+              "content": null,
+              "note_ja": "固定したアプリケーションのリビジョンに含まれる入力。上流リポジトリから取得してください。",
+              "note_en": "Input included in the pinned upstream source commit."
+            },
+            {
+              "name": "conf_04040408.txt",
+              "sha256": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d",
+              "content": null,
+              "note_ja": "固定したアプリケーションのリビジョンに含まれる入力。上流リポジトリから取得してください。",
+              "note_en": "Input included in the pinned upstream source commit."
+            }
+          ],
+          "gaps_ja": [
+            "完全に同じ環境での再現に必要な旧NUMA配置、MPI/OS版、クロック状態は未記録です。現在の環境から過去の値を推定して補いません。",
+            "スクリプトはスケジューラの割当内で使用します。配置・モジュール名・親ディレクトリは環境依存です。公開記録ではホスト・アカウント・ジョブIDを除外しています。",
+            "新規実験は実行ごとに環境レコードを取得します。未取得の測定値やプロファイルを数値予測の代わりに掲載しません。"
+          ],
+          "gaps_en": [
+            "Old NUMA placement, MPI/OS versions and clock state were not recorded; complete environment reproduction is not established. Current state is not used to reconstruct historical facts.",
+            "Run scripts inside a scheduler allocation. Placement, module names and parent directories are environment-specific. Public records omit host, account and job identifiers.",
+            "New experiments capture per-execution environment records. Missing timings or profiles are not replaced by invented forecasts."
+          ]
+        }
+      ],
     "specification_comparison": {
       "metrics": [
         {
@@ -1383,55 +1563,73 @@
         "id": "a64fx",
         "name": "A64FX-Fugaku",
         "profile_id": "report-a64fx",
-        "spec_id": null
+        "spec_id": null,
+        "lineage": null,
+        "generation": null
       },
       {
         "id": "a100",
         "name": "A100 80 GB SXM",
         "profile_id": null,
-        "spec_id": "a100-sxm-80"
+        "spec_id": "a100-sxm-80",
+        "lineage": "nvidia-datacenter",
+        "generation": "Ampere"
       },
       {
         "id": "h100",
         "name": "H100 80 GB SXM",
         "profile_id": null,
-        "spec_id": "h100-sxm-80"
+        "spec_id": "h100-sxm-80",
+        "lineage": "nvidia-datacenter",
+        "generation": "Hopper"
       },
       {
         "id": "gh200",
         "name": "GH200-Grace-96GB",
         "profile_id": "cloud-gh200-20260919",
-        "spec_id": "gh200-hbm3-96"
+        "spec_id": "gh200-hbm3-96",
+        "lineage": "nvidia-datacenter",
+        "generation": "Hopper"
       },
       {
         "id": "gh200e",
         "name": "GH200 HBM3e 144 GB",
         "profile_id": null,
-        "spec_id": "gh200-hbm3e-144"
+        "spec_id": "gh200-hbm3e-144",
+        "lineage": "nvidia-datacenter",
+        "generation": "Hopper"
       },
       {
         "id": "h200",
         "name": "H200 141 GB SXM",
         "profile_id": null,
-        "spec_id": "h200-sxm"
+        "spec_id": "h200-sxm",
+        "lineage": "nvidia-datacenter",
+        "generation": "Hopper"
       },
       {
         "id": "b200",
         "name": "B200 HGX 180 GB",
         "profile_id": null,
-        "spec_id": "b200-hgx"
+        "spec_id": "b200-hgx",
+        "lineage": "nvidia-datacenter",
+        "generation": "Blackwell"
       },
       {
         "id": "b300",
         "name": "B300-SXM6-Xeon6767P",
         "profile_id": "cloud-b300-20260919",
-        "spec_id": "b300-sxm6"
+        "spec_id": "b300-sxm6",
+        "lineage": "nvidia-datacenter",
+        "generation": "Blackwell"
       },
       {
         "id": "rubin",
         "name": "Rubin 288 GB",
         "profile_id": null,
-        "spec_id": "rubin"
+        "spec_id": "rubin",
+        "lineage": "nvidia-datacenter",
+        "generation": "Rubin"
       }
     ],
     "cases": [
@@ -2461,6 +2659,76 @@
     }
   ],
   "kernel_study": {
+    "additional_forecasts": [
+      {
+        "baseline_machine_id": "gh200",
+        "frozen": {
+          "frozen_at": "2026-09-19T15:43:30.445423+00:00",
+          "model_sha256": "9263a1a91a5469b8c9624a93249644da85be60b052cc15dfbe3657451cf41347",
+          "baseline_sha256": "1dbcaa0ecb48d72ca78dfefd2c6d168587832adffea5ecd38ae7d228412dd75c",
+          "baseline_spec": {
+            "fp64": 34,
+            "fp32": 67,
+            "bandwidth": 4000
+          },
+          "targets": {
+            "b200": {
+              "fp64": 37,
+              "fp32": 75,
+              "bandwidth": 7700
+            },
+            "rubin": {
+              "fp64": 33,
+              "fp32": 130,
+              "bandwidth": 22000
+            }
+          },
+          "target_observations_used": false,
+          "prior_target_seen": [],
+          "results": {
+            "b200": {
+              "seconds": 13.213484133142199,
+              "minimum": 7.070027441115703,
+              "maximum": 24.502270164483136
+            },
+            "rubin": {
+              "seconds": 13.191895127018268,
+              "minimum": 6.804582075925754,
+              "maximum": 24.480681158359204
+            }
+          }
+        }
+      },
+      {
+        "baseline_machine_id": "b300",
+        "frozen": {
+          "frozen_at": "2026-09-19T15:43:30.446138+00:00",
+          "model_sha256": "9263a1a91a5469b8c9624a93249644da85be60b052cc15dfbe3657451cf41347",
+          "baseline_sha256": "08cc2462e6590f981520367fe12793dae0fd3f8d09a909a1d98fd71f67569790",
+          "baseline_spec": {
+            "fp64": 1.25,
+            "fp32": 75,
+            "bandwidth": 8000
+          },
+          "targets": {
+            "rubin": {
+              "fp64": 33,
+              "fp32": 130,
+              "bandwidth": 22000
+            }
+          },
+          "target_observations_used": false,
+          "prior_target_seen": [],
+          "results": {
+            "rubin": {
+              "seconds": 25.382288214107017,
+              "minimum": 10.77500706133318,
+              "maximum": 42.87079937397331
+            }
+          }
+        }
+      }
+    ],
     "id": "lqcd-kernel-20260919",
     "application_id": "APP-EEA1-LQCD-DWF-HMC",
     "baseline_machine_id": "gh200",

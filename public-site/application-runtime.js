@@ -179,14 +179,17 @@
         el("p", local(method,"note")));
       const observed = view.results.find(v => v.case_id === c.id && v.machine_id === r.machine_id && v.kind === "measured");
       if (observed) contents.push(el("p", t("同じ評価ケースの実測との差：", "Difference from the measured matching case: ")+((r.seconds/observed.seconds-1)*100).toFixed(1)+"%"));
+      else contents.push(el("p",t("予測対象の同条件の独自実測は未取得です。精度検証は未完了です。","No matching own measurement of the target is available. Prediction accuracy is not validated.")));
       contents.push(el("p", t("対象実測値による係数調整なし。未校正・調達評価不可。", "No coefficient fitted to the target measurement. Uncalibrated; not for procurement.")));
       if(r.method_id==="kernel-roofline") {
-        const frozen=data.kernel_study.frozen,base=frozen.baseline_spec,target=frozen.targets[r.machine_id];
+        const forecast=[{baseline_machine_id:data.kernel_study.baseline_machine_id,frozen:data.kernel_study.frozen},...(data.kernel_study.additional_forecasts||[])].find(f=>f.baseline_machine_id===r.baseline_id&&f.frozen.targets[r.machine_id]);
+        const frozen=forecast.frozen;
+        const base=frozen.baseline_spec,target=frozen.targets[r.machine_id];
         contents.push(table([t("モデル入力","Model input"),t("予測元","Baseline"),t("予測先","Target")],[
           ["FP64 TFLOP/s",fmt(base.fp64),fmt(target.fp64)],
           ["FP32 TFLOP/s",fmt(base.fp32),fmt(target.fp32)],
           ["HBM GB/s",fmt(base.bandwidth),fmt(target.bandwidth)]
-        ]),el("p",t("B300のFP64はメーカー併記値から換算した条件付き上限です。通常FP64の実効値ではありません。","B300 FP64 is a conditional ceiling normalized from the combined vendor label, not an achieved native-FP64 rate.")));
+        ]),el("p",t("B200/B300のFP64入力はメーカー併記値を使った条件付き上限、Rubinは公表暫定仕様です。通常FP64の実効性能を保証する値ではありません。","B200/B300 FP64 inputs are conditional ceilings from combined vendor labels; Rubin uses announced preliminary specifications. These do not guarantee achieved native-FP64 performance.")));
         contents.push(el("p",t("仮定感度の範囲（信頼区間ではありません）：","Assumption sensitivity, not a confidence interval: ")+fmt(r.minimum)+"–"+fmt(r.maximum)+" s"),
           el("p",t("カウンタ対応率（基準機GPU時間）：","Counter coverage of baseline GPU time: ")+(100*r.coverage_fraction).toFixed(1)+"%"),
           el("p",t("予測固定日時：","Forecast frozen at: ")+r.frozen_at),
@@ -200,6 +203,8 @@
       else contents.push(el("p", t("初期化・終了処理はこの計測区間に含まれません。", "Initialization and finalization are outside this timing boundary.")));
     }
     contents.push(link(t("評価条件・実行時間の内訳", "Conditions and runtime breakdown"),href(c,"runtime-detail")));
+    contents.push(link(t("再現情報・ジョブスクリプト", "Reproduction records and job scripts"),href(c,"runtime-repro-records")));
+    if(r.kind === "predicted") contents.push(link(t("予測元の通常実行・プロファイル", "Baseline normal runs and profiles"),href(c,c.kind==="kernel-study"?"runtime-kernel-study":"runtime-profile")));
     dialog(machine(r.machine_id).name+" · "+(r.kind === "measured" ? t("実測値","Measured") : t("予測値","Predicted")),contents);
   }
   function phaseName(key) {
@@ -214,7 +219,9 @@
     head.append(hr); const body=el("tbody");
     cases.forEach(c => {
       const row=el("tr"); row.dataset.caseId=c.id;
-      const values=view.results.filter(r=>r.case_id===c.id);
+      const groups=view.generation_comparison.groups.filter(g=>g.case_id===c.id);
+      const selected=new Set(groups.flatMap(g=>g.slots.map(s=>s.result_id).filter(Boolean)));
+      const values=view.results.filter(r=>selected.has(r.id));
       const max=values.length ? Math.max(...values.map(r=>r.seconds))*1.2 : 1;
       const th=el("th");th.scope="row";th.append(link(local(c,"title"),href(c)));
       const app=apps.find(a=>a.application_id===c.application_id);
@@ -223,7 +230,8 @@
       row.append(th);
       view.machines.forEach(m=>{
         const cell=el("td");cell.dataset.machineId=m.id;
-        const rs=values.filter(r=>r.machine_id===m.id);
+        const slots=groups.find(g=>g.machine_id===m.id).slots;
+        const rs=slots.map(s=>({...s,...values.find(r=>r.id===s.result_id)}));
         if (!rs.length) {
           const missing=button(t("未算定","Unavailable"),()=>dialog(local(c,"title")+" / "+m.name,[
             el("p",c.kind==="unmeasured" ? local(c,"scope") : t("この機器・評価条件に対応する通常実行の実測値、または区間別予測の根拠がありません。ゼロ秒ではありません。","No matching normal-run measurement or evidenced phase prediction for this machine and case. This is not zero seconds.")),
@@ -234,9 +242,19 @@
           rs.forEach(r=>{
             const column=el("div");column.className="runtime-column";
             const plot=el("div");plot.className="runtime-plot";
+            const slotLabel=r.offset===0 ? t("実測","Measured") : t(r.offset+"世代前",r.offset+" gen earlier");
+            if(!r.result_id) {
+              const missing=button(t("未算定","Unavailable"),()=>dialog(m.name+" · "+slotLabel,[
+                el("p",r.offset===0 ? t("同じ入力・計測区間の独自実測は未取得です。","No own measurement with matching input and timing boundary.") :
+                  t((r.source_generation || "対象世代")+"の同条件での通常実測・プロファイルに基づく予測が未取得です。他世代の数値で代用しません。","A forecast using matching normal runs and profiles from "+(r.source_generation || "the required generation")+" is unavailable. No substitute from another generation.")),
+                link(t("再現情報・不足項目","Reproduction records and gaps"),href(c,"runtime-repro-records"))]));
+              missing.className="runtime-missing";plot.append(missing);column.append(plot,el("small",slotLabel));
+              if(r.source_generation)column.append(el("small",r.source_generation));
+              group.append(column);return;
+            }
             const bar=button("",()=>evidence(r,c));bar.className="runtime-bar "+r.kind;bar.dataset.resultId=r.id;
             bar.style.height=(r.seconds/max*100)+"%";
-            bar.setAttribute("aria-label",m.name+" · "+(r.kind==="measured" ? t("実測値","Measured") : local(view.methods.find(v=>v.id===r.method_id),"name"))+" · "+fmt(r.seconds)+" s");
+            bar.setAttribute("aria-label",m.name+" · "+slotLabel+" · "+(r.kind==="measured" ? t("実測値","Measured") : local(view.methods.find(v=>v.id===r.method_id),"name"))+" · "+fmt(r.seconds)+" s");
             bar.title=bar.getAttribute("aria-label");
             const value=el("span",fmt(r.seconds));value.className="runtime-value";bar.append(value);
             const segments=r.phases || {update:r.seconds};
@@ -246,7 +264,8 @@
             else {
               const a=methodLink(r.method_id,c);a.className="runtime-method-label";a.title=a.textContent;
               a.textContent=({"bandwidth-proportional":t("帯域比例","Bandwidth"),"profile-assisted":t("時間比併用","Time-share"),"kernel-roofline":t("カーネル別","Per-kernel")})[r.method_id];
-              column.append(a,el("small","← "+machine(r.baseline_id).name.split("-")[0]));
+              const baseLabel=el("small",machine(r.baseline_id).name.split(/[ -]/)[0]);baseLabel.title=machine(r.baseline_id).name;
+              column.append(el("small",slotLabel),a,baseLabel);
             }
             group.append(column);
           });cell.append(group);
@@ -343,12 +362,46 @@
       const ul=el("ul");study["caveats_"+language].forEach(v=>ul.append(el("li",v)));limits.append(ul);root.append(limits);
     }
     if(c.kind==="kernel-study")root.append(kernelDetails(data.kernel_study));
+    root.append(reproductionDetails(c),diagnosticDetails(c));
     for(const method of view.methods) {
       const section=el("details");section.id="method-"+method.id;section.className="runtime-method";
       section.append(el("summary",local(method,"name")),el("p",method.formula),el("p",local(method,"note")));
       method.source_ids.forEach(id=>section.append(source(id)));
       root.append(section);
     }
+  }
+  function reproductionDetails(c) {
+    const panel=el("details");panel.id="runtime-repro-records";
+    panel.append(el("summary",t("再現情報・ジョブスクリプト","Reproduction records and job scripts")));
+    const records=view.reproducibility.filter(r=>r.case_ids.includes(c.id));
+    if(!records.length)panel.append(el("p",t("この評価ケースの再現情報は未登録です。","No reproducibility record for this evaluation case yet.")));
+    for(const record of records) {
+      panel.append(el("p",record.status==="partial" ? t("一部未記録：完全に同じ実行環境での再現は未確認です。","Partially recorded: reproduction of the complete execution environment is not established.") : t("記録済み。再実行時は入力と環境の一致を確認してください。","Recorded. Verify matching inputs and environment when rerunning.")),
+        link("Source commit: "+record.source_commit,record.source_url),
+        table([t("項目","Item"),t("設定・観測","Configuration / observation"),t("状態","Status")],record.settings.map(s=>[
+          local(s,"name"),local(s,"value"),({recorded:t("記録済み","Recorded"),requested:t("指定値","Requested"),"not-recorded":t("未記録","Not recorded")})[s.status]])));
+      for(const artifact of record.artifacts) {
+        const d=el("details");d.append(el("summary",artifact.name),el("p",local(artifact,"note")),el("p","SHA-256: "+artifact.sha256));
+        if(artifact.content!==null) {
+          const pre=el("pre");pre.append(el("code",artifact.content));d.append(pre);
+          d.append(button(t("ファイルをダウンロード","Download file"),()=>{
+            const url=URL.createObjectURL(new Blob([artifact.content],{type:"text/plain;charset=utf-8"}));
+            const a=document.createElement("a");a.href=url;a.download=artifact.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+          }));
+        }panel.append(d);
+      }
+      const gaps=el("ul");record["gaps_"+language].forEach(g=>gaps.append(el("li",g)));panel.append(gaps);
+    }return panel;
+  }
+  function diagnosticDetails(c) {
+    const d=el("details");d.id="runtime-diagnostics";
+    d.append(el("summary",t("旧モデル・同世代／逆方向の参考試算","Historical methods and same-/reverse-generation diagnostics")),
+      el("p",t("主グラフには実測と1・2世代前からのプロファイル併用予測を表示します。以下は旧来の比較手法や同世代・逆方向の試算であり、将来世代の予測とは区別します。数値と固定履歴は保持しています。","The main chart shows measurements and profile-assisted forecasts from one and two previous generations. These historical methods and same-/reverse-generation estimates are separate diagnostics; their frozen values are retained.")));
+    const ids=new Set(view.generation_comparison.diagnostic_result_ids);
+    const rows=view.results.filter(r=>r.case_id===c.id&&ids.has(r.id));
+    for(const r of rows)d.append(button(machine(r.machine_id).name+" / "+machine(r.baseline_id).name+" / "+local(view.methods.find(m=>m.id===r.method_id),"name")+": "+fmt(r.seconds)+" s",()=>evidence(r,c)));
+    if(!rows.length)d.append(el("p",t("該当する参考試算はありません。","No historical diagnostics for this case.")));
+    return d;
   }
   function focusAnchor() {
     let id;try{id=decodeURIComponent(location.hash.slice(1));}catch(_){return;}
@@ -363,6 +416,7 @@
     const c=requested || (app ? view.cases.find(c=>c.application_id===app.application_id) : null);
     document.getElementById("legacy-device-reference").hidden=!c;
     root.append(el("p",t("通常実行の秒数。塗りつぶし＝実測、点線枠＝予測。色＝初期化・主要計算・終了処理。未算定はゼロではありません。","Normal-run seconds. Solid bars: measured; dashed outlines: predicted. Colors: initialization, computation, finalization. Unavailable does not mean zero.")));
+    root.append(el("p",local(view.generation_policy,"note")));
     const legend=el("div");legend.className="runtime-legend";
     ["initialization","compute","finalization","update"].forEach(key=>{const item=el("span",phaseName(key));item.className="legend-"+key;legend.append(item);});root.append(legend);
     if(c) detail(c);
