@@ -11,6 +11,7 @@
   const t = (ja, en) => language === "ja" ? ja : en;
   const fmt = n => Number(n).toLocaleString(language, {maximumFractionDigits: 3});
   const machine = id => view.machines.find(m => m.id === id);
+  const kernelStudy = c => c.kind === "application-study" ? data.application_studies.find(s => s.id === c.study_id) : data.kernel_study;
   const comparison = view.specification_comparison;
   const visibleMachines = new Set(view.machines.map(m => m.id));
   let selectedMachine = machine(params().get("machine"))?.id || null;
@@ -180,9 +181,12 @@
       const observed = view.results.find(v => v.case_id === c.id && v.machine_id === r.machine_id && v.kind === "measured");
       if (observed) contents.push(el("p", t("同じ評価ケースの実測との差：", "Difference from the measured matching case: ")+((r.seconds/observed.seconds-1)*100).toFixed(1)+"%"));
       else contents.push(el("p",t("予測対象の同条件の独自実測は未取得です。精度検証は未完了です。","No matching own measurement of the target is available. Prediction accuracy is not validated.")));
+      if(observed&&r.minimum!==null&&r.maximum!==null&&(observed.seconds<r.minimum||observed.seconds>r.maximum)) contents.push(el("p",t("注意：実測値は仮定感度の範囲外です。このケースではモデルの説明力が不足しています。","Warning: the measurement lies outside the assumption-sensitivity range. This model does not adequately explain this case.")));
       contents.push(el("p", t("対象実測値による係数調整なし。未校正・調達評価不可。", "No coefficient fitted to the target measurement. Uncalibrated; not for procurement.")));
       if(r.method_id==="kernel-roofline") {
-        const forecast=[{baseline_machine_id:data.kernel_study.baseline_machine_id,frozen:data.kernel_study.frozen},...(data.kernel_study.additional_forecasts||[])].find(f=>f.baseline_machine_id===r.baseline_id&&f.frozen.targets[r.machine_id]);
+        const study=kernelStudy(c);
+        const forecasts=study.forecasts || [{baseline_machine_id:study.baseline_machine_id,frozen:study.frozen},...(study.additional_forecasts||[])];
+        const forecast=forecasts.find(f=>f.baseline_machine_id===r.baseline_id&&f.frozen.targets[r.machine_id]);
         const frozen=forecast.frozen;
         const base=frozen.baseline_spec,target=frozen.targets[r.machine_id];
         contents.push(table([t("モデル入力","Model input"),t("予測元","Baseline"),t("予測先","Target")],[
@@ -195,6 +199,7 @@
           el("p",t("予測固定日時：","Forecast frozen at: ")+r.frozen_at),
           el("p",r.prior_target_seen ? t("この対象の旧実測は開発時に既知です。盲検検証ではありません。","Earlier measurements of this target were known during development; not blind validation.") : t("この対象の実測結果を確認する前に予測を固定しました。","Forecast frozen before inspecting this target's measurements.")),
           link(t("カーネルカウンタ・時間区分・限界","Kernel counters, timeline and limitations"),href(c,"runtime-kernel-study")));
+        if(c.kind==="application-study") contents.push(el("p",t("主要計算区間にカーネル別モデルを適用します。初期化・終了処理の中心値は予測元の通常実行から据え置き、0.5〜2倍を感度範囲に含めます。ホストCPU・I/Oの性能予測ではありません。","The kernel model scales computation only. Initialization and finalization retain baseline normal-run values, with 0.5–2× sensitivity. Host CPU and I/O performance are not independently predicted.")));
       }
     } else {
       contents.push(el("p", t("通常実行。プロファイラ無効。初回を除く3回の中央値。", "Normal execution with profiler disabled. Median of three retained repetitions after excluding the first process.")),
@@ -204,7 +209,7 @@
     }
     contents.push(link(t("評価条件・実行時間の内訳", "Conditions and runtime breakdown"),href(c,"runtime-detail")));
     contents.push(link(t("再現情報・ジョブスクリプト", "Reproduction records and job scripts"),href(c,"runtime-repro-records")));
-    if(r.kind === "predicted") contents.push(link(t("予測元の通常実行・プロファイル", "Baseline normal runs and profiles"),href(c,c.kind==="kernel-study"?"runtime-kernel-study":"runtime-profile")));
+    if(r.kind === "predicted") contents.push(link(t("予測元の通常実行・プロファイル", "Baseline normal runs and profiles"),href(c,["kernel-study","application-study"].includes(c.kind)?"runtime-kernel-study":"runtime-profile")));
     dialog(machine(r.machine_id).name+" · "+(r.kind === "measured" ? t("実測値","Measured") : t("予測値","Predicted")),contents);
   }
   function phaseName(key) {
@@ -305,14 +310,17 @@
   function kernelDetails(study) {
     const outer=el("details");outer.id="runtime-kernel-study";outer.open=true;
     outer.append(el("summary",t("カーネル別モデル：計測根拠と検証","Per-kernel model: measurements and validation")),el("p",local(study,"note")),el("p",study.compiler),
-      link(study.source_commit,"https://github.com/i-kanamori/LQCD-DWF-HMC/tree/"+study.source_commit));
+      link(study.source_commit,study.source_url || "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/"+study.source_commit));
     const names={gpu:t("GPUカーネル","GPU kernels"),copy:t("GPU転送","GPU copies"),sync_api:t("同期API（GPU等との重複除外）","Sync APIs, excluding higher-priority overlap"),launch_api:t("起動API（重複除外）","Launch APIs, excluding overlap"),unclassified:t("未分類：CPU処理・I/O等","Unclassified: CPU work, I/O, etc.")};
     for(const run of study.runs) {
       const detail=el("details"),r=run.data;detail.append(el("summary",machine(run.machine_id).name));
       detail.append(el("p",run.receipt.measurement_started_at+" → "+run.receipt.completed_at),
         el("p","Nsight Systems "+run.receipt.nsys_version+" / Nsight Compute "+run.receipt.ncu_version),
         el("p","Binary SHA-256: "+run.receipt.binary_sha256));
-      detail.append(table([t("通常実行","Normal run"),t("更新区間（秒）","Update (seconds)"),"H(diff)"],r.runs.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),fmt(v.seconds),String(v.h_diff)])),
+      detail.append(table([t("入力ファイル","Input file"),"SHA-256"],Object.entries(r.input_sha256)));
+      if(run.phase_rows) detail.append(table([t("通常実行","Normal run"),t("初期化","Initialization"),t("主要計算","Computation"),t("終了処理","Finalization"),t("合計（秒）","Total (seconds)")],run.phase_rows.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),...['initialization','compute','finalization','total'].map(k=>fmt(v[k]))])),el("p",local(run.verification,"method")));
+      else detail.append(table([t("通常実行","Normal run"),t("更新区間（秒）","Update (seconds)"),"H(diff)"],r.runs.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),fmt(v.seconds),String(v.h_diff)])));
+      detail.append(
         el("h4",t("別実行のトレース内訳","Separate-run trace partition")),
         el("p",t("以下はプロファイル実行の時間です。通常実行の実測内訳ではありません。","These are profiled-run times, not measured decompositions of normal execution.")),
         table([t("重複を除いた時間区分","Disjoint time partition"),"s"],Object.entries(r.timeline).map(([k,v])=>[names[k],fmt(v)])));
@@ -361,7 +369,7 @@
       const limits=el("details");limits.append(el("summary",t("予測の限界・未確認事項","Prediction limitations and gaps")));
       const ul=el("ul");study["caveats_"+language].forEach(v=>ul.append(el("li",v)));limits.append(ul);root.append(limits);
     }
-    if(c.kind==="kernel-study")root.append(kernelDetails(data.kernel_study));
+    if(["kernel-study","application-study"].includes(c.kind))root.append(kernelDetails(kernelStudy(c)));
     root.append(reproductionDetails(c),diagnosticDetails(c));
     for(const method of view.methods) {
       const section=el("details");section.id="method-"+method.id;section.className="runtime-method";
@@ -413,7 +421,8 @@
     language=lang;root.replaceChildren();
     const p=params(),requested=view.cases.find(c=>c.id===p.get("case"));
     const app=apps.find(a=>a.application_id===p.get("app"));
-    const c=requested || (app ? view.cases.find(c=>c.application_id===app.application_id) : null);
+    const measuredCases=new Set(view.results.filter(r=>r.kind==="measured").map(r=>r.case_id));
+    const c=requested || (app ? (view.cases.find(c=>c.application_id===app.application_id&&measuredCases.has(c.id)) || view.cases.find(c=>c.application_id===app.application_id)) : null);
     document.getElementById("legacy-device-reference").hidden=!c;
     root.append(el("p",t("通常実行の秒数。塗りつぶし＝実測、点線枠＝予測。色＝初期化・主要計算・終了処理。未算定はゼロではありません。","Normal-run seconds. Solid bars: measured; dashed outlines: predicted. Colors: initialization, computation, finalization. Unavailable does not mean zero.")));
     root.append(el("p",local(view.generation_policy,"note")));
