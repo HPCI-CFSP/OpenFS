@@ -5,13 +5,12 @@
   const requested = new URLSearchParams(location.search).get("app") || location.hash.slice(1);
   let selectedApp = apps.some(a => a.application_id === requested) ? requested : apps[0].application_id;
   let selectedGroup = new URLSearchParams(location.search).get("study");
-  let selectedTarget = data?.bandwidth_scenario?.target_ids[0];
   const el = (tag, text) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; return n; };
   const copy = {
     ja: {
       app: "アプリケーション", workload: "入力・計測区間", low: "小さいほど高速", high: "大きいほど高速",
       reference: "公開報告の実測値（EEA1指定入力との一致は未確認）", device: "CPU／GPU・測定環境",
-      measuredCPU: "実測値 · 1 CPU", measuredGPU: "実測値 · 1 GPU ＋ ホストCPU", estimated: "条件付き予測値（参考試算）",
+      measuredCPU: "実測値 · 1 CPU", measuredGPU: "実測値 · 1 GPU ＋ ホストCPU", estimated: "予測手法：帯域比例",
       legend: "実測値・予測値の区別", forecastScope: "点線枠は帯域比例による未検証のカーネル性能予測です。アプリケーション全体の性能や予測精度を保証するものではありません。",
       value: "報告値", conditions: "実行条件・根拠", forecast: "校正済み予測に不足する根拠", unavailable: "未成立",
       noData: "比較可能な1 CPU／1 GPUの実測値が未確認です。", noProfile: "予測に必要な入力・版・精度、カーネル別計測、ホスト処理・転送・同期・I/O、対象製品の仕様が不足しています。",
@@ -35,7 +34,7 @@
     en: {
       app: "Application", workload: "Input / timing boundary", low: "Lower is faster", high: "Higher is faster",
       reference: "Reported measurements (equivalence to the EEA1 input unverified)", device: "CPU / GPU and environment",
-      measuredCPU: "Measured · 1 CPU", measuredGPU: "Measured · 1 GPU + host CPUs", estimated: "Conditional forecast (what-if)",
+      measuredCPU: "Measured · 1 CPU", measuredGPU: "Measured · 1 GPU + host CPUs", estimated: "Prediction method: bandwidth scaling",
       legend: "Measured and forecast values", forecastScope: "Dashed outlines indicate unvalidated, bandwidth-proportional kernel forecasts, not whole-application performance or validated prediction accuracy.",
       value: "Reported value", conditions: "Conditions and evidence", forecast: "Evidence still needed for calibrated forecasts", unavailable: "Not established",
       noData: "No verified comparable single-CPU / single-GPU measurements.", noProfile: "Missing frozen input, version, precision, per-kernel profiles, host/transfer/sync/I/O timings and target product specifications.",
@@ -104,7 +103,11 @@
     const s = data.bandwidth_scenario, base = s.hardware.find(h => h.id === r.baseline_hardware_id);
     const m = group.measurements.find(m => m.id === r.baseline_measurement_id);
     const list = el("ul"); s["assumptions_" + lang].forEach(a => list.append(el("li", a)));
+    const method = el("a", lang === "ja" ? "予測手法：帯域比例（詳しい説明）" : "Prediction method: bandwidth scaling (details)");
+    const url = new URL(location.href); url.searchParams.set("app", group.application_id); url.hash = "method-bandwidth-proportional";
+    method.href = url.href; method.addEventListener("click", () => document.getElementById("device-evidence-dialog")?.close());
     dialog(target.name + " ← " + m.device, [
+      method,
       el("p", t.publicMethod + " · " + r.value.toFixed(1) + " " + group.unit), el("p", t.formulaText),
       el("p", m.value + " × " + target.bandwidth_gbs + " / " + base.bandwidth_gbs + " = " + r.value.toFixed(1)),
       el("p", t.identityNote), el("h3", t.assumptions), list,
@@ -283,14 +286,11 @@
       const rows = group.measurements;
       const scenario = data.bandwidth_scenario;
       const targets = scenario?.target_ids.filter(id => scenario.results.some(r => r.group_id === group.id && r.target_id === id)) || [];
-      if (targets.length && !targets.includes(selectedTarget)) selectedTarget = targets[0];
       const specs = Object.fromEntries((scenario?.hardware || []).map(h => [h.id, h]));
-      if (targets.length) selectControl(t.target, targets.map(id => [id, specs[id].name]), selectedTarget, value => { selectedTarget = value; render(lang); });
-      const forecasts = targets.length ? scenario.results.filter(r => r.group_id === group.id && r.target_id === selectedTarget) : [];
-      const target = specs[selectedTarget];
+      const forecasts = targets.length ? scenario.results.filter(r => r.group_id === group.id) : [];
       root.append(el("h4", local(group, "title")), el("p", t.reference));
       if (forecasts.length) {
-        const note = el("p", t.forecastScope + " " + target.name + ": " + (target.specification_status === "preliminary" ? t.preliminary : t.publishedSpec));
+        const note = el("p", t.forecastScope);
         note.className = "device-forecast-note"; root.append(note);
       }
       const unit = el("p", group.unit + " · " + (group.direction === "lower" ? t.low : t.high)); unit.className = "device-axis-title";
@@ -298,8 +298,8 @@
       root.append(bars([
         ...rows.map(m => ({...m, onEvidence: () => measuredDetails(m, group, lang, t),
           onSpecs: () => dialog(m.device + " · " + t.specs, deviceNodes(m, lang, t), t)})),
-        ...forecasts.map(r => ({value: r.value, device: target.name + " ← " + rows.find(m => m.id === r.baseline_measurement_id).device, kind: "conditional",
-          onEvidence: () => forecastDetails(r, group, target, lang, t), onSpecs: () => forecastDetails(r, group, target, lang, t)}))
+        ...forecasts.map(r => ({value: r.value, device: specs[r.target_id].name + " ← " + rows.find(m => m.id === r.baseline_measurement_id).device, kind: "conditional",
+          onEvidence: () => forecastDetails(r, group, specs[r.target_id], lang, t), onSpecs: () => forecastDetails(r, group, specs[r.target_id], lang, t)}))
       ], local(group, "title") + " / " + group.unit, lang, t));
       root.append(el("p", local(group, "scope")), el("p", local(data, "caveat")));
       const details = el("details"); details.append(el("summary", t.conditions));
@@ -311,7 +311,7 @@
       table.append(head, body);
       const wrap = el("div"); wrap.className = "table-wrap"; wrap.append(table);
       details.append(wrap, link(group.source_url, group.locator)); root.append(details);
-      if (forecasts.length) root.append(bandwidthScenario(group, target, forecasts, lang, t));
+      targets.forEach(id => root.append(bandwidthScenario(group, specs[id], forecasts.filter(r => r.target_id === id), lang, t)));
     } else {
       root.append(el("p", t.noData));
       data.gaps.filter(g => g.application_id === selectedApp).forEach(g => root.append(el("p", local(g, "note"))));
