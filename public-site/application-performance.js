@@ -7,7 +7,7 @@
     ja: {
       publicOnly: "公開情報のみ", languageControl: "表示言語", breadcrumbs: "パンくずリスト",
       tagline: "公開調査カタログとシステム整備計画案", analysis: "分析",
-      pageTitle: "アプリケーション性能予測", lead: "EEA1評価対象の基本情報を整理しています。性能予測値は未掲載です。",
+      pageTitle: "アプリケーション性能予測", lead: "EEA1アプリケーションの公開実測値と、予測元別の外挿に必要な条件を整理しています。根拠不足の予測値は未掲載です。",
       tableTitle: "EEA1評価対象アプリケーション", name: "アプリケーション", domain: "分野・計算内容",
       code: "公開コード・公式情報", conditions: "評価条件", sources: "根拠",
       publicCode: "公開コードあり", unreleased: "EEA1参照資料では非公開", unknown: "未確認",
@@ -20,7 +20,7 @@
     en: {
       publicOnly: "Public information only", languageControl: "Display language", breadcrumbs: "Breadcrumbs",
       tagline: "Public research catalog and system planning options", analysis: "Analysis",
-      pageTitle: "Application performance forecasting", lead: "Basic information on the EEA1 evaluation applications. Performance forecasts are not published here.",
+      pageTitle: "Application performance forecasting", lead: "Reported EEA1 application measurements and requirements for baseline-specific extrapolation. Unsupported numerical forecasts are not published.",
       tableTitle: "EEA1 evaluation applications", name: "Application", domain: "Domain / computation",
       code: "Public code / official information", conditions: "Evaluation conditions", sources: "Evidence",
       publicCode: "Public source available", unreleased: "Unreleased in the EEA1 reference", unknown: "Not verified",
@@ -59,7 +59,8 @@
     document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = tr(node.dataset.i18n); });
     document.querySelectorAll("[data-i18n-aria-label]").forEach((node) => node.setAttribute("aria-label", tr(node.dataset.i18nAriaLabel)));
     document.querySelectorAll("[data-language]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.language === language)));
-    document.getElementById("application-overview-status").textContent = `${tr("provisional")} · ${tr("asOf")}: ${overview.as_of}`;
+    const comparisonDate = data.application_device_comparison?.as_of || overview.as_of;
+    document.getElementById("application-overview-status").textContent = `${tr("provisional")} · ${tr("asOf")}: ${comparisonDate}`;
     const updated = document.getElementById("site-updated");
     updated.href = data.site.commit_url; updated.textContent = overview.as_of;
     const roadmap = data.roadmaps.find((item) => item.roadmap_id === "RM-APP-WORKLOADS");
@@ -99,6 +100,7 @@
     });
     table.append(caption, head, body);
     document.getElementById("application-overview-table").replaceChildren(table);
+    window.OpenFSDeviceComparison.render(language);
   }
   function focusApplication() {
     const id = new URLSearchParams(window.location.search).get("app") || window.location.hash.slice(1);
