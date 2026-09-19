@@ -317,6 +317,7 @@
       detail.append(el("p",run.receipt.measurement_started_at+" → "+run.receipt.completed_at),
         el("p","Nsight Systems "+run.receipt.nsys_version+" / Nsight Compute "+run.receipt.ncu_version),
         el("p","Binary SHA-256: "+run.receipt.binary_sha256));
+      if(run.receipt.completion_basis)detail.append(el("p",t("終了日時は別プロファイル取得を含むジョブ完了時刻です。","Completion is the scheduler job end, including separate profiling.")));
       detail.append(table([t("入力ファイル","Input file"),"SHA-256"],Object.entries(r.input_sha256)));
       if(run.phase_rows) detail.append(table([t("通常実行","Normal run"),t("初期化","Initialization"),t("主要計算","Computation"),t("終了処理","Finalization"),t("合計（秒）","Total (seconds)")],run.phase_rows.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),...['initialization','compute','finalization','total'].map(k=>fmt(v[k]))])),el("p",local(run.verification,"method")));
       else detail.append(table([t("通常実行","Normal run"),t("更新区間（秒）","Update (seconds)"),"H(diff)"],r.runs.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),fmt(v.seconds),String(v.h_diff)])));
@@ -338,6 +339,15 @@
       detail.append(counter);outer.append(detail);
     }
     const ul=el("ul");study["limitations_"+language].forEach(note=>ul.append(el("li",note)));outer.append(ul);
+    const history=view.phase_runs.filter(r=>r.historical_study_id&&study.id==="PHASE-"+r.case_id.toUpperCase());
+    if(history.length) {
+      const previous=el("details");previous.append(el("summary",t("過去の通常実行記録（現在の棒グラフとは別）","Historical normal runs (separate from current bars)")));
+      for(const r of history)previous.append(el("h4",machine(r.machine_id).name),
+        el("p","Header SHA-256: "+r.header_sha256),
+        table([t("反復","Repeat"),t("初期化","Initialization"),t("主要計算","Computation"),t("終了","Finalization"),t("合計秒","Total seconds")],
+          r.rows.map((v,i)=>[String(i)+(v.warmup?t("（除外）"," (excluded)"):""),...["initialization","compute","finalization","total"].map(k=>fmt(v[k]))])));
+      outer.append(previous);
+    }
     return outer;
   }
   function detail(c) {
@@ -407,7 +417,10 @@
       el("p",t("主グラフには実測と1・2世代前からのプロファイル併用予測を表示します。以下は旧来の比較手法や同世代・逆方向の試算であり、将来世代の予測とは区別します。数値と固定履歴は保持しています。","The main chart shows measurements and profile-assisted forecasts from one and two previous generations. These historical methods and same-/reverse-generation estimates are separate diagnostics; their frozen values are retained.")));
     const ids=new Set(view.generation_comparison.diagnostic_result_ids);
     const rows=view.results.filter(r=>r.case_id===c.id&&ids.has(r.id));
-    for(const r of rows)d.append(button(machine(r.machine_id).name+" / "+machine(r.baseline_id).name+" / "+local(view.methods.find(m=>m.id===r.method_id),"name")+": "+fmt(r.seconds)+" s",()=>evidence(r,c)));
+    for(const r of rows) {
+      const b=button(machine(r.machine_id).name+" / "+machine(r.baseline_id).name+" / "+local(view.methods.find(m=>m.id===r.method_id),"name")+": "+fmt(r.seconds)+" s",()=>evidence(r,c));
+      b.dataset.resultId=r.id;d.append(b);
+    }
     if(!rows.length)d.append(el("p",t("該当する参考試算はありません。","No historical diagnostics for this case.")));
     return d;
   }
@@ -416,6 +429,95 @@
     if(!id.startsWith("method-")&&!id.startsWith("runtime-"))return;
     const node=document.getElementById(id);
     if(node){if(node.tagName==="DETAILS")node.open=true;node.tabIndex=-1;node.scrollIntoView({block:"start"});node.focus({preventScroll:true});}
+  }
+  function analyticalPanel(c) {
+    const study=data.analytical_model_study;if(!study)return null;
+    const rows=study.results.filter(r=>!c||r.case_id===c.id);if(!rows.length)return null;
+    const panel=el("section");panel.id="runtime-analytical-models";
+    panel.append(el("h3",t("定式化モデルの比較検証","Analytical model comparison")),
+      el("p",t("3アプリに同じ式を適用した暫定比較。対象機の結果は既知であり、盲検検証ではありません。初期化から終了までの秒数です。",
+                 "Provisional comparison using the same formulas for three applications. Target results were already known: this is not blind validation. Seconds cover initialization through finalization.")));
+    panel.append(el("p",t("各行は同一入力・同一計測区間の比較です。行間で縦軸の尺度は異なります。",
+                         "Each row compares matching inputs and timing boundaries. Vertical scales differ across rows.")));
+    const explain=(row,value)=>{
+      const method=study.methods.find(m=>m.id===value.model);
+      const content=[el("p",local(method,"note")),el("p",method.formula),
+        el("p",machine(row.baseline).name+" → "+machine(row.target).name),
+        table([t("量","Quantity"),t("値","Value")],[
+          [t("実測 / 予測（秒）","Observed / predicted seconds"),fmt(row.observed_seconds)+" / "+fmt(value.seconds)],
+          [t("相対誤差","Relative error"),value.error_percent.toFixed(1)+"%"],
+          [t("GPU計算 / 据え置き部分（秒）","GPU / fixed part (seconds)"),fmt(value.gpu_seconds)+" / "+fmt(value.fixed_seconds)],
+          [t("カウンタ取得済み時間率","Counter-covered time share"),(100*value.coverage_fraction).toFixed(1)+"%"],
+          [t("トレース区間 / 通常実行区間","Trace / normal computation"),fmt(value.trace_to_normal_ratio)+"×"]
+        ]),el("p",t("誤差は評価結果であり、モデル入力には使っていません。未分類時間等の据え置きは仮定で、正確さの保証ではありません。",
+          "Error is an evaluation output, never a predictor input. Holding unknown components fixed is an assumption, not an accuracy guarantee."))];
+      const kernels=el("details");kernels.append(el("summary",t("カーネル別の予測内訳","Per-kernel prediction")),
+        table([t("カーネル / 形状","Kernel / shape"),t("予測元の秒数","Baseline seconds"),t("予測秒数","Predicted seconds")],
+          value.kernels.map(k=>[k.name+" / "+k.grid.join("×")+" / "+k.block.join("×"),fmt(k.baseline_seconds),fmt(k.seconds)])));
+      content.push(kernels,link(t("予測元の通常実行・カウンタ・再現情報","Source normal runs, counters and reproducibility"),href(view.cases.find(v=>v.id===row.case_id),"runtime-kernel-study")));
+      content.push(table([t("モデル入力","Model input"),t("予測元","Source"),t("対象機","Target")],
+        Object.keys(value.source_spec).map(key=>[key,String(value.source_spec[key]),String(value.target_spec[key])])),
+        button(t("計算入力をJSONで取得","Download model inputs as JSON"),()=>{
+          const sourceStudy=data.application_studies.find(s=>s.id===row.study_id);
+          const inputs={model:value.model,model_sha256:study.model_sha256,
+            run:sourceStudy.runs.find(r=>r.machine_id===row.baseline),source_spec:value.source_spec,target_spec:value.target_spec,
+            expected_seconds:value.seconds,target_application_timings_used:false};
+          const url=URL.createObjectURL(new Blob([JSON.stringify(inputs,null,2)],{type:"application/json"}));
+          const a=el("a");a.href=url;a.download=row.case_id+"-"+value.model+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+        }));
+      dialog(local(row,"name")+" · "+local(method,"name"),content);
+    };
+    const tableNode=el("table");tableNode.className="analytical-results";
+    const head=el("thead"),hr=el("tr");
+    [t("評価ケース","Case"),t("実測と予測（秒）","Measured and predicted seconds"),t("値 / 相対誤差","Values / relative error")].forEach(v=>{const h=el("th",v);h.scope="col";hr.append(h);});head.append(hr);
+    const body=el("tbody");
+    for(const row of rows) {
+      const tr=el("tr");tr.dataset.caseId=row.case_id;
+      const title=el("th");title.scope="row";title.append(link(local(row,"name"),href(view.cases.find(v=>v.id===row.case_id))),
+        el("small",machine(row.baseline).name+" → "+machine(row.target).name));
+      const plotCell=el("td"),plot=el("div");plot.className="analytical-bars";
+      const max=Math.max(row.observed_seconds,...row.predictions.map(p=>p.seconds))*1.1;
+      const observed=button(t("実測","Measured")+": "+fmt(row.observed_seconds)+" s",()=>{
+        const r=view.results.find(r=>r.case_id===row.case_id&&r.machine_id===row.target&&r.kind==="measured");
+        if(r)evidence(r,view.cases.find(c=>c.id===row.case_id));
+      });observed.className="analytical-bar observed";observed.style.height=(row.observed_seconds/max*100)+"%";
+      observed.title=observed.textContent;observed.setAttribute("aria-label",observed.textContent);
+      observed.replaceChildren(el("span",t("実測","Measured")));plot.append(observed);
+      const values=el("td");values.append(el("div",t("実測：","Measured: ")+fmt(row.observed_seconds)+" s"));
+      row.predictions.forEach((value,index)=>{
+        const method=study.methods.find(m=>m.id===value.model);
+        const label=local(method,"name")+": "+fmt(value.seconds)+" s ("+value.error_percent.toFixed(1)+"%)";
+        const bar=button(label,()=>explain(row,value));bar.className="analytical-bar predicted model-"+index;
+        bar.style.height=(value.seconds/max*100)+"%";bar.title=label;bar.setAttribute("aria-label",label);
+        bar.replaceChildren(el("span",index===0?t("従来","Control"):index===1?t("資源比","Ratio"):t("階層","Hierarchy")));
+        plot.append(bar);const line=el("div");line.append(button(label,()=>explain(row,value)));values.append(line);
+      });
+      plotCell.append(plot);tr.append(title,plotCell,values);body.append(tr);
+    }
+    tableNode.append(head,body);const wrap=el("div");wrap.className="table-wrap";wrap.append(tableNode);panel.append(wrap);
+    const methods=el("details");methods.append(el("summary",t("定式化・技術的根拠・限界","Formulas, technical basis and limitations")));
+    for(const m of study.methods)methods.append(el("h4",local(m,"name")),el("p",m.formula),el("p",local(m,"note")));
+    const limits=el("ul");study["limitations_"+language].forEach(l=>limits.append(el("li",l)));methods.append(limits);
+    study.source_urls.forEach(url=>methods.append(el("p"),link(new URL(url).hostname+new URL(url).pathname,url)));
+    panel.append(methods);
+    const calibration=el("details");calibration.append(el("summary",t("独立ハードウェア測定・再現レシピ","Independent hardware probes and recipes")),
+      el("p",t("L2とHBMの値は、通常実行の転送速度に、別のカウンタ実行で得た実転送量／論理転送量を掛けた値です。アプリごとに合わせた係数ではありません。",
+                 "L2/HBM rates combine ordinary-run throughput with actual/logical traffic measured in a separate counter run. This is measured traffic accounting, not application-specific fitting.")),
+      table([t("機器","Device"),"FP64 TFLOP/s","FP32 TFLOP/s","HBM GB/s","L2 GB/s",t("確認日","Captured")],
+        Object.entries(study.calibrations).map(([mid,v])=>[machine(mid).name,...["fp64","fp32","bandwidth","cache_bandwidth"].map(k=>fmt(v.rates[k])),v.captured_at])));
+    for(const recipe of study.recipes) {
+      const entry=el("details"),pre=el("pre");pre.append(el("code",recipe.content));
+      entry.append(el("summary",recipe.name),el("p","SHA-256: "+recipe.sha256),pre);calibration.append(entry);
+    }panel.append(calibration);
+    const future=el("details");future.append(el("summary",t("1・2世代前からの予測：公表仕様によるリソース比","One-/two-prior-generation predictions: catalog resource ratio")),
+      el("p",t("下表は階層実測校正ではなく、公表仕様のみを使う式です。対象機の実効値を測れない場合にも算定できますが、CPU・キャッシュ等の不確実性は残ります。",
+                 "These use catalog specifications, not target-hardware calibration. They can be evaluated without target probes but leave CPU/cache and other uncertainty unresolved.")),
+      table([t("ケース","Case"),t("対象機","Target"),t("予測元","Source"),t("予測秒数","Predicted seconds")],
+        study.forecasts.filter(r=>rows.some(x=>x.case_id===r.case_id)).map(r=>[
+          local(rows.find(x=>x.case_id===r.case_id),"name"),machine(r.target).name,
+          String(r.generation_offset)+t("世代前："," generation(s) prior: ")+(r.baseline?machine(r.baseline).name:t("データ待ち","Awaiting data")),
+          r.seconds===null?t("未算定","Unavailable"):fmt(r.seconds)
+        ])));panel.append(future);return panel;
   }
   function render(lang) {
     language=lang;root.replaceChildren();
@@ -426,6 +528,8 @@
     document.getElementById("legacy-device-reference").hidden=!c;
     root.append(el("p",t("通常実行の秒数。塗りつぶし＝実測、点線枠＝予測。色＝初期化・主要計算・終了処理。未算定はゼロではありません。","Normal-run seconds. Solid bars: measured; dashed outlines: predicted. Colors: initialization, computation, finalization. Unavailable does not mean zero.")));
     root.append(el("p",local(view.generation_policy,"note")));
+    const analysis=analyticalPanel(c);
+    if(analysis)root.append(link(t("定式化モデルの比較検証へ","Analytical model comparison"),href(c,"runtime-analytical-models")));
     const legend=el("div");legend.className="runtime-legend";
     ["initialization","compute","finalization","update"].forEach(key=>{const item=el("span",phaseName(key));item.className="legend-"+key;legend.append(item);});root.append(legend);
     if(c) detail(c);
@@ -435,6 +539,7 @@
       const ordered=[...view.cases].sort((a,b)=>Number(available.has(b.id))-Number(available.has(a.id)));
       root.append(chart(ordered,false));
     }
+    if(analysis)root.append(analysis);
     specificationPanel();
     focusAnchor();
   }

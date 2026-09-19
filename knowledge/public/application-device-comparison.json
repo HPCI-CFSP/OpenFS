@@ -1,7 +1,7 @@
 {
   "schema_version": "1.3.0",
   "export_id": "APP-DEVICE-COMPARISON-001",
-  "as_of": "2026-09-19",
+  "as_of": "2026-09-20",
   "research_status": "provisional",
   "consensus_status": "incomplete",
   "publication": {
@@ -1653,6 +1653,258 @@
           "One GPU allocated. OS distribution and actual worker placement were not captured. MPI launch/shutdown outside the phase boundary is excluded.",
           "Reference scripts include fixes for later runs and are not asserted identical to every historical spool. Per-run environment, binary and collector digests are retained."
         ]
+      },
+      {
+        "id": "REPRO-LQCD-8X4-MAIN",
+        "case_ids": [
+          "lqcd-8x4-main"
+        ],
+        "status": "partial",
+        "source_url": "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+        "source_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+        "settings": [
+          {
+            "name_ja": "gh200 CPU/NUMA",
+            "name_en": "gh200 CPU/NUMA",
+            "value_ja": "Model name=Neoverse-V2; Architecture=aarch64; Socket(s)=1; NUMA node(s)=9",
+            "value_en": "Model name=Neoverse-V2; Architecture=aarch64; Socket(s)=1; NUMA node(s)=9",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "gh200 カーネル・スレッド設定",
+            "name_en": "gh200 Kernel / thread settings",
+            "value_ja": "5.14.0-687.48.1.el9_8.aarch64+64k; OMP_NUM_THREADS=1; OMP_PROC_BIND=true; OMP_PLACES=cores; OPENBLAS_NUM_THREADS=1",
+            "value_en": "5.14.0-687.48.1.el9_8.aarch64+64k; OMP_NUM_THREADS=1; OMP_PROC_BIND=true; OMP_PLACES=cores; OPENBLAS_NUM_THREADS=1",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "gh200 継承CPU/NUMA affinity",
+            "name_en": "gh200 Inherited CPU/NUMA affinity",
+            "value_ja": "{\"Cpus_allowed_list\": \"0-71\", \"Mems_allowed_list\": \"0\"}",
+            "value_en": "{\"Cpus_allowed_list\": \"0-71\", \"Mems_allowed_list\": \"0\"}",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "gh200 MPI / CUDA / compiler",
+            "name_en": "gh200 MPI / CUDA / compiler",
+            "value_ja": "mpirun (Open MPI) 5.0.10rc2 | nvcc: NVIDIA (R) Cuda compiler driver | nvfortran 26.5-0 linuxarm64 target on aarch64 Linux -tp neoverse-v2 ",
+            "value_en": "mpirun (Open MPI) 5.0.10rc2 | nvcc: NVIDIA (R) Cuda compiler driver | nvfortran 26.5-0 linuxarm64 target on aarch64 Linux -tp neoverse-v2 ",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "b300 CPU/NUMA",
+            "name_en": "b300 CPU/NUMA",
+            "value_ja": "Model name=Intel(R) Xeon(R) 6767P; Architecture=x86_64; Socket(s)=2; NUMA node(s)=2",
+            "value_en": "Model name=Intel(R) Xeon(R) 6767P; Architecture=x86_64; Socket(s)=2; NUMA node(s)=2",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "b300 カーネル・スレッド設定",
+            "name_en": "b300 Kernel / thread settings",
+            "value_ja": "6.12.0-211.49.1.el10_2.x86_64; OMP_NUM_THREADS=1; OMP_PROC_BIND=true; OMP_PLACES=cores; OPENBLAS_NUM_THREADS=1",
+            "value_en": "6.12.0-211.49.1.el10_2.x86_64; OMP_NUM_THREADS=1; OMP_PROC_BIND=true; OMP_PLACES=cores; OPENBLAS_NUM_THREADS=1",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "b300 継承CPU/NUMA affinity",
+            "name_en": "b300 Inherited CPU/NUMA affinity",
+            "value_ja": "{\"Cpus_allowed_list\": \"96,98,100,102,224,226,228,230\", \"Mems_allowed_list\": \"0-1\"}",
+            "value_en": "{\"Cpus_allowed_list\": \"96,98,100,102,224,226,228,230\", \"Mems_allowed_list\": \"0-1\"}",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "b300 MPI / CUDA / compiler",
+            "name_en": "b300 MPI / CUDA / compiler",
+            "value_ja": "mpirun (Open MPI) 5.0.10rc2 | nvcc: NVIDIA (R) Cuda compiler driver | nvfortran 26.5-0 64-bit target on x86-64 Linux -tp graniterapids ",
+            "value_en": "mpirun (Open MPI) 5.0.10rc2 | nvcc: NVIDIA (R) Cuda compiler driver | nvfortran 26.5-0 64-bit target on x86-64 Linux -tp graniterapids ",
+            "status": "recorded"
+          },
+          {
+            "name_ja": "ワーカースレッドの実配置",
+            "name_en": "Observed worker placement",
+            "value_ja": "Not observed; OMP placement is requested, not independently verified",
+            "value_en": "Not observed; OMP placement is requested, not independently verified",
+            "status": "not-recorded"
+          },
+          {
+            "name_ja": "OSディストリビューション",
+            "name_en": "OS distribution",
+            "value_ja": "Not captured in these receipts; kernel version above",
+            "value_en": "Not captured in these receipts; kernel version above",
+            "status": "not-recorded"
+          }
+        ],
+        "artifacts": [
+          {
+            "name": "lqcd_full_job.sh",
+            "content": "#!/bin/bash\n# One allocated GPU; main phases and compute counters use identical boundaries.\nset -eo pipefail\ntest -n \"${SLURM_JOB_ID:-}\"\nsource /etc/profile\nmodule load \"system/${SLURM_JOB_PARTITION}\" nvhpc/26.5\nset -u\nroot=\"$PWD/..\"\nexport OMP_NUM_THREADS=1 OMP_PROC_BIND=true OMP_PLACES=cores\nexport OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1\nexport OPENFS_SOURCE_REVISION=c5b1b6c4593154cef6eafde9bb0ccfc6344699c3\nexport OPENFS_SOURCE_URL=https://github.com/i-kanamori/LQCD-DWF-HMC\ntest ! -e source\nmkdir source\ntar -xzf \"$root/source.tar.gz\" -C source\nnvc++ -O2 -shared -fPIC -cuda \"$root/application_phases.cpp\" -o libopenfs_phases.so\nexport LD_LIBRARY_PATH=\"$PWD:${LD_LIBRARY_PATH:-}\"\npython3 \"$root/instrument_lqcd_phases.py\" source/benchmark_hmc_dwf/hmc_dwf_eo.cpp\n(cd source && make -f Makefile_openacc -j8) > build.log 2>&1\nmake -B -C source/benchmark_hmc_dwf \\\n  CXX=\"mpic++ -include $root/lqcd_full_phases.h\" \\\n  LD=\"mpic++ -L$PWD -Wl,-rpath,$PWD -Wl,--no-as-needed -lopenfs_phases\" > phase-build.log 2>&1\ncp source/benchmark_hmc_dwf/hmc_dwf_eo.elf application.elf\nbinary=\"$PWD/application.elf\"\npython3 \"$root/record_environment.py\" environment.json --mode normal \\\n  --artifact \"$0\" --artifact \"$binary\" --artifact libopenfs_phases.so \\\n  --artifact \"$root/source.tar.gz\" --artifact \"$root/lqcd_full_phases.h\" \\\n  --artifact \"$root/application_phases.cpp\" --artifact \"$root/instrument_lqcd_phases.py\"\nfor repeat in normal-0 normal-1 normal-2 normal-3 timeline; do\n  mkdir \"$repeat\"\n  cp -R source/sample_1gpu \"$repeat/lqcd\"\n  cp source/conf_04040408.txt \"$repeat/conf_04040408.txt\"\n  (\n    cd \"$repeat/lqcd\"\n    TIMEFORMAT='OPENFS_WALL_SECONDS=%R'\n    if [ \"$repeat\" = timeline ]; then\n      nsys profile --trace=cuda,nvtx,osrt --sample=none --cpuctxsw=none --output=trace \\\n        timeout 180 \"$binary\" > run.log 2> run.stderr\n      nsys export --type=sqlite --output=trace.sqlite trace.nsys-rep > export.log 2>&1\n    else\n      { time timeout 180 \"$binary\"; } > run.log 2> run.stderr\n    fi\n  )\ndone\ncp -R timeline counters\n(\n  cd counters/lqcd\n  python3 \"$root/record_environment.py\" environment-counters.json --mode counters \\\n    --artifact \"$binary\" --artifact \"$root/capture_application_counters.py\"\n  python3 \"$root/capture_application_counters.py\" trace.sqlite \"$binary\"\n)\n",
+            "sha256": "bc84c28cf30bb042b876d25595f7fd21da3d9ddcc89a2de6bf487ec6c4d03de8",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "lqcd_full_phases.h",
+            "content": "#ifndef OPENFS_LQCD_FULL_PHASES_H\n#define OPENFS_LQCD_FULL_PHASES_H\nextern \"C\" void openfs_phase_(const int *);\nnamespace openfs {\nstatic void mark(int phase) { openfs_phase_(&phase); }\nstatic void begin() { mark(0); }\nstatic void compute() { mark(1); }\nstatic void finish() { mark(2); }\nstatic void end() { mark(3); }\n}\n#endif\n",
+            "sha256": "e9afaebb1a63ee16cc4217d31376b7b01cccb6ab8664c296fe9f14029e6c5754",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "application_phases.cpp",
+            "content": "#include <chrono>\n#include <cstdio>\n#include <cstdlib>\n#include <cuda_runtime_api.h>\n#include <nvtx3/nvToolsExt.h>\n\n// Single MPI rank only. Profile and normal runs use identical phase boundaries.\nextern \"C\" void openfs_phase_(const int *phase) {\n  using Clock = std::chrono::steady_clock;\n  static Clock::time_point started, previous;\n  static double elapsed[3];\n  static int expected = 0;\n  if (*phase != expected || *phase < 0 || *phase > 3) std::abort();\n  if (*phase > 0 && cudaDeviceSynchronize() != cudaSuccess) std::abort();\n  const auto now = Clock::now();\n  if (*phase == 0) {\n    started = previous = now;\n    nvtxRangePushA(\"openfs-total\");\n  } else {\n    elapsed[*phase - 1] = std::chrono::duration<double>(now - previous).count();\n    previous = now;\n    nvtxRangePop();\n  }\n  const char *names[] = {\"initialization\", \"compute\", \"finalization\"};\n  if (*phase < 3) nvtxRangePushA(names[*phase]);\n  else {\n    nvtxRangePop();\n    std::printf(\"OPENFS_INITIALIZATION_SECONDS=%.9f\\nOPENFS_COMPUTE_SECONDS=%.9f\\n\"\n                \"OPENFS_FINALIZATION_SECONDS=%.9f\\nOPENFS_TOTAL_SECONDS=%.9f\\n\",\n                elapsed[0], elapsed[1], elapsed[2],\n                std::chrono::duration<double>(now - started).count());\n  }\n  ++expected;\n}\n",
+            "sha256": "343011485c58772798c78db77423d850ba6fc262d94888413cb77e3f401029d3",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "instrument_lqcd_phases.py",
+            "content": "\"\"\"Instrument only the pinned public sample; fail closed on changed anchors.\"\"\"\nimport argparse\nfrom pathlib import Path\n\ndef instrument(text):\n    if \"openfs::\" in text:\n        raise ValueError(\"source is already instrumented\")\n    anchors = [\n        (\"int main(int argc, char *argv[])\\n{\", \"int main(int argc, char *argv[])\\n{\\n  openfs::begin();\"),\n        (\"    for (int traj = 0; traj < Ntraj; ++traj) {\",\n         \"    openfs::compute();\\n    for (int traj = 0; traj < Ntraj; ++traj) {\"),\n        (\"    gconf_write.write_file(U, writefile);\",\n         \"    openfs::finish();\\n    gconf_write.write_file(U, writefile);\"),\n        (\"  return EXIT_SUCCESS;\", \"  openfs::end();\\n  return EXIT_SUCCESS;\"),\n    ]\n    for old, new in anchors:\n        if text.count(old) != 1:\n            raise ValueError(\"pinned source anchor mismatch\")\n        text = text.replace(old, new)\n    return text\n\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"source\", type=Path)\n    args = parser.parse_args()\n    args.source.write_text(instrument(args.source.read_text()))\n",
+            "sha256": "ebd53fbe23fe6a55e254d95791668d389abb3e84416e954de6a44ffc5e23fdd8",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "capture_application_counters.py",
+            "content": "\"\"\"Select samples from this application's own compute trace, not another app.\"\"\"\nimport argparse\nfrom collections import defaultdict\nimport json\nfrom pathlib import Path\nimport re\nimport sqlite3\nimport subprocess\nimport time\nfrom capture_lqcd_counters import METRICS\n\n\ndef select(path):\n    con = sqlite3.connect(path.resolve().as_uri() + \"?mode=ro\", uri=True)\n    ranges = con.execute(\"SELECT start,end FROM NVTX_EVENTS WHERE text='compute' AND end IS NOT NULL\").fetchall()\n    if len(ranges) != 1:\n        raise ValueError(\"Exactly one compute region required\")\n    start, end = ranges[0]\n    rows = con.execute(\"SELECT s.value,k.start,k.end FROM CUPTI_ACTIVITY_KIND_KERNEL k JOIN StringIds s ON k.demangledName=s.id WHERE k.start>=? AND k.end<=?\", (start, end)).fetchall()\n    con.close()\n    times = defaultdict(float)\n    for name, a, b in rows:\n        times[name] += (b-a)/1e9\n    total, selected, covered = sum(times.values()), [], 0\n    if total <= 0:\n        raise ValueError(\"No GPU activity in compute region\")\n    for name, seconds in sorted(times.items(), key=lambda pair: -pair[1]):\n        selected.append(name)\n        covered += seconds\n        if covered / total >= .90 or len(selected) == 12:\n            break\n    return selected, covered / total\n\n\ndef main():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"trace\", type=Path)\n    p.add_argument(\"binary\", type=Path)\n    p.add_argument(\"--input\", type=Path)\n    p.add_argument(\"arguments\", nargs=\"*\")\n    a = p.parse_args()\n    kernels, coverage = select(a.trace)\n    manifest = dict(selection_basis=\"same-application-same-machine-compute-timeline\",\n        selected_kernel_time_fraction=coverage, metrics=METRICS, cache_control=\"none\",\n        clock_control=\"none\", launch_skip=0, samples_per_kernel=2,\n        profiled_application_terminated_early=True, samples=[])\n    out = Path(\"counter-manifest.json\")\n    if out.exists():\n        raise FileExistsError(out)\n    for index, name in enumerate(kernels):\n        prefix = f\"counter-{index:02d}\"\n        # NVHPC OpenACC kernels have an Nsys-only _gpu suffix in these receipts.\n        matched_name = re.escape(name[:-4])+r\"(?:_gpu)?\" if name.endswith(\"_gpu\") else re.escape(name)\n        command = [\"timeout\", \"--kill-after=5\", \"50\", \"ncu\", \"--target-processes\", \"all\",\n            \"--nvtx\", \"--nvtx-include\", \"compute/\", \"--kernel-name-base\", \"demangled\", \"--rename-kernels\", \"off\",\n            \"--kernel-name\", \"regex:^\"+matched_name+\"$\", \"--launch-skip\", \"0\", \"--launch-count\", \"2\",\n            \"--kill\", \"yes\", \"--clock-control\", \"none\", \"--cache-control\", \"none\",\n            \"--metrics\", \",\".join(METRICS), \"--csv\", \"--page\", \"raw\", \"--print-units\", \"base\",\n            \"--log-file\", prefix+\".csv\", str(a.binary.resolve()), *a.arguments]\n        before = time.monotonic()\n        with Path(prefix+\".log\").open(\"x\") as log, (a.input or Path(\"/dev/null\")).open() as inp:\n            try:\n                rc = subprocess.run(command, stdin=inp, stdout=log, stderr=subprocess.STDOUT,\n                                    timeout=60, check=False).returncode\n            except subprocess.TimeoutExpired:\n                rc = \"timeout\"\n        manifest[\"samples\"].append(dict(kernel=name, file=prefix+\".csv\", status=rc,\n                                        elapsed_seconds=time.monotonic()-before))\n        out.write_text(json.dumps(manifest, indent=2)+\"\\n\")\n        print(prefix, rc, flush=True)\n        content = Path(prefix+\".csv\").read_text() if Path(prefix+\".csv\").exists() else \"\"\n        if \"ERR_NVGPUCTRPERM\" in content or \"Failed to find metric\" in content:\n            break\n        if '\"ID\",' not in content:\n            raise ValueError(\"Counter run returned no samples; do not publish a zero-coverage forecast\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+            "sha256": "9062b445b29babfff22526d1195aee1f3c50a91a32f6fb862886d8d5a7c73c37",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "capture_lqcd_counters.py",
+            "content": "\"\"\"Bounded diagnostic counter samples; never use these runs as normal runtimes.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport re\nimport subprocess\nimport time\n\n\nMETRICS = [\n    \"gpu__time_duration.sum\", \"dram__bytes_read.sum\", \"dram__bytes_write.sum\",\n    \"lts__t_bytes.sum\",\n    *[\"smsp__sass_thread_inst_executed_op_\" + op + \"_pred_on.sum\"\n      for op in (\"dfma\", \"dmul\", \"dadd\", \"ffma\", \"fmul\", \"fadd\")],\n]\n\n\ndef selected_kernels(data, coverage=.90, limit=16):\n    kernels = data[\"profile_studies\"][0][\"baseline\"][\"kernels\"]\n    selected, cumulative = [], 0\n    total = sum(k[\"seconds\"] for k in kernels)\n    for kernel in sorted(kernels, key=lambda k: -k[\"seconds\"]):\n        selected.append(kernel)\n        cumulative += kernel[\"seconds\"]\n        if cumulative >= coverage * total or len(selected) >= limit:\n            break\n    return selected, cumulative / total\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"reference\", type=Path)\n    parser.add_argument(\"directory\", type=Path)\n    args = parser.parse_args()\n    directory = args.directory.resolve()\n    kernels, coverage = selected_kernels(json.loads(args.reference.read_text()))\n    manifest = {\"schema_version\": \"1.0\", \"selection_basis\": \"prior-GH200-timeline\",\n                \"selected_kernel_time_fraction\": coverage, \"metrics\": METRICS,\n                \"cache_control\": \"none\", \"clock_control\": \"none\",\n                \"launch_skip\": 10, \"samples_per_kernel\": 2,\n                \"profiled_application_terminated_early\": True, \"samples\": []}\n    output = directory / \"counter-manifest.json\"\n    if output.exists():\n        raise FileExistsError(output)\n    for index, kernel in enumerate(kernels):\n        name = f\"counter-{index:02d}\"\n        args = [\"timeout\", \"--kill-after=5\", \"50\", \"ncu\", \"--target-processes\", \"all\", \"--nvtx\", \"--nvtx-include\", \"update/\",\n                \"--kernel-name-base\", \"demangled\", \"--kernel-name\", \"regex:^\" + re.escape(kernel[\"name\"]) + \"$\",\n                \"--launch-skip\", \"10\", \"--launch-count\", \"2\", \"--kill\", \"yes\",\n                \"--clock-control\", \"none\", \"--cache-control\", \"none\",\n                \"--metrics\", \",\".join(METRICS), \"--csv\", \"--page\", \"raw\",\n                \"--print-units\", \"base\", \"--log-file\", str(directory / (name + \".csv\")),\n                str(directory / \"hmc.elf\")]\n        started = time.monotonic()\n        with (directory / (name + \".log\")).open(\"x\") as log:\n            try:\n                result = subprocess.run(args, cwd=directory / \"input\", stdout=log,\n                                        stderr=subprocess.STDOUT, timeout=60, check=False)\n                status = result.returncode\n            except subprocess.TimeoutExpired:\n                status = \"timeout\"\n        manifest[\"samples\"].append({\"kernel\": kernel[\"name\"], \"file\": name + \".csv\",\n                                    \"status\": status, \"elapsed_seconds\": time.monotonic()-started})\n        output.write_text(json.dumps(manifest, indent=2) + \"\\n\")\n        print(name, status, flush=True)\n        if index == 0:\n            csv = directory / (name + \".csv\")\n            content = csv.read_text() if csv.exists() else \"\"\n            if \"ERR_NVGPUCTRPERM\" in content or \"Failed to find metric\" in content:\n                break\n\n\nif __name__ == \"__main__\":\n    main()\n",
+            "sha256": "146bfb79e270accbc9ef352ec11f65b96a09c5659130b84a9dc8b0f98e38df7f",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "record_environment.py",
+            "content": "\"\"\"Capture bounded, private reproducibility receipts inside an allocated job.\n\nThis file is not a publication exporter. Review an allowlisted projection before\npublishing; compiler and linked-library output can contain installation paths.\n\"\"\"\nimport argparse\nfrom datetime import datetime, timezone\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport platform\nimport subprocess\n\n\nENV_KEYS = (\n    \"OMP_NUM_THREADS\", \"OMP_PROC_BIND\", \"OMP_PLACES\", \"OMP_WAIT_POLICY\",\n    \"OPENBLAS_NUM_THREADS\", \"MKL_NUM_THREADS\", \"ACC_DEVICE_TYPE\",\n    \"CUDA_VISIBLE_DEVICES\", \"LOADEDMODULES\", \"SLURM_JOB_ID\",\n    \"SLURM_JOB_PARTITION\", \"SLURM_CPUS_PER_TASK\", \"SLURM_NTASKS\",\n    \"SLURM_JOB_GPUS\", \"SLURM_CPU_BIND\", \"SLURM_MEM_BIND\",\n    \"OPENFS_SOURCE_REVISION\", \"OPENFS_SOURCE_URL\",\n)\n\n\ndef command(args):\n    try:\n        result = subprocess.run(args, capture_output=True, text=True, timeout=15,\n                                env=dict(os.environ, LC_ALL=\"C\"), check=False)\n        return dict(status=result.returncode, stdout=result.stdout[:65536],\n                    stderr=result.stderr[:4096])\n    except (OSError, subprocess.TimeoutExpired) as error:\n        return dict(status=\"unavailable\", error=type(error).__name__)\n\n\ndef digest(path):\n    with path.open(\"rb\") as handle:\n        result = hashlib.sha256()\n        for block in iter(lambda: handle.read(1024 * 1024), b\"\"):\n            result.update(block)\n    return result.hexdigest()\n\n\ndef capture(mode, artifacts):\n    if not os.environ.get(\"SLURM_JOB_ID\"):\n        raise ValueError(\"environment capture requires an allocated Slurm job\")\n    status = Path(\"/proc/self/status\").read_text()\n    affinity = {line.split(\":\", 1)[0]: line.split(\":\", 1)[1].strip()\n                for line in status.splitlines()\n                if line.startswith((\"Cpus_allowed_list:\", \"Mems_allowed_list:\"))}\n    return dict(schema_version=\"1.0\", mode=mode,\n        collector_sha256=digest(Path(__file__)),\n        captured_at=datetime.now(timezone.utc).isoformat(),\n        platform=dict(kernel=platform.release(), architecture=platform.machine()),\n        environment={key: os.environ.get(key) for key in ENV_KEYS},\n        inherited_affinity=affinity,\n        worker_affinity=\"not-measured; OpenMP settings are requests, not observations\",\n        cpu=command([\"lscpu\", \"--json\"]),\n        numa_hardware=command([\"numactl\", \"--hardware\"]),\n        numa_policy=command([\"numactl\", \"--show\"]),\n        gpu=command([\"nvidia-smi\", \"--query-gpu=name,memory.total,compute_cap,driver_version,power.limit,clocks.max.sm,clocks.max.memory\", \"--format=csv,noheader\"]),\n        gpu_topology=command([\"nvidia-smi\", \"topo\", \"-m\"]),\n        software={name: command(args) for name, args in {\n            \"nvc++\": [\"nvc++\", \"--version\"], \"nvfortran\": [\"nvfortran\", \"--version\"],\n            \"cuda\": [\"nvcc\", \"--version\"], \"mpi\": [\"mpirun\", \"--version\"],\n            \"nsys\": [\"nsys\", \"--version\"], \"ncu\": [\"ncu\", \"--version\"],\n            \"libc\": [\"ldd\", \"--version\"],\n        }.items()},\n        dynamic_libraries={str(path): command([\"ldd\",str(path.resolve())])\n                           for path in artifacts if path.suffix==\".elf\"},\n        artifacts=[dict(path=str(path), sha256=digest(path)) for path in artifacts],\n        limitations=[\"No clocks, power caps, NUMA policy or system settings were changed.\",\n                      \"The affinity is inherited by the following command; worker-level placement is not observed.\",\n                      \"GPU inventory may include other installed GPUs; CUDA_VISIBLE_DEVICES records the allocation.\"])\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"output\", type=Path)\n    parser.add_argument(\"--mode\", required=True, choices=[\"build\", \"normal\", \"timeline\", \"counters\"])\n    parser.add_argument(\"--artifact\", type=Path, action=\"append\", default=[])\n    args = parser.parse_args()\n    if args.output.exists():\n        raise FileExistsError(args.output)\n    receipt = capture(args.mode, args.artifact)\n    with args.output.open(\"x\") as handle:\n        json.dump(receipt, handle, indent=2)\n        handle.write(\"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+            "sha256": "c57031fc4b668734c10b450c533bca54d830a00036d298fca710336a85fadf99",
+            "note_ja": "今回の実験用スクリプト。公開ソースの取得・ビルド環境とスケジューラ投入は別途必要です。",
+            "note_en": "Script for this experiment. Public source staging, build environment and scheduler submission are separate prerequisites."
+          },
+          {
+            "name": "gh200-environment-receipt.json",
+            "sha256": "b051fbe9f05003ad7f6f9a48c264faf0a8633b5d3cc57211ffb09a4658b4ff06",
+            "content": null,
+            "note_ja": "非公開の実行環境記録のハッシュ。ユーザー名・ホスト名・パス等を含む原本は公開しません。",
+            "note_en": "Digest of the private environment receipt. Raw user/host/path metadata is not published."
+          },
+          {
+            "name": "gh200-recorded-0-slurm_script",
+            "sha256": "bc84c28cf30bb042b876d25595f7fd21da3d9ddcc89a2de6bf487ec6c4d03de8",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-1-application.elf",
+            "sha256": "e2535448bc2e44d5652fb32e645648a93c1c9caac5a13116a903c2869f443915",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-2-libopenfs_phases.so",
+            "sha256": "8f213909293a74e05667d46ac667e437757c28769306631ea1f3ee4a22a6cf19",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-3-source.tar.gz",
+            "sha256": "7c743ebcfefad780d4d3f68c5b4868270828ddc769a9902c9895065197bfd7c9",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-4-lqcd_full_phases.h",
+            "sha256": "e9afaebb1a63ee16cc4217d31376b7b01cccb6ab8664c296fe9f14029e6c5754",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-5-application_phases.cpp",
+            "sha256": "343011485c58772798c78db77423d850ba6fc262d94888413cb77e3f401029d3",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "gh200-recorded-6-instrument_lqcd_phases.py",
+            "sha256": "ebd53fbe23fe6a55e254d95791668d389abb3e84416e954de6a44ffc5e23fdd8",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-environment-receipt.json",
+            "sha256": "c0a41da55ebd1768e0a4f5cdcb28fcba968363c56056450f497d1fecb07ae1d8",
+            "content": null,
+            "note_ja": "非公開の実行環境記録のハッシュ。ユーザー名・ホスト名・パス等を含む原本は公開しません。",
+            "note_en": "Digest of the private environment receipt. Raw user/host/path metadata is not published."
+          },
+          {
+            "name": "b300-recorded-0-slurm_script",
+            "sha256": "bc84c28cf30bb042b876d25595f7fd21da3d9ddcc89a2de6bf487ec6c4d03de8",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-1-application.elf",
+            "sha256": "913dbdae2ee478da7a8dee7207c19040b8f6c3751c39e70488c47dbf5fce6a7f",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-2-libopenfs_phases.so",
+            "sha256": "0dffb4cb3428e470d4c9161073331719166f3bfcf7636dd2aa516b1377758e75",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-3-source.tar.gz",
+            "sha256": "7c743ebcfefad780d4d3f68c5b4868270828ddc769a9902c9895065197bfd7c9",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-4-lqcd_full_phases.h",
+            "sha256": "e9afaebb1a63ee16cc4217d31376b7b01cccb6ab8664c296fe9f14029e6c5754",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-5-application_phases.cpp",
+            "sha256": "343011485c58772798c78db77423d850ba6fc262d94888413cb77e3f401029d3",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          },
+          {
+            "name": "b300-recorded-6-instrument_lqcd_phases.py",
+            "sha256": "ebd53fbe23fe6a55e254d95791668d389abb3e84416e954de6a44ffc5e23fdd8",
+            "content": null,
+            "note_ja": "この測定時点のファイルハッシュ。下記の再実行用スクリプト最新版と同一だとは主張しません。",
+            "note_en": "File digest recorded during this measurement; not asserted identical to the current reference recipe below."
+          }
+        ],
+        "gaps_ja": [
+          "GPU割当は1基。OSディストリビューションと実ワーカー配置は未記録。計測境界外のMPI起動・終了は合計に含めません。",
+          "標準スクリプトは後続測定向けの修正版を含みます。過去のspoolと同一とはせず、各実験の環境・バイナリ・収集器ハッシュを保持します。"
+        ],
+        "gaps_en": [
+          "One GPU allocated. OS distribution and actual worker placement were not captured. MPI launch/shutdown outside the phase boundary is excluded.",
+          "Reference scripts include fixes for later runs and are not asserted identical to every historical spool. Per-run environment, binary and collector digests are retained."
+        ]
       }
     ],
     "specification_comparison": {
@@ -2363,17 +2615,6 @@
         "study_id": "lqcd-sample-20260919"
       },
       {
-        "id": "lqcd-8x4-main",
-        "application_id": "APP-EEA1-LQCD-DWF-HMC",
-        "title_ja": "LQCD（8×8×8×8格子・main全体・1軌道）",
-        "title_en": "LQCD (8×8×8×8 / main / 1 trajectory)",
-        "scope_ja": "main入口からreturn直前まで。起動・動的ローダー・main終了後の破棄処理は含みません。主要計算は軌道ループ全体で周期的な出力を含み、最終出力は終了処理です。更新区間だけの予測とは比較しません。",
-        "scope_en": "From main entry to just before return; excludes launch, dynamic loading and destruction after main. Computation includes the trajectory loop and periodic output; final output belongs to finalization. Not compared with update-only predictions.",
-        "kind": "normal-phases",
-        "reference_group_id": null,
-        "study_id": "lqcd-sample-20260919"
-      },
-      {
         "id": "lqcd-8x4-kernel",
         "application_id": "APP-EEA1-LQCD-DWF-HMC",
         "title_ja": "LQCD（8×8×8×8・カーネル別モデル検証）",
@@ -2416,6 +2657,17 @@
         "kind": "application-study",
         "reference_group_id": null,
         "study_id": "PHASE-SALMON-SI8-RT180"
+      },
+      {
+        "id": "lqcd-8x4-main",
+        "application_id": "APP-EEA1-LQCD-DWF-HMC",
+        "title_ja": "LQCD：8×8×8×8・DWF/HMC（main全体）",
+        "title_en": "LQCD: 8×8×8×8 DWF/HMC (full main)",
+        "scope_ja": "公開sample_1gpu、格子8×8×8×8、1 MPIランク・1スレッド・1 GPU。初期化、1 trajectoryの主要計算、終了処理を通常実行で分離し、同じcompute区間を別実行でプロファイル。EEA1指定入力とは別ケースです。URLの8x4は過去の識別子であり格子寸法ではありません。",
+        "scope_en": "Public sample_1gpu; 8×8×8×8 lattice, one MPI rank / one thread / one GPU. Normal execution separates initialization, one-trajectory computation and finalization; a separate process profiles the identical compute boundary. Separate from the prescribed EEA1 input. The URL token 8x4 is a legacy identifier, not lattice dimensions.",
+        "kind": "application-study",
+        "reference_group_id": null,
+        "study_id": "PHASE-LQCD-8X4-MAIN"
       }
     ],
     "phase_runs": [
@@ -2474,7 +2726,8 @@
             "original_h_diff": 0.00083995,
             "log_sha256": "071377558081986bf15d3b63a2bd0dff7fa387b0241170004997dadaa81bc5e1"
           }
-        ]
+        ],
+        "historical_study_id": "lqcd-sample-20260919"
       },
       {
         "case_id": "lqcd-8x4-main",
@@ -2531,7 +2784,8 @@
             "original_h_diff": 0.00083995,
             "log_sha256": "cb2cb4eed3d264a938edd72679755b43c975fefc1e64a3b132cb964f7ab69d54"
           }
-        ]
+        ],
+        "historical_study_id": "lqcd-sample-20260919"
       }
     ]
   },
@@ -15506,6 +15760,3199 @@
           }
         }
       ]
+    },
+    {
+      "id": "PHASE-LQCD-8X4-MAIN",
+      "application_id": "APP-EEA1-LQCD-DWF-HMC",
+      "source_commit": "c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "source_url": "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/c5b1b6c4593154cef6eafde9bb0ccfc6344699c3",
+      "compiler": "NVHPC 26.5; CUDA/OpenACC; source and build overlay retained in reproduction records",
+      "note_ja": "公開sample_1gpu、格子8×8×8×8、1 MPIランク・1スレッド・1 GPU。初期化、1 trajectoryの主要計算、終了処理を通常実行で分離し、同じcompute区間を別実行でプロファイル。EEA1指定入力とは別ケースです。URLの8x4は過去の識別子であり格子寸法ではありません。",
+      "note_en": "Public sample_1gpu; 8×8×8×8 lattice, one MPI rank / one thread / one GPU. Normal execution separates initialization, one-trajectory computation and finalization; a separate process profiles the identical compute boundary. Separate from the prescribed EEA1 input. The URL token 8x4 is a legacy identifier, not lattice dimensions.",
+      "limitations_ja": [
+        "単一のAIモデル・単一エージェントによる暫定結果。独立検証・調達評価には使用できません。",
+        "小規模な公開回帰入力の結果であり、大規模なEEA1ワークロードの代表値ではありません。",
+        "通常実行は初回を除いた3回。プロファイルは別実行であり、トレース時間自体を通常実行時間として使いません。",
+        "初期化・終了処理と未分類時間は中心値で据え置き、0.5〜2倍の仮定感度を示します。統計的信頼区間ではありません。",
+        "FP64/FP32演算とHBM転送を標本化。未取得カーネルは据え置き。L2転送量は表示しますが、キャッシュ容量・遅延・CPU・同期の移行を直接予測しません。",
+        "B200/B300のFP64メーカー併記値とRubin暫定仕様を使う条件付き試算です。異なるCPU/GPU実装やコンパイラ最適化を保証しません。"
+      ],
+      "limitations_en": [
+        "Provisional single-model/single-agent results, not independently validated or procurement eligible.",
+        "Small public regression inputs are not representative measurements of full-scale EEA1 workloads.",
+        "Three retained normal runs after excluding the first. Profiling is separate; traced time is never the normal elapsed result.",
+        "Initialization/finalization and unclassified time are held constant centrally, with 0.5–2× assumption sensitivity, not statistical confidence intervals.",
+        "FP64/FP32 work and HBM traffic are sampled; uncovered kernels stay constant. L2 bytes are reported, but cache capacity/latency, CPU and synchronization changes are not independently modeled.",
+        "Conditional estimates use combined vendor FP64 labels for B200/B300 and preliminary Rubin specs. CPU/GPU implementations and compiler optimization differences are not guaranteed."
+      ],
+      "runs": [
+        {
+          "data": {
+            "window_seconds": 17.297092096,
+            "timeline": {
+              "gpu": 2.550872547,
+              "copy": 0.43643619,
+              "sync_api": 3.748235584,
+              "launch_api": 0.921557811,
+              "unclassified": 9.639989964
+            },
+            "api_counts": {
+              "sync_api": 640493,
+              "launch_api": 318945
+            },
+            "kernels": [
+              {
+                "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.8052758119999781,
+                "count": 51290,
+                "samples": [
+                  {
+                    "fp64_ops": 147456.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 8704.0,
+                    "l2_bytes": 4109536.0,
+                    "profiled_nanoseconds": 5248.0
+                  },
+                  {
+                    "fp64_ops": 147456.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 8704.0,
+                    "l2_bytes": 4101664.0,
+                    "profiled_nanoseconds": 5280.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.24598505800001158,
+                "count": 22436,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2369024.0,
+                    "l2_bytes": 11821056.0,
+                    "profiled_nanoseconds": 19872.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2372352.0,
+                    "l2_bytes": 11848736.0,
+                    "profiled_nanoseconds": 19456.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+                "grid": [
+                  2640,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1578567680000098,
+                "count": 22516,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 44089344.0,
+                    "hbm_bytes": 3183360.0,
+                    "l2_bytes": 20498016.0,
+                    "profiled_nanoseconds": 10080.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 44089344.0,
+                    "hbm_bytes": 3184640.0,
+                    "l2_bytes": 20415616.0,
+                    "profiled_nanoseconds": 10208.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::norm2_344(double *, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1364919339999883,
+                "count": 19769,
+                "samples": [
+                  {
+                    "fp64_ops": 1181632.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4730112.0,
+                    "l2_bytes": 8842720.0,
+                    "profiled_nanoseconds": 12480.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1303950400000011,
+                "count": 18564,
+                "samples": [
+                  {
+                    "fp64_ops": 589824.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4728064.0,
+                    "l2_bytes": 15901568.0,
+                    "profiled_nanoseconds": 12832.0
+                  },
+                  {
+                    "fp64_ops": 589824.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4733952.0,
+                    "l2_bytes": 15901536.0,
+                    "profiled_nanoseconds": 12704.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+                "grid": [
+                  1584,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.097090174999999,
+                "count": 10224,
+                "samples": [
+                  {
+                    "fp64_ops": 44089344.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 6330368.0,
+                    "l2_bytes": 39798720.0,
+                    "profiled_nanoseconds": 12832.0
+                  },
+                  {
+                    "fp64_ops": 44089344.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 6341632.0,
+                    "l2_bytes": 39595680.0,
+                    "profiled_nanoseconds": 12800.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.08451561600000101,
+                "count": 11258,
+                "samples": [
+                  {
+                    "fp64_ops": 1314816.0,
+                    "fp32_ops": 4534272.0,
+                    "hbm_bytes": 2367744.0,
+                    "l2_bytes": 9011104.0,
+                    "profiled_nanoseconds": 11008.0
+                  },
+                  {
+                    "fp64_ops": 1314816.0,
+                    "fp32_ops": 4534272.0,
+                    "hbm_bytes": 2367232.0,
+                    "l2_bytes": 9007136.0,
+                    "profiled_nanoseconds": 10912.0
+                  }
+                ]
+              },
+              {
+                "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.076539487,
+                "count": 2144,
+                "samples": [
+                  {
+                    "fp64_ops": 14155776.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 18891776.0,
+                    "l2_bytes": 35342784.0,
+                    "profiled_nanoseconds": 46496.0
+                  },
+                  {
+                    "fp64_ops": 14155776.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 18914048.0,
+                    "l2_bytes": 35345760.0,
+                    "profiled_nanoseconds": 46272.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::copy_137(float *, float *, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.07450755299999987,
+                "count": 11578,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 2368512.0,
+                    "l2_bytes": 8942688.0,
+                    "profiled_nanoseconds": 11968.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 2370048.0,
+                    "l2_bytes": 8940672.0,
+                    "profiled_nanoseconds": 12000.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.07421670300000065,
+                "count": 11258,
+                "samples": [
+                  {
+                    "fp64_ops": 466944.0,
+                    "fp32_ops": 4988928.0,
+                    "hbm_bytes": 2367488.0,
+                    "l2_bytes": 9006656.0,
+                    "profiled_nanoseconds": 10656.0
+                  },
+                  {
+                    "fp64_ops": 466944.0,
+                    "fp32_ops": 4988928.0,
+                    "hbm_bytes": 2367744.0,
+                    "l2_bytes": 9005824.0,
+                    "profiled_nanoseconds": 10400.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.05837759900000037,
+                "count": 11258,
+                "samples": [
+                  {
+                    "fp64_ops": 172032.0,
+                    "fp32_ops": 6610944.0,
+                    "hbm_bytes": 2368000.0,
+                    "l2_bytes": 12249664.0,
+                    "profiled_nanoseconds": 8128.0
+                  },
+                  {
+                    "fp64_ops": 172032.0,
+                    "fp32_ops": 6610944.0,
+                    "hbm_bytes": 2376448.0,
+                    "l2_bytes": 12239648.0,
+                    "profiled_nanoseconds": 8000.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.05286396700000192,
+                "count": 11258,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.04577238499999962,
+                "count": 5348,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::norm2_344(float *, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.043932415999999586,
+                "count": 5789,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_137(double *, double *, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.041713281000000275,
+                "count": 5376,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(float *, float *, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.03799779199999982,
+                "count": 5549,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1310592.0,
+                    "hbm_bytes": 4730880.0,
+                    "l2_bytes": 9027616.0,
+                    "profiled_nanoseconds": 13504.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.03725308799999979,
+                "count": 4876,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.03599388700000266,
+                "count": 5549,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+                "grid": [
+                  3168,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.032366944000000106,
+                "count": 5412,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+                "grid": [
+                  3168,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.03231536000000036,
+                "count": 5348,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::norm2_344(double *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.03091203200000004,
+                "count": 19769,
+                "samples": [
+                  {
+                    "fp64_ops": 64.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4608.0,
+                    "l2_bytes": 1692672.0,
+                    "profiled_nanoseconds": 2752.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::dot_321(float *, float *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.026983103999999977,
+                "count": 5549,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 4224.0,
+                    "hbm_bytes": 4864.0,
+                    "l2_bytes": 1714624.0,
+                    "profiled_nanoseconds": 5376.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.016167201000000065,
+                "count": 1714,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+                "grid": [
+                  128,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.014818079999999989,
+                "count": 1072,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(double *, double *, int, int)",
+                "grid": [
+                  2640,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.012992127999999947,
+                "count": 1719,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.012951936000000048,
+                "count": 1574,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.00997798499999995,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.009696383999999898,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.00964054399999998,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.009575423999999956,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2112,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.009178272000000001,
+                "count": 3780,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::norm2_344(float *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.009129311999999671,
+                "count": 5789,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2112,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.007448447999999844,
+                "count": 3096,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2112,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.006925183999999938,
+                "count": 2848,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(double *, double *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.006428960000000006,
+                "count": 1719,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+                "grid": [
+                  1584,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.004357247999999927,
+                "count": 2052,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.00428048,
+                "count": 1087,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.003500096000000003,
+                "count": 892,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.003128736,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0030171199999999994,
+                "count": 772,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0029233920000000017,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0029206080000000025,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.002907103999999992,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0029040959999999945,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0021503360000000005,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2112,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0016818879999999916,
+                "count": 684,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0014738559999999997,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_init_20(double *, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0014660799999999979,
+                "count": 333,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0013027519999999986,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0012920319999999998,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011892159999999999,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011803199999999995,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011775680000000004,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.001177536,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011766719999999997,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011714880000000005,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.001166368000000001,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011658240000000004,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011642880000000005,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011619520000000013,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011553600000000013,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011528960000000011,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011474880000000014,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0006310079999999992,
+                "count": 160,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0005925759999999995,
+                "count": 80,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.000588864,
+                "count": 80,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::at_G_714(double *, int, int)",
+                "grid": [
+                  4224,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0002814399999999998,
+                "count": 76,
+                "samples": []
+              }
+            ],
+            "counter_settings": {
+              "selection_basis": "same-application-same-machine-compute-timeline",
+              "selected_kernel_time_fraction": 0.7986070003363391,
+              "metrics": [
+                "gpu__time_duration.sum",
+                "dram__bytes_read.sum",
+                "dram__bytes_write.sum",
+                "lts__t_bytes.sum",
+                "smsp__sass_thread_inst_executed_op_dfma_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_dmul_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_dadd_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_ffma_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_fmul_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_fadd_pred_on.sum"
+              ],
+              "cache_control": "none",
+              "clock_control": "none",
+              "launch_skip": 0,
+              "samples_per_kernel": 2,
+              "profiled_application_terminated_early": true
+            },
+            "runs": [
+              {
+                "warmup": true,
+                "seconds": 13.070120379,
+                "outer_seconds": 14.215
+              },
+              {
+                "warmup": false,
+                "seconds": 13.229023795,
+                "outer_seconds": 14.264
+              },
+              {
+                "warmup": false,
+                "seconds": 13.088285572,
+                "outer_seconds": 14.089
+              },
+              {
+                "warmup": false,
+                "seconds": 13.19442789,
+                "outer_seconds": 14.201
+              }
+            ],
+            "input_sha256": {
+              "main.yaml": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+              "HMC_DWF_Nf2p1_eo.yaml": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+              "../conf_04040408.txt": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+            }
+          },
+          "phase_rows": [
+            {
+              "initialization": 0.608962793,
+              "compute": 13.070120379,
+              "finalization": 0.007280982,
+              "total": 13.686364154,
+              "warmup": true,
+              "outer_seconds": 14.215
+            },
+            {
+              "initialization": 0.493486971,
+              "compute": 13.229023795,
+              "finalization": 0.009042181,
+              "total": 13.731552947,
+              "warmup": false,
+              "outer_seconds": 14.264
+            },
+            {
+              "initialization": 0.47810223,
+              "compute": 13.088285572,
+              "finalization": 0.007906512,
+              "total": 13.574294314,
+              "warmup": false,
+              "outer_seconds": 14.089
+            },
+            {
+              "initialization": 0.487225401,
+              "compute": 13.19442789,
+              "finalization": 0.007381589,
+              "total": 13.68903488,
+              "warmup": false,
+              "outer_seconds": 14.201
+            }
+          ],
+          "machine_id": "gh200",
+          "receipt": {
+            "measurement_started_at": "2026-09-19T17:44:34.168231+00:00",
+            "completed_at": "2026-09-19T17:47:35Z",
+            "binary_sha256": "e2535448bc2e44d5652fb32e645648a93c1c9caac5a13116a903c2869f443915",
+            "nsys_version": "2026.2.1",
+            "ncu_version": "2026.1.0",
+            "completion_basis": "scheduler-job-end-including-profiling"
+          },
+          "verification": {
+            "passed": true,
+            "method_ja": "全4通常実行でH(diff)=0.00083995を絶対許容差1e-8で確認。固定された小規模公開入力に対するチェックであり、科学計算全体の正しさの証明ではありません。",
+            "method_en": "All four normal runs match H(diff)=0.00083995 within absolute tolerance 1e-8. This checks the fixed small public input, not correctness of the complete scientific calculation.",
+            "receipt_sha256": "63b829af9690adfa4d33226f69919dba99b296c566b90b368f30544eb008bab1"
+          }
+        },
+        {
+          "data": {
+            "window_seconds": 30.712166121,
+            "timeline": {
+              "gpu": 9.846158159,
+              "copy": 0.901248524,
+              "sync_api": 6.437318864,
+              "launch_api": 1.140252316,
+              "unclassified": 12.387188258
+            },
+            "api_counts": {
+              "sync_api": 640493,
+              "launch_api": 318945
+            },
+            "kernels": [
+              {
+                "name": "BridgeACC::axpy_180(double *, int, double, double *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 4.284337290000526,
+                "count": 51290,
+                "samples": [
+                  {
+                    "fp64_ops": 147456.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 9472.0,
+                    "l2_bytes": 2792960.0,
+                    "profiled_nanoseconds": 11008.0
+                  },
+                  {
+                    "fp64_ops": 147456.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 9216.0,
+                    "l2_bytes": 2765888.0,
+                    "profiled_nanoseconds": 11136.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::axpy_180(float *, int, float, float *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 1.2046898750000004,
+                "count": 22436,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2373632.0,
+                    "l2_bytes": 10949248.0,
+                    "profiled_nanoseconds": 97056.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2368768.0,
+                    "l2_bytes": 10914272.0,
+                    "profiled_nanoseconds": 98016.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::scal_274(double *, int, double, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 1.0389485030000083,
+                "count": 18564,
+                "samples": [
+                  {
+                    "fp64_ops": 589824.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4730368.0,
+                    "l2_bytes": 14732736.0,
+                    "profiled_nanoseconds": 138848.0
+                  },
+                  {
+                    "fp64_ops": 589824.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4730624.0,
+                    "l2_bytes": 14733120.0,
+                    "profiled_nanoseconds": 139136.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(double *, double *, double *, int, int *, int *, int *, int, int, int)",
+                "grid": [
+                  1776,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.6571125579999904,
+                "count": 10224,
+                "samples": [
+                  {
+                    "fp64_ops": 44089344.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 6409216.0,
+                    "l2_bytes": 41842464.0,
+                    "profiled_nanoseconds": 75520.0
+                  },
+                  {
+                    "fp64_ops": 44089344.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 6445056.0,
+                    "l2_bytes": 41763072.0,
+                    "profiled_nanoseconds": 75712.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::norm2_344(double *, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.29137880600003296,
+                "count": 19769,
+                "samples": [
+                  {
+                    "fp64_ops": 1181632.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4731648.0,
+                    "l2_bytes": 7663040.0,
+                    "profiled_nanoseconds": 22304.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::aypx_226(float, float *, int, float *, int, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.2694665470000054,
+                "count": 5549,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2367488.0,
+                    "l2_bytes": 10654816.0,
+                    "profiled_nanoseconds": 91520.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 1179648.0,
+                    "hbm_bytes": 2367744.0,
+                    "l2_bytes": 10654816.0,
+                    "profiled_nanoseconds": 90720.0
+                  }
+                ]
+              },
+              {
+                "name": "void Accel_Spinor::tensorProd_5din_103_gpu<double>(AField<T1, (Impl)5> &, int, const AField<T1, (Impl)5> &, const AField<T1, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.19362255200000014,
+                "count": 2144,
+                "samples": [
+                  {
+                    "fp64_ops": 14155776.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 18881536.0,
+                    "l2_bytes": 31181632.0,
+                    "profiled_nanoseconds": 107136.0
+                  },
+                  {
+                    "fp64_ops": 14155776.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 18881536.0,
+                    "l2_bytes": 31176736.0,
+                    "profiled_nanoseconds": 107840.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(float *, float *, float, float, int, float *, float *, float, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1927848879999973,
+                "count": 11258,
+                "samples": [
+                  {
+                    "fp64_ops": 1314816.0,
+                    "fp32_ops": 4534272.0,
+                    "hbm_bytes": 2369024.0,
+                    "l2_bytes": 8546560.0,
+                    "profiled_nanoseconds": 23264.0
+                  },
+                  {
+                    "fp64_ops": 1314816.0,
+                    "fp32_ops": 4534272.0,
+                    "hbm_bytes": 2369280.0,
+                    "l2_bytes": 8475040.0,
+                    "profiled_nanoseconds": 23552.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_hopb_dirac_5d_473(float *, float *, float *, int, int *, int *, int *, int, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.18077941299999123,
+                "count": 22516,
+                "samples": [
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 44089344.0,
+                    "hbm_bytes": 3197184.0,
+                    "l2_bytes": 20486272.0,
+                    "profiled_nanoseconds": 12032.0
+                  },
+                  {
+                    "fp64_ops": 0.0,
+                    "fp32_ops": 44089344.0,
+                    "hbm_bytes": 3201536.0,
+                    "l2_bytes": 20391168.0,
+                    "profiled_nanoseconds": 12608.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(float *, float *, float, float, int, float *, float *, float, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.15063710099999644,
+                "count": 11258,
+                "samples": [
+                  {
+                    "fp64_ops": 454656.0,
+                    "fp32_ops": 4988928.0,
+                    "hbm_bytes": 2368512.0,
+                    "l2_bytes": 8409984.0,
+                    "profiled_nanoseconds": 19200.0
+                  },
+                  {
+                    "fp64_ops": 454656.0,
+                    "fp32_ops": 4988928.0,
+                    "hbm_bytes": 2375680.0,
+                    "l2_bytes": 8474432.0,
+                    "profiled_nanoseconds": 19424.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::norm2_344(float *, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1466513349999959,
+                "count": 5789,
+                "samples": [
+                  {
+                    "fp64_ops": 591808.0,
+                    "fp32_ops": 589824.0,
+                    "hbm_bytes": 2376960.0,
+                    "l2_bytes": 4054976.0,
+                    "profiled_nanoseconds": 32224.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::aypx_226(double, double *, int, double *, int, int, int)",
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1396192780000002,
+                "count": 1714,
+                "samples": [
+                  {
+                    "fp64_ops": 1179648.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4744960.0,
+                    "l2_bytes": 20944928.0,
+                    "profiled_nanoseconds": 111296.0
+                  },
+                  {
+                    "fp64_ops": 1179648.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 4727808.0,
+                    "l2_bytes": 20903968.0,
+                    "profiled_nanoseconds": 110880.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dirdag_dirac_365(double *, double *, double, double, int, double *, double *, double, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1360383340000001,
+                "count": 4876,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_eo_5dir_dirac_141(double *, double *, double, double, int, double *, double *, double, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.1190385559999996,
+                "count": 5348,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(double *, double *, int, int *, double *, double *, double *, double *, double)",
+                "grid": [
+                  3552,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.10740926500000034,
+                "count": 5348,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(double *, double *, int, int *, double *, double *, double *, double *, double)",
+                "grid": [
+                  3552,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.08912178499999932,
+                "count": 5412,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_137(float *, float *, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.08459247199999964,
+                "count": 11578,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUinv_dirac_36(float *, float *, int, int *, float *, float *, float *, float *, float)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.08201318000000297,
+                "count": 11258,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_LUdaginv_dirac_226(float *, float *, int, int *, float *, float *, float *, float *, float)",
+                "grid": [
+                  4144,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0714926049999988,
+                "count": 11258,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_137(double *, double *, int, int)",
+                "grid": [
+                  4144,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.04359387300000002,
+                "count": 5376,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(float *, float *, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.04220056899999988,
+                "count": 5549,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::norm2_344(double *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.032494003999999826,
+                "count": 19769,
+                "samples": [
+                  {
+                    "fp64_ops": 64.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 9984.0,
+                    "l2_bytes": 202432.0,
+                    "profiled_nanoseconds": 4320.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::merge_95(double *, double *, double *, int, int, int *)",
+                "grid": [
+                  128,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.026010006000000023,
+                "count": 1072,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(double *, double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.025742330999999972,
+                "count": 1719,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gdn_484(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.020820049999999667,
+                "count": 3780,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gnd_311(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.01704617599999988,
+                "count": 3096,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gnn_138(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.015898739999999918,
+                "count": 2848,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::dot_321(float *, float *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.01551712500000017,
+                "count": 5549,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_zpb_513(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.015396092999999996,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_ypb_289(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.01526719699999998,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_tpb_724(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.015207623999999937,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_xpb_87(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.014504557000000135,
+                "count": 2345,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::multadd_Gnd_225(double *, int, double *, int, double *, int, double, int)",
+                "grid": [
+                  4144,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.013942513000000063,
+                "count": 2052,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_domainwall_5din_mult_gm5R_dirac_401(double *, double *, int, int *)",
+                "grid": [
+                  4144,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.013726645999999993,
+                "count": 1574,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::norm2_344(float *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.009665240999999738,
+                "count": 5789,
+                "samples": [
+                  {
+                    "fp64_ops": 64.0,
+                    "fp32_ops": 0.0,
+                    "hbm_bytes": 9984.0,
+                    "l2_bytes": 202368.0,
+                    "profiled_nanoseconds": 4096.0
+                  }
+                ]
+              },
+              {
+                "name": "BridgeACC::dot_321(double *, double *, int, int)",
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "seconds": 0.006714304999999981,
+                "count": 1719,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_818_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.006153978000000001,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_380_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.006136666999999994,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_set_42(double *, double, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.004038313999999994,
+                "count": 1087,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::mult_Gdd_570(double *, int, double *, int, double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0037811569999999925,
+                "count": 684,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_zmb_625(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0033947489999999955,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::reverse_118(double *, double *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.003302787999999987,
+                "count": 892,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_tmb_822(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.003268642000000001,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_ymb_400(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0030258120000000006,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_159(double *, int, double *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0028701079999999962,
+                "count": 772,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::shift_lex_xmb_182(double *, double *, int, int *, int *)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0028262020000000016,
+                "count": 774,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_43(float *, int, double *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.002512603,
+                "count": 80,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::copy_21(double *, int, float *, int, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.001785423,
+                "count": 80,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_init_20(double *, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0013196610000000002,
+                "count": 333,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_465_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011531000000000009,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_982_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011500600000000005,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_622_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011493520000000015,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_903_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011481050000000006,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_543_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011471480000000004,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1062_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011453860000000017,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1142_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011362980000000009,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_701_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0011079109999999996,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1179_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.001063336000000001,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_737_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010597810000000003,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_939_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.001033449,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1099_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010326449999999991,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_1019_gpu<AField<double, (Impl)5>>::force_udiv1_Ddag(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010300290000000009,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_501_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010298009999999992,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_658_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010290279999999998,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "AForce_F_Domainwall_5din_580_gpu<AField<double, (Impl)5>>::force_udiv1_D(AField<double, (Impl)5> &, const AField<double, (Impl)5> &, const AField<double, (Impl)5> &)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0010259920000000003,
+                "count": 268,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::afield_set_42(float *, float, int, int)",
+                "grid": [
+                  4736,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.0006006120000000005,
+                "count": 160,
+                "samples": []
+              },
+              {
+                "name": "BridgeACC::at_G_714(double *, int, int)",
+                "grid": [
+                  2960,
+                  1,
+                  1
+                ],
+                "block": [
+                  32,
+                  1,
+                  1
+                ],
+                "seconds": 0.00021862900000000002,
+                "count": 76,
+                "samples": []
+              }
+            ],
+            "counter_settings": {
+              "selection_basis": "same-application-same-machine-compute-timeline",
+              "selected_kernel_time_fraction": 0.8929561407627252,
+              "metrics": [
+                "gpu__time_duration.sum",
+                "dram__bytes_read.sum",
+                "dram__bytes_write.sum",
+                "lts__t_bytes.sum",
+                "smsp__sass_thread_inst_executed_op_dfma_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_dmul_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_dadd_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_ffma_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_fmul_pred_on.sum",
+                "smsp__sass_thread_inst_executed_op_fadd_pred_on.sum"
+              ],
+              "cache_control": "none",
+              "clock_control": "none",
+              "launch_skip": 0,
+              "samples_per_kernel": 2,
+              "profiled_application_terminated_early": true
+            },
+            "runs": [
+              {
+                "warmup": true,
+                "seconds": 25.864357413,
+                "outer_seconds": 27.877
+              },
+              {
+                "warmup": false,
+                "seconds": 26.500478614,
+                "outer_seconds": 28.972
+              },
+              {
+                "warmup": false,
+                "seconds": 25.970612717,
+                "outer_seconds": 28.68
+              },
+              {
+                "warmup": false,
+                "seconds": 26.200436497,
+                "outer_seconds": 29.287
+              }
+            ],
+            "input_sha256": {
+              "main.yaml": "7d658585458fd71843a4cf71f8713ba5d8ac8e312f5d7df918d5e5735080ee87",
+              "HMC_DWF_Nf2p1_eo.yaml": "75ce12f684495ee17332dc33029942cd19ed60243f7a259345ec66e5463c30a0",
+              "../conf_04040408.txt": "de20a4a61e25733d47c70daf9f1eabf062d5475cfe1c45b35829ba0f93e31f5d"
+            }
+          },
+          "phase_rows": [
+            {
+              "initialization": 1.178822084,
+              "compute": 25.864357413,
+              "finalization": 0.009795451,
+              "total": 27.052974948,
+              "warmup": true,
+              "outer_seconds": 27.877
+            },
+            {
+              "initialization": 1.649852153,
+              "compute": 26.500478614,
+              "finalization": 0.01008175,
+              "total": 28.160412517,
+              "warmup": false,
+              "outer_seconds": 28.972
+            },
+            {
+              "initialization": 1.168330546,
+              "compute": 25.970612717,
+              "finalization": 0.009795255,
+              "total": 27.148738518,
+              "warmup": false,
+              "outer_seconds": 28.68
+            },
+            {
+              "initialization": 2.25645261,
+              "compute": 26.200436497,
+              "finalization": 0.009961399,
+              "total": 28.466850506,
+              "warmup": false,
+              "outer_seconds": 29.287
+            }
+          ],
+          "machine_id": "b300",
+          "receipt": {
+            "measurement_started_at": "2026-09-19T17:51:13.820514+00:00",
+            "completed_at": "2026-09-19T17:55:35Z",
+            "binary_sha256": "913dbdae2ee478da7a8dee7207c19040b8f6c3751c39e70488c47dbf5fce6a7f",
+            "nsys_version": "2026.2.1",
+            "ncu_version": "2026.1.0",
+            "completion_basis": "scheduler-job-end-including-profiling"
+          },
+          "verification": {
+            "passed": true,
+            "method_ja": "全4通常実行でH(diff)=0.00083995を絶対許容差1e-8で確認。固定された小規模公開入力に対するチェックであり、科学計算全体の正しさの証明ではありません。",
+            "method_en": "All four normal runs match H(diff)=0.00083995 within absolute tolerance 1e-8. This checks the fixed small public input, not correctness of the complete scientific calculation.",
+            "receipt_sha256": "63b829af9690adfa4d33226f69919dba99b296c566b90b368f30544eb008bab1"
+          }
+        }
+      ],
+      "forecasts": [
+        {
+          "baseline_machine_id": "gh200",
+          "frozen": {
+            "frozen_at": "2026-09-19T18:19:00.876866+00:00",
+            "model_sha256": "0c6b235d14f23bc9712f8296dad78b911e1d279fb8a074b8f9226fb82739e050",
+            "baseline_sha256": "1e06c76516e1b2f63c1a17724fb2092b0f7d33c9ea222bdc3614fae2fef771e9",
+            "baseline_spec": {
+              "fp64": 34,
+              "fp32": 67,
+              "bandwidth": 4000
+            },
+            "targets": {
+              "b300": {
+                "fp64": 1.25,
+                "fp32": 75,
+                "bandwidth": 8000
+              },
+              "b200": {
+                "fp64": 37,
+                "fp32": 75,
+                "bandwidth": 7700
+              },
+              "rubin": {
+                "fp64": 33,
+                "fp32": 130,
+                "bandwidth": 22000
+              }
+            },
+            "target_observations_used": false,
+            "prior_target_seen": [
+              "b300"
+            ],
+            "results": {
+              "b300": {
+                "seconds": 13.891316779044965,
+                "minimum": 8.019717321188203,
+                "maximum": 42.941814558616564
+              },
+              "b200": {
+                "seconds": 13.662158708381003,
+                "minimum": 7.359709011156061,
+                "maximum": 25.405357624094528
+              },
+              "rubin": {
+                "seconds": 13.644569970049176,
+                "minimum": 7.14563058843743,
+                "maximum": 25.387768885762696
+              }
+            }
+          }
+        },
+        {
+          "baseline_machine_id": "b300",
+          "frozen": {
+            "frozen_at": "2026-09-19T18:19:05.235039+00:00",
+            "model_sha256": "0c6b235d14f23bc9712f8296dad78b911e1d279fb8a074b8f9226fb82739e050",
+            "baseline_sha256": "ece275a3c3b60a67550798d93f9d36a0846a2d20f4404c74df5298ff9a3e055c",
+            "baseline_spec": {
+              "fp64": 1.25,
+              "fp32": 75,
+              "bandwidth": 8000
+            },
+            "targets": {
+              "rubin": {
+                "fp64": 33,
+                "fp32": 130,
+                "bandwidth": 22000
+              }
+            },
+            "target_observations_used": false,
+            "prior_target_seen": [],
+            "results": {
+              "rubin": {
+                "seconds": 27.82391736713082,
+                "minimum": 11.969382282841698,
+                "maximum": 47.488416483082005
+              }
+            }
+          }
+        }
+      ]
     }
-  ]
+  ],
+  "analytical_model_study": {
+    "version": "20260920-v1",
+    "status": "retrospective-exploration",
+    "target_application_fitting": false,
+    "procurement_eligible": false,
+    "model_sha256": "0d20f1981c11d80d7797ec5e2dee19089f6c5419dd66af41bc76e457da6d018a",
+    "methods": [
+      {
+        "id": "residual-roofline",
+        "name_ja": "残余時間据え置き（従来式）",
+        "name_en": "Preserved residual (control)",
+        "formula": "t1 = t0 * (max(0, d0 - R0) + R1) / d0; R=max(F64/P64+F32/P32, D_HBM/B_HBM)",
+        "note_ja": "通常実行に正規化したカーネル時間t0に、別のカウンタ測定時間d0から求めた残余を適用。従来のカウンタ時間がR0より短い場合の保守的分岐も維持。",
+        "note_en": "Apply the residual from separate counter duration d0 to normal-normalized kernel time t0; retain the control's conservative branch when d0 is below R0."
+      },
+      {
+        "id": "resource-ratio",
+        "name_ja": "リソース比（公表仕様）",
+        "name_en": "Resource ratio (catalog specifications)",
+        "formula": "t1 = t0 * R1/R0; R=max(F64/P64+F32/P32, D_HBM/B_HBM)",
+        "note_ja": "予測元で観測した資源利用効率が移行後も等しいという仮説。アプリ別の係数調整なし。カウンタ取得中の実行時間d0は使わない。",
+        "note_en": "Hypothesis: source resource efficiency transfers unchanged. No application-specific fitting; counter-profiled duration d0 is not used."
+      },
+      {
+        "id": "hierarchical-resource-ratio",
+        "name_ja": "階層リソース比（独立測定）",
+        "name_en": "Hierarchical resource ratio (independent probes)",
+        "formula": "t1 = t0 * R1/R0; R=max(F64/P64+F32/P32, D_HBM/B_HBM, D_L2/B_L2)",
+        "note_ja": "同一の合成プローブで測った通常FP64/FP32・ストリーミング・L2の実効速度を使用。対象アプリの実測時間は入力しない。対象機を測れる事後検証用で、未発売機の実効値を知っていると主張しない。",
+        "note_en": "Use ordinary FP64/FP32, streaming and L2 service rates from identical synthetic probes, never target-application elapsed time. An ex-post hardware-calibrated diagnostic, not knowledge of unreleased-device rates."
+      }
+    ],
+    "cases": [
+      {
+        "case_id": "lqcd-8x4-main",
+        "study_id": "PHASE-LQCD-8X4-MAIN",
+        "baseline": "gh200",
+        "target": "b300",
+        "role": "primary",
+        "name_ja": "LQCD DWF/HMC：main全体",
+        "name_en": "LQCD DWF/HMC: full main"
+      },
+      {
+        "case_id": "genesis-jac-pme20",
+        "study_id": "PHASE-GENESIS-JAC-PME20",
+        "baseline": "h200",
+        "target": "b300",
+        "role": "primary",
+        "name_ja": "GENESIS：JAC/PME20",
+        "name_en": "GENESIS: JAC/PME20"
+      },
+      {
+        "case_id": "salmon-si8-rt180",
+        "study_id": "PHASE-SALMON-SI8-RT180",
+        "baseline": "gh200",
+        "target": "b300",
+        "role": "primary",
+        "name_ja": "SALMON：Si8・時間発展180",
+        "name_en": "SALMON: Si8, 180 real-time steps"
+      },
+      {
+        "case_id": "salmon-si8-gs",
+        "study_id": "PHASE-SALMON-SI8-GS",
+        "baseline": "gh200",
+        "target": "b300",
+        "role": "supplementary",
+        "name_ja": "SALMON：Si8・基底状態（補足）",
+        "name_en": "SALMON: Si8 ground state (supplementary)"
+      }
+    ],
+    "calibrations": {
+      "gh200": {
+        "rates": {
+          "fp64": 30.2341708123,
+          "fp32": 55.1442354113,
+          "bandwidth": 3380.2671978241074,
+          "cache_bandwidth": 7974.282865186747
+        },
+        "hardware": {
+          "device_name": "NVIDIA GH200 480GB",
+          "sm_count": 132,
+          "l2_bytes": 62914560,
+          "compute_major": 9,
+          "compute_minor": 0
+        },
+        "measurements": [
+          {
+            "metric": "ordinary_fp64",
+            "unit": "TFLOP/s",
+            "minimum": 29.127111954,
+            "median": 30.2341708123,
+            "maximum": 30.2870975552,
+            "repetitions": 5
+          },
+          {
+            "metric": "ordinary_fp32",
+            "unit": "TFLOP/s",
+            "minimum": 54.2792262767,
+            "median": 55.1442354113,
+            "maximum": 55.4091416894,
+            "repetitions": 5
+          },
+          {
+            "metric": "streaming_copy",
+            "unit": "GB/s",
+            "minimum": 3376.54673533,
+            "median": 3383.61184206,
+            "maximum": 3386.42898201,
+            "repetitions": 5
+          },
+          {
+            "metric": "cache_resident_copy_proxy",
+            "unit": "GB/s",
+            "minimum": 6323.72289231,
+            "median": 6341.31463896,
+            "maximum": 6350.8686676,
+            "repetitions": 5
+          },
+          {
+            "metric": "launch_and_sync_wall",
+            "unit": "seconds",
+            "minimum": 6.202304e-06,
+            "median": 6.245216e-06,
+            "maximum": 6.58502e-06,
+            "repetitions": 5
+          }
+        ],
+        "cache_check": {
+          "l2_bytes": 675121920.0,
+          "dram_bytes": 902144.0,
+          "expected_bytes": 536870912,
+          "streaming_dram_bytes": 536340224.0
+        },
+        "captured_at": "2026-09-19T18:00:27.133715+00:00",
+        "receipt_sha256": "6a1f855194ee2849b4ef5a34f9d4ea974249704dc6b9e7a486acc2afc5f11d9b",
+        "measurements_sha256": "f9d726a7f319fa125187eca2eed3d560c00ce3d07f53b9b433e37ed76d14d1ea",
+        "cache_counter_sha256": "64eb0adbec96677c704ca103786670338c5bb9a3a527b2a95b499b88940c9f40",
+        "hbm_counter_sha256": "82b7ffd446f201560464fdc062b51dcf532038fd9be1ec8da3699a69f6d6f47f",
+        "target_application_timings_used": false
+      },
+      "h200": {
+        "rates": {
+          "fp64": 29.3245825259,
+          "fp32": 52.8290213286,
+          "bandwidth": 3879.5553076325155,
+          "cache_bandwidth": 7916.398126664007
+        },
+        "hardware": {
+          "device_name": "NVIDIA H200",
+          "sm_count": 132,
+          "l2_bytes": 62914560,
+          "compute_major": 9,
+          "compute_minor": 0
+        },
+        "measurements": [
+          {
+            "metric": "ordinary_fp64",
+            "unit": "TFLOP/s",
+            "minimum": 28.8839789596,
+            "median": 29.3245825259,
+            "maximum": 29.38684326,
+            "repetitions": 5
+          },
+          {
+            "metric": "ordinary_fp32",
+            "unit": "TFLOP/s",
+            "minimum": 51.4542871057,
+            "median": 52.8290213286,
+            "maximum": 53.1944776377,
+            "repetitions": 5
+          },
+          {
+            "metric": "streaming_copy",
+            "unit": "GB/s",
+            "minimum": 3879.23734629,
+            "median": 3883.95198561,
+            "maximum": 3896.80730385,
+            "repetitions": 5
+          },
+          {
+            "metric": "cache_resident_copy_proxy",
+            "unit": "GB/s",
+            "minimum": 6298.86477676,
+            "median": 6300.85218399,
+            "maximum": 6304.28498149,
+            "repetitions": 5
+          },
+          {
+            "metric": "launch_and_sync_wall",
+            "unit": "seconds",
+            "minimum": 7.145134e-06,
+            "median": 7.148252e-06,
+            "maximum": 7.270055e-06,
+            "repetitions": 5
+          }
+        ],
+        "cache_check": {
+          "l2_bytes": 674525248.0,
+          "dram_bytes": 1091328.0,
+          "expected_bytes": 536870912,
+          "streaming_dram_bytes": 536263168.0
+        },
+        "captured_at": "2026-09-19T18:00:33.866943+00:00",
+        "receipt_sha256": "52ec8916f8dfba8cd1075cc2fb524ab5598db3bdc43f2d2ccf2b8894b8332d11",
+        "measurements_sha256": "b31daced23e368305f6eb274dd4eb6abff033c203286e5c123a4fc9a484a5769",
+        "cache_counter_sha256": "b621f13d9649fc24a02c001f517136ab62255f605f4f5a0bdb6c8f5f82bcea56",
+        "hbm_counter_sha256": "cbf307dcaccae78ac02214930e3df1ab8438bc13f4e9907bda418f9d2ac1a9f8",
+        "target_application_timings_used": false
+      },
+      "b300": {
+        "rates": {
+          "fp64": 1.00637624494,
+          "fp32": 59.4139518188,
+          "bandwidth": 5618.6996519599725,
+          "cache_bandwidth": 12076.08755541841
+        },
+        "hardware": {
+          "device_name": "NVIDIA B300 SXM6 AC",
+          "sm_count": 148,
+          "l2_bytes": 132644864,
+          "compute_major": 10,
+          "compute_minor": 3
+        },
+        "measurements": [
+          {
+            "metric": "ordinary_fp64",
+            "unit": "TFLOP/s",
+            "minimum": 1.00522886501,
+            "median": 1.00637624494,
+            "maximum": 1.006663402,
+            "repetitions": 5
+          },
+          {
+            "metric": "ordinary_fp32",
+            "unit": "TFLOP/s",
+            "minimum": 58.21051967,
+            "median": 59.4139518188,
+            "maximum": 60.6681989239,
+            "repetitions": 5
+          },
+          {
+            "metric": "streaming_copy",
+            "unit": "GB/s",
+            "minimum": 5601.04012424,
+            "median": 5623.56930464,
+            "maximum": 5640.34839182,
+            "repetitions": 5
+          },
+          {
+            "metric": "cache_resident_copy_proxy",
+            "unit": "GB/s",
+            "minimum": 9646.51303108,
+            "median": 9651.34135863,
+            "maximum": 9657.56353387,
+            "repetitions": 5
+          },
+          {
+            "metric": "launch_and_sync_wall",
+            "unit": "seconds",
+            "minimum": 9.962044e-06,
+            "median": 1.0058405e-05,
+            "maximum": 1.00942e-05,
+            "repetitions": 5
+          }
+        ],
+        "cache_check": {
+          "l2_bytes": 671751200.0,
+          "dram_bytes": 828160.0,
+          "expected_bytes": 536870912,
+          "streaming_dram_bytes": 536406016.0
+        },
+        "captured_at": "2026-09-19T18:00:44.206357+00:00",
+        "receipt_sha256": "85350673f416b6f5005eb3fc4cb295a4344f30642af825ddee0ead87b81870e9",
+        "measurements_sha256": "7c41bec2a16105681b24735237f9dc79848dfa816b3e2ec1ea01744b1099d750",
+        "cache_counter_sha256": "ce4ffd7d1123f2285eefb5174b20b5fe2714a7097d6ead9052e34dd08e754f9d",
+        "hbm_counter_sha256": "7ee0a60e2928388cdb5f178149d3e797355e58f890ca7253dbeff0d9c834b9bc",
+        "target_application_timings_used": false
+      }
+    },
+    "recipes": [
+      {
+        "name": "application_analytical_models.py",
+        "sha256": "0d20f1981c11d80d7797ec5e2dee19089f6c5419dd66af41bc76e457da6d018a",
+        "content": "\"\"\"Analytical model comparison with no target-application input or fitted knobs.\n\nThe efficiency ratio assumes the source's resource efficiency transfers. It is\na falsifiable assumption, not proof of a universal model or a fitted correction.\n\"\"\"\nimport math\nimport statistics\nimport hashlib\nfrom pathlib import Path\nfrom application_kernel_model import nonnegative, predict\nfrom application_phase_model import representative\n\nMODELS = (\"residual-roofline\", \"resource-ratio\", \"hierarchical-resource-ratio\")\n\n\ndef service(sample, spec):\n    for key in (\"fp64\", \"fp32\", \"bandwidth\"):\n        if nonnegative(spec[key]) == 0:\n            raise ValueError(\"positive service rate required\")\n    terms = dict(arithmetic=sum(nonnegative(sample[key]) / (spec[peak]*1e12)\n                               for key, peak in ((\"fp64_ops\", \"fp64\"), (\"fp32_ops\", \"fp32\"))),\n                 hbm=nonnegative(sample[\"hbm_bytes\"]) / (spec[\"bandwidth\"]*1e9))\n    if \"cache_bandwidth\" in spec:\n        if nonnegative(spec[\"cache_bandwidth\"]) == 0:\n            raise ValueError(\"positive cache rate required\")\n        terms[\"cache\"] = nonnegative(sample[\"l2_bytes\"]) / (spec[\"cache_bandwidth\"]*1e9)\n    return max(terms.values()), terms\n\n\ndef estimate(run, source_spec, target_spec, model):\n    if model not in MODELS:\n        raise ValueError(\"unknown analytical model\")\n    if (\"cache_bandwidth\" in source_spec) != (\"cache_bandwidth\" in target_spec):\n        raise ValueError(\"matching resource ceilings required\")\n    if model == \"hierarchical-resource-ratio\" and \"cache_bandwidth\" not in source_spec:\n        raise ValueError(\"hierarchical model requires independently measured cache rates\")\n    data = run[\"data\"]\n    control = predict(data, source_spec, target_spec)  # Also verifies timeline/units.\n    if \"phase_rows\" in run:\n        row = representative(run)\n        normal = row[\"compute\"]\n        fixed_phases = row[\"initialization\"] + row[\"finalization\"]\n    else:\n        normal = control[\"baseline_seconds\"]\n        fixed_phases = 0\n    factor = normal / data[\"window_seconds\"]\n    fixed = sum(v for k, v in data[\"timeline\"].items() if k != \"gpu\")*factor + fixed_phases\n    if model == \"residual-roofline\":\n        gpu = control[\"modeled_parts\"][\"gpu\"] * normal/control[\"baseline_seconds\"]\n        kernels = control[\"kernels\"]\n    else:\n        gpu, kernels = 0, []\n        for kernel in data[\"kernels\"]:\n            old = kernel[\"seconds\"]*factor\n            keys = (\"fp64_ops\", \"fp32_ops\", \"hbm_bytes\", \"l2_bytes\")\n            samples = [s for s in kernel[\"samples\"] if all(s.get(k) is not None for k in keys)]\n            ratio, terms0, terms1 = 1, {}, {}\n            if samples:\n                sample = {k: statistics.median(nonnegative(s[k]) for s in samples) for k in keys}\n                r0, terms0 = service(sample, source_spec)\n                r1, terms1 = service(sample, target_spec)\n                if r0 > 0:\n                    ratio = r1/r0\n                elif r1 > 0:\n                    raise ValueError(\"cannot scale from zero source service\")\n            gpu += old*ratio\n            kernels.append(dict(name=kernel[\"name\"], grid=kernel[\"grid\"], block=kernel[\"block\"],\n                                baseline_seconds=old, seconds=old*ratio, ratio=ratio,\n                                covered=bool(samples), source_service=terms0, target_service=terms1))\n    value = gpu + fixed\n    if not math.isfinite(value) or value <= 0:\n        raise ValueError(\"positive finite prediction required\")\n    return dict(seconds=value, gpu_seconds=gpu, fixed_seconds=fixed,\n                fixed_fraction=fixed/(normal+fixed_phases),\n                coverage_fraction=control[\"coverage_fraction\"],\n                baseline_seconds=normal+fixed_phases,\n                trace_to_normal_ratio=data[\"window_seconds\"]/normal,\n                kernels=kernels, procurement_eligible=False)\n\n\ndef observed(run):\n    if \"phase_rows\" in run:\n        return representative(run)[\"total\"]\n    return statistics.median(r[\"seconds\"] for r in run[\"data\"][\"runs\"] if not r[\"warmup\"])\n\n\ndef project(artifact):\n    \"\"\"Target observations are used only after predictions, to score errors.\"\"\"\n    study = artifact.get(\"analytical_model_study\")\n    if not study:\n        return None\n    if study[\"model_sha256\"] != hashlib.sha256(Path(__file__).read_bytes()).hexdigest():\n        raise ValueError(\"analytical model changed after input freeze\")\n    if {m[\"id\"] for m in study[\"methods\"]} != set(MODELS):\n        raise ValueError(\"analytical method coverage mismatch\")\n    for recipe in study[\"recipes\"]:\n        if hashlib.sha256(recipe[\"content\"].encode()).hexdigest() != recipe[\"sha256\"]:\n            raise ValueError(\"analytical recipe digest mismatch\")\n    for calibration in study[\"calibrations\"].values():\n        metrics={m[\"metric\"]:m for m in calibration[\"measurements\"]}\n        traffic=calibration[\"cache_check\"]\n        expected=dict(fp64=metrics[\"ordinary_fp64\"][\"median\"],fp32=metrics[\"ordinary_fp32\"][\"median\"],\n            bandwidth=metrics[\"streaming_copy\"][\"median\"]*traffic[\"streaming_dram_bytes\"]/traffic[\"expected_bytes\"],\n            cache_bandwidth=metrics[\"cache_resident_copy_proxy\"][\"median\"]*traffic[\"l2_bytes\"]/traffic[\"expected_bytes\"])\n        if calibration[\"target_application_timings_used\"] is not False or any(\n            not math.isclose(v,calibration[\"rates\"][k],rel_tol=1e-12) for k,v in expected.items()\n        ):\n            raise ValueError(\"service rates must derive from independent hardware measurements\")\n    from application_device_specifications import specifications\n    specs = specifications(artifact)\n    studies = {s[\"id\"]: s for s in [artifact[\"kernel_study\"], *artifact[\"application_studies\"]]}\n    rows, forecasts = [], []\n    machines = {m[\"id\"]: m for m in artifact[\"runtime_view\"][\"machines\"]}\n    lineages = {v[\"id\"]: v[\"generations\"] for v in artifact[\"runtime_view\"][\"generation_policy\"][\"lineages\"]}\n    for case in study[\"cases\"]:\n        dataset = studies[case[\"study_id\"]]\n        runs = {r[\"machine_id\"]: r for r in dataset[\"runs\"]}\n        base, target = runs[case[\"baseline\"]], runs[case[\"target\"]]\n        if base[\"data\"][\"input_sha256\"] != target[\"data\"][\"input_sha256\"]:\n            raise ValueError(\"comparison input hashes differ\")\n        sm, tm = machines[case[\"baseline\"]], machines[case[\"target\"]]\n        if sm[\"lineage\"] != tm[\"lineage\"]:\n            raise ValueError(\"generation lineage mismatch\")\n        generations = lineages[sm[\"lineage\"]]\n        offset = generations.index(tm[\"generation\"])-generations.index(sm[\"generation\"])\n        if offset not in (1, 2):\n            raise ValueError(\"one or two prior generations required\")\n        values = []\n        for model in MODELS:\n            if model == \"hierarchical-resource-ratio\":\n                source_spec = study[\"calibrations\"][case[\"baseline\"]][\"rates\"]\n                target_spec = study[\"calibrations\"][case[\"target\"]][\"rates\"]\n            else:\n                source_spec, target_spec = specs[case[\"baseline\"]], specs[case[\"target\"]]\n            prediction = estimate(base, source_spec, target_spec, model)\n            actual = observed(target)\n            values.append(dict(model=model, **prediction, source_spec=source_spec, target_spec=target_spec,\n                               error_percent=(prediction[\"seconds\"]/actual-1)*100))\n        rows.append(dict(**case, observed_seconds=observed(target), baseline_seconds=observed(base),\n                         generation_offset=offset, predictions=values))\n        preferred = artifact[\"runtime_view\"][\"generation_policy\"][\"baseline_preference\"]\n        for target_id in (\"b200\", \"b300\", \"rubin\"):\n            tm = machines[target_id]\n            for distance in (1, 2):\n                index = generations.index(tm[\"generation\"])-distance\n                available = [mid for mid in runs if machines[mid][\"lineage\"] == tm[\"lineage\"]\n                             and index >= 0 and machines[mid][\"generation\"] == generations[index]]\n                available.sort(key=preferred.index)\n                if not available:\n                    forecasts.append(dict(case_id=case[\"case_id\"], target=target_id,\n                                          generation_offset=distance, baseline=None, seconds=None))\n                    continue\n                source = available[0]\n                estimate_value = estimate(runs[source], specs[source], specs[target_id], \"resource-ratio\")\n                forecasts.append(dict(case_id=case[\"case_id\"], target=target_id, baseline=source,\n                    generation_offset=distance, seconds=estimate_value[\"seconds\"],\n                    coverage_fraction=estimate_value[\"coverage_fraction\"],\n                    actual_seconds=observed(runs[target_id]) if target_id in runs else None))\n    return dict(study, results=rows, forecasts=forecasts, procurement_eligible=False)\n"
+      },
+      {
+        "name": "application_kernel_model.py",
+        "sha256": "9263a1a91a5469b8c9624a93249644da85be60b052cc15dfbe3657451cf41347",
+        "content": "\"\"\"Baseline-only, sampled-kernel roofline residual model; not procurement advice.\"\"\"\nimport math\nimport statistics\n\n\ndef nonnegative(value):\n    if isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or value<0:\n        raise ValueError(\"finite nonnegative measurement required\")\n    return value\n\n\ndef roof(sample, spec):\n    # Independent precision work is serialized; arithmetic overlaps HBM traffic.\n    compute = sum(nonnegative(sample[key])/(spec[peak]*1e12)\n                  for key,peak in ((\"fp64_ops\",\"fp64\"),(\"fp32_ops\",\"fp32\")))\n    return max(compute,nonnegative(sample[\"hbm_bytes\"])/(spec[\"bandwidth\"]*1e9))\n\n\ndef predict(run, baseline_spec, target_spec):\n    for spec in (baseline_spec,target_spec):\n        if any(nonnegative(spec[k])==0 for k in (\"fp64\",\"fp32\",\"bandwidth\")):\n            raise ValueError(\"positive specification required\")\n    if [r[\"warmup\"] for r in run[\"runs\"]] != [True,False,False,False]:\n        raise ValueError(\"normal repetition policy\")\n    t0=statistics.median(nonnegative(r[\"seconds\"]) for r in run[\"runs\"][1:])\n    window=nonnegative(run[\"window_seconds\"])\n    if window<=0 or t0<=0: raise ValueError(\"positive timing required\")\n    parts={k:nonnegative(v) for k,v in run[\"timeline\"].items()}\n    if not math.isclose(sum(parts.values()),window,abs_tol=1e-7):\n        raise ValueError(\"exclusive timeline must sum to window\")\n    gpu_sum=sum(nonnegative(k[\"seconds\"]) for k in run[\"kernels\"])\n    if not math.isclose(gpu_sum,parts[\"gpu\"],abs_tol=1e-6):\n        raise ValueError(\"overlapping GPU kernels need a critical-path model\")\n    factor=t0/window\n    total=equal_efficiency=0\n    covered=0\n    details=[]\n    for kernel in run[\"kernels\"]:\n        samples=kernel[\"samples\"]\n        valid=[s for s in samples if all(s.get(k) is not None for k in\n               (\"fp64_ops\",\"fp32_ops\",\"hbm_bytes\",\"l2_bytes\",\"profiled_nanoseconds\"))]\n        old=kernel[\"seconds\"]*factor\n        if not valid:\n            total+=old;equal_efficiency+=old\n            details.append(dict(name=kernel[\"name\"],grid=kernel[\"grid\"],block=kernel[\"block\"],\n                                covered=False,seconds=old,baseline_seconds=old))\n            continue\n        sample={k:statistics.median(nonnegative(s[k]) for s in valid) for k in valid[0]}\n        duration=sample[\"profiled_nanoseconds\"]/1e9\n        if duration<=0: raise ValueError(\"positive counter duration required\")\n        r0,r1=roof(sample,baseline_spec),roof(sample,target_spec)\n        # Preserve the baseline residual (cache, latency, occupancy, other work).\n        # Target observations never enter this function or calibrate its inputs.\n        projected=max(0,duration-r0)+r1\n        ratio=projected/duration if r0<=duration else max(1,r1/r0)\n        alternate=r1/r0 if r0 else 1\n        new=old*ratio\n        total+=new;equal_efficiency+=old*alternate;covered+=kernel[\"seconds\"]\n        details.append(dict(name=kernel[\"name\"],grid=kernel[\"grid\"],block=kernel[\"block\"],covered=True,\n            seconds=new,baseline_seconds=old,ratio=ratio,sample_count=len(valid),\n            sample=sample,roof_baseline_seconds=r0,roof_target_seconds=r1,\n            residual_seconds=max(0,duration-r0),equal_efficiency_seconds=old*alternate))\n    fixed={k:v*factor for k,v in parts.items() if k!=\"gpu\"}\n    fixed_sum=sum(fixed.values())\n    seconds=total+fixed_sum\n    return dict(seconds=seconds,minimum=min(total,equal_efficiency)+.5*fixed_sum,\n        maximum=max(total,equal_efficiency)+2*fixed_sum,\n        baseline_seconds=t0,baseline_bandwidth_gbs=baseline_spec[\"bandwidth\"],\n        target_bandwidth_gbs=target_spec[\"bandwidth\"],kernel_share=parts[\"gpu\"]/window,\n        coverage_fraction=covered/gpu_sum if gpu_sum else 0,kernels=details,\n        modeled_parts=dict(gpu=total,**fixed),equal_efficiency_seconds=equal_efficiency+fixed_sum,\n        interval_kind=\"assumption-sensitivity-not-confidence\",procurement_eligible=False)\n"
+      },
+      {
+        "name": "application_phase_model.py",
+        "sha256": "0c6b235d14f23bc9712f8296dad78b911e1d279fb8a074b8f9226fb82739e050",
+        "content": "\"\"\"Full application phases with baseline-only, counter-assisted compute scaling.\"\"\"\nimport hashlib\nimport json\nimport math\nfrom application_kernel_model import nonnegative, predict\n\nPHASES = (\"initialization\", \"compute\", \"finalization\")\n\n\ndef representative(run):\n    rows = run[\"phase_rows\"]\n    if [r[\"warmup\"] for r in rows] != [True, False, False, False]:\n        raise ValueError(\"phase repetition policy\")\n    for row, compute in zip(rows, run[\"data\"][\"runs\"], strict=True):\n        for field in (*PHASES, \"total\", \"outer_seconds\"):\n            nonnegative(row[field])\n        if not math.isclose(sum(row[p] for p in PHASES), row[\"total\"], abs_tol=1e-7):\n            raise ValueError(\"application phase sum\")\n        if row[\"total\"] > row[\"outer_seconds\"] + .002:\n            raise ValueError(\"application timer exceeds process timer\")\n        if row[\"compute\"] != compute[\"seconds\"] or row[\"warmup\"] != compute[\"warmup\"]:\n            raise ValueError(\"normal compute binding\")\n    return sorted(rows[1:], key=lambda r: r[\"total\"])[1]\n\n\ndef digest(run):\n    return hashlib.sha256((json.dumps(run, indent=2)+\"\\n\").encode()).hexdigest()\n\n\ndef phase_predict(run, baseline_spec, target_spec):\n    result = predict(run[\"data\"], baseline_spec, target_spec)\n    row = representative(run)\n    ratio = row[\"compute\"] / result[\"baseline_seconds\"]\n    fixed = row[\"initialization\"] + row[\"finalization\"]\n    compute = result[\"seconds\"] * ratio\n    return dict(result, seconds=compute+fixed,\n        minimum=result[\"minimum\"]*ratio+.5*fixed,\n        maximum=result[\"maximum\"]*ratio+2*fixed,\n        phases=dict(initialization=row[\"initialization\"], compute=compute, finalization=row[\"finalization\"]),\n        baseline_seconds=row[\"total\"], fixed_phase_policy=\"baseline-held-constant-central-0.5-to-2-sensitivity\")\n\n\ndef project_phase_study(study, machines, case):\n    runs = {r[\"machine_id\"]: r for r in study[\"runs\"]}\n    if len(runs) != len(study[\"runs\"]) or not runs or not runs.keys() <= machines.keys():\n        raise ValueError(\"application study machine binding\")\n    inputs = next(iter(runs.values()))[\"data\"][\"input_sha256\"]\n    results = []\n    for mid, run in runs.items():\n        if run[\"data\"][\"input_sha256\"] != inputs:\n            raise ValueError(\"application study inputs differ\")\n        if run[\"verification\"][\"passed\"] is not True:\n            raise ValueError(\"application numerical verification failed\")\n        row = representative(run)\n        retained = run[\"phase_rows\"][1:]\n        results.append(dict(id=f\"{case['id']}-{mid}-measured\", case_id=case[\"id\"], machine_id=mid,\n            kind=\"measured\", method_id=None, baseline_id=None, seconds=row[\"total\"],\n            minimum=min(r[\"total\"] for r in retained), maximum=max(r[\"total\"] for r in retained),\n            phases={p: row[p] for p in PHASES}, scope=\"main\", procurement_eligible=False))\n    seen = set()\n    for entry in study[\"forecasts\"]:\n        mid, frozen = entry[\"baseline_machine_id\"], entry[\"frozen\"]\n        if mid not in runs or digest(runs[mid]) != frozen[\"baseline_sha256\"]:\n            raise ValueError(\"application frozen baseline digest\")\n        if frozen[\"target_observations_used\"] is not False:\n            raise ValueError(\"application forecast target fitting\")\n        for target, spec in frozen[\"targets\"].items():\n            if target not in machines or (mid, target) in seen:\n                raise ValueError(\"application forecast target binding\")\n            seen.add((mid, target))\n            result = phase_predict(runs[mid], frozen[\"baseline_spec\"], spec)\n            for key in (\"seconds\", \"minimum\", \"maximum\"):\n                if not math.isclose(result[key], frozen[\"results\"][target][key], rel_tol=1e-12):\n                    raise ValueError(\"application forecast changed after freeze\")\n            results.append(dict(result, id=f\"{case['id']}-{target}-kernel-roofline-from-{mid}\",\n                case_id=case[\"id\"], machine_id=target, kind=\"predicted\", method_id=\"kernel-roofline\",\n                baseline_id=mid, scope=\"main\", prior_target_seen=target in frozen[\"prior_target_seen\"],\n                frozen_at=frozen[\"frozen_at\"]))\n    return results\n"
+      },
+      {
+        "name": "application_device_specifications.py",
+        "sha256": "e32b21d38f9810367cfa43d0e41732c49fec8b4ae4edee8b72a4b360f769bbb2",
+        "content": "\"\"\"Resolve explicitly recorded arithmetic and memory specifications.\"\"\"\n\n\ndef specifications(artifact):\n    records = {r[\"machine_id\"]: r[\"values\"] for r in artifact[\"runtime_view\"][\"specification_comparison\"][\"records\"]}\n    hardware = {h[\"id\"]: h for h in artifact[\"bandwidth_scenario\"][\"hardware\"]}\n    result = {}\n    for machine in artifact[\"runtime_view\"][\"machines\"]:\n        values = records[machine[\"id\"]]\n        fp64 = values.get(\"fp64\", values.get(\"fp64_combined\"))\n        if fp64 and \"fp32\" in values and machine[\"spec_id\"] in hardware:\n            result[machine[\"id\"]] = dict(fp64=fp64[\"value\"], fp32=values[\"fp32\"][\"value\"],\n                bandwidth=hardware[machine[\"spec_id\"]][\"bandwidth_gbs\"])\n    return result\n"
+      },
+      {
+        "name": "replay_analytical_prediction.py",
+        "sha256": "834d282fd67704e1f72f3daeef1a7e8e1e32d9bbf13a2de56bf3cbc966510c4a",
+        "content": "\"\"\"Replay a downloaded prediction input beside the three published model files.\"\"\"\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\nimport sys\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nimport application_analytical_models as models\n\n\ndef replay(inputs):\n    if inputs[\"target_application_timings_used\"] is not False:\n        raise ValueError(\"target-application fitting is not supported\")\n    if hashlib.sha256(Path(models.__file__).read_bytes()).hexdigest() != inputs[\"model_sha256\"]:\n        raise ValueError(\"model file differs from recorded version\")\n    value = models.estimate(inputs[\"run\"],inputs[\"source_spec\"],inputs[\"target_spec\"],inputs[\"model\"])\n    if abs(value[\"seconds\"]-inputs[\"expected_seconds\"]) > 1e-10:\n        raise ValueError(\"replayed prediction differs\")\n    return value\n\n\nif __name__ == \"__main__\":\n    parser=argparse.ArgumentParser()\n    parser.add_argument(\"inputs\",type=Path)\n    args=parser.parse_args()\n    print(json.dumps(replay(json.loads(args.inputs.read_text())),indent=2))\n"
+      },
+      {
+        "name": "hardware_service_probe.cu",
+        "sha256": "745b9328c324cfedfeac63dfc3428f73c22593dbaaf58cd70787461ffb20bbdd",
+        "content": "// Independent synthetic resource probes, never fitted to an application.\n#include <cuda_runtime.h>\n#include <algorithm>\n#include <chrono>\n#include <cmath>\n#include <cstdio>\n#include <cstdlib>\n#include <vector>\n\n#define CK(call) do { cudaError_t e=(call); if(e!=cudaSuccess) { \\\n  std::fprintf(stderr,\"%s\\n\",cudaGetErrorString(e)); std::exit(1); } } while(0)\nusing Clock=std::chrono::steady_clock;\n__global__ void empty() {}\n__global__ void initialize(double *a,size_t n) {\n  for(size_t i=blockIdx.x*blockDim.x+threadIdx.x;i<n;i+=gridDim.x*blockDim.x) {\n    unsigned long long x=i+0x9e3779b97f4a7c15ULL;\n    x=(x^(x>>30))*0xbf58476d1ce4e5b9ULL;\n    x=(x^(x>>27))*0x94d049bb133111ebULL;\n    x^=x>>31;\n    a[i]=__longlong_as_double((x&0x000fffffffffffffULL)|0x3ff0000000000000ULL);\n  }\n}\n__device__ float madd(float a,float b,float c) { return fmaf(a,b,c); }\n__device__ double madd(double a,double b,double c) { return fma(a,b,c); }\ntemplate<class T> __global__ void arithmetic(T *out, int iterations) {\n  int id=blockIdx.x*blockDim.x+threadIdx.x;\n  T a=T(1.01)+T(id%17)*T(.0001), b=T(1.02), c=T(1.03), d=T(1.04);\n  T m=T(1.000001), n=T(.000001);\n  for(int i=0;i<iterations;++i) {\n    a=madd(a,m,n); b=madd(b,m,n); c=madd(c,m,n); d=madd(d,m,n);\n  }\n  out[id]=a+b+c+d;\n}\n__global__ void copy_cg(const double *a,double *b,size_t n,int repeat) {\n  for(int r=0;r<repeat;++r) {\n    for(size_t i=blockIdx.x*blockDim.x+threadIdx.x;i<n;i+=gridDim.x*blockDim.x) {\n      double x;\n      asm volatile(\"ld.global.cg.f64 %0, [%1];\" : \"=d\"(x) : \"l\"(a+i));\n      asm volatile(\"st.global.wb.f64 [%0], %1;\" :: \"l\"(b+i), \"d\"(x));\n    }\n    __syncthreads();\n  }\n}\ntemplate<class F> double event_seconds(F f) {\n  cudaEvent_t a,b; CK(cudaEventCreate(&a)); CK(cudaEventCreate(&b));\n  CK(cudaEventRecord(a)); f(); CK(cudaEventRecord(b)); CK(cudaEventSynchronize(b));\n  float ms; CK(cudaEventElapsedTime(&ms,a,b));\n  CK(cudaEventDestroy(a)); CK(cudaEventDestroy(b)); CK(cudaGetLastError());\n  return ms/1000.;\n}\nvoid emit(const char* name, const char* unit, std::vector<double> v) {\n  std::sort(v.begin(),v.end());\n  std::printf(\"{\\\"metric\\\":\\\"%s\\\",\\\"unit\\\":\\\"%s\\\",\\\"minimum\\\":%.12g,\"\n              \"\\\"median\\\":%.12g,\\\"maximum\\\":%.12g,\\\"repetitions\\\":%zu}\\n\",\n              name,unit,v.front(),v[v.size()/2],v.back(),v.size());\n}\nint main() {\n  CK(cudaSetDevice(0)); cudaDeviceProp p; CK(cudaGetDeviceProperties(&p,0));\n  std::printf(\"{\\\"device_name\\\":\\\"%s\\\",\\\"sm_count\\\":%d,\\\"l2_bytes\\\":%d,\"\n              \"\\\"compute_major\\\":%d,\\\"compute_minor\\\":%d}\\n\",\n              p.name,p.multiProcessorCount,p.l2CacheSize,p.major,p.minor);\n  const int blocks=p.multiProcessorCount*8, threads=256, iters=1024;\n  double *a,*b; float *s;\n  const size_t large=32UL*1024*1024; // 512 MiB combined, exceeds tested L2 sizes.\n  CK(cudaMalloc(&a,large*sizeof(double))); CK(cudaMalloc(&b,large*sizeof(double)));\n  CK(cudaMalloc(&s,blocks*threads*sizeof(float)));\n  initialize<<<blocks,threads>>>(a,large);\n  CK(cudaMemset(b,0,large*sizeof(double)));\n  arithmetic<double><<<blocks,threads>>>(b,iters);\n  arithmetic<float><<<blocks,threads>>>(s,iters); CK(cudaDeviceSynchronize());\n  std::vector<double> fp64,fp32,hbm,l2,launch;\n  for(int r=0;r<5;++r) {\n    double n=double(blocks)*threads*iters*8;\n    fp64.push_back(n/event_seconds([&]{arithmetic<double><<<blocks,threads>>>(b,iters);})/1e12);\n    fp32.push_back(n/event_seconds([&]{arithmetic<float><<<blocks,threads>>>(s,iters);})/1e12);\n    copy_cg<<<blocks,threads>>>(a,b,large,1); CK(cudaDeviceSynchronize());\n    hbm.push_back(large*16./event_seconds([&]{\n      for(int i=0;i<8;++i)copy_cg<<<blocks,threads>>>(a,b,large,1);\n    })*8/1e9);\n    // Two 4 MiB arrays, global .cg reads. A proxy ceiling, not counter-proven L2 bytes.\n    size_t small=512UL*1024;\n    copy_cg<<<blocks,threads>>>(a,b,small,64); CK(cudaDeviceSynchronize());\n    l2.push_back(small*16.*64/event_seconds([&]{\n      for(int i=0;i<100;++i)copy_cg<<<blocks,threads>>>(a,b,small,64);\n    })*100/1e9);\n    auto start=Clock::now();\n    for(int i=0;i<1000;++i) { empty<<<1,1>>>(); CK(cudaDeviceSynchronize()); }\n    launch.push_back(std::chrono::duration<double>(Clock::now()-start).count()/1000);\n  }\n  emit(\"ordinary_fp64\",\"TFLOP/s\",fp64); emit(\"ordinary_fp32\",\"TFLOP/s\",fp32);\n  emit(\"streaming_copy\",\"GB/s\",hbm); emit(\"cache_resident_copy_proxy\",\"GB/s\",l2);\n  emit(\"launch_and_sync_wall\",\"seconds\",launch);\n  double result; CK(cudaMemcpy(&result,b,sizeof(double),cudaMemcpyDeviceToHost));\n  if(!std::isfinite(result))return 2;\n  CK(cudaFree(a)); CK(cudaFree(b)); CK(cudaFree(s));\n}\n"
+      },
+      {
+        "name": "hardware_service_probe_job.sh",
+        "sha256": "c9d37aa2bda6e1e40b4be1ac6e27a919a3585c54570bf898656cc6e246ef8ee9",
+        "content": "#!/bin/bash\nset -eo pipefail\ntest -n \"${SLURM_JOB_ID:-}\"\nsource /etc/profile\nmodule load \"system/${SLURM_JOB_PARTITION}\" nvhpc/26.5\nset -u\nroot=\"$PWD/..\"\nexport OMP_NUM_THREADS=1 OMP_PROC_BIND=true OMP_PLACES=cores\nnvcc -O3 -arch=native \"$root/hardware_service_probe.cu\" -o probe.elf > build.log 2>&1\npython3 \"$root/record_environment.py\" environment.json --mode normal \\\n  --artifact \"$0\" --artifact \"$root/hardware_service_probe.cu\" --artifact probe.elf\ntimeout 90 ./probe.elf > measurements.jsonl\n"
+      },
+      {
+        "name": "hardware_probe_counters_job.sh",
+        "sha256": "545bc2bc139176530aa9037785b5b211ad5207f58ad4b5a9a75920818ae2ffb9",
+        "content": "#!/bin/bash\nset -eo pipefail\ntest -n \"${SLURM_JOB_ID:-}\"\nsource /etc/profile\nmodule load \"system/${SLURM_JOB_PARTITION}\" nvhpc/26.5\nset -u\n# Same binary, separate process. The first cache-resident measured copy follows\n# nine large copies and one cache warmup. Do not use profiled time as throughput.\ntest -s measurements.jsonl\ntimeout 90 ncu --cache-control none --clock-control none --csv --page raw \\\n  --kernel-name-base function --kernel-name regex:copy_cg \\\n  --launch-skip 10 --launch-count 1 \\\n  --metrics dram__bytes_read.sum,dram__bytes_write.sum,lts__t_bytes.sum,gpu__time_duration.sum \\\n  ./probe.elf > cache-counter.csv 2> cache-counter.stderr\ntimeout 90 ncu --cache-control none --clock-control none --csv --page raw \\\n  --kernel-name-base function --kernel-name regex:copy_cg \\\n  --launch-skip 1 --launch-count 1 \\\n  --metrics dram__bytes_read.sum,dram__bytes_write.sum,lts__t_bytes.sum,gpu__time_duration.sum \\\n  ./probe.elf > hbm-counter.csv 2> hbm-counter.stderr\n"
+      }
+    ],
+    "source_urls": [
+      "https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.pdf",
+      "https://arxiv.org/abs/1509.03118",
+      "https://arxiv.org/abs/2009.05257",
+      "https://docs.nvidia.com/nsight-compute/ProfilingGuide/"
+    ],
+    "limitations_ja": [
+      "既知の対象機実測に対する事後比較です。予測関数へ対象アプリの実測値を渡していませんが、盲検による精度検証ではありません。",
+      "主要3ケースと補足1ケースを全て掲載します。アプリごとに誤差の小さいモデルを選択しません。3アプリだけでは汎用性を証明できません。",
+      "通常実行とトレースは別です。トレース比率の通常時間への一括正規化では、計測による偏りを全て除去できません。",
+      "CPU処理・コピー・起動・同期・未分類時間、初期化・終了処理は現段階では据え置きます。キャッシュ容量変化、CPU ISA/コンパイラ差、依存関係の遷移を未モデル化です。",
+      "FP64とFP32のサービス時間は加算し、メモリ階層とは重なると仮定。未知カーネルは据え置き。ハードウェアプローブは実効上限の近似であり、全命令種・アクセス形状の性能を表しません。",
+      "Ampereからの同条件測定は資源待ち。Voltaは利用不可。未取得の2世代前データをHopperの別機種で代用しません。",
+      "対象GPUのL2/実効演算速度が未取得なら階層式は未算定。未発売CPU/GPUへ校正値を架空に補完しません。単一のAIモデルによる暫定結果であり、調達評価には使用不可。"
+    ],
+    "limitations_en": [
+      "Retrospective comparison against known target observations. Target-application timings never enter the predictor, but this is not blind accuracy validation.",
+      "All three primary cases and one supplementary case remain visible. No per-application selection of the lowest-error model; three applications cannot establish generality.",
+      "Normal execution and tracing are separate. Global normalization of trace shares cannot remove all instrumentation bias.",
+      "CPU work, copies, launch, synchronization, unclassified time, initialization and finalization remain fixed in this iteration. Cache-capacity changes, CPU ISA/compiler effects and dependency changes remain unmodeled.",
+      "FP64/FP32 service times are added and overlap memory service. Uncovered kernels stay constant. Probes approximate service ceilings, not every instruction or access pattern.",
+      "Matched Ampere runs are resource-queued; Volta unavailable. A second Hopper device never substitutes for two-prior-generation evidence.",
+      "No hierarchical estimate without target L2/effective-throughput evidence. Unreleased CPU/GPU calibration is not invented. Provisional single-model results, not procurement eligible."
+    ]
+  }
 }
