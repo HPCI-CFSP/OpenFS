@@ -4,8 +4,8 @@
 > Generated from the canonical harness. Do not edit this managed block; put project-specific instructions outside it.
 
 - Harness ID: `kento-common`
-- Harness version: `0.2.0`
-- Source commit: `27fd9ed9e6180dacc4599adc3e22ba12ca8d6de2`
+- Harness version: `0.2.6`
+- Source commit: `ceeb16eb562675de9ec6a6fe08921a3156f3b12e`
 - Service adapter: `gemini`
 - Profiles: `code`, `workspace`
 - Source ID: `kento-common`
@@ -191,6 +191,20 @@ When work is repository-backed:
 - Write Pull Request descriptions and PR comments bilingually, with the English section first and the Japanese section second. Convey the same decisions, validation results, limitations, and requested actions in both sections unless the user explicitly requests different content.
 - Distinguish local verification, remote CI, preview deployment, merged state, and production deployment.
 - Record the base revision and any generated artifact digest needed to reproduce the result.
+
+## Repository Pull Request summary
+
+Start completion or handoff with one line per repository, including no-PR state:
+
+```text
+control-repository: PRなし
+public-repository: PR #123 → PR #124（順番にMerge）
+shared-harness: PR #125
+```
+
+In English, use `no PR` and `(merge in this order)`. Link PR identifiers when
+possible. Arrows mean dependency order. Report merge, publication, and deployment
+separately.
 
 For repositories that publish research or generated sites, include the required data, presentation, navigation, and validation changes in the same reviewable change unless the project explicitly defines another atomic boundary.
 
