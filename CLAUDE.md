@@ -4,11 +4,38 @@
 > Generated from the canonical harness. Do not edit this managed block; put project-specific instructions outside it.
 
 - Harness ID: `kento-common`
-- Harness version: `0.3.1`
-- Source commit: `d3361c803985292c50586ea9013d10ab65c0363e`
+- Harness version: `0.3.2`
+- Source commit: `2130012d3e320a349353060c25264c4e77888861`
 - Service adapter: `claude`
 - Profiles: `code`, `workspace`
 - Source ID: `kento-common`
+
+# Harness Startup Contract
+
+This section is an evergreen bootstrap contract. It must be present near the start of every generated native instruction file and portable bundle so that a newly started AI session can discover how to obtain and apply the current accepted harness without a repeated user prompt.
+
+## Start, resume, and handoff
+
+- Before substantive work at every task start, resume, or handoff, verify the canonical repository's reviewed default branch `origin/main`, record its full commit SHA, and compare it with `.agent-harness/harness.lock.json` or the active snapshot. Only the reviewed default branch is an accepted version; never substitute a Pull Request branch, unmerged branch, local-only commit, dirty worktree, or an unverified tag.
+- If the accepted commit has advanced, use a clean worktree at that exact commit, validate the canonical harness, inspect the old-to-new changes, and select the current task's routes, policies, profiles, skills, and adapter requirements. Preserve existing checkouts, local changes, project overlays, credentials, and instruction precedence.
+- Synchronize the managed native instruction files for every AI service already configured in the consuming project, not only the service performing the update. Use the services recorded in the lock plus the active service, preserve unmanaged text byte-for-byte, run project checks, and follow that project's review and merge authority.
+- Record the active harness ID, version, exact commit, whether latest verification succeeded, the prior commit when known, relevant behavioral changes, and selected routes/profiles. Pin the verified commit for the current substantive step and check again at the next start, resume, or handoff.
+
+## Current-session activation
+
+- Native instruction discovery commonly happens before the agent can synchronize files. Writing a newer `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, Copilot instruction file, or equivalent does not prove that the running session reloaded it.
+- After synchronization in an already-running session, explicitly read the newly generated managed block and all newly applicable canonical documents, then apply them to the current session's remaining decisions. State which version and commit are now active. A newly started session should discover the updated native file automatically.
+- If the current service cannot read the canonical repository, do not claim that its bundled snapshot is latest. Report that freshness is unverified and request a newly generated self-contained bundle from a verified accepted commit, or obtain explicit user authorization for a stated pinned-version exception.
+
+## Commercial-service integration gate
+
+- An AI service integration is incomplete until it has a documented native instruction entrypoint when the service supports one, a manifest entry and adapter, inclusion in project synchronization, and a regression test proving that a core-only render contains this startup contract. A service without native instruction discovery must use an explicitly attached or pasted self-contained bundle and must disclose that it cannot refresh itself.
+- Adding an adapter must not weaken this contract or silently exclude the service from future accepted-harness synchronization. Service-specific limitations belong in the adapter or project overlay; common freshness, provenance, authorization, and failure-reporting rules remain mandatory.
+
+## Failure boundary
+
+- If fetch, authentication, network access, validation, diff review, or synchronization fails, report the exact failed stage. Do not change global authentication to bypass it, call an older snapshot latest, or begin substantive work under an unverified version unless Kento Sato explicitly authorizes that exception.
+- A successful refresh grants no additional credentials, remote-compute access, publication scope, destructive authority, merge permission, or permission to overwrite another contributor's work.
 
 # Core Principles
 
@@ -317,12 +344,15 @@ When the accepted commit is newer:
 2. compare the prior pinned SHA with the new accepted SHA across `core/`, `policies/`, `profiles/`, `catalog/`, `skills/`, `adapters/`, schemas, templates, and manifest limits;
 3. identify and summarize new or changed rules, routes, profiles, capabilities, skills, service behavior, validation, and operational limits that affect the current task;
 4. validate the canonical harness and select all currently applicable routes and profiles, including newly introduced ones;
-5. synchronize only managed harness content while preserving project overlays;
+5. synchronize only managed harness content while preserving project overlays, and update every AI service recorded in the consuming lock plus the active service rather than only the agent performing the refresh;
 6. run the consuming project's required checks and submit the normal reviewable change;
 7. record the old/new SHAs, relevant diff summary, selected routes/profiles, and any unresolved conflict in the session handoff or equivalent durable note;
-8. do not begin the consuming task's substantive work until the accepted harness is applied under that project's merge and review rules, then follow the newly applicable requirements in that same session.
+8. do not begin the consuming task's substantive work until the accepted harness is applied under that project's merge and review rules;
+9. if the session was already running when its native instruction file changed, explicitly read the new managed block and newly applicable canonical documents, then follow them in that same session instead of assuming hot reload.
 
 If a trustworthy prior SHA is unavailable, perform a full read of the current core, relevant policies, task routes, selected profiles and adapters instead of inventing a diff, and record the missing baseline. This refresh requirement grants no new credentials, publication scope, merge authority, or permission to overwrite a dirty worktree. A project without standing merge authority must stop after the synchronization Pull Request and request or await the required approval. A failed fetch or validation is a blocker to claiming current-harness use; do not alter authentication globally, fall back silently, or treat an unmerged branch as accepted. Once verified, keep the exact commit pinned for the current task rather than changing policy mid-step.
+
+Every supported commercial AI service must receive this requirement through its native instruction entrypoint. A new service is not integrated merely because an adapter file exists: its discovery path, manifest entry, synchronization behavior, and core-only render test must prove that the startup contract is present. Services without canonical access must identify their snapshot as unverified for freshness and request a newly generated verified bundle rather than silently continuing forever on a stale copy.
 
 ## Semi-automatic maintenance
 
