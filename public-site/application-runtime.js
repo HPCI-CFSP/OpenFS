@@ -17,6 +17,14 @@
   let selectedMachine = machine(params().get("machine"))?.id || null;
   let comparisonOpen = false;
   const specification = id => comparison.records.find(r => r.machine_id === id);
+  const deviceRole = m => m.selection.role === "validation" ? t("実機検証対象", "Accessible validation device") : t("未発売・予測対象", "Announced future target");
+  function selectionEvidence(m) {
+    const s = m.selection;
+    return [el("p", deviceRole(m)), el("p", local(s,"basis")),
+      el("p", t("根拠確認日：", "Evidence checked: ")+s.checked_at),
+      ...(s.access_checked_at ? [el("p",t("実機アクセス確認日：", "Access evidenced on: ")+s.access_checked_at)] : []),
+      ...s.source_ids.map(source)];
+  }
   const specStatus = status => ({
     published: t("公表仕様", "Published"), preliminary: t("暫定仕様", "Preliminary"),
     derived: t("換算値", "Derived")
@@ -68,16 +76,16 @@
     visibleMachines.add(m.id);
     refreshSpecifications();
     const p = data.device_profiles.find(p => p.id === m.profile_id);
-    const parts = [];
+    const parts = selectionEvidence(m);
     if (p) parts.push(table([t("項目", "Item"), t("内容", "Value")], [
       [t("ホストCPU", "Host CPU"), p.cpu_model], [t("搭載ソケット / コア", "Installed sockets / cores"), p.cpu_sockets+" / "+p.cpu_cores],
       [t("GPU", "GPU"), p.accelerator_variant || t("該当なし・未確認", "Not applicable / unverified")],
       [t("搭載GPU数", "Installed GPUs"), String(p.installed_accelerators)],
       [t("GPU当たりHBM容量", "HBM per GPU"), p.accelerator_memory_gb === null ? t("未確認", "Unverified") : p.accelerator_memory_gb+" GB"]
     ]), el("p", local(p,"note")), source(p.source_id));
-    else parts.push(el("p", data.kernel_study?.runs.some(r=>r.machine_id===m.id) ?
+    else parts.push(el("p", m.selection.role === "validation" ?
       t("このGPUで独自測定を取得しています。ホストCPU・ノード構成の詳細は未登録です。以下の理論値はカタログ仕様です。","Own measurements are available for this GPU. Host CPU and node configuration details are not yet registered. The theoretical values below are catalog specifications.") :
-      t("予測対象のカタログ仕様です。ホストCPU・実装・ソフトウェア互換性は同定していません。", "Catalog specification for prediction only. Host CPU, implementation and software compatibility are not identified.")));
+      t("メーカーが製品化計画を公式発表した予測候補です。最終仕様・ソフトウェア互換性・納入時期は保証されません。", "An officially announced future product candidate. Final specifications, software compatibility and delivery timing are not guaranteed.")));
     const record = specification(m.id);
     parts.push(el("p",local(record,"unit")),el("p",local(record,"note")));
     const specRows = comparison.metrics.map(metric => {
@@ -126,13 +134,16 @@
     select.value=selectedMachine || "";
     select.addEventListener("change",()=>{if(machine(select.value))specs(machine(select.value));});
     const label=el("label",t("機器の詳細","Device details"));label.append(select);label.className="runtime-case-control";mount.append(label);
-    const filter=el("fieldset");filter.className="runtime-specification-filter";filter.append(el("legend",t("比較対象","Devices to compare")));
-    view.machines.forEach(m=>{
-      const label=el("label"),check=el("input");check.type="checkbox";check.value=m.id;check.checked=visibleMachines.has(m.id);
-      check.addEventListener("change",()=>{if(check.checked)visibleMachines.add(m.id);else visibleMachines.delete(m.id);refreshSpecifications();
-        document.querySelector('#runtime-specification-content input[value="'+m.id+'"]')?.focus();});
-      label.append(check,document.createTextNode(m.name));filter.append(label);
-    });mount.append(filter);
+    for(const role of ["validation","forecast"]) {
+      const filter=el("fieldset");filter.className="runtime-specification-filter";filter.dataset.deviceRole=role;
+      filter.append(el("legend",role === "validation" ? t("発売済み・実機検証対象","Released: accessible validation devices") : t("未発売・予測対象","Unreleased: forecast targets")));
+      view.machines.filter(m=>m.selection.role===role).forEach(m=>{
+        const label=el("label"),check=el("input");check.type="checkbox";check.value=m.id;check.checked=visibleMachines.has(m.id);
+        check.addEventListener("change",()=>{if(check.checked)visibleMachines.add(m.id);else visibleMachines.delete(m.id);refreshSpecifications();
+          document.querySelector('#runtime-specification-content input[value="'+m.id+'"]')?.focus();});
+        label.append(check,document.createTextNode(m.name));filter.append(label);
+      });mount.append(filter);
+    }
     const active=view.machines.filter(m=>visibleMachines.has(m.id));
     if(!active.length){mount.append(el("p",t("比較対象が選択されていません。","No comparison devices selected.")));return;}
     const scroll=el("div");scroll.className="runtime-specification-scroll";scroll.tabIndex=0;scroll.setAttribute("role","region");
@@ -142,9 +153,15 @@
     for(const m of active) {
       const th=el("th");th.scope="col";th.dataset.machineId=m.id;
       if(m.id===selectedMachine){th.className="selected";th.setAttribute("aria-current","true");}
-      th.append(button(m.name,()=>specs(m)),el("small",local(specification(m.id),"unit")));hr.append(th);
+      th.append(button(m.name,()=>specs(m)),el("small",deviceRole(m)),el("small",local(specification(m.id),"unit")));hr.append(th);
     }head.append(hr);
     const body=el("tbody");
+    const eligibility=el("tr");eligibility.append(el("th",t("選定根拠・確認日","Selection evidence / date")));
+    for(const m of active) {
+      const cell=el("td");cell.dataset.machineId=m.id;
+      cell.append(button(m.selection.access_checked_at || m.selection.checked_at,()=>dialog(m.name,selectionEvidence(m))));
+      eligibility.append(cell);
+    }body.append(eligibility);
     for(const metric of comparison.metrics) {
       const row=el("tr");row.dataset.metricId=metric.id;const title=el("th",local(metric,"name"));title.scope="row";row.append(title);
       for(const m of active) {
@@ -164,6 +181,7 @@
     const panel=el("details");panel.id="runtime-specifications";panel.open=comparisonOpen;
     panel.addEventListener("toggle",()=>{comparisonOpen=panel.open;});
     panel.append(el("summary",t("CPU/GPU 理論性能・仕様比較","CPU/GPU theoretical performance and specifications")),
+      el("p",local(view.device_selection,"note")),
       el("p",t("公称ピーク値であり、アプリケーションの実測性能ではありません。CPUは1ソケット、GPUは1 GPUの値です。GH200のCPU性能・LPDDRはGPUの行へ加算しません。Dense、Sparsity、エミュレーション、メーカー併記値は別項目です。接続帯域は公称合計であり、片方向の実効帯域ではありません。","Catalog peaks, not measured application performance. CPU values are per socket and GPU values per GPU. GH200 CPU performance and LPDDR are not added to GPU rows. Dense, sparse, emulated and combined vendor labels remain distinct. Link bandwidth is the advertised aggregate, not one-way achieved bandwidth.")));
     const mount=el("div");mount.id="runtime-specification-content";panel.append(mount);root.append(panel);refreshSpecifications();
   }
@@ -222,7 +240,7 @@
     const tab = el("table"); tab.className = "runtime-grid"+(detail ? " runtime-detailed" : "");
     const head = el("thead"), hr = el("tr"), first = el("th",t("評価ケース / 秒・小さいほど高速","Evaluation case / seconds, lower is faster"));
     first.scope="col"; hr.append(first);
-    view.machines.forEach(m => { const th=el("th"); th.scope="col"; th.dataset.machineId=m.id; th.append(button(m.name,()=>specs(m)));hr.append(th); });
+    view.machines.forEach(m => { const th=el("th"); th.scope="col"; th.dataset.machineId=m.id; th.append(button(m.name,()=>specs(m)),el("small",deviceRole(m)));hr.append(th); });
     head.append(hr); const body=el("tbody");
     cases.forEach(c => {
       const row=el("tr"); row.dataset.caseId=c.id;
@@ -254,6 +272,7 @@
               const missing=button(t("未算定","Unavailable"),()=>dialog(m.name+" · "+slotLabel,[
                 el("p",r.offset===0 ? t("同じ入力・計測区間の独自実測は未取得です。","No own measurement with matching input and timing boundary.") :
                   t((r.source_generation || "対象世代")+"の同条件での通常実測・プロファイルに基づく予測が未取得です。他世代の数値で代用しません。","A forecast using matching normal runs and profiles from "+(r.source_generation || "the required generation")+" is unavailable. No substitute from another generation.")),
+                ...(m.selection.role === "forecast" ? [el("p",local(specification(m.id),"note")),...selectionEvidence(m)] : []),
                 link(t("再現情報・不足項目","Reproduction records and gaps"),href(c,"runtime-repro-records"))]));
               missing.className="runtime-missing";plot.append(missing);column.append(plot,el("small",slotLabel));
               if(r.source_generation)column.append(el("small",r.source_generation));
@@ -287,6 +306,7 @@
       outer.append(el("p",t("以下は別実行のHMC更新区間だけのトレースです。main全体の内訳ではなく、通常実行の棒にも転用しません。GPUが稼働していない時間の原因は未分類です。","These separate-run traces cover only the HMC update, not the entire main function. They are not decompositions of the normal-run bars. Causes of non-GPU-active time remain unclassified.")));
     for(const run of [study.baseline,study.target]) {
       const m=view.machines.find(m=>m.profile_id===run.device_profile_id);
+      if(!m)continue;
       const detail=el("details");detail.append(el("summary",m.name));
       const normal=[...run.repeat_seconds].sort((a,b)=>a-b)[1];
       detail.append(table([t("指標","Metric"),"s"],[
@@ -315,6 +335,7 @@
       link(study.source_commit,study.source_url || "https://github.com/i-kanamori/LQCD-DWF-HMC/tree/"+study.source_commit));
     const names={gpu:t("GPUカーネル","GPU kernels"),copy:t("GPU転送","GPU copies"),sync_api:t("同期API（GPU等との重複除外）","Sync APIs, excluding higher-priority overlap"),launch_api:t("起動API（重複除外）","Launch APIs, excluding overlap"),unclassified:t("未分類：CPU処理・I/O等","Unclassified: CPU work, I/O, etc.")};
     for(const run of study.runs) {
+      if(!machine(run.machine_id))continue;
       const detail=el("details"),r=run.data;detail.append(el("summary",machine(run.machine_id).name));
       detail.append(el("p",run.receipt.measurement_started_at+" → "+run.receipt.completed_at),
         el("p","Nsight Systems "+run.receipt.nsys_version+" / Nsight Compute "+run.receipt.ncu_version),
@@ -341,7 +362,7 @@
       detail.append(counter);outer.append(detail);
     }
     const ul=el("ul");study["limitations_"+language].forEach(note=>ul.append(el("li",note)));outer.append(ul);
-    const history=view.phase_runs.filter(r=>r.historical_study_id&&study.id==="PHASE-"+r.case_id.toUpperCase());
+    const history=view.phase_runs.filter(r=>machine(r.machine_id)&&r.historical_study_id&&study.id==="PHASE-"+r.case_id.toUpperCase());
     if(history.length) {
       const previous=el("details");previous.append(el("summary",t("過去の通常実行記録（現在の棒グラフとは別）","Historical normal runs (separate from current bars)")));
       for(const r of history)previous.append(el("h4",machine(r.machine_id).name),
@@ -364,7 +385,7 @@
         table([t("入力ファイル","Input file"),"SHA-256"],study.input_files.map(f=>[f.name,f.sha256])));
       d.append(el("p",t("1 MPIランク・1 OpenMPスレッド・1 GPU。EEA1指定入力との一致は未確認。","One MPI rank, one OpenMP thread, one GPU. Equivalence to the prescribed EEA1 input is unverified.")));
       root.append(d);
-      const records=view.phase_runs.filter(r=>r.case_id===c.id);
+      const records=view.phase_runs.filter(r=>machine(r.machine_id)&&r.case_id===c.id);
       if(records.length) {
         const normal=el("details");normal.id="runtime-normal";normal.open=true;normal.append(el("summary",t("通常実行：初期化・主要計算・終了処理","Normal run: initialization, computation and finalization")));
         normal.append(el("p",t("総時間の中央値に当たる1回の実行を積み上げ表示します。区間ごとの中央値を足し合わせてはいません。初回プロセスは除外しますが、各実行の初期化は除外しません。","The stacked bar uses the complete median-total run, not a sum of independently selected phase medians. The first process is excluded; initialization in each retained run is not excluded.")));
@@ -445,7 +466,7 @@
     ["initialization","compute","finalization","update"].forEach(key=>{const item=el("span",phaseName(key));item.className="legend-"+key;legend.append(item);});root.append(legend);
     if(c) detail(c);
     else {
-      root.append(el("p",t("機器列は世代順で共通です。同世代内の列順は性能順位ではありません。各行は同一条件・同一計測区間で比較し、行間で尺度は異なります。","Shared machine columns follow generation order, not performance rank within a generation. Comparisons use matching conditions and timing boundaries within each row; scales differ across rows.")));
+      root.append(el("p",t("発売済みの実機検証対象と、未発売の予測対象を分けています。列順は性能順位ではありません。各行は同一条件・同一計測区間で比較し、行間で尺度は異なります。","Accessible released validation devices are separated from announced future targets. Column order is not a performance ranking. Comparisons use matching conditions and timing boundaries within each row; scales differ across rows.")));
       const available=new Set(view.results.map(r=>r.case_id));
       const ordered=[...view.cases].sort((a,b)=>Number(available.has(b.id))-Number(available.has(a.id)));
       root.append(chart(ordered,false));
