@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "applications",
   "slug": "applications/ai-for-science-agents",
-  "as_of": "2026-09-05",
+  "as_of": "2026-10-03",
   "title_ja": "AI for Science・科学AIエージェント",
   "title_en": "AI for Science and scientific AI agents",
   "summary_ja": "大規模学習・推論、科学AIエージェント、評価基盤をシステム要件へ接続する暫定ロードマップです。製品機能、ベンチマーク、公的な科学成果を分けて扱います。",
@@ -41,14 +41,16 @@
       "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
       "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。",
       "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline.",
-      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。",
-      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths.",
+      "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。",
+      "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests.",
       "source_ids": [
         "SRC-CDS048",
         "SRC-CDS050",
         "SRC-CDS053",
         "SRC-AIP001",
-        "SRC-AIP002"
+        "SRC-AIP002",
+        "SRC-OCT03-SSW009-DCP-STAGING",
+        "SRC-OCT03-SSW009-PD-EQUAL-GPU"
       ]
     },
     {
@@ -60,11 +62,12 @@
       "summary_en": "Cover correctness, reproducibility, cost, time, and tool use.",
       "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。",
       "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes.",
-      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。",
-      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records.",
+      "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。",
+      "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume.",
       "source_ids": [
         "SRC-CDA053",
-        "SRC-HC26-JALAPENO-RESULTS"
+        "SRC-HC26-JALAPENO-RESULTS",
+        "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY"
       ]
     }
   ],
@@ -107,10 +110,12 @@
           "comparison_priority": "key",
           "label_ja": "共通受入試験の時期は未確定",
           "label_en": "Common acceptance testing is undated",
-          "detail_ja": "固定モデル、入力、同時実行数、精度、電力での比較日程はありません。",
-          "detail_en": "No schedule exists for comparison with pinned models, inputs, concurrency, accuracy, and power.",
+          "detail_ja": "固定モデル、入力、同時実行数、精度、電力での比較日程はありません。 提案試験ではstaging完了、保存中のCPU・固定メモリ、再開の正しさを測り、推論は同一総GPU数の併置対照、実到着分布、p95/p99、ノード全体エネルギーを含める。",
+          "detail_en": "No schedule exists for comparison with pinned models, inputs, concurrency, accuracy, and power. Proposed tests measure staging completion, CPU/pinned-memory load during saves and restart correctness; inference comparisons include equal-total-GPU colocation, real arrival distributions, p95/p99 and whole-node energy.",
           "source_ids": [
-            "SRC-OPENFS-P0-PLAN"
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-OCT03-SSW009-DCP-STAGING",
+            "SRC-OCT03-SSW009-PD-EQUAL-GPU"
           ],
           "dependency_refs": [
             "DEP-AI-BLUEPRINT"
@@ -119,33 +124,31 @@
       ]
     },
     {
-      "lane_id": "LANE-AI-AGENTS",
-      "track_id": "AI-SCIENTIFIC-AGENTS",
-      "owner": "OpenFS",
-      "scope_ja": "科学AIエージェント評価",
-      "scope_en": "Scientific-agent evaluation",
       "milestones": [
         {
           "milestone_id": "MS-AI-AGENT-SUITE-2027",
-          "year": 2027,
           "quarter": "Q2",
-          "timing_precision": "quarter",
-          "maturity": "pilot",
-          "event_type": "hpci-evaluation",
-          "timing_basis": "openfs-provisional-plan",
-          "comparison_priority": "key",
-          "label_ja": "科学タスク群の暫定実証点",
-          "label_en": "Provisional scientific task-suite pilot",
-          "detail_ja": "正答、再実行性、時間、費用、ツール権限を測る公開タスク群を試す暫定計画です。",
-          "detail_en": "A provisional plan to pilot public tasks measuring correctness, reproducibility, time, cost, and tool permissions.",
           "source_ids": [
             "SRC-OPENFS-P0-PLAN",
             "SRC-CDA053",
-            "SRC-HC26-JALAPENO-RESULTS"
+            "SRC-HC26-JALAPENO-RESULTS",
+            "SRC-OCT03-APP012-KOSMOS-AUDIT",
+            "SRC-OCT03-APP012-SCIAGENTARENA",
+            "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY"
           ],
+          "maturity": "pilot",
+          "timing_basis": "openfs-provisional-plan",
+          "detail_en": "A provisional plan to pilot public tasks measuring correctness, reproducibility, time, cost, and tool permissions. Additional proposed criteria separate execution from scientific validation and consider fixed budgets, null models, external-data validation, inconclusive outcomes and resource records for CPU analysis, LLM inference, queues and retries. The existing Q2 2027 date is an OpenFS proposal, not a paper or vendor delivery commitment. Add checkpoint write boundaries, effective serializer configuration, rejection of unapproved types and legitimate-resume compatibility to the provisional test conditions.",
+          "comparison_priority": "key",
+          "event_type": "hpci-evaluation",
+          "label_ja": "科学タスク群の暫定実証点",
+          "label_en": "Provisional scientific task-suite pilot",
+          "year": 2027,
           "dependency_refs": [
             "DEP-AI-BLUEPRINT"
-          ]
+          ],
+          "detail_ja": "正答、再実行性、時間、費用、ツール権限を測る公開タスク群を試す暫定計画です。 追加の暫定評価条件として、実行と科学的検証を別計測し、固定予算、帰無モデル、外部データ検証、未確定判定、CPU解析・LLM推論・待機・再試行の資源記録を検討します。既存の2027年Q2はOpenFS案であり、論文やベンダーの提供約束ではありません。 暫定試験条件にcheckpointの書込境界、実効serializer設定、不許可型の拒否と正常再開の両立を加える。",
+          "timing_precision": "quarter"
         },
         {
           "milestone_id": "MS-AI-CONSENSUS",
@@ -165,7 +168,12 @@
           ],
           "dependency_refs": []
         }
-      ]
+      ],
+      "lane_id": "LANE-AI-AGENTS",
+      "track_id": "AI-SCIENTIFIC-AGENTS",
+      "owner": "OpenFS",
+      "scope_en": "Scientific-agent evaluation",
+      "scope_ja": "科学AIエージェント評価"
     }
   ],
   "dependencies": [
@@ -241,6 +249,44 @@
       "url": "https://openai.com/index/jalapeno-first-results/",
       "source_class": "vendor-official",
       "published_at": "2026-08-25"
+    },
+    {
+      "source_id": "SRC-OCT03-APP012-KOSMOS-AUDIT",
+      "title": "When AI Does Science: Evaluating the Autonomous AI Scientist KOSMOS in Radiation Biology, v1",
+      "publisher": "Humza Nusrat and Omar Nusrat / arXiv",
+      "url": "https://arxiv.org/pdf/2511.13825v1",
+      "source_class": "academic-primary",
+      "published_at": "2025-11-17"
+    },
+    {
+      "source_id": "SRC-OCT03-APP012-SCIAGENTARENA",
+      "title": "Benchmarking AI Agents for Addressing Scientific Challenges Across Scales, v1",
+      "publisher": "Tianyu Liu et al. / arXiv",
+      "url": "https://arxiv.org/html/2606.12736v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-06-10"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW009-DCP-STAGING",
+      "title": "Asynchronous Saving with Distributed Checkpoint (DCP)",
+      "publisher": "PyTorch project",
+      "url": "https://docs.pytorch.org/tutorials/recipes/distributed_async_checkpoint_recipe.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW009-PD-EQUAL-GPU",
+      "title": "Revisiting Disaggregated Large Language Model Serving for Performance and Energy Implications",
+      "publisher": "Jiaxi Li, Yue Zhu, Eun Kyung Lee and Klara Nahrstedt (UIUC / IBM Research), arXiv",
+      "url": "https://arxiv.org/html/2601.08833v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY",
+      "title": "Unsafe msgpack deserialization in LangGraph checkpoint loading",
+      "publisher": "LangGraph / langchain-ai",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-g48c-2wqr-h844",
+      "source_class": "project-official",
+      "published_at": "2026-03-05"
     }
   ],
   "coverage_gaps": [
@@ -272,7 +318,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
-    "human_approval_directive_id": "DIR-900103"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }

@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "hardware",
   "slug": "hardware/facility-power-cooling",
-  "as_of": "2026-09-17",
+  "as_of": "2026-10-03",
   "title_ja": "施設・電力・冷却",
   "title_en": "Facility, power, and cooling",
   "summary_ja": "受電、液冷、熱設計、施設工期をシステム導入判断へ接続する暫定ロードマップです。富岳NEXTの公開施設要件は個別計画の根拠であり、他センターへ一律には適用しません。",
@@ -55,13 +55,14 @@
       "name_en": "Efficiency, water, and resilience",
       "summary_ja": "PUEだけでなく水使用、復旧、計測境界を扱います。",
       "summary_en": "Cover water use, recovery, and measurement boundaries in addition to PUE.",
-      "current_state_ja": "DOEの公開ガイドは評価項目を示しますが、各HPCIセンターの実測値ではありません。",
-      "current_state_en": "DOE public guidance defines evaluation considerations but is not measured data for each HPCI center.",
-      "hpci_implications_ja": "共通の計測期間と境界で受入・運用データを比較します。",
-      "hpci_implications_en": "Compare acceptance and operating data using common periods and boundaries.",
+      "current_state_ja": "DOEの公開ガイドは評価項目を示しますが、各HPCIセンターの実測値ではありません。 富岳2024年度の施設年報は電力価格による一部ノード停止の履歴と、冷却設備変更に伴う工業用水減・夏季上水増を報告しています。消費量変化を同一仕事量の効率改善と同一視しません。",
+      "current_state_en": "DOE public guidance defines evaluation considerations but is not measured data for each HPCI center. Fugaku’s FY2024 facility report records historical partial-node shutdown related to energy prices and reduced industrial-water use alongside increased summer tap-water use after cooling changes. Consumption changes are not equal-work efficiency measurements.",
+      "hpci_implications_ja": "共通の計測期間と境界で受入・運用データを比較します。 水源別の使用量、電力・ガス、負荷・仕事量、サービス制約を分け、PUEだけでは捉えられない影響を記録します。",
+      "hpci_implications_en": "Compare acceptance and operating data using common periods and boundaries. Separate water sources, electricity/gas, workload and completed work, and service constraints to record effects that PUE alone does not capture.",
       "source_ids": [
         "SRC-CDO003",
-        "SRC-CDO009"
+        "SRC-CDO009",
+        "SRC-OCT03-OPS001-FUGAKU"
       ]
     }
   ],
@@ -101,12 +102,13 @@
           "event_type": "hpci-evaluation",
           "timing_basis": "project-target",
           "comparison_priority": "key",
-          "label_ja": "冷却水条件の調整予定",
-          "label_en": "Cooling-water conditions scheduled for coordination",
-          "detail_ja": "流量・圧力等は2028年頃に計算機側の要求に合わせて決定予定です。四半期は公表されていません。",
-          "detail_en": "Flow, pressure, and related conditions are scheduled for determination around 2028 against compute requirements; no quarter is published.",
+          "label_ja": "旧要求の冷却水調整目標（不調後の工程は未確認）",
+          "label_en": "Historical cooling coordination target; post-failure schedule unverified",
+          "detail_ja": "流量・圧力等は2028年頃に計算機側の要求に合わせて決定予定です。四半期は公表されていません。 2026年9月4日に当該DBO公募の不調が公表されたため、これは旧要求の履歴として保持し、不調後の確定した工程とは扱いません。本調査で要求水準書PDFの再取得に失敗したため、当該PDFの確認時点は更新しません。",
+          "detail_en": "Flow, pressure, and related conditions are scheduled for determination around 2028 against compute requirements; no quarter is published. Following the September 4, 2026 unsuccessful DBO solicitation, retain this as historical requirements evidence, not a confirmed post-failure schedule. The requirements PDF could not be retrieved again in this pass, so its verification date is not refreshed.",
           "source_ids": [
-            "SRC-BLUE043"
+            "SRC-BLUE043",
+            "SRC-BLUE009"
           ],
           "dependency_refs": [
             "DEP-FACILITY-BLUEPRINT"
@@ -123,8 +125,28 @@
           "comparison_priority": "key",
           "label_ja": "2030年頃の運転開始目標",
           "label_en": "Target operation around 2030",
-          "detail_ja": "募集ページに示されたプロジェクト目標であり、確定した稼働四半期ではありません。",
-          "detail_en": "This is the project target on the solicitation page, not a confirmed operating quarter.",
+          "detail_ja": "募集ページに示されたプロジェクト目標であり、確定した稼働四半期ではありません。 同ページは2026年9月4日付で有効な提案書がなくDBO公募不調とも公表しています。2030年頃の目標は掲載されたままですが、後継の契約・引渡し工程は未確認であり、遅延幅や目標変更は推測しません。",
+          "detail_en": "This is the project target on the solicitation page, not a confirmed operating quarter. The same page reports on September 4, 2026 that the DBO solicitation was unsuccessful for lack of valid proposals. The around-2030 target remains published, but successor contracting and handover schedules are unverified; no delay duration or target change is inferred.",
+          "source_ids": [
+            "SRC-BLUE009"
+          ],
+          "dependency_refs": [
+            "DEP-FACILITY-BLUEPRINT"
+          ]
+        },
+        {
+          "milestone_id": "MS-OCT03-OPS001-DBO-FAILED",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "published",
+          "event_type": "hpci-adoption",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "富岳NEXT新建屋DBO公募不調",
+          "label_en": "FugakuNEXT building DBO solicitation unsuccessful",
+          "detail_ja": "理研は2026年9月4日、有効な提案書の提出がなく当該公募を不調としました。日付は詳細欄に保持しQ3表示とします。旧10月選定・12月契約予定の継続適用や後継手続きは確認できず、計算機事業全体の中止とは解釈しません。",
+          "detail_en": "On September 4, 2026 RIKEN declared this solicitation unsuccessful because no valid proposals were submitted. The exact date is retained here and displayed in Q3. Continuing applicability of the old October selection/December contract timetable and successor procurement are unverified; this does not establish cancellation of the computing project.",
           "source_ids": [
             "SRC-BLUE009"
           ],
@@ -135,33 +157,33 @@
       ]
     },
     {
-      "lane_id": "LANE-FACILITY-OPENFS",
-      "track_id": "FACILITY-METRICS",
-      "owner": "OpenFS",
-      "scope_ja": "センター共通の施設証拠",
-      "scope_en": "Common center facility evidence",
       "milestones": [
         {
           "milestone_id": "MS-FACILITY-CENTER-EVIDENCE",
-          "year": 2027,
           "quarter": "Q2",
-          "timing_precision": "quarter",
-          "maturity": "decision-gate",
-          "event_type": "hpci-evaluation",
-          "timing_basis": "openfs-provisional-plan",
-          "comparison_priority": "key",
-          "label_ja": "センター別計測表の暫定判断点",
-          "label_en": "Provisional gate for center measurement sheets",
-          "detail_ja": "受電、冷却、増設余地、計測境界が揃ったセンターだけを比較対象とするOpenFS上の暫定計画です。",
-          "detail_en": "A provisional OpenFS plan to compare only centers with documented power, cooling, expansion headroom, and measurement boundaries.",
           "source_ids": [
             "SRC-OPENFS-P0-PLAN",
             "SRC-CDO003",
-            "SRC-CDO009"
+            "SRC-CDO009",
+            "SRC-OCT03-OPS006-MIT",
+            "SRC-OCT03-OPS006-FRONTIER",
+            "SRC-OCT03-OPS013-TEPCO",
+            "SRC-OCT03-OPS013-TOCHIGI",
+            "SRC-OCT03-OPS013-ALCF"
           ],
+          "maturity": "decision-gate",
+          "timing_basis": "openfs-provisional-plan",
+          "detail_en": "A provisional OpenFS plan to compare only centers with documented power, cooling, expansion headroom, and measurement boundaries. Proposed evaluation separates GPU power/temperature improvements from facility energy, PUE and coolant effects and checks matched-period facility meters and completed useful work. Regional comparisons should include power lead-time start/consultation and experiment transfer, queue, processing and return deadlines. Public maps or trial selection alone cannot rank sites. These are proposed OpenFS criteria, not provider commitments.",
+          "comparison_priority": "key",
+          "event_type": "hpci-evaluation",
+          "label_ja": "センター別計測表の暫定判断点",
+          "label_en": "Provisional gate for center measurement sheets",
+          "year": 2027,
           "dependency_refs": [
             "DEP-FACILITY-BLUEPRINT"
-          ]
+          ],
+          "detail_ja": "受電、冷却、増設余地、計測境界が揃ったセンターだけを比較対象とするOpenFS上の暫定計画です。 GPU電力・温度の改善を施設全体の電力量・PUE・冷却水の改善と同一視せず、同期間の施設meterと完了work量で検証する評価案を追加する。 地域配置を比較する場合は、受電工期の起算点・事前協議と、実験の転送・queue・処理・返却期限を含める。公開供給地図や実証採択だけで順位を付けない。これはOpenFSの評価条件案であり、提供者の約束ではない。",
+          "timing_precision": "quarter"
         },
         {
           "milestone_id": "MS-FACILITY-ALL-CENTERS",
@@ -181,7 +203,12 @@
           ],
           "dependency_refs": []
         }
-      ]
+      ],
+      "lane_id": "LANE-FACILITY-OPENFS",
+      "track_id": "FACILITY-METRICS",
+      "owner": "OpenFS",
+      "scope_en": "Common center facility evidence",
+      "scope_ja": "センター共通の施設証拠"
     },
     {
       "lane_id": "LANE-FACILITY-LUMIAI",
@@ -205,6 +232,33 @@
           "detail_en": "CSC's 3 September 2026 notice plans six months of commissioning/testing from early 2027 and facility operation by year-end. Year-end is displayed in Q4, with no exact date. It does not establish compute-system acceptance or Japan delivery.",
           "source_ids": [
             "SRC-P30-LUMIAI-FACILITY"
+          ],
+          "dependency_refs": []
+        }
+      ]
+    },
+    {
+      "lane_id": "LANE-FACILITY-OCT03-OPS013-TOCHIGI",
+      "track_id": "FACILITY-METRICS",
+      "owner": "NEC / Tochigi consortium",
+      "scope_ja": "地域内分散実証（HPCI外の参照例）",
+      "scope_en": "Regional trial outside HPCI",
+      "milestones": [
+        {
+          "milestone_id": "MS-FACILITY-OCT03-OPS013-TOCHIGI-END",
+          "year": 2027,
+          "quarter": "Q1",
+          "timing_precision": "quarter",
+          "maturity": "target",
+          "event_type": "research",
+          "timing_basis": "project-target",
+          "comparison_priority": "supporting",
+          "label_ja": "栃木APN実証期間の終了予定",
+          "label_en": "Planned end of Tochigi APN trial period",
+          "detail_ja": "発表上の期間末は2027年2月。月をQ1表示し、完了・成果公表・商用化とは区別する。",
+          "detail_en": "The announced period ends in February 2027, displayed as Q1. This is not observed completion, result publication or commercialization.",
+          "source_ids": [
+            "SRC-OCT03-OPS013-TOCHIGI"
           ],
           "dependency_refs": []
         }
@@ -270,6 +324,50 @@
       "url": "https://csc.fi/en/news/lumi-ai-factory-data-center-construction-progresses-in-kajaani/",
       "source_class": "research-organization",
       "published_at": "2026-09-03"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS001-FUGAKU",
+      "title": "Fugaku Annual Report FY2024: Facility management",
+      "publisher": "RIKEN R-CCS",
+      "url": "https://www.r-ccs.riken.jp/fugaku/fugaku-annual-reports/2024/2/2/",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-FRONTIER",
+      "title": "Exploring the Frontiers of Energy Efficiency using Power Management at System Scale",
+      "publisher": "Karimi et al., Oak Ridge National Laboratory",
+      "url": "https://arxiv.org/html/2408.01552v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-MIT",
+      "title": "Sustainable Supercomputing for AI: GPU Power Capping at HPC Scale",
+      "publisher": "Zhao et al., MIT SuperCloud study authors",
+      "url": "https://arxiv.org/html/2402.18593v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS013-TEPCO",
+      "title": "東京 ウェルカムゾーンマップ",
+      "publisher": "TEPCO Power Grid",
+      "url": "https://www.tepco.co.jp/pg/consignment/zonemap/pref/tokyo/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS013-TOCHIGI",
+      "title": "NECなど5社、総務省の令和8年度「ワット・ビット連携関連実証」に採択",
+      "publisher": "NEC and four consortium partners",
+      "url": "https://jpn.nec.com/press/202609/20260930_01.html",
+      "source_class": "project-official",
+      "published_at": "2026-09-30"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS013-ALCF",
+      "title": "Data analysis at the speed of light source experiments",
+      "publisher": "Argonne Leadership Computing Facility",
+      "url": "https://www.alcf.anl.gov/news/data-analysis-speed-light-source-experiments",
+      "source_class": "research-organization",
+      "published_at": "2026-04-14"
     }
   ],
   "coverage_gaps": [
@@ -301,7 +399,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-PRIORITY30-20260917",
-    "human_approval_directive_id": "DIR-900127"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }

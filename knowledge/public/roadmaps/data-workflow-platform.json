@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/data-workflow-platform",
-  "as_of": "2026-09-05",
+  "as_of": "2026-10-03",
   "title_ja": "データ・AI・実験ワークフロー基盤",
   "title_en": "Data, AI, and experimental workflow platform",
   "summary_ja": "HPC、AI、データ転送、実験施設をまたぐ実行と再開可能性を扱う暫定ロードマップです。個別ツールの機能とHPCI横断サービスを区別します。",
@@ -118,33 +118,35 @@
       ]
     },
     {
-      "lane_id": "LANE-WORKFLOW-OPENFS",
-      "track_id": "WORKFLOW-DATA",
-      "owner": "OpenFS",
-      "scope_ja": "代表ワークフロー実証",
-      "scope_en": "Reference workflow demonstration",
       "milestones": [
         {
           "milestone_id": "MS-WORKFLOW-PILOT-2027",
-          "year": 2027,
           "quarter": "Q2",
-          "timing_precision": "quarter",
-          "maturity": "pilot",
-          "event_type": "hpci-evaluation",
-          "timing_basis": "openfs-provisional-plan",
-          "comparison_priority": "key",
-          "label_ja": "代表ワークフロー実証の暫定判断点",
-          "label_en": "Provisional reference-workflow pilot gate",
-          "detail_ja": "シミュレーション、AI、実験データの少なくとも各1件で再実行性を確認する暫定計画です。",
-          "detail_en": "A provisional plan to test reproducibility for at least one simulation, AI, and experimental-data workflow.",
           "source_ids": [
             "SRC-OPENFS-P0-PLAN",
             "SRC-CDO075",
-            "SRC-STP010"
+            "SRC-STP010",
+            "SRC-OCT03-ARCH012-HPCI",
+            "SRC-OCT03-ARCH012-GLOBUS",
+            "SRC-OCT03-SSW012-BLUE-REPLAY",
+            "SRC-OCT03-SSW012-NF-LINEAGE",
+            "SRC-OCT03-SSW012-BLUE-PERMISSIONS",
+            "SRC-OCT03-SSW012-NF-SLURM",
+            "SRC-OCT03-SSW012-NF-K8S"
           ],
+          "maturity": "pilot",
+          "timing_basis": "openfs-provisional-plan",
+          "detail_en": "A provisional plan to test reproducibility for at least one simulation, AI, and experimental-data workflow. Data-path acceptance should check DTN configuration-key restoration, interrupted-transfer restart, checksums, permissions and destination logical capacity. Globus multi-DTN operation and HPCI cross-site replicas alone do not guarantee a common SLA, recovery time or deleted-file restoration. This existing Q2 gate does not change service-specific evacuation start dates or migration deadlines. Proposed acceptance criteria include preventing replay of irreversible experiments, joining successful-result lineage to failed attempts, queued-authorization revocation and worker isolation, and Slurm/Kubernetes resource and queue-time differences. Q2 2027 remains the existing OpenFS provisional plan, not a project delivery commitment.",
+          "comparison_priority": "key",
+          "event_type": "hpci-evaluation",
+          "label_ja": "代表ワークフロー実証の暫定判断点",
+          "label_en": "Provisional reference-workflow pilot gate",
+          "year": 2027,
           "dependency_refs": [
             "DEP-WORKFLOW-BLUEPRINT"
-          ]
+          ],
+          "detail_ja": "シミュレーション、AI、実験データの少なくとも各1件で再実行性を確認する暫定計画です。 データ経路の評価条件として、DTN設定鍵の復元、転送中断後の再開、checksum、アクセス権、転送先論理容量を確認する。Globusの複数DTNやHPCIの拠点間複製だけで、共通SLA・復旧時間・削除復元を保証しない。既存Q2判断点は個別サービスの退避開始日や移行期限を変更しない。 提案する受入条件は、不可逆な実験操作の再実行禁止、成功来歴と失敗試行の連結、queue権限失効とworker隔離、Slurm/Kubernetesの資源・待ち時間契約の差を含める。2027年Q2は既存のOpenFS暫定計画であり、プロジェクトの提供約束ではない。",
+          "timing_precision": "quarter"
         },
         {
           "milestone_id": "MS-WORKFLOW-SLA",
@@ -164,7 +166,12 @@
           ],
           "dependency_refs": []
         }
-      ]
+      ],
+      "lane_id": "LANE-WORKFLOW-OPENFS",
+      "track_id": "WORKFLOW-DATA",
+      "owner": "OpenFS",
+      "scope_en": "Reference workflow demonstration",
+      "scope_ja": "代表ワークフロー実証"
     }
   ],
   "dependencies": [
@@ -231,6 +238,55 @@
       "publisher": "Globus",
       "url": "https://docs.globus.org/globus-connect-server/v5/",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-ARCH012-HPCI",
+      "title": "HPCI共用ストレージ FY2026",
+      "publisher": "RIST / HPCI",
+      "url": "https://www.hpci-office.jp/using_hpci/hardware_software_resource/2026/hpci_2026_st-1",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT03-ARCH012-GLOBUS",
+      "title": "Globus Connect Server v5 installation guide",
+      "publisher": "Globus",
+      "url": "https://docs.globus.org/globus-connect-server/v5/",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW012-BLUE-REPLAY",
+      "title": "Interruptions — bluesky 1.14.6",
+      "publisher": "Bluesky project",
+      "url": "https://blueskyproject.io/bluesky/v1.14.6/state-machine.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW012-NF-LINEAGE",
+      "title": "Getting started with data lineage",
+      "publisher": "Seqera / Nextflow",
+      "url": "https://docs.seqera.io/nextflow/tutorials/data-lineage",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW012-BLUE-PERMISSIONS",
+      "title": "Features and Configuration — bluesky-queueserver",
+      "publisher": "Bluesky project",
+      "url": "https://blueskyproject.io/bluesky-queueserver/features_and_config.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW012-NF-SLURM",
+      "title": "SLURM executor",
+      "publisher": "Seqera / Nextflow",
+      "url": "https://docs.seqera.io/nextflow/executor/slurm",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW012-NF-K8S",
+      "title": "Kubernetes executor",
+      "publisher": "Seqera / Nextflow",
+      "url": "https://docs.seqera.io/nextflow/executor/kubernetes",
+      "source_class": "project-official"
     }
   ],
   "coverage_gaps": [
@@ -262,7 +318,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
-    "human_approval_directive_id": "DIR-900103"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }

@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "applications",
   "slug": "applications/realtime-experiment-quantum",
-  "as_of": "2026-09-06",
+  "as_of": "2026-10-03",
   "title_ja": "緊急・リアルタイム・実験連携・量子応用",
   "title_en": "Urgent, real-time, experimental, and quantum applications",
   "summary_ja": "実験データの即時処理、緊急計算、量子・HPC連携を、個別実証から継続サービスへ移す条件を整理する暫定ロードマップです。特定実験の速度や圧縮率を他用途へ一般化しません。",
@@ -39,14 +39,16 @@
       "name_en": "Real-time experimental data processing",
       "summary_ja": "取得、圧縮、転送、解析、判断までの期限と障害処理を扱います。",
       "summary_en": "Cover acquisition, compression, transfer, analysis, decision deadlines, and failures.",
-      "current_state_ja": "理研の圧縮技術、SPring-8とGakuNin RDMの試行、APSのAI画像処理実証が公表されています。対象データと測定条件は異なります。",
-      "current_state_en": "RIKEN compression, the SPring-8/GakuNin RDM trial, and an APS AI-imaging demonstration are public, with different data and measurement conditions.",
-      "hpci_implications_ja": "本番化にはデータ率、期限、再送、来歴、認証、障害時の手動経路をユースケース別に固定する必要があります。",
-      "hpci_implications_en": "Production requires use-case-specific data rate, deadline, retry, provenance, identity, and manual fallback contracts.",
+      "current_state_ja": "理研の圧縮技術、SPring-8とGakuNin RDMの試行、APSのAI画像処理実証が公表されています。対象データと測定条件は異なります。 DIII-Dのショット間HPC解析と施設内FPGA推論は異なる測定境界を持ち、共通の全制御SLAを意味しません。",
+      "current_state_en": "RIKEN compression, the SPring-8/GakuNin RDM trial, and an APS AI-imaging demonstration are public, with different data and measurement conditions. DIII-D inter-shot HPC analysis and facility-local FPGA inference have different measurement boundaries and do not establish a common full-control-loop SLA.",
+      "hpci_implications_ja": "本番化にはデータ率、期限、再送、来歴、認証、障害時の手動経路をユースケース別に固定する必要があります。 科学的品質、入力window、queue待ち、推論、actuator到達、重み更新承認を分けて評価します。",
+      "hpci_implications_en": "Production requires use-case-specific data rate, deadline, retry, provenance, identity, and manual fallback contracts. Evaluate scientific quality, input windows, queueing, inference, actuator delivery and weight-update authorization separately.",
       "source_ids": [
         "SRC-CDS397",
         "SRC-CDS402",
-        "SRC-CDS433"
+        "SRC-CDS433",
+        "SRC-OCT03-APP014-CAKE",
+        "SRC-OCT03-APP014-FPGA"
       ]
     },
     {
@@ -58,12 +60,17 @@
       "summary_en": "Evaluate on-premises quantum systems, HPC resources, and classical baselines together.",
       "current_state_ja": "ROQUOとORNL Pathfinderは運用開始が公表され、QuEraは2028年以降の製品目標を示しています。量子優位性やHPCI共通サービスは確立していません。",
       "current_state_en": "ROQUO and ORNL Pathfinder have announced operation, while QuEra states targets from 2028. Quantum advantage and a common HPCI service are not established.",
-      "hpci_implications_ja": "量子回路だけでなく、前後処理、待ち時間、誤り、古典基準、利用者支援を含めます。",
-      "hpci_implications_en": "Include preprocessing, postprocessing, queueing, error, classical baselines, and user support in addition to quantum circuits.",
+      "hpci_implications_ja": "量子回路だけでなく、前後処理、待ち時間、誤り、古典基準、利用者支援を含めます。 Ising応用は許容gap・成功確率、専用古典機、replica・embeddingを含む全費用で比較する。動的制御は平均rewardと最悪遅延を分離し、資料の版間で異なる時間値を統合しない。",
+      "hpci_implications_en": "Include preprocessing, postprocessing, queueing, error, classical baselines, and user support in addition to quantum circuits. Compare Ising applications at fixed gap and success probability, including specialized classical hardware and full replica/embedding costs. Separate average reward from worst-case latency in dynamic control and do not combine timings from differing source versions.",
       "source_ids": [
         "SRC-WORK060",
         "SRC-CDS422",
-        "SRC-CDS455"
+        "SRC-CDS455",
+        "SRC-OCT03-APP010-QAC",
+        "SRC-OCT03-APP010-PCOMPUTER",
+        "SRC-OCT03-APP010-RTBBO-PREPRINT",
+        "SRC-OCT03-APP010-RTBBO-RELEASE",
+        "SRC-OCT03-OPS009-DECORATOR"
       ]
     }
   ],
@@ -140,10 +147,12 @@
           "comparison_priority": "key",
           "label_ja": "広域リアルタイムサービスの時期は未確定",
           "label_en": "Broad real-time service is undated",
-          "detail_ja": "複数施設で共通の期限、帯域、再送、認証、責任分担は確認できていません。",
-          "detail_en": "Common deadlines, bandwidth, retry, identity, and ownership across facilities are not established.",
+          "detail_ja": "複数施設で共通の期限、帯域、再送、認証、責任分担は確認できていません。 富岳の申請結果通知期間とNERSCの特別承認付き実時間枠は、共通計算完了期限の証拠としない。",
+          "detail_en": "Common deadlines, bandwidth, retry, identity, and ownership across facilities are not established. Fugaku application-result notification times and NERSC specially approved realtime access do not establish a common compute-completion deadline.",
           "source_ids": [
-            "SRC-OPENFS-REMAINING-PLAN"
+            "SRC-OPENFS-REMAINING-PLAN",
+            "SRC-OCT03-OPS003-FUGAKU",
+            "SRC-OCT03-OPS003-NERSC"
           ],
           "dependency_refs": []
         }
@@ -152,7 +161,7 @@
     {
       "lane_id": "LANE-REALTIME-QUANTUM",
       "track_id": "REALTIME-QUANTUM",
-      "owner": "RIKEN, ORNL, and QuEra",
+      "owner": "RIKEN, ORNL, QuEra, and quantum-HPC workflow researchers",
       "scope_ja": "量子・HPC連携の運用と目標",
       "scope_en": "Quantum-HPC operation and targets",
       "milestones": [
@@ -193,6 +202,24 @@
           "dependency_refs": []
         },
         {
+          "milestone_id": "MS-REALTIME-TIERKREIS-OCT03-OPS009-2026Q3",
+          "year": 2026,
+          "quarter": "Q3",
+          "timing_precision": "quarter",
+          "maturity": "pilot",
+          "event_type": "research",
+          "timing_basis": "observed",
+          "comparison_priority": "key",
+          "label_ja": "Tierkreisによる国内workflow実装の報告",
+          "label_en": "Japanese Tierkreis workflow implementation reported",
+          "detail_ja": "2026年9月25日preprintの公開。個別実証であり本番共通サービスの保証ではない。",
+          "detail_en": "Preprint publication on September 25, 2026; individual demonstrations do not guarantee a common production service.",
+          "source_ids": [
+            "SRC-OCT03-OPS009-TIERKREIS"
+          ],
+          "dependency_refs": []
+        },
+        {
           "milestone_id": "MS-REALTIME-QUERA-2028",
           "year": 2028,
           "quarter": null,
@@ -221,12 +248,15 @@
           "comparison_priority": "key",
           "label_ja": "リアルタイム・量子サービス契約の暫定判断点",
           "label_en": "Provisional real-time and quantum service-contract gate",
-          "detail_ja": "期限、データ率、古典基準、正答、失敗、責任分担を定義したユースケースだけを整備案へ接続する暫定計画です。",
-          "detail_en": "A provisional plan to connect only use cases with defined deadlines, data rates, classical baselines, correctness, failures, and ownership to deployment options.",
+          "detail_ja": "期限、データ率、古典基準、正答、失敗、責任分担を定義したユースケースだけを整備案へ接続する暫定計画です。 追加する評価案は、予約満了、checkpointからの再投入、権限失効、校正鮮度、外部QPUへのdata経路を試験する。2027Q2はOpenFS暫定計画であり提供者の約束ではない。",
+          "detail_en": "A provisional plan to connect only use cases with defined deadlines, data rates, classical baselines, correctness, failures, and ownership to deployment options. Proposed tests additionally cover reservation expiry, checkpoint resubmission, revoked authority, calibration freshness and external-QPU data paths. Q2 2027 remains an OpenFS provisional plan, not a provider commitment.",
           "source_ids": [
             "SRC-OPENFS-REMAINING-PLAN",
             "SRC-CDS397",
-            "SRC-CDS455"
+            "SRC-CDS455",
+            "SRC-OCT03-OPS009-TIERKREIS",
+            "SRC-OCT03-OPS009-FAQ",
+            "SRC-OCT03-OPS009-CONCEPTS"
           ],
           "dependency_refs": []
         }
@@ -299,6 +329,93 @@
       "publisher": "Oak Ridge National Laboratory",
       "url": "https://www.ornl.gov/news/ornl-deploys-new-iqm-quantum-computer",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-APP010-QAC",
+      "title": "Scaling Advantage in Approximate Optimization with Quantum Annealing",
+      "publisher": "Munoz-Bauza and Lidar / American Physical Society",
+      "url": "https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.134.160601",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-APP010-PCOMPUTER",
+      "title": "Pushing the boundary of quantum advantage in hard combinatorial optimization with probabilistic computers",
+      "publisher": "Chowdhury et al. / Nature Communications",
+      "url": "https://www.nature.com/articles/s41467-025-64235-y",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-APP010-RTBBO-PREPRINT",
+      "title": "Real-Time Black-Box Optimization for Dynamic Discrete Environments Using Embedded Ising Machines, v1",
+      "publisher": "Kashimata et al. / Toshiba / arXiv",
+      "url": "https://arxiv.org/html/2506.16924v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-APP010-RTBBO-RELEASE",
+      "title": "量子インスパイアードリアルタイムブラックボックス最適化技術を開発",
+      "publisher": "Toshiba",
+      "url": "https://www.global.toshiba/jp/technology/corporate/rdc/rd/topics/26/2609-01.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-APP014-CAKE",
+      "title": "Accelerating discoveries at DIII-D with the Integrated Research Infrastructure",
+      "publisher": "Bechtel Amara et al. / Frontiers in Physics",
+      "url": "https://www.frontiersin.org/journals/physics/articles/10.3389/fphy.2024.1524041/full",
+      "source_class": "academic-primary",
+      "published_at": "2025-01-17"
+    },
+    {
+      "source_id": "SRC-OCT03-APP014-FPGA",
+      "title": "FPGA-Accelerated Real-Time Diagnostics at DIII-D Using the SLAC Neural Network Library for ML Inference",
+      "publisher": "Dave et al. / arXiv",
+      "url": "https://arxiv.org/pdf/2604.26042",
+      "source_class": "academic-primary",
+      "published_at": "2026-04-28"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS003-FUGAKU",
+      "title": "「富岳」機動的課題の随時募集",
+      "publisher": "HPCI運用事務局 / RIST",
+      "url": "https://www.hpci-office.jp/using_hpci/proposal_submission_current/fugaku_sscale",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS003-NERSC",
+      "title": "Example Jobs: Realtime",
+      "publisher": "NERSC",
+      "url": "https://docs.nersc.gov/jobs/examples/",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS009-TIERKREIS",
+      "title": "Quantum-HPC Workflows Across Multiple Quantum Computing Platforms: Two Case Studies",
+      "publisher": "Seitz et al. (Quantinuum / University of Tsukuba / RIKEN), arXiv",
+      "url": "https://arxiv.org/html/2609.31528v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-09-25"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS009-DECORATOR",
+      "title": "Run your local code as a hybrid job",
+      "publisher": "Amazon Web Services",
+      "url": "https://docs.aws.amazon.com/braket/latest/developerguide/braket-hybrid-job-decorator.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS009-FAQ",
+      "title": "Amazon Braket FAQ",
+      "publisher": "Amazon Web Services",
+      "url": "https://aws.amazon.com/braket/faqs/",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS009-CONCEPTS",
+      "title": "Key concepts for Hybrid Jobs",
+      "publisher": "Amazon Web Services",
+      "url": "https://docs.aws.amazon.com/braket/latest/developerguide/braket-jobs-concepts.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -330,7 +447,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
-    "human_approval_directive_id": "DIR-900105"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }
