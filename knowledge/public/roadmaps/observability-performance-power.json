@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/observability-performance-power",
-  "as_of": "2026-09-06",
+  "as_of": "2026-10-03",
   "title_ja": "可観測性・性能工学・電力適応運用",
   "title_en": "Observability, performance engineering, and power-aware operations",
   "summary_ja": "ジョブ、通信、I/O、電力・冷却の観測を性能モデルと運用制御へ接続する暫定ロードマップです。研究上の電力制御結果と、センター全体で安全に運用できる制御を区別します。",
@@ -130,31 +130,39 @@
       ]
     },
     {
-      "lane_id": "LANE-PERFORMANCE-OPENFS",
-      "track_id": "PERFORMANCE-OBSERVABILITY",
-      "owner": "OpenFS",
-      "scope_ja": "共通観測・受入条件",
-      "scope_en": "Common observability and acceptance",
       "milestones": [
         {
           "milestone_id": "MS-PERFORMANCE-CONTRACT-2027Q2",
-          "year": 2027,
           "quarter": "Q2",
-          "timing_precision": "quarter",
-          "maturity": "decision-gate",
-          "event_type": "hpci-evaluation",
-          "timing_basis": "openfs-provisional-plan",
-          "comparison_priority": "key",
-          "label_ja": "性能・電力観測契約の暫定判断点",
-          "label_en": "Provisional performance and power observability gate",
-          "detail_ja": "入力、版、精度、計測区間、IT/施設電力境界、失敗を固定した比較形式を審査する暫定計画です。",
-          "detail_en": "A provisional plan to review a comparison contract pinning input, version, correctness, timing interval, IT/facility power boundary, and failures.",
           "source_ids": [
             "SRC-OPENFS-REMAINING-PLAN",
             "SRC-CDS376",
-            "SRC-CDO055"
+            "SRC-CDO055",
+            "SRC-OCT03-APP015-SST-RM",
+            "SRC-OCT03-APP015-PAPER-RM",
+            "SRC-OCT03-APP015-LOADGEN-RM",
+            "SRC-OCT03-CROSS005-SWF",
+            "SRC-OCT03-CROSS005-CLEANING",
+            "SRC-OCT03-CROSS005-GOOGLE",
+            "SRC-OCT03-CROSS005-NIST",
+            "SRC-OCT03-OPS006-NERSC",
+            "SRC-OCT03-OPS006-FRONTIER",
+            "SRC-OCT03-OPS006-MIT",
+            "SRC-OCT03-OPS006-SLURM",
+            "SRC-OCT03-SSW001-CDMM",
+            "SRC-OCT03-SSW001-NVHPC269"
           ],
-          "dependency_refs": []
+          "maturity": "decision-gate",
+          "timing_basis": "openfs-provisional-plan",
+          "detail_en": "A provisional plan to review a comparison contract pinning input, version, correctness, timing interval, IT/facility power boundary, and failures. For experimental streams, OpenFS proposes separately reporting scheduled-versus-actual issue, reconciliation of all steps, backpressure versus skipping, premature termination and tail sample size. Joint quality/deadline/loss measurement remains unexecuted. Proposed review criteria include requested/allocated/used distinctions, transformation/exclusion versions, external-trace applicability, and disclosure risk across monthly and revised releases. These are OpenFS proposals, not external delivery commitments. Proposed evaluation additionally distinguishes requested/applied caps, acquisition/preprocessing cadence, sensor boundaries, approximation, overhead/calibration accuracy and nonrandom operational comparisons. An additional OpenFS evaluation proposal records driver, allocator/memory mode, effective MPI placement and patch version to avoid confusing configuration changes with portability differences. Vendor statements are not HPCI measurements; no new acceptance threshold or deployment date is set.",
+          "comparison_priority": "key",
+          "event_type": "hpci-evaluation",
+          "label_ja": "性能・電力観測契約の暫定判断点",
+          "label_en": "Provisional performance and power observability gate",
+          "year": 2027,
+          "dependency_refs": [],
+          "detail_ja": "入力、版、精度、計測区間、IT/施設電力境界、失敗を固定した比較形式を審査する暫定計画です。 実験streamでは、予定到着と実投入の差、全stepの照合、backpressureと省略、途中終了、tail推定の標本数を別記することを提案します。品質・期限・欠損の同時測定は未実施です。 審査候補として、要求・割当・使用の区別、変換・除外版、外部トレースの適用範囲、月次・訂正版を通じた開示リスク確認を含めます。これはOpenFSの提案であり外部組織の納期ではありません。 追加の評価案では要求capと適用cap、取得周期と前処理周期、センサ範囲、近似、overhead・較正精度、非無作為な実績比較を区別する。 OpenFSの追加評価案として、ドライバ、割当・メモリ方式、実効MPI配置、パッチ版も記録し、設定変更を性能可搬性の差と混同しない。ベンダー記述はHPCI実測ではなく、合否閾値や導入日は新設しない。",
+          "timing_precision": "quarter"
         },
         {
           "milestone_id": "MS-PERFORMANCE-SLO-UNDATED",
@@ -174,7 +182,12 @@
           ],
           "dependency_refs": []
         }
-      ]
+      ],
+      "lane_id": "LANE-PERFORMANCE-OPENFS",
+      "track_id": "PERFORMANCE-OBSERVABILITY",
+      "owner": "OpenFS",
+      "scope_en": "Common observability and acceptance",
+      "scope_ja": "共通観測・受入条件"
     }
   ],
   "dependencies": [
@@ -220,6 +233,97 @@
       "publisher": "SchedMD",
       "url": "https://slurm.schedmd.com/slurm.conf.html",
       "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-APP015-SST-RM",
+      "title": "ADIOS2 2.11.0 Supported Engines: SST",
+      "publisher": "ADIOS2 project",
+      "url": "https://adios2.readthedocs.io/en/v2.11.0/engines/engines.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-APP015-PAPER-RM",
+      "title": "Streaming Data in HPC Workflows Using ADIOS",
+      "publisher": "SST authors / arXiv",
+      "url": "https://arxiv.org/html/2410.00178v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-APP015-LOADGEN-RM",
+      "title": "MLPerf Inference rules",
+      "publisher": "MLCommons",
+      "url": "https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-CROSS005-SWF",
+      "title": "Parallel Workloads Archive: Standard Workload Format",
+      "publisher": "Parallel Workloads Archive / Hebrew University",
+      "url": "https://www.cs.huji.ac.il/labs/parallel/workload/swf.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-CROSS005-CLEANING",
+      "title": "Parallel Workloads Archive: Logs of Real Parallel Workloads from Production Systems",
+      "publisher": "Parallel Workloads Archive / Hebrew University",
+      "url": "https://www.cs.huji.ac.il/labs/parallel/workload/logs.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-CROSS005-GOOGLE",
+      "title": "ClusterData 2019 traces",
+      "publisher": "Google",
+      "url": "https://github.com/google/cluster-data/blob/master/ClusterData2019.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-CROSS005-NIST",
+      "title": "De-Identifying Government Datasets: Techniques and Governance (SP 800-188)",
+      "publisher": "NIST",
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-188.pdf",
+      "source_class": "government-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-NERSC",
+      "title": "GPU Power Capping on Perlmutter",
+      "publisher": "NERSC",
+      "url": "https://docs.nersc.gov/jobs/power-capping/",
+      "source_class": "research-organization"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-FRONTIER",
+      "title": "Exploring the Frontiers of Energy Efficiency using Power Management at System Scale",
+      "publisher": "Karimi et al., Oak Ridge National Laboratory",
+      "url": "https://arxiv.org/html/2408.01552v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-MIT",
+      "title": "Sustainable Supercomputing for AI: GPU Power Capping at HPC Scale",
+      "publisher": "Zhao et al., MIT SuperCloud study authors",
+      "url": "https://arxiv.org/html/2402.18593v1",
+      "source_class": "academic-primary"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS006-SLURM",
+      "title": "Slurm acct_gather.conf",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/acct_gather.conf.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW001-CDMM",
+      "title": "NVIDIA HPC Compilers User Guide 26.9",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/hpc-sdk/compilers/hpc-compilers-user-guide/index.html#coherent-driver-based-memory-management-cdmm",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-SSW001-NVHPC269",
+      "title": "NVIDIA HPC SDK 26.9 Release Notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/hpc-sdk/archive/26.9/release-notes/index.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -251,7 +355,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-RESEARCH-READINESS-20260906-001",
-    "human_approval_directive_id": "DIR-900105"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }

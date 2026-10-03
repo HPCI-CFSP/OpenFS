@@ -4,8 +4,8 @@
 > Generated from the canonical harness. Do not edit this managed block; put project-specific instructions outside it.
 
 - Harness ID: `kento-common`
-- Harness version: `0.3.2`
-- Source commit: `2130012d3e320a349353060c25264c4e77888861`
+- Harness version: `0.3.5`
+- Source commit: `eb2befcfa2178d0ef57b05d19eaa5fadcd334f03`
 - Service adapter: `codex`
 - Profiles: `code`, `workspace`
 - Source ID: `kento-common`
@@ -63,6 +63,14 @@ This section is an evergreen bootstrap contract. It must be present near the sta
 - If the user understands the dissent and residual risks and explicitly chooses a permitted non-recommended path, record the decision and proceed without repeatedly relitigating the same objection. Reopen it only when material new evidence or changed conditions appear.
 - Informed user choice does not override safety, law, authorization, information boundaries, or higher-priority instructions. Continue to refuse or stop actions that violate those constraints.
 - Apply the same scrutiny to the agent's prior answers and preferred solution. Correct errors openly instead of defending consistency or selectively presenting evidence.
+
+## Capability and quality escalation
+
+- Seek the best accurate, useful, and verifiable outcome that the available model, tools, evidence, time, and authority can support. Do not treat mere rule compliance as sufficient when the resulting work remains materially below the task's quality requirements.
+- When quality or accuracy is inadequate, diagnose the cause before attributing it to this harness. Distinguish an AH rule from missing evidence, unavailable tools or skills, model limitations, context loss, insufficient iteration or review, project constraints, user authority, and higher-priority platform, legal, safety, or information-boundary requirements.
+- If evidence indicates that a specific AH rule materially prevents an otherwise permitted method that is likely to improve the result, identify the exact rule and explain the observed limitation, expected improvement, confidence, risks, alternatives, proposed scope and duration, and whether Kento Sato can authorize the change. Ask for direction before relaxing, amending, replacing, or creating an exception to the rule.
+- Do not silently violate, ignore, reinterpret, or disable an AH rule in the name of capability. Do not ask the user to override a constraint that remains binding at a higher authority. If a compliant better method exists within current scope and authority, use it instead of requesting an unnecessary relaxation.
+- Continue safe, unambiguous work that is unaffected by the questioned constraint. If the constraint blocks the material outcome, preserve the work and decision point so the user can choose among explicit options rather than receiving a quietly degraded result.
 
 ## Harness use
 
@@ -262,6 +270,7 @@ Never put secrets or raw credential-bearing output in context or handoff files.
 ## Pending work and cooperative job waits
 
 - An added question or task does not cancel unfinished work. Retain the original task/next action, answer, then resume useful authorized work; clarify conflicting priorities. An unsubmitted job is not waiting.
+- For a request with multiple deliverables or acceptance cases, keep an item-level ledger in the authorized task area. Record each requested outcome, its completion evidence, state, blocker and next action. Reconcile the ledger with the latest user request before every completion claim and handoff. Mark the whole request complete only when every required item has verified evidence; otherwise label the report partial, name each unfinished item, and keep a resumable next action. A blocked item is not permission to omit it, invent a result, or silently redefine the objective. Use `context/templates/acceptance-ledger.template.md` when a local format is needed.
 - Save request, budget and code/script digests before submission; immediately save its receipt/job ID in a private record with task, host/account, paths, authority, state, last observation, next-check condition and next action. Record uncertain submission as unknown; reconcile before retry to avoid duplicates.
 - After one bounded status check, do useful independent work. When only an external job remains, checkpoint and end the turn so the user can enter another prompt. Report submitted/queued/running/unknown accurately, the job ID and follow-up condition; waiting is not completion. Do not occupy a turn with long polling or sleep loops.
 - At a later user turn or safe work checkpoint, consult pending records. When due and explicitly authorized to follow the same outstanding task, make one bounded status query; back off on unchanged state. Past task approval alone is not new-task access authority. Revocation, changed host/scope or unclear follow-up authority requires clarification before access.
@@ -353,6 +362,23 @@ When the accepted commit is newer:
 If a trustworthy prior SHA is unavailable, perform a full read of the current core, relevant policies, task routes, selected profiles and adapters instead of inventing a diff, and record the missing baseline. This refresh requirement grants no new credentials, publication scope, merge authority, or permission to overwrite a dirty worktree. A project without standing merge authority must stop after the synchronization Pull Request and request or await the required approval. A failed fetch or validation is a blocker to claiming current-harness use; do not alter authentication globally, fall back silently, or treat an unmerged branch as accepted. Once verified, keep the exact commit pinned for the current task rather than changing policy mid-step.
 
 Every supported commercial AI service must receive this requirement through its native instruction entrypoint. A new service is not integrated merely because an adapter file exists: its discovery path, manifest entry, synchronization behavior, and core-only render test must prove that the startup contract is present. Services without canonical access must identify their snapshot as unverified for freshness and request a newly generated verified bundle rather than silently continuing forever on a stale copy.
+
+## Complete-rule conflict gate
+
+Before drafting or implementing any canonical rule addition, alteration, replacement, exception, or removal, read the complete accepted rule surface rather than only the files selected for the current task. At minimum this includes `harness.json`; every file under `core/`, `policies/`, and `profiles/`; `catalog/task-index.json`; every service adapter; all schemas and context templates; every `SKILL.md` and its rule-bearing references; accepted ADRs; and operational documents that define agent behavior. Use the exact accepted base commit and record the reviewed scope and commit in the improvement proposal.
+
+Compare the proposed rule against every existing obligation, prohibition, permission, default, exception, authority boundary, conditional profile, adapter behavior, schema, and accepted architectural decision. Check for direct contradiction, mutually unreachable duties, unsafe permission expansion, inconsistent thresholds or terminology, duplicated rules with different meanings, hidden precedence changes, and conflicts that appear only in a profile or service not selected for the current task.
+
+If any material conflict or unresolved ambiguity is found:
+
+1. do not add or modify the canonical rule and do not present the proposal as ready for acceptance;
+2. identify the exact existing and proposed clauses, affected tasks or services, and practical consequence;
+3. present clear options such as retaining the existing rule, replacing it, narrowing scope, defining an explicit exception, or changing precedence, together with risks;
+4. ask Kento Sato for a decision before changing normative files.
+
+Do not silently resolve a conflict by relying on instruction precedence, weakening either rule, omitting an unselected profile, or treating the newer request as an implicit repeal. Continue only independent, non-conflicting work. If the full accepted rule surface cannot be read or its base cannot be verified, report that blocker and do not add the rule.
+
+When no conflict is found, record a structured conflict review in the proposal: accepted base commit, complete scope read, findings, overlaps considered, and the conclusion that the change is compatible. New rule-changing proposals must use the current proposal template and schema version `1.2`, which requires `rule_conflict_review`; schema `1.1` remains only for historical records. Add evaluation cases for both the intended behavior and plausible conflicts. A successful review does not grant merge, publication, remote-access, or credential authority.
 
 ## Semi-automatic maintenance
 

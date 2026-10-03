@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/identity-security-federation",
-  "as_of": "2026-09-05",
+  "as_of": "2026-10-03",
   "title_ja": "認証・セキュリティ・連合運用",
   "title_en": "Identity, security, and federated operations",
   "summary_ja": "統合認証、保証レベル、HPCセキュリティ、機密計算を段階的に検証する暫定ロードマップです。標準準拠と運用受入を分けます。",
@@ -106,10 +106,13 @@
           "comparison_priority": "key",
           "label_ja": "共通保証プロファイルの提供時期は未確定",
           "label_en": "Common assurance-profile availability is undated",
-          "detail_ja": "センター横断の属性、MFA、復旧、監査要件は確定していません。",
-          "detail_en": "Cross-center attribute, MFA, recovery, and audit requirements are not fixed.",
+          "detail_ja": "センター横断の属性、MFA、復旧、監査要件は確定していません。 候補受入条件として、委譲先への失効伝播、更新token再利用検出後の復旧、WebとCLIの実効有効期間を追加確認する。標準の公表はHPCI実装の適合証明ではない。",
+          "detail_en": "Cross-center attribute, MFA, recovery, and audit requirements are not fixed. Candidate acceptance checks additionally cover downstream revocation propagation, recovery after refresh replay detection, and effective web/CLI lifetimes. Standard publication is not proof of HPCI implementation compliance.",
           "source_ids": [
-            "SRC-OPENFS-P0-PLAN"
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-OCT03-OPS004-EXCHANGE",
+            "SRC-OCT03-OPS004-REFRESH",
+            "SRC-OCT03-OPS004-WEBSESSION"
           ],
           "dependency_refs": [
             "DEP-SECURITY-BLUEPRINT"
@@ -157,10 +160,15 @@
           "comparison_priority": "key",
           "label_ja": "機密計算の相互運用は未確認",
           "label_en": "Confidential-computing interoperability is unverified",
-          "detail_ja": "CPU、GPU、ネットワーク、ストレージをまたぐ証明・鍵管理・復旧は未検証です。",
-          "detail_en": "Attestation, key management, and recovery across CPU, GPU, network, and storage remain unverified.",
+          "detail_ja": "CPU、GPU、ネットワーク、ストレージをまたぐ証明・鍵管理・復旧は未検証です。 Googleの現行GPU機密VMは複数ノードclusterに非対応。NVIDIAのdevice別claims、RIM/OCSP依存とcache鮮度を構成ごとの受入試験案へ加える。これらはHPCI導入日や相互運用成立の証明ではない。",
+          "detail_en": "Attestation, key management, and recovery across CPU, GPU, network, and storage remain unverified. Current Google GPU Confidential VMs exclude multi-node clusters. Add per-device NVIDIA claims, RIM/OCSP dependencies and cache freshness to proposed stack-specific acceptance tests. These do not establish an HPCI adoption date or proven interoperability.",
           "source_ids": [
-            "SRC-OPENFS-P0-PLAN"
+            "SRC-OPENFS-P0-PLAN",
+            "SRC-OCT03-OPS005-GOOGLE",
+            "SRC-OCT03-OPS005-LOCAL",
+            "SRC-OCT03-OPS005-OUTPOST",
+            "SRC-OCT03-OPS005-TOKENS",
+            "SRC-OCT03-OPS005-SWITCH"
           ],
           "dependency_refs": []
         }
@@ -233,6 +241,63 @@
       "publisher": "NIST",
       "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
       "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS004-EXCHANGE",
+      "title": "Delegation and revocation boundaries of exchanged tokens",
+      "publisher": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc8693.html",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS004-REFRESH",
+      "title": "Refresh-token replay controls for public clients",
+      "publisher": "IETF / RFC Editor",
+      "url": "https://www.rfc-editor.org/rfc/rfc9700.html",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS004-WEBSESSION",
+      "title": "HPCI shared-storage web renewal window",
+      "publisher": "HPCI / RIST",
+      "url": "https://www.hpci-office.jp/application/files/8217/7681/4871/HPCI-ST01-007-01.pdf",
+      "source_class": "project-official",
+      "published_at": "2026-04-11"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS005-GOOGLE",
+      "title": "Confidential VM supported configurations",
+      "publisher": "Google Cloud",
+      "url": "https://docs.cloud.google.com/confidential-computing/confidential-vm/docs/supported-configurations",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS005-LOCAL",
+      "title": "Attestation using Local Verifier",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/attestation/poc-to-production/latest/integration-options/local_verifier.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS005-OUTPOST",
+      "title": "Customer-Managed Attestation",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/attestation/poc-to-production/latest/integration-options/trust_outpost.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS005-TOKENS",
+      "title": "Claims Guide Introduction",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/attestation/advanced-documentation/latest/claims-guide/introduction.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS005-SWITCH",
+      "title": "nvSwitch Claims",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/attestation/advanced-documentation/latest/claims-guide/nvswitch_claims.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -264,7 +329,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-P0-ROADMAP-PLANNING-20260905-001",
-    "human_approval_directive_id": "DIR-900103"
+    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
+    "human_approval_directive_id": "DIR-900141"
   }
 }
