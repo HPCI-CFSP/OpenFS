@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "applications",
   "slug": "applications/ai-for-science-agents",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "AI for Science・科学AIエージェント",
   "title_en": "AI for Science and scientific AI agents",
   "summary_ja": "大規模学習・推論、科学AIエージェント、評価基盤をシステム要件へ接続する暫定ロードマップです。製品機能、ベンチマーク、公的な科学成果を分けて扱います。",
@@ -39,8 +39,8 @@
       "name_en": "Distributed training and inference serving",
       "summary_ja": "並列化、メモリ、チェックポイント、待ち時間を扱います。",
       "summary_en": "Cover parallelism, memory, checkpoints, and latency.",
-      "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。",
-      "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline.",
+      "current_state_ja": "Megatron、DeepSpeed、vLLM、MLPerfの公開資料を基準にします。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
+      "current_state_en": "Public Megatron, DeepSpeed, vLLM, and MLPerf materials form the baseline. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
       "hpci_implications_ja": "学習と推論を同じピーク演算値だけで評価せず、通信、KV cache、データ経路を測定します。 非同期保存の境界と等資源推論比較を受入試験に加える。",
       "hpci_implications_en": "Do not evaluate training and inference by peak arithmetic alone; measure communication, KV cache, and data paths. Add asynchronous-save boundaries and equal-resource serving comparisons to acceptance tests.",
       "source_ids": [
@@ -50,7 +50,13 @@
         "SRC-AIP001",
         "SRC-AIP002",
         "SRC-OCT03-SSW009-DCP-STAGING",
-        "SRC-OCT03-SSW009-PD-EQUAL-GPU"
+        "SRC-OCT03-SSW009-PD-EQUAL-GPU",
+        "SRC-OCT05-APP012-01",
+        "SRC-OCT05-APP012-02",
+        "SRC-OCT05-APP012-03",
+        "SRC-OCT05-SSW009-01",
+        "SRC-OCT05-SSW009-02",
+        "SRC-OCT05-SSW009-03"
       ]
     },
     {
@@ -60,14 +66,20 @@
       "name_en": "Scientific tasks and agent evaluation",
       "summary_ja": "正答、再現性、費用、時間、ツール利用を扱います。",
       "summary_en": "Cover correctness, reproducibility, cost, time, and tool use.",
-      "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。",
-      "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes.",
+      "current_state_ja": "ScienceAgentBenchとJalapenoの公開成果は異なる評価範囲を持ちます。 今回の限定的な追補：ECMWFは入力解析世代の変更でGraphCast・Aurora・AIFS v1.1の精度変化を報告し、AIFS v2適応と外部モデルの同センター実時間運用停止を説明する。モデルの世界的廃止ではない。Anemoiの研究例は約100km・6時間入力から約30km・1時間出力へ反復samplerで変換するが、運用日・全系節約は未報告。AgentActionBenchは150論文（AI4Science30）、人手注釈15、GPT-4o-mini採点で行動過程と5段階を評価する。rubric総合点は完全再現論文の割合ではない。 PyTorch DCP2.14のstaging thread所有・cleanupをmemory条件と共に確認する。JSON checkpoint packageのlegacy resume条件は既存msgpack advisoryと別で、JS/TS Storeの設定依存cross-user認可問題を全Python packageの一般脆弱性へ拡張しない。package版・serializer・principal・expiry・checkpoint再開・Store認可を既存agent試験へ組み込み、site診断や再現済みとはしない。",
+      "current_state_en": "ScienceAgentBench and Jalapeno public results cover different evaluation scopes. Scoped additions in this batch: ECMWF reports quality changes for GraphCast, Aurora and AIFS v1.1 after initial-condition changes, adaptation of AIFS v2 and cessation of its external-model realtime runs, not worldwide model retirement. Anemoi research maps roughly 100km/six-hour inputs to 30km/hourly outputs through iterative sampling without reported deployment dates or end-to-end savings. AgentActionBench covers 150 papers (30 AI4Science), 15 human-annotated papers and GPT-4o-mini scoring of actions/five stages. Overall rubric scores are not fractions of completely reproduced papers. Add PyTorch DCP 2.14 staging-thread ownership/cleanup alongside memory conditions. Keep JSON-package legacy resume conditions distinct from the existing msgpack advisory; configuration-dependent JS/TS Store authorization does not establish a universal Python vulnerability. Add package versions, serializers, principals, expiry, checkpoint resumption and Store authorization to existing agent tests without site diagnosis or reproduction claims.",
       "hpci_implications_ja": "HPCIで実行可能な科学タスク群と監査可能な実行記録が必要です。 永続状態の整合性と再開時の復元型の制約も検証する。",
       "hpci_implications_en": "HPCI needs executable scientific task suites and auditable run records. Also qualify persistent-state integrity and type restrictions during resume.",
       "source_ids": [
         "SRC-CDA053",
         "SRC-HC26-JALAPENO-RESULTS",
-        "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY"
+        "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY",
+        "SRC-OCT05-APP012-01",
+        "SRC-OCT05-APP012-02",
+        "SRC-OCT05-APP012-03",
+        "SRC-OCT05-SSW009-01",
+        "SRC-OCT05-SSW009-02",
+        "SRC-OCT05-SSW009-03"
       ]
     }
   ],
@@ -110,12 +122,18 @@
           "comparison_priority": "key",
           "label_ja": "共通受入試験の時期は未確定",
           "label_en": "Common acceptance testing is undated",
-          "detail_ja": "固定モデル、入力、同時実行数、精度、電力での比較日程はありません。 提案試験ではstaging完了、保存中のCPU・固定メモリ、再開の正しさを測り、推論は同一総GPU数の併置対照、実到着分布、p95/p99、ノード全体エネルギーを含める。",
-          "detail_en": "No schedule exists for comparison with pinned models, inputs, concurrency, accuracy, and power. Proposed tests measure staging completion, CPU/pinned-memory load during saves and restart correctness; inference comparisons include equal-total-GPU colocation, real arrival distributions, p95/p99 and whole-node energy.",
+          "detail_ja": "固定モデル、入力、同時実行数、精度、電力での比較日程はありません。 提案試験ではstaging完了、保存中のCPU・固定メモリ、再開の正しさを測り、推論は同一総GPU数の併置対照、実到着分布、p95/p99、ノード全体エネルギーを含める。 追補条件：入力解析世代の変化・model適応の費用とDCP staging thread所有/cleanupを確認する。研究samplerの解像度変換を実運用・全系節約に一般化しない。実行日は引き続き未設定。",
+          "detail_en": "No schedule exists for comparison with pinned models, inputs, concurrency, accuracy, and power. Proposed tests measure staging completion, CPU/pinned-memory load during saves and restart correctness; inference comparisons include equal-total-GPU colocation, real arrival distributions, p95/p99 and whole-node energy. Additional criteria: qualify initial-condition generation changes/model-adaptation costs and DCP staging-thread ownership/cleanup. Research sampler resolution conversion is not operational deployment or whole-system savings. No execution date is set.",
           "source_ids": [
             "SRC-OPENFS-P0-PLAN",
             "SRC-OCT03-SSW009-DCP-STAGING",
-            "SRC-OCT03-SSW009-PD-EQUAL-GPU"
+            "SRC-OCT03-SSW009-PD-EQUAL-GPU",
+            "SRC-OCT05-APP012-01",
+            "SRC-OCT05-APP012-02",
+            "SRC-OCT05-APP012-03",
+            "SRC-OCT05-SSW009-01",
+            "SRC-OCT05-SSW009-02",
+            "SRC-OCT05-SSW009-03"
           ],
           "dependency_refs": [
             "DEP-AI-BLUEPRINT"
@@ -134,11 +152,17 @@
             "SRC-HC26-JALAPENO-RESULTS",
             "SRC-OCT03-APP012-KOSMOS-AUDIT",
             "SRC-OCT03-APP012-SCIAGENTARENA",
-            "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY"
+            "SRC-OCT03-SSW009-CHECKPOINT-INTEGRITY",
+            "SRC-OCT05-APP012-01",
+            "SRC-OCT05-APP012-02",
+            "SRC-OCT05-APP012-03",
+            "SRC-OCT05-SSW009-01",
+            "SRC-OCT05-SSW009-02",
+            "SRC-OCT05-SSW009-03"
           ],
           "maturity": "pilot",
           "timing_basis": "openfs-provisional-plan",
-          "detail_en": "A provisional plan to pilot public tasks measuring correctness, reproducibility, time, cost, and tool permissions. Additional proposed criteria separate execution from scientific validation and consider fixed budgets, null models, external-data validation, inconclusive outcomes and resource records for CPU analysis, LLM inference, queues and retries. The existing Q2 2027 date is an OpenFS proposal, not a paper or vendor delivery commitment. Add checkpoint write boundaries, effective serializer configuration, rejection of unapproved types and legitimate-resume compatibility to the provisional test conditions.",
+          "detail_en": "A provisional plan to pilot public tasks measuring correctness, reproducibility, time, cost, and tool permissions. Additional proposed criteria separate execution from scientific validation and consider fixed budgets, null models, external-data validation, inconclusive outcomes and resource records for CPU analysis, LLM inference, queues and retries. The existing Q2 2027 date is an OpenFS proposal, not a paper or vendor delivery commitment. Add checkpoint write boundaries, effective serializer configuration, rejection of unapproved types and legitimate-resume compatibility to the provisional test conditions. Additional criteria: distinguish action/rubric scores from complete scientific-reproduction fractions; test package-specific JSON/msgpack, legacy resume and configuration-dependent JS/TS Store authorization. Infer no universal Python vulnerability or site diagnosis. Coding agents reference existing PORT-AUTO scope/denominator/human-adjudication evidence without a duplicate lane.",
           "comparison_priority": "key",
           "event_type": "hpci-evaluation",
           "label_ja": "科学タスク群の暫定実証点",
@@ -147,7 +171,7 @@
           "dependency_refs": [
             "DEP-AI-BLUEPRINT"
           ],
-          "detail_ja": "正答、再実行性、時間、費用、ツール権限を測る公開タスク群を試す暫定計画です。 追加の暫定評価条件として、実行と科学的検証を別計測し、固定予算、帰無モデル、外部データ検証、未確定判定、CPU解析・LLM推論・待機・再試行の資源記録を検討します。既存の2027年Q2はOpenFS案であり、論文やベンダーの提供約束ではありません。 暫定試験条件にcheckpointの書込境界、実効serializer設定、不許可型の拒否と正常再開の両立を加える。",
+          "detail_ja": "正答、再実行性、時間、費用、ツール権限を測る公開タスク群を試す暫定計画です。 追加の暫定評価条件として、実行と科学的検証を別計測し、固定予算、帰無モデル、外部データ検証、未確定判定、CPU解析・LLM推論・待機・再試行の資源記録を検討します。既存の2027年Q2はOpenFS案であり、論文やベンダーの提供約束ではありません。 暫定試験条件にcheckpointの書込境界、実効serializer設定、不許可型の拒否と正常再開の両立を加える。 追補条件：行動/rubric点と完全科学再現割合を分け、package別JSON/msgpack・legacy resume・JS/TS Storeの設定依存認可を試験する。一般Python脆弱性やsite診断へ拡張しない。移植agentは既存PORT-AUTOのscope/分母・人判定を参照し新laneを作らない。",
           "timing_precision": "quarter"
         },
         {
@@ -287,6 +311,53 @@
       "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-g48c-2wqr-h844",
       "source_class": "project-official",
       "published_at": "2026-03-05"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-01",
+      "title": "Farewell to the external AI models",
+      "publisher": "ECMWF; Zied Ben Bouallègue, Baudouin Raoult, Matthew Chantry",
+      "url": "https://www.ecmwf.int/en/about/media-centre/aifs-blog/2026/farewell-external-ai-models",
+      "source_class": "project-official",
+      "published_at": "2026-05-11"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-02",
+      "title": "Flow matching for spatio-temporal downscaling with Anemoi",
+      "publisher": "ECMWF; Simon Lang",
+      "url": "https://www.ecmwf.int/en/about/media-centre/aifs-blog/2026/flow-matching-spatio-temporal-downscaling",
+      "source_class": "project-official",
+      "published_at": "2026-09-07"
+    },
+    {
+      "source_id": "SRC-OCT05-APP012-03",
+      "title": "Overview of the NLPCC 2026 Shared Task 11: Agent-Based Experiment Reproduction from Scientific Papers",
+      "publisher": "Hanhua Hong et al., original authors via arXiv",
+      "url": "https://arxiv.org/html/2609.11117v1",
+      "source_class": "academic-primary",
+      "published_at": "2026-09-10"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW009-01",
+      "title": "Distributed Checkpoint — PyTorch 2.14",
+      "publisher": "PyTorch",
+      "url": "https://docs.pytorch.org/docs/2.14/distributed.checkpoint.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW009-02",
+      "title": "LangGraph JSON checkpoint serializer advisory GHSA-fjqc-hq36-qh5p",
+      "publisher": "LangGraph / langchain-ai",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-fjqc-hq36-qh5p",
+      "source_class": "project-official",
+      "published_at": "2026-05-22"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW009-03",
+      "title": "LangGraph Store authorization advisory GHSA-4hm6-w6qq-w73v",
+      "publisher": "LangGraph / langchain-ai",
+      "url": "https://github.com/langchain-ai/langgraph/security/advisories/GHSA-4hm6-w6qq-w73v",
+      "source_class": "project-official",
+      "published_at": "2026-09-28"
     }
   ],
   "coverage_gaps": [
@@ -318,7 +389,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

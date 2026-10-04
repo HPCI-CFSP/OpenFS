@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/runtime-scheduling-os",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "通信・ランタイム・スケジューリング・OS",
   "title_en": "Communication, runtimes, scheduling, and operating systems",
   "summary_ja": "通信標準、GPU通信、実行時系、ジョブ管理を連合資源へ接続する暫定ロードマップです。仕様公開と各システムでの相互運用確認を区別します。",
@@ -39,8 +39,8 @@
       "name_en": "MPI, UCX, and collectives",
       "summary_ja": "仕様、実装、GPU・NIC対応を分離して追跡します。",
       "summary_en": "Track specifications, implementations, and GPU/NIC support separately.",
-      "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。 2026-10-03再確認では、Open MPI 5.0.11、MPICH 5.0.2、UCX 1.22.0、UCC 1.9.0、libfabric 2.7.0とNCCL/RCCLの版別条件を追加した。標準ABIの言語差、device APIのprovider対応、配布版とdevelop、実験経路を区別する。",
-      "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline. The 2026-10-03 recheck adds Open MPI 5.0.11, MPICH 5.0.2, UCX 1.22.0, UCC 1.9.0, libfabric 2.7.0 and version-specific NCCL/RCCL conditions. Distinguish language-specific standard ABI, provider implementation of device APIs, packaged versus development code, and experimental paths.",
+      "current_state_ja": "MPI 5.0資料、MPICH 5.0、UCX/UCCの公開資料を基準にします。 2026-10-03再確認では、Open MPI 5.0.11、MPICH 5.0.2、UCX 1.22.0、UCC 1.9.0、libfabric 2.7.0とNCCL/RCCLの版別条件を追加した。標準ABIの言語差、device APIのprovider対応、配布版とdevelop、実験経路を区別する。 今回の限定的な追補：NCCLのB100 PCIe MLoPartのCUDA error 101条件の既知問題とvendor workaround NCCL_CUMEM_ENABLE=0を限定して追記する。nccl4py実験bindingとlib/device IR整合、barrier終了・event全rank一致・CUDA条件を分ける。upstream issue closedはAuroraのwrong-result適合確認ではない。Open MPI5.0.11 download rowの9月16日と8月changelogを区別し、2月source日付を現行release日へ誤用しない。NCCL表示release stampの年・timezone不明を保持。",
+      "current_state_en": "MPI 5.0 documents, MPICH 5.0, and UCX/UCC public materials form the baseline. The 2026-10-03 recheck adds Open MPI 5.0.11, MPICH 5.0.2, UCX 1.22.0, UCC 1.9.0, libfabric 2.7.0 and version-specific NCCL/RCCL conditions. Distinguish language-specific standard ABI, provider implementation of device APIs, packaged versus development code, and experimental paths. Scoped additions in this batch: Add the configuration-scoped B100 PCIe MLoPart NCCL allocation issue with CUDA error 101 and vendor NCCL_CUMEM_ENABLE=0 workaround. Separate experimental nccl4py binding/lib/device-IR matching, barrier teardown, all-rank events and CUDA requirements. A closed upstream issue does not qualify Aurora wrong-result recovery. Distinguish Open MPI 5.0.11 download-row September 16 from August changelog and avoid using the old February source date for the current release. Retain unknown NCCL release-label year/timezone.",
       "hpci_implications_ja": "候補ノードとファブリックの組合せごとに適合試験が必要です。 ABI、起動系、provider、GPU/NIC、実際の転送経路、build flagsを固定し、正確性・終了処理・障害回復と実アプリ性能を別に検証する。",
       "hpci_implications_en": "Each candidate node/fabric combination needs conformance testing. Pin ABI, launch stack, provider, GPU/NIC, actual transfer paths and build flags; separately qualify correctness, teardown, recovery and application performance.",
       "source_ids": [
@@ -58,7 +58,14 @@
         "SRC-OCT03-SSW003-XPU",
         "SRC-OCT03-SSW003-NCCL",
         "SRC-OCT03-SSW003-RCCL",
-        "SRC-OCT03-SSW003-RCCL-DEVELOP"
+        "SRC-OCT03-SSW003-RCCL-DEVELOP",
+        "SRC-OCT05-SSW003-03",
+        "SRC-OCT05-SSW003-04",
+        "SRC-OCT05-SSW003-09",
+        "SRC-OCT05-SSW003-10",
+        "SRC-OCT05-SSW003-11",
+        "SRC-OCT05-SSW003-14",
+        "SRC-OCT05-SSW003-15"
       ]
     },
     {
@@ -68,8 +75,8 @@
       "name_en": "Scheduling and power integration",
       "summary_ja": "ジョブ配置、会計、電力制約の連携を扱います。",
       "summary_en": "Cover workload placement, accounting, and power constraints.",
-      "current_state_ja": "Slurmはエネルギー会計設定を公開していますが、HPCI横断の共通実装を意味しません。 2026年10月3日の確認では、Slurmは25.05以降cgroup v1へ新機能を追加せず、ノード内のv1/v2混在は非対応だがノード別の異なる版は許容する。v2のno_file_cache設定ではMaxRSSがポーリング由来となり短いピークを取り逃し得る。AutoDetect=nvidiaはMIG/NVLinkを検出しない。Apptainer 1.5.4はsuid/CDIの権限境界とUbuntu 24.04以降のrootless build向けAppArmorを修正した。",
-      "current_state_en": "Slurm documents energy accounting, but this does not establish a common HPCI-wide implementation. The October 3, 2026 read confirms no new Slurm cgroup v1 features from 25.05; within-node hybrid controllers are unsupported, while node-wise version differences are allowed. With v2 no_file_cache, polling-based MaxRSS can miss short peaks. AutoDetect=nvidia does not detect MIG/NVLink. Apptainer 1.5.4 fixes a suid/CDI privilege boundary and AppArmor for rootless builds on Ubuntu 24.04 and later.",
+      "current_state_ja": "Slurmはエネルギー会計設定を公開していますが、HPCI横断の共通実装を意味しません。 2026年10月3日の確認では、Slurmは25.05以降cgroup v1へ新機能を追加せず、ノード内のv1/v2混在は非対応だがノード別の異なる版は許容する。v2のno_file_cache設定ではMaxRSSがポーリング由来となり短いピークを取り逃し得る。AutoDetect=nvidiaはMIG/NVLinkを検出しない。Apptainer 1.5.4はsuid/CDIの権限境界とUbuntu 24.04以降のrootless build向けAppArmorを修正した。 今回の限定的な追補：9月のFlux core・scheduler・accountingの独立releaseを8月履歴に追加し、queue recovery・quota enforcement機能を統合配備済みとしない。親queue共有・policy override・実効設定を別に固定し、fairness・accounting・復旧を試験する。moving stable docs、Slurm26系列EOL矛盾、HPCI採用・共通SLA未確認を保持する。 EFPの既存9systemの運用文書とArrheniusの部分的integration、2027–2029提供者目標を区別し、10番目の全面受入とはしない。9月29日MEXT案を既存の6月根拠と併記するが採択済み共通要件へ昇格しない。Slurm federationのorigin failure・requeue・accounting viewを既存queue/SLA試験条件へ追加し、共通SLA・緊急締切達成・複数施設実験は未確認とする。",
+      "current_state_en": "Slurm documents energy accounting, but this does not establish a common HPCI-wide implementation. The October 3, 2026 read confirms no new Slurm cgroup v1 features from 25.05; within-node hybrid controllers are unsupported, while node-wise version differences are allowed. With v2 no_file_cache, polling-based MaxRSS can miss short peaks. AutoDetect=nvidia does not detect MIG/NVLink. Apptainer 1.5.4 fixes a suid/CDI privilege boundary and AppArmor for rootless builds on Ubuntu 24.04 and later. Scoped additions in this batch: Append separate September Flux core/scheduler/accounting releases to August history without calling queue recovery/quota enforcement integrated deployment. Pin parent-queue sharing, policy overrides and effective configuration separately; test fairness/accounting/recovery. Retain moving-stable documentation, Slurm 26-series EOL dissent and unverified HPCI adoption/common SLAs. Distinguish nine-system EFP operational documentation from partial Arrhenius integration and provider 2027–2029 targets, not a fully accepted tenth system. Add September 29 MEXT draft context beside June history without adopted common requirements. Extend existing queue/SLA tests with Slurm origin failure, requeue and accounting views; common SLAs, urgent deadlines and multisite experiments remain unverified.",
       "hpci_implications_ja": "資源記述、会計、優先度、緊急実行の意味をそろえる必要があります。 候補構成ではcgroup移行時の再起動、資源検出・隔離・会計の整合性、Slurm daemon/client/pluginの更新順序と旧ジョブ完了を検証する。daemon起動後の単純downgradeは非対応であり、状態・会計backupの復元可能性を確認する。26系支援終了表の年と18か月表記の不整合は未解決とし、確定終了日やHPCI移行日へ変換しない。",
       "hpci_implications_en": "Resource descriptions, accounting, priority, and urgent execution semantics need alignment. Candidate-stack tests should cover cgroup-conversion reboot, resource discovery/isolation/accounting consistency, Slurm daemon/client/plugin upgrade order and completion of old jobs. Simple downgrade after daemon startup is unsupported; verify restoration of state and accounting backups. The 26-series support table has conflicting end years and 18-month labels; do not turn them into definite end dates or HPCI migration deadlines.",
       "source_ids": [
@@ -79,7 +86,20 @@
         "SRC-OCT03-SSW006-CGROUP",
         "SRC-OCT03-SSW006-CGROUPV2",
         "SRC-OCT03-SSW006-UPGRADE",
-        "SRC-OCT03-SSW006-PLATFORMS"
+        "SRC-OCT03-SSW006-PLATFORMS",
+        "SRC-OCT05-SSW006-01",
+        "SRC-OCT05-SSW006-02",
+        "SRC-OCT05-SSW006-03",
+        "SRC-OCT05-SSW006-04",
+        "SRC-OCT05-SSW006-05",
+        "SRC-OCT05-OPS002-03",
+        "SRC-OCT05-OPS003-01",
+        "SRC-OCT05-GOV001-05",
+        "SRC-CDO019",
+        "SRC-OCT03-OPS003-EFP",
+        "SRC-OCT03-OPS003-PROJECT",
+        "SRC-OCT03-OPS003-WORKFLOW",
+        "SRC-OCT03-OPS003-QUICKSTART"
       ]
     }
   ],
@@ -183,8 +203,8 @@
           "comparison_priority": "key",
           "label_ja": "互換性マトリクスの暫定判断点",
           "label_en": "Provisional compatibility-matrix gate",
-          "detail_ja": "API、版、失敗処理、会計、電力制御を候補構成別に記録する暫定計画です。 EFPの新旧課題移行、配分内のcluster選択、site別規約・支援責任を検査し、smart schedulerの説明と実測を分離する。",
-          "detail_en": "A provisional plan to record APIs, versions, failure handling, accounting, and power controls per candidate stack. Test EFP new/legacy-project migration, allocation-bounded cluster selection and site-specific terms/support; distinguish smart-scheduler descriptions from measured behavior.",
+          "detail_ja": "API、版、失敗処理、会計、電力制御を候補構成別に記録する暫定計画です。 EFPの新旧課題移行、配分内のcluster選択、site別規約・支援責任を検査し、smart schedulerの説明と実測を分離する。 追補条件：Flux core/scheduler/accountingの版、親queue・override実効policyを分ける。EFP Arrheniusの部分integrationとprovider目標を全面受入から区別し、origin failure・requeue・accounting viewを試験する。共通SLAやsite配備済み機能とはしない。",
+          "detail_en": "A provisional plan to record APIs, versions, failure handling, accounting, and power controls per candidate stack. Test EFP new/legacy-project migration, allocation-bounded cluster selection and site-specific terms/support; distinguish smart-scheduler descriptions from measured behavior. Additional criteria: separate Flux core/scheduler/accounting versions, parent queues and effective policy overrides. Distinguish partial EFP Arrhenius integration/provider targets from full acceptance; test origin failure, requeue and accounting views. These do not establish common SLAs or deployed site functionality.",
           "source_ids": [
             "SRC-OPENFS-P0-PLAN",
             "SRC-CDO055",
@@ -192,7 +212,17 @@
             "SRC-OCT03-OPS003-PROJECT",
             "SRC-OCT03-OPS003-QUICKSTART",
             "SRC-OCT03-OPS003-SMART",
-            "SRC-OCT03-OPS003-SUPPORT"
+            "SRC-OCT03-OPS003-SUPPORT",
+            "SRC-OCT05-SSW006-01",
+            "SRC-OCT05-SSW006-02",
+            "SRC-OCT05-SSW006-03",
+            "SRC-OCT05-SSW006-04",
+            "SRC-OCT05-SSW006-05",
+            "SRC-OCT05-OPS002-03",
+            "SRC-OCT05-OPS003-01",
+            "SRC-OCT05-GOV001-05",
+            "SRC-CDO019",
+            "SRC-OCT03-OPS003-WORKFLOW"
           ],
           "dependency_refs": [
             "DEP-RUNTIME-BLUEPRINT"
@@ -401,11 +431,11 @@
     },
     {
       "source_id": "SRC-OCT03-SSW003-OMPI",
-      "title": "Open MPI Version 5.0 Releases",
+      "title": "Open MPI5.0.11 download row (September16); changelog separately says August2026",
       "publisher": "Open MPI Project",
       "url": "https://www.open-mpi.org/software/ompi/v5.0/",
       "source_class": "project-official",
-      "published_at": "2026-02-23"
+      "published_at": "2026-09-16"
     },
     {
       "source_id": "SRC-OCT03-SSW003-OMPI-NEWS",
@@ -523,6 +553,129 @@
       "publisher": "SchedMD",
       "url": "https://slurm.schedmd.com/platforms.html",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-03",
+      "title": "Open MPI5.0.11 download row (September16); changelog separately says August2026",
+      "publisher": "Open MPI Project",
+      "url": "https://www.open-mpi.org/software/ompi/v5.0/",
+      "source_class": "project-official",
+      "published_at": "2026-09-16"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-04",
+      "title": "Open MPI 5.0.x changelog",
+      "publisher": "Open MPI project",
+      "url": "https://docs.open-mpi.org/en/v5.0.x/release-notes/changelog/v5.0.x.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-09",
+      "title": "NCCL 2.32.3 release notes",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/deeplearning/nccl/release-notes/rel_2-32-3.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-10",
+      "title": "NCCL v2.32.3-1 Release",
+      "publisher": "NVIDIA",
+      "url": "https://github.com/NVIDIA/nccl/releases/tag/v2.32.3-1",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-11",
+      "title": "NCCL4Py v0.6.0 Release",
+      "publisher": "NVIDIA",
+      "url": "https://github.com/NVIDIA/nccl/releases/tag/nccl4py-v0.6.0",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-14",
+      "title": "AuroraBugTracking bugs.md",
+      "publisher": "Argonne Leadership Computing Facility",
+      "url": "https://raw.githubusercontent.com/argonne-lcf/AuroraBugTracking/main/bugs.md",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW003-15",
+      "title": "Fortran: MPI_Reduce produces wrong answer using MPI_REAL #7911",
+      "publisher": "MPICH project tracker; report linked to ALCF",
+      "url": "https://github.com/pmodels/mpich/issues/7911",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW006-01",
+      "title": "flux-core v0.89.0",
+      "publisher": "Flux Framework project",
+      "url": "https://flux-framework.org/release/2026/09/02/flux-core-0.89.0.html",
+      "source_class": "project-official",
+      "published_at": "2026-09-02"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW006-02",
+      "title": "flux-accounting v0.61.0",
+      "publisher": "Flux Framework project",
+      "url": "https://flux-framework.org/release/2026/09/01/flux-accounting-0.61.0.html",
+      "source_class": "project-official",
+      "published_at": "2026-09-01"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW006-03",
+      "title": "flux-sched v0.55.0",
+      "publisher": "Flux Framework project",
+      "url": "https://flux-framework.org/release/2026/09/08/flux-sched-0.55.0.html",
+      "source_class": "project-official",
+      "published_at": "2026-09-08"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW006-04",
+      "title": "flux-config-queues(5), stable documentation",
+      "publisher": "Flux Framework project",
+      "url": "https://flux-framework.readthedocs.io/projects/flux-core/en/stable/man5/flux-config-queues.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-SSW006-05",
+      "title": "flux-config-policy(5), stable documentation",
+      "publisher": "Flux Framework project",
+      "url": "https://flux-framework.readthedocs.io/projects/flux-core/en/stable/man5/flux-config-policy.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS002-03",
+      "title": "Slurm upgrade and compatibility guide",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/upgrades.html",
+      "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS003-01",
+      "title": "Plenary session: Federation & Hyperconnectivity Benefits for Users",
+      "publisher": "EuroHPC JU / EFP consortium",
+      "url": "https://www.eurohpc-ju.europa.eu/document/download/fa86f05c-e71b-43f7-9d58-99ceab2d67da_en?filename=PLENARY+Day+3+-+Federation+%26+Hyperconnectivity++Benefits+for+Users.pdf",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT05-GOV001-05",
+      "title": "Strategic HPCI ecosystem policy draft",
+      "publisher": "MEXT",
+      "url": "https://www.mext.go.jp/content/20260929-mxt_jyohoka01-000052278_331.pdf",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-CDO019",
+      "title": "Slurm Federated Scheduling Guide",
+      "publisher": "SchedMD",
+      "url": "https://slurm.schedmd.com/federation.html",
+      "source_class": "project-official"
+    },
+    {
+      "source_id": "SRC-OCT03-OPS003-WORKFLOW",
+      "title": "EFP Workflows",
+      "publisher": "EuroHPC Federation Platform consortium",
+      "url": "https://docs.my-eurohpc.eu/workflows/overview/",
+      "source_class": "project-official"
     }
   ],
   "coverage_gaps": [
@@ -554,7 +707,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }

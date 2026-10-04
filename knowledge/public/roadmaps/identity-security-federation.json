@@ -5,7 +5,7 @@
   "status": "published",
   "domain": "system-software",
   "slug": "system-software/identity-security-federation",
-  "as_of": "2026-10-03",
+  "as_of": "2026-10-04",
   "title_ja": "認証・セキュリティ・連合運用",
   "title_en": "Identity, security, and federated operations",
   "summary_ja": "統合認証、保証レベル、HPCセキュリティ、機密計算を段階的に検証する暫定ロードマップです。標準準拠と運用受入を分けます。",
@@ -39,14 +39,19 @@
       "name_en": "Federated identity and assurance",
       "summary_ja": "ログイン、MFA、属性、保証レベルを追跡します。",
       "summary_en": "Track login, MFA, attributes, and assurance levels.",
-      "current_state_ja": "HPCI手順、REFEDS MFA、OpenID Federationの公開資料を確認しました。",
-      "current_state_en": "HPCI procedures, REFEDS MFA, and OpenID Federation documentation were checked.",
+      "current_state_ja": "HPCI手順、REFEDS MFA、OpenID Federationの公開資料を確認しました。 今回の限定的な追補：NIIは2026年10月–2027年3月pilotのassurance、AP/VC、MDQ cache・移行・失敗試験を予告するが開始実績とHPCI展開は未確認。Open OnDemand4.2.4のmulti-cluster account名衝突・reverse-proxy初期化修正は認可脆弱性やsite導入を示さない。OpenIDの任意signed event historyは初のImplementer’s DraftでFinal本体§11.4と異なり、project/token自動取消を保証しない。",
+      "current_state_en": "HPCI procedures, REFEDS MFA, and OpenID Federation documentation were checked. Scoped additions in this batch: NII announces an October 2026–March 2027 pilot for assurance, AP/VC and MDQ cache/migration/failure tests, without observed start or HPCI rollout. Open OnDemand 4.2.4 account-name collision/reverse-proxy fixes establish neither an authorization vulnerability nor deployment. Optional OpenID signed event history is a first Implementers Draft distinct from Final §11.4; it does not guarantee automatic project/token revocation.",
       "hpci_implications_ja": "利用者、サービス、ワークロードIDの境界を定義する必要があります。",
       "hpci_implications_en": "User, service, and workload identity boundaries need definition.",
       "source_ids": [
         "SRC-CDO027",
         "SRC-BLUE041",
-        "SRC-BLUE040"
+        "SRC-BLUE040",
+        "SRC-OCT05-OPS004-01",
+        "SRC-OCT05-OPS004-02",
+        "SRC-OCT05-OPS004-03",
+        "SRC-OCT05-OPS004-04",
+        "SRC-OCT05-OPS004-05"
       ]
     },
     {
@@ -56,14 +61,15 @@
       "name_en": "HPC zero trust and confidential computing",
       "summary_ja": "管理面、計算面、データ面の統制を扱います。",
       "summary_en": "Cover control-plane, compute-plane, and data-plane controls.",
-      "current_state_ja": "NISTのHPC向け文書とZero Trust資料は統制設計の基準であり、製品認定ではありません。",
-      "current_state_en": "NIST HPC and Zero Trust documents are control-design references, not product certifications.",
+      "current_state_ja": "NISTのHPC向け文書とZero Trust資料は統制設計の基準であり、製品認定ではありません。 今回の限定的な追補：AMD-SB-3034は9月24日版でTCB値を削除した。現行の対策確認は製品別PI・OEM BIOSの適用証跡として扱い、このbulletinからTCB確認を要求する旧解釈を訂正する。一般のattestation基準値管理・構成検証は別の要件として保持する。全製品patch配備、攻撃再現、HPCI security適合は未確認。",
+      "current_state_en": "NIST HPC and Zero Trust documents are control-design references, not product certifications. Scoped additions in this batch: AMD-SB-3034 removed TCB values in its September 24 revision. Assess product-specific PI/OEM BIOS deployment evidence and correct the prior bulletin-specific TCB-check implication. Retain generic attestation reference-value/configuration management as separate requirements. Universal patch deployment, exploit reproduction and HPCI security qualification remain unverified.",
       "hpci_implications_ja": "性能影響、鍵管理、障害対応、監査証跡を候補構成で試験します。",
       "hpci_implications_en": "Test performance impact, key management, incident handling, and audit trails on candidate stacks.",
       "source_ids": [
         "SRC-CDO039",
         "SRC-CDO040",
-        "SRC-CDO053"
+        "SRC-CDO053",
+        "SRC-OCT05-OPS005-01"
       ]
     }
   ],
@@ -298,6 +304,52 @@
       "publisher": "NVIDIA",
       "url": "https://docs.nvidia.com/attestation/advanced-documentation/latest/claims-guide/nvswitch_claims.html",
       "source_class": "vendor-official"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS004-01",
+      "title": "2026年度 中規模実証実験 参加機関・サービス募集",
+      "publisher": "National Institute of Informatics, Center for Trust and Digital Identity R&D. Publication 2026-08-28; announced experiment period October 2026–March 2027, month precision",
+      "url": "https://trustdigitalidcenter.jp/?p=641",
+      "source_class": "project-official",
+      "published_at": "2026-08-28"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS004-02",
+      "title": "Open OnDemand 4.2 Release; September 3 post, Open OnDemand 4.2.4",
+      "publisher": "Open OnDemand project. Publication/release announcement: 2026-09-03 15:34 as displayed (timezone unspecified)",
+      "url": "https://discourse.openondemand.org/t/open-ondemand-4-2-release/4885",
+      "source_class": "project-official",
+      "published_at": "2026-09-03"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS004-03",
+      "title": "Implementer’s Drafts of Two OpenID Federation Extensions Approved",
+      "publisher": "OpenID Foundation; publication/approval announcement 2026-09-09",
+      "url": "https://openid.net/implementers-drafts-of-two-openid-federation-extensions-approved/",
+      "source_class": "project-official",
+      "published_at": "2026-09-09"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS004-04",
+      "title": "OpenID Federation Subordinate Entity Events 1.0, first Implementers Draft",
+      "publisher": "OpenID Foundation",
+      "url": "https://openid.net/specs/openid-federation-subordinate-events-1_0-ID1.html",
+      "source_class": "standards-body"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS004-05",
+      "title": "OpenID Federation 1.0 Final",
+      "publisher": "OpenID Foundation",
+      "url": "https://openid.net/specs/openid-federation-1_0-final.html",
+      "source_class": "standards-body",
+      "published_at": "2026-02-17"
+    },
+    {
+      "source_id": "SRC-OCT05-OPS005-01",
+      "title": "SEV-SNP Routing Misconfiguration",
+      "publisher": "AMD",
+      "url": "https://www.amd.com/en/resources/product-security/bulletin/amd-sb-3034.html",
+      "source_class": "vendor-official"
     }
   ],
   "coverage_gaps": [
@@ -329,7 +381,7 @@
   "publication": {
     "information_classification": "public",
     "publication_approved": true,
-    "publication_decision_id": "PUBDEC-OCT03-CATALOG41-20261003",
-    "human_approval_directive_id": "DIR-900141"
+    "publication_decision_id": "PUBDEC-OCT05-CATALOG41-20261005",
+    "human_approval_directive_id": "DIR-900144"
   }
 }
